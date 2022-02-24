@@ -712,59 +712,91 @@ class RMSD(AnalysisBase):
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.rmsd
 
+
 class SymmRMSD(AnalysisBase):
     """
     Compute symmetry-corrected RMSD for small molecules
     """
 
-    def __init__(self, atomgroup, select, reference=None, align_select="", weights=None, ref_frame=0, **kwargs):
+    def __init__(self, atomgroup, reference=None, select='all', ref_frame=0, **kwargs):
         super().__init__(atomgroup.universe.trajectory, **kwargs)
 
-        self.weights = weights
-        self.select = select
+        self.atomgroup = atomgroup
+        self.reference = reference if reference is not None else self.atomgroup
+        self.ref_frame = ref_frame
 
-        # TODO: Use actual reference or select from ref_frame
-        self.reference = atomgroup.select_atoms(select)
+        select = process_selection(select)
 
-        # TODO: Check that weights match number of atoms in reference
+        self.ref_atoms = self.reference.select_atoms(*select['reference'])
+        self.mobile_atoms = self.atomgroup.select_atoms(*select['mobile'])
+
+        if len(self.ref_atoms) != len(self.mobile_atoms):
+            err = ("Reference and trajectory atom selections do "
+                   "not contain the same number of atoms: "
+                   f"N_ref={self.ref_atoms.n_atoms:d}, "
+                   f"N_traj={self.mobile_atoms.n_atoms:d}")
+
+            logger.exception(err)
+            raise SelectionError(err)
 
     def _prepare(self):
+        current_frame = self.reference.universe.trajectory.ts.frame
+
         # Columns: frame, time, rmsd
         self.results.rmsd = np.zeros((self.n_frames, 3))
 
-        A = self._adjacency_matrix()
-        G = graph.graph_from_adjacency_matrix(A)
+        A = self._adjacency_matrix(self.ref_atoms)
+        Ga = graph.graph_from_adjacency_matrix(A)
 
-        self.isomorphisms = graph.match_graphs(G, G)
+        B = self._adjacency_matrix(self.mobile_atoms)
+        Gb = graph.graph_from_adjacency_matrix(B)
+
+        self.isomorphisms = graph.match_graphs(Ga, Gb)
+
+        # TODO: Check consistency of masses after graph isomorphism?
+
+        try:
+            # TODO: Deal with COM?
+            # Move to the ref_frame
+            self.reference.universe.trajectory[self.ref_frame]
+            self._ref_coordinates = self.ref_atoms.positions
+        finally:
+            # Move back to the original frame
+            self.reference.universe.trajectory[current_frame]
+
+        self._ref_coordinates64 = self._ref_coordinates.astype(np.float64)
+
+        # Pre-allocate memory for the mobile coordinates
+        self._mobile_coordinates64 = self.mobile_atoms.positions.copy().astype(np.float64)
+
+        # Pre-allocate memory for the results
+        self.results.rmsd = np.zeros((self.n_frames, 3))
 
     def _single_frame(self):
-        # Get frame number from current timestep
-        self.results[self._frame_index, 0] = self._ts.frame
+        # Get current coordinates
+        self._mobile_coordinates64[:] = self.mobile_atoms.positions
 
-        # Get time from actual trajectory
-        self.results[self._frame_index, 1] = self._trajectory.time
+        # Get frame number and time for current timestep
+        self.results.rmsd[self._frame_index, :2] = self._ts.frame, self._trajectory.time
 
         # Compute minimum RMSD from graph isomorphisms
         min_rmsd = np.inf
         for idx1, idx2 in self.isomorphisms:
+            # Shuffle positions around according to graph isomorphism
+            cref = self._ref_coordinates64[idx1, :]
+            cmobile = self._mobile_coordinates64[idx2, :]
 
-            a = self.reference.positions[idx1, :]
-            b = self.atomgroup.select_atoms(select).positions[idx2, :]
-
-            r = rmsd(a, b, weights=self.weights, center=False, superposition=False)
+            r = rmsd(cref, cmobile, weights=None, center=False, superposition=False)
             if r < min_rmsd:
                 min_rmsd = r
 
-        self.results.rmsd[self.frame_index, 2] = min_rmsd
+        self.results.rmsd[self._frame_index, 2] = min_rmsd
 
-    #def _conclude(self):
-    #    pass
-
-    def _adjacency_matrix(self):
+    def _adjacency_matrix(self, atoms):
         """
         Compute adjacency matrix for selection based on bonds.
         """
-        n_atoms = len(self.reference)
+        n_atoms = len(atoms)
 
         # Allocate adjacency matrix
         A = np.zeros((n_atoms, n_atoms), dtype=int)
@@ -772,16 +804,13 @@ class SymmRMSD(AnalysisBase):
         # TODO: Catch NoDataError in case of missing bonds?
         # FIXME: Make this more efficient
         # Loop over all bonds
-        for bond in self.reference.bonds:
-            for i, ai in enumerate(self.reference.atoms):
-                for j, aj in enumerate(self.reference.atoms):
+        for bond in atoms.bonds:
+            for i, ai in enumerate(atoms.atoms):
+                for j, aj in enumerate(atoms.atoms):
                     if ai in bond and aj in bond and i != j:
                         A[i, j] = 1
 
         return A
-
-
-
 
 
 class RMSF(AnalysisBase):
