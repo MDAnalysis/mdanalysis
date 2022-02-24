@@ -20,6 +20,8 @@ The rules for this file:
  * 2.1.0
 
 Fixes
+  * Add optional dtype argument to box checking routines to avoid forced
+    conversion to np.float32.
   * Prevents attempts to close an already closed NamedStream (Issue #3386)
   * Added missing exe_err import in hole.py. Fixed a bug in HoleAnalysis where 
     kwarg was passed instead of object to generate path (Issue #3493, PR #3496)
