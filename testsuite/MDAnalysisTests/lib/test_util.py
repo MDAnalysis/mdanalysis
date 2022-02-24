@@ -2051,6 +2051,7 @@ class TestCheckBox(object):
     ref_tri_vecs = np.array([[1, 0, 0], [0, 1, 0], [0, 2 ** 0.5, 2 ** 0.5]],
                             dtype=np.float32)
 
+    @pytest.mark.parametrize('dtype', (np.float32, np.float64))
     @pytest.mark.parametrize('box',
                              ([1, 1, 1, 90, 90, 90],
                               (1, 1, 1, 90, 90, 90),
@@ -2064,17 +2065,18 @@ class TestCheckBox(object):
                                  np.array([1, 1, 1, 1, 1, 1,
                                            90, 90, 90, 90, 90, 90],
                                           dtype=np.float32)[::2]))
-    def test_check_box_ortho(self, box):
-        boxtype, checked_box = util.check_box(box)
+    def test_check_box_ortho(self, box, dtype):
+        boxtype, checked_box = util.check_box(box, dtype=dtype)
         assert boxtype == 'ortho'
         assert_allclose(checked_box, self.ref_ortho)
-        assert checked_box.dtype == np.float32
+        assert checked_box.dtype == dtype
         assert checked_box.flags['C_CONTIGUOUS']
 
     def test_check_box_None(self):
         with pytest.raises(ValueError, match="Box is None"):
             util.check_box(None)
 
+    @pytest.mark.parametrize('dtype', (np.float32, np.float64))
     @pytest.mark.parametrize('box',
                              ([1, 1, 2, 45, 90, 90],
                               (1, 1, 2, 45, 90, 90),
@@ -2088,11 +2090,11 @@ class TestCheckBox(object):
                                  np.array([1, 1, 1, 1, 2, 2,
                                            45, 45, 90, 90, 90, 90],
                                           dtype=np.float32)[::2]))
-    def test_check_box_tri_vecs(self, box):
-        boxtype, checked_box = util.check_box(box)
+    def test_check_box_tri_vecs(self, box, dtype):
+        boxtype, checked_box = util.check_box(box, dtype=dtype)
         assert boxtype == 'tri_vecs'
         assert_almost_equal(checked_box, self.ref_tri_vecs, self.prec)
-        assert checked_box.dtype == np.float32
+        assert checked_box.dtype == dtype
         assert checked_box.flags['C_CONTIGUOUS']
 
     def test_check_box_wrong_data(self):
