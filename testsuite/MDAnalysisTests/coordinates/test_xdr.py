@@ -742,15 +742,15 @@ class _GromacsReader_offsets(object):
     def test_reload_offsets(self, traj):
         self._reader(traj, refresh_offsets=True)
 
-    def test_nonexistant_offsets_file(self, traj):
-        # assert that a nonexistant file returns False during read-in
+    def test_nonexistent_offsets_file(self, traj):
+        # assert that a nonexistent file returns False during read-in
         outfile_offsets = XDR.offsets_filename(traj)
         with patch.object(np, "load") as np_load_mock:
             np_load_mock.side_effect = IOError
             saved_offsets = XDR.read_numpy_offsets(outfile_offsets)
             assert_equal(saved_offsets, False)
 
-    def test_nonexistant_offsets_file(self, traj):
+    def test_nonexistent_offsets_file(self, traj):
         # assert that a corrupted file returns False during read-in
         # Issue #3230
         outfile_offsets = XDR.offsets_filename(traj)

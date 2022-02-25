@@ -24,14 +24,15 @@ import multiprocessing
 
 import numpy as np
 import os
+import shutil
 import pytest
 import pickle
 from numpy.testing import assert_equal
 
 import MDAnalysis as mda
+import MDAnalysis.coordinates
 from MDAnalysis.coordinates.core import get_reader_for
 from MDAnalysis.analysis.rms import RMSD
-from MDAnalysis.coordinates import XDR
 
 from MDAnalysisTests.datafiles import (
     CRD,
@@ -87,6 +88,19 @@ def u(request):
         top, trj = request.param
         return mda.Universe(top, trj)
 
+@pytest.fixture(scope="function")
+def temp_xtc(tmp_path):
+    fresh_xtc = tmp_path / "testing.xtc"
+    shutil.copy(XTC, fresh_xtc)
+    # In principle there is no possibility that the offset for
+    # fresh_xtc exists as it is a fresh copy for every test. However,
+    # the code is left for documentation.
+    try:
+        os.remove(MDAnalysis.coordinates.XDR.offsets_filename(fresh_xtc))
+    except OSError:
+        pass
+    return fresh_xtc
+
 
 # Define target functions here
 # inside test functions doesn't work
@@ -127,22 +141,16 @@ def test_universe_unpickle_in_new_process():
     assert_equal(ref, res)
 
 
-def create_universe():
-    return mda.Universe(GRO, XTC)
-
-
-def test_creating_multiple_universe_without_offset():
+def test_creating_multiple_universe_without_offset(temp_xtc, ncopies=3):
     #  test if they can be created without generating
     #  the offset simultaneously.
-    #  The tested XTC file is way too short to induce a race scenario
-    try:
-        os.remove(XDR.offsets_filename(XTC))
-    except OSError:
-        pass
-    p = multiprocessing.Pool(2)
-    universes = [p.apply(create_universe)
-            for i in range(3)]
-    p.close()
+    #  The tested XTC file is way too short to induce a race scenario but the
+    #  test is included as documentation for the scenario that used to create
+    #  a problem (see PR #3375 and issues #3230, #1988)
+
+    args = (GRO, str(temp_xtc))
+    with multiprocessing.Pool(2) as p:
+        universes = [p.apply(mda.Universe, args) for i in range(ncopies)]
 
     assert_equal(universes[0].trajectory._xdr.offsets,
                  universes[1].trajectory._xdr.offsets)
