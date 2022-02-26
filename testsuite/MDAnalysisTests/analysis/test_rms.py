@@ -367,26 +367,20 @@ class TestRMSD(object):
         with pytest.warns(DeprecationWarning, match=wmsg):
             assert_equal(RMSD.rmsd, RMSD.results.rmsd)
 
+
 class TestSymmRMSD(object):
     @pytest.fixture()
     def universe(self):
         return MDAnalysis.Universe(PSF, DCD)
 
     @pytest.fixture()
-    def outfile(self, tmpdir):
-        return os.path.join(str(tmpdir), 'rmsd.txt')
-
-    @pytest.fixture()
     def correct_values(self):
-        return [[0, 1, 0], [49, 50, 4.68953]]
+        raise NotImplementedError
 
     def test_rmsd(self, universe, correct_values):
-        RMSD = MDAnalysis.analysis.rms.SymmRMSD(universe, select='name CA')
-        RMSD.run(step=49)
-
-        assert_almost_equal(RMSD.results.rmsd, correct_values, 4,
-                            err_msg="error: rmsd profile should match" +
-                            "test values")
+        # Find suitable trajectory for test
+        # See 
+        raise NotImplementedError
 
 
 class TestRMSF(object):

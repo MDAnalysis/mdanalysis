@@ -158,7 +158,7 @@ import numpy as np
 import logging
 import warnings
 
-from spyrmsd import graph
+import spyrmsd.rmsd
 
 import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.analysis.base import AnalysisBase
@@ -745,13 +745,14 @@ class SymmRMSD(AnalysisBase):
         # Columns: frame, time, rmsd
         self.results.rmsd = np.zeros((self.n_frames, 3))
 
-        A = self._adjacency_matrix(self.ref_atoms)
-        Ga = graph.graph_from_adjacency_matrix(A)
+        self.ref_adj = self._adjacency_matrix(self.ref_atoms)
+        self.ref_aprops = self.ref_atoms.types.copy()
+        
+        self.mobile_adj = self._adjacency_matrix(self.mobile_atoms)
+        self.mobile_aprops = self.mobile_atoms.types.copy()
 
-        B = self._adjacency_matrix(self.mobile_atoms)
-        Gb = graph.graph_from_adjacency_matrix(B)
-
-        self.isomorphisms = graph.match_graphs(Ga, Gb)
+        # Compute isomorphisms at the first iteration
+        self.isomorphisms = None
 
         # TODO: Check consistency of masses after graph isomorphism?
 
@@ -759,12 +760,10 @@ class SymmRMSD(AnalysisBase):
             # TODO: Deal with COM?
             # Move to the ref_frame
             self.reference.universe.trajectory[self.ref_frame]
-            self._ref_coordinates = self.ref_atoms.positions
+            self._ref_coordinates64 = self.ref_atoms.positions.copy().astype(np.float64)
         finally:
             # Move back to the original frame
             self.reference.universe.trajectory[current_frame]
-
-        self._ref_coordinates64 = self._ref_coordinates.astype(np.float64)
 
         # Pre-allocate memory for the mobile coordinates
         self._mobile_coordinates64 = self.mobile_atoms.positions.copy().astype(np.float64)
@@ -780,17 +779,19 @@ class SymmRMSD(AnalysisBase):
         self.results.rmsd[self._frame_index, :2] = self._ts.frame, self._trajectory.time
 
         # Compute minimum RMSD from graph isomorphisms
-        min_rmsd = np.inf
-        for idx1, idx2 in self.isomorphisms:
-            # Shuffle positions around according to graph isomorphism
-            cref = self._ref_coordinates64[idx1, :]
-            cmobile = self._mobile_coordinates64[idx2, :]
+        min_rmsd, self.isomorphism = spyrmsd.rmsd._rmsd_isomorphic_core(
+            self._mobile_coordinates64,
+            self._ref_coordinates64,
+            self.mobile_aprops,
+            self.ref_aprops,
+            self.mobile_adj,
+            self.ref_adj,
+            center=False,
+            minimize=False,
+            isomorphisms=self.isomorphisms,
+        )
 
-            r = rmsd(cref, cmobile, weights=None, center=False, superposition=False)
-            if r < min_rmsd:
-                min_rmsd = r
-
-        self.results.rmsd[self._frame_index, 2] = min_rmsd
+        self.results.rmsd[self._frame_index, -1] = min_rmsd
 
     def _adjacency_matrix(self, atoms):
         """
