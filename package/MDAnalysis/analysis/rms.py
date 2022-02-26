@@ -723,23 +723,17 @@ class SymmRMSD(AnalysisBase):
 
     def __init__(
             self,
-            atomgroup,
+            mobile,
             reference=None,
-            select='all',
             ref_frame=0,
             **kwargs
         ):
 
-        super().__init__(atomgroup.universe.trajectory, **kwargs)
+        super().__init__(mobile.universe.trajectory, **kwargs)
 
-        self.atomgroup = atomgroup
-        self.reference = reference if reference is not None else self.atomgroup
+        self.mobile_atoms = mobile
+        self.ref_atoms = reference if reference is not None else self.mobile_atoms
         self.ref_frame = ref_frame
-
-        select = process_selection(select)
-
-        self.ref_atoms = self.reference.select_atoms(*select['reference'])
-        self.mobile_atoms = self.atomgroup.select_atoms(*select['mobile'])
 
         if len(self.ref_atoms) != len(self.mobile_atoms):
             err = ("Reference and trajectory atom selections do "
@@ -751,7 +745,7 @@ class SymmRMSD(AnalysisBase):
             raise SelectionError(err)
 
     def _prepare(self):
-        current_frame = self.reference.universe.trajectory.ts.frame
+        current_frame = self.ref_atoms.universe.trajectory.ts.frame
 
         # Columns: frame, time, rmsd
         self.results.rmsd = np.zeros((self.n_frames, 3))
@@ -770,12 +764,12 @@ class SymmRMSD(AnalysisBase):
         try:
             # TODO: Deal with COM?
             # Move to the ref_frame
-            self.reference.universe.trajectory[self.ref_frame]
+            self.ref_atoms.universe.trajectory[self.ref_frame]
             self._ref_coordinates64 = \
                 self.ref_atoms.positions.copy().astype(np.float64)
         finally:
             # Move back to the original frame
-            self.reference.universe.trajectory[current_frame]
+            self.ref_atoms.universe.trajectory[current_frame]
 
         # Pre-allocate memory for the mobile coordinates
         self._mobile_coordinates64 = \
@@ -797,11 +791,12 @@ class SymmRMSD(AnalysisBase):
                     pip install spyrmsd
 
                 or conda eg:
-                
+
                     conda install spyrmsd -c conda-forge
-                
-                """)
-        
+
+                """
+            )
+
         # Get current coordinates
         self._mobile_coordinates64[:] = self.mobile_atoms.positions
 
