@@ -158,8 +158,6 @@ import numpy as np
 import logging
 import warnings
 
-import spyrmsd.rmsd
-
 import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.exceptions import SelectionError, NoDataError
@@ -782,6 +780,23 @@ class SymmRMSD(AnalysisBase):
         self.results.rmsd = np.zeros((self.n_frames, 3))
 
     def _single_frame(self):
+        try:
+            import spyrmsd.rmsd
+        except ImportError:
+            raise ImportError("""ERROR --- spyrmsd was not found!
+
+                spyrmsd is required to compute symmetry-corrected RMSDs.
+
+                try installing it using pip eg:
+
+                    pip install spyrmsd
+
+                or conda eg:
+                
+                    conda install spyrmsd -c conda-forge
+                
+                """)
+        
         # Get current coordinates
         self._mobile_coordinates64[:] = self.mobile_atoms.positions
 
