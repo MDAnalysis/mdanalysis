@@ -163,6 +163,7 @@ from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.exceptions import SelectionError, NoDataError
 from MDAnalysis.lib.util import asiterable, iterable, get_weights
 
+from ..due import due, Doi
 
 logger = logging.getLogger('MDAnalysis.analysis.rmsd')
 
@@ -711,10 +712,14 @@ class RMSD(AnalysisBase):
         return self.results.rmsd
 
 
+@due.dcite(
+        Doi('10.1186/s13321-020-00455-2'),
+    )
 class SymmRMSD(AnalysisBase):
     """
     Compute symmetry-corrected RMSD for small molecules
     """
+
 
     def __init__(
             self,
