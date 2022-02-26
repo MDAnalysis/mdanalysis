@@ -382,6 +382,23 @@ class TestSymmRMSD(object):
         # See https://github.com/MDAnalysis/MDAnalysisData/issues/45
         raise NotImplementedError
 
+    def test_adjacency_matrix(self, universe, correct_values):
+        """
+        Test construction of the adjacency matrix.
+        """
+        # Find suitable trajectory for test
+        # See https://github.com/MDAnalysis/MDAnalysisData/issues/45
+        raise NotImplementedError
+
+    def test_isomorphisms(self, universe, correct_values):
+        """
+        Test isomorphisms between two selections.
+        """
+        # Find suitable trajectory for test
+        # See https://github.com/MDAnalysis/MDAnalysisData/issues/45
+        raise NotImplementedError
+
+
 
 class TestRMSF(object):
     @pytest.fixture()
