@@ -718,7 +718,15 @@ class SymmRMSD(AnalysisBase):
     Compute symmetry-corrected RMSD for small molecules
     """
 
-    def __init__(self, atomgroup, reference=None, select='all', ref_frame=0, **kwargs):
+    def __init__(
+            self,
+            atomgroup,
+            reference=None,
+            select='all',
+            ref_frame=0,
+            **kwargs
+        ):
+
         super().__init__(atomgroup.universe.trajectory, **kwargs)
 
         self.atomgroup = atomgroup
@@ -760,13 +768,15 @@ class SymmRMSD(AnalysisBase):
             # TODO: Deal with COM?
             # Move to the ref_frame
             self.reference.universe.trajectory[self.ref_frame]
-            self._ref_coordinates64 = self.ref_atoms.positions.copy().astype(np.float64)
+            self._ref_coordinates64 = \
+                self.ref_atoms.positions.copy().astype(np.float64)
         finally:
             # Move back to the original frame
             self.reference.universe.trajectory[current_frame]
 
         # Pre-allocate memory for the mobile coordinates
-        self._mobile_coordinates64 = self.mobile_atoms.positions.copy().astype(np.float64)
+        self._mobile_coordinates64 = \
+            self.mobile_atoms.positions.copy().astype(np.float64)
 
         # Pre-allocate memory for the results
         self.results.rmsd = np.zeros((self.n_frames, 3))
@@ -776,7 +786,8 @@ class SymmRMSD(AnalysisBase):
         self._mobile_coordinates64[:] = self.mobile_atoms.positions
 
         # Get frame number and time for current timestep
-        self.results.rmsd[self._frame_index, :2] = self._ts.frame, self._trajectory.time
+        self.results.rmsd[self._frame_index, 0] = self._ts.frame
+        self.results.rmsd[self._frame_index, 1] = self._trajectory.time
 
         # Compute minimum RMSD from graph isomorphisms
         min_rmsd, self.isomorphisms = spyrmsd.rmsd._rmsd_isomorphic_core(
