@@ -779,7 +779,7 @@ class SymmRMSD(AnalysisBase):
         self.results.rmsd[self._frame_index, :2] = self._ts.frame, self._trajectory.time
 
         # Compute minimum RMSD from graph isomorphisms
-        min_rmsd, self.isomorphism = spyrmsd.rmsd._rmsd_isomorphic_core(
+        min_rmsd, self.isomorphisms = spyrmsd.rmsd._rmsd_isomorphic_core(
             self._mobile_coordinates64,
             self._ref_coordinates64,
             self.mobile_aprops,
