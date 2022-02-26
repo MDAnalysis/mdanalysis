@@ -379,7 +379,7 @@ class TestSymmRMSD(object):
 
     def test_rmsd(self, universe, correct_values):
         # Find suitable trajectory for test
-        # See 
+        # See https://github.com/MDAnalysis/MDAnalysisData/issues/45
         raise NotImplementedError
 
 
