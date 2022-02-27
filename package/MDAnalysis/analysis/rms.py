@@ -717,7 +717,7 @@ class RMSD(AnalysisBase):
     )
 class SymmRMSD(AnalysisBase):
     """
-    Compute symmetry-corrected RMSD for small molecules
+    Compute symmetry-corrected RMSD for small molecules.
     """
 
 
@@ -728,6 +728,24 @@ class SymmRMSD(AnalysisBase):
             ref_frame=0,
             **kwargs
         ):
+        """
+        Parameters
+        ----------
+        mobile : AtomGroup
+            Group of atoms for which the RMSD is calculated. If a trajectory is
+            associated with the atoms then the computation iterates over the
+            trajectory.
+        reference : AtomGroup (optional)
+            Group of reference atoms; if ``None`` then the current frame of
+            `atomgroup` is used.
+        ref_frame : int (optional)
+             frame index to select frame from `reference`
+
+        Raises
+        ------
+        SelectionError
+             If the selections from `atomgroup` and `reference` do not match.
+        """
 
         super().__init__(mobile.universe.trajectory, **kwargs)
 
@@ -779,6 +797,12 @@ class SymmRMSD(AnalysisBase):
         self.results.rmsd = np.zeros((self.n_frames, 3))
 
     def _single_frame(self):
+        """
+        Raises
+        ------
+        ImportError
+             If the spyrmsd package is not installed
+        """
         try:
             import spyrmsd.rmsd
         except ImportError:
