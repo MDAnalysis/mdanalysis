@@ -20,6 +20,8 @@ inputs:
     default: 'codecov'
   cython:
     default: 'cython'
+  fasteners:
+    default: 'fasteners'
   griddataformats:
     default: 'griddataformats'
   gsd:
@@ -88,6 +90,7 @@ runs:
           ${{ inputs.biopython }}
           ${{ inputs.codecov }}
           ${{ inputs.cython }}
+          ${{ inputs.fasteners }}
           ${{ inputs.griddataformats }}
           ${{ inputs.gsd }}
           ${{ inputs.hypothesis }}
