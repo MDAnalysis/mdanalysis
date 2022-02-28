@@ -176,7 +176,7 @@ class OpenMMTopologyParser(TopologyReaderBase):
 
             attrs.append(Elements(np.array(validated_elements, dtype=object)))
             attrs.append(Masses(np.array(masses)))
-            atomtypes = [elem if len(elem) != 0 else 'X'
+            atomtypes = [elem if elem else 'X'
                          for elem in validated_elements]
             attrs.append(Atomtypes(np.array(atomtypes, dtype=object)))
 

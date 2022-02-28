@@ -27,7 +27,7 @@ import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import CONECT, PDBX, PDB
-from copy import deepcopy
+
 
 try:
     from openmm import app
@@ -109,17 +109,20 @@ class OpenMMTopologyBase(ParserBase):
             assert all(isinstance(elem, str) for elem in top.elements.values)
 
     def test_atomtypes(self, top):
-        if 'atomtypes' in self.expected_attrs:
-            assert len(top.atomtypes.values) == self.expected_n_atoms
-            assert isinstance(top, np.ndarray)
-            assert all(isinstance(atomtype, str)
-                       for atomtype in top.atomtypes.values)
+        assert len(top.types.values) == self.expected_n_atoms
+        if self.expected_n_atoms:
+            assert isinstance(top.types.values, np.ndarray)
+        else:
+            assert top.types.values == []
 
     def test_masses(self, top):
         assert len(top.masses.values) == self.expected_n_atoms
-        assert isinstance(top.masses.values, np.ndarray)
-        assert all(isinstance(mass, np.float64)
-                   for mass in top.masses.values)
+        if self.expected_n_atoms:
+            assert isinstance(top.masses.values, np.ndarray)
+            assert all(isinstance(mass, np.float64)
+                       for mass in top.masses.values)
+        else:
+            assert top.masses.values == []
 
 
 class OpenMMAppTopologyBase(OpenMMTopologyBase):
@@ -157,22 +160,18 @@ class TestOpenMMTopologyParserWithNoElements(OpenMMTopologyBase):
     expected_n_segments = 1
     expected_n_bonds = 25533
 
-    def test_with_partial_elements(self, top):
-        if 'elements' in self.expected_attrs:
-            omm_topology = self.ref_filename
-            wmsg = ("Unknown element None found for some atoms. "
-                    "These have been given an empty element record "
-                    "with their atomtype set to 'X' "
-                    "and their mass set to 0.0. "
-                    "If needed they can be guessed using "
-                    "MDAnalysis.topology.guessers.")
-            with pytest.warns(UserWarning, match=wmsg):
-                mda_top = self.parser(PDB) \
-                          ._mda_topology_from_omm_topology(omm_topology)
+    expected_attrs = [
+        "ids",
+        "names",
+        "resids",
+        "resnames",
+        "masses",
+        "bonds",
+        "chainIDs",
+    ]
 
-    def test_with_no_elements(self, top):
-        self.expected_attrs.remove('elements')
-        omm_topology = deepcopy(self.ref_filename)
+    def test_no_elements(self, top):
+        omm_topology = self.ref_filename
         for a in omm_topology.atoms():
             a.element = None
 
@@ -185,7 +184,31 @@ class TestOpenMMTopologyParserWithNoElements(OpenMMTopologyBase):
         with pytest.warns(UserWarning, match=wmsg):
             mda_top = self.parser(PDB) \
                       ._mda_topology_from_omm_topology(omm_topology)
-        self.expected_attrs.append('elements')
+
+
+class TestOpenMMTopologyParserWithPartialElements(OpenMMTopologyBase):
+    ref_filename = app.PDBFile(PDB).topology
+    expected_n_atoms = 47681
+    expected_n_residues = 11302
+    expected_n_segments = 1
+    expected_n_bonds = 25533
+
+    def test_with_partial_elements(self, top):
+        if 'elements' in self.expected_attrs:
+            omm_topology = self.ref_filename
+            wmsg = ("Unknown element None found for some atoms. "
+                    "These have been given an empty element record "
+                    "with their atomtype set to 'X' "
+                    "and their mass set to 0.0. "
+                    "If needed they can be guessed using "
+                    "MDAnalysis.topology.guessers.")
+            with pytest.warns(UserWarning, match=wmsg):
+                mda_top = self.parser(PDB) \
+                          ._mda_topology_from_omm_topology(omm_topology)
+                assert mda_top.types.values[3344] == 'X'
+                assert mda_top.types.values[3388] == 'X'
+                assert mda_top.elements.values[3344] == ''
+                assert mda_top.elements.values[3388] == ''
 
 
 class TestOpenMMPDBFileParser(OpenMMAppTopologyBase):
