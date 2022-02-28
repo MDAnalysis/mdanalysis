@@ -1,6 +1,7 @@
 biopython
 codecov
 cython
+fasteners
 griddataformats
 gsd
 hypothesis
@@ -21,4 +22,3 @@ sphinx_rtd_theme
 sphinx_sitemap
 threadpoolctl
 tqdm
-fasteners
