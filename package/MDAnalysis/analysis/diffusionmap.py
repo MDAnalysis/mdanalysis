@@ -172,7 +172,7 @@ class DistanceMatrix(AnalysisBase):
 
     Parameters
     ----------
-    universe : `~MDAnalysis.core.universe.Universe`
+    universe : `~MDAnalysis.core.universe.Universe or ~MDAnalysis.core.groups.AtomGroup`
         The MD Trajectory for dimension reduction, remember that
         computational cost of eigenvalue decomposition
         scales at O(N^3) where N is the number of frames.

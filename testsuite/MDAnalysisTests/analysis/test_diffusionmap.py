@@ -25,17 +25,12 @@ import MDAnalysis.analysis.diffusionmap as diffusionmap
 import numpy as np
 import pytest
 from MDAnalysisTests.datafiles import PDB, XTC
-from numpy.testing import assert_array_almost_equal
+from numpy.testing import assert_array_almost_equal, assert_allclose
 
 
 @pytest.fixture(scope='module')
 def u():
     return MDAnalysis.Universe(PDB, XTC)
-
-
-@pytest.fixture(scope='module')
-def ag():
-    return MDAnalysis.Universe(PDB, XTC).select_atoms('backbone')
 
 
 @pytest.fixture(scope='module')
@@ -74,11 +69,12 @@ def test_dist_weights(u):
                                 [.707, -.707, 0, 0]]), 2)
 
 
-def test_distvalues_ag_universe(u, ag):
+def test_distvalues_ag_universe(u):
     dist_universe = diffusionmap.DistanceMatrix(u, select='backbone').run()
+    ag = u.select_atoms('backbone')
     dist_ag = diffusionmap.DistanceMatrix(ag).run()
-    assert_array_almost_equal(dist_universe.results.dist_matrix,
-                              dist_ag.results.dist_matrix)
+    assert_allclose(dist_universe.results.dist_matrix,
+                    dist_ag.results.dist_matrix)
 
 
 def test_different_steps(u):
@@ -104,9 +100,9 @@ def test_long_traj(u):
         dmap.run()
 
 
-def test_not_universe_error(u):
-    trj_only = u.universe.trajectory
-    with pytest.raises(ValueError, match='U is not a Universe'):
+def test_not_universe_atomgroup_error(u):
+    trj_only = u.trajectory
+    with pytest.raises(ValueError, match='U is not a Universe or AtomGroup'):
         diffusionmap.DiffusionMap(trj_only)
 
 
