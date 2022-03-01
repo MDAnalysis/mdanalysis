@@ -107,6 +107,8 @@ class OpenMMTopologyBase(ParserBase):
             assert len(top.elements.values) == self.expected_n_atoms
             assert isinstance(top.elements.values, np.ndarray)
             assert all(isinstance(elem, str) for elem in top.elements.values)
+        else:
+            assert not hasattr(top, 'elemets')
 
     def test_atomtypes(self, top):
         assert len(top.types.values) == self.expected_n_atoms
