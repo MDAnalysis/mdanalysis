@@ -21,7 +21,7 @@ The rules for this file:
 
 Fixes
   * Prevents attempts to close an already closed NamedStream (Issue #3386)
-  * Added missing exe_err import in hole.py. Fixed a bug in HoleAnalysis where 
+  * Added missing exe_err import in hole.py. Fixed a bug in HoleAnalysis where
     kwarg was passed instead of object to generate path (Issue #3493, PR #3496)
   * Fixes creation of vmd surfaces in hole2 when using non-contiguous frames
     with start/stop/step (Issue #3476)
@@ -31,10 +31,6 @@ Fixes
   * TRRWriter preserves timestep data (Issue #3350).
   * Fixed Universe creation from a custom object which only provided a topology,
     previously raised a TypeError. (Issue #3443)
-  * Fix the competition when generating offsets from multiple processes by
-    using a interprocess file lock. (Issue #1988, PR #3375)
-  * Fix the error when trying to load a corrupted offset file (Issue #3230
-    PR #3375)
   * Documentation fixes (Issues #3224, #2667)
   * Fixed string attributes (e.g. resname, segid) not working on Residues and Segments
     created using add_Residue and add_Segment (Issue #3437)
@@ -54,6 +50,7 @@ Enhancements
   * Added MDAnalysis.lib.distances.minimize_vectors
 
 Changes
+  * `fasteners` package is now a core dependency (Issues #3230, #1988, PR #3375)
   * Indexing a group (AtomGroup, ResidueGroup, or SegmentGroup) with None
     raises a TypeError (Issue #3092, PR #3517)
   * TRZReader now defaults to a `dt` of 1.0 (instead of 0.0 previously) when
