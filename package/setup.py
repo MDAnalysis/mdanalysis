@@ -46,6 +46,7 @@ Google groups forbids any name that contains the string `anal'.)
 from setuptools import setup, Extension, find_packages
 from distutils.ccompiler import new_compiler
 from distutils.sysconfig import customize_compiler
+from packaging.version import Version
 import codecs
 import os
 import sys
@@ -83,7 +84,6 @@ try:
     import Cython
     from Cython.Build import cythonize
     cython_found = True
-    from packaging.version import Version
 
     required_version = "0.16"
     if not Version(Cython.__version__) >= Version(required_version):
