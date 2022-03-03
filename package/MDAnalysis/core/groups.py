@@ -437,7 +437,8 @@ def _pbc_to_wrap(function):
     @functools.wraps(function)
     def wrapped(group, *args, **kwargs):
         if kwargs.get('pbc', None) is not None:
-            warnings.warn("The 'pbc' kwarg has been deprecated, "
+            warnings.warn("The 'pbc' kwarg has been deprecated and will be "
+                          "removed in version 3.0., "
                           "please use 'wrap' instead",
                           DeprecationWarning)
             kwargs['wrap'] = kwargs.pop('pbc')
@@ -1038,7 +1039,9 @@ class GroupBase(_MutableBase):
             compounds
         .. versionchanged:: 0.20.0 Added `unwrap` parameter
         .. versionchanged:: 1.0.0 Removed flags affecting default behaviour
-        .. versionchanged:: 2.0.0 Renamed `pbc` kwarg to `wrap`
+        .. versionchanged::
+           2.1.0 Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
+           is deprecated and will be removed in version 3.0.
         """
         atoms = self.atoms
 
@@ -1146,7 +1149,9 @@ class GroupBase(_MutableBase):
             compounds
         .. versionchanged:: 0.20.0 Added `unwrap` parameter
         .. versionchanged:: 1.0.0 Removed flags affecting default behaviour
-        .. versionchanged:: 2.0.0 Renamed 'pbc' kwarg to 'wrap'
+        .. versionchanged::
+           2.1.0 Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
+           is deprecated and will be removed in version 3.0.
         """
         return self.center(None, wrap=wrap, compound=compound, unwrap=unwrap)
 
@@ -1289,7 +1294,9 @@ class GroupBase(_MutableBase):
         .. versionadded:: 0.7.2
         .. versionchanged:: 0.8 Added *pbc* keyword
         .. versionchanged:: 1.0.0 Removed flags affecting default behaviour
-        .. versionchanged:: 2.0.0 Renamed 'pbc' kwarg to 'wrap'
+        .. versionchanged::
+           2.1.0 Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
+           is deprecated and will be removed in version 3.0.
         """
         # TODO: Add unwrap/compounds treatment
         atomgroup = self.atoms
@@ -1324,7 +1331,9 @@ class GroupBase(_MutableBase):
 
         .. versionadded:: 0.7.3
         .. versionchanged:: 0.8 Added *pbc* keyword
-        .. versionchanged:: 2.0.0 Renamed 'pbc' kwarg to 'wrap'
+        .. versionchanged::
+           2.1.0 Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
+           is deprecated and will be removed in version 3.0.
         """
         atomgroup = self.atoms.unsorted_unique
 
