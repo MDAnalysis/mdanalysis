@@ -599,6 +599,7 @@ if __name__ == '__main__':
           'matplotlib>=1.5.1',
           'tqdm>=4.43.0',
           'threadpoolctl',
+          'packaging',
     ]
 
     if not os.name == 'nt':
@@ -641,6 +642,7 @@ if __name__ == '__main__':
           # typically can be installed without difficulties through setuptools
           setup_requires=[
               'numpy>=1.18.0',
+              'packaging',
           ],
           install_requires=install_requires,
           # extras can be difficult to install through setuptools and/or

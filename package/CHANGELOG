@@ -48,6 +48,7 @@ Enhancements
   * Added MDAnalysis.lib.distances.minimize_vectors
 
 Changes
+  * `packaging` is now a core dependency for MDAnalysis
   * Indexing a group (AtomGroup, ResidueGroup, or SegmentGroup) with None
     raises a TypeError (Issue #3092, PR #3517)
   * TRZReader now defaults to a `dt` of 1.0 (instead of 0.0 previously) when
