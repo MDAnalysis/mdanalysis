@@ -1279,8 +1279,6 @@ class TestAtomGroup(object):
         ag.dimensions = [50, 50, 50, 90, 90, 90]
         ref = [getattr(a, method_name)(unwrap=unwrap)
                for a in ag.groupby(name).values()]
-        ref = distances.apply_PBC(np.asarray(ref, dtype=np.float32),
-                                  ag.dimensions)
         vals = getattr(ag, method_name)(compound=compound,
                                         unwrap=unwrap)
         assert_almost_equal(vals, ref, decimal=5)
@@ -1306,8 +1304,6 @@ class TestAtomGroup(object):
         ag_molfrg.dimensions = [50, 50, 50, 90, 90, 90]
         ref = [getattr(a, method_name)(unwrap=unwrap)
                for a in ag_molfrg.groupby(name).values()]
-        ref = distances.apply_PBC(np.asarray(ref, dtype=np.float32),
-                                  ag_molfrg.dimensions)
         vals = getattr(ag_molfrg, method_name)(compound=compound,
                                                unwrap=unwrap)
         assert_almost_equal(vals, ref, decimal=5)
