@@ -1541,9 +1541,17 @@ class TestDecorator(object):
 
         if pbc and unwrap:
             with pytest.raises(ValueError):
+                # We call a deprecated argument that does not appear in the
+                # function's signature. This is done on purpose to test the
+                # deprecation. We need to tell the linter.
+                # pylint: disable-next=unexpected-keyword-arg
                 self.dummy_funtion(compound=compound, pbc=pbc, unwrap=unwrap)
         else:
             with pytest.warns(DeprecationWarning):
+                # We call a deprecated argument that does not appear in the
+                # function's signature. This is done on purpose to test the
+                # deprecation. We need to tell the linter.
+                # pylint: disable-next=unexpected-keyword-arg
                 assert self.dummy_funtion(compound=compound, pbc=pbc, unwrap=unwrap) == 0
 
     @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
