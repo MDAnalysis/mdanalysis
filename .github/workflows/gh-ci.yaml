@@ -44,12 +44,15 @@ jobs:
               python-version: 3.9
               full-deps: true
               install_hole: true
+              openmm: openmm=7.7.0=py39h8d72adf_0_khronos
               codecov: true
             - name: macOS_catalina_py37
               os: macOS-10.15
               python-version: 3.7
               full-deps: true
+              openmm: openmm=7.7.0=py37hf0bdc88_0_khronos
               install_hole: true
+              openmm:
               codecov: false
             - name: minimal-ubuntu
               os: ubuntu-latest
