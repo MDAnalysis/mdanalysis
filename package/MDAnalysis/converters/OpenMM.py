@@ -26,23 +26,23 @@
 
 
 Read coordinates data from a
-`OpenMM <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.simulation.Simulation.html#simtk.openmm.app.simulation.Simulation>`_
-:class:`simtk.openmm.app.simulation.Simulation` with :class:`OpenMMReader`
+`OpenMM <http://docs.openmm.org/latest/api-python/generated/openmm.app.simulation.Simulation.html#openmm.app.simulation.Simulation>`_
+:class:`openmm.app.simulation.Simulation` with :class:`OpenMMReader`
 into a MDAnalysis Universe.
 
 Also converts other objects within the
 `OpenMM Application Layer <http://docs.openmm.org/latest/api-python/app.html>`_:
 
-    - `simtk.openmm.app.pdbfile.PDBFile <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.pdbfile.PDBFile.html#simtk.openmm.app.pdbfile.PDBFile>`_
-    - `simtk.openmm.app.modeller.Modeller <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.modeller.Modeller.html#simtk.openmm.app.modeller.Modeller>`_
-    - `simtk.openmm.app.pdbxfile.PDBxFile <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.pdbxfile.PDBxFile.html#simtk.openmm.app.pdbxfile.PDBxFile>`_
+    - `openmm.app.pdbfile.PDBFile <http://docs.openmm.org/latest/api-python/generated/openmm.app.pdbfile.PDBFile.html#openmm.app.pdbfile.PDBFile>`_
+    - `openmm.app.modeller.Modeller <http://docs.openmm.org/latest/api-python/generated/openmm.app.modeller.Modeller.html#openmm.app.modeller.Modeller>`_
+    - `openmm.app.pdbxfile.PDBxFile <http://docs.openmm.org/latest/api-python/generated/openmm.app.pdbxfile.PDBxFile.html#openmm.app.pdbxfile.PDBxFile>`_
 
 Example
 -------
 OpenMM can read various file formats into OpenMM objects.
 MDAnalysis can then convert some of these OpenMM objects into MDAnalysis Universe objects.
 
-    >>> import simtk.openmm.app as app
+    >>> import openmm.app as app
     >>> import MDAnalysis as mda
     >>> from MDAnalysis.tests.datafiles import PDBX
     >>> pdbxfile = app.PDBxFile(PDBX)
@@ -111,7 +111,10 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
 
     def _mda_timestep_from_omm_context(self):
         """ Construct Timestep object from OpenMM context """
-        import simtk.unit as u
+        try:
+            import openmm.unit as u
+        except ImportError:
+            import simtk.unit as u
 
         state = self.filename.context.getState(-1, getVelocities=True,
                 getForces=True, getEnergy=True)
@@ -140,7 +143,7 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
 class OpenMMAppReader(base.SingleFrameReaderBase):
     """Reader for OpenMM Application layer objects
 
-    See also `the object definition in the OpenMM Application layer <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.simulation.Simulation.html#simtk.openmm.app.simulation.Simulation>`_
+    See also `the object definition in the OpenMM Application layer <http://docs.openmm.org/latest/api-python/generated/openmm.app.simulation.Simulation.html#openmm.app.simulation.Simulation>`_
 
     .. versionadded:: 2.0.0
     """

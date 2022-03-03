@@ -28,16 +28,16 @@
 
 
 Converts an
-`OpenMM topology <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.topology.Topology.html#simtk.openmm.app.topology.Topology>`_
-:class:`simtk.openmm.app.topology.Topology` into a :class:`MDAnalysis.core.Topology`.
+`OpenMM topology <http://docs.openmm.org/latest/api-python/generated/openmm.app.topology.Topology.html#openmm.app.topology.Topology>`_
+:class:`openmm.app.topology.Topology` into a :class:`MDAnalysis.core.Topology`.
 
 Also converts some objects within the
 `OpenMM Application layer <http://docs.openmm.org/latest/api-python/app.html>`_
 
-    - `simtk.openmm.app.pdbfile.PDBFile <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.pdbfile.PDBFile.html#simtk.openmm.app.pdbfile.PDBFile>`_
-    - `simtk.openmm.app.simulation.Simulation <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.simulation.Simulation.html#simtk.openmm.app.simulation.Simulation>`_
-    - `simtk.openmm.app.modeller.Modeller <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.modeller.Modeller.html#simtk.openmm.app.modeller.Modeller>`_
-    - `simtk.openmm.app.pdbxfile.PDBxFile <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.pdbxfile.PDBxFile.html#simtk.openmm.app.pdbxfile.PDBxFile>`_
+    - `openmm.app.pdbfile.PDBFile <http://docs.openmm.org/latest/api-python/generated/openmm.app.pdbfile.PDBFile.html#openmm.app.pdbfile.PDBFile>`_
+    - `openmm.app.simulation.Simulation <http://docs.openmm.org/latest/api-python/generated/openmm.app.simulation.Simulation.html#openmm.app.simulation.Simulation>`_
+    - `openmm.app.modeller.Modeller <http://docs.openmm.org/latest/api-python/generated/openmm.app.modeller.Modeller.html#openmm.app.modeller.Modeller>`_
+    - `openmm.app.pdbxfile.PDBxFile <http://docs.openmm.org/latest/api-python/generated/openmm.app.pdbxfile.PDBxFile.html#openmm.app.pdbxfile.PDBxFile>`_
 
 The :class:`OpenMMTopologyParser` generates a topology from an OpenMM Topology object.
 
@@ -83,9 +83,12 @@ class OpenMMTopologyParser(TopologyReaderBase):
 
         """
         try:
-            from simtk.openmm import app
+            from openmm import app
         except ImportError:
-            return False
+            try:
+                from simtk.openmm import app
+            except ImportError:
+                return False
         else:
             return isinstance(thing, app.Topology)
 
@@ -96,7 +99,7 @@ class OpenMMTopologyParser(TopologyReaderBase):
 
         Parameters
         ----------
-        omm_topology: simtk.openmm.Topology
+        omm_topology: openmm.Topology
 
         Returns
         -------
@@ -165,9 +168,12 @@ class OpenMMAppTopologyParser(OpenMMTopologyParser):
 
         """
         try:
-            from simtk.openmm import app
+            from openmm import app
         except ImportError:
-            return False
+            try:
+                from simtk.openmm import app
+            except ImportError:
+                return False
         else:
             return isinstance(
                 thing,
