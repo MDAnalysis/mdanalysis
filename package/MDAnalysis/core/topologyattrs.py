@@ -1507,7 +1507,9 @@ class Masses(AtomAttr):
         .. versionchanged:: 0.20.0 Added ``'molecules'`` and ``'fragments'``
             compounds
         .. versionchanged:: 0.20.0 Added `unwrap` parameter
-        .. versionchanged:: 2.0.0  Renamed `pbc` parameter to `wrap`
+        .. versionchanged::
+           2.1.0 Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
+           is deprecated and will be removed in version 3.0.
         """
         atoms = group.atoms
         return atoms.center(weights=atoms.masses, wrap=wrap, compound=compound,
@@ -1568,7 +1570,9 @@ class Masses(AtomAttr):
 
         .. versionchanged:: 0.8 Added *pbc* keyword
         .. versionchanged:: 0.20.0 Added `unwrap` parameter
-        .. versionchanged:: 2.0.0 Renamed `pbc` kwarg to `wrap`
+        .. versionchanged::
+           2.1.0 Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
+           is deprecated and will be removed in version 3.0.
         """
         atomgroup = group.atoms
         unwrap = kwargs.pop('unwrap', False)
@@ -1629,8 +1633,9 @@ class Masses(AtomAttr):
 
 
         .. versionchanged:: 0.8 Added *pbc* keyword
-        .. versionchanged:: 2.0.0
-           Renamed `pbc` kwarg to `wrap`
+        .. versionchanged::
+           2.1.0 Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
+           is deprecated and will be removed in version 3.0.
         """
         atomgroup = group.atoms
         masses = atomgroup.masses
@@ -1665,8 +1670,9 @@ class Masses(AtomAttr):
 
         .. versionadded:: 0.7.7
         .. versionchanged:: 0.8 Added *pbc* keyword
-        .. versionchanged:: 2.0.0
-           Renamed `pbc` kwarg to `wrap`
+        .. versionchanged::
+           2.1.0 Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
+           is deprecated and will be removed in version 3.0.
         """
         atomgroup = group.atoms
         masses = atomgroup.masses
