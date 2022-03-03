@@ -1123,14 +1123,16 @@ class GroupBase(_MutableBase):
             compounds intact. Instead, the resulting position vectors will be
             moved to the primary unit cell after calculation. Default False.
         unwrap : bool, optional
-            If ``True``, compounds will be unwrapped before computing their centers.
+            If ``True``, compounds will be unwrapped before computing their
+            centers.
         compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
             If ``'group'``, the center of geometry of all :class:`Atoms<Atom>`
-            in the group will be returned as a single position vector. Else, the
-            centers of geometry of each :class:`Segment` or :class:`Residue`
-            will be returned as an array of position vectors, i.e. a 2d array.
-            Note that, in any case, *only* the positions of :class:`Atoms<Atom>`
-            *belonging to the group* will be taken into account.
+            in the group will be returned as a single position vector. Else,
+            the centers of geometry of each :class:`Segment` or
+            :class:`Residue` will be returned as an array of position vectors,
+            i.e. a 2d array. Note that, in any case, *only* the positions of
+            :class:`Atoms<Atom>` *belonging to the group* will be taken into
+            account.
 
         Returns
         -------

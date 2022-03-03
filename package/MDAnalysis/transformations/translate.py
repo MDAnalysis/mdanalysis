@@ -122,7 +122,7 @@ class center_in_box(TransformationBase):
     -------
     :class:`~MDAnalysis.coordinates.base.Timestep` object
 
-    
+
     .. versionchanged:: 2.0.0
         The transformation was changed from a function/closure to a class
         with ``__call__``.
