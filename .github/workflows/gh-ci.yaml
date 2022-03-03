@@ -52,7 +52,6 @@ jobs:
               full-deps: true
               openmm: openmm=7.7.0=py37hf0bdc88_0_khronos
               install_hole: true
-              openmm:
               codecov: false
             - name: minimal-ubuntu
               os: ubuntu-latest
@@ -104,6 +103,7 @@ jobs:
         full-deps: ${{ matrix.full-deps }}
         # in most cases will just default to empty, i.e. pick up max version from other deps
         numpy: ${{ matrix.numpy }}
+        openmm: ${{ matrix.openmm }}
         extra-pip-deps: ${{ matrix.extra-pip-deps }}
 
     - name: build_srcs
