@@ -119,16 +119,16 @@
 
 
 <span class="sd">Converts an</span>
-<span class="sd">`OpenMM topology &lt;http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.topology.Topology.html#simtk.openmm.app.topology.Topology&gt;`_</span>
-<span class="sd">:class:`simtk.openmm.app.topology.Topology` into a :class:`MDAnalysis.core.Topology`.</span>
+<span class="sd">`OpenMM topology &lt;http://docs.openmm.org/latest/api-python/generated/openmm.app.topology.Topology.html#openmm.app.topology.Topology&gt;`_</span>
+<span class="sd">:class:`openmm.app.topology.Topology` into a :class:`MDAnalysis.core.Topology`.</span>
 
 <span class="sd">Also converts some objects within the</span>
 <span class="sd">`OpenMM Application layer &lt;http://docs.openmm.org/latest/api-python/app.html&gt;`_</span>
 
-<span class="sd">    - `simtk.openmm.app.pdbfile.PDBFile &lt;http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.pdbfile.PDBFile.html#simtk.openmm.app.pdbfile.PDBFile&gt;`_</span>
-<span class="sd">    - `simtk.openmm.app.simulation.Simulation &lt;http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.simulation.Simulation.html#simtk.openmm.app.simulation.Simulation&gt;`_</span>
-<span class="sd">    - `simtk.openmm.app.modeller.Modeller &lt;http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.modeller.Modeller.html#simtk.openmm.app.modeller.Modeller&gt;`_</span>
-<span class="sd">    - `simtk.openmm.app.pdbxfile.PDBxFile &lt;http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.pdbxfile.PDBxFile.html#simtk.openmm.app.pdbxfile.PDBxFile&gt;`_</span>
+<span class="sd">    - `openmm.app.pdbfile.PDBFile &lt;http://docs.openmm.org/latest/api-python/generated/openmm.app.pdbfile.PDBFile.html#openmm.app.pdbfile.PDBFile&gt;`_</span>
+<span class="sd">    - `openmm.app.simulation.Simulation &lt;http://docs.openmm.org/latest/api-python/generated/openmm.app.simulation.Simulation.html#openmm.app.simulation.Simulation&gt;`_</span>
+<span class="sd">    - `openmm.app.modeller.Modeller &lt;http://docs.openmm.org/latest/api-python/generated/openmm.app.modeller.Modeller.html#openmm.app.modeller.Modeller&gt;`_</span>
+<span class="sd">    - `openmm.app.pdbxfile.PDBxFile &lt;http://docs.openmm.org/latest/api-python/generated/openmm.app.pdbxfile.PDBxFile.html#openmm.app.pdbxfile.PDBxFile&gt;`_</span>
 
 <span class="sd">The :class:`OpenMMTopologyParser` generates a topology from an OpenMM Topology object.</span>
 
@@ -174,9 +174,12 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">simtk.openmm</span> <span class="kn">import</span> <span class="n">app</span>
+            <span class="kn">from</span> <span class="nn">openmm</span> <span class="kn">import</span> <span class="n">app</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">try</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+                <span class="kn">from</span> <span class="nn">simtk.openmm</span> <span class="kn">import</span> <span class="n">app</span>
+            <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">thing</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">Topology</span><span class="p">)</span>
 
@@ -187,7 +190,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        omm_topology: simtk.openmm.Topology</span>
+<span class="sd">        omm_topology: openmm.Topology</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -256,9 +259,12 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">simtk.openmm</span> <span class="kn">import</span> <span class="n">app</span>
+            <span class="kn">from</span> <span class="nn">openmm</span> <span class="kn">import</span> <span class="n">app</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">try</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+                <span class="kn">from</span> <span class="nn">simtk.openmm</span> <span class="kn">import</span> <span class="n">app</span>
+            <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span>
                 <span class="n">thing</span><span class="p">,</span>

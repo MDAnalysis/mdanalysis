@@ -113,16 +113,16 @@
 <p><span class="versionmodified added">New in version 2.0.0.</span></p>
 </div>
 <p>Converts an
-<a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.topology.Topology.html#simtk.openmm.app.topology.Topology">OpenMM topology</a>
-<code class="xref py py-class docutils literal notranslate"><span class="pre">simtk.openmm.app.topology.Topology</span></code> into a <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.Topology</span></code>.</p>
+<a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.app.topology.Topology.html#openmm.app.topology.Topology">OpenMM topology</a>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">openmm.app.topology.Topology</span></code> into a <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.Topology</span></code>.</p>
 <p>Also converts some objects within the
 <a class="reference external" href="http://docs.openmm.org/latest/api-python/app.html">OpenMM Application layer</a></p>
 <blockquote>
 <div><ul class="simple">
-<li><p><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.pdbfile.PDBFile.html#simtk.openmm.app.pdbfile.PDBFile">simtk.openmm.app.pdbfile.PDBFile</a></p></li>
-<li><p><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.simulation.Simulation.html#simtk.openmm.app.simulation.Simulation">simtk.openmm.app.simulation.Simulation</a></p></li>
-<li><p><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.modeller.Modeller.html#simtk.openmm.app.modeller.Modeller">simtk.openmm.app.modeller.Modeller</a></p></li>
-<li><p><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.pdbxfile.PDBxFile.html#simtk.openmm.app.pdbxfile.PDBxFile">simtk.openmm.app.pdbxfile.PDBxFile</a></p></li>
+<li><p><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.app.pdbfile.PDBFile.html#openmm.app.pdbfile.PDBFile">openmm.app.pdbfile.PDBFile</a></p></li>
+<li><p><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.app.simulation.Simulation.html#openmm.app.simulation.Simulation">openmm.app.simulation.Simulation</a></p></li>
+<li><p><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.app.modeller.Modeller.html#openmm.app.modeller.Modeller">openmm.app.modeller.Modeller</a></p></li>
+<li><p><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.app.pdbxfile.PDBxFile.html#openmm.app.pdbxfile.PDBxFile">openmm.app.pdbxfile.PDBxFile</a></p></li>
 </ul>
 </div></blockquote>
 <p>The <a class="reference internal" href="#MDAnalysis.converters.OpenMMParser.OpenMMTopologyParser" title="MDAnalysis.converters.OpenMMParser.OpenMMTopologyParser"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpenMMTopologyParser</span></code></a> generates a topology from an OpenMM Topology object.</p>
@@ -553,22 +553,22 @@ is avoided.</p>
 <span class="target" id="module-MDAnalysis.converters.OpenMM"></span><section id="openmm-structure-i-o-mdanalysis-converters-openmm">
 <h1><span class="section-number">7.6. </span>OpenMM structure I/O — <a class="reference internal" href="#module-MDAnalysis.converters.OpenMM" title="MDAnalysis.converters.OpenMM"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.OpenMM</span></code></a><a class="headerlink" href="#openmm-structure-i-o-mdanalysis-converters-openmm" title="Permalink to this headline"></a></h1>
 <p>Read coordinates data from a
-<a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.simulation.Simulation.html#simtk.openmm.app.simulation.Simulation">OpenMM</a>
-<code class="xref py py-class docutils literal notranslate"><span class="pre">simtk.openmm.app.simulation.Simulation</span></code> with <code class="xref py py-class docutils literal notranslate"><span class="pre">OpenMMReader</span></code>
+<a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.app.simulation.Simulation.html#openmm.app.simulation.Simulation">OpenMM</a>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">openmm.app.simulation.Simulation</span></code> with <code class="xref py py-class docutils literal notranslate"><span class="pre">OpenMMReader</span></code>
 into a MDAnalysis Universe.</p>
 <p>Also converts other objects within the
 <a class="reference external" href="http://docs.openmm.org/latest/api-python/app.html">OpenMM Application Layer</a>:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.pdbfile.PDBFile.html#simtk.openmm.app.pdbfile.PDBFile">simtk.openmm.app.pdbfile.PDBFile</a></p></li>
-<li><p><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.modeller.Modeller.html#simtk.openmm.app.modeller.Modeller">simtk.openmm.app.modeller.Modeller</a></p></li>
-<li><p><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.pdbxfile.PDBxFile.html#simtk.openmm.app.pdbxfile.PDBxFile">simtk.openmm.app.pdbxfile.PDBxFile</a></p></li>
+<li><p><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.app.pdbfile.PDBFile.html#openmm.app.pdbfile.PDBFile">openmm.app.pdbfile.PDBFile</a></p></li>
+<li><p><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.app.modeller.Modeller.html#openmm.app.modeller.Modeller">openmm.app.modeller.Modeller</a></p></li>
+<li><p><a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.app.pdbxfile.PDBxFile.html#openmm.app.pdbxfile.PDBxFile">openmm.app.pdbxfile.PDBxFile</a></p></li>
 </ul>
 </div></blockquote>
 <p class="rubric">Example</p>
 <p>OpenMM can read various file formats into OpenMM objects.
 MDAnalysis can then convert some of these OpenMM objects into MDAnalysis Universe objects.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">simtk.openmm.app</span> <span class="k">as</span> <span class="nn">app</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">openmm.app</span> <span class="k">as</span> <span class="nn">app</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PDBX</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pdbxfile</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">PDBxFile</span><span class="p">(</span><span class="n">PDBX</span><span class="p">)</span>
@@ -591,7 +591,7 @@ MDAnalysis can then convert some of these OpenMM objects into MDAnalysis Univers
 <dt class="sig sig-object py" id="MDAnalysis.converters.OpenMM.OpenMMAppReader">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.converters.OpenMM.</span></span><span class="sig-name descname"><span class="pre">OpenMMAppReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/OpenMM.html#OpenMMAppReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.OpenMM.OpenMMAppReader" title="Permalink to this definition"></a></dt>
 <dd><p>Reader for OpenMM Application layer objects</p>
-<p>See also <a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.simulation.Simulation.html#simtk.openmm.app.simulation.Simulation">the object definition in the OpenMM Application layer</a></p>
+<p>See also <a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.app.simulation.Simulation.html#openmm.app.simulation.Simulation">the object definition in the OpenMM Application layer</a></p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 2.0.0.</span></p>
 </div>

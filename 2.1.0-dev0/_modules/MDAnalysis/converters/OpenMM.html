@@ -117,23 +117,23 @@
 
 
 <span class="sd">Read coordinates data from a</span>
-<span class="sd">`OpenMM &lt;http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.simulation.Simulation.html#simtk.openmm.app.simulation.Simulation&gt;`_</span>
-<span class="sd">:class:`simtk.openmm.app.simulation.Simulation` with :class:`OpenMMReader`</span>
+<span class="sd">`OpenMM &lt;http://docs.openmm.org/latest/api-python/generated/openmm.app.simulation.Simulation.html#openmm.app.simulation.Simulation&gt;`_</span>
+<span class="sd">:class:`openmm.app.simulation.Simulation` with :class:`OpenMMReader`</span>
 <span class="sd">into a MDAnalysis Universe.</span>
 
 <span class="sd">Also converts other objects within the</span>
 <span class="sd">`OpenMM Application Layer &lt;http://docs.openmm.org/latest/api-python/app.html&gt;`_:</span>
 
-<span class="sd">    - `simtk.openmm.app.pdbfile.PDBFile &lt;http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.pdbfile.PDBFile.html#simtk.openmm.app.pdbfile.PDBFile&gt;`_</span>
-<span class="sd">    - `simtk.openmm.app.modeller.Modeller &lt;http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.modeller.Modeller.html#simtk.openmm.app.modeller.Modeller&gt;`_</span>
-<span class="sd">    - `simtk.openmm.app.pdbxfile.PDBxFile &lt;http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.pdbxfile.PDBxFile.html#simtk.openmm.app.pdbxfile.PDBxFile&gt;`_</span>
+<span class="sd">    - `openmm.app.pdbfile.PDBFile &lt;http://docs.openmm.org/latest/api-python/generated/openmm.app.pdbfile.PDBFile.html#openmm.app.pdbfile.PDBFile&gt;`_</span>
+<span class="sd">    - `openmm.app.modeller.Modeller &lt;http://docs.openmm.org/latest/api-python/generated/openmm.app.modeller.Modeller.html#openmm.app.modeller.Modeller&gt;`_</span>
+<span class="sd">    - `openmm.app.pdbxfile.PDBxFile &lt;http://docs.openmm.org/latest/api-python/generated/openmm.app.pdbxfile.PDBxFile.html#openmm.app.pdbxfile.PDBxFile&gt;`_</span>
 
 <span class="sd">Example</span>
 <span class="sd">-------</span>
 <span class="sd">OpenMM can read various file formats into OpenMM objects.</span>
 <span class="sd">MDAnalysis can then convert some of these OpenMM objects into MDAnalysis Universe objects.</span>
 
-<span class="sd">    &gt;&gt;&gt; import simtk.openmm.app as app</span>
+<span class="sd">    &gt;&gt;&gt; import openmm.app as app</span>
 <span class="sd">    &gt;&gt;&gt; import MDAnalysis as mda</span>
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.tests.datafiles import PDBX</span>
 <span class="sd">    &gt;&gt;&gt; pdbxfile = app.PDBxFile(PDBX)</span>
@@ -178,7 +178,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">openmm.app</span> <span class="kn">import</span> <span class="n">Simulation</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
                 <span class="kn">from</span> <span class="nn">simtk.openmm.app</span> <span class="kn">import</span> <span class="n">Simulation</span>
             <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">False</span>
@@ -202,7 +202,10 @@
 
     <span class="k">def</span> <span class="nf">_mda_timestep_from_omm_context</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Construct Timestep object from OpenMM context &quot;&quot;&quot;</span>
-        <span class="kn">import</span> <span class="nn">simtk.unit</span> <span class="k">as</span> <span class="nn">u</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">openmm.unit</span> <span class="k">as</span> <span class="nn">u</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+            <span class="kn">import</span> <span class="nn">simtk.unit</span> <span class="k">as</span> <span class="nn">u</span>
 
         <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">getState</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">getVelocities</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="n">getForces</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">getEnergy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -231,7 +234,7 @@
 <div class="viewcode-block" id="OpenMMAppReader"><a class="viewcode-back" href="../../../documentation_pages/converters/OpenMM.html#MDAnalysis.converters.OpenMM.OpenMMAppReader">[docs]</a><span class="k">class</span> <span class="nc">OpenMMAppReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Reader for OpenMM Application layer objects</span>
 
-<span class="sd">    See also `the object definition in the OpenMM Application layer &lt;http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.simulation.Simulation.html#simtk.openmm.app.simulation.Simulation&gt;`_</span>
+<span class="sd">    See also `the object definition in the OpenMM Application layer &lt;http://docs.openmm.org/latest/api-python/generated/openmm.app.simulation.Simulation.html#openmm.app.simulation.Simulation&gt;`_</span>
 
 <span class="sd">    .. versionadded:: 2.0.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -246,7 +249,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">openmm</span> <span class="kn">import</span> <span class="n">app</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
                 <span class="kn">from</span> <span class="nn">simtk.openmm</span> <span class="kn">import</span> <span class="n">app</span>
             <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">False</span>
