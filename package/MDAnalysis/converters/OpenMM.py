@@ -87,7 +87,7 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
         try:
             from openmm.app import Simulation
         except ImportError:
-            try:  # pragma no cover
+            try:  # pragma: no cover
                 from simtk.openmm.app import Simulation
             except ImportError:
                 return False
@@ -113,7 +113,7 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
         """ Construct Timestep object from OpenMM context """
         try:
             import openmm.unit as u
-        except ImportError:  # pragma no cover
+        except ImportError:  # pragma: no cover
             import simtk.unit as u
 
         state = self.filename.context.getState(-1, getVelocities=True,
@@ -158,7 +158,7 @@ class OpenMMAppReader(base.SingleFrameReaderBase):
         try:
             from openmm import app
         except ImportError:
-            try:  # pragma no cover
+            try:  # pragma: no cover
                 from simtk.openmm import app
             except ImportError:
                 return False

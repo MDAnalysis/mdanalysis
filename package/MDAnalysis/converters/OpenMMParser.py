@@ -85,7 +85,7 @@ class OpenMMTopologyParser(TopologyReaderBase):
         try:
             from openmm import app
         except ImportError:
-            try:  # pragma no cover
+            try:  # pragma: no cover
                 from simtk.openmm import app
             except ImportError:
                 return False
@@ -170,7 +170,7 @@ class OpenMMAppTopologyParser(OpenMMTopologyParser):
         try:
             from openmm import app
         except ImportError:
-            try:  # pragma no cover
+            try:  # pragma: no cover
                 from simtk.openmm import app
             except ImportError:
                 return False
