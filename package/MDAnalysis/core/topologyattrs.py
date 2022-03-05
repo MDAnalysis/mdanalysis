@@ -1560,8 +1560,7 @@ class Masses(AtomAttr):
     @_pbc_to_wrap
     @check_wrap_and_unwrap
     def moment_of_inertia(group, wrap=False, unwrap=False, compound="group"):
-        """Tensor moment of inertia relative to center of mass as 3x3 numpy
-        array.
+        """Moment of inertia tensor relative to center of mass.
 
         Parameters
         ----------
@@ -1584,9 +1583,33 @@ class Masses(AtomAttr):
 
         Returns
         -------
-        I : array
-            Tensor of inertia as a 3 x 3 numpy array.
+        moment_of_inertia : numpy.ndarray
+            Moment of inertia tensor as a 3 x 3 numpy array.
 
+        Note
+        ----
+        The moment of inertia tensor :math:`\mathsf{I}` is calculated for a group of
+        :math:`N` atoms with coordinates :math:`\mathbf{r}_i,\ 1 \le i \le N`
+        relative to its center of mass from the relative coordinates
+
+        .. math::
+           \mathbf{r}'_i = \mathbf{r}_i - \frac{1}{\sum_{i=1}^{N}} \sum_{i=1}^{N} m_i \mathbf{r}_i
+
+        as
+
+        .. math::
+           \mathsf{I} = \sum_{i=1}^{N} m_i [(\mathbf{r}'_i\cdot\mathbf{r}'_i) \sum_{\alpha=1}^{3}
+                 \hat{\mathbf{e}}_\alpha \otimes \hat{\mathbf{e}}_\alpha - \mathbf{r}'_i \otimes \mathbf{r}'_i]
+
+        where :math:`\hat{\mathbf{e}}_\alpha` are Cartesian unit vectors, or in Cartesian coordinates
+
+        .. math::
+           I_{\alpha,\beta} = \sum_{k=1}^{N} m_k
+                 \Big(\big(\sum_{\gamma=1}^3 (x'^{(k)}_{\alpha})^2 \big)\delta_{\alpha,\beta}
+                 - x'^{(k)}_{\alpha} x'^{(k)}_{\beta} \Big).
+
+        where :math:`x'^{(k)}_{\alpha}` are the Cartesian coordinates of the
+        relative coordinates :math:`\mathbf{r}'_k`.
 
         .. versionchanged:: 0.8
            Added `pbc` keyword
@@ -1595,6 +1618,7 @@ class Masses(AtomAttr):
         .. versionchanged:: 2.1.0
            Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
            is deprecated and will be removed in version 3.0.
+
         """
         atomgroup = group.atoms
 
