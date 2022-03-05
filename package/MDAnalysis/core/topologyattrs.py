@@ -1208,11 +1208,11 @@ class Atomnames(AtomStringAttr):
             4-atom selection in the correct order. If no CB and/or CG is found
             then this method returns ``None``.
 
-        .. versionchanged:: 1.0.0
-            Added arguments for flexible atom names and refactored code for
-            faster atom matching with boolean arrays.
 
         .. versionadded:: 0.7.5
+        .. versionchanged:: 1.0.0
+           Added arguments for flexible atom names and refactored code for
+           faster atom matching with boolean arrays.
         """
         names = [n_name, ca_name, cb_name, cg_name]
         ags = [residue.atoms.select_atoms(f"name {n}") for n in names]
@@ -1498,17 +1498,19 @@ class Masses(AtomAttr):
 
         Note
         ----
-        * This method can only be accessed if the underlying topology has
-          information about atomic masses.
+        This method can only be accessed if the underlying topology has
+        information about atomic masses.
 
 
-        .. versionchanged:: 0.8 Added `pbc` parameter
-        .. versionchanged:: 0.19.0 Added `compound` parameter
-        .. versionchanged:: 0.20.0 Added ``'molecules'`` and ``'fragments'``
-            compounds
-        .. versionchanged:: 0.20.0 Added `unwrap` parameter
-        .. versionchanged::
-           2.1.0 Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
+        .. versionchanged:: 0.8
+           Added `pbc` parameter
+        .. versionchanged:: 0.19.0
+           Added `compound` parameter
+        .. versionchanged:: 0.20.0
+           Added ``'molecules'`` and ``'fragments'`` compounds;
+           added `unwrap` parameter
+        .. versionchanged:: 2.1.0
+           Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
            is deprecated and will be removed in version 3.0.
         """
         atoms = group.atoms
@@ -1557,26 +1559,44 @@ class Masses(AtomAttr):
     @warn_if_not_unique
     @_pbc_to_wrap
     @check_wrap_and_unwrap
-    def moment_of_inertia(group, wrap=False, **kwargs):
+    def moment_of_inertia(group, wrap=False, unwrap=False, compound="group"):
         """Tensor moment of inertia relative to center of mass as 3x3 numpy
         array.
 
         Parameters
         ----------
         wrap : bool, optional
-            If ``True``, move all atoms within the primary unit cell before
-            calculation. [``False``]
+            If ``True`` and `compound` is ``'group'``, move all atoms to the
+            primary unit cell before calculation.
+            If ``True`` and `compound` is not ``group``, the
+            centers of mass of each compound will be calculated without moving
+            any atoms to keep the compounds intact. Instead, the resulting
+            center-of-mass position vectors will be moved to the primary unit
+            cell after calculation.
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their
+            centers and tensor of inertia.
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'},\
+                   optional
+            `compound` determines the behavior of `wrap`.
+            Note that, in any case, *only* the positions of :class:`Atoms<Atom>`
+            *belonging to the group* will be taken into account.
+
+        Returns
+        -------
+        I : array
+            Tensor of inertia as a 3 x 3 numpy array.
 
 
-        .. versionchanged:: 0.8 Added *pbc* keyword
-        .. versionchanged:: 0.20.0 Added `unwrap` parameter
-        .. versionchanged::
-           2.1.0 Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
+        .. versionchanged:: 0.8
+           Added `pbc` keyword
+        .. versionchanged:: 0.20.0
+           Added `unwrap` parameter
+        .. versionchanged:: 2.1.0
+           Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
            is deprecated and will be removed in version 3.0.
         """
         atomgroup = group.atoms
-        unwrap = kwargs.pop('unwrap', False)
-        compound = kwargs.pop('compound', 'group')
 
         com = atomgroup.center_of_mass(
             wrap=wrap, unwrap=unwrap, compound=compound)
@@ -1632,9 +1652,10 @@ class Masses(AtomAttr):
             calculation. [``False``]
 
 
-        .. versionchanged:: 0.8 Added *pbc* keyword
-        .. versionchanged::
-           2.1.0 Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
+        .. versionchanged:: 0.8
+           Added `pbc` keyword
+        .. versionchanged:: 2.1.0
+           Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
            is deprecated and will be removed in version 3.0.
         """
         atomgroup = group.atoms
@@ -1656,7 +1677,7 @@ class Masses(AtomAttr):
 
     @warn_if_not_unique
     @_pbc_to_wrap
-    def shape_parameter(group, wrap=False, **kwargs):
+    def shape_parameter(group, wrap=False):
         """Shape parameter.
 
         See [Dima2004a]_ for background information.
@@ -1669,10 +1690,12 @@ class Masses(AtomAttr):
 
 
         .. versionadded:: 0.7.7
-        .. versionchanged:: 0.8 Added *pbc* keyword
-        .. versionchanged::
-           2.1.0 Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
+        .. versionchanged:: 0.8
+           Added `pbc` keyword
+        .. versionchanged:: 2.1.0
+           Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
            is deprecated and will be removed in version 3.0.
+           Superfluous kwargs were removed.
         """
         atomgroup = group.atoms
         masses = atomgroup.masses
@@ -1717,9 +1740,13 @@ class Masses(AtomAttr):
 
 
         .. versionadded:: 0.7.7
-        .. versionchanged:: 0.8 Added *pbc* keyword
-        .. versionchanged:: 0.20.0 Added *unwrap* and *compound* parameter
-
+        .. versionchanged:: 0.8
+           Added `pbc` keyword
+        .. versionchanged:: 0.20.0
+           Added *unwrap* and *compound* parameter
+        .. versionchanged:: 2.1.0
+           Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
+           is deprecated and will be removed in version 3.0.
         """
         atomgroup = group.atoms
         masses = atomgroup.masses
@@ -1767,7 +1794,7 @@ class Masses(AtomAttr):
 
         Parameters
         ----------
-        pbc : bool, optional
+        wrap : bool, optional
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
 
@@ -1778,10 +1805,13 @@ class Masses(AtomAttr):
             ``v[2]`` as third eigenvector.
 
 
-        .. versionchanged:: 0.8 Added *pbc* keyword
+        .. versionchanged:: 0.8
+           Added `pbc` keyword
         .. versionchanged:: 1.0.0
-            Always return principal axes in right-hand convention.
-
+           Always return principal axes in right-hand convention.
+        .. versionchanged:: 2.1.0
+           Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
+           is deprecated and will be removed in version 3.0.
         """
         atomgroup = group.atoms
         e_val, e_vec = np.linalg.eig(atomgroup.moment_of_inertia(wrap=wrap))
