@@ -56,7 +56,7 @@ class DistancesBench(object):
             # making a triclinic box with the same volume as the cube
             alpha = 2*np.pi/3
             beta = np.pi/2
-            gamma = 2*np.pi/3
+            gamma = np.pi/3
 
             # change side lengths so that the resulting box has correct
             # volume
