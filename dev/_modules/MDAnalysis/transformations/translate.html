@@ -239,10 +239,10 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">==</span> <span class="s1">&#39;geometry&#39;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">center_method</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="o">.</span><span class="n">center_of_geometry</span><span class="p">,</span>
-                                             <span class="n">pbc</span><span class="o">=</span><span class="n">pbc_arg</span><span class="p">)</span>
+                                             <span class="n">wrap</span><span class="o">=</span><span class="n">pbc_arg</span><span class="p">)</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">==</span> <span class="s1">&#39;mass&#39;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">center_method</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">,</span>
-                                             <span class="n">pbc</span><span class="o">=</span><span class="n">pbc_arg</span><span class="p">)</span>
+                                             <span class="n">wrap</span><span class="o">=</span><span class="n">pbc_arg</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="si">}</span><span class="s1"> is valid for center&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>

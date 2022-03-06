@@ -488,13 +488,13 @@ shape (without the first dimension).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.AtomGroup.asphericity">
-<span class="sig-name descname"><span class="pre">asphericity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.asphericity" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">asphericity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.asphericity" title="Permalink to this definition"></a></dt>
 <dd><p>Asphericity.</p>
 <p>See <a class="reference internal" href="../references.html#dima2004b" id="id1"><span>[Dima2004b]</span></a> for background information.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
 calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p></li>
 <li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</p></li>
 <li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – Which type of component to keep together during unwrapping.</p></li>
@@ -505,10 +505,14 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 <p><span class="versionmodified added">New in version 0.7.7.</span></p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+<p><span class="versionmodified changed">Changed in version 0.8: </span>Added <cite>pbc</cite> keyword</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.20.0: </span>Added <em>unwrap</em> and <em>compound</em> parameter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -576,7 +580,7 @@ not affect any code but only speed up calculations.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.AtomGroup.bbox">
-<span class="sig-name descname"><span class="pre">bbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.bbox" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">bbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.bbox" title="Permalink to this definition"></a></dt>
 <dd><p>Return the bounding box of the selection.</p>
 <p>The lengths A,B,C of the orthorhombic enclosing box are</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">L</span> <span class="o">=</span> <span class="n">AtomGroup</span><span class="o">.</span><span class="n">bbox</span><span class="p">()</span>
@@ -585,7 +589,7 @@ not affect any code but only speed up calculations.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to the primary unit cell
+<dd class="field-odd"><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to the primary unit cell
 before calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -604,6 +608,10 @@ before calculation. [<code class="docutils literal notranslate"><span class="pre
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 1.0.0: </span>Removed flags affecting default behaviour</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.</p>
 </div>
 </dd></dl>
 
@@ -635,13 +643,13 @@ before calculation. [<code class="docutils literal notranslate"><span class="pre
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.AtomGroup.bsphere">
-<span class="sig-name descname"><span class="pre">bsphere</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.bsphere" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">bsphere</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.bsphere" title="Permalink to this definition"></a></dt>
 <dd><p>Return the bounding sphere of the selection.</p>
 <p>The sphere is calculated relative to the
 <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.center_of_geometry" title="MDAnalysis.core.groups.AtomGroup.center_of_geometry"><code class="xref py py-meth docutils literal notranslate"><span class="pre">center</span> <span class="pre">of</span> <span class="pre">geometry</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms to the primary unit cell before
+<dd class="field-odd"><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms to the primary unit cell before
 calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -658,11 +666,15 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.AtomGroup.center">
-<span class="sig-name descname"><span class="pre">center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.center" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.center" title="Permalink to this definition"></a></dt>
 <dd><p>Weighted center of (compounds of) the group</p>
 <p>Computes the weighted center of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
 Weighted centers per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
@@ -675,23 +687,24 @@ number).</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>weights</strong> (<em>array_like</em><em> or </em><em>None</em>) – Weights to be used. Setting <cite>weights=None</cite> is equivalent to passing
 identical weights for all atoms of the group.</p></li>
-<li><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
-primary unit cell before calculation. If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is
-<code class="docutils literal notranslate"><span class="pre">'segments'</span></code>, <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>,
-the center of each compound will be calculated without moving any
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+primary unit cell before calculation.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is not <code class="docutils literal notranslate"><span class="pre">'group'</span></code> the center of each
+compound will be calculated without moving any
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to keep the compounds intact. Instead, the
 resulting position vectors will be moved to the primary unit cell
 after calculation. Default [<code class="docutils literal notranslate"><span class="pre">False</span></code>].</p></li>
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – <dl class="simple">
+<dt>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their</dt><dd><p>centers.</p>
+</dd>
+</dl>
+</p></li>
 <li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the weighted center of all atoms in the group will
 be returned as a single position vector. Else, the weighted centers
 of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or fragment
 will be returned as an array of position vectors, i.e. a 2d array.
 Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 <em>belonging to the group</em> will be taken into account.</p></li>
-<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
-centers. The position of the first atom of each compound will be
-taken as the reference to unwrap from; as such, results may differ
-for the same <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> if atoms are ordered differently.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -740,11 +753,15 @@ compounds</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 1.0.0: </span>Removed flags affecting default behaviour</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.AtomGroup.center_of_geometry">
-<span class="sig-name descname"><span class="pre">center_of_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.center_of_geometry" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">center_of_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.center_of_geometry" title="Permalink to this definition"></a></dt>
 <dd><p>Center of geometry of (compounds of) the group.</p>
 <p>Computes the center of geometry (a.k.a. centroid) of
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group. Centers of geometry per
@@ -753,19 +770,21 @@ obtained by setting the <cite>compound</cite> parameter accordingly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
 primary unit cell before calculation. If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is
 <code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the center of each compound will
 be calculated without moving any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to keep the
 compounds intact. Instead, the resulting position vectors will be
 moved to the primary unit cell after calculation. Default False.</p></li>
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers.</p></li>
 <li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of geometry of all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
-in the group will be returned as a single position vector. Else, the
-centers of geometry of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> or <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>
-will be returned as an array of position vectors, i.e. a 2d array.
-Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
-<em>belonging to the group</em> will be taken into account.</p></li>
-<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</p></li>
+in the group will be returned as a single position vector. Else,
+the centers of geometry of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> or
+<a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> will be returned as an array of position vectors,
+i.e. a 2d array. Note that, in any case, <em>only</em> the positions of
+<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> <em>belonging to the group</em> will be taken into
+account.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -796,11 +815,15 @@ compounds</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 1.0.0: </span>Removed flags affecting default behaviour</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.AtomGroup.center_of_mass">
-<span class="sig-name descname"><span class="pre">center_of_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.center_of_mass" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">center_of_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.center_of_mass" title="Permalink to this definition"></a></dt>
 <dd><p>Center of mass of (compounds of) the group.</p>
 <p>Computes the center of mass of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
 Centers of mass per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
@@ -811,22 +834,22 @@ number).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
 primary unit cell before calculation.
-If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the
+If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is not <code class="docutils literal notranslate"><span class="pre">group</span></code>, the
 centers of mass of each compound will be calculated without moving
 any atoms to keep the compounds intact. Instead, the resulting
 center-of-mass position vectors will be moved to the primary unit
 cell after calculation.</p></li>
-<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
-If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of mass of all atoms in the group will
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers.</p></li>
+<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,                   </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of mass of all atoms in the group will
 be returned as a single position vector. Otherwise, the centers of
 mass of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or
 fragment will be returned as an array of position vectors, i.e. a 2d
 array.
 Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 <em>belonging to the group</em> will be taken into account.</p></li>
-<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -843,10 +866,8 @@ is the number of compounds.</p>
 </dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<ul class="simple">
-<li><p>This method can only be accessed if the underlying topology has
-information about atomic masses.</p></li>
-</ul>
+<p>This method can only be accessed if the underlying topology has
+information about atomic masses.</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.8: </span>Added <cite>pbc</cite> parameter</p>
@@ -855,11 +876,12 @@ information about atomic masses.</p></li>
 <p><span class="versionmodified changed">Changed in version 0.19.0: </span>Added <cite>compound</cite> parameter</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.20.0: </span>Added <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>
-compounds</p>
+<p><span class="versionmodified changed">Changed in version 0.20.0: </span>Added <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code> compounds;
+added <cite>unwrap</cite> parameter</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -870,7 +892,7 @@ compounds</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.AtomGroup.centroid">
-<span class="sig-name descname"><span class="pre">centroid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.centroid" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">centroid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.centroid" title="Permalink to this definition"></a></dt>
 <dd><p>Center of geometry of (compounds of) the group.</p>
 <p>Computes the center of geometry (a.k.a. centroid) of
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group. Centers of geometry per
@@ -879,19 +901,21 @@ obtained by setting the <cite>compound</cite> parameter accordingly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
 primary unit cell before calculation. If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is
 <code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the center of each compound will
 be calculated without moving any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to keep the
 compounds intact. Instead, the resulting position vectors will be
 moved to the primary unit cell after calculation. Default False.</p></li>
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers.</p></li>
 <li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of geometry of all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
-in the group will be returned as a single position vector. Else, the
-centers of geometry of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> or <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>
-will be returned as an array of position vectors, i.e. a 2d array.
-Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
-<em>belonging to the group</em> will be taken into account.</p></li>
-<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</p></li>
+in the group will be returned as a single position vector. Else,
+the centers of geometry of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> or
+<a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> will be returned as an array of position vectors,
+i.e. a 2d array. Note that, in any case, <em>only</em> the positions of
+<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> <em>belonging to the group</em> will be taken into
+account.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -921,6 +945,10 @@ compounds</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 1.0.0: </span>Removed flags affecting default behaviour</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.</p>
 </div>
 </dd></dl>
 
@@ -1411,20 +1439,59 @@ gives a consistent API between components and groups.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.AtomGroup.moment_of_inertia">
-<span class="sig-name descname"><span class="pre">moment_of_inertia</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.moment_of_inertia" title="Permalink to this definition"></a></dt>
-<dd><p>Tensor moment of inertia relative to center of mass as 3x3 numpy
-array.</p>
+<span class="sig-name descname"><span class="pre">moment_of_inertia</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.moment_of_inertia" title="Permalink to this definition"></a></dt>
+<dd><p>Moment of inertia tensor relative to center of mass.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
-calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+primary unit cell before calculation.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is not <code class="docutils literal notranslate"><span class="pre">group</span></code>, the
+centers of mass of each compound will be calculated without moving
+any atoms to keep the compounds intact. Instead, the resulting
+center-of-mass position vectors will be moved to the primary unit
+cell after calculation.</p></li>
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers and tensor of inertia.</p></li>
+<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+<cite>compound</cite> determines the behavior of <cite>wrap</cite>.
+Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
+<em>belonging to the group</em> will be taken into account.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>moment_of_inertia</strong> – Moment of inertia tensor as a 3 x 3 numpy array.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<p>The moment of inertia tensor <span class="math notranslate nohighlight">\(\mathsf{I}\)</span> is calculated for a group of
+<span class="math notranslate nohighlight">\(N\)</span> atoms with coordinates <span class="math notranslate nohighlight">\(\mathbf{r}_i,\ 1 \le i \le N\)</span>
+relative to its center of mass from the relative coordinates</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{r}'_i = \mathbf{r}_i - \frac{1}{\sum_{i=1}^{N} m_i} \sum_{i=1}^{N} m_i \mathbf{r}_i\]</div>
+<p>as</p>
+<div class="math notranslate nohighlight">
+\[\mathsf{I} = \sum_{i=1}^{N} m_i \Big[(\mathbf{r}'_i\cdot\mathbf{r}'_i) \sum_{\alpha=1}^{3}
+      \hat{\mathbf{e}}_\alpha \otimes \hat{\mathbf{e}}_\alpha - \mathbf{r}'_i \otimes \mathbf{r}'_i\Big]\]</div>
+<p>where <span class="math notranslate nohighlight">\(\hat{\mathbf{e}}_\alpha\)</span> are Cartesian unit vectors, or in Cartesian coordinates</p>
+<div class="math notranslate nohighlight">
+\[I_{\alpha,\beta} = \sum_{k=1}^{N} m_k
+      \Big(\big(\sum_{\gamma=1}^3 (x'^{(k)}_{\gamma})^2 \big)\delta_{\alpha,\beta}
+      - x'^{(k)}_{\alpha} x'^{(k)}_{\beta} \Big).\]</div>
+<p>where <span class="math notranslate nohighlight">\(x'^{(k)}_{\alpha}\)</span> are the Cartesian coordinates of the
+relative coordinates <span class="math notranslate nohighlight">\(\mathbf{r}'_k\)</span>.</p>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+<p><span class="versionmodified changed">Changed in version 0.8: </span>Added <cite>pbc</cite> keyword</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -1558,7 +1625,7 @@ method was used.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.AtomGroup.principal_axes">
-<span class="sig-name descname"><span class="pre">principal_axes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.principal_axes" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">principal_axes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.principal_axes" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate the principal axes from the moment of inertia.</p>
 <p>e1,e2,e3 = AtomGroup.principal_axes()</p>
 <p>The eigenvectors are sorted by eigenvalue, i.e. the first one
@@ -1567,7 +1634,7 @@ axes.</p>
 <p>The eigenvectors form a right-handed coordinate system.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+<dd class="field-odd"><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
 calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1579,10 +1646,14 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 </dd>
 </dl>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+<p><span class="versionmodified changed">Changed in version 0.8: </span>Added <cite>pbc</cite> keyword</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 1.0.0: </span>Always return principal axes in right-hand convention.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -1593,16 +1664,20 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.AtomGroup.radius_of_gyration">
-<span class="sig-name descname"><span class="pre">radius_of_gyration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.radius_of_gyration" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">radius_of_gyration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.radius_of_gyration" title="Permalink to this definition"></a></dt>
 <dd><p>Radius of gyration.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+<dd class="field-odd"><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
 calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p>
 </dd>
 </dl>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+<p><span class="versionmodified changed">Changed in version 0.8: </span>Added <cite>pbc</cite> keyword</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -2014,12 +2089,12 @@ to select float values. Added the <code class="docutils literal notranslate"><sp
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.AtomGroup.shape_parameter">
-<span class="sig-name descname"><span class="pre">shape_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.shape_parameter" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">shape_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.shape_parameter" title="Permalink to this definition"></a></dt>
 <dd><p>Shape parameter.</p>
 <p>See <a class="reference internal" href="../references.html#dima2004a" id="id2"><span>[Dima2004a]</span></a> for background information.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+<dd class="field-odd"><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
 calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p>
 </dd>
 </dl>
@@ -2027,7 +2102,12 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 <p><span class="versionmodified added">New in version 0.7.7.</span></p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+<p><span class="versionmodified changed">Changed in version 0.8: </span>Added <cite>pbc</cite> keyword</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.
+Superfluous kwargs were removed.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -2779,13 +2859,13 @@ shape (without the first dimension).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.ResidueGroup.asphericity">
-<span class="sig-name descname"><span class="pre">asphericity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.asphericity" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">asphericity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.asphericity" title="Permalink to this definition"></a></dt>
 <dd><p>Asphericity.</p>
 <p>See <a class="reference internal" href="../references.html#dima2004b" id="id3"><span>[Dima2004b]</span></a> for background information.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
 calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p></li>
 <li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</p></li>
 <li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – Which type of component to keep together during unwrapping.</p></li>
@@ -2796,10 +2876,14 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 <p><span class="versionmodified added">New in version 0.7.7.</span></p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+<p><span class="versionmodified changed">Changed in version 0.8: </span>Added <cite>pbc</cite> keyword</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.20.0: </span>Added <em>unwrap</em> and <em>compound</em> parameter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -2857,7 +2941,7 @@ by resindex.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.ResidueGroup.bbox">
-<span class="sig-name descname"><span class="pre">bbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.bbox" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">bbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.bbox" title="Permalink to this definition"></a></dt>
 <dd><p>Return the bounding box of the selection.</p>
 <p>The lengths A,B,C of the orthorhombic enclosing box are</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">L</span> <span class="o">=</span> <span class="n">AtomGroup</span><span class="o">.</span><span class="n">bbox</span><span class="p">()</span>
@@ -2866,7 +2950,7 @@ by resindex.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to the primary unit cell
+<dd class="field-odd"><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to the primary unit cell
 before calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -2886,6 +2970,10 @@ before calculation. [<code class="docutils literal notranslate"><span class="pre
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 1.0.0: </span>Removed flags affecting default behaviour</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.</p>
+</div>
 </dd></dl>
 
 <dl class="py property">
@@ -2901,13 +2989,13 @@ before calculation. [<code class="docutils literal notranslate"><span class="pre
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.ResidueGroup.bsphere">
-<span class="sig-name descname"><span class="pre">bsphere</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.bsphere" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">bsphere</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.bsphere" title="Permalink to this definition"></a></dt>
 <dd><p>Return the bounding sphere of the selection.</p>
 <p>The sphere is calculated relative to the
 <a class="reference internal" href="#MDAnalysis.core.groups.ResidueGroup.center_of_geometry" title="MDAnalysis.core.groups.ResidueGroup.center_of_geometry"><code class="xref py py-meth docutils literal notranslate"><span class="pre">center</span> <span class="pre">of</span> <span class="pre">geometry</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms to the primary unit cell before
+<dd class="field-odd"><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms to the primary unit cell before
 calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -2924,11 +3012,15 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.ResidueGroup.center">
-<span class="sig-name descname"><span class="pre">center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.center" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.center" title="Permalink to this definition"></a></dt>
 <dd><p>Weighted center of (compounds of) the group</p>
 <p>Computes the weighted center of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
 Weighted centers per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
@@ -2941,23 +3033,24 @@ number).</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>weights</strong> (<em>array_like</em><em> or </em><em>None</em>) – Weights to be used. Setting <cite>weights=None</cite> is equivalent to passing
 identical weights for all atoms of the group.</p></li>
-<li><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
-primary unit cell before calculation. If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is
-<code class="docutils literal notranslate"><span class="pre">'segments'</span></code>, <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>,
-the center of each compound will be calculated without moving any
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+primary unit cell before calculation.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is not <code class="docutils literal notranslate"><span class="pre">'group'</span></code> the center of each
+compound will be calculated without moving any
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to keep the compounds intact. Instead, the
 resulting position vectors will be moved to the primary unit cell
 after calculation. Default [<code class="docutils literal notranslate"><span class="pre">False</span></code>].</p></li>
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – <dl class="simple">
+<dt>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their</dt><dd><p>centers.</p>
+</dd>
+</dl>
+</p></li>
 <li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the weighted center of all atoms in the group will
 be returned as a single position vector. Else, the weighted centers
 of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or fragment
 will be returned as an array of position vectors, i.e. a 2d array.
 Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 <em>belonging to the group</em> will be taken into account.</p></li>
-<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
-centers. The position of the first atom of each compound will be
-taken as the reference to unwrap from; as such, results may differ
-for the same <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> if atoms are ordered differently.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -3006,11 +3099,15 @@ compounds</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 1.0.0: </span>Removed flags affecting default behaviour</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.ResidueGroup.center_of_geometry">
-<span class="sig-name descname"><span class="pre">center_of_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.center_of_geometry" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">center_of_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.center_of_geometry" title="Permalink to this definition"></a></dt>
 <dd><p>Center of geometry of (compounds of) the group.</p>
 <p>Computes the center of geometry (a.k.a. centroid) of
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group. Centers of geometry per
@@ -3019,19 +3116,21 @@ obtained by setting the <cite>compound</cite> parameter accordingly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
 primary unit cell before calculation. If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is
 <code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the center of each compound will
 be calculated without moving any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to keep the
 compounds intact. Instead, the resulting position vectors will be
 moved to the primary unit cell after calculation. Default False.</p></li>
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers.</p></li>
 <li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of geometry of all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
-in the group will be returned as a single position vector. Else, the
-centers of geometry of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> or <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>
-will be returned as an array of position vectors, i.e. a 2d array.
-Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
-<em>belonging to the group</em> will be taken into account.</p></li>
-<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</p></li>
+in the group will be returned as a single position vector. Else,
+the centers of geometry of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> or
+<a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> will be returned as an array of position vectors,
+i.e. a 2d array. Note that, in any case, <em>only</em> the positions of
+<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> <em>belonging to the group</em> will be taken into
+account.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -3062,11 +3161,15 @@ compounds</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 1.0.0: </span>Removed flags affecting default behaviour</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.ResidueGroup.center_of_mass">
-<span class="sig-name descname"><span class="pre">center_of_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.center_of_mass" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">center_of_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.center_of_mass" title="Permalink to this definition"></a></dt>
 <dd><p>Center of mass of (compounds of) the group.</p>
 <p>Computes the center of mass of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
 Centers of mass per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
@@ -3077,22 +3180,22 @@ number).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
 primary unit cell before calculation.
-If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the
+If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is not <code class="docutils literal notranslate"><span class="pre">group</span></code>, the
 centers of mass of each compound will be calculated without moving
 any atoms to keep the compounds intact. Instead, the resulting
 center-of-mass position vectors will be moved to the primary unit
 cell after calculation.</p></li>
-<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
-If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of mass of all atoms in the group will
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers.</p></li>
+<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,                   </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of mass of all atoms in the group will
 be returned as a single position vector. Otherwise, the centers of
 mass of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or
 fragment will be returned as an array of position vectors, i.e. a 2d
 array.
 Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 <em>belonging to the group</em> will be taken into account.</p></li>
-<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -3109,10 +3212,8 @@ is the number of compounds.</p>
 </dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<ul class="simple">
-<li><p>This method can only be accessed if the underlying topology has
-information about atomic masses.</p></li>
-</ul>
+<p>This method can only be accessed if the underlying topology has
+information about atomic masses.</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.8: </span>Added <cite>pbc</cite> parameter</p>
@@ -3121,11 +3222,12 @@ information about atomic masses.</p></li>
 <p><span class="versionmodified changed">Changed in version 0.19.0: </span>Added <cite>compound</cite> parameter</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.20.0: </span>Added <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>
-compounds</p>
+<p><span class="versionmodified changed">Changed in version 0.20.0: </span>Added <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code> compounds;
+added <cite>unwrap</cite> parameter</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -3136,7 +3238,7 @@ compounds</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.ResidueGroup.centroid">
-<span class="sig-name descname"><span class="pre">centroid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.centroid" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">centroid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.centroid" title="Permalink to this definition"></a></dt>
 <dd><p>Center of geometry of (compounds of) the group.</p>
 <p>Computes the center of geometry (a.k.a. centroid) of
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group. Centers of geometry per
@@ -3145,19 +3247,21 @@ obtained by setting the <cite>compound</cite> parameter accordingly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
 primary unit cell before calculation. If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is
 <code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the center of each compound will
 be calculated without moving any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to keep the
 compounds intact. Instead, the resulting position vectors will be
 moved to the primary unit cell after calculation. Default False.</p></li>
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers.</p></li>
 <li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of geometry of all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
-in the group will be returned as a single position vector. Else, the
-centers of geometry of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> or <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>
-will be returned as an array of position vectors, i.e. a 2d array.
-Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
-<em>belonging to the group</em> will be taken into account.</p></li>
-<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</p></li>
+in the group will be returned as a single position vector. Else,
+the centers of geometry of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> or
+<a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> will be returned as an array of position vectors,
+i.e. a 2d array. Note that, in any case, <em>only</em> the positions of
+<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> <em>belonging to the group</em> will be taken into
+account.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -3187,6 +3291,10 @@ compounds</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 1.0.0: </span>Removed flags affecting default behaviour</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.</p>
 </div>
 </dd></dl>
 
@@ -3562,20 +3670,59 @@ gives a consistent API between components and groups.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.ResidueGroup.moment_of_inertia">
-<span class="sig-name descname"><span class="pre">moment_of_inertia</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.moment_of_inertia" title="Permalink to this definition"></a></dt>
-<dd><p>Tensor moment of inertia relative to center of mass as 3x3 numpy
-array.</p>
+<span class="sig-name descname"><span class="pre">moment_of_inertia</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.moment_of_inertia" title="Permalink to this definition"></a></dt>
+<dd><p>Moment of inertia tensor relative to center of mass.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
-calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+primary unit cell before calculation.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is not <code class="docutils literal notranslate"><span class="pre">group</span></code>, the
+centers of mass of each compound will be calculated without moving
+any atoms to keep the compounds intact. Instead, the resulting
+center-of-mass position vectors will be moved to the primary unit
+cell after calculation.</p></li>
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers and tensor of inertia.</p></li>
+<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+<cite>compound</cite> determines the behavior of <cite>wrap</cite>.
+Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
+<em>belonging to the group</em> will be taken into account.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>moment_of_inertia</strong> – Moment of inertia tensor as a 3 x 3 numpy array.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<p>The moment of inertia tensor <span class="math notranslate nohighlight">\(\mathsf{I}\)</span> is calculated for a group of
+<span class="math notranslate nohighlight">\(N\)</span> atoms with coordinates <span class="math notranslate nohighlight">\(\mathbf{r}_i,\ 1 \le i \le N\)</span>
+relative to its center of mass from the relative coordinates</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{r}'_i = \mathbf{r}_i - \frac{1}{\sum_{i=1}^{N} m_i} \sum_{i=1}^{N} m_i \mathbf{r}_i\]</div>
+<p>as</p>
+<div class="math notranslate nohighlight">
+\[\mathsf{I} = \sum_{i=1}^{N} m_i \Big[(\mathbf{r}'_i\cdot\mathbf{r}'_i) \sum_{\alpha=1}^{3}
+      \hat{\mathbf{e}}_\alpha \otimes \hat{\mathbf{e}}_\alpha - \mathbf{r}'_i \otimes \mathbf{r}'_i\Big]\]</div>
+<p>where <span class="math notranslate nohighlight">\(\hat{\mathbf{e}}_\alpha\)</span> are Cartesian unit vectors, or in Cartesian coordinates</p>
+<div class="math notranslate nohighlight">
+\[I_{\alpha,\beta} = \sum_{k=1}^{N} m_k
+      \Big(\big(\sum_{\gamma=1}^3 (x'^{(k)}_{\gamma})^2 \big)\delta_{\alpha,\beta}
+      - x'^{(k)}_{\alpha} x'^{(k)}_{\beta} \Big).\]</div>
+<p>where <span class="math notranslate nohighlight">\(x'^{(k)}_{\alpha}\)</span> are the Cartesian coordinates of the
+relative coordinates <span class="math notranslate nohighlight">\(\mathbf{r}'_k\)</span>.</p>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+<p><span class="versionmodified changed">Changed in version 0.8: </span>Added <cite>pbc</cite> keyword</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -3722,7 +3869,7 @@ is <code class="docutils literal notranslate"><span class="pre">None</span></cod
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.ResidueGroup.principal_axes">
-<span class="sig-name descname"><span class="pre">principal_axes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.principal_axes" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">principal_axes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.principal_axes" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate the principal axes from the moment of inertia.</p>
 <p>e1,e2,e3 = AtomGroup.principal_axes()</p>
 <p>The eigenvectors are sorted by eigenvalue, i.e. the first one
@@ -3731,7 +3878,7 @@ axes.</p>
 <p>The eigenvectors form a right-handed coordinate system.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+<dd class="field-odd"><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
 calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -3743,10 +3890,14 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 </dd>
 </dl>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+<p><span class="versionmodified changed">Changed in version 0.8: </span>Added <cite>pbc</cite> keyword</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 1.0.0: </span>Always return principal axes in right-hand convention.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -3787,16 +3938,20 @@ list is <code class="docutils literal notranslate"><span class="pre">None</span>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.ResidueGroup.radius_of_gyration">
-<span class="sig-name descname"><span class="pre">radius_of_gyration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.radius_of_gyration" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">radius_of_gyration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.radius_of_gyration" title="Permalink to this definition"></a></dt>
 <dd><p>Radius of gyration.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+<dd class="field-odd"><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
 calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p>
 </dd>
 </dl>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+<p><span class="versionmodified changed">Changed in version 0.8: </span>Added <cite>pbc</cite> keyword</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -3994,12 +4149,12 @@ class:<cite>Bio.SeqRecord.SeqRecord</cite>.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.ResidueGroup.shape_parameter">
-<span class="sig-name descname"><span class="pre">shape_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.shape_parameter" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">shape_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.shape_parameter" title="Permalink to this definition"></a></dt>
 <dd><p>Shape parameter.</p>
 <p>See <a class="reference internal" href="../references.html#dima2004a" id="id4"><span>[Dima2004a]</span></a> for background information.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+<dd class="field-odd"><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
 calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p>
 </dd>
 </dl>
@@ -4007,7 +4162,12 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 <p><span class="versionmodified added">New in version 0.7.7.</span></p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+<p><span class="versionmodified changed">Changed in version 0.8: </span>Added <cite>pbc</cite> keyword</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.
+Superfluous kwargs were removed.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -4589,13 +4749,13 @@ shape (without the first dimension).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.SegmentGroup.asphericity">
-<span class="sig-name descname"><span class="pre">asphericity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.asphericity" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">asphericity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.asphericity" title="Permalink to this definition"></a></dt>
 <dd><p>Asphericity.</p>
 <p>See <a class="reference internal" href="../references.html#dima2004b" id="id5"><span>[Dima2004b]</span></a> for background information.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
 calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p></li>
 <li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</p></li>
 <li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – Which type of component to keep together during unwrapping.</p></li>
@@ -4606,10 +4766,14 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 <p><span class="versionmodified added">New in version 0.7.7.</span></p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+<p><span class="versionmodified changed">Changed in version 0.8: </span>Added <cite>pbc</cite> keyword</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.20.0: </span>Added <em>unwrap</em> and <em>compound</em> parameter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -4668,7 +4832,7 @@ Duplicates are <em>not</em> removed.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.SegmentGroup.bbox">
-<span class="sig-name descname"><span class="pre">bbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.bbox" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">bbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.bbox" title="Permalink to this definition"></a></dt>
 <dd><p>Return the bounding box of the selection.</p>
 <p>The lengths A,B,C of the orthorhombic enclosing box are</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">L</span> <span class="o">=</span> <span class="n">AtomGroup</span><span class="o">.</span><span class="n">bbox</span><span class="p">()</span>
@@ -4677,7 +4841,7 @@ Duplicates are <em>not</em> removed.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to the primary unit cell
+<dd class="field-odd"><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to the primary unit cell
 before calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -4697,6 +4861,10 @@ before calculation. [<code class="docutils literal notranslate"><span class="pre
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 1.0.0: </span>Removed flags affecting default behaviour</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.</p>
+</div>
 </dd></dl>
 
 <dl class="py property">
@@ -4712,13 +4880,13 @@ before calculation. [<code class="docutils literal notranslate"><span class="pre
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.SegmentGroup.bsphere">
-<span class="sig-name descname"><span class="pre">bsphere</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.bsphere" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">bsphere</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.bsphere" title="Permalink to this definition"></a></dt>
 <dd><p>Return the bounding sphere of the selection.</p>
 <p>The sphere is calculated relative to the
 <a class="reference internal" href="#MDAnalysis.core.groups.SegmentGroup.center_of_geometry" title="MDAnalysis.core.groups.SegmentGroup.center_of_geometry"><code class="xref py py-meth docutils literal notranslate"><span class="pre">center</span> <span class="pre">of</span> <span class="pre">geometry</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms to the primary unit cell before
+<dd class="field-odd"><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms to the primary unit cell before
 calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -4735,11 +4903,15 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.SegmentGroup.center">
-<span class="sig-name descname"><span class="pre">center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.center" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.center" title="Permalink to this definition"></a></dt>
 <dd><p>Weighted center of (compounds of) the group</p>
 <p>Computes the weighted center of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
 Weighted centers per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
@@ -4752,23 +4924,24 @@ number).</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>weights</strong> (<em>array_like</em><em> or </em><em>None</em>) – Weights to be used. Setting <cite>weights=None</cite> is equivalent to passing
 identical weights for all atoms of the group.</p></li>
-<li><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
-primary unit cell before calculation. If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is
-<code class="docutils literal notranslate"><span class="pre">'segments'</span></code>, <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>,
-the center of each compound will be calculated without moving any
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+primary unit cell before calculation.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is not <code class="docutils literal notranslate"><span class="pre">'group'</span></code> the center of each
+compound will be calculated without moving any
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to keep the compounds intact. Instead, the
 resulting position vectors will be moved to the primary unit cell
 after calculation. Default [<code class="docutils literal notranslate"><span class="pre">False</span></code>].</p></li>
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – <dl class="simple">
+<dt>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their</dt><dd><p>centers.</p>
+</dd>
+</dl>
+</p></li>
 <li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the weighted center of all atoms in the group will
 be returned as a single position vector. Else, the weighted centers
 of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or fragment
 will be returned as an array of position vectors, i.e. a 2d array.
 Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 <em>belonging to the group</em> will be taken into account.</p></li>
-<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
-centers. The position of the first atom of each compound will be
-taken as the reference to unwrap from; as such, results may differ
-for the same <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> if atoms are ordered differently.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -4817,11 +4990,15 @@ compounds</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 1.0.0: </span>Removed flags affecting default behaviour</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.SegmentGroup.center_of_geometry">
-<span class="sig-name descname"><span class="pre">center_of_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.center_of_geometry" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">center_of_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.center_of_geometry" title="Permalink to this definition"></a></dt>
 <dd><p>Center of geometry of (compounds of) the group.</p>
 <p>Computes the center of geometry (a.k.a. centroid) of
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group. Centers of geometry per
@@ -4830,19 +5007,21 @@ obtained by setting the <cite>compound</cite> parameter accordingly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
 primary unit cell before calculation. If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is
 <code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the center of each compound will
 be calculated without moving any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to keep the
 compounds intact. Instead, the resulting position vectors will be
 moved to the primary unit cell after calculation. Default False.</p></li>
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers.</p></li>
 <li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of geometry of all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
-in the group will be returned as a single position vector. Else, the
-centers of geometry of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> or <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>
-will be returned as an array of position vectors, i.e. a 2d array.
-Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
-<em>belonging to the group</em> will be taken into account.</p></li>
-<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</p></li>
+in the group will be returned as a single position vector. Else,
+the centers of geometry of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> or
+<a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> will be returned as an array of position vectors,
+i.e. a 2d array. Note that, in any case, <em>only</em> the positions of
+<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> <em>belonging to the group</em> will be taken into
+account.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -4873,11 +5052,15 @@ compounds</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 1.0.0: </span>Removed flags affecting default behaviour</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.SegmentGroup.center_of_mass">
-<span class="sig-name descname"><span class="pre">center_of_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.center_of_mass" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">center_of_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.center_of_mass" title="Permalink to this definition"></a></dt>
 <dd><p>Center of mass of (compounds of) the group.</p>
 <p>Computes the center of mass of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
 Centers of mass per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
@@ -4888,22 +5071,22 @@ number).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
 primary unit cell before calculation.
-If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the
+If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is not <code class="docutils literal notranslate"><span class="pre">group</span></code>, the
 centers of mass of each compound will be calculated without moving
 any atoms to keep the compounds intact. Instead, the resulting
 center-of-mass position vectors will be moved to the primary unit
 cell after calculation.</p></li>
-<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
-If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of mass of all atoms in the group will
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers.</p></li>
+<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,                   </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of mass of all atoms in the group will
 be returned as a single position vector. Otherwise, the centers of
 mass of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or
 fragment will be returned as an array of position vectors, i.e. a 2d
 array.
 Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 <em>belonging to the group</em> will be taken into account.</p></li>
-<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -4920,10 +5103,8 @@ is the number of compounds.</p>
 </dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<ul class="simple">
-<li><p>This method can only be accessed if the underlying topology has
-information about atomic masses.</p></li>
-</ul>
+<p>This method can only be accessed if the underlying topology has
+information about atomic masses.</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.8: </span>Added <cite>pbc</cite> parameter</p>
@@ -4932,11 +5113,12 @@ information about atomic masses.</p></li>
 <p><span class="versionmodified changed">Changed in version 0.19.0: </span>Added <cite>compound</cite> parameter</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.20.0: </span>Added <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>
-compounds</p>
+<p><span class="versionmodified changed">Changed in version 0.20.0: </span>Added <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code> compounds;
+added <cite>unwrap</cite> parameter</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -4947,7 +5129,7 @@ compounds</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.SegmentGroup.centroid">
-<span class="sig-name descname"><span class="pre">centroid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.centroid" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">centroid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.centroid" title="Permalink to this definition"></a></dt>
 <dd><p>Center of geometry of (compounds of) the group.</p>
 <p>Computes the center of geometry (a.k.a. centroid) of
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group. Centers of geometry per
@@ -4956,19 +5138,21 @@ obtained by setting the <cite>compound</cite> parameter accordingly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
 primary unit cell before calculation. If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is
 <code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the center of each compound will
 be calculated without moving any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to keep the
 compounds intact. Instead, the resulting position vectors will be
 moved to the primary unit cell after calculation. Default False.</p></li>
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers.</p></li>
 <li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of geometry of all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
-in the group will be returned as a single position vector. Else, the
-centers of geometry of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> or <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>
-will be returned as an array of position vectors, i.e. a 2d array.
-Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
-<em>belonging to the group</em> will be taken into account.</p></li>
-<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</p></li>
+in the group will be returned as a single position vector. Else,
+the centers of geometry of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> or
+<a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> will be returned as an array of position vectors,
+i.e. a 2d array. Note that, in any case, <em>only</em> the positions of
+<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> <em>belonging to the group</em> will be taken into
+account.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -4998,6 +5182,10 @@ compounds</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 1.0.0: </span>Removed flags affecting default behaviour</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.</p>
 </div>
 </dd></dl>
 
@@ -5343,20 +5531,59 @@ gives a consistent API between components and groups.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.SegmentGroup.moment_of_inertia">
-<span class="sig-name descname"><span class="pre">moment_of_inertia</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.moment_of_inertia" title="Permalink to this definition"></a></dt>
-<dd><p>Tensor moment of inertia relative to center of mass as 3x3 numpy
-array.</p>
+<span class="sig-name descname"><span class="pre">moment_of_inertia</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.moment_of_inertia" title="Permalink to this definition"></a></dt>
+<dd><p>Moment of inertia tensor relative to center of mass.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
-calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+primary unit cell before calculation.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is not <code class="docutils literal notranslate"><span class="pre">group</span></code>, the
+centers of mass of each compound will be calculated without moving
+any atoms to keep the compounds intact. Instead, the resulting
+center-of-mass position vectors will be moved to the primary unit
+cell after calculation.</p></li>
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers and tensor of inertia.</p></li>
+<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+<cite>compound</cite> determines the behavior of <cite>wrap</cite>.
+Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
+<em>belonging to the group</em> will be taken into account.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>moment_of_inertia</strong> – Moment of inertia tensor as a 3 x 3 numpy array.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<p>The moment of inertia tensor <span class="math notranslate nohighlight">\(\mathsf{I}\)</span> is calculated for a group of
+<span class="math notranslate nohighlight">\(N\)</span> atoms with coordinates <span class="math notranslate nohighlight">\(\mathbf{r}_i,\ 1 \le i \le N\)</span>
+relative to its center of mass from the relative coordinates</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{r}'_i = \mathbf{r}_i - \frac{1}{\sum_{i=1}^{N} m_i} \sum_{i=1}^{N} m_i \mathbf{r}_i\]</div>
+<p>as</p>
+<div class="math notranslate nohighlight">
+\[\mathsf{I} = \sum_{i=1}^{N} m_i \Big[(\mathbf{r}'_i\cdot\mathbf{r}'_i) \sum_{\alpha=1}^{3}
+      \hat{\mathbf{e}}_\alpha \otimes \hat{\mathbf{e}}_\alpha - \mathbf{r}'_i \otimes \mathbf{r}'_i\Big]\]</div>
+<p>where <span class="math notranslate nohighlight">\(\hat{\mathbf{e}}_\alpha\)</span> are Cartesian unit vectors, or in Cartesian coordinates</p>
+<div class="math notranslate nohighlight">
+\[I_{\alpha,\beta} = \sum_{k=1}^{N} m_k
+      \Big(\big(\sum_{\gamma=1}^3 (x'^{(k)}_{\gamma})^2 \big)\delta_{\alpha,\beta}
+      - x'^{(k)}_{\alpha} x'^{(k)}_{\beta} \Big).\]</div>
+<p>where <span class="math notranslate nohighlight">\(x'^{(k)}_{\alpha}\)</span> are the Cartesian coordinates of the
+relative coordinates <span class="math notranslate nohighlight">\(\mathbf{r}'_k\)</span>.</p>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+<p><span class="versionmodified changed">Changed in version 0.8: </span>Added <cite>pbc</cite> keyword</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -5441,7 +5668,7 @@ keywords.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.SegmentGroup.principal_axes">
-<span class="sig-name descname"><span class="pre">principal_axes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.principal_axes" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">principal_axes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.principal_axes" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate the principal axes from the moment of inertia.</p>
 <p>e1,e2,e3 = AtomGroup.principal_axes()</p>
 <p>The eigenvectors are sorted by eigenvalue, i.e. the first one
@@ -5450,7 +5677,7 @@ axes.</p>
 <p>The eigenvectors form a right-handed coordinate system.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+<dd class="field-odd"><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
 calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -5462,10 +5689,14 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 </dd>
 </dl>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+<p><span class="versionmodified changed">Changed in version 0.8: </span>Added <cite>pbc</cite> keyword</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 1.0.0: </span>Always return principal axes in right-hand convention.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -5476,16 +5707,20 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.SegmentGroup.radius_of_gyration">
-<span class="sig-name descname"><span class="pre">radius_of_gyration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.radius_of_gyration" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">radius_of_gyration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.radius_of_gyration" title="Permalink to this definition"></a></dt>
 <dd><p>Radius of gyration.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+<dd class="field-odd"><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
 calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p>
 </dd>
 </dl>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+<p><span class="versionmodified changed">Changed in version 0.8: </span>Added <cite>pbc</cite> keyword</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -5593,12 +5828,12 @@ not affect any code but only speed up calculations.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.SegmentGroup.shape_parameter">
-<span class="sig-name descname"><span class="pre">shape_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.shape_parameter" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">shape_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.shape_parameter" title="Permalink to this definition"></a></dt>
 <dd><p>Shape parameter.</p>
 <p>See <a class="reference internal" href="../references.html#dima2004a" id="id6"><span>[Dima2004a]</span></a> for background information.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+<dd class="field-odd"><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
 calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p>
 </dd>
 </dl>
@@ -5606,7 +5841,12 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 <p><span class="versionmodified added">New in version 0.7.7.</span></p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+<p><span class="versionmodified changed">Changed in version 0.8: </span>Added <cite>pbc</cite> keyword</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
+is deprecated and will be removed in version 3.0.
+Superfluous kwargs were removed.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -6400,16 +6640,20 @@ amino acids where the gamma atom is not carbon, into its chi1 selections.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><em>AtomGroup</em> – 4-atom selection in the correct order. If no CB and/or CG is found
-then this method returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
-<li><p><em>.. versionchanged:: 1.0.0</em> – Added arguments for flexible atom names and refactored code for
-faster atom matching with boolean arrays.</p></li>
-<li><p><em>.. versionadded:: 0.7.5</em></p></li>
-</ul>
-</p>
+<dd class="field-even"><p>4-atom selection in the correct order. If no CB and/or CG is found
+then this method returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup">AtomGroup</a></p>
 </dd>
 </dl>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.7.5.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.0.0: </span>Added arguments for flexible atom names and refactored code for
+faster atom matching with boolean arrays.</p>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This requires the underlying topology to have names. Otherwise, a
