@@ -74,7 +74,7 @@ else:
     from commands import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "2.1.0-dev0"
+RELEASE = "2.1.0"
 
 is_release = 'dev' not in RELEASE
 
@@ -579,6 +579,7 @@ if __name__ == '__main__':
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
+        'Programming Lnaguage :; Python :: 3.10',
         'Programming Language :: C',
         'Topic :: Scientific/Engineering',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
