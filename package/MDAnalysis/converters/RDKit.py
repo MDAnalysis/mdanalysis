@@ -82,9 +82,9 @@ Classes
 """
 
 import warnings
-import re
 import copy
 from functools import lru_cache
+from io import StringIO
 
 import numpy as np
 
@@ -92,6 +92,7 @@ from ..exceptions import NoDataError
 from ..core.topologyattrs import _TOPOLOGY_ATTRS
 from ..coordinates import memory
 from ..coordinates import base
+from ..coordinates.PDB import PDBWriter
 
 try:
     from rdkit import Chem
@@ -120,6 +121,9 @@ else:
         "tempfactors": "TempFactor",
     }
     PERIODIC_TABLE = Chem.GetPeriodicTable()
+
+
+_deduce_PDB_atom_name = PDBWriter(StringIO())._deduce_PDB_atom_name
 
 
 class RDKitReader(memory.MemoryReader):
@@ -398,6 +402,13 @@ def atomgroup_to_mol(ag, NoImplicit=True, max_iter=200, force=False):
     for attr in RDATTRIBUTES.keys():
         if hasattr(ag, attr):
             pdb_attrs[attr] = getattr(ag, attr)
+    resnames = pdb_attrs.get("resnames", None)
+    if resnames is None:
+        def get_resname(idx):
+            return ""
+    else:
+        def get_resname(idx):
+            return resnames[idx]
 
     other_attrs = {}
     for attr in ["charges", "segids", "types"]:
@@ -416,7 +427,7 @@ def atomgroup_to_mol(ag, NoImplicit=True, max_iter=200, force=False):
         # add PDB-like properties
         mi = Chem.AtomPDBResidueInfo()
         for attr, values in pdb_attrs.items():
-            _add_mda_attr_to_rdkit(attr, values[i], mi)
+            _add_mda_attr_to_rdkit(attr, values[i], mi, get_resname(i))
         rdatom.SetMonomerInfo(mi)
         # other properties
         for attr in other_attrs.keys():
@@ -479,7 +490,7 @@ def set_converter_cache_size(maxsize):
     atomgroup_to_mol = lru_cache(maxsize=maxsize)(atomgroup_to_mol.__wrapped__)
 
 
-def _add_mda_attr_to_rdkit(attr, value, mi):
+def _add_mda_attr_to_rdkit(attr, value, mi, resname=""):
     """Converts an MDAnalysis atom attribute into the RDKit equivalent and
     stores it into an RDKit :class:`~rdkit.Chem.rdchem.AtomPDBResidueInfo`.
 
@@ -491,26 +502,15 @@ def _add_mda_attr_to_rdkit(attr, value, mi):
         Attribute value as found in the AtomGroup
     mi : rdkit.Chem.rdchem.AtomPDBResidueInfo
         MonomerInfo object that will store the relevant atom attributes
+    resname : str
+        Residue name of the atom, if available
     """
     if isinstance(value, np.generic):
         # convert numpy types to python standard types
         value = value.item()
     if attr == "names":
-        # RDKit needs the name to be properly formatted for a
-        # PDB file (1 letter elements start at col 14)
-        name = re.findall(r'(\D+|\d+)', value)  # splits alphabet from numeric
-        # alpha-numeric name
-        if len(name) == 2:
-            # only two characters
-            if len(value) == 2:
-                value = f" {value} "
-            # more than two --> cut to 4 characters
-            else:
-                symbol, number = name
-                value = f"{symbol + number:>4.4}"
-        # no number in the name
-        else:
-            value = f" {name[0]:<3.3}"
+        # RDKit needs the name to be properly formatted for a PDB file
+        value = _deduce_PDB_atom_name(value, resname)
 
     # set attribute value in RDKit MonomerInfo
     rdattr = RDATTRIBUTES[attr]
