@@ -53,7 +53,7 @@ molecule::
     infers the structures of approximately 90% of the `ChEMBL27`_ dataset.
     Work is currently ongoing on further improving this and updates to the
     converter are expected in future releases of MDAnalysis.
-    Please see `Pull Request #3044`_ for more details.
+    Please see `Pull Request #3044`_ and `Issue #3339`_ for more details.
 
 
 
@@ -77,6 +77,7 @@ Classes
 
 .. _`ChEMBL27`: https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl_27/
 .. _`Pull Request #3044`: https://github.com/MDAnalysis/mdanalysis/pull/3044
+.. _`Issue #3339`: https://github.com/MDAnalysis/mdanalysis/issues/3339
 
 """
 
@@ -261,6 +262,10 @@ class RDKitConverter(base.ConverterBase):
     cache since the arguments given are different. You can pass a
     ``cache=False`` argument to the converter to bypass the caching system.
 
+    The ``_MDAnalysis_index`` property of the resulting molecule corresponds
+    to the index of the specific :class:`~MDAnalysis.core.groups.AtomGroup`
+    that was converted, which may not always match the ``index`` property.
+
     To get a better understanding of how the converter works under the hood,
     please refer to the following RDKit UGM presentation:
 
@@ -269,6 +274,11 @@ class RDKitConverter(base.ConverterBase):
 
 
     .. versionadded:: 2.0.0
+
+    .. versionchanged:: 2.2.0
+        Improved the accuracy of the converter. Atoms in the resulting molecule
+        follow the same order as in the AtomGroup. Fixed a
+        ``SanitizationError`` when disabling the bond order inferring step.
 
     """
 
@@ -440,7 +450,8 @@ def atomgroup_to_mol(ag, NoImplicit=True, max_iter=200, force=False):
         # infer bond orders and formal charges from the connectivity
         _infer_bo_and_charges(mol)
         mol = _standardize_patterns(mol, max_iter)
-        # reorder atoms to match MDAnalysis
+        # reorder atoms to match MDAnalysis, since the reactions from
+        # _standardize_patterns will mess up the original order
         order = np.argsort([atom.GetIntProp("_MDAnalysis_index")
                             for atom in mol.GetAtoms()])
         mol = Chem.RenumberAtoms(mol, order.astype(int).tolist())
