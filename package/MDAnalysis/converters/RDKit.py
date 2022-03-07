@@ -758,11 +758,6 @@ def _standardize_patterns(mol, max_iter=200):
     # reassign all properties
     _transfer_properties(mol, newmol)
 
-    # fix bonds with "crossed" stereo
-    for bond in newmol.GetBonds():
-        if bond.GetStereo() == Chem.BondStereo.STEREOANY:
-            bond.SetStereo(Chem.BondStereo.STEREONONE)
-
     return newmol
 
 
