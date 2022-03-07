@@ -45,13 +45,19 @@
     "version": "2.0.0",
     "display": "2.0.0",
     "url": "https://docs.mdanalysis.org/2.0.0",
-    "latest": true
+    "latest": false
   },
   {
     "version": "2.0.0-dev0",
     "display": "2.0.0-dev0",
     "url": "https://docs.mdanalysis.org/2.0.0-dev0",
     "latest": false
+  },
+  {
+    "version": "2.1.0",
+    "display": "2.1.0",
+    "url": "https://docs.mdanalysis.org/2.1.0",
+    "latest": true
   },
   {
     "version": "2.1.0-dev0",
