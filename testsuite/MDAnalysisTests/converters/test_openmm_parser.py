@@ -28,8 +28,13 @@ import MDAnalysis as mda
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import CONECT, PDBX
 
-
-app = pytest.importorskip('simtk.openmm.app')
+try:
+    from openmm import app
+except ImportError:
+    try:
+        from simtk.openmm import app
+    except ImportError:
+        pytest.skip(allow_module_level=True)
 
 
 class OpenMMTopologyBase(ParserBase):

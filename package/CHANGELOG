@@ -14,11 +14,14 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/?? IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope,
-         orbeckst, scal444, p-j-smith, edisj, Atharva7K, ojeda-e, jbarnoud
+         orbeckst, scal444, p-j-smith, edisj, Atharva7K, ojeda-e, jbarnoud,
+         yangtcai
 
  * 2.1.0
 
 Fixes
+  * Use uint64_t loop counters in C level distance functions to avoid overflow
+    for large arrays (Issue #3512, PR #3513).
   * Prevents attempts to close an already closed NamedStream (Issue #3386)
   * Added missing exe_err import in hole.py. Fixed a bug in HoleAnalysis where 
     kwarg was passed instead of object to generate path (Issue #3493, PR #3496)
@@ -45,6 +48,7 @@ Enhancements
   * Added MDAnalysis.lib.distances.minimize_vectors
 
 Changes
+  * `packaging` is now a core dependency for MDAnalysis
   * Indexing a group (AtomGroup, ResidueGroup, or SegmentGroup) with None
     raises a TypeError (Issue #3092, PR #3517)
   * TRZReader now defaults to a `dt` of 1.0 (instead of 0.0 previously) when
@@ -53,6 +57,8 @@ Changes
     (NEP29)
 
 Deprecations
+  * Deprecated the 'pbc' kwarg for various Group methods, the 'wrap' kwarg
+    should be used instead. (Issue #1760)
 
 
 08/21/21 tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,

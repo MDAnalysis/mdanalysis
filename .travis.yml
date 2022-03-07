@@ -25,7 +25,7 @@ matrix:
         - conda activate base
         - conda update --yes conda
         - conda install --yes pip pytest==6.1.2 mmtf-python biopython networkx cython matplotlib-base "scipy>=1.6" griddataformats hypothesis gsd codecov -c conda-forge -c biobuilds
-        - pip install pytest-xdist threadpoolctl
+        - pip install pytest-xdist packaging threadpoolctl
         - conda info
       install:
         - (cd package/ && python setup.py develop) && (cd testsuite/ && python setup.py install)
@@ -45,7 +45,7 @@ matrix:
       if: type = cron
       before_install:
         - python -m pip install cython "numpy>=1.19.2" scipy
-        - python -m pip install --no-build-isolation hypothesis matplotlib pytest pytest-cov pytest-xdist tqdm threadpoolctl
+        - python -m pip install --no-build-isolation hypothesis matplotlib packaging pytest pytest-cov pytest-xdist tqdm threadpoolctl
       install:
         - cd package
         - python setup.py install

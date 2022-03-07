@@ -46,6 +46,7 @@ Google groups forbids any name that contains the string `anal'.)
 from setuptools import setup, Extension, find_packages
 from distutils.ccompiler import new_compiler
 from distutils.sysconfig import customize_compiler
+from packaging.version import Version
 import codecs
 import os
 import sys
@@ -83,7 +84,6 @@ try:
     import Cython
     from Cython.Build import cythonize
     cython_found = True
-    from packaging.version import Version
 
     required_version = "0.16"
     if not Version(Cython.__version__) >= Version(required_version):
@@ -599,6 +599,7 @@ if __name__ == '__main__':
           'matplotlib>=1.5.1',
           'tqdm>=4.43.0',
           'threadpoolctl',
+          'packaging',
     ]
 
     if not os.name == 'nt':
@@ -641,6 +642,7 @@ if __name__ == '__main__':
           # typically can be installed without difficulties through setuptools
           setup_requires=[
               'numpy>=1.18.0',
+              'packaging',
           ],
           install_requires=install_requires,
           # extras can be difficult to install through setuptools and/or
