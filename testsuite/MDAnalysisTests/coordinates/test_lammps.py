@@ -29,7 +29,7 @@ import pytest
 import MDAnalysis as mda
 from MDAnalysis import NoDataError
 
-from numpy.testing import (assert_equal, assert_almost_equal)
+from numpy.testing import (assert_equal, assert_almost_equal, assert_allclose)
 
 from MDAnalysisTests import make_Universe
 from MDAnalysisTests.coordinates.reference import (
@@ -659,10 +659,11 @@ class TestLammpsTriclinic(object):
         return mda.lib.mdamath.triclinic_box(*box)
 
     def test_box(self, u_dump, u_data, reference_box):
+        # NOTE threefold validation testing both data and dump reader.
         for ts in u_dump.trajectory:
-            assert_almost_equal(ts.dimensions, reference_box, decimal=5)
+            assert_allclose(ts.dimensions, reference_box, rtol=1e-5, atol=0)
 
         for ts in u_dump.trajectory:
-            assert_almost_equal(ts.dimensions, u_data.dimensions, decimal=5)
+            assert_allclose(ts.dimensions, u_data.dimensions, rtol=1e-5, atol=0)
 
-        assert_almost_equal(u_data.dimensions, reference_box, decimal=5)
+        assert_allclose(u_data.dimensions, reference_box, rtol=1e-5, atol=0)
