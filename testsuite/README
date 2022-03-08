@@ -43,10 +43,10 @@ For questions and discussions for code development, join the developer list http
 
 .. badges
 
-.. |build| image:: https://travis-ci.com/MDAnalysis/mdanalysis.svg?branch=develop
-   :alt: Build Status
-   :target: https://travis-ci.com/MDAnalysis/mdanalysis
-
+.. |build| image:: https://github.com/MDAnalysis/mdanalysis/actions/workflows/gh-ci.yaml/badge.svg
+   :alt: Github Actions Build Status
+   :target: https://github.com/MDAnalysis/mdanalysis/actions/workflows/gh-ci.yaml
+   
 .. |cov|   image:: https://codecov.io/gh/MDAnalysis/mdanalysis/branch/develop/graph/badge.svg
    :alt: Coverage Status
    :target: https://codecov.io/gh/MDAnalysis/mdanalysis
