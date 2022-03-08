@@ -36,6 +36,8 @@ inputs:
     default: 'networkx'
   numpy:
     default: 'numpy'
+  packaging:
+    default: 'packaging'
   pip:
     default: 'pip'
   pytest:
@@ -98,6 +100,7 @@ runs:
           ${{ inputs.mmtf-python }}
           ${{ inputs.networkx }}
           ${{ inputs.numpy }}
+          ${{ inputs.packaging }}
           ${{ inputs.pip }}
           ${{ inputs.pytest }}
           ${{ inputs.scipy }}

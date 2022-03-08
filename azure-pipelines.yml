@@ -92,6 +92,7 @@ jobs:
       hypothesis
       matplotlib
       numpy
+      packaging
       pytest
       pytest-cov
       pytest-xdist
