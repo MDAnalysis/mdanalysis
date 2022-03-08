@@ -108,7 +108,7 @@ class OpenMMTopologyBase(ParserBase):
             assert isinstance(top.elements.values, np.ndarray)
             assert all(isinstance(elem, str) for elem in top.elements.values)
         else:
-            assert not hasattr(top, 'elemets')
+            assert not hasattr(top, 'elements')
 
     def test_atomtypes(self, top):
         assert len(top.types.values) == self.expected_n_atoms
@@ -171,6 +171,14 @@ class TestOpenMMTopologyParserWithNoElements(OpenMMTopologyBase):
         "bonds",
         "chainIDs",
     ]
+
+    @pytest.fixture()
+    def top(self, filename):
+        omm_topology = self.ref_filename
+        for a in omm_topology.atoms():
+            a.element = None
+        return self.parser(PDB) \
+                   ._mda_topology_from_omm_topology(omm_topology)
 
     def test_no_elements(self, top):
         omm_topology = self.ref_filename
