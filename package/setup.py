@@ -46,6 +46,7 @@ Google groups forbids any name that contains the string `anal'.)
 from setuptools import setup, Extension, find_packages
 from distutils.ccompiler import new_compiler
 from distutils.sysconfig import customize_compiler
+from packaging.version import Version
 import codecs
 import os
 import sys
@@ -73,7 +74,7 @@ else:
     from commands import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "2.1.0-dev0"
+RELEASE = "2.2.0-dev0"
 
 is_release = 'dev' not in RELEASE
 
@@ -83,10 +84,9 @@ try:
     import Cython
     from Cython.Build import cythonize
     cython_found = True
-    from distutils.version import LooseVersion
 
     required_version = "0.16"
-    if not LooseVersion(Cython.__version__) >= LooseVersion(required_version):
+    if not Version(Cython.__version__) >= Version(required_version):
         # We don't necessarily die here. Maybe we already have
         #  the cythonized '.c' files.
         print("Cython version {0} was found but won't be used: version {1} "
@@ -280,12 +280,6 @@ def extensions(config):
         extra_compile_args.extend(['-Wall', '-pedantic'])
         define_macros.extend([('DEBUG', '1')])
 
-    # allow using architecture specific instructions. This allows people to
-    # build optimized versions of MDAnalysis.
-    arch = config.get('march', default=False)
-    if arch:
-        extra_compile_args.append('-march={}'.format(arch))
-
     # encore is sensitive to floating point accuracy, especially on non-x86
     # to avoid reducing optimisations on everything, we make a set of compile
     # args specific to encore see #2997 for an example of this.
@@ -294,6 +288,14 @@ def extensions(config):
         encore_compile_args.append('-O1')
     else:
         encore_compile_args.append('-O3')
+
+    # allow using custom c/c++ flags and architecture specific instructions.
+    # This allows people to build optimized versions of MDAnalysis.
+    # Do here so not included in encore
+    extra_cflags = config.get('extra_cflags', default=False)
+    if extra_cflags:
+        flags = extra_cflags.split()
+        extra_compile_args.extend(flags)
 
     cpp_extra_compile_args = [a for a in extra_compile_args if 'std' not in a]
     cpp_extra_compile_args.append('-std=c++11')
@@ -577,6 +579,7 @@ if __name__ == '__main__':
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'Programming Language :: C',
         'Topic :: Scientific/Engineering',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
@@ -597,6 +600,7 @@ if __name__ == '__main__':
           'matplotlib>=1.5.1',
           'tqdm>=4.43.0',
           'threadpoolctl',
+          'packaging',
     ]
 
     if not os.name == 'nt':
@@ -639,6 +643,7 @@ if __name__ == '__main__':
           # typically can be installed without difficulties through setuptools
           setup_requires=[
               'numpy>=1.18.0',
+              'packaging',
           ],
           install_requires=install_requires,
           # extras can be difficult to install through setuptools and/or

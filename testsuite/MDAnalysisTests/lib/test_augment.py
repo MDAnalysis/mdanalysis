@@ -20,6 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 
+import os
 import pytest
 import numpy as np
 from numpy.testing import assert_almost_equal, assert_equal
@@ -67,6 +68,8 @@ qres = (
        )
 
 
+@pytest.mark.xfail(os.name == "nt",
+                   reason="see gh-3248")
 @pytest.mark.parametrize('b', (
                          np.array([10, 10, 10, 90, 90, 90], dtype=np.float32),
                          np.array([10, 10, 10, 45, 60, 90], dtype=np.float32)

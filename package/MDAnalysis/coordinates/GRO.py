@@ -52,9 +52,6 @@ For example::
 Classes
 -------
 
-.. autoclass:: Timestep
-   :members:
-
 .. autoclass:: GROReader
    :members:
 
