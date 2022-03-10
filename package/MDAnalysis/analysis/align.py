@@ -504,6 +504,8 @@ def alignto(mobile, reference, select=None, weights=None,
     if subselection is None:
         # mobile_atoms is Universe
         mobile_atoms = mobile.universe.atoms
+        if mobile.universe == reference.universe:
+            mobile_atoms = mobile.select_atoms('all')
     elif isinstance(subselection, str):
         # select mobile_atoms from string
         mobile_atoms = mobile.select_atoms(subselection)
