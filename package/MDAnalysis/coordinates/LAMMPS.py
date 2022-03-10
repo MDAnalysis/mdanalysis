@@ -463,7 +463,14 @@ class DumpReader(base.ReaderBase):
     (xsu,ysu,zsu) they will automatically be converted from their
     scaled/fractional representation to their real values.
 
+    Supports both orthogonal and triclinic simulation box dimensions (for more
+    details see https://docs.lammps.org/Howto_triclinic.html). In either case,
+    MDAnalysis will always use ``(*A*, *B*, *C*, *alpha*, *beta*, *gamma*)``
+    to represent the unit cell. Lengths *A*, *B*, *C* are in the MDAnalysis
+    length unit (Å), and angles are in degrees.
 
+    .. versionchanged:: 2.2.0
+       Triclinic simulation boxes are supported. (Issue #3383)
     .. versionchanged:: 2.0.0
        Now parses coordinates in multiple lammps conventions (x,xs,xu,xsu)
     .. versionadded:: 0.19.0

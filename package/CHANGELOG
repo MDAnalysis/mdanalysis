@@ -13,12 +13,12 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay
+??/??/?? IAlibay, Agorfa
 
  * 2.2.0
 
 Fixes
-
+  * Fixed DumpReader triclinic box dimensions reading. (Issue #3386, PR #3403)
 Enhancements
 
 Changes
