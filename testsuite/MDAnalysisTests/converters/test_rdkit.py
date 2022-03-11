@@ -673,13 +673,3 @@ class TestRDKitFunctions(object):
         values = [a.GetSymbol() for a in mu.GetAtoms()]
         expected = [a.GetSymbol() for a in mol.GetAtoms()]
         assert values == expected
-
-    def test_convert_stereoany_to_stereonone(self):
-        mol = Chem.MolFromSmiles("FC(Cl)=C(Br)I")
-        bond = next(b for b in mol.GetBonds()
-                    if b.GetBondTypeAsDouble() == 2)
-        bond.SetStereo(Chem.BondStereo.STEREOANY)
-        newmol = _standardize_patterns(mol)
-        bond = next(b for b in newmol.GetBonds()
-                    if b.GetBondTypeAsDouble() == 2)
-        assert bond.GetStereo() == Chem.BondStereo.STEREONONE
