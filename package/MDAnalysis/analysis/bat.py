@@ -173,8 +173,9 @@ References
 """
 import logging
 import warnings
-import copy
+
 import numpy as np
+import copy
 
 import MDAnalysis as mda
 from .base import AnalysisBase
