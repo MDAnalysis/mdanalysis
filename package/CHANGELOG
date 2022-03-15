@@ -33,7 +33,7 @@ Deprecations
 
 03/06/22 IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope,
          orbeckst, scal444, p-j-smith, edisj, Atharva7K, ojeda-e, jbarnoud,
-         yangtcai
+         yangtcai, AnirG
 
  * 2.1.0
 
@@ -66,6 +66,8 @@ Enhancements
   * Added MDAnalysis.lib.distances.minimize_vectors
 
 Changes
+  * `DistanceMatrix` class in MDAnalysis.analysis.diffusionmap now also
+    accepts `AtomGroup` as a valid argument (Issue #3486, PR #3541)
   * `packaging` is now a core dependency for MDAnalysis
   * Indexing a group (AtomGroup, ResidueGroup, or SegmentGroup) with None
     raises a TypeError (Issue #3092, PR #3517)
