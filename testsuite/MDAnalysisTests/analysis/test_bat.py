@@ -127,3 +127,8 @@ class TestBAT(object):
         errmsg = 'Dimensions of array in loaded file'
         with pytest.raises(ValueError, match=errmsg):
             R = BAT(selected_residues, filename=bat_npz)
+
+    def test_bat_input_data(self,torsions,bat_frame):
+        arr1 = np.array(torsions)
+        arr2 = np.array(bat_frame)
+        return np.may_share_memory(arr1,arr2)
