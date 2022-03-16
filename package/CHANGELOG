@@ -13,13 +13,23 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay
+??/??/?? IAlibay, cbouy
 
  * 2.2.0
 
 Fixes
+  * When converting an AtomGroup to an RDKit molecule (PR #3044):
+    - the atoms are now in the same order
+    - the output of `atom.GetMonomerInfo().GetName()` now follows the
+      guidelines for PDB files while the original name is still available
+      through `atom.GetProp("_MDAnalysis_name")`
+    - using `NoImplicit=False` should no longer throw a `SanitizationError`
 
 Enhancements
+  * Improves the RDKitConverter's accuracy (PR #3044): AtomGroups containing
+    monatomic ion charges or edge cases with nitrogen, sulfur, phosphorus and
+    conjugated systems should now have correctly assigned bond orders and
+    charges.
 
 Changes
 
