@@ -195,6 +195,7 @@ class RDKitConverter(base.ConverterBase):
     | icodes                | atom.GetMonomerInfo().GetInsertionCode()  |
     +-----------------------+-------------------------------------------+
     | names                 | atom.GetMonomerInfo().GetName()           |
+    |                       | atom.GetProp("_MDAnalysis_name")          |
     +-----------------------+-------------------------------------------+
     | occupancies           | atom.GetMonomerInfo().GetOccupancy()      |
     +-----------------------+-------------------------------------------+
@@ -280,9 +281,13 @@ class RDKitConverter(base.ConverterBase):
     .. versionadded:: 2.0.0
 
     .. versionchanged:: 2.2.0
-        Improved the accuracy of the converter. Atoms in the resulting molecule
-        follow the same order as in the AtomGroup. Fixed a
-        ``SanitizationError`` when disabling the bond order inferring step.
+        See the full changelog for more details:
+
+        - Improved the accuracy of the converter
+        - Atoms in the resulting molecule follow the same order as in the
+          AtomGroup
+        - Fixed a ``SanitizationError`` when disabling the bond order inferring
+          step
 
     """
 
@@ -411,7 +416,7 @@ def atomgroup_to_mol(ag, NoImplicit=True, max_iter=200, force=False):
             return resnames[idx]
 
     other_attrs = {}
-    for attr in ["charges", "segids", "types"]:
+    for attr in ["charges", "segids", "types", "names"]:
         if hasattr(ag, attr):
             other_attrs[attr] = getattr(ag, attr)
 

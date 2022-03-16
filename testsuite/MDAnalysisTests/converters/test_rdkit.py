@@ -673,3 +673,11 @@ class TestRDKitFunctions(object):
         values = [a.GetSymbol() for a in mu.GetAtoms()]
         expected = [a.GetSymbol() for a in mol.GetAtoms()]
         assert values == expected
+
+    def test_pdb_names(self):
+        u = mda.Universe(PDB_helix)
+        mol = u.atoms.convert_to.rdkit()
+        names = u.atoms.names
+        rd_names = np.array([a.GetProp("_MDAnalysis_name")
+                                 for a in mol.GetAtoms()])
+        assert (names == rd_names).all()
