@@ -172,7 +172,8 @@ class DistanceMatrix(AnalysisBase):
 
     Parameters
     ----------
-    universe : `~MDAnalysis.core.universe.Universe or ~MDAnalysis.core.groups.AtomGroup`
+    universe : `~MDAnalysis.core.universe.Universe` or 
+       `~MDAnalysis.core.groups.AtomGroup`
         The MD Trajectory for dimension reduction, remember that
         computational cost of eigenvalue decomposition
         scales at O(N^3) where N is the number of frames.
@@ -317,7 +318,8 @@ class DiffusionMap(object):
         """
         Parameters
         -------------
-        u : MDAnalysis Universe or DistanceMatrix object
+        u : MDAnalysis Universe or MDAnalysis AtomGroup or
+            DistanceMatrix object.
             Can be a Universe, in which case one must supply kwargs for the
             initialization of a DistanceMatrix. Otherwise, this can be a
             DistanceMatrix already initialized. Either way, this will be made
