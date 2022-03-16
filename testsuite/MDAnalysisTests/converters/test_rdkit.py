@@ -681,3 +681,15 @@ class TestRDKitFunctions(object):
         rd_names = np.array([a.GetProp("_MDAnalysis_name")
                                  for a in mol.GetAtoms()])
         assert (names == rd_names).all()
+
+    @pytest.mark.parametrize("smi", [
+        r"F/C(Br)=C(Cl)/I",
+        r"F\C(Br)=C(Cl)\I",
+        "F-C(Br)=C(Cl)-I",
+    ])
+    def test_bond_stereo_not_stereoany(self, smi):
+        u = mda.Universe.from_smiles(smi)
+        mol = u.atoms.convert_to.rdkit(force=True)
+        for bond in mol.GetBonds():
+            if bond.GetBondTypeAsDouble() == 2:
+                assert bond.GetStereo() != Chem.BondStereo.STEREOANY
