@@ -277,6 +277,10 @@ class RDKitConverter(base.ConverterBase):
     * `Video (4:55 to 8:05) <https://youtu.be/5b5wYmK4URU>`__
     * `Slides <https://github.com/rdkit/UGM_2020/blob/master/Presentations/C%C3%A9dricBouysset_From_RDKit_to_the_Universe.pdf>`__
 
+    Their are some molecules containing specific patterns that the converter
+    cannot currently tackle correctly. See
+    `Issue #3339 <https://github.com/MDAnalysis/mdanalysis/issues/3339>`__ for
+    more info.
 
     .. versionadded:: 2.0.0
 
