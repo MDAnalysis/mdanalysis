@@ -279,7 +279,6 @@ class TestITPNoKeywords(BaseITP):
         for b in [(0, 1), (0, 2)]:
             assert b in vals
           
-        print(top.angles.values)
     def test_defines(self, top):
         assert_allclose(top.charges.values[1], 0.241)
         assert_allclose(top.charges.values[2], 0.241)
