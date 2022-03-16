@@ -192,17 +192,19 @@ class TestRDKitConverter(object):
     ])
     def test_monomer_info(self, pdb, sel_str, atom_index):
         sel = pdb.select_atoms(sel_str)
+        mda_atom = sel.atoms[atom_index]
         umol = sel.convert_to.rdkit(NoImplicit=False)
         atom = umol.GetAtomWithIdx(atom_index)
         mi = atom.GetMonomerInfo()
-
-        for mda_attr, rd_attr in RDATTRIBUTES.items():
-            rd_value = getattr(mi, "Get%s" % rd_attr)()
-            if hasattr(sel, mda_attr):
-                mda_value = getattr(sel, mda_attr)[atom_index]
-                if mda_attr == "names":
-                    rd_value = rd_value.strip()
-                assert rd_value == mda_value
+        assert mda_atom.altLoc == mi.GetAltLoc()
+        assert mda_atom.chainID == mi.GetChainId()
+        assert mda_atom.icode == mi.GetInsertionCode()
+        assert mda_atom.name == mi.GetName().strip()
+        assert mda_atom.occupancy == mi.GetOccupancy()
+        assert mda_atom.resname == mi.GetResidueName()
+        assert mda_atom.resid == mi.GetResidueNumber()
+        assert mda_atom.segindex == mi.GetSegmentNumber()
+        assert mda_atom.tempfactor == mi.GetTempFactor()
 
     @pytest.mark.parametrize("rdmol", ["mol2_mol", "smiles_mol"],
                              indirect=True)
@@ -283,11 +285,10 @@ class TestRDKitConverter(object):
     def test_other_attributes(self, mol2, idx):
         mol = mol2.atoms.convert_to("RDKIT")
         rdatom = mol.GetAtomWithIdx(idx)
-        rdprops = rdatom.GetPropsAsDict()
-        for prop in ["charge", "segid", "type"]:
-            rdprop = rdprops["_MDAnalysis_%s" % prop]
-            mdaprop = getattr(mol2.atoms[idx], prop)
-            assert rdprop == mdaprop
+        mda_atom = mol2.atoms[idx]
+        assert mda_atom.charge == rdatom.GetDoubleProp("_MDAnalysis_charge")
+        assert mda_atom.segid == rdatom.GetProp("_MDAnalysis_segid")
+        assert mda_atom.type == rdatom.GetProp("_MDAnalysis_type")
 
     @pytest.mark.parametrize("sel_str", [
         "resname ALA",
