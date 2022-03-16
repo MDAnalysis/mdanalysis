@@ -22,6 +22,9 @@ Fixes
 Enhancements
 
 Changes
+  * ITPParser no longer adds an angle for water molecules that have the SETTLE
+    constraint applied to them. This mirrors the way the constraint is handled
+    in AMBER. (Issue #2417, PR #)
 
 Deprecations
 
@@ -36,7 +39,7 @@ Fixes
   * Use uint64_t loop counters in C level distance functions to avoid overflow
     for large arrays (Issue #3512, PR #3513).
   * Prevents attempts to close an already closed NamedStream (Issue #3386)
-  * Added missing exe_err import in hole.py. Fixed a bug in HoleAnalysis where 
+  * Added missing exe_err import in hole.py. Fixed a bug in HoleAnalysis where
     kwarg was passed instead of object to generate path (Issue #3493, PR #3496)
   * Fixes creation of vmd surfaces in hole2 when using non-contiguous frames
     with start/stop/step (Issue #3476)
