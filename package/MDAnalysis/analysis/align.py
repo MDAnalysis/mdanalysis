@@ -505,7 +505,17 @@ def alignto(mobile, reference, select=None, weights=None,
         # mobile_atoms is Universe
         mobile_atoms = mobile.universe.atoms
         if mobile.universe == reference.universe:
-            mobile_atoms = mobile.select_atoms('all')
+            try:
+                mobile_atoms = subselection.atoms
+            except AttributeError:
+                #raise a warning when passing atom groups from same Universe
+                err = ("The reference and mobile selections are atom groups"
+            "from the same universe, the reference selection will" 
+            "be transformed. If it is not the behavior you intend," 
+            "try setting the subselection argument to 'all'."
+            "This will become the default behavior in version 3.0.0.")
+            #raise TypeError(err) from None
+            warnings.warn(err, SelectionWarning)
     elif isinstance(subselection, str):
         # select mobile_atoms from string
         mobile_atoms = mobile.select_atoms(subselection)
