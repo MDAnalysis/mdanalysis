@@ -13,7 +13,20 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope,
+??/??/?? IAlibay
+
+ * 2.2.0
+
+Fixes
+
+Enhancements
+
+Changes
+
+Deprecations
+
+
+03/06/22 IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope,
          orbeckst, scal444, p-j-smith, edisj, Atharva7K, ojeda-e, jbarnoud,
          yangtcai
 
