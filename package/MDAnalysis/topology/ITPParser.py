@@ -467,6 +467,9 @@ class ITPParser(TopologyReaderBase):
 
     .. _ITP: http://manual.gromacs.org/current/reference-manual/topologies/topology-file-formats.html#molecule-itp-file
     .. _TOP: http://manual.gromacs.org/current/reference-manual/file-formats.html#top
+
+    .. versionchanged:: 2.2.0
+      no longer adds angles for water molecules with SETTLE constraint
     """
     format = 'ITP'
 
