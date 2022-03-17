@@ -24,7 +24,7 @@ Enhancements
 Changes
   * ITPParser no longer adds an angle for water molecules that have the SETTLE
     constraint applied to them. This mirrors the way the constraint is handled
-    in AMBER. (Issue #2417, PR #)
+    in AMBER. (Issue #2417, PR #3564)
 
 Deprecations
 
