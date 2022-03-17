@@ -357,8 +357,8 @@ class Molecule:
         # assumed to be hydrogens. Unlike TPRParser,  
         # the manual only lists this format (as of 2019).
         # These are treated as 2 bonds.
-        # No angle component is included to avoid discrepancies 
-        # with water molecules loaded from different MD engines. 
+        # No angle component is included to avoid discrepancies
+        # with water molecules loaded from different MD engines.
         oxygen, funct, doh, dhh = line.split()
         try:
             base = self.index_ids([oxygen])[0]
