@@ -430,15 +430,15 @@ class TestRDKitFunctions(object):
         Chem.SanitizeMol(mol)
         return mol
 
-    def assert_mols_equal_or_resonance_structure(self, mol, ref):
-        """Checks if 2 molecules are equal. If not, enumerates the resonance
-        structures of the first molecule and checks again"""
-        isomorphic = is_isomorphic(mol, ref)
-        if not is_isomorphic:
-            # try resonance structures
-            isomorphic = any(is_isomorphic(res_mol, ref)
-                             for res_mol in Chem.ResonanceMolSupplier(mol))
-        assert isomorphic
+    def assert_isomorphic_resonance_structure(self, mol, ref):
+        """Checks if 2 molecules are isomorphic using their resonance
+        structures
+        """
+        isomorphic = mol.HasSubstructMatch(ref)
+        if not isomorphic:
+            isomorphic = bool(Chem.ResonanceMolSupplier(mol)
+                              .GetSubstructMatch(ref))
+        assert isomorphic, f"{Chem.MolToSmiles(ref)} != {Chem.MolToSmiles(mol)}"
 
     @pytest.mark.parametrize("smi, out", [
         ("C(-[H])(-[H])(-[H])-[H]", "C"),
@@ -635,7 +635,8 @@ class TestRDKitFunctions(object):
         for m in self.enumerate_reordered_mol(stripped_mol):
             m = self.assign_bond_orders_and_charges(m)
             m = Chem.RemoveHs(m)
-            self.assert_mols_equal_or_resonance_structure(m, ref)
+            self.assert_isomorphic_resonance_structure(m, ref)
+
 
     def test_warn_conjugated_max_iter(self):
         smi = "[C-]C=CC=CC=CC=CC=CC=C[C-]"
