@@ -266,7 +266,7 @@ class TestITPNoKeywords(BaseITP):
 
     expected_n_bonds = 2
     # FLEXIBLE not set -> SETTLE constraint -> water has no angle
-    expected_n_angles = 0   
+    expected_n_angles = 0
     expected_n_dihedrals = 0
     expected_n_impropers = 0
 
@@ -278,7 +278,7 @@ class TestITPNoKeywords(BaseITP):
         vals = top.bonds.values
         for b in [(0, 1), (0, 2)]:
             assert b in vals
-          
+
     def test_defines(self, top):
         assert_allclose(top.charges.values[1], 0.241)
         assert_allclose(top.charges.values[2], 0.241)
@@ -307,7 +307,7 @@ class TestITPKeywords(TestITPNoKeywords):
     def test_whether_settles_types(self, universe):
         for param in list(universe.bonds) + list(universe.angles):
             assert param.type == 1
-    
+
     def test_angles_values(self, top):
         assert (1, 0, 2) in top.angles.values
 
