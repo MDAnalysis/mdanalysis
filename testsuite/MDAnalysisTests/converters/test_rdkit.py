@@ -599,6 +599,8 @@ class TestRDKitFunctions(object):
         "Cc1cc[n+](CC[n+]2ccc(C)cc2)cc1",
         "[O-]c1ccccc1",
         "[O-]C=CC=CCC=CC=[N+](C)C",
+        "C=[N+](-[O-])-C",
+        "C-[N-]-C(=O)C",
         # amino acids
         "C[C@H](N)C(=O)O",  # A
         "NCC(=O)O",  # G
@@ -637,6 +639,15 @@ class TestRDKitFunctions(object):
             m = Chem.RemoveHs(m)
             self.assert_isomorphic_resonance_structure(m, ref)
 
+    @pytest.mark.xfail(reason="Not currently tackled by the RDKitConverter")
+    @pytest.mark.parametrize("smi", [
+        "C-[N+]#N",
+        "C-N=[N+]=[N-]",
+        "C-[O+]=C",
+        "C-[N+]#[C-]",
+    ])
+    def test_order_independant_issue_3339(self, smi):
+        self.test_order_independant(smi)
 
     def test_warn_conjugated_max_iter(self):
         smi = "[C-]C=CC=CC=CC=CC=CC=C[C-]"
