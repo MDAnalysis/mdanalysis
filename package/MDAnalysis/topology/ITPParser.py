@@ -356,7 +356,9 @@ class Molecule:
         # oxygen atom index. The next two atoms are 
         # assumed to be hydrogens. Unlike TPRParser,  
         # the manual only lists this format (as of 2019).
-        # These are treated as 2 bonds and 1 angle.
+        # These are treated as 2 bonds.
+        # No angle component is included to avoid discrepancies
+        # with water molecules loaded from different MD engines.
         oxygen, funct, doh, dhh = line.split()
         try:
             base = self.index_ids([oxygen])[0]
@@ -365,7 +367,6 @@ class Molecule:
         else:
             self.bonds[(base, base+1)].append("settles")
             self.bonds[(base, base+2)].append("settles")
-            self.angles[(base+1, base, base+2)].append("settles")
 
     def resolve_residue_attrs(self):
         """Figure out residue borders and assign moltypes and molnums"""
@@ -466,6 +467,9 @@ class ITPParser(TopologyReaderBase):
 
     .. _ITP: http://manual.gromacs.org/current/reference-manual/topologies/topology-file-formats.html#molecule-itp-file
     .. _TOP: http://manual.gromacs.org/current/reference-manual/file-formats.html#top
+
+    .. versionchanged:: 2.2.0
+      no longer adds angles for water molecules with SETTLE constraint
     """
     format = 'ITP'
 
