@@ -218,7 +218,7 @@ import MDAnalysis
 import MDAnalysis.lib.distances
 from MDAnalysis.lib.util import openany
 from MDAnalysis.analysis.distances import distance_array
-from MDAnalysis.core.groups import AtomGroup
+from MDAnalysis.core.groups import AtomGroup, UpdatingAtomGroup
 from .base import AnalysisBase
 
 logger = logging.getLogger("MDAnalysis.analysis.contacts")
@@ -438,21 +438,27 @@ class Contacts(AnalysisBase):
 
         self.select = select
         
-        select_error_message = "selection must be either string or AtomGroup"
+        select_error_message = "selection must be either string or a static AtomGroup"
 
         if isinstance(select[0], str):
             self.grA = u.select_atoms(select[0])
         elif isinstance(select[0], AtomGroup):
-            self.grA = select[0]
+            if isinstance(select[0], UpdatingAtomGroup):
+                raise TypeError(select_error_message)
+            else:
+                self.grA = select[0]
         else:
             raise TypeError(select_error_message)
 
         if isinstance(select[1], str):
             self.grB = u.select_atoms(select[1])
         elif isinstance(select[1], AtomGroup):
+            if isinstance(select[1], UpdatingAtomGroup):
+                raise TypeError(select_error_message)
             self.grB = select[1]
         else:
             raise TypeError(select_error_message)
+
         self.pbc = pbc
         
         # contacts formed in reference
@@ -506,7 +512,7 @@ class Contacts(AnalysisBase):
 
 def _new_selections(u_orig, selections, frame):
     """create stand alone AGs from selections at frame"""
-    u = MDAnalysis.Universe(u_orig.filename, u_orig.trajectory.filename)
+    u = u_orig.copy()
     u.trajectory[frame]
     return [u.select_atoms(s) for s in selections]
 
