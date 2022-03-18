@@ -28,7 +28,7 @@ Native contacts analysis --- :mod:`MDAnalysis.analysis.contacts`
 This module contains classes to analyze native contacts *Q* over a
 trajectory. Native contacts of a conformation are contacts that exist
 in a reference structure and in the conformation. Contacts in the
-reference structure are always defined as being closer then a distance
+reference structure are always defined as being closer than a distance
 `radius`. The fraction of native contacts for a conformation can be
 calculated in different ways. This module supports 3 different metrics
 listed below, as well as custom metrics.
@@ -394,7 +394,7 @@ class Contacts(AnalysisBase):
         ----------
         u : Universe
             trajectory
-        select : tuple(string, string)
+        select : tuple(AtomGroup, AtomGroup) | tuple(string, string)
             two contacting groups that change over time
         refgroup : tuple(AtomGroup, AtomGroup)
             two contacting atomgroups in their reference conformation. This
@@ -437,8 +437,22 @@ class Contacts(AnalysisBase):
             self.fraction_contacts = method
 
         self.select = select
-        self.grA = u.select_atoms(select[0])
-        self.grB = u.select_atoms(select[1])
+        
+        select_error_message = "selection must be either string or AtomGroup"
+
+        if isinstance(select[0], str):
+            self.grA = u.select_atoms(select[0])
+        elif isinstance(select[0], AtomGroup):
+            self.grA = select[0]
+        else:
+            raise TypeError(select_error_message)
+
+        if isinstance(select[1], str):
+            self.grB = u.select_atoms(select[1])
+        elif isinstance(select[1], AtomGroup):
+            self.grB = select[1]
+        else:
+            raise TypeError(select_error_message)
         self.pbc = pbc
         
         # contacts formed in reference
