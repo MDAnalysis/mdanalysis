@@ -208,6 +208,27 @@ class TestContacts(object):
         uag = universe.select_atoms(self.sel_basic, updating=True)
         self._run_Contacts(universe, sel_basic=uag)
 
+    @pytest.mark.xfail
+    def test_select_wrong_type(self, universe):
+        """test that Contacts fails if selection types are wrong"""
+        selections = [
+            (1, 2), 
+            ([1], [2]), 
+            (mda.Universe, mda.Universe),
+            (AtomGroup, 2)
+        ]
+        fails = True
+        for sel_acid, self_basic in selections:
+            try:
+                self._run_Contacts(universe, sel_acid=sel_acid, sel_basic=sel_basic)
+                fails = False
+                break
+            except:
+                pass
+        if fails:
+            raise TypeError
+            
+
     def test_startframe(self, universe):
         """test_startframe: TestContactAnalysis1: start frame set to 0 (resolution of
         Issue #624)
