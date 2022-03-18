@@ -429,6 +429,11 @@ class TestEncoreClustering(object):
             ens2_template.filename,
             ens2_template.trajectory.timeseries(order='fac'),
             format=mda.coordinates.memory.MemoryReader)
+ 
+    @pytest.fixture()
+    def empty(self):
+        return encore.Cluster()
+    
     
     def test_clustering_one_ensemble(self, ens1):
         cluster_collection = encore.cluster(ens1)
@@ -557,6 +562,15 @@ class TestEncoreClustering(object):
         cluster.add_metadata('test', metadata)
         assert np.all(cluster.metadata['test'] == metadata), \
                      "Cluster metadata isn't as expected"
+    
+    def test_empty_Cluster(self, empty):
+        assert empty.size == 0 and np.size(empty.elements) == 0 \
+        and empty.centroid == None and bool(empty.metadata) == False
+        
+    def test_centroid_not_in_elements(self):
+        with pytest.raises(LookupError):
+            c = encore.Cluster([38, 39, 40, 41, 42, 43], 99)
+        
 
 class TestEncoreClusteringSklearn(object):
     """The tests in this class were duplicated from the affinity propagation
