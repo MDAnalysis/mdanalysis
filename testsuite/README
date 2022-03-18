@@ -46,6 +46,7 @@ For questions and discussions for code development, join the developer list http
 .. |build| image:: https://github.com/MDAnalysis/mdanalysis/actions/workflows/gh-ci.yaml/badge.svg
    :alt: Github Actions Build Status
    :target: https://github.com/MDAnalysis/mdanalysis/actions/workflows/gh-ci.yaml
+   
 .. |cov|   image:: https://codecov.io/gh/MDAnalysis/mdanalysis/branch/develop/graph/badge.svg
    :alt: Coverage Status
    :target: https://codecov.io/gh/MDAnalysis/mdanalysis
