@@ -13,14 +13,16 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin
+??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin
 
  * 2.2.0
 
 Fixes
   * Fixed DumpReader triclinic box dimensions reading. (Issue #3386, PR #3403)
   * Updated the badge in README of MDAnalysisTest to point to Github CI Actions
-
+  * Provides Contacts ability to use static AtomGroups as well as selection 
+    texts.
+  
 Enhancements
 
 Changes
