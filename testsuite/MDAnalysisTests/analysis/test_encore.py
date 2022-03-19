@@ -569,7 +569,8 @@ class TestEncoreClustering(object):
         assert bool(empty_cluster.metadata) == False
      
     def test_centroid_not_in_elements(self):
-        with pytest.raises(LookupError):
+        error_message = "Centroid of cluster not found in the element list"
+        with pytest.raises(LookupError, match = error_message):
              encore.Cluster([38, 39, 40, 41, 42, 43], 99)
        
 
