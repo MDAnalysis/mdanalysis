@@ -430,8 +430,10 @@ class TestEncoreClustering(object):
             ens2_template.trajectory.timeseries(order='fac'),
             format=mda.coordinates.memory.MemoryReader)
 
-  
-    
+    @pytest.fixture()
+    def empty_cluster(self):
+        return encore.Cluster()
+
     def test_clustering_one_ensemble(self, ens1):
         cluster_collection = encore.cluster(ens1)
         expected_value = 7
@@ -559,14 +561,13 @@ class TestEncoreClustering(object):
         cluster.add_metadata('test', metadata)
         assert np.all(cluster.metadata['test'] == metadata), \
                      "Cluster metadata isn't as expected"
-  
-    def test_empty_Cluster(self):
-        empty_cluster = encore.Cluster()
+ 
+    def test_empty_Cluster(self, empty_cluster):
         assert empty_cluster.size == 0 
         assert np.size(empty_cluster.elements) == 0 
         assert empty_cluster.centroid is None
         assert bool(empty_cluster.metadata) == False
-      
+     
     def test_centroid_not_in_elements(self):
         with pytest.raises(LookupError):
              encore.Cluster([38, 39, 40, 41, 42, 43], 99)
