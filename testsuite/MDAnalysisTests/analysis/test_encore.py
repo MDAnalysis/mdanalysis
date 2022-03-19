@@ -559,15 +559,15 @@ class TestEncoreClustering(object):
         assert np.all(cluster.metadata['test'] == metadata), \
                      "Cluster metadata isn't as expected"
 
-    def test_empty_Cluster(self ):
+    def test_empty_Cluster(self):
         empty_cluster = encore.Cluster()
-        assert empty_cluster.size==0 
-        assert np.size(empty_cluster.elements)==0 
+        assert empty_cluster.size == 0
+        assert np.size(empty_cluster.elements) == 0
         assert empty_cluster.centroid is None
         assert bool(empty_cluster.metadata) is False
 
     def test_centroid_not_in_elements(self):
-        error_message="Centroid of cluster not found in the element list"
+        error_message = "Centroid of cluster not found in the element list"
         with pytest.raises(LookupError, match=error_message):
             encore.Cluster([38, 39, 40, 41, 42, 43], 99)
 
