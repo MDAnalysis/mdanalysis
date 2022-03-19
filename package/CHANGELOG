@@ -13,11 +13,12 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay
+??/??/?? IAlibay, BFedder, inomag
 
  * 2.2.0
 
 Fixes
+  * Updated the badge in README of MDAnalysisTest to point to Github CI Actions
 
 Enhancements
 
