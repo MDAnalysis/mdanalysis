@@ -13,6 +13,25 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+03/21/22 aya9aladdin
+
+* 2.2.0
+
+Fixes 
+   For the Cluster class: (Issue #3566)
+   *added test method for testing empty Cluster object instantiation
+   *added test method for testing error raised when centroid is not in 
+    the element list
+   *added test method for testing error raised when metadata size is not 
+    the same as elements list length
+   *added test method for testing cluster iteration is iterating over the
+    elements list
+   *added test method for testing that len() return the size of the elements list
+   *added test method for testing that repr() return the expected string
+   *Updated test_cluster_add_metadata() method to check for error raised when
+    trying to add metadata with length matching the cluster size (Issue #3566)
+   *Updated spacing typos in two error messages in the Cluster class (Issue #3566)
+
 ??/??/?? IAlibay, BFedder, inomag
 
  * 2.2.0
