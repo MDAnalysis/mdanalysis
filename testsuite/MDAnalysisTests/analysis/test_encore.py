@@ -185,7 +185,7 @@ inconsistent results")
             weights='mass',
             n_jobs=1)
 
-        print(repr(confdist_matrix.as_array()[0,:]))
+        print(repr(confdist_matrix.as_array()[0, :]))
         assert_almost_equal(confdist_matrix.as_array()[0,:], reference_rmsd, decimal=3,
                             err_msg="calculated RMSD values differ from reference")
 
@@ -581,7 +581,8 @@ class TestEncoreClustering(object):
         error_message = 'Size of metadata having label "label" is \
             not equal to the number of cluster elements'
         with pytest.raises(TypeError, match=error_message):
-            encore.Cluster(np.array([1, 1, 1]), 1, None, {"label": [1, 1, 1, 1]})
+            encore.Cluster(np.array([1, 1, 1]), 1, None, \
+                           {"label": [1, 1, 1, 1]})
 
     def test_cluster_iteration(self, cluster):
         test = []
