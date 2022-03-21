@@ -152,11 +152,11 @@ module in published work please cite [Theobald2005]_.
 """
 import logging
 import warnings
-from MDAnalysis import AtomGroup
 
 import numpy as np
 
 from MDAnalysis.core.universe import Universe
+from MDAnalysis.core.groups import AtomGroup
 from .rms import rmsd
 from .base import AnalysisBase
 
