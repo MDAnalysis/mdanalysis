@@ -581,7 +581,7 @@ class TestEncoreClustering(object):
         error_message = 'Size of metadata having label "label" is \
             not equal to the number of cluster elements'
         with pytest.raises(TypeError, match=error_message):
-            encore.Cluster(np.array([1, 1, 1]), 1, None, \
+            encore.Cluster(np.array([1, 1, 1]), 1, None,
                            {"label": [1, 1, 1, 1]})
 
     def test_cluster_iteration(self, cluster):
