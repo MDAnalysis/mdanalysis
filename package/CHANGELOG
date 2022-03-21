@@ -22,6 +22,10 @@ Fixes
   * Updated the badge in README of MDAnalysisTest to point to Github CI Actions
   * Provides Contacts ability to use static AtomGroups as well as selection 
     texts.
+  * Contacts can now accepts static AtomGroup as well as selection text. 
+    (Issue #2666, PR #3565)
+  * Helper function  `_new_selections()` in `contacts.py` now simply uses 
+    `Universe.copy()`. (Issue #2666, PR #3565)   
   
 Enhancements
 
