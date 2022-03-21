@@ -18,14 +18,12 @@ The rules for this file:
  * 2.2.0
 
 Fixes
+  * Contacts can now accept static AtomGroups as well as selection texts.
+    (Issue #2666, PR #3565)
   * Fixed DumpReader triclinic box dimensions reading. (Issue #3386, PR #3403)
   * Updated the badge in README of MDAnalysisTest to point to Github CI Actions
   * Provides Contacts ability to use static AtomGroups as well as selection 
     texts.
-  * Contacts can now accept static AtomGroups as well as selection texts.
-    (Issue #2666, PR #3565)
-  * Helper function  `_new_selections()` in `contacts.py` now simply uses 
-    `Universe.copy()`. (Issue #2666, PR #3565)   
   
 Enhancements
 

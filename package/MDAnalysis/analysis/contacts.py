@@ -388,8 +388,21 @@ class Contacts(AnalysisBase):
        :class:`MDAnalysis.analysis.base.Results` instance.
     """
     # Error message for wrong selection type:
-    select_error_message = "selection must be either string or a " \
-                           "static AtomGroup"
+    _select_error_message = ("selection must be either string or a "
+                             "static AtomGroup. Updating AtomGroups "
+                             "are not supported.")
+
+    @staticmethod
+    def _get_atomgroup(u, sel):
+        if isinstance(sel, str):
+            return u.select_atoms(sel)
+        elif isinstance(sel, AtomGroup):
+            if isinstance(sel, UpdatingAtomGroup):
+                raise TypeError(Contacts._select_error_message)
+            else:
+                return sel
+        else:
+            raise TypeError(Contacts._select_error_message)
 
     def __init__(self, u, select, refgroup, method="hard_cut", radius=4.5,
                  pbc=True, kwargs=None, **basekwargs):
@@ -442,24 +455,7 @@ class Contacts(AnalysisBase):
 
         self.select = select
 
-        if isinstance(select[0], str):
-            self.grA = u.select_atoms(select[0])
-        elif isinstance(select[0], AtomGroup):
-            if isinstance(select[0], UpdatingAtomGroup):
-                raise TypeError(self.select_error_message)
-            else:
-                self.grA = select[0]
-        else:
-            raise TypeError(self.select_error_message)
-
-        if isinstance(select[1], str):
-            self.grB = u.select_atoms(select[1])
-        elif isinstance(select[1], AtomGroup):
-            if isinstance(select[1], UpdatingAtomGroup):
-                raise TypeError(self.select_error_message)
-            self.grB = select[1]
-        else:
-            raise TypeError(self.select_error_message)
+        self.grA, self.grB = (self._get_atomgroup(u, sel) for sel in select)
 
         self.pbc = pbc
         
