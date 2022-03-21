@@ -387,6 +387,10 @@ class Contacts(AnalysisBase):
        :attr:`timeseries` results are now stored in a
        :class:`MDAnalysis.analysis.base.Results` instance.
     """
+    # Error message for wrong selection type:
+    select_error_message = "selection must be either string or a " \
+                                    "static AtomGroup"
+
     def __init__(self, u, select, refgroup, method="hard_cut", radius=4.5,
                  pbc=True, kwargs=None, **basekwargs):
         """
@@ -437,27 +441,25 @@ class Contacts(AnalysisBase):
             self.fraction_contacts = method
 
         self.select = select
-        
-        select_error_message = "selection must be either string or a static AtomGroup"
 
         if isinstance(select[0], str):
             self.grA = u.select_atoms(select[0])
         elif isinstance(select[0], AtomGroup):
             if isinstance(select[0], UpdatingAtomGroup):
-                raise TypeError(select_error_message)
+                raise TypeError(self.select_error_message)
             else:
                 self.grA = select[0]
         else:
-            raise TypeError(select_error_message)
+            raise TypeError(self.select_error_message)
 
         if isinstance(select[1], str):
             self.grB = u.select_atoms(select[1])
         elif isinstance(select[1], AtomGroup):
             if isinstance(select[1], UpdatingAtomGroup):
-                raise TypeError(select_error_message)
+                raise TypeError(self.select_error_message)
             self.grB = select[1]
         else:
-            raise TypeError(select_error_message)
+            raise TypeError(self.select_error_message)
 
         self.pbc = pbc
         

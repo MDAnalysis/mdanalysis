@@ -171,63 +171,60 @@ class TestContacts(object):
     def universe():
         return mda.Universe(PSF, DCD)
 
-    def _run_Contacts(self, universe, sel_acidic=None, sel_basic=None, start=None, stop=None, step=None, **kwargs):
+    def _run_Contacts(
+        self, universe,
+        ag_acidic=None, ag_basic=None,
+        start=None, stop=None, step=None, **kwargs
+    ):
         acidic = universe.select_atoms(self.sel_acidic)
         basic = universe.select_atoms(self.sel_basic)
-        if sel_acidic is None:
-            sel_acidic = self.sel_acidic
-        if sel_basic is None:
-            sel_basic = self.sel_basic
+        if ag_acidic is None:
+            ag_acidic = self.sel_acidic
+        if ag_basic is None:
+            ag_basic = self.sel_basic
 
         return contacts.Contacts(
             universe,
-            select=(sel_acidic, sel_basic),
+            select=(ag_acidic, ag_basic),
             refgroup=(acidic, basic),
             radius=6.0,
             **kwargs).run(start=start, stop=stop, step=step)
 
-    def test_select_types(self, universe):
+    def test_select_valid_types(self, universe):
         """Test if Contact can take both string and AtomGroup as selections.
         """
         acidic = universe.select_atoms(self.sel_acidic)
         basic = universe.select_atoms(self.sel_basic)
 
         with_string = self._run_Contacts(universe)
-        with_atomgroup = self._run_Contacts(universe, sel_acidic=acidic, sel_basic=basic)
-       
+        with_atomgroup = self._run_Contacts(
+            universe, ag_acidic=acidic, ag_basic=basic
+        )
+
         assert_equal(with_atomgroup.grA, with_string.grA)
-        assert_equal(with_atomgroup.grB, with_string.grB) 
+        assert_equal(with_atomgroup.grB, with_string.grB)
 
-    @pytest.mark.xfail
-    def test_select_updating_acid(self, universe):
-        uag = universe.select_atoms(self.sel_acidic, updating=True)
-        self._run_Contacts(universe, sel_acidic=uag)
-    
-    @pytest.mark.xfail
-    def test_select_updating_basic(self, universe):
-        uag = universe.select_atoms(self.sel_basic, updating=True)
-        self._run_Contacts(universe, sel_basic=uag)
-
-    @pytest.mark.xfail
-    def test_select_wrong_type(self, universe):
-        """test that Contacts fails if selection types are wrong"""
-        selections = [
-            (1, 2), 
-            ([1], [2]), 
-            (mda.Universe, mda.Universe),
-            (AtomGroup, 2)
+    @pytest.mark.parametrize(
+        "ag1, ag2", 
+        [
+            (1, 2),
+            ([1], [2]),
+            (mda.Universe, sel_basic),
+            (sel_acidic, 2),
+            ("USE UPDATING AG", sel_basic),
+            (sel_acidic, "USE UPDATING AG")
         ]
-        fails = True
-        for sel_acid, self_basic in selections:
-            try:
-                self._run_Contacts(universe, sel_acid=sel_acid, sel_basic=sel_basic)
-                fails = False
-                break
-            except:
-                pass
-        if fails:
-            raise TypeError
-            
+    )
+    def test_select_wrong_types(self, universe, ag1, ag2):
+        """test that Contacts fails if selection types are wrong"""
+        if ag1 == "USE UPDATING AG":
+            ag1 = universe.select_atoms(self.sel_acidic, updating=True)
+        if ag2 == "USE UPDATING AG":
+            ag2 = universe.select_atoms(self.sel_basic, updating=True)
+
+        sel_err_msg = contacts.Contacts.select_error_message
+        with pytest.raises(TypeError, match=sel_err_msg) as te: 
+            C = self._run_Contacts(universe, ag_acidic=ag1, ag_basic=ag2)
 
     def test_startframe(self, universe):
         """test_startframe: TestContactAnalysis1: start frame set to 0 (resolution of
