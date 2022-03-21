@@ -554,13 +554,14 @@ class TestEncoreClustering(object):
         assert cc.get_centroids() == [1, 3, 5], \
                      "ClusterCollection centroids aren't as expected"
 
-    def test_Cluster_add_metadata(self, cluster):
+    def test_cluster_add_metadata(self, cluster):
         metadata = cluster.elements*10
         cluster.add_metadata('test', metadata)
         assert np.all(cluster.metadata['test'] == metadata), \
                      "Cluster metadata isn't as expected"
         metadata = np.append(metadata, 9)
-        error_message = "Size of metadata is not equal to the number of cluster elmements"
+        error_message = "Size of metadata is not equal to the \
+            number of cluster elmements"
         with pytest.raises(TypeError, match=error_message):
             cluster.add_metadata('test2', metadata)
 
@@ -577,7 +578,8 @@ class TestEncoreClustering(object):
             encore.Cluster([38, 39, 40, 41, 42, 43], 99)
 
     def test_metadata_size_error(self):
-        error_message = 'Size of metadata having label "label" is not equal to the number of cluster elements'
+        error_message = 'Size of metadata having label "label" is \
+            not equal to the number of cluster elements'
         with pytest.raises(TypeError, match=error_message):
             encore.Cluster(np.array([1, 1, 1]), 1, None, {"label": [1, 1, 1, 1]})
 
@@ -595,7 +597,7 @@ class TestEncoreClustering(object):
         assert_equal(repr(encore.Cluster()), repr_message)
         cluster = encore.Cluster(np.array([1]), 1, 1)
         repr_message = "<Cluster with 1 elements, centroid=1, id=1>"
-        assert_equal(repr(cluster), repr_message )
+        assert_equal(repr(cluster), repr_message)
 
 class TestEncoreClusteringSklearn(object):
     """The tests in this class were duplicated from the affinity propagation
