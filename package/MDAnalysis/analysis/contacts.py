@@ -389,7 +389,7 @@ class Contacts(AnalysisBase):
     """
     # Error message for wrong selection type:
     select_error_message = "selection must be either string or a " \
-                                    "static AtomGroup"
+                           "static AtomGroup"
 
     def __init__(self, u, select, refgroup, method="hard_cut", radius=4.5,
                  pbc=True, kwargs=None, **basekwargs):

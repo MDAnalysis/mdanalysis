@@ -205,7 +205,7 @@ class TestContacts(object):
         assert_equal(with_atomgroup.grB, with_string.grB)
 
     @pytest.mark.parametrize(
-        "ag1, ag2", 
+        "ag1, ag2",
         [
             (1, 2),
             ([1], [2]),
@@ -222,8 +222,9 @@ class TestContacts(object):
         if ag2 == "USE UPDATING AG":
             ag2 = universe.select_atoms(self.sel_basic, updating=True)
 
-        sel_err_msg = contacts.Contacts.select_error_message
-        with pytest.raises(TypeError, match=sel_err_msg) as te: 
+        with pytest.raises(
+            TypeError, match=contacts.Contacts.select_error_message
+        ) as te:
             C = self._run_Contacts(universe, ag_acidic=ag1, ag_basic=ag2)
 
     def test_startframe(self, universe):
