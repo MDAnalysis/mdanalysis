@@ -13,7 +13,11 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+<<<<<<< HEAD
 ??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin
+=======
+??/??/?? IAlibay, BFedder, inomag, AnirG
+>>>>>>> 6c94eceb9 (updated changelog and added self to authors)
 
  * 2.2.0
 
@@ -22,6 +26,8 @@ Fixes
   * Updated the badge in README of MDAnalysisTest to point to Github CI Actions
 
 Enhancements
+ * `DistanceMatrix` class in MDAnalysis.analysis.diffusionmap now also
+    accepts `AtomGroup` as a valid argument (Issue #3486, PR #3541)
 
 Changes
   * ITPParser no longer adds an angle for water molecules that have the SETTLE
