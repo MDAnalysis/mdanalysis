@@ -560,8 +560,8 @@ class TestEncoreClustering(object):
         assert np.all(cluster.metadata['test'] == metadata), \
                      "Cluster metadata isn't as expected"
         metadata = np.append(metadata, 9)
-        error_message = "Size of metadata is not equal to the \
-            number of cluster elmements"
+        error_message = "Size of metadata is not equal to the " \
+            "number of cluster elmements"
         with pytest.raises(TypeError, match=error_message):
             cluster.add_metadata('test2', metadata)
 
@@ -578,8 +578,8 @@ class TestEncoreClustering(object):
             encore.Cluster([38, 39, 40, 41, 42, 43], 99)
 
     def test_metadata_size_error(self):
-        error_message = 'Size of metadata having label "label" is \
-            not equal to the number of cluster elements'
+        error_message = 'Size of metadata having label "label" is '\
+            'not equal to the number of cluster elements'
         with pytest.raises(TypeError, match=error_message):
             encore.Cluster(np.array([1, 1, 1]), 1, None,
                            {"label": [1, 1, 1, 1]})
