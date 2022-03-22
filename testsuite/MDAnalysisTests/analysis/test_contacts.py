@@ -193,7 +193,7 @@ class TestContacts(object):
 
         ag_from_string = contacts.Contacts._get_atomgroup(universe, seltxt)
         ag_from_ag = contacts.Contacts._get_atomgroup(universe, ag)
-        
+
         assert_equal(ag_from_string, ag_from_ag)
 
     @pytest.mark.parametrize("ag", [1, [2], mda.Universe, "USE UPDATING AG"])
