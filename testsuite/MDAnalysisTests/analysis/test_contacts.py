@@ -173,36 +173,28 @@ class TestContacts(object):
 
     def _run_Contacts(
         self, universe,
-        ag_acidic=None, ag_basic=None,
         start=None, stop=None, step=None, **kwargs
     ):
         acidic = universe.select_atoms(self.sel_acidic)
         basic = universe.select_atoms(self.sel_basic)
-        if ag_acidic is None:
-            ag_acidic = self.sel_acidic
-        if ag_basic is None:
-            ag_basic = self.sel_basic
 
         return contacts.Contacts(
             universe,
-            select=(ag_acidic, ag_basic),
+            select=(self.sel_acidic, self.sel_basic),
             refgroup=(acidic, basic),
             radius=6.0,
             **kwargs).run(start=start, stop=stop, step=step)
 
-    def test_select_valid_types(self, universe):
+    @pytest.mark.parametrize("seltxt", [sel_acidic, sel_basic])
+    def test_select_valid_types(self, universe, seltxt):
         """Test if Contact can take both string and AtomGroup as selections.
         """
-        acidic = universe.select_atoms(self.sel_acidic)
-        basic = universe.select_atoms(self.sel_basic)
+        ag = universe.select_atoms(seltxt)
 
-        with_string = self._run_Contacts(universe)
-        with_atomgroup = self._run_Contacts(
-            universe, ag_acidic=acidic, ag_basic=basic
-        )
-
-        assert_equal(with_atomgroup.grA, with_string.grA)
-        assert_equal(with_atomgroup.grB, with_string.grB)
+        ag_from_string = contacts.Contacts._get_atomgroup(universe, seltxt)
+        ag_from_ag = contacts.Contacts._get_atomgroup(universe, ag)
+        
+        assert_equal(ag_from_string, ag_from_ag)
 
     @pytest.mark.parametrize("ag", [1, [2], mda.Universe, "USE UPDATING AG"])
     def test_select_wrong_types(self, universe, ag):
