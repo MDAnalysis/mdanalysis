@@ -470,7 +470,7 @@ class DumpReader(base.ReaderBase):
     length unit (Å), and angles are in degrees.
 
     .. versionchanged:: 2.2.0
-       Triclinic simulation boxes are supported. (Issue #3383)
+       Triclinic simulation boxes are supported. (Issue `#3383 <https://github.com/MDAnalysis/mdanalysis/issues/3383>`__ )
     .. versionchanged:: 2.0.0
        Now parses coordinates in multiple lammps conventions (x,xs,xu,xsu)
     .. versionadded:: 0.19.0
@@ -571,7 +571,8 @@ class DumpReader(base.ReaderBase):
             ylo_bound, yhi_bound, xz = map(float, f.readline().split())
             zlo, zhi, yz = map(float, f.readline().split())
 
-            # converts orthogonal bounding box to the conventional format, see https://docs.lammps.org/Howto_triclinic.html
+            # converts orthogonal bounding box to the conventional format,
+            # see https://docs.lammps.org/Howto_triclinic.html
             xlo = xlo_bound - min(0.0, xy, xz, xy + xz)
             xhi = xhi_bound - max(0.0, xy, xz, xy + xz)
             ylo = ylo_bound - min(0.0, yz)

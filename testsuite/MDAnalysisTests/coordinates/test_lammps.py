@@ -664,6 +664,7 @@ class TestLammpsTriclinic(object):
             assert_allclose(ts.dimensions, reference_box, rtol=1e-5, atol=0)
 
         for ts in u_dump.trajectory:
-            assert_allclose(ts.dimensions, u_data.dimensions, rtol=1e-5, atol=0)
+            assert_allclose(ts.dimensions, u_data.dimensions,
+                            rtol=1e-5, atol=0)
 
         assert_allclose(u_data.dimensions, reference_box, rtol=1e-5, atol=0)
