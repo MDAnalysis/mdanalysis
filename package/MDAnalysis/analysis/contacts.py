@@ -386,6 +386,8 @@ class Contacts(AnalysisBase):
     .. versionchanged:: 2.0.0
        :attr:`timeseries` results are now stored in a
        :class:`MDAnalysis.analysis.base.Results` instance.
+    .. versionchanged:: 2.2.0
+       :class: `Contacts` accepts both AtomGroup and string for `select`
     """
     # Error message for wrong selection type:
     _select_error_message = ("selection must be either string or a "
