@@ -187,7 +187,8 @@ class TestContacts(object):
 
     @pytest.mark.parametrize("seltxt", [sel_acidic, sel_basic])
     def test_select_valid_types(self, universe, seltxt):
-        """Test if Contact can take both string and AtomGroup as selections.
+        """Test if Contacts._get_atomgroup() can take both string and AtomGroup
+         as selections.
         """
         ag = universe.select_atoms(seltxt)
 
@@ -195,6 +196,27 @@ class TestContacts(object):
         ag_from_ag = contacts.Contacts._get_atomgroup(universe, ag)
 
         assert_equal(ag_from_string, ag_from_ag)
+
+    def test_contacts_selections(self, universe):
+        """Test if Contacts can take both string and AtomGroup as selections.
+        """
+        aga = universe.select_atoms(self.sel_acidic)
+        agb = universe.select_atoms(self.sel_basic)
+
+        cag = contacts.Contacts(
+            universe,
+            select=(aga, agb),
+            refgroup=(aga, agb),
+        ).run()
+
+        csel = contacts.Contacts(
+            universe,
+            select=(self.sel_acidic, self.sel_basic),
+            refgroup=(aga, agb)
+        ).run()
+
+        assert cag.grA == csel.grA
+        assert cag.grB == csel.grB
 
     @pytest.mark.parametrize("ag", [1, [2], mda.Universe, "USE UPDATING AG"])
     def test_select_wrong_types(self, universe, ag):
