@@ -121,7 +121,7 @@ class Cluster(object):
     def add_metadata(self, name, data):
         if len(data) != self.size:
             raise TypeError("Size of metadata is not equal to the number of "
-                            "cluster elmements")
+                            "cluster elements")
         self.metadata[name] = np.array(data)
 
     def __repr__(self):
