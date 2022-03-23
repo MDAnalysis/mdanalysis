@@ -177,7 +177,6 @@ class TestContacts(object):
     ):
         acidic = universe.select_atoms(self.sel_acidic)
         basic = universe.select_atoms(self.sel_basic)
-
         return contacts.Contacts(
             universe,
             select=(self.sel_acidic, self.sel_basic),
