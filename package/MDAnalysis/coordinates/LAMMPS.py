@@ -463,7 +463,15 @@ class DumpReader(base.ReaderBase):
     (xsu,ysu,zsu) they will automatically be converted from their
     scaled/fractional representation to their real values.
 
+    Supports both orthogonal and triclinic simulation box dimensions (for more
+    details see https://docs.lammps.org/Howto_triclinic.html). In either case,
+    MDAnalysis will always use ``(*A*, *B*, *C*, *alpha*, *beta*, *gamma*)``
+    to represent the unit cell. Lengths *A*, *B*, *C* are in the MDAnalysis
+    length unit (Å), and angles are in degrees.
 
+    .. versionchanged:: 2.2.0
+       Triclinic simulation boxes are supported.
+       (Issue `#3383 <https://github.com/MDAnalysis/mdanalysis/issues/3383>`__)
     .. versionchanged:: 2.0.0
        Now parses coordinates in multiple lammps conventions (x,xs,xu,xsu)
     .. versionadded:: 0.19.0
@@ -560,9 +568,16 @@ class DumpReader(base.ReaderBase):
 
         triclinic = len(f.readline().split()) == 9  # ITEM BOX BOUNDS
         if triclinic:
-            xlo, xhi, xy = map(float, f.readline().split())
-            ylo, yhi, xz = map(float, f.readline().split())
+            xlo_bound, xhi_bound, xy = map(float, f.readline().split())
+            ylo_bound, yhi_bound, xz = map(float, f.readline().split())
             zlo, zhi, yz = map(float, f.readline().split())
+
+            # converts orthogonal bounding box to the conventional format,
+            # see https://docs.lammps.org/Howto_triclinic.html
+            xlo = xlo_bound - min(0.0, xy, xz, xy + xz)
+            xhi = xhi_bound - max(0.0, xy, xz, xy + xz)
+            ylo = ylo_bound - min(0.0, yz)
+            yhi = yhi_bound - max(0.0, yz)
 
             box = np.zeros((3, 3), dtype=np.float64)
             box[0] = xhi - xlo, 0.0, 0.0

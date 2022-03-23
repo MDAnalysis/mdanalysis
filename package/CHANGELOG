@@ -13,13 +13,12 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-
-
-??/??/?? IAlibay, BFedder, inomag
+??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin
 
  * 2.2.0
 
 Fixes
+  * Fixed DumpReader triclinic box dimensions reading. (Issue #3386, PR #3403)
   * Updated the badge in README of MDAnalysisTest to point to Github CI Actions
 
 Enhancements
