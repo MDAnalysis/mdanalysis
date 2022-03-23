@@ -506,10 +506,11 @@ def alignto(mobile, reference, select=None, weights=None,
         mobile_atoms = mobile.universe.atoms
         if mobile.universe == reference.universe:
             # raise a warning when passing atom groups from same Universe
-            wmsg = ("The reference and mobile selections are atom groups "
-                   "from the same universe, the reference selection will " 
-                   "be transformed. If it is not the behavior you intend, " 
-                   "try setting the subselection argument to 'all'.This "
+            wmsg = ("The reference and mobile selections are atom groups"
+                   "from the same universe, the reference selection will" 
+                   "be transformed. If it is not the behavior you intend," 
+                   "try setting the subselection argument to 'all'."
+                   "`subselection = 'all' is deprecated in 2.1.0 but it"
                    "will become the default behavior in version 3.0.0.")
             warnings.warn(wmsg, DeprecationWarning)
     elif isinstance(subselection, str):
