@@ -470,7 +470,8 @@ class DumpReader(base.ReaderBase):
     length unit (Å), and angles are in degrees.
 
     .. versionchanged:: 2.2.0
-       Triclinic simulation boxes are supported. (Issue `#3383 <https://github.com/MDAnalysis/mdanalysis/issues/3383>`__ )
+       Triclinic simulation boxes are supported.
+       (Issue `#3383 <https://github.com/MDAnalysis/mdanalysis/issues/3383>`__)
     .. versionchanged:: 2.0.0
        Now parses coordinates in multiple lammps conventions (x,xs,xu,xsu)
     .. versionadded:: 0.19.0
