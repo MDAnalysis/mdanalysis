@@ -1,3 +1,8 @@
+The MDAnalysis *Code of Conduct* sets the rules for the behavior of
+every member in the MDAnalysis community so that everyone can
+experience a welcoming, supportive, and productive environment that is
+free from harassment.
+
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-generate-toc again -->
 **Table of Contents**
 
@@ -7,7 +12,7 @@
 - [Acknowledgment](#acknowledgment)
 
 <!-- markdown-toc end -->
-# MDAnalysis Code of Conduct and Community Guidelines
+## MDAnalysis Code of Conduct and Community Guidelines
 
 MDAnalysis is an engaged and respectful community made up of people from all
 over the world. Your involvement helps us to further our mission and to create
@@ -104,7 +109,7 @@ at our [*user-mailing-list*](mailto:mdnalysis-discussions@googlegroups.com).
    and telling someone that you are sorry is act of empathy that doesn’t
    automatically imply an admission of guilt.
 
-# Reporting
+## Reporting
 
 If someone makes you or any other contributor feel unsafe or unwelcome, please
 report this in a timely manner. Code of conduct violations reduce the value of
@@ -121,7 +126,7 @@ The online form gives you the option to keep your report anonymous or request
 that we follow up with you directly. While we cannot follow up on an anonymous
 report, we will take appropriate action.
 
-# Enforcement
+## Enforcement
 
 When a report is sent to us we will reply as soon as possible to confirm receipt;
 we strive to answer in less than 24 hours. We will review the incident and
@@ -140,7 +145,7 @@ acceptable and note feedback for the record. We are, however, not required to ac
 on this feedback.
 
 
-# Acknowledgment
+## Acknowledgment
 
 Original text courtesy of
 the

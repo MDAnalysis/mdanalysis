@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, cbouy
+??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, cbouy
 
  * 2.2.0
 
@@ -24,6 +24,8 @@ Fixes
       guidelines for PDB files while the original name is still available
       through `atom.GetProp("_MDAnalysis_name")`
     - using `NoImplicit=False` should no longer throw a `SanitizationError`
+  * Fixed DumpReader triclinic box dimensions reading. (Issue #3386, PR #3403)
+  * Updated the badge in README of MDAnalysisTest to point to Github CI Actions
 
 Enhancements
   * Improves the RDKitConverter's accuracy (PR #3044): AtomGroups containing
@@ -32,6 +34,9 @@ Enhancements
     charges.
 
 Changes
+  * ITPParser no longer adds an angle for water molecules that have the SETTLE
+    constraint applied to them. This mirrors the way the constraint is handled
+    in AMBER. (Issue #2417, PR #3564)
 
 Deprecations
 
@@ -46,7 +51,7 @@ Fixes
   * Use uint64_t loop counters in C level distance functions to avoid overflow
     for large arrays (Issue #3512, PR #3513).
   * Prevents attempts to close an already closed NamedStream (Issue #3386)
-  * Added missing exe_err import in hole.py. Fixed a bug in HoleAnalysis where 
+  * Added missing exe_err import in hole.py. Fixed a bug in HoleAnalysis where
     kwarg was passed instead of object to generate path (Issue #3493, PR #3496)
   * Fixes creation of vmd surfaces in hole2 when using non-contiguous frames
     with start/stop/step (Issue #3476)
