@@ -31,7 +31,7 @@ import pytest
 from MDAnalysis import SelectionError, SelectionWarning
 from MDAnalysisTests import executable_not_found
 from MDAnalysisTests.datafiles import (PSF, DCD, CRD, FASTA, ALIGN_BOUND,
-                                       ALIGN_UNBOUND, PDB_helix)
+                                       ALIGN_UNBOUND, PDB_helix, GRO_MEMPROT)
 from numpy.testing import (
     assert_almost_equal,
     assert_equal,
@@ -566,3 +566,18 @@ def test_alignto_reorder_atomgroups():
     ref = u.atoms[[3, 2, 1, 0]]
     rmsd = align.alignto(mobile, ref, select='bynum 1-4')
     assert_allclose(rmsd, (0.0, 0.0))
+
+def test_alignto_same_universe():
+    # Alike Issue 1825
+    u = mda.Universe(GRO_MEMPROT)
+    # In my case, two selections of a GRO_MEMPROT lipid
+    mobile = u.atoms.residues[4].atoms
+    ref = u.atoms.residues[12].atoms
+
+    wmsg = ("The reference and mobile selections are atom groups "
+            "from the same universe, the reference selection will " 
+            "be transformed. If it is not the behavior you intend, " 
+            "try setting the subselection argument to 'all'.This "
+            "will become the default behavior in version 3.0.0.")
+    with pytest.warns(DeprecationWarning, match=wmsg):
+        align.alignto(ref, mobile)
