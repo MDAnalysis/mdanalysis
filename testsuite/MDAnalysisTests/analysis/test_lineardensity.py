@@ -25,7 +25,7 @@ import numpy as np
 
 from MDAnalysisTests.datafiles import waterPSF, waterDCD
 from MDAnalysis.analysis.lineardensity import LinearDensity
-from numpy.testing import assert_almost_equal
+from numpy.testing import assert_allclose
 
 
 def test_grouping_atoms():
@@ -47,9 +47,10 @@ def test_grouping_atoms():
     xpos = np.array([0., 0., 0., 0.0072334, 0.00473299, 0.,
                           0., 0., 0., 0.])
 
-    assert_almost_equal(ld.masses, expected_masses)
-    assert_almost_equal(ld.charges, expected_charges)
-    assert_almost_equal(ld.results['x']['pos'], xpos)
+    assert_allclose(ld.masses, expected_masses)
+    assert_allclose(ld.charges, expected_charges)
+    # rtol changed here due to floating point imprecision
+    assert_allclose(ld.results['x']['pos'], xpos, rtol=1e-06)
 
 
 def test_grouping_residues():
@@ -62,8 +63,8 @@ def test_grouping_residues():
     expected_masses = np.array([18.0154, 18.0154, 18.0154, 18.0154, 18.0154])
     expected_charges = np.array([0, 0, 0, 0, 0])
 
-    assert_almost_equal(ld.masses, expected_masses)
-    assert_almost_equal(ld.charges, expected_charges)
+    assert_allclose(ld.masses, expected_masses)
+    assert_allclose(ld.charges, expected_charges)
 
 
 def test_grouping_segments():
@@ -75,8 +76,8 @@ def test_grouping_segments():
 
     expected_masses = np.array([90.0770])
     expected_charges = np.array([0])
-    assert_almost_equal(ld.masses, expected_masses)
-    assert_almost_equal(ld.charges, expected_charges)
+    assert_allclose(ld.masses, expected_masses)
+    assert_allclose(ld.charges, expected_charges)
 
 
 def test_grouping_fragments():
@@ -89,5 +90,5 @@ def test_grouping_fragments():
     expected_masses = np.array([18.0154, 18.0154, 18.0154, 18.0154, 18.0154])
     expected_charges = np.array([0, 0, 0, 0, 0])
 
-    assert_almost_equal(ld.masses, expected_masses)
-    assert_almost_equal(ld.charges, expected_charges)
+    assert_allclose(ld.masses, expected_masses)
+    assert_allclose(ld.charges, expected_charges)
