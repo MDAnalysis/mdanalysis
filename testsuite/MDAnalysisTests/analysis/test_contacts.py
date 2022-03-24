@@ -203,14 +203,11 @@ class TestContacts(object):
         agb = universe.select_atoms(self.sel_basic)
 
         cag = contacts.Contacts(
-            universe,
-            select=(aga, agb),
-            refgroup=(aga, agb),
+            universe, select=(aga, agb), refgroup=(aga, agb)
         ).run()
 
         csel = contacts.Contacts(
-            universe,
-            select=(self.sel_acidic, self.sel_basic),
+            universe, select=(self.sel_acidic, self.sel_basic),
             refgroup=(aga, agb)
         ).run()
 
@@ -225,7 +222,7 @@ class TestContacts(object):
             ag = universe.select_atoms(self.sel_acidic, updating=True)
 
         with pytest.raises(
-            TypeError, match=contacts.Contacts._select_error_message
+            TypeError, match="must be either string or a static AtomGroup"
         ) as te:
             contacts.Contacts._get_atomgroup(universe, ag)
 

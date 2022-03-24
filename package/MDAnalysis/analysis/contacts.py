@@ -389,10 +389,6 @@ class Contacts(AnalysisBase):
     .. versionchanged:: 2.2.0
        :class: `Contacts` accepts both AtomGroup and string for `select`
     """
-    # Error message for wrong selection type:
-    _select_error_message = ("selection must be either string or a "
-                             "static AtomGroup. Updating AtomGroups "
-                             "are not supported.")
 
     def __init__(self, u, select, refgroup, method="hard_cut", radius=4.5,
                  pbc=True, kwargs=None, **basekwargs):
@@ -473,15 +469,18 @@ class Contacts(AnalysisBase):
 
     @staticmethod
     def _get_atomgroup(u, sel):
+        select_error_message = ("selection must be either string or a "
+                                "static AtomGroup. Updating AtomGroups "
+                                "are not supported.")
         if isinstance(sel, str):
             return u.select_atoms(sel)
         elif isinstance(sel, AtomGroup):
             if isinstance(sel, UpdatingAtomGroup):
-                raise TypeError(Contacts._select_error_message)
+                raise TypeError(select_error_message)
             else:
                 return sel
         else:
-            raise TypeError(Contacts._select_error_message)
+            raise TypeError(select_error_message)
 
     def _prepare(self):
         self.results.timeseries = np.empty((self.n_frames, len(self.r0)+1))
