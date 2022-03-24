@@ -25,7 +25,7 @@ import numpy as np
 from numpy.testing import assert_equal
 
 from MDAnalysis.lib._cutil import (
-    unique_int_1d, find_fragments, _in2d,
+    unique_int_1d, find_fragments, _in2d, inverse_unique_unsorted_array,
 )
 
 
@@ -45,6 +45,26 @@ def test_unique_int_1d(values):
     assert type(res) == type(ref)
     assert res.dtype == ref.dtype
 
+@pytest.mark.parametrize('arrays', (
+    [],  # empty array
+    [1, 1, 1, 1, ],  # all identical
+    [2, 3, 5, 7, ],  # unique, sorted
+    [5, 2, 7, 3, ],  # unique, unsorted
+    [1, 2, 2, 4, 4, 6, ],  # duplicates, sorted
+    [1, 2, 2, 6, 4, 4, ],  # duplicates, unsorted
+))
+def test_inverse_unique_unsorted_array(arrays):
+    # Generate unique, unsorted arrays.
+    array = np.array(arrays, dtype=np.intp)
+    values, indices = np.unique(array, return_index=True)
+    unique_array = array[np.sort(indices)]
+    
+    inverse = inverse_unique_unsorted_array(array, unique_array)
+    ref = array
+    res = unique_array[inverse]
+    assert_equal(res, ref)
+    assert type(res) == type(ref)
+    assert res.dtype == ref.dtype
 
 @pytest.mark.parametrize('edges,ref', [
     ([[0, 1], [1, 2], [2, 3], [3, 4]],

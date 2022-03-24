@@ -37,8 +37,8 @@ from cython.operator cimport dereference as deref
 
 np.import_array()
 
-__all__ = ['unique_int_1d', 'make_whole', 'find_fragments',
-           '_sarrus_det_single', '_sarrus_det_multiple']
+__all__ = ['inverse_unique_unsorted_array', 'unique_int_1d', 'make_whole',
+	   'find_fragments', '_sarrus_det_single', '_sarrus_det_multiple']
 
 cdef extern from "calc_distances.h":
     ctypedef float coordinate[3]
@@ -47,6 +47,29 @@ cdef extern from "calc_distances.h":
 
 ctypedef cset[int] intset
 ctypedef cmap[int, intset] intmap
+
+
+@cython.boundscheck(False) # turn off bounds-checking for entire function 
+@cython.wraparound(False)  # turn off negative index wrapping for entire function 
+cdef np.intp_t[::1] _inverse_unique_unsorted_array(np.intp_t[::1] full_arr,
+                                          np.intp_t[::1] unique_arr,
+                                          np.intp_t[::1] mask):
+    cdef Py_ssize_t i = 0 
+    cdef Py_ssize_t j = 0
+    cdef int n_full = full_arr.shape[0]
+    cdef int n_unique = unique_arr.shape[0]
+
+    for i in range(n_unique):
+        for j in range(n_full):
+            if unique_arr[i] == full_arr[j]:
+                mask[j] = i 
+    return mask
+
+
+def inverse_unique_unsorted_array(np.intp_t[::1] full_arr, np.intp_t[::1] unique_arr):
+    cdef np.intp_t[::1] mask = np.empty(full_arr.shape[0], dtype=np.intp)
+    return np.array(_inverse_unique_unsorted_array(full_arr, unique_arr, mask))
+
 
 
 @cython.boundscheck(False) # turn off bounds-checking for entire function
