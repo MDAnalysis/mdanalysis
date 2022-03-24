@@ -204,12 +204,15 @@ class TestContacts(object):
 
         cag = contacts.Contacts(
             universe, select=(aga, agb), refgroup=(aga, agb)
-        ).run()
+        )
 
         csel = contacts.Contacts(
             universe, select=(self.sel_acidic, self.sel_basic),
             refgroup=(aga, agb)
-        ).run()
+        )
+
+        cag.run()
+        csel.run()
 
         assert cag.grA == csel.grA
         assert cag.grB == csel.grB
