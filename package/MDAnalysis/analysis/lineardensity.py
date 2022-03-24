@@ -23,6 +23,7 @@
 """
 Linear Density --- :mod:`MDAnalysis.analysis.lineardensity`
 ===========================================================
+
 A tool to compute mass and charge density profiles along the three
 cartesian axes [xyz] of the simulation cell. Works only for orthorombic,
 fixed volume cells (thus for simulations in canonical NVT ensemble).
@@ -36,6 +37,7 @@ from MDAnalysis.analysis.base import AnalysisBase, Results
 
 class LinearDensity(AnalysisBase):
     """Linear density profile
+
     Parameters
     ----------
     select : AtomGroup
@@ -49,6 +51,7 @@ class LinearDensity(AnalysisBase):
           profile (smaller --> higher resolution)
     verbose : bool, optional
           Show detailed progress of the calculation if set to ``True``
+
     Attributes
     ----------
     results.x.dim : int
@@ -63,28 +66,37 @@ class LinearDensity(AnalysisBase):
            standard deviation of the charge density in [xyz] direction
     results.x.slice_volume : float
            volume of bin in [xyz] direction
+
     Example
     -------
     First create a ``LinearDensity`` object by supplying a selection,
     then use the :meth:`run` method. Finally access the results
     stored in results, i.e. the mass density in the x direction.
+
     .. code-block:: python
+
        ldens = LinearDensity(selection)
        ldens.run()
        print(ldens.results.x.pos)
+
+
     .. versionadded:: 0.14.0
+
     .. versionchanged:: 1.0.0
        Support for the ``start``, ``stop``, and ``step`` keywords has been
        removed. These should instead be passed to :meth:`LinearDensity.run`.
        The ``save()`` method was also removed, you can use ``np.savetxt()`` or
        ``np.save()`` on the :attr:`LinearDensity.results` dictionary contents
        instead.
+
     .. versionchanged:: 1.0.0
        Changed `selection` keyword to `select`
+
     .. versionchanged:: 2.0.0
        Results are now instances of
        :class:`~MDAnalysis.core.analysis.Results` allowing access
        via key and attribute.
+
     .. versionchanged:: 2.2.0
        Fixed a bug that caused LinearDensity to fail if grouping="residues"
        or grouping="segments" were set.
