@@ -28,7 +28,6 @@ from MDAnalysis.analysis.lineardensity import LinearDensity
 from numpy.testing import assert_almost_equal
 
 
-
 def test_grouping_atoms():
     """For testing the case of grouping='atoms'"""
     universe = mda.Universe(waterPSF, waterDCD)
@@ -51,6 +50,7 @@ def test_grouping_atoms():
     assert_almost_equal(ld.masses, expected_masses)
     assert_almost_equal(ld.charges, expected_charges)
     assert_almost_equal(ld.results['x']['pos'], xpos)
+
 
 def test_grouping_residues():
     """For testing the case of grouping='residues'"""
@@ -78,6 +78,7 @@ def test_grouping_segments():
     assert_almost_equal(ld.masses, expected_masses)
     assert_almost_equal(ld.charges, expected_charges)
 
+
 def test_grouping_fragments():
     """For testing the case of grouping='fragments'"""
     universe = mda.Universe(waterPSF, waterDCD)
@@ -90,4 +91,3 @@ def test_grouping_fragments():
 
     assert_almost_equal(ld.masses, expected_masses)
     assert_almost_equal(ld.charges, expected_charges)
-
