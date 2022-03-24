@@ -172,8 +172,7 @@ class DistanceMatrix(AnalysisBase):
 
     Parameters
     ----------
-    universe : `~MDAnalysis.core.universe.Universe` or 
-       `~MDAnalysis.core.groups.AtomGroup`
+    universe : `~MDAnalysis.core.universe.Universe or ~MDAnalysis.core.groups.AtomGroup`
         The MD Trajectory for dimension reduction, remember that
         computational cost of eigenvalue decomposition
         scales at O(N^3) where N is the number of frames.
@@ -307,23 +306,22 @@ class DiffusionMap(object):
 
     Methods
     -------
-    run()line
+    run()
         Constructs an anisotropic diffusion kernel and performs eigenvalue
         decomposition on it.
     transform(n_eigenvectors, time)
         Perform an embedding of a frame into the eigenvectors representing
         the collective coordinates.
-    
-    .. versionchanged: 2.2.0
-         :class: `DiffusionMap` now also accepts `AtomGroup`.
+
+    .. versionchanged:: 2.2.0
+         :class:`DiffusionMap` now also accepts `AtomGroup`.
     """
 
     def __init__(self, u, epsilon=1, **kwargs):
         """
         Parameters
         -------------
-        u : MDAnalysis Universe or MDAnalysis AtomGroup or
-            DistanceMatrix object.
+        u : MDAnalysis Universe or AtomGroup or DistanceMatrix object.
             Can be a Universe or AtomGroup, in which case one must supply kwargs for the
             initialization of a DistanceMatrix. Otherwise, this can be a
             DistanceMatrix already initialized. Either way, this will be made
