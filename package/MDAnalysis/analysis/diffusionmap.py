@@ -245,7 +245,8 @@ class DistanceMatrix(AnalysisBase):
     .. versionchanged:: 2.0.0
          :attr:`dist_matrix` is now stored in a
          :class:`MDAnalysis.analysis.base.Results` instance.
-
+    .. versionchanged:: 2.2.0
+         :class:`DistanceMatrix` now also accepts `AtomGroup`.
     """
     def __init__(self, universe, select='all', metric=rmsd, cutoff=1E0-5,
                  weights=None, **kwargs):
@@ -306,12 +307,15 @@ class DiffusionMap(object):
 
     Methods
     -------
-    run()
+    run()line
         Constructs an anisotropic diffusion kernel and performs eigenvalue
         decomposition on it.
     transform(n_eigenvectors, time)
         Perform an embedding of a frame into the eigenvectors representing
         the collective coordinates.
+    
+    .. versionchanged: 2.2.0
+         :class: `DiffusionMap` now also accepts `AtomGroup`.
     """
 
     def __init__(self, u, epsilon=1, **kwargs):
@@ -320,7 +324,7 @@ class DiffusionMap(object):
         -------------
         u : MDAnalysis Universe or MDAnalysis AtomGroup or
             DistanceMatrix object.
-            Can be a Universe, in which case one must supply kwargs for the
+            Can be a Universe or AtomGroup, in which case one must supply kwargs for the
             initialization of a DistanceMatrix. Otherwise, this can be a
             DistanceMatrix already initialized. Either way, this will be made
             into a diffusion kernel.
