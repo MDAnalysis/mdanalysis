@@ -22,7 +22,7 @@ Fixes
     (Issue #2666, PR #3565)
   * Fixed DumpReader triclinic box dimensions reading. (Issue #3386, PR #3403)
   * Updated the badge in README of MDAnalysisTest to point to Github CI Actions
-  
+ 
 Enhancements
 
 Changes

@@ -194,7 +194,7 @@ class TestContacts(object):
         ag_from_string = contacts.Contacts._get_atomgroup(universe, seltxt)
         ag_from_ag = contacts.Contacts._get_atomgroup(universe, ag)
 
-        assert_equal(ag_from_string, ag_from_ag)
+        assert ag_from_string == ag_from_ag
 
     def test_contacts_selections(self, universe):
         """Test if Contacts can take both string and AtomGroup as selections.

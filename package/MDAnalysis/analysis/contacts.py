@@ -387,7 +387,7 @@ class Contacts(AnalysisBase):
        :attr:`timeseries` results are now stored in a
        :class:`MDAnalysis.analysis.base.Results` instance.
     .. versionchanged:: 2.2.0
-       :class: `Contacts` accepts both AtomGroup and string for `select`
+       :class:`Contacts` accepts both AtomGroup and string for `select`
     """
 
     def __init__(self, u, select, refgroup, method="hard_cut", radius=4.5,
