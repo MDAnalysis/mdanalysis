@@ -96,6 +96,10 @@ class LinearDensity(AnalysisBase):
        Results are now instances of
        :class:`~MDAnalysis.core.analysis.Results` allowing access
        via key and attribute.
+
+    .. versionchanged:: 2.2.0
+       Fixed a bug that caused LinearDensity to fail if grouping="residues"
+       or grouping="segments" were set.
     """
 
     def __init__(self, select, grouping='atoms', binsize=0.25, **kwargs):
@@ -146,12 +150,18 @@ class LinearDensity(AnalysisBase):
         group = getattr(self._ags[0], self.grouping)
 
         # Get masses and charges for the selection
-        try:  # in case it's not an atom
-            self.masses = np.array([elem.total_mass() for elem in group])
-            self.charges = np.array([elem.total_charge() for elem in group])
-        except AttributeError:  # much much faster for atoms
+        if self.grouping == "atoms":
             self.masses = self._ags[0].masses
             self.charges = self._ags[0].charges
+
+        if self.grouping in ["residues", "segments"]:
+            self.masses = np.array([elem.atoms.total_mass() for elem in group])
+            self.charges = np.array(
+                [elem.atoms.total_charge() for elem in group])
+
+        if self.grouping == "fragments":
+            self.masses = np.array([elem.total_mass() for elem in group])
+            self.charges = np.array([elem.total_charge() for elem in group])
 
         self.totalmass = np.sum(self.masses)
 
@@ -163,8 +173,8 @@ class LinearDensity(AnalysisBase):
         if self.grouping == 'atoms':
             positions = self._ags[0].positions  # faster for atoms
         else:
-            # COM for res/frag/etc
-            positions = np.array([elem.centroid() for elem in self.group])
+            # Centre of geometry for residues, segments, fragments
+            positions = np.array([elem.atoms.centroid() for elem in self.group])
 
         for dim in ['x', 'y', 'z']:
             idx = self.results[dim]['dim']
@@ -183,6 +193,7 @@ class LinearDensity(AnalysisBase):
             key = 'char'
             key_std = 'char_std'
             # histogram for positions weighted on charges
+
             hist, _ = np.histogram(positions[:, idx],
                                    weights=self.charges,
                                    bins=self.nbins,
@@ -190,6 +201,7 @@ class LinearDensity(AnalysisBase):
 
             self.results[dim][key] += hist
             self.results[dim][key_std] += np.square(hist)
+
 
     def _conclude(self):
         k = 6.022e-1  # divide by avodagro and convert from A3 to cm3
@@ -199,10 +211,24 @@ class LinearDensity(AnalysisBase):
             for key in ['pos', 'pos_std', 'char', 'char_std']:
                 self.results[dim][key] /= self.n_frames
             # Compute standard deviation for the error
-            self.results[dim]['pos_std'] = np.sqrt(self.results[dim][
-                'pos_std'] - np.square(self.results[dim]['pos']))
-            self.results[dim]['char_std'] = np.sqrt(self.results[dim][
-                'char_std'] - np.square(self.results[dim]['char']))
+            # For certain tests in testsuite, floating point imprecision
+            # can lead to negative radicands of tiny magnitude (yielding nan),
+            # rather than actual value of zero. radicand_pos and radicand_char
+            # are therefore tested for closeness to 0 first and changed where
+            # appropriate before the square root is calculated.
+            radicand_pos = self.results[dim][
+                'pos_std'] - np.square(self.results[dim]['pos'])
+            for i in range(len(radicand_pos)):
+                if np.isclose(radicand_pos, np.zeros(self.nbins))[i]:
+                    radicand_pos[i] = 0
+            self.results[dim]['pos_std'] = np.sqrt(radicand_pos)
+
+            radicand_char = self.results[dim][
+                'char_std'] - np.square(self.results[dim]['char'])
+            for i in range(len(radicand_char)):
+                if np.isclose(radicand_char, np.zeros(self.nbins))[i]:
+                    radicand_char[i] = 0
+            self.results[dim]['char_std'] = np.sqrt(radicand_char)
 
         for dim in ['x', 'y', 'z']:
             norm = k * self.results[dim]['slice_volume']
