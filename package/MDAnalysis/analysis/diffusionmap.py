@@ -313,6 +313,7 @@ class DiffusionMap(object):
         Perform an embedding of a frame into the eigenvectors representing
         the collective coordinates.
 
+
     .. versionchanged:: 2.2.0
          :class:`DiffusionMap` now also accepts `AtomGroup`.
     """
