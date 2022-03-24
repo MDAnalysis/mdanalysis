@@ -13,15 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-<<<<<<< HEAD
-<<<<<<< HEAD
-??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin
-=======
-??/??/?? IAlibay, BFedder, inomag, AnirG
->>>>>>> 6c94eceb9 (updated changelog and added self to authors)
-=======
 ??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, AnirG
->>>>>>> cbc8c57c9 (updated changelog and authors)
 
  * 2.2.0
 
@@ -76,11 +68,6 @@ Enhancements
   * Added MDAnalysis.lib.distances.minimize_vectors
 
 Changes
-<<<<<<< HEAD
-  * `DistanceMatrix` class in MDAnalysis.analysis.diffusionmap now also
-    accepts `AtomGroup` as a valid argument (Issue #3486, PR #3541)
-=======
->>>>>>> cbc8c57c9 (updated changelog and authors)
   * `packaging` is now a core dependency for MDAnalysis
   * Indexing a group (AtomGroup, ResidueGroup, or SegmentGroup) with None
     raises a TypeError (Issue #3092, PR #3517)
