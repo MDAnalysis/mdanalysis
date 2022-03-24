@@ -102,7 +102,7 @@ from .. import (_CONVERTERS,
 from ..lib import util
 from ..lib.util import (cached, warn_if_not_unique,
                         unique_int_1d, unique_int_1d_unsorted,
-                        int_array_is_sorted
+                        int_array_is_sorted, inverse_unique_contiguous_1d_array
                         )
 from ..lib import distances
 from ..lib import transformations
@@ -822,10 +822,9 @@ class GroupBase(_MutableBase):
 
         indices = unique_int_1d_unsorted(self.ix)
         if set_mask:
-            mask = np.zeros_like(self.ix)
-            for i, x in enumerate(indices):
-                values = np.where(self.ix == x)[0]
-                mask[values] = i
+            # self.ix must be contiguous for cython implementation.
+            # crashes on slices of atomgroups otherwise.
+            mask = inverse_unique_contiguous_1d_array(np.ascontiguousarray(self.ix), indices)
             self._unique_restore_mask = mask
 
         issorted = int_array_is_sorted(indices)
