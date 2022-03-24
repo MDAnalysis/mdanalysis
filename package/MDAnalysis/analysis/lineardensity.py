@@ -23,7 +23,6 @@
 """
 Linear Density --- :mod:`MDAnalysis.analysis.lineardensity`
 ===========================================================
-
 A tool to compute mass and charge density profiles along the three
 cartesian axes [xyz] of the simulation cell. Works only for orthorombic,
 fixed volume cells (thus for simulations in canonical NVT ensemble).
@@ -37,7 +36,6 @@ from MDAnalysis.analysis.base import AnalysisBase, Results
 
 class LinearDensity(AnalysisBase):
     """Linear density profile
-
     Parameters
     ----------
     select : AtomGroup
@@ -51,7 +49,6 @@ class LinearDensity(AnalysisBase):
           profile (smaller --> higher resolution)
     verbose : bool, optional
           Show detailed progress of the calculation if set to ``True``
-
     Attributes
     ----------
     results.x.dim : int
@@ -66,37 +63,28 @@ class LinearDensity(AnalysisBase):
            standard deviation of the charge density in [xyz] direction
     results.x.slice_volume : float
            volume of bin in [xyz] direction
-
     Example
     -------
     First create a ``LinearDensity`` object by supplying a selection,
     then use the :meth:`run` method. Finally access the results
     stored in results, i.e. the mass density in the x direction.
-
     .. code-block:: python
-
        ldens = LinearDensity(selection)
        ldens.run()
        print(ldens.results.x.pos)
-
-
     .. versionadded:: 0.14.0
-
     .. versionchanged:: 1.0.0
        Support for the ``start``, ``stop``, and ``step`` keywords has been
        removed. These should instead be passed to :meth:`LinearDensity.run`.
        The ``save()`` method was also removed, you can use ``np.savetxt()`` or
        ``np.save()`` on the :attr:`LinearDensity.results` dictionary contents
        instead.
-
     .. versionchanged:: 1.0.0
        Changed `selection` keyword to `select`
-
     .. versionchanged:: 2.0.0
        Results are now instances of
        :class:`~MDAnalysis.core.analysis.Results` allowing access
        via key and attribute.
-
     .. versionchanged:: 2.2.0
        Fixed a bug that caused LinearDensity to fail if grouping="residues"
        or grouping="segments" were set.
@@ -154,14 +142,14 @@ class LinearDensity(AnalysisBase):
             self.masses = self._ags[0].masses
             self.charges = self._ags[0].charges
 
-        if self.grouping in ["residues", "segments"]:
+        elif self.grouping in ["residues", "segments", "fragments"]:
             self.masses = np.array([elem.atoms.total_mass() for elem in group])
             self.charges = np.array(
                 [elem.atoms.total_charge() for elem in group])
 
-        if self.grouping == "fragments":
-            self.masses = np.array([elem.total_mass() for elem in group])
-            self.charges = np.array([elem.total_charge() for elem in group])
+        else:
+            raise AttributeError(
+                f"{self.grouping} is not a valid value for grouping.")
 
         self.totalmass = np.sum(self.masses)
 
@@ -174,7 +162,8 @@ class LinearDensity(AnalysisBase):
             positions = self._ags[0].positions  # faster for atoms
         else:
             # Centre of geometry for residues, segments, fragments
-            positions = np.array([elem.atoms.centroid() for elem in self.group])
+            positions = np.array(
+                [elem.atoms.centroid() for elem in self.group])
 
         for dim in ['x', 'y', 'z']:
             idx = self.results[dim]['dim']
@@ -193,7 +182,6 @@ class LinearDensity(AnalysisBase):
             key = 'char'
             key_std = 'char_std'
             # histogram for positions weighted on charges
-
             hist, _ = np.histogram(positions[:, idx],
                                    weights=self.charges,
                                    bins=self.nbins,
@@ -201,7 +189,6 @@ class LinearDensity(AnalysisBase):
 
             self.results[dim][key] += hist
             self.results[dim][key_std] += np.square(hist)
-
 
     def _conclude(self):
         k = 6.022e-1  # divide by avodagro and convert from A3 to cm3
