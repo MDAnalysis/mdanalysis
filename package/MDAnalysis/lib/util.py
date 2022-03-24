@@ -214,7 +214,7 @@ from .picklable_file_io import pickle_open, bz2_pickle_open, gzip_pickle_open
 
 from ..exceptions import StreamWarning, DuplicateWarning
 try:
-    from ._cutil import unique_int_1d, inverse_unique_unsorted_array
+    from ._cutil import unique_int_1d, inverse_unique_contiguous_1d_array
 except ImportError:
     raise ImportError("MDAnalysis not installed properly. "
                       "This can happen if your C extensions "

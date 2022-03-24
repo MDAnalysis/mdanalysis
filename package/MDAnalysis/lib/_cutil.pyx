@@ -37,7 +37,7 @@ from cython.operator cimport dereference as deref
 
 np.import_array()
 
-__all__ = ['inverse_unique_unsorted_array', 'unique_int_1d', 'make_whole',
+__all__ = ['inverse_unique_contiguous_1d_array', 'unique_int_1d', 'make_whole',
 	   'find_fragments', '_sarrus_det_single', '_sarrus_det_multiple']
 
 cdef extern from "calc_distances.h":
@@ -52,8 +52,28 @@ ctypedef cmap[int, intset] intmap
 @cython.boundscheck(False) # turn off bounds-checking for entire function 
 @cython.wraparound(False)  # turn off negative index wrapping for entire function 
 cdef np.intp_t[::1] _inverse_unique_unsorted_array(np.intp_t[::1] full_arr,
-                                          np.intp_t[::1] unique_arr,
-                                          np.intp_t[::1] mask):
+                                          	   np.intp_t[::1] unique_arr,
+                                          	   np.intp_t[::1] mask):
+    """Find the inverse of a unique 1D array to map onto a non-unique 1D array.
+
+    Cython driver function. Loops though the unique array and finds the locations
+    in the full array that correspond to the values.
+    Requires contiguous arrays as an input.
+
+    Parameters
+    ----------
+    full_arr: numpy.ndarray
+        1D array of dtype ``numpy.int64`` in which to find the non-unique values.
+    unique_arr: numpy.ndarray
+        1D array of dtype ``numpy.int64``, the unique, unsorted values of full_arr.
+
+    Returns
+    -------
+    numpy.ndarray
+        1D array of dtype ``numpy.int64``, the inverse that maps unique_arr onto full_arr.
+
+    """
+    
     cdef Py_ssize_t i = 0 
     cdef Py_ssize_t j = 0
     cdef int n_full = full_arr.shape[0]
@@ -66,7 +86,26 @@ cdef np.intp_t[::1] _inverse_unique_unsorted_array(np.intp_t[::1] full_arr,
     return mask
 
 
-def inverse_unique_unsorted_array(np.intp_t[::1] full_arr, np.intp_t[::1] unique_arr):
+def inverse_unique_contiguous_1d_array(np.intp_t[::1] full_arr,
+                                       np.intp_t[::1] unique_arr):
+    """Find the inverse of a unique 1D array to map onto a non-unique 1D array.
+
+    Creates the inverse array then populates it by calling the function:
+    _inverse_unique_unsorted_array
+
+    Parameters
+    ----------
+    full_arr: numpy.ndarray
+        1D array of dtype ``numpy.int64`` in which to find the non-unique values.
+    unique_arr: numpy.ndarray
+        1D array of dtype ``numpy.int64``, the unique, unsorted values of full_arr.
+
+    Returns
+    -------
+    numpy.ndarray
+        1D array of dtype ``numpy.int64``, the inverse that maps unique_arr onto full_arr.
+
+    """
     cdef np.intp_t[::1] mask = np.empty(full_arr.shape[0], dtype=np.intp)
     return np.array(_inverse_unique_unsorted_array(full_arr, unique_arr, mask))
 
