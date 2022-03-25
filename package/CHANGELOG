@@ -19,7 +19,7 @@ The rules for this file:
 
 Fixes
   * Fixed LinearDensity not working with grouping='residues' or 'segments'
-    (Issue #3571, PR #3566 )
+    (Issue #3571, PR #3572)
   * Fixed DumpReader triclinic box dimensions reading. (Issue #3386, PR #3403)
   * Updated the badge in README of MDAnalysisTest to point to Github CI Actions
 
