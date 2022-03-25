@@ -27,7 +27,7 @@ from numpy.testing import assert_equal
 from MDAnalysis.lib._cutil import (
     unique_int_1d, find_fragments, _in2d, inverse_unique_contiguous_1d_array,
 )
-
+from MDAnalysis.lib.util import unique_int_1d_unsorted
 
 @pytest.mark.parametrize('values', (
     [],  # empty array
@@ -56,9 +56,8 @@ def test_unique_int_1d(values):
 def test_inverse_unique_contiguous_1d_array(arrays):
     # Generate unique, unsorted arrays.
     array = np.array(arrays, dtype=np.intp)
-    values, indices = np.unique(array, return_index=True)
-    unique_array = array[np.sort(indices)]
-    
+    unique_array = unique_int_1d_unsorted(array)
+
     inverse = inverse_unique_contiguous_1d_array(array, unique_array)
     ref = array
     res = unique_array[inverse]
@@ -66,8 +65,8 @@ def test_inverse_unique_contiguous_1d_array(arrays):
     assert type(res) == type(ref)
     assert res.dtype == ref.dtype
     
-    # raise ValueError on none 1d inputs
-    with pytest.raises(ValueError) as e_info:
+    # raise ValueError on non 1d inputs
+    with pytest.raises(ValueError):
         # change array shape
         array_2d = array.reshape((2,-1))
         values, indices = np.unique(array_2d, return_index=True)
@@ -77,7 +76,7 @@ def test_inverse_unique_contiguous_1d_array(arrays):
     # raise ValueError on non-contiguous data
     array = np.array(arrays, dtype=np.intp)[::2]
     if not array.data.contiguous: # empty array ([]) is still contiguous
-      with pytest.raises(ValueError) as e_info:
+      with pytest.raises(ValueError):
           values, indices = np.unique(array, return_index=True)
           unique_array = array[np.sort(indices)]
           inverse = inverse_unique_contiguous_1d_array(array, unique_array)
