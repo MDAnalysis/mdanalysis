@@ -68,18 +68,16 @@ def test_inverse_unique_contiguous_1d_array(arrays):
 
     # raise ValueError on non 1d inputs
     with pytest.raises(ValueError):
+        unique_array = unique_int_1d_unsorted(array)
         # change array shape
         array_2d = array.reshape((2, -1))
-        values, indices = np.unique(array_2d, return_index=True)
-        unique_array = array[np.sort(indices)]
         inverse_unique_contiguous_1d_array(array_2d, unique_array)
 
     # raise ValueError on non-contiguous data
     array = np.array(arrays, dtype=np.intp)[::2]
     if not array.data.contiguous:  # empty array ([]) is still contiguous
         with pytest.raises(ValueError):
-            values, indices = np.unique(array, return_index=True)
-            unique_array = array[np.sort(indices)]
+            unique_array = unique_int_1d_unsorted(array)
             inverse = inverse_unique_contiguous_1d_array(array, unique_array)
 
 
