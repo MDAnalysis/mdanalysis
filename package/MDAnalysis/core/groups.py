@@ -824,7 +824,8 @@ class GroupBase(_MutableBase):
         if set_mask:
             # self.ix must be contiguous for cython implementation.
             # crashes on slices of atomgroups otherwise.
-            mask = inverse_unique_contiguous_1d_array(np.ascontiguousarray(self.ix), indices)
+            mask = inverse_unique_contiguous_1d_array(
+                       np.ascontiguousarray(self.ix), indices)
             self._unique_restore_mask = mask
 
         issorted = int_array_is_sorted(indices)
