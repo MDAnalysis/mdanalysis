@@ -66,6 +66,8 @@ cdef np.intp_t[::1] _inverse_unique_unsorted_array(np.intp_t[::1] full_arr,
         1D array of dtype ``numpy.int64`` in which to find the non-unique values.
     unique_arr: numpy.ndarray
         1D array of dtype ``numpy.int64``, the unique, unsorted values of full_arr.
+    mask: numpy.ndarray
+	1D array of dtype ``numpy.int64``, preallocated inverse array to be filled.
 
     Returns
     -------

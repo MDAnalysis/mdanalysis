@@ -45,6 +45,7 @@ def test_unique_int_1d(values):
     assert type(res) == type(ref)
     assert res.dtype == ref.dtype
 
+
 @pytest.mark.parametrize('arrays', (
     [],  # empty array
     [1, 1, 1, 1, ],  # all identical
@@ -64,27 +65,23 @@ def test_inverse_unique_contiguous_1d_array(arrays):
     assert_equal(res, ref)
     assert type(res) == type(ref)
     assert res.dtype == ref.dtype
-    
+
     # raise ValueError on non 1d inputs
     with pytest.raises(ValueError):
         # change array shape
-        array_2d = array.reshape((2,-1))
+        array_2d = array.reshape((2, -1))
         values, indices = np.unique(array_2d, return_index=True)
         unique_array = array[np.sort(indices)]
         inverse_unique_contiguous_1d_array(array_2d, unique_array)
-    
+
     # raise ValueError on non-contiguous data
     array = np.array(arrays, dtype=np.intp)[::2]
-    if not array.data.contiguous: # empty array ([]) is still contiguous
-      with pytest.raises(ValueError):
-          values, indices = np.unique(array, return_index=True)
-          unique_array = array[np.sort(indices)]
-          inverse = inverse_unique_contiguous_1d_array(array, unique_array)
-    
-        
+    if not array.data.contiguous:  # empty array ([]) is still contiguous
+          with pytest.raises(ValueError):
+              values, indices = np.unique(array, return_index=True)
+              unique_array = array[np.sort(indices)]
+              inverse = inverse_unique_contiguous_1d_array(array, unique_array)
 
-  
-    
 
 @pytest.mark.parametrize('edges,ref', [
     ([[0, 1], [1, 2], [2, 3], [3, 4]],
