@@ -60,7 +60,7 @@ import warnings
 
 from ..topology.base import TopologyReaderBase
 from ..topology.tables import SYMB2Z
-from ..topology.guessers import guess_masses, guess_types
+from ..topology.guessers import guess_types, guess_masses
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomids,
@@ -109,14 +109,15 @@ class OpenMMTopologyParser(TopologyReaderBase):
         top : MDAnalysis.core.topology.Topology
 
 
-        .. versionchanged:: 2.1.0
+        .. versionchanged:: 2.2.0
            * The parser now works when element attribute is missing in some or
              all the atoms.
-           * When none of the elements are present their atomtypes are guessed using
-             their names and their masses are then guessed using their atomtypes.
-           * When partial elements are present, values from available elements are used
-             whereas the absent elements are assigned an empty string with their
-             atomtype set to 'X' and mass set to 0.0.
+           * When none of the elements are present their atomtypes are guessed
+             using their names and their masses are then guessed using their
+             atomtypes.
+           * When partial elements are present, values from available elements
+             are used whereas the absent elements are assigned an empty string
+             with their atomtype set to 'X' and mass set to 0.0.
 
         """
         atom_resindex = [a.residue.index for a in omm_topology.atoms()]
@@ -131,8 +132,6 @@ class OpenMMTopologyParser(TopologyReaderBase):
         bonds = [(b.atom1.index, b.atom2.index) for b in omm_topology.bonds()]
         bond_orders = [b.order for b in omm_topology.bonds()]
         bond_types = [b.type for b in omm_topology.bonds()]
-        elements = [None if a.element is None else a.element.symbol
-                    for a in omm_topology.atoms()]
 
         attrs = [
             Atomids(np.array(atomids, dtype=np.int32)),
@@ -145,40 +144,40 @@ class OpenMMTopologyParser(TopologyReaderBase):
             Segids(segids),
         ]
 
-        if not any(elements):
+        validated_elements = []
+        masses = []
+        atomtypes = []
+        for a in omm_topology.atoms():
+            elem = a.element
+            if elem is not None and elem.symbol.capitalize() in SYMB2Z:
+                validated_elements.append(elem.symbol.capitalize())
+                masses.append(elem.mass._value)
+                atomtypes.append(elem.symbol.capitalize())
+            else:
+                wmsg = (f"Unknown element {elem} found for some atoms. "
+                        f"These have been given an empty element record "
+                        f"with their atomtype set to 'X' "
+                        f"and their mass set to 0.0. "
+                        f"If needed they can be guessed using "
+                        f"MDAnalysis.topology.guessers.")
+                warnings.warn(wmsg)
+                validated_elements.append('')
+                masses.append(0.0)
+                atomtypes.append('X')
+
+        if not any(validated_elements):
             atomtypes = guess_types(atomnames)
-            attrs.append(Atomtypes(np.array(atomtypes, dtype=object)))
             masses = guess_masses(atomtypes)
-            attrs.append(Masses(np.array(masses)))
             warnings.warn("Element information is missing, elements "
                           "attribute will not be populated. "
                           "Atomtype attribute will be guessed using atom "
                           "name and mass will be guessed using atomtype."
                           "See MDAnalysis.topology.guessers.")
         else:
-            validated_elements = []
-            masses = []
-            for a in omm_topology.atoms():
-                elem = a.element
-                if elem is not None and elem.symbol.capitalize() in SYMB2Z:
-                    validated_elements.append(a.element.symbol.capitalize())
-                    masses.append(a.element.mass._value)
-                else:
-                    wmsg = (f"Unknown element {elem} found for some atoms. "
-                            f"These have been given an empty element record "
-                            f"with their atomtype set to 'X' "
-                            f"and their mass set to 0.0. "
-                            f"If needed they can be guessed using "
-                            f"MDAnalysis.topology.guessers.")
-                    warnings.warn(wmsg)
-                    validated_elements.append('')
-                    masses.append(0.0)
-
             attrs.append(Elements(np.array(validated_elements, dtype=object)))
-            attrs.append(Masses(np.array(masses)))
-            atomtypes = [elem if elem else 'X'
-                         for elem in validated_elements]
-            attrs.append(Atomtypes(np.array(atomtypes, dtype=object)))
+
+        attrs.append(Atomtypes(np.array(atomtypes, dtype=object)))
+        attrs.append(Masses(np.array(masses)))
 
         n_atoms = len(atomids)
         n_residues = len(resids)

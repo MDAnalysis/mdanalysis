@@ -157,6 +157,9 @@ class TestOpenMMTopologyParser(OpenMMTopologyBase):
 
 class TestOpenMMTopologyParserWithNoElements(OpenMMTopologyBase):
     ref_filename = app.PDBFile(PDB).topology
+    for a in ref_filename.atoms():
+        a.element = None
+
     expected_n_atoms = 47681
     expected_n_residues = 11302
     expected_n_segments = 1
@@ -172,28 +175,15 @@ class TestOpenMMTopologyParserWithNoElements(OpenMMTopologyBase):
         "chainIDs",
     ]
 
-    @pytest.fixture()
-    def top(self, filename):
-        omm_topology = self.ref_filename
-        for a in omm_topology.atoms():
-            a.element = None
-        return self.parser(PDB) \
-                   ._mda_topology_from_omm_topology(omm_topology)
-
-    def test_no_elements(self, top):
-        omm_topology = self.ref_filename
-        for a in omm_topology.atoms():
-            a.element = None
-
+    def test_no_elements_warn(self, top):
         wmsg = ("Element information is missing, elements attribute "
                 "will not be populated. "
                 "Atomtype attribute will be guessed using atom "
                 "name and mass will be guessed using atomtype."
-                "See MDAnalysis.topology.guessers."
-                )
+                "See MDAnalysis.topology.guessers.")
+
         with pytest.warns(UserWarning, match=wmsg):
-            mda_top = self.parser(PDB) \
-                      ._mda_topology_from_omm_topology(omm_topology)
+            mda_top = self.parser(self.ref_filename).parse()
 
 
 class TestOpenMMTopologyParserWithPartialElements(OpenMMTopologyBase):
@@ -205,7 +195,6 @@ class TestOpenMMTopologyParserWithPartialElements(OpenMMTopologyBase):
 
     def test_with_partial_elements(self, top):
         if 'elements' in self.expected_attrs:
-            omm_topology = self.ref_filename
             wmsg = ("Unknown element None found for some atoms. "
                     "These have been given an empty element record "
                     "with their atomtype set to 'X' "
@@ -213,8 +202,7 @@ class TestOpenMMTopologyParserWithPartialElements(OpenMMTopologyBase):
                     "If needed they can be guessed using "
                     "MDAnalysis.topology.guessers.")
             with pytest.warns(UserWarning, match=wmsg):
-                mda_top = self.parser(PDB) \
-                          ._mda_topology_from_omm_topology(omm_topology)
+                mda_top = self.parser(self.ref_filename).parse()
                 assert mda_top.types.values[3344] == 'X'
                 assert mda_top.types.values[3388] == 'X'
                 assert mda_top.elements.values[3344] == ''
