@@ -57,8 +57,8 @@ protein atoms, and then convert it back to ParmEd. ::
 From here you can create an OpenMM simulation system and minimize the
 energy. ::
 
-    >>> import simtk.openmm as mm
-    >>> import simtk.openmm.app as app
+    >>> import openmm as mm
+    >>> import openmm.app as app
     >>> from parmed import unit as u
     >>> system = prm_prot.createSystem(nonbondedMethod=app.NoCutoff,
     ...                                constraints=app.HBonds,

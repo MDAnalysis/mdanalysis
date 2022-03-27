@@ -148,10 +148,10 @@ class center_in_box(TransformationBase):
         try:
             if self.center == 'geometry':
                 self.center_method = partial(self.ag.center_of_geometry,
-                                             pbc=pbc_arg)
+                                             wrap=pbc_arg)
             elif self.center == 'mass':
                 self.center_method = partial(self.ag.center_of_mass,
-                                             pbc=pbc_arg)
+                                             wrap=pbc_arg)
             else:
                 raise ValueError(f'{self.center} is valid for center')
         except AttributeError:

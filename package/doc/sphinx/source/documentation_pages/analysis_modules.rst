@@ -153,6 +153,7 @@ Volumetric analysis
    analysis/density
    analysis/lineardensity
    analysis/waterdynamics
+   analysis/dielectric
 
 Dimensionality Reduction
 ========================

@@ -1528,21 +1528,43 @@ class TestInitGroup(object):
 
 
 class TestDecorator(object):
-    @groups.check_pbc_and_unwrap
-    def dummy_funtion(cls, compound="group", pbc=True, unwrap=True):
+    @groups._pbc_to_wrap
+    @groups.check_wrap_and_unwrap
+    def dummy_funtion(cls, compound="group", wrap=True, unwrap=True):
         return 0
 
     @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
                                           'group', 'segments'))
     @pytest.mark.parametrize('pbc', (True, False))
     @pytest.mark.parametrize('unwrap', (True, False))
-    def test_decorator(self, compound, pbc, unwrap):
+    def test_wrap_and_unwrap_deprecation(self, compound, pbc, unwrap):
 
-        if compound == 'group' and pbc and unwrap:
+        if pbc and unwrap:
             with pytest.raises(ValueError):
+                # We call a deprecated argument that does not appear in the
+                # function's signature. This is done on purpose to test the
+                # deprecation. We need to tell the linter.
+                # pylint: disable-next=unexpected-keyword-arg
                 self.dummy_funtion(compound=compound, pbc=pbc, unwrap=unwrap)
         else:
-            assert_equal(self.dummy_funtion(compound=compound, pbc=pbc, unwrap=unwrap), 0)
+            with pytest.warns(DeprecationWarning):
+                # We call a deprecated argument that does not appear in the
+                # function's signature. This is done on purpose to test the
+                # deprecation. We need to tell the linter.
+                # pylint: disable-next=unexpected-keyword-arg
+                assert self.dummy_funtion(compound=compound, pbc=pbc, unwrap=unwrap) == 0
+
+    @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
+                                          'group', 'segments'))
+    @pytest.mark.parametrize('wrap', (True, False))
+    @pytest.mark.parametrize('unwrap', (True, False))
+    def test_wrap_and_unwrap(self, compound, wrap, unwrap):
+
+        if wrap and unwrap:
+            with pytest.raises(ValueError):
+                self.dummy_funtion(compound=compound, wrap=wrap, unwrap=unwrap)
+        else:
+            assert self.dummy_funtion(compound=compound, wrap=wrap, unwrap=unwrap) == 0
 
 
 @pytest.fixture()
