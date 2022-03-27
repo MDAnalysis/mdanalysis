@@ -15,7 +15,7 @@ requires = [
 
 [project]
 name = "MDAnalysis"
-dynamic = ['version']
+dynamic = ['version', 'readme']
 license = {file = "LICENSE"}
 authors = [
     {name = 'MDAnalysis Development Team', email = 'mdanalysis@numfocus.org'}
@@ -37,7 +37,6 @@ dependencies = [
     'threadpoolctl',
     'packaging'
 ]
-#readme = "../README.rst"
 keywords = [
     "python", "science", "chemistry", "biophysics", "molecular-dynamics",
     "computational-chemistry", "molecular-simulation", "analysis",
