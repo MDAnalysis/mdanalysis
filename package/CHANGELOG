@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, 
+??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin,
          JoseAntonioSiguenza
 
  * 2.2.0
@@ -33,7 +33,7 @@ Changes
 
 Deprecations
   * `align.alignto(mobile, reference)` now raise a warning when both mobile
-    and reference are from the same universe; as stated in the warning message, 
+    and reference are from the same universe; as stated in the warning message,
     the subselection value will be set as "all" in 3.0.0. when considered
     the same Universe (Issue #1825, PR#3562).
      

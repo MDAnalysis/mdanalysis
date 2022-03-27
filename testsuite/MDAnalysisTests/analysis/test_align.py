@@ -569,17 +569,17 @@ def test_alignto_reorder_atomgroups():
 
 
 def test_alignto_same_universe_deprecation_warning():
-    # Alike Issue 1825
+    # Issue 1825
     u = mda.Universe(GRO_MEMPROT)
     # In my case, two selections of a GRO_MEMPROT lipid
     mobile = u.atoms.residues[4].atoms
     ref = u.atoms.residues[12].atoms
 
-    wmsg = ("The reference and mobile selections are atom groups"
-            "from the same universe, the reference selection will"
-            "be transformed. If it is not the behavior you intend,"
-            "try setting the subselection argument to 'all'."
-            "`subselection = 'all' is deprecated in 2.1.0 but it"
+    wmsg = ("The reference and mobile selections are atom groups "
+            "from the same universe, the reference selection will "
+            "be transformed. If it is not the behavior you intend, "
+            "try setting the subselection argument to 'all'. "
+            "`subselection = 'all' is deprecated in 2.1.0 but it "
             "will become the default behavior in version 3.0.0.")
     with pytest.warns(DeprecationWarning, match=wmsg):
         align.alignto(ref, mobile)
