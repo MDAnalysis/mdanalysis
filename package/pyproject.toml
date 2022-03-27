@@ -15,7 +15,7 @@ requires = [
 
 [project]
 name = "MDAnalysis"
-dynamic = ['version', 'readme']
+dynamic = ['version',]
 license = {file = "LICENSE"}
 authors = [
     {name = 'MDAnalysis Development Team', email = 'mdanalysis@numfocus.org'}
