@@ -35,6 +35,7 @@ dependencies = [
     'matplotlib>=1.5.1',
     'tqdm>=4.43.0',
     'threadpoolctl',
+    'packaging'
 ]
 #readme = "../README.rst"
 keywords = [
