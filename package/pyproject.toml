@@ -15,7 +15,7 @@ requires = [
 
 [project]
 name = "MDAnalysis"
-version = "2.1.0-dev0"
+dynamic = ['version']
 license = {file = "LICENSE"}
 authors = [
     {name = 'MDAnalysis Development Team', email = 'mdanalysis@numfocus.org'}
@@ -49,12 +49,13 @@ classifiers = [
     'License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)',
     'Operating System :: POSIX',
     'Operating System :: MacOS :: MacOS X',
-    'Operating System :: Microsoft :: Windows ',
+    'Operating System :: Microsoft :: Windows',
     'Programming Language :: Python',
     'Programming Language :: Python :: 3',
     'Programming Language :: Python :: 3.7',
     'Programming Language :: Python :: 3.8',
     'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
     'Programming Language :: C',
     'Topic :: Scientific/Engineering',
     'Topic :: Scientific/Engineering :: Bio-Informatics',
