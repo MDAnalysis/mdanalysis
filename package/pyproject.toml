@@ -36,7 +36,7 @@ dependencies = [
     'tqdm>=4.43.0',
     'threadpoolctl',
 ]
-readme = "../README.rst"
+#readme = "../README.rst"
 keywords = [
     "python", "science", "chemistry", "biophysics", "molecular-dynamics",
     "computational-chemistry", "molecular-simulation", "analysis",
