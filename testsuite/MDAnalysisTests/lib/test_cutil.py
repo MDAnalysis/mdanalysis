@@ -27,7 +27,6 @@ from numpy.testing import assert_equal
 from MDAnalysis.lib._cutil import (
     unique_int_1d, find_fragments, _in2d, inverse_unique_contiguous_1d_array,
 )
-from MDAnalysis.lib.util import unique_int_1d_unsorted
 
 @pytest.mark.parametrize('values', (
     [],  # empty array
@@ -46,39 +45,47 @@ def test_unique_int_1d(values):
     assert res.dtype == ref.dtype
 
 
-@pytest.mark.parametrize('arrays', (
-    [],  # empty array
-    [1, 1, 1, 1, ],  # all identical
-    [2, 3, 5, 7, ],  # unique, sorted
-    [5, 2, 7, 3, ],  # unique, unsorted
-    [1, 2, 2, 4, 4, 6, ],  # duplicates, sorted
-    [1, 2, 2, 6, 4, 4, ],  # duplicates, unsorted
+@pytest.mark.parametrize(['array', 'unique_array', 'inverse'],  (
+    ([], [], []),  # empty array
+    ([1, 1, 1, 1, ], [1,], [0, 0, 0, 0, ]),  # all identical
+    ([2, 3, 5, 7, ], [2, 3, 5, 7, ], [0, 1, 2, 3, ]),  # unique, sorted
+    ([5, 2, 7, 3, ], [5, 2, 7, 3, ], [0, 1, 2, 3, ],),  # unique, unsorted
+    ([1, 2, 2, 4, 4, 6, ], [1, 2, 4, 6, ], [0, 1, 1, 2, 2, 3, ]),  # duplicates, sorted
+    ([1, 2, 2, 6, 4, 4, ], [1, 2, 6, 4, ], [0, 1, 1, 2, 3, 3, ]),  # duplicates, unsorted
+    ([1, 1, 2, 2, 1, 1, ], [1, 2, ], [0, 0, 1, 1, 0, 0, ]),  # duplicated, unsorted, unsorted inverse
 ))
-def test_inverse_unique_contiguous_1d_array(arrays):
-    # Generate unique, unsorted arrays.
-    array = np.array(arrays, dtype=np.intp)
-    unique_array = unique_int_1d_unsorted(array)
+def test_inverse_unique_contiguous_1d_array(array, unique_array, inverse):
+    array = np.array(array, dtype=np.intp)
+    unique_array = np.array(unique_array, dtype=np.intp)
+    inverse = np.array(inverse, dtype=np.intp)
 
-    inverse = inverse_unique_contiguous_1d_array(array, unique_array)
-    ref = array
-    res = unique_array[inverse]
-    assert_equal(res, ref)
-    assert type(res) == type(ref)
-    assert res.dtype == ref.dtype
+    res = inverse_unique_contiguous_1d_array(array, unique_array)
+    assert_equal(res, inverse)
+    assert type(res) == type(inverse)
+    assert res.dtype == inverse.dtype
 
+
+@pytest.mark.parametrize(['array', 'unique_array'],  (
+    ([[1, 1], [1, 1], ], [1,], ),  # 2d array
+))
+def test_inverse_unique_contiguous_1d_array_2d_input(array, unique_array):
     # raise ValueError on non 1d inputs
-    with pytest.raises(ValueError):
-        unique_array = unique_int_1d_unsorted(array)
-        # change array shape
-        array_2d = array.reshape((2, -1))
-        inverse_unique_contiguous_1d_array(array_2d, unique_array)
+    array_2d = np.array(array, dtype=np.intp)
+    unique_array = np.array(unique_array, dtype=np.intp)
 
+    with pytest.raises(ValueError):
+        inverse = inverse_unique_contiguous_1d_array(array_2d, unique_array)
+
+
+@pytest.mark.parametrize(['array', 'unique_array'],  (
+    ([1, 1, 1, 1, ], [1,], ),  # contiguous array
+))
+def test_inverse_unique_contiguous_1d_array_noncontiguous_input(array, unique_array):
     # raise ValueError on non-contiguous data
-    array = np.array(arrays, dtype=np.intp)[::2]
-    if not array.data.contiguous:  # empty array ([]) is still contiguous
-        with pytest.raises(ValueError):
-            unique_array = unique_int_1d_unsorted(array)
-            inverse = inverse_unique_contiguous_1d_array(array, unique_array)
+    array = np.array(array, dtype=np.intp)[::2]  # make non-contiguous
+    unique_array = np.array(unique_array, dtype=np.intp)
+    with pytest.raises(ValueError):
+        inverse = inverse_unique_contiguous_1d_array(array, unique_array)
 
 
 @pytest.mark.parametrize('edges,ref', [
