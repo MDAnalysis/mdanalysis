@@ -215,7 +215,7 @@ def covariance_matrix(ensemble,
         # Select the same atoms in reference structure
         reference_atom_selection = reference.select_atoms(
             ensemble.get_atom_selection_string())
-        reference_coordinates = reference_atom_selection.atoms.coordinates()
+        reference_coordinates = reference_atom_selection.atoms.positions
 
         # Flatten reference coordinates
         reference_coordinates = reference_coordinates.flatten()
