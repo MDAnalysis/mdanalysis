@@ -65,25 +65,19 @@ def test_inverse_unique_contiguous_1d_array(array, unique_array, inverse):
     assert res.dtype == inverse.dtype
 
 
-@pytest.mark.parametrize(['array', 'unique_array'],  (
-    ([[1, 1], [1, 1], ], [1,], ),  # 2d array
-))
-def test_inverse_unique_contiguous_1d_array_2d_input(array, unique_array):
+def test_inverse_unique_contiguous_1d_array_2d_input():
     # raise ValueError on non 1d inputs
-    array_2d = np.array(array, dtype=np.intp)
-    unique_array = np.array(unique_array, dtype=np.intp)
+    array_2d = np.array([[1, 1], [1, 1], ], dtype=np.intp)
+    unique_array = np.array([1, ], dtype=np.intp)
 
     with pytest.raises(ValueError):
         inverse = inverse_unique_contiguous_1d_array(array_2d, unique_array)
 
 
-@pytest.mark.parametrize(['array', 'unique_array'],  (
-    ([1, 1, 1, 1, ], [1,], ),  # contiguous array
-))
-def test_inverse_unique_contiguous_1d_array_noncontiguous_input(array, unique_array):
+def test_inverse_unique_contiguous_1d_array_noncontiguous_input():
     # raise ValueError on non-contiguous data
-    array = np.array(array, dtype=np.intp)[::2]  # make non-contiguous
-    unique_array = np.array(unique_array, dtype=np.intp)
+    array = np.array([1, 1, 1, 1, ], dtype=np.intp)[::2]  # make non-contiguous
+    unique_array = np.array([1, ], dtype=np.intp)
     with pytest.raises(ValueError):
         inverse = inverse_unique_contiguous_1d_array(array, unique_array)
 
