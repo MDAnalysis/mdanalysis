@@ -138,6 +138,12 @@ def inverse_unique_contiguous_1d_array(np.intp_t[::1] full_arr,
     Creates the inverse array then populates it by calling the function:
     _inverse_unique_unsorted_contiguous_array
 
+    Indexing the unique array by the inverse array will recreate the original
+    full array.
+    ie: inverse_arr = inverse_unique_contiguous_1d_array(full_arr, unique_arr)
+	unique_arr[inverse_arr] == full_arr
+
+
     Parameters
     ----------
     full_arr: numpy.ndarray
