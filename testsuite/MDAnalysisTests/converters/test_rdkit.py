@@ -411,7 +411,7 @@ class TestRDKitFunctions(object):
             bond.SetBondType(Chem.BondType.SINGLE)
         mH.UpdatePropertyCache(strict=False)
         return mH
-    
+
     def enumerate_reordered_mol(self, mol):
         """Enumerates all possible starting atoms for a given molecule"""
         # go through each possible starting atom
@@ -422,7 +422,7 @@ class TestRDKitFunctions(object):
                 atom.SetNoImplicit(True)
             reordered_mol.UpdatePropertyCache(strict=False)
             yield reordered_mol
-    
+
     def assign_bond_orders_and_charges(self, mol):
         """Returns a sanitized molecule with infered bond orders and charges"""
         _infer_bo_and_charges(mol)
@@ -692,7 +692,7 @@ class TestRDKitFunctions(object):
         mol = u.atoms.convert_to.rdkit()
         names = u.atoms.names
         rd_names = np.array([a.GetProp("_MDAnalysis_name")
-                                 for a in mol.GetAtoms()])
+                             for a in mol.GetAtoms()])
         assert (names == rd_names).all()
 
     @pytest.mark.parametrize("smi", [
