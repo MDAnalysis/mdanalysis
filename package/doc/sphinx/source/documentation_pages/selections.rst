@@ -96,7 +96,7 @@ selection parser. The following applies to all selections:
     selection ranges.
 
 
-.. _`Defined topology attributes`: https://userguide.mdanalysis.org/2.0.0-dev0/topology_system.html#format-specific-attributes
+.. _`Defined topology attributes`: https://userguide.mdanalysis.org/stable/topology_system.html#format-specific-attributes
 
 
 Simple selections

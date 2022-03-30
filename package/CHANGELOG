@@ -13,7 +13,27 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope,
+??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin
+
+ * 2.2.0
+
+Fixes
+  * Contacts can now accept static AtomGroups as well as selection texts.
+    (Issue #2666, PR #3565)
+  * Fixed DumpReader triclinic box dimensions reading. (Issue #3386, PR #3403)
+  * Updated the badge in README of MDAnalysisTest to point to Github CI Actions
+
+Enhancements
+
+Changes
+  * ITPParser no longer adds an angle for water molecules that have the SETTLE
+    constraint applied to them. This mirrors the way the constraint is handled
+    in AMBER. (Issue #2417, PR #3564)
+
+Deprecations
+
+
+03/06/22 IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope,
          orbeckst, scal444, p-j-smith, edisj, Atharva7K, ojeda-e, jbarnoud,
          yangtcai
 
@@ -23,7 +43,7 @@ Fixes
   * Use uint64_t loop counters in C level distance functions to avoid overflow
     for large arrays (Issue #3512, PR #3513).
   * Prevents attempts to close an already closed NamedStream (Issue #3386)
-  * Added missing exe_err import in hole.py. Fixed a bug in HoleAnalysis where 
+  * Added missing exe_err import in hole.py. Fixed a bug in HoleAnalysis where
     kwarg was passed instead of object to generate path (Issue #3493, PR #3496)
   * Fixes creation of vmd surfaces in hole2 when using non-contiguous frames
     with start/stop/step (Issue #3476)
@@ -48,6 +68,7 @@ Enhancements
   * Added MDAnalysis.lib.distances.minimize_vectors
 
 Changes
+  * `packaging` is now a core dependency for MDAnalysis
   * Indexing a group (AtomGroup, ResidueGroup, or SegmentGroup) with None
     raises a TypeError (Issue #3092, PR #3517)
   * TRZReader now defaults to a `dt` of 1.0 (instead of 0.0 previously) when
@@ -56,6 +77,8 @@ Changes
     (NEP29)
 
 Deprecations
+  * Deprecated the 'pbc' kwarg for various Group methods, the 'wrap' kwarg
+    should be used instead. (Issue #1760)
 
 
 08/21/21 tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,

@@ -11,6 +11,7 @@ msmb_theme==1.2.0
 netcdf4
 networkx
 numpy>=1.16.0
+packaging
 parmed
 pytest
 scikit-learn
