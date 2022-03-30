@@ -50,10 +50,11 @@ molecule::
 .. warning::
     The RDKit converter is currently *experimental* and may not work as
     expected for all molecules. Currently the converter accurately
-    infers the structures of approximately 90% of the `ChEMBL27`_ dataset.
+    infers the structures of approximately 99% of the `ChEMBL27`_ dataset.
     Work is currently ongoing on further improving this and updates to the
     converter are expected in future releases of MDAnalysis.
-    Please see `Pull Request #3044`_ and `Issue #3339`_ for more details.
+    Please see `Issue #3339`_ and the `RDKitConverter benchmark`_ for more
+    details.
 
 
 
@@ -76,9 +77,8 @@ Classes
 .. Links
 
 .. _`ChEMBL27`: https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl_27/
-.. _`Pull Request #3044`: https://github.com/MDAnalysis/mdanalysis/pull/3044
 .. _`Issue #3339`: https://github.com/MDAnalysis/mdanalysis/issues/3339
-
+.. _`RDKitConverter benchmark`: https://github.com/MDAnalysis/RDKitConverter-benchmark
 """
 
 import warnings
@@ -285,13 +285,11 @@ class RDKitConverter(base.ConverterBase):
     .. versionadded:: 2.0.0
 
     .. versionchanged:: 2.2.0
-        See the full changelog for more details:
-
-        - Improved the accuracy of the converter
-        - Atoms in the resulting molecule follow the same order as in the
-          AtomGroup
-        - Fixed a ``SanitizationError`` when disabling the bond order inferring
-          step
+        Improved the accuracy of the converter. Atoms in the resulting molecule
+        now follow the same order as in the AtomGroup. The output of
+        `atom.GetMonomerInfo().GetName()` now follows the guidelines for PDB
+        files while the original name is still available through
+        `atom.GetProp("_MDAnalysis_name")`
 
     """
 
@@ -305,8 +303,7 @@ class RDKitConverter(base.ConverterBase):
 
         Parameters
         -----------
-        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or
-            :class:`~MDAnalysis.core.universe.Universe`
+        obj : `AtomGroup` or `Universe`
         cache : bool
             Use a cached copy of the molecule's topology when available. To be
             used, the cached molecule and the new one have to be made from the
