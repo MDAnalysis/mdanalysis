@@ -277,7 +277,7 @@ class RDKitConverter(base.ConverterBase):
     * `Video (4:55 to 8:05) <https://youtu.be/5b5wYmK4URU>`__
     * `Slides <https://github.com/rdkit/UGM_2020/blob/master/Presentations/C%C3%A9dricBouysset_From_RDKit_to_the_Universe.pdf>`__
 
-    Their are some molecules containing specific patterns that the converter
+    There are some molecules containing specific patterns that the converter
     cannot currently tackle correctly. See
     `Issue #3339 <https://github.com/MDAnalysis/mdanalysis/issues/3339>`__ for
     more info.
@@ -287,9 +287,9 @@ class RDKitConverter(base.ConverterBase):
     .. versionchanged:: 2.2.0
         Improved the accuracy of the converter. Atoms in the resulting molecule
         now follow the same order as in the AtomGroup. The output of
-        `atom.GetMonomerInfo().GetName()` now follows the guidelines for PDB
+        ``atom.GetMonomerInfo().GetName()`` now follows the guidelines for PDB
         files while the original name is still available through
-        `atom.GetProp("_MDAnalysis_name")`
+        ``atom.GetProp("_MDAnalysis_name")``
 
     """
 
@@ -303,7 +303,7 @@ class RDKitConverter(base.ConverterBase):
 
         Parameters
         -----------
-        obj : `AtomGroup` or `Universe`
+        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe`
         cache : bool
             Use a cached copy of the molecule's topology when available. To be
             used, the cached molecule and the new one have to be made from the
