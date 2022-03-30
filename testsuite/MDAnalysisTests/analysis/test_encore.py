@@ -44,6 +44,7 @@ import MDAnalysis.analysis.encore.confdistmatrix as confdistmatrix
 def function(x):
     return x**2
 
+
 class TestEncore(object):
     @pytest.fixture(scope='class')
     def ens1_template(self):
@@ -77,9 +78,9 @@ class TestEncore(object):
         expected_value = 1.984
         filename = tempfile.mktemp()+".npz"
 
-        triangular_matrix = encore.utils.TriangularMatrix(size = size)
+        triangular_matrix = encore.utils.TriangularMatrix(size=size)
 
-        triangular_matrix[0,1] = expected_value
+        triangular_matrix[0, 1] = expected_value
 
         assert_equal(triangular_matrix[0,1], expected_value,
                      err_msg="Data error in TriangularMatrix: read/write are not consistent")
@@ -184,7 +185,7 @@ inconsistent results")
             weights='mass',
             n_jobs=1)
 
-        print (repr(confdist_matrix.as_array()[0,:]))
+        print(repr(confdist_matrix.as_array()[0, :]))
         assert_almost_equal(confdist_matrix.as_array()[0,:], reference_rmsd, decimal=3,
                             err_msg="calculated RMSD values differ from reference")
 
@@ -395,6 +396,7 @@ inconsistent results")
         assert stdev < stdev_upper_bound, "Unexpected standard deviation for" \
                                            " bootstrapped samples in Dim. reduction Ensemble imilarity"
 
+
 class TestEncoreClustering(object):
     @pytest.fixture(scope='class')
     def ens1_template(self):
@@ -429,7 +431,7 @@ class TestEncoreClustering(object):
             ens2_template.filename,
             ens2_template.trajectory.timeseries(order='fac'),
             format=mda.coordinates.memory.MemoryReader)
-    
+
     def test_clustering_one_ensemble(self, ens1):
         cluster_collection = encore.cluster(ens1)
         expected_value = 7
@@ -552,11 +554,51 @@ class TestEncoreClustering(object):
         assert cc.get_centroids() == [1, 3, 5], \
                      "ClusterCollection centroids aren't as expected"
 
-    def test_Cluster_add_metadata(self, cluster):
+    def test_cluster_add_metadata(self, cluster):
         metadata = cluster.elements*10
         cluster.add_metadata('test', metadata)
         assert np.all(cluster.metadata['test'] == metadata), \
                      "Cluster metadata isn't as expected"
+        metadata = np.append(metadata, 9)
+        error_message = ("Size of metadata is not equal to the "
+                         "number of cluster elements")
+        with pytest.raises(TypeError, match=error_message):
+            cluster.add_metadata('test2', metadata)
+
+    def test_empty_cluster(self):
+        empty_cluster = encore.Cluster()
+        assert empty_cluster.size == 0
+        assert np.size(empty_cluster.elements) == 0
+        assert empty_cluster.centroid is None
+        assert bool(empty_cluster.metadata) is False
+
+    def test_centroid_not_in_elements(self):
+        error_message = "Centroid of cluster not found in the element list"
+        with pytest.raises(LookupError, match=error_message):
+            encore.Cluster([38, 39, 40, 41, 42, 43], 99)
+
+    def test_metadata_size_error(self):
+        error_message = ('Size of metadata having label "label" is '
+                         'not equal to the number of cluster elements')
+        with pytest.raises(TypeError, match=error_message):
+            encore.Cluster(np.array([1, 1, 1]), 1, None,
+                           {"label": [1, 1, 1, 1]})
+
+    def test_cluster_iteration(self, cluster):
+        test = []
+        for i in cluster.elements:
+            test.append(i)
+        assert_equal(cluster.elements, test)
+
+    def test_cluster_len(self, cluster):
+        assert(cluster.size == len(cluster))
+
+    def test_cluster_repr(self):
+        repr_message = "<Cluster with no elements>"
+        assert_equal(repr(encore.Cluster()), repr_message)
+        cluster = encore.Cluster(np.array([1]), 1, 1)
+        repr_message = "<Cluster with 1 elements, centroid=1, id=1>"
+        assert_equal(repr(cluster), repr_message)
 
 class TestEncoreClusteringSklearn(object):
     """The tests in this class were duplicated from the affinity propagation
@@ -686,7 +728,6 @@ class TestEncoreDimensionalityReduction(object):
         coordinates, details = encore.reduce_dimensionality(ens1)
         assert_equal(coordinates.shape[0], dimension,
                      err_msg="Unexpected result in dimensionality reduction: {0}".format(coordinates))
-
 
     def test_dimensionality_reduction_two_ensembles(self, ens1, ens2):
         dimension = 2
