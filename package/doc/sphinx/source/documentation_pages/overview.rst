@@ -35,7 +35,7 @@ of a protein and the radius of gyration of the backbone atoms are calculated::
         r = cterm.pos - nterm.pos  # end-to-end vector from atom positions
         d = numpy.linalg.norm(r)   # end-to-end distance
         rgyr = bb.radius_of_gyration()  # method of a AtomGroup; updates with each frame
-        print "frame = %d: d = %f Angstroem, Rgyr = %f Angstroem" % (ts.frame, d, rgyr)
+        print("frame = %d: d = %f Angstroem, Rgyr = %f Angstroem" % (ts.frame, d, rgyr))
 
 
 .. _NumPy:   http://numpy.scipy.org
@@ -104,7 +104,7 @@ The :class:`~MDAnalysis.core.universe.Universe` contains a number of important a
 the most important ones of which is
 :attr:`~MDAnalysis.core.universe.Universe.atoms`::
 
-  >>> print u.atoms
+  >>> print(u.atoms)
   <AtomGroup with 3341 atoms>
 
 :attr:`Universe.atoms` is a
