@@ -53,6 +53,11 @@ Data files
    The given levels will draw contours that contain 90% and 99% of the data
    points. See the :ref:`Ramachandran plot figure <figure-ramachandran>` as an
    example.
+.. _figure-ramachandran:
+
+   .. figure:: /images/rama_demo_plot.png
+      :scale: 50 %
+      :alt: Ramachandran plot
 
 .. data:: Janin_ref
 
@@ -72,6 +77,12 @@ Data files
 
    The given levels will draw contours that contain 90% and 98% of the
    data. See the :ref:`Janin plot figure <figure-janin>` as an example.
+
+.. _figure-janin:
+
+   .. figure:: /images/janin_demo_plot.png
+      :scale: 50 %
+      :alt: Janin plot
 
 """
 
