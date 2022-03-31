@@ -212,21 +212,18 @@ class LinearDensity(AnalysisBase):
             # Compute standard deviation for the error
             # For certain tests in testsuite, floating point imprecision
             # can lead to negative radicands of tiny magnitude (yielding nan),
-            # rather than actual value of zero. radicand_pos and radicand_char
-            # are therefore tested for closeness to 0 first and changed where
-            # appropriate before the square root is calculated.
+            # or tiny positive values, both of which should actually be zero.
+            # radicand_pos and radicand_char are therefore calculated first and
+            # and values that should be 0 are changed appropriately before
+            # the square root is calculated.
             radicand_pos = self.results[dim][
                 'pos_std'] - np.square(self.results[dim]['pos'])
-            for i in range(len(radicand_pos)):
-                if np.isclose(radicand_pos, np.zeros(self.nbins))[i]:
-                    radicand_pos[i] = 0
+            radicand_pos[radicand_pos < 1e-9] = 0
             self.results[dim]['pos_std'] = np.sqrt(radicand_pos)
 
             radicand_char = self.results[dim][
                 'char_std'] - np.square(self.results[dim]['char'])
-            for i in range(len(radicand_char)):
-                if np.isclose(radicand_char, np.zeros(self.nbins))[i]:
-                    radicand_char[i] = 0
+            radicand_char[radicand_char < 1e-9] = 0
             self.results[dim]['char_std'] = np.sqrt(radicand_char)
 
         for dim in ['x', 'y', 'z']:
