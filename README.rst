@@ -194,7 +194,7 @@ For citations of included algorithms and sub-modules please see the references_.
    :alt: My Binder
    :target: https://mybinder.org/v2/gh/MDAnalysis/binder-notebook/master
    
- .. |asv| image:: http://img.shields.io/badge/benchmarked%20by-asv-blue.svg?style=flat
+ .. |asv| image:: https://img.shields.io/badge/benchmarked%20by-asv-blue.svg?style=flat
    :alt: ASV Benchmarks
    :target:  https://www.mdanalysis.org/benchmarks/
 
