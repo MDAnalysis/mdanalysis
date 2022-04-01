@@ -104,6 +104,10 @@ The trajectory is included with the test data files. The data in
    ax.set_ylabel(r"RMSD ($\\AA$)")
    fig.savefig("rmsd_all_CORE_LID_NMP_ref1AKE.pdf")
 
+.. figure:: /images/RSMD_plot.png
+      :scale: 50 %
+      :alt: RSMD plot
+
 
 Functions
 ---------
@@ -876,3 +880,4 @@ class RMSF(AnalysisBase):
                 "`results.rmsd` instead.")
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.rmsf
+
