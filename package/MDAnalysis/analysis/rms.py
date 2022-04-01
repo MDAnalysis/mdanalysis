@@ -880,4 +880,3 @@ class RMSF(AnalysisBase):
                 "`results.rmsd` instead.")
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.rmsf
-
