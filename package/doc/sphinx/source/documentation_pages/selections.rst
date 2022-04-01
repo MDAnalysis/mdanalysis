@@ -54,7 +54,7 @@ packages with the help of :ref:`Selection exporters`.
         True
 
 
-    For further details, see :ref:`ordered-selections-label`.
+    For further details on ordered selections, see :ref:`ordered-selections-label`.
 Selection Keywords
 ==================
 
