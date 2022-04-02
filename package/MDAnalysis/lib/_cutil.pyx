@@ -64,11 +64,6 @@ cdef void _inverse_unique_unsorted_contiguous_array_inplace(
     ie: np.array([1,2,3])[np.array(0,0,1,2,2)] == np.array([1,1,2,3,3])
 	       unique_arr[mask]                ==       full_arr
 
-
-    Calculates the bounding region of unsorted values to reduce number of iterations,
-    more efficient on uninterleaved full_arr, where unique_arr is sorted according to
-    first occurance of the value in full_arr. 
-
     Requires contiguous arrays as an input.
 
 
@@ -92,42 +87,11 @@ cdef void _inverse_unique_unsorted_contiguous_array_inplace(
     cdef int n_full = full_arr.shape[0]
     cdef int n_unique = unique_arr.shape[0]
     
-    # loop bounding variables
-    cdef int lower_bound = 0   
-    cdef int upper_bound = n_full
-    cdef int new_upper_bound = upper_bound
-    cdef bint bound_start = True
-    cdef bint bound_end = False
-    cdef bint init_val = True
-    
-    for i in range(n_unique):
-        # update end bound if valid.
-        # valid if final value(s) match current index value
-        if bound_end:
-            upper_bound = new_upper_bound
-        
-        # restart loop bounding
-        bound_start = True
-        bound_end = False
-        init_val = True
-        
-        # bounds shrink to reduce iteration through array
-        for j in range(lower_bound,upper_bound):
-            if unique_arr[i] == full_arr[j]:
-                mask[j] = i
-                
-                # update bounds on full_array
-                if init_val:
-                    lower_bound += 1  # increment until first non-matching value is found
-                if not bound_end:
-                    # set to position of first N matching values.
-                    new_upper_bound = j  
-                    bound_end = True  # stop incrementing after first found value.
-            else:
-                # stop start bounding once first non-matching value found.
-                init_val = False 
-                # restart end bounding if non-matching value found.
-                bound_end = False
+    for j in range(n_full):
+      for i in range(n_unique):
+        if unique_arr[i] == full_arr[j]:
+            mask[j] = i
+            break
 
 
 
@@ -156,6 +120,26 @@ def inverse_unique_contiguous_1d_array(np.intp_t[::1] full_arr,
     numpy.ndarray
         1D array of dtype ``numpy.int64``, the inverse that maps unique_arr onto full_arr.
 
+
+    Example
+    -------
+    Find the inverse of an array::
+
+        from MDAnalysis.lib.util import (
+                                         inverse_unique_contiguous_1d_array,
+                                         unique_int_1d_unsorted
+                                         )
+
+        full_arr = np.array([1,2,3,4,1,2,3,4], dtype=np.intp)
+	unique_arr = unique_int_1d_unsorted(full_arr)
+	# unique_arr == np.array([1,2,3,4], dtype=np.intp)
+
+	inverse = inverse_unique_contiguous_1d_array(full_arr, unique_arr)
+	# inverse == np.array([0,1,2,3,0,1,2,3], dtype=np.intp)
+
+	rebuilt_arr = unique_arr[inverse]
+        # rebuilt_arr has the same elements as the original full_arr	
+   
     """
     cdef np.intp_t[::1] mask = np.empty(full_arr.shape[0], dtype=np.intp)
     _inverse_unique_unsorted_contiguous_array_inplace(full_arr, unique_arr, mask)
