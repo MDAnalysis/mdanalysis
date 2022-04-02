@@ -109,7 +109,7 @@
              
   <span class="target" id="module-MDAnalysis.converters.RDKitParser"></span><section id="rdkit-topology-parser-mdanalysis-converters-rdkitparser">
 <h1><span class="section-number">7.3. </span>RDKit topology parser — <a class="reference internal" href="#module-MDAnalysis.converters.RDKitParser" title="MDAnalysis.converters.RDKitParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKitParser</span></code></a><a class="headerlink" href="#rdkit-topology-parser-mdanalysis-converters-rdkitparser" title="Permalink to this headline"></a></h1>
-<p>Converts an <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol">RDKit</a> <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2021.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></a> into a <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.Topology</span></code>.</p>
+<p>Converts an <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol">RDKit</a> <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2022.03)"><code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></a> into a <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.Topology</span></code>.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="#module-MDAnalysis.converters.RDKit" title="MDAnalysis.converters.RDKit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKit</span></code></a></p>
@@ -443,9 +443,9 @@ is avoided.</p>
 </section>
 <span class="target" id="module-MDAnalysis.converters.RDKit"></span><section id="rdkit-molecule-i-o-mdanalysis-converters-rdkit">
 <h1><span class="section-number">7.4. </span>RDKit molecule I/O — <a class="reference internal" href="#module-MDAnalysis.converters.RDKit" title="MDAnalysis.converters.RDKit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKit</span></code></a><a class="headerlink" href="#rdkit-molecule-i-o-mdanalysis-converters-rdkit" title="Permalink to this headline"></a></h1>
-<p>Read coordinates data from an <a class="reference external" href="https://www.rdkit.org/docs/">RDKit</a> <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2021.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></a> with
+<p>Read coordinates data from an <a class="reference external" href="https://www.rdkit.org/docs/">RDKit</a> <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2022.03)"><code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></a> with
 <a class="reference internal" href="#MDAnalysis.converters.RDKit.RDKitReader" title="MDAnalysis.converters.RDKit.RDKitReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">RDKitReader</span></code></a> into an MDAnalysis Universe. Convert it back to a
-<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2021.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></a> with <a class="reference internal" href="#MDAnalysis.converters.RDKit.RDKitConverter" title="MDAnalysis.converters.RDKit.RDKitConverter"><code class="xref py py-class docutils literal notranslate"><span class="pre">RDKitConverter</span></code></a>.</p>
+<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2022.03)"><code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></a> with <a class="reference internal" href="#MDAnalysis.converters.RDKit.RDKitConverter" title="MDAnalysis.converters.RDKit.RDKitConverter"><code class="xref py py-class docutils literal notranslate"><span class="pre">RDKitConverter</span></code></a>.</p>
 <p class="rubric">Example</p>
 <p>To read an RDKit molecule and then convert the AtomGroup back to an RDKit
 molecule:</p>
@@ -465,10 +465,11 @@ molecule:</p>
 <p class="admonition-title">Warning</p>
 <p>The RDKit converter is currently <em>experimental</em> and may not work as
 expected for all molecules. Currently the converter accurately
-infers the structures of approximately 90% of the <a class="reference external" href="https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl_27/">ChEMBL27</a> dataset.
+infers the structures of approximately 99% of the <a class="reference external" href="https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl_27/">ChEMBL27</a> dataset.
 Work is currently ongoing on further improving this and updates to the
 converter are expected in future releases of MDAnalysis.
-Please see <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/pull/3044">Pull Request #3044</a> for more details.</p>
+Please see <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/3339">Issue #3339</a> and the <a class="reference external" href="https://github.com/MDAnalysis/RDKitConverter-benchmark">RDKitConverter benchmark</a> for more
+details.</p>
 </div>
 <section id="id1">
 <h2><span class="section-number">7.4.1. </span>Classes<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h2>
@@ -484,7 +485,7 @@ Each conformer in the original RDKit molecule will be read as a frame
 in the resulting universe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2021.09)"><em>rdkit.Chem.rdchem.Mol</em></a>) – RDKit molecule</p>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2022.03)"><em>rdkit.Chem.rdchem.Mol</em></a>) – RDKit molecule</p>
 </dd>
 </dl>
 </dd></dl>
@@ -494,16 +495,16 @@ in the resulting universe.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.converters.RDKit.</span></span><span class="sig-name descname"><span class="pre">RDKitConverter</span></span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKit.html#RDKitConverter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKit.RDKitConverter" title="Permalink to this definition"></a></dt>
 <dd><p>Convert MDAnalysis <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> or
 <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> to RDKit
-<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2021.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mol</span></code></a></p>
+<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2022.03)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mol</span></code></a></p>
 <p>MDanalysis attributes are stored in each RDKit
-<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Atom" title="(in The RDKit v2021.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a> of the resulting molecule in two different
+<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Atom" title="(in The RDKit v2022.03)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a> of the resulting molecule in two different
 ways:</p>
 <ul class="simple">
-<li><p>in an <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.AtomPDBResidueInfo" title="(in The RDKit v2021.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomPDBResidueInfo</span></code></a> object available
-through the <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Atom.GetMonomerInfo" title="(in The RDKit v2021.09)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">GetMonomerInfo()</span></code></a> method if it’s
+<li><p>in an <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.AtomPDBResidueInfo" title="(in The RDKit v2022.03)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomPDBResidueInfo</span></code></a> object available
+through the <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Atom.GetMonomerInfo" title="(in The RDKit v2022.03)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">GetMonomerInfo()</span></code></a> method if it’s
 an attribute that is typically found in a PDB file,</p></li>
 <li><p>directly as an atom property available through the
-<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Atom.GetProp" title="(in The RDKit v2021.09)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">GetProp()</span></code></a> methods for the others.</p></li>
+<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Atom.GetProp" title="(in The RDKit v2022.03)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">GetProp()</span></code></a> methods for the others.</p></li>
 </ul>
 <p>Supported attributes:</p>
 <table class="docutils align-default">
@@ -527,7 +528,8 @@ an attribute that is typically found in a PDB file,</p></li>
 <td><p>atom.GetMonomerInfo().GetInsertionCode()</p></td>
 </tr>
 <tr class="row-odd"><td><p>names</p></td>
-<td><p>atom.GetMonomerInfo().GetName()</p></td>
+<td><p>atom.GetMonomerInfo().GetName()
+atom.GetProp(“_MDAnalysis_name”)</p></td>
 </tr>
 <tr class="row-even"><td><p>occupancies</p></td>
 <td><p>atom.GetMonomerInfo().GetOccupancy()</p></td>
@@ -600,14 +602,34 @@ objects cached can be changed with the function
 followed by <code class="docutils literal notranslate"><span class="pre">ag.convert_to(&quot;RDKIT&quot;,</span> <span class="pre">NoImplicit=False)</span></code> will not use the
 cache since the arguments given are different. You can pass a
 <code class="docutils literal notranslate"><span class="pre">cache=False</span></code> argument to the converter to bypass the caching system.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">_MDAnalysis_index</span></code> property of the resulting molecule corresponds
+to the index of the specific <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>
+that was converted, which may not always match the <code class="docutils literal notranslate"><span class="pre">index</span></code> property.</p>
+<p>To get a better understanding of how the converter works under the hood,
+please refer to the following RDKit UGM presentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://youtu.be/5b5wYmK4URU">Video (4:55 to 8:05)</a></p></li>
+<li><p><a class="reference external" href="https://github.com/rdkit/UGM_2020/blob/master/Presentations/C%C3%A9dricBouysset_From_RDKit_to_the_Universe.pdf">Slides</a></p></li>
+</ul>
+<p>There are some molecules containing specific patterns that the converter
+cannot currently tackle correctly. See
+<a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/3339">Issue #3339</a> for
+more info.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 2.0.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.2.0: </span>Improved the accuracy of the converter. Atoms in the resulting molecule
+now follow the same order as in the AtomGroup. The output of
+<code class="docutils literal notranslate"><span class="pre">atom.GetMonomerInfo().GetName()</span></code> now follows the guidelines for PDB
+files while the original name is still available through
+<code class="docutils literal notranslate"><span class="pre">atom.GetProp(&quot;_MDAnalysis_name&quot;)</span></code></p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.converters.RDKit.RDKitConverter.convert">
 <span class="sig-name descname"><span class="pre">convert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">NoImplicit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKit.html#RDKitConverter.convert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKit.RDKitConverter.convert" title="Permalink to this definition"></a></dt>
 <dd><p>Write selection at current trajectory frame to
-<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2021.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mol</span></code></a>.</p>
+<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2022.03)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mol</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -643,7 +665,7 @@ If after this process, an atom still has UEs, it needs a negative formal
 charge of -NUE.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>mol</strong> (<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.RWMol" title="(in The RDKit v2021.09)"><em>rdkit.Chem.rdchem.RWMol</em></a>) – The molecule is modified inplace and must have all hydrogens added</p>
+<dd class="field-odd"><p><strong>mol</strong> (<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.RWMol" title="(in The RDKit v2022.03)"><em>rdkit.Chem.rdchem.RWMol</em></a>) – The molecule is modified inplace and must have all hydrogens added</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -664,7 +686,7 @@ Finally, the fragments are recombined.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>mol</strong> (<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.RWMol" title="(in The RDKit v2021.09)"><em>rdkit.Chem.rdchem.RWMol</em></a>) – The molecule to standardize</p></li>
+<li><p><strong>mol</strong> (<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.RWMol" title="(in The RDKit v2022.03)"><em>rdkit.Chem.rdchem.RWMol</em></a>) – The molecule to standardize</p></li>
 <li><p><strong>max_iter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Maximum number of iterations to standardize conjugated systems</p></li>
 </ul>
 </dd>
@@ -672,7 +694,7 @@ Finally, the fragments are recombined.</p>
 <dd class="field-even"><p><strong>mol</strong> – The standardized molecule</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2021.09)">rdkit.Chem.rdchem.Mol</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2022.03)">rdkit.Chem.rdchem.Mol</a></p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -689,34 +711,37 @@ Finally, the fragments are recombined.</p>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>conjugated</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">[*-;!O:1]-[*:2]=[*:3]-[*-:4]&gt;&gt;[*+0:1]=[*:2]-[*:3]=[*+0:4]</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[*-:1]-[*:2]=[*:3]-[*-:4]&gt;&gt;[*+0:1]=[*:2]-[*:3]=[*+0:4]</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p>conjugated-N+</p></td>
+<tr class="row-odd"><td><p>conjugated N+</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[N;X3;v3:1]-[*:2]=[*:3]-[*-:4]&gt;&gt;[N+:1]=[*:2]-[*:3]=[*+0:4]</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p>conjugated-O-</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">[O:1]=[#6:2]-[*:3]=[*:4]-[*-:5]&gt;&gt;[O-:1]-[*:2]=[*:3]-[*:4]=[*+0:5]</span></code></p></td>
+<tr class="row-even"><td><p>conjugated O-</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[O:1]=[#6+0,#7+:2]-[*:3]=[*:4]-[*-:5]&gt;&gt;[O-:1]-[*:2]=[*:3]-[*:4]=[*+0:5]</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p>Cterm</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">[C-;X2:1]=[O:2]&gt;&gt;[C+0:1]=[O:2]</span></code></p></td>
+<tr class="row-odd"><td><p>conjug. S=O</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[O-:1]-[S;D4;v4:2]-[*:3]=[*:4]-[*-:5]&gt;&gt;[O+0:1]=[*:2]=[*:3]-[*:4]=[*+0:5]</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p>Nterm</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">[N-;X2;H1:1]&gt;&gt;[N+0:1]</span></code></p></td>
+<tr class="row-even"><td><p>Cterm</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[C-;X2;H0:1]=[O:2]&gt;&gt;[C+0:1]=[O:2]</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p>keto-enolate</p></td>
+<tr class="row-odd"><td><p>Nterm</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[N-;X2;H1;$(N-[*^3]):1]&gt;&gt;[N+0:1]</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>keto-enolate</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[#6-:1]-[#6:2]=[O:3]&gt;&gt;[#6+0:1]=[#6:2]-[O-:3]</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p>arginine</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">[N;H1:1]-[C-;X3;H0:2](-[N;H2:3])-[N;H2:4]&gt;&gt;[N:1]-[C+0:2](-[N:3])=[N+:4]</span></code></p></td>
+<tr class="row-odd"><td><p>arginine</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[C-;v3:1]-[#7+0;v3;H2:2]&gt;&gt;[#6+0:1]=[#7+:2]</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p>histidine</p></td>
+<tr class="row-even"><td><p>histidine</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">[#6+0;H0:1]=[#6+0:2]-[#7;X3:3]-[#6-;X3:4]&gt;&gt;[#6:1]=[#6:2]-[#7+:3]=[#6+0:4]</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p>sulfone</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">[S;X4;v4:1](-[O-;X1:2])-[O-;X1:3]&gt;&gt;[S:1](=[O+0:2])=[O+0:3]</span></code></p></td>
+<tr class="row-odd"><td><p>sulfone</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[S;D4;!v6:1]-[*-:2]&gt;&gt;[S;v6:1]=[*+0:2]</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p>nitro</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">[N;X3;v3:1](-[O-;X1:2])-[O-;X1:3]&gt;&gt;[N+:1](-[O-:2])=[O+0:3]</span></code></p></td>
+<tr class="row-even"><td><p>charged N</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[#7+0;X3:1]-[*-:2]&gt;&gt;[#7+:1]=[*+0:2]</span></code></p></td>
 </tr>
 </tbody>
 </table>
@@ -742,16 +767,19 @@ is to make <code class="docutils literal notranslate"><span class="pre">n</span>
 Since <code class="docutils literal notranslate"><span class="pre">anion-*=*</span></code> is the same as <code class="docutils literal notranslate"><span class="pre">*=*-anion</span></code> in terms of SMARTS, we can
 control that we don’t transform the same triplet of atoms back and forth by
 adding their indices to a list.
+This function also handles conjugated systems with triple bonds.
 The molecule needs to be kekulized first to also cover systems
 with aromatic rings.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>mol</strong> (<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.RWMol" title="(in The RDKit v2021.09)"><em>rdkit.Chem.rdchem.RWMol</em></a>) – The molecule to transform, modified inplace</p></li>
+<li><p><strong>mol</strong> (<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.RWMol" title="(in The RDKit v2022.03)"><em>rdkit.Chem.rdchem.RWMol</em></a>) – The molecule to transform, modified inplace</p></li>
 <li><p><strong>max_iter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Maximum number of iterations performed by the function</p></li>
 </ul>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<p>The molecule is modified inplace</p>
 </dd></dl>
 
 </section>
