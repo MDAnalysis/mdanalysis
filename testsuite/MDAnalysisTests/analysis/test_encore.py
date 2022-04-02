@@ -29,6 +29,7 @@ import numpy as np
 import sys
 import os
 import warnings
+import platform
 
 import pytest
 from numpy.testing import assert_equal, assert_almost_equal
@@ -444,6 +445,8 @@ class TestEncoreClustering(object):
         assert len(cluster_collection) == expected_value, "Unexpected " \
                                                           "results: {0}".format(cluster_collection)
 
+    @pytest.mark.xfail(platform.machine() == "arm64" and platform.system() == "Darwin",
+                       reason="Fails on M1 Mac")
     def test_clustering_three_ensembles_two_identical(self, ens1, ens2):
         cluster_collection = encore.cluster([ens1, ens2, ens1])
         expected_value = 40
