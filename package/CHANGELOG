@@ -2821,3 +2821,7 @@ Testsuite
 
 11/12/07 naveen
   * prepared for release outside lab
+  
+04/02/22 HenokB
+  * change python 2 code snippets to python 3
+
