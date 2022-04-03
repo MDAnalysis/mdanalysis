@@ -414,13 +414,14 @@ class PCA(AnalysisBase):
         return dot
 
     def project_single_frame(self, components=None):
-        """Runs an inverse-PCA and generates a trajectory that is projected on selected PCs
-        
+        """Runs an inverse-PCA and generates
+           a trajectory that is projected on selected PCs
+
         Run PCA class before using this function.
-        To project the trajectory onto the first principal component, pass components=0
+        To project the trajectory onto the first principal component,
             pca = PCA(universe, select='backbone').run()
             func = pca.project_single_frame(components=0)
-        
+
         To apply the projection on-the-fly, add as a transformation
             workflow = [other transformations, func]
             u.trajectory.add_transformations(*workflow)
@@ -437,12 +438,13 @@ class PCA(AnalysisBase):
         """
         if components is None:
             components = range(self.results.p_components.shape[1])
-        
+
         def wrapped(ts):
             xyz = self._atoms.positions.ravel() - self._xmean
-            dot = np.dot(xyz, self._p_components[:,components])
+            dot = np.dot(xyz, self._p_components[:, components])
             self._atoms.positions = np.reshape(
-                (np.dot(dot, self._p_components[:,components].T) + self._xmean), (-1,3)
+                (np.dot(dot, self._p_components[:, components].T)
+                 + self._xmean), (-1, 3)
             )
             return ts
 

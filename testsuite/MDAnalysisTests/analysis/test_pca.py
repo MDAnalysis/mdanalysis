@@ -144,6 +144,13 @@ def test_transform_universe():
     pca_test = PCA(u1).run()
     pca_test.transform(u2)
 
+def test_project_single_frame():
+    u = mda.Universe(PSF, DCD)
+    PSF_pca = PCA(u, select='backbone')
+    pca_run = PSF_pca.run()
+    func = PSF_pca.project_single_frame()
+    u.trajectory.add_transformations(func)
+    u.trajectory[-1]
 
 def test_cosine_content():
     rand = mda.Universe(RANDOM_WALK_TOPO, RANDOM_WALK)
