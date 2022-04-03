@@ -159,18 +159,18 @@ class MOL2Parser(TopologyReaderBase):
                 opt_fields = ['subst_id', 'subst_name', 'charge']
                 if len(columns) < 6:
                     raise ValueError("The @<TRIPOS>ATOM block in mol2 file {0}"
-                                    " should contain at least 6 fields to be"
-                                    " unpacked: atom_id atom_name x y z"
-                                    " atom_type [subst_id[subst_name"
-                                    " [charge [status_bit]]]]"
-                                    .format(os.path.basename(self.filename)))
+                                     " should contain at least 6 fields to be"
+                                     " unpacked: atom_id atom_name x y z"
+                                     " atom_type [subst_id[subst_name"
+                                     " [charge [status_bit]]]]".format(
+                        os.path.basename(self.filename)))
                 aid, name, x, y, z, atom_type = columns[:6]
                 for i in range(6, len(columns)):
                     opt_values[i-6] = columns[i]
                 for i in range(len(columns), 9):
                     warnings.warn("Not enough values to unpack."
-                                " {0} has been given value {1}."
-                                .format(opt_fields[i-6], opt_values[i-6]))
+                                  " {0} has been given value {1}.".format(
+                        opt_fields[i-6], opt_values[i-6]))
                 resid, resname, charge = opt_values
             ids.append(aid)
             names.append(name)
