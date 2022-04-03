@@ -153,7 +153,7 @@ class MOL2Parser(TopologyReaderBase):
 
         for a in atom_lines:
             columns = a.split()
-            opt_values = [1, '', 0.0]
+            opt_values = ['1', 'UNK', '0.0']
             opt_fields = ['subst_id', 'subst_name', 'charge']
             if len(columns) < 6:
                 raise ValueError("The @<TRIPOS>ATOM block in mol2 file {0}"
