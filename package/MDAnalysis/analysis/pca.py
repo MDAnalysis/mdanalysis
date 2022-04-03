@@ -411,8 +411,42 @@ class PCA(AnalysisBase):
         for i, ts in enumerate(traj[start:stop:step]):
             xyz = atomgroup.positions.ravel() - self._xmean
             dot[i] = np.dot(xyz, self._p_components[:, :dim])
-
         return dot
+
+    def project_single_frame(self, components=None):
+        """Runs an inverse-PCA and generates a trajectory that is projected on selected PCs
+        
+        Run PCA class before using this function.
+        To project the trajectory onto the first principal component, pass components=0
+            pca = PCA(universe, select='backbone').run()
+            func = pca.project_single_frame(components=0)
+        
+        To apply the projection on-the-fly, add as a transformation
+            workflow = [other transformations, func]
+            u.trajectory.add_transformations(*workflow)
+
+        Parameters
+        ----------
+        components : int, array, optional
+             Components to be projected onto.
+             The default ``None`` maps onto all components.
+
+        Returns
+        -------
+        Returns the projecting function which transforms a timestep
+        """
+        if components is None:
+            components = range(self.results.p_components.shape[1])
+        
+        def wrapped(ts):
+            xyz = self._atoms.positions.ravel() - self._xmean
+            dot = np.dot(xyz, self._p_components[:,components])
+            self._atoms.positions = np.reshape(
+                (np.dot(dot, self._p_components[:,components].T) + self._xmean), (-1,3)
+            )
+            return ts
+
+        return wrapped
 
     @due.dcite(
         Doi('10.1002/(SICI)1097-0134(19990901)36:4<419::AID-PROT5>3.0.CO;2-U'),
