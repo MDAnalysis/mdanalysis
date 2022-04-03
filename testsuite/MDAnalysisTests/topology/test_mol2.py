@@ -206,6 +206,7 @@ def test_all_elements():
     expected = np.array(expected, dtype=object)
     assert_equal(u.atoms.elements, expected)
 
+
 # Test for Issue #3385 / PR #3598
 def test_optional_columns():
     u = mda.Universe(StringIO(mol2_wo_opt_col), format='MOL2')
