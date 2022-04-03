@@ -53,8 +53,9 @@ packages with the help of :ref:`Selection exporters`.
         >>> np.all(ag3.ix == ag2.ix)
         True
 
-
     For further details on ordered selections, see :ref:`ordered-selections-label`.
+    
+    
 Selection Keywords
 ==================
 
