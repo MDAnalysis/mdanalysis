@@ -203,7 +203,7 @@ class MOL2Reader(base.ReaderBase):
 
         coords = np.zeros((self.n_atoms, 3), dtype=np.float32)
         for i, a in enumerate(atom_lines):
-            aid, name, x, y, z, atom_type, resid, resname, charge = a.split()[:9]
+            aid, name, x, y, z, atom_type = a.split()[:6]
 
             #x, y, z = float(x), float(y), float(z)
             coords[i, :] = x, y, z
