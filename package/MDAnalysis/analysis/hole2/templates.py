@@ -23,6 +23,7 @@
 
 """HOLE Analysis --- :mod:`MDAnalysis.analysis.hole2.templates`
 =====================================================================================
+
 :Author: Lily Wang
 :Year: 2020
 :Copyright: GNU Public License v3
