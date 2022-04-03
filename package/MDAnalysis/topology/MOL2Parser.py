@@ -41,9 +41,7 @@ Classes
    :inherited-members:
 
 """
-from email.policy import default
 import os
-from click import option
 import numpy as np
 
 from . import guessers
