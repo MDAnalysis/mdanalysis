@@ -446,7 +446,7 @@ class TestEncoreClustering(object):
                                                           "results: {0}".format(cluster_collection)
 
     @pytest.mark.xfail(platform.machine() == "arm64" and platform.system() == "Darwin",
-                       reason="Fails on M1 Mac")
+                       reason="see gh-3599")
     def test_clustering_three_ensembles_two_identical(self, ens1, ens2):
         cluster_collection = encore.cluster([ens1, ens2, ens1])
         expected_value = 40
