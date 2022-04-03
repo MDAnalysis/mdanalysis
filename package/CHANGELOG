@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin
+??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, HenokB
 
  * 2.2.0
 
@@ -31,9 +31,6 @@ Changes
     in AMBER. (Issue #2417, PR #3564)
 
 Deprecations
-
-04/02/22 HenokB
-  * Added a new badge to link it to the benchmark
 
 03/06/22 IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope,
          orbeckst, scal444, p-j-smith, edisj, Atharva7K, ojeda-e, jbarnoud,
