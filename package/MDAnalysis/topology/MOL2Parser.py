@@ -151,24 +151,27 @@ class MOL2Parser(TopologyReaderBase):
 
         for a in atom_lines:
             columns = a.split()
-            opt_values = ['1', 'UNK', '0.0']
-            opt_fields = ['subst_id', 'subst_name', 'charge']
-            if len(columns) < 6:
-                raise ValueError("The @<TRIPOS>ATOM block in mol2 file {0}"
-                                 " should contain at least 6 fields to be unpacked:"
-                                 " atom_id atom_name x y z atom_type"
-                                 " [subst_id[subst_name [charge [status_bit]]]]".format(
-                    os.path.basename(self.filename)))
-            if len(columns) > 9:
+            if len(columns) >= 9:
                 columns = columns[:9]
-            aid, name, x, y, z, atom_type = columns[:6]
-            for i in range(6, len(columns)):
-                opt_values[i-6] = columns[i]
-            for i in range(len(columns), 9):
-                warnings.warn("Not enough values to unpack."
-                              " {0} has been given value {1}.".format(
-                    opt_fields[i-6], opt_values[i-6]))
-            resid, resname, charge = opt_values
+                aid, name, x, y, z, atom_type, resid, resname, charge = columns
+            else:
+                opt_values = ['1', 'UNK', '0.0']
+                opt_fields = ['subst_id', 'subst_name', 'charge']
+                if len(columns) < 6:
+                    raise ValueError("The @<TRIPOS>ATOM block in mol2 file {0}"
+                                    " should contain at least 6 fields to be"
+                                    " unpacked: atom_id atom_name x y z"
+                                    " atom_type [subst_id[subst_name"
+                                    " [charge [status_bit]]]]"
+                                    .format(os.path.basename(self.filename)))
+                aid, name, x, y, z, atom_type = columns[:6]
+                for i in range(6, len(columns)):
+                    opt_values[i-6] = columns[i]
+                for i in range(len(columns), 9):
+                    warnings.warn("Not enough values to unpack."
+                                " {0} has been given value {1}."
+                                .format(opt_fields[i-6], opt_values[i-6]))
+                resid, resname, charge = opt_values
             ids.append(aid)
             names.append(name)
             types.append(atom_type)
