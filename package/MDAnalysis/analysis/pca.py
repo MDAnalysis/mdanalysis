@@ -411,6 +411,7 @@ class PCA(AnalysisBase):
         for i, ts in enumerate(traj[start:stop:step]):
             xyz = atomgroup.positions.ravel() - self._xmean
             dot[i] = np.dot(xyz, self._p_components[:, :dim])
+
         return dot
 
     def project_single_frame(self, components=None):
@@ -422,9 +423,8 @@ class PCA(AnalysisBase):
             pca = PCA(universe, select='backbone').run()
             func = pca.project_single_frame(components=0)
 
-        To apply the projection on-the-fly, add as a transformation
-            workflow = [other transformations, func]
-            u.trajectory.add_transformations(*workflow)
+        To apply the projection on-the-fly, may add as a transformation
+            u.trajectory.add_transformations(func)
 
         Parameters
         ----------
