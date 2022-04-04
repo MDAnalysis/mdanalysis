@@ -13,11 +13,8 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-<<<<<<< HEAD
-??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, AnirG
-=======
-??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy
->>>>>>> upstream/develop
+??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy, 
+         AnirG
 
  * 2.2.0
 
