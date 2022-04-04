@@ -78,15 +78,9 @@ def test_distvalues_ag_universe(u):
 
 
 def test_distvalues_updating_ag(u):
-    selection = 'resname ALA'
+    selection = 'around 5 resname ALA'
     ag = u.select_atoms(selection, updating=True)
-    ala_residues = u.atoms[[]]
-    
-    for _ in u.trajectory:
-        ala_residues |= ag
-    
-    selection_by_index = f"index {' '.join(list(map(str, ala_residues.ix)))}"
-   
+    selection_by_index = f"index {' '.join(list(map(str, ag.ix)))}"
     dist_ag = diffusionmap.DistanceMatrix(ag).run()
     dist_universe = diffusionmap.DistanceMatrix(u, select=selection_by_index).run()
     assert_allclose(dist_ag.results.dist_matrix,
