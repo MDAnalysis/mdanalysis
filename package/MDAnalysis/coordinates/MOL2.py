@@ -139,6 +139,8 @@ class MOL2Reader(base.ReaderBase):
        Ignores status bit strings
     .. versionchanged:: 2.0.0
        Bonds attribute is not added if no bonds are present in MOL2 file
+    .. versionchanged: 2.2.0
+       Optional columns will be assigned with default values when not provided
     """
     format = 'MOL2'
     units = {'time': None, 'length': 'Angstrom'}
