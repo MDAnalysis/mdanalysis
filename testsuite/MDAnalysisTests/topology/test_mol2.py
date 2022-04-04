@@ -47,6 +47,32 @@ NO_CHARGES
   2 N2       4.4000     9.1300    20.4710 N.am
 """
 
+mol2_partial_opt_col = """\
+@<TRIPOS>MOLECULE
+MOL2
+2
+SMALL
+NO_CHARGES
+
+
+@<TRIPOS>ATOM
+  1 N1       6.8420     9.9900    22.7430 N.am  1
+  2 N2       4.4000     9.1300    20.4710 N.am  2
+"""
+
+mol2_wo_required_col = """\
+@<TRIPOS>MOLECULE
+MOL2
+2
+SMALL
+NO_CHARGES
+
+
+@<TRIPOS>ATOM
+  1 N1       6.8420     9.9900    22.7430
+  2 N2       4.4000     9.1300    20.4710
+"""
+
 mol2_wrong_element = """\
 @<TRIPOS>MOLECULE
 mol2_wrong_element
@@ -208,9 +234,38 @@ def test_all_elements():
 
 
 # Test for Issue #3385 / PR #3598
-def test_optional_columns():
-    u = mda.Universe(StringIO(mol2_wo_opt_col), format='MOL2')
+def test_wo_optional_columns():
+    with pytest.warns(UserWarning, match='Not enough values to unpack'):
+        u = mda.Universe(StringIO(mol2_wo_opt_col), format='MOL2')
     assert_equal(
         u.atoms.elements,
         np.array(["N", "N"], dtype="U3")
     )
+    assert_equal(
+        u.atoms.resnames,
+        np.array(["UNK", "UNK"], dtype="U3")
+    )
+    assert_equal(
+        u.atoms.resids,
+        np.array(["1", "1"], dtype="U3")
+    )
+    assert_equal(
+        u.atoms.resnames,
+        np.array(["UNK", "UNK"], dtype="U3")
+    )
+
+
+def test_partial_optional_columns():
+    with pytest.warns(UserWarning, match='Not enough values to unpack'):
+        u = mda.Universe(StringIO(mol2_partial_opt_col), format='MOL2')
+    assert_equal(
+        u.atoms.resids,
+        np.array(["1", "2"], dtype="U3")
+    )
+
+
+def test_mol2_wo_required_columns():
+    with pytest.raises(ValueError, match='The @<TRIPOS>ATOM block in mol2 file'):
+        u = mda.Universe(StringIO(mol2_all_wrong_elements), format='MOL2')
+
+
