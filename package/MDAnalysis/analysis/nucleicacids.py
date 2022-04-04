@@ -76,6 +76,7 @@ class WCBase(AnalysisBase):
         
     def _prepare(self) -> None:
         self._res_dict = {k: [] for k in range(len(self._sel))}
+        self.results: pd.DataFrame = pd.DataFrame(columns=['Selection', 'Distance'])
     
     def _single_frame(self):
         wc = mdamath.norm(np.subtract(self._s1.positions, self._s2.positions))
@@ -84,4 +85,3 @@ class WCBase(AnalysisBase):
             self._res_dict[k].append(wc[k])
     
     def _conclude(self) -> None:
-        self.results: pd.DataFrame = pd.DataFrame.from_dict(self._res_dict)
