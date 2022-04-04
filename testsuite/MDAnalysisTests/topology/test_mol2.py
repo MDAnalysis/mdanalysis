@@ -267,4 +267,4 @@ def test_partial_optional_columns():
 def test_mol2_wo_required_columns():
     with pytest.raises(ValueError,
                        match='The @<TRIPOS>ATOM block in mol2 file'):
-        u = mda.Universe(StringIO(mol2_all_wrong_elements), format='MOL2')
+        u = mda.Universe(StringIO(mol2_wo_required_col), format='MOL2')
