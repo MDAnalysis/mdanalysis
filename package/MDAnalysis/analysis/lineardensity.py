@@ -28,7 +28,7 @@ A tool to compute mass and charge density profiles along the three
 cartesian axes [xyz] of the simulation cell. Works only for orthorombic,
 fixed volume cells (thus for simulations in canonical NVT ensemble).
 """
-import os.path as pat
+import os.path as path
 
 import numpy as np
 
