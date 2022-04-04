@@ -28,7 +28,7 @@ A tool to compute mass and charge density profiles along the three
 cartesian axes [xyz] of the simulation cell. Works only for orthorombic,
 fixed volume cells (thus for simulations in canonical NVT ensemble).
 """
-import os.path as path
+import os.path as pat
 
 import numpy as np
 
@@ -43,8 +43,9 @@ class LinearDensity(AnalysisBase):
     select : AtomGroup
           any atomgroup
     grouping : str {'atoms', 'residues', 'segments', 'fragments'}
-          Density profiles will be computed on the center of geometry
-          of a selected group of atoms
+          Density profiles will be computed either on the atom positions (in
+          the case of 'atoms') or on the center of mass of the specified
+          grouping unit ('residues', 'segments', or 'fragments').
     binsize : float
           Bin width in Angstrom used to build linear density
           histograms. Defines the resolution of the resulting density
@@ -100,6 +101,8 @@ class LinearDensity(AnalysisBase):
     .. versionchanged:: 2.2.0
        Fixed a bug that caused LinearDensity to fail if grouping="residues"
        or grouping="segments" were set.
+       Residues, segments, and fragments will be analysed based on their centre
+       of mass, not centre of geometry as previously stated.
     """
 
     def __init__(self, select, grouping='atoms', binsize=0.25, **kwargs):
@@ -145,19 +148,14 @@ class LinearDensity(AnalysisBase):
         self.totalmass = None
 
     def _prepare(self):
-        # group must be a local variable, otherwise there will be
-        # issues with parallelization
-        group = getattr(self._ags[0], self.grouping)
-
         # Get masses and charges for the selection
         if self.grouping == "atoms":
             self.masses = self._ags[0].masses
             self.charges = self._ags[0].charges
 
         elif self.grouping in ["residues", "segments", "fragments"]:
-            self.masses = np.array([elem.atoms.total_mass() for elem in group])
-            self.charges = np.array(
-                [elem.atoms.total_charge() for elem in group])
+            self.masses = self._ags[0].total_mass(compound=self.grouping)
+            self.charges = self._ags[0].total_charge(compound=self.grouping)
 
         else:
             raise AttributeError(
@@ -173,9 +171,8 @@ class LinearDensity(AnalysisBase):
         if self.grouping == 'atoms':
             positions = self._ags[0].positions  # faster for atoms
         else:
-            # Centre of geometry for residues, segments, fragments
-            positions = np.array(
-                [elem.atoms.centroid() for elem in self.group])
+            # Centre of mass for residues, segments, fragments
+            positions = self._ags[0].center_of_mass(compound=self.grouping)
 
         for dim in ['x', 'y', 'z']:
             idx = self.results[dim]['dim']
@@ -211,19 +208,18 @@ class LinearDensity(AnalysisBase):
                 self.results[dim][key] /= self.n_frames
             # Compute standard deviation for the error
             # For certain tests in testsuite, floating point imprecision
-            # can lead to negative radicands of tiny magnitude (yielding nan),
-            # or tiny positive values, both of which should actually be zero.
+            # can lead to negative radicands of tiny magnitude (yielding nan).
             # radicand_pos and radicand_char are therefore calculated first and
-            # and values that should be 0 are changed appropriately before
-            # the square root is calculated.
+            # and negative values set to 0 before the square root
+            # is calculated.
             radicand_pos = self.results[dim][
                 'pos_std'] - np.square(self.results[dim]['pos'])
-            radicand_pos[radicand_pos < 1e-9] = 0
+            radicand_pos[radicand_pos < 0] = 0
             self.results[dim]['pos_std'] = np.sqrt(radicand_pos)
 
             radicand_char = self.results[dim][
                 'char_std'] - np.square(self.results[dim]['char'])
-            radicand_char[radicand_char < 1e-9] = 0
+            radicand_char[radicand_char < 0] = 0
             self.results[dim]['char_std'] = np.sqrt(radicand_char)
 
         for dim in ['x', 'y', 'z']:
