@@ -235,26 +235,20 @@ def test_all_elements():
 
 # Test for Issue #3385 / PR #3598
 def test_wo_optional_columns():
-    with pytest.warns(UserWarning, match='Not enough values to unpack'):
-        u = mda.Universe(StringIO(mol2_wo_opt_col), format='MOL2')
+    u = mda.Universe(StringIO(mol2_wo_opt_col), format='MOL2')
     assert_equal(
         u.atoms.elements,
         np.array(["N", "N"], dtype="U3")
     )
-    assert_equal(
-        u.atoms.resnames,
-        np.array(["UNK", "UNK"], dtype="U3")
-    )
     assert_equal(u.atoms.resids, np.array([1, 1]))
     assert_equal(
         u.atoms.resnames,
-        np.array(["UNK", "UNK"], dtype="U3")
+        np.array(["", ""], dtype="U3")
     )
 
 
 def test_partial_optional_columns():
-    with pytest.warns(UserWarning, match='Not enough values to unpack'):
-        u = mda.Universe(StringIO(mol2_partial_opt_col), format='MOL2')
+    u = mda.Universe(StringIO(mol2_partial_opt_col), format='MOL2')
     assert_equal(u.atoms.resids, np.array([1, 2]))
 
 
