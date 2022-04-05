@@ -103,11 +103,15 @@ The trajectory is included with the test data files. The data in
    ax.set_xlabel("time (ps)")
    ax.set_ylabel(r"RMSD ($\\AA$)")
    fig.savefig("rmsd_all_CORE_LID_NMP_ref1AKE.pdf")
+   
+.. _figure-RMSD:
 
 .. figure:: /images/RSMD_plot.png
       :scale: 50 %
-      :alt: RSMD plot
-
+      :alt: RMSD plot
+      
+      RMSD plot for backbone and CORE , LID , NMP domain of the protein.
+      
 
 Functions
 ---------
