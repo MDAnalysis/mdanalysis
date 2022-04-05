@@ -73,7 +73,7 @@ NMP domain.
 * calculate the backbone RMSD and RMSD for CORE, LID, NMP (backbone atoms)
 
 The trajectory is included with the test data files. The data in
-:attr:`RMSD.results.rmsd` is plotted with :func:`matplotlib.pyplot.plot`::
+:attr:`RMSD.results.rmsd` is plotted with :func:`matplotlib.pyplot.plot` (see Figure :ref:`RMSD plot figure <figure-RMSD>`)::
 
    import MDAnalysis
    from MDAnalysis.tests.datafiles import PSF,DCD,CRD
@@ -110,9 +110,9 @@ The trajectory is included with the test data files. The data in
       :scale: 50 %
       :alt: RMSD plot
       
-      RMSD plot for backbone and CORE , LID , NMP domain of the protein.
-      
+      RMSD plot for backbone and CORE, LID, NMP domain of the protein.
 
+      
 Functions
 ---------
 
