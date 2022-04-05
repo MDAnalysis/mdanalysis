@@ -130,7 +130,7 @@ of a protein and the radius of gyration of the backbone atoms are calculated:</p
     <span class="n">r</span> <span class="o">=</span> <span class="n">cterm</span><span class="o">.</span><span class="n">pos</span> <span class="o">-</span> <span class="n">nterm</span><span class="o">.</span><span class="n">pos</span>  <span class="c1"># end-to-end vector from atom positions</span>
     <span class="n">d</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>   <span class="c1"># end-to-end distance</span>
     <span class="n">rgyr</span> <span class="o">=</span> <span class="n">bb</span><span class="o">.</span><span class="n">radius_of_gyration</span><span class="p">()</span>  <span class="c1"># method of a AtomGroup; updates with each frame</span>
-    <span class="nb">print</span> <span class="s2">&quot;frame = </span><span class="si">%d</span><span class="s2">: d = </span><span class="si">%f</span><span class="s2"> Angstroem, Rgyr = </span><span class="si">%f</span><span class="s2"> Angstroem&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">rgyr</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;frame = </span><span class="si">{</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="si">}</span><span class="s2">: d = </span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s2"> Angstroem, Rgyr = </span><span class="si">{</span><span class="n">rgyr</span><span class="si">}</span><span class="s2"> Angstroem&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <section id="using-mdanalysis-in-python">
@@ -183,7 +183,7 @@ just make clear in the examples what is input and what is output.)</p>
 <p>The <a class="reference internal" href="core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> contains a number of important attributes,
 the most important ones of which is
 <a class="reference internal" href="core/universe.html#MDAnalysis.core.universe.Universe.atoms" title="MDAnalysis.core.universe.Universe.atoms"><code class="xref py py-attr docutils literal notranslate"><span class="pre">atoms</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
 <span class="go">&lt;AtomGroup with 3341 atoms&gt;</span>
 </pre></div>
 </div>
@@ -194,14 +194,14 @@ objects. The <a class="reference internal" href="core/groups.html#MDAnalysis.cor
 elementary and fundamental object in MDAnalysis.</p>
 <p>The <code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.Universe.trajectory</span></code> attribute gives access to the coordinates
 over time:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
 <span class="go">&lt; DCDReader &#39;/..../MDAnalysis/tests/data/adk_dims.dcd&#39; with 98 frames of 3341 atoms (0 fixed) &gt;</span>
 </pre></div>
 </div>
 <p>Finally, the <code class="xref py py-meth docutils literal notranslate"><span class="pre">MDAnalysis.Universe.select_atoms()</span></code> method generates a new
 <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> according to a selection criterion</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">calphas</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name CA&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">calphas</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">calphas</span><span class="p">)</span>
 <span class="go">&lt;AtomGroup with 214 atoms&gt;</span>
 </pre></div>
 </div>

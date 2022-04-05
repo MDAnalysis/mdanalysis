@@ -475,7 +475,7 @@ them.</p>
 <p>The most straightforward way to concatentate two AtomGroups is by using the
 <code class="docutils literal notranslate"><span class="pre">+</span></code> operator:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ordered</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;segid DMPC and resid 3 and name P&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;segid DMPC and resid 2 and name P&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="nb">list</span><span class="p">(</span><span class="n">ordered</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">ordered</span><span class="p">))</span>
 <span class="go">[&lt; Atom 570: name &#39;P&#39; of type &#39;180&#39; of resid &#39;DMPC&#39;, 3 and &#39;DMPC&#39;&gt;,</span>
 <span class="go">&lt; Atom 452: name &#39;P&#39; of type &#39;180&#39; of resid &#39;DMPC&#39;, 2 and &#39;DMPC&#39;&gt;]</span>
 </pre></div>
@@ -483,7 +483,7 @@ them.</p>
 <p>A shortcut is to provide <em>two or more</em> selections to
 <a class="reference internal" href="core/universe.html#MDAnalysis.core.universe.Universe.select_atoms" title="MDAnalysis.core.universe.Universe.select_atoms"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_atoms()</span></code></a>, which then
 does the concatenation automatically:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="nb">list</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;segid DMPC and resid 3 and name P&quot;</span><span class="p">,</span> <span class="s2">&quot;segid DMPC and resid 2 and name P&quot;</span><span class="p">))</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;segid DMPC and resid 3 and name P&quot;</span><span class="p">,</span> <span class="s2">&quot;segid DMPC and resid 2 and name P&quot;</span><span class="p">)))</span>
 <span class="go">[&lt; Atom 570: name &#39;P&#39; of type &#39;180&#39; of resid &#39;DMPC&#39;, 3 and &#39;DMPC&#39;&gt;,</span>
 <span class="go">&lt; Atom 452: name &#39;P&#39; of type &#39;180&#39; of resid &#39;DMPC&#39;, 2 and &#39;DMPC&#39;&gt;]</span>
 </pre></div>
@@ -491,7 +491,7 @@ does the concatenation automatically:</p>
 <p>Just for comparison to show that a single selection string does not
 work as one might expect:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># WRONG!</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span> <span class="nb">list</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;segid DMPC and ( resid 3 or resid 2 ) and name P&quot;</span><span class="p">))</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;segid DMPC and (resid 3 or resid 2) and name P&quot;</span><span class="p">)))</span>
 <span class="p">[</span><span class="o">&lt;</span> <span class="n">Atom</span> <span class="mi">452</span><span class="p">:</span> <span class="n">name</span> <span class="s1">&#39;P&#39;</span> <span class="n">of</span> <span class="nb">type</span> <span class="s1">&#39;180&#39;</span> <span class="n">of</span> <span class="n">resid</span> <span class="s1">&#39;DMPC&#39;</span><span class="p">,</span> <span class="mi">2</span> <span class="ow">and</span> <span class="s1">&#39;DMPC&#39;</span><span class="o">&gt;</span><span class="p">,</span>
 <span class="o">&lt;</span> <span class="n">Atom</span> <span class="mi">570</span><span class="p">:</span> <span class="n">name</span> <span class="s1">&#39;P&#39;</span> <span class="n">of</span> <span class="nb">type</span> <span class="s1">&#39;180&#39;</span> <span class="n">of</span> <span class="n">resid</span> <span class="s1">&#39;DMPC&#39;</span><span class="p">,</span> <span class="mi">3</span> <span class="ow">and</span> <span class="s1">&#39;DMPC&#39;</span><span class="o">&gt;</span><span class="p">]</span>
 </pre></div>
