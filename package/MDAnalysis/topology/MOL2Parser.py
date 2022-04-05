@@ -97,6 +97,8 @@ class MOL2Parser(TopologyReaderBase):
        Bonds attribute is not added if no bonds are present in MOL2 file
     .. versionchanged: 2.0.0
        Parse elements from atom types.
+    .. versionchanged:: 2.2.0
+       Optional columns will be assigned with default values when not provided
     """
     format = 'MOL2'
 
@@ -148,9 +150,33 @@ class MOL2Parser(TopologyReaderBase):
         resids = []
         resnames = []
         charges = []
-
+        set_charge = True
+        for line in sections['molecule']:
+            if line.strip().lower() == 'no_charges':
+                set_charge = False
         for a in atom_lines:
-            aid, name, x, y, z, atom_type, resid, resname, charge = a.split()[:9]
+            columns = a.split()
+            if len(columns) >= 9:
+                columns = columns[:9]
+                aid, name, x, y, z, atom_type, resid, resname, charge = columns
+            elif len(columns) < 6:
+                raise ValueError(f"The @<TRIPOS>ATOM block in mol2 file"
+                                 f" {os.path.basename(self.filename)}"
+                                 f" should contain at least 6 fields to be"
+                                 f" unpacked: atom_id atom_name x y z"
+                                 f" atom_type [subst_id[subst_name"
+                                 f" [charge [status_bit]]]]")
+            else:
+                aid, name, x, y, z, atom_type = columns[:6]
+                resid = '1'
+                resname = ''
+                charge = ''
+                opt_values = [resid, resname, charge]
+                for i in range(6, len(columns)):
+                    opt_values[i-6] = columns[i]
+                resid, resname, charge = opt_values
+                if len(charge):
+                    set_charge = False
 
             ids.append(aid)
             names.append(name)
@@ -182,7 +208,8 @@ class MOL2Parser(TopologyReaderBase):
         attrs.append(Atomids(np.array(ids, dtype=np.int32)))
         attrs.append(Atomnames(np.array(names, dtype=object)))
         attrs.append(Atomtypes(np.array(types, dtype=object)))
-        attrs.append(Charges(np.array(charges, dtype=np.float32)))
+        if set_charge:
+            attrs.append(Charges(np.array(charges, dtype=np.float32)))
         attrs.append(Masses(masses, guessed=True))
 
         if not np.all(validated_elements == ''):
