@@ -428,13 +428,16 @@ class PCA(AnalysisBase):
         function
             The projecting function which transforms a timestep.
 
-        Example
-        ---------
-        Run PCA class before using this function.:
+        Examples
+        --------
+
+        Run PCA class before using this function.::
           pca = PCA(universe, select='backbone').run()
 
-        To project the trajectory onto the first principal component, run::
+
+        To project the trajectory onto the first principal component, run:::
           project = pca.project_single_frame(components=0)
+
 
         To apply the projection on-the-fly, may add as a transformation::
           u.trajectory.add_transformations(project)
