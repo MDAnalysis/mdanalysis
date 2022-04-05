@@ -80,6 +80,8 @@ class LinearDensity(AnalysisBase):
        ldens.run()
        print(ldens.results.x.pos)
 
+       # alternatively, specify grouping/binsize like this
+       ldens = LinearDensity(selection, grouping='residues', binsize=1.0)
 
     .. versionadded:: 0.14.0
 
