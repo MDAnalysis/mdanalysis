@@ -46,13 +46,20 @@ def test_unique_int_1d(values):
 
 
 @pytest.mark.parametrize(['array', 'unique_array', 'inverse'],  (
-    ([], [], []),  # empty array
-    ([1, 1, 1, 1, ], [1,], [0, 0, 0, 0, ]),  # all identical
-    ([2, 3, 5, 7, ], [2, 3, 5, 7, ], [0, 1, 2, 3, ]),  # unique, sorted
-    ([5, 2, 7, 3, ], [5, 2, 7, 3, ], [0, 1, 2, 3, ],),  # unique, unsorted
-    ([1, 2, 2, 4, 4, 6, ], [1, 2, 4, 6, ], [0, 1, 1, 2, 2, 3, ]),  # duplicates, sorted
-    ([1, 2, 2, 6, 4, 4, ], [1, 2, 6, 4, ], [0, 1, 1, 2, 3, 3, ]),  # duplicates, unsorted
-    ([1, 1, 2, 2, 1, 1, ], [1, 2, ], [0, 0, 1, 1, 0, 0, ]),  # duplicated, unsorted, unsorted inverse
+    # empty array
+    ([], [], []),  
+    # all identical
+    ([1, 1, 1, 1, ], [1,], [0, 0, 0, 0, ]), 
+    # unique, sorted
+    ([2, 3, 5, 7, ], [2, 3, 5, 7, ], [0, 1, 2, 3, ]),  
+    # unique, unsorted
+    ([5, 2, 7, 3, ], [5, 2, 7, 3, ], [0, 1, 2, 3, ],), 
+    # duplicates, sorted
+    ([1, 2, 2, 4, 4, 6, ], [1, 2, 4, 6, ], [0, 1, 1, 2, 2, 3, ]),
+    # duplicates, unsorted
+    ([1, 2, 2, 6, 4, 4, ], [1, 2, 6, 4, ], [0, 1, 1, 2, 3, 3, ]),
+    # duplicated, unsorted, unsorted inverse
+    ([1, 1, 2, 2, 1, 1, ], [1, 2, ], [0, 0, 1, 1, 0, 0, ]),
 ))
 def test_inverse_unique_contiguous_1d_array(array, unique_array, inverse):
     array = np.array(array, dtype=np.intp)
