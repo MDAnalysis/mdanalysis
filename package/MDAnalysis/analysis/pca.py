@@ -432,15 +432,15 @@ class PCA(AnalysisBase):
         --------
 
         Run PCA class before using this function.::
-          pca = PCA(universe, select='backbone').run()
+            pca = PCA(universe, select='backbone').run()
 
 
         To project the trajectory onto the first principal component, run:::
-          project = pca.project_single_frame(components=0)
+            project = pca.project_single_frame(components=0)
 
 
         To apply the projection on-the-fly, may add as a transformation::
-          u.trajectory.add_transformations(project)
+            u.trajectory.add_transformations(project)
 
 
         .. versionadded:: 2.2.0
