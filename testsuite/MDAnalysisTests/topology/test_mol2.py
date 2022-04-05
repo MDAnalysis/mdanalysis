@@ -40,8 +40,6 @@ MOL2
 2
 SMALL
 NO_CHARGES
-
-
 @<TRIPOS>ATOM
   1 N1       6.8420     9.9900    22.7430 N.am
   2 N2       4.4000     9.1300    20.4710 N.am
@@ -53,8 +51,6 @@ MOL2
 2
 SMALL
 NO_CHARGES
-
-
 @<TRIPOS>ATOM
   1 N1       6.8420     9.9900    22.7430 N.am  1
   2 N2       4.4000     9.1300    20.4710 N.am  2
@@ -66,8 +62,6 @@ MOL2
 2
 SMALL
 NO_CHARGES
-
-
 @<TRIPOS>ATOM
   1 N1       6.8420     9.9900    22.7430
   2 N2       4.4000     9.1300    20.4710
