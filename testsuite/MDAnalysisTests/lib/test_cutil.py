@@ -28,6 +28,7 @@ from MDAnalysis.lib._cutil import (
     unique_int_1d, find_fragments, _in2d, inverse_unique_contiguous_1d_array,
 )
 
+
 @pytest.mark.parametrize('values', (
     [],  # empty array
     [1, 1, 1, 1, ],  # all identical
@@ -47,13 +48,13 @@ def test_unique_int_1d(values):
 
 @pytest.mark.parametrize(['array', 'unique_array', 'inverse'],  (
     # empty array
-    ([], [], []),  
+    ([], [], []),
     # all identical
-    ([1, 1, 1, 1, ], [1,], [0, 0, 0, 0, ]), 
+    ([1, 1, 1, 1, ], [1, ], [0, 0, 0, 0, ]),
     # unique, sorted
-    ([2, 3, 5, 7, ], [2, 3, 5, 7, ], [0, 1, 2, 3, ]),  
+    ([2, 3, 5, 7, ], [2, 3, 5, 7, ], [0, 1, 2, 3, ]),
     # unique, unsorted
-    ([5, 2, 7, 3, ], [5, 2, 7, 3, ], [0, 1, 2, 3, ],), 
+    ([5, 2, 7, 3, ], [5, 2, 7, 3, ], [0, 1, 2, 3, ],),
     # duplicates, sorted
     ([1, 2, 2, 4, 4, 6, ], [1, 2, 4, 6, ], [0, 1, 1, 2, 2, 3, ]),
     # duplicates, unsorted
