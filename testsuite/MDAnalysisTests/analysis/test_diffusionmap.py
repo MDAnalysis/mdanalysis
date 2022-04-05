@@ -100,6 +100,13 @@ def test_long_traj(u):
         dmap.run()
 
 
+def test_updating_atomgroup(u):
+    with pytest.warns(UserWarning, match='U must be a static AtomGroup'):
+        resid_select = 'around 5 resname ALA'
+        ag = u.select_atoms(resid_select, updating=True)
+        dmap = diffusionmap.DiffusionMap(ag)
+        dmap.run()
+
 def test_not_universe_atomgroup_error(u):
     trj_only = u.trajectory
     with pytest.raises(ValueError, match='U is not a Universe or AtomGroup'):
