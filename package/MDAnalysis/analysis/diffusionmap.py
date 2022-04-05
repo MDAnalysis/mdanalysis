@@ -156,7 +156,7 @@ import warnings
 import numpy as np
 
 from MDAnalysis.core.universe import Universe
-from MDAnalysis.core.groups import AtomGroup
+from MDAnalysis.core.groups import AtomGroup, UpdatingAtomGroup
 from .rms import rmsd
 from .base import AnalysisBase
 
@@ -252,6 +252,12 @@ class DistanceMatrix(AnalysisBase):
         # remember that this must be called before referencing self.n_frames
         super(DistanceMatrix, self).__init__(universe.universe.trajectory,
                                              **kwargs)
+
+        if isinstance(universe, UpdatingAtomGroup):
+            wmsg = ("U must be a static AtomGroup. Parsing an updating AtomGroup "
+                    "will result in a static AtomGroup with the first frame "
+                    "atom selection.")
+            warnings.warn(wmsg)
 
         self.atoms = universe.select_atoms(select)
         self._metric = metric

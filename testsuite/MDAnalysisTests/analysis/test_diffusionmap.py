@@ -77,16 +77,6 @@ def test_distvalues_ag_universe(u):
                     dist_ag.results.dist_matrix)
 
 
-def test_distvalues_updating_ag(u):
-    selection = 'around 5 resname ALA'
-    ag = u.select_atoms(selection, updating=True)
-    selection_by_index = f"index {' '.join(list(map(str, ag.ix)))}"
-    dist_ag = diffusionmap.DistanceMatrix(ag).run()
-    dist_universe = diffusionmap.DistanceMatrix(u, select=selection_by_index).run()
-    assert_allclose(dist_ag.results.dist_matrix,
-                    dist_universe.results.dist_matrix)
-
-
 def test_different_steps(u):
     dmap = diffusionmap.DiffusionMap(u, select='backbone')
     dmap.run(step=3)
