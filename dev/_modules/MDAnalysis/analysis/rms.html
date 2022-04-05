@@ -164,7 +164,7 @@
 <span class="sd">* calculate the backbone RMSD and RMSD for CORE, LID, NMP (backbone atoms)</span>
 
 <span class="sd">The trajectory is included with the test data files. The data in</span>
-<span class="sd">:attr:`RMSD.results.rmsd` is plotted with :func:`matplotlib.pyplot.plot`::</span>
+<span class="sd">:attr:`RMSD.results.rmsd` is plotted with :func:`matplotlib.pyplot.plot` (see Figure :ref:`RMSD plot figure &lt;figure-RMSD&gt;`)::</span>
 
 <span class="sd">   import MDAnalysis</span>
 <span class="sd">   from MDAnalysis.tests.datafiles import PSF,DCD,CRD</span>
@@ -194,8 +194,16 @@
 <span class="sd">   ax.set_xlabel(&quot;time (ps)&quot;)</span>
 <span class="sd">   ax.set_ylabel(r&quot;RMSD ($\\AA$)&quot;)</span>
 <span class="sd">   fig.savefig(&quot;rmsd_all_CORE_LID_NMP_ref1AKE.pdf&quot;)</span>
+<span class="sd">   </span>
+<span class="sd">.. _figure-RMSD:</span>
 
+<span class="sd">.. figure:: /images/RSMD_plot.png</span>
+<span class="sd">      :scale: 50 %</span>
+<span class="sd">      :alt: RMSD plot</span>
+<span class="sd">      </span>
+<span class="sd">      RMSD plot for backbone and CORE, LID, NMP domain of the protein.</span>
 
+<span class="sd">      </span>
 <span class="sd">Functions</span>
 <span class="sd">---------</span>
 
