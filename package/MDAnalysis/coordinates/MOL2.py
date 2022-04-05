@@ -139,8 +139,6 @@ class MOL2Reader(base.ReaderBase):
        Ignores status bit strings
     .. versionchanged:: 2.0.0
        Bonds attribute is not added if no bonds are present in MOL2 file
-    .. versionchanged:: 2.2.0
-       Optional columns will be assigned with default values when not provided
     """
     format = 'MOL2'
     units = {'time': None, 'length': 'Angstrom'}
@@ -205,7 +203,7 @@ class MOL2Reader(base.ReaderBase):
 
         coords = np.zeros((self.n_atoms, 3), dtype=np.float32)
         for i, a in enumerate(atom_lines):
-            aid, name, x, y, z, atom_type = a.split()[:6]
+            aid, name, x, y, z, atom_type, resid, resname, charge = a.split()[:9]
 
             #x, y, z = float(x), float(y), float(z)
             coords[i, :] = x, y, z
