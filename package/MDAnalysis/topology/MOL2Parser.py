@@ -167,7 +167,6 @@ class MOL2Parser(TopologyReaderBase):
                                  f" atom_type [subst_id[subst_name"
                                  f" [charge [status_bit]]]]")
             else:
-                opt_values = ['1', '', '0.0']
                 aid, name, x, y, z, atom_type = columns[:6]
                 resid = '1'
                 resname = ''
