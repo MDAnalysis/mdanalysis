@@ -236,20 +236,18 @@ def test_all_elements():
 # Test for Issue #3385 / PR #3598
 def test_wo_optional_columns():
     u = mda.Universe(StringIO(mol2_wo_opt_col), format='MOL2')
-    assert_equal(
-        u.atoms.elements,
-        np.array(["N", "N"], dtype="U3")
-    )
     assert_equal(u.atoms.resids, np.array([1, 1]))
-    assert_equal(
-        u.atoms.resnames,
-        np.array(["", ""], dtype="U3")
-    )
+    assert_equal(u.atoms.resnames, np.array(["", ""], dtype="U3"))
+    with pytest.raises(mda.exceptions.NoDataError):
+        u.atoms.charges
 
 
 def test_partial_optional_columns():
     u = mda.Universe(StringIO(mol2_partial_opt_col), format='MOL2')
     assert_equal(u.atoms.resids, np.array([1, 2]))
+    assert_equal(u.atoms.resnames, np.array(["", ""], dtype="U3"))
+    with pytest.raises(mda.exceptions.NoDataError):
+        u.atoms.charges
 
 
 def test_mol2_wo_required_columns():

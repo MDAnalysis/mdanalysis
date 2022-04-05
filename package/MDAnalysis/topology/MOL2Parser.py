@@ -150,10 +150,10 @@ class MOL2Parser(TopologyReaderBase):
         resids = []
         resnames = []
         charges = []
-        if 'NO_CHARGES' in sections['molecule']:
-            set_charge = False
-        else:
-            set_charge = True
+        set_charge = True
+        for line in sections['molecule']:
+            if line.strip().lower() == 'no_charges':
+                set_charge = False
         for a in atom_lines:
             columns = a.split()
             if len(columns) >= 9:
@@ -177,6 +177,7 @@ class MOL2Parser(TopologyReaderBase):
                 resid, resname, charge = opt_values
                 if len(charge):
                     set_charge = False
+
             ids.append(aid)
             names.append(name)
             types.append(atom_type)
