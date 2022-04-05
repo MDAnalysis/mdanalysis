@@ -154,6 +154,7 @@ class MOL2Parser(TopologyReaderBase):
         for line in sections['molecule']:
             if line.strip().lower() == 'no_charges':
                 set_charge = False
+                break
         for a in atom_lines:
             columns = a.split()
             if len(columns) >= 9:
