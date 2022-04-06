@@ -1,0 +1,153 @@
+name: 'setup-deps'
+description: 'setup python dependencies for an MDAnalysis install'
+inputs:
+  full-deps:
+    description: 'install optional dependencies'
+    default: false
+  extra-conda-deps:
+    description: 'extra dependencies to install via conda'
+    default: ''
+  extra-pip-deps:
+    description: 'extra dependencies to install via pip'
+    default: ''
+  mamba:
+    description: 'use mamba instead of conda'
+    default: false
+  # conda-installed min dependencies
+  biopython:
+    default: 'biopython'
+  codecov:
+    default: 'codecov'
+  cython:
+    default: 'cython'
+  griddataformats:
+    default: 'griddataformats'
+  gsd:
+    default: 'gsd'
+  hypothesis:
+    default: 'hypothesis'
+  matplotlib:
+    default: 'matplotlib-base'
+  mmtf-python:
+    default: 'mmtf-python'
+  networkx:
+    default: 'networkx'
+  numpy:
+    default: 'numpy'
+  packaging:
+    default: 'packaging'
+  pip:
+    default: 'pip'
+  pytest:
+    default: 'pytest'
+  scipy:
+    default: 'scipy'
+  threadpoolctl:
+    default: 'threadpoolctl'
+  tqdm:
+    default: 'tqdm>=4.43.0'
+  # conda-installed optional dependencies
+  chemfiles-python:
+    default: 'chemfiles-python>=0.9'
+  clustalw:
+    default: 'clustalw=2.1'
+  h5py:
+    default: 'h5py'
+  joblib:
+    default: 'joblib>=0.12'
+  netcdf4:
+    default: 'netcdf4'
+  openmm:
+    default: 'openmm'
+  rdkit:
+    default: 'rdkit>=2020.03.1'
+  scikit-learn:
+    default: 'scikit-learn'
+  seaborn:
+    default: 'seaborn>=0.7.0'
+  tidynamics:
+    default: 'tidynamics>=1.0.0'
+  # pip-installed min dependencies
+  coverage:
+    default: 'coverage<5'
+  pytest-cov:
+    default: 'pytest-cov==2.10.1'
+  pytest-xdist:
+    default: 'pytest-xdist'
+  # pip-install optional dependencies
+  duecredit:
+    default: 'duecredit'
+  parmed:
+    default: 'parmed'
+
+runs:
+  using: "composite"
+  steps:
+    - name: conda_install
+      shell: bash -l {0}
+      env:
+        CONDA_MIN_DEPS: |
+          ${{ inputs.biopython }}
+          ${{ inputs.codecov }}
+          ${{ inputs.cython }}
+          ${{ inputs.griddataformats }}
+          ${{ inputs.gsd }}
+          ${{ inputs.hypothesis }}
+          ${{ inputs.matplotlib }}
+          ${{ inputs.mmtf-python }}
+          ${{ inputs.networkx }}
+          ${{ inputs.numpy }}
+          ${{ inputs.packaging }}
+          ${{ inputs.pip }}
+          ${{ inputs.pytest }}
+          ${{ inputs.scipy }}
+          ${{ inputs.threadpoolctl }}
+          ${{ inputs.tqdm }}
+        CONDA_OPT_DEPS: |
+          ${{ inputs.chemfiles-python }}
+          ${{ inputs.clustalw }}
+          ${{ inputs.h5py }}
+          ${{ inputs.joblib }}
+          ${{ inputs.netcdf4 }}
+          ${{ inputs.openmm }}
+          ${{ inputs.rdkit }}
+          ${{ inputs.scikit-learn }}
+          ${{ inputs.seaborn }}
+          ${{ inputs.tidynamics }}
+
+      run: |
+        # setup full variable
+        if [ ${{ inputs.full-deps }} = "true" ]; then
+          CONDA_DEPS="${CONDA_MIN_DEPS} ${CONDA_OPT_DEPS} ${{ inputs.extra-conda-deps }}"
+        else
+          CONDA_DEPS="${CONDA_MIN_DEPS} ${{ inputs.extra-conda-deps }}"
+        fi
+
+        # do the install
+        if [ ${{ inputs.mamba }} = "true" ]; then
+          mamba install ${CONDA_DEPS}
+        else
+          conda install ${CONDA_DEPS}
+        fi
+          
+    - name: pip_install
+      shell: bash -l {0}
+      env:
+        PIP_MIN_DEPS: |
+          ${{ inputs.coverage }}
+          ${{ inputs.pytest-cov }}
+          ${{ inputs.pytest-xdist }}
+        PIP_OPT_DEPS: |
+          ${{ inputs.duecredit }}
+          ${{ inputs.parmed }}
+      run: |
+        # setup full variable
+        if [ ${{ inputs.full-deps }} = "true" ]; then
+          PIP_DEPS="${PIP_MIN_DEPS} ${PIP_OPT_DEPS} ${{ inputs.extra-pip-deps }}"
+        else
+          PIP_DEPS="${PIP_MIN_DEPS} ${{ inputs.extra-pip-deps }}"
+        fi
+        
+        # do the install
+        pip install ${PIP_DEPS}
+

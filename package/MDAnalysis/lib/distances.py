@@ -73,6 +73,8 @@ from .util import check_coords, check_box
 from .mdamath import triclinic_vectors
 from ._augment import augment_coordinates, undo_augment
 from .nsgrid import FastNS
+from .c_distances import _minimize_vectors_ortho, _minimize_vectors_triclinic
+
 
 # hack to select backend with backend=<backend> kwarg. Note that
 # the cython parallel code (prange) in parallel.distances is
@@ -103,7 +105,8 @@ def _run(funcname, args=None, kwargs=None, backend="serial"):
 
 # serial versions are always available (and are typically used within
 # the core and topology modules)
-from .c_distances import (calc_distance_array,
+from .c_distances import (_UINT64_MAX,
+                          calc_distance_array,
                           calc_distance_array_ortho,
                           calc_distance_array_triclinic,
                           calc_self_distance_array,
@@ -221,10 +224,14 @@ def distance_array(reference, configuration, box=None, result=None,
     confnum = configuration.shape[0]
     refnum = reference.shape[0]
 
+    # check resulting array will not overflow UINT64_MAX
+    if refnum * confnum > _UINT64_MAX:
+        raise ValueError(f"Size of resulting array {refnum * confnum} elements"
+                         " larger than size of maximum integer")
+
     distances = _check_result_array(result, (refnum, confnum))
     if len(distances) == 0:
         return distances
-
     if box is not None:
         boxtype, box = check_box(box)
         if boxtype == 'ortho':
@@ -293,11 +300,14 @@ def self_distance_array(reference, box=None, result=None, backend="serial"):
     """
     refnum = reference.shape[0]
     distnum = refnum * (refnum - 1) // 2
+    # check resulting array will not overflow UINT64_MAX
+    if distnum > _UINT64_MAX:
+        raise ValueError(f"Size of resulting array {distnum} elements larger"
+                         " than size of maximum integer")
 
     distances = _check_result_array(result, (distnum,))
     if len(distances) == 0:
         return distances
-
     if box is not None:
         boxtype, box = check_box(box)
         if boxtype == 'ortho':
@@ -379,16 +389,19 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None,
                 coord2 = configuration[j]
                 distance = distances[k]
 
-    Note
-    -----
-    Currently supports brute force, grid-based, and periodic KDtree search
-    methods.
-
     See Also
     --------
     distance_array
     MDAnalysis.lib.pkdtree.PeriodicKDTree.search
     MDAnalysis.lib.nsgrid.FastNS.search
+
+
+    .. versionchanged:: 1.0.1
+       nsgrid was temporarily removed and replaced with pkdtree due to issues
+       relating to its reliability and accuracy (Issues #2919, #2229, #2345,
+       #2670, #2930)
+    .. versionchanged:: 1.0.2
+       nsgrid enabled again
     """
     if box is not None:
         box = np.asarray(box, dtype=np.float32)
@@ -432,10 +445,19 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
     -------
     function : callable
         The function implementing the guessed (or deliberatly chosen) method.
+
+
+    .. versionchanged:: 1.0.1
+       nsgrid was temporarily removed and replaced with pkdtree due to issues
+       relating to its reliability and accuracy (Issues #2919, #2229, #2345,
+       #2670, #2930)
+    .. versionchanged:: 1.1.0
+       enabled nsgrid again
     """
     methods = {'bruteforce': _bruteforce_capped,
                'pkdtree': _pkdtree_capped,
-               'nsgrid': _nsgrid_capped}
+               'nsgrid': _nsgrid_capped,
+    }
 
     if method is not None:
         return methods[method.lower()]
@@ -792,8 +814,15 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None, box=None,
     MDAnalysis.lib.pkdtree.PeriodicKDTree.search
     MDAnalysis.lib.nsgrid.FastNS.self_search
 
+
     .. versionchanged:: 0.20.0
        Added `return_distances` keyword.
+    .. versionchanged:: 1.0.1
+       nsgrid was temporarily removed and replaced with pkdtree due to issues
+       relating to its reliability and accuracy (Issues #2919, #2229, #2345,
+       #2670, #2930)
+    .. versionchanged:: 1.0.2
+       enabled nsgrid again
     """
     if box is not None:
         box = np.asarray(box, dtype=np.float32)
@@ -835,10 +864,19 @@ def _determine_method_self(reference, max_cutoff, min_cutoff=None, box=None,
     -------
     function : callable
         The function implementing the guessed (or deliberatly chosen) method.
+
+
+    .. versionchanged:: 1.0.1
+       nsgrid was temporarily removed and replaced with pkdtree due to issues
+       relating to its reliability and accuracy (Issues #2919, #2229, #2345,
+       #2670, #2930)
+    .. versionchanged:: 1.0.2
+       enabled nsgrid again
     """
     methods = {'bruteforce': _bruteforce_capped_self,
                'pkdtree': _pkdtree_capped_self,
-               'nsgrid': _nsgrid_capped_self}
+               'nsgrid': _nsgrid_capped_self,
+    }
 
     if method is not None:
         return methods[method.lower()]
@@ -1096,9 +1134,9 @@ def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
             gridsearch = FastNS(max_cutoff, reference, box=box)
             results = gridsearch.self_search()
 
-        pairs = results.get_pairs()[::2, :]
+        pairs = results.get_pairs()
         if return_distances or (min_cutoff is not None):
-            distances = results.get_pair_distances()[::2]
+            distances = results.get_pair_distances()
             if min_cutoff is not None:
                 idx = distances > min_cutoff
                 pairs, distances = pairs[idx], distances[idx]
@@ -1521,3 +1559,45 @@ def apply_PBC(coords, box, backend="serial"):
         _run("triclinic_pbc", args=(coords, box), backend=backend)
 
     return coords
+
+
+@check_coords('vectors', enforce_copy=False, enforce_dtype=False)
+def minimize_vectors(vectors, box):
+    """Apply minimum image convention to an array of vectors
+
+    This function is required for calculating the correct vectors between two
+    points.  A naive approach of ``ag1.positions - ag2.positions`` will not
+    provide the minimum vectors between particles, even if all particles are
+    within the primary unit cell (box).
+
+    Parameters
+    ----------
+    vectors : numpy.ndarray
+        Vector array of shape ``(n, 3)``, either float32 or float64.  These
+        represent many vectors (such as between two particles).
+    box : numpy.ndarray
+        The unitcell dimensions of the system, which can be orthogonal or
+        triclinic and must be provided in the same format as returned by
+        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        ``[lx, ly, lz, alpha, beta, gamma]``.
+
+    Returns
+    -------
+    minimized_vectors : numpy.ndarray
+        Same shape and dtype as input.  The vectors from the input, but
+        minimized according to the size of the box.
+
+    .. versionadded:: 2.1.0
+    """
+    boxtype, box = check_box(box)
+    output = np.empty_like(vectors)
+
+    # use box which is same precision as input vectors
+    box = box.astype(vectors.dtype)
+
+    if boxtype == 'ortho':
+        _minimize_vectors_ortho(vectors, box, output)
+    else:
+        _minimize_vectors_triclinic(vectors, box.ravel(), output)
+
+    return output

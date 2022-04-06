@@ -202,6 +202,7 @@ import warnings
 import functools
 from functools import wraps
 import textwrap
+import weakref
 
 import mmtf
 import numpy as np
@@ -218,6 +219,20 @@ except ImportError:
     raise ImportError("MDAnalysis not installed properly. "
                       "This can happen if your C extensions "
                       "have not been built.")
+
+
+def int_array_is_sorted(array):
+    mask = array[:-1] <= array[1:]
+    try:
+        return mask[0] and mask.argmin() == 0
+    except IndexError:
+        # Empty arrays are sorted, I guess...
+        return True
+
+
+def unique_int_1d_unsorted(array):
+    values, indices = np.unique(array, return_index=True)
+    return array[np.sort(indices)]
 
 
 def filename(name, ext=None, keep=False):
@@ -710,6 +725,9 @@ class NamedStream(io.IOBase, os.PathLike):
                   always closes the underlying stream.
 
         """
+        if self.closed:
+            return
+
         if self.close_stream or force:
             try:
                 return self.stream.close()
@@ -1496,10 +1514,18 @@ def conv_float(s):
         return s
 
 
-def cached(key):
+# A dummy, empty, cheaply-hashable object class to use with weakref caching.
+# (class object doesn't allow weakrefs to its instances, but user-defined
+#  classes do)
+class _CacheKey:
+    pass
+
+
+def cached(key, universe_validation=False):
     """Cache a property within a class.
 
-    Requires the Class to have a cache dict called ``_cache``.
+    Requires the Class to have a cache dict :attr:`_cache` and, with
+    `universe_validation`, a :attr:`universe` with a cache dict :attr:`_cache`.
 
     Example
     -------
@@ -1513,23 +1539,54 @@ def cached(key):
            @property
            @cached('keyname')
            def size(self):
-               # This code gets ran only if the lookup of keyname fails
-               # After this code has been ran once, the result is stored in
+               # This code gets run only if the lookup of keyname fails
+               # After this code has been run once, the result is stored in
                # _cache with the key: 'keyname'
-               size = 10.0
+               return 10.0
+
+           @property
+           @cached('keyname', universe_validation=True)
+           def othersize(self):
+               # This code gets run only if the lookup
+               # id(self) is not in the validation set under
+               # self.universe._cache['_valid']['keyname']
+               # After this code has been run once, id(self) is added to that
+               # set. The validation set can be centrally invalidated at the
+               # universe level (say, if a topology change invalidates specific
+               # caches).
+               return 20.0
 
 
     .. versionadded:: 0.9.0
 
+    .. versionchanged::2.0.0
+        Added the `universe_validation` keyword.
     """
 
     def cached_lookup(func):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
             try:
+                if universe_validation:  # Universe-level cache validation
+                    u_cache = self.universe._cache.setdefault('_valid', dict())
+                    # A WeakSet is used so that keys from out-of-scope/deleted
+                    # objects don't clutter it.
+                    valid_caches = u_cache.setdefault(key, weakref.WeakSet())
+                    try:
+                        if self._cache_key not in valid_caches:
+                            raise KeyError
+                    except AttributeError:  # No _cache_key yet
+                        # Must create a reference key for the validation set.
+                        # self could be used itself as a weakref but set()
+                        # requires hashing it, which can be slow for AGs. Using
+                        # id(self) fails because ints can't be weak-referenced.
+                        self._cache_key = _CacheKey()
+                        raise KeyError
                 return self._cache[key]
             except KeyError:
                 self._cache[key] = ret = func(self, *args, **kwargs)
+                if universe_validation:
+                    valid_caches.add(self._cache_key)
                 return ret
 
         return wrapper
@@ -1907,6 +1964,8 @@ def check_coords(*coord_names, **options):
         * **enforce_copy** (:class:`bool`, optional) -- Enforce working on a
           copy of the coordinate arrays. This is useful to ensure that the input
           arrays are left unchanged. Default: ``True``
+        * **enforce_dtype** (:class:`bool`, optional) -- Enforce a conversion
+          to float32.  Default: ``True``
         * **allow_single** (:class:`bool`, optional) -- Allow the input
           coordinate array to be a single coordinate with shape ``(3,)``.
         * **convert_single** (:class:`bool`, optional) -- If ``True``, single
@@ -1962,6 +2021,7 @@ def check_coords(*coord_names, **options):
     .. versionadded:: 0.19.0
     """
     enforce_copy = options.get('enforce_copy', True)
+    enforce_dtype = options.get('enforce_dtype', True)
     allow_single = options.get('allow_single', True)
     convert_single = options.get('convert_single', True)
     reduce_result_if_single = options.get('reduce_result_if_single', True)
@@ -2007,13 +2067,14 @@ def check_coords(*coord_names, **options):
                 if (coords.ndim != 2) or (coords.shape[1] != 3):
                     raise ValueError("{}(): {}.shape must be (n, 3), got {}."
                                      "".format(fname, argname, coords.shape))
-            try:
-                coords = coords.astype(
-                    np.float32, order='C', copy=enforce_copy)
-            except ValueError:
-                errmsg = (f"{fname}(): {argname}.dtype must be convertible to "
-                          f"float32, got {coords.dtype}.")
-                raise TypeError(errmsg) from None
+            if enforce_dtype:
+                try:
+                    coords = coords.astype(
+                        np.float32, order='C', copy=enforce_copy)
+                except ValueError:
+                    errmsg = (f"{fname}(): {argname}.dtype must be convertible to "
+                              f"float32, got {coords.dtype}.")
+                    raise TypeError(errmsg) from None
             return coords, is_single
 
         @wraps(func)
@@ -2346,6 +2407,8 @@ def check_box(box):
          in :mod:`~MDAnalysis.lib.c_distances`.
        * Removed obsolete box types ``tri_box`` and ``tri_vecs_bad``.
     """
+    if box is None:
+        raise ValueError("Box is None")
     from .mdamath import triclinic_vectors  # avoid circular import
     box = np.asarray(box, dtype=np.float32, order='C')
     if box.shape != (6,):

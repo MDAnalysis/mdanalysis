@@ -28,11 +28,12 @@ from numpy.testing import (
 )
 import pytest
 import operator
+import warnings
 
 import MDAnalysis as mda
 from MDAnalysis.exceptions import NoDataError
 from MDAnalysisTests import make_Universe, no_deprecated_call
-from MDAnalysisTests.datafiles import PSF, DCD
+from MDAnalysisTests.datafiles import PSF, DCD, TPR
 from MDAnalysis.core import groups
 
 
@@ -97,42 +98,121 @@ class TestGroupProperties(object):
 
     @pytest.mark.parametrize('group', (uni.atoms[:2], uni.residues[:2],
                                        uni.segments[:2]))
-    def test_group_unique(self, group):
+    def test_group_unique_nocache(self, group):
         # check unique group:
         assert len(group) == 2
         # assert caches are empty:
-        with pytest.raises(KeyError):
-            _ = group._cache['isunique']
-        with pytest.raises(KeyError):
-            _ = group._cache['unique']
-        # assert that group.unique of the unique group references itself:
-        assert group.unique is group
-        # check if caches have been set:
+        for attr in ('isunique', 'sorted_unique', 'unsorted_unique'):
+            assert attr not in group._cache
+
+    @pytest.mark.parametrize('group', (uni.atoms[:2], uni.residues[:2],
+                                       uni.segments[:2]))
+    def test_create_unique_group_from_unique(self, group):
+        unique_group = group.asunique(sorted=True)
+        # assert identity and caches
+        assert unique_group is group
+        assert group._cache['sorted_unique'] is unique_group
+        assert group._cache['unsorted_unique'] is unique_group
         assert group._cache['isunique'] is True
-        assert group._cache['unique'] is group
+        assert group._cache['issorted']  # numpy.bool != bool
+
+        # assert .unique copies
+        assert group.unique is not group
+        assert group.unique == group
+
         # add duplicate element to group:
         group += group[0]
         assert len(group) == 3
+
         # assert caches are cleared since the group changed:
-        with pytest.raises(KeyError):
-            _ = group._cache['isunique']
-        with pytest.raises(KeyError):
-            _ = group._cache['unique']
-        # assert that group.unique of the non-unique group doesn't reference
-        # itself:
-        assert group.unique is not group
+        for attr in ('isunique', 'sorted_unique', 'unsorted_unique'):
+            assert attr not in group._cache
+
+        # now not unique
+        assert group.isunique is False
+        assert not group.issorted
+        # assert that group.unique of the non-unique group is not the old one
+        assert group.asunique() is not unique_group
+        assert group.asunique() == unique_group
         # check if caches have been set correctly:
-        assert group._cache['isunique'] is False
-        assert group._cache['unique'] is group.unique
+        assert group._cache['unsorted_unique'] is group.asunique()
+        assert group._cache['sorted_unique'] is group.asunique()
+        assert group.unique is not group.asunique()
+
         # check length and type:
         assert len(group.unique) == 2
         assert type(group.unique) is type(group)
-        # check if caches of group.unique have been set correctly:
-        assert group.unique._cache['isunique'] is True
-        assert group.unique._cache['unique'] is group.unique
+
+        # check if caches of group.sorted_unique have been set correctly:
+        assert group.sorted_unique._cache['isunique'] is True
+        assert group.sorted_unique._cache['sorted_unique'] is group.sorted_unique
         # assert that repeated access yields the same object (not a copy):
-        unique_group = group.unique
-        assert unique_group is group.unique
+        unique_group = group.sorted_unique
+        assert unique_group is group.sorted_unique
+
+    @pytest.mark.parametrize('ugroup', [uni.atoms, uni.residues, uni.segments])
+    @pytest.mark.parametrize('ix, unique_ix', [
+        ([0, 1], [0, 1]),
+        ([4, 3, 3, 1], [1, 3, 4])
+    ])
+    def test_group_unique_returns_sorted_copy(self, ugroup, ix, unique_ix):
+        # is copy
+        group = ugroup[ix]
+        assert group.unique is not group
+        # sorted
+        assert_equal(group.unique.ix, unique_ix)
+
+    @pytest.mark.parametrize('ugroup', [uni.atoms, uni.residues, uni.segments])
+    @pytest.mark.parametrize('ix, value', [
+        ([4, 3, 3, 1], False),
+        ([1, 3, 4], True),
+        ([2, 2, 2, 4], True),
+    ])
+    def test_group_issorted(self, ugroup, ix, value):
+        assert ugroup[ix].issorted == value
+
+    @pytest.mark.parametrize('ugroup', [uni.atoms, uni.residues, uni.segments])
+    @pytest.mark.parametrize('ix, sort, unique_ix, is_same', [
+        ([1, 3, 4], True, [1, 3, 4], True),
+        ([1, 3, 4], False, [1, 3, 4], True),
+        ([4, 3, 1], True, [1, 3, 4], False),
+        ([4, 3, 1], False, [4, 3, 1], True),
+        ([1, 3, 3, 4], True, [1, 3, 4], False),
+        ([1, 3, 3, 4], False, [1, 3, 4], False),
+        ([4, 3, 3, 1], True, [1, 3, 4], False),
+        ([4, 3, 3, 1], False, [4, 3, 1], False),
+    ])
+    def test_group_asunique(self, ugroup, ix, sort, unique_ix, is_same):
+        group = ugroup[ix]
+        unique_group = group.asunique(sorted=sort)
+        assert_equal(unique_group.ix, unique_ix)
+        if is_same:
+            assert unique_group is group
+
+    @pytest.mark.parametrize('ugroup', [uni.atoms, uni.residues, uni.segments])
+    def test_group_return_sorted_unsorted_unique(self, ugroup):
+        unsorted_unique = ugroup[[1, 3, 4]].asunique(sorted=False)
+        assert 'unsorted_unique' in unsorted_unique._cache
+        assert 'sorted_unique' not in unsorted_unique._cache
+        assert 'issorted' not in unsorted_unique._cache
+        assert 'isunique' in unsorted_unique._cache
+
+        sorted_unique = unsorted_unique.asunique(sorted=True)
+        assert sorted_unique is unsorted_unique
+        assert unsorted_unique._cache['issorted']
+        assert unsorted_unique._cache['sorted_unique'] is unsorted_unique
+
+    @pytest.mark.parametrize('ugroup', [uni.atoms, uni.residues, uni.segments])
+    def test_group_return_unsorted_sorted_unique(self, ugroup):
+        unique = ugroup[[1, 3, 3, 4]]
+        sorted_unique = unique.asunique(sorted=True)
+        assert unique._cache['sorted_unique'] is sorted_unique
+        assert 'unsorted_unique' not in unique._cache
+
+        unsorted_unique = unique.asunique(sorted=False)
+        assert unsorted_unique is sorted_unique
+        assert unique._cache['unsorted_unique'] is sorted_unique
+
 
 
 class TestGroupSlicing(object):
@@ -246,6 +326,10 @@ class TestGroupSlicing(object):
 
         assert a.ix == ref
         assert isinstance(a, singular)
+ 
+    def test_none_getitem(self, group):
+        with pytest.raises(TypeError):
+            group[None]
 
 
 def _yield_groups(group_dict, singles, levels, groupclasses, repeat):
@@ -433,7 +517,7 @@ class TestGroupLevelTransition(object):
         assert res == u.residues
         assert res is not u.residues
         assert res._cache['isunique'] is True
-        assert res._cache['unique'] is res
+        assert res._cache['sorted_unique'] is res
 
     def test_atomgroup_to_segmentgroup(self, u):
         seg = u.atoms.segments
@@ -442,7 +526,7 @@ class TestGroupLevelTransition(object):
         assert seg == u.segments
         assert seg is not u.segments
         assert seg._cache['isunique'] is True
-        assert seg._cache['unique'] is seg
+        assert seg._cache['sorted_unique'] is seg
 
     def test_residuegroup_to_atomgroup(self, u):
         res = u.residues
@@ -452,8 +536,8 @@ class TestGroupLevelTransition(object):
         assert atm == u.atoms
         assert atm is not u.atoms
         # clear res' uniqueness caches:
-        if 'unique' in res._cache.keys():
-            del res._cache['unique']
+        if 'sorted_unique' in res._cache.keys():
+            del res._cache['sorted_unique']
         if 'isunique' in res._cache.keys():
             del res._cache['isunique']
         atm = res.atoms
@@ -461,13 +545,13 @@ class TestGroupLevelTransition(object):
         with pytest.raises(KeyError):
             _ = atm._cache['isunique']
         with pytest.raises(KeyError):
-            _ = atm._cache['unique']
+            _ = atm._cache['sorted_unique']
         # populate uniqueness cache of res:
         assert res.isunique
         atm = res.atoms
         # assert uniqueness caches of atm are set:
         assert atm._cache['isunique'] is True
-        assert atm._cache['unique'] is atm
+        assert atm._cache['unsorted_unique'] is atm
 
     def test_residuegroup_to_residuegroup(self, u):
         res = u.residues.residues
@@ -482,7 +566,7 @@ class TestGroupLevelTransition(object):
         assert seg == u.segments
         assert seg is not u.segments
         assert seg._cache['isunique'] is True
-        assert seg._cache['unique'] is seg
+        assert seg._cache['sorted_unique'] is seg
 
     def test_segmentgroup_to_atomgroup(self, u):
         seg = u.segments
@@ -492,8 +576,8 @@ class TestGroupLevelTransition(object):
         assert atm == u.atoms
         assert atm is not u.atoms
         # clear seg's uniqueness caches:
-        if 'unique' in seg._cache.keys():
-            del seg._cache['unique']
+        if 'sorted_unique' in seg._cache.keys():
+            del seg._cache['sorted_unique']
         if 'isunique' in seg._cache.keys():
             del seg._cache['isunique']
         atm = seg.atoms
@@ -501,13 +585,13 @@ class TestGroupLevelTransition(object):
         with pytest.raises(KeyError):
             _ = atm._cache['isunique']
         with pytest.raises(KeyError):
-            _ = atm._cache['unique']
+            _ = atm._cache['sorted_unique']
         # populate uniqueness cache of seg:
         assert seg.isunique
         atm = seg.atoms
         # assert uniqueness caches of atm are set:
         assert atm._cache['isunique'] is True
-        assert atm._cache['unique'] is atm
+        assert atm._cache['unsorted_unique'] is atm
 
     def test_segmentgroup_to_residuegroup(self, u):
         seg = u.segments
@@ -517,8 +601,8 @@ class TestGroupLevelTransition(object):
         assert res == u.residues
         assert res is not u.residues
         # clear seg's uniqueness caches:
-        if 'unique' in seg._cache.keys():
-            del seg._cache['unique']
+        if 'sorted_unique' in seg._cache.keys():
+            del seg._cache['sorted_unique']
         if 'isunique' in seg._cache.keys():
             del seg._cache['isunique']
         res = seg.residues
@@ -526,13 +610,13 @@ class TestGroupLevelTransition(object):
         with pytest.raises(KeyError):
             _ = res._cache['isunique']
         with pytest.raises(KeyError):
-            _ = res._cache['unique']
+            _ = res._cache['sorted_unique']
         # populate uniqueness cache of seg:
         assert seg.isunique
         res = seg.residues
         # assert uniqueness caches of res are set:
         assert res._cache['isunique'] is True
-        assert res._cache['unique'] is res
+        assert res._cache['unsorted_unique'] is res
 
     def test_segmentgroup_to_segmentgroup(self, u):
         seg = u.segments.segments
@@ -553,8 +637,8 @@ class TestGroupLevelTransition(object):
         assert isinstance(ag, groups.AtomGroup)
         assert len(ag) == 5
         assert ag._cache['isunique'] is True
-        assert ag._cache['unique'] is ag
-        del ag._cache['unique']
+        assert ag._cache['sorted_unique'] is ag
+        del ag._cache['sorted_unique']
         del ag._cache['isunique']
         assert ag.isunique
 
@@ -567,8 +651,8 @@ class TestGroupLevelTransition(object):
         assert isinstance(ag, groups.AtomGroup)
         assert len(ag) == 25
         assert ag._cache['isunique'] is True
-        assert ag._cache['unique'] is ag
-        del ag._cache['unique']
+        assert ag._cache['sorted_unique'] is ag
+        del ag._cache['sorted_unique']
         del ag._cache['isunique']
         assert ag.isunique
 
@@ -577,8 +661,8 @@ class TestGroupLevelTransition(object):
         assert isinstance(rg, groups.ResidueGroup)
         assert len(rg) == 5
         assert rg._cache['isunique'] is True
-        assert rg._cache['unique'] is rg
-        del rg._cache['unique']
+        assert rg._cache['sorted_unique'] is rg
+        del rg._cache['sorted_unique']
         del rg._cache['isunique']
         assert rg.isunique
 
@@ -587,21 +671,21 @@ class TestGroupLevelTransition(object):
         rg = ag.residues
         assert len(rg) == 2
         assert rg._cache['isunique'] is True
-        assert rg._cache['unique'] is rg
+        assert rg._cache['sorted_unique'] is rg
 
     def test_atomgroup_to_segmentgroup_unique(self, u):
         ag = u.atoms[0] + u.atoms[-1] + u.atoms[0]
         sg = ag.segments
         assert len(sg) == 2
         assert sg._cache['isunique'] is True
-        assert sg._cache['unique'] is sg
+        assert sg._cache['sorted_unique'] is sg
 
     def test_residuegroup_to_segmentgroup_unique(self, u):
         rg = u.residues[0] + u.residues[6] + u.residues[1]
         sg = rg.segments
         assert len(sg) == 2
         assert sg._cache['isunique'] is True
-        assert sg._cache['unique'] is sg
+        assert sg._cache['sorted_unique'] is sg
 
     def test_residuegroup_to_atomgroup_listcomp(self, u):
         rg = u.residues[0] + u.residues[0] + u.residues[4]
@@ -611,15 +695,14 @@ class TestGroupLevelTransition(object):
         with pytest.raises(KeyError):
             _ = ag._cache['isunique']
         with pytest.raises(KeyError):
-            _ = ag._cache['unique']
+            _ = ag._cache['sorted_unique']
         # populate uniqueness cache of rg:
         assert not rg.isunique
         ag = rg.atoms
-        # assert uniqueness caches of ag are still empty:
+        # ag uniqueness caches are now from residue
+        assert not ag._cache['isunique']
         with pytest.raises(KeyError):
-            _ = ag._cache['isunique']
-        with pytest.raises(KeyError):
-            _ = ag._cache['unique']
+            _ = ag._cache['sorted_unique']
 
     def test_segmentgroup_to_residuegroup_listcomp(self, u):
         sg = u.segments[0] + u.segments[0] + u.segments[1]
@@ -629,15 +712,14 @@ class TestGroupLevelTransition(object):
         with pytest.raises(KeyError):
             _ = rg._cache['isunique']
         with pytest.raises(KeyError):
-            _ = rg._cache['unique']
+            _ = rg._cache['sorted_unique']
         # populate uniqueness cache of sg:
         assert not sg.isunique
         rg = sg.residues
-        # assert uniqueness caches of rg are still empty:
+        # assert uniqueness caches of rg are now populated
+        assert not rg._cache['isunique']
         with pytest.raises(KeyError):
-            _ = rg._cache['isunique']
-        with pytest.raises(KeyError):
-            _ = rg._cache['unique']
+            _ = rg._cache['sorted_unique']
 
     def test_segmentgroup_to_atomgroup_listcomp(self, u):
         sg = u.segments[0] + u.segments[0] + u.segments[1]
@@ -647,15 +729,14 @@ class TestGroupLevelTransition(object):
         with pytest.raises(KeyError):
             _ = ag._cache['isunique']
         with pytest.raises(KeyError):
-            _ = ag._cache['unique']
+            _ = ag._cache['sorted_unique']
         # populate uniqueness cache of sg:
         assert not sg.isunique
         ag = sg.atoms
-        # assert uniqueness caches of ag are still empty:
+        # ag uniqueness caches are now from segment
+        assert not ag._cache['isunique']
         with pytest.raises(KeyError):
-            _ = ag._cache['isunique']
-        with pytest.raises(KeyError):
-            _ = ag._cache['unique']
+            _ = ag._cache['sorted_unique']
 
 
 class TestComponentComparisons(object):
@@ -978,7 +1059,7 @@ class TestGroupBaseOperators(object):
         with pytest.raises(KeyError):
             _ = group._cache['isunique']
         with pytest.raises(KeyError):
-            _ = group._cache['unique']
+            _ = group._cache['sorted_unique']
         # make a copy:
         cgroup = group.copy()
         # check if cgroup is an identical copy of group:
@@ -989,14 +1070,15 @@ class TestGroupBaseOperators(object):
         with pytest.raises(KeyError):
             _ = cgroup._cache['isunique']
         with pytest.raises(KeyError):
-            _ = cgroup._cache['unique']
+            _ = cgroup._cache['sorted_unique']
         # populate group's uniqueness caches:
         assert group.isunique
         # make a copy:
         cgroup = group.copy()
         # check if the copied group's uniqueness caches are set correctly:
         assert cgroup._cache['isunique'] is True
-        assert cgroup._cache['unique'] is cgroup
+        # assert sorted_unique still doesn't exist
+        assert 'sorted_unique' not in cgroup._cache
         # add duplicate element to group:
         group += group[0]
         # populate group's uniqueness caches:
@@ -1006,7 +1088,7 @@ class TestGroupBaseOperators(object):
         # check if the copied group's uniqueness caches are set correctly:
         assert cgroup._cache['isunique'] is False
         with pytest.raises(KeyError):
-            _ = cgroup._cache['unique']
+            _ = cgroup._cache['sorted_unique']
         # assert that duplicates are preserved:
         assert cgroup == group
 
@@ -1446,18 +1528,190 @@ class TestInitGroup(object):
 
 
 class TestDecorator(object):
-    @groups.check_pbc_and_unwrap
-    def dummy_funtion(cls, compound="group", pbc=True, unwrap=True):
+    @groups._pbc_to_wrap
+    @groups.check_wrap_and_unwrap
+    def dummy_funtion(cls, compound="group", wrap=True, unwrap=True):
         return 0
 
     @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
                                           'group', 'segments'))
     @pytest.mark.parametrize('pbc', (True, False))
     @pytest.mark.parametrize('unwrap', (True, False))
-    def test_decorator(self, compound, pbc, unwrap):
+    def test_wrap_and_unwrap_deprecation(self, compound, pbc, unwrap):
 
-        if compound == 'group' and pbc and unwrap:
+        if pbc and unwrap:
             with pytest.raises(ValueError):
+                # We call a deprecated argument that does not appear in the
+                # function's signature. This is done on purpose to test the
+                # deprecation. We need to tell the linter.
+                # pylint: disable-next=unexpected-keyword-arg
                 self.dummy_funtion(compound=compound, pbc=pbc, unwrap=unwrap)
         else:
-            assert_equal(self.dummy_funtion(compound=compound, pbc=pbc, unwrap=unwrap), 0)
+            with pytest.warns(DeprecationWarning):
+                # We call a deprecated argument that does not appear in the
+                # function's signature. This is done on purpose to test the
+                # deprecation. We need to tell the linter.
+                # pylint: disable-next=unexpected-keyword-arg
+                assert self.dummy_funtion(compound=compound, pbc=pbc, unwrap=unwrap) == 0
+
+    @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
+                                          'group', 'segments'))
+    @pytest.mark.parametrize('wrap', (True, False))
+    @pytest.mark.parametrize('unwrap', (True, False))
+    def test_wrap_and_unwrap(self, compound, wrap, unwrap):
+
+        if wrap and unwrap:
+            with pytest.raises(ValueError):
+                self.dummy_funtion(compound=compound, wrap=wrap, unwrap=unwrap)
+        else:
+            assert self.dummy_funtion(compound=compound, wrap=wrap, unwrap=unwrap) == 0
+
+
+@pytest.fixture()
+def tpr():
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore",
+                                message="No coordinate reader found")
+        return mda.Universe(TPR)
+
+class TestGetConnectionsAtoms(object):
+    """Test Atom and AtomGroup.get_connections"""
+
+    @pytest.mark.parametrize("typename",
+                             ["bonds", "angles", "dihedrals", "impropers"])
+    def test_connection_from_atom_not_outside(self, tpr, typename):
+        cxns = tpr.atoms[1].get_connections(typename, outside=False)
+        assert len(cxns) == 0
+
+    @pytest.mark.parametrize("typename, n_atoms", [
+        ("bonds", 1),
+        ("angles", 3),
+        ("dihedrals", 4),
+    ])
+    def test_connection_from_atom_outside(self, tpr, typename, n_atoms):
+        cxns = tpr.atoms[10].get_connections(typename, outside=True)
+        assert len(cxns) == n_atoms
+
+    @pytest.mark.parametrize("typename, n_atoms", [
+        ("bonds", 9),
+        ("angles", 15),
+        ("dihedrals", 12),
+    ])
+    def test_connection_from_atoms_not_outside(self, tpr, typename,
+                                               n_atoms):
+        ag = tpr.atoms[:10]
+        cxns = ag.get_connections(typename, outside=False)
+        assert len(cxns) == n_atoms
+        indices = np.ravel(cxns.to_indices())
+        assert np.all(np.in1d(indices, ag.indices))
+
+    @pytest.mark.parametrize("typename, n_atoms", [
+        ("bonds", 13),
+        ("angles", 27),
+        ("dihedrals", 38),
+    ])
+    def test_connection_from_atoms_outside(self, tpr, typename, n_atoms):
+        ag = tpr.atoms[:10]
+        cxns = ag.get_connections(typename, outside=True)
+        assert len(cxns) == n_atoms
+        indices = np.ravel(cxns.to_indices())
+        assert not np.all(np.in1d(indices, ag.indices))
+
+    def test_invalid_connection_error(self, tpr):
+        with pytest.raises(AttributeError, match="does not contain"):
+            ag = tpr.atoms[:10]
+            ag.get_connections("ureybradleys")
+
+    @pytest.mark.parametrize("outside", [True, False])
+    def test_get_empty_group(self, tpr, outside):
+        imp = tpr.impropers
+        ag = tpr.atoms[:10]
+        cxns = ag.get_connections("impropers", outside=outside)
+        assert len(imp) == 0
+        assert len(cxns) == 0
+
+
+class TestGetConnectionsResidues(object):
+    """Test Residue and ResidueGroup.get_connections"""
+
+    @pytest.mark.parametrize("typename, n_atoms", [
+        ("bonds", 9),
+        ("angles", 14),
+        ("dihedrals", 9),
+        ("impropers", 0),
+    ])
+    def test_connection_from_res_not_outside(self, tpr, typename, n_atoms):
+        cxns = tpr.residues[10].get_connections(typename, outside=False)
+        assert len(cxns) == n_atoms
+
+    @pytest.mark.parametrize("typename, n_atoms", [
+        ("bonds", 11),
+        ("angles", 22),
+        ("dihedrals", 27),
+        ("impropers", 0),
+    ])
+    def test_connection_from_res_outside(self, tpr, typename, n_atoms):
+        cxns = tpr.residues[10].get_connections(typename, outside=True)
+        assert len(cxns) == n_atoms
+
+    @pytest.mark.parametrize("typename, n_atoms", [
+        ("bonds", 157),
+        ("angles", 290),
+        ("dihedrals", 351),
+    ])
+    def test_connection_from_residues_not_outside(self, tpr, typename,
+                                                  n_atoms):
+        ag = tpr.residues[:10]
+        cxns = ag.get_connections(typename, outside=False)
+        assert len(cxns) == n_atoms
+        indices = np.ravel(cxns.to_indices())
+        assert np.all(np.in1d(indices, ag.atoms.indices))
+
+    @pytest.mark.parametrize("typename, n_atoms", [
+        ("bonds", 158),
+        ("angles", 294),
+        ("dihedrals", 360),
+    ])
+    def test_connection_from_residues_outside(self, tpr, typename, n_atoms):
+        ag = tpr.residues[:10]
+        cxns = ag.get_connections(typename, outside=True)
+        assert len(cxns) == n_atoms
+        indices = np.ravel(cxns.to_indices())
+        assert not np.all(np.in1d(indices, ag.atoms.indices))
+
+    def test_invalid_connection_error(self, tpr):
+        with pytest.raises(AttributeError, match="does not contain"):
+            ag = tpr.residues[:10]
+            ag.get_connections("ureybradleys")
+
+    @pytest.mark.parametrize("outside", [True, False])
+    def test_get_empty_group(self, tpr, outside):
+        imp = tpr.impropers
+        ag = tpr.residues[:10]
+        cxns = ag.get_connections("impropers", outside=outside)
+        assert len(imp) == 0
+        assert len(cxns) == 0
+
+
+@pytest.mark.parametrize("typename, n_inside", [
+    ("intra_bonds", 9),
+    ("intra_angles", 15),
+    ("intra_dihedrals", 12),
+])
+def test_topologygroup_gets_connections_inside(tpr, typename, n_inside):
+    ag = tpr.atoms[:10]
+    cxns = getattr(ag, typename)
+    assert len(cxns) == n_inside
+    indices = np.ravel(cxns.to_indices())
+    assert np.all(np.in1d(indices, ag.indices))
+
+
+@pytest.mark.parametrize("typename, n_outside", [
+    ("bonds", 13),
+    ("angles", 27),
+    ("dihedrals", 38),
+])
+def test_topologygroup_gets_connections_outside(tpr, typename, n_outside):
+    ag = tpr.atoms[:10]
+    cxns = getattr(ag, typename)
+    assert len(cxns) == n_outside

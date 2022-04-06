@@ -31,7 +31,8 @@ import sys
 
 import numpy as np
 from numpy.testing import (assert_equal, assert_almost_equal,
-                           assert_array_almost_equal, assert_array_equal)
+                           assert_array_almost_equal, assert_array_equal,
+                           assert_allclose)
 from itertools import combinations_with_replacement as comb_wr
 
 import MDAnalysis as mda
@@ -49,15 +50,9 @@ from MDAnalysisTests.datafiles import (
 
 def test_absence_cutil():
     with patch.dict('sys.modules', {'MDAnalysis.lib._cutil':None}):
-        #http://docs.python.org/library/sys.html#sys.hexversion
-        if sys.hexversion <= 0x03030000:
-            import imp
-            with pytest.raises(ImportError):
-                imp.reload(sys.modules['MDAnalysis.lib.util'])
-        else:
-            import importlib
-            with pytest.raises(ImportError):
-                importlib.reload(sys.modules['MDAnalysis.lib.util'])
+        import importlib
+        with pytest.raises(ImportError):
+            importlib.reload(sys.modules['MDAnalysis.lib.util'])
 
 def test_presence_cutil():
     mock = Mock()
@@ -203,7 +198,7 @@ class TestGeometryFunctions(object):
         (a, a, 0.0)
     ])
     def test_vectors(self, x_axis, y_axis, value):
-        assert_equal(mdamath.angle(x_axis, y_axis), value)
+        assert_allclose(mdamath.angle(x_axis, y_axis), value)
 
     @pytest.mark.parametrize('x_axis, y_axis, value', [
         (-2.3456e7 * e1, 3.4567e-6 * e1, np.pi),
@@ -237,7 +232,7 @@ class TestGeometryFunctions(object):
         (e1, null, 0.0)
     ])
     def test_normal(self, vec1, vec2, value):
-        assert_equal(mdamath.normal(vec1, vec2), value)
+        assert_allclose(mdamath.normal(vec1, vec2), value)
         # add more non-trivial tests
 
     def test_angle_lower_clip(self):
@@ -425,7 +420,7 @@ class TestMatrixOperations(object):
         # These cycles were inexact prior to PR #2201
         ref = np.array([10.1, 10.1, 10.1] + angles, dtype=np.float32)
         res = mdamath.triclinic_box(*mdamath.triclinic_vectors(ref))
-        assert_equal(res, ref)
+        assert_allclose(res, ref)
 
     @pytest.mark.parametrize('lengths', comb_wr([-1, 0, 1, 2], 3))
     @pytest.mark.parametrize('angles',
@@ -669,8 +664,7 @@ class TestMakeWhole(object):
         u = mda.Universe(fullerene)
 
         bbox = u.atoms.bbox()
-        u.dimensions[:3] = bbox[1] - bbox[0]
-        u.dimensions[3:] = 90.0
+        u.dimensions = np.r_[bbox[1] - bbox[0], [90]*3]
 
         blengths = u.atoms.bonds.values()
         # kaboom
@@ -700,6 +694,11 @@ class Class_with_Caches(object):
         self.ref3 = 3.0
         self.ref4 = 4.0
         self.ref5 = 5.0
+        self.ref6 = 6.0
+        # For universe-validated caches
+        # One-line lambda-like class
+        self.universe = type('Universe', (), dict())()
+        self.universe._cache = {'_valid': {}}
 
     @cached('val1')
     def val1(self):
@@ -741,6 +740,12 @@ class Class_with_Caches(object):
 
     def _init_val_5(self, n, s=None):
         return n * s
+
+    # Property decorator and universally-validated cache
+    @property
+    @cached('val6', universe_validation=True)
+    def val6(self):
+        return self.ref5 + 1.0
 
     # These are designed to mimic the AG and Universe cache methods
     def _clear_caches(self, *args):
@@ -835,6 +840,34 @@ class TestCachedDecorator(object):
         assert obj.val5(5, s='abc') == 5 * 'abc'
 
         assert obj.val5(5, s='!!!') == 5 * 'abc'
+
+    # property decorator, with universe validation
+    def test_val6_universe_validation(self, obj):
+        obj._clear_caches()
+        assert not hasattr(obj, '_cache_key')
+        assert 'val6' not in obj._cache
+        assert 'val6' not in obj.universe._cache['_valid']
+
+        ret = obj.val6  # Trigger caching
+        assert obj.val6 == obj.ref6
+        assert ret is obj.val6
+        assert 'val6' in obj._cache
+        assert 'val6' in obj.universe._cache['_valid']
+        assert obj._cache_key in obj.universe._cache['_valid']['val6']
+        assert obj._cache['val6'] is ret
+
+        # Invalidate cache at universe level
+        obj.universe._cache['_valid']['val6'].clear()
+        ret2 = obj.val6
+        assert ret2 is obj.val6
+        assert ret2 is not ret
+
+        # Clear obj cache and access again
+        obj._clear_caches()
+        ret3 = obj.val6
+        assert ret3 is obj.val6
+        assert ret3 is not ret2
+        assert ret3 is not ret
 
 
 class TestConvFloat(object):
@@ -1360,6 +1393,7 @@ class TestBlocksOf(object):
 def test_group_same_or_consecutive_integers(arr, answer):
     assert_equal(util.group_same_or_consecutive_integers(arr), answer)
 
+
 class TestNamespace(object):
     @staticmethod
     @pytest.fixture()
@@ -1474,7 +1508,7 @@ class TestStaticVariables(object):
 
         @static_variables(foo=0, bar={'test': x})
         def myfunc():
-            assert myfunc.foo is 0
+            assert myfunc.foo == 0
             assert type(myfunc.bar) is type(dict())
             if 'test2' not in myfunc.bar:
                 myfunc.bar['test2'] = "a"
@@ -1488,14 +1522,14 @@ class TestStaticVariables(object):
 
         y = myfunc()
         assert y is x
-        assert x[0] is 1
-        assert myfunc.bar['test'][0] is 1
+        assert x[0] == 1
+        assert myfunc.bar['test'][0] == 1
         assert myfunc.bar['test2'] == "a"
 
         x = [0]
         y = myfunc()
         assert y is not x
-        assert myfunc.bar['test'][0] is 2
+        assert myfunc.bar['test'][0] == 2
         assert myfunc.bar['test2'] == "aa"
 
 
@@ -1536,7 +1570,7 @@ class TestWarnIfNotUnique(object):
         assert atoms.isunique
         with pytest.warns(None) as w:
             x = outer(atoms)
-            assert x is 0
+            assert x == 0
             assert not w.list
 
         # Check that a warning is raised for a group with duplicates:
@@ -1548,7 +1582,7 @@ class TestWarnIfNotUnique(object):
             # Assert that the "warned" state is restored:
             assert warn_if_not_unique.warned is False
             # Check correct function execution:
-            assert x is 0
+            assert x == 0
             # Only one warning must have been raised:
             assert len(w) == 1
             # For whatever reason pytest.warns(DuplicateWarning, match=msg)
@@ -1602,7 +1636,7 @@ class TestWarnIfNotUnique(object):
             # Assert that the "warned" state is restored:
             assert warn_if_not_unique.warned is False
             # Check correct function execution:
-            assert x is 0
+            assert x == 0
             # Only one warning must have been raised:
             assert len(w) == 1
             assert w[0].message.args[0] == msg
@@ -2030,12 +2064,16 @@ class TestCheckBox(object):
                                  np.array([1, 1, 1, 1, 1, 1,
                                            90, 90, 90, 90, 90, 90],
                                           dtype=np.float32)[::2]))
-    def test_ckeck_box_ortho(self, box):
+    def test_check_box_ortho(self, box):
         boxtype, checked_box = util.check_box(box)
         assert boxtype == 'ortho'
-        assert_equal(checked_box, self.ref_ortho)
+        assert_allclose(checked_box, self.ref_ortho)
         assert checked_box.dtype == np.float32
         assert checked_box.flags['C_CONTIGUOUS']
+
+    def test_check_box_None(self):
+        with pytest.raises(ValueError, match="Box is None"):
+            util.check_box(None)
 
     @pytest.mark.parametrize('box',
                              ([1, 1, 2, 45, 90, 90],

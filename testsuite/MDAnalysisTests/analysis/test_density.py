@@ -22,6 +22,7 @@
 #
 import numpy as np
 import pytest
+import copy
 import sys
 import warnings
 from unittest.mock import Mock, patch
@@ -33,7 +34,7 @@ import gridData.OpenDX
 import MDAnalysis as mda
 from MDAnalysis.analysis import density
 
-from MDAnalysisTests.datafiles import TPR, XTC, GRO, PDB_full
+from MDAnalysisTests.datafiles import TPR, XTC
 from MDAnalysisTests.util import block_import
 
 
@@ -59,6 +60,13 @@ class TestDensity(object):
         d = density.Density(h, edges, parameters={'isDensity': False},
                             units={'length': 'A'})
         d.make_density()
+        return d
+
+    @pytest.fixture()
+    def D1(self, h_and_edges):
+        h, edges = h_and_edges
+        d = density.Density(h, edges, parameters={},
+                            units={})
         return d
 
     def test_shape(self, D):
@@ -105,6 +113,75 @@ class TestDensity(object):
         with pytest.raises(ValueError):
             D._check_set_unit(units)
 
+    def test_check_set_density_none(self, D1):
+        units = {'density': None}
+        D1._check_set_unit(units)
+        assert D1.units['density'] is None
+
+    def test_check_set_density_not_in_units(self, D1):
+        del D1.units['density']
+        D1._check_set_unit({})
+        assert D1.units['density'] is None
+
+    def test_parameters_isdensity(self, D):
+        with pytest.warns(UserWarning, match='Running make_density()'):
+            D.make_density()
+
+    def test_check_convert_density_grid_not_density(self, D1):
+        with pytest.raises(RuntimeError, match="The grid is not a density"):
+            D1.convert_density()
+
+    def test_check_convert_density_value_error(self, D):
+        unit = 'A^{-2}'
+        with pytest.raises(ValueError, match="The name of the unit"):
+            D.convert_density(unit)
+
+    def test_check_convert_density_units_same_density_units(self, D):
+        unit = 'A^{-3}'
+        D_orig = copy.deepcopy(D)
+        D.convert_density(unit)
+        assert D.units['density'] == D_orig.units['density'] == unit
+        assert_almost_equal(D.grid, D_orig.grid)
+
+    def test_check_convert_density_units_density(self, D):
+        unit = 'nm^{-3}'
+        D_orig = copy.deepcopy(D)
+        D.convert_density(unit)
+        assert D.units['density'] == 'nm^{-3}'
+        assert_almost_equal(D.grid, 10**3 * D_orig.grid)
+
+    def test_convert_length_same_length_units(self, D):
+        unit = 'A'
+        D_orig = copy.deepcopy(D)
+        D.convert_length(unit)
+        assert D.units['length'] == D_orig.units['length'] == unit
+        assert_almost_equal(D.grid, D_orig.grid)
+
+    def test_convert_length_other_length_units(self, D):
+        unit = 'nm'
+        D_orig = copy.deepcopy(D)
+        D.convert_length(unit)
+        assert D.units['length'] == unit
+        assert_almost_equal(D.grid, D_orig.grid)
+
+    def test_repr(self, D, D1):
+        assert str(D) == '<Density density with (3, 4, 5) bins>'
+        assert str(D1) == '<Density histogram with (3, 4, 5) bins>'
+
+    def test_check_convert_length_edges(self, D):
+        D1 = copy.deepcopy(D)
+        unit = 'nm'
+        D.convert_length(unit)
+        for prev_edge, conv_edge in zip(D1.edges, D.edges):
+            assert_almost_equal(prev_edge, 10*conv_edge)
+
+    def test_check_convert_density_edges(self, D):
+        unit = 'nm^{-3}'
+        D_orig = copy.deepcopy(D)
+        D.convert_density(unit)
+        for new_den, orig_den in zip(D.edges, D_orig.edges):
+            assert_almost_equal(new_den, orig_den)
+
     @pytest.mark.parametrize('dxtype',
                              ("float", "double", "int", "byte"))
     def test_export_types(self, D, dxtype, tmpdir, outfile="density.dx"):
@@ -116,16 +193,18 @@ class TestDensity(object):
             data = dx.components['data']
         assert data.type == dxtype
 
+
 class DensityParameters(object):
     topology = TPR
     trajectory = XTC
     delta = 2.0
-    selections = {'static': "name OW",
+    selections = {'none': "resname None",
+                  'static': "name OW",
                   'dynamic': "name OW and around 4 (protein and resid 1-10)",
                   'solute': "protein and not name H*",
                   }
     references = {'static':
-                      {'meandensity': 0.016764271713091212, },
+                  {'meandensity': 0.016764271713091212, },
                   'static_sliced':
                       {'meandensity': 0.016764270747693617, },
                   'static_defined':
@@ -147,21 +226,25 @@ class DensityParameters(object):
 
     @pytest.fixture()
     def universe(self):
-        return mda.Universe(self.topology, self.trajectory)
+        return mda.Universe(self.topology, self.trajectory, tpr_resid_from_one=False)
+
 
 class TestDensityAnalysis(DensityParameters):
     def check_DensityAnalysis(self, ag, ref_meandensity,
-                                    tmpdir, runargs=None, **kwargs):
+                              tmpdir, runargs=None, **kwargs):
         runargs = runargs if runargs else {}
         with tmpdir.as_cwd():
-            D = density.DensityAnalysis(ag, delta=self.delta, **kwargs).run(**runargs)
-            assert_almost_equal(D.density.grid.mean(), ref_meandensity,
+            D = density.DensityAnalysis(
+                ag, delta=self.delta, **kwargs).run(**runargs)
+            assert_almost_equal(D.results.density.grid.mean(), ref_meandensity,
                                 err_msg="mean density does not match")
-            D.density.export(self.outfile)
+            D.results.density.export(self.outfile)
 
             D2 = density.Density(self.outfile)
-            assert_almost_equal(D.density.grid, D2.grid, decimal=self.precision,
-                                err_msg="DX export failed: different grid sizes")
+            assert_almost_equal(
+                D.results.density.grid, D2.grid, decimal=self.precision,
+                err_msg="DX export failed: different grid sizes"
+            )
 
     @pytest.mark.parametrize("mode", ("static", "dynamic"))
     def test_run(self, mode, universe, tmpdir):
@@ -210,7 +293,7 @@ class TestDensityAnalysis(DensityParameters):
             universe.select_atoms(self.selections['static']),
             delta=1.0, xdim=8.0, ydim=12.0, zdim=17.0,
             gridcenter=self.gridcenters['static_defined']).run()
-        assert D.density.grid.shape == (8, 12, 17)
+        assert D.results.density.grid.shape == (8, 12, 17)
 
     def test_warn_userdefn_padding(self, universe):
         regex = (r"Box padding \(currently set at 1\.0\) is not used "
@@ -232,7 +315,7 @@ class TestDensityAnalysis(DensityParameters):
 
     def test_ValueError_userdefn_gridcenter_shape(self, universe):
         # Test len(gridcenter) != 3
-        with pytest.raises(ValueError, match="gridcenter must be a 3D coordinate"):
+        with pytest.raises(ValueError, match="Gridcenter must be a 3D coordinate"):
             D = density.DensityAnalysis(
                 universe.select_atoms(self.selections['static']),
                 delta=self.delta, xdim=10.0, ydim=10.0, zdim=10.0,
@@ -240,11 +323,19 @@ class TestDensityAnalysis(DensityParameters):
 
     def test_ValueError_userdefn_gridcenter_type(self, universe):
         # Test gridcenter includes non-numeric strings
-        with pytest.raises(ValueError, match="Non-number values assigned to gridcenter"):
+        with pytest.raises(ValueError, match="Gridcenter must be a 3D coordinate"):
             D = density.DensityAnalysis(
                 universe.select_atoms(self.selections['static']),
                 delta=self.delta, xdim=10.0, ydim=10.0, zdim=10.0,
                 gridcenter=self.gridcenters['error2']).run(step=5)
+
+    def test_ValueError_userdefn_gridcenter_missing(self, universe):
+        # Test no gridcenter provided when grid dimensions are given
+        regex = ("Gridcenter or grid dimensions are not provided")
+        with pytest.raises(ValueError, match=regex):
+            D = density.DensityAnalysis(
+                universe.select_atoms(self.selections['static']),
+                delta=self.delta, xdim=10.0, ydim=10.0, zdim=10.0).run(step=5)
 
     def test_ValueError_userdefn_xdim_type(self, universe):
         # Test xdim != int or float
@@ -253,6 +344,45 @@ class TestDensityAnalysis(DensityParameters):
                 universe.select_atoms(self.selections['static']),
                 delta=self.delta, xdim="MDAnalysis", ydim=10.0, zdim=10.0,
                 gridcenter=self.gridcenters['static_defined']).run(step=5)
+
+    def test_ValueError_userdefn_xdim_nanvalue(self, universe):
+        # Test  xdim set to NaN value
+        regex = ("Gridcenter or grid dimensions have NaN element")
+        with pytest.raises(ValueError, match=regex):
+            D = density.DensityAnalysis(
+                universe.select_atoms(self.selections['static']),
+                delta=self.delta, xdim=np.NaN, ydim=10.0, zdim=10.0,
+                gridcenter=self.gridcenters['static_defined']).run(step=5)
+
+    def test_warn_noatomgroup(self, universe):
+        regex = ("No atoms in AtomGroup at input time frame. "
+                 "This may be intended; please ensure that "
+                 "your grid selection covers the atomic "
+                 "positions you wish to capture.")
+        with pytest.warns(UserWarning, match=regex):
+            D = density.DensityAnalysis(
+                universe.select_atoms(self.selections['none']),
+                delta=self.delta, xdim=1.0, ydim=2.0, zdim=2.0, padding=0.0,
+                gridcenter=self.gridcenters['static_defined']).run(step=5)
+
+    def test_ValueError_noatomgroup(self, universe):
+        with pytest.raises(ValueError, match="No atoms in AtomGroup at input"
+                                             " time frame. Grid for density"
+                                             " could not be automatically"
+                                             " generated. If this is"
+                                             " expected, a user"
+                                             " defined grid will "
+                                             "need to be provided instead."):
+            D = density.DensityAnalysis(
+                universe.select_atoms(self.selections['none'])).run(step=5)
+
+    def test_warn_results_deprecated(self, universe):
+        D = density.DensityAnalysis(
+            universe.select_atoms(self.selections['static']))
+        D.run(stop=1)
+        wmsg = "The `density` attribute was deprecated in MDAnalysis 2.0.0"
+        with pytest.warns(DeprecationWarning, match=wmsg):
+            assert_equal(D.density.grid, D.results.density.grid)
 
 
 class TestGridImport(object):
@@ -273,7 +403,7 @@ class TestGridImport(object):
         # mock gridData in case there are testing scenarios where
         # it is not available
         mock = Mock()
-        with patch.dict('sys.modules', {'gridData':mock}):
+        with patch.dict('sys.modules', {'gridData': mock}):
             try:
                 import MDAnalysis.analysis.density
             except ImportError:

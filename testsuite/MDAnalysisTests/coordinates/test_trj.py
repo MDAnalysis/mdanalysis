@@ -31,7 +31,6 @@ from numpy.testing import (
 
 from MDAnalysisTests.coordinates.reference import RefACHE, RefCappedAla
 from MDAnalysisTests.datafiles import (PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2)
-from MDAnalysisTests.coordinates.base import BaseTimestepTest
 
 
 class _TRJReaderTest(object):
@@ -132,15 +131,6 @@ class TestBzippedTRJReaderPBC(_TRJReaderTest, RefCappedAla):
     topology_file = PRMpbc
     trajectory_file = TRJpbc_bz2
     prec = 3
-
-
-class TestTRJTimestep(BaseTimestepTest):
-    Timestep = mda.coordinates.TRJ.Timestep
-    name = "TRJ"
-    has_box = True
-    set_box = True
-    unitcell = np.array([10., 11., 12., 90., 90., 90.])
-    uni_args = (PRM, TRJ)
 
 
 def test_trj_no_natoms():

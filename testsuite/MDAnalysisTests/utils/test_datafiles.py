@@ -21,7 +21,21 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import pytest
+import sys
 from numpy.testing import assert_equal
+
+
+def test_failed_import(monkeypatch):
+    # Putting this test first to avoid datafiles already being loaded
+    errmsg = "MDAnalysisTests package not installed."
+
+    monkeypatch.setitem(sys.modules, 'MDAnalysisTests.datafiles', None)
+
+    if 'MDAnalysis.tests.datafiles' in sys.modules:
+        monkeypatch.delitem(sys.modules, 'MDAnalysis.tests.datafiles')
+
+    with pytest.raises(ImportError, match=errmsg):
+        import MDAnalysis.tests.datafiles
 
 
 def test_import():

@@ -186,6 +186,8 @@ constants = {
     'N_Avogadro': 6.02214129e+23,          # mol**-1
     'elementary_charge': 1.602176565e-19,  # As
     'calorie': 4.184,                      # J
+    'Boltzman_constant': 8.314462159e-3,   # KJ (mol K)**-1
+    'electric_constant': 5.526350e-3,      # As (Angstroms Volts)**-1
 }
 
 #: The basic unit of *length* in MDAnalysis is the Angstrom.
@@ -239,6 +241,8 @@ timeUnit_factor = {
     'ps': 1.0, 'picosecond': 1.0,  # 1/1.0
     'fs': 1e3, 'femtosecond': 1e3,  # 1/1e-3,
     'ns': 1e-3, 'nanosecond': 1e-3,  # 1/1e3,
+    'ms': 1e-9, 'millisecond': 1e-9,  # 1/1e9,
+    'us': 1e-6, 'microsecond': 1e-6, '\u03BCs': 1e-6,  # 1/1e6,
     'second': 1e-12, 'sec': 1e-12, 's': 1e-12,  # 1/1e12,
     'AKMA': 1 / 4.888821e-2,
 }
@@ -253,7 +257,21 @@ speedUnit_factor = {
     'Angstrom/femtosecond': 1.0 * 1e3,
     'angstrom/femtosecond': 1.0 * 1e3,
     'angstrom/fs': 1.0 * 1e3,
+    'A/fs': 1.0 * 1e3,
+    'Angstrom/ms': 1.0 * 1e-9,
+    'Angstrom/millisecond': 1.0 * 1e-9,
+    'angstrom/millisecond': 1.0 * 1e-9,
+    'angstrom/ms': 1.0 * 1e-9,
+    'A/ms': 1.0 * 1e-9,
+    'Angstrom/us': 1.0 * 1e-6,
+    'angstrom/us': 1.0 * 1e-6,
+    'A/us': 1.0 * 1e-6,
+    'Angstrom/microsecond': 1.0 * 1e-6,
+    'angstrom/microsecond': 1.0 * 1e-6,
+    'Angstrom/\u03BCs': 1.0 * 1e-6,
+    'angstrom/\u03BCs': 1.0 * 1e-6,
     'Angstrom/AKMA': 4.888821e-2,
+    'A/AKMA': 4.888821e-2,
     'nm/ps': 0.1, 'nanometer/ps': 0.1, 'nanometer/picosecond': 0.1,  # 1/10
     'nm/ns': 0.1 / 1e-3,
     'pm/ps': 1e2,

@@ -942,7 +942,7 @@ class SurvivalProbability(object):
        Using the MDAnalysis.lib.correlations.py to carry out the intermittency
        and autocorrelation calculations.
        Changed `selection` keyword to `select`.
-       Removed support for the deprecated `t0`, `tf`, and `dtmax` keywords. 
+       Removed support for the deprecated `t0`, `tf`, and `dtmax` keywords.
        These should instead be passed to :meth:`SurvivalProbability.run` as
        the `start`, `stop`, and `tau_max` keywords respectively.
        The `stop` keyword as passed to :meth:`SurvivalProbability.run` has now

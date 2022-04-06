@@ -25,14 +25,14 @@ Linear Density --- :mod:`MDAnalysis.analysis.lineardensity`
 ===========================================================
 
 A tool to compute mass and charge density profiles along the three
-cartesian axes of the simulation cell. Works only for orthorombic,
+cartesian axes [xyz] of the simulation cell. Works only for orthorombic,
 fixed volume cells (thus for simulations in canonical NVT ensemble).
 """
 import os.path as path
 
 import numpy as np
 
-from MDAnalysis.analysis.base import AnalysisBase
+from MDAnalysis.analysis.base import AnalysisBase, Results
 
 
 class LinearDensity(AnalysisBase):
@@ -44,30 +44,40 @@ class LinearDensity(AnalysisBase):
           any atomgroup
     grouping : str {'atoms', 'residues', 'segments', 'fragments'}
           Density profiles will be computed on the center of geometry
-          of a selected group of atoms ['atoms']
+          of a selected group of atoms
     binsize : float
           Bin width in Angstrom used to build linear density
           histograms. Defines the resolution of the resulting density
-          profile (smaller --> higher resolution) [0.25]
-    verbose : bool (optional)
-          Show detailed progress of the calculation if set to ``True``; the
-          default is ``False``.
+          profile (smaller --> higher resolution)
+    verbose : bool, optional
+          Show detailed progress of the calculation if set to ``True``
 
     Attributes
     ----------
-    results : dict
-          Keys 'x', 'y', and 'z' for the three directions. Under these
-          keys, find 'pos', 'pos_std' (mass-weighted density and
-          standard deviation), 'char', 'char_std' (charge density and
-          its standard deviation), 'slice_volume' (volume of bin).
+    results.x.dim : int
+           index of the [xyz] axes
+    results.x.pos : numpy.ndarray
+           mass density in [xyz] direction
+    results.x.pos_std : numpy.ndarray
+           standard deviation of the mass density in [xyz] direction
+    results.x.char : numpy.ndarray
+           charge density in [xyz] direction
+    results.x.char_std : numpy.ndarray
+           standard deviation of the charge density in [xyz] direction
+    results.x.slice_volume : float
+           volume of bin in [xyz] direction
 
     Example
     -------
-    First create a LinearDensity object by supplying a selection,
-    then use the :meth:`run` method::
+    First create a ``LinearDensity`` object by supplying a selection,
+    then use the :meth:`run` method. Finally access the results
+    stored in results, i.e. the mass density in the x direction.
 
-      ldens = LinearDensity(selection)
-      ldens.run()
+    .. code-block:: python
+
+       ldens = LinearDensity(selection)
+       ldens.run()
+       print(ldens.results.x.pos)
 
 
     .. versionadded:: 0.14.0
@@ -81,6 +91,11 @@ class LinearDensity(AnalysisBase):
 
     .. versionchanged:: 1.0.0
        Changed `selection` keyword to `select`
+
+    .. versionchanged:: 2.0.0
+       Results are now instances of
+       :class:`~MDAnalysis.core.analysis.Results` allowing access
+       via key and attribute.
     """
 
     def __init__(self, select, grouping='atoms', binsize=0.25, **kwargs):
@@ -96,8 +111,10 @@ class LinearDensity(AnalysisBase):
         # AtomGroup.wrap())
         self.grouping = grouping
 
-        # Dictionary containing results
-        self.results = {'x': {'dim': 0}, 'y': {'dim': 1}, 'z': {'dim': 2}}
+        # Initiate result instances
+        self.results["x"] = Results(dim=0)
+        self.results["y"] = Results(dim=1)
+        self.results["z"] = Results(dim=2)
         # Box sides
         self.dimensions = self._universe.dimensions[:3]
         self.volume = np.prod(self.dimensions)
@@ -114,9 +131,9 @@ class LinearDensity(AnalysisBase):
         # Initialize results array with zeros
         for dim in self.results:
             idx = self.results[dim]['dim']
-            self.results[dim].update({'slice volume': slices_vol[idx]})
+            self.results[dim]['slice_volume'] = slices_vol[idx]
             for key in self.keys:
-                self.results[dim].update({key: np.zeros(self.nbins)})
+                self.results[dim][key] = np.zeros(self.nbins)
 
         # Variables later defined in _prepare() method
         self.masses = None
@@ -177,7 +194,7 @@ class LinearDensity(AnalysisBase):
     def _conclude(self):
         k = 6.022e-1  # divide by avodagro and convert from A3 to cm3
 
-        # Average results over the  number of configurations
+        # Average results over the number of configurations
         for dim in ['x', 'y', 'z']:
             for key in ['pos', 'pos_std', 'char', 'char_std']:
                 self.results[dim][key] /= self.n_frames
@@ -188,10 +205,9 @@ class LinearDensity(AnalysisBase):
                 'char_std'] - np.square(self.results[dim]['char']))
 
         for dim in ['x', 'y', 'z']:
-            self.results[dim]['pos'] /= self.results[dim]['slice volume'] * k
-            self.results[dim]['char'] /= self.results[dim]['slice volume'] * k
-            self.results[dim]['pos_std'] /= self.results[dim]['slice volume'] * k
-            self.results[dim]['char_std'] /= self.results[dim]['slice volume'] * k
+            norm = k * self.results[dim]['slice_volume']
+            for key in self.keys:
+                self.results[dim][key] /= norm
 
     def _add_other_results(self, other):
         # For parallel analysis

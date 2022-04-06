@@ -30,7 +30,7 @@ from numpy.testing import (
     assert_almost_equal,
 )
 import pytest
-from MDAnalysisTests.datafiles import PSF, DCD, PDB_CHECK_RIGHTHAND_PA
+from MDAnalysisTests.datafiles import PSF, DCD, PDB_CHECK_RIGHTHAND_PA, MMTF
 from MDAnalysisTests import make_Universe, no_deprecated_call
 
 import MDAnalysis as mda
@@ -176,9 +176,21 @@ class TestIndicesClasses(object):
 
 class TestAtomnames(TestAtomAttr):
     values = np.array(['O', 'C', 'CA', 'N', 'CB', 'CG', 'CD', 'NA', 'CL', 'OW'],
-                      dtype=np.object)
+                      dtype=object)
     single_value = 'Ca2'
     attrclass = tpattrs.Atomnames
+
+    @pytest.fixture()
+    def u(self):
+        return mda.Universe(PSF, DCD)
+
+    def test_prev_emptyresidue(self, u):
+        assert_equal(u.residues[[]]._get_prev_residues_by_resid(),
+                     u.residues[[]])
+
+    def test_next_emptyresidue(self, u):
+        assert_equal(u.residues[[]]._get_next_residues_by_resid(),
+                     u.residues[[]])
 
 
 class AggregationMixin(TestAtomAttr):
@@ -501,3 +513,124 @@ def test_static_typing_from_empty():
 
     assert isinstance(u._topology.masses.values, np.ndarray)
     assert isinstance(u.atoms[0].mass, float)
+
+
+@pytest.mark.parametrize('level, transplant_name', (
+    ('atoms', 'center_of_mass'),
+    ('atoms', 'total_charge'),
+    ('residues', 'total_charge'),
+))
+def test_stub_transplant_methods(level, transplant_name):
+    u = mda.Universe.empty(n_atoms=2)
+    group = getattr(u, level)
+    with pytest.raises(NoDataError):
+        getattr(group, transplant_name)()
+
+
+@pytest.mark.parametrize('level, transplant_name', (
+    ('universe', 'models'),
+    ('atoms', 'n_fragments'),
+))
+def test_stub_transplant_property(level, transplant_name):
+    u = mda.Universe.empty(n_atoms=2)
+    group = getattr(u, level)
+    with pytest.raises(NoDataError):
+        getattr(group, transplant_name)
+
+
+def test_warn_selection_for_strange_dtype():
+    err = "A selection keyword could not be automatically generated"
+
+    with pytest.warns(UserWarning, match=err):
+        class Star(tpattrs.TopologyAttr):
+            singular = "star"  # turns out test_imports doesn't like emoji
+            attrname = "stars"  # :(
+            per_object = "atom"
+            dtype = dict
+
+
+class TestDeprecateBFactor:
+
+    MATCH = "use the tempfactor attribute"
+
+    @pytest.fixture()
+    def universe(self):
+        return mda.Universe(MMTF)
+
+    def test_deprecate_bfactors_get_group(self, universe):
+        with pytest.warns(DeprecationWarning, match=self.MATCH):
+            universe.atoms.bfactors
+
+    def test_deprecate_bfactors_get_atom(self, universe):
+        with pytest.warns(DeprecationWarning, match=self.MATCH):
+            assert universe.atoms[0].bfactor == universe.atoms[0].tempfactor
+
+    def test_deprecate_bfactors_set_group(self, universe):
+        with pytest.warns(DeprecationWarning, match=self.MATCH):
+            universe.atoms[:2].bfactors = [3.14, 10]
+        assert universe.atoms.tempfactors[0] == 3.14
+        assert universe.atoms.tempfactors[1] == 10
+
+        with pytest.warns(DeprecationWarning, match=self.MATCH):
+            assert universe.atoms.bfactors[0] == 3.14
+            assert universe.atoms.bfactors[1] == 10
+
+    def test_deprecate_bfactors_set_atom(self, universe):
+        with pytest.warns(DeprecationWarning, match=self.MATCH):
+            universe.atoms[0].bfactor = 3.14
+        assert universe.atoms[0].tempfactor == 3.14
+        with pytest.warns(DeprecationWarning, match=self.MATCH):
+            assert universe.atoms[0].bfactor == 3.14
+
+    def test_deprecate_bfactor_sel(self, universe):
+        with pytest.warns(DeprecationWarning, match=self.MATCH):
+            universe.select_atoms("bfactor 3")
+
+
+class TestStringInterning:
+    # try and trip up the string interning we use for string attributes
+    @pytest.fixture
+    def universe(self):
+        u = mda.Universe.empty(n_atoms=10, n_residues=2,
+                               atom_resindex=[0]*5 + [1] * 5)
+        u.add_TopologyAttr('names', values=['A'] * 10)
+        u.add_TopologyAttr('resnames', values=['ResA', 'ResB'])
+        u.add_TopologyAttr('segids', values=['SegA'])
+
+        return u
+
+    @pytest.mark.parametrize('newname', ['ResA', 'ResB'])
+    def test_add_residue(self, universe, newname):
+        newres = universe.add_Residue(resname=newname)
+
+        assert newres.resname == newname
+
+        ag = universe.atoms[2]
+        ag.residue = newres
+
+        assert ag.resname == newname
+
+    @pytest.mark.parametrize('newname', ['SegA', 'SegB'])
+    def test_add_segment(self, universe, newname):
+        newseg = universe.add_Segment(segid=newname)
+
+        assert newseg.segid == newname
+
+        rg = universe.residues[0]
+        rg.segment = newseg
+
+        assert rg.atoms[0].segid == newname
+
+    def test_issue3437(self, universe):
+        newseg = universe.add_Segment(segid='B')
+
+        ag = universe.residues[0].atoms
+
+        ag.residues.segments = newseg
+
+        assert 'B' in universe.segments.segids
+
+        ag2 = universe.select_atoms('segid B')
+
+        assert len(ag2) == 5
+        assert (ag2.ix == ag.ix).all()

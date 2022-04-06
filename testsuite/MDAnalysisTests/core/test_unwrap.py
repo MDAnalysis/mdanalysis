@@ -21,12 +21,14 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import numpy as np
-from numpy.testing import assert_almost_equal, assert_array_equal
+from numpy.testing import (assert_raises, assert_almost_equal,
+                           assert_array_equal)
 import pytest
 
 import MDAnalysis as mda
 from MDAnalysis import NoDataError
 from MDAnalysisTests.core.util import UnWrapUniverse
+from MDAnalysis.tests.datafiles import CONECT
 
 
 class TestUnwrap(object):
@@ -356,3 +358,25 @@ class TestUnwrap(object):
             group.unwrap(compound='molecules', reference=reference,
                          inplace=True)
         assert_array_equal(group.atoms.positions, orig_pos)
+
+
+def test_uncontiguous():
+    """Real-life case of fragment sparsity that triggers Issue 3352
+    """
+    precision = 5
+    displacement_vec = [14.7, 0., 0.]
+    u = mda.Universe(CONECT)
+    # This is one of the few residues that has bonds
+    ag = u.residues[66].atoms
+    ref_pos = ag.positions
+    # Let's break it by placing it over the box boundary and re-packing
+    u.atoms.positions -= displacement_vec
+    u.atoms.pack_into_box()
+    # Let's make sure we really broke the fragment
+    assert_raises(AssertionError, assert_almost_equal,
+                  ref_pos, ag.positions+displacement_vec,
+                  decimal=precision)
+    # Ok, let's make it whole again and check that we're good
+    u.atoms.unwrap()
+    assert_almost_equal(ref_pos, ag.positions+displacement_vec,
+                        decimal=precision)

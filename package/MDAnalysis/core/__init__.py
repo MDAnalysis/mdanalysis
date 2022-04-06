@@ -52,5 +52,5 @@ and write your own Python code.
 
 __all__ = ['AtomGroup', 'Selection']
 
-from . import groups
-from . import selection
+from .groups import AtomGroup
+from .selection import Selection

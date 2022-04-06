@@ -11,7 +11,7 @@ from MDAnalysisTests.datafiles import MMTF, MMTF_gz, MMTF_skinny, MMTF_skinny2
 
 class MMTFBase(ParserBase):
     expected_attrs = [
-        'ids', 'names', 'types', 'altLocs', 'bfactors', 'occupancies',
+        'ids', 'names', 'types', 'altLocs', 'tempfactors', 'occupancies',
         'charges', 'names', 'resnames', 'resids', 'resnums', 'icodes',
         'segids', 'bonds', 'models'
     ]

@@ -36,6 +36,7 @@ cimport numpy as np
 import cython
 from libc.math cimport sqrt
 
+np.import_array()
 
 @cython.boundscheck(False)
 @cython.wraparound(False)

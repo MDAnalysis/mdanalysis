@@ -125,9 +125,10 @@ def test_center_in_box_no_masses(translate_universes):
     # this universe has no masses
     ts = translate_universes[0].trajectory.ts
     ag = translate_universes[0].residues[0].atoms
+    ts.dimensions = [10, 10, 10, 90, 90, 90]
     # if the universe has no masses and `mass` is passed as the center arg
     bad_center = "mass"
-    with pytest.raises(AttributeError): 
+    with pytest.raises(mda.NoDataError):
         center_in_box(ag, center=bad_center)(ts)
 
 

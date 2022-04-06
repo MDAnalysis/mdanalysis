@@ -212,6 +212,24 @@ class TestFragments(object):
         with pytest.raises(NoDataError):
             getattr(u.atoms[10], 'fragindex')
 
+    def test_atomgroup_fragment_cache_invalidation_bond_making(self):
+        u = case1()
+        fgs = u.atoms.fragments
+        assert fgs is u.atoms._cache['fragments']
+        assert u.atoms._cache_key in u._cache['_valid']['fragments']
+        u.add_bonds((fgs[0][-1] + fgs[1][0],))  # should trigger invalidation
+        assert 'fragments' not in u._cache['_valid']
+        assert len(fgs) > len(u.atoms.fragments)  # recomputed
+
+    def test_atomgroup_fragment_cache_invalidation_bond_breaking(self):
+        u = case1()
+        fgs = u.atoms.fragments
+        assert fgs is u.atoms._cache['fragments']
+        assert u.atoms._cache_key in u._cache['_valid']['fragments']
+        u.delete_bonds((u.atoms.bonds[3],))  # should trigger invalidation
+        assert 'fragments' not in u._cache['_valid']
+        assert len(fgs) < len(u.atoms.fragments)  # recomputed
+
 
 def test_tpr_fragments():
     ag = mda.Universe(TPR, XTC).atoms

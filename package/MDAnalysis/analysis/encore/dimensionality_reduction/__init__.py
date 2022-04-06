@@ -22,7 +22,10 @@
 #
 from . import DimensionalityReductionMethod
 
-__all__ = [
-    'DimensionalityReductionMethod.StochasticProximityEmbeddingNative',
-    'DimensionalityReductionMethod.PrincipalComponentAnalysis'
-]
+from .DimensionalityReductionMethod import StochasticProximityEmbeddingNative
+
+__all__ = ['StochasticProximityEmbeddingNative']
+
+if DimensionalityReductionMethod.sklearn:
+    from .DimensionalityReductionMethod import PrincipalComponentAnalysis
+    __all__ += ['PrincipalComponentAnalysis']

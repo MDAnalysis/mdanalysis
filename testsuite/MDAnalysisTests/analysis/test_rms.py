@@ -185,14 +185,14 @@ class TestRMSD(object):
     def test_rmsd(self, universe, correct_values):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe, select='name CA')
         RMSD.run(step=49)
-        assert_almost_equal(RMSD.rmsd, correct_values, 4,
+        assert_almost_equal(RMSD.results.rmsd, correct_values, 4,
                             err_msg="error: rmsd profile should match" +
                             "test values")
 
     def test_rmsd_unicode_selection(self, universe, correct_values):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe, select=u'name CA')
         RMSD.run(step=49)
-        assert_almost_equal(RMSD.rmsd, correct_values, 4,
+        assert_almost_equal(RMSD.results.rmsd, correct_values, 4,
                             err_msg="error: rmsd profile should match" +
                             "test values")
 
@@ -202,13 +202,13 @@ class TestRMSD(object):
                                           select="resid 1-30").run()
         R2 = MDAnalysis.analysis.rms.RMSD(universe.atoms.select_atoms("name CA"),
                                           select="resid 1-30").run()
-        assert not np.allclose(R1.rmsd[:, 2], R2.rmsd[:, 2])
+        assert not np.allclose(R1.results.rmsd[:, 2], R2.results.rmsd[:, 2])
 
     def test_rmsd_single_frame(self, universe):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe, select='name CA',
                                             ).run(start=5, stop=6)
         single_frame = [[5, 6, 0.91544906]]
-        assert_almost_equal(RMSD.rmsd, single_frame, 4,
+        assert_almost_equal(RMSD.results.rmsd, single_frame, 4,
                             err_msg="error: rmsd profile should match" +
                             "test values")
 
@@ -218,14 +218,14 @@ class TestRMSD(object):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe, select='name CA',
                                             weights='mass').run(step=49)
 
-        assert_almost_equal(RMSD.rmsd, correct_values, 4,
+        assert_almost_equal(RMSD.results.rmsd, correct_values, 4,
                             err_msg="error: rmsd profile should match"
                             "test values")
 
     def test_custom_weighted(self, universe, correct_values_mass):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe, weights="mass").run(step=49)
 
-        assert_almost_equal(RMSD.rmsd, correct_values_mass, 4,
+        assert_almost_equal(RMSD.results.rmsd, correct_values_mass, 4,
                             err_msg="error: rmsd profile should match"
                             "test values")
 
@@ -234,7 +234,7 @@ class TestRMSD(object):
                                                  weights="mass").run(step=49)
         RMSD_cust = MDAnalysis.analysis.rms.RMSD(universe,
                                                  weights=universe.atoms.masses).run(step=49)
-        assert_almost_equal(RMSD_mass.rmsd, RMSD_cust.rmsd, 4,
+        assert_almost_equal(RMSD_mass.results.rmsd, RMSD_cust.results.rmsd, 4,
                             err_msg="error: rmsd profiles should match for 'mass' "
                             "and universe.atoms.masses")
 
@@ -242,7 +242,7 @@ class TestRMSD(object):
         weights = universe.atoms.masses
         RMSD = MDAnalysis.analysis.rms.RMSD(universe,
                                             weights=list(weights)).run(step=49)
-        assert_almost_equal(RMSD.rmsd, correct_values_mass, 4,
+        assert_almost_equal(RMSD.results.rmsd, correct_values_mass, 4,
                             err_msg="error: rmsd profile should match" +
                             "test values")
 
@@ -253,7 +253,7 @@ class TestRMSD(object):
                                             weights=None,
                                             weights_groupselections=[[1, 0, 0, 0, 0], None]).run(step=49)
 
-        assert_almost_equal(RMSD.rmsd.T[3], RMSD.rmsd.T[4], 4,
+        assert_almost_equal(RMSD.results.rmsd.T[3], RMSD.results.rmsd.T[4], 4,
                             err_msg="error: rmsd profile should match "
                             "for applied weight array and selected resid")
 
@@ -265,7 +265,7 @@ class TestRMSD(object):
                                             weights_groupselections=['mass',
                                                                      universe.atoms.masses]).run(step=49)
 
-        assert_almost_equal(RMSD.rmsd.T[3], RMSD.rmsd.T[4], 4,
+        assert_almost_equal(RMSD.results.rmsd.T[3], RMSD.results.rmsd.T[4], 4,
                             err_msg="error: rmsd profile should match "
                             "between applied mass and universe.atoms.masses")
 
@@ -308,7 +308,7 @@ class TestRMSD(object):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe,
                                             groupselections=['backbone', 'name CA']
                                             ).run(step=49)
-        assert_almost_equal(RMSD.rmsd, correct_values_group, 4,
+        assert_almost_equal(RMSD.results.rmsd, correct_values_group, 4,
                             err_msg="error: rmsd profile should match"
                             "test values")
 
@@ -321,7 +321,7 @@ class TestRMSD(object):
             groupselections=['backbone and resid 1:10',
                              'backbone and resid 10:20']).run(step=49)
         assert_almost_equal(
-            RMSD.rmsd, correct_values_backbone_group, 4,
+            RMSD.results.rmsd, correct_values_backbone_group, 4,
             err_msg="error: rmsd profile should match test values")
 
     def test_ref_length_unequal_len(self, universe):
@@ -347,7 +347,7 @@ class TestRMSD(object):
                                                 weights='mass',
                                                 tol_mass=100)
         RMSD.run(step=49)
-        assert_almost_equal(RMSD.rmsd, correct_values_mass_add_ten, 4,
+        assert_almost_equal(RMSD.results.rmsd, correct_values_mass_add_ten, 4,
                             err_msg="error: rmsd profile should match "
                             "between true values and calculated values")
 
@@ -358,6 +358,14 @@ class TestRMSD(object):
             RMSD = MDAnalysis.analysis.rms.RMSD(universe,
                                                 reference=reference,
                                                 groupselections=['resname MET', 'type NH3'])
+
+    def test_rmsd_attr_warning(self, universe):
+        RMSD = MDAnalysis.analysis.rms.RMSD(
+                universe, select='name CA').run(stop=2)
+
+        wmsg = "The `rmsd` attribute was deprecated in MDAnalysis 2.0.0"
+        with pytest.warns(DeprecationWarning, match=wmsg):
+            assert_equal(RMSD.rmsd, RMSD.results.rmsd)
 
 
 class TestRMSF(object):
@@ -370,14 +378,14 @@ class TestRMSF(object):
         rmsfs.run()
         test_rmsfs = np.load(rmsfArray)
 
-        assert_almost_equal(rmsfs.rmsf, test_rmsfs, 5,
+        assert_almost_equal(rmsfs.results.rmsf, test_rmsfs, 5,
                             err_msg="error: rmsf profile should match test "
                             "values")
 
     def test_rmsf_single_frame(self, universe):
         rmsfs = rms.RMSF(universe.select_atoms('name CA')).run(start=5, stop=6)
 
-        assert_almost_equal(rmsfs.rmsf, 0, 5,
+        assert_almost_equal(rmsfs.results.rmsf, 0, 5,
                             err_msg="error: rmsfs should all be zero")
 
     def test_rmsf_identical_frames(self, universe, tmpdir):
@@ -392,5 +400,12 @@ class TestRMSF(object):
         universe = mda.Universe(GRO, outfile)
         rmsfs = rms.RMSF(universe.select_atoms('name CA'))
         rmsfs.run()
-        assert_almost_equal(rmsfs.rmsf, 0, 5,
+        assert_almost_equal(rmsfs.results.rmsf, 0, 5,
                             err_msg="error: rmsfs should all be 0")
+
+    def test_rmsf_attr_warning(self, universe):
+        rmsfs = rms.RMSF(universe.select_atoms('name CA')).run(stop=2)
+
+        wmsg = "The `rmsf` attribute was deprecated in MDAnalysis 2.0.0"
+        with pytest.warns(DeprecationWarning, match=wmsg):
+            assert_equal(rmsfs.rmsf, rmsfs.results.rmsf)

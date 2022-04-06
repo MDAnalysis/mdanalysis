@@ -423,7 +423,7 @@ class BaseX3DNA(object):
             ax.set_xlabel(r"Nucleic Acid Number")
             param = self.profiles.values()[0].dtype.names[k]
             if param in ["Shear", "Stretch", "Stagger", "Rise", "Shift", "Slide"]:
-                ax.set_ylabel("{0!s} ($\AA$)".format((param)))
+                ax.set_ylabel(r"{!s} ($\AA$)".format(param))
             else:
                 ax.set_ylabel("{0!s} (deg)".format((param)))
             ax.figure.savefig("{0!s}.png".format((param)))

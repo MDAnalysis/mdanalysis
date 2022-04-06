@@ -24,7 +24,7 @@ import MDAnalysis as mda
 import numpy as np
 import sys
 
-from scipy.io import netcdf
+from scipy.io import netcdf_file
 
 import pytest
 from numpy.testing import (
@@ -39,6 +39,7 @@ from MDAnalysisTests.datafiles import (PFncdf_Top, PFncdf_Trj,
 from MDAnalysisTests.coordinates.test_trj import _TRJReaderTest
 from MDAnalysisTests.coordinates.reference import (RefVGV, RefTZ2)
 from MDAnalysisTests import make_Universe
+from MDAnalysisTests.util import block_import
 
 
 class _NCDFReaderTest(_TRJReaderTest):
@@ -200,9 +201,8 @@ class TestNCDFReader2(object):
         assert_almost_equal(ref, u.trajectory.ts.dt, self.prec)
 
     def test_box(self, u):
-        ref = np.array([0., 0., 0., 0., 0., 0.], dtype=np.float32)
         for ts in u.trajectory:
-            assert_equal(ref, ts.dimensions)
+            assert ts.dimensions is None
 
 
 class TestNCDFReader3(object):
@@ -306,8 +306,8 @@ class _NCDFGenerator(object):
     def create_ncdf(self, params):
         """A basic modular ncdf writer based on :class:`NCDFWriter`"""
         # Create under context manager
-        with netcdf.netcdf_file(params['filename'], mode='w',
-                                version=params['version_byte']) as ncdf:
+        with netcdf_file(params['filename'], mode='w',
+                         version=params['version_byte']) as ncdf:
             # Top level attributes
             if params['Conventions']:
                 setattr(ncdf, 'Conventions', params['Conventions'])
@@ -501,6 +501,16 @@ class TestScaleFactorImplementation(_NCDFGenerator):
             for ts in u.trajectory:
                 assert_almost_equal(ts.dimensions, expected, self.prec)
 
+    def test_scale_factor_not_float(self, tmpdir):
+        mutation = {'scale_factor': 'coordinates',
+                    'scale_factor_value': 'parsnips'}
+        params = self.gen_params(keypair=mutation, restart=False)
+        with tmpdir.as_cwd():
+            self.create_ncdf(params)
+            errmsg = "b'parsnips' is not a float"
+            with pytest.raises(TypeError, match=errmsg):
+                u = mda.Universe(params['filename'])
+
 
 class TestNCDFReaderExceptionsWarnings(_NCDFGenerator):
 
@@ -594,6 +604,19 @@ class TestNCDFReaderExceptionsWarnings(_NCDFGenerator):
                     "attributes are missing")
             assert str(record[0].message.args[0]) == wmsg
 
+    def test_no_dt_warning(self, tmpdir):
+        """Issue 3166 - not being able to call dt should throw a warning.
+        Also at the same time checks that single frame chain reading works"""
+        u = mda.Universe(PFncdf_Top, PFncdf_Trj)
+        with tmpdir.as_cwd():
+            with NCDFWriter('single_frame.nc', u.atoms.n_atoms) as W:
+                W.write(u)
+
+            # Using the ChainReader implicitly calls dt() and thus _get_dt()
+            wmsg = "Reader has no dt information, set to 1.0 ps"
+            with pytest.warns(UserWarning, match=wmsg):
+                u2 = mda.Universe(PFncdf_Top, [PFncdf_Trj, 'single_frame.nc'])
+
 
 class _NCDFWriterTest(object):
     prec = 5
@@ -601,6 +624,12 @@ class _NCDFWriterTest(object):
     @pytest.fixture()
     def universe(self):
         return mda.Universe(self.topology, self.filename)
+
+    @pytest.fixture(params=['nc', 'ncdf'])
+    def outfile_extensions(self, tmpdir, request):
+        # Issue 3030, test all extensions of NCDFWriter
+        ext = request.param
+        return str(tmpdir) + f'ncdf-writer-1.{ext}'
 
     @pytest.fixture()
     def outfile(self, tmpdir):
@@ -627,7 +656,7 @@ class _NCDFWriterTest(object):
         #       which should be "float32".
         #       See http://docs.scipy.org/doc/numpy-1.10.0/reference/arrays.dtypes.html
         #       and https://github.com/MDAnalysis/mdanalysis/pull/503
-        dataset = netcdf.netcdf_file(outfile, 'r')
+        dataset = netcdf_file(outfile, 'r')
         coords = dataset.variables['coordinates']
         time = dataset.variables['time']
         assert_equal(coords[:].dtype.name, np.dtype(np.float32).name,
@@ -654,11 +683,11 @@ class _NCDFWriterTest(object):
         finally:
             sys.modules['MDAnalysis.coordinates.TRJ'].netCDF4 = loaded_netCDF4
 
-    def test_OtherWriter(self, universe, outfile):
+    def test_OtherWriter(self, universe, outfile_extensions):
         t = universe.trajectory
-        with t.OtherWriter(outfile) as W:
+        with t.OtherWriter(outfile_extensions) as W:
             self._copy_traj(W, universe)
-        self._check_new_traj(universe, outfile)
+        self._check_new_traj(universe, outfile_extensions)
 
     def _copy_traj(self, writer, universe):
         for ts in universe.trajectory:
@@ -858,6 +887,135 @@ class TestNCDFWriterVelsForces(object):
         u.trajectory.close()
 
 
+class TestNCDFWriterScaleFactors:
+    """Class to check that the NCDF Writer properly handles the
+    application of scale factors"""
+
+    @pytest.fixture()
+    def outfile(self, tmpdir):
+        return str(tmpdir) + 'ncdf-write-scale.ncdf'
+
+    @pytest.fixture()
+    def outfile2(self, tmpdir):
+        return str(tmpdir) + 'ncdf-write-scale2.ncdf'
+
+    @pytest.fixture()
+    def universe(self):
+        return mda.Universe(PRM_NCBOX, TRJ_NCBOX)
+
+    def get_scale_factors(self, ncdfile):
+        """Get a dictionary of scale factors stored in netcdf file"""
+        sfactors = {}
+        # being overly cautious by setting mmap to False, probably would
+        # be faster & ok to set it to True
+        with netcdf_file(ncdfile, mmap=False) as f:
+            for var in f.variables:
+                if hasattr(f.variables[var], 'scale_factor'):
+                    sfactors[var] = f.variables[var].scale_factor
+
+        return sfactors
+
+    def get_variable(self, ncdfile, variable, frame):
+        """Return a variable array from netcdf file"""
+        with netcdf_file(ncdfile, mmap=False) as f:
+            return f.variables[variable][frame]
+
+    def test_write_read_factors_default(self, outfile, universe):
+        with universe.trajectory.Writer(outfile) as W:
+            W.write(universe.atoms)
+
+        # check scale_factors
+        sfactors = self.get_scale_factors(outfile)
+        assert len(sfactors) == 1
+        assert sfactors['velocities'] == 20.455
+
+    def test_write_bad_scale_factor(self, outfile, universe):
+        errmsg = "scale_factor parsnips is not a float"
+        with pytest.raises(TypeError, match=errmsg):
+            NCDFWriter(outfile, n_atoms=len(universe.atoms),
+                       scale_velocities="parsnips")
+
+    @pytest.mark.parametrize('stime, slengths, sangles, scoords, svels, sfrcs', (
+            (-2.0, -2.0, -2.0, -2.0, -2.0, -2.0),
+            (1.0, 1.0, 1.0, 1.0, 1.0, 1.0),
+            (2.0, 4.0, 8.0, 16.0, 32.0, 64.0)
+    ))
+    def test_write_read_write(self, outfile, outfile2, universe, stime,
+                              slengths, sangles, scoords, svels, sfrcs):
+        """Write out a file with assorted scale_factors, then
+        read it back in, then write it out to make sure that the
+        new assorted scale_factors have been retained by Write"""
+
+        with NCDFWriter(outfile, n_atoms=len(universe.atoms), velocities=True,
+                        forces=True, scale_time=stime,
+                        scale_cell_lengths=slengths, scale_cell_angles=sangles,
+                        scale_coordinates=scoords, scale_velocities=svels,
+                        scale_forces=sfrcs) as W:
+            for ts in universe.trajectory:
+                W.write(universe.atoms)
+
+        universe2 = mda.Universe(PRM_NCBOX, outfile)
+
+        # Write back checking that the same scale_factors as used
+        with universe2.trajectory.Writer(outfile2) as OWriter:
+            OWriter.write(universe2.atoms)
+
+        universe3 = mda.Universe(PRM_NCBOX, outfile2)
+
+        # check stored scale_factors
+        sfactors1 = self.get_scale_factors(outfile)
+        sfactors2 = self.get_scale_factors(outfile2)
+
+        assert sfactors1 == sfactors2
+        assert len(sfactors1) == 6
+        assert sfactors1['time'] == stime
+        assert sfactors1['cell_lengths'] == slengths
+        assert sfactors1['cell_angles'] == sangles
+        assert sfactors1['coordinates'] == scoords
+        assert sfactors1['velocities'] == svels
+        assert sfactors1['forces'] == sfrcs
+
+        # check that the stored values are indeed scaled
+        assert_almost_equal(universe.trajectory.time / stime,
+                            self.get_variable(outfile, 'time', 0), 4)
+        assert_almost_equal(universe.dimensions[:3] / slengths,
+                            self.get_variable(outfile, 'cell_lengths', 0), 4)
+        assert_almost_equal(universe.dimensions[3:] / sangles,
+                            self.get_variable(outfile, 'cell_angles', 0), 4)
+        assert_almost_equal(universe.atoms.positions / scoords,
+                            self.get_variable(outfile, 'coordinates', 0), 4)
+        assert_almost_equal(universe.atoms.velocities / svels,
+                            self.get_variable(outfile, 'velocities', 0), 4)
+        # note: kJ/mol -> kcal/mol = 4.184 conversion
+        assert_almost_equal(universe.atoms.forces / (sfrcs * 4.184),
+                            self.get_variable(outfile, 'forces', 0), 4)
+
+        # check that the individual components were saved/read properly
+        for ts1, ts3 in zip(universe.trajectory, universe3.trajectory):
+            assert_almost_equal(ts1.time, ts3.time)
+            assert_almost_equal(ts1.dimensions, ts3.dimensions)
+            assert_almost_equal(universe.atoms.positions,
+                                universe3.atoms.positions, 4)
+            assert_almost_equal(universe.atoms.velocities,
+                                universe3.atoms.velocities, 4)
+            assert_almost_equal(universe.atoms.forces,
+                                universe3.atoms.forces, 4)
+
+
+class TestScipyScaleFactors(TestNCDFWriterScaleFactors):
+    """As above, but netCDF4 is disabled since scaleandmask is different
+    between the two libraries"""
+    @pytest.fixture(autouse=True)
+    def block_netcdf4(self, monkeypatch):
+        monkeypatch.setattr(sys.modules['MDAnalysis.coordinates.TRJ'], 'netCDF4', None)
+
+    def test_ncdf4_not_present(self, outfile, universe):
+        # whilst we're here, let's also test this warning
+        with pytest.warns(UserWarning, match="Could not find netCDF4 module"):
+            with universe.trajectory.Writer(outfile) as W:
+                W.write(universe.atoms)
+
+
 class TestNCDFWriterUnits(object):
     """Tests that the writer adheres to AMBER convention units"""
     @pytest.fixture()
@@ -880,25 +1038,21 @@ class TestNCDFWriterUnits(object):
             for ts in trr.trajectory:
                 W.write(trr)
 
-        with netcdf.netcdf_file(outfile, mode='r') as ncdf:
+        with netcdf_file(outfile, mode='r') as ncdf:
             unit = ncdf.variables[var].units.decode('utf-8')
             assert_equal(unit, expected)
 
 
-class TestNCDFWriterErrors(object):
+class TestNCDFWriterErrorsWarnings(object):
     @pytest.fixture()
     def outfile(self, tmpdir):
         return str(tmpdir) + 'out.ncdf'
 
     def test_zero_atoms_VE(self, outfile):
-        from MDAnalysis.coordinates.TRJ import NCDFWriter
-
         with pytest.raises(ValueError):
             NCDFWriter(outfile, 0)
 
     def test_wrong_n_atoms(self, outfile):
-        from MDAnalysis.coordinates.TRJ import NCDFWriter
-
         with NCDFWriter(outfile, 100) as w:
             u = make_Universe(trajectory=True)
             with pytest.raises(IOError):

@@ -19,11 +19,11 @@ die () {
 
 findcommand() {
     for name in $*; do
-    path=$(which $name)
-    if [ -n "$path" ]; then
-        echo $path
-        return 0
-    fi
+        path=$(which $name)
+        if [ -n "$path" ]; then
+            echo $path
+            return 0
+        fi
     done
     die "None of the commands $* found." 2
 }
@@ -74,12 +74,12 @@ echo "Using sed = $SED"
 echo "Setting RELEASE/__version__ in MDAnalysis to $RELEASE"
 
 git grep -E -l 'RELEASE.*[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?(-dev[0-9]*|-rc[0-9]*)?' $FILES  \
-   | xargs -I FILE $SED '/RELEASE/s/[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?(-dev[0-9]*|-rc[0-9]*)?/'${RELEASE}'/' -i.bak FILE
+   | xargs -I FILE $SED -e '/RELEASE/s/[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?(-dev[0-9]*|-rc[0-9]*)?/'${RELEASE}'/' -i .bak FILE
 
 git grep -E -l '__version__ *=.*[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?(-dev[0-9]*|-rc[0-9]*)?'  $FILES \
-   | xargs -I FILE $SED '/__version__/s/[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?(-dev[0-9]*|-rc[0-9]*)?/'${RELEASE}'/' -i.bak FILE
+   | xargs -I FILE $SED -e '/__version__/s/[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?(-dev[0-9]*|-rc[0-9]*)?/'${RELEASE}'/' -i .bak FILE
 
 git grep -E -l 'version:.*[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?(-dev[0-9]*|-rc[0-9]*)?'  $FILES \
-   | xargs -I FILE $SED '/version:/s/[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?(-dev[0-9]*|-rc[0-9]*)?/'${RELEASE}'/' -i.bak FILE
+   | xargs -I FILE $SED -e '/version:/s/[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?(-dev[0-9]*|-rc[0-9]*)?/'${RELEASE}'/' -i .bak FILE
 
 git status

@@ -61,6 +61,16 @@ Classes
    :members:
 
 
+Notes
+-----
+
+* The MDAnalysis :class:`MOL2Reader` and :class:`MOL2Writer` only handle the
+  MOLECULE, SUBSTRUCTURE, ATOM, and BOND record types. Other records are not
+  currently read or preserved on writing.
+* As the CRYSIN record type is not parsed / written, MOL2 systems always have
+  dimensions set to ``None`` and dimensionless MOL2 files are written.
+
+
 MOL2 format notes
 -----------------
 
@@ -127,6 +137,8 @@ class MOL2Reader(base.ReaderBase):
     .. versionchanged:: 0.20.0
        Allows for comments at top of file.
        Ignores status bit strings
+    .. versionchanged:: 2.0.0
+       Bonds attribute is not added if no bonds are present in MOL2 file
     """
     format = 'MOL2'
     units = {'time': None, 'length': 'Angstrom'}
@@ -175,7 +187,7 @@ class MOL2Reader(base.ReaderBase):
                 continue
             sections[cursor].append(line)
 
-        atom_lines, bond_lines = sections["atom"], sections["bond"]
+        atom_lines = sections["atom"]
         if not len(atom_lines):
             raise Exception("The mol2 (starting at line {0}) block has no atoms"
                             "".format(block["start_line"]))
@@ -188,10 +200,6 @@ class MOL2Reader(base.ReaderBase):
                 " between frames; the current "
                 "frame has {0}, the next frame has {1} atoms"
                 "".format(self.n_atoms, len(atom_lines)))
-
-        if not len(bond_lines):
-            raise Exception("The mol2 (starting at line {0}) block has no bonds"
-                            "".format(block["start_line"]))
 
         coords = np.zeros((self.n_atoms, 3), dtype=np.float32)
         for i, a in enumerate(atom_lines):
@@ -212,7 +220,6 @@ class MOL2Reader(base.ReaderBase):
         return self._read_frame(frame)
 
     def _read_frame(self, frame):
-        unitcell = np.zeros(6, dtype=np.float32)
         try:
             block = self.frames[frame]
         except IndexError:
@@ -229,11 +236,10 @@ class MOL2Reader(base.ReaderBase):
                 pass
 
         self.ts.positions = np.array(coords, dtype=np.float32)
-        self.ts.unitcell = unitcell
+
         if self.convert_units:
             # in-place !
             self.convert_pos_from_native(self.ts._pos)
-            self.convert_pos_from_native(self.ts._unitcell[:3])
         self.ts.frame = frame
 
         return self.ts
@@ -322,20 +328,24 @@ class MOL2Writer(base.WriterBase):
         # Need to remap atom indices to 1 based in this selection
         mapping = {a: i for i, a in enumerate(obj.atoms, start=1)}
 
-        # Grab only bonds between atoms in the obj
-        # ie none that extend out of it
-        bondgroup = obj.bonds.atomgroup_intersection(obj, strict=True)
-        bonds = sorted((b[0], b[1], b.order) for b in bondgroup)
-        bond_lines = ["@<TRIPOS>BOND"]
-        bond_lines.extend("{0:>5} {1:>5} {2:>5} {3:>2}"
-                          "".format(bid,
-                                    mapping[atom1],
-                                    mapping[atom2],
-                                    order)
-                          for bid, (atom1, atom2, order)in enumerate(
-                                  bonds, start=1))
-        bond_lines.append("\n")
-        bond_lines = "\n".join(bond_lines)
+        # only write bonds if the Bonds attribute exists (Issue #3057)
+        if hasattr(obj, "bonds"):
+            # Grab only bonds between atoms in the obj
+            # ie none that extend out of it
+            bondgroup = obj.intra_bonds
+            bonds = sorted((b[0], b[1], b.order) for b in bondgroup)
+            bond_lines = ["@<TRIPOS>BOND"]
+            bls = ["{0:>5} {1:>5} {2:>5} {3:>2}".format(bid,
+                                                        mapping[atom1],
+                                                        mapping[atom2],
+                                                        order)
+                   for bid, (atom1, atom2, order) in enumerate(bonds, start=1)]
+            bond_lines.extend(bls)
+            bond_lines.append("\n")
+            bond_lines = "\n".join(bond_lines)
+        else:
+            bondgroup = []
+            bond_lines = ""
 
         atom_lines = ["@<TRIPOS>ATOM"]
         atom_lines.extend("{0:>4} {1:>4} {2:>13.4f} {3:>9.4f} {4:>9.4f}"

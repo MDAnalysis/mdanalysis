@@ -149,6 +149,7 @@ class XTCReader(XDRBaseReader):
             ts.positions = frame.x
         if self.convert_units:
             self.convert_pos_from_native(ts.positions)
-            self.convert_pos_from_native(ts.dimensions[:3])
+            if ts.dimensions is not None:
+                self.convert_pos_from_native(ts.dimensions[:3])
 
         return ts

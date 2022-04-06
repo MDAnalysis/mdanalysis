@@ -31,34 +31,6 @@ Polymer analysis --- :mod:`MDAnalysis.analysis.polymer`
 :Copyright: GNU Public License v3
 
 This module contains various commonly used tools in analysing polymers.
-
-
-Persistence length worked example
----------------------------------
-
-This example shows how to find the persistence length of a polymer
-using MDAnalysis.
-::
-
-  from MDAnalysis.tests.datafiles import TRZ_psf, TRZ
-  import MDAnalysis as mda
-  from MDAnalysis.analysis import polymer
-  u = mda.Universe(TRZ_psf, TRZ)
-  # this system is a pure polymer melt of polyamide,
-  # so we can select the chains by using the .fragments attribute
-  chains = u.atoms.fragments
-  # select only the backbone atoms for each chain
-  backbones = [chain.select_atoms('not name O* H*') for chain in chains]
-  # sort the chains, removing any non-backbone atoms
-  sorted_backbones = [polymer.sort_backbone(bb) for bb in backbones]
-  persistence_length = polymer.PersistenceLength(sorted_backbones)
-  # Run the analysis, this will average over all polymer chains
-  # and all timesteps in trajectory
-  persistence_length = persistence_length.run()
-  print('The persistence length is: {}'.format(persistence_length.lp))
-  # always check the visualisation of this:
-  persistence_length.plot()
-
 """
 import numpy as np
 import scipy.optimize
@@ -160,33 +132,102 @@ class PersistenceLength(AnalysisBase):
     Parameters
     ----------
     atomgroups : iterable
-       List of AtomGroups.  Each should represent a single
+       List of AtomGroups. Each should represent a single
        polymer chain, ordered in the correct order.
-    verbose : bool (optional)
-       Show detailed progress of the calculation if set to ``True``; the
-       default is ``False``.
+    verbose : bool, optional
+       Show detailed progress of the calculation if set to ``True``.
 
     Attributes
     ----------
-    results : numpy.ndarray
+    results.bond_autocorrelation : numpy.ndarray
        the measured bond autocorrelation
-    lb : float
+    results.lb : float
        the average bond length
-    lp : float
+
+       .. versionadded:: 2.0.0
+
+    lb : float
+
+       Alias to the :attr:`results.lb`.
+
+       .. deprecated:: 2.0.0
+            Will be removed in MDAnalysis 3.0.0. Please use
+            :attr:`results.lb` instead.
+
+    results.x : numpy.ndarray
+        length of the decorrelation predicted by *lp*
+
+        .. versionadded:: 2.0.0
+
+    results.lp : float
        calculated persistence length
-    fit : numpy.ndarray
+
+       .. versionadded:: 2.0.0
+
+    lp : float
+
+       Alias to the :attr:`results.lp`.
+
+       .. deprecated:: 2.0.0
+            Will be removed in MDAnalysis 3.0.0. Please use
+            :attr:`results.lp` instead.
+
+    results.fit : numpy.ndarray
        the modelled backbone decorrelation predicted by *lp*
+
+       .. versionadded:: 2.0.0
+
+    fit : float
+
+       Alias to the :attr:`results.fit`.
+
+       .. deprecated:: 2.0.0
+            Will be removed in MDAnalysis 3.0.0. Please use
+            :attr:`results.fit` instead.
 
     See Also
     --------
     :func:`sort_backbone`
        for producing the sorted AtomGroup required for input.
 
+    Example
+    -------
+    .. code-block:: python
+
+        from MDAnalysis.tests.datafiles import TRZ_psf, TRZ
+        import MDAnalysis as mda
+        from MDAnalysis.analysis import polymer
+        u = mda.Universe(TRZ_psf, TRZ)
+
+        # this system is a pure polymer melt of polyamide,
+        # so we can select the chains by using the .fragments attribute
+        chains = u.atoms.fragments
+
+        # select only the backbone atoms for each chain
+        backbones = [chain.select_atoms('not name O* H*') for chain in chains]
+
+        # sort the chains, removing any non-backbone atoms
+        sorted_backbones = [polymer.sort_backbone(bb) for bb in backbones]
+        persistence_length = polymer.PersistenceLength(sorted_backbones)
+
+        # Run the analysis, this will average over all polymer chains
+        # and all timesteps in trajectory
+        persistence_length = persistence_length.run()
+        print(f'The persistence length is: {persistence_length.results.lp}')
+
+        # always check the visualisation of this:
+        persistence_length.plot()
+
+
     .. versionadded:: 0.13.0
     .. versionchanged:: 0.20.0
        The run method now automatically performs the exponential fit
     .. versionchanged:: 1.0.0
        Deprecated :meth:`PersistenceLength.perform_fit` has now been removed.
+    .. versionchanged:: 2.0.0
+       Former ``results`` are now stored as ``results.bond_autocorrelation``.
+       :attr:`lb`, :attr:`lp`, :attr:`fit` are now stored in a
+       :class:`MDAnalysis.analysis.base.Results` instance.
     """
     def __init__(self, atomgroups, **kwargs):
         super(PersistenceLength, self).__init__(
@@ -218,13 +259,37 @@ class PersistenceLength(AnalysisBase):
             for i in range(n-1):
                 self._results[:(n-1)-i] += inner_pr[i, i:]
 
+    @property
+    def lb(self):
+        wmsg = ("The `lb` attribute was deprecated in "
+                "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
+                "Please use `results.variance` instead.")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.lb
+
+    @property
+    def lp(self):
+        wmsg = ("The `lp` attribute was deprecated in "
+                "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
+                "Please use `results.variance` instead.")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.lp
+
+    @property
+    def fit(self):
+        wmsg = ("The `fit` attribute was deprecated in "
+                "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
+                "Please use `results.variance` instead.")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.fit
+
     def _conclude(self):
         n = len(self._atomgroups[0])
 
         norm = np.linspace(n - 1, 1, n - 1)
         norm *= len(self._atomgroups) * self.n_frames
 
-        self.results = self._results / norm
+        self.results.bond_autocorrelation = self._results / norm
         self._calc_bond_length()
 
         self._perform_fit()
@@ -236,19 +301,21 @@ class PersistenceLength(AnalysisBase):
             pos = ag.positions
             b = calc_bonds(pos[:-1], pos[1:]).mean()
             bs.append(b)
-        self.lb = np.mean(bs)
+        self.results.lb = np.mean(bs)
 
     def _perform_fit(self):
         """Fit the results to an exponential decay"""
         try:
-            self.results
+            self.results.bond_autocorrelation
         except AttributeError:
             raise NoDataError("Use the run method first") from None
-        self.x = np.arange(len(self.results)) * self.lb
+        self.results.x = self.results.lb *\
+                            np.arange(len(self.results.bond_autocorrelation))
 
-        self.lp = fit_exponential_decay(self.x, self.results)
+        self.results.lp = fit_exponential_decay(self.results.x,
+                                                self.results.bond_autocorrelation)
 
-        self.fit = np.exp(-self.x/self.lp)
+        self.results.fit = np.exp(-self.results.x/self.results.lp)
 
     def plot(self, ax=None):
         """Visualise the results and fit
@@ -265,11 +332,16 @@ class PersistenceLength(AnalysisBase):
         import matplotlib.pyplot as plt
         if ax is None:
             fig, ax = plt.subplots()
-        ax.plot(self.x, self.results, 'ro', label='Result')
-        ax.plot(self.x, self.fit, label='Fit')
+        ax.plot(self.results.x,
+                self.results.bond_autocorrelation,
+                'ro',
+                label='Result')
+        ax.plot(self.results.x,
+                self.results.fit,
+                label='Fit')
         ax.set_xlabel(r'x')
         ax.set_ylabel(r'$C(x)$')
-        ax.set_xlim(0.0, 40 * self.lb)
+        ax.set_xlim(0.0, 40 * self.results.lb)
 
         ax.legend(loc='best')
 

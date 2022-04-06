@@ -129,16 +129,16 @@ class HistoryParser(TopologyReaderBase):
         with openany(self.filename) as inf:
             inf.readline()
             levcfg, imcon, megatm = np.int64(inf.readline().split()[:3])
-            inf.readline()
-            if not imcon == 0:
-                inf.readline()
-                inf.readline()
-                inf.readline()
 
             names = []
             ids = []
 
             line = inf.readline()
+            while not len(line.split()) == 5:
+                line = inf.readline()
+                if line == '':
+                    raise EOFError("End of file reached when reading HISTORY.")
+
             while line and not line.startswith('timestep'):
                 name = line[:8].strip()
                 names.append(name)
@@ -169,7 +169,7 @@ class HistoryParser(TopologyReaderBase):
 
         atomtypes = guessers.guess_types(names)
         masses = guessers.guess_masses(atomtypes)
-            
+
         attrs = [
             Atomnames(names),
             Atomids(ids),
