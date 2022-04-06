@@ -27,14 +27,17 @@ import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import CONECT, PDBX, PDB
-from openmm.app.element import Element
-from openmm.unit import daltons
-from openmm.app import Topology
+
 
 try:
+    from openmm.app.element import Element
+    from openmm.unit import daltons
+    from openmm.app import Topology
     from openmm import app
 except ImportError:
     try:
+        from simtk.openmm.app import Topology, Element
+        from simtk.unit import daltons
         from simtk.openmm import app
     except ImportError:
         pytest.skip(allow_module_level=True)
