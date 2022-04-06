@@ -35,7 +35,7 @@ of a protein and the radius of gyration of the backbone atoms are calculated::
         r = cterm.pos - nterm.pos  # end-to-end vector from atom positions
         d = numpy.linalg.norm(r)   # end-to-end distance
         rgyr = bb.radius_of_gyration()  # method of a AtomGroup; updates with each frame
-        print "frame = %d: d = %f Angstroem, Rgyr = %f Angstroem" % (ts.frame, d, rgyr)
+        print(f"frame = {ts.frame}: d = {d} Angstroem, Rgyr = {rgyr} Angstroem")
 
 
 .. _NumPy:   http://numpy.scipy.org
@@ -104,7 +104,7 @@ The :class:`~MDAnalysis.core.universe.Universe` contains a number of important a
 the most important ones of which is
 :attr:`~MDAnalysis.core.universe.Universe.atoms`::
 
-  >>> print u.atoms
+  >>> print(u.atoms)
   <AtomGroup with 3341 atoms>
 
 :attr:`Universe.atoms` is a
@@ -116,14 +116,14 @@ elementary and fundamental object in MDAnalysis.
 The :attr:`MDAnalysis.Universe.trajectory` attribute gives access to the coordinates
 over time::
 
-  >>> print u.trajectory
+  >>> print(u.trajectory)
   < DCDReader '/..../MDAnalysis/tests/data/adk_dims.dcd' with 98 frames of 3341 atoms (0 fixed) >
 
 Finally, the :meth:`MDAnalysis.Universe.select_atoms` method generates a new
 :class:`~MDAnalysis.core.groups.AtomGroup` according to a selection criterion
 
   >>> calphas = u.select_atoms("name CA")
-  >>> print calphas
+  >>> print(calphas)
   <AtomGroup with 214 atoms>
 
 as described in :ref:`selection-commands-label`.
