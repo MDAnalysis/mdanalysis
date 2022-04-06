@@ -171,7 +171,10 @@ class TestContacts(object):
     def universe():
         return mda.Universe(PSF, DCD)
 
-    def _run_Contacts(self, universe, start=None, stop=None, step=None, **kwargs):
+    def _run_Contacts(
+        self, universe,
+        start=None, stop=None, step=None, **kwargs
+    ):
         acidic = universe.select_atoms(self.sel_acidic)
         basic = universe.select_atoms(self.sel_basic)
         return contacts.Contacts(
@@ -180,6 +183,51 @@ class TestContacts(object):
             refgroup=(acidic, basic),
             radius=6.0,
             **kwargs).run(start=start, stop=stop, step=step)
+
+    @pytest.mark.parametrize("seltxt", [sel_acidic, sel_basic])
+    def test_select_valid_types(self, universe, seltxt):
+        """Test if Contacts._get_atomgroup() can take both string and AtomGroup
+         as selections.
+        """
+        ag = universe.select_atoms(seltxt)
+
+        ag_from_string = contacts.Contacts._get_atomgroup(universe, seltxt)
+        ag_from_ag = contacts.Contacts._get_atomgroup(universe, ag)
+
+        assert ag_from_string == ag_from_ag
+
+    def test_contacts_selections(self, universe):
+        """Test if Contacts can take both string and AtomGroup as selections.
+        """
+        aga = universe.select_atoms(self.sel_acidic)
+        agb = universe.select_atoms(self.sel_basic)
+
+        cag = contacts.Contacts(
+            universe, select=(aga, agb), refgroup=(aga, agb)
+        )
+
+        csel = contacts.Contacts(
+            universe, select=(self.sel_acidic, self.sel_basic),
+            refgroup=(aga, agb)
+        )
+
+        cag.run()
+        csel.run()
+
+        assert cag.grA == csel.grA
+        assert cag.grB == csel.grB
+
+    @pytest.mark.parametrize("ag", [1, [2], mda.Universe, "USE UPDATING AG"])
+    def test_select_wrong_types(self, universe, ag):
+        """Test that Contacts._get_atomgroup(u, sel) fails if sel is of the
+        wrong type"""
+        if ag == "USE UPDATING AG":
+            ag = universe.select_atoms(self.sel_acidic, updating=True)
+
+        with pytest.raises(
+            TypeError, match="must be either string or a static AtomGroup"
+        ) as te:
+            contacts.Contacts._get_atomgroup(universe, ag)
 
     def test_startframe(self, universe):
         """test_startframe: TestContactAnalysis1: start frame set to 0 (resolution of

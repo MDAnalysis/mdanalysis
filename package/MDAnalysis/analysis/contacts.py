@@ -28,7 +28,7 @@ Native contacts analysis --- :mod:`MDAnalysis.analysis.contacts`
 This module contains classes to analyze native contacts *Q* over a
 trajectory. Native contacts of a conformation are contacts that exist
 in a reference structure and in the conformation. Contacts in the
-reference structure are always defined as being closer then a distance
+reference structure are always defined as being closer than a distance
 `radius`. The fraction of native contacts for a conformation can be
 calculated in different ways. This module supports 3 different metrics
 listed below, as well as custom metrics.
@@ -218,7 +218,7 @@ import MDAnalysis
 import MDAnalysis.lib.distances
 from MDAnalysis.lib.util import openany
 from MDAnalysis.analysis.distances import distance_array
-from MDAnalysis.core.groups import AtomGroup
+from MDAnalysis.core.groups import AtomGroup, UpdatingAtomGroup
 from .base import AnalysisBase
 
 logger = logging.getLogger("MDAnalysis.analysis.contacts")
@@ -386,7 +386,10 @@ class Contacts(AnalysisBase):
     .. versionchanged:: 2.0.0
        :attr:`timeseries` results are now stored in a
        :class:`MDAnalysis.analysis.base.Results` instance.
+    .. versionchanged:: 2.2.0
+       :class:`Contacts` accepts both AtomGroup and string for `select`
     """
+
     def __init__(self, u, select, refgroup, method="hard_cut", radius=4.5,
                  pbc=True, kwargs=None, **basekwargs):
         """
@@ -394,7 +397,7 @@ class Contacts(AnalysisBase):
         ----------
         u : Universe
             trajectory
-        select : tuple(string, string)
+        select : tuple(AtomGroup, AtomGroup) | tuple(string, string)
             two contacting groups that change over time
         refgroup : tuple(AtomGroup, AtomGroup)
             two contacting atomgroups in their reference conformation. This
@@ -437,8 +440,9 @@ class Contacts(AnalysisBase):
             self.fraction_contacts = method
 
         self.select = select
-        self.grA = u.select_atoms(select[0])
-        self.grB = u.select_atoms(select[1])
+
+        self.grA, self.grB = (self._get_atomgroup(u, sel) for sel in select)
+
         self.pbc = pbc
         
         # contacts formed in reference
@@ -462,6 +466,21 @@ class Contacts(AnalysisBase):
                 self.r0.append(distance_array(refA.positions, refB.positions,
                                                 box=self._get_box(refA.universe)))
                 self.initial_contacts.append(contact_matrix(self.r0[-1], radius))
+
+    @staticmethod
+    def _get_atomgroup(u, sel):
+        select_error_message = ("selection must be either string or a "
+                                "static AtomGroup. Updating AtomGroups "
+                                "are not supported.")
+        if isinstance(sel, str):
+            return u.select_atoms(sel)
+        elif isinstance(sel, AtomGroup):
+            if isinstance(sel, UpdatingAtomGroup):
+                raise TypeError(select_error_message)
+            else:
+                return sel
+        else:
+            raise TypeError(select_error_message)
 
     def _prepare(self):
         self.results.timeseries = np.empty((self.n_frames, len(self.r0)+1))
