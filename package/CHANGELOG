@@ -13,8 +13,8 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy, HenokB, umak1106
-
+??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy, 
+         HenokB, umak1106, megosato
  * 2.2.0
 
 Fixes
@@ -28,7 +28,7 @@ Fixes
     (Issue #2666, PR #3565)
   * Fixed DumpReader triclinic box dimensions reading. (Issue #3386, PR #3403)
   * Updated the badge in README of MDAnalysisTest to point to Github CI Actions
-
+  * Fixed FrameIteratorIndices doesn't rewind. (Issue #3416)
 Enhancements
   * Improves the RDKitConverter's accuracy (PR #3044): AtomGroups containing
     monatomic ion charges or edge cases with nitrogen, sulfur, phosphorus and
