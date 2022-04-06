@@ -475,7 +475,7 @@ class PCA(AnalysisBase):
         .. versionadded:: 2.2.0
         """
         if not self._calculated:
-            raise ValueError('Call run() on the PCA before using transform')
+            raise ValueError('Call run() on the PCA before projecting')
 
         if components is None:
             components = range(self.results.p_components.shape[1])
