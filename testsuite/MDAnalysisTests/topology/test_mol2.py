@@ -289,16 +289,15 @@ def test_mol2_wo_required_columns():
 
 
 def test_mol2_no_charges():
-    with pytest.raises(ValueError, 
+    with pytest.raises(ValueError,
                        match='indicates no charges'):
         u = mda.Universe(StringIO(mol2_no_charge_error1), format='MOL2')
     with pytest.raises(ValueError,
                        match='indicates a charge model'):
         u = mda.Universe(StringIO(mol2_no_charge_error2), format='MOL2')
 
+
 def test_unformat():
-    with pytest.raises(ValueError, 
+    with pytest.raises(ValueError,
                        match='Some atoms in the mol2 file'):
         u = mda.Universe(StringIO(mol2_resname_unformat), format='MOL2')
-
-
