@@ -41,7 +41,6 @@ Classes
    :inherited-members:
 
 """
-from ast import Raise
 import os
 import numpy as np
 
