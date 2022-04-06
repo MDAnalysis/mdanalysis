@@ -302,19 +302,29 @@ bynum *index-range*
     runs from 1 up to the total number of atoms.
     
 id *index-range*
-    id is a topology attribute which can be labeled according to the user
-    and conventionally corresponds to serial number in PDB format.
     selects all atoms in the given range which consists of two numbers 
-    seperated by a colon such as ``id 5:10`` (both inclusive).
+    separated by a colon such as ``id 5:10`` (both inclusive).
     e.g. ``id 1`` selects the atom with id 1; ``id 5:10`` selects the
-    atoms with ids 5 through 10 both inclusive.
-    
+    atoms with ids 5 through 10 both inclusive. All atoms in the
+    :class:`MDAnalysis.Universe` are consecutively numbered, though
+    id (an topology attribute) can be labeled by the user and need 
+    not be continuous. Conventionally it corresponds to the serial number 
+    in PDB format.
+     
 index *index-range*
     selects all atoms within a range of (0-based) inclusive indices,
     e.g. ``index 0`` selects the first atom in the universe; ``index 5:10``
     selects atoms 6 through 11 inclusive. All atoms in the
     :class:`MDAnalysis.Universe` are consecutively numbered, and the index
     runs from 0 up to the total number of atoms - 1.
+    
+    
+.. note::
+    While ``index`` is the underlying position of an atom in a linear array
+    of atoms in the universe, it must be continuous and cannot be set by
+    the user, whereas the ``id`` being a label can be set by the user and so can skip
+    numbers.
+
 
 .. _pre-selections-label:
 
