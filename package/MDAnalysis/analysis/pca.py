@@ -432,12 +432,13 @@ class PCA(AnalysisBase):
             The atoms in the PCA class will be projected regardless.
 
         anchor : string, optional
-            The atomselection whose displacement vector is applied to
+            String to select the atom whose displacement vector is applied to
             non-PCA atoms in a residue. The atomselection must have exactly
             one PCA atom in each residue of group. The atomselection must
             not have any atoms thats were not part of the PCA transformation.
             The default ``None`` does not extrapolate the projection
-            to non-PCA atoms.
+            to non-PCA atoms. anchor cannot be ``None``
+            if group is not ``None``.
 
         Returns
         -------
@@ -446,15 +447,27 @@ class PCA(AnalysisBase):
 
         Examples
         --------
-        Run PCA class before using this function.::
+        Run PCA class before using this function. For backbone PCA, run::
 
             pca = PCA(universe, select='backbone').run()
 
-        To project the trajectory onto the first principal component, run:::
+        Obtain a transformation function to project the
+        backbone trajectory onto the first principal component:::
 
             project = pca.project_single_frame(components=0)
 
-        To apply the projection on-the-fly, may add as a transformation::
+        Alternatively, the transformation can be extrapolated to other atoms
+        according to the CA atom's translation in each residue:::
+
+            all = u.select_atoms('all')
+            project = pca.project_single_frame(components=0,
+                                               group=all, anchor='name CA')
+
+        Finally apply the transformation function to a timestep:::
+
+            project(u.trajectory.ts)
+
+        or apply the projection to the universe:::
 
             u.trajectory.add_transformations(project)
 
@@ -468,6 +481,9 @@ class PCA(AnalysisBase):
             components = range(self.results.p_components.shape[1])
 
         if group is not None:
+            if anchor is None:
+                raise ValueError('anchor cannot be None if group is not None')
+
             for i in group.residues.resnums:
                 n_anchor = self._atoms.select_atoms(
                            f'resnum {i} and {anchor}').n_atoms

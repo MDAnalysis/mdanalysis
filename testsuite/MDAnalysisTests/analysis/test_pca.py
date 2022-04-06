@@ -145,10 +145,16 @@ def test_transform_universe():
     pca_test.transform(u2)
 
 
-def test_project_no_pca_run(u):
-    pca = PCA(u, select=SELECTION)
+def test_project_no_pca_run(u, pca):
+    pca_class = PCA(u, select=SELECTION)
     with pytest.raises(ValueError):
-        func = pca.project_single_frame()
+        func = pca_class.project_single_frame()
+
+
+def test_project_no_anchor(u, pca):
+    group = u.select_atoms('resnum 1')
+    with pytest.raises(ValueError):
+        func = pca.project_single_frame(0, group=group, anchor=None)
 
 
 def test_project_compare_projections():
