@@ -27,7 +27,9 @@ import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import CONECT, PDBX, PDB
-
+from openmm.app.element import Element
+from openmm.unit import daltons
+from openmm.app import Topology
 
 try:
     from openmm import app
@@ -207,6 +209,28 @@ class TestOpenMMTopologyParserWithPartialElements(OpenMMTopologyBase):
                 assert mda_top.types.values[3388] == 'X'
                 assert mda_top.elements.values[3344] == ''
                 assert mda_top.elements.values[3388] == ''
+
+    def test_abnormal_elements(self, top):
+        omm_top = Topology()
+        bad1 = Element(0, "*", "*", 0*daltons)
+        bad2 = Element(0, "?", "?", 6*daltons)
+        silver = Element.getBySymbol('Ag')
+        chain = omm_top.addChain()
+        res = omm_top.addResidue('R', chain)
+        omm_top.addAtom(name='Ag', element=silver, residue=res)
+        omm_top.addAtom(name='Bad1', element=bad1, residue=res)
+        omm_top.addAtom(name='Bad2', element=bad2, residue=res)
+        mda_top = self.parser(omm_top).parse()
+
+        assert mda_top.types.values[0] == 'Ag'
+        assert mda_top.types.values[1] == '*'
+        assert mda_top.types.values[2] == '?'
+        assert mda_top.elements.values[0] == 'Ag'
+        assert mda_top.elements.values[1] == ''
+        assert mda_top.elements.values[2] == ''
+        assert mda_top.masses.values[0] == 107.86822
+        assert mda_top.masses.values[1] == (0*daltons)._value
+        assert mda_top.masses.values[2] == (6*daltons)._value
 
 
 class TestOpenMMPDBFileParser(OpenMMAppTopologyBase):

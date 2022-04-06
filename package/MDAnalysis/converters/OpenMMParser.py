@@ -118,6 +118,9 @@ class OpenMMTopologyParser(TopologyReaderBase):
            * When partial elements are present, values from available elements
              are used whereas the absent elements are assigned an empty string
              with their atomtype set to 'X' and mass set to 0.0.
+           * For abnormal elements (i.e not in SYM2Z) their symbol is
+             used as it is for atomtypes but an empty string is used for
+             elements.
 
         """
         atom_resindex = [a.residue.index for a in omm_topology.atoms()]
@@ -149,10 +152,13 @@ class OpenMMTopologyParser(TopologyReaderBase):
         atomtypes = []
         for a in omm_topology.atoms():
             elem = a.element
-            if elem is not None and elem.symbol.capitalize() in SYMB2Z:
-                validated_elements.append(elem.symbol.capitalize())
-                masses.append(elem.mass._value)
+            if elem is not None:
+                if elem.symbol.capitalize() in SYMB2Z:
+                    validated_elements.append(elem.symbol.capitalize())
+                else:
+                    validated_elements.append('')
                 atomtypes.append(elem.symbol.capitalize())
+                masses.append(elem.mass._value)
             else:
                 wmsg = (f"Unknown element {elem} found for some atoms. "
                         f"These have been given an empty element record "
