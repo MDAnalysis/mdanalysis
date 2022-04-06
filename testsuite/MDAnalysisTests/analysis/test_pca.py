@@ -151,26 +151,75 @@ def test_project_no_pca_run(u):
         func = pca.project_single_frame()
 
 
+def test_project_compare_projections():
+    u = mda.Universe(PSF, DCD)
+    u_copy = u.copy()
+    pca = PCA(u, select=SELECTION).run()
+    project0 = pca.project_single_frame(0)
+    project1 = pca.project_single_frame(1)
+
+    u.trajectory[0]
+    coord0 = project0(u.trajectory.ts).positions.copy()
+    u.trajectory[0]
+    coord1 = project1(u.trajectory.ts).positions.copy()
+
+    with pytest.raises(AssertionError):
+        assert_almost_equal(coord0, coord1)
+
+
 def test_project_reconstruct_whole():
     u = mda.Universe(PSF, DCD)
     u_copy = u.copy()
     pca = PCA(u, select=SELECTION).run()
     project = pca.project_single_frame()
-    u.trajectory.add_transformations(project)
-    assert_almost_equal(
-        u.select_atoms(SELECTION).positions,
-        u_copy.select_atoms(SELECTION).positions
-    )
+
+    coord_reconstructed = project(u.trajectory.ts).positions.copy()
+    coord_copy = u_copy.trajectory.ts.positions.copy()
+    assert_almost_equal(coord_reconstructed, coord_copy, decimal=5)
 
 
 def test_project_twice_projection():
     u = mda.Universe(PSF, DCD)
     pca = PCA(u, select=SELECTION).run()
-    project = pca.project_single_frame(0)
-    assert_almost_equal(
-        project(u.trajectory.ts).positions,
-        project(project(u.trajectory.ts)).positions
+
+    project0 = pca.project_single_frame(0)
+    project1 = pca.project_single_frame(1)
+
+    u.trajectory[0]
+    coord0 = project0(u.trajectory.ts).positions.copy()
+    coord00 = project0(u.trajectory.ts).positions.copy()
+    assert_almost_equal(coord0, coord00, decimal=5)
+
+
+@pytest.mark.parametrize('distance_sel, case',
+                         (('resnum 1 and name CA CB', 1),
+                          ('resnum 1 and name N CA CB', 2)))
+def test_projet_extrapolate_translation(distance_sel, case):
+    u = mda.Universe(PSF, DCD)
+    pca = PCA(u, select='backbone').run()
+    group = u.select_atoms(distance_sel)
+    project = pca.project_single_frame(0, group=group, anchor='name CA')
+
+    distances_original = (
+        mda.lib.distances.self_distance_array(group.positions.copy())
     )
+    distances_new = (
+        mda.lib.distances.self_distance_array(project(group).positions.copy())
+    )
+
+    if case == 1:
+        assert_almost_equal(distances_original, distances_new, decimal=5)
+    if case == 2:
+        with pytest.raises(AssertionError):
+            assert_almost_equal(distances_original, distances_new, decimal=5)
+
+
+def test_project_extrapolate_anchor_error():
+    u = mda.Universe(PSF, DCD)
+    pca = PCA(u, select='backbone').run()
+    group = u.select_atoms('resnum 1')
+    with pytest.raises(ValueError):
+        project = pca.project_single_frame(0, group=group, anchor='backbone')
 
 
 def test_cosine_content():

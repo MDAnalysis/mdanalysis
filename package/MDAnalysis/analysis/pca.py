@@ -414,14 +414,30 @@ class PCA(AnalysisBase):
 
         return dot
 
-    def project_single_frame(self, components=None):
+    def project_single_frame(self, components=None, group=None, anchor=None):
         """Projects the structure onto selected PCs
+
+        Applies Inverse-PCA transform to the PCA atomgroup.
+        Optionally, calculates one displacement vector per residue
+        to extrapolate the transform to atoms not in the PCA atomgroup.
 
         Parameters
         ----------
         components : int, array, optional
             Components to be projected onto.
             The default ``None`` maps onto all components.
+
+        group : AtomGroup or Universe?, optional
+            The AtomGroup or Universe containing atoms to be projected.
+            The atoms in the PCA class will be projected regardless.
+
+        anchor : string, optional
+            The atomselection whose displacement vector is applied to
+            non-PCA atoms in a residue. The atomselection must have exactly
+            one PCA atom in each residue of group. The atomselection must
+            not have any atoms thats were not part of the PCA transformation.
+            The default ``None`` does not extrapolate the projection
+            to non-PCA atoms.
 
         Returns
         -------
@@ -430,16 +446,16 @@ class PCA(AnalysisBase):
 
         Examples
         --------
-
         Run PCA class before using this function.::
+
             pca = PCA(universe, select='backbone').run()
 
-
         To project the trajectory onto the first principal component, run:::
+
             project = pca.project_single_frame(components=0)
 
-
         To apply the projection on-the-fly, may add as a transformation::
+
             u.trajectory.add_transformations(project)
 
 
@@ -451,13 +467,41 @@ class PCA(AnalysisBase):
         if components is None:
             components = range(self.results.p_components.shape[1])
 
+        if group is not None:
+            for i in group.residues.resnums:
+                n_anchor = self._atoms.select_atoms(
+                           f'resnum {i} and {anchor}').n_atoms
+                if(n_anchor != 1):
+                    raise ValueError("anchor string selected " +
+                                     f"{n_anchor} (!=1) PCA atoms in " +
+                                     f"resnum {i}. anchor string must " +
+                                     "select exactly one PCA atom " +
+                                     "in each residue of group.")
+            non_pca = group.subtract(self._atoms)
+
         def wrapped(ts):
+
+            if group is not None:
+                for i in group.residues.resnums:
+                    non_pca.select_atoms(f'resnum {i}').positions -= (
+                        self._atoms.select_atoms(f'resnum {i} and {anchor}')
+                            .positions
+                    )
+
             xyz = self._atoms.positions.ravel() - self._xmean
             self._atoms.positions = np.reshape(
                 (np.dot(np.dot(xyz, self._p_components[:, components]),
                         self._p_components[:, components].T)
                  + self._xmean), (-1, 3)
             )
+
+            if group is not None:
+                for i in group.residues.resnums:
+                    non_pca.select_atoms(f'resnum {i}').positions += (
+                        self._atoms.select_atoms(f'resnum {i} and {anchor}')
+                            .positions
+                    )
+
             return ts
 
         return wrapped
