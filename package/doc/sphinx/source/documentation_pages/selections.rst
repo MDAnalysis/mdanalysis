@@ -300,7 +300,15 @@ bynum *index-range*
     selects atoms 5 through 10 inclusive. All atoms in the
     :class:`MDAnalysis.Universe` are consecutively numbered, and the index
     runs from 1 up to the total number of atoms.
-
+    
+id *index-range*
+    id is a topology attribute which can be labeled according to the user
+    and conventionally corresponds to serial number in PDB format.
+    selects all atoms in the given range which consists of two numbers 
+    seperated by a colon such as ``id 5:10`` (both inclusive).
+    e.g. ``id 1`` selects the atom with id 1; ``id 5:10`` selects the
+    atoms with ids 5 through 10 both inclusive.
+    
 index *index-range*
     selects all atoms within a range of (0-based) inclusive indices,
     e.g. ``index 0`` selects the first atom in the universe; ``index 5:10``
