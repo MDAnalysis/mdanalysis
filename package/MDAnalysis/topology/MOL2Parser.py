@@ -234,15 +234,19 @@ class MOL2Parser(TopologyReaderBase):
 
         resids = np.array(resids, dtype=np.int32)
         resnames = np.array(resnames, dtype=object)
-        residx, resids, (resnames,) = squash_by(resids, resnames)
-        n_residues = len(resids)
-        attrs.append(Resids(resids))
-        attrs.append(Resnums(resids.copy()))
-        
+
         if np.all(resnames):
+            residx, resids, (resnames,) = squash_by(
+                resids, resnames)
+            n_residues = len(resids)
+            attrs.append(Resids(resids))
+            attrs.append(Resnums(resids.copy()))
             attrs.append(Resnames(resnames))
         elif not (np.any(resnames)):
-            pass
+            residx, resids, _ = squash_by(resids,)
+            n_residues = len(resids)
+            attrs.append(Resids(resids))
+            attrs.append(Resnums(resids.copy()))
         else:
             raise ValueError(f"Some atoms in the mol2 file {self.filename}"
                              f" contain subst_name while some not.")
