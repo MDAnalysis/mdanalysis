@@ -457,7 +457,7 @@ class PCA(AnalysisBase):
             project = pca.project_single_frame(components=0)
 
         Alternatively, the transformation can be extrapolated to other atoms
-        according to the CA atom's translation in each residue.:
+        according to the CA atom's translation in each residue::
 
             all = u.select_atoms('all')
             project = pca.project_single_frame(components=0,
@@ -467,7 +467,7 @@ class PCA(AnalysisBase):
 
             project(u.trajectory.ts)
 
-        or apply the projection to the universe.:
+        or apply the projection to the universe::
 
             u.trajectory.add_transformations(project)
 
