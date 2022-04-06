@@ -150,7 +150,9 @@ def test_creating_multiple_universe_without_offset(temp_xtc, ncopies=3):
 
     args = (GRO, str(temp_xtc))
     with multiprocessing.Pool(2) as p:
-        universes = [p.apply(mda.Universe, args) for i in range(ncopies)]
+        universes = [p.apply_async(mda.Universe, args) for i in range(ncopies)]
+        universes = [universe.get() for universe in universes]
+
 
     assert_equal(universes[0].trajectory._xdr.offsets,
                  universes[1].trajectory._xdr.offsets)
