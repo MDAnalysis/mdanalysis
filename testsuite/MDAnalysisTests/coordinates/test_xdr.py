@@ -35,7 +35,7 @@ from numpy.testing import (assert_equal,
 
 from MDAnalysisTests import make_Universe
 from MDAnalysisTests.datafiles import (
-    PDB_sub_dry, PDB_sub_sol, TRR_sub_sol, TRR, XTC, GRO, PDB, CRD, PRMncdf,
+    PDB_sub_dry, PDB_sub_sol, TRR_sub_sol, TRR, TPR, XTC, GRO, PDB, CRD, PRMncdf,
     NCDF, XTC_sub_sol, COORDINATES_XTC, COORDINATES_TOPOLOGY, COORDINATES_TRR)
 from MDAnalysisTests.coordinates.base import (MultiframeReaderTest,
                                               BaseReference, BaseWriterTest,
@@ -212,6 +212,20 @@ class _GromacsReader(object):
         with pytest.raises(StopIteration):
             go_beyond_EOF()
 
+    def test_index_iterator(self):
+        u = mda.Universe(TPR, XTC)
+        frames = []
+        iterator = u.trajectory[[0,1,2]]
+        for ts in iterator:
+            frames.append(ts.frame)
+        assert_equal(np.array(frames),
+                     np.arange(u.trajectory.n_frames)[[0,1,2]],
+                     err_msg="indexing did not produce the expected frames")
+        assert_equal(u.trajectory.ts.frame, 0,
+                     err_msg="Index Iterator did not rewind")
+
+
+            
 
 class TestXTCReader(_GromacsReader):
     filename = XTC
