@@ -41,6 +41,7 @@ Classes
    :inherited-members:
 
 """
+from ast import Raise
 import os
 import numpy as np
 
@@ -98,7 +99,7 @@ class MOL2Parser(TopologyReaderBase):
     .. versionchanged: 2.0.0
        Parse elements from atom types.
     .. versionchanged:: 2.2.0
-       Optional columns will be assigned with default values when not provided
+       Read MOL2 files with optional columns omitted.
     """
     format = 'MOL2'
 
@@ -150,16 +151,15 @@ class MOL2Parser(TopologyReaderBase):
         resids = []
         resnames = []
         charges = []
-        set_charge = True
-        for line in sections['molecule']:
-            if line.strip().lower() == 'no_charges':
-                set_charge = False
-                break
+        has_charges = True
+        
+        if sections['molecule'][3].strip() == 'NO_CHARGES':
+            has_charges = False
+
         for a in atom_lines:
             columns = a.split()
             if len(columns) >= 9:
-                columns = columns[:9]
-                aid, name, x, y, z, atom_type, resid, resname, charge = columns
+                aid, name, x, y, z, atom_type, resid, resname, charge = columns[:9]
             elif len(columns) < 6:
                 raise ValueError(f"The @<TRIPOS>ATOM block in mol2 file"
                                  f" {os.path.basename(self.filename)}"
@@ -169,15 +169,22 @@ class MOL2Parser(TopologyReaderBase):
                                  f" [charge [status_bit]]]]")
             else:
                 aid, name, x, y, z, atom_type = columns[:6]
-                resid = '1'
-                resname = ''
-                charge = ''
+                resid = 1
+                resname = None
+                charge = None
                 opt_values = [resid, resname, charge]
                 for i in range(6, len(columns)):
                     opt_values[i-6] = columns[i]
                 resid, resname, charge = opt_values
-                if len(charge):
-                    set_charge = False
+                if charge and (not has_charges):
+                    raise ValueError(f"The mol2 file {self.filename}"
+                                     f" indicates no charges, but charge"
+                                     f" provided in line: {a}.")
+                if (charge is None) and has_charges:
+                    raise ValueError(f"The mol2 file {self.filename}"
+                                     f" indicates a charge model"
+                                     f"{sections['molecule'][3]}, but "
+                                     f"no charge provided in line: {a}")
 
             ids.append(aid)
             names.append(name)
@@ -209,7 +216,7 @@ class MOL2Parser(TopologyReaderBase):
         attrs.append(Atomids(np.array(ids, dtype=np.int32)))
         attrs.append(Atomnames(np.array(names, dtype=object)))
         attrs.append(Atomtypes(np.array(types, dtype=object)))
-        if set_charge:
+        if has_charges:
             attrs.append(Charges(np.array(charges, dtype=np.float32)))
         attrs.append(Masses(masses, guessed=True))
 
@@ -224,7 +231,14 @@ class MOL2Parser(TopologyReaderBase):
         n_residues = len(resids)
         attrs.append(Resids(resids))
         attrs.append(Resnums(resids.copy()))
-        attrs.append(Resnames(resnames))
+
+        if np.all(resnames):
+            attrs.append(Resnames(resnames))
+        elif not (np.any(resnames)):
+            pass
+        else:
+            raise ValueError(f"Some atoms in the mol2 file {self.filename}"
+                             f" contain subst_name while some not.")
 
         attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
 
