@@ -415,35 +415,44 @@ class PCA(AnalysisBase):
         return dot
 
     def project_single_frame(self, components=None):
-        """Runs an inverse-PCA and generates
-           a trajectory that is projected on selected PCs
-
-        Run PCA class before using this function.
-        To project the trajectory onto the first principal component,
-            pca = PCA(universe, select='backbone').run()
-            func = pca.project_single_frame(components=0)
-
-        To apply the projection on-the-fly, may add as a transformation
-            u.trajectory.add_transformations(func)
+        """Projects the structure onto selected PCs
 
         Parameters
         ----------
         components : int, array, optional
-             Components to be projected onto.
-             The default ``None`` maps onto all components.
+            Components to be projected onto.
+            The default ``None`` maps onto all components.
 
         Returns
         -------
-        Returns the projecting function which transforms a timestep
+        function
+            The projecting function which transforms a timestep.
+
+        Example
+        ---------
+        Run PCA class before using this function.:
+          pca = PCA(universe, select='backbone').run()
+
+        To project the trajectory onto the first principal component, run::
+          project = pca.project_single_frame(components=0)
+
+        To apply the projection on-the-fly, may add as a transformation::
+          u.trajectory.add_transformations(project)
+
+
+        .. versionadded:: 2.2.0
         """
+        if not self._calculated:
+            raise ValueError('Call run() on the PCA before using transform')
+
         if components is None:
             components = range(self.results.p_components.shape[1])
 
         def wrapped(ts):
             xyz = self._atoms.positions.ravel() - self._xmean
-            dot = np.dot(xyz, self._p_components[:, components])
             self._atoms.positions = np.reshape(
-                (np.dot(dot, self._p_components[:, components].T)
+                (np.dot(np.dot(xyz, self._p_components[:, components]),
+                        self._p_components[:, components].T)
                  + self._xmean), (-1, 3)
             )
             return ts

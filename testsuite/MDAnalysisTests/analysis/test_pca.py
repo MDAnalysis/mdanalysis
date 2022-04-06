@@ -145,13 +145,32 @@ def test_transform_universe():
     pca_test.transform(u2)
 
 
-def test_project_single_frame():
+def test_project_no_pca_run(u):
+    pca = PCA(u, select=SELECTION)
+    with pytest.raises(ValueError):
+        func = pca.project_single_frame()
+
+
+def test_project_reconstruct_whole():
     u = mda.Universe(PSF, DCD)
-    PSF_pca = PCA(u, select='backbone')
-    pca_run = PSF_pca.run()
-    func = PSF_pca.project_single_frame()
-    u.trajectory.add_transformations(func)
-    u.trajectory[-1]
+    u_copy = u.copy()
+    pca = PCA(u, select=SELECTION).run()
+    project = pca.project_single_frame()
+    u.trajectory.add_transformations(project)
+    assert_almost_equal(
+        u.select_atoms(SELECTION).positions,
+        u_copy.select_atoms(SELECTION).positions
+    )
+
+
+def test_project_twice_projection():
+    u = mda.Universe(PSF, DCD)
+    pca = PCA(u, select=SELECTION).run()
+    project = pca.project_single_frame(0)
+    assert_almost_equal(
+        project(u.trajectory.ts).positions,
+        project(project(u.trajectory.ts)).positions
+    )
 
 
 def test_cosine_content():
