@@ -568,7 +568,7 @@ def test_alignto_reorder_atomgroups():
     assert_allclose(rmsd, (0.0, 0.0))
 
 
-def test_alignto_same_universe_deprecation_warning():
+def test_alignto_same_universe_future_warning():
     # Issue 1825
     u = mda.Universe(GRO_MEMPROT)
     # In my case, two selections of a GRO_MEMPROT lipid
@@ -581,5 +581,5 @@ def test_alignto_same_universe_deprecation_warning():
             "try setting the subselection argument to 'all'. "
             "`subselection = 'all' is deprecated in 2.1.0 but it "
             "will become the default behavior in version 3.0.0.")
-    with pytest.warns(DeprecationWarning, match=wmsg):
+    with pytest.warns(FutureWarning, match=wmsg):
         align.alignto(ref, mobile)

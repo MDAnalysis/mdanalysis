@@ -373,6 +373,13 @@ def alignto(mobile, reference, select=None, weights=None,
     `reference`, therefore preserving the exact atom ordering (see
     :ref:`ordered-selections-label`).
 
+    .. Warning:: 2.2.0
+       In version 3.0.0, when the reference and mobile selections are atom
+       groups from the same universe and ``subselection`` is ``None``,
+       the reference selection will no longer be transformed. This will
+       result in the same behaviour what is currently obtained in the above
+       case but with ``subselection`` set to 'all'.
+
     .. Warning:: The atom order for `mobile` and `reference` is *only*
        preserved when `select` is either "all" or ``None``. In any other case,
        a new selection will be made that will sort the resulting AtomGroup by
@@ -512,7 +519,7 @@ def alignto(mobile, reference, select=None, weights=None,
                     "try setting the subselection argument to 'all'. "
                     "`subselection = 'all' is deprecated in 2.1.0 but it "
                     "will become the default behavior in version 3.0.0.")
-            warnings.warn(wmsg, DeprecationWarning)
+            warnings.warn(wmsg, FutureWarning)
     elif isinstance(subselection, str):
         # select mobile_atoms from string
         mobile_atoms = mobile.select_atoms(subselection)
