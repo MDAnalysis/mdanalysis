@@ -29,6 +29,7 @@ Fixes
   * Fixed DumpReader triclinic box dimensions reading. (Issue #3386, PR #3403)
   * Updated the badge in README of MDAnalysisTest to point to Github CI Actions
   * Fixed FrameIteratorIndices doesn't rewind. (Issue #3416)
+
 Enhancements
   * Improves the RDKitConverter's accuracy (PR #3044): AtomGroups containing
     monatomic ion charges or edge cases with nitrogen, sulfur, phosphorus and

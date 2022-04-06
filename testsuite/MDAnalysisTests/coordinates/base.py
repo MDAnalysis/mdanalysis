@@ -384,7 +384,7 @@ class BaseReaderTest(object):
 
         for i, ts in enumerate(transformed):
             assert_almost_equal(ts.positions, idealcoords[i], decimal=ref.prec)
-
+    
     def test_transformations_slice(self, ref, transformed):
         # Are the transformations applied when iterating over a slice of the trajectory?
         v1 = np.float32((1,1,1))
@@ -392,7 +392,6 @@ class BaseReaderTest(object):
         for i,ts in enumerate(transformed[2:3:1]):
             idealcoords = ref.iter_ts(ts.frame).positions + v1 + v2
             assert_array_almost_equal(ts.positions, idealcoords, decimal = ref.prec)
-
 
     def test_transformations_switch_frame(self, ref, transformed):
         # This test checks if the transformations are applied and if the coordinates
@@ -511,6 +510,22 @@ class MultiframeReaderTest(BaseReaderTest):
             assert_timestep_almost_equal(ts,
                                          ref.iter_ts(ref.aux_lowf_frames_with_steps[i]),
                                          decimal=ref.prec)
+
+    def test_iter_rewinds(self, reader):
+        for ts_indices in reader[[0, 1, 2]]:
+            pass
+        for ts_sliced in reader[:3]:
+            pass
+        assert_equal(ts_indices.frame, ts_sliced.frame,
+                     err_msg="FrameIteratorIndices and Sliced do not match")
+        assert_equal(ts_indices.frame, 0,
+                     err_msg="FrameIteratorIndices did not rewind")
+        assert_equal(ts_sliced.frame, 0,
+                     err_msg="FrameIteratorSliced did not rewind")
+        for ts_all in reader:
+            pass
+        assert_equal(ts_all.frame, 0,
+                     err_msg="FrameIteratorAll did not rewind")
 
     #  To make sure we not only save the current timestep information,
     #  but also maintain its relative position.
