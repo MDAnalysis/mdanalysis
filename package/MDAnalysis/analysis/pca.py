@@ -427,7 +427,7 @@ class PCA(AnalysisBase):
             Components to be projected onto.
             The default ``None`` maps onto all components.
 
-        group : AtomGroup or Universe?, optional
+        group : AtomGroup, optional
             The AtomGroup or Universe containing atoms to be projected.
             The atoms in the PCA class will be projected regardless.
 
@@ -453,6 +453,10 @@ class PCA(AnalysisBase):
 
         Obtain a transformation function to project the
         backbone trajectory onto the first principal component::
+
+            project = pca.project_single_frame(components=0)
+
+        to projet onto the first two components, run:
 
             project = pca.project_single_frame(components=0)
 
