@@ -685,9 +685,15 @@ class DumpReader(base.ReaderBase):
 
         # Create the data arrays for additional attributes which will be saved 
         # under ts.data
+        additional_keys = []
         if len(attrs) > 3:
-            for attribute_key in attrs[3:]:
+            for attribute_key in attrs:
+                # Skip the normal columns
+                if attribute_key == "id" or attribute_key in self._coordtype_column_names[self.lammps_coordinate_convention]: 
+                    continue
+                # Else this is an additional field
                 ts.data[attribute_key] = np.empty(self.n_atoms)
+                additional_keys.append(attribute_key)
 
         # Parse all the atoms
         for i in range(self.n_atoms):
@@ -711,8 +717,8 @@ class DumpReader(base.ReaderBase):
                 ts.forces[i] = [fields[dim] for dim in force_cols]
 
             # Add the capability to also collect other data
-            if len(attrs) > 3: # Then there is also more than just the positional data
-                for attribute_key in attrs[3:]:
+            if len(additional_keys) != 0: # Then there is also more than just the positional data
+                for attribute_key in additional_keys:
                     ts.data[attribute_key][i] = fields[attr_to_col_ix[attribute_key]]
 
         order = np.argsort(indices)
@@ -721,6 +727,11 @@ class DumpReader(base.ReaderBase):
             ts.velocities = ts.velocities[order]
         if self._has_forces:
             ts.forces = ts.forces[order]
+
+        # Also need to sort the additional keys
+        for attribute_key in additional_keys:
+            ts.data[attribute_key] = ts.data[attribute_key][order]
+
         if (self.lammps_coordinate_convention.startswith("scaled")):
             # if coordinates are given in scaled format, undo that
             ts.positions = distances.transform_StoR(ts.positions,
