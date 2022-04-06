@@ -97,7 +97,6 @@ class MOL2Parser(TopologyReaderBase):
     ValueError will occur;
     If charge model is specified, while some atoms don't have a charge field,
     ValueError will occur as well.
-    
 
     .. versionchanged:: 0.9
        Now subclasses TopologyReaderBase
@@ -168,7 +167,8 @@ class MOL2Parser(TopologyReaderBase):
         for a in atom_lines:
             columns = a.split()
             if len(columns) >= 9:
-                aid, name, x, y, z, atom_type, resid, resname, charge = columns[:9]
+                aid, name, x, y, z, atom_type, \
+                    resid, resname, charge = columns[:9]
             elif len(columns) < 6:
                 raise ValueError(f"The @<TRIPOS>ATOM block in mol2 file"
                                  f" {os.path.basename(self.filename)}"
@@ -187,14 +187,14 @@ class MOL2Parser(TopologyReaderBase):
                 resid, resname, charge = opt_values
 
             if charge and (not has_charges):
-                    raise ValueError(f"The mol2 file {self.filename}"
-                                     f" indicates no charges, but charge"
-                                     f" provided in line: {a}.")
+                raise ValueError(f"The mol2 file {self.filename}"
+                                    f" indicates no charges, but charge"
+                                    f" provided in line: {a}.")
             if (charge is None) and has_charges:
                 raise ValueError(f"The mol2 file {self.filename}"
-                                    f" indicates a charge model"
-                                    f"{sections['molecule'][3]}, but "
-                                    f"no charge provided in line: {a}")
+                                 f" indicates a charge model"
+                                 f"{sections['molecule'][3]}, but "
+                                 f"no charge provided in line: {a}")
             ids.append(aid)
             names.append(name)
             types.append(atom_type)
