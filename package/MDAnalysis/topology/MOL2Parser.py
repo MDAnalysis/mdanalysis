@@ -188,8 +188,8 @@ class MOL2Parser(TopologyReaderBase):
 
             if charge and (not has_charges):
                 raise ValueError(f"The mol2 file {self.filename}"
-                                    f" indicates no charges, but charge"
-                                    f" provided in line: {a}.")
+                                 f" indicates no charges, but charge"
+                                 f" provided in line: {a}.")
             if (charge is None) and has_charges:
                 raise ValueError(f"The mol2 file {self.filename}"
                                  f" indicates a charge model"
