@@ -317,9 +317,9 @@ index *index-range*
     
 .. note::
     Conventionally ``id`` corresponds to the serial number in PDB format and so
-    starts from 1 like the ``bynum``. But ``id`` can be labeled by the user and need 
-    not be continuous whereas ``bynum`` (which is equivalent to index + 1) cannot 
-    be set by the user and is continuous. Also while each atom has an unique 
+    starts from 1 like the ``bynum``. But ``id`` can be labeled by the user and 
+    need not be continuous whereas ``bynum`` (which is equivalent to index + 1) 
+    cannot be set by the user and is continuous. Also while each atom has an unique 
     ``index`` and so unique ``bynum``, many atoms can have the same ``id``.
     
      
