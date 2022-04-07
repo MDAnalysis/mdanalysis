@@ -525,7 +525,6 @@ class PCA(AnalysisBase):
                 non_pca.positions -= matrix_extrapolate @ anchors.positions
 
             xyz = self._atoms.positions.ravel() - self._xmean
-            print(xyz.shape, self._p_components[:, components].shape)
             self._atoms.positions = np.reshape(
                 (np.dot(np.dot(xyz, self._p_components[:, components]),
                         self._p_components[:, components].T)
