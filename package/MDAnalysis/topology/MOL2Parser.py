@@ -87,6 +87,7 @@ class MOL2Parser(TopologyReaderBase):
     Elements are obtained directly from the SYBYL atom types. If some atoms have
     unknown atom types, they will be assigned an empty element record. If all
     atoms have unknown atom types, the elements attribute will not be set.
+    
     Dealing with optional fields:
     Resid will set to 1 when not provided.
     If no atoms contain resname, resnames attribute will not be set;
@@ -185,16 +186,18 @@ class MOL2Parser(TopologyReaderBase):
                 for i in range(6, len(columns)):
                     opt_values[i-6] = columns[i]
                 resid, resname, charge = opt_values
-
-            if charge and (not has_charges):
-                raise ValueError(f"The mol2 file {self.filename}"
-                                 f" indicates no charges, but charge"
-                                 f" provided in line: {a}.")
-            if (charge is None) and has_charges:
-                raise ValueError(f"The mol2 file {self.filename}"
-                                 f" indicates a charge model"
-                                 f"{sections['molecule'][3]}, but "
-                                 f"no charge provided in line: {a}")
+            if has_charges:
+                if charge is None:
+                    raise ValueError(f"The mol2 file {self.filename}"
+                                     f" indicates no charges, but charge"
+                                     f" provided in line: {a}.")
+            else:
+                if charge is not None:
+                    raise ValueError(f"The mol2 file {self.filename}"
+                                     f" indicates a charge model"
+                                     f"{sections['molecule'][3]}, but"
+                                     f" no charge provided in line: {a}")
+                
             ids.append(aid)
             names.append(name)
             types.append(atom_type)
@@ -249,7 +252,7 @@ class MOL2Parser(TopologyReaderBase):
             attrs.append(Resnums(resids.copy()))
         else:
             raise ValueError(f"Some atoms in the mol2 file {self.filename}"
-                             f" contain subst_name while some not.")
+                             f" contain subst_name while some do not.")
 
         attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
 
