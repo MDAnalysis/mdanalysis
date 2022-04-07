@@ -1,5 +1,5 @@
-"""HOLE Analysis --- :mod:`MDAnalysis.analysis.hole2`
-=====================================================================================
+HOLE Analysis --- :mod:`MDAnalysis.analysis.hole2`
+==================================================
 
 :Author: Lily Wang
 :Year: 2020
