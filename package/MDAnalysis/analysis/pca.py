@@ -459,7 +459,7 @@ class PCA(AnalysisBase):
 
             project = pca.project_single_frame(components=0)
 
-        To projet onto the first two components, run::
+        To project onto the first two components, run::
 
             project = pca.project_single_frame(components=[0,1])
 
