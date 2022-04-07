@@ -37,7 +37,7 @@ import numpy as np
 import pandas as pd
 from math import pi, sin, cos, atan2, sqrt, pow
 
-import MDAnalysis
+import MDAnalysis as mda
 from MDAnalysis.lib import mdamath
 from MDAnalysis.analysis.base import AnalysisBase
 from package import MDAnalysis
@@ -70,47 +70,50 @@ class NucPairDist(AnalysisBase):
     """An class for developing analyses that run on a pair of base pairs """
 
     _sel: List[Tuple[str, str]]
-    _unv: MDAnalysis.Universe
-    _s1: MDAnalysis.AtomGroup
-    _s2: MDAnalysis.AtomGroup
+    _unv: mda.Universe
+    _s1: mda.AtomGroup
+    _s2: mda.AtomGroup
     _res_dict: Dict[str, List[Union[float, str]]]
     _names: List[str]
     results: pd.DataFrame
 
-    def __init__(self, universe: MDAnalysis.Universe, selections: List[Tuple[str, str]], **kwargs) -> None:
+    def __init__(self, universe: mda.Universe, selections: List[Tuple[str, str]], **kwargs) -> None:
         super(NucPairDist, self).__init__(universe.trajectory, **kwargs)
         self._unv = universe
         self._sel = selections
-        self._s1 = MDAnalysis.AtomGroup()
-        self._s2 = MDAnalysis.AtomGroup()
+        self._check_selections()
 
     def _check_selections(self) -> None:
+        ag1: List[mda.AtomGroup] = []
+        ag2: List[mda.AtomGroup] = []
+
         for s in self._sel:
             # Checking number of selections and building AtomGroups
             if len(s) != 2:
-                raise ValueError("Each base pair selection given as a tuple of lenght 2")
+                raise ValueError("Each base pair selection given as a tuple of length 2")
             try:
-                self._s1 += self._unv.select_atoms(s[0])
+                ag1.append(self._unv.select_atoms(s[0]))
 
             except SelectionError:
                 raise SelectionError(f"Invalid selection in {s[0]}")
 
             try:
-                self._s2 += self._unv.select_atoms(s[1])
+                ag2.append(self._unv.select_atoms(s[1]))
             except SelectionError:
                 raise SelectionError(f"Invalid selection in {s[1]}")
 
-            if len(self._s1) != len(self._sel) or len(self._s2) != len(self._sel):
-                raise ValueError("must only select 1 atom per selection")
+        self._s1 = mda.AtomGroup([ag[0] for ag in ag1])
+        self._s2 = mda.AtomGroup([ag[0] for ag in ag2])
 
     def _prepare(self) -> None:
         self._col = ('selection', 'time', 'distance')
-        self._res_dict = {k: [] for k in range(len(self._col))}
+        self._res_dict = {k: [] for k in self._col}
         self.results: pd.DataFrame = pd.DataFrame(columns=self._col)
         self._names = [s[0] + s[1] for s in self._sel]
 
     def _single_frame(self) -> None:
-        wc: np.ndarray = mdamath.pnorm(np.subtract(self._s1.positions, self._s2.positions))
+        dist = self._s1.positions - self._s2.positions
+        wc: np.ndarray = mdamath.pnorm(dist)
 
         for i, n in enumerate(self._names):
             self._res_dict['selection'].append(n)
@@ -125,8 +128,19 @@ class NucPairDist(AnalysisBase):
 class WCDist(NucPairDist):
     """Watson-Crick basepair distance for selected residues"""
 
-    def __init__(self, universe: MDAnalysis.Universe, selections: List[Tuple[BaseSelect, BaseSelect]],
+    def __init__(self, universe: mda.Universe, selections: List[Tuple[BaseSelect, BaseSelect]],
                  n1_name: str = 'N1', n3_name: str = "N3", **kwargs) -> None:
-        sel_str = [(f'segid {s[0].segid} and resid {s[0].resid} and {n1_name}',
-                    f'segid {s[1].segid} and resid {s[1].resid} and {n3_name}') for s in selections]
-        super(WCDist, self).__init__(universe.trajectory, sel_str, **kwargs)
+        sel_str = []
+
+        for s in selections:
+            a1, a2, = None, None
+            if universe.select_atoms(f" resid {s[0].resid} ").resnames[0] in ["DC", "DT", "U", "C", "T", "CYT", "THY", "URA"]:
+                a1, a2 = n3_name, n1_name
+            elif universe.select_atoms(f" resid {s[0].resid} ").resnames[0] in ["DG", "DA", "A", "G", "ADE", "GUA"]:
+                a1, a2 = n1_name, n3_name
+            else:
+                raise SelectionError(f"Resid {s[0].resid} is not a Nucleic acid")
+
+            sel_str.append((f'segid {s[0].segid} and resid {s[0].resid} and name {a1}',
+                            f'segid {s[1].segid} and resid {s[1].resid} and name {a2}'))
+        super(WCDist, self).__init__(universe, sel_str, **kwargs)
