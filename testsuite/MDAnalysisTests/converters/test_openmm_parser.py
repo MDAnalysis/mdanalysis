@@ -180,9 +180,9 @@ class TestOpenMMTopologyParserWithNoElements(OpenMMTopologyBase):
         "chainIDs",
     ]
 
-    def test_no_elements_warn(self, top):
-        wmsg = ("Element information is missing, elements attribute "
-                "will not be populated. "
+    def test_no_elements_warn(self):
+        wmsg = ("Element information is missing for all the atoms. "
+                "Elements attribute will not be populated. "
                 "Atomtype attribute will be guessed using atom "
                 "name and mass will be guessed using atomtype."
                 "See MDAnalysis.topology.guessers.")
@@ -191,49 +191,56 @@ class TestOpenMMTopologyParserWithNoElements(OpenMMTopologyBase):
             mda_top = self.parser(self.ref_filename).parse()
 
 
-class TestOpenMMTopologyParserWithPartialElements(OpenMMTopologyBase):
+class TestOpenMMTopologyParserWithPartialElements():
+    parser = mda.converters.OpenMMParser.OpenMMTopologyParser
     ref_filename = app.PDBFile(PDB).topology
     expected_n_atoms = 47681
     expected_n_residues = 11302
     expected_n_segments = 1
     expected_n_bonds = 25533
 
-    def test_with_partial_elements(self, top):
-        if 'elements' in self.expected_attrs:
-            wmsg = ("Unknown element None found for some atoms. "
-                    "These have been given an empty element record "
-                    "with their atomtype set to 'X' "
-                    "and their mass set to 0.0. "
-                    "If needed they can be guessed using "
-                    "MDAnalysis.topology.guessers.")
-            with pytest.warns(UserWarning, match=wmsg):
-                mda_top = self.parser(self.ref_filename).parse()
-                assert mda_top.types.values[3344] == 'X'
-                assert mda_top.types.values[3388] == 'X'
-                assert mda_top.elements.values[3344] == ''
-                assert mda_top.elements.values[3388] == ''
+    def test_with_partial_elements(self):
+        wmsg = (f"Element information missing for some atoms. "
+                f"These have been given an empty element record "
+                f"with their atomtype set to 'X' "
+                f"and their mass set to 0.0. "
+                f"If needed they can be guessed using "
+                f"MDAnalysis.topology.guessers.")
+        with pytest.warns(UserWarning, match=wmsg):
+            mda_top = self.parser(self.ref_filename).parse()
+            assert mda_top.types.values[3344] == 'X'
+            assert mda_top.types.values[3388] == 'X'
+            assert mda_top.elements.values[3344] == ''
+            assert mda_top.elements.values[3388] == ''
 
-    def test_abnormal_elements(self, top):
-        omm_top = Topology()
-        bad1 = Element(0, "*", "*", 0*daltons)
-        bad2 = Element(0, "?", "?", 6*daltons)
-        silver = Element.getBySymbol('Ag')
-        chain = omm_top.addChain()
-        res = omm_top.addResidue('R', chain)
-        omm_top.addAtom(name='Ag', element=silver, residue=res)
-        omm_top.addAtom(name='Bad1', element=bad1, residue=res)
-        omm_top.addAtom(name='Bad2', element=bad2, residue=res)
-        mda_top = self.parser(omm_top).parse()
 
-        assert mda_top.types.values[0] == 'Ag'
-        assert mda_top.types.values[1] == '*'
-        assert mda_top.types.values[2] == '?'
-        assert mda_top.elements.values[0] == 'Ag'
-        assert mda_top.elements.values[1] == ''
-        assert mda_top.elements.values[2] == ''
-        assert mda_top.masses.values[0] == 107.86822
-        assert mda_top.masses.values[1] == (0*daltons)._value
-        assert mda_top.masses.values[2] == (6*daltons)._value
+def test_invalid_element_symbols():
+    parser = mda.converters.OpenMMParser.OpenMMTopologyParser
+    omm_top = Topology()
+    bad1 = Element(0, "*", "*", 0*daltons)
+    bad2 = Element(0, "?", "?", 6*daltons)
+    bad3 = None
+    silver = Element.getBySymbol('Ag')
+    chain = omm_top.addChain()
+    res = omm_top.addResidue('R', chain)
+    omm_top.addAtom(name='Ag', element=silver, residue=res)
+    omm_top.addAtom(name='Bad1', element=bad1, residue=res)
+    omm_top.addAtom(name='Bad2', element=bad2, residue=res)
+    omm_top.addAtom(name='Bad3', element=bad3, residue=res)
+    mda_top = parser(omm_top).parse()
+
+    assert mda_top.types.values[0] == 'Ag'
+    assert mda_top.types.values[1] == '*'
+    assert mda_top.types.values[2] == '?'
+    assert mda_top.types.values[3] == 'X'
+    assert mda_top.elements.values[0] == 'Ag'
+    assert mda_top.elements.values[1] == ''
+    assert mda_top.elements.values[2] == ''
+    assert mda_top.elements.values[3] == ''
+    assert mda_top.masses.values[0] == 107.86822
+    assert mda_top.masses.values[1] == 0.0
+    assert mda_top.masses.values[2] == 6.0
+    assert mda_top.masses.values[3] == 0.0
 
 
 class TestOpenMMPDBFileParser(OpenMMAppTopologyBase):

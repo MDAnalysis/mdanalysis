@@ -76,6 +76,11 @@ from ..core.topologyattrs import (
     Segids,
 )
 
+try:
+    from openmm.unit import daltons
+except ImportError:
+    from simtk.unit import daltons
+
 
 class OpenMMTopologyParser(TopologyReaderBase):
     format = "OPENMMTOPOLOGY"
@@ -118,9 +123,8 @@ class OpenMMTopologyParser(TopologyReaderBase):
            * When partial elements are present, values from available elements
              are used whereas the absent elements are assigned an empty string
              with their atomtype set to 'X' and mass set to 0.0.
-           * For abnormal elements (i.e not in SYM2Z) their symbol is
-             used as it is for atomtypes but an empty string is used for
-             elements.
+           * For elements with invalid and unreal symbols, the symbol is used
+             as it is for atomtypes but an empty string is used for elements.
 
         """
         atom_resindex = [a.residue.index for a in omm_topology.atoms()]
@@ -150,32 +154,36 @@ class OpenMMTopologyParser(TopologyReaderBase):
         validated_elements = []
         masses = []
         atomtypes = []
+        warn = False
         for a in omm_topology.atoms():
             elem = a.element
             if elem is not None:
                 if elem.symbol.capitalize() in SYMB2Z:
-                    validated_elements.append(elem.symbol.capitalize())
+                    validated_elements.append(elem.symbol)
                 else:
                     validated_elements.append('')
-                atomtypes.append(elem.symbol.capitalize())
-                masses.append(elem.mass._value)
+                atomtypes.append(elem.symbol)
+                masses.append(elem.mass.value_in_unit(daltons))
             else:
-                wmsg = (f"Unknown element {elem} found for some atoms. "
-                        f"These have been given an empty element record "
-                        f"with their atomtype set to 'X' "
-                        f"and their mass set to 0.0. "
-                        f"If needed they can be guessed using "
-                        f"MDAnalysis.topology.guessers.")
-                warnings.warn(wmsg)
+                warn = True
                 validated_elements.append('')
                 masses.append(0.0)
                 atomtypes.append('X')
 
+        if warn:
+            wmsg = (f"Element information missing for some atoms. "
+                    f"These have been given an empty element record "
+                    f"with their atomtype set to 'X' "
+                    f"and their mass set to 0.0. "
+                    f"If needed they can be guessed using "
+                    f"MDAnalysis.topology.guessers.")
+            warnings.warn(wmsg)
+
         if not any(validated_elements):
             atomtypes = guess_types(atomnames)
             masses = guess_masses(atomtypes)
-            warnings.warn("Element information is missing, elements "
-                          "attribute will not be populated. "
+            warnings.warn("Element information is missing for all the atoms. "
+                          "Elements attribute will not be populated. "
                           "Atomtype attribute will be guessed using atom "
                           "name and mass will be guessed using atomtype."
                           "See MDAnalysis.topology.guessers.")
