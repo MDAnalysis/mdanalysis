@@ -23,7 +23,7 @@
 
 import MDAnalysis as mda
 import pytest
-from MDAnalysis.analysis import nuclinfo, nucleicacids
+from MDAnalysis.analysis.nucleicacids import WCDist, BaseSelect
 from MDAnalysisTests.datafiles import RNA_PSF, RNA_PDB
 from numpy.testing import (
     assert_almost_equal,
@@ -35,12 +35,11 @@ from numpy.testing import (
 def u():
     return mda.Universe(RNA_PSF, RNA_PDB)
 
-@pytest.mark.parametrize('i, bp, seg1, seg2, expected_value', (
-    ( 1,  2, 'RNAA', 'RNAA', 4.3874702),
-    (22, 23, 'RNAA', 'RNAA', 4.1716404),
-))
-def test_wcbase(u, i, bp, seg1, seg2, expected_value):
-    sel = [(f'segid {seg1} and resid {i} and N1', f'segid {seg1} and resid {bp} and N3')]
-    WC = nucleicacids.WCBASE(u, sel)
+
+def test_wc_dist(u):
+    sel = [(BaseSelect('RNAA', 1), BaseSelect('RNAA', 2)),
+           (BaseSelect('RNAA', 22), BaseSelect('RNAA', 23))]
+    WC = WCDist(u, sel)
     WC.run()
-    assert_almost_equal(WC.results[''], expected_value, decimal=3)
+    assert_almost_equal(WC.results['distance'][0], 4.3874702, decimal=3)
+    assert_almost_equal(WC.results['distance'][1], 4.1716404, decimal=3)
