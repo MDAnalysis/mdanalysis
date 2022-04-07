@@ -457,12 +457,13 @@ class PCA(AnalysisBase):
 
             project = pca.project_single_frame(components=0)
 
-        to projet onto the first two components, run:
+        To projet onto the first two components, run::
 
             project = pca.project_single_frame(components=[0,1])
 
-        Alternatively, the transformation can be extrapolated to other atoms
-        according to the CA atom's translation in each residue::
+        Alternatively, the transformation can be applied to PCA atoms and
+        extrapolated to other atoms according to the CA atom's translation
+        in each residue::
 
             all = u.select_atoms('all')
             project = pca.project_single_frame(components=0,
