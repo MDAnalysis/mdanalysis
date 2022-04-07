@@ -444,7 +444,8 @@ class PCA(AnalysisBase):
         Returns
         -------
         function
-            The resulting function f(ts) takes as input a ``Timestep`` ts,
+            The resulting function f(ts) takes as input a
+            :class:`~MDAnalysis.coordinates.base.Timestep` ts,
             and returns ts with the projected structure
 
         Examples
@@ -522,7 +523,7 @@ class PCA(AnalysisBase):
         def wrapped(ts):
             """Projects a timestep"""
             if group is not None:
-                non_pca.positions -= matrix_extrapolate @ anchors.positions
+                anchors_coords_old = anchors.positions
 
             xyz = self._atoms.positions.ravel() - self._xmean
             self._atoms.positions = np.reshape(
@@ -532,7 +533,8 @@ class PCA(AnalysisBase):
             )
 
             if group is not None:
-                non_pca.positions += matrix_extrapolate @ anchors.positions
+                non_pca.positions += (matrix_extrapolate @
+                                      (anchors.positions - anchors_coords_old))
             return ts
         return wrapped
 
