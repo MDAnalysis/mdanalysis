@@ -89,15 +89,31 @@ class MOL2Parser(TopologyReaderBase):
     atoms have unknown atom types, the elements attribute will not be set.
     
     Dealing with optional fields:
-    Resid will set to 1 when not provided.
-    If no atoms contain resname, resnames attribute will not be set;
-    If some atoms contain resname while some not, ValueError will occur.
-    If "NO_CHARGES" shows up in @<TRIPOS>MOLECULE section and no atoms contain
-    the charge field, charges attribute will not be set;
-    If "NO_CHARGES" shows up while charge field appears,
-    ValueError will occur;
-    If charge model is specified, while some atoms don't have a charge field,
-    ValueError will occur as well.
+    (1) ``Resid`` will set to 1 when not provided.
+    (2) If no atoms have ``resname`` field, resnames attribute will not be set;
+    If some atoms have ``resname`` while some do not, :exc:`ValueError` will occur.
+    (3) If "NO_CHARGES" shows up in "@<TRIPOS>MOLECULE" section and no atoms have
+    the ``charge`` field, charges attribute will not be set;
+    If "NO_CHARGES" shows up while ``charge`` field appears, :exc:`ValueError` will occur;
+    If charge model is specified, while some atoms don't have ``charge`` field,
+    :exc:`ValueError` will occur as well.
+
+    Raises
+    ------
+    ValueError
+      If some atoms have the optional field ``resname`` (aka ``subst_name``)
+      while some do not, this error would be raised.
+    
+    ValueError
+      If "NO_CHARGES" shows up in "@<TRIPOS>MOLECULE" section while
+      some atoms have the optional field ``charge`` (aka ``subst_name``),
+      this error would be raised.
+    
+    ValueError
+      If "NO_CHARGES" does not up in "@<TRIPOS>MOLECULE" section while
+      some atoms do not have the optional field ``charge`` (aka ``subst_name``),
+      this error would be raised.
+
 
     .. versionchanged:: 0.9
        Now subclasses TopologyReaderBase
@@ -106,7 +122,7 @@ class MOL2Parser(TopologyReaderBase):
        Ignores status bit strings
     .. versionchanged:: 2.0.0
        Bonds attribute is not added if no bonds are present in MOL2 file
-    .. versionchanged: 2.0.0
+    .. versionchanged:: 2.0.0
        Parse elements from atom types.
     .. versionchanged:: 2.2.0
        Read MOL2 files with optional columns omitted.
@@ -173,7 +189,7 @@ class MOL2Parser(TopologyReaderBase):
             elif len(columns) < 6:
                 raise ValueError(f"The @<TRIPOS>ATOM block in mol2 file"
                                  f" {os.path.basename(self.filename)}"
-                                 f" should contain at least 6 fields to be"
+                                 f" should have at least 6 fields to be"
                                  f" unpacked: atom_id atom_name x y z"
                                  f" atom_type [subst_id[subst_name"
                                  f" [charge [status_bit]]]]")
@@ -252,7 +268,7 @@ class MOL2Parser(TopologyReaderBase):
             attrs.append(Resnums(resids.copy()))
         else:
             raise ValueError(f"Some atoms in the mol2 file {self.filename}"
-                             f" contain subst_name while some do not.")
+                             f" have subst_name while some do not.")
 
         attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
 
