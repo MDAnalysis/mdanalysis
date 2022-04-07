@@ -216,7 +216,7 @@ class MOL2Parser(TopologyReaderBase):
             #                          f" indicates a charge model"
             #                          f"{sections['molecule'][3]}, but"
             #                          f" no charge provided in line: {a}")
-            if charge is not None and (not has_charges):
+            if (charge is not None) and (not has_charges):
                 raise ValueError(f"The mol2 file {self.filename}"
                                  f" indicates no charges, but charge"
                                  f" provided in line: {a}.")
