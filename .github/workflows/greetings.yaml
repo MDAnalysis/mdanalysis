@@ -1,9 +1,14 @@
-name: Greetings
+name: First Time Contributor Greetings
 
-on: [pull_request]
+on:
+  pull_request:
+    types: [opened]
+    branches:
+      - develop
 
 jobs:
   greeting:
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
