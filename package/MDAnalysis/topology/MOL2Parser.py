@@ -90,15 +90,13 @@ class MOL2Parser(TopologyReaderBase):
     
     Dealing with optional fields:
     (1) ``Resid`` will set to 1 when not provided.
-    (2) If no atoms have ``resname`` field,
-    resnames attribute will not be set;
-    If some atoms have ``resname`` while some do not,
-    :exc:`ValueError` will occur.
+    (2) If no atoms have ``resname`` field, resnames attribute will not be set;
+    Raise :exc:`ValueError` if some atoms have ``resname`` while some do not.
     (3) If "NO_CHARGES" shows up in "@<TRIPOS>MOLECULE" section
     and no atoms have the ``charge`` field, charges attribute will not be set;
     If "NO_CHARGES" shows up while ``charge`` field appears,
     :exc:`ValueError` will occur;
-    If charge model is specified, while some atoms don't have ``charge`` field,
+    If a charge model is specified, while some atoms don't have ``charge`` field,
     :exc:`ValueError` will occur as well.
 
     Raises
@@ -109,13 +107,13 @@ class MOL2Parser(TopologyReaderBase):
 
     ValueError
       If "NO_CHARGES" shows up in "@<TRIPOS>MOLECULE" section while
-      some atoms have the optional field ``charge`` (aka ``subst_name``),
+      some atoms have the optional field ``charge``,
       this error would be raised.
     
     ValueError
-      If "NO_CHARGES" does not up in "@<TRIPOS>MOLECULE" section while
-      some atoms do not have the optional field ``charge`` 
-      (aka ``subst_name``), this error would be raised.
+      If a charge model is specified in "@<TRIPOS>MOLECULE" section while
+      some atoms do not have the optional field ``charge``,
+      this error would be raised.
 
 
     .. versionchanged:: 0.9
@@ -180,10 +178,8 @@ class MOL2Parser(TopologyReaderBase):
         resids = []
         resnames = []
         charges = []
-        has_charges = True
-        if sections['molecule'][3].strip() == 'NO_CHARGES':
-            has_charges = False
-
+        has_charges = False if sections['molecule'][3].strip() == 'NO_CHARGES'\
+            else True
         for a in atom_lines:
             columns = a.split()
             if len(columns) >= 9:
@@ -198,13 +194,10 @@ class MOL2Parser(TopologyReaderBase):
                                  f" [charge [status_bit]]]]")
             else:
                 aid, name, x, y, z, atom_type = columns[:6]
-                resid = 1
-                resname = None
-                charge = None
-                opt_values = [resid, resname, charge]
+                id_name_charge = [1, None, None]
                 for i in range(6, len(columns)):
-                    opt_values[i-6] = columns[i]
-                resid, resname, charge = opt_values
+                    id_name_charge[i-6] = columns[i]
+                resid, resname, charge = id_name_charge
             # if has_charges:
             #     if charge is None:
             #         raise ValueError(f"The mol2 file {self.filename}"
@@ -218,7 +211,7 @@ class MOL2Parser(TopologyReaderBase):
             #                          f" no charge provided in line: {a}")
             if (charge is not None) and (not has_charges):
                 raise ValueError(f"The mol2 file {self.filename}"
-                                 f" indicates no charges, but charge"
+                                 f" indicates no charges, but charge {charge}"
                                  f" provided in line: {a}.")
             if (charge is None) and has_charges:
                 raise ValueError(f"The mol2 file {self.filename}"
@@ -273,7 +266,7 @@ class MOL2Parser(TopologyReaderBase):
             attrs.append(Resids(resids))
             attrs.append(Resnums(resids.copy()))
             attrs.append(Resnames(resnames))
-        elif not (np.any(resnames)):
+        elif not np.any(resnames):
             residx, resids, _ = squash_by(resids,)
             n_residues = len(resids)
             attrs.append(Resids(resids))
