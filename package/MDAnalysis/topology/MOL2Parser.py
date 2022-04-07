@@ -89,16 +89,19 @@ class MOL2Parser(TopologyReaderBase):
     atoms have unknown atom types, the elements attribute will not be set.
 
     Dealing with optional fields:
-    (1) ``resid`` will set to 1 when not provided.
-    (2) If no atoms have ``resname`` field, resnames attribute will not be set;
-    If some atoms have ``resname`` while some do not,
-    :exc:`ValueError` will occur.
-    (3) If "NO_CHARGES" shows up in "@<TRIPOS>MOLECULE" section
-    and no atoms have the ``charge`` field, charges attribute will not be set;
-    If "NO_CHARGES" shows up while ``charge`` field appears,
-    :exc:`ValueError` will occur;
-    If a charge model is specified while some atoms don't have ``charge``,
-    :exc:`ValueError` will occur as well.
+
+      1. ``resid`` will set to 1 when not provided.
+
+      2. If no atoms have ``resname`` field, resnames attribute will not be set;
+         If some atoms have ``resname`` while some do not,
+         :exc:`ValueError` will occur.
+    
+      3. If "NO_CHARGES" shows up in "@<TRIPOS>MOLECULE" section
+         and no atoms have the ``charge`` field, charges attribute will not be set;
+         If "NO_CHARGES" shows up while ``charge`` field appears,
+         :exc:`ValueError` will occur;
+         If a charge model is specified while some atoms don't have ``charge``,
+         :exc:`ValueError` will occur as well.
 
     Raises
     ------
