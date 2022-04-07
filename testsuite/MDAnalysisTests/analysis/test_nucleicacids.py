@@ -23,7 +23,7 @@
 
 import MDAnalysis as mda
 import pytest
-from MDAnalysis.analysis.nucleicacids import WCDist, BaseSelect
+from MDAnalysis.analysis.nucleicacids import WCDist, MinorDist, MajorDist, BaseSelect
 from MDAnalysisTests.datafiles import RNA_PSF, RNA_PDB
 from numpy.testing import (
     assert_almost_equal,
@@ -41,5 +41,26 @@ def test_wc_dist(u):
            (BaseSelect('RNAA', 22), BaseSelect('RNAA', 23))]
     WC = WCDist(u, sel)
     WC.run()
+
     assert_almost_equal(WC.results['distance'][0], 4.3874702, decimal=3)
     assert_almost_equal(WC.results['distance'][1], 4.1716404, decimal=3)
+
+
+def test_minor_pair(u):
+    sel = [(BaseSelect('RNAA', 3), BaseSelect('RNAA', 17)),
+           (BaseSelect('RNAA', 20), BaseSelect('RNAA', 5))]
+    MP = MinorDist(u, sel)
+    MP.run()
+
+    assert_almost_equal(MP.results['distance'][0], 15.06506, decimal=3)
+    assert_almost_equal(MP.results['distance'][1], 3.219116, decimal=3)
+
+
+def test_major_pair(u):
+    sel = [(BaseSelect('RNAA', 2), BaseSelect('RNAA', 12)),
+           (BaseSelect('RNAA', 5), BaseSelect('RNAA', 9))]
+    MP = MajorDist(u, sel)
+    MP.run()
+
+    assert_almost_equal(MP.results['distance'][0], 26.884272, decimal=3)
+    assert_almost_equal(MP.results['distance'][1], 13.578535, decimal=3)
