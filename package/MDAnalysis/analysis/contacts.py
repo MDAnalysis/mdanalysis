@@ -254,6 +254,7 @@ def soft_cut_q(r, r0, beta=5.0, lambda_constant=1.8):
     Q : float
       fraction of native contacts
 
+    The native contact function is defined as :cite:p:`best2013native`
     """ References
     ----------
     .. [Best2013] RB Best, G Hummer, and WA Eaton, "Native contacts determine protein
