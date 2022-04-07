@@ -151,10 +151,29 @@ def test_project_no_pca_run(u, pca):
         func = pca_class.project_single_frame()
 
 
-def test_project_no_anchor(u, pca):
+def test_project_none_anchor(u, pca):
     group = u.select_atoms('resnum 1')
     with pytest.raises(ValueError):
         func = pca.project_single_frame(0, group=group, anchor=None)
+
+
+def test_project_more_anchor(u, pca):
+    group = u.select_atoms('resnum 1')
+    with pytest.raises(ValueError):
+        project = pca.project_single_frame(0, group=group, anchor='backbone')
+
+
+def test_project_less_anchor(u, pca):
+    group = u.select_atoms('all')
+    with pytest.raises(ValueError):
+        project = pca.project_single_frame(0, group=group, anchor='name CB')
+
+
+def test_project_improper_anchor(u):
+    pca = PCA(u, select='name CA').run()
+    group = u.select_atoms('all')
+    with pytest.raises(ValueError):
+        project = pca.project_single_frame(0, group=group, anchor='name N')
 
 
 def test_project_compare_projections():
@@ -170,7 +189,7 @@ def test_project_compare_projections():
     coord1 = project1(u.trajectory.ts).positions.copy()
 
     with pytest.raises(AssertionError):
-        assert_almost_equal(coord0, coord1)
+        assert_almost_equal(coord0, coord1, decimal=5)
 
 
 def test_project_reconstruct_whole():
@@ -204,7 +223,8 @@ def test_projet_extrapolate_translation(distance_sel, case):
     u = mda.Universe(PSF, DCD)
     pca = PCA(u, select='backbone').run()
     group = u.select_atoms(distance_sel)
-    project = pca.project_single_frame(0, group=group, anchor='name CA')
+    project = pca.project_single_frame(0, group=group,
+                                       anchor='resnum 1 and name CA')
 
     distances_original = (
         mda.lib.distances.self_distance_array(group.positions.copy())
@@ -218,14 +238,6 @@ def test_projet_extrapolate_translation(distance_sel, case):
     if case == 2:
         with pytest.raises(AssertionError):
             assert_almost_equal(distances_original, distances_new, decimal=5)
-
-
-def test_project_extrapolate_anchor_error():
-    u = mda.Universe(PSF, DCD)
-    pca = PCA(u, select='backbone').run()
-    group = u.select_atoms('resnum 1')
-    with pytest.raises(ValueError):
-        project = pca.project_single_frame(0, group=group, anchor='backbone')
 
 
 def test_cosine_content():

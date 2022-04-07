@@ -428,21 +428,22 @@ class PCA(AnalysisBase):
             The default ``None`` maps onto all components.
 
         group : AtomGroup, optional
-            The AtomGroup or Universe containing atoms to be projected.
-            The atoms in the PCA class will be projected regardless.
+            The AtomGroup containing atoms to be projected.
+            The projection applies to the residues in ``group``.
+            The atoms in the PCA class are not affected by this argument.
+            The default ``None`` does not extrapolate the projection
+            to non-PCA atoms.
 
         anchor : string, optional
-            String to select the atom whose displacement vector is applied to
-            non-PCA atoms in a residue. The atomselection must have exactly
-            one PCA atom in each residue of group. The atomselection must
-            not have any atoms thats were not part of the PCA transformation.
+            The string to select the PCA atom whose displacement vector
+            is applied to non-PCA atoms in a residue. The atomselection
+            must have exactly one PCA atom in each residue of ``group``.
             The default ``None`` does not extrapolate the projection
-            to non-PCA atoms. anchor cannot be ``None``
-            if group is not ``None``.
+            to non-PCA atoms.
 
         Returns
         -------
-        function
+        :class:`~MDAnalysis.coordinates.base.Timestep` object
             The projecting function which transforms a timestep.
 
         Examples
@@ -458,7 +459,7 @@ class PCA(AnalysisBase):
 
         to projet onto the first two components, run:
 
-            project = pca.project_single_frame(components=0)
+            project = pca.project_single_frame(components=[0,1])
 
         Alternatively, the transformation can be extrapolated to other atoms
         according to the CA atom's translation in each residue::
@@ -481,32 +482,44 @@ class PCA(AnalysisBase):
         if not self._calculated:
             raise ValueError('Call run() on the PCA before projecting')
 
-        if components is None:
-            components = range(self.results.p_components.shape[1])
-
         if group is not None:
             if anchor is None:
-                raise ValueError('anchor cannot be None if group is not None')
+                raise ValueError("'anchor' cannot be 'None'" +
+                                 " if 'group' is not 'None'")
+            anchors = group.select_atoms(anchor)
+            anchors_res_ids = anchors.resindices
+            if np.unique(anchors_res_ids).size != anchors_res_ids.size:
+                raise ValueError("More than one 'anchor' found in residues")
+            if not np.isin(group.resindices, anchors_res_ids).all():
+                raise ValueError("Some residues in 'group'" +
+                                 " do not have an 'anchor'")
+            if not anchors.issubset(self._atoms):
+                raise ValueError("Some 'anchors' are not part of PCA class")
 
-            for i in group.residues.resnums:
-                n_anchor = self._atoms.select_atoms(
-                           f'resnum {i} and {anchor}').n_atoms
-                if(n_anchor != 1):
-                    raise ValueError("anchor string selected " +
-                                     f"{n_anchor} (!=1) PCA atoms in " +
-                                     f"resnum {i}. anchor string must " +
-                                     "select exactly one PCA atom " +
-                                     "in each residue of group.")
-            non_pca = group.subtract(self._atoms)
+            non_pca = group - self._atoms
+            pca_res_indices, pca_res_counts = np.unique(
+                self._atoms.resindices, return_counts=True)
+
+            matrix_extrapolate = np.zeros((non_pca.n_atoms, anchors.n_atoms))
+            cumul_atoms_old = 0
+            for res in group.residues:
+                res_index = res.resindex
+                n_common = pca_res_counts[np.where(
+                           pca_res_indices == res_index)][0]
+                cumul_atoms_new = (cumul_atoms_old +
+                                   res.atoms.n_atoms - n_common)
+                matrix_extrapolate[cumul_atoms_old:cumul_atoms_new,
+                                   res_index] = 1
+                cumul_atoms_old = cumul_atoms_new
+
+        if components is None:
+            components = range(self.results.p_components.shape[1])
 
         def wrapped(ts):
 
             if group is not None:
-                for i in group.residues.resnums:
-                    non_pca.select_atoms(f'resnum {i}').positions -= (
-                        self._atoms.select_atoms(f'resnum {i} and {anchor}')
-                            .positions
-                    )
+                anchors_pos = np.matmul(matrix_extrapolate, anchors.positions)
+                non_pca.positions -= anchors_pos
 
             xyz = self._atoms.positions.ravel() - self._xmean
             self._atoms.positions = np.reshape(
@@ -516,11 +529,8 @@ class PCA(AnalysisBase):
             )
 
             if group is not None:
-                for i in group.residues.resnums:
-                    non_pca.select_atoms(f'resnum {i}').positions += (
-                        self._atoms.select_atoms(f'resnum {i} and {anchor}')
-                            .positions
-                    )
+                anchors_pos = np.matmul(matrix_extrapolate, anchors.positions)
+                non_pca.positions += anchors_pos
 
             return ts
 
