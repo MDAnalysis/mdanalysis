@@ -19,8 +19,17 @@
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
+<<<<<<< HEAD
 #
 
+=======
+<<<<<<< HEAD
+
+
+=======
+#
+>>>>>>> f4665d77d2a850cbf599c745e6a329e2eb218cc8
+>>>>>>> 5da7ae88db7580a77c6d35fdad67bfad7bc2cb1b
 
 import os
 import errno

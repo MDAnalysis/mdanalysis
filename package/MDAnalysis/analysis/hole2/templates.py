@@ -27,9 +27,7 @@
 :Author: Lily Wang
 :Year: 2020
 :Copyright: GNU Public License v3
-
 .. versionadded:: 1.0
-
 Templates used in :mod:`MDAnalysis.analysis.hole2.hole`
 """
 
