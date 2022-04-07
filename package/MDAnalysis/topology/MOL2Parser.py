@@ -89,7 +89,7 @@ class MOL2Parser(TopologyReaderBase):
     atoms have unknown atom types, the elements attribute will not be set.
 
     Dealing with optional fields:
-    (1) ``Resid`` will set to 1 when not provided.
+    (1) ``resid`` will set to 1 when not provided.
     (2) If no atoms have ``resname`` field, resnames attribute will not be set;
     If some atoms have ``resname`` while some do not, 
     :exc:`ValueError` will occur.
