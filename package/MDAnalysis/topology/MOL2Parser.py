@@ -197,26 +197,17 @@ class MOL2Parser(TopologyReaderBase):
                 for i in range(6, len(columns)):
                     id_name_charge[i-6] = columns[i]
                 resid, resname, charge = id_name_charge
-            # if has_charges:
-            #     if charge is None:
-            #         raise ValueError(f"The mol2 file {self.filename}"
-            #                          f" indicates no charges, but charge"
-            #                          f" provided in line: {a}.")
-            # else:
-            #     if charge is not None:
-            #         raise ValueError(f"The mol2 file {self.filename}"
-            #                          f" indicates a charge model"
-            #                          f"{sections['molecule'][3]}, but"
-            #                          f" no charge provided in line: {a}")
-            if (charge is not None) and (not has_charges):
-                raise ValueError(f"The mol2 file {self.filename}"
-                                 f" indicates no charges, but charge {charge}"
-                                 f" provided in line: {a}.")
-            if (charge is None) and has_charges:
-                raise ValueError(f"The mol2 file {self.filename}"
-                                 f" indicates a charge model"
-                                 f"{sections['molecule'][3]}, but "
-                                 f"no charge provided in line: {a}")
+            if has_charges:
+                if charge is None:
+                    raise ValueError(f"The mol2 file {self.filename}"
+                                     f" indicates a charge model"
+                                     f"{sections['molecule'][3]}, but"
+                                     f" no charge provided in line: {a}")
+            else:
+                if charge is not None:
+                    raise ValueError(f"The mol2 file {self.filename}"
+                                     f" indicates no charges, but charge"
+                                     f" {charge} provided in line: {a}.")
 
             ids.append(aid)
             names.append(name)
