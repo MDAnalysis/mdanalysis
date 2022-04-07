@@ -130,10 +130,9 @@ class WCDist(NucPairDist):
 
     def __init__(self, universe: mda.Universe, selections: List[Tuple[BaseSelect, BaseSelect]],
                  n1_name: str = 'N1', n3_name: str = "N3", **kwargs) -> None:
-        sel_str = []
+        sel_str: List[Tuple[str, str]] = []
 
         for s in selections:
-            a1, a2, = None, None
             if universe.select_atoms(f" resid {s[0].resid} ").resnames[0] in ["DC", "DT", "U", "C", "T", "CYT", "THY", "URA"]:
                 a1, a2 = n3_name, n1_name
             elif universe.select_atoms(f" resid {s[0].resid} ").resnames[0] in ["DG", "DA", "A", "G", "ADE", "GUA"]:
@@ -144,3 +143,45 @@ class WCDist(NucPairDist):
             sel_str.append((f'segid {s[0].segid} and resid {s[0].resid} and name {a1}',
                             f'segid {s[1].segid} and resid {s[1].resid} and name {a2}'))
         super(WCDist, self).__init__(universe, sel_str, **kwargs)
+
+
+class MinorDist(NucPairDist):
+    """"""
+
+    def __init__(self, universe: mda.Universe, selections: List[Tuple[BaseSelect, BaseSelect]],
+                 c2_name: str = "C2", o2_name: str = "O2", **kwargs) -> None:
+        sel_str: List[Tuple[str, str]] = []
+
+        for s in selections:
+            if universe.select_atoms(f" resid {s[0].resid} ").resnames[0] in ["DC", "DT", "U", "C", "T", "CYT", "THY",
+                                                                              "URA"]:
+                a1, a2 = o2_name, c2_name
+            elif universe.select_atoms(f" resid {s[0].resid} ").resnames[0] in ["DG", "DA", "A", "G", "ADE", "GUA"]:
+                a1, a2 = c2_name, o2_name
+            else:
+                raise SelectionError(f"Resid {s[0].resid} is not a Nucleic acid")
+
+            sel_str.append((f'segid {s[0].segid} and resid {s[0].resid} and name {a1}',
+                            f'segid {s[1].segid} and resid {s[1].resid} and name {a2}'))
+        super(MinorDist, self).__init__(universe, sel_str, **kwargs)
+
+
+class MajorDist(NucPairDist):
+    """"""
+
+    def __init__(self, universe: mda.Universe, selections: List[Tuple[BaseSelect, BaseSelect]],
+                 n4_name: str = "N4", o6_name: str = "O6", **kwargs) -> None:
+        sel_str: List[Tuple[str, str]] = []
+
+        for s in selections:
+            if universe.select_atoms(f" resid {s[0].resid} ").resnames[0] in ["DC", "DT", "U", "C", "T", "CYT", "THY",
+                                                                              "URA"]:
+                a1, a2 = n4_name, o6_name
+            elif universe.select_atoms(f" resid {s[0].resid} ").resnames[0] in ["DG", "DA", "A", "G", "ADE", "GUA"]:
+                a1, a2 = o6_name, n4_name
+            else:
+                raise SelectionError(f"Resid {s[0].resid} is not a Nucleic acid")
+
+            sel_str.append((f'segid {s[0].segid} and resid {s[0].resid} and name {a1}',
+                            f'segid {s[1].segid} and resid {s[1].resid} and name {a2}'))
+        super(MajorDist, self).__init__(universe, sel_str, **kwargs)
