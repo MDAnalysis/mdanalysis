@@ -415,7 +415,7 @@ class PCA(AnalysisBase):
         return dot
 
     def project_single_frame(self, components=None, group=None, anchor=None):
-        """Projects the structure onto selected PCs
+        """Computes a function to project structures onto selected PCs
 
         Applies Inverse-PCA transform to the PCA atomgroup.
         Optionally, calculates one displacement vector per residue
@@ -443,8 +443,9 @@ class PCA(AnalysisBase):
 
         Returns
         -------
-        :class:`~MDAnalysis.coordinates.base.Timestep` object
-            The projecting function which transforms a timestep.
+        function
+            The resulting function f(ts) takes as input a ``Timestep`` ts,
+            and returns ts with the projected structure
 
         Examples
         --------
@@ -487,6 +488,7 @@ class PCA(AnalysisBase):
             if anchor is None:
                 raise ValueError("'anchor' cannot be 'None'" +
                                  " if 'group' is not 'None'")
+
             anchors = group.select_atoms(anchor)
             anchors_res_ids = anchors.resindices
             if np.unique(anchors_res_ids).size != anchors_res_ids.size:
@@ -501,28 +503,29 @@ class PCA(AnalysisBase):
             pca_res_indices, pca_res_counts = np.unique(
                 self._atoms.resindices, return_counts=True)
 
+            # matrix_extrapolate is later multiplied to anchors' coordinates.
+            # multiplication shapes the array as appropriate for non_pca atoms
             matrix_extrapolate = np.zeros((non_pca.n_atoms, anchors.n_atoms))
             cumul_atoms_old = 0
             for res in group.residues:
-                res_index = res.resindex
                 n_common = pca_res_counts[np.where(
-                           pca_res_indices == res_index)][0]
+                           pca_res_indices == res.resindex)][0]
                 cumul_atoms_new = (cumul_atoms_old +
                                    res.atoms.n_atoms - n_common)
                 matrix_extrapolate[cumul_atoms_old:cumul_atoms_new,
-                                   res_index] = 1
+                                   res.resindex] = 1
                 cumul_atoms_old = cumul_atoms_new
 
         if components is None:
             components = range(self.results.p_components.shape[1])
 
         def wrapped(ts):
-
+            """Projects a timestep"""
             if group is not None:
-                anchors_pos = np.matmul(matrix_extrapolate, anchors.positions)
-                non_pca.positions -= anchors_pos
+                non_pca.positions -= matrix_extrapolate @ anchors.positions
 
             xyz = self._atoms.positions.ravel() - self._xmean
+            print(xyz.shape, self._p_components[:, components].shape)
             self._atoms.positions = np.reshape(
                 (np.dot(np.dot(xyz, self._p_components[:, components]),
                         self._p_components[:, components].T)
@@ -530,11 +533,8 @@ class PCA(AnalysisBase):
             )
 
             if group is not None:
-                anchors_pos = np.matmul(matrix_extrapolate, anchors.positions)
-                non_pca.positions += anchors_pos
-
+                non_pca.positions += matrix_extrapolate @ anchors.positions
             return ts
-
         return wrapped
 
     @due.dcite(

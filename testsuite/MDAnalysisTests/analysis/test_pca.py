@@ -42,6 +42,12 @@ def u():
 
 
 @pytest.fixture(scope='module')
+def u_project():
+    # create another universe so projection does not change u
+    return mda.Universe(PSF, DCD)
+
+
+@pytest.fixture(scope='module')
 def u_aligned():
     u = mda.Universe(PSF, DCD, in_memory=True)
     align.AlignTraj(u, u, select=SELECTION).run()
@@ -147,97 +153,109 @@ def test_transform_universe():
 
 def test_project_no_pca_run(u, pca):
     pca_class = PCA(u, select=SELECTION)
-    with pytest.raises(ValueError):
-        func = pca_class.project_single_frame()
+    with pytest.raises(ValueError) as exc:
+        pca_class.project_single_frame()
+    assert 'Call run() on the PCA before projecting' in str(exc.value)
 
 
 def test_project_none_anchor(u, pca):
     group = u.select_atoms('resnum 1')
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError) as exc:
         func = pca.project_single_frame(0, group=group, anchor=None)
+    assert ("'anchor' cannot be 'None'" +
+            " if 'group' is not 'None'") in str(exc.value)
 
 
 def test_project_more_anchor(u, pca):
     group = u.select_atoms('resnum 1')
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError) as exc:
         project = pca.project_single_frame(0, group=group, anchor='backbone')
+    assert "More than one 'anchor' found in residues" in str(exc.value)
 
 
 def test_project_less_anchor(u, pca):
     group = u.select_atoms('all')
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError) as exc:
         project = pca.project_single_frame(0, group=group, anchor='name CB')
+    assert ("Some residues in 'group'" +
+            " do not have an 'anchor'") in str(exc.value)
 
 
-def test_project_improper_anchor(u):
+def test_project_invalid_anchor(u):
     pca = PCA(u, select='name CA').run()
     group = u.select_atoms('all')
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError) as exc:
         project = pca.project_single_frame(0, group=group, anchor='name N')
+    assert "Some 'anchors' are not part of PCA class" in str(exc.value)
 
 
-def test_project_compare_projections():
-    u = mda.Universe(PSF, DCD)
-    u_copy = u.copy()
-    pca = PCA(u, select=SELECTION).run()
+@pytest.mark.xfail
+def test_project_compare_projections(u_project):
+    # projections along different PCs should be different
+    pca = PCA(u_project, select=SELECTION).run()
     project0 = pca.project_single_frame(0)
     project1 = pca.project_single_frame(1)
 
-    u.trajectory[0]
-    coord0 = project0(u.trajectory.ts).positions.copy()
-    u.trajectory[0]
-    coord1 = project1(u.trajectory.ts).positions.copy()
-
-    with pytest.raises(AssertionError):
-        assert_almost_equal(coord0, coord1, decimal=5)
+    u_project.trajectory[0]
+    coord0 = project0(u_project.trajectory.ts).positions
+    u_project.trajectory[0]
+    coord1 = project1(u_project.trajectory.ts).positions
+    assert_almost_equal(coord0, coord1, decimal=5)
 
 
-def test_project_reconstruct_whole():
-    u = mda.Universe(PSF, DCD)
-    u_copy = u.copy()
-    pca = PCA(u, select=SELECTION).run()
+def test_project_reconstruct_whole(u, u_project):
+    # structure projected along all PCs
+    # should be same as the original structure
+    pca = PCA(u_project, select=SELECTION).run()
     project = pca.project_single_frame()
 
-    coord_reconstructed = project(u.trajectory.ts).positions.copy()
-    coord_copy = u_copy.trajectory.ts.positions.copy()
-    assert_almost_equal(coord_reconstructed, coord_copy, decimal=5)
+    coord_original = u.trajectory.ts.positions
+    coord_reconstructed = project(u_project.trajectory.ts).positions
+    assert_almost_equal(coord_original, coord_reconstructed, decimal=5)
 
 
-def test_project_twice_projection():
-    u = mda.Universe(PSF, DCD)
-    pca = PCA(u, select=SELECTION).run()
+@pytest.mark.parametrize(
+    ("n1", "n2"),
+    [(0, 0), (1, 1), ([0, 1], [0, 1]),
+     pytest.param(0, 1, marks=pytest.mark.xfail),
+     pytest.param(1, 0, marks=pytest.mark.xfail)]
+)
+def test_project_twice_projection(u_project, n1, n2):
+    # Two succesive projections are applied. The second projection does nothing
+    # if both projections are along the same PC(s).
+    pca = PCA(u_project, select=SELECTION).run()
 
-    project0 = pca.project_single_frame(0)
-    project1 = pca.project_single_frame(1)
+    project_first = pca.project_single_frame(n1)
+    project_second = pca.project_single_frame(n2)
 
-    u.trajectory[0]
-    coord0 = project0(u.trajectory.ts).positions.copy()
-    coord00 = project0(u.trajectory.ts).positions.copy()
-    assert_almost_equal(coord0, coord00, decimal=5)
+    u_project.trajectory[0]
+    coord1 = project_first(u_project.trajectory.ts).positions.copy()
+    coord2 = project_second(u_project.trajectory.ts).positions.copy()
+    assert_almost_equal(coord1, coord2, decimal=5)
 
 
-@pytest.mark.parametrize('distance_sel, case',
-                         (('resnum 1 and name CA CB', 1),
-                          ('resnum 1 and name N CA CB', 2)))
-def test_projet_extrapolate_translation(distance_sel, case):
-    u = mda.Universe(PSF, DCD)
-    pca = PCA(u, select='backbone').run()
-    group = u.select_atoms(distance_sel)
+@pytest.mark.parametrize(
+    "sel",
+    ['resnum 1 and name CA CB CG',
+     pytest.param('resnum 1 and name N CB CG', marks=pytest.mark.xfail)]
+)
+def test_projet_extrapolate_translation(u_project, sel):
+    # when the projection is extended to non-PCA atoms,
+    # non-PCA atoms' coordinates will be conserved relative to the anchor atom,
+    # and the coordinates change relative to other PCA atoms
+    pca = PCA(u_project, select='backbone').run()
+    group = u_project.select_atoms(sel)
     project = pca.project_single_frame(0, group=group,
                                        anchor='resnum 1 and name CA')
 
     distances_original = (
-        mda.lib.distances.self_distance_array(group.positions.copy())
+        mda.lib.distances.self_distance_array(group.positions)
     )
     distances_new = (
-        mda.lib.distances.self_distance_array(project(group).positions.copy())
+        mda.lib.distances.self_distance_array(project(group).positions)
     )
 
-    if case == 1:
-        assert_almost_equal(distances_original, distances_new, decimal=5)
-    if case == 2:
-        with pytest.raises(AssertionError):
-            assert_almost_equal(distances_original, distances_new, decimal=5)
+    assert_almost_equal(distances_original, distances_new, decimal=5)
 
 
 def test_cosine_content():
