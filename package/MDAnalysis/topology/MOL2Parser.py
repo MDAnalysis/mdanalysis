@@ -82,38 +82,6 @@ class MOL2Parser(TopologyReaderBase):
     Guesses the following:
      - masses
 
-    Notes
-    -----
-    Elements are obtained directly from the SYBYL atom types. If some atoms have
-    unknown atom types, they will be assigned an empty element record. If all
-    atoms have unknown atom types, the elements attribute will not be set.
-    
-    Dealing with optional fields:
-    (1) ``Resid`` will set to 1 when not provided.
-    (2) If no atoms have ``resname`` field, resnames attribute will not be set;
-    If some atoms have ``resname`` while some do not, :exc:`ValueError` will occur.
-    (3) If "NO_CHARGES" shows up in "@<TRIPOS>MOLECULE" section and no atoms have
-    the ``charge`` field, charges attribute will not be set;
-    If "NO_CHARGES" shows up while ``charge`` field appears, :exc:`ValueError` will occur;
-    If charge model is specified, while some atoms don't have ``charge`` field,
-    :exc:`ValueError` will occur as well.
-
-    Raises
-    ------
-    ValueError
-      If some atoms have the optional field ``resname`` (aka ``subst_name``)
-      while some do not, this error would be raised.
-    
-    ValueError
-      If "NO_CHARGES" shows up in "@<TRIPOS>MOLECULE" section while
-      some atoms have the optional field ``charge`` (aka ``subst_name``),
-      this error would be raised.
-    
-    ValueError
-      If "NO_CHARGES" does not up in "@<TRIPOS>MOLECULE" section while
-      some atoms do not have the optional field ``charge`` (aka ``subst_name``),
-      this error would be raised.
-
 
     .. versionchanged:: 0.9
        Now subclasses TopologyReaderBase
