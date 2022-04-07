@@ -24,10 +24,10 @@ A typical usage pattern is to iterate through a trajectory and analyze
 coordinates for every frame. In the following example the end-to-end distance
 of a protein and the radius of gyration of the backbone atoms are calculated::
 
-    import MDAnalysis
+    import MDAnalysis as mda
     from MDAnalysis.tests.datafiles import PSF,DCD  # test trajectory
     import numpy.linalg
-    u = MDAnalysis.Universe(PSF,DCD)  # always start with a Universe
+    u = mda.Universe(PSF,DCD)  # always start with a Universe
     nterm = u.select_atoms('segid 4AKE and name N')[0]  # can access structure via segid (s4AKE) and atom name
     cterm = u.select_atoms('segid 4AKE and name C')[-1]  # ... takes the last atom named 'C'
     bb = u.select_atoms('protein and backbone')  # a selection (a AtomGroup)
@@ -59,7 +59,7 @@ from within the interpreter::
 
 or ::
 
- import MDAnalysis
+ import MDAnalysis as mda
 
 The idea behind MDAnalysis is to get trajectory data into NumPy_
 :class:`numpy.ndarray` arrays, where it can then be easily manipulated using
@@ -75,8 +75,8 @@ Invariably, a MDAnalysis session starts with loading data into the
 :class:`~MDAnalysis.core.universe.Universe` class (which can be accessed
 as :class:`MDAnalysis.Universe`)::
 
- from MDAnalysis import *
- universe = Universe(topology, trajectory)
+ import MDAnalysis as mda
+ universe = mda.Universe(topology, trajectory)
 
 - The *topology* file lists the atoms and residues (and also their
   connectivity). It can be a CHARMM/XPLOR/NAMD PSF file or a coordinate file
@@ -145,10 +145,10 @@ MDAnalysis comes with a number of real trajectories for testing. You
 can also use them to explore the functionality and ensure that
 everything is working properly::
 
-  from MDAnalysis import *
+  import MDAnalysis as mda 
   from MDAnalysis.tests.datafiles import PSF,DCD, PDB,XTC
-  u_dims_adk = Universe(PSF,DCD)
-  u_eq_adk = Universe(PDB, XTC)
+  u_dims_adk = mda.Universe(PSF,DCD)
+  u_eq_adk = mda.Universe(PDB, XTC)
 
 The PSF and DCD file are a closed-form-to-open-form transition of
 Adenylate Kinase (from [Beckstein2009]_) and the PDB+XTC file are ten
