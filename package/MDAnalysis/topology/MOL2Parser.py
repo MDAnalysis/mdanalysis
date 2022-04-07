@@ -103,17 +103,15 @@ class MOL2Parser(TopologyReaderBase):
     ------
     ValueError
       If some atoms have the optional field ``resname`` (aka ``subst_name``)
-      while some do not, this error would be raised.
+      while some do not.
 
     ValueError
       If "NO_CHARGES" shows up in "@<TRIPOS>MOLECULE" section while
-      some atoms have the optional field ``charge``,
-      this error would be raised.
+      some atoms have the optional field ``charge``.
     
     ValueError
       If a charge model is specified in "@<TRIPOS>MOLECULE" section while
-      some atoms do not have the optional field ``charge``,
-      this error would be raised.
+      some atoms do not have the optional field ``charge``.
 
 
     .. versionchanged:: 0.9
