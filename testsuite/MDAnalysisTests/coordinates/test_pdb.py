@@ -636,8 +636,6 @@ class TestMultiPDBReader(object):
             "iterated number of frames %d is not the expected number %d; "
             "trajectory iterator fails to rewind" %
             (len(frames), u.trajectory.n_frames))
-        assert_equal(u.trajectory.ts.frame, 0,
-                     err_msg="iterator did not rewind")
 
     def test_slice_iteration(self, multiverse):
         u = multiverse
@@ -647,19 +645,6 @@ class TestMultiPDBReader(object):
         assert_equal(np.array(frames),
                      np.arange(u.trajectory.n_frames)[4:-2:4],
                      err_msg="slicing did not produce the expected frames")
-        assert_equal(u.trajectory.ts.frame, 0,
-                     err_msg="slice iterator did not rewind")
-
-    def test_indices_iteration(self, multiverse):
-        u = multiverse
-        frames = []
-        for ts in u.trajectory[[2, 3, 4]]:
-            frames.append(ts.frame)
-        assert_equal(np.array(frames),
-                     np.arange(u.trajectory.n_frames)[[2, 3, 4]],
-                     err_msg="indexing did not produce the expected frames")
-        assert_equal(u.trajectory.ts.frame, 0,
-                     err_msg="indices iterator did not rewind")
 
     def test_conect_bonds_conect(self, tmpdir, conect):
         assert_equal(len(conect.atoms), 1890)
