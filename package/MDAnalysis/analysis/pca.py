@@ -469,25 +469,26 @@ class PCA(AnalysisBase):
         length 3N. A PCA score can be calculated for a set of coordinates
         of the same atoms. The PCA scores are then used to transform
         the structure at a given timestep to the original space.
+
         .. math::
 
             PC\_score =  (X - \bar{X}) \cdot PC
             X\_projected = (PC\_score \cdot PC^T) + \bar{X}
 
-       For each residue, the projection can be extended to atoms that were
-       not part of PCA by applying the displacement vector of a PCA atom to
-       all the atoms in the residue. This could be useful to preserve the bond
-       distance between a PCA atom and other non-PCA atoms in a residue.
+        For each residue, the projection can be extended to atoms that were
+        not part of PCA by applying the displacement vector of a PCA atom to
+        all the atoms in the residue. This could be useful to preserve the bond
+        distance between a PCA atom and other non-PCA atoms in a residue.
 
-       If there are r residues and n non-PCA atoms in total, the displacement
-       vector has the size 3r. This needs to be broadcasted to a size 3n. An
-       extrapolation trick is used to shape the array, since going over each
-       residue for each frame can be expensive. The extrapolation matrix has
-       the size :math:`(3n, 3r)`. If the atom i belongs to residue j, the
-       matrix element :math:`(i,j)` is 1; otherwise, it is 0. When this matrix
-       is multiplied to the displacement vector of PCA atoms, the result is
-       the desired displacement vector for all the non-PCA atoms:
-       :math:`(3n, 3r) \times (3r) = (3n)`.
+        If there are r residues and n non-PCA atoms in total, the displacement
+        vector has the size 3r. This needs to be broadcasted to a size 3n. An
+        extrapolation trick is used to shape the array, since going over each
+        residue for each frame can be expensive. The extrapolation matrix has
+        the size :math:`(3n, 3r)`. If the atom i belongs to residue j, the
+        matrix element :math:`(i,j)` is 1; otherwise, it is 0. When this matrix
+        is multiplied to the displacement vector of PCA atoms, the result is
+        the desired displacement vector for all the non-PCA atoms:
+        :math:`(3n, 3r) \times (3r) = (3n)`.
 
         Examples
         --------
