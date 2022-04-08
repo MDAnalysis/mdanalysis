@@ -27,7 +27,7 @@ from MDAnalysis.analysis.pca import (PCA, cosine_content,
                                      rmsip, cumulative_overlap)
 
 from numpy.testing import (assert_almost_equal, assert_equal,
-                           assert_array_almost_equal)
+                           assert_array_almost_equal, assert_allclose)
 
 from MDAnalysisTests.datafiles import (PSF, DCD, RANDOM_WALK, RANDOM_WALK_TOPO,
                                        waterPSF, waterDCD)
@@ -41,9 +41,9 @@ def u():
     return mda.Universe(PSF, DCD)
 
 
-@pytest.fixture(scope='module')
-def u_project():
-    # create another universe so projection does not change u
+@pytest.fixture(scope='function')
+def u_fresh():
+    # each test gets a fresh universe
     return mda.Universe(PSF, DCD)
 
 
@@ -189,62 +189,60 @@ def test_project_invalid_anchor(u):
     assert "Some 'anchors' are not part of PCA class" in str(exc.value)
 
 
-@pytest.mark.xfail
-def test_project_compare_projections(u_project):
+def test_project_compare_projections(u_fresh):
     # projections along different PCs should be different
-    pca = PCA(u_project, select=SELECTION).run()
+    pca = PCA(u_fresh, select=SELECTION).run()
     project0 = pca.project_single_frame(0)
     project1 = pca.project_single_frame(1)
 
-    u_project.trajectory[0]
-    coord0 = project0(u_project.trajectory.ts).positions
-    u_project.trajectory[0]
-    coord1 = project1(u_project.trajectory.ts).positions
-    assert_almost_equal(coord0, coord1, decimal=5)
+    u_fresh.trajectory[0]
+    coord0 = project0(u_fresh.trajectory.ts).positions
+    u_fresh.trajectory[0]
+    coord1 = project1(u_fresh.trajectory.ts).positions
+    assert not np.allclose(coord0, coord1, rtol=1e-05)
 
 
-def test_project_reconstruct_whole(u, u_project):
+def test_project_reconstruct_whole(u, u_fresh):
     # structure projected along all PCs
     # should be same as the original structure
-    pca = PCA(u_project, select=SELECTION).run()
+    pca = PCA(u_fresh, select=SELECTION).run()
     project = pca.project_single_frame()
 
     coord_original = u.trajectory.ts.positions
-    coord_reconstructed = project(u_project.trajectory.ts).positions
-    assert_almost_equal(coord_original, coord_reconstructed, decimal=5)
+    coord_reconstructed = project(u_fresh.trajectory.ts).positions
+    assert_allclose(coord_original, coord_reconstructed, rtol=1e-5)
 
 
 @pytest.mark.parametrize(
     ("n1", "n2"),
-    [(0, 0), (1, 1), ([0, 1], [0, 1]),
-     pytest.param(0, 1, marks=pytest.mark.xfail),
-     pytest.param(1, 0, marks=pytest.mark.xfail)]
+    [(0, 0), (0, [0]), ([0, 1], [0, 1]), (0, 1), (1, 0)]
 )
-def test_project_twice_projection(u_project, n1, n2):
+def test_project_twice_projection(u_fresh, n1, n2):
     # Two succesive projections are applied. The second projection does nothing
     # if both projections are along the same PC(s).
-    pca = PCA(u_project, select=SELECTION).run()
+    # Single PC input as an array should be equivalent to a scalar
+    pca = PCA(u_fresh, select=SELECTION).run()
 
     project_first = pca.project_single_frame(n1)
     project_second = pca.project_single_frame(n2)
 
-    u_project.trajectory[0]
-    coord1 = project_first(u_project.trajectory.ts).positions.copy()
-    coord2 = project_second(u_project.trajectory.ts).positions.copy()
-    assert_almost_equal(coord1, coord2, decimal=5)
+    u_fresh.trajectory[0]
+    coord1 = project_first(u_fresh.trajectory.ts).positions.copy()
+    coord2 = project_second(u_fresh.trajectory.ts).positions.copy()
+
+    if np.array_equiv(n1, n2):
+        assert np.allclose(coord1, coord2, rtol=1e-5)
+    else:
+        assert not np.allclose(coord1, coord2, rtol=1e-05)
 
 
-@pytest.mark.parametrize(
-    "sel",
-    ['resnum 1 and name CA CB CG',
-     pytest.param('resnum 1 and name N CB CG', marks=pytest.mark.xfail)]
-)
-def test_projet_extrapolate_translation(u_project, sel):
+def test_project_extrapolate_translation(u_fresh):
     # when the projection is extended to non-PCA atoms,
     # non-PCA atoms' coordinates will be conserved relative to the anchor atom,
-    # and the coordinates change relative to other PCA atoms
-    pca = PCA(u_project, select='backbone').run()
-    group = u_project.select_atoms(sel)
+    # but the coordinates change relative to other PCA atoms
+    pca = PCA(u_fresh, select='backbone').run()
+    sel = 'resnum 1 and name CA CB CG'
+    group = u_fresh.select_atoms(sel)
     project = pca.project_single_frame(0, group=group,
                                        anchor='resnum 1 and name CA')
 
@@ -255,7 +253,7 @@ def test_projet_extrapolate_translation(u_project, sel):
         mda.lib.distances.self_distance_array(project(group).positions)
     )
 
-    assert_almost_equal(distances_original, distances_new, decimal=5)
+    assert_allclose(distances_original, distances_new, rtol=1e-05)
 
 
 def test_cosine_content():

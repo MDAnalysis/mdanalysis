@@ -436,8 +436,9 @@ class PCA(AnalysisBase):
 
         anchor : string, optional
             The string to select the PCA atom whose displacement vector
-            is applied to non-PCA atoms in a residue. The atomselection
-            must have exactly one PCA atom in each residue of ``group``.
+            is applied to non-PCA atoms in a residue. The ``anchor`` selection
+            is applied to ``group``.The resulting atomselection must have
+            exactly one PCA atom in each residue of ``group``.
             The default ``None`` does not extrapolate the projection
             to non-PCA atoms.
 
@@ -447,6 +448,14 @@ class PCA(AnalysisBase):
             The resulting function f(ts) takes as input a
             :class:`~MDAnalysis.coordinates.base.Timestep` ts,
             and returns ts with the projected structure
+
+            .. warning::
+               The transformation function takes a :class:``Timestep`` as input
+               because this is required for :ref:``transformations``.
+               However, the inverse-PCA transformation is applied on the atoms
+               of the Universe that was used for the PCA. It is **expected**
+               that the `ts` is from the same Universe but this is
+               currently not checked.
 
         Examples
         --------
@@ -506,7 +515,8 @@ class PCA(AnalysisBase):
 
             # matrix_extrapolate is later multiplied to anchors' coordinates.
             # multiplication shapes the array as appropriate for non_pca atoms
-            matrix_extrapolate = np.zeros((non_pca.n_atoms, anchors.n_atoms))
+            matrix_extrapolate = np.zeros((non_pca.n_atoms, anchors.n_atoms),
+                                          dtype=np.int8)
             cumul_atoms_old = 0
             for res in group.residues:
                 n_common = pca_res_counts[np.where(
@@ -518,7 +528,7 @@ class PCA(AnalysisBase):
                 cumul_atoms_old = cumul_atoms_new
 
         if components is None:
-            components = range(self.results.p_components.shape[1])
+            components = np.arange(self.results.p_components.shape[1])
 
         def wrapped(ts):
             """Projects a timestep"""
