@@ -273,9 +273,11 @@ jobs:
         # mamba not enabled as install longer than deps install
         architecture: x64
 
-    - name: install_conda
+    - name: install_pip_conda
       run: |
-        conda install setuptools cython numpy twine
+        # Issue 3612 - readme_renderer is outdated on conda-forge
+        pip install readme-renderer
+        conda install setuptools cython numpy twine 
 
     - name: install_mdanalysis
       run: |
