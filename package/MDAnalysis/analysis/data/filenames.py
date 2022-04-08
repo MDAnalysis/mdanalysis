@@ -53,6 +53,11 @@ Data files
    The given levels will draw contours that contain 90% and 99% of the data
    points. See the :ref:`Ramachandran plot figure <figure-ramachandran>` as an
    example.
+.. _figure-rama ref plot:
+
+.. figure:: /images/rama_ref_plot.png
+   :scale: 50 %
+   :alt: Ramachandran Ref Plot
 
 .. data:: Janin_ref
 
@@ -66,12 +71,18 @@ Data files
       import numpy as np
       import matplotlib.pyplot as plt
       from MDAnalysis.analysis.data.filenames import Janin_ref
-      X, Y = np.meshgrid(np.arange(-180, 180, 4), np.arange(-180, 180, 4))
+      X, Y = np.meshgrid(np.arange(-180, 180, 6), np.arange(-180, 180, 6))
       Z = np.load(Janin_ref)
       ax.contourf(X, Y, Z, levels=[1, 6, 600])
 
    The given levels will draw contours that contain 90% and 98% of the
    data. See the :ref:`Janin plot figure <figure-janin>` as an example.
+
+.. _figure-janin ref plot:
+
+.. figure:: /images/janin_ref_plot.png
+   :scale: 50 %
+   :alt: Janin Ref Plot
 
 """
 
