@@ -255,7 +255,7 @@ class DistanceMatrix(AnalysisBase):
 
         if isinstance(universe, UpdatingAtomGroup):
             wmsg = ("U must be a static AtomGroup. Parsing an updating AtomGroup "
-                    "will result in a static AtomGroup with the first frame "
+                    "will result in a static AtomGroup with the current frame "
                     "atom selection.")
             warnings.warn(wmsg)
 
