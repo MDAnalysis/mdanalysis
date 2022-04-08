@@ -76,29 +76,16 @@ expected_xpos_fragments = np.array([0., 0., 0., 0.00717983, 0.00478656,
 expected_xchar_fragments = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
 
 
-@pytest.mark.parametrize("grouping, expected_masses, expected_charges,\
-                         expected_xpos, expected_xchar", [
-                         ("atoms",
-                          expected_masses_atoms,
-                          expected_charges_atoms,
-                          expected_xpos_atoms,
-                          expected_xchar_atoms),
-                         ("residues",
-                          expected_masses_residues,
-                          expected_charges_residues,
-                          expected_xpos_residues,
-                          expected_xchar_residues),
-                         ("segments",
-                          expected_masses_segments,
-                          expected_charges_segments,
-                          expected_xpos_segments,
-                          expected_xchar_segments),
-                         ("fragments",
-                          expected_masses_fragments,
-                          expected_charges_fragments,
-                          expected_xpos_fragments,
-                          expected_xchar_fragments)
-                         ])
+@pytest.mark.parametrize("grouping, expected_masses, expected_charges, expected_xpos, expected_xchar", [
+    ("atoms", expected_masses_atoms, expected_charges_atoms,
+     expected_xpos_atoms, expected_xchar_atoms),
+    ("residues", expected_masses_residues, expected_charges_residues,
+     expected_xpos_residues, expected_xchar_residues),
+    ("segments", expected_masses_segments, expected_charges_segments,
+     expected_xpos_segments, expected_xchar_segments),
+    ("fragments", expected_masses_fragments, expected_charges_fragments,
+     expected_xpos_fragments, expected_xchar_fragments)
+])
 def test_lineardensity(grouping, expected_masses, expected_charges,
                        expected_xpos, expected_xchar):
     universe = mda.Universe(waterPSF, waterDCD)
