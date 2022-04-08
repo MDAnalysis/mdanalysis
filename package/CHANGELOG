@@ -13,11 +13,14 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy, HenokB, umak1106, tamandeeps
+??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy,
+         HenokB, umak1106, tamandeeps, Mrqeoqqt
 
  * 2.2.0
 
 Fixes
+  * MOL2 can read files without providing optional columns:
+    subst_id, subst_name and charge. (Issue #3385, PR #3598)
   * When converting an AtomGroup to an RDKit molecule (PR #3044):
     - the atoms are now in the same order
     - the output of `atom.GetMonomerInfo().GetName()` now follows the
