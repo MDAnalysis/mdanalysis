@@ -180,8 +180,7 @@ class MOL2Parser(TopologyReaderBase):
         resids = []
         resnames = []
         charges = []
-        has_charges = False if sections['molecule'][3].strip() == 'NO_CHARGES'\
-            else True
+        has_charges = sections['molecule'][3].strip() != 'NO_CHARGES'
         for a in atom_lines:
             columns = a.split()
             if len(columns) >= 9:
