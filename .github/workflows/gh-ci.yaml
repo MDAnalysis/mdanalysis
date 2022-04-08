@@ -277,7 +277,7 @@ jobs:
       run: |
         # Issue 3612 - readme_renderer is outdated on conda-forge
         conda install setuptools cython numpy twine 
-        pip install readme-renderer
+        pip install "readme-renderer>=0.34"
 
     - name: install_mdanalysis
       run: |
