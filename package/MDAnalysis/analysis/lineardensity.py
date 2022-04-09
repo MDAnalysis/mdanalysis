@@ -82,7 +82,7 @@ class LinearDensity(AnalysisBase):
 
 
     Alternatively, the other types of groupings can be selected using the
-    ``grouping`` keyword. For example to calculated the density based on
+    ``grouping`` keyword. For example to calculate the density based on
     a grouping of the :class:`~MDAnalysis.core.groups.ResidueGroup`
     of the system.
 
