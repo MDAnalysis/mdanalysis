@@ -70,7 +70,7 @@ class LinearDensity(AnalysisBase):
 
     Example
     -------
-    First create a ``LinearDensity`` object by supplying a selection,
+    First create a :class:`LinearDensity` object by supplying a selection,
     then use the :meth:`run` method. Finally access the results
     stored in results, i.e. the mass density in the x direction.
 
@@ -81,13 +81,16 @@ class LinearDensity(AnalysisBase):
        print(ldens.results.x.pos)
 
 
-    Alternatively, the other types of groupings can be selected using the ``grouping``
-    keyword. For example to calculated the density based on the :class:`ResidueGroup`s
-    of the system:
-    
+    Alternatively, other types of grouping can be selected using the
+    ``grouping`` keyword. For example to calculate the density based on
+    a grouping of the :class:`~MDAnalysis.core.groups.ResidueGroup`
+    of the input :class:`~MDAnalysis.core.groups.AtomGroup`.
+
     .. code-block:: python
+
        ldens = LinearDensity(selection, grouping='residues', binsize=1.0)
        ldens.run()
+
 
 
     .. versionadded:: 0.14.0
