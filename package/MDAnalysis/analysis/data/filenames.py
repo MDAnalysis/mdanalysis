@@ -51,9 +51,11 @@ Data files
       ax.contourf(X, Y, Z, levels=[1, 17, 15000])
 
    The given levels will draw contours that contain 90% and 99% of the data
-   points. See the :ref:`Ramachandran plot figure <figure-ramachandran>` as an
-   example.
-.. _figure-rama ref plot:
+   points. The reference data are shown in :ref:`figure-rama-ref-plot`. An example of analyzed data together with the 
+reference data are shown in :ref:`Ramachandran plot figure <figure-ramachandran>`.
+   
+   
+.. _figure-rama-ref-plot:
 
 .. figure:: /images/rama_ref_plot.png
    :scale: 50 %
@@ -76,9 +78,11 @@ Data files
       ax.contourf(X, Y, Z, levels=[1, 6, 600])
 
    The given levels will draw contours that contain 90% and 98% of the
-   data. See the :ref:`Janin plot figure <figure-janin>` as an example.
+   data. The reference data are shown in :ref:`figure-janin-ref-plot`. An example of analyzed data together with the 
+reference data are shown in :ref:`Janin plot figure <figure-janin>`.
 
-.. _figure-janin ref plot:
+
+.. _figure-janin-ref-plot:
 
 .. figure:: /images/janin_ref_plot.png
    :scale: 50 %
