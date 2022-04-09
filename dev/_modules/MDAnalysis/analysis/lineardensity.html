@@ -134,8 +134,9 @@
 <span class="sd">    select : AtomGroup</span>
 <span class="sd">          any atomgroup</span>
 <span class="sd">    grouping : str {&#39;atoms&#39;, &#39;residues&#39;, &#39;segments&#39;, &#39;fragments&#39;}</span>
-<span class="sd">          Density profiles will be computed on the center of geometry</span>
-<span class="sd">          of a selected group of atoms</span>
+<span class="sd">          Density profiles will be computed either on the atom positions (in</span>
+<span class="sd">          the case of &#39;atoms&#39;) or on the center of mass of the specified</span>
+<span class="sd">          grouping unit (&#39;residues&#39;, &#39;segments&#39;, or &#39;fragments&#39;).</span>
 <span class="sd">    binsize : float</span>
 <span class="sd">          Bin width in Angstrom used to build linear density</span>
 <span class="sd">          histograms. Defines the resolution of the resulting density</span>
@@ -160,7 +161,7 @@
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
-<span class="sd">    First create a ``LinearDensity`` object by supplying a selection,</span>
+<span class="sd">    First create a :class:`LinearDensity` object by supplying a selection,</span>
 <span class="sd">    then use the :meth:`run` method. Finally access the results</span>
 <span class="sd">    stored in results, i.e. the mass density in the x direction.</span>
 
@@ -169,6 +170,18 @@
 <span class="sd">       ldens = LinearDensity(selection)</span>
 <span class="sd">       ldens.run()</span>
 <span class="sd">       print(ldens.results.x.pos)</span>
+
+
+<span class="sd">    Alternatively, other types of grouping can be selected using the</span>
+<span class="sd">    ``grouping`` keyword. For example to calculate the density based on</span>
+<span class="sd">    a grouping of the :class:`~MDAnalysis.core.groups.ResidueGroup`</span>
+<span class="sd">    of the input :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">       ldens = LinearDensity(selection, grouping=&#39;residues&#39;, binsize=1.0)</span>
+<span class="sd">       ldens.run()</span>
+
 
 
 <span class="sd">    .. versionadded:: 0.14.0</span>
@@ -187,6 +200,12 @@
 <span class="sd">       Results are now instances of</span>
 <span class="sd">       :class:`~MDAnalysis.core.analysis.Results` allowing access</span>
 <span class="sd">       via key and attribute.</span>
+
+<span class="sd">    .. versionchanged:: 2.2.0</span>
+<span class="sd">       Fixed a bug that caused LinearDensity to fail if grouping=&quot;residues&quot;</span>
+<span class="sd">       or grouping=&quot;segments&quot; were set.</span>
+<span class="sd">       Residues, segments, and fragments will be analysed based on their centre</span>
+<span class="sd">       of mass, not centre of geometry as previously stated.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">grouping</span><span class="o">=</span><span class="s1">&#39;atoms&#39;</span><span class="p">,</span> <span class="n">binsize</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -232,17 +251,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">totalmass</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># group must be a local variable, otherwise there will be</span>
-        <span class="c1"># issues with parallelization</span>
-        <span class="n">group</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">grouping</span><span class="p">)</span>
-
         <span class="c1"># Get masses and charges for the selection</span>
-        <span class="k">try</span><span class="p">:</span>  <span class="c1"># in case it&#39;s not an atom</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">masses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">elem</span><span class="o">.</span><span class="n">total_mass</span><span class="p">()</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">group</span><span class="p">])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">charges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">elem</span><span class="o">.</span><span class="n">total_charge</span><span class="p">()</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">group</span><span class="p">])</span>
-        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>  <span class="c1"># much much faster for atoms</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">grouping</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">masses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">masses</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">charges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">charges</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">grouping</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;residues&quot;</span><span class="p">,</span> <span class="s2">&quot;segments&quot;</span><span class="p">,</span> <span class="s2">&quot;fragments&quot;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">masses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">total_mass</span><span class="p">(</span><span class="n">compound</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">grouping</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">charges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">total_charge</span><span class="p">(</span><span class="n">compound</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">grouping</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">grouping</span><span class="si">}</span><span class="s2"> is not a valid value for grouping.&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">totalmass</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">masses</span><span class="p">)</span>
 
@@ -254,8 +274,8 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">grouping</span> <span class="o">==</span> <span class="s1">&#39;atoms&#39;</span><span class="p">:</span>
             <span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">positions</span>  <span class="c1"># faster for atoms</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># COM for res/frag/etc</span>
-            <span class="n">positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">elem</span><span class="o">.</span><span class="n">centroid</span><span class="p">()</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">])</span>
+            <span class="c1"># Centre of mass for residues, segments, fragments</span>
+            <span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">compound</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">grouping</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">]:</span>
             <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;dim&#39;</span><span class="p">]</span>
@@ -290,10 +310,20 @@
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;pos&#39;</span><span class="p">,</span> <span class="s1">&#39;pos_std&#39;</span><span class="p">,</span> <span class="s1">&#39;char&#39;</span><span class="p">,</span> <span class="s1">&#39;char_std&#39;</span><span class="p">]:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span>
             <span class="c1"># Compute standard deviation for the error</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;pos_std&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span>
-                <span class="s1">&#39;pos_std&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;pos&#39;</span><span class="p">]))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;char_std&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span>
-                <span class="s1">&#39;char_std&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;char&#39;</span><span class="p">]))</span>
+            <span class="c1"># For certain tests in testsuite, floating point imprecision</span>
+            <span class="c1"># can lead to negative radicands of tiny magnitude (yielding nan).</span>
+            <span class="c1"># radicand_pos and radicand_char are therefore calculated first and</span>
+            <span class="c1"># and negative values set to 0 before the square root</span>
+            <span class="c1"># is calculated.</span>
+            <span class="n">radicand_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span>
+                <span class="s1">&#39;pos_std&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;pos&#39;</span><span class="p">])</span>
+            <span class="n">radicand_pos</span><span class="p">[</span><span class="n">radicand_pos</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;pos_std&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">radicand_pos</span><span class="p">)</span>
+
+            <span class="n">radicand_char</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span>
+                <span class="s1">&#39;char_std&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;char&#39;</span><span class="p">])</span>
+            <span class="n">radicand_char</span><span class="p">[</span><span class="n">radicand_char</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;char_std&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">radicand_char</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">]:</span>
             <span class="n">norm</span> <span class="o">=</span> <span class="n">k</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;slice_volume&#39;</span><span class="p">]</span>

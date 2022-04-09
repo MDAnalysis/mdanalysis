@@ -124,8 +124,9 @@ fixed volume cells (thus for simulations in canonical NVT ensemble).</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>select</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – any atomgroup</p></li>
-<li><p><strong>grouping</strong> (<em>str {'atoms'</em><em>, </em><em>'residues'</em><em>, </em><em>'segments'</em><em>, </em><em>'fragments'}</em>) – Density profiles will be computed on the center of geometry
-of a selected group of atoms</p></li>
+<li><p><strong>grouping</strong> (<em>str {'atoms'</em><em>, </em><em>'residues'</em><em>, </em><em>'segments'</em><em>, </em><em>'fragments'}</em>) – Density profiles will be computed either on the atom positions (in
+the case of ‘atoms’) or on the center of mass of the specified
+grouping unit (‘residues’, ‘segments’, or ‘fragments’).</p></li>
 <li><p><strong>binsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – Bin width in Angstrom used to build linear density
 histograms. Defines the resolution of the resulting density
 profile (smaller –&gt; higher resolution)</p></li>
@@ -200,12 +201,20 @@ profile (smaller –&gt; higher resolution)</p></li>
 </dd></dl>
 
 <p class="rubric">Example</p>
-<p>First create a <code class="docutils literal notranslate"><span class="pre">LinearDensity</span></code> object by supplying a selection,
+<p>First create a <a class="reference internal" href="#MDAnalysis.analysis.lineardensity.LinearDensity" title="MDAnalysis.analysis.lineardensity.LinearDensity"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinearDensity</span></code></a> object by supplying a selection,
 then use the <code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code> method. Finally access the results
 stored in results, i.e. the mass density in the x direction.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ldens</span> <span class="o">=</span> <span class="n">LinearDensity</span><span class="p">(</span><span class="n">selection</span><span class="p">)</span>
 <span class="n">ldens</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">ldens</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">pos</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Alternatively, other types of grouping can be selected using the
+<code class="docutils literal notranslate"><span class="pre">grouping</span></code> keyword. For example to calculate the density based on
+a grouping of the <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResidueGroup</span></code></a>
+of the input <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ldens</span> <span class="o">=</span> <span class="n">LinearDensity</span><span class="p">(</span><span class="n">selection</span><span class="p">,</span> <span class="n">grouping</span><span class="o">=</span><span class="s1">&#39;residues&#39;</span><span class="p">,</span> <span class="n">binsize</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">ldens</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
 <div class="versionadded">
@@ -225,6 +234,12 @@ instead.</p>
 <p><span class="versionmodified changed">Changed in version 2.0.0: </span>Results are now instances of
 <code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code> allowing access
 via key and attribute.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.2.0: </span>Fixed a bug that caused LinearDensity to fail if grouping=”residues”
+or grouping=”segments” were set.
+Residues, segments, and fragments will be analysed based on their centre
+of mass, not centre of geometry as previously stated.</p>
 </div>
 </dd></dl>
 
