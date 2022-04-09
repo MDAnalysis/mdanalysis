@@ -462,8 +462,8 @@ class PCA(AnalysisBase):
         When the PCA class is run for an atomgroup, the principal components
         are cached. The trajectory can then be projected onto one or more of
         these principal components. Since the principal components are sorted
-        in a decreasing order of :attr:`PCA.results.cumulated_variance`, the
-        first few components capture the essential molecular motion.
+        in the order of decreasing explained variance, the first few components
+        capture the essential molecular motion.
 
         If N is the number of atoms in the PCA group, each component has the
         length 3N. A PCA score can be calculated for a set of coordinates
@@ -549,7 +549,7 @@ class PCA(AnalysisBase):
             # matrix_extrapolate is later multiplied to anchors' coordinates.
             # multiplication shapes the array as appropriate for non_pca atoms
             matrix_extrapolate = np.zeros((non_pca.n_atoms, anchors.n_atoms),
-                                          dtype=np.int8)
+                                          dtype=np.float32)
             cumul_atoms_old = 0
             for res in group.residues:
                 n_common = pca_res_counts[np.where(

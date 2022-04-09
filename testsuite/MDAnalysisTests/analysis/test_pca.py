@@ -228,7 +228,7 @@ def test_project_twice_projection(u_fresh, n1, n2):
 
     u_fresh.trajectory[0]
     coord1 = project_first(u_fresh.trajectory.ts).positions.copy()
-    coord2 = project_second(u_fresh.trajectory.ts).positions.copy()
+    coord2 = project_second(u_fresh.trajectory.ts).positions
 
     if np.array_equiv(n1, n2):
         assert np.allclose(coord1, coord2, rtol=1e-5)
