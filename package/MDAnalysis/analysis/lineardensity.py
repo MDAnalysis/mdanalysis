@@ -70,7 +70,7 @@ class LinearDensity(AnalysisBase):
 
     Example
     -------
-    First create a ``LinearDensity`` object by supplying a selection,
+    First create a :class:`LinearDensity` object by supplying a selection,
     then use the :meth:`run` method. Finally access the results
     stored in results, i.e. the mass density in the x direction.
 
