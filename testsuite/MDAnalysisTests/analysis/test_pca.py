@@ -238,13 +238,12 @@ def test_project_twice_projection(u_fresh, n1, n2):
 
 def test_project_extrapolate_translation(u_fresh):
     # when the projection is extended to non-PCA atoms,
-    # non-PCA atoms' coordinates will be conserved relative to the anchor atom,
-    # but the coordinates change relative to other PCA atoms
-    pca = PCA(u_fresh, select='backbone').run()
+    # non-PCA atoms' coordinates will be conserved relative to the anchor atom
+    pca = PCA(u_fresh, select='resnum 1 and backbone').run()
     sel = 'resnum 1 and name CA CB CG'
     group = u_fresh.select_atoms(sel)
     project = pca.project_single_frame(0, group=group,
-                                       anchor='resnum 1 and name CA')
+                                       anchor='name CA')
 
     distances_original = (
         mda.lib.distances.self_distance_array(group.positions)

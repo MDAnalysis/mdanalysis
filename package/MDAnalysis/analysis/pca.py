@@ -429,7 +429,7 @@ class PCA(AnalysisBase):
 
         group : AtomGroup, optional
             The AtomGroup containing atoms to be projected.
-            The projection applies to the residues in ``group``.
+            The projection applies to whole residues in ``group``.
             The atoms in the PCA class are not affected by this argument.
             The default ``None`` does not extrapolate the projection
             to non-PCA atoms.
@@ -466,14 +466,17 @@ class PCA(AnalysisBase):
         capture the essential molecular motion.
 
         If N is the number of atoms in the PCA group, each component has the
-        length 3N. A PCA score can be calculated for a set of coordinates
-        of the same atoms. The PCA scores are then used to transform
-        the structure at a given timestep to the original space.
+        length 3N. A PCA score :math:`w\_i`, along component :math:`u\_i`, is
+        calculated for a set of coordinates :math:`(r(t))` of the same atoms.
+        The PCA scores are then used to transform the structure, :math:`(r(t))`
+        at a timestep, back to the original space.
 
         .. math::
 
-            PC\_score =  (X - \bar{X}) \cdot PC\\
-            X\_projected = (PC\_score \cdot PC^T) + \bar{X}
+            w_{i}(t) =  ({\textbf r}(t) - \bar{{\textbf r}}) \cdot
+                        {\textbf u}_i \\
+            {\textbf r'}(t) = (w_{i}(t) \cdot {\textbf u}_i^T) +
+                              \bar{{\textbf r}}
 
         For each residue, the projection can be extended to atoms that were
         not part of PCA by applying the displacement vector of a PCA atom to
@@ -483,12 +486,11 @@ class PCA(AnalysisBase):
         If there are r residues and n non-PCA atoms in total, the displacement
         vector has the size 3r. This needs to be broadcasted to a size 3n. An
         extrapolation trick is used to shape the array, since going over each
-        residue for each frame can be expensive. The extrapolation matrix has
-        the size :math:`(3n, 3r)`. If the atom i belongs to residue j, the
-        matrix element :math:`(i,j)` is 1; otherwise, it is 0. When this matrix
-        is multiplied to the displacement vector of PCA atoms, the result is
-        the desired displacement vector for all the non-PCA atoms:
-        :math:`(3n, 3r) \times (3r) = (3n)`.
+        residue for each frame can be expensive. Atoms' displacement vector is
+        calculated with fancy index operation on the anchors' displacement
+        vector. `index_extrapolate` saves which atoms belong to which anchors.
+        If there are two non-PCA atoms in the first anchor's residue and three
+        in the second anchor's residue, `index_extrapolate` is [0, 0, 1, 1, 1]
 
         Examples
         --------
@@ -542,23 +544,22 @@ class PCA(AnalysisBase):
             if not anchors.issubset(self._atoms):
                 raise ValueError("Some 'anchors' are not part of PCA class")
 
-            non_pca = group - self._atoms
+            # non_pca has all the atoms in residues of `group`. This makes
+            # sure that extrapolation works on residues, not random atoms.
+            non_pca = group.residues.atoms[:] - self._atoms
             pca_res_indices, pca_res_counts = np.unique(
                 self._atoms.resindices, return_counts=True)
 
-            # matrix_extrapolate is later multiplied to anchors' coordinates.
-            # multiplication shapes the array as appropriate for non_pca atoms
-            matrix_extrapolate = np.zeros((non_pca.n_atoms, anchors.n_atoms),
-                                          dtype=np.float32)
-            cumul_atoms_old = 0
+            non_pca_atoms = np.array([], dtype=np.int64)
             for res in group.residues:
+                # n_common is the number of pca atoms in a residue
                 n_common = pca_res_counts[np.where(
                            pca_res_indices == res.resindex)][0]
-                cumul_atoms_new = (cumul_atoms_old +
-                                   res.atoms.n_atoms - n_common)
-                matrix_extrapolate[cumul_atoms_old:cumul_atoms_new,
-                                   res.resindex] = 1
-                cumul_atoms_old = cumul_atoms_new
+                non_pca_atoms = np.append(non_pca_atoms,
+                                          res.atoms.n_atoms - n_common)
+            # index_extrapolate records atoms belong to which anchor
+            index_extrapolate = np.repeat(np.arange(anchors.atoms.n_atoms),
+                                          non_pca_atoms)
 
         if components is None:
             components = np.arange(self.results.p_components.shape[1])
@@ -576,8 +577,8 @@ class PCA(AnalysisBase):
             )
 
             if group is not None:
-                non_pca.positions += (matrix_extrapolate @
-                                      (anchors.positions - anchors_coords_old))
+                non_pca.positions += (anchors.positions -
+                                      anchors_coords_old)[index_extrapolate]
             return ts
         return wrapped
 
