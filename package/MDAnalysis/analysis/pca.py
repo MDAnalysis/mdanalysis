@@ -472,7 +472,7 @@ class PCA(AnalysisBase):
 
         .. math::
 
-            PC\_score =  (X - \bar{X}) \cdot PC
+            PC\_score =  (X - \bar{X}) \cdot PC\\
             X\_projected = (PC\_score \cdot PC^T) + \bar{X}
 
         For each residue, the projection can be extended to atoms that were
