@@ -83,12 +83,14 @@ class LinearDensity(AnalysisBase):
 
     Alternatively, the other types of groupings can be selected using the
     ``grouping`` keyword. For example to calculated the density based on
-    the :class:`ResidueGroup`s of the system:
-    
+    a grouping of the :class:`~MDAnalysis.core.groups.ResidueGroup`
+    of the system.
+
     .. code-block:: python
 
        ldens = LinearDensity(selection, grouping='residues', binsize=1.0)
        ldens.run()
+
 
 
     .. versionadded:: 0.14.0
