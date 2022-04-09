@@ -486,8 +486,8 @@ class PCA(AnalysisBase):
         If there are r residues and n non-PCA atoms in total, the displacement
         vector has the size 3r. This needs to be broadcasted to a size 3n. An
         extrapolation trick is used to shape the array, since going over each
-        residue for each frame can be expensive. Atoms' displacement vector is
-        calculated with fancy index operation on the anchors' displacement
+        residue for each frame can be expensive. Non-PCA atoms' displacement
+        vector is calculated with fancy indexing on the anchors' displacement
         vector. `index_extrapolate` saves which atoms belong to which anchors.
         If there are two non-PCA atoms in the first anchor's residue and three
         in the second anchor's residue, `index_extrapolate` is [0, 0, 1, 1, 1]
