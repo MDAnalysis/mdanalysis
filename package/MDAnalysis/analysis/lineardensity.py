@@ -81,10 +81,10 @@ class LinearDensity(AnalysisBase):
        print(ldens.results.x.pos)
 
 
-    Alternatively, the other types of groupings can be selected using the
+    Alternatively, other types of grouping can be selected using the
     ``grouping`` keyword. For example to calculate the density based on
     a grouping of the :class:`~MDAnalysis.core.groups.ResidueGroup`
-    of the system.
+    of the input :class:`~MDAnalysis.core.groups.AtomGroup`.
 
     .. code-block:: python
 
