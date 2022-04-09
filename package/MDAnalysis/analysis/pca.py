@@ -544,7 +544,7 @@ class PCA(AnalysisBase):
             if not anchors.issubset(self._atoms):
                 raise ValueError("Some 'anchors' are not part of PCA class")
 
-            # non_pca has all the atoms in residues of `group`. This makes
+            # non_pca has "all" the atoms in residues of `group`. This makes
             # sure that extrapolation works on residues, not random atoms.
             non_pca = group.residues.atoms[:] - self._atoms
             pca_res_indices, pca_res_counts = np.unique(
@@ -557,7 +557,7 @@ class PCA(AnalysisBase):
                            pca_res_indices == res.resindex)][0]
                 non_pca_atoms = np.append(non_pca_atoms,
                                           res.atoms.n_atoms - n_common)
-            # index_extrapolate records atoms belong to which anchor
+            # index_extrapolate records the anchor number for each non-PCA atom
             index_extrapolate = np.repeat(np.arange(anchors.atoms.n_atoms),
                                           non_pca_atoms)
 
