@@ -228,6 +228,49 @@ inconsistent results")
         assert sum(rmsfs1.rmsf) > sum(rmsfs2.rmsf), "Ensemble aligned on all " \
                                                     "atoms should have lower full-atom RMSF than ensemble aligned on only CAs."
 
+    def test_covariance_matrix(self, ens1):
+        reference_cov = np.array([
+        [12.9122,-5.2692,3.9016,10.0663,-5.3309,3.8923,8.5037,-5.2017,2.6941],
+        [-5.2692,4.1087,-2.4101,-4.5485,3.3954,-2.3245,-3.7343,2.8415,-1.6223],
+        [3.9016,-2.4101,3.1800,3.4453,-2.6860,2.2438,2.7751,-2.2523,1.6084],
+        [10.0663,-4.5485,3.4453,8.8608,-4.6727,3.3641,7.0106,-4.4986,2.2604],
+        [-5.3309,3.3954,-2.6860,-4.6727,4.4627,-2.4233,-3.8304,3.0367,-1.6942],
+        [3.8923,-2.3245,2.2438,3.3641,-2.4233,2.6193,2.6908,-2.0252,1.5775],
+        [8.5037,-3.7343,2.7751,7.0106,-3.8304,2.6908,6.2861,-3.7138,1.8701],
+        [-5.2017,2.8415,-2.2523,-4.4986,3.0367,-2.0252,-3.7138,3.3999,-1.4166],
+        [2.6941,-1.6223,1.6084,2.2604,-1.6942,1.5775,1.8701,-1.4166,1.4664]])
+
+        covariance = encore.covariance.covariance_matrix(ens1,
+                                                         select="name CA and resnum 1:3",
+                                                         estimator=encore.covariance.shrinkage_covariance_estimator)
+        assert_almost_equal(covariance, reference_cov, decimal=4,
+                            err_msg="Covariance matrix from covariance estimation not as expected")
+
+    def test_covariance_matrix_with_reference(self, ens1):
+        reference_cov = np.array([
+        [39.0760,-28.5383,29.7761,37.9330,-35.5251,18.9421,30.4334,-31.4829,12.8712],
+        [-28.5383,24.1827,-25.5676,-29.0183,30.3511,-15.9598,-22.9298,26.1086,-10.8693],
+        [29.7761,-25.5676,28.9796,30.7607,-32.8739,17.7072,24.1689,-28.3557,12.1190],
+        [37.9330,-29.0183,30.7607,37.6532,-36.4537,19.2865,29.9841,-32.1404,12.9998],
+        [-35.5251,30.3511,-32.8739,-36.4537,38.5711,-20.1190,-28.7652,33.2857,-13.6963],
+        [18.9421,-15.9598,17.7072,19.2865,-20.1190,11.4059,15.1244,-17.2695,7.8205],
+        [30.4334,-22.9298,24.1689,29.9841,-28.7652,15.1244,24.0514,-25.4106,10.2863],
+        [-31.4829,26.1086,-28.3557,-32.1404,33.2857,-17.2695,-25.4106,29.1773,-11.7530],
+        [12.8712,-10.8693,12.1190,12.9998,-13.6963,7.8205,10.2863,-11.7530,5.5058]])
+            
+        covariance = encore.covariance.covariance_matrix(ens1,
+                                                         select="name CA and resnum 1:3",
+                                                         estimator=encore.covariance.shrinkage_covariance_estimator,
+                                                         reference=ens1)
+        assert_almost_equal(covariance, reference_cov, decimal=4,
+                            err_msg="Covariance matrix from covariance estimation not as expected")
+
+    def test_covariance_matrix_reference(self, ens1):
+        encore.covariance.covariance_matrix(ens1,
+                                            estimator=encore.covariance.shrinkage_covariance_estimator)
+
+
+
     def test_hes_to_self(self, ens1):
         results, details = encore.hes([ens1, ens1])
         result_value = results[0, 1]
