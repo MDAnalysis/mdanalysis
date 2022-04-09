@@ -81,11 +81,12 @@ class LinearDensity(AnalysisBase):
        print(ldens.results.x.pos)
 
 
-    Alternatively, the other types of groupings can be selected using the ``grouping``
-    keyword. For example to calculated the density based on the :class:`ResidueGroup`s
-    of the system:
+    Alternatively, the other types of groupings can be selected using the
+    ``grouping`` keyword. For example to calculated the density based on
+    the :class:`ResidueGroup`s of the system:
     
     .. code-block:: python
+
        ldens = LinearDensity(selection, grouping='residues', binsize=1.0)
        ldens.run()
 
