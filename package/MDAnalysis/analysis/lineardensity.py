@@ -57,16 +57,19 @@ class LinearDensity(AnalysisBase):
     ----------
     results.x.dim : int
            index of the [xyz] axes
-    results.x.pos : numpy.ndarray
+    results.x.mass_density : numpy.ndarray
            mass density in [xyz] direction
-    results.x.pos_std : numpy.ndarray
+    results.x.mass_density_stddev : numpy.ndarray
            standard deviation of the mass density in [xyz] direction
-    results.x.char : numpy.ndarray
+    results.x.charge_density : numpy.ndarray
            charge density in [xyz] direction
-    results.x.char_std : numpy.ndarray
+    results.x.charge_density_stddev : numpy.ndarray
            standard deviation of the charge density in [xyz] direction
     results.x.slice_volume : float
            volume of bin in [xyz] direction
+    results.x.hist_bin_edges : numpy.ndarray
+           edges of histogram bins for mass/charge densities, useful for, e.g.,
+           plotting of histogram data.
 
     Example
     -------
@@ -78,7 +81,7 @@ class LinearDensity(AnalysisBase):
 
        ldens = LinearDensity(selection)
        ldens.run()
-       print(ldens.results.x.pos)
+       print(ldens.results.x.mass_density)
 
 
     Alternatively, other types of grouping can be selected using the
@@ -115,6 +118,15 @@ class LinearDensity(AnalysisBase):
        or grouping="segments" were set.
        Residues, segments, and fragments will be analysed based on their centre
        of mass, not centre of geometry as previously stated.
+       LinearDensity now works with updating atom groups.
+       Changed names of result containers
+         :attr:`results.x.pos` -> :attr:`results.x.mass_density`
+         :attr:`results.x.pos_std` -> :attr:`results.x.mass_density_stddev`
+         :attr:`results.x.char` -> :attr:`results.x.charge_density`
+         :attr:`results.x.char_std` -> :attr:`results.x.charge_density_stddev`
+       Added new result container :attr:`results.x.hist_bin_edges`. It contains
+       the bin edges of the histrogram bins for calculated densities and can be
+       used for easier plotting of histogram data.
     """
 
     def __init__(self, select, grouping='atoms', binsize=0.25, **kwargs):
@@ -145,7 +157,8 @@ class LinearDensity(AnalysisBase):
         self.nbins = bins.max()
         slices_vol = self.volume / bins
 
-        self.keys = ['pos', 'pos_std', 'char', 'char_std']
+        self.keys = ['mass_density', 'mass_density_stddev',
+                     'charge_density', 'charge_density_stddev']
 
         # Initialize results array with zeros
         for dim in self.results:
@@ -154,12 +167,12 @@ class LinearDensity(AnalysisBase):
             for key in self.keys:
                 self.results[dim][key] = np.zeros(self.nbins)
 
-        # Variables later defined in _prepare() method
+        # Variables later defined in _single_frame() method
         self.masses = None
         self.charges = None
         self.totalmass = None
 
-    def _prepare(self):
+    def _single_frame(self):
         # Get masses and charges for the selection
         if self.grouping == "atoms":
             self.masses = self._ags[0].masses
@@ -175,7 +188,6 @@ class LinearDensity(AnalysisBase):
 
         self.totalmass = np.sum(self.masses)
 
-    def _single_frame(self):
         self.group = getattr(self._ags[0], self.grouping)
         self._ags[0].wrap(compound=self.grouping)
 
@@ -189,8 +201,8 @@ class LinearDensity(AnalysisBase):
         for dim in ['x', 'y', 'z']:
             idx = self.results[dim]['dim']
 
-            key = 'pos'
-            key_std = 'pos_std'
+            key = 'mass_density'
+            key_std = 'mass_density_stddev'
             # histogram for positions weighted on masses
             hist, _ = np.histogram(positions[:, idx],
                                    weights=self.masses,
@@ -200,39 +212,42 @@ class LinearDensity(AnalysisBase):
             self.results[dim][key] += hist
             self.results[dim][key_std] += np.square(hist)
 
-            key = 'char'
-            key_std = 'char_std'
+            key = 'charge_density'
+            key_std = 'charge_density_stddev'
             # histogram for positions weighted on charges
-            hist, _ = np.histogram(positions[:, idx],
-                                   weights=self.charges,
-                                   bins=self.nbins,
-                                   range=(0.0, max(self.dimensions)))
+            hist, bin_edges = np.histogram(positions[:, idx],
+                                           weights=self.charges,
+                                           bins=self.nbins,
+                                           range=(0.0, max(self.dimensions)))
 
             self.results[dim][key] += hist
             self.results[dim][key_std] += np.square(hist)
+            self.results[dim]['hist_bin_edges'] = bin_edges
 
     def _conclude(self):
         k = 6.022e-1  # divide by avodagro and convert from A3 to cm3
 
         # Average results over the number of configurations
         for dim in ['x', 'y', 'z']:
-            for key in ['pos', 'pos_std', 'char', 'char_std']:
+            for key in ['mass_density', 'mass_density_stddev',
+                        'charge_density', 'charge_density_stddev']:
                 self.results[dim][key] /= self.n_frames
             # Compute standard deviation for the error
             # For certain tests in testsuite, floating point imprecision
             # can lead to negative radicands of tiny magnitude (yielding nan).
-            # radicand_pos and radicand_char are therefore calculated first and
+            # radicand_mass and radicand_charge are therefore calculated first
             # and negative values set to 0 before the square root
             # is calculated.
-            radicand_pos = self.results[dim][
-                'pos_std'] - np.square(self.results[dim]['pos'])
-            radicand_pos[radicand_pos < 0] = 0
-            self.results[dim]['pos_std'] = np.sqrt(radicand_pos)
+            radicand_mass = self.results[dim]['mass_density_stddev'] - \
+                np.square(self.results[dim]['mass_density'])
+            radicand_mass[radicand_mass < 0] = 0
+            self.results[dim]['mass_density_stddev'] = np.sqrt(radicand_mass)
 
-            radicand_char = self.results[dim][
-                'char_std'] - np.square(self.results[dim]['char'])
-            radicand_char[radicand_char < 0] = 0
-            self.results[dim]['char_std'] = np.sqrt(radicand_char)
+            radicand_charge = self.results[dim]['charge_density_stddev'] - \
+                np.square(self.results[dim]['charge_density'])
+            radicand_charge[radicand_charge < 0] = 0
+            self.results[dim]['charge_density_stddev'] = \
+                np.sqrt(radicand_charge)
 
         for dim in ['x', 'y', 'z']:
             norm = k * self.results[dim]['slice_volume']
@@ -243,12 +258,12 @@ class LinearDensity(AnalysisBase):
         # For parallel analysis
         results = self.results
         for dim in ['x', 'y', 'z']:
-            key = 'pos'
-            key_std = 'pos_std'
+            key = 'mass_density'
+            key_std = 'mass_density_stddev'
             results[dim][key] += other[dim][key]
             results[dim][key_std] += other[dim][key_std]
 
-            key = 'char'
-            key_std = 'char_std'
+            key = 'charge_density'
+            key_std = 'charge_density_stddev'
             results[dim][key] += other[dim][key]
             results[dim][key_std] += other[dim][key_std]

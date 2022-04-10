@@ -35,12 +35,18 @@ Fixes
   * Updated the badge in README of MDAnalysisTest to point to Github CI Actions
 
 Enhancements
+  * LinearDensity now works with updating AtomGroups (Issue #2508, PR #    )
   * Improves the RDKitConverter's accuracy (PR #3044): AtomGroups containing
     monatomic ion charges or edge cases with nitrogen, sulfur, phosphorus and
     conjugated systems should now have correctly assigned bond orders and
     charges.
 
 Changes
+  * LinearDensity's results container was changed. (Issue #2508, PR #    )
+    - "pos" is now "mass_density",
+    - "char" is now "charge_density"
+    - "std" entries are now "stddev"
+    - "hist_bin_edges" added to each dimension xyz.
   * ITPParser no longer adds an angle for water molecules that have the SETTLE
     constraint applied to them. This mirrors the way the constraint is handled
     in AMBER. (Issue #2417, PR #3564)
