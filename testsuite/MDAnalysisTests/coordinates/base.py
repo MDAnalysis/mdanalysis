@@ -510,8 +510,9 @@ class MultiframeReaderTest(BaseReaderTest):
             assert_timestep_almost_equal(ts,
                                          ref.iter_ts(ref.aux_lowf_frames_with_steps[i]),
                                          decimal=ref.prec)
+
     @pytest.mark.parametrize("accessor", [
-              lambda traj: traj[[0, 1, 2]], 
+              lambda traj: traj[[0, 1, 2]],
               lambda traj: traj[:3],
               lambda traj: traj],
               ids=["indexed", "sliced", "all"])
