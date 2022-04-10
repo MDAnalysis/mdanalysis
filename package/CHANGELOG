@@ -35,14 +35,14 @@ Fixes
   * Updated the badge in README of MDAnalysisTest to point to Github CI Actions
 
 Enhancements
-  * LinearDensity now works with updating AtomGroups (Issue #2508, PR #    )
+  * LinearDensity now works with updating AtomGroups (Issue #2508, PR #3617)
   * Improves the RDKitConverter's accuracy (PR #3044): AtomGroups containing
     monatomic ion charges or edge cases with nitrogen, sulfur, phosphorus and
     conjugated systems should now have correctly assigned bond orders and
     charges.
 
 Changes
-  * LinearDensity's results container was changed. (Issue #2508, PR #    )
+  * LinearDensity's results container was changed. (Issue #2508, PR #3617)
     - "pos" is now "mass_density",
     - "char" is now "charge_density"
     - "std" entries are now "stddev"
