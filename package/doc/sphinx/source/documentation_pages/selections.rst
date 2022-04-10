@@ -302,10 +302,9 @@ bynum *index-range*
     runs from 1 up to the total number of atoms.
     
 id *index-range*
-    selects all atoms in the given range which consists of two numbers 
-    separated by a colon such as ``id 5:10`` (both inclusive),
-    e.g. ``id 1`` selects all the atoms with id 1; ``id 5:7`` selects all
-    atoms with ids 5, all atoms with ids 6 and all atoms with ids 7.
+    selects all atoms in a range of (1-based) inclusive indices, e.g. ``id 1`` selects 
+    all the atoms with id 1; ``id 5:7`` selects all atoms with ids 5, all atoms with 
+    ids 6 and all atoms with ids 7.
      
 index *index-range*
     selects all atoms within a range of (0-based) inclusive indices,
@@ -316,11 +315,9 @@ index *index-range*
     
     
 .. note::
-    Conventionally ``id`` corresponds to the serial number in PDB format and so
-    starts from 1 like the ``bynum``. But ``id`` can be labeled by the user and 
-    need not be continuous whereas ``bynum`` (which is equivalent to index + 1) 
-    cannot be set by the user and is continuous. Also while each atom has an unique 
-    ``index`` and so unique ``bynum``, many atoms can have the same ``id``.
+    Conventionally ``id`` corresponds to the serial number in PDB format.In contrast to ``bynum``, the ``id`` index is not 
+    necessarily continuous nor unique, and can be arbitrarily assigned by the user. Therefore, different atoms in the 
+    :class:`MDAnalysis.Universe` can share the same ``id`` and the user can set the ``id`` index to an arbitrary number.
     
      
 .. _pre-selections-label:
