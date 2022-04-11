@@ -31,8 +31,48 @@ fixed volume cells (thus for simulations in canonical NVT ensemble).
 import os.path as path
 
 import numpy as np
+import warnings
 
 from MDAnalysis.analysis.base import AnalysisBase, Results
+
+
+# TODO: Remove in version 3.0.0
+class Results(Results):
+    """From version 3.0.0 onwards, some entries in Results will be renamed. See
+    the docstring for LinearDensity for details. The Results class is defined
+    here to implement deprecation warnings for the user."""
+
+    @property
+    def pos(self):
+        warnings.warn("`pos` is deprecated and will be removed in MDAnalysis "
+                      "3.0.0. Please use `mass_density` instead. See "
+                      "docstring of LinearDensity for more details.",
+                      DeprecationWarning)
+        return self.mass_density
+
+    @property
+    def pos_std(self):
+        warnings.warn("`pos_std` is deprecated and will be removed in "
+                      "MDAnalysis 3.0.0. Please use `mass_density_stddev` "
+                      "instead. See docstring of LinearDensity for more "
+                      "details.", DeprecationWarning)
+        return self.mass_density_stddev
+
+    @property
+    def char(self):
+        warnings.warn("`char` is deprecated and will be removed in MDAnalysis "
+                      "3.0.0. Please use `charge_density` instead. See "
+                      "docstring of LinearDensity for more details.",
+                      DeprecationWarning)
+        return self.charge_density
+
+    @property
+    def char_std(self):
+        warnings.warn("`char_std` is deprecated and will be removed in "
+                      "MDAnalysis 3.0.0. Please use `charge_density_stddev` "
+                      "instead. See docstring of LinearDensity for more "
+                      "details.", DeprecationWarning)
+        return self.charge_density_stddev
 
 
 class LinearDensity(AnalysisBase):
@@ -146,6 +186,7 @@ class LinearDensity(AnalysisBase):
         self.results["x"] = Results(dim=0)
         self.results["y"] = Results(dim=1)
         self.results["z"] = Results(dim=2)
+
         # Box sides
         self.dimensions = self._universe.dimensions[:3]
         self.volume = np.prod(self.dimensions)
