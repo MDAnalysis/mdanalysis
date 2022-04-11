@@ -546,7 +546,7 @@ class PCA(AnalysisBase):
 
             # non_pca has "all" the atoms in residues of `group`. This makes
             # sure that extrapolation works on residues, not random atoms.
-            non_pca = group.residues.atoms[:] - self._atoms
+            non_pca = group.residues.atoms - self._atoms
             pca_res_indices, pca_res_counts = np.unique(
                 self._atoms.resindices, return_counts=True)
 
