@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy,
-         HenokB, umak1106, tamandeeps, Mrqeoqqt, megosato, AnirG
+         HenokB, umak1106, tamandeeps, Mrqeoqqt, megosato, AnirG, markvrma
 
  * 2.2.0
 
@@ -42,6 +42,7 @@ Enhancements
     monatomic ion charges or edge cases with nitrogen, sulfur, phosphorus and
     conjugated systems should now have correctly assigned bond orders and
     charges.
+  * Added MSD example where multiple replicates are combined (Issue #3578, PR #3620)
 
 Changes
   * ITPParser no longer adds an angle for water molecules that have the SETTLE
