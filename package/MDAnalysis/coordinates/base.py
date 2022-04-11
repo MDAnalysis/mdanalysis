@@ -1112,6 +1112,7 @@ class FrameIteratorIndices(FrameIteratorBase):
     def __iter__(self):
         for frame in self.frames:
             yield self.trajectory._read_frame_with_aux(frame)
+        self.trajectory.rewind()
 
     def __getitem__(self, frame):
         if isinstance(frame, numbers.Integral):
