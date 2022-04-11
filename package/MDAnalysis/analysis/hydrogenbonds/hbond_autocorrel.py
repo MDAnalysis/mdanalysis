@@ -211,7 +211,7 @@ Functions and Classes
 """
 import numpy as np
 import scipy.optimize
-
+from scipy.spatial.distance import cdist
 import warnings
 
 from MDAnalysis.lib.log import ProgressBar
@@ -321,11 +321,13 @@ class HydrogenBondAutoCorrel(object):
             raise ValueError("Donors and Hydrogen groups must be identical "
                              "length.  Try using `find_hydrogen_donors`.")
 
-        self.exclusions = exclusions
-        if self.exclusions:
-            if not len(self.exclusions[0]) == len(self.exclusions[1]):
+        if exclusions is not None:
+            if len(exclusions[0]) != len(exclusions[1]):
                 raise ValueError(
-                    "'exclusion' must be two arrays of identical length")
+                        "'exclusion' must be two arrays of identical length")
+            self.exclusions = np.column_stack((exclusions[0], exclusions[1])).astype(np.intp)
+        else:
+            self.exclusions = None
 
         self.bond_type = bond_type
         if self.bond_type not in ['continuous', 'intermittent']:
@@ -428,11 +430,9 @@ class HydrogenBondAutoCorrel(object):
         box = self.u.dimensions if self.pbc else None
 
         # 2d array of all distances
-        pair, d = capped_distance(self.h.positions, self.a.positions, max_cutoff=self.d_crit, box=box)
-        if self.exclusions:
-            # set to above dist crit to exclude
-            exclude = np.column_stack((self.exclusions[0], self.exclusions[1]))
-            pair = np.delete(pair, np.where(pair==exclude), 0)
+        pair = capped_distance(self.h.positions, self.a.positions, max_cutoff=self.d_crit, box=box, return_distances=False)
+        if self.exclusions is not None:
+            pair = pair[~ (cdist(pair, self.exclusions)==0).any(axis=1)]
 
         hidx, aidx = np.transpose(pair)
 
