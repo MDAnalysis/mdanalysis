@@ -136,10 +136,12 @@ __all__ = [
     "LAMMPScnt", "LAMMPScnt2",  # triclinic box
     "LAMMPShyd", "LAMMPShyd2",
     "LAMMPSdata_deletedatoms",  # with deleted atoms
+    "LAMMPSdata_triclinic", # lammpsdata file to test triclinic dimension parsing, albite with most atoms deleted
     "LAMMPSDUMP",
     "LAMMPSDUMP_long",  # lammpsdump file with a few zeros sprinkled in the first column first frame
     "LAMMPSDUMP_allcoords",  # lammpsdump file with all coordinate conventions (x,xs,xu,xsu) present, from LAMMPS rdf example
     "LAMMPSDUMP_nocoords",  # lammpsdump file with no coordinates
+    "LAMMPSDUMP_triclinic", # lammpsdump file to test triclinic dimension parsing, albite with most atoms deleted
     "unordered_res",  # pdb file with resids non sequential
     "GMS_ASYMOPT",  # GAMESS C1  optimization
     "GMS_SYMOPT",   # GAMESS D4h optimization
@@ -490,10 +492,12 @@ LAMMPScnt2 = resource_filename(__name__, "data/lammps/cnt-hexagonal-class1.data2
 LAMMPShyd = resource_filename(__name__, "data/lammps/hydrogen-class1.data")
 LAMMPShyd2 = resource_filename(__name__, "data/lammps/hydrogen-class1.data2")
 LAMMPSdata_deletedatoms = resource_filename(__name__, 'data/lammps/deletedatoms.data')
+LAMMPSdata_triclinic = resource_filename(__name__, "data/lammps/albite_triclinic.data")
 LAMMPSDUMP = resource_filename(__name__, "data/lammps/wat.lammpstrj.bz2")
 LAMMPSDUMP_long = resource_filename(__name__, "data/lammps/wat.lammpstrj_long.bz2")
 LAMMPSDUMP_allcoords = resource_filename(__name__, "data/lammps/spce_all_coords.lammpstrj.bz2")
 LAMMPSDUMP_nocoords = resource_filename(__name__, "data/lammps/spce_no_coords.lammpstrj.bz2")
+LAMMPSDUMP_triclinic = resource_filename(__name__, "data/lammps/albite_triclinic.dump")
 
 
 unordered_res = resource_filename(__name__, "data/unordered_res.pdb")
