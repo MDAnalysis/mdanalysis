@@ -211,9 +211,9 @@ Functions and Classes
 """
 import numpy as np
 import scipy.optimize
-from scipy.spatial.distance import cdist
 import warnings
 
+from MDAnalysis.lib._cutil import _in2d
 from MDAnalysis.lib.log import ProgressBar
 from MDAnalysis.lib.distances import capped_distance, calc_angles, calc_bonds
 from MDAnalysis.core.groups import requires
@@ -325,7 +325,8 @@ class HydrogenBondAutoCorrel(object):
             if len(exclusions[0]) != len(exclusions[1]):
                 raise ValueError(
                         "'exclusion' must be two arrays of identical length")
-            self.exclusions = np.column_stack((exclusions[0], exclusions[1])).astype(np.intp)
+            self.exclusions = np.column_stack((exclusions[0], 
+                exclusions[1])).astype(np.intp)
         else:
             self.exclusions = None
 
@@ -430,9 +431,10 @@ class HydrogenBondAutoCorrel(object):
         box = self.u.dimensions if self.pbc else None
 
         # 2d array of all distances
-        pair = capped_distance(self.h.positions, self.a.positions, max_cutoff=self.d_crit, box=box, return_distances=False)
+        pair = capped_distance(self.h.positions, self.a.positions,
+                max_cutoff=self.d_crit, box=box, return_distances=False)
         if self.exclusions is not None:
-            pair = pair[~ (cdist(pair, self.exclusions)==0).any(axis=1)]
+            pair = pair[~ _in2d(pair, self.exclusions)]
 
         hidx, aidx = np.transpose(pair)
 
