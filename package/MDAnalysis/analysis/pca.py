@@ -550,7 +550,7 @@ class PCA(AnalysisBase):
             pca_res_indices, pca_res_counts = np.unique(
                 self._atoms.resindices, return_counts=True)
 
-            non_pca_atoms = np.array([], dtype=np.int64)
+            non_pca_atoms = np.array([], dtype=int)
             for res in group.residues:
                 # n_common is the number of pca atoms in a residue
                 n_common = pca_res_counts[np.where(
