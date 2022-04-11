@@ -265,12 +265,6 @@ inconsistent results")
         assert_almost_equal(covariance, reference_cov, decimal=4,
                             err_msg="Covariance matrix from covariance estimation not as expected")
 
-    def test_covariance_matrix_reference(self, ens1):
-        encore.covariance.covariance_matrix(ens1,
-                                            estimator=encore.covariance.shrinkage_covariance_estimator)
-
-
-
     def test_hes_to_self(self, ens1):
         results, details = encore.hes([ens1, ens1])
         result_value = results[0, 1]
