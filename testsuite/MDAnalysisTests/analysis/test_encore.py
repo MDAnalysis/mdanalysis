@@ -257,7 +257,7 @@ inconsistent results")
         [30.4334,-22.9298,24.1689,29.9841,-28.7652,15.1244,24.0514,-25.4106,10.2863],
         [-31.4829,26.1086,-28.3557,-32.1404,33.2857,-17.2695,-25.4106,29.1773,-11.7530],
         [12.8712,-10.8693,12.1190,12.9998,-13.6963,7.8205,10.2863,-11.7530,5.5058]])
-            
+
         covariance = encore.covariance.covariance_matrix(ens1,
                                                          select="name CA and resnum 1:3",
                                                          estimator=encore.covariance.shrinkage_covariance_estimator,
