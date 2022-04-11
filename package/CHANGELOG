@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy,
-         HenokB, umak1106, tamandeeps, Mrqeoqqt, mtiberti
+         HenokB, umak1106, tamandeeps, Mrqeoqqt, megosato, AnirG, mtiberti
 
  * 2.2.0
 
@@ -35,8 +35,11 @@ Fixes
     (Issue #2666, PR #3565)
   * Fixed DumpReader triclinic box dimensions reading. (Issue #3386, PR #3403)
   * Updated the badge in README of MDAnalysisTest to point to Github CI Actions
+  * Fixed FrameIteratorIndices doesn't rewind. (Issue #3416)
 
 Enhancements
+ * `DistanceMatrix` class in MDAnalysis.analysis.diffusionmap now also
+    accepts `AtomGroup` as a valid argument (Issue #3486, PR #3541)
   * Improves the RDKitConverter's accuracy (PR #3044): AtomGroups containing
     monatomic ion charges or edge cases with nitrogen, sulfur, phosphorus and
     conjugated systems should now have correctly assigned bond orders and
