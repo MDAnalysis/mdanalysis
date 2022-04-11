@@ -52,8 +52,8 @@ Data files
 
    The given levels will draw contours that contain 90% and 99% of the data
    points.The reference data are shown in 
-   :ref:`Ramachandran Ref plot figure <figure-rama-ref-plot>`. An example of 
-   analyzed data together with the reference data are shown in
+   :ref:`Ramachandran reference plot figure <figure-rama-ref-plot>`. An example
+   of analyzed data together with the reference data are shown in
    :ref:`Ramachandran plot figure <figure-ramachandran>` as an example.
    
    
