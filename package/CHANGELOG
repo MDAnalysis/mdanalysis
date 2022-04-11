@@ -13,14 +13,15 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay
+??/??/?? IAlibay, markvrma
 
  * 2.2.0
 
 Fixes
 
 Enhancements
-
+   * added MSD example where multiple replicates are combined
+  (Issue #3758, PR #3620)
 Changes
 
 Deprecations
