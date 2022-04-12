@@ -111,289 +111,6 @@
 <span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
-
-<span class="sd">&quot;&quot;&quot;HOLE Analysis --- :mod:`MDAnalysis.analysis.hole2.hole`</span>
-<span class="sd">=====================================================================================</span>
-
-<span class="sd">:Author: Lily Wang</span>
-<span class="sd">:Year: 2020</span>
-<span class="sd">:Copyright: GNU Public License v3</span>
-
-<span class="sd">.. versionadded:: 1.0.0</span>
-
-<span class="sd">This module contains the tools to interface with HOLE_ [Smart1993]_</span>
-<span class="sd">[Smart1996]_ to analyse an ion channel pore or transporter pathway [Stelzl2014]_ .</span>
-
-<span class="sd">Using HOLE on a PDB file</span>
-<span class="sd">------------------------</span>
-
-<span class="sd">Use the :func:``hole`` function to run `HOLE`_ on a single PDB file. For example,</span>
-<span class="sd">the code below runs the `HOLE`_ program installed at &#39;~/hole2/exe/hole&#39; ::</span>
-
-<span class="sd">    from MDAnalysis.tests.datafiles import PDB_HOLE</span>
-<span class="sd">    from MDAnalysis.analysis import hole2</span>
-<span class="sd">    profiles = hole2.hole(PDB_HOLE, executable=&#39;~/hole2/exe/hole&#39;)</span>
-<span class="sd">    # to create a VMD surface of the pore</span>
-<span class="sd">    hole2.create_vmd_surface(filename=&#39;hole.vmd&#39;)</span>
-
-<span class="sd">``profiles`` is a dictionary of HOLE profiles, indexed by the frame number. If only</span>
-<span class="sd">a PDB file is passed to the function, there will only be one profile at frame 0.</span>
-<span class="sd">You can visualise the pore by loading your PDB file into VMD, and in</span>
-<span class="sd">Extensions &gt; Tk Console, type::</span>
-
-<span class="sd">    source hole.vmd</span>
-
-<span class="sd">You can also pass a DCD trajectory with the same atoms in the same order as</span>
-<span class="sd">your PDB file with the ``dcd`` keyword argument. In that case, ``profiles`` will</span>
-<span class="sd">contain multiple HOLE profiles, indexed by frame.</span>
-
-<span class="sd">The HOLE program will create some output files:</span>
-
-<span class="sd">    * an output file (default name: hole.out)</span>
-<span class="sd">    * an sphpdb file (default name: hole.sph)</span>
-<span class="sd">    * a file of van der Waals&#39; radii</span>
-<span class="sd">      (if not specified with ``vdwradii_file``. Default name: simple2.rad)</span>
-<span class="sd">    * a symlink of your PDB or DCD files (if the original name is too long)</span>
-<span class="sd">    * the input text (if you specify ``infile``)</span>
-
-<span class="sd">By default (`keep_files=True`), these files are kept. If you would like to</span>
-<span class="sd">delete the files after the function is wrong, set `keep_files=False`. Keep in</span>
-<span class="sd">mind that if you delete the sphpdb file, you cannot then create a VMD surface.</span>
-
-
-<span class="sd">Using HOLE on a trajectory</span>
-<span class="sd">--------------------------</span>
-
-<span class="sd">You can also run HOLE on a trajectory through the :class:`HoleAnalysis` class.</span>
-<span class="sd">This behaves similarly to the ``hole`` function, although arguments such as ``cpoint``</span>
-<span class="sd">and ``cvect`` become runtime arguments for the :meth:`~HoleAnalysis.run` function.</span>
-
-<span class="sd">The class can be set-up and run like a normal MDAnalysis analysis class::</span>
-
-<span class="sd">    import MDAnalysis as mda</span>
-<span class="sd">    from MDAnalysis.tests.datafiles import MULTIPDB_HOLE</span>
-<span class="sd">    from MDAnalysis.analysis import hole2</span>
-
-<span class="sd">    u = mda.Universe(MULTIPDB_HOLE)</span>
-
-<span class="sd">    ha = hole2.HoleAnalysis(u, executable=&#39;~/hole2/exe/hole&#39;) as h2:</span>
-<span class="sd">    ha.run()</span>
-<span class="sd">    ha.create_vmd_surface(filename=&#39;hole.vmd&#39;)</span>
-
-<span class="sd">The VMD surface created by the class updates the pore for each frame of the trajectory.</span>
-<span class="sd">Use it as normal by loading your trajectory in VMD and sourcing the file in the Tk Console.</span>
-
-<span class="sd">You can access the actual profiles generated in the ``results`` attribute::</span>
-
-<span class="sd">    print(ha.results.profiles)</span>
-
-<span class="sd">Again, HOLE writes out files for each frame. If you would like to delete these files</span>
-<span class="sd">after the analysis, you can call :meth:`~HoleAnalysis.delete_temporary_files`::</span>
-
-<span class="sd">    ha.delete_temporary_files()</span>
-
-<span class="sd">Alternatively, you can use HoleAnalysis as a context manager that deletes temporary</span>
-<span class="sd">files when you are finished with the context manager::</span>
-
-<span class="sd">    with hole2.HoleAnalysis(u, executable=&#39;~/hole2/exe/hole&#39;) as h2:</span>
-<span class="sd">        h2.run()</span>
-<span class="sd">        h2.create_vmd_surface()</span>
-
-
-<span class="sd">Using HOLE with VMD</span>
-<span class="sd">-------------------</span>
-
-<span class="sd">The :program:`sos_triangle` program that is part of HOLE_ can write an input</span>
-<span class="sd">file for VMD_ to display a triangulated surface of the pore found by</span>
-<span class="sd">:program:`hole`. This functionality is available with the</span>
-<span class="sd">:meth:`HoleAnalysis.create_vmd_surface` method</span>
-<span class="sd">[#create_vmd_surface_function]_. For an input trajectory MDAnalysis writes a</span>
-<span class="sd">*trajectory* of pore surfaces that can be animated in VMD together with the</span>
-<span class="sd">frames from the trajectory.</span>
-
-
-<span class="sd">Analyzing a full trajectory</span>
-<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
-
-<span class="sd">To analyze a full trajectory and write pore surfaces for all frames to file</span>
-<span class="sd">:file:`hole_surface.vmd`, use ::</span>
-
-<span class="sd">    import MDAnalysis as mda</span>
-<span class="sd">    from MDAnalysis.analysis import hole2</span>
-
-<span class="sd">    # load example trajectory MULTIPDB_HOLE</span>
-<span class="sd">    from MDAnalysis.tests.datafiles import MULTIPDB_HOLE</span>
-
-<span class="sd">    u = mda.Universe(MULTIPDB_HOLE)</span>
-
-<span class="sd">    with hole2.HoleAnalysis(u, executable=&#39;~/hole2/exe/hole&#39;) as h2:</span>
-<span class="sd">        h2.run()</span>
-<span class="sd">        h2.create_vmd_surface(filename=&quot;hole_surface.vmd&quot;)</span>
-
-<span class="sd">In VMD, load your trajectory and then in the tcl console</span>
-<span class="sd">(e.g.. :menuselection:`Extensions --&gt; Tk Console`) load the surface</span>
-<span class="sd">trajectory:</span>
-
-<span class="sd">.. code-block:: tcl</span>
-
-<span class="sd">   source hole_surface.vmd</span>
-
-<span class="sd">If you only want to *subsample the trajectory* and only show the surface at</span>
-<span class="sd">specific frames then you can either load the trajectory with the same</span>
-<span class="sd">subsampling into VMD or create a subsampled trajectory.</span>
-
-
-<span class="sd">Creating subsampled HOLE surface</span>
-<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
-
-<span class="sd">For example, if we want to start displaying at frame 1 (i.e., skip frame 0), stop at frame 7, and</span>
-<span class="sd">only show every other frame (step 2) then the HOLE analysis will be ::</span>
-
-<span class="sd">    with hole2.HoleAnalysis(u, executable=&#39;~/hole2/exe/hole&#39;) as h2:</span>
-<span class="sd">        h2.run(start=1, stop=9, step=2)</span>
-<span class="sd">        h2.create_vmd_surface(filename=&quot;hole_surface_subsampled.vmd&quot;)</span>
-
-<span class="sd">The commands produce the file ``hole_surface_subsampled.vmd`` that can be loaded into VMD.</span>
-
-<span class="sd">.. Note::</span>
-
-<span class="sd">   Python (and MDAnalysis) stop indices are *exclusive* so the parameters</span>
-<span class="sd">   ``start=1``, ``stop=9``, and ``step=2`` will analyze frames 1, 3, 5, 7.</span>
-
-<span class="sd">.. _Loading-a-trajectory-into-VMD-with-subsampling:</span>
-
-<span class="sd">Loading a trajectory into VMD with subsampling</span>
-<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
-
-<span class="sd">Load your system into VMD. This can mean to load the topology file with</span>
-<span class="sd">:menuselection:`File --&gt; New Molecule` and adding the trajectory with</span>
-<span class="sd">:menuselection:`File --&gt; Load Data into Molecule` or just :menuselection:`File</span>
-<span class="sd">--&gt; New Molecule`.</span>
-
-<span class="sd">When loading the trajectory, subsample the frames by setting parametes in in</span>
-<span class="sd">the :guilabel:`Frames` section. Select *First: 1*, *Last: 7*, *Stride: 2*. Then</span>
-<span class="sd">:guilabel:`Load` everything.</span>
-
-<span class="sd">.. Note::</span>
-
-<span class="sd">   VMD considers the stop/last frame to be *inclusive* so you need to typically</span>
-<span class="sd">   choose one less than the ``stop`` value that you selected in MDAnalysis.</span>
-
-<span class="sd">Then load the surface trajectory:</span>
-
-<span class="sd">.. code-block:: tcl</span>
-
-<span class="sd">   source hole_surface_subsampled.vmd</span>
-
-<span class="sd">You should see a different surface for each frame in the trajectory. [#vmd_extra_frame]_</span>
-
-
-<span class="sd">Creating a subsampled trajectory</span>
-<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
-
-<span class="sd">Instead of having VMD subsample the trajectory as described in</span>
-<span class="sd">:ref:`Loading-a-trajectory-into-VMD-with-subsampling` we can write a subsampled</span>
-<span class="sd">trajectory to a file. Although it requires more disk space, it can be</span>
-<span class="sd">convenient if we want to visualize the system repeatedly.</span>
-
-<span class="sd">The example trajectory comes as a multi-PDB file so we need a suitable topology</span>
-<span class="sd">file. If you already have a topology file such as a PSF, TPR, or PRMTOP file</span>
-<span class="sd">then skip this step. We write frame 0 as a PDB :file:`frame0.pdb` (which we</span>
-<span class="sd">will use as the topology in VMD)::</span>
-
-<span class="sd">    u.atoms.write(&quot;frame0.pdb&quot;)</span>
-
-<span class="sd">Then write the actual trajectory in a convenient format such as TRR (or</span>
-<span class="sd">DCD). Note that we apply the same slicing (``start=1``, ``stop=9``, ``step=2``)</span>
-<span class="sd">to the trajectory itself and then use it as the value for the ``frames``</span>
-<span class="sd">parameter of :meth:`AtomGroup.write&lt;MDAnalysis.core.groups.AtomGroup.write&gt;`</span>
-<span class="sd">method::</span>
-
-<span class="sd">    u.atoms.write(&quot;subsampled.trr&quot;, frames=u.trajectory[1:9:2])</span>
-
-<span class="sd">This command creates the subsampled trajectory file :file:`subsampled.trr` in</span>
-<span class="sd">TRR format.</span>
-
-<span class="sd">In VMD we load the topology and the trajectory and then load the surface. In</span>
-<span class="sd">our example we have a PDB file (:file:`frame0.pdb`) as topology so we need to</span>
-<span class="sd">remove the first frame [#vmd_extra_frame]_ (skip the &quot;trim&quot; step below if you</span>
-<span class="sd">are using a true topology file such as PSF, TPR, or PRMTOP). To keep this</span>
-<span class="sd">example compact, we are using the tcl command line interface in VMD_</span>
-<span class="sd">(:menuselection:`Extensions --&gt; Tk Console`) for loading and trimming the</span>
-<span class="sd">trajectory; you can use the menu commands if you prefer.</span>
-
-<span class="sd">.. code-block:: tcl</span>
-
-<span class="sd">   # load topology and subsampled trajectory</span>
-<span class="sd">   mol load pdb frame0.pdb trr subsampled.trr</span>
-
-<span class="sd">   # trim first frame (frame0) -- SKIP if using PSF, TPR, PRMTOP</span>
-<span class="sd">   animate delete beg 0 end 0</span>
-
-<span class="sd">   # load the HOLE surface trajectory</span>
-<span class="sd">   source hole_surface_subsampled.vmd</span>
-
-<span class="sd">You can now animate your molecule together with the surface and render it.</span>
-
-
-<span class="sd">.. _HOLE: http://www.holeprogram.org</span>
-<span class="sd">.. _VMD: https://www.ks.uiuc.edu/Research/vmd/</span>
-
-<span class="sd">Functions and classes</span>
-<span class="sd">---------------------</span>
-
-<span class="sd">.. autofunction:: hole</span>
-
-<span class="sd">.. autoclass:: HoleAnalysis</span>
-<span class="sd">   :members:</span>
-
-
-<span class="sd">References</span>
-<span class="sd">----------</span>
-
-<span class="sd">.. [Smart1993] O.S. Smart, J.M. Goodfellow and B.A. Wallace.</span>
-<span class="sd">               The Pore Dimensions of Gramicidin A. Biophysical Journal 65:2455-2460, 1993.</span>
-<span class="sd">               DOI: 10.1016/S0006-3495(93)81293-1</span>
-<span class="sd">.. [Smart1996] O.S. Smart, J.G. Neduvelil, X. Wang, B.A. Wallace, and M.S.P. Sansom.</span>
-<span class="sd">               HOLE: A program for the analysis of the pore dimensions of ion channel</span>
-<span class="sd">               structural models. J.Mol.Graph., 14:354–360, 1996.</span>
-<span class="sd">               DOI: 10.1016/S0263-7855(97)00009-X</span>
-<span class="sd">               URL http://www.holeprogram.org/</span>
-<span class="sd">.. [Stelzl2014] L. S. Stelzl, P. W. Fowler, M. S. P. Sansom, and O. Beckstein.</span>
-<span class="sd">               Flexible gates generate occluded intermediates in the transport cycle</span>
-<span class="sd">               of LacY. J Mol Biol, 426:735–751, 2014.</span>
-<span class="sd">               DOI: 10.1016/j.jmb.2013.10.024</span>
-
-<span class="sd">.. Footnotes</span>
-
-<span class="sd">.. [#create_vmd_surface_function] If you use the :class:`hole` class to run</span>
-<span class="sd">              :program:`hole` on a single PDB file then you can use</span>
-<span class="sd">              :func:`MDAnalysis.analysis.hole2.utils.create_vmd_surface`</span>
-<span class="sd">              function to manually run :program:`sph_process` and</span>
-<span class="sd">              :program:`sos_triangle` on the output files andcr eate a surface</span>
-<span class="sd">              file.</span>
-
-<span class="sd">.. [#vmd_extra_frame] If you loaded your system in VMD_ from separate topology</span>
-<span class="sd">              and trajectory files and the topology file contained coordinates</span>
-<span class="sd">              (such as a PDB or GRO) file then your trajectory will have an</span>
-<span class="sd">              extra initial frame containing the coordinates from your topology</span>
-<span class="sd">              file. Delete the initial frame with :menuselection:`Molecule --&gt;</span>
-<span class="sd">              Delete Frames` by setting *First* to 0 and *Last* to 0 and</span>
-<span class="sd">              selecting :guilabel:`Delete`.</span>
-
-<span class="sd">.. [#HOLEDCD] PDB files are not the only files that :program:`hole` can</span>
-<span class="sd">              read. In principle, it is also able to read CHARMM DCD</span>
-<span class="sd">              trajectories and generate a hole profile for each frame. However,</span>
-<span class="sd">              native support for DCD in :program:`hole` is patchy and not every</span>
-<span class="sd">              DCD is recognized. In particular, At the moment, DCDs generated</span>
-<span class="sd">              with MDAnalysis are not accepted by HOLE. To overcome this</span>
-<span class="sd">              PDB / DCD limitation, use :class:`HoleAnalysis` which creates</span>
-<span class="sd">              temporary PDB files for each frame of a</span>
-<span class="sd">              :class:`~MDAnalysis.core.universe.Universe` or</span>
-<span class="sd">              :class:`~MDAnalysis.core.universe.AtomGroup` and runs</span>
-<span class="sd">              :func:``hole`` on each of them.</span>
-
-<span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">errno</span>
 <span class="kn">import</span> <span class="nn">tempfile</span>
@@ -420,7 +137,7 @@
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="hole"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.hole.hole">[docs]</a><span class="k">def</span> <span class="nf">hole</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">,</span>
+<div class="viewcode-block" id="hole"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.hole">[docs]</a><span class="k">def</span> <span class="nf">hole</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">,</span>
          <span class="n">infile_text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
          <span class="n">infile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
          <span class="n">outfile</span><span class="o">=</span><span class="s1">&#39;hole.out&#39;</span><span class="p">,</span>
@@ -650,7 +367,7 @@
     <span class="k">return</span> <span class="n">recarrays</span></div>
 
 
-<div class="viewcode-block" id="HoleAnalysis"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.hole.HoleAnalysis">[docs]</a><span class="k">class</span> <span class="nc">HoleAnalysis</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
+<div class="viewcode-block" id="HoleAnalysis"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis">[docs]</a><span class="k">class</span> <span class="nc">HoleAnalysis</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Run :program:`hole` on a trajectory.</span>
 
@@ -927,7 +644,7 @@
         <span class="n">hole_filenames</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">!    &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input_header</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hole_header</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hole_filenames</span><span class="p">)</span>
 
-<div class="viewcode-block" id="HoleAnalysis.run"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.hole.HoleAnalysis.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="HoleAnalysis.run"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">random_seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Perform the calculation</span>
@@ -1005,7 +722,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">infile_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_header</span> <span class="o">+</span> <span class="n">body</span>
 
-<div class="viewcode-block" id="HoleAnalysis.guess_cpoint"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.hole.HoleAnalysis.guess_cpoint">[docs]</a>    <span class="k">def</span> <span class="nf">guess_cpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="HoleAnalysis.guess_cpoint"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.guess_cpoint">[docs]</a>    <span class="k">def</span> <span class="nf">guess_cpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Guess a point inside the pore.</span>
 
 <span class="sd">        This method simply uses the center of geometry of the selection as a</span>
@@ -1067,7 +784,7 @@
             <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;No profile found in HOLE output. Output level: </span><span class="si">{}</span><span class="s1">&#39;</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_level</span><span class="p">))</span>
 
-<div class="viewcode-block" id="HoleAnalysis.create_vmd_surface"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.hole.HoleAnalysis.create_vmd_surface">[docs]</a>    <span class="k">def</span> <span class="nf">create_vmd_surface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;hole.vmd&#39;</span><span class="p">,</span> <span class="n">dot_density</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+<div class="viewcode-block" id="HoleAnalysis.create_vmd_surface"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.create_vmd_surface">[docs]</a>    <span class="k">def</span> <span class="nf">create_vmd_surface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;hole.vmd&#39;</span><span class="p">,</span> <span class="n">dot_density</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
                            <span class="n">no_water_color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">one_water_color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span>
                            <span class="n">double_water_color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Process HOLE output to create a smooth pore surface suitable for VMD.</span>
@@ -1172,14 +889,14 @@
 
         <span class="k">return</span> <span class="n">filename</span></div>
 
-<div class="viewcode-block" id="HoleAnalysis.min_radius"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.hole.HoleAnalysis.min_radius">[docs]</a>    <span class="k">def</span> <span class="nf">min_radius</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="HoleAnalysis.min_radius"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.min_radius">[docs]</a>    <span class="k">def</span> <span class="nf">min_radius</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the minimum radius over all profiles as a function of q&quot;&quot;&quot;</span>
         <span class="n">profiles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;profiles&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">profiles</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No profiles available. Try calling run()&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">q</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">radius</span><span class="o">.</span><span class="n">min</span><span class="p">()]</span> <span class="k">for</span> <span class="n">q</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">profiles</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span></div>
 
-<div class="viewcode-block" id="HoleAnalysis.delete_temporary_files"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.hole.HoleAnalysis.delete_temporary_files">[docs]</a>    <span class="k">def</span> <span class="nf">delete_temporary_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="HoleAnalysis.delete_temporary_files"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.delete_temporary_files">[docs]</a>    <span class="k">def</span> <span class="nf">delete_temporary_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Delete temporary files&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmp_files</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
@@ -1240,7 +957,7 @@
 
         <span class="k">return</span> <span class="n">frames</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">linestyles</span>
 
-<div class="viewcode-block" id="HoleAnalysis.plot"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.hole.HoleAnalysis.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="HoleAnalysis.plot"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
              <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span>
              <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">y_shift</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
              <span class="n">label</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1308,7 +1025,7 @@
             <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="n">legend_loc</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ax</span></div>
 
-<div class="viewcode-block" id="HoleAnalysis.plot3D"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.hole.HoleAnalysis.plot3D">[docs]</a>    <span class="k">def</span> <span class="nf">plot3D</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="HoleAnalysis.plot3D"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.plot3D">[docs]</a>    <span class="k">def</span> <span class="nf">plot3D</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span>
                <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">r_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Frames&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -1385,7 +1102,7 @@
 
         <span class="k">return</span> <span class="n">ax</span></div>
 
-<div class="viewcode-block" id="HoleAnalysis.over_order_parameters"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.hole.HoleAnalysis.over_order_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">over_order_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_parameters</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="HoleAnalysis.over_order_parameters"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.over_order_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">over_order_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_parameters</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get HOLE profiles sorted over order parameters ``order_parameters``.</span>
 
 <span class="sd">        Parameters</span>
@@ -1440,7 +1157,7 @@
 
         <span class="k">return</span> <span class="n">profiles</span></div>
 
-<div class="viewcode-block" id="HoleAnalysis.plot_order_parameters"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.hole.HoleAnalysis.plot_order_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">plot_order_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_parameters</span><span class="p">,</span>
+<div class="viewcode-block" id="HoleAnalysis.plot_order_parameters"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.plot_order_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">plot_order_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_parameters</span><span class="p">,</span>
                               <span class="n">aggregator</span><span class="o">=</span><span class="nb">min</span><span class="p">,</span>
                               <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                               <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span>
@@ -1499,7 +1216,7 @@
         <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylabel</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ax</span></div>
 
-<div class="viewcode-block" id="HoleAnalysis.gather"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.hole.HoleAnalysis.gather">[docs]</a>    <span class="k">def</span> <span class="nf">gather</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="HoleAnalysis.gather"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.gather">[docs]</a>    <span class="k">def</span> <span class="nf">gather</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gather the fields of each profile recarray together.</span>
 
 <span class="sd">        Parameters</span>
@@ -1535,7 +1252,7 @@
                <span class="s1">&#39;cen_line_D&#39;</span><span class="p">:</span> <span class="n">cen_line_Ds</span><span class="p">}</span>
         <span class="k">return</span> <span class="n">dct</span></div>
 
-<div class="viewcode-block" id="HoleAnalysis.bin_radii"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.hole.HoleAnalysis.bin_radii">[docs]</a>    <span class="k">def</span> <span class="nf">bin_radii</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="HoleAnalysis.bin_radii"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.bin_radii">[docs]</a>    <span class="k">def</span> <span class="nf">bin_radii</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Collects the pore radii into bins by reaction coordinate.</span>
 
 <span class="sd">        Parameters</span>
@@ -1587,7 +1304,7 @@
         <span class="n">binned</span> <span class="o">=</span> <span class="p">[</span><span class="n">radii</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bin_idx</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">bin_idx</span><span class="p">[</span><span class="mi">1</span><span class="p">:])]</span>
         <span class="k">return</span> <span class="n">binned</span><span class="p">,</span> <span class="n">bins</span></div>
 
-<div class="viewcode-block" id="HoleAnalysis.histogram_radii"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.hole.HoleAnalysis.histogram_radii">[docs]</a>    <span class="k">def</span> <span class="nf">histogram_radii</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aggregator</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="HoleAnalysis.histogram_radii"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.histogram_radii">[docs]</a>    <span class="k">def</span> <span class="nf">histogram_radii</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aggregator</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Histograms the pore radii into bins by reaction coordinate,</span>
 <span class="sd">        aggregate the radii with an `aggregator` function, and returns the</span>
@@ -1623,7 +1340,7 @@
         <span class="n">binned</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_radii</span><span class="p">(</span><span class="n">frames</span><span class="o">=</span><span class="n">frames</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="nb">range</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">aggregator</span><span class="p">,</span> <span class="n">binned</span><span class="p">))),</span> <span class="n">bins</span></div>
 
-<div class="viewcode-block" id="HoleAnalysis.plot_mean_profile"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.hole.HoleAnalysis.plot_mean_profile">[docs]</a>    <span class="k">def</span> <span class="nf">plot_mean_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="HoleAnalysis.plot_mean_profile"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.plot_mean_profile">[docs]</a>    <span class="k">def</span> <span class="nf">plot_mean_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                           <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span>
                           <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                           <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Frame&#39;</span><span class="p">,</span> <span class="n">fill_alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
@@ -1692,7 +1409,7 @@
             <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="n">legend_loc</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ax</span></div>
 
-<div class="viewcode-block" id="HoleAnalysis.plot3D_order_parameters"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.hole.HoleAnalysis.plot3D_order_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">plot3D_order_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_parameters</span><span class="p">,</span>
+<div class="viewcode-block" id="HoleAnalysis.plot3D_order_parameters"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.HoleAnalysis.plot3D_order_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">plot3D_order_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_parameters</span><span class="p">,</span>
                                 <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                 <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                 <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span>
@@ -1782,7 +1499,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.</p>
+    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.</p>
   </div>
 
   
