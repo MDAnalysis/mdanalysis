@@ -34,14 +34,12 @@ Nucleic acid analysis
 from typing import List, Tuple, Dict, Union, NamedTuple
 
 import numpy as np
-import pandas as pd
-from math import pi, sin, cos, atan2, sqrt, pow
 
 import MDAnalysis as mda
-from MDAnalysis.lib import mdamath
-from MDAnalysis.analysis.base import AnalysisBase
-from package import MDAnalysis
-from package.MDAnalysis.exceptions import SelectionError
+from ..lib import mdamath
+from ..analysis.base import AnalysisBase, Results
+
+from ..exceptions import SelectionError
 
 
 class BaseSelect(NamedTuple):
@@ -67,7 +65,7 @@ class BaseSelect(NamedTuple):
 
 
 class NucPairDist(AnalysisBase):
-    """An class for developing analyses that run on a pair of base pairs """
+    """A class for developing analyses that run on a pair of base pairs """
 
     _sel: List[Tuple[str, str]]
     _unv: mda.Universe
@@ -75,20 +73,20 @@ class NucPairDist(AnalysisBase):
     _s2: mda.AtomGroup
     _res_dict: Dict[str, List[Union[float, str]]]
     _names: List[str]
-    results: pd.DataFrame
 
     def __init__(self, universe: mda.Universe, selections: List[Tuple[str, str]], **kwargs) -> None:
         super(NucPairDist, self).__init__(universe.trajectory, **kwargs)
         self._unv = universe
         self._sel = selections
         self._check_selections()
+        self.results = Results()
 
     def _check_selections(self) -> None:
         ag1: List[mda.AtomGroup] = []
         ag2: List[mda.AtomGroup] = []
 
         for s in self._sel:
-            # Checking number of selections and building AtomGroups
+            # Checking number of selections and building mda.AtomGroups
             if len(s) != 2:
                 raise ValueError("Each base pair selection given as a tuple of length 2")
             try:
@@ -106,23 +104,23 @@ class NucPairDist(AnalysisBase):
         self._s2 = mda.AtomGroup([ag[0] for ag in ag2])
 
     def _prepare(self) -> None:
-        self._col = ('selection', 'time', 'distance')
-        self._res_dict = {k: [] for k in self._col}
-        self.results: pd.DataFrame = pd.DataFrame(columns=self._col)
         self._names = [s[0] + s[1] for s in self._sel]
+        self._res_dict = {k: [] for k in self._names}
+        self._res_dict['time'] = []
 
     def _single_frame(self) -> None:
         dist = self._s1.positions - self._s2.positions
         wc: np.ndarray = mdamath.pnorm(dist)
 
         for i, n in enumerate(self._names):
-            self._res_dict['selection'].append(n)
+            self._res_dict[n].append(wc[i])
             self._res_dict['time'].append(self._ts.time)
-            self._res_dict['distance'].append(wc[i])
 
     def _conclude(self) -> None:
-        for k in self._col:
-            self.results[k] = self._res_dict[k]
+        self.results['times'] = np.array(self._res_dict['time'])
+        self.results['selections'] = self._names
+        for i, n in enumerate(self._names):
+            self.results[i] = np.array(self._res_dict[n])
 
 
 class WCDist(NucPairDist):
