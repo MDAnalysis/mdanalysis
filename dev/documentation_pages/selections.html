@@ -374,6 +374,10 @@ selects atoms 5 through 10 inclusive. All atoms in the
 <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.Universe</span></code> are consecutively numbered, and the index
 runs from 1 up to the total number of atoms.</p>
 </dd>
+<dt>id <em>index-range</em></dt><dd><p>selects all atoms in a range of (1-based) inclusive indices, e.g. <code class="docutils literal notranslate"><span class="pre">id</span> <span class="pre">1</span></code> selects
+all the atoms with id 1; <code class="docutils literal notranslate"><span class="pre">id</span> <span class="pre">5:7</span></code> selects all atoms with ids 5, all atoms with
+ids 6 and all atoms with ids 7.</p>
+</dd>
 <dt>index <em>index-range</em></dt><dd><p>selects all atoms within a range of (0-based) inclusive indices,
 e.g. <code class="docutils literal notranslate"><span class="pre">index</span> <span class="pre">0</span></code> selects the first atom in the universe; <code class="docutils literal notranslate"><span class="pre">index</span> <span class="pre">5:10</span></code>
 selects atoms 6 through 11 inclusive. All atoms in the
@@ -381,6 +385,12 @@ selects atoms 6 through 11 inclusive. All atoms in the
 runs from 0 up to the total number of atoms - 1.</p>
 </dd>
 </dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Conventionally, <code class="docutils literal notranslate"><span class="pre">id</span></code> corresponds to the serial number in the PDB format. In contrast
+to <code class="docutils literal notranslate"><span class="pre">bynum</span></code>, the <code class="docutils literal notranslate"><span class="pre">id</span></code> topology attribute is not necessarily continuous, ordered, or
+unique, and can be arbitrarily assigned by the user.</p>
+</div>
 </section>
 <section id="preexisting-selections-and-modifiers">
 <span id="pre-selections-label"></span><h3><span class="section-number">3.1.7. </span>Preexisting selections and modifiers<a class="headerlink" href="#preexisting-selections-and-modifiers" title="Permalink to this headline"></a></h3>
