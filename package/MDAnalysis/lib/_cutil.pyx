@@ -64,22 +64,36 @@ cdef void _inverse_unique_unsorted_contiguous_array_inplace(
     ie: np.array([1,2,3])[np.array(0,0,1,2,2)] == np.array([1,1,2,3,3])
                unique_arr[mask]                ==       full_arr
 
-    Requires contiguous arrays as an input.
-    Requires preallocated array mask, the same length as full_arr.
-    Does not require unique_arr to be sorted.
 
 
     Parameters
     ----------
     full_arr: numpy.ndarray
-        1D array of dtype ``numpy.int64``, the non-unique values.
+        1D contiguous array of dtype ``numpy.int64``,
+        the non-unique values.
     unique_arr: numpy.ndarray
-        1D array of dtype ``numpy.int64``, the unique values of full_arr.
+        1D contiguous array of dtype ``numpy.int64``,
+        the unique values of full_arr, can be unsorted.
     mask: numpy.ndarray
-        1D array of dtype ``numpy.int64``, inverse array to be filled.
+        1D contiguous array of dtype ``numpy.int64``,
+        inverse array to be changed inplace, the same length as full_arr.
 
     Returns
     -------
+
+    Example
+    -------
+    Find the inverse of an array::
+
+        cdef full_arr = np.array([1,2,3,4,1,2,3,4], dtype=np.intp)
+        cdef unique_arr = np.array([1,2,3,4], dtype=np.intp)
+        cdef mask = np.empty(full_arr.shape[0], dtype=np.intp)
+    	_inverse_unique_unsorted_contiguous_array_inplace(full_arr,
+                                                          unique_arr,
+                                                          mask)
+       assert full_arr == unique_arr[mask]
+
+    """
 
 
     """
@@ -112,9 +126,11 @@ def inverse_unique_contiguous_1d_array(np.intp_t[::1] full_arr,
     Parameters
     ----------
     full_arr: numpy.ndarray
-        1D array of dtype ``numpy.int64``, the non-unique values.
+        1D contiguous array of dtype ``numpy.int64``,
+        the non-unique values.
     unique_arr: numpy.ndarray
-        1D array of dtype ``numpy.int64``, the unique values of full_arr.
+        1D contiguous array of dtype ``numpy.int64``,
+        the unique values of full_arr.
 
     Returns
     -------
@@ -138,8 +154,8 @@ def inverse_unique_contiguous_1d_array(np.intp_t[::1] full_arr,
         inverse = inverse_unique_contiguous_1d_array(full_arr, unique_arr)
         # inverse == np.array([0,1,2,3,0,1,2,3], dtype=np.intp)
 
-        rebuilt_arr = unique_arr[inverse]
-        # rebuilt_arr has the same elements as the original full_arr
+        assert full_arr == unique_arr[inverse]
+        # the rebuilt array has the same elements as the original full_arr
 
     """
     cdef np.intp_t[::1] mask = np.empty(full_arr.shape[0], dtype=np.intp)
