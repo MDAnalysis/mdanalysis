@@ -14,11 +14,14 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy,
-         HenokB, umak1106, tamandeeps, Mrqeoqqt, megosato, AnirG, rishu235
+         HenokB, umak1106, tamandeeps, Mrqeoqqt, megosato, AnirG, rishu235,
+         mtiberti
 
  * 2.2.0
 
 Fixes
+  * Fixed encore.covariance.covariance_matrix not working when providing
+    an external reference (Issue #3539, PR #3621)
   * Fixed LinearDensity not working with grouping='residues' or 'segments'
     (Issue #3571, PR #3572)
   * MOL2 can read files without providing optional columns:
