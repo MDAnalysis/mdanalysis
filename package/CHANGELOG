@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy,
-         HenokB, umak1106, tamandeeps, Mrqeoqqt, megosato, AnirG, manishsaini6421
+         HenokB, umak1106, tamandeeps, Mrqeoqqt, megosato, AnirG, rishu235, manishsaini6421
 
  * 2.2.0
 
@@ -36,6 +36,8 @@ Fixes
   * Fixed FrameIteratorIndices doesn't rewind. (Issue #3416)
 
 Enhancements
+  * PCA class now has an inverse-PCA function. The inverse transform can
+    also be extrapolated to certain non-PCA atoms. (PR #3596, Issue #2703)
  * `DistanceMatrix` class in MDAnalysis.analysis.diffusionmap now also
     accepts `AtomGroup` as a valid argument (Issue #3486, PR #3541)
   * Improves the RDKitConverter's accuracy (PR #3044): AtomGroups containing
