@@ -302,11 +302,10 @@
 
     <span class="c1"># Extract coordinates from reference structure, if specified</span>
     <span class="n">reference_coordinates</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">if</span> <span class="n">reference</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">reference</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># Select the same atoms in reference structure</span>
-        <span class="n">reference_atom_selection</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span>
-            <span class="n">ensemble</span><span class="o">.</span><span class="n">get_atom_selection_string</span><span class="p">())</span>
-        <span class="n">reference_coordinates</span> <span class="o">=</span> <span class="n">reference_atom_selection</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span>
+        <span class="n">reference_atom_selection</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
+        <span class="n">reference_coordinates</span> <span class="o">=</span> <span class="n">reference_atom_selection</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span>
 
         <span class="c1"># Flatten reference coordinates</span>
         <span class="n">reference_coordinates</span> <span class="o">=</span> <span class="n">reference_coordinates</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
