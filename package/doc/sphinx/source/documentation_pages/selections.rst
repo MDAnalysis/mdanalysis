@@ -315,9 +315,8 @@ index *index-range*
     
     
 .. note::
-    Conventionally ``id`` corresponds to the serial number in PDB format. In contrast to ``bynum``, the ``id`` index is not 
-    necessarily continuous nor unique, and can be arbitrarily assigned by the user. Therefore, different atoms in the 
-    :class:`MDAnalysis.Universe` can share the same ``id`` and the user can set the ``id`` index to an arbitrary number.
+    Conventionally, ``id`` corresponds to the serial number in the PDB format. In contrast to ``bynum``, the ``id`` 
+    topology attribute is not necessarily continuous, ordered, or unique, and can be arbitrarily assigned by the user. 
     
      
 .. _pre-selections-label:
