@@ -76,11 +76,6 @@ from ..core.topologyattrs import (
     Segids,
 )
 
-try:
-    from openmm.unit import daltons
-except ImportError:
-    from simtk.unit import daltons
-
 
 class OpenMMTopologyParser(TopologyReaderBase):
     format = "OPENMMTOPOLOGY"
@@ -127,6 +122,18 @@ class OpenMMTopologyParser(TopologyReaderBase):
              as it is for atomtypes but an empty string is used for elements.
 
         """
+
+        try:
+            from openmm.unit import daltons
+        except ImportError:
+            try:
+                from simtk.unit import daltons
+            except ImportError:
+                msg = ("OpenMM is required for the OpenMMParser but "
+                       "it's not installed. Try installing it with \n"
+                       "conda install -c conda-forge openmm")
+                raise ImportError(msg)
+
         atom_resindex = [a.residue.index for a in omm_topology.atoms()]
         residue_segindex = [r.chain.index for r in omm_topology.residues()]
         atomids = [a.id for a in omm_topology.atoms()]

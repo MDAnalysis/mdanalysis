@@ -30,13 +30,12 @@ from MDAnalysisTests.datafiles import CONECT, PDBX, PDB
 
 
 try:
-    from openmm.app.element import Element
+    from openmm.app import Element, Topology
     from openmm.unit import daltons
-    from openmm.app import Topology
     from openmm import app
 except ImportError:
     try:
-        from simtk.openmm.app import Topology, Element
+        from simtk.openmm.app import Element, Topology
         from simtk.unit import daltons
         from simtk.openmm import app
     except ImportError:
