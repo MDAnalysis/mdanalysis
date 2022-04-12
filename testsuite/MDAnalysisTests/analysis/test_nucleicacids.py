@@ -24,11 +24,8 @@
 import MDAnalysis as mda
 import pytest
 from MDAnalysis.analysis.nucleicacids import WCDist, MinorDist, MajorDist, BaseSelect
-from MDAnalysisTests.datafiles import RNA_PSF, RNA_PDB
-from numpy.testing import (
-    assert_almost_equal,
-    assert_allclose,
-)
+from ..datafiles import RNA_PSF, RNA_PDB
+from numpy.testing import assert_allclose
 
 
 @pytest.fixture(scope='module')
@@ -42,8 +39,8 @@ def test_wc_dist(u):
     WC = WCDist(u, sel)
     WC.run()
 
-    assert_almost_equal(WC.results['distance'][0], 4.3874702, decimal=3)
-    assert_almost_equal(WC.results['distance'][1], 4.1716404, decimal=3)
+    assert_allclose(WC.results[0][0], 4.3874702, atol=1e-3)
+    assert_allclose(WC.results[1][0], 4.1716404, atol=1e-3)
 
 
 def test_minor_pair(u):
@@ -52,8 +49,8 @@ def test_minor_pair(u):
     MP = MinorDist(u, sel)
     MP.run()
 
-    assert_almost_equal(MP.results['distance'][0], 15.06506, decimal=3)
-    assert_almost_equal(MP.results['distance'][1], 3.219116, decimal=3)
+    assert_allclose(MP.results[0][0], 15.06506, atol=1e-3)
+    assert_allclose(MP.results[1][0], 3.219116, atol=1e-3)
 
 
 def test_major_pair(u):
@@ -62,5 +59,5 @@ def test_major_pair(u):
     MP = MajorDist(u, sel)
     MP.run()
 
-    assert_almost_equal(MP.results['distance'][0], 26.884272, decimal=3)
-    assert_almost_equal(MP.results['distance'][1], 13.578535, decimal=3)
+    assert_allclose(MP.results[0][0], 26.884272, atol=1e-3)
+    assert_allclose(MP.results[1][0], 13.578535, atol=1e-3)
