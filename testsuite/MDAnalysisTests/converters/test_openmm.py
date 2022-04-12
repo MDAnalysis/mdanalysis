@@ -31,9 +31,16 @@ from MDAnalysisTests.coordinates.base import _SingleFrameReader
 
 import MDAnalysis as mda
 
-mm = pytest.importorskip("simtk.openmm")
-unit = pytest.importorskip("simtk.unit")
-app = pytest.importorskip("simtk.openmm.app")
+try:
+    import openmm as mm
+    from openmm import unit, app
+except ImportError:
+    try:
+        from simtk import openmm as mm
+        from simtk import unit
+        from simtk.openmm import app
+    except ImportError:
+        pytest.skip(allow_module_level=True)
 
 
 class TestOpenMMBasicSimulationReader():

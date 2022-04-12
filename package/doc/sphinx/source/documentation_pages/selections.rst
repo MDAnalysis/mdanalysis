@@ -53,7 +53,9 @@ packages with the help of :ref:`Selection exporters`.
         >>> np.all(ag3.ix == ag2.ix)
         True
 
-
+    For further details on ordered selections, see :ref:`ordered-selections-label`.
+    
+    
 Selection Keywords
 ==================
 
@@ -96,7 +98,7 @@ selection parser. The following applies to all selections:
     selection ranges.
 
 
-.. _`Defined topology attributes`: https://userguide.mdanalysis.org/2.0.0-dev0/topology_system.html#format-specific-attributes
+.. _`Defined topology attributes`: https://userguide.mdanalysis.org/stable/topology_system.html#format-specific-attributes
 
 
 Simple selections
@@ -405,7 +407,7 @@ The most straightforward way to concatentate two AtomGroups is by using the
 ``+`` operator::
 
  >>> ordered = u.select_atoms("segid DMPC and resid 3 and name P") + u.select_atoms("segid DMPC and resid 2 and name P")
- >>> print list(ordered)
+ >>> print(list(ordered))
  [< Atom 570: name 'P' of type '180' of resid 'DMPC', 3 and 'DMPC'>,
  < Atom 452: name 'P' of type '180' of resid 'DMPC', 2 and 'DMPC'>]
 
@@ -413,7 +415,7 @@ A shortcut is to provide *two or more* selections to
 :meth:`~MDAnalysis.core.universe.Universe.select_atoms`, which then
 does the concatenation automatically::
 
- >>> print list(universe.select_atoms("segid DMPC and resid 3 and name P", "segid DMPC and resid 2 and name P"))
+ >>> print(list(universe.select_atoms("segid DMPC and resid 3 and name P", "segid DMPC and resid 2 and name P")))
  [< Atom 570: name 'P' of type '180' of resid 'DMPC', 3 and 'DMPC'>,
  < Atom 452: name 'P' of type '180' of resid 'DMPC', 2 and 'DMPC'>]
 
@@ -421,6 +423,6 @@ Just for comparison to show that a single selection string does not
 work as one might expect::
 
  # WRONG!
- >>> print list(universe.select_atoms("segid DMPC and ( resid 3 or resid 2 ) and name P"))
+ >>> print(list(universe.select_atoms("segid DMPC and (resid 3 or resid 2) and name P")))
  [< Atom 452: name 'P' of type '180' of resid 'DMPC', 2 and 'DMPC'>,
  < Atom 570: name 'P' of type '180' of resid 'DMPC', 3 and 'DMPC'>]

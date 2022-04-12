@@ -108,7 +108,7 @@ void minimum_image_triclinic(double* dx, float* box)
     dx[2] = dx_min[2];
 }
 
-static void _ortho_pbc(coordinate* coords, int numcoords, float* box)
+static void _ortho_pbc(coordinate* coords, uint64_t numcoords, float* box)
 {
    /*
     * Moves all coordinates to within the box boundaries for an orthogonal box.
@@ -128,7 +128,8 @@ static void _ortho_pbc(coordinate* coords, int numcoords, float* box)
         return;
     }
 
-    int i, j, s;
+    uint64_t i;
+    int j, s;
     float crd;
     // inverse box for multi-box shifts:
     const double inverse_box[3] = {1.0 / (double) box[0], \
@@ -186,7 +187,7 @@ static void _ortho_pbc(coordinate* coords, int numcoords, float* box)
     }
 }
 
-static void _triclinic_pbc(coordinate* coords, int numcoords, float* box)
+static void _triclinic_pbc(coordinate* coords, uint64_t numcoords, float* box)
 {
    /* Moves all coordinates to within the box boundaries for a triclinic box.
     * Assumes that the box has zero values for box[1], box[2] and box[5]:
@@ -214,7 +215,8 @@ static void _triclinic_pbc(coordinate* coords, int numcoords, float* box)
         return;
     }
 
-    int i, s, msr;
+    uint64_t i;
+    int s, msr;
     float crd[3];
     // constants for multi-box shifts:
     const double bi0 = 1.0 / (double) box[0];
@@ -377,10 +379,10 @@ static void _triclinic_pbc(coordinate* coords, int numcoords, float* box)
     }
 }
 
-static void _calc_distance_array(coordinate* ref, int numref, coordinate* conf,
-                                 int numconf, double* distances)
+static void _calc_distance_array(coordinate* ref, uint64_t numref, coordinate* conf,
+                                 uint64_t numconf, double* distances)
 {
-  int i, j;
+  uint64_t i, j;
   double dx[3];
   double rsq;
 
@@ -398,10 +400,10 @@ static void _calc_distance_array(coordinate* ref, int numref, coordinate* conf,
   }
 }
 
-static void _calc_distance_array_ortho(coordinate* ref, int numref, coordinate* conf,
-                                       int numconf, float* box, double* distances)
+static void _calc_distance_array_ortho(coordinate* ref, uint64_t numref, coordinate* conf,
+                                       uint64_t numconf, float* box, double* distances)
 {
-  int i, j;
+  uint64_t i, j;
   double dx[3];
   float inverse_box[3];
   double rsq;
@@ -425,11 +427,11 @@ static void _calc_distance_array_ortho(coordinate* ref, int numref, coordinate* 
   }
 }
 
-static void _calc_distance_array_triclinic(coordinate* ref, int numref,
-                                           coordinate* conf, int numconf,
+static void _calc_distance_array_triclinic(coordinate* ref, uint64_t numref,
+                                           coordinate* conf, uint64_t numconf,
                                            float* box, double* distances)
 {
-  int i, j;
+  uint64_t i, j;
   double dx[3];
   double rsq;
 
@@ -452,10 +454,10 @@ static void _calc_distance_array_triclinic(coordinate* ref, int numref,
   }
 }
 
-static void _calc_self_distance_array(coordinate* ref, int numref,
+static void _calc_self_distance_array(coordinate* ref, uint64_t numref,
                                       double* distances)
 {
-  int i, j, distpos;
+  uint64_t i, j, distpos;
   double dx[3];
   double rsq;
 
@@ -479,10 +481,10 @@ static void _calc_self_distance_array(coordinate* ref, int numref,
   }
 }
 
-static void _calc_self_distance_array_ortho(coordinate* ref, int numref,
+static void _calc_self_distance_array_ortho(coordinate* ref, uint64_t numref,
                                             float* box, double* distances)
 {
-  int i, j, distpos;
+  uint64_t i, j, distpos;
   double dx[3];
   float inverse_box[3];
   double rsq;
@@ -512,10 +514,10 @@ static void _calc_self_distance_array_ortho(coordinate* ref, int numref,
   }
 }
 
-static void _calc_self_distance_array_triclinic(coordinate* ref, int numref,
+static void _calc_self_distance_array_triclinic(coordinate* ref, uint64_t numref,
                                                 float* box, double *distances)
 {
-  int i, j, distpos;
+  uint64_t i, j, distpos;
   double dx[3];
   double rsq;
 
@@ -542,9 +544,9 @@ static void _calc_self_distance_array_triclinic(coordinate* ref, int numref,
   }
 }
 
-void _coord_transform(coordinate* coords, int numCoords, double* box)
+void _coord_transform(coordinate* coords, uint64_t numCoords, double* box)
 {
-  int i, j, k;
+  uint64_t i, j, k;
   float newpos[3];
   // Matrix multiplication inCoords * box = outCoords
   // Multiplication done in place using temp array 'new'
@@ -568,9 +570,9 @@ void _coord_transform(coordinate* coords, int numCoords, double* box)
 }
 
 static void _calc_bond_distance(coordinate* atom1, coordinate* atom2,
-                                int numatom, double* distances)
+                                uint64_t numatom, double* distances)
 {
-  int i;
+  uint64_t i;
   double dx[3];
   double rsq;
 
@@ -587,9 +589,9 @@ static void _calc_bond_distance(coordinate* atom1, coordinate* atom2,
 }
 
 static void _calc_bond_distance_ortho(coordinate* atom1, coordinate* atom2,
-                                      int numatom, float* box, double* distances)
+                                      uint64_t numatom, float* box, double* distances)
 {
-  int i;
+  uint64_t i;
   double dx[3];
   float inverse_box[3];
   double rsq;
@@ -612,10 +614,10 @@ static void _calc_bond_distance_ortho(coordinate* atom1, coordinate* atom2,
   }
 }
 static void _calc_bond_distance_triclinic(coordinate* atom1, coordinate* atom2,
-                                          int numatom, float* box,
+                                          uint64_t numatom, float* box,
                                           double* distances)
 {
-  int i;
+  uint64_t i;
   double dx[3];
   double rsq;
 
@@ -637,9 +639,9 @@ static void _calc_bond_distance_triclinic(coordinate* atom1, coordinate* atom2,
 }
 
 static void _calc_angle(coordinate* atom1, coordinate* atom2,
-                        coordinate* atom3, int numatom, double* angles)
+                        coordinate* atom3, uint64_t numatom, double* angles)
 {
-  int i;
+  uint64_t i;
   double rji[3], rjk[3];
   double x, y, xp[3];
 
@@ -668,14 +670,14 @@ static void _calc_angle(coordinate* atom1, coordinate* atom2,
 }
 
 static void _calc_angle_ortho(coordinate* atom1, coordinate* atom2,
-                              coordinate* atom3, int numatom,
+                              coordinate* atom3, uint64_t numatom,
                               float* box, double* angles)
 {
   // Angle is calculated between two vectors
   // pbc option ensures that vectors are constructed between atoms in the same image as eachother
   // ie that vectors don't go across a boxlength
   // it doesn't matter if vectors are from different boxes however
-  int i;
+  uint64_t i;
   double rji[3], rjk[3];
   double x, y, xp[3];
   float inverse_box[3];
@@ -711,11 +713,11 @@ static void _calc_angle_ortho(coordinate* atom1, coordinate* atom2,
 }
 
 static void _calc_angle_triclinic(coordinate* atom1, coordinate* atom2,
-                                  coordinate* atom3, int numatom,
+                                  coordinate* atom3, uint64_t numatom,
                                   float* box, double* angles)
 {
   // Triclinic version of min image aware angle calculate, see above
-  int i;
+  uint64_t i;
   double rji[3], rjk[3];
   double x, y, xp[3];
 
@@ -789,9 +791,9 @@ static void _calc_dihedral_angle(double* va, double* vb, double* vc, double* res
 
 static void _calc_dihedral(coordinate* atom1, coordinate* atom2,
                            coordinate* atom3, coordinate* atom4,
-                           int numatom, double* angles)
+                           uint64_t numatom, double* angles)
 {
-  int i;
+  uint64_t i;
   double va[3], vb[3], vc[3];
 
 #ifdef PARALLEL
@@ -817,9 +819,9 @@ static void _calc_dihedral(coordinate* atom1, coordinate* atom2,
 
 static void _calc_dihedral_ortho(coordinate* atom1, coordinate* atom2,
                                  coordinate* atom3, coordinate* atom4,
-                                 int numatom, float* box, double* angles)
+                                 uint64_t numatom, float* box, double* angles)
 {
-  int i;
+  uint64_t i;
   double va[3], vb[3], vc[3];
   float inverse_box[3];
 
@@ -853,9 +855,9 @@ static void _calc_dihedral_ortho(coordinate* atom1, coordinate* atom2,
 
 static void _calc_dihedral_triclinic(coordinate* atom1, coordinate* atom2,
                                      coordinate* atom3, coordinate* atom4,
-                                     int numatom, float* box, double* angles)
+                                     uint64_t numatom, float* box, double* angles)
 {
-  int i;
+  uint64_t i;
   double va[3], vb[3], vc[3];
 
   _triclinic_pbc(atom1, numatom, box);

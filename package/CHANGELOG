@@ -13,12 +13,65 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope,
-         orbeckst, scal444, p-j-smith, edisj, rsexton2
+??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy,
+         HenokB, umak1106, tamandeeps, Mrqeoqqt, megosato, AnirG, rishu235,
+         mtiberti, manishsaini6421, rsexton2
+
+ * 2.2.0
+
+Fixes
+  * Fixed encore.covariance.covariance_matrix not working when providing
+    an external reference (Issue #3539, PR #3621)
+  * Fixed LinearDensity not working with grouping='residues' or 'segments'
+    (Issue #3571, PR #3572)
+  * MOL2 can read files without providing optional columns:
+    subst_id, subst_name and charge. (Issue #3385, PR #3598)
+  * When converting an AtomGroup to an RDKit molecule (PR #3044):
+    - the atoms are now in the same order
+    - the output of `atom.GetMonomerInfo().GetName()` now follows the
+      guidelines for PDB files while the original name is still available
+      through `atom.GetProp("_MDAnalysis_name")`
+    - using `NoImplicit=False` should no longer throw a `SanitizationError`
+  * Contacts can now accept static AtomGroups as well as selection texts.
+    (Issue #2666, PR #3565)
+  * Fixed DumpReader triclinic box dimensions reading. (Issue #3386, PR #3403)
+  * Updated the badge in README of MDAnalysisTest to point to Github CI Actions
+  * Fixed FrameIteratorIndices doesn't rewind. (Issue #3416)
+
+Enhancements
+  * PCA class now has an inverse-PCA function. The inverse transform can
+    also be extrapolated to certain non-PCA atoms. (PR #3596, Issue #2703)
+  * `DistanceMatrix` class in MDAnalysis.analysis.diffusionmap now also
+    accepts `AtomGroup` as a valid argument (Issue #3486, PR #3541)
+  * Improves the RDKitConverter's accuracy (PR #3044): AtomGroups containing
+    monatomic ion charges or edge cases with nitrogen, sulfur, phosphorus and
+    conjugated systems should now have correctly assigned bond orders and
+    charges.
+  * Added `frames` argument to AnalysisBase.run to allow analysis to run on 
+    arbitrary list of frames (Issue #1985)    
+
+Changes
+  * ITPParser no longer adds an angle for water molecules that have the SETTLE
+    constraint applied to them. This mirrors the way the constraint is handled
+    in AMBER. (Issue #2417, PR #3564)
+
+Deprecations
+
+
+03/06/22 IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope,
+         orbeckst, scal444, p-j-smith, edisj, Atharva7K, ojeda-e, jbarnoud,
+         yangtcai
 
  * 2.1.0
 
 Fixes
+  * Use uint64_t loop counters in C level distance functions to avoid overflow
+    for large arrays (Issue #3512, PR #3513).
+  * Prevents attempts to close an already closed NamedStream (Issue #3386)
+  * Added missing exe_err import in hole.py. Fixed a bug in HoleAnalysis where
+    kwarg was passed instead of object to generate path (Issue #3493, PR #3496)
+  * Fixes creation of vmd surfaces in hole2 when using non-contiguous frames
+    with start/stop/step (Issue #3476)
   * Allow empty strings to be passed to HydrogenBondAnalysis (Issue #3453).
   * Avoid integer overflow in NSGrid with too many grids (Issue #3183)
   * Fix ITPParser charge reading (Issue #3419).
@@ -30,20 +83,27 @@ Fixes
     created using add_Residue and add_Segment (Issue #3437)
 
 Enhancements
+  * Added dielectric analysis module (PR #2118)
+  * Supports TPR files produced by Gromacs 2022 (PR #3514)
+  * Add support for millisecond and microsecond units (Issue #3473, PR #3491)
   * Adds :meth:`parse_n_atoms` to H5MD reader (Issue #3465)
   * Add option for custom compiler flags for C/C++ on build and remove march
     option from setup.cfg (Issue #3428, PR #3429).
   * Added R/S Chirality support to RDKit parsed molecules
-  * Added `frames` argument to AnalysisBase.run to allow analysis to run on 
-    arbitrary list of frames (Issue #1985)  
+  * Added MDAnalysis.lib.distances.minimize_vectors
 
 Changes
+  * `packaging` is now a core dependency for MDAnalysis
+  * Indexing a group (AtomGroup, ResidueGroup, or SegmentGroup) with None
+    raises a TypeError (Issue #3092, PR #3517)
   * TRZReader now defaults to a `dt` of 1.0 (instead of 0.0 previously) when
     it cannot be obtained from file (Issue #3257)
   * Dropped python 3.6 support and raised minimum numpy version to 1.18.0
     (NEP29)
 
 Deprecations
+  * Deprecated the 'pbc' kwarg for various Group methods, the 'wrap' kwarg
+    should be used instead. (Issue #1760)
 
 
 08/21/21 tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,

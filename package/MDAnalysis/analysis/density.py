@@ -865,7 +865,7 @@ class Density(Grid):
 
         """
         if not self.parameters['isDensity']:
-            errmsg = 'The grid is not a density so converty_density() makes no sense.'
+            errmsg = 'The grid is not a density so convert_density() makes no sense.'
             logger.fatal(errmsg)
             raise RuntimeError(errmsg)
         if unit == self.units['density']:

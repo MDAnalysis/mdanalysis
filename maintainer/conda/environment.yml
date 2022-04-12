@@ -3,7 +3,7 @@ channels:
   - defaults
   - conda-forge
 dependencies:
-  - chemfiles>=0.9
+  - chemfiles>=0.10
   - codecov
   - cython
   - griddataformats
@@ -31,3 +31,4 @@ dependencies:
       - parmed
       - msmb_theme==1.2.0
       - sphinx-sitemap==1.0.2
+      - packaging

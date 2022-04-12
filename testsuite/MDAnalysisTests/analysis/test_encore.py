@@ -29,6 +29,7 @@ import numpy as np
 import sys
 import os
 import warnings
+import platform
 
 import pytest
 from numpy.testing import assert_equal, assert_almost_equal
@@ -43,6 +44,7 @@ import MDAnalysis.analysis.encore.confdistmatrix as confdistmatrix
 
 def function(x):
     return x**2
+
 
 class TestEncore(object):
     @pytest.fixture(scope='class')
@@ -77,9 +79,9 @@ class TestEncore(object):
         expected_value = 1.984
         filename = tempfile.mktemp()+".npz"
 
-        triangular_matrix = encore.utils.TriangularMatrix(size = size)
+        triangular_matrix = encore.utils.TriangularMatrix(size=size)
 
-        triangular_matrix[0,1] = expected_value
+        triangular_matrix[0, 1] = expected_value
 
         assert_equal(triangular_matrix[0,1], expected_value,
                      err_msg="Data error in TriangularMatrix: read/write are not consistent")
@@ -184,7 +186,7 @@ inconsistent results")
             weights='mass',
             n_jobs=1)
 
-        print (repr(confdist_matrix.as_array()[0,:]))
+        print(repr(confdist_matrix.as_array()[0, :]))
         assert_almost_equal(confdist_matrix.as_array()[0,:], reference_rmsd, decimal=3,
                             err_msg="calculated RMSD values differ from reference")
 
@@ -225,6 +227,43 @@ inconsistent results")
 
         assert sum(rmsfs1.rmsf) > sum(rmsfs2.rmsf), "Ensemble aligned on all " \
                                                     "atoms should have lower full-atom RMSF than ensemble aligned on only CAs."
+
+    def test_covariance_matrix(self, ens1):
+        reference_cov = np.array([
+        [12.9122,-5.2692,3.9016,10.0663,-5.3309,3.8923,8.5037,-5.2017,2.6941],
+        [-5.2692,4.1087,-2.4101,-4.5485,3.3954,-2.3245,-3.7343,2.8415,-1.6223],
+        [3.9016,-2.4101,3.1800,3.4453,-2.6860,2.2438,2.7751,-2.2523,1.6084],
+        [10.0663,-4.5485,3.4453,8.8608,-4.6727,3.3641,7.0106,-4.4986,2.2604],
+        [-5.3309,3.3954,-2.6860,-4.6727,4.4627,-2.4233,-3.8304,3.0367,-1.6942],
+        [3.8923,-2.3245,2.2438,3.3641,-2.4233,2.6193,2.6908,-2.0252,1.5775],
+        [8.5037,-3.7343,2.7751,7.0106,-3.8304,2.6908,6.2861,-3.7138,1.8701],
+        [-5.2017,2.8415,-2.2523,-4.4986,3.0367,-2.0252,-3.7138,3.3999,-1.4166],
+        [2.6941,-1.6223,1.6084,2.2604,-1.6942,1.5775,1.8701,-1.4166,1.4664]])
+
+        covariance = encore.covariance.covariance_matrix(ens1,
+                                                         select="name CA and resnum 1:3",
+                                                         estimator=encore.covariance.shrinkage_covariance_estimator)
+        assert_almost_equal(covariance, reference_cov, decimal=4,
+                            err_msg="Covariance matrix from covariance estimation not as expected")
+
+    def test_covariance_matrix_with_reference(self, ens1):
+        reference_cov = np.array([
+        [39.0760,-28.5383,29.7761,37.9330,-35.5251,18.9421,30.4334,-31.4829,12.8712],
+        [-28.5383,24.1827,-25.5676,-29.0183,30.3511,-15.9598,-22.9298,26.1086,-10.8693],
+        [29.7761,-25.5676,28.9796,30.7607,-32.8739,17.7072,24.1689,-28.3557,12.1190],
+        [37.9330,-29.0183,30.7607,37.6532,-36.4537,19.2865,29.9841,-32.1404,12.9998],
+        [-35.5251,30.3511,-32.8739,-36.4537,38.5711,-20.1190,-28.7652,33.2857,-13.6963],
+        [18.9421,-15.9598,17.7072,19.2865,-20.1190,11.4059,15.1244,-17.2695,7.8205],
+        [30.4334,-22.9298,24.1689,29.9841,-28.7652,15.1244,24.0514,-25.4106,10.2863],
+        [-31.4829,26.1086,-28.3557,-32.1404,33.2857,-17.2695,-25.4106,29.1773,-11.7530],
+        [12.8712,-10.8693,12.1190,12.9998,-13.6963,7.8205,10.2863,-11.7530,5.5058]])
+
+        covariance = encore.covariance.covariance_matrix(ens1,
+                                                         select="name CA and resnum 1:3",
+                                                         estimator=encore.covariance.shrinkage_covariance_estimator,
+                                                         reference=ens1)
+        assert_almost_equal(covariance, reference_cov, decimal=4,
+                            err_msg="Covariance matrix from covariance estimation not as expected")
 
     def test_hes_to_self(self, ens1):
         results, details = encore.hes([ens1, ens1])
@@ -395,6 +434,7 @@ inconsistent results")
         assert stdev < stdev_upper_bound, "Unexpected standard deviation for" \
                                            " bootstrapped samples in Dim. reduction Ensemble imilarity"
 
+
 class TestEncoreClustering(object):
     @pytest.fixture(scope='class')
     def ens1_template(self):
@@ -429,7 +469,7 @@ class TestEncoreClustering(object):
             ens2_template.filename,
             ens2_template.trajectory.timeseries(order='fac'),
             format=mda.coordinates.memory.MemoryReader)
-    
+
     def test_clustering_one_ensemble(self, ens1):
         cluster_collection = encore.cluster(ens1)
         expected_value = 7
@@ -442,6 +482,8 @@ class TestEncoreClustering(object):
         assert len(cluster_collection) == expected_value, "Unexpected " \
                                                           "results: {0}".format(cluster_collection)
 
+    @pytest.mark.xfail(platform.machine() == "arm64" and platform.system() == "Darwin",
+                       reason="see gh-3599")
     def test_clustering_three_ensembles_two_identical(self, ens1, ens2):
         cluster_collection = encore.cluster([ens1, ens2, ens1])
         expected_value = 40
@@ -552,11 +594,51 @@ class TestEncoreClustering(object):
         assert cc.get_centroids() == [1, 3, 5], \
                      "ClusterCollection centroids aren't as expected"
 
-    def test_Cluster_add_metadata(self, cluster):
+    def test_cluster_add_metadata(self, cluster):
         metadata = cluster.elements*10
         cluster.add_metadata('test', metadata)
         assert np.all(cluster.metadata['test'] == metadata), \
                      "Cluster metadata isn't as expected"
+        metadata = np.append(metadata, 9)
+        error_message = ("Size of metadata is not equal to the "
+                         "number of cluster elements")
+        with pytest.raises(TypeError, match=error_message):
+            cluster.add_metadata('test2', metadata)
+
+    def test_empty_cluster(self):
+        empty_cluster = encore.Cluster()
+        assert empty_cluster.size == 0
+        assert np.size(empty_cluster.elements) == 0
+        assert empty_cluster.centroid is None
+        assert bool(empty_cluster.metadata) is False
+
+    def test_centroid_not_in_elements(self):
+        error_message = "Centroid of cluster not found in the element list"
+        with pytest.raises(LookupError, match=error_message):
+            encore.Cluster([38, 39, 40, 41, 42, 43], 99)
+
+    def test_metadata_size_error(self):
+        error_message = ('Size of metadata having label "label" is '
+                         'not equal to the number of cluster elements')
+        with pytest.raises(TypeError, match=error_message):
+            encore.Cluster(np.array([1, 1, 1]), 1, None,
+                           {"label": [1, 1, 1, 1]})
+
+    def test_cluster_iteration(self, cluster):
+        test = []
+        for i in cluster.elements:
+            test.append(i)
+        assert_equal(cluster.elements, test)
+
+    def test_cluster_len(self, cluster):
+        assert(cluster.size == len(cluster))
+
+    def test_cluster_repr(self):
+        repr_message = "<Cluster with no elements>"
+        assert_equal(repr(encore.Cluster()), repr_message)
+        cluster = encore.Cluster(np.array([1]), 1, 1)
+        repr_message = "<Cluster with 1 elements, centroid=1, id=1>"
+        assert_equal(repr(cluster), repr_message)
 
 class TestEncoreClusteringSklearn(object):
     """The tests in this class were duplicated from the affinity propagation
@@ -686,7 +768,6 @@ class TestEncoreDimensionalityReduction(object):
         coordinates, details = encore.reduce_dimensionality(ens1)
         assert_equal(coordinates.shape[0], dimension,
                      err_msg="Unexpected result in dimensionality reduction: {0}".format(coordinates))
-
 
     def test_dimensionality_reduction_two_ensembles(self, ens1, ens2):
         dimension = 2

@@ -74,10 +74,10 @@ class TestWrap(object):
         if compound == 'atoms':
             assert_in_box(group.atoms.positions, group.dimensions)
         elif center == 'com':
-            compos = group.atoms.center_of_mass(pbc=False, compound=compound)
+            compos = group.atoms.center_of_mass(wrap=False, compound=compound)
             assert_in_box(compos, group.dimensions)
         else:
-            cogpos = group.atoms.center_of_geometry(pbc=False,
+            cogpos = group.atoms.center_of_geometry(wrap=False,
                                                     compound=compound)
             assert_in_box(cogpos, group.dimensions)
 
@@ -441,9 +441,9 @@ class TestWrapTRZ(object):
         ag = u.atoms[:100]
         ag.wrap(compound='group', center=center)
         if center == 'com':
-            ctrpos = ag.center_of_mass(pbc=False, compound='group')
+            ctrpos = ag.center_of_mass(wrap=False, compound='group')
         elif center == 'cog':
-            ctrpos = ag.center_of_geometry(pbc=False, compound='group')
+            ctrpos = ag.center_of_geometry(wrap=False, compound='group')
         assert_in_box(ctrpos, u.dimensions)
 
     @pytest.mark.parametrize('center', ('com', 'cog'))
@@ -451,9 +451,9 @@ class TestWrapTRZ(object):
         ag = u.atoms[300:400].residues
         ag.wrap(compound='residues', center=center)
         if center == 'com':
-            ctrpos = ag.center_of_mass(pbc=False, compound='residues')
+            ctrpos = ag.center_of_mass(wrap=False, compound='residues')
         elif center == 'cog':
-            ctrpos = ag.center_of_geometry(pbc=False, compound='residues')
+            ctrpos = ag.center_of_geometry(wrap=False, compound='residues')
         assert_in_box(ctrpos, u.dimensions)
 
     @pytest.mark.parametrize('center', ('com', 'cog'))
@@ -461,9 +461,9 @@ class TestWrapTRZ(object):
         ag = u.atoms[1000:1200]
         ag.wrap(compound='segments', center=center)
         if center == 'com':
-            ctrpos = ag.center_of_mass(pbc=False, compound='segments')
+            ctrpos = ag.center_of_mass(wrap=False, compound='segments')
         elif center == 'cog':
-            ctrpos = ag.center_of_geometry(pbc=False, compound='segments')
+            ctrpos = ag.center_of_geometry(wrap=False, compound='segments')
         assert_in_box(ctrpos, u.dimensions)
 
     @pytest.mark.parametrize('center', ('com', 'cog'))
@@ -471,7 +471,7 @@ class TestWrapTRZ(object):
         ag = u.atoms[:250]
         ag.wrap(compound='fragments', center=center)
         if center == 'com':
-            ctrpos = ag.center_of_mass(pbc=False, compound='fragments')
+            ctrpos = ag.center_of_mass(wrap=False, compound='fragments')
         elif center == 'cog':
-            ctrpos = ag.center_of_geometry(pbc=False, compound='fragments')
+            ctrpos = ag.center_of_geometry(wrap=False, compound='fragments')
         assert_in_box(ctrpos, u.dimensions)

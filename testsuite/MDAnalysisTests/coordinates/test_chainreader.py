@@ -353,8 +353,7 @@ class TestChainReaderContinuous(object):
                 # ImportWarning('_SixMetaPathImporter.find_spec() not found
                 # TODO: remove when we no longer have a dependency
                 # that still imports six
-                if (platform.system() == "Windows" and
-                sys.version_info >= (3, 10)):
+                if sys.version_info >= (3, 10):
                     warnings.filterwarnings(
                             action='ignore',
                             category=ImportWarning)
