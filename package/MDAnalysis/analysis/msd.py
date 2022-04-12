@@ -181,6 +181,29 @@ is used to demonstrate selection of a MSD segment.
 
 We have now computed a self-diffusivity!
 
+Combining Multiple Replicates
+--------------------------------
+It is common practice to combine replicates when calculating MSDs. An example
+of this is shown below using MSD1 and MSD2
+
+.. code-block:: python
+
+    u1 = mda.Universe(RANDOM_WALK, RANDOM_WALK_TOPO)
+    MSD1 = msd.EinsteinMSD(u1, select='all', msd_type='xyz', fft=True)
+    MSD1.run()
+
+    u2 = mda.Universe(RANDOM_WALK, RANDOM_WALK_TOPO)
+    MSD2 = msd.EinsteinMSD(u2, select='all', msd_type='xyz', fft=True)
+    MSD2.run()
+
+    combined_msds = np.concatenate((MSD1.results.msds_by_particle,
+                                    MSD2.results.msds_by_particle), axis=0)
+    average_msd = np.mean(combined_msds, axis=0)
+
+The same cannot be achieved by concatenating the replicas in a single run as
+the jump between frame -1 and frame 0 of the next trajectory will lead to
+an artificial inflation of the MSD and hence any subsequent
+diffusion coefficient calculated.
 
 Notes
 _____
