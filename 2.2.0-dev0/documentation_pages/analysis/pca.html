@@ -372,6 +372,113 @@ orthogonal, whereas 1 indicates that they are identical.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.pca.PCA.project_single_frame">
+<span class="sig-name descname"><span class="pre">project_single_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anchor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#PCA.project_single_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.project_single_frame" title="Permalink to this definition"></a></dt>
+<dd><p>Computes a function to project structures onto selected PCs</p>
+<p>Applies Inverse-PCA transform to the PCA atomgroup.
+Optionally, calculates one displacement vector per residue
+to extrapolate the transform to atoms not in the PCA atomgroup.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>components</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>array</em><em>, </em><em>optional</em>) – Components to be projected onto.
+The default <code class="docutils literal notranslate"><span class="pre">None</span></code> maps onto all components.</p></li>
+<li><p><strong>group</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em>, </em><em>optional</em>) – The AtomGroup containing atoms to be projected.
+The projection applies to whole residues in <code class="docutils literal notranslate"><span class="pre">group</span></code>.
+The atoms in the PCA class are not affected by this argument.
+The default <code class="docutils literal notranslate"><span class="pre">None</span></code> does not extrapolate the projection
+to non-PCA atoms.</p></li>
+<li><p><strong>anchor</strong> (<em>string</em><em>, </em><em>optional</em>) – The string to select the PCA atom whose displacement vector
+is applied to non-PCA atoms in a residue. The <code class="docutils literal notranslate"><span class="pre">anchor</span></code> selection
+is applied to <code class="docutils literal notranslate"><span class="pre">group</span></code>.The resulting atomselection must have
+exactly one PCA atom in each residue of <code class="docutils literal notranslate"><span class="pre">group</span></code>.
+The default <code class="docutils literal notranslate"><span class="pre">None</span></code> does not extrapolate the projection
+to non-PCA atoms.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>The resulting function f(ts) takes as input a
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> ts,
+and returns ts with the projected structure</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The transformation function takes a :class:<code class="docutils literal notranslate"><span class="pre">Timestep</span></code> as input
+because this is required for :ref:<code class="docutils literal notranslate"><span class="pre">transformations</span></code>.
+However, the inverse-PCA transformation is applied on the atoms
+of the Universe that was used for the PCA. It is <em>expected</em>
+that the <cite>ts</cite> is from the same Universe but this is
+currently not checked.</p>
+</div>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>function</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>When the PCA class is run for an atomgroup, the principal components
+are cached. The trajectory can then be projected onto one or more of
+these principal components. Since the principal components are sorted
+in the order of decreasing explained variance, the first few components
+capture the essential molecular motion.</p>
+<p>If N is the number of atoms in the PCA group, each component has the
+length 3N. A PCA score <span class="math notranslate nohighlight">\(w\_i\)</span>, along component <span class="math notranslate nohighlight">\(u\_i\)</span>, is
+calculated for a set of coordinates <span class="math notranslate nohighlight">\((r(t))\)</span> of the same atoms.
+The PCA scores are then used to transform the structure, <span class="math notranslate nohighlight">\((r(t))\)</span>
+at a timestep, back to the original space.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}w_{i}(t) =  ({\textbf r}(t) - \bar{{\textbf r}}) \cdot
+            {\textbf u}_i \\
+{\textbf r'}(t) = (w_{i}(t) \cdot {\textbf u}_i^T) +
+                  \bar{{\textbf r}}\end{split}\]</div>
+<p>For each residue, the projection can be extended to atoms that were
+not part of PCA by applying the displacement vector of a PCA atom to
+all the atoms in the residue. This could be useful to preserve the bond
+distance between a PCA atom and other non-PCA atoms in a residue.</p>
+<p>If there are r residues and n non-PCA atoms in total, the displacement
+vector has the size 3r. This needs to be broadcasted to a size 3n. An
+extrapolation trick is used to shape the array, since going over each
+residue for each frame can be expensive. Non-PCA atoms’ displacement
+vector is calculated with fancy indexing on the anchors’ displacement
+vector. <cite>index_extrapolate</cite> saves which atoms belong to which anchors.
+If there are two non-PCA atoms in the first anchor’s residue and three
+in the second anchor’s residue, <cite>index_extrapolate</cite> is [0, 0, 1, 1, 1]</p>
+<p class="rubric">Examples</p>
+<p>Run PCA class before using this function. For backbone PCA, run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;backbone&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Obtain a transformation function to project the
+backbone trajectory onto the first principal component:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">project</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">project_single_frame</span><span class="p">(</span><span class="n">components</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To project onto the first two components, run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">project</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">project_single_frame</span><span class="p">(</span><span class="n">components</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Alternatively, the transformation can be applied to PCA atoms and
+extrapolated to other atoms according to the CA atom’s translation
+in each residue:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">all</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+<span class="n">project</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">project_single_frame</span><span class="p">(</span><span class="n">components</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                   <span class="n">group</span><span class="o">=</span><span class="nb">all</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;name CA&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Finally, apply the transformation function to a timestep:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">project</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>or apply the projection to the universe:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.2.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.pca.PCA.rmsip">
 <span class="sig-name descname"><span class="pre">rmsip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#PCA.rmsip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.rmsip" title="Permalink to this definition"></a></dt>
 <dd><p>Compute the root mean square inner product between subspaces.</p>
@@ -567,7 +674,7 @@ that they are identical.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.</p>
+    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.</p>
   </div>
 
   

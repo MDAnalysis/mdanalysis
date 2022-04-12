@@ -505,6 +505,174 @@
 
         <span class="k">return</span> <span class="n">dot</span></div>
 
+<div class="viewcode-block" id="PCA.project_single_frame"><a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.PCA.project_single_frame">[docs]</a>    <span class="k">def</span> <span class="nf">project_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">components</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes a function to project structures onto selected PCs</span>
+
+<span class="sd">        Applies Inverse-PCA transform to the PCA atomgroup.</span>
+<span class="sd">        Optionally, calculates one displacement vector per residue</span>
+<span class="sd">        to extrapolate the transform to atoms not in the PCA atomgroup.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        components : int, array, optional</span>
+<span class="sd">            Components to be projected onto.</span>
+<span class="sd">            The default ``None`` maps onto all components.</span>
+
+<span class="sd">        group : AtomGroup, optional</span>
+<span class="sd">            The AtomGroup containing atoms to be projected.</span>
+<span class="sd">            The projection applies to whole residues in ``group``.</span>
+<span class="sd">            The atoms in the PCA class are not affected by this argument.</span>
+<span class="sd">            The default ``None`` does not extrapolate the projection</span>
+<span class="sd">            to non-PCA atoms.</span>
+
+<span class="sd">        anchor : string, optional</span>
+<span class="sd">            The string to select the PCA atom whose displacement vector</span>
+<span class="sd">            is applied to non-PCA atoms in a residue. The ``anchor`` selection</span>
+<span class="sd">            is applied to ``group``.The resulting atomselection must have</span>
+<span class="sd">            exactly one PCA atom in each residue of ``group``.</span>
+<span class="sd">            The default ``None`` does not extrapolate the projection</span>
+<span class="sd">            to non-PCA atoms.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        function</span>
+<span class="sd">            The resulting function f(ts) takes as input a</span>
+<span class="sd">            :class:`~MDAnalysis.coordinates.base.Timestep` ts,</span>
+<span class="sd">            and returns ts with the projected structure</span>
+
+<span class="sd">            .. warning::</span>
+<span class="sd">               The transformation function takes a :class:``Timestep`` as input</span>
+<span class="sd">               because this is required for :ref:``transformations``.</span>
+<span class="sd">               However, the inverse-PCA transformation is applied on the atoms</span>
+<span class="sd">               of the Universe that was used for the PCA. It is *expected*</span>
+<span class="sd">               that the `ts` is from the same Universe but this is</span>
+<span class="sd">               currently not checked.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        When the PCA class is run for an atomgroup, the principal components</span>
+<span class="sd">        are cached. The trajectory can then be projected onto one or more of</span>
+<span class="sd">        these principal components. Since the principal components are sorted</span>
+<span class="sd">        in the order of decreasing explained variance, the first few components</span>
+<span class="sd">        capture the essential molecular motion.</span>
+
+<span class="sd">        If N is the number of atoms in the PCA group, each component has the</span>
+<span class="sd">        length 3N. A PCA score :math:`w\_i`, along component :math:`u\_i`, is</span>
+<span class="sd">        calculated for a set of coordinates :math:`(r(t))` of the same atoms.</span>
+<span class="sd">        The PCA scores are then used to transform the structure, :math:`(r(t))`</span>
+<span class="sd">        at a timestep, back to the original space.</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">            w_{i}(t) =  ({\textbf r}(t) - \bar{{\textbf r}}) \cdot</span>
+<span class="sd">                        {\textbf u}_i \\</span>
+<span class="sd">            {\textbf r&#39;}(t) = (w_{i}(t) \cdot {\textbf u}_i^T) +</span>
+<span class="sd">                              \bar{{\textbf r}}</span>
+
+<span class="sd">        For each residue, the projection can be extended to atoms that were</span>
+<span class="sd">        not part of PCA by applying the displacement vector of a PCA atom to</span>
+<span class="sd">        all the atoms in the residue. This could be useful to preserve the bond</span>
+<span class="sd">        distance between a PCA atom and other non-PCA atoms in a residue.</span>
+
+<span class="sd">        If there are r residues and n non-PCA atoms in total, the displacement</span>
+<span class="sd">        vector has the size 3r. This needs to be broadcasted to a size 3n. An</span>
+<span class="sd">        extrapolation trick is used to shape the array, since going over each</span>
+<span class="sd">        residue for each frame can be expensive. Non-PCA atoms&#39; displacement</span>
+<span class="sd">        vector is calculated with fancy indexing on the anchors&#39; displacement</span>
+<span class="sd">        vector. `index_extrapolate` saves which atoms belong to which anchors.</span>
+<span class="sd">        If there are two non-PCA atoms in the first anchor&#39;s residue and three</span>
+<span class="sd">        in the second anchor&#39;s residue, `index_extrapolate` is [0, 0, 1, 1, 1]</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Run PCA class before using this function. For backbone PCA, run::</span>
+
+<span class="sd">            pca = PCA(universe, select=&#39;backbone&#39;).run()</span>
+
+<span class="sd">        Obtain a transformation function to project the</span>
+<span class="sd">        backbone trajectory onto the first principal component::</span>
+
+<span class="sd">            project = pca.project_single_frame(components=0)</span>
+
+<span class="sd">        To project onto the first two components, run::</span>
+
+<span class="sd">            project = pca.project_single_frame(components=[0,1])</span>
+
+<span class="sd">        Alternatively, the transformation can be applied to PCA atoms and</span>
+<span class="sd">        extrapolated to other atoms according to the CA atom&#39;s translation</span>
+<span class="sd">        in each residue::</span>
+
+<span class="sd">            all = u.select_atoms(&#39;all&#39;)</span>
+<span class="sd">            project = pca.project_single_frame(components=0,</span>
+<span class="sd">                                               group=all, anchor=&#39;name CA&#39;)</span>
+
+<span class="sd">        Finally, apply the transformation function to a timestep::</span>
+
+<span class="sd">            project(u.trajectory.ts)</span>
+
+<span class="sd">        or apply the projection to the universe::</span>
+
+<span class="sd">            u.trajectory.add_transformations(project)</span>
+
+
+<span class="sd">        .. versionadded:: 2.2.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculated</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Call run() on the PCA before projecting&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">group</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">anchor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;anchor&#39; cannot be &#39;None&#39;&quot;</span> <span class="o">+</span>
+                                 <span class="s2">&quot; if &#39;group&#39; is not &#39;None&#39;&quot;</span><span class="p">)</span>
+
+            <span class="n">anchors</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">anchor</span><span class="p">)</span>
+            <span class="n">anchors_res_ids</span> <span class="o">=</span> <span class="n">anchors</span><span class="o">.</span><span class="n">resindices</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">anchors_res_ids</span><span class="p">)</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="n">anchors_res_ids</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;More than one &#39;anchor&#39; found in residues&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">resindices</span><span class="p">,</span> <span class="n">anchors_res_ids</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some residues in &#39;group&#39;&quot;</span> <span class="o">+</span>
+                                 <span class="s2">&quot; do not have an &#39;anchor&#39;&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">anchors</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some &#39;anchors&#39; are not part of PCA class&quot;</span><span class="p">)</span>
+
+            <span class="c1"># non_pca has &quot;all&quot; the atoms in residues of `group`. This makes</span>
+            <span class="c1"># sure that extrapolation works on residues, not random atoms.</span>
+            <span class="n">non_pca</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">atoms</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span>
+            <span class="n">pca_res_indices</span><span class="p">,</span> <span class="n">pca_res_counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">resindices</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="n">non_pca_atoms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">residues</span><span class="p">:</span>
+                <span class="c1"># n_common is the number of pca atoms in a residue</span>
+                <span class="n">n_common</span> <span class="o">=</span> <span class="n">pca_res_counts</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                           <span class="n">pca_res_indices</span> <span class="o">==</span> <span class="n">res</span><span class="o">.</span><span class="n">resindex</span><span class="p">)][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">non_pca_atoms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">non_pca_atoms</span><span class="p">,</span>
+                                          <span class="n">res</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">-</span> <span class="n">n_common</span><span class="p">)</span>
+            <span class="c1"># index_extrapolate records the anchor number for each non-PCA atom</span>
+            <span class="n">index_extrapolate</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">anchors</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">),</span>
+                                          <span class="n">non_pca_atoms</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">components</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">components</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">p_components</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">def</span> <span class="nf">wrapped</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Projects a timestep&quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">group</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">anchors_coords_old</span> <span class="o">=</span> <span class="n">anchors</span><span class="o">.</span><span class="n">positions</span>
+
+            <span class="n">xyz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xmean</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p_components</span><span class="p">[:,</span> <span class="n">components</span><span class="p">]),</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_p_components</span><span class="p">[:,</span> <span class="n">components</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+                 <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xmean</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">group</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">non_pca</span><span class="o">.</span><span class="n">positions</span> <span class="o">+=</span> <span class="p">(</span><span class="n">anchors</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span>
+                                      <span class="n">anchors_coords_old</span><span class="p">)[</span><span class="n">index_extrapolate</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">ts</span>
+        <span class="k">return</span> <span class="n">wrapped</span></div>
+
 <div class="viewcode-block" id="PCA.rmsip"><a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.PCA.rmsip">[docs]</a>    <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
         <span class="n">Doi</span><span class="p">(</span><span class="s1">&#39;10.1002/(SICI)1097-0134(19990901)36:4&lt;419::AID-PROT5&gt;3.0.CO;2-U&#39;</span><span class="p">),</span>
         <span class="n">Doi</span><span class="p">(</span><span class="s1">&#39;10.1529/biophysj.104.052449&#39;</span><span class="p">),</span>
@@ -762,7 +930,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.</p>
+    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.</p>
   </div>
 
   
