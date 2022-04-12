@@ -39,6 +39,8 @@ Fixes
   * Fixed FrameIteratorIndices doesn't rewind. (Issue #3416)
 
 Enhancements
+  * Added cython functions to speed up creation of an inverse of an array
+    given its unique values. (Issue #3387, PR #3573)
   * PCA class now has an inverse-PCA function. The inverse transform can
     also be extrapolated to certain non-PCA atoms. (PR #3596, Issue #2703)
  * `DistanceMatrix` class in MDAnalysis.analysis.diffusionmap now also
