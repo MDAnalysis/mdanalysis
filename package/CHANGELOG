@@ -14,11 +14,14 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy,
-         HenokB, umak1106, tamandeeps, Mrqeoqqt, megosato, AnirG
+         HenokB, umak1106, tamandeeps, Mrqeoqqt, megosato, AnirG, rishu235,
+         mtiberti, manishsaini6421
 
  * 2.2.0
 
 Fixes
+  * Fixed encore.covariance.covariance_matrix not working when providing
+    an external reference (Issue #3539, PR #3621)
   * Fixed LinearDensity not working with grouping='residues' or 'segments'
     (Issue #3571, PR #3572)
   * MOL2 can read files without providing optional columns:
@@ -37,6 +40,8 @@ Fixes
 
 Enhancements
   * LinearDensity now works with updating AtomGroups (Issue #2508, PR #3617)
+  * PCA class now has an inverse-PCA function. The inverse transform can
+    also be extrapolated to certain non-PCA atoms. (PR #3596, Issue #2703)
   * `DistanceMatrix` class in MDAnalysis.analysis.diffusionmap now also
     accepts `AtomGroup` as a valid argument (Issue #3486, PR #3541)
   * Improves the RDKitConverter's accuracy (PR #3044): AtomGroups containing
