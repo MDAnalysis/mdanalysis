@@ -24,7 +24,7 @@
 import MDAnalysis as mda
 import pytest
 from MDAnalysis.analysis.nucleicacids import WCDist, MinorDist, MajorDist, BaseSelect
-from ..datafiles import RNA_PSF, RNA_PDB
+from MDAnalysisTests.datafiles import RNA_PSF, RNA_PDB
 from numpy.testing import assert_allclose
 
 
