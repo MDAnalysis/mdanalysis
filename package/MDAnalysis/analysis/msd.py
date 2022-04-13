@@ -202,7 +202,7 @@ of this is shown below using MSD1 and MSD2.
 
 The same cannot be achieved by concatenating the replicas in a single run as
 the jump between the last frame of the first trajectory and frame 0 of the
-next trajectory will lead to an artificial inflation of the MSD and hence 
+next trajectory will lead to an artificial inflation of the MSD and hence
 any subsequent diffusion coefficient calculated.
 
 Notes
