@@ -125,6 +125,8 @@ class CRDWriter(base.WriterBase):
 
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
+    .. versionchanged:: 0.12.0
+       CRD extended format now can be explicitely requested
     """
     format = 'CRD'
     units = {'time': None, 'length': 'Angstrom'}
@@ -151,12 +153,35 @@ class CRDWriter(base.WriterBase):
         ----------
         filename : str or :class:`~MDAnalysis.lib.util.NamedStream`
              name of the output file or a stream
+        
+        crdext   : bool (optional)
+             By default, noextended CRD format is used [``False``]. 
+             However, extended CRD format can be forced by 
+             specifying `crdext` ``=True``.
         """
 
         self.filename = util.filename(filename, ext='crd')
         self.crd = None
+        
+        # account for explicit crd format, if requested
+        if "crdext" in kwargs.keys():
+            self.crdext = kwargs.pop('crdext')
+        else:
+            self.crdext = False   # if not requested, default to NOEXT format
 
-    def write(self, selection, frame=None):
+        # account for specific frame request
+        if "frame" in kwargs.keys():
+            frame = kwargs.pop('frame')
+            try:
+                self.frame = int(frame)
+            except Exception:
+                errmsg = "Value of parameter 'frame' (frame ='" + str(frame) + "') must be an integer."
+                raise ValueError(errmsg) from None
+        else:
+            self.frame = None   # default is None (current frame)
+
+
+    def write(self, selection, frame=None, crdext=False):
         """Write selection at current trajectory frame to file.
 
         Parameters
@@ -174,13 +199,20 @@ class CRDWriter(base.WriterBase):
             errmsg = "Input obj is neither an AtomGroup or Universe"
             raise TypeError(errmsg) from None
 
-        if frame is not None:
-            u.trajectory[frame]  # advance to frame
+        if self.frame is not None:
+            requestedframe = self.frame
+            u.trajectory[requestedframe]  # advance to frame
         else:
             try:
-                frame = u.trajectory.ts.frame
+                requestedframe = u.trajectory.ts.frame
             except AttributeError:
-                frame = 0  # should catch cases when we are analyzing a single PDB (?)
+                requestedframe = 0  # should catch cases when we are analyzing a single PDB (?)
+
+        # account for explicit crd format, if requested
+        if self.crdext:
+            crdext = self.crdext
+        else:
+            crdext = crdext   # if not requested, default to NOEXT format
 
         atoms = selection.atoms  # make sure to use atoms (Issue 46)
         coor = atoms.positions  # can write from selection == Universe (Issue 49)
@@ -189,16 +221,23 @@ class CRDWriter(base.WriterBase):
         # Detect which format string we're using to output (EXT or not)
         # *len refers to how to truncate various things,
         # depending on output format!
+
         if n_atoms > 99999:
             at_fmt = self.fmt['ATOM_EXT']
             serial_len = 10
             resid_len = 8
             totres_len = 10
         else:
-            at_fmt = self.fmt['ATOM']
-            serial_len = 5
-            resid_len = 4
-            totres_len = 5
+            if crdext == True:
+                at_fmt = self.fmt['ATOM_EXT']
+                serial_len = 10
+                resid_len = 8
+                totres_len = 10
+            else:
+                at_fmt = self.fmt['ATOM']
+                serial_len = 5
+                resid_len = 4
+                totres_len = 5
 
         # Check for attributes, use defaults for missing ones
         attrs = {}
@@ -234,14 +273,17 @@ class CRDWriter(base.WriterBase):
         with util.openany(self.filename, 'w') as crd:
             # Write Title
             crd.write(self.fmt['TITLE'].format(
-                frame=frame, where=u.trajectory.filename))
+                frame=requestedframe, where=u.trajectory.filename))
             crd.write("*\n")
 
             # Write NUMATOMS
             if n_atoms > 99999:
                 crd.write(self.fmt['NUMATOMS_EXT'].format(n_atoms))
             else:
-                crd.write(self.fmt['NUMATOMS'].format(n_atoms))
+                if crdext == True:
+                    crd.write(self.fmt['NUMATOMS_EXT'].format(n_atoms))
+                else:
+                    crd.write(self.fmt['NUMATOMS'].format(n_atoms))
 
             # Write all atoms
 
