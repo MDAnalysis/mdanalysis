@@ -76,7 +76,7 @@ First load all modules and test data::
 
 
 Given a universe containing trajectory data we can perform Principal Component
-Analyis by using the class :class:`PCA` and retrieving the principal
+Analysis by using the class :class:`PCA` and retrieving the principal
 components.::
 
     u = mda.Universe(PSF, DCD)
