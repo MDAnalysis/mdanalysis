@@ -60,8 +60,12 @@ Data files
 .. _figure-rama-ref-plot:
 
 .. figure:: /images/rama_ref_plot.png
-   :scale: 50 %
+   :scale: 80%
    :alt: Ramachandran Ref Plot
+   
+   Reference Ramachandran plot, with contours that contain 90% 
+   ("allowed region") and 99% ("generously allowed region") of the data points 
+   from the reference data set.
 
 .. data:: Janin_ref
 
@@ -75,7 +79,7 @@ Data files
       import numpy as np
       import matplotlib.pyplot as plt
       from MDAnalysis.analysis.data.filenames import Janin_ref
-      X, Y = np.meshgrid(np.arange(-180, 180, 6), np.arange(-180, 180, 6))
+      X, Y = np.meshgrid(np.arange(0, 3600, 6), np.arange(0, 360, 6))
       Z = np.load(Janin_ref)
       ax.contourf(X, Y, Z, levels=[1, 6, 600])
 
@@ -88,8 +92,12 @@ Data files
 .. _figure-janin-ref-plot:
 
 .. figure:: /images/janin_ref_plot.png
-   :scale: 50 %
+   :scale: 85 %
    :alt: Janin Ref Plot
+
+   Janin reference plot with contours that contain 90% ("allowed region") and 
+   98% ("generously allowed region") of the data points from the reference data 
+   set.
 
 """
 
