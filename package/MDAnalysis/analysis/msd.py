@@ -184,7 +184,7 @@ We have now computed a self-diffusivity!
 Combining Multiple Replicates
 --------------------------------
 It is common practice to combine replicates when calculating MSDs. An example
-of this is shown below using MSD1 and MSD2
+of this is shown below using MSD1 and MSD2.
 
 .. code-block:: python
 
