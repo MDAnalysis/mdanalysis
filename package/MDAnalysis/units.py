@@ -109,15 +109,15 @@ concentration:
     M(H2O) = 18 g/mol   Molar mass of water
 
     factor = 1/(1e-24 * N_Avogadro / M(H2O))
-  
-  from :math:`rho/rho0 = n/(N_A * M^-1) / rho0`
 
-  where :math:`[n] = 1/Volume`, :math:`[rho] = mass/Volume`
+  from :math:`\rho/\rho_0 = n/(N_A * M^{-1}) / \rho_0`
+
+  where :math:`[n] = 1/Volume`, :math:`[\rho] = mass/Volume`
 
 
 Note
 ----
-In the future me might move towards using the Quantities_ package or
+In the future we might move towards using the Quantities_ package or
 :mod:`scipy.constants`.
 
 
