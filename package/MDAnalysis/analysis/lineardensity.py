@@ -42,6 +42,36 @@ class Results(Results):
     the docstring for LinearDensity for details. The Results class is defined
     here to implement deprecation warnings for the user."""
 
+    def __getitem__(self, key):
+        if key == "pos":
+            warnings.warn("`pos` is deprecated and will be removed in "
+                          "MDAnalysis 3.0.0. Please use `mass_density` instead."
+                          " See docstring of LinearDensity for more details.",
+                          DeprecationWarning)
+            return super(Results, self).__getitem__("mass_density")
+
+        elif key == "pos_std":
+            warnings.warn("`pos_std` is deprecated and will be removed in "
+                          "MDAnalysis 3.0.0. Please use `mass_density_stddev` "
+                          "instead. See docstring of LinearDensity for more "
+                          "details.", DeprecationWarning)
+            return super(Results, self).__getitem__("mass_density_stddev")
+
+        elif key == "char":
+            warnings.warn("`char` is deprecated and will be removed in "
+                          "MDAnalysis 3.0.0. Please use `charge_density` "
+                          "instead. See docstring of LinearDensity for more "
+                          "details.", DeprecationWarning)
+            return super(Results, self).__getitem__("charge_density")
+
+        elif key == "char_std":
+            warnings.warn("`char_std` is deprecated and will be removed in "
+                          "MDAnalysis 3.0.0. Please use `charge_density_stddev`"
+                          " instead. See docstring of LinearDensity for more "
+                          "details.", DeprecationWarning)
+            return super(Results, self).__getitem__("charge_density_stddev")
+        return super(Results, self).__getitem__(key)
+
     @property
     def pos(self):
         warnings.warn("`pos` is deprecated and will be removed in MDAnalysis "

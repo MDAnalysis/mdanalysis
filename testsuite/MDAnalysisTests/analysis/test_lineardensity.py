@@ -150,3 +150,9 @@ def test_old_name_deprecations():
     assert_allclose(ld.results.x.pos_std, ld.results.x.mass_density_stddev)
     assert_allclose(ld.results.x.char, ld.results.x.charge_density)
     assert_allclose(ld.results.x.char_std, ld.results.x.charge_density_stddev)
+    assert_allclose(ld.results["x"]["pos"], ld.results["x"]["mass_density"])
+    assert_allclose(ld.results["x"]["pos_std"], ld.results["x"]
+                    ["mass_density_stddev"])
+    assert_allclose(ld.results["x"]["char"], ld.results["x"]["charge_density"])
+    assert_allclose(ld.results["x"]["char_std"], ld.results["x"]
+                    ["charge_density_stddev"])
