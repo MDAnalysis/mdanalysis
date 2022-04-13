@@ -42,67 +42,28 @@ class Results(Results):
     the docstring for LinearDensity for details. The Results class is defined
     here to implement deprecation warnings for the user."""
 
+    _deprecation_dict = {"pos": "mass_density",
+                         "pos_std": "mass_density_stddev",
+                         "char": "charge_density",
+                         "char_std": "charge_density_stddev"}
+
+    def _deprication_warning(self, key):
+        warnings.warn(
+            f"`{key}` is deprecated and will be removed in version 3.0.0. "
+            f"Please use `{self._deprecation_dict[key]}` instead.",
+            DeprecationWarning)
+
     def __getitem__(self, key):
-        if key == "pos":
-            warnings.warn("`pos` is deprecated and will be removed in "
-                          "MDAnalysis 3.0.0. Please use `mass_density` instead."
-                          " See docstring of LinearDensity for more details.",
-                          DeprecationWarning)
-            return super(Results, self).__getitem__("mass_density")
-
-        elif key == "pos_std":
-            warnings.warn("`pos_std` is deprecated and will be removed in "
-                          "MDAnalysis 3.0.0. Please use `mass_density_stddev` "
-                          "instead. See docstring of LinearDensity for more "
-                          "details.", DeprecationWarning)
-            return super(Results, self).__getitem__("mass_density_stddev")
-
-        elif key == "char":
-            warnings.warn("`char` is deprecated and will be removed in "
-                          "MDAnalysis 3.0.0. Please use `charge_density` "
-                          "instead. See docstring of LinearDensity for more "
-                          "details.", DeprecationWarning)
-            return super(Results, self).__getitem__("charge_density")
-
-        elif key == "char_std":
-            warnings.warn("`char_std` is deprecated and will be removed in "
-                          "MDAnalysis 3.0.0. Please use `charge_density_stddev`"
-                          " instead. See docstring of LinearDensity for more "
-                          "details.", DeprecationWarning)
-            return super(Results, self).__getitem__("charge_density_stddev")
+        if key in self._deprecation_dict.keys():
+            self._deprication_warning(key)
+            return super(Results, self).__getitem__(self._deprecation_dict[key])
         return super(Results, self).__getitem__(key)
 
-    @property
-    def pos(self):
-        warnings.warn("`pos` is deprecated and will be removed in MDAnalysis "
-                      "3.0.0. Please use `mass_density` instead. See "
-                      "docstring of LinearDensity for more details.",
-                      DeprecationWarning)
-        return self.mass_density
-
-    @property
-    def pos_std(self):
-        warnings.warn("`pos_std` is deprecated and will be removed in "
-                      "MDAnalysis 3.0.0. Please use `mass_density_stddev` "
-                      "instead. See docstring of LinearDensity for more "
-                      "details.", DeprecationWarning)
-        return self.mass_density_stddev
-
-    @property
-    def char(self):
-        warnings.warn("`char` is deprecated and will be removed in MDAnalysis "
-                      "3.0.0. Please use `charge_density` instead. See "
-                      "docstring of LinearDensity for more details.",
-                      DeprecationWarning)
-        return self.charge_density
-
-    @property
-    def char_std(self):
-        warnings.warn("`char_std` is deprecated and will be removed in "
-                      "MDAnalysis 3.0.0. Please use `charge_density_stddev` "
-                      "instead. See docstring of LinearDensity for more "
-                      "details.", DeprecationWarning)
-        return self.charge_density_stddev
+    def __getattr__(self, attr):
+        if attr in self._deprecation_dict.keys():
+            self._deprication_warning(attr)
+            attr = self._deprecation_dict[attr]
+        return super(Results, self).__getattr__(attr)
 
 
 class LinearDensity(AnalysisBase):
@@ -128,11 +89,11 @@ class LinearDensity(AnalysisBase):
     results.x.dim : int
            index of the [xyz] axes
     results.x.mass_density : numpy.ndarray
-           mass density in [xyz] direction
+           mass density in g/cm^3 in [xyz] direction
     results.x.mass_density_stddev : numpy.ndarray
            standard deviation of the mass density in [xyz] direction
     results.x.charge_density : numpy.ndarray
-           charge density in [xyz] direction
+           charge density in (e * mol)/cm^3 in [xyz] direction
     results.x.charge_density_stddev : numpy.ndarray
            standard deviation of the charge density in [xyz] direction
     results.x.slice_volume : float
@@ -140,6 +101,7 @@ class LinearDensity(AnalysisBase):
     results.x.hist_bin_edges : numpy.ndarray
            edges of histogram bins for mass/charge densities, useful for, e.g.,
            plotting of histogram data.
+    Note: These density units are likely to be changed in the future.
 
     Example
     -------
