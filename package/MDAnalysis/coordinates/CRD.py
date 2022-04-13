@@ -123,8 +123,9 @@ class CRDWriter(base.WriterBase):
     - chainIDs
     - tempfactors
 
-    .. versionchanged:: 0.12.0
+    .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
+    .. versionchanged:: 0.12.0
        CRD extended format now can be explicitely requested
     """
     format = 'CRD'
