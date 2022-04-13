@@ -104,13 +104,14 @@ concentration:
 
      factor = 1 A**-3 / (N_Avogadro * (10**-9 dm)**-3)
 
-  relative to a density rho0 in g/cm^3::
+  relative to a density rho0 in g/cm^{3}::
 
     M(H2O) = 18 g/mol   Molar mass of water
 
     factor = 1/(1e-24 * N_Avogadro / M(H2O))
+  ::
 
-  from `rho/rho0 = n/(N_A * M**-1) / rho0`  where `[n] = 1/Volume`, `[rho] = mass/Volume`
+    from rho/rho0 = n/(N_A * M**-1) / rho0   where [n] = 1/Volume, [rho] = mass/Volume
 
 
 Note
@@ -219,7 +220,7 @@ water = {
     'MolarMass': 18.016,  # in g mol**-1
 }
 
-#: The basic unit for *densities* is Angstroem**(-3), i.e.
+#: The basic unit for *densities* is Angstrom**(-3), i.e.
 #: the volume per molecule in A**3. Especially for water
 #: it can be convenient to measure the density relative to bulk, and
 #: hence a number of values are pre-stored in :data:`water`.
@@ -314,9 +315,10 @@ chargeUnit_factor = {
     'C': constants['elementary_charge'], 'As': constants['elementary_charge'],
 }
 
-#: :data:`conversion_factor` is used by :func:`get_conversion_factor`:
-#: Note: any observable with a unit (i.e. one with an entry in
-#: the :attr:`unit` attribute) needs an entry in :data:`conversion_factor`
+#: :data:`conversion_factor` is used by :func:`get_conversion_factor`
+#: .. note:: 
+#:    any observable with a unit (i.e. one with an entry in
+#:    the :attr:`unit` attribute) needs an entry in :data:`conversion_factor`
 conversion_factor = {
     'length': lengthUnit_factor,
     'density': densityUnit_factor,
