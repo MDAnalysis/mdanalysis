@@ -169,7 +169,6 @@ class CRDWriter(base.WriterBase):
         else:
             self.crdext = False   # if not requested, default to NOEXT format
 
-
     def write(self, selection, frame=None, crdext=False):
         """Write selection at current trajectory frame to file.
 
@@ -217,7 +216,7 @@ class CRDWriter(base.WriterBase):
             resid_len = 8
             totres_len = 10
         else:
-            if crdext == True:
+            if crdext is True:
                 at_fmt = self.fmt['ATOM_EXT']
                 serial_len = 10
                 resid_len = 8
@@ -269,7 +268,7 @@ class CRDWriter(base.WriterBase):
             if n_atoms > 99999:
                 crd.write(self.fmt['NUMATOMS_EXT'].format(n_atoms))
             else:
-                if crdext == True:
+                if crdext is True:
                     crd.write(self.fmt['NUMATOMS_EXT'].format(n_atoms))
                 else:
                     crd.write(self.fmt['NUMATOMS'].format(n_atoms))
