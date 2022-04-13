@@ -56,7 +56,7 @@ All conversions with :func:`convert` are carried out in a simple fashion: the
 conversion factor :math:`f_{b,b'}` from the base unit :math:`b` to another unit
 :math:`b'` is precomputed and stored (see :ref:`Data`). The numerical value of
 a quantity in unit :math:`b` is :math:`X/b` (e.g. for :math:`X =
-1.23\,\mathrm{ps}` the numerical value is :math:`X/\mathrm{ps} =
+1.23\,\mathrm{ps}`, the numerical value is :math:`X/\mathrm{ps} =
 1.23`). [#funits]_
 
 The new numerical value :math:`X'/b'` of the quantity (in units of :math:`b'`)
@@ -89,7 +89,7 @@ density:
      n/x = n/A**3 * densityUnit_factor[x]
 
   Example for how to calculate the conversion factor
-  :math:`f_{\mathrm{Å}^{-3},\mathrm{nm}^{-3}}` from :math:`\mathrm{Å^-3}` to
+  :math:`f_{\mathrm{Å}^{-3},\mathrm{nm}^{-3}}` from :math:`\mathrm{Å}^{-3}` to
   :math:`\mathrm{nm}^{-3}`:
 
   .. math::
@@ -104,14 +104,15 @@ concentration:
 
      factor = 1 A**-3 / (N_Avogadro * (10**-9 dm)**-3)
 
-  relative to a density rho0 in g/cm^{3}::
+  relative to a density rho0 in :math:`g/cm^3`::
 
     M(H2O) = 18 g/mol   Molar mass of water
 
     factor = 1/(1e-24 * N_Avogadro / M(H2O))
-  ::
+  
+  from :math:`rho/rho0 = n/(N_A * M^-1) / rho0`
 
-    from rho/rho0 = n/(N_A * M**-1) / rho0   where [n] = 1/Volume, [rho] = mass/Volume
+  where :math:`[n] = 1/Volume`, :math:`[rho] = mass/Volume`
 
 
 Note
@@ -316,9 +317,8 @@ chargeUnit_factor = {
 }
 
 #: :data:`conversion_factor` is used by :func:`get_conversion_factor`
-#: .. note:: 
-#:    any observable with a unit (i.e. one with an entry in
-#:    the :attr:`unit` attribute) needs an entry in :data:`conversion_factor`
+#: NOTE: any observable with a unit (i.e. one with an entry in
+#: the :attr:`unit` attribute) needs an entry in :data:`conversion_factor`
 conversion_factor = {
     'length': lengthUnit_factor,
     'density': densityUnit_factor,
@@ -344,9 +344,9 @@ def get_conversion_factor(unit_type, u1, u2):
 
     f[u1 -> u2] = factor[u2]/factor[u1]
 
-    Conversion of X (in u1) to X' (in u2):
+    Conversion of :math:`X` (in u1) to :math:`X'` (in u2):
 
-        X' = conversion_factor * X
+       :math:`X'` = conversion_factor * :math:`X`
     """
     # x is in u1: from u1 to b:  x'  = x  / factor[u1]
     #             from b  to u2: x'' = x' * factor[u2]
