@@ -184,19 +184,19 @@ class LinearDensity(AnalysisBase):
        via key and attribute.
 
     .. versionchanged:: 2.2.0
-       Fixed a bug that caused LinearDensity to fail if grouping="residues"
+       | Fixed a bug that caused LinearDensity to fail if grouping="residues"
        or grouping="segments" were set.
-       Residues, segments, and fragments will be analysed based on their centre
-       of mass, not centre of geometry as previously stated.
-       LinearDensity now works with updating atom groups.
-       Changed names of result containers
-         :attr:`results.x.pos` -> :attr:`results.x.mass_density`
-         :attr:`results.x.pos_std` -> :attr:`results.x.mass_density_stddev`
-         :attr:`results.x.char` -> :attr:`results.x.charge_density`
-         :attr:`results.x.char_std` -> :attr:`results.x.charge_density_stddev`
-       Added new result container :attr:`results.x.hist_bin_edges`. It contains
-       the bin edges of the histrogram bins for calculated densities and can be
-       used for easier plotting of histogram data.
+       | Residues, segments, and fragments will be analysed based on their
+       centre of mass, not centre of geometry as previously stated.
+       | LinearDensity now works with updating atom groups.
+       | Changed names of result containers
+       |  :attr:`results.x.pos` -> :attr:`results.x.mass_density`
+       |  :attr:`results.x.pos_std` -> :attr:`results.x.mass_density_stddev`
+       |  :attr:`results.x.char` -> :attr:`results.x.charge_density`
+       |  :attr:`results.x.char_std` -> :attr:`results.x.charge_density_stddev`
+       | Added new result container :attr:`results.x.hist_bin_edges`.
+         It contains the bin edges of the histrogram bins for calculated
+         densities and can be used for easier plotting of histogram data.
     """
 
     def __init__(self, select, grouping='atoms', binsize=0.25, **kwargs):
