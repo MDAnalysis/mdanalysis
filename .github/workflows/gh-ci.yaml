@@ -13,7 +13,7 @@ concurrency:
   # Probably overly cautious group naming.
   # Commits to develop/master will cancel each other, but PRs will only cancel
   # commits within the same PR
-  group: "${{ github.ref }}-${{ github.head_ref }}"
+  group: "${{ github.ref }}-${{ github.head_ref }}-${{ github.workflow }}"
   cancel-in-progress: true
 
 defaults:
@@ -273,9 +273,11 @@ jobs:
         # mamba not enabled as install longer than deps install
         architecture: x64
 
-    - name: install_conda
+    - name: install_pip_conda
       run: |
-        conda install setuptools cython numpy twine
+        # Issue 3612 - readme_renderer is outdated on conda-forge
+        conda install setuptools cython numpy twine 
+        pip install "readme-renderer>=34.0"
 
     - name: install_mdanalysis
       run: |
