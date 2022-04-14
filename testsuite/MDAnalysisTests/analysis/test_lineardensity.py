@@ -23,6 +23,7 @@
 import MDAnalysis as mda
 import numpy as np
 import pytest
+import warnings
 
 from MDAnalysisTests.datafiles import waterPSF, waterDCD
 from MDAnalysis.analysis.lineardensity import LinearDensity
@@ -140,19 +141,30 @@ def test_updating_atomgroup():
     assert_allclose(ld.results.x.hist_bin_edges, expected_bin_edges)
 
 
+testdict = {"pos": "mass_density",
+            "pos_std": "mass_density_stddev",
+            "char": "charge_density",
+            "char_std": "charge_density_stddev"}
+
+
 def test_old_name_deprecations():
     universe = mda.Universe(waterPSF, waterDCD)
     sel_string = 'all'
     selection = universe.select_atoms(sel_string)
     ld = LinearDensity(selection, binsize=5).run()
+    with pytest.warns(DeprecationWarning):
+        assert_allclose(ld.results.x.pos, ld.results.x.mass_density)
+        assert_allclose(ld.results.x.pos_std, ld.results.x.mass_density_stddev)
+        assert_allclose(ld.results.x.char, ld.results.x.charge_density)
+        assert_allclose(ld.results.x.char_std,
+                        ld.results.x.charge_density_stddev)
+        for key in testdict.keys():
+            assert_allclose(ld.results["x"][key],
+                            ld.results["x"][testdict[key]])
 
-    assert_allclose(ld.results.x.pos, ld.results.x.mass_density)
-    assert_allclose(ld.results.x.pos_std, ld.results.x.mass_density_stddev)
-    assert_allclose(ld.results.x.char, ld.results.x.charge_density)
-    assert_allclose(ld.results.x.char_std, ld.results.x.charge_density_stddev)
-    assert_allclose(ld.results["x"]["pos"], ld.results["x"]["mass_density"])
-    assert_allclose(ld.results["x"]["pos_std"], ld.results["x"]
-                    ["mass_density_stddev"])
-    assert_allclose(ld.results["x"]["char"], ld.results["x"]["charge_density"])
-    assert_allclose(ld.results["x"]["char_std"], ld.results["x"]
-                    ["charge_density_stddev"])
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        ld.results.x.mass_density
+        ld.results.x.mass_density_stddev
+        ld.results.x.charge_density
+        ld.results.x.charge_density_stddev

@@ -89,11 +89,12 @@ class LinearDensity(AnalysisBase):
     results.x.dim : int
            index of the [xyz] axes
     results.x.mass_density : numpy.ndarray
-           mass density in g/cm^3 in [xyz] direction
+           mass density in :math:`g \cdot cm^{-3}` in [xyz] direction
     results.x.mass_density_stddev : numpy.ndarray
            standard deviation of the mass density in [xyz] direction
     results.x.charge_density : numpy.ndarray
-           charge density in (e * mol)/cm^3 in [xyz] direction
+           charge density in :math:`\mathrm{e} \cdot mol \cdot cm^{-3}` in
+           [xyz] direction
     results.x.charge_density_stddev : numpy.ndarray
            standard deviation of the charge density in [xyz] direction
     results.x.slice_volume : float
