@@ -326,7 +326,8 @@ class HydrogenBondAutoCorrel(object):
                 raise ValueError(
                         "'exclusion' must be two arrays of identical length")
             self.exclusions = np.column_stack((exclusions[0], 
-                exclusions[1])).astype(np.intp)
+                                               exclusions[1]))
+                                               .astype(np.intp)
         else:
             self.exclusions = None
 
@@ -432,7 +433,8 @@ class HydrogenBondAutoCorrel(object):
 
         # 2d array of all distances
         pair = capped_distance(self.h.positions, self.a.positions,
-                max_cutoff=self.d_crit, box=box, return_distances=False)
+                               max_cutoff=self.d_crit, box=box,
+                               return_distances=False)
         if self.exclusions is not None:
             pair = pair[~ _in2d(pair, self.exclusions)]
 
