@@ -264,7 +264,10 @@ class LinearDensity(AnalysisBase):
             self.results[dim]['hist_bin_edges'] = bin_edges
 
     def _conclude(self):
-        k = 6.022e-1  # divide by avodagro and convert from A3 to cm3
+        avogadro = 6.022e23  # unit: mol^{-1}
+        volume_conversion = 1e-24  # unit: A^3/cm^3
+        # divide result values by avodagro and convert from A3 to cm3
+        k = avogadro * volume_conversion
 
         # Average results over the number of configurations
         for dim in ['x', 'y', 'z']:
@@ -289,6 +292,7 @@ class LinearDensity(AnalysisBase):
                 np.sqrt(radicand_charge)
 
         for dim in ['x', 'y', 'z']:
+            # norming factor, units of mol^-1 cm^3
             norm = k * self.results[dim]['slice_volume']
             for key in self.keys:
                 self.results[dim][key] /= norm
