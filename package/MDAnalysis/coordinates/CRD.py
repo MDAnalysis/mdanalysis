@@ -164,10 +164,7 @@ class CRDWriter(base.WriterBase):
         self.crd = None
 
         # account for explicit crd format, if requested
-        if "crdext" in kwargs.keys():
-            self.crdext = kwargs.pop('crdext')
-        else:
-            self.crdext = False   # if not requested, default to NOEXT format
+        self.extended = kwargs.pop("extended", False)
 
     def write(self, selection, frame=None, crdext=False):
         """Write selection at current trajectory frame to file.
