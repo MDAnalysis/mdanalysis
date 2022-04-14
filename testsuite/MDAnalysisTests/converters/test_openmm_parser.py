@@ -159,38 +159,7 @@ class TestOpenMMTopologyParser(OpenMMTopologyBase):
     expected_n_bonds = 1922
 
 
-class TestOpenMMTopologyParserWithNoElements(OpenMMTopologyBase):
-    ref_filename = app.PDBFile(PDB).topology
-    for a in ref_filename.atoms():
-        a.element = None
-
-    expected_n_atoms = 47681
-    expected_n_residues = 11302
-    expected_n_segments = 1
-    expected_n_bonds = 25533
-
-    expected_attrs = [
-        "ids",
-        "names",
-        "resids",
-        "resnames",
-        "masses",
-        "bonds",
-        "chainIDs",
-    ]
-
-    def test_no_elements_warn(self):
-        wmsg = ("Element information is missing for all the atoms. "
-                "Elements attribute will not be populated. "
-                "Atomtype attribute will be guessed using atom "
-                "name and mass will be guessed using atomtype."
-                "See MDAnalysis.topology.guessers.")
-
-        with pytest.warns(UserWarning, match=wmsg):
-            mda_top = self.parser(self.ref_filename).parse()
-
-
-class TestOpenMMTopologyParserWithPartialElements():
+class TestOpenMMTopologyParserWithPartialElements(OpenMMTopologyBase):
     parser = mda.converters.OpenMMParser.OpenMMTopologyParser
     ref_filename = app.PDBFile(PDB).topology
     expected_n_atoms = 47681
@@ -211,6 +180,22 @@ class TestOpenMMTopologyParserWithPartialElements():
             assert mda_top.types.values[3388] == 'X'
             assert mda_top.elements.values[3344] == ''
             assert mda_top.elements.values[3388] == ''
+
+
+def test_no_elements_warn():
+    parser = mda.converters.OpenMMParser.OpenMMTopologyParser
+    omm_top = app.PDBFile(CONECT).topology
+    for a in omm_top.atoms():
+        a.element = None
+
+    wmsg = ("Element information is missing for all the atoms. "
+            "Elements attribute will not be populated. "
+            "Atomtype attribute will be guessed using atom "
+            "name and mass will be guessed using atomtype."
+            "See MDAnalysis.topology.guessers.")
+
+    with pytest.warns(UserWarning, match=wmsg):
+        mda_top = parser(omm_top).parse()
 
 
 def test_invalid_element_symbols():
