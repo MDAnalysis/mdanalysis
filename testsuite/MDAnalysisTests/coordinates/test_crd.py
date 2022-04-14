@@ -66,10 +66,9 @@ class TestCRDWriter(object):
         for ref, other in zip(CRD_iter(CRD), CRD_iter(outfile)):
             assert ref == other
 
-    def test_write_EXT(self):
-        # TODO: Write tests that use EXT output format
-        # Must have *lots* of atoms, maybe fake the system
-        # to make tests faster
+    def test_write_EXT(self, u, outfile):
+        # Use the `extended` keyword to force the EXT format
+        u.atoms.write(outfile, extended=True)
         pass
 
 
