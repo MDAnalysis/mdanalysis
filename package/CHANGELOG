@@ -35,7 +35,7 @@ Enhancements
     conjugated systems should now have correctly assigned bond orders and
     charges.
   * CRD extended format can now be explicitly requested with the `extended` 
-    keyword
+    keyword (Issue #3605)
 
 Changes
   * ITPParser no longer adds an angle for water molecules that have the SETTLE
