@@ -20,6 +20,8 @@ The rules for this file:
  * 2.2.0
 
 Fixes
+  * Fixed Numpy deprecation warnings about elementwise comparisons.
+    (Issue #3535, PR #3619)
   * Updated Elementwise Comparison. (Issue #3535, PR #3619)
   * Fixed encore.covariance.covariance_matrix not working when providing
     an external reference (Issue #3539, PR #3621)

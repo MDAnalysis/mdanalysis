@@ -325,9 +325,9 @@ class HydrogenBondAutoCorrel(object):
             if len(exclusions[0]) != len(exclusions[1]):
                 raise ValueError(
                         "'exclusion' must be two arrays of identical length")
-            self.exclusions = np.column_stack((exclusions[0], 
-                                               exclusions[1]))
-                                               .astype(np.intp)
+            self.exclusions = np.column_stack((
+                exclusions[0], exclusions[1]
+            )).astype(np.intp)
         else:
             self.exclusions = None
 
