@@ -13,16 +13,19 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy, 
-         HenokB, umak1106, tamandeeps, yuxuanzhuang
+??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy,
+         HenokB, umak1106, tamandeeps, Mrqeoqqt, megosato, AnirG, rishu235,
+         mtiberti, manishsaini6421, yuxuanzhuang
 
  * 2.2.0
 
 Fixes
-  * Fix the competition when generating offsets from multiple processes by
-    using a interprocess file lock. (Issue #1988, PR #3375)
-  * Fix the error when trying to load a corrupted offset file (Issue #3230
-    PR #3375)
+  * Fixed encore.covariance.covariance_matrix not working when providing
+    an external reference (Issue #3539, PR #3621)
+  * Fixed LinearDensity not working with grouping='residues' or 'segments'
+    (Issue #3571, PR #3572)
+  * MOL2 can read files without providing optional columns:
+    subst_id, subst_name and charge. (Issue #3385, PR #3598)
   * When converting an AtomGroup to an RDKit molecule (PR #3044):
     - the atoms are now in the same order
     - the output of `atom.GetMonomerInfo().GetName()` now follows the
@@ -33,8 +36,17 @@ Fixes
     (Issue #2666, PR #3565)
   * Fixed DumpReader triclinic box dimensions reading. (Issue #3386, PR #3403)
   * Updated the badge in README of MDAnalysisTest to point to Github CI Actions
+  * Fixed FrameIteratorIndices doesn't rewind. (Issue #3416)
+  * Fix the competition when generating offsets from multiple processes by
+    using a interprocess file lock. (Issue #1988, PR #3375)
+  * Fix the error when trying to load a corrupted offset file (Issue #3230
+    PR #3375)  
 
 Enhancements
+  * PCA class now has an inverse-PCA function. The inverse transform can
+    also be extrapolated to certain non-PCA atoms. (PR #3596, Issue #2703)
+ * `DistanceMatrix` class in MDAnalysis.analysis.diffusionmap now also
+    accepts `AtomGroup` as a valid argument (Issue #3486, PR #3541)
   * Improves the RDKitConverter's accuracy (PR #3044): AtomGroups containing
     monatomic ion charges or edge cases with nitrogen, sulfur, phosphorus and
     conjugated systems should now have correctly assigned bond orders and

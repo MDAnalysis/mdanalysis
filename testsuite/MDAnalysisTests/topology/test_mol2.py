@@ -34,6 +34,75 @@ from MDAnalysisTests.datafiles import (
 )
 
 
+mol2_wo_opt_col = """\
+@<TRIPOS>MOLECULE
+mol2_wo_opt_col
+2
+SMALL
+NO_CHARGES
+@<TRIPOS>ATOM
+  1 N1       6.8420     9.9900    22.7430 N.am
+  2 N2       4.4000     9.1300    20.4710 N.am
+"""
+
+mol2_partial_opt_col = """\
+@<TRIPOS>MOLECULE
+mol2_partial_opt_col
+2
+SMALL
+NO_CHARGES
+@<TRIPOS>ATOM
+  1 N1       6.8420     9.9900    22.7430 N.am  1
+  2 N2       4.4000     9.1300    20.4710 N.am  2
+"""
+
+mol2_resname_unformat = """\
+@<TRIPOS>MOLECULE
+mol2_resname_unformat
+2 1 0 0 0
+SMALL
+NO_CHARGES
+
+@<TRIPOS>ATOM
+  1 O        3.0000    0.0000    0.0000 O.3     1
+  2 C        2.0000    0.0000    0.0000 C.2     1  UNL1
+"""
+
+mol2_wo_required_col = """\
+@<TRIPOS>MOLECULE
+mol2_wo_required_col
+2
+SMALL
+NO_CHARGES
+@<TRIPOS>ATOM
+  1 N1       6.8420     9.9900    22.7430
+  2 N2       4.4000     9.1300    20.4710
+"""
+
+mol2_no_charge_error1 = """\
+@<TRIPOS>MOLECULE
+mol2_no_charge_error1
+2 1 0 0 0
+SMALL
+NO_CHARGES
+
+@<TRIPOS>ATOM
+  1 O        3.0000    0.0000    0.0000 O.3     1  UNL1       -0.0520
+  2 C        2.0000    0.0000    0.0000 C.2     1  UNL1        0.0520
+"""
+
+mol2_no_charge_error2 = """\
+@<TRIPOS>MOLECULE
+mol2_no_charge_error2
+2 1 0 0 0
+SMALL
+MMFF94_CHARGES
+
+@<TRIPOS>ATOM
+  1 O        3.0000     0.0000    0.0000 O.3    1  UNL1
+  2 C        2.0000     0.0000    0.0000 C.2    1  UNL1
+"""
+
 mol2_wrong_element = """\
 @<TRIPOS>MOLECULE
 mol2_wrong_element
@@ -192,3 +261,43 @@ def test_all_elements():
         ["S"] * 6 + ["P"] + ["Cr"] * 2 + ["Co"]
     expected = np.array(expected, dtype=object)
     assert_equal(u.atoms.elements, expected)
+
+
+# Test for Issue #3385 / PR #3598
+def test_wo_optional_columns():
+    u = mda.Universe(StringIO(mol2_wo_opt_col), format='MOL2')
+    assert_equal(u.atoms.resids, np.array([1, 1]))
+    with pytest.raises(mda.exceptions.NoDataError):
+        u.atoms.resnames
+    with pytest.raises(mda.exceptions.NoDataError):
+        u.atoms.charges
+
+
+def test_partial_optional_columns():
+    u = mda.Universe(StringIO(mol2_partial_opt_col), format='MOL2')
+    assert_equal(u.atoms.resids, np.array([1, 2]))
+    with pytest.raises(mda.exceptions.NoDataError):
+        u.atoms.resnames
+    with pytest.raises(mda.exceptions.NoDataError):
+        u.atoms.charges
+
+
+def test_mol2_wo_required_columns():
+    with pytest.raises(ValueError,
+                       match='The @<TRIPOS>ATOM block in mol2 file'):
+        u = mda.Universe(StringIO(mol2_wo_required_col), format='MOL2')
+
+
+def test_mol2_no_charges():
+    with pytest.raises(ValueError,
+                       match='indicates no charges'):
+        u = mda.Universe(StringIO(mol2_no_charge_error1), format='MOL2')
+    with pytest.raises(ValueError,
+                       match='indicates a charge model'):
+        u = mda.Universe(StringIO(mol2_no_charge_error2), format='MOL2')
+
+
+def test_unformat():
+    with pytest.raises(ValueError,
+                       match='Some atoms in the mol2 file'):
+        u = mda.Universe(StringIO(mol2_resname_unformat), format='MOL2')
