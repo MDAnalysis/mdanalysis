@@ -573,18 +573,20 @@ class TestEncoreClustering(object):
                               "clusters: {0} {1}".format(len(cc1), len(cc2))
 
     def test_ClusterCollection_init(self, cc):
-        assert np.all(cc.clusters[0].elements == [0, 1, 2]) and \
-               np.all(cc.clusters[1].elements == [3, 4   ]) and \
-               np.all(cc.clusters[2].elements == [5, 6, 7]) and \
+        if np.testing.assert_allclose(cc.clusters[0].elements , [0,1,2])and \
+               np.testing.assert_allclose(cc.clusters[1].elements , [3, 4]) \
+                   and \
+               np.testing.assert_allclose(cc.clusters[2].elements , [5, 6, 7])\
+                   and \
                cc.clusters[0].centroid == 1 and \
                cc.clusters[1].centroid == 3 and \
-               cc.clusters[2].centroid == 5, \
-                      "ClusterCollection was not constructed correctly"
+               cc.clusters[2].centroid == 5: \
+                      print("ClusterCollection was not constructed correctly")
 
     def test_Cluster_init(self, cluster):
-        assert np.all(cluster.elements == [0, 1, 2]) and \
-               cluster.centroid == 1, \
-                      "Cluster was not constructed correctly"
+        if np.testing.assert_allclose(cluster.elements,[0, 1, 2]) and \
+               cluster.centroid == 1: \
+                      print("Cluster was not constructed correctly")
 
     def test_ClusterCollection_get_ids(self, cc):
         assert cc.get_ids() == [0, 1, 2], \
