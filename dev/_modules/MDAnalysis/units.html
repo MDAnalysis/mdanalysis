@@ -147,7 +147,7 @@
 <span class="sd">conversion factor :math:`f_{b,b&#39;}` from the base unit :math:`b` to another unit</span>
 <span class="sd">:math:`b&#39;` is precomputed and stored (see :ref:`Data`). The numerical value of</span>
 <span class="sd">a quantity in unit :math:`b` is :math:`X/b` (e.g. for :math:`X =</span>
-<span class="sd">1.23\,\mathrm{ps}` the numerical value is :math:`X/\mathrm{ps} =</span>
+<span class="sd">1.23\,\mathrm{ps}`, the numerical value is :math:`X/\mathrm{ps} =</span>
 <span class="sd">1.23`). [#funits]_</span>
 
 <span class="sd">The new numerical value :math:`X&#39;/b&#39;` of the quantity (in units of :math:`b&#39;`)</span>
@@ -180,7 +180,7 @@
 <span class="sd">     n/x = n/A**3 * densityUnit_factor[x]</span>
 
 <span class="sd">  Example for how to calculate the conversion factor</span>
-<span class="sd">  :math:`f_{\mathrm{Å}^{-3},\mathrm{nm}^{-3}}` from :math:`\mathrm{Å^-3}` to</span>
+<span class="sd">  :math:`f_{\mathrm{Å}^{-3},\mathrm{nm}^{-3}}` from :math:`\mathrm{Å}^{-3}` to</span>
 <span class="sd">  :math:`\mathrm{nm}^{-3}`:</span>
 
 <span class="sd">  .. math::</span>
@@ -195,18 +195,20 @@
 
 <span class="sd">     factor = 1 A**-3 / (N_Avogadro * (10**-9 dm)**-3)</span>
 
-<span class="sd">  relative to a density rho0 in g/cm^3::</span>
+<span class="sd">  relative to a density rho0 in :math:`g/cm^3`::</span>
 
 <span class="sd">    M(H2O) = 18 g/mol   Molar mass of water</span>
 
 <span class="sd">    factor = 1/(1e-24 * N_Avogadro / M(H2O))</span>
 
-<span class="sd">  from `rho/rho0 = n/(N_A * M**-1) / rho0`  where `[n] = 1/Volume`, `[rho] = mass/Volume`</span>
+<span class="sd">  from :math:`\rho/\rho_0 = n/(N_A * M^{-1}) / \rho_0`</span>
+
+<span class="sd">  where :math:`[n] = 1/Volume`, :math:`[\rho] = mass/Volume`</span>
 
 
 <span class="sd">Note</span>
 <span class="sd">----</span>
-<span class="sd">In the future me might move towards using the Quantities_ package or</span>
+<span class="sd">In the future we might move towards using the Quantities_ package or</span>
 <span class="sd">:mod:`scipy.constants`.</span>
 
 
@@ -310,7 +312,7 @@
     <span class="s1">&#39;MolarMass&#39;</span><span class="p">:</span> <span class="mf">18.016</span><span class="p">,</span>  <span class="c1"># in g mol**-1</span>
 <span class="p">}</span>
 
-<span class="c1">#: The basic unit for *densities* is Angstroem**(-3), i.e.</span>
+<span class="c1">#: The basic unit for *densities* is Angstrom**(-3), i.e.</span>
 <span class="c1">#: the volume per molecule in A**3. Especially for water</span>
 <span class="c1">#: it can be convenient to measure the density relative to bulk, and</span>
 <span class="c1">#: hence a number of values are pre-stored in :data:`water`.</span>
@@ -405,8 +407,8 @@
     <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="n">constants</span><span class="p">[</span><span class="s1">&#39;elementary_charge&#39;</span><span class="p">],</span> <span class="s1">&#39;As&#39;</span><span class="p">:</span> <span class="n">constants</span><span class="p">[</span><span class="s1">&#39;elementary_charge&#39;</span><span class="p">],</span>
 <span class="p">}</span>
 
-<span class="c1">#: :data:`conversion_factor` is used by :func:`get_conversion_factor`:</span>
-<span class="c1">#: Note: any observable with a unit (i.e. one with an entry in</span>
+<span class="c1">#: :data:`conversion_factor` is used by :func:`get_conversion_factor`</span>
+<span class="c1">#: NOTE: any observable with a unit (i.e. one with an entry in</span>
 <span class="c1">#: the :attr:`unit` attribute) needs an entry in :data:`conversion_factor`</span>
 <span class="n">conversion_factor</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="n">lengthUnit_factor</span><span class="p">,</span>
@@ -433,9 +435,9 @@
 
 <span class="sd">    f[u1 -&gt; u2] = factor[u2]/factor[u1]</span>
 
-<span class="sd">    Conversion of X (in u1) to X&#39; (in u2):</span>
+<span class="sd">    Conversion of :math:`X` (in u1) to :math:`X&#39;` (in u2):</span>
 
-<span class="sd">        X&#39; = conversion_factor * X</span>
+<span class="sd">       :math:`X&#39;` = conversion_factor * :math:`X`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># x is in u1: from u1 to b:  x&#39;  = x  / factor[u1]</span>
     <span class="c1">#             from b  to u2: x&#39;&#39; = x&#39; * factor[u2]</span>
@@ -483,7 +485,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.</p>
+    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Robot Jelly, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.</p>
   </div>
 
   
