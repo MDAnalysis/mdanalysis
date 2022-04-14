@@ -125,8 +125,9 @@ class CRDWriter(base.WriterBase):
 
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
-    .. versionchanged:: 0.12.0
-       CRD extended format now can be explicitely requested
+    .. versionchanged:: 2.2.0
+       CRD extended format can now be explicitly requested with the
+       `extended` keyword
     """
     format = 'CRD'
     units = {'time': None, 'length': 'Angstrom'}
@@ -154,10 +155,15 @@ class CRDWriter(base.WriterBase):
         filename : str or :class:`~MDAnalysis.lib.util.NamedStream`
              name of the output file or a stream
 
-        crdext   : bool (optional)
+        extended : bool (optional)
              By default, noextended CRD format is used [``False``].
              However, extended CRD format can be forced by
-             specifying `crdext` ``=True``.
+             specifying `extended` ``=True``.
+
+
+        .. versionchanged:: 2.2.0
+           CRD extended format can now be explicitly requested with the
+           `extended` keyword
         """
 
         self.filename = util.filename(filename, ext='crd')
@@ -206,16 +212,10 @@ class CRDWriter(base.WriterBase):
             resid_len = 8
             totres_len = 10
         else:
-            if crdext is True:
-                at_fmt = self.fmt['ATOM_EXT']
-                serial_len = 10
-                resid_len = 8
-                totres_len = 10
-            else:
-                at_fmt = self.fmt['ATOM']
-                serial_len = 5
-                resid_len = 4
-                totres_len = 5
+            at_fmt = self.fmt['ATOM']
+            serial_len = 5
+            resid_len = 4
+            totres_len = 5
 
         # Check for attributes, use defaults for missing ones
         attrs = {}
@@ -255,13 +255,10 @@ class CRDWriter(base.WriterBase):
             crd.write("*\n")
 
             # Write NUMATOMS
-            if n_atoms > 99999:
+            if self.extended or n_atoms > 99999:
                 crd.write(self.fmt['NUMATOMS_EXT'].format(n_atoms))
             else:
-                if crdext is True:
-                    crd.write(self.fmt['NUMATOMS_EXT'].format(n_atoms))
-                else:
-                    crd.write(self.fmt['NUMATOMS'].format(n_atoms))
+                crd.write(self.fmt['NUMATOMS'].format(n_atoms))
 
             # Write all atoms
 
