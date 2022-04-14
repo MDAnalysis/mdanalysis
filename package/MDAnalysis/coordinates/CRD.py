@@ -192,12 +192,6 @@ class CRDWriter(base.WriterBase):
             except AttributeError:
                 frame = 0  # should catch cases when we are analyzing a single PDB (?)
 
-        # account for explicit crd format, if requested
-        if self.crdext:
-            crdext = self.crdext
-        else:
-            crdext = crdext   # if not requested, default to NOEXT format
-
 
         atoms = selection.atoms  # make sure to use atoms (Issue 46)
         coor = atoms.positions  # can write from selection == Universe (Issue 49)
