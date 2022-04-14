@@ -67,7 +67,7 @@ class Results(Results):
 
 
 class LinearDensity(AnalysisBase):
-    """Linear density profile
+    r"""Linear density profile
 
     Parameters
     ----------
