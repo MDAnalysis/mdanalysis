@@ -161,7 +161,6 @@ class OpenMMTopologyParser(TopologyReaderBase):
         validated_elements = []
         masses = []
         atomtypes = []
-        warn = False
         for a in omm_topology.atoms():
             elem = a.element
             if elem is not None:
@@ -177,26 +176,29 @@ class OpenMMTopologyParser(TopologyReaderBase):
                 masses.append(0.0)
                 atomtypes.append('X')
 
-        if warn:
-            wmsg = (f"Element information missing for some atoms. "
-                    f"These have been given an empty element record "
-                    f"with their atomtype set to 'X' "
-                    f"and their mass set to 0.0. "
-                    f"If needed they can be guessed using "
-                    f"MDAnalysis.topology.guessers.")
-            warnings.warn(wmsg)
+        if not all(validated_elements):
+            if any(validated_elements):
+                warnings.warn("Element information missing for some atoms. "
+                              "These have been given an empty element record ")
+                if any([i == 'X' for i in atomtypes]):
+                    warnings.warn("For absent elements, atomtype has been  "
+                                  "set to 'X' and mass has been set to 0.0. "
+                                  "If needed these can be guessed using "
+                                  "MDAnalysis.topology.guessers.")
+                attrs.append(Elements(np.array(validated_elements,
+                                               dtype=object)))
 
-        if not any(validated_elements):
-            atomtypes = guess_types(atomnames)
-            masses = guess_masses(atomtypes)
-            warnings.warn("Element information is missing for all the atoms. "
-                          "Elements attribute will not be populated. "
-                          "Atomtype attribute will be guessed using atom "
-                          "name and mass will be guessed using atomtype."
-                          "See MDAnalysis.topology.guessers.")
+            else:
+                atomtypes = guess_types(atomnames)
+                masses = guess_masses(atomtypes)
+                wmsg = ("Element information is missing for all the atoms. "
+                        "Elements attribute will not be populated. "
+                        "Atomtype attribute will be guessed using atom "
+                        "name and mass will be guessed using atomtype."
+                        "See MDAnalysis.topology.guessers.")
+                warnings.warn(wmsg)
         else:
             attrs.append(Elements(np.array(validated_elements, dtype=object)))
-
         attrs.append(Atomtypes(np.array(atomtypes, dtype=object)))
         attrs.append(Masses(np.array(masses)))
 

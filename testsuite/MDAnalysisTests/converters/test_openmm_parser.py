@@ -168,18 +168,24 @@ class TestOpenMMTopologyParserWithPartialElements(OpenMMTopologyBase):
     expected_n_bonds = 25533
 
     def test_with_partial_elements(self):
-        wmsg = (f"Element information missing for some atoms. "
-                f"These have been given an empty element record "
-                f"with their atomtype set to 'X' "
-                f"and their mass set to 0.0. "
-                f"If needed they can be guessed using "
-                f"MDAnalysis.topology.guessers.")
-        with pytest.warns(UserWarning, match=wmsg):
+        wmsg1 = ("Element information missing for some atoms. "
+                 "These have been given an empty element record ")
+
+        wmsg2 = ("For absent elements, atomtype has been  "
+                 "set to 'X' and mass has been set to 0.0. "
+                 "If needed these can be guessed using "
+                 "MDAnalysis.topology.guessers.")
+
+        with pytest.warns(UserWarning) as warnings:
             mda_top = self.parser(self.ref_filename).parse()
             assert mda_top.types.values[3344] == 'X'
             assert mda_top.types.values[3388] == 'X'
             assert mda_top.elements.values[3344] == ''
             assert mda_top.elements.values[3388] == ''
+
+            assert len(warnings) == 2
+            assert str(warnings[0].message) == wmsg1
+            assert str(warnings[1].message) == wmsg2
 
 
 def test_no_elements_warn():
