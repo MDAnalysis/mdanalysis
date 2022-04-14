@@ -200,8 +200,7 @@ class CRDWriter(base.WriterBase):
         # Detect which format string we're using to output (EXT or not)
         # *len refers to how to truncate various things,
         # depending on output format!
-
-        if n_atoms > 99999:
+        if self.extended or n_atoms > 99999:
             at_fmt = self.fmt['ATOM_EXT']
             serial_len = 10
             resid_len = 8
