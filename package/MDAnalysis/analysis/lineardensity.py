@@ -67,7 +67,7 @@ class Results(Results):
 
 
 class LinearDensity(AnalysisBase):
-    """Linear density profile
+    r"""Linear density profile
 
     Parameters
     ----------
@@ -147,19 +147,24 @@ class LinearDensity(AnalysisBase):
        via key and attribute.
 
     .. versionchanged:: 2.2.0
-       | Fixed a bug that caused LinearDensity to fail if grouping="residues"
-       or grouping="segments" were set.
-       | Residues, segments, and fragments will be analysed based on their
-       centre of mass, not centre of geometry as previously stated.
-       | LinearDensity now works with updating atom groups.
-       | Changed names of result containers
-       |  :attr:`results.x.pos` -> :attr:`results.x.mass_density`
-       |  :attr:`results.x.pos_std` -> :attr:`results.x.mass_density_stddev`
-       |  :attr:`results.x.char` -> :attr:`results.x.charge_density`
-       |  :attr:`results.x.char_std` -> :attr:`results.x.charge_density_stddev`
-       | Added new result container :attr:`results.x.hist_bin_edges`.
-         It contains the bin edges of the histrogram bins for calculated
-         densities and can be used for easier plotting of histogram data.
+
+       *  Fixed a bug that caused LinearDensity to fail if grouping="residues"
+          or grouping="segments" were set.
+       *  Residues, segments, and fragments will be analysed based on their
+          centre of mass, not centre of geometry as previously stated.
+       *  LinearDensity now works with updating atom groups.
+       *  Added new result container :attr:`results.x.hist_bin_edges`.
+          It contains the bin edges of the histrogram bins for calculated
+          densities and can be used for easier plotting of histogram data.
+
+
+    .. deprecated:: 2.2.0
+       The `results` dictionary has been changed and the attributes
+       :attr:`results.x.pos`, :attr:`results.x.pos_std`, :attr:`results.x.char`
+       and :attr:`results.x.char_std` are now deprecated. They will be removed
+       in 3.0.0. Please use :attr:`results.x.mass_density`,
+       :attr:`results.x.mass_density_stddev`, :attr:`results.x.charge_density`,
+       and :attr:`results.x.charge_density_stddev` instead.
     """
 
     def __init__(self, select, grouping='atoms', binsize=0.25, **kwargs):
