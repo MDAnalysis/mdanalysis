@@ -166,7 +166,7 @@ class CRDWriter(base.WriterBase):
         # account for explicit crd format, if requested
         self.extended = kwargs.pop("extended", False)
 
-    def write(self, selection, frame=None, crdext=False):
+    def write(self, selection, frame=None):
         """Write selection at current trajectory frame to file.
 
         Parameters
