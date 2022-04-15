@@ -68,8 +68,11 @@ class TestCRDWriter(object):
 
     def test_write_EXT(self, u, outfile):
         # Use the `extended` keyword to force the EXT format
-        u.atoms.write(outfile, extended=True)
-        pass
+        try:
+            u.atoms.write(outfile, extended=True)
+        except Exception:
+            pytest.fail()
+        
 
 
 class TestCRDWriterMissingAttrs(object):
