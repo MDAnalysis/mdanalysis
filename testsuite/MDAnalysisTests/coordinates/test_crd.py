@@ -28,6 +28,7 @@ from numpy.testing import (
 )
 
 import MDAnalysis as mda
+import os
 
 from MDAnalysisTests.datafiles import CRD
 from MDAnalysisTests import make_Universe
@@ -40,7 +41,8 @@ class TestCRDWriter(object):
 
     @pytest.fixture()
     def outfile(self, tmpdir):
-        return str(tmpdir) + '/out.crd'
+        #return str(tmpdir) + '/out.crd'
+        return os.path.join(str(tmpdir), 'test.crd')
 
     def test_write_atoms(self, u, outfile):
         # Test that written file when read gives same coordinates
@@ -68,11 +70,12 @@ class TestCRDWriter(object):
 
     def test_write_EXT(self, u, outfile):
         # Use the `extended` keyword to force the EXT format
-        try:
-            u.atoms.write(outfile, extended=True)
-        except Exception:
-            pytest.fail()
-        
+        u.atoms.write(outfile, extended=True)
+
+        with open(outfile, 'r') as inf:
+            format_line = inf.readlines()[2]
+            assert 'EXT' in format_line, "EXT format expected"
+            
 
 
 class TestCRDWriterMissingAttrs(object):
