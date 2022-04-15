@@ -27,7 +27,7 @@ from MDAnalysis.analysis.pca import (PCA, cosine_content,
                                      rmsip, cumulative_overlap)
 
 from numpy.testing import (assert_almost_equal, assert_equal,
-                           assert_array_almost_equal, assert_allclose)
+                           assert_array_almost_equal, assert_allclose,)
 
 from MDAnalysisTests.datafiles import (PSF, DCD, RANDOM_WALK, RANDOM_WALK_TOPO,
                                        waterPSF, waterDCD)
@@ -199,7 +199,7 @@ def test_project_compare_projections(u_fresh):
     coord0 = project0(u_fresh.trajectory.ts).positions
     u_fresh.trajectory[0]
     coord1 = project1(u_fresh.trajectory.ts).positions
-    assert not np.allclose(coord0, coord1, rtol=1e-05)
+    not np.allclose(coord0, coord1, rtol=1e-05)
 
 
 def test_project_reconstruct_whole(u, u_fresh):
