@@ -133,6 +133,5 @@ class TestBAT(object):
         XYZ = R.Cartesian(bat[0])
         PQR = R.Cartesian(bat[0])
         assert_almost_equal(PQR, selected_residues.positions, 5,
-            err_msg="error: Reconstructed Cartesian coordinates " + \
-                    "after multiple transformations " + \
+            err_msg="error: Cartesian coordinates after multiple transformation" + \
                     "don't match original")
