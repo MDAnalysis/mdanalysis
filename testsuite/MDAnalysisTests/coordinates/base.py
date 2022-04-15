@@ -393,7 +393,6 @@ class BaseReaderTest(object):
             idealcoords = ref.iter_ts(ts.frame).positions + v1 + v2
             assert_array_almost_equal(ts.positions, idealcoords, decimal = ref.prec)
 
-
     def test_transformations_switch_frame(self, ref, transformed):
         # This test checks if the transformations are applied and if the coordinates
         # "overtransformed" on different situations
@@ -511,6 +510,16 @@ class MultiframeReaderTest(BaseReaderTest):
             assert_timestep_almost_equal(ts,
                                          ref.iter_ts(ref.aux_lowf_frames_with_steps[i]),
                                          decimal=ref.prec)
+
+    @pytest.mark.parametrize("accessor", [
+              lambda traj: traj[[0, 1, 2]],
+              lambda traj: traj[:3],
+              lambda traj: traj],
+              ids=["indexed", "sliced", "all"])
+    def test_iter_rewinds(self, reader, accessor):
+        for ts_indices in accessor(reader):
+            pass
+        assert_equal(ts_indices.frame, 0)
 
     #  To make sure we not only save the current timestep information,
     #  but also maintain its relative position.
