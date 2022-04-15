@@ -127,11 +127,12 @@ class TestBAT(object):
         errmsg = 'Dimensions of array in loaded file'
         with pytest.raises(ValueError, match=errmsg):
             R = BAT(selected_residues, filename=bat_npz)
-            
-    def test_bat_between_transformations(self, selected_residues, bat):
+
+    def test_bat_transformation(self, selected_residues, bat):
         R = BAT(selected_residues)
         XYZ = R.Cartesian(bat[0])
         PQR = R.Cartesian(bat[0])
         assert_almost_equal(PQR, selected_residues.positions, 5,
-            err_msg="error: Cartesian coordinates after multiple transformation" + \
-                    "don't match original")
+              err_msg="error: Reconstructed Cartesian coordinates"
+                      "after multiple transformations don't match "
+                      "original")
