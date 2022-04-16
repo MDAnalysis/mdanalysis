@@ -117,8 +117,8 @@ SECTIONS = set([
     'Angles',
     'Dihedrals',
     'Impropers',
-    'Pair',
-    'Pair LJCoeffs',
+    'Pair Coeffs',
+    'PairLJ Coeffs',
     'Bond Coeffs',
     'Angle Coeffs',
     'Dihedral Coeffs',
@@ -212,7 +212,7 @@ class DATAParser(TopologyReaderBase):
                     header[token] = line.split(token)[0]
                     continue
 
-        sects = {f[l]:f[l+1:starts[i+1]]
+        sects = {f[l]: f[l+1:starts[i+1]]
                  for i, l in enumerate(starts[:-1])}
 
         return header, sects
@@ -251,9 +251,8 @@ class DATAParser(TopologyReaderBase):
         if missing_attrs:
             raise ValueError("atom_style string missing required field(s): {}"
                              "".format(', '.join(missing_attrs)))
-                
         return style_dict
-    
+
     def parse(self, **kwargs):
         """Parses a LAMMPS_ DATA file.
 
@@ -296,10 +295,11 @@ class DATAParser(TopologyReaderBase):
                 (Impropers, 'Impropers', 4)
         ]:
             try:
-                type, sect = self._parse_bond_section(sects[L], nentries, mapping)
+                type, sect = self._parse_bond_section(
+                    sects[L], nentries, mapping)
             except KeyError:
                 type, sect = [], []
-            
+
             top.add_TopologyAttr(attr(sect, type))
 
         return top
@@ -322,7 +322,7 @@ class DATAParser(TopologyReaderBase):
             self.style_dict = None
         else:
             self.style_dict = self._interpret_atom_style(atom_style)
-        
+
         header, sects = self.grab_datafile()
 
         unitcell = self._parse_box(header)
@@ -350,7 +350,7 @@ class DATAParser(TopologyReaderBase):
         pos = np.zeros((len(datalines), 3), dtype=np.float32)
         # TODO: could maybe store this from topology parsing?
         # Or try to reach into Universe?
-        # but ugly because assumes lots of things, and Reader should be standalone
+        # but ugly since assumes lots of things, and Reader should be standalone
         ids = np.zeros(len(pos), dtype=np.int32)
 
         if self.style_dict is None:
@@ -360,7 +360,7 @@ class DATAParser(TopologyReaderBase):
                 style_dict = {'id': 0, 'x': 3, 'y': 4, 'z': 5}
         else:
             style_dict = self.style_dict
-    
+
         for i, line in enumerate(datalines):
             line = line.split()
 
@@ -425,7 +425,9 @@ class DATAParser(TopologyReaderBase):
         for line in datalines:
             line = line.split()
             # map to 0 based int
-            section.append(tuple([mapping[int(x)] for x in line[2:2 + nentries]]))
+            section.append(
+                tuple([mapping[int(x)] for x in line[2:2 + nentries]])
+                )
             type.append(line[1])
         return tuple(type), tuple(section)
 
@@ -607,7 +609,7 @@ class LammpsDumpParser(TopologyReaderBase):
 
             indices = np.zeros(natoms, dtype=int)
             types = np.zeros(natoms, dtype=object)
-            
+
             fin.readline()  # ITEM ATOMS
             for i in range(natoms):
                 idx, atype, _, _, _ = fin.readline().split()
@@ -644,8 +646,7 @@ class LAMMPSAtom(object):  # pragma: no cover
         self.mass = mass
 
     def __repr__(self):
-        return "<LAMMPSAtom " + repr(self.index + 1) + ": name " + repr(self.type) + " of chain " + repr(
-            self.chainid) + ">"
+        return "<LAMMPSAtom " + repr(self.index + 1) + ": name " + repr(self.type) + " of chain " + repr(self.chainid) + ">"
 
     def __lt__(self, other):
         return self.index < other.index
