@@ -384,7 +384,7 @@ class TestSingleFrameReader(_Single):
         # Issue #3423
         # positions should be zero to start with
         assert_allclose(reader.ts.positions, np.zeros((10, 3)))
-        
+
         # modify positions in place
         reader.ts.positions = np.ones((10, 3))
         assert_allclose(reader.ts.positions, np.ones((10, 3)))
