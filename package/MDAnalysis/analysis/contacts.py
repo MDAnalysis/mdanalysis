@@ -374,11 +374,12 @@ class Contacts(AnalysisBase):
     radius : float, optional (4.5 Angstroms)
         radius within which contacts exist in refgroup
     method : string | callable (optional)
-        Can either be one of ``['hard_cut' , 'soft_cut', 'radius_cut']`` or a callable
-        with call signature ``func(r, r0, **kwargs)`` (the "Contacts API").
+        Can either be one of ``['hard_cut' , 'soft_cut', 'radius_cut']``
+        or a callable with call signature ``func(r, r0, **kwargs)``
+        (the "Contacts API").
     pbc : bool (optional)
-        Uses periodic boundary conditions to calculate distances if set to ``True``; the
-        default is ``True``.
+        Uses periodic boundary conditions to calculate distances if set
+        to ``True``; the default is ``True``.
     kwargs : dict, optional
         dictionary of additional kwargs passed to `method`. Check
         respective functions for reasonable values.
@@ -434,7 +435,7 @@ class Contacts(AnalysisBase):
         self.grA, self.grB = (self._get_atomgroup(u, sel) for sel in select)
 
         self.pbc = pbc
-        
+
         # contacts formed in reference
         self.r0 = []
         self.initial_contacts = []
@@ -477,11 +478,11 @@ class Contacts(AnalysisBase):
 
     def _single_frame(self):
         self.results.timeseries[self._frame_index][0] = self._ts.frame
-        
+
         # compute distance array for a frame
         d = distance_array(self.grA.positions, self.grB.positions,
                             box=self._get_box(self._ts))
-        
+
         for i, (initial_contacts, r0) in enumerate(zip(self.initial_contacts,
                                                        self.r0), 1):
             # select only the contacts that were formed in the reference state
@@ -526,7 +527,7 @@ def q1q2(u, select='all', radius=4.5):
     contacts : :class:`Contacts`
         Contact Analysis that is set up for a q1-q2 analysis
 
-    
+
     .. versionchanged:: 1.0.0
        Changed `selection` keyword to `select`
        Support for setting ``start``, ``stop``, and ``step`` has been removed.

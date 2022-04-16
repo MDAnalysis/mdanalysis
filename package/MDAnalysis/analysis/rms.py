@@ -103,16 +103,16 @@ The trajectory is included with the test data files. The data in
    ax.set_xlabel("time (ps)")
    ax.set_ylabel(r"RMSD ($\\AA$)")
    fig.savefig("rmsd_all_CORE_LID_NMP_ref1AKE.pdf")
-   
+
 .. _figure-RMSD:
 
 .. figure:: /images/RSMD_plot.png
       :scale: 50 %
       :alt: RMSD plot
-      
+
       RMSD plot for backbone and CORE, LID, NMP domain of the protein.
 
-      
+
 Functions
 ---------
 
@@ -357,8 +357,9 @@ class RMSD(AnalysisBase):
         2. a dictionary ``{'mobile': sel1, 'reference': sel2}`` where *sel1*
             and *sel2* are valid selection strings that are applied to
             `atomgroup` and `reference` respectively (the
-            :func:`MDAnalysis.analysis.align.fasta2select` function returns such
-            a dictionary based on a ClustalW_ or STAMP_ sequence alignment); or
+            :func:`MDAnalysis.analysis.align.fasta2select` function returns
+            such a dictionary based on a ClustalW_
+            or STAMP_ sequence alignment); or
 
         3. a tuple ``(sel1, sel2)``
 
@@ -383,22 +384,26 @@ class RMSD(AnalysisBase):
                     implemented.
 
     weights : {"mass", ``None``} or array_like (optional)
-            1. "mass" will use masses as weights for both `select` and `groupselections`.
+            1. "mass" will use masses as weights for both `select` and
+            `groupselections`.
 
-            2. ``None`` will weigh each atom equally for both `select` and `groupselections`.
+            2. ``None`` will weigh each atom equally for both `select` and
+            `groupselections`.
 
             3. If 1D float array of the same length as `atomgroup` is provided,
             use each element of the `array_like` as a weight for the
-            corresponding atom in `select`, and assumes ``None`` for `groupselections`.
+            corresponding atom in `select`, and assumes ``None`` for
+            `groupselections`.
 
-    weights_groupselections : False or list of {"mass", ``None`` or array_like} (optional)
+    weights_groupselections : False or list of {"mass", ``None`` or array_like}
             1. ``False`` will apply imposed weights to `groupselections` from
-            ``weights`` option if ``weights`` is either ``"mass"`` or ``None``. 
-            Otherwise will assume a list of length equal to length of 
+            ``weights`` option if ``weights`` is either ``"mass"`` or ``None``.
+            Otherwise will assume a list of length equal to length of
             `groupselections` filled with ``None`` values.
 
-            2. A list of {"mass", ``None`` or array_like} with the length of `groupselections`
-            will apply the weights to `groupselections` correspondingly.
+            2. A list of {"mass", ``None`` or array_like} with the length of
+            `groupselections` will apply the weights to `groupselections`
+            correspondingly.
 
     tol_mass : float (optional)
             Reject match if the atomic masses for matched atoms differ by more
@@ -456,15 +461,16 @@ class RMSD(AnalysisBase):
     SelectionError
             If the selections from `atomgroup` and `reference` do not match.
     TypeError
-            If `weights` or `weights_groupselections` is not of the appropriate type;
-            see also :func:`MDAnalysis.lib.util.get_weights`
+            If `weights` or `weights_groupselections` is not of the
+            appropriate type; see also :func:`MDAnalysis.lib.util.get_weights`
     ValueError
             If `weights` are not compatible with `atomgroup` (not the same
             length) or if it is not a 1D array (see
             :func:`MDAnalysis.lib.util.get_weights`).
 
-            A :exc:`ValueError` is also raised if the length of `weights_groupselections`
-            are not compatible with `groupselections`.
+            A :exc:`ValueError` is also raised if the length of
+            `weights_groupselections` are not compatible with
+            `groupselections`.
 
 
     .. versionadded:: 0.7.7
@@ -742,7 +748,8 @@ class RMSF(AnalysisBase):
 
     .. math::
 
-        \rho_i = \sqrt{\left\langle (\mathbf{x}_i - \langle\mathbf{x}_i\rangle)^2 \right\rangle}
+        \rho_i = \sqrt{\left\langle (\mathbf{x}_i -
+                 \langle\mathbf{x}_i\rangle)^2 \right\rangle}
 
     No mass weighting is performed.
 

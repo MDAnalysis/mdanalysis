@@ -290,7 +290,8 @@ class HydrogenBondAnalysis(AnalysisBase):
         Only used to find donor-hydrogen pairs if the
         universe topology does not contain bonding information
     d_a_cutoff : float (optional)
-        Distance cutoff for hydrogen bonds. This cutoff refers to the D-A distance.
+        Distance cutoff for hydrogen bonds. This cutoff refers to the
+        D-A distance.
     d_h_a_angle_cutoff : float (optional)
         D-H-A angle cutoff for hydrogen bonds, in degrees.
     update_selections : bool (optional)

@@ -555,7 +555,8 @@ class AlignTraj(AnalysisBase):
     tol_mass : float (optional)
         Tolerance given to `get_matching_atoms` to find appropriate atoms
     match_atoms : bool (optional)
-        Whether to match the mobile and reference atom-by-atom. Default ``True``.
+        Whether to match the mobile and reference atom-by-atom.
+        Default ``True``.
     strict : bool (optional)
         Force `get_matching_atoms` to fail if atoms can't be found using
         exact methods
@@ -610,7 +611,8 @@ class AlignTraj(AnalysisBase):
         Default ``filename`` has now been changed to the current directory.
 
     .. deprecated:: 0.19.1
-        Default ``filename`` directory will change in 1.0 to the current directory.
+        Default ``filename`` directory will change in 1.0 to the current
+        directory.
 
     .. versionchanged:: 0.16.0
         new general ``weights`` kwarg replace ``mass_weights``
@@ -634,10 +636,10 @@ class AlignTraj(AnalysisBase):
        on :attr:`results.rmsd`.
     """
     def __init__(self,
-                mobile,
-                reference,
-                select='all',
-                filename=None,
+                 mobile,
+                 reference,
+                 select='all',
+                 filename=None,
                  prefix='rmsfit_',
                  weights=None,
                  tol_mass=0.1,
@@ -757,7 +759,8 @@ class AverageStructure(AnalysisBase):
     tol_mass : float (optional)
         Tolerance given to `get_matching_atoms` to find appropriate atoms
     match_atoms : bool (optional)
-        Whether to match the mobile and reference atom-by-atom. Default ``True``.
+        Whether to match the mobile and reference atom-by-atom.
+        Default ``True``.
     strict : bool (optional)
         Force `get_matching_atoms` to fail if atoms can't be found using
         exact methods
