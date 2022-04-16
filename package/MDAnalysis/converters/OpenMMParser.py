@@ -171,7 +171,6 @@ class OpenMMTopologyParser(TopologyReaderBase):
                 atomtypes.append(elem.symbol)
                 masses.append(elem.mass.value_in_unit(daltons))
             else:
-                warn = True
                 validated_elements.append('')
                 masses.append(0.0)
                 atomtypes.append('X')
@@ -180,7 +179,7 @@ class OpenMMTopologyParser(TopologyReaderBase):
             if any(validated_elements):
                 warnings.warn("Element information missing for some atoms. "
                               "These have been given an empty element record ")
-                if any([i == 'X' for i in atomtypes]):
+                if any(i == 'X' for i in atomtypes):
                     warnings.warn("For absent elements, atomtype has been  "
                                   "set to 'X' and mass has been set to 0.0. "
                                   "If needed these can be guessed using "
