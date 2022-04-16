@@ -573,13 +573,13 @@ class TestEncoreClustering(object):
                               "clusters: {0} {1}".format(len(cc1), len(cc2))
 
     def test_ClusterCollection_init(self, cc):
-        assert_equal(cc.clusters[0].elements , [0,3,2]) and \
+        assert_equal(cc.clusters[0].elements , [0,1,2]) and \
         assert_equal(cc.clusters[1].elements , [3, 4]) and \
         assert_equal(cc.clusters[2].elements , [5, 8, 7]) and \
         assert_equal(cc.clusters[0].centroid , 1) and \
         assert_equal(cc.clusters[1].centroid , 3) and \
         assert_equal(cc.clusters[2].centroid , 5), \
-                    "ClusterCollection was not constructed correctly"
+                   "ClusterCollection was not constructed correctly"
 
     def test_Cluster_init(self, cluster):
         assert_equal(cluster.elements,[0, 1, 2]) and \
