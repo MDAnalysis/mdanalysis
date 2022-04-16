@@ -236,7 +236,7 @@ densityUnit_factor = {
 
 
 #: For *time*, the basic unit is ps; in particular CHARMM's
-#: 1 AKMA_ time unit = 4.888821E-14 sec is supported.
+#: 1 AKMA_ time unit = 4.888821e-14 sec is supported.
 timeUnit_factor = {
     'ps': 1.0, 'picosecond': 1.0,  # 1/1.0
     'fs': 1e3, 'femtosecond': 1e3,  # 1/1e-3,
