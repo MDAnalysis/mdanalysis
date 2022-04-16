@@ -339,7 +339,7 @@ The following attributes are inherited from
       Method to use in calculating representative auxiliary value for a 
       timestep. Default is 'closest'.
   ``cutoff``
-      Cutoff (in ps) for ignoring auxiliary steps when calculating 
+      Cutoff (in ps) for ignoring auxiliary steps when calculating
       representative value(s) for a timestep.
   ``auxstep``
       The :class:`~MDAnalysis.auxiliary.base.AuxStep` object to store data for
@@ -348,10 +348,10 @@ The following attributes are inherited from
   ``n_steps``
       Total number of auxiliary steps.
   ``frame_data``
-      `data` from each auxiliary step assigned to the last-read trajectory 
+      `data` from each auxiliary step assigned to the last-read trajectory
       timestep.
   ``frame_rep``
-      Representative value(s) of auxiliary data for last-read trajectory 
+      Representative value(s) of auxiliary data for last-read trajectory
       timestep.
 
 The following are stored in ``auxstep`` but may be accessed from the auxiliary
