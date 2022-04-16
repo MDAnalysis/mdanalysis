@@ -90,6 +90,8 @@ class TestCRDWriter(object):
         cog1 = np.around(sel1.center_of_geometry(),6)
         cog2 = np.around(sel2.center_of_geometry(),6)
 
+        assert_equal(len(u.atoms), len(u2.atoms)), 'Equal number of '\
+                'atoms expected in both CRD formats'
         assert_equal(len(u.atoms.residues),
             len(u2.atoms.residues)), 'Equal number of residues expected in'\
                         'both CRD formats'
