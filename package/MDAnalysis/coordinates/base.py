@@ -2362,6 +2362,7 @@ class SingleFrameReaderBase(ProtoReader):
         raise StopIteration(self._err.format(self.__class__.__name__))
 
     def __iter__(self):
+        self.rewind()
         yield self.ts
         return
 
