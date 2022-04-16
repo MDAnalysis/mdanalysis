@@ -418,7 +418,7 @@ inconsistent results")
         assert_almost_equal(average, expected_average, decimal=1,
                             err_msg="Unexpected average value for bootstrapped samples in Clustering Ensemble similarity")
         assert_almost_equal(stdev, expected_stdev, decimal=1,
-                            err_msg="Unexpected standard daviation  for bootstrapped samples in Clustering Ensemble similarity")
+                            err_msg="Unexpected standard deviation  for bootstrapped samples in Clustering Ensemble similarity")
 
     def test_dres_error_estimation(self, ens1):
         average_upper_bound = 0.3
@@ -583,16 +583,16 @@ class TestEncoreClustering(object):
 
     def test_Cluster_init(self, cluster):
         assert_equal(cluster.elements,[0, 1, 2]) and \
-              assert_equal(cluster.centroid , 1), \
-                      "Cluster was not constructed correctly"
+        assert_equal(cluster.centroid , 1),
+        "Cluster was not constructed correctly"
 
     def test_ClusterCollection_get_ids(self, cc):
         assert_equal(cc.get_ids(), [0, 1, 2], \
-                     err_msg="ClusterCollection ids aren't as expected")
+            err_msg="ClusterCollection ids aren't as expected")
 
     def test_ClusterCollection_get_centroids(self, cc):
         assert_equal(cc.get_centroids(), [1, 3, 5], \
-                     err_msg="ClusterCollection centroids aren't as expected")
+            err_msg="ClusterCollection centroids aren't as expected")
 
     def test_cluster_add_metadata(self, cluster):
         metadata = cluster.elements*10
