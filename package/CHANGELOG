@@ -20,6 +20,9 @@ The rules for this file:
  * 2.2.0
 
 Fixes
+  * Iterating a SingleFrameReaderBase trajectory now rewinds the
+    reader, resetting any modified trajectory attributes to those
+    read from file (Issue #3423)
   * Fixed Numpy deprecation warnings about elementwise comparisons.
     (Issue #3535, PR #3619)
   * Fixed encore.covariance.covariance_matrix not working when providing

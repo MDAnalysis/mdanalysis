@@ -2301,6 +2301,9 @@ class SingleFrameReaderBase(ProtoReader):
     .. versionchanged:: 0.11.0
        Added attribute "_ts_kwargs" for subclasses
        Keywords "dt" and "time_offset" read into _ts_kwargs
+    .. versionchanged:: 2.1.0
+       Calling `__iter__` now rewinds the reader before yielding a
+       :class:`Timestep` object.
     """
     _err = "{0} only contains a single frame"
 
