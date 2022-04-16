@@ -63,7 +63,7 @@ See Also
 --------
 :class:`~MDAnalysis.analysis.dihedrals.Dihedral`
    class to calculate dihedral angles for a given set of atoms or residues
-:func:`MDAnalysis.lib.distances.calc_dihedrals()`
+:func:`MDAnalysis.calc_dihedrals()`
    function to calculate dihedral angles from atom positions
 
 

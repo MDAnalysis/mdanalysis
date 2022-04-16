@@ -66,6 +66,7 @@ Functions
 .. autofunction:: augment_coordinates(coordinates, box, r)
 .. autofunction:: undo_augment(results, translation, nreal)
 """
+import time
 import numpy as np
 from numpy.lib.utils import deprecate
 
@@ -1242,6 +1243,7 @@ def transform_StoR(coords, box, backend="serial"):
 
 @check_coords('coords1', 'coords2')
 def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
+    start = time.perf_counter()
     """Calculates the bond lengths between pairs of atom positions from the two
     coordinate arrays `coords1` and `coords2`, which must contain the same
     number of coordinates. ``coords1[i]`` and ``coords2[i]`` represent the
@@ -1318,13 +1320,14 @@ def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
             _run("calc_bond_distance",
                  args=(coords1, coords2, bondlengths),
                  backend=backend)
-
+    print(f"Completed Execution in {time.perf_counter() - start} seconds")
     return bondlengths
 
 
 @check_coords('coords1', 'coords2', 'coords3')
 def calc_angles(coords1, coords2, coords3, box=None, result=None,
                 backend="serial"):
+    start = time.perf_counter()            
     """Calculates the angles formed between triplets of atom positions from the
     three coordinate arrays `coords1`, `coords2`, and `coords3`. All coordinate
     arrays must contain the same number of coordinates.
@@ -1410,13 +1413,14 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None,
             _run("calc_angle",
                    args=(coords1, coords2, coords3, angles),
                    backend=backend)
-
+    print(f"Completed Execution in {time.perf_counter() - start} seconds")
     return angles
 
 
 @check_coords('coords1', 'coords2', 'coords3', 'coords4')
 def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
                    backend="serial"):
+    start = time.perf_counter()               
     r"""Calculates the dihedral angles formed between quadruplets of positions
     from the four coordinate arrays `coords1`, `coords2`, `coords3`, and
     `coords4`, which must contain the same number of coordinates.
@@ -1515,7 +1519,7 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
             _run("calc_dihedral",
                  args=(coords1, coords2, coords3, coords4, dihedrals),
                  backend=backend)
-
+    print(f"Completed Execution in {time.perf_counter() - start} seconds")
     return dihedrals
 
 
