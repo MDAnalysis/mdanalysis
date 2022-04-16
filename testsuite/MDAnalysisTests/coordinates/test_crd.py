@@ -29,6 +29,7 @@ from numpy.testing import (
 
 import MDAnalysis as mda
 import os
+import numpy as np
 
 from MDAnalysisTests.datafiles import CRD
 from MDAnalysisTests import make_Universe
@@ -75,7 +76,27 @@ class TestCRDWriter(object):
         with open(outfile, 'r') as inf:
             format_line = inf.readlines()[2]
             assert 'EXT' in format_line, "EXT format expected"
-            
+
+    def test_read_EXT(self, u, outfile):
+        # Read EXT format and check atom positions
+        u.atoms.write(outfile, extended=True)
+
+        u2 = mda.Universe(outfile)
+
+        sel1 = u.select_atoms('all')
+        sel2 = u2.select_atoms('all')
+
+        # Rounding floats since EXT format support more decimals
+        cog1 = np.around(sel1.center_of_geometry(),6)
+        cog2 = np.around(sel2.center_of_geometry(),6)
+
+        assert_equal(len(u.atoms.residues),
+            len(u2.atoms.residues)), 'Equal number of residues expected in'\
+                        'both CRD formats'
+        assert_equal(len(u.atoms.segments), 
+            len(u2.atoms.segments)), 'Equal number of segments expected in'\
+                        'both CRD formats'
+        assert_equal(cog1, cog2), 'Same centroid expected for both CRD formats'
 
 
 class TestCRDWriterMissingAttrs(object):
