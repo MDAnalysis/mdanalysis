@@ -388,13 +388,12 @@ Classes
    :inherited-members:
 
 """
-from MDAnalysis.lib.correlations import autocorrelation, correct_intermittency
-import MDAnalysis.analysis.hbonds
-from itertools import zip_longest
 import logging
-import warnings
-import numpy as np
+from itertools import zip_longest
 
+import numpy as np
+from MDAnalysis.analysis.base import set_verbose_doc
+from MDAnalysis.lib.correlations import autocorrelation, correct_intermittency
 
 logger = logging.getLogger('MDAnalysis.analysis.waterdynamics')
 from MDAnalysis.lib.log import ProgressBar
@@ -903,6 +902,7 @@ class MeanSquareDisplacement(object):
             self.timeseries.append(output)
 
 
+@set_verbose_doc
 class SurvivalProbability(object):
     r"""
     Survival Probability (SP) gives the probability for a group of particles to remain in a certain region.
@@ -923,8 +923,7 @@ class SurvivalProbability(object):
     select : str
       Selection string; any selection is allowed. With this selection you
       define the region/zone where to analyze, e.g.: "resname SOL and around 5 (resid 10)". See `SP-examples`_.
-    verbose : Boolean, optional
-      When True, prints progress and comments to the console.
+    ${VERBOSE_PARAMETER}
 
 
     Notes
@@ -949,7 +948,6 @@ class SurvivalProbability(object):
        changed behaviour and will act in an `exclusive` manner (instead of it's
        previous `inclusive` behaviour),
     """
-
     def __init__(self, universe, select, verbose=False):
         self.universe = universe
         self.selection = select

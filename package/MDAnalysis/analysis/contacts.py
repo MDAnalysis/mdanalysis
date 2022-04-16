@@ -204,22 +204,18 @@ Classes
    :members:
 
 """
-import os
-import errno
-import warnings
-import bz2
 import functools
-
-import numpy as np
-
 import logging
+import warnings
 
 import MDAnalysis
 import MDAnalysis.lib.distances
-from MDAnalysis.lib.util import openany
+import numpy as np
 from MDAnalysis.analysis.distances import distance_array
 from MDAnalysis.core.groups import AtomGroup, UpdatingAtomGroup
-from .base import AnalysisBase
+from MDAnalysis.lib.util import openany
+
+from .base import AnalysisBase, set_verbose_doc
 
 logger = logging.getLogger("MDAnalysis.analysis.contacts")
 
@@ -350,6 +346,7 @@ def contact_matrix(d, radius, out=None):
     return out
 
 
+@set_verbose_doc
 class Contacts(AnalysisBase):
     """Calculate contacts based observables.
 
@@ -364,6 +361,28 @@ class Contacts(AnalysisBase):
     **Contact API** prescribes that this method must be a function with call
     signature ``func(r, r0, **kwargs)`` and must be provided in the keyword
     argument `method`.
+
+    Parameters
+    ----------
+    u : Universe
+        trajectory
+    select : tuple(AtomGroup, AtomGroup) | tuple(string, string)
+        two contacting groups that change over time
+    refgroup : tuple(AtomGroup, AtomGroup)
+        two contacting atomgroups in their reference conformation. This
+        can also be a list of tuples containing different atom groups
+    radius : float, optional (4.5 Angstroms)
+        radius within which contacts exist in refgroup
+    method : string | callable (optional)
+        Can either be one of ``['hard_cut' , 'soft_cut', 'radius_cut']`` or a callable
+        with call signature ``func(r, r0, **kwargs)`` (the "Contacts API").
+    pbc : bool (optional)
+        Uses periodic boundary conditions to calculate distances if set to ``True``; the
+        default is ``True``.
+    kwargs : dict, optional
+        dictionary of additional kwargs passed to `method`. Check
+        respective functions for reasonable values.
+    ${VERBOSE_PARAMETER}
 
     Attributes
     ----------
@@ -383,6 +402,8 @@ class Contacts(AnalysisBase):
        :attr:`Contacts.results.timeseries` instead.
     .. versionchanged:: 1.0.0
         added ``pbc`` attribute to calculate distances using PBC.
+    .. versionchanged:: 1.0.0
+        Changed `selection` keyword to `select`
     .. versionchanged:: 2.0.0
        :attr:`timeseries` results are now stored in a
        :class:`MDAnalysis.analysis.base.Results` instance.
@@ -392,37 +413,6 @@ class Contacts(AnalysisBase):
 
     def __init__(self, u, select, refgroup, method="hard_cut", radius=4.5,
                  pbc=True, kwargs=None, **basekwargs):
-        """
-        Parameters
-        ----------
-        u : Universe
-            trajectory
-        select : tuple(AtomGroup, AtomGroup) | tuple(string, string)
-            two contacting groups that change over time
-        refgroup : tuple(AtomGroup, AtomGroup)
-            two contacting atomgroups in their reference conformation. This
-            can also be a list of tuples containing different atom groups
-        radius : float, optional (4.5 Angstroms)
-            radius within which contacts exist in refgroup
-        method : string | callable (optional)
-            Can either be one of ``['hard_cut' , 'soft_cut', 'radius_cut']`` or a callable
-            with call signature ``func(r, r0, **kwargs)`` (the "Contacts API").
-        pbc : bool (optional)
-            Uses periodic boundary conditions to calculate distances if set to ``True``; the
-            default is ``True``.
-        kwargs : dict, optional
-            dictionary of additional kwargs passed to `method`. Check
-            respective functions for reasonable values.
-        verbose : bool (optional)
-             Show detailed progress of the calculation if set to ``True``; the
-             default is ``False``.
-
-        Notes
-        -----
-
-        .. versionchanged:: 1.0.0
-           Changed `selection` keyword to `select`
-        """
         self.u = u
         super(Contacts, self).__init__(self.u.trajectory, **basekwargs)
 

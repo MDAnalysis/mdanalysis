@@ -230,11 +230,13 @@ Classes
 
 """
 
-import numpy as np
 import logging
-from ..due import due, Doi
-from .base import AnalysisBase
+
+import numpy as np
+
 from ..core import groups
+from ..due import Doi, due
+from .base import AnalysisBase, set_verbose_doc
 
 logger = logging.getLogger('MDAnalysis.analysis.msd')
 
@@ -249,6 +251,7 @@ due.cite(Doi("10.1051/sfn/201112010"),
 del Doi
 
 
+@set_verbose_doc
 class EinsteinMSD(AnalysisBase):
     r"""Class to calculate Mean Squared Displacement by the Einstein relation.
 
@@ -267,6 +270,7 @@ class EinsteinMSD(AnalysisBase):
         the MSD. Otherwise, use the simple "windowed" algorithm.
         The tidynamics package is required for `fft=True`.
         Defaults to ``True``.
+    ${VERBOSE_PARAMETER}
 
     Attributes
     ----------
@@ -288,21 +292,6 @@ class EinsteinMSD(AnalysisBase):
     """
 
     def __init__(self, u, select='all', msd_type='xyz', fft=True, **kwargs):
-        r"""
-        Parameters
-        ----------
-        u : Universe or AtomGroup
-            An MDAnalysis :class:`Universe` or :class:`AtomGroup`.
-        select : str
-            A selection string. Defaults to "all" in which case
-            all atoms are selected.
-        msd_type : {'xyz', 'xy', 'yz', 'xz', 'x', 'y', 'z'}
-            Desired dimensions to be included in the MSD.
-        fft : bool
-            If ``True``, uses a fast FFT based algorithm for computation of
-            the MSD. Otherwise, use the simple "windowed" algorithm.
-            The tidynamics package is required for `fft=True`.
-        """
         if isinstance(u, groups.UpdatingAtomGroup):
             raise TypeError("UpdatingAtomGroups are not valid for MSD "
                             "computation")

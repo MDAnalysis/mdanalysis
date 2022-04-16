@@ -154,15 +154,16 @@ import logging
 import warnings
 
 import numpy as np
-
-from MDAnalysis.core.universe import Universe
 from MDAnalysis.core.groups import AtomGroup, UpdatingAtomGroup
+from MDAnalysis.core.universe import Universe
+
+from .base import AnalysisBase, set_verbose_doc
 from .rms import rmsd
-from .base import AnalysisBase
 
 logger = logging.getLogger("MDAnalysis.analysis.diffusionmap")
 
 
+@set_verbose_doc
 class DistanceMatrix(AnalysisBase):
     """Calculate the pairwise distance between each frame in a trajectory
     using a given metric
@@ -195,9 +196,7 @@ class DistanceMatrix(AnalysisBase):
         Default: 1EO-5
     weights : array, optional
         Weights to be given to coordinates for metric calculation
-    verbose : bool, optional
-            Show detailed progress of the calculation if set to ``True``; the
-            default is ``False``.
+    ${VERBOSE_PARAMETER}
 
     Attributes
     ----------

@@ -20,28 +20,27 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-import os
 import errno
+import itertools
+import logging
+import os
 import tempfile
 import textwrap
-import logging
-import itertools
 import warnings
-
-import numpy as np
-import matplotlib
-import matplotlib.pyplot as plt
 from collections import OrderedDict
 
+import matplotlib
+import matplotlib.pyplot as plt
+import numpy as np
+
 from ...exceptions import ApplicationError
-from ..base import AnalysisBase
 from ...lib import util
-from .utils import (check_and_fix_long_filename, write_simplerad2,
-                    set_up_hole_input, run_hole, collect_hole,
-                    create_vmd_surface)
-from .templates import (hole_input, hole_lines, vmd_script_array,
-                        vmd_script_function, exe_err,
-                        IGNORE_RESIDUES)
+from ..base import AnalysisBase, set_verbose_doc
+from .templates import (IGNORE_RESIDUES, exe_err, hole_input, hole_lines,
+                        vmd_script_array, vmd_script_function)
+from .utils import (check_and_fix_long_filename, collect_hole,
+                    create_vmd_surface, run_hole, set_up_hole_input,
+                    write_simplerad2)
 
 logger = logging.getLogger(__name__)
 
@@ -276,6 +275,7 @@ def hole(pdbfile,
     return recarrays
 
 
+@set_verbose_doc
 class HoleAnalysis(AnalysisBase):
     r"""
     Run :program:`hole` on a trajectory.
@@ -297,7 +297,6 @@ class HoleAnalysis(AnalysisBase):
 
     Parameters
     ----------
-
     universe : Universe or AtomGroup
         The Universe or AtomGroup to apply the analysis to.
     select : string, optional
@@ -381,6 +380,7 @@ class HoleAnalysis(AnalysisBase):
     write_input_files : bool, optional
         Whether to write out the input HOLE text as files.
         Files are called `hole.inp`.
+    ${VERBOSE_PARAMETER}
 
 
     Attributes
@@ -553,6 +553,7 @@ class HoleAnalysis(AnalysisBase):
         hole_filenames = '\n!    '.join(filenames)
         self._input_header = self.hole_header.format(hole_filenames)
 
+    @set_verbose_doc
     def run(self, start=None, stop=None, step=None, verbose=None,
             random_seed=None):
         """
@@ -562,22 +563,17 @@ class HoleAnalysis(AnalysisBase):
         ----------
         start : int, optional
             start frame of analysis
-
         stop : int, optional
             stop frame of analysis
-
         step : int, optional
             number of frames to skip between each analysed frame
-
-        verbose : bool, optional
-            Turn on verbosity
-
         random_seed : int, optional
             integer number to start the random number generator.
             By default,
             :program:`hole` will use the time of the day.
             For reproducible runs (e.g., for testing) set ``random_seed``
             to an integer.
+        ${VERBOSE_PARAMETER}
         """
         self.random_seed = random_seed
         return super(HoleAnalysis, self).run(start=start, stop=stop,

@@ -118,16 +118,16 @@ import warnings
 
 import numpy as np
 import scipy.integrate
-
 from MDAnalysis import Universe
 from MDAnalysis.analysis.align import _fit_to
 from MDAnalysis.lib.log import ProgressBar
 
+from ..due import Doi, due
 from ..lib import util
-from ..due import due, Doi
-from .base import AnalysisBase
+from .base import AnalysisBase, set_verbose_doc
 
 
+@set_verbose_doc
 class PCA(AnalysisBase):
     """Principal component analysis on an MD trajectory.
 
@@ -160,8 +160,7 @@ class PCA(AnalysisBase):
     n_components : int, optional
         The number of principal components to be saved, default saves
         all principal components
-    verbose : bool (optional)
-            Show detailed progress of the calculation if set to ``True``.
+    ${VERBOSE_PARAMETER}
 
     Attributes
     ----------

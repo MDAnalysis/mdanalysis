@@ -150,32 +150,22 @@ instance, which is derived from a :class:`gridData.core.Grid`. A
 .. _`gmx trjconv`: http://manual.gromacs.org/programs/gmx-trjconv.html
 
 """
-import numpy as np
-import sys
-import os
+import logging
 import os.path
-import errno
 import warnings
 
+import numpy as np
 from gridData import Grid
+from MDAnalysis.lib.util import fixedwidth_bins
 
-import MDAnalysis
-from MDAnalysis.core import groups
-from MDAnalysis.lib.util import (fixedwidth_bins, iterable, asiterable,
-                                 deprecate,)
-from MDAnalysis.lib import NeighborSearch as NS
-from MDAnalysis import NoDataError, MissingDataWarning
 from .. import units
 from ..lib import distances
-from MDAnalysis.lib.log import ProgressBar
-
-from .base import AnalysisBase
-
-import logging
+from .base import AnalysisBase, set_verbose_doc
 
 logger = logging.getLogger("MDAnalysis.analysis.density")
 
 
+@set_verbose_doc
 class DensityAnalysis(AnalysisBase):
     r"""Volumetric density analysis.
 
@@ -203,6 +193,7 @@ class DensityAnalysis(AnalysisBase):
             User defined y dimension box edge in ångström.
     zdim : float (optional)
             User defined z dimension box edge in ångström.
+    ${VERBOSE_PARAMETER}
 
     Attributes
     ----------

@@ -28,13 +28,12 @@ A tool to compute mass and charge density profiles along the three
 cartesian axes [xyz] of the simulation cell. Works only for orthorombic,
 fixed volume cells (thus for simulations in canonical NVT ensemble).
 """
-import os.path as path
 
 import numpy as np
+from MDAnalysis.analysis.base import AnalysisBase, Results, set_verbose_doc
 
-from MDAnalysis.analysis.base import AnalysisBase, Results
 
-
+@set_verbose_doc
 class LinearDensity(AnalysisBase):
     """Linear density profile
 
@@ -50,8 +49,7 @@ class LinearDensity(AnalysisBase):
           Bin width in Angstrom used to build linear density
           histograms. Defines the resolution of the resulting density
           profile (smaller --> higher resolution)
-    verbose : bool, optional
-          Show detailed progress of the calculation if set to ``True``
+    ${VERBOSE_PARAMETER}
 
     Attributes
     ----------

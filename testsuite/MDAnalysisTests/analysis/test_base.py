@@ -20,20 +20,16 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from collections import UserDict
 import pickle
-
-import pytest
-
-import numpy as np
-
-from numpy.testing import assert_equal, assert_almost_equal
+from collections import UserDict
 
 import MDAnalysis as mda
+import numpy as np
+import pytest
 from MDAnalysis.analysis import base
-
-from MDAnalysisTests.datafiles import PSF, DCD, TPR, XTC
+from MDAnalysisTests.datafiles import DCD, PSF, TPR, XTC
 from MDAnalysisTests.util import no_deprecated_call
+from numpy.testing import assert_almost_equal, assert_equal
 
 
 class Test_Results:
@@ -145,6 +141,19 @@ class Test_Results:
     def test_different_instances(self, results):
         new_results = base.Results(darth="tater")
         assert new_results.data is not results.data
+
+def test_verbose_parameter_doc():
+    assert "verbose : bool" in base.verbose_parameter_doc
+
+
+@pytest.mark.parametrize("doc, new_doc",
+                         [("${VERBOSE_PARAMETER}", base.verbose_parameter_doc),
+                          (None, None), ("", ""), ("foo", "foo")])
+def test_set_verbose_doc(doc, new_doc):
+    func = lambda x: x
+    func.__doc__ = doc
+    func_decorated = base.set_verbose_doc(func)
+    assert func_decorated.__doc__ == new_doc
 
 
 class FrameAnalysis(base.AnalysisBase):

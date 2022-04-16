@@ -31,11 +31,10 @@ Dielectric --- :mod:`MDAnalysis.analysis.dielectric`
 """
 
 import numpy as np
-
-from MDAnalysis.units import constants, convert
-from MDAnalysis.analysis.base import AnalysisBase
-from MDAnalysis.due import due, Doi
+from MDAnalysis.analysis.base import AnalysisBase, set_verbose_doc
+from MDAnalysis.due import Doi, due
 from MDAnalysis.exceptions import NoDataError
+from MDAnalysis.units import constants, convert
 
 due.cite(Doi("10.1080/00268978300102721"),
          description="Dielectric analysis",
@@ -44,6 +43,7 @@ due.cite(Doi("10.1080/00268978300102721"),
 del Doi
 
 
+@set_verbose_doc
 class DielectricConstant(AnalysisBase):
     r"""
     Computes the average dipole moment
@@ -74,8 +74,7 @@ class DielectricConstant(AnalysisBase):
     make_whole : bool
       Make molecules whole; If the input already contains whole molecules
       this can be disabled to gain speedup
-    verbose : bool
-      Show detailed progress of the calculation
+    ${VERBOSE_PARAMETER}
 
     Attributes
     ----------

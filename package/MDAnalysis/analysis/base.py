@@ -27,10 +27,10 @@ Analysis building blocks --- :mod:`MDAnalysis.analysis.base`
 The building blocks for creating Analysis classes.
 
 """
-from collections import UserDict
 import inspect
-import logging
 import itertools
+import logging
+from collections import UserDict
 
 import numpy as np
 from MDAnalysis import coordinates
@@ -126,6 +126,26 @@ class Results(UserDict):
         self.data = state
 
 
+verbose_parameter_doc = (
+    """verbose : bool, optional
+        Toggle progress output and turn on more logging as well as
+        debugging."""
+    )
+
+
+def set_verbose_doc(public_api):
+    """Decorator for setting verbose parameter on docstring.
+
+    The decorator will replace the phrase `${VERBOSE_PARAMETER}` in the
+    docstring with the verbose parameter description."""
+    if public_api.__doc__ is not None:
+        public_api.__doc__ = public_api.__doc__.replace(
+            "${VERBOSE_PARAMETER}",
+            verbose_parameter_doc)
+    return public_api
+
+
+@set_verbose_doc
 class AnalysisBase(object):
     r"""Base class for defining multi-frame analysis
 
@@ -144,8 +164,7 @@ class AnalysisBase(object):
     ----------
     trajectory : MDAnalysis.coordinates.base.ReaderBase
         A trajectory Reader
-    verbose : bool, optional
-        Turn on more logging and debugging
+    ${VERBOSE_PARAMETER}
 
     Attributes
     ----------
@@ -270,8 +289,9 @@ class AnalysisBase(object):
         """
         pass  # pylint: disable=unnecessary-pass
 
+    @set_verbose_doc
     def run(self, start=None, stop=None, step=None, verbose=None):
-        """Perform the calculation
+        """Perform the calculations.
 
         Parameters
         ----------
@@ -281,8 +301,7 @@ class AnalysisBase(object):
             stop frame of analysis
         step : int, optional
             number of frames to skip between each analysed frame
-        verbose : bool, optional
-            Turn on verbosity
+        ${VERBOSE_PARAMETER}
         """
         logger.info("Choosing frames to analyze")
         # if verbose unchanged, use class default

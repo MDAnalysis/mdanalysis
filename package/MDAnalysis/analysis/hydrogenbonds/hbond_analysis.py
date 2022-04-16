@@ -230,14 +230,13 @@ import warnings
 from collections.abc import Iterable
 
 import numpy as np
-
-from ..base import AnalysisBase, Results
-from MDAnalysis.lib.distances import capped_distance, calc_angles
-from MDAnalysis.lib.correlations import autocorrelation, correct_intermittency
-from MDAnalysis.exceptions import NoDataError
 from MDAnalysis.core.groups import AtomGroup
+from MDAnalysis.exceptions import NoDataError
+from MDAnalysis.lib.correlations import autocorrelation, correct_intermittency
+from MDAnalysis.lib.distances import calc_angles, capped_distance
 
-from ...due import due, Doi
+from ...due import Doi, due
+from ..base import AnalysisBase, Results, set_verbose_doc
 
 due.cite(Doi("10.1039/C9CP01532A"),
          description="Hydrogen bond analysis implementation",
@@ -247,72 +246,74 @@ due.cite(Doi("10.1039/C9CP01532A"),
 del Doi
 
 
+@set_verbose_doc
 class HydrogenBondAnalysis(AnalysisBase):
     """
     Perform an analysis of hydrogen bonds in a Universe.
-    """
 
+    Set up atom selections and geometric criteria for finding hydrogen
+    bonds in a Universe.
+
+    Parameters
+    ----------
+    universe : Universe
+        MDAnalysis Universe object
+    donors_sel : str
+        Selection string for the hydrogen bond donor atoms. If the
+        universe topology contains bonding information, leave
+        :attr:`donors_sel` as `None` so that donor-hydrogen pairs can be
+        correctly identified.
+    hydrogens_sel :  str
+        Selection string for the hydrogen bond hydrogen atoms. Leave as
+        `None` to guess which hydrogens to use in the analysis using
+        :attr:`guess_hydrogens`. If :attr:`hydrogens_sel` is left as
+        `None`, also leave :attr:`donors_sel` as None so that
+        donor-hydrogen pairs can be correctly identified.
+    acceptors_sel : str
+        Selection string for the hydrogen bond acceptor atoms. Leave as
+        `None` to guess which atoms to use in the analysis using
+        :attr:`guess_acceptors`
+    between : List (optional),
+        Specify two selection strings for non-updating atom groups between
+        which hydrogen bonds will be calculated. For example, if the donor
+        and acceptor selections include both protein and water, it is
+        possible to find only protein-water hydrogen bonds - and not
+        protein-protein or water-water - by specifying
+        between=["protein", "SOL"]`. If a two-dimensional list is
+        passed, hydrogen bonds between each pair will be found. For
+        example, between=[["protein", "SOL"], ["protein", "protein"]]`
+        will calculate all protein-water and protein-protein hydrogen
+        bonds but not water-water hydrogen bonds. If `None`, hydrogen
+        bonds between all donors and acceptors will be calculated.
+    d_h_cutoff : float (optional)
+        Distance cutoff used for finding donor-hydrogen pairs.
+        Only used to find donor-hydrogen pairs if the
+        universe topology does not contain bonding information
+    d_a_cutoff : float (optional)
+        Distance cutoff for hydrogen bonds. This cutoff refers to the D-A distance.
+    d_h_a_angle_cutoff : float (optional)
+        D-H-A angle cutoff for hydrogen bonds, in degrees.
+    update_selections : bool (optional)
+        Whether or not to update the acceptor, donor and hydrogen
+        lists at each frame.
+    ${VERBOSE_PARAMETER}
+
+    Note
+    ----
+
+    It is highly recommended that a universe topology with bond
+    information is used, as this is the only way that guarantees the
+    correct identification of donor-hydrogen pairs.
+
+
+    .. versionadded:: 2.0.0
+        Added `between` keyword
+    """
     def __init__(self, universe,
                  donors_sel=None, hydrogens_sel=None, acceptors_sel=None,
                  between=None, d_h_cutoff=1.2,
                  d_a_cutoff=3.0, d_h_a_angle_cutoff=150,
                  update_selections=True):
-        """Set up atom selections and geometric criteria for finding hydrogen
-        bonds in a Universe.
-
-        Parameters
-        ----------
-        universe : Universe
-            MDAnalysis Universe object
-        donors_sel : str
-            Selection string for the hydrogen bond donor atoms. If the
-            universe topology contains bonding information, leave
-            :attr:`donors_sel` as `None` so that donor-hydrogen pairs can be
-            correctly identified.
-        hydrogens_sel :  str
-            Selection string for the hydrogen bond hydrogen atoms. Leave as
-            `None` to guess which hydrogens to use in the analysis using
-            :attr:`guess_hydrogens`. If :attr:`hydrogens_sel` is left as
-            `None`, also leave :attr:`donors_sel` as None so that
-            donor-hydrogen pairs can be correctly identified.
-        acceptors_sel : str
-            Selection string for the hydrogen bond acceptor atoms. Leave as
-            `None` to guess which atoms to use in the analysis using
-            :attr:`guess_acceptors`
-        between : List (optional),
-            Specify two selection strings for non-updating atom groups between
-            which hydrogen bonds will be calculated. For example, if the donor
-            and acceptor selections include both protein and water, it is
-            possible to find only protein-water hydrogen bonds - and not
-            protein-protein or water-water - by specifying
-            between=["protein", "SOL"]`. If a two-dimensional list is
-            passed, hydrogen bonds between each pair will be found. For
-            example, between=[["protein", "SOL"], ["protein", "protein"]]`
-            will calculate all protein-water and protein-protein hydrogen
-            bonds but not water-water hydrogen bonds. If `None`, hydrogen
-            bonds between all donors and acceptors will be calculated.
-        d_h_cutoff : float (optional)
-            Distance cutoff used for finding donor-hydrogen pairs.
-            Only used to find donor-hydrogen pairs if the
-            universe topology does not contain bonding information
-        d_a_cutoff : float (optional)
-            Distance cutoff for hydrogen bonds. This cutoff refers to the D-A distance.
-        d_h_a_angle_cutoff : float (optional)
-            D-H-A angle cutoff for hydrogen bonds, in degrees.
-        update_selections : bool (optional)
-            Whether or not to update the acceptor, donor and hydrogen
-            lists at each frame.
-
-        Note
-        ----
-
-        It is highly recommended that a universe topology with bond
-        information is used, as this is the only way that guarantees the
-        correct identification of donor-hydrogen pairs.
-
-        .. versionadded:: 2.0.0
-            Added `between` keyword
-        """
 
         self.u = universe
         self._trajectory = self.u.trajectory

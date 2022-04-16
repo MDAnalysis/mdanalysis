@@ -161,16 +161,14 @@ Analysis classes
          instead.
 
 """
-import numpy as np
-
 import logging
 import warnings
 
 import MDAnalysis.lib.qcprot as qcp
-from MDAnalysis.analysis.base import AnalysisBase
-from MDAnalysis.exceptions import SelectionError, NoDataError
-from MDAnalysis.lib.util import asiterable, iterable, get_weights
-
+import numpy as np
+from MDAnalysis.analysis.base import AnalysisBase, set_verbose_doc
+from MDAnalysis.exceptions import SelectionError
+from MDAnalysis.lib.util import asiterable, get_weights, iterable
 
 logger = logging.getLogger('MDAnalysis.analysis.rmsd')
 
@@ -328,6 +326,7 @@ def process_selection(select):
     return select
 
 
+@set_verbose_doc
 class RMSD(AnalysisBase):
     r"""Class to perform RMSD analysis on a trajectory.
 
@@ -336,6 +335,111 @@ class RMSD(AnalysisBase):
     applying the selection selection `select` to the changing `atomgroup` and
     the fixed `reference`.
 
+    Run the analysis with :meth:`RMSD.run`, which stores the results
+    in the array :attr:`RMSD.results.rmsd`.
+
+    Parameters
+    ----------
+    atomgroup : AtomGroup or Universe
+        Group of atoms for which the RMSD is calculated. If a trajectory is
+        associated with the atoms then the computation iterates over the
+        trajectory.
+    reference : AtomGroup or Universe (optional)
+        Group of reference atoms; if ``None`` then the current frame of
+        `atomgroup` is used.
+    select : str or dict or tuple (optional)
+        The selection to operate on; can be one of:
+
+        1. any valid selection string for
+            :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` that
+            produces identical selections in `atomgroup` and `reference`; or
+
+        2. a dictionary ``{'mobile': sel1, 'reference': sel2}`` where *sel1*
+            and *sel2* are valid selection strings that are applied to
+            `atomgroup` and `reference` respectively (the
+            :func:`MDAnalysis.analysis.align.fasta2select` function returns such
+            a dictionary based on a ClustalW_ or STAMP_ sequence alignment); or
+
+        3. a tuple ``(sel1, sel2)``
+
+        When using 2. or 3. with *sel1* and *sel2* then these selection strings
+        are applied to `atomgroup` and `reference` respectively and should
+        generate *groups of equivalent atoms*.  *sel1* and *sel2* can each also
+        be a *list of selection strings* to generate a
+        :class:`~MDAnalysis.core.groups.AtomGroup` with defined atom order as
+        described under :ref:`ordered-selections-label`).
+
+    groupselections : list (optional)
+        A list of selections as described for `select`, with the difference
+        that these selections are *always applied to the full universes*,
+        i.e., ``atomgroup.universe.select_atoms(sel1)`` and
+        ``reference.universe.select_atoms(sel2)``. Each selection describes
+        additional RMSDs to be computed *after the structures have been
+        superimposed* according to `select`. No additional fitting is
+        performed.The output contains one additional column for each
+        selection.
+
+        .. Note:: Experimental feature. Only limited error checking
+                    implemented.
+
+    weights : {"mass", ``None``} or array_like (optional)
+            1. "mass" will use masses as weights for both `select` and `groupselections`.
+
+            2. ``None`` will weigh each atom equally for both `select` and `groupselections`.
+
+            3. If 1D float array of the same length as `atomgroup` is provided,
+            use each element of the `array_like` as a weight for the
+            corresponding atom in `select`, and assumes ``None`` for `groupselections`.
+
+    weights_groupselections : False or list of {"mass", ``None`` or array_like} (optional)
+            1. ``False`` will apply imposed weights to `groupselections` from
+            ``weights`` option if ``weights`` is either ``"mass"`` or ``None``. 
+            Otherwise will assume a list of length equal to length of 
+            `groupselections` filled with ``None`` values.
+
+            2. A list of {"mass", ``None`` or array_like} with the length of `groupselections`
+            will apply the weights to `groupselections` correspondingly.
+
+    tol_mass : float (optional)
+            Reject match if the atomic masses for matched atoms differ by more
+            than `tol_mass`.
+    ref_frame : int (optional)
+            frame index to select frame from `reference`
+    ${VERBOSE_PARAMETER}
+
+    Notes
+    -----
+    The root mean square deviation :math:`\rho(t)` of a group of :math:`N`
+    atoms relative to a reference structure as a function of time is
+    calculated as
+
+    .. math::
+
+        \rho(t) = \sqrt{\frac{1}{N} \sum_{i=1}^N w_i \left(\mathbf{x}_i(t)
+                                - \mathbf{x}_i^{\text{ref}}\right)^2}
+
+    The weights :math:`w_i` are calculated from the input weights `weights`
+    :math:`w'_i` as relative to the mean of the input weights:
+
+    .. math::
+
+        w_i = \frac{w'_i}{\langle w' \rangle}
+
+    The selected coordinates from `atomgroup` are optimally superimposed
+    (translation and rotation) on the `reference` coordinates at each time step
+    as to minimize the RMSD. Douglas Theobald's fast QCP algorithm
+    [Theobald2005]_ is used for the rotational superposition and to calculate
+    the RMSD (see :mod:`MDAnalysis.lib.qcprot` for implementation details).
+
+    The class runs various checks on the input to ensure that the two atom
+    groups can be compared. This includes a comparison of atom masses (i.e.,
+    only the positions of atoms of the same mass will be considered to be
+    correct for comparison). If masses should not be checked, just set
+    `tol_mass` to a large value such as 1000.
+
+    .. _ClustalW: http://www.clustal.org/
+    .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/
+
     Note
     ----
     If you use trajectory data from simulations performed under **periodic
@@ -343,162 +447,56 @@ class RMSD(AnalysisBase):
     performing RMSD calculations so that the centers of mass of the selected
     and reference structure are properly superimposed.
 
+    See Also
+    --------
+    rmsd
 
-    Run the analysis with :meth:`RMSD.run`, which stores the results
-    in the array :attr:`RMSD.results.rmsd`.
+    Raises
+    ------
+    SelectionError
+            If the selections from `atomgroup` and `reference` do not match.
+    TypeError
+            If `weights` or `weights_groupselections` is not of the appropriate type;
+            see also :func:`MDAnalysis.lib.util.get_weights`
+    ValueError
+            If `weights` are not compatible with `atomgroup` (not the same
+            length) or if it is not a 1D array (see
+            :func:`MDAnalysis.lib.util.get_weights`).
+
+            A :exc:`ValueError` is also raised if the length of `weights_groupselections`
+            are not compatible with `groupselections`.
 
 
+    .. versionadded:: 0.7.7
+    .. versionchanged:: 0.8
+        `groupselections` added
+    .. versionchanged:: 0.16.0
+        Flexible weighting scheme with new `weights` keyword.
+    .. deprecated:: 0.16.0
+        Instead of ``mass_weighted=True`` (removal in 0.17.0) use new
+        ``weights='mass'``; refactored to fit with AnalysisBase API
+    .. versionchanged:: 0.17.0
+        removed deprecated `mass_weighted` keyword; `groupselections`
+        are *not* rotationally superimposed any more.
+    .. versionchanged:: 1.0.0
+        `filename` keyword was removed.
     .. versionchanged:: 1.0.0
        ``save()`` method was removed, use ``np.savetxt()`` on
        :attr:`RMSD.results.rmsd` instead.
     .. versionchanged:: 2.0.0
        :attr:`rmsd` results are now stored in a
        :class:`MDAnalysis.analysis.base.Results` instance.
-
     """
-    def __init__(self, atomgroup, reference=None, select='all',
-                 groupselections=None, weights=None, weights_groupselections=False,
-                 tol_mass=0.1, ref_frame=0, **kwargs):
-        r"""Parameters
-        ----------
-        atomgroup : AtomGroup or Universe
-            Group of atoms for which the RMSD is calculated. If a trajectory is
-            associated with the atoms then the computation iterates over the
-            trajectory.
-        reference : AtomGroup or Universe (optional)
-            Group of reference atoms; if ``None`` then the current frame of
-            `atomgroup` is used.
-        select : str or dict or tuple (optional)
-            The selection to operate on; can be one of:
-
-            1. any valid selection string for
-               :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` that
-               produces identical selections in `atomgroup` and `reference`; or
-
-            2. a dictionary ``{'mobile': sel1, 'reference': sel2}`` where *sel1*
-               and *sel2* are valid selection strings that are applied to
-               `atomgroup` and `reference` respectively (the
-               :func:`MDAnalysis.analysis.align.fasta2select` function returns such
-               a dictionary based on a ClustalW_ or STAMP_ sequence alignment); or
-
-            3. a tuple ``(sel1, sel2)``
-
-            When using 2. or 3. with *sel1* and *sel2* then these selection strings
-            are applied to `atomgroup` and `reference` respectively and should
-            generate *groups of equivalent atoms*.  *sel1* and *sel2* can each also
-            be a *list of selection strings* to generate a
-            :class:`~MDAnalysis.core.groups.AtomGroup` with defined atom order as
-            described under :ref:`ordered-selections-label`).
-
-        groupselections : list (optional)
-            A list of selections as described for `select`, with the difference
-            that these selections are *always applied to the full universes*,
-            i.e., ``atomgroup.universe.select_atoms(sel1)`` and
-            ``reference.universe.select_atoms(sel2)``. Each selection describes
-            additional RMSDs to be computed *after the structures have been
-            superimposed* according to `select`. No additional fitting is
-            performed.The output contains one additional column for each
-            selection.
-
-            .. Note:: Experimental feature. Only limited error checking
-                      implemented.
-
-        weights : {"mass", ``None``} or array_like (optional)
-             1. "mass" will use masses as weights for both `select` and `groupselections`.
-
-             2. ``None`` will weigh each atom equally for both `select` and `groupselections`.
-
-             3. If 1D float array of the same length as `atomgroup` is provided,
-             use each element of the `array_like` as a weight for the
-             corresponding atom in `select`, and assumes ``None`` for `groupselections`.
-
-        weights_groupselections : False or list of {"mass", ``None`` or array_like} (optional)
-             1. ``False`` will apply imposed weights to `groupselections` from
-             ``weights`` option if ``weights`` is either ``"mass"`` or ``None``. 
-             Otherwise will assume a list of length equal to length of 
-             `groupselections` filled with ``None`` values.
-
-             2. A list of {"mass", ``None`` or array_like} with the length of `groupselections`
-             will apply the weights to `groupselections` correspondingly.
-
-        tol_mass : float (optional)
-             Reject match if the atomic masses for matched atoms differ by more
-             than `tol_mass`.
-        ref_frame : int (optional)
-             frame index to select frame from `reference`
-        verbose : bool (optional)
-             Show detailed progress of the calculation if set to ``True``; the
-             default is ``False``.
-
-        Raises
-        ------
-        SelectionError
-             If the selections from `atomgroup` and `reference` do not match.
-        TypeError
-             If `weights` or `weights_groupselections` is not of the appropriate type;
-             see also :func:`MDAnalysis.lib.util.get_weights`
-        ValueError
-             If `weights` are not compatible with `atomgroup` (not the same
-             length) or if it is not a 1D array (see
-             :func:`MDAnalysis.lib.util.get_weights`).
-
-             A :exc:`ValueError` is also raised if the length of `weights_groupselections`
-             are not compatible with `groupselections`.
-
-        Notes
-        -----
-        The root mean square deviation :math:`\rho(t)` of a group of :math:`N`
-        atoms relative to a reference structure as a function of time is
-        calculated as
-
-        .. math::
-
-           \rho(t) = \sqrt{\frac{1}{N} \sum_{i=1}^N w_i \left(\mathbf{x}_i(t)
-                                    - \mathbf{x}_i^{\text{ref}}\right)^2}
-
-        The weights :math:`w_i` are calculated from the input weights `weights`
-        :math:`w'_i` as relative to the mean of the input weights:
-
-        .. math::
-
-           w_i = \frac{w'_i}{\langle w' \rangle}
-
-        The selected coordinates from `atomgroup` are optimally superimposed
-        (translation and rotation) on the `reference` coordinates at each time step
-        as to minimize the RMSD. Douglas Theobald's fast QCP algorithm
-        [Theobald2005]_ is used for the rotational superposition and to calculate
-        the RMSD (see :mod:`MDAnalysis.lib.qcprot` for implementation details).
-
-        The class runs various checks on the input to ensure that the two atom
-        groups can be compared. This includes a comparison of atom masses (i.e.,
-        only the positions of atoms of the same mass will be considered to be
-        correct for comparison). If masses should not be checked, just set
-        `tol_mass` to a large value such as 1000.
-
-        .. _ClustalW: http://www.clustal.org/
-        .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/
-
-
-        See Also
-        --------
-        rmsd
-
-
-        .. versionadded:: 0.7.7
-        .. versionchanged:: 0.8
-           `groupselections` added
-        .. versionchanged:: 0.16.0
-           Flexible weighting scheme with new `weights` keyword.
-        .. deprecated:: 0.16.0
-           Instead of ``mass_weighted=True`` (removal in 0.17.0) use new
-           ``weights='mass'``; refactored to fit with AnalysisBase API
-        .. versionchanged:: 0.17.0
-           removed deprecated `mass_weighted` keyword; `groupselections`
-           are *not* rotationally superimposed any more.
-        .. versionchanged:: 1.0.0
-           `filename` keyword was removed.
-
-        """
+    def __init__(self,
+                 atomgroup,
+                 reference=None,
+                 select='all',
+                 groupselections=None,
+                 weights=None,
+                 weights_groupselections=False,
+                 tol_mass=0.1,
+                 ref_frame=0,
+                 **kwargs):
         super(RMSD, self).__init__(atomgroup.universe.trajectory,
                                    **kwargs)
         self.atomgroup = atomgroup
@@ -719,8 +717,15 @@ class RMSD(AnalysisBase):
         return self.results.rmsd
 
 
+@set_verbose_doc
 class RMSF(AnalysisBase):
     r"""Calculate RMSF of given atoms across a trajectory.
+
+    Parameters
+    ----------
+    atomgroup : AtomGroup
+        Atoms for which RMSF is calculated
+    ${VERBOSE_PARAMETER}
 
     Note
     ----
@@ -730,133 +735,117 @@ class RMSF(AnalysisBase):
     protein also has be whole because periodic boundaries are not taken into
     account.
 
+    Notes
+    -----
+    The root mean square fluctuation of an atom :math:`i` is computed as the
+    time average
 
-    Run the analysis with :meth:`RMSF.run`, which stores the results
-    in the array :attr:`RMSF.results.rmsf`.
+    .. math::
 
+        \rho_i = \sqrt{\left\langle (\mathbf{x}_i - \langle\mathbf{x}_i\rangle)^2 \right\rangle}
+
+    No mass weighting is performed.
+
+    This method implements an algorithm for computing sums of squares while
+    avoiding overflows and underflows [Welford1962]_.
+
+
+    Examples
+    --------
+
+    In this example we calculate the residue RMSF fluctuations by analyzing
+    the :math:`\text{C}_\alpha` atoms. First we need to fit the trajectory
+    to the average structure as a reference. That requires calculating the
+    average structure first. Because we need to analyze and manipulate the
+    same trajectory multiple times, we are going to load it into memory
+    using the :mod:`~MDAnalysis.coordinates.MemoryReader`. (If your
+    trajectory does not fit into memory, you will need to :ref:`write out
+    intermediate trajectories <writing-trajectories>` to disk or
+    :ref:`generate an in-memory universe
+    <creating-in-memory-trajectory-label>` that only contains, say, the
+    protein)::
+
+        import MDAnalysis as mda
+        from MDAnalysis.analysis import align
+
+        from MDAnalysis.tests.datafiles import TPR, XTC
+
+        u = mda.Universe(TPR, XTC, in_memory=True)
+        protein = u.select_atoms("protein")
+
+        # 1) the current trajectory contains a protein split across
+        #    periodic boundaries, so we first make the protein whole and
+        #    center it in the box using on-the-fly transformations
+        import MDAnalysis.transformations as trans
+
+        not_protein = u.select_atoms('not protein')
+        transforms = [trans.unwrap(protein),
+                        trans.center_in_box(protein, wrap=True),
+                        trans.wrap(not_protein)]
+        u.trajectory.add_transformations(*transforms)
+
+        # 2) fit to the initial frame to get a better average structure
+        #    (the trajectory is changed in memory)
+        prealigner = align.AlignTraj(u, u, select="protein and name CA",
+                                    in_memory=True).run()
+
+        # 3) reference = average structure
+        ref_coordinates = u.trajectory.timeseries(asel=protein).mean(axis=1)
+        # make a reference structure (need to reshape into a 1-frame
+        # "trajectory")
+        reference = mda.Merge(protein).load_new(ref_coordinates[:, None, :],
+                                                order="afc")
+
+    We created a new universe ``reference`` that contains a single frame
+    with the averaged coordinates of the protein.  Now we need to fit the
+    whole trajectory to the reference by minimizing the RMSD. We use
+    :class:`MDAnalysis.analysis.align.AlignTraj`::
+
+        aligner = align.AlignTraj(u, reference,
+                                    select="protein and name CA",
+                                    in_memory=True).run()
+
+    The trajectory is now fitted to the reference (the RMSD is stored as
+    `aligner.results.rmsd` for further inspection). Now we can calculate
+    the RMSF::
+
+        from MDAnalysis.analysis.rms import RMSF
+
+        calphas = protein.select_atoms("name CA")
+        rmsfer = RMSF(calphas, verbose=True).run()
+
+    and plot::
+
+        import matplotlib.pyplot as plt
+
+        plt.plot(calphas.resnums, rmsfer.results.rmsf)
+
+    Raises
+    ------
+    ValueError
+            raised if negative values are calculated, which indicates that a
+            numerical overflow or underflow occured
+
+
+    References
+    ----------
+    .. [Welford1962] B. P. Welford (1962). "Note on a Method for
+        Calculating Corrected Sums of Squares and Products." Technometrics
+        4(3):419-420.
+
+
+    .. versionadded:: 0.11.0
+    .. versionchanged:: 0.16.0
+        refactored to fit with AnalysisBase API
+    .. deprecated:: 0.16.0
+        the keyword argument `quiet` is deprecated in favor of `verbose`.
+    .. versionchanged:: 0.17.0
+        removed unused keyword `weights`
+    .. versionchanged:: 1.0.0
+        Support for the ``start``, ``stop``, and ``step`` keywords has been
+        removed. These should instead be passed to :meth:`RMSF.run`.
     """
     def __init__(self, atomgroup, **kwargs):
-        r"""Parameters
-        ----------
-        atomgroup : AtomGroup
-            Atoms for which RMSF is calculated
-        verbose : bool (optional)
-             Show detailed progress of the calculation if set to ``True``; the
-             default is ``False``.
-
-        Raises
-        ------
-        ValueError
-             raised if negative values are calculated, which indicates that a
-             numerical overflow or underflow occured
-
-
-        Notes
-        -----
-        The root mean square fluctuation of an atom :math:`i` is computed as the
-        time average
-
-        .. math::
-
-          \rho_i = \sqrt{\left\langle (\mathbf{x}_i - \langle\mathbf{x}_i\rangle)^2 \right\rangle}
-
-        No mass weighting is performed.
-
-        This method implements an algorithm for computing sums of squares while
-        avoiding overflows and underflows [Welford1962]_.
-
-
-        Examples
-        --------
-
-        In this example we calculate the residue RMSF fluctuations by analyzing
-        the :math:`\text{C}_\alpha` atoms. First we need to fit the trajectory
-        to the average structure as a reference. That requires calculating the
-        average structure first. Because we need to analyze and manipulate the
-        same trajectory multiple times, we are going to load it into memory
-        using the :mod:`~MDAnalysis.coordinates.MemoryReader`. (If your
-        trajectory does not fit into memory, you will need to :ref:`write out
-        intermediate trajectories <writing-trajectories>` to disk or
-        :ref:`generate an in-memory universe
-        <creating-in-memory-trajectory-label>` that only contains, say, the
-        protein)::
-
-           import MDAnalysis as mda
-           from MDAnalysis.analysis import align
-
-           from MDAnalysis.tests.datafiles import TPR, XTC
-
-           u = mda.Universe(TPR, XTC, in_memory=True)
-           protein = u.select_atoms("protein")
-
-           # 1) the current trajectory contains a protein split across
-           #    periodic boundaries, so we first make the protein whole and
-           #    center it in the box using on-the-fly transformations
-           import MDAnalysis.transformations as trans
-
-           not_protein = u.select_atoms('not protein')
-           transforms = [trans.unwrap(protein),
-                         trans.center_in_box(protein, wrap=True),
-                         trans.wrap(not_protein)]
-           u.trajectory.add_transformations(*transforms)
-
-           # 2) fit to the initial frame to get a better average structure
-           #    (the trajectory is changed in memory)
-           prealigner = align.AlignTraj(u, u, select="protein and name CA",
-                                        in_memory=True).run()
-
-           # 3) reference = average structure
-           ref_coordinates = u.trajectory.timeseries(asel=protein).mean(axis=1)
-           # make a reference structure (need to reshape into a 1-frame
-           # "trajectory")
-           reference = mda.Merge(protein).load_new(ref_coordinates[:, None, :],
-                                                   order="afc")
-
-        We created a new universe ``reference`` that contains a single frame
-        with the averaged coordinates of the protein.  Now we need to fit the
-        whole trajectory to the reference by minimizing the RMSD. We use
-        :class:`MDAnalysis.analysis.align.AlignTraj`::
-
-           aligner = align.AlignTraj(u, reference,
-                                     select="protein and name CA",
-                                     in_memory=True).run()
-
-        The trajectory is now fitted to the reference (the RMSD is stored as
-        `aligner.results.rmsd` for further inspection). Now we can calculate
-        the RMSF::
-
-           from MDAnalysis.analysis.rms import RMSF
-
-           calphas = protein.select_atoms("name CA")
-           rmsfer = RMSF(calphas, verbose=True).run()
-
-        and plot::
-
-           import matplotlib.pyplot as plt
-
-           plt.plot(calphas.resnums, rmsfer.results.rmsf)
-
-
-
-        References
-        ----------
-        .. [Welford1962] B. P. Welford (1962). "Note on a Method for
-           Calculating Corrected Sums of Squares and Products." Technometrics
-           4(3):419-420.
-
-
-        .. versionadded:: 0.11.0
-        .. versionchanged:: 0.16.0
-           refactored to fit with AnalysisBase API
-        .. deprecated:: 0.16.0
-           the keyword argument `quiet` is deprecated in favor of `verbose`.
-        .. versionchanged:: 0.17.0
-           removed unused keyword `weights`
-        .. versionchanged:: 1.0.0
-           Support for the ``start``, ``stop``, and ``step`` keywords has been
-           removed. These should instead be passed to :meth:`RMSF.run`.
-
-        """
         super(RMSF, self).__init__(atomgroup.universe.trajectory, **kwargs)
         self.atomgroup = atomgroup
 

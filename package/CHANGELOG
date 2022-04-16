@@ -41,6 +41,7 @@ Fixes
   * Fixed FrameIteratorIndices doesn't rewind. (Issue #3416)
 
 Enhancements
+  * Cleanup and restructure of AnalysisBase classes
   * PCA class now has an inverse-PCA function. The inverse transform can
     also be extrapolated to certain non-PCA atoms. (PR #3596, Issue #2703)
  * `DistanceMatrix` class in MDAnalysis.analysis.diffusionmap now also

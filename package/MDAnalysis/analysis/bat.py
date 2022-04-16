@@ -172,17 +172,14 @@ References
 
 """
 import logging
-import warnings
-
-import numpy as np
 
 import MDAnalysis as mda
-from .base import AnalysisBase
-
-from MDAnalysis.lib.distances import calc_bonds, calc_angles, calc_dihedrals
+import numpy as np
+from MDAnalysis.lib.distances import calc_angles, calc_bonds, calc_dihedrals
 from MDAnalysis.lib.mdamath import make_whole
 
-from ..due import due, Doi
+from ..due import Doi, due
+from .base import AnalysisBase, set_verbose_doc
 
 logger = logging.getLogger(__name__)
 
@@ -260,44 +257,44 @@ def _find_torsions(root, atoms):
     return torsions
 
 
+@set_verbose_doc
 class BAT(AnalysisBase):
     """Calculate BAT coordinates for the specified AtomGroup.
 
     Bond-Angle-Torsions (BAT) internal coordinates will be computed for
     the group of atoms and all frame in the trajectory belonging to `ag`.
 
+    Parameters
+    ----------
+    ag : AtomGroup or Universe
+        Group of atoms for which the BAT coordinates are calculated.
+        `ag` must have a bonds attribute.
+        If unavailable, bonds may be guessed using
+        :meth:`AtomGroup.guess_bonds <MDAnalysis.core.groups.AtomGroup.guess_bonds>`.
+        `ag` must only include one molecule.
+        If a trajectory is associated with the atoms, then the computation
+        iterates over the trajectory.
+    initial_atom : :class:`Atom <MDAnalysis.core.groups.Atom>`
+        The atom whose Cartesian coordinates define the translation
+        of the molecule. If not specified, the heaviest terminal atom
+        will be selected.
+    filename : str
+        Name of a numpy binary file containing a saved bat array.
+        If filename is not ``None``, the data will be loaded from this file
+        instead of being recalculated using the run() method.
+    ${VERBOSE_PARAMETER}
+
+    Raises
+    ------
+    AttributeError
+        If `ag` does not contain a bonds attribute
+    ValueError
+        If `ag` contains more than one molecule
     """
     @due.dcite(Doi("10.1002/jcc.26036"),
                description="Bond-Angle-Torsions Coordinate Transformation",
                path="MDAnalysis.analysis.bat.BAT")
     def __init__(self, ag, initial_atom=None, filename=None, **kwargs):
-        r"""Parameters
-        ----------
-        ag : AtomGroup or Universe
-            Group of atoms for which the BAT coordinates are calculated.
-            `ag` must have a bonds attribute.
-            If unavailable, bonds may be guessed using
-            :meth:`AtomGroup.guess_bonds <MDAnalysis.core.groups.AtomGroup.guess_bonds>`.
-            `ag` must only include one molecule.
-            If a trajectory is associated with the atoms, then the computation
-            iterates over the trajectory.
-        initial_atom : :class:`Atom <MDAnalysis.core.groups.Atom>`
-            The atom whose Cartesian coordinates define the translation
-            of the molecule. If not specified, the heaviest terminal atom
-            will be selected.
-        filename : str
-            Name of a numpy binary file containing a saved bat array.
-            If filename is not ``None``, the data will be loaded from this file
-            instead of being recalculated using the run() method.
-
-        Raises
-        ------
-        AttributeError
-            If `ag` does not contain a bonds attribute
-        ValueError
-            If `ag` contains more than one molecule
-
-        """
         super(BAT, self).__init__(ag.universe.trajectory, **kwargs)
         self._ag = ag
 

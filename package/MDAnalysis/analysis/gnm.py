@@ -92,11 +92,9 @@ import logging
 import warnings
 
 import numpy as np
-
-from .base import AnalysisBase
-
-
 from MDAnalysis.analysis.base import Results
+
+from .base import AnalysisBase, set_verbose_doc
 
 logger = logging.getLogger('MDAnalysis.analysis.GNM')
 
@@ -195,6 +193,7 @@ def order_list(w):
     return list_map
 
 
+@set_verbose_doc
 class GNMAnalysis(AnalysisBase):
     """Basic tool for GNM analysis.
 
@@ -221,6 +220,7 @@ class GNMAnalysis(AnalysisBase):
           ligands such as drugs). You need to ensure that none of the atoms in
           `Bonus_groups` is contained in `selection` as this could lead to
           double counting. No checks are applied.
+    ${VERBOSE_PARAMETER}
 
     Attributes
     ----------

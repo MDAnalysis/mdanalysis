@@ -82,11 +82,12 @@ equivalent::
 """
 
 import warnings
-import numpy as np
 
 import MDAnalysis as mda
-from ..lib import util, mdamath
-from .base import AnalysisBase
+import numpy as np
+
+from ..lib import mdamath, util
+from .base import AnalysisBase, set_verbose_doc
 
 
 def vector_of_best_fit(coordinates):
@@ -288,6 +289,7 @@ def helix_analysis(positions, ref_axis=[0, 0, 1]):
     return results
 
 
+@set_verbose_doc
 class HELANAL(AnalysisBase):
     r"""
     Perform HELANAL helix analysis on your trajectory.
@@ -308,8 +310,7 @@ class HELANAL(AnalysisBase):
         Whether to flatten results if only one selection is passed.
     split_residue_sequences : bool, optional
         Wether to split residues into a list of same or consecutive helices.
-    verbose : bool, optional
-        Turn on more logging and debugging.
+    ${VERBOSE_PARAMETER}
 
     Attributes
     ----------

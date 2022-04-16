@@ -261,23 +261,35 @@ References
    <https://doi.org/10.6084/m9.figshare.6957296>`_
 
 """
-import numpy as np
-import matplotlib.pyplot as plt
-
 import warnings
 
+import matplotlib.pyplot as plt
 import MDAnalysis as mda
-from MDAnalysis.analysis.base import AnalysisBase
+import numpy as np
+from MDAnalysis.analysis.base import AnalysisBase, set_verbose_doc
+from MDAnalysis.analysis.data.filenames import Janin_ref, Rama_ref
 from MDAnalysis.lib.distances import calc_dihedrals
-from MDAnalysis.analysis.data.filenames import Rama_ref, Janin_ref
 
 
+@set_verbose_doc
 class Dihedral(AnalysisBase):
     """Calculate dihedral angles for specified atomgroups.
 
     Dihedral angles will be calculated for each atomgroup that is given for
     each step in the trajectory. Each :class:`~MDAnalysis.core.groups.AtomGroup`
     must contain 4 atoms.
+
+    Parameters
+    ----------
+    atomgroups : list[AtomGroup]
+        a list of :class:`~MDAnalysis.core.groups.AtomGroup` for which
+        the dihedral angles are calculated
+    ${VERBOSE_PARAMETER}
+
+    Raises
+    ------
+    ValueError
+        If any atomgroups do not contain 4 atoms
 
     Note
     ----
@@ -289,22 +301,8 @@ class Dihedral(AnalysisBase):
     .. versionchanged:: 2.0.0
        :attr:`angles` results are now stored in a
        :class:`MDAnalysis.analysis.base.Results` instance.
-
     """
-
     def __init__(self, atomgroups, **kwargs):
-        """Parameters
-        ----------
-        atomgroups : list[AtomGroup]
-            a list of :class:`~MDAnalysis.core.groups.AtomGroup` for which
-            the dihedral angles are calculated
-
-        Raises
-        ------
-        ValueError
-            If any atomgroups do not contain 4 atoms
-
-        """
         super(Dihedral, self).__init__(
             atomgroups[0].universe.trajectory, **kwargs)
         self.atomgroups = atomgroups
@@ -338,6 +336,7 @@ class Dihedral(AnalysisBase):
         return self.results.angles
 
 
+@set_verbose_doc
 class Ramachandran(AnalysisBase):
     r"""Calculate :math:`\phi` and :math:`\psi` dihedral angles of selected
     residues.
@@ -361,6 +360,7 @@ class Ramachandran(AnalysisBase):
     check_protein : bool (optional)
         whether to raise an error if the provided atomgroup is not a
         subset of protein atoms
+    ${VERBOSE_PARAMETER}
 
     Example
     -------

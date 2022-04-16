@@ -35,19 +35,18 @@ class to compute an RMSD matrix in such a way is also available.
 .. versionadded:: 0.16.0
 
 """
-from joblib import Parallel, delayed
-import numpy as np
-from getpass import getuser
-from socket import gethostname
-from datetime import datetime
-from time import sleep
 import logging
 import warnings
+from datetime import datetime
+from getpass import getuser
+from socket import gethostname
+from time import sleep
+
+import numpy as np
+from joblib import Parallel, delayed
 
 from ...core.universe import Universe
-
 from ..align import rotation_matrix
-
 from .cutils import PureRMSD
 from .utils import TriangularMatrix, trm_indices
 
@@ -88,8 +87,6 @@ def conformational_distance_matrix(ensemble,
     max_nbytes : str, optional
         Threshold on the size of arrays passed to the workers that triggers automated memory mapping in temp_folder (default is None).
         See https://joblib.readthedocs.io/en/latest/generated/joblib.Parallel.html for detailed documentation.
-    verbose : bool, optional
-        enable verbose output
 
     Returns
     -------

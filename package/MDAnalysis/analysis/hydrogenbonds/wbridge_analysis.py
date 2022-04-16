@@ -713,20 +713,21 @@ Classes
          Will be removed in MDAnalysis 3.0.0. Please use
          :attr:`results.timeseries` instead.
 """
-from collections import defaultdict
 import logging
 import warnings
-import numpy as np
+from collections import defaultdict
 
-from ..base import AnalysisBase
+import numpy as np
+from MDAnalysis import MissingDataWarning, NoDataError
+from MDAnalysis.lib.distances import calc_angles, capped_distance
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
-from MDAnalysis.lib.distances import capped_distance, calc_angles
-from MDAnalysis import NoDataError, MissingDataWarning, SelectionError
-from MDAnalysis.lib import distances
+
+from ..base import AnalysisBase, set_verbose_doc
 
 logger = logging.getLogger('MDAnalysis.analysis.WaterBridgeAnalysis')
 
 
+@set_verbose_doc
 class WaterBridgeAnalysis(AnalysisBase):
     """Perform a water bridge analysis
 
@@ -734,6 +735,132 @@ class WaterBridgeAnalysis(AnalysisBase):
     :meth:`WaterBridgeAnalysis.run` method. The result is stored in
     :attr:`WaterBridgeAnalysis.results.timeseries`. See
     :meth:`~WaterBridgeAnalysis.run` for the format.
+
+    The timeseries is accessible as the attribute
+    :attr:`WaterBridgeAnalysis.results.timeseries`.
+
+    If no hydrogen bonds are detected or if the initial check fails, look
+    at the log output (enable with :func:`MDAnalysis.start_logging` and set
+    `verbose` ``=True``). It is likely that the default names for donors
+    and acceptors are not suitable (especially for non-standard
+    ligands). In this case, either change the `forcefield` or use
+    customized `donors` and/or `acceptors`.
+
+    Parameters
+    ----------
+    universe : Universe
+        Universe object
+    selection1 : str (optional)
+        Selection string for first selection ['protein']
+    selection2 : str (optional)
+        Selection string for second selection ['not resname SOL']
+        This string selects everything except water where water is assumed
+        to have a residue name as SOL.
+    water_selection : str (optional)
+        Selection string for bridging water selection ['resname SOL']
+        The default selection assumes that the water molecules have residue
+        name "SOL". Change it to the appropriate selection for your
+        specific force field.
+
+        However, in theory, this selection can be anything which forms
+        a hydrogen bond with selection 1 and selection 2.
+    order : int (optional)
+        The maximum number of water bridges linking both selections.
+        if the order is set to 3, then all the residues linked with less
+        than three water molecules will be detected. [1]
+
+        Computation of high order water bridges can be very time-consuming.
+        Think carefully before running the calculation, do you really want
+        to compute the 20th order water bridge between domain A and domain
+        B or you just want to know the third order water bridge between two
+        residues.
+    selection1_type : {"donor", "acceptor", "both"} (optional)
+        Selection 1 can be 'donor', 'acceptor' or 'both'. Note that the
+        value for `selection1_type` automatically determines how
+        `selection2` handles donors and acceptors: If `selection1` contains
+        'both' then `selection2` will also contain 'both'. If `selection1`
+        is set to 'donor' then `selection2` is 'acceptor' (and vice versa).
+        ['both'].
+    update_selection : bool (optional)
+        Update selection 1 and 2 at each frame. Setting to ``True`` if the
+        selection is not static. Selections are filtered first to speed up
+        performance. Thus, setting to ``True`` is recommended if contact
+        surface between selection 1 and selection 2 is constantly
+        changing. [``False``]
+    update_water_selection : bool (optional)
+        Update selection of water at each frame. Setting to ``False`` is
+        **only** recommended when the total amount of water molecules in
+        the simulation are small and when water molecules remain static
+        across the simulation.
+
+        However, in normal simulations, only a tiny proportion of water is
+        engaged in the formation of water bridge. It is recommended to
+        update the water selection and set keyword `filter_first` to
+        ``True`` so as to filter out water not residing between the two
+        selections. [``True``]
+    filter_first : bool (optional)
+        Filter the water selection to only include water within 4 Å +
+        `order` * (2 Å + `distance`) away from `both` selection 1 and
+        selection 2.
+        Selection 1 and selection 2 are both filtered to only include atoms
+        with the same distance away from the other selection. [``True``]
+    distance : float (optional)
+        Distance cutoff for hydrogen bonds; only interactions with a H-A
+        distance <= `distance` (and the appropriate D-H-A angle, see
+        `angle`) are recorded. (Note: `distance_type` can change this to
+        the D-A distance.) [3.0]
+    angle : float (optional)
+        Angle cutoff for hydrogen bonds; an ideal H-bond has an angle of
+        180º.  A hydrogen bond is only recorded if the D-H-A angle is
+        >=  `angle`. The default of 120º also finds fairly non-specific
+        hydrogen interactions and possibly better value is 150º. [120.0]
+    forcefield : {"CHARMM27", "GLYCAM06", "other"} (optional)
+        Name of the forcefield used. Switches between different
+        :attr:`~DEFAULT_DONORS` and
+        :attr:`~DEFAULT_ACCEPTORS` values.
+        ["CHARMM27"]
+    donors : sequence (optional)
+        Extra H donor atom types (in addition to those in
+        :attr:`~DEFAULT_DONORS`), must be a sequence.
+    acceptors : sequence (optional)
+        Extra H acceptor atom types (in addition to those in
+        :attr:`~DEFAULT_ACCEPTORS`), must be a
+        sequence.
+    distance_type : {"hydrogen", "heavy"} (optional)
+        Measure hydrogen bond lengths between donor and acceptor heavy
+        atoms ("heavy") or between donor hydrogen and acceptor heavy
+        atom ("hydrogen"). If using "heavy" then one should set the
+        *distance* cutoff to a higher value such as 3.5 Å. ["hydrogen"]
+    output_format: {"sele1_sele2", "donor_acceptor"} (optional)
+        Setting the output format for timeseries and table. If set to
+        "sele1_sele2", for each hydrogen bond, the one close to selection 1
+        will be placed before selection 2. If set to "donor_acceptor", the
+        donor will be placed before acceptor. "sele1_sele2"]
+    debug : bool (optional)
+        If set to ``True`` enables per-frame debug logging. This is
+        disabled by default because it generates a very large amount of
+        output in the log file. (Note that a logger must have been started
+        to see the output, e.g. using :func:`MDAnalysis.start_logging`.)
+    ${VERBOSE_PARAMETER}
+
+    Notes
+    -----
+    In order to speed up processing, atoms are filtered by a coarse
+    distance criterion before a detailed hydrogen bonding analysis is
+    performed (`filter_first` = ``True``).
+
+    If selection 1 and selection 2 are very mobile during the simulation
+    and the contact surface is constantly changing (i.e. residues are
+    moving farther than 4 Å + `order` * (2 Å + `distance`)), you might
+    consider setting the `update_selection` keywords to ``True``
+    to ensure correctness.
+
+
+    .. versionchanged 0.20.0
+        The :attr:`WaterBridgeAnalysis.timeseries` has been updated
+        see :attr:`WaterBridgeAnalysis.timeseries` for detail.
+        This class is now based on
+        :class:`~MDAnalysis.analysis.base.AnalysisBase`.
 
     .. versionadded:: 0.17.0
 
@@ -779,138 +906,6 @@ class WaterBridgeAnalysis(AnalysisBase):
                  forcefield='CHARMM27', donors=None, acceptors=None,
                  output_format="sele1_sele2", debug=None,
                  pbc=False, **kwargs):
-        """Set up the calculation of water bridges between two selections in a
-        universe.
-
-        The timeseries is accessible as the attribute
-        :attr:`WaterBridgeAnalysis.results.timeseries`.
-
-        If no hydrogen bonds are detected or if the initial check fails, look
-        at the log output (enable with :func:`MDAnalysis.start_logging` and set
-        `verbose` ``=True``). It is likely that the default names for donors
-        and acceptors are not suitable (especially for non-standard
-        ligands). In this case, either change the `forcefield` or use
-        customized `donors` and/or `acceptors`.
-
-        Parameters
-        ----------
-        universe : Universe
-            Universe object
-        selection1 : str (optional)
-            Selection string for first selection ['protein']
-        selection2 : str (optional)
-            Selection string for second selection ['not resname SOL']
-            This string selects everything except water where water is assumed
-            to have a residue name as SOL.
-        water_selection : str (optional)
-            Selection string for bridging water selection ['resname SOL']
-            The default selection assumes that the water molecules have residue
-            name "SOL". Change it to the appropriate selection for your
-            specific force field.
-
-            However, in theory, this selection can be anything which forms
-            a hydrogen bond with selection 1 and selection 2.
-        order : int (optional)
-            The maximum number of water bridges linking both selections.
-            if the order is set to 3, then all the residues linked with less
-            than three water molecules will be detected. [1]
-
-            Computation of high order water bridges can be very time-consuming.
-            Think carefully before running the calculation, do you really want
-            to compute the 20th order water bridge between domain A and domain
-            B or you just want to know the third order water bridge between two
-            residues.
-        selection1_type : {"donor", "acceptor", "both"} (optional)
-            Selection 1 can be 'donor', 'acceptor' or 'both'. Note that the
-            value for `selection1_type` automatically determines how
-            `selection2` handles donors and acceptors: If `selection1` contains
-            'both' then `selection2` will also contain 'both'. If `selection1`
-            is set to 'donor' then `selection2` is 'acceptor' (and vice versa).
-            ['both'].
-        update_selection : bool (optional)
-            Update selection 1 and 2 at each frame. Setting to ``True`` if the
-            selection is not static. Selections are filtered first to speed up
-            performance. Thus, setting to ``True`` is recommended if contact
-            surface between selection 1 and selection 2 is constantly
-            changing. [``False``]
-        update_water_selection : bool (optional)
-            Update selection of water at each frame. Setting to ``False`` is
-            **only** recommended when the total amount of water molecules in
-            the simulation are small and when water molecules remain static
-            across the simulation.
-
-            However, in normal simulations, only a tiny proportion of water is
-            engaged in the formation of water bridge. It is recommended to
-            update the water selection and set keyword `filter_first` to
-            ``True`` so as to filter out water not residing between the two
-            selections. [``True``]
-        filter_first : bool (optional)
-            Filter the water selection to only include water within 4 Å +
-            `order` * (2 Å + `distance`) away from `both` selection 1 and
-            selection 2.
-            Selection 1 and selection 2 are both filtered to only include atoms
-            with the same distance away from the other selection. [``True``]
-        distance : float (optional)
-            Distance cutoff for hydrogen bonds; only interactions with a H-A
-            distance <= `distance` (and the appropriate D-H-A angle, see
-            `angle`) are recorded. (Note: `distance_type` can change this to
-            the D-A distance.) [3.0]
-        angle : float (optional)
-            Angle cutoff for hydrogen bonds; an ideal H-bond has an angle of
-            180º.  A hydrogen bond is only recorded if the D-H-A angle is
-            >=  `angle`. The default of 120º also finds fairly non-specific
-            hydrogen interactions and possibly better value is 150º. [120.0]
-        forcefield : {"CHARMM27", "GLYCAM06", "other"} (optional)
-            Name of the forcefield used. Switches between different
-            :attr:`~DEFAULT_DONORS` and
-            :attr:`~DEFAULT_ACCEPTORS` values.
-            ["CHARMM27"]
-        donors : sequence (optional)
-            Extra H donor atom types (in addition to those in
-            :attr:`~DEFAULT_DONORS`), must be a sequence.
-        acceptors : sequence (optional)
-            Extra H acceptor atom types (in addition to those in
-            :attr:`~DEFAULT_ACCEPTORS`), must be a
-            sequence.
-        distance_type : {"hydrogen", "heavy"} (optional)
-            Measure hydrogen bond lengths between donor and acceptor heavy
-            atoms ("heavy") or between donor hydrogen and acceptor heavy
-            atom ("hydrogen"). If using "heavy" then one should set the
-            *distance* cutoff to a higher value such as 3.5 Å. ["hydrogen"]
-        output_format: {"sele1_sele2", "donor_acceptor"} (optional)
-            Setting the output format for timeseries and table. If set to
-            "sele1_sele2", for each hydrogen bond, the one close to selection 1
-            will be placed before selection 2. If set to "donor_acceptor", the
-            donor will be placed before acceptor. "sele1_sele2"]
-        debug : bool (optional)
-            If set to ``True`` enables per-frame debug logging. This is
-            disabled by default because it generates a very large amount of
-            output in the log file. (Note that a logger must have been started
-            to see the output, e.g. using :func:`MDAnalysis.start_logging`.)
-        verbose : bool (optional)
-            Toggle progress output. (Can also be given as keyword argument to
-            :meth:`run`.)
-
-        Notes
-        -----
-        In order to speed up processing, atoms are filtered by a coarse
-        distance criterion before a detailed hydrogen bonding analysis is
-        performed (`filter_first` = ``True``).
-
-        If selection 1 and selection 2 are very mobile during the simulation
-        and the contact surface is constantly changing (i.e. residues are
-        moving farther than 4 Å + `order` * (2 Å + `distance`)), you might
-        consider setting the `update_selection` keywords to ``True``
-        to ensure correctness.
-
-        .. versionchanged 0.20.0
-           The :attr:`WaterBridgeAnalysis.timeseries` has been updated
-           see :attr:`WaterBridgeAnalysis.timeseries` for detail.
-           This class is now based on
-           :class:`~MDAnalysis.analysis.base.AnalysisBase`.
-
-
-        """
         super(WaterBridgeAnalysis, self).__init__(universe.trajectory,
                                                   **kwargs)
         self.water_selection = water_selection
