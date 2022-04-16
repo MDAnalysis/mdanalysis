@@ -578,8 +578,8 @@ class TestEncoreClustering(object):
         assert_equal(cc.clusters[2].elements , [5, 8, 7]) and \
         assert_equal(cc.clusters[0].centroid , 1) and \
         assert_equal(cc.clusters[1].centroid , 3) and \
-        assert_equal(cc.clusters[2].centroid , 5), \
-                   "ClusterCollection was not constructed correctly"
+        assert_equal(cc.clusters[2].centroid , 5),
+        "ClusterCollection was not constructed correctly"
 
     def test_Cluster_init(self, cluster):
         assert_equal(cluster.elements,[0, 1, 2]) and \
@@ -587,17 +587,17 @@ class TestEncoreClustering(object):
                       "Cluster was not constructed correctly"
 
     def test_ClusterCollection_get_ids(self, cc):
-        assert_equal(cc.get_ids() , [0, 1, 2], \
+        assert_equal(cc.get_ids(), [0, 1, 2], \
                      err_msg="ClusterCollection ids aren't as expected")
 
     def test_ClusterCollection_get_centroids(self, cc):
-        assert_equal(cc.get_centroids() , [1, 3, 5], \
+        assert_equal(cc.get_centroids(), [1, 3, 5], \
                      err_msg="ClusterCollection centroids aren't as expected")
 
     def test_cluster_add_metadata(self, cluster):
         metadata = cluster.elements*10
         cluster.add_metadata('test', metadata)
-        assert_equal(cluster.metadata['test'] , metadata, \
+        assert_equal(cluster.metadata['test'], metadata, \
                      err_msg="Cluster metadata isn't as expected")
         metadata = np.append(metadata, 9)
         error_message = ("Size of metadata is not equal to the "
