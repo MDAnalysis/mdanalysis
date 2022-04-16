@@ -351,7 +351,7 @@ The following attributes are inherited from
       `data` from each auxiliary step assigned to the last-read trajectory 
       timestep.
   ``frame_rep``
-      Represenatative value(s) of auxiliary data for last-read trajectory 
+      Representative value(s) of auxiliary data for last-read trajectory 
       timestep.
 
 The following are stored in ``auxstep`` but may be accessed from the auxiliary
@@ -436,7 +436,7 @@ The following methods are inherited from
 
   ``next_nonempty_frame(ts)``
     Return the frame number of the next trajectory frame (after the current
-    auxiliary time) for which a represenatative auxiliary value can be
+    auxiliary time) for which a representative auxiliary value can be
     calculated (i.e., there is at least one assigned auxiliary step within
     ``cutoff``).
 
@@ -453,12 +453,12 @@ The following methods are inherited from
   ``__del__()``
     Calls ``close()``.
 
-  ``get_descrtiption``
+  ``get_description``
     Get the values of the attributes required for replicating an auxiliary (as
     listed in ``required_attrs``) and return as a dictionary.
 
   ``__eq__``
-    Check for equality by checking each of the attributes requried for 
+    Check for equality by checking each of the attributes required for
     replicating an auxiliary (as listed in ``required_attrs``) are equal.
 
 Each AuxReader must subclass :class:`~MDAnalysis.auxiliary.base.AuxReader`
@@ -466,11 +466,11 @@ and addionally define:
 
   ``__init__(auxdata, **kwargs)``
     Additional processing of *kwargs* and any necessary initial processing of 
-    *auxdata*. Must :func:`super` through  
+    *auxdata*. Must :func:`super` through
     :class:`~MDAnalysis.auxiliary.base.AuxReader`.
 
   ``_read_next_step()``
-    Read the data from the next auxiliary step and update ``auxstep`` as 
+    Read the data from the next auxiliary step and update ``auxstep`` as
     appropriate. Raise `StopIteration` when attempting to read past last step.
 
   ``_go_to_step(i)``
@@ -494,16 +494,16 @@ define/overwrite the following:
 
   ``close()``
 
-For convinience, when reading auxiliary data from an open file, step at a time, 
-:class:`~MDAnalysis.auxiliary.base.AuxFileReader` 
+For convenience, when reading auxiliary data from an open file, step at a time,
+:class:`~MDAnalysis.auxiliary.base.AuxFileReader`
 extends :class:`~MDAnalysis.auxiliary.base.AuxReader` by providing the
 following (these may be overwritten by subclasses as appropriate):
 
   ``__init__(auxfile, **kwargs)``
     Open *auxfile* and any additional processing of *kwargs*.
 
-  ``_restart()``, 
-    Seek to the start of ``auxfile``
+  ``_restart()``,
+  Seek to the start of ``auxfile``
 
   ``close()``
     Close ``auxfile``

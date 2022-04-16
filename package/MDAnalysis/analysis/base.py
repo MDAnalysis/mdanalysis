@@ -264,7 +264,7 @@ class AnalysisBase(object):
         pass  # pylint: disable=unnecessary-pass
 
     def _conclude(self):
-        """Finalise the results you've gathered.
+        """Finalize the results you've gathered.
 
         Called at the end of the :meth:`run` method to finish everything up.
         """

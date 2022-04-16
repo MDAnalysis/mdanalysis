@@ -190,7 +190,7 @@ Classes, methods, and functions
 
    .. attribute:: D
 
-      :class:`numpy.ndarray` whichs store calculated distance matrix
+      :class:`numpy.ndarray` which store calculated distance matrix
 
 
 .. Markup definitions
