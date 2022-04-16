@@ -160,10 +160,7 @@ class CRDWriter(base.WriterBase):
              However, extended CRD format can be forced by
              specifying `extended` ``=True``.
 
-
-        .. versionchanged:: 2.2.0
-           CRD extended format can now be explicitly requested with the
-           `extended` keyword
+             .. versionadded:: 2.2.0
         """
 
         self.filename = util.filename(filename, ext='crd')
