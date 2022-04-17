@@ -23,7 +23,7 @@
 
 import MDAnalysis as mda
 import pytest
-from MDAnalysis.analysis.nucleicacids import WCDist, MinorDist, MajorDist, BaseSelect
+from MDAnalysis.analysis.nucleicacids import WatsonCrickDist
 from MDAnalysisTests.datafiles import RNA_PSF, RNA_PDB
 from numpy.testing import assert_allclose
 
@@ -34,30 +34,12 @@ def u():
 
 
 def test_wc_dist(u):
-    sel = [(BaseSelect('RNAA', 1), BaseSelect('RNAA', 2)),
-           (BaseSelect('RNAA', 22), BaseSelect('RNAA', 23))]
-    WC = WCDist(u, sel)
+    strand: mda.AtomGroup = u.select_atoms("segid RNAA")
+    strand1 = [strand.residues[0], strand.residues[21]]
+    strand2 = [strand.residues[1], strand.residues[22]]
+
+    WC = WatsonCrickDist(strand1, strand2)
     WC.run()
 
     assert_allclose(WC.results[0][0], 4.3874702, atol=1e-3)
     assert_allclose(WC.results[1][0], 4.1716404, atol=1e-3)
-
-
-def test_minor_pair(u):
-    sel = [(BaseSelect('RNAA', 3), BaseSelect('RNAA', 17)),
-           (BaseSelect('RNAA', 20), BaseSelect('RNAA', 5))]
-    MP = MinorDist(u, sel)
-    MP.run()
-
-    assert_allclose(MP.results[0][0], 15.06506, atol=1e-3)
-    assert_allclose(MP.results[1][0], 3.219116, atol=1e-3)
-
-
-def test_major_pair(u):
-    sel = [(BaseSelect('RNAA', 2), BaseSelect('RNAA', 12)),
-           (BaseSelect('RNAA', 5), BaseSelect('RNAA', 9))]
-    MP = MajorDist(u, sel)
-    MP.run()
-
-    assert_allclose(MP.results[0][0], 26.884272, atol=1e-3)
-    assert_allclose(MP.results[1][0], 13.578535, atol=1e-3)
