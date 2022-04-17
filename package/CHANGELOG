@@ -37,6 +37,7 @@ Fixes
   * Fixed DumpReader triclinic box dimensions reading. (Issue #3386, PR #3403)
   * Updated the badge in README of MDAnalysisTest to point to Github CI Actions
   * Fixed FrameIteratorIndices doesn't rewind. (Issue #3416)
+  * Fixed BAT method Cartesian modifies input data. (Issue #3501)
 
 Enhancements
   * PCA class now has an inverse-PCA function. The inverse transform can
