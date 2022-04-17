@@ -130,9 +130,11 @@ inconsistent results")
                                                                 args=arguments)
         results = parallel_calculation.run()
 
-        for i,r in enumerate(results):
-            assert_equal(r[1], arguments[i][0]**2,
-            err_msg="Unexpected results from ParallelCalculation")
+        for i, r in enumerate(results):
+            assert_equal(
+                r[1],
+                arguments[i][0]**2,
+                err_msg="Unexpected results from ParallelCalculation")
 
     def test_rmsd_matrix_with_superimposition(self, ens1):
         conf_dist_matrix = encore.confdistmatrix.conformational_distance_matrix(
@@ -415,12 +417,16 @@ inconsistent results")
         average = averages[0,1]
         stdev = stdevs[0,1]
 
-        assert_almost_equal(average, expected_average, decimal=1,
-        err_msg="Unexpected average value for bootstrapped samples in \
+        assert_almost_equal(average, 
+            expected_average, 
+            decimal=1,
+            err_msg="Unexpected average value for bootstrapped samples in \
             Clustering Ensemble similarity")
-        assert_almost_equal(stdev, expected_stdev, decimal=1,
-        err_msg="Unexpected standard deviation for bootstrapped samples in \
-            Clustering Ensemble similarity")
+        assert_almost_equal(stdev,
+            expected_stdev,
+            decimal=1,
+            err_msg="Unexpected standard deviation for bootstrapped samples \
+            in Clustering Ensemble similarity")
 
     def test_dres_error_estimation(self, ens1):
         average_upper_bound = 0.3
@@ -575,21 +581,26 @@ class TestEncoreClustering(object):
                               "clusters: {0} {1}".format(len(cc1), len(cc2))
 
     def test_ClusterCollection_init(self, cc):
-        assert_equal(cc.clusters[0].elements, [0,1,2]) and \
-        assert_equal(cc.clusters[1].elements, [3, 4]) and \
-        assert_equal(cc.clusters[2].elements, [5, 8, 7]) and \
-        assert_equal(cc.clusters[1].centroid, 3) and \
-        assert_equal(cc.clusters[2].centroid, 5),
-        "ClusterCollection was not constructed correctly"
+        assert_equal(cc.clusters[0].elements, [0, 1, 2]) and \
+                assert_equal(cc.clusters[1].elements, [3, 4]) and \
+                assert_equal(cc.clusters[2].elements, [5, 8, 7]) and \
+                assert_equal(cc.clusters[1].centroid, 3) and \
+                assert_equal(cc.clusters[2].centroid, 5),\
+                "ClusterCollection was not constructed correctly"
+
 
     def test_Cluster_init(self, cluster):
         assert_equal(cluster.elements, [0, 1, 2]) and \
-        assert_equal(cluster.centroid, 1),
+            assert_equal(cluster.centroid, 1),
         "Cluster was not constructed correctly"
 
+
     def test_ClusterCollection_get_ids(self, cc):
-        assert_equal(cc.get_ids(), [0, 1, 2],
-        err_msg="ClusterCollection ids aren't as expected")
+        assert_equal(
+            cc.get_ids(),
+            [0, 1, 2],
+            err_msg="ClusterCollection ids aren't as expected")
+
 
     def test_ClusterCollection_get_centroids(self, cc):
         assert_equal(cc.get_centroids(), [1, 3, 5],
