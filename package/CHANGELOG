@@ -15,11 +15,13 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy,
          HenokB, umak1106, tamandeeps, Mrqeoqqt, megosato, AnirG, rishu235,
-         mtiberti, manishsaini6421, markvrma
+         mtiberti, manishsaini6421, Sukeerti1, robotjellyzone, markvrma
 
  * 2.2.0
 
 Fixes
+  * Fixed Numpy deprecation warnings about elementwise comparisons.
+    (Issue #3535, PR #3619)
   * Fixed encore.covariance.covariance_matrix not working when providing
     an external reference (Issue #3539, PR #3621)
   * Fixed LinearDensity not working with grouping='residues' or 'segments'
