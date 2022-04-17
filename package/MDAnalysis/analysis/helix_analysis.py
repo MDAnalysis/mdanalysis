@@ -307,7 +307,14 @@ class HELANAL(AnalysisBase):
     flatten_single_helix : bool, optional
         Whether to flatten results if only one selection is passed.
     split_residue_sequences : bool, optional
-        Wether to split residues into a list of same or consecutive helices.
+        Whether to split residues into a list of same or consecutive helices.
+        If False, the residues will be analysed as a single helix.
+        Holds True, if more than one `select` string given Otherwise False.
+        i.e., if len(select) > 1, then split_residue_sequences = True
+        example-1: if select=['protein and name CA', 'protein and name CA']
+                   then split_residue_sequences = True
+        example-2: if select=['protein and name CA']
+                   then split_residue_sequences = False
     verbose : bool, optional
         Turn on more logging and debugging.
 
