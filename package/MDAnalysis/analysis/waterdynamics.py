@@ -556,7 +556,7 @@ class WaterOrientationalRelaxation(object):
         select only the particles that are repeated in both frame. This is to
         consider only the molecules that remains in the selection after the dt
         time has elapsed.
-        The result is a list with the indices of the atoms.
+        The result is a list with the indexes of the atoms.
         """
         a = set(selection[t0d])
         b = set(selection[tf])
