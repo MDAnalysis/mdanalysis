@@ -44,8 +44,7 @@ The parsers and readers for LAMMPS DATA files can handle any `atom_style`_
 defined in LAMMPS; however, they only parse `id` ('atom-ID' in LAMMPS), `type`
 ('atom-type' in LAMMPS), `resid` ('molecule-ID' in LAMMPS), `charge` ('q' or
 'charge' in LAMMPS), `x`, `y` and `z` attributes. The resid and charge
-attributes are optional and any other specified attribute define an atom style
-will be ignored.
+attributes are optional and any other specified attribute defined.
 
 Valid atom styles as defined in `data`_::
 
@@ -54,10 +53,11 @@ Valid atom styles as defined in `data`_::
     'peri', 'smd', 'sph', 'sphere', 'spin', 'tdpd', 'template', 'tri',
     'wavepacket', 'hybrid'
 
+'full' is the defualt atom_style.
 
 Examples
 --------
-To parse a DATA file in 'atomic'::
+To parse a DATA file in 'atomic' atom style::
 
   Atoms # atomic
 
@@ -258,7 +258,7 @@ class DATAParser(TopologyReaderBase):
         with openany(self.filename) as f:
             for line in f:
                 line = line.partition('#')[0].strip()
-                if line:
+                if line:  # reading non-empty lines
                     yield line
 
     def grab_datafile(self):
@@ -266,23 +266,31 @@ class DATAParser(TopologyReaderBase):
 
         Returns
         -------
-        header - dict of header section: value
-        sections - dict of section name: content
+        header: dict of str
+            A dict in which a key and value pair is a 'header' name and
+            its value in str foramt.
+        sections: dict of list of str
+            A dict in which a key and value pair is a 'section' name and
+            a list of strings (relevenat lines of the data file).
         """
         f = list(self.iterdata())
 
+        # finding the starting line of each section:
         starts = [i for i, line in enumerate(f)
                   if line.split()[0] in SECTIONS]
+        # adding None to properly handle lines in the last SECTION below
         starts += [None]
 
         header = {}
+
+        # lines before the first SECTION found in the file are about HEADERS:
         for line in f[:starts[0]]:
             for token in HEADERS:
                 if line.endswith(token):
                     header[token] = line.split(token)[0]
                     continue
 
-        sects = {f[l]: f[l+1:starts[i+1]]
+        sects = {f[l]: f[l+1:starts[i+1]]  # f[l] is indeed a SECTION name
                  for i, l in enumerate(starts[:-1])}
 
         return header, sects
@@ -310,14 +318,14 @@ class DATAParser(TopologyReaderBase):
              'z': 6,
             }
 
-        Parameters
-        ----------
-        atom_style: str, default 'full'
-            One of the following atom styles:
-            {'angle', 'atomic', 'body', 'bond', 'charge', 'dipole', 'dpd',
-             'edpd', 'electron', 'ellipsoid', 'full', 'line', 'mdpd', 'mesont',
-             'molecular', 'peri', 'smd', 'sph', 'sphere', 'spin', 'tdpd',
-             'template', 'tri', 'wavepacket', 'hybrid'}
+        Arguments
+        ---------
+        atom_style: str, {'angle', 'atomic', 'body', 'bond', 'charge',
+                          'dipole', 'dpd', 'edpd', 'electron', 'ellipsoid',
+                          'full', 'line', 'mdpd', 'mesont', 'molecular',
+                          'peri', 'smd', 'sph', 'sphere', 'spin', 'tdpd',
+                          'template', 'tri', 'wavepacket', 'hybrid'}
+            Name of one of the defined atom styles.
 
         Returns
         -------
@@ -338,20 +346,26 @@ class DATAParser(TopologyReaderBase):
         -------
         MDAnalysis Topology object.
         """
-        if kwargs['atom_style'] in ATOM_STYLES.keys():
-            self.style_dict = self._interpret_atom_style(kwargs['atom_style'])
+
+        # Using'full' atom_style as default value:
+        # See: https://docs.python.org/3.9/library/stdtypes.html#dict.get
+        atom_style = kwargs.get('atom_style', 'full')
+
+        # handling invalid atom_style keywords:
+        if atom_style in ATOM_STYLES.keys():
+            self.style_dict = self._interpret_atom_style(atom_style)
         else:
             atom_styles_string = "'" + "', '".join(
                 ATOM_STYLES.keys()) + "'"
             raise ValueError(
-                f"'{kwargs['atom_style']}' "
-                "is not a valid 'atom_style'. Please select one of "
+                f"'{atom_style}' "
+                "is not a valid atom style. Please select one of "
                 f"{atom_styles_string} atom_styles.")
 
-        head, sects = self.grab_datafile()
+        header, sects = self.grab_datafile()
 
         try:
-            masses = self._parse_masses(sects['Masses'])
+            masses = self._parse_masses(sects['Masses'], header)
         except KeyError:
             masses = None
 
@@ -359,7 +373,7 @@ class DATAParser(TopologyReaderBase):
             raise ValueError("Data file was missing Atoms section")
 
         try:
-            top = self._parse_atoms(sects['Atoms'], masses)
+            top = self._parse_atoms(sects['Atoms'], header, massdict=masses)
         except Exception:
             errmsg = (
                 "Failed to parse atoms section.  You can supply a description "
@@ -370,15 +384,15 @@ class DATAParser(TopologyReaderBase):
         # create mapping of id to index (ie atom id 10 might be the 0th atom)
         mapping = {atom_id: i for i, atom_id in enumerate(top.ids.values)}
 
-        for attr, L, nentries in [
-                (Bonds, 'Bonds', 2),
-                (Angles, 'Angles', 3),
-                (Dihedrals, 'Dihedrals', 4),
-                (Impropers, 'Impropers', 4)
+        for attr, attr_name, header_name, nentries in [
+                (Bonds, 'Bonds', 'bonds', 2),
+                (Angles, 'Angles', 'angles', 3),
+                (Dihedrals, 'Dihedrals', 'dihedrals', 4),
+                (Impropers, 'Impropers', 'impropers', 4)
         ]:
             try:
                 type, sect = self._parse_bond_section(
-                    sects[L], nentries, mapping)
+                    sects[attr_name], nentries, mapping, header, header_name)
             except KeyError:
                 type, sect = [], []
 
@@ -387,8 +401,8 @@ class DATAParser(TopologyReaderBase):
         return top
 
     def read_DATA_timestep(self, n_atoms, TS_class, TS_kwargs,
-                           atom_style=None):
-        """Read a DATA file and try and extract x, v, box.
+                           atom_style='full'):
+        """Read a DATA file and try to extract x, v, box.
 
         - positions
         - velocities (optional)
@@ -400,23 +414,29 @@ class DATAParser(TopologyReaderBase):
         .. versionchanged:: 0.18.0
            Added atom_style kwarg
         """
-        if atom_style is None:
-            self.style_dict = None
-        else:
+        # handling invalid atom_style keywords:
+        if atom_style in ATOM_STYLES.keys():
             self.style_dict = self._interpret_atom_style(atom_style)
+        else:
+            atom_styles_string = "'" + "', '".join(
+                ATOM_STYLES.keys()) + "'"
+            raise ValueError(
+                f"'{atom_style}' "
+                "is not a valid atom style. Please select one of "
+                f"{atom_styles_string} atom_styles.")
 
         header, sects = self.grab_datafile()
 
         unitcell = self._parse_box(header)
 
         try:
-            positions, ordering = self._parse_pos(sects['Atoms'])
+            positions, ordering = self._parse_pos(sects['Atoms'], header)
         except KeyError as err:
             errmsg = f"Position information not found: {err}"
             raise IOError(errmsg) from None
 
         if 'Velocities' in sects:
-            velocities = self._parse_vel(sects['Velocities'], ordering)
+            velocities = self._parse_vel(sects['Velocities'], ordering, header)
         else:
             velocities = None
 
@@ -427,53 +447,79 @@ class DATAParser(TopologyReaderBase):
 
         return ts
 
-    def _parse_pos(self, datalines):
-        """Strip coordinate info into np array"""
-        pos = np.zeros((len(datalines), 3), dtype=np.float32)
+    def _parse_pos(self, datalines, header):
+        """Strip coordinate info into a np array
+
+        Arguments
+        ---------
+        datalines : list of str
+            list of strings (raw lines) from data file.
+        header: dict of str
+            A dict in which a key and value pair is a 'header' name and
+            its value in str foramt.
+
+        Returns
+        -------
+        pos: np.ndarray
+            array of (x,y,z) coordinates of atoms in a data file.
+        order : np.ndarray
+            array of integers (resulted from applying np.argsort on atom ids
+            that corrrectly maps the velocities into their corrresponding atom
+            ids.
+        """
+        n_atoms = len(datalines)
+        if n_atoms != header['atoms']:
+            raise ValueError(
+                "Number of lines "
+                f"'{len(datalines)}'"
+                " in 'Atoms' section does not match the number of atoms "
+                f"'{header['atoms']}'."
+            )
+        pos = np.zeros((n_atoms, 3), dtype=np.float32)
         # TODO: could maybe store this from topology parsing?
         # Or try to reach into Universe?
         # but ugly since assumes lots of things, and Reader should be standalone
         ids = np.zeros(len(pos), dtype=np.int32)
-
-        if self.style_dict is None:
-            if len(datalines[0].split()) in (7, 10):
-                style_dict = {'id': 0, 'x': 4, 'y': 5, 'z': 6}
-            else:
-                style_dict = {'id': 0, 'x': 3, 'y': 4, 'z': 5}
-        else:
-            style_dict = self.style_dict
-
         for i, line in enumerate(datalines):
             line = line.split()
-
-            ids[i] = line[style_dict['id']]
-
-            pos[i, :] = [line[style_dict['x']],
-                         line[style_dict['y']],
-                         line[style_dict['z']]]
+            ids[i] = line[self.style_dict['id']]
+            pos[i, :] = [line[self.style_dict['x']],
+                         line[self.style_dict['y']],
+                         line[self.style_dict['z']]]
 
         order = np.argsort(ids)
         pos = pos[order]
-
         # return order for velocities
         return pos, order
 
-    def _parse_vel(self, datalines, order):
+    def _parse_vel(self, datalines, order, header):
         """Strip velocity info into np array
 
-        Parameters
-        ----------
-        datalines : list
-          list of strings from file
-        order : np.array
-          array which rearranges the velocities into correct order
-          (from argsort on atom ids)
+        Arguments
+        ---------
+        datalines : list of str
+            list of strings (raw lines) from data file.
+        order : np.ndarray
+            array of integers (resulted from applying np.argsort on atom ids
+            that corrrectly maps the velocities into their corrresponding atom
+            ids. See `_parse_pos`.
+        header: dict of str
+            A dict in which a key and value pair is a 'header' name and
+            its value in str foramt.
 
         Returns
         -------
         velocities : np.ndarray
         """
-        vel = np.zeros((len(datalines), 3), dtype=np.float32)
+        n_atoms = len(datalines)
+        if n_atoms != header['atoms']:
+            raise ValueError(
+                "Number of lines "
+                f"'{len(datalines)}'"
+                " in 'Velocities' section does not match the number of atoms "
+                f"'{header['atoms']}'."
+            )
+        vel = np.zeros((n_atoms, 3), dtype=np.float32)
 
         for i, line in enumerate(datalines):
             line = line.split()
@@ -483,17 +529,26 @@ class DATAParser(TopologyReaderBase):
 
         return vel
 
-    def _parse_bond_section(self, datalines, nentries, mapping):
-        """Read lines and strip information
+    def _parse_bond_section(
+        self, datalines, nentries, mapping, header, header_name
+        ):
+        """Read lines in a bond-related section and parse relevant info.
 
+        Bond-related sections are 'Bonds', 'Angles', 'Dihedrals' and
+        'Imporpers'.
         Arguments
         ---------
-        datalines : list
-          the raw lines from the data file
+        datalines : list of str
+            list of strings (raw lines) from data file.
         nentries : int
-          number of integers per line
+            number of integers per line
         mapping : dict
-          converts atom_ids to index within topology
+            converts atom_ids to index within topology
+        header: dict of str
+            A dict in which a key and value pair is a 'header' name and
+            its value in str foramt.
+        header_name: str
+            Name of the corresponding header name for a given section name
 
         Returns
         -------
@@ -502,6 +557,14 @@ class DATAParser(TopologyReaderBase):
         indices : tuple of ints
           indices of atoms involved
         """
+        n_lines = len(datalines)
+        if n_lines != header[header_name]:
+            raise ValueError(
+                "Number of lines "
+                f"'{n_lines}'"
+                " in 'Atoms' section does not match the number of atoms "
+                f"'{header[header_name]}'."
+            )
         section = []
         type = []
         for line in datalines:
@@ -513,7 +576,7 @@ class DATAParser(TopologyReaderBase):
             type.append(line[1])
         return tuple(type), tuple(section)
 
-    def _parse_atoms(self, datalines, massdict=None):
+    def _parse_atoms(self, datalines, header, massdict=None):
         """Creates a Topology object
 
         Adds the following attributes
@@ -527,14 +590,26 @@ class DATAParser(TopologyReaderBase):
 
         http://lammps.sandia.gov/doc/atom_style.html
 
-        Treated here are
-        - atoms with 7 fields (with charge) "full"
-        - atoms with 6 fields (no charge) "molecular"
+        Here, the standard atom styles as defined in
+
+        http://lammps.sandia.gov/doc/atom_style.html
+
+        and explained in
+
+        https://docs.lammps.org/read_data.html
+
+        are implemented.
 
         Arguments
         ---------
-        datalines - the relevent lines from the data file
-        massdict - dictionary relating type to mass
+        datalines : list of str
+            list of strings (raw lines) from data file.
+        header: dict of str
+            A dict in which a key and value pair is a 'header' name and
+            its value in str foramt.
+        massdict: dict of float, optional
+            A dict in which a key and value pair is an atom type
+            and its corresponding mass. dictionary relating type to mass
 
         Returns
         -------
@@ -543,20 +618,15 @@ class DATAParser(TopologyReaderBase):
         logger.info("Doing Atoms section")
 
         n_atoms = len(datalines)
-
-        if self.style_dict is None:
-            sd = {'id': 0,
-                  'resid': 1,
-                  'type': 2}
-            # Fields per line
-            n = len(datalines[0].split())
-            if n in (7, 10):
-                sd['charge'] = 3
-        else:
-            sd = self.style_dict
-
-        has_charge = 'charge' in sd
-        has_resid = 'resid' in sd
+        if n_atoms != header['atoms']:
+            raise ValueError(
+                "Number of lines "
+                f"'{n_atoms}'"
+                " in 'Atoms' section does not match the number of atoms "
+                f"'{header['atoms']}'."
+            )
+        has_charge = 'charge' in self.style_dict
+        has_resid = 'resid' in self.style_dict
 
         # atom ids aren't necessarily sequential
         atom_ids = np.zeros(n_atoms, dtype=np.int32)
@@ -574,12 +644,12 @@ class DATAParser(TopologyReaderBase):
             # these numpy array are already typed correctly,
             # so just pass the raw strings
             # and let numpy handle the conversion
-            atom_ids[i] = line[sd['id']]
+            atom_ids[i] = line[self.style_dict['id']]
             if has_resid:
-                resids[i] = line[sd['resid']]
-            types[i] = line[sd['type']]
+                resids[i] = line[self.style_dict['resid']]
+            types[i] = line[self.style_dict['type']]
             if has_charge:
-                charges[i] = line[sd['charge']]
+                charges[i] = line[self.style_dict['charge']]
 
         # at this point, we've read the atoms section,
         # but it's still (potentially) unordered
@@ -622,12 +692,33 @@ class DATAParser(TopologyReaderBase):
 
         return top
 
-    def _parse_masses(self, datalines):
-        """Lammps defines mass on a per atom type basis.
+    def _parse_masses(self, datalines, header):
+        """Parse mass per atom type, as outlined in LAMMPS doc.
 
-        This reads mass for each type and stores in dict
+        Arguments
+        ---------
+        datalines : list of str
+            list of strings (raw lines) from data file.
+        header: dict of str
+            A dict in which a key and value pair is a 'header' name and
+            its value in str foramt.
+
+        Returns
+        -------
+        masses: dict of float
+            A dict in which a key and value pair is an atom type
+            and its corresponding mass.
+
         """
         logger.info("Doing Masses section")
+        n_atomtypes = len(datalines)
+        if n_atomtypes != header['atom types']:
+            raise ValueError(
+                "Number of lines "
+                f"'{len(datalines)}'"
+                " in 'Masses' section does not match the number of atom types"
+                f"'{header['atom types']}'."
+            )
 
         masses = {}
         for line in datalines:
@@ -637,6 +728,19 @@ class DATAParser(TopologyReaderBase):
         return masses
 
     def _parse_box(self, header):
+        """Extract box info from the header info.
+
+        Arguments
+        ---------
+        header: dict of str
+            A dict in which a key and value pair is a 'header' name and
+            its value in str foramt.
+
+        Returns
+        -------
+        unitcell:
+            A triclinic box vector as defined an returned by `triclinic_box`.
+        """
         x1, x2 = np.float32(header['xlo xhi'].split())
         x = x2 - x1
         y1, y2 = np.float32(header['ylo yhi'].split())
