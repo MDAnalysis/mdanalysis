@@ -417,12 +417,14 @@ inconsistent results")
         average = averages[0,1]
         stdev = stdevs[0,1]
 
-        assert_almost_equal(average, 
-            expected_average, 
+        assert_almost_equal(
+            average,
+            expected_average,
             decimal=1,
             err_msg="Unexpected average value for bootstrapped samples in \
             Clustering Ensemble similarity")
-        assert_almost_equal(stdev,
+        assert_almost_equal(
+            stdev,
             expected_stdev,
             decimal=1,
             err_msg="Unexpected standard deviation for bootstrapped samples \
@@ -603,14 +605,17 @@ class TestEncoreClustering(object):
 
 
     def test_ClusterCollection_get_centroids(self, cc):
-        assert_equal(cc.get_centroids(), [1, 3, 5],
-        err_msg="ClusterCollection centroids aren't as expected")
+        assert_equal(
+            cc.get_centroids(), [1, 3, 5],
+            err_msg="ClusterCollection centroids aren't as expected")
 
     def test_cluster_add_metadata(self, cluster):
         metadata = cluster.elements*10
         cluster.add_metadata('test', metadata)
-        assert_equal(cluster.metadata['test'], metadata,
-        err_msg="Cluster metadata isn't as expected")
+        assert_equal(
+            cluster.metadata['test'],
+            metadata,
+            err_msg="Cluster metadata isn't as expected")
         metadata = np.append(metadata, 9)
         error_message = ("Size of metadata is not equal to the "
                          "number of cluster elements")
