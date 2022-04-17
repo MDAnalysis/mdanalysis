@@ -84,7 +84,7 @@ directly needed to perform the analysis.
 .. autofunction:: order_list
 
 .. versionchanged:: 0.16.0
-   removed un-unused function :func:`backup_file`
+   removed un-used function :func:`backup_file`
 
 """
 import itertools
