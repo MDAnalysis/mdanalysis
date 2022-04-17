@@ -50,7 +50,7 @@ Enhancements
   * Improves the RDKitConverter's accuracy (PR #3044): AtomGroups containing
     monatomic ion charges or edge cases with nitrogen, sulfur, phosphorus and
     conjugated systems should now have correctly assigned bond orders and
-    charges.  
+    charges.
 
 Changes
   * ITPParser no longer adds an angle for water molecules that have the SETTLE
