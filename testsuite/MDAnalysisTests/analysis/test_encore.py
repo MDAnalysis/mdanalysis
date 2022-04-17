@@ -417,10 +417,10 @@ inconsistent results")
 
         assert_almost_equal(average, expected_average, decimal=1,
         err_msg="Unexpected average value for bootstrapped samples in \
-            Clustering Ensemble similarity")
+        clustering Ensemble similarity")
         assert_almost_equal(stdev, expected_stdev, decimal=1,
         err_msg="Unexpected standard deviation for bootstrapped samples in \
-            Clustering Ensemble similarity")
+        clustering Ensemble similarity")
 
     def test_dres_error_estimation(self, ens1):
         average_upper_bound = 0.3
@@ -575,7 +575,7 @@ class TestEncoreClustering(object):
                               "clusters: {0} {1}".format(len(cc1), len(cc2))
 
     def test_ClusterCollection_init(self, cc):
-        assert_equal(cc.clusters[0].elements, [0,1,2]) and \
+        assert_equal(cc.clusters[0].elements, [0, 1, 2]) and \
         assert_equal(cc.clusters[1].elements, [3, 4]) and \
         assert_equal(cc.clusters[2].elements, [5, 8, 7]) and \
         assert_equal(cc.clusters[1].centroid, 3) and \
