@@ -44,7 +44,8 @@ The parsers and readers for LAMMPS DATA files can handle any `atom_style`_
 defined in LAMMPS `atom_style`_ doc and expalined data_; however, they only
 parse `id` ('atom-ID' in data_ doc), `type` ('atom-type' in data_ doc), `resid`
 ('molecule-ID' in data_ doc), `charge` ('q' or 'charge' in data_ doc), `x`, `y`
-and `z` attributes. The `resid` and `charge` attributes are optional and any other specified attribute will be ignored.
+and `z` attributes. The `resid` and `charge` attributes are optional and any
+other specified attribute will be ignored.
 
 Valid atom styles as defined in `data`_  doc::
 
@@ -907,7 +908,10 @@ class LAMMPSAtom(object):  # pragma: no cover
         self.mass = mass
 
     def __repr__(self):
-        return "<LAMMPSAtom " + repr(self.index + 1) + ": name " + repr(self.type) + " of chain " + repr(self.chainid) + ">"
+        repr_str = ("<LAMMPSAtom " + repr(self.index + 1) +
+                    ": name " + repr(self.type) +
+                    " of chain " + repr(self.chainid) + ">")
+        return repr_str
 
     def __lt__(self, other):
         return self.index < other.index
