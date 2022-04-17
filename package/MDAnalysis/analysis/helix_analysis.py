@@ -309,12 +309,16 @@ class HELANAL(AnalysisBase):
     split_residue_sequences : bool, optional
         Whether to split residues into a list of same or consecutive helices.
         If False, the residues will be analysed as a single helix.
-        Holds True, if more than one `select` string given Otherwise False.
-        i.e., if len(select) > 1, then split_residue_sequences = True
-        example-1: if select=['protein and name CA', 'protein and name CA']
-                   then split_residue_sequences = True
-        example-2: if select=['protein and name CA']
-                   then split_residue_sequences = False
+        If True, split residues having gaps into a list of consecutive helices.
+        This will be checked when `select` is having gaps in residue.
+        example-1: if select=['resid 6:50 or resid 100:130 or resid 132:148']
+                   and split_residue_sequences = True
+                   then selection has gaps in the residues.
+                   So Splitting into 3 helices.
+        example-2: if select=['resid 6:50', 'resid 100:130', 'resid 132:148']
+                   and split_residue_sequences = True
+                   then selection has no gaps in the residues.
+                   So Splitting into 1 helix.
     verbose : bool, optional
         Turn on more logging and debugging.
 
