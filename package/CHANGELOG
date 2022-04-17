@@ -42,7 +42,7 @@ Fixes
 
 Enhancements
   * Added MSD example where multiple replicates are combined(Issue #3578
-  PR #3633)
+    PR #3633)
   * PCA class now has an inverse-PCA function. The inverse transform can
     also be extrapolated to certain non-PCA atoms. (PR #3596, Issue #2703)
  * `DistanceMatrix` class in MDAnalysis.analysis.diffusionmap now also
