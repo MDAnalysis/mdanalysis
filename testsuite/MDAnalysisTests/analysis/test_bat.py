@@ -25,6 +25,7 @@ from __future__ import absolute_import
 import numpy as np
 from numpy.testing import assert_equal, assert_almost_equal
 import pytest
+import copy
 
 import MDAnalysis as mda
 from MDAnalysisTests.datafiles import (PSF, DCD, mol2_comments_header, XYZ_mini,
@@ -130,8 +131,11 @@ class TestBAT(object):
 
     def test_bat_transformation(self, selected_residues, bat):
         R = BAT(selected_residues)
-        XYZ = R.Cartesian(bat[0])
-        PQR = R.Cartesian(bat[0])
+        R.run()
+        R.Cartesian(R.results.bat[0])
+        XYZ = R.results.bat[0]
+        PQR = copy.deepcopy(XYZ)
+        R.Cartesian(R.results.bat[0])
         assert_almost_equal(PQR, XYZ, 5,
                             err_msg="error: Reconstructed Cartesian"
                                     "coordinate after multiple "
