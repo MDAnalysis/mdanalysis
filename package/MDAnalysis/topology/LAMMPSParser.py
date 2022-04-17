@@ -166,6 +166,61 @@ HEADERS = set([
     'xy xz yz',
 ])
 
+# List of valid atom styles for Atoms section:
+# Each atom style can optionally have three image flags: nx, ny, nz
+# The following mapping is done between LAMMPS and MDAnalysis attributes:
+# LAMMPS -> MDAnalysis: atom-ID -> id, molecule-ID -> segid, atom-type -> type
+# q -> charge.
+# Some commments about the some atom styles:
+# 'smd': molecule is defined differently from molecule-ID.
+# 'tdpd': this style can have n+5 columns for n cc species.
+# 'template': the order of id and resid is swapped.
+# 'hybrid': this style can have n+5 columns for n sub-styles.
+# See below for an up-to-date list of valide atom styles:
+# https://docs.lammps.org/read_data.html
+
+# NOTE: In MDAnalysis, 'id', 'type', 'x', 'y', 'z' are the mandatory
+# attributes, and 'segid' and 'charge' are the optional ones.
+# What about the other attributes defined in LAMMPS and cannot/are not
+# mapped to corresponding attributes in MDAnalysis? Are they ignored as
+# mentioned in the doc above?
+# An idea is to keep all the atom styles defined below, and just read in
+# the attributes that are compatible with MDAnalysis and ignore the rest.
+# In this way, MDAnalysis can read all types of LAMMPS data file but only reads
+# in the 5 mendatory and 2 optional attributes, and warns about how it handles
+# atom styles that have other attributes than these 7 attributes.
+
+ATOM_STYLES = {
+    'angle': ['id', 'segid', 'type', 'x', 'y', 'z'],
+    'atomic': ['id', 'type', 'x', 'y', 'z'],
+    'body': ['id', 'type', 'bodyflag', 'mass', 'x', 'y', 'z'],
+    'bond': ['id', 'resid', 'type', 'x', 'y', 'z'],
+    'charge': ['id', 'type', 'charge', 'x', 'y', 'z'],
+    'dipole': ['id', 'type', 'charge', 'x', 'y', 'z', 'mux', 'muy', 'muz'],
+    'dpd': ['id', 'type', 'theta', 'x', 'y', 'z'],
+    'edpd': ['id', 'type', 'edpd_temp', 'edpd_cv', 'x', 'y', 'z'],
+    'electron': ['id', 'type', 'charge', 'spin', 'eradius', 'x', 'y', 'z'],
+    'ellipsoid': ['id', 'type', 'ellipsoidflag', 'density', 'x', 'y', 'z'],
+    'full': ['id', 'resid', 'type', 'charge', 'x', 'y', 'z'],
+    'line': ['id', 'resid', 'type', 'lineflag', 'density', 'x', 'y', 'z'],
+    'mdpd': ['id', 'type', 'rho', 'x', 'y', 'z'],
+    'mesont': ['id', 'segid', 'type', 'bond_nt', 'mass', 'mradius', 'mlength',
+               'buckling', 'x', 'y', 'z'],
+    'molecular': ['id', 'segid', 'type', 'x', 'y', 'z'],
+    'peri': ['id', 'type', 'volume', 'density', 'x', 'y', 'z'],
+    'smd': ['id', 'type', 'molecule', 'volume', 'mass', 'kradius', 'cradius',
+            'x0', 'y0', 'z0', 'x', 'y', 'z'],
+    'sph': ['id', 'type', 'rho', 'esph', 'cv', 'x', 'y', 'z'],
+    'sphere': ['id', 'type', 'diameter', 'density', 'x', 'y', 'z'],
+    'spin': ['id', 'type', 'x', 'y', 'z', 'spx', 'spy', 'spz', 'sp'],
+    'tdpd': ['id', 'type', 'x', 'y', 'z'],
+    'template': ['id', 'type', 'resid', 'template-index', 'template-atom', 'x',
+                 'y', 'z'],
+    'tri': ['id', 'segid', 'type', 'triangleflag', 'density', 'x', 'y', 'z'],
+    'wavepacket': ['id', 'type', 'charge', 'spin', 'eradius', 'etag', 'cs_re',
+                   'cs_im', 'x', 'y', 'z'],
+    'hybrid': ['id', 'type', 'x', 'y', 'z']
+}
 
 class DATAParser(TopologyReaderBase):
     """Parse a LAMMPS DATA file for topology and coordinates.
