@@ -77,12 +77,11 @@ Classes
 """
 import numpy as np
 import logging
-import string
 import functools
 import warnings
 
 from . import guessers
-from ..lib.util import openany, conv_float
+from ..lib.util import openany
 from ..lib.mdamath import triclinic_box
 from .base import TopologyReaderBase, squash_by
 from ..core.topology import Topology
@@ -690,7 +689,8 @@ class LammpsDumpParser(TopologyReaderBase):
 
 @functools.total_ordering
 class LAMMPSAtom(object):  # pragma: no cover
-    __slots__ = ("index", "name", "type", "chainid", "charge", "mass", "_positions")
+    __slots__ = ("index", "name", "type", "chainid", "charge", "mass",
+                 "_positions")
 
     def __init__(self, index, name, type, chain_id, charge=0, mass=1):
         self.index = index
