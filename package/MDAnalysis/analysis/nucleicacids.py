@@ -32,6 +32,12 @@ Updated nucleic acid analysis --- :mod:`MDAnalysis.analysis.nucleicacids`
 The module provides classes for analyzing nucleic acids structures.
 This is an updated, higher performance version of :ref:`analysis.nuclinfo`.
 
+Distances
+_________
+
+.. autoclass:: NucPairDist
+
+.. autoclass:: WatsonCrickDist
 
 """
 
@@ -94,15 +100,18 @@ class WatsonCrickDist(NucPairDist):
     """Watson-Crick basepair distance for selected residues"""
 
     def __init__(self, strand1: List[Residue], strand2: List[Residue],
-                 n1_name: str = 'N1', n3_name: str = "N3", **kwargs) -> None:
+                 n1_name: str = 'N1', n3_name: str = "N3",
+                 g_name: str = 'G', a_name: str = 'A', u_name: str = 'U',
+                 t_name: str = 'T', c_name: str = 'C',
+                 **kwargs) -> None:
         sel1: List[mda.AtomGroup] = []
         sel2: List[mda.AtomGroup] = []
         strand = zip(strand1, strand2)
 
         for s in strand:
-            if s[0].resname[0] in ["DC", "DT", "U", "C", "T", "CYT", "THY", "URA"]:
+            if s[0].resname[0] in [c_name, t_name, u_name]:
                 a1, a2 = n3_name, n1_name
-            elif s[1].resname[0] in ["DG", "DA", "A", "G", "ADE", "GUA"]:
+            elif s[1].resname[0] in [a_name, g_name]:
                 a1, a2 = n1_name, n3_name
             else:
                 raise ValueError(f"{s} are not valid nucleic acids")
