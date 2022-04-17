@@ -41,12 +41,12 @@ Atom styles
 -----------
 
 The parsers and readers for LAMMPS DATA files can handle any `atom_style`_
-defined in LAMMPS; however, they only parse `id` ('atom-ID' in LAMMPS), `type`
-('atom-type' in LAMMPS), `resid` ('molecule-ID' in LAMMPS), `charge` ('q' or
-'charge' in LAMMPS), `x`, `y` and `z` attributes. The resid and charge
-attributes are optional and any other specified attribute defined.
+defined in LAMMPS `atom_style`_ doc and expalined data_; however, they only
+parse `id` ('atom-ID' in data_ doc), `type` ('atom-type' in data_ doc), `resid`
+('molecule-ID' in data_ doc), `charge` ('q' or 'charge' in data_ doc), `x`, `y`
+and `z` attributes. The `resid` and `charge` attributes are optional and any other specified attribute will be ignored.
 
-Valid atom styles as defined in `data`_::
+Valid atom styles as defined in `data`_  doc::
 
     'angle', 'atomic', 'body', 'bond', 'charge', 'dipole', 'dpd', 'edpd',
     'electron', 'ellipsoid', 'full', 'line', 'mdpd', 'mesont', 'molecular',
@@ -88,7 +88,6 @@ Classes
 import numpy as np
 import logging
 import functools
-import warnings
 
 from . import guessers
 from ..lib.util import openany
@@ -478,7 +477,7 @@ class DATAParser(TopologyReaderBase):
         pos = np.zeros((n_atoms, 3), dtype=np.float32)
         # TODO: could maybe store this from topology parsing?
         # Or try to reach into Universe?
-        # but ugly since assumes lots of things, and Reader should be standalone
+        # but ugly since assumes many things, and Reader should be standalone
         ids = np.zeros(len(pos), dtype=np.int32)
         for i, line in enumerate(datalines):
             line = line.split()
@@ -529,9 +528,8 @@ class DATAParser(TopologyReaderBase):
 
         return vel
 
-    def _parse_bond_section(
-        self, datalines, nentries, mapping, header, header_name
-        ):
+    def _parse_bond_section(self, datalines, nentries, mapping, header,
+                            header_name):
         """Read lines in a bond-related section and parse relevant info.
 
         Bond-related sections are 'Bonds', 'Angles', 'Dihedrals' and
@@ -772,51 +770,127 @@ class DATAParser(TopologyReaderBase):
 
 
 class LammpsDumpParser(TopologyReaderBase):
-    """Parses Lammps ascii dump files in 'atom' format
+    """Parse a LAMMPS ascii dump files in any format.
 
-    Only reads atom ids.  Sets all masses to 1.0.
+    `LammpsDumpParser` can handle any standard or custom LAMMPS dump files
+    provided that the columns describtors (keywords similar to the attributes
+    in the atom_style argument in DATAParser) are included in the “ITEM: ATOMS”
+    line as described in dump_ documentation.
+
+    However, `LammpsDumpParser` only parses `id`, `type`, `resid` ('mol' in
+    dump_ doc), `charge` ('q' in dump_ doc), `mass` attributes. The `resid`,
+    `charge` and `mass` attributes are optional and any other attribute will be
+    ignored.
+
+    Sets all masses to 1.0 if there is no `mass` info in the parsed dump file.
 
     .. versionadded:: 0.19.0
+
+    .. _dump: http://lammps.sandia.gov/doc/dump.html
     """
     format = 'LAMMPSDUMP'
 
     def parse(self, **kwargs):
+        # mol: resid
+        valid_attrs = ['id', 'mol', 'type', 'mass', 'q']
+        reqd_attrs = ['id', 'type']
+
         with openany(self.filename) as fin:
             fin.readline()  # ITEM TIMESTEP
             fin.readline()  # 0
 
             fin.readline()  # ITEM NUMBER OF ATOMS
-            natoms = int(fin.readline())
+            n_atoms = int(fin.readline())
 
             fin.readline()  # ITEM BOX
             fin.readline()  # x
             fin.readline()  # y
             fin.readline()  # z
 
-            indices = np.zeros(natoms, dtype=int)
-            types = np.zeros(natoms, dtype=object)
+            atom_ids = np.zeros(n_atoms, dtype=int)
+            types = np.zeros(n_atoms, dtype=object)
 
-            fin.readline()  # ITEM ATOMS
-            for i in range(natoms):
-                idx, atype, _, _, _ = fin.readline().split()
+            line = fin.readline()  # ITEM ATOMS
+            # column describtors comes after '# ITEM ATOMS ' as explained in
+            # http://lammps.sandia.gov/doc/dump.html
+            cols = line.split("# ITEM ATOMS ")[1].split()
+            style_dict = {}
+            for attr in valid_attrs:
+                try:
+                    location = cols.index(attr)
+                except ValueError:
+                    pass
+                else:
+                    style_dict[attr] = location
 
-                indices[i] = idx
-                types[i] = atype
+            missing_attrs = [
+                attr for attr in reqd_attrs if attr not in style_dict
+                ]
+            if missing_attrs:
+                raise ValueError(
+                    "atom_style string missing required field(s): "
+                    f"{', '.join(missing_attrs)}"
+                    )
+            has_resid = 'mol' in style_dict
+            has_mass = 'mass' in style_dict
+            has_charge = 'charge' in style_dict
+            if has_resid:
+                resids = np.zeros(n_atoms, dtype=np.int32)
+            else:
+                resids = np.ones(n_atoms, dtype=np.int32)
+            if has_mass:
+                masses = np.zeros(n_atoms, dtype=np.float64)
+            else:
+                masses = np.ones(n_atoms, dtype=np.float64)
+            if has_charge:
+                charges = np.zeros(n_atoms, dtype=np.float32)
 
-        order = np.argsort(indices)
-        indices = indices[order]
+            for i in range(n_atoms):
+                cols = fin.readline().split()
+                atom_ids[i] = cols[style_dict['id']]
+                types[i] = cols[style_dict['type']]
+                if has_resid:
+                    resids[i] = cols[style_dict['mol']]
+                if has_mass:
+                    masses[i] = cols[style_dict['mass']]
+                if has_charge:
+                    charges[i] = cols[style_dict['q']]
+
+        order = np.argsort(atom_ids)
+        atom_ids = atom_ids[order]
         types = types[order]
 
+        if has_resid:
+            resids = resids[order]
+        if has_mass:
+            masses = masses[order]
+        if has_charge:
+            charges = charges[order]
+
         attrs = []
-        attrs.append(Atomids(indices))
+        attrs.append(Atomids(atom_ids))
         attrs.append(Atomtypes(types))
-        attrs.append(Masses(np.ones(natoms, dtype=np.float64), guessed=True))
-        warnings.warn('Guessed all Masses to 1.0')
-        attrs.append(Resids(np.array([1], dtype=int)))
-        attrs.append(Resnums(np.array([1], dtype=int)))
+        if has_mass:
+            attrs.append(Masses(masses))
+        else:
+            # Guess them
+            masses = guessers.guess_masses(types)
+            attrs.append(Masses(masses, guessed=True))
+        if has_charge:
+            attrs.append(Charges(charges))
+
+        residx, resids = squash_by(resids)[:2]
+        n_residues = len(resids)
+
+        attrs.append(Atomids(atom_ids))
+        attrs.append(Resids(resids))
+        attrs.append(Resnums(resids.copy()))
         attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
 
-        return Topology(natoms, 1, 1, attrs=attrs)
+        top = Topology(n_atoms, n_residues, 1,
+                       attrs=attrs,
+                       atom_resindex=residx)
+        return top
 
 
 @functools.total_ordering
