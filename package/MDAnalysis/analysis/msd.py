@@ -188,17 +188,17 @@ of this is shown below using MSD1 and MSD2.
 
 .. code-block:: python
 
-    u1 = mda.Universe(RANDOM_WALK, RANDOM_WALK_TOPO)
+    u1 = mda.Universe(RANDOM_WALK_TOPO, RANDOM_WALK)
     MSD1 = msd.EinsteinMSD(u1, select='all', msd_type='xyz', fft=True)
     MSD1.run()
 
-    u2 = mda.Universe(RANDOM_WALK, RANDOM_WALK_TOPO)
+    u2 = mda.Universe(RANDOM_WALK_TOPO, RANDOM_WALK)
     MSD2 = msd.EinsteinMSD(u2, select='all', msd_type='xyz', fft=True)
     MSD2.run()
 
     combined_msds = np.concatenate((MSD1.results.msds_by_particle,
-                                    MSD2.results.msds_by_particle), axis=0)
-    average_msd = np.mean(combined_msds, axis=0)
+                                    MSD2.results.msds_by_particle), axis=1)
+    average_msd = np.mean(combined_msds, axis=1)
 
 The same cannot be achieved by concatenating the replicas in a single run as
 the jump between the last frame of the first trajectory and frame 0 of the

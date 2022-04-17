@@ -39,6 +39,8 @@ Fixes
   * Fixed FrameIteratorIndices doesn't rewind. (Issue #3416)
 
 Enhancements
+  * Added MSD example where multiple replicates are combined(Issue #3578
+  PR #3633)
   * PCA class now has an inverse-PCA function. The inverse transform can
     also be extrapolated to certain non-PCA atoms. (PR #3596, Issue #2703)
  * `DistanceMatrix` class in MDAnalysis.analysis.diffusionmap now also
@@ -46,9 +48,7 @@ Enhancements
   * Improves the RDKitConverter's accuracy (PR #3044): AtomGroups containing
     monatomic ion charges or edge cases with nitrogen, sulfur, phosphorus and
     conjugated systems should now have correctly assigned bond orders and
-    charges.
-  * Added MSD example where multiple replicates are combined(Issue #3578
-  PR #3633)
+    charges.  
 
 Changes
   * ITPParser no longer adds an angle for water molecules that have the SETTLE
