@@ -503,7 +503,7 @@ following (these may be overwritten by subclasses as appropriate):
     Open *auxfile* and any additional processing of *kwargs*.
 
   ``_restart()``,
-  Seek to the start of ``auxfile``
+    Seek to the start of ``auxfile``
 
   ``close()``
     Close ``auxfile``

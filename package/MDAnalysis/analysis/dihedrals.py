@@ -545,7 +545,7 @@ class Janin(Ramachandran):
     GLY, PRO, SER, THR, or VAL (the default of the `select_remove` keyword
     argument) then a warning will be raised and they will be removed from the
     list of residues, but the analysis will still run. Some topologies have
-    altloc attributes which can add duplicate atoms to the selection and must 
+    altloc attributes which can add duplicate atoms to the selection and must
     be removed.
 
     """
