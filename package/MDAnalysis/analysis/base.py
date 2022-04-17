@@ -31,6 +31,7 @@ import inspect
 import itertools
 import logging
 from collections import UserDict
+from typing import Callable
 
 import numpy as np
 from MDAnalysis import coordinates
@@ -133,7 +134,7 @@ verbose_parameter_doc = (
     )
 
 
-def set_verbose_doc(public_api):
+def set_verbose_doc(public_api: Callable) -> None:
     """Decorator for setting verbose parameter on docstring.
 
     The decorator will replace the phrase `${VERBOSE_PARAMETER}` in the
