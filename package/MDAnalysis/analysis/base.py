@@ -134,11 +134,24 @@ verbose_parameter_doc = (
     )
 
 
-def set_verbose_doc(public_api: Callable) -> None:
+def set_verbose_doc(public_api: Callable) -> Callable:
     """Decorator for setting verbose parameter on docstring.
 
     The decorator will replace the phrase `${VERBOSE_PARAMETER}` in the
-    docstring with the verbose parameter description."""
+    docstring with the verbose parameter description. If `${VERBOSE_PARAMETER}`
+    does not appear in the docstring to docstring will not be changed.
+
+    Parameters
+    ----------
+    public_api : callable
+        The callable (function, class) where the phrase `${VERBOSE_PARAMETER}`
+        should be replaces.
+
+    Returns
+    -------
+    Callable
+        callable with replaced phrase
+    """
     if public_api.__doc__ is not None:
         public_api.__doc__ = public_api.__doc__.replace(
             "${VERBOSE_PARAMETER}",
