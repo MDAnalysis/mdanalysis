@@ -28,7 +28,7 @@ LAMMPSParser
 Parses data_ or dump_ files produced by LAMMPS_.
 
 .. _LAMMPS: http://lammps.sandia.gov/
-.. _data: DATA file format: :http://lammps.sandia.gov/doc/2001/data_format.html
+.. _data: DATA file format: :https://docs.lammps.org/read_data.html
 .. _dump: http://lammps.sandia.gov/doc/dump.html
 
 .. versionchanged:: 1.0.0
@@ -40,14 +40,24 @@ Parses data_ or dump_ files produced by LAMMPS_.
 Atom styles
 -----------
 
-By default parsers and readers for Lammps data files expect either an
-*atomic* or *full* `atom_style`_.  This can be customised by passing
-the `atom_style` keyword argument.  This should be a space separated
-string indicating the position of the `id`, `type`, `resid`, `charge`,
-`x`, `y` and `z` fields.  The `resid` and `charge` fields are optional
-and any other specified field will be ignored.
+The parsers and readers for LAMMPS DATA files can handle any `atom_style`_
+defined in LAMMPS; however, they only parse `id` ('atom-ID' in LAMMPS), `type`
+('atom-type' in LAMMPS), `resid` ('molecule-ID' in LAMMPS), `charge` ('q' or
+'charge' in LAMMPS), `x`, `y` and `z` attributes. The resid and charge
+attributes are optional and any other specified attribute define an atom style
+will be ignored.
 
-For example to read a file with the following format, where there is no resid::
+Valid atom styles as defined in `data`_::
+
+    'angle', 'atomic', 'body', 'bond', 'charge', 'dipole', 'dpd', 'edpd',
+    'electron', 'ellipsoid', 'full', 'line', 'mdpd', 'mesont', 'molecular',
+    'peri', 'smd', 'sph', 'sphere', 'spin', 'tdpd', 'template', 'tri',
+    'wavepacket', 'hybrid'
+
+
+Examples
+--------
+To parse a DATA file in 'atomic'::
 
   Atoms # atomic
 
@@ -58,7 +68,7 @@ The following code could be used::
 
   >>> import MDAnalysis as mda
   >>>
-  >>> u = mda.Universe('myfile.data', atom_style='id type x y z')
+  >>> u = mda.Universe('myfile.data', atom_style='atomic')
 
 
 .. _`atom_style`: http://lammps.sandia.gov/doc/atom_style.html
@@ -101,6 +111,8 @@ from ..core.topologyattrs import (
 
 logger = logging.getLogger("MDAnalysis.topology.LAMMPS")
 
+# NOTE: The SECTIONS, HEADERS, and ATOM_STYLES are only used in DATAParser, so
+# it is better to defined them as class attributes in the DATAParser, not.
 
 # Sections will all start with one of these words
 # and run until the next section title
@@ -167,7 +179,7 @@ HEADERS = set([
 
 # List of valid atom styles for Atoms section:
 # Each atom style can optionally have three image flags: nx, ny, nz
-# The following mapping is done between LAMMPS and MDAnalysis attributes:
+# This mapping is used between LAMMPS and MDAnalysis attributes:
 # LAMMPS -> MDAnalysis: atom-ID -> id, molecule-ID -> segid, atom-type -> type
 # q -> charge.
 # Some commments about the some atom styles:
@@ -175,7 +187,10 @@ HEADERS = set([
 # 'tdpd': this style can have n+5 columns for n cc species.
 # 'template': the order of id and resid is swapped.
 # 'hybrid': this style can have n+5 columns for n sub-styles.
-# See below for an up-to-date list of valide atom styles:
+# See below for an up-to-date list of valid atom styles and their usage:
+# https://docs.lammps.org/atom_style.html
+# See below for an up-to-date list of valid atom styles and how they defined in
+# a LAMMPS DATA file:
 # https://docs.lammps.org/read_data.html
 
 # NOTE: In MDAnalysis, 'id', 'type', 'x', 'y', 'z' are the mandatory
@@ -185,7 +200,7 @@ HEADERS = set([
 # mentioned in the doc above?
 # An idea is to keep all the atom styles defined below, and just read in
 # the attributes that are compatible with MDAnalysis and ignore the rest.
-# In this way, MDAnalysis can read all types of LAMMPS data file but only reads
+# This way, MDAnalysis can read all types of LAMMPS data file but only read
 # in the 5 mendatory and 2 optional attributes, and warns about how it handles
 # atom styles that have other attributes than these 7 attributes.
 
@@ -220,6 +235,7 @@ ATOM_STYLES = {
                    'cs_im', 'x', 'y', 'z'],
     'hybrid': ['id', 'type', 'x', 'y', 'z']
 }
+
 
 class DATAParser(TopologyReaderBase):
     """Parse a LAMMPS DATA file for topology and coordinates.
@@ -273,38 +289,46 @@ class DATAParser(TopologyReaderBase):
 
     @staticmethod
     def _interpret_atom_style(atom_style):
-        """Transform a string description of atom style into a dict
+        """Map field names in a given `atom_style` to their corresponding
+        locations.
 
-        Required fields: id, type, x, y, z
-        Optional fields: resid, charge
+        Required attributes: id, type, x, y, z
+        Optional attributes: resid, charge
+        Note: other attributes are ignored.
 
-        eg: "id resid type charge x y z"
-        {'id': 0,
-         'resid': 1,
-         'type': 2,
-         'charge': 3,
-         'x': 4,
-         'y': 5,
-         'z': 6,
-        }
+        Exammples
+        ---------
+        "full" atom_style has the following attributes:
+            "id resid type charge x y z"
+        `_interpret_atom_style` returns this dict for "full" atom_style:
+            {'id': 0,
+             'resid': 1,
+             'type': 2,
+             'charge': 3,
+             'x': 4,
+             'y': 5,
+             'z': 6,
+            }
+
+        Parameters
+        ----------
+        atom_style: str, default 'full'
+            One of the following atom styles:
+            {'angle', 'atomic', 'body', 'bond', 'charge', 'dipole', 'dpd',
+             'edpd', 'electron', 'ellipsoid', 'full', 'line', 'mdpd', 'mesont',
+             'molecular', 'peri', 'smd', 'sph', 'sphere', 'spin', 'tdpd',
+             'template', 'tri', 'wavepacket', 'hybrid'}
+
+        Returns
+        -------
+        dict:
+            a map between the attributes' names and attributes' locations.
         """
         style_dict = {}
 
-        atom_style = atom_style.split()
+        for loc, attr in enumerate(ATOM_STYLES[atom_style]):
+            style_dict[attr] = loc
 
-        for attr in ['id', 'type', 'resid', 'charge', 'x', 'y', 'z']:
-            try:
-                location = atom_style.index(attr)
-            except ValueError:
-                pass
-            else:
-                style_dict[attr] = location
-
-        reqd_attrs = ['id', 'type', 'x', 'y', 'z']
-        missing_attrs = [attr for attr in reqd_attrs if attr not in style_dict]
-        if missing_attrs:
-            raise ValueError("atom_style string missing required field(s): {}"
-                             "".format(', '.join(missing_attrs)))
         return style_dict
 
     def parse(self, **kwargs):
@@ -314,11 +338,15 @@ class DATAParser(TopologyReaderBase):
         -------
         MDAnalysis Topology object.
         """
-        # Can pass atom_style to help parsing
-        try:
+        if kwargs['atom_style'] in ATOM_STYLES.keys():
             self.style_dict = self._interpret_atom_style(kwargs['atom_style'])
-        except KeyError:
-            self.style_dict = None
+        else:
+            atom_styles_string = "'" + "', '".join(
+                ATOM_STYLES.keys()) + "'"
+            raise ValueError(
+                f"'{kwargs['atom_style']}' "
+                "is not a valid 'atom_style'. Please select one of "
+                f"{atom_styles_string} atom_styles.")
 
         head, sects = self.grab_datafile()
 
