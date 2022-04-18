@@ -132,12 +132,9 @@ class TestBAT(object):
     def test_bat_transformation(self, selected_residues, bat):
         R = BAT(selected_residues)
         R.run()
-        R.Cartesian(R.results.bat[0])
         XYZ = R.results.bat[0]
         PQR = copy.deepcopy(XYZ)
         R.Cartesian(R.results.bat[0])
         assert_almost_equal(PQR, XYZ, 5,
-                            err_msg="error: Reconstructed Cartesian"
-                                    "coordinate after multiple "
-                                    "transformations don't match "
-                                    "original")
+                            err_msg="error: Bat input data"
+                                    "modified by the Cartesian method")
