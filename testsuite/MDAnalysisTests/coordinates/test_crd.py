@@ -24,12 +24,11 @@ from collections import OrderedDict
 
 import pytest
 from numpy.testing import (
-    assert_equal,
+    assert_equal,assert_allclose
 )
 
 import MDAnalysis as mda
 import os
-import numpy as np
 
 from MDAnalysisTests.datafiles import CRD
 from MDAnalysisTests import make_Universe
@@ -86,8 +85,8 @@ class TestCRDWriter(object):
         sel2 = u2.select_atoms('all')
 
         # Rounding floats since EXT format support more decimals
-        cog1 = np.around(sel1.center_of_geometry(),6)
-        cog2 = np.around(sel2.center_of_geometry(),6)
+        cog1 = sel1.center_of_geometry()
+        cog2 = sel2.center_of_geometry()
 
         assert_equal(len(u.atoms), len(u2.atoms)), 'Equal number of '\
                 'atoms expected in both CRD formats'
@@ -97,7 +96,7 @@ class TestCRDWriter(object):
         assert_equal(len(u.atoms.segments), 
             len(u2.atoms.segments)), 'Equal number of segments expected in'\
                         'both CRD formats'
-        assert_equal(cog1, cog2), 'Same centroid expected for both CRD formats'
+        assert_allclose(cog1, cog2, rtol=1e-6, atol=0), 'Same centroid expected for both CRD formats'
 
 
 class TestCRDWriterMissingAttrs(object):
