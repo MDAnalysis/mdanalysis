@@ -42,7 +42,6 @@ class TestCRDWriter(object):
 
     @pytest.fixture()
     def outfile(self, tmpdir):
-        #return str(tmpdir) + '/out.crd'
         return os.path.join(str(tmpdir), 'test.crd')
 
     def test_write_atoms(self, u, outfile):
@@ -77,7 +76,7 @@ class TestCRDWriter(object):
             format_line = inf.readlines()[2]
             assert 'EXT' in format_line, "EXT format expected"
 
-    def test_read_EXT(self, u, outfile):
+    def test_write_EXT_read(self, u, outfile):
         # Read EXT format and check atom positions
         u.atoms.write(outfile, extended=True)
 
