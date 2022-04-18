@@ -150,7 +150,8 @@ inconsistent results")
 
         for i,rmsd in enumerate(reference.rmsd):
             assert_almost_equal(conf_dist_matrix[0,i], rmsd[2], decimal=3,
-                                err_msg = "calculated RMSD values differ from the reference implementation")
+                                err_msg = "calculated RMSD values differ from \
+                                    the reference implementation")
 
     def test_rmsd_matrix_with_superimposition_custom_weights(self, ens1):
         conf_dist_matrix = encore.confdistmatrix.conformational_distance_matrix(
