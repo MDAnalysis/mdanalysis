@@ -158,7 +158,9 @@ class CRDWriter(base.WriterBase):
         extended : bool (optional)
              By default, noextended CRD format is used [``False``].
              However, extended CRD format can be forced by
-             specifying `extended` ``=True``.
+             specifying `extended` ``=True``. Note that the extended format
+             is *always* used if the number of atoms exceeds 99,999, regardless
+             of the setting of `extended`.
 
              .. versionadded:: 2.2.0
         """

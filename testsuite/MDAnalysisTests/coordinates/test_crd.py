@@ -73,7 +73,7 @@ class TestCRDWriter(object):
 
         with open(outfile, 'r') as inf:
             format_line = inf.readlines()[2]
-            assert 'EXT' in format_line, "EXT format expected"
+        assert 'EXT' in format_line, "EXT format expected"
 
     def test_write_EXT_read(self, u, outfile):
         # Read EXT format and check atom positions
@@ -84,7 +84,6 @@ class TestCRDWriter(object):
         sel1 = u.select_atoms('all')
         sel2 = u2.select_atoms('all')
 
-        # Rounding floats since EXT format support more decimals
         cog1 = sel1.center_of_geometry()
         cog2 = sel2.center_of_geometry()
 
