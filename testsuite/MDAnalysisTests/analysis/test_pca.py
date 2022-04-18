@@ -199,7 +199,7 @@ def test_project_compare_projections(u_fresh):
     coord0 = project0(u_fresh.trajectory.ts).positions
     u_fresh.trajectory[0]
     coord1 = project1(u_fresh.trajectory.ts).positions
-    not np.allclose(coord0, coord1, rtol=1e-05)
+    assert not np.allclose(coord0, coord1, rtol=1e-05)
 
 
 def test_project_reconstruct_whole(u, u_fresh):
