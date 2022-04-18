@@ -51,6 +51,8 @@ Enhancements
     monatomic ion charges or edge cases with nitrogen, sulfur, phosphorus and
     conjugated systems should now have correctly assigned bond orders and
     charges.
+  * CRD extended format can now be explicitly requested with the `extended` 
+    keyword (Issue #3605)
 
 Changes
   * ITPParser no longer adds an angle for water molecules that have the SETTLE
