@@ -19,26 +19,6 @@ class AtomGroupMethodsBench(object):
 
     params = (10, 100, 1000, 10000)
     param_names = ['num_atoms']
-    
-    
-    
-    def time_calc_bonds(self,num_atoms):
-        a = np.array([[0., 0., 0.], [0., 0., 0.], [0., 11., 0.], [1., 1., 1.]], dtype=np.float32)
-        b = np.array([[0., 0., 0.], [1., 1., 1.], [0., 0., 0.], [29., -21., 99.]], dtype=np.float32)
-        MDAnalysis.lib.distances.calc_bonds(a,b)
-
-    def time_calc_angles(self,num_atom):
-        a = np.array([[0., 0., 0.], [0., 0., 0.], [0., 11., 0.], [1., 1., 1.]], dtype=np.float32)
-        b = np.array([[0., 0., 0.], [1., 1., 1.], [0., 0., 0.], [29., -21., 99.]], dtype=np.float32)
-        c = np.array([[0., 0., 0.], [2., 2., 2.], [11., 0., 0.], [1., 9., 9.]], dtype=np.float32)
-        MDAnalysis.lib.distances.calc_angles(a,b,c)
-
-    def time_calc_dihedrals(self,num_atom):
-        a = np.array([[0., 0., 0.], [0., 0., 0.], [0., 11., 0.], [1., 1., 1.]], dtype=np.float32)
-        b = np.array([[0., 0., 0.], [1., 1., 1.], [0., 0., 0.], [29., -21., 99.]], dtype=np.float32)
-        c = np.array([[0., 0., 0.], [2., 2., 2.], [11., 0., 0.], [1., 9., 9.]], dtype=np.float32)
-        d = np.array([[0., 0., 0.], [3., 3., 3.], [11., -11., 0.], [65., -65., 65.]], dtype=np.float32)
-        MDAnalysis.lib.distances.calc_dihedrals(a,b,c,d)
 
     def setup(self, num_atoms):
         self.u = MDAnalysis.Universe(GRO)
