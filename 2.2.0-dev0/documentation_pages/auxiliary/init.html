@@ -447,7 +447,7 @@ format.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">frame_data</span></code></dt><dd><p><cite>data</cite> from each auxiliary step assigned to the last-read trajectory
 timestep.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">frame_rep</span></code></dt><dd><p>Represenatative value(s) of auxiliary data for last-read trajectory
+<dt><code class="docutils literal notranslate"><span class="pre">frame_rep</span></code></dt><dd><p>Representative value(s) of auxiliary data for last-read trajectory
 timestep.</p>
 </dd>
 </dl>
@@ -520,7 +520,7 @@ it time between the step and the returned frame.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">step_to_time(step)</span></code></dt><dd><p>Return the time of the auxiliary step <cite>step</cite>.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">next_nonempty_frame(ts)</span></code></dt><dd><p>Return the frame number of the next trajectory frame (after the current
-auxiliary time) for which a represenatative auxiliary value can be
+auxiliary time) for which a representative auxiliary value can be
 calculated (i.e., there is at least one assigned auxiliary step within
 <code class="docutils literal notranslate"><span class="pre">cutoff</span></code>).</p>
 </dd>
@@ -533,10 +533,10 @@ the method specified by <code class="docutils literal notranslate"><span class="
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">__del__()</span></code></dt><dd><p>Calls <code class="docutils literal notranslate"><span class="pre">close()</span></code>.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">get_descrtiption</span></code></dt><dd><p>Get the values of the attributes required for replicating an auxiliary (as
+<dt><code class="docutils literal notranslate"><span class="pre">get_description</span></code></dt><dd><p>Get the values of the attributes required for replicating an auxiliary (as
 listed in <code class="docutils literal notranslate"><span class="pre">required_attrs</span></code>) and return as a dictionary.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">__eq__</span></code></dt><dd><p>Check for equality by checking each of the attributes requried for
+<dt><code class="docutils literal notranslate"><span class="pre">__eq__</span></code></dt><dd><p>Check for equality by checking each of the attributes required for
 replicating an auxiliary (as listed in <code class="docutils literal notranslate"><span class="pre">required_attrs</span></code>) are equal.</p>
 </dd>
 </dl>
@@ -572,7 +572,7 @@ set during <cite>__init__</cite>).</p>
 </dl>
 <p><code class="docutils literal notranslate"><span class="pre">close()</span></code></p>
 </div></blockquote>
-<p>For convinience, when reading auxiliary data from an open file, step at a time,
+<p>For convenience, when reading auxiliary data from an open file, step at a time,
 <a class="reference internal" href="base.html#MDAnalysis.auxiliary.base.AuxFileReader" title="MDAnalysis.auxiliary.base.AuxFileReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">AuxFileReader</span></code></a>
 extends <a class="reference internal" href="base.html#MDAnalysis.auxiliary.base.AuxReader" title="MDAnalysis.auxiliary.base.AuxReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">AuxReader</span></code></a> by providing the
 following (these may be overwritten by subclasses as appropriate):</p>

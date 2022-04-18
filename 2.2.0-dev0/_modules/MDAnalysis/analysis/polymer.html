@@ -343,7 +343,7 @@
         <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atomgroups</span><span class="p">:</span>
             <span class="c1"># Vector from each atom to next</span>
             <span class="n">vecs</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">chain</span><span class="o">.</span><span class="n">positions</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="c1"># Normalised to unit vectors</span>
+            <span class="c1"># Normalized to unit vectors</span>
             <span class="n">vecs</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">vecs</span> <span class="o">*</span> <span class="n">vecs</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))[:,</span> <span class="kc">None</span><span class="p">]</span>
 
             <span class="n">inner_pr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="n">vecs</span><span class="p">,</span> <span class="n">vecs</span><span class="p">)</span>
@@ -409,7 +409,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">fit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">x</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">lp</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PersistenceLength.plot"><a class="viewcode-back" href="../../../documentation_pages/analysis/polymer.html#MDAnalysis.analysis.polymer.PersistenceLength.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Visualise the results and fit</span>
+        <span class="sd">&quot;&quot;&quot;Visualize the results and fit</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
