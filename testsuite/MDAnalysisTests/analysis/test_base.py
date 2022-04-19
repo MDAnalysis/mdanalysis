@@ -224,6 +224,11 @@ def test_verbose(u):
     assert a._verbose
 
 
+def test_verbose_deprecated(u):
+    with pytest.warns(DeprecationWarning):
+        FrameAnalysis(u.trajectory, verbose=True)
+
+
 def test_verbose_progressbar(u, capsys):
     an = FrameAnalysis(u.trajectory).run()
     out, err = capsys.readouterr()

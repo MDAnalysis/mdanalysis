@@ -30,6 +30,7 @@ The building blocks for creating Analysis classes.
 import inspect
 import itertools
 import logging
+import warnings
 from collections import UserDict
 from typing import Callable
 
@@ -178,7 +179,6 @@ class AnalysisBase(object):
     ----------
     trajectory : MDAnalysis.coordinates.base.ReaderBase
         A trajectory Reader
-    ${VERBOSE_PARAMETER}
 
     Attributes
     ----------
@@ -249,12 +249,22 @@ class AnalysisBase(object):
 
     .. versionchanged:: 2.0.0
         Added :attr:`results`
+
+    .. versionchanged:: 3.0.0
+        Support for setting ``verbose`` has been removed. This should now be 
+        directly passed to :meth:`AnalysisBase.run`.
     """
 
-    def __init__(self, trajectory, verbose=False, **kwargs):
+    def __init__(self, trajectory, **kwargs):
         self._trajectory = trajectory
-        self._verbose = verbose
         self.results = Results()
+
+        if "verbose" in kwargs.keys():
+            warnings.warn("The `verbose` paramater is deprecated and will be "
+                          "removed in version 3.0.0. Please use the verbose "
+                          "parameter of the `run` method instead.",
+                          DeprecationWarning)
+            self._verbose = kwargs["verbose"]
 
     def _setup_frames(self, trajectory, start=None, stop=None, step=None):
         """
@@ -318,7 +328,7 @@ class AnalysisBase(object):
         ${VERBOSE_PARAMETER}
         """
         logger.info("Choosing frames to analyze")
-        # if verbose unchanged, use class default
+        # if verbose unchanged, use class default; remove for 3.0.0 release
         verbose = getattr(self, '_verbose',
                           False) if verbose is None else verbose
 
