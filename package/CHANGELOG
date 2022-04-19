@@ -15,7 +15,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy,
          HenokB, umak1106, tamandeeps, Mrqeoqqt, megosato, AnirG, rishu235,
-         mtiberti, manishsaini6421, Sukeerti1, robotjellyzone, markvrma
+         mtiberti, manishsaini6421, Sukeerti1, robotjellyzone, markvrma, alescoulie
 
  * 2.2.0
 
@@ -51,6 +51,8 @@ Enhancements
     monatomic ion charges or edge cases with nitrogen, sulfur, phosphorus and
     conjugated systems should now have correctly assigned bond orders and
     charges.
+  * New optimized AnalysisBase derived Watson-Crick distance analysis class in
+    analysis.nucleicacids
   * CRD extended format can now be explicitly requested with the `extended` 
     keyword (Issue #3605)
 
