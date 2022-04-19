@@ -43,8 +43,9 @@ class LinearDensity(AnalysisBase):
     select : AtomGroup
           any atomgroup
     grouping : str {'atoms', 'residues', 'segments', 'fragments'}
-          Density profiles will be computed on the center of geometry
-          of a selected group of atoms
+          Density profiles will be computed either on the atom positions (in
+          the case of 'atoms') or on the center of mass of the specified
+          grouping unit ('residues', 'segments', or 'fragments').
     binsize : float
           Bin width in Angstrom used to build linear density
           histograms. Defines the resolution of the resulting density
@@ -69,7 +70,7 @@ class LinearDensity(AnalysisBase):
 
     Example
     -------
-    First create a ``LinearDensity`` object by supplying a selection,
+    First create a :class:`LinearDensity` object by supplying a selection,
     then use the :meth:`run` method. Finally access the results
     stored in results, i.e. the mass density in the x direction.
 
@@ -78,6 +79,18 @@ class LinearDensity(AnalysisBase):
        ldens = LinearDensity(selection)
        ldens.run()
        print(ldens.results.x.pos)
+
+
+    Alternatively, other types of grouping can be selected using the
+    ``grouping`` keyword. For example to calculate the density based on
+    a grouping of the :class:`~MDAnalysis.core.groups.ResidueGroup`
+    of the input :class:`~MDAnalysis.core.groups.AtomGroup`.
+
+    .. code-block:: python
+
+       ldens = LinearDensity(selection, grouping='residues', binsize=1.0)
+       ldens.run()
+
 
 
     .. versionadded:: 0.14.0
@@ -96,6 +109,12 @@ class LinearDensity(AnalysisBase):
        Results are now instances of
        :class:`~MDAnalysis.core.analysis.Results` allowing access
        via key and attribute.
+
+    .. versionchanged:: 2.2.0
+       Fixed a bug that caused LinearDensity to fail if grouping="residues"
+       or grouping="segments" were set.
+       Residues, segments, and fragments will be analysed based on their centre
+       of mass, not centre of geometry as previously stated.
     """
 
     def __init__(self, select, grouping='atoms', binsize=0.25, **kwargs):
@@ -141,17 +160,18 @@ class LinearDensity(AnalysisBase):
         self.totalmass = None
 
     def _prepare(self):
-        # group must be a local variable, otherwise there will be
-        # issues with parallelization
-        group = getattr(self._ags[0], self.grouping)
-
         # Get masses and charges for the selection
-        try:  # in case it's not an atom
-            self.masses = np.array([elem.total_mass() for elem in group])
-            self.charges = np.array([elem.total_charge() for elem in group])
-        except AttributeError:  # much much faster for atoms
+        if self.grouping == "atoms":
             self.masses = self._ags[0].masses
             self.charges = self._ags[0].charges
+
+        elif self.grouping in ["residues", "segments", "fragments"]:
+            self.masses = self._ags[0].total_mass(compound=self.grouping)
+            self.charges = self._ags[0].total_charge(compound=self.grouping)
+
+        else:
+            raise AttributeError(
+                f"{self.grouping} is not a valid value for grouping.")
 
         self.totalmass = np.sum(self.masses)
 
@@ -163,8 +183,8 @@ class LinearDensity(AnalysisBase):
         if self.grouping == 'atoms':
             positions = self._ags[0].positions  # faster for atoms
         else:
-            # COM for res/frag/etc
-            positions = np.array([elem.centroid() for elem in self.group])
+            # Centre of mass for residues, segments, fragments
+            positions = self._ags[0].center_of_mass(compound=self.grouping)
 
         for dim in ['x', 'y', 'z']:
             idx = self.results[dim]['dim']
@@ -199,10 +219,20 @@ class LinearDensity(AnalysisBase):
             for key in ['pos', 'pos_std', 'char', 'char_std']:
                 self.results[dim][key] /= self.n_frames
             # Compute standard deviation for the error
-            self.results[dim]['pos_std'] = np.sqrt(self.results[dim][
-                'pos_std'] - np.square(self.results[dim]['pos']))
-            self.results[dim]['char_std'] = np.sqrt(self.results[dim][
-                'char_std'] - np.square(self.results[dim]['char']))
+            # For certain tests in testsuite, floating point imprecision
+            # can lead to negative radicands of tiny magnitude (yielding nan).
+            # radicand_pos and radicand_char are therefore calculated first and
+            # and negative values set to 0 before the square root
+            # is calculated.
+            radicand_pos = self.results[dim][
+                'pos_std'] - np.square(self.results[dim]['pos'])
+            radicand_pos[radicand_pos < 0] = 0
+            self.results[dim]['pos_std'] = np.sqrt(radicand_pos)
+
+            radicand_char = self.results[dim][
+                'char_std'] - np.square(self.results[dim]['char'])
+            radicand_char[radicand_char < 0] = 0
+            self.results[dim]['char_std'] = np.sqrt(radicand_char)
 
         for dim in ['x', 'y', 'z']:
             norm = k * self.results[dim]['slice_volume']
