@@ -30,23 +30,8 @@ Updated nucleic acid analysis --- :mod:`MDAnalysis.analysis.nucleicacids`
 :copyright: GNU Public Licence v3
 
 The module provides classes for analyzing nucleic acids structures.
-This is an updated, higher performance version of :ref:`analysis.nuclinfo`.
-Please cite original work by Elizabeth Denning.
-
-.. rubric:: References
-
-.. [Denning2011] E.J. Denning, U.D. Priyakumar, L. Nilsson, and A.D. Mackerell, Jr. Impact of
-              2'-hydroxyl sampling on the conformational properties of RNA: update of the
-              CHARMM all-atom additive force field for RNA. *J. Comput. Chem.* 32 (2011),
-              1929--1943. doi: `10.1002/jcc.21777`_
-
-.. [Denning2012] E.J. Denning and A.D. MacKerell, Jr. Intrinsic Contribution of the 2'-Hydroxyl to
-              RNA Conformational Heterogeneity. *J. Am. Chem. Soc.* 134 (2012), 2800--2806.
-              doi: `10.1021/ja211328g`_
-
-
-.. _`10.1002/jcc.21777`: http://dx.doi.org/10.1002/jcc.21777
-.. _`10.1021/ja211328g`: http://dx.doi.org/10.1021/ja211328g
+This is an updated, higher performance version of previous nucleic acid tools.
+For applications see [Denning2011]_ and [Denning2012]_.
 
 Distances
 _________
