@@ -129,10 +129,11 @@ class TestBAT(object):
         with pytest.raises(ValueError, match=errmsg):
             R = BAT(selected_residues, filename=bat_npz)
 
-    def test_bat_transformation(self, selected_residues, bat):
+    def test_Cartesian_does_not_modify_input(self, selected_residues, bat):
         R = BAT(selected_residues)
         pre_transformation = copy.deepcopy(bat[0])
         R.Cartesian(bat[0])
-        assert_almost_equal(pre_transformation, bat[0], 5,
-                            err_msg="error: Bat.Cartesian"
-                                    "modified input data")
+        assert_almost_equal(
+            pre_transformation, bat[0],
+            err_msg="BAT.Cartesian modified input data"
+        )
