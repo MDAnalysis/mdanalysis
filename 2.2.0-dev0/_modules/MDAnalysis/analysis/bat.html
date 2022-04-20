@@ -266,6 +266,7 @@
 <span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">copy</span>
 
 <span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span>
@@ -590,7 +591,7 @@
         <span class="n">n_torsions</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">-</span> <span class="mi">3</span><span class="p">)</span>
         <span class="n">bonds</span> <span class="o">=</span> <span class="n">bat_frame</span><span class="p">[</span><span class="mi">9</span><span class="p">:</span><span class="n">n_torsions</span> <span class="o">+</span> <span class="mi">9</span><span class="p">]</span>
         <span class="n">angles</span> <span class="o">=</span> <span class="n">bat_frame</span><span class="p">[</span><span class="n">n_torsions</span> <span class="o">+</span> <span class="mi">9</span><span class="p">:</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n_torsions</span> <span class="o">+</span> <span class="mi">9</span><span class="p">]</span>
-        <span class="n">torsions</span> <span class="o">=</span> <span class="n">bat_frame</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n_torsions</span> <span class="o">+</span> <span class="mi">9</span><span class="p">:]</span>
+        <span class="n">torsions</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">bat_frame</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n_torsions</span> <span class="o">+</span> <span class="mi">9</span><span class="p">:])</span>
         <span class="c1"># When appropriate, convert improper to proper torsions</span>
         <span class="n">shift</span> <span class="o">=</span> <span class="n">torsions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_primary_torsion_indices</span><span class="p">]</span>
         <span class="n">shift</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_unique_primary_torsion_indices</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.</span>
