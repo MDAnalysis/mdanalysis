@@ -294,6 +294,19 @@ class TestOSError:
             h = hole2.HoleAnalysis(universe, sph_process='dummy_path')
 
 
+class TestHoleNoneFilename(BaseTestHole):
+
+    @pytest.fixture()
+    def universe_none_filename(self):
+        u = mda.Universe(PDB_HOLE, in_memory=True)
+        u.trajectory.filename = None
+        return u
+
+    def test_none_filename(self, universe_none_filename, tmpdir):
+        with tmpdir.as_cwd():
+            with hole2.HoleAnalysis(universe_none_filename) as h:
+                h.run()
+
 class TestHoleAnalysis(BaseTestHole):
 
     def test_correct_profile_values(self, hole, frames):
