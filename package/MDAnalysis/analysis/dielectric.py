@@ -31,7 +31,7 @@ Dielectric --- :mod:`MDAnalysis.analysis.dielectric`
 """
 
 import numpy as np
-from MDAnalysis.analysis.base import AnalysisBase, set_verbose_doc
+from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.due import Doi, due
 from MDAnalysis.exceptions import NoDataError
 from MDAnalysis.units import constants, convert

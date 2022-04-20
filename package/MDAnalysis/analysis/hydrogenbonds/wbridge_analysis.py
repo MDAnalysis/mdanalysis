@@ -331,7 +331,7 @@ Use ``count_by_type``
 ---------------------
 
 We can use the :meth:`~WaterBridgeAnalysis.count_by_type` to
-generate the frequence of all water bridges in the simulation. ::
+generate the frequency of all water bridges in the simulation. ::
 
   w.count_by_type()
 
@@ -722,7 +722,7 @@ from MDAnalysis import MissingDataWarning, NoDataError
 from MDAnalysis.lib.distances import calc_angles, capped_distance
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 
-from ..base import AnalysisBase, set_verbose_doc
+from ..base import AnalysisBase
 
 logger = logging.getLogger('MDAnalysis.analysis.WaterBridgeAnalysis')
 

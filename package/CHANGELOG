@@ -15,7 +15,8 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy,
          HenokB, umak1106, tamandeeps, Mrqeoqqt, megosato, AnirG, rishu235,
-         mtiberti, manishsaini6421, Sukeerti1, robotjellyzone
+         mtiberti, manishsaini6421, Sukeerti1, robotjellyzone, markvrma, alescoulie,
+         PicoCentauri
 
  * 2.2.0
 
@@ -39,9 +40,12 @@ Fixes
   * Fixed DumpReader triclinic box dimensions reading. (Issue #3386, PR #3403)
   * Updated the badge in README of MDAnalysisTest to point to Github CI Actions
   * Fixed FrameIteratorIndices doesn't rewind. (Issue #3416)
+  * Fixed BAT method Cartesian modifies input data. (Issue #3501)
 
 Enhancements
-  * Cleanup and restructure of AnalysisBase classes
+  * Cleanup and restructure of AnalysisBase classes (PR #3644)
+  * Added MSD example where multiple replicates are combined(Issue #3578
+    PR #3633)
   * PCA class now has an inverse-PCA function. The inverse transform can
     also be extrapolated to certain non-PCA atoms. (PR #3596, Issue #2703)
  * `DistanceMatrix` class in MDAnalysis.analysis.diffusionmap now also
@@ -50,6 +54,10 @@ Enhancements
     monatomic ion charges or edge cases with nitrogen, sulfur, phosphorus and
     conjugated systems should now have correctly assigned bond orders and
     charges.
+  * New optimized AnalysisBase derived Watson-Crick distance analysis class in
+    analysis.nucleicacids
+  * CRD extended format can now be explicitly requested with the `extended`
+    keyword (Issue #3605)
 
 Changes
   * ITPParser no longer adds an angle for water molecules that have the SETTLE
@@ -57,6 +65,7 @@ Changes
     in AMBER. (Issue #2417, PR #3564)
 
 Deprecations
+  * Deprecate `verbose` parameter in initialization of `AnalysisBase` (PR #3644)
 
 
 03/06/22 IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope,

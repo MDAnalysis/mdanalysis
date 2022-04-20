@@ -264,7 +264,7 @@ import warnings
 import numpy as np
 
 from ..lib import distances
-from .base import AnalysisBase, set_verbose_doc
+from .base import AnalysisBase
 
 
 class InterRDF(AnalysisBase):

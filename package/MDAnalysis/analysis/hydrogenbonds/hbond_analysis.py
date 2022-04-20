@@ -236,7 +236,7 @@ from MDAnalysis.lib.correlations import autocorrelation, correct_intermittency
 from MDAnalysis.lib.distances import calc_angles, capped_distance
 
 from ...due import Doi, due
-from ..base import AnalysisBase, Results, set_verbose_doc
+from ..base import AnalysisBase, Results
 
 due.cite(Doi("10.1039/C9CP01532A"),
          description="Hydrogen bond analysis implementation",

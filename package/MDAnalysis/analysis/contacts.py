@@ -215,7 +215,7 @@ from MDAnalysis.analysis.distances import distance_array
 from MDAnalysis.core.groups import AtomGroup, UpdatingAtomGroup
 from MDAnalysis.lib.util import openany
 
-from .base import AnalysisBase, set_verbose_doc
+from .base import AnalysisBase
 
 logger = logging.getLogger("MDAnalysis.analysis.contacts")
 

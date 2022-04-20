@@ -266,7 +266,7 @@ import warnings
 import matplotlib.pyplot as plt
 import MDAnalysis as mda
 import numpy as np
-from MDAnalysis.analysis.base import AnalysisBase, set_verbose_doc
+from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.analysis.data.filenames import Janin_ref, Rama_ref
 from MDAnalysis.lib.distances import calc_dihedrals
 
@@ -541,8 +541,8 @@ class Janin(Ramachandran):
     GLY, PRO, SER, THR, or VAL (the default of the `select_remove` keyword
     argument) then a warning will be raised and they will be removed from the
     list of residues, but the analysis will still run. Some topologies have
-    altloc attribues which can add duplicate atoms to the selection and must be
-    removed.
+    altloc attributes which can add duplicate atoms to the selection and must
+    be removed.
 
     """
 

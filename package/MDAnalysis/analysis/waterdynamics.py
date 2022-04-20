@@ -30,7 +30,7 @@
 
 .. versionadded:: 0.11.0
 
-This module provides functions to analize water dynamics trajectories and water
+This module provides functions to analyze water dynamics trajectories and water
 interactions with other molecules.  The functions in this module are: water
 orientational relaxation (WOR) [Yeh1999]_, hydrogen bond lifetimes (HBL)
 [Rapaport1983]_, angular distribution (AD) [Grigera1995]_, mean square
@@ -82,7 +82,7 @@ HydrogenBondLifetimes
 ~~~~~~~~~~~~~~~~~~~~~
 
 To analyse hydrogen bond lifetime, use
-:meth:`MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.liftetime`.
+:meth:`MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.lifetime`.
 
 See Also
 --------
@@ -392,7 +392,6 @@ import logging
 from itertools import zip_longest
 
 import numpy as np
-from MDAnalysis.analysis.base import set_verbose_doc
 from MDAnalysis.lib.correlations import autocorrelation, correct_intermittency
 
 logger = logging.getLogger('MDAnalysis.analysis.waterdynamics')
@@ -555,7 +554,7 @@ class WaterOrientationalRelaxation(object):
         select only the particles that are repeated in both frame. This is to
         consider only the molecules that remains in the selection after the dt
         time has elapsed.
-        The result is a list with the indexs of the atoms.
+        The result is a list with the indices of the atoms.
         """
         a = set(selection[t0d])
         b = set(selection[tf])
@@ -812,7 +811,7 @@ class MeanSquareDisplacement(object):
         C_vect vs t.
 
         - Ex: t0=1 and dt=1 so calculate the t0-dt=1-2 interval.
-        - Ex: t0=5 and dt=3 so calcultate the t0-dt=5-8 interva
+        - Ex: t0=5 and dt=3 so calcultate the t0-dt=5-8 interval
 
         i = come from getMeanOnePoint (named j) (int)
         """

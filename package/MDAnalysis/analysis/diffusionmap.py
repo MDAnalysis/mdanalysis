@@ -31,11 +31,11 @@
 This module contains the non-linear dimension reduction method diffusion map.
 The eigenvectors of a diffusion matrix represent the 'collective coordinates'
 of a molecule; the largest eigenvalues are the more dominant collective
-coordinates. Assigning phyiscal meaning to the 'collective coordinates' is a
+coordinates. Assigning physical meaning to the 'collective coordinates' is a
 fundamentally difficult problem. The time complexity of the diffusion map is
 :math:`O(N^3)`, where N is the number of frames in the trajectory, and the in-memory
 storage complexity is :math:`O(N^2)`. Instead of a single trajectory a sample of
-protein structures can be used. The sample should be equiblibrated, at least
+protein structures can be used. The sample should be equilibrated, at least
 locally. The order of the sampled structures in the trajectory is irrelevant.
 
 The :ref:`Diffusion-Map-tutorial` shows how to use diffusion map for dimension
@@ -157,7 +157,7 @@ import numpy as np
 from MDAnalysis.core.groups import AtomGroup, UpdatingAtomGroup
 from MDAnalysis.core.universe import Universe
 
-from .base import AnalysisBase, set_verbose_doc
+from .base import AnalysisBase
 from .rms import rmsd
 
 logger = logging.getLogger("MDAnalysis.analysis.diffusionmap")

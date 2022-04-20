@@ -171,6 +171,7 @@ References
    doi:`10.1002/jcc.26036 <https://doi.org/10.1002/jcc.26036>`_
 
 """
+import copy
 import logging
 
 import MDAnalysis as mda
@@ -179,7 +180,7 @@ from MDAnalysis.lib.distances import calc_angles, calc_bonds, calc_dihedrals
 from MDAnalysis.lib.mdamath import make_whole
 
 from ..due import Doi, due
-from .base import AnalysisBase, set_verbose_doc
+from .base import AnalysisBase
 
 logger = logging.getLogger(__name__)
 
@@ -255,7 +256,6 @@ def _find_torsions(root, atoms):
             print([list(t.indices + 1) for t in torsions])
             raise ValueError('Additional torsions not found.')
     return torsions
-
 
 
 class BAT(AnalysisBase):
@@ -495,7 +495,7 @@ class BAT(AnalysisBase):
         n_torsions = (self._ag.n_atoms - 3)
         bonds = bat_frame[9:n_torsions + 9]
         angles = bat_frame[n_torsions + 9:2 * n_torsions + 9]
-        torsions = bat_frame[2 * n_torsions + 9:]
+        torsions = copy.deepcopy(bat_frame[2 * n_torsions + 9:])
         # When appropriate, convert improper to proper torsions
         shift = torsions[self._primary_torsion_indices]
         shift[self._unique_primary_torsion_indices] = 0.

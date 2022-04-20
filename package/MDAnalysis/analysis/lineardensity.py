@@ -30,7 +30,7 @@ fixed volume cells (thus for simulations in canonical NVT ensemble).
 """
 
 import numpy as np
-from MDAnalysis.analysis.base import AnalysisBase, Results, set_verbose_doc
+from MDAnalysis.analysis.base import AnalysisBase, Results
 
 
 class LinearDensity(AnalysisBase):

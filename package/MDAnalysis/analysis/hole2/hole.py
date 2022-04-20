@@ -35,7 +35,7 @@ import numpy as np
 
 from ...exceptions import ApplicationError
 from ...lib import util
-from ..base import AnalysisBase, set_verbose_doc
+from ..base import AnalysisBase
 from .templates import (IGNORE_RESIDUES, exe_err, hole_input, hole_lines,
                         vmd_script_array, vmd_script_function)
 from .utils import (check_and_fix_long_filename, collect_hole,

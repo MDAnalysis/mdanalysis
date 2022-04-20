@@ -160,7 +160,7 @@ from MDAnalysis.lib.util import fixedwidth_bins
 
 from .. import units
 from ..lib import distances
-from .base import AnalysisBase, set_verbose_doc
+from .base import AnalysisBase
 
 logger = logging.getLogger("MDAnalysis.analysis.density")
 

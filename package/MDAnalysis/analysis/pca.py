@@ -76,7 +76,7 @@ First load all modules and test data::
 
 
 Given a universe containing trajectory data we can perform Principal Component
-Analyis by using the class :class:`PCA` and retrieving the principal
+Analysis by using the class :class:`PCA` and retrieving the principal
 components.::
 
     u = mda.Universe(PSF, DCD)
@@ -124,7 +124,7 @@ from MDAnalysis.lib.log import ProgressBar
 
 from ..due import Doi, due
 from ..lib import util
-from .base import AnalysisBase, set_verbose_doc
+from .base import AnalysisBase
 
 
 class PCA(AnalysisBase):

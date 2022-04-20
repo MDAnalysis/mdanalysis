@@ -41,7 +41,7 @@ import scipy.optimize
 from .. import NoDataError
 from ..core.groups import AtomGroup, requires
 from ..lib.distances import calc_bonds
-from .base import AnalysisBase, set_verbose_doc
+from .base import AnalysisBase
 
 logger = logging.getLogger(__name__)
 
@@ -251,7 +251,7 @@ class PersistenceLength(AnalysisBase):
         for chain in self._atomgroups:
             # Vector from each atom to next
             vecs = chain.positions[1:] - chain.positions[:-1]
-            # Normalised to unit vectors
+            # Normalized to unit vectors
             vecs /= np.sqrt((vecs * vecs).sum(axis=1))[:, None]
 
             inner_pr = np.inner(vecs, vecs)
@@ -317,7 +317,7 @@ class PersistenceLength(AnalysisBase):
         self.results.fit = np.exp(-self.results.x/self.results.lp)
 
     def plot(self, ax=None):
-        """Visualise the results and fit
+        """Visualize the results and fit
 
         Parameters
         ----------

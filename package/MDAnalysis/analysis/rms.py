@@ -166,7 +166,7 @@ import warnings
 
 import MDAnalysis.lib.qcprot as qcp
 import numpy as np
-from MDAnalysis.analysis.base import AnalysisBase, set_verbose_doc
+from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.exceptions import SelectionError
 from MDAnalysis.lib.util import asiterable, get_weights, iterable
 
