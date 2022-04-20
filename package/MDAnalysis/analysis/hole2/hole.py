@@ -550,6 +550,8 @@ class HoleAnalysis(AnalysisBase):
             filenames.extend(universe.trajectory.filenames)
         except AttributeError:
             filenames.append(universe.trajectory.filename)
+        if None in filenames:
+            filenames.remove(None)
         hole_filenames = '\n!    '.join(filenames)
         self._input_header = self.hole_header.format(hole_filenames)
 
