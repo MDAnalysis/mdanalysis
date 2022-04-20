@@ -267,7 +267,6 @@ from ..lib import distances
 from .base import AnalysisBase, set_verbose_doc
 
 
-@set_verbose_doc
 class InterRDF(AnalysisBase):
     r"""Intermolecular pair distribution function
 
@@ -294,7 +293,6 @@ class InterRDF(AnalysisBase):
     exclusion_block : tuple (optional)
           A tuple representing the tile to exclude from the distance
           array.
-    ${VERBOSE_PARAMETER}
 
     Example
     -------
@@ -426,7 +424,6 @@ class InterRDF(AnalysisBase):
         return self.results.rdf
 
 
-@set_verbose_doc
 class InterRDF_s(AnalysisBase):
     r"""Site-specific intermolecular pair distribution function
 
@@ -452,7 +449,6 @@ class InterRDF_s(AnalysisBase):
              documented. Furthermore, it had the opposite
              meaning. Since 1.0.1 it is officially supported as
              documented.
-    ${VERBOSE_PARAMETER}
 
 
     Example

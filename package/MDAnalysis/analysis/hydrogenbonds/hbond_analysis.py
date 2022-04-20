@@ -246,7 +246,6 @@ due.cite(Doi("10.1039/C9CP01532A"),
 del Doi
 
 
-@set_verbose_doc
 class HydrogenBondAnalysis(AnalysisBase):
     """
     Perform an analysis of hydrogen bonds in a Universe.
@@ -297,7 +296,6 @@ class HydrogenBondAnalysis(AnalysisBase):
     update_selections : bool (optional)
         Whether or not to update the acceptor, donor and hydrogen
         lists at each frame.
-    ${VERBOSE_PARAMETER}
 
     Note
     ----

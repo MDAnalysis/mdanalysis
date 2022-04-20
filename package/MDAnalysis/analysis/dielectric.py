@@ -43,7 +43,6 @@ due.cite(Doi("10.1080/00268978300102721"),
 del Doi
 
 
-@set_verbose_doc
 class DielectricConstant(AnalysisBase):
     r"""
     Computes the average dipole moment
@@ -74,7 +73,6 @@ class DielectricConstant(AnalysisBase):
     make_whole : bool
       Make molecules whole; If the input already contains whole molecules
       this can be disabled to gain speedup
-    ${VERBOSE_PARAMETER}
 
     Attributes
     ----------

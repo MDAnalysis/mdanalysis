@@ -251,7 +251,6 @@ due.cite(Doi("10.1051/sfn/201112010"),
 del Doi
 
 
-@set_verbose_doc
 class EinsteinMSD(AnalysisBase):
     r"""Class to calculate Mean Squared Displacement by the Einstein relation.
 
@@ -270,7 +269,6 @@ class EinsteinMSD(AnalysisBase):
         the MSD. Otherwise, use the simple "windowed" algorithm.
         The tidynamics package is required for `fft=True`.
         Defaults to ``True``.
-    ${VERBOSE_PARAMETER}
 
     Attributes
     ----------

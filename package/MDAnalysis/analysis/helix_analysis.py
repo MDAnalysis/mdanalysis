@@ -289,7 +289,6 @@ def helix_analysis(positions, ref_axis=[0, 0, 1]):
     return results
 
 
-@set_verbose_doc
 class HELANAL(AnalysisBase):
     r"""
     Perform HELANAL helix analysis on your trajectory.
@@ -310,7 +309,6 @@ class HELANAL(AnalysisBase):
         Whether to flatten results if only one selection is passed.
     split_residue_sequences : bool, optional
         Wether to split residues into a list of same or consecutive helices.
-    ${VERBOSE_PARAMETER}
 
     Attributes
     ----------

@@ -128,39 +128,6 @@ class Results(UserDict):
         self.data = state
 
 
-verbose_parameter_doc = (
-    """verbose : bool, optional
-        Toggle progress output and turn on more logging as well as
-        debugging."""
-    )
-
-
-def set_verbose_doc(public_api: Callable) -> Callable:
-    """Decorator for setting verbose parameter on docstring.
-
-    The decorator will replace the phrase `${VERBOSE_PARAMETER}` in the
-    docstring with the verbose parameter description. If `${VERBOSE_PARAMETER}`
-    does not appear in the docstring to docstring will not be changed.
-
-    Parameters
-    ----------
-    public_api : callable
-        The callable (function, class) where the phrase `${VERBOSE_PARAMETER}`
-        should be replaces.
-
-    Returns
-    -------
-    Callable
-        callable with replaced phrase
-    """
-    if public_api.__doc__ is not None:
-        public_api.__doc__ = public_api.__doc__.replace(
-            "${VERBOSE_PARAMETER}",
-            verbose_parameter_doc)
-    return public_api
-
-
-@set_verbose_doc
 class AnalysisBase(object):
     r"""Base class for defining multi-frame analysis
 
@@ -313,7 +280,6 @@ class AnalysisBase(object):
         """
         pass  # pylint: disable=unnecessary-pass
 
-    @set_verbose_doc
     def run(self, start=None, stop=None, step=None, verbose=None):
         """Perform the calculations.
 
@@ -325,11 +291,13 @@ class AnalysisBase(object):
             stop frame of analysis
         step : int, optional
             number of frames to skip between each analysed frame
-        ${VERBOSE_PARAMETER}
+        verbose : bool, optional
+            Toggle progress output and turn on more logging as well as
+            debugging.
         """
         logger.info("Choosing frames to analyze")
         # if verbose unchanged, use class default; remove for 3.0.0 release
-        verbose = getattr(self, '_verbose',
+        self.verbose = getattr(self, '_verbose',
                           False) if verbose is None else verbose
 
         self._setup_frames(self._trajectory, start, stop, step)
@@ -337,7 +305,7 @@ class AnalysisBase(object):
         self._prepare()
         for i, ts in enumerate(ProgressBar(
                 self._trajectory[self.start:self.stop:self.step],
-                verbose=verbose)):
+                verbose=self.verbose)):
             self._frame_index = i
             self._ts = ts
             self.frames[i] = ts.frame

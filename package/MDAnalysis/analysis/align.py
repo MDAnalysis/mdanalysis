@@ -522,7 +522,6 @@ def alignto(mobile, reference, select=None, weights=None,
     return old_rmsd, new_rmsd
 
 
-@set_verbose_doc
 class AlignTraj(AnalysisBase):
     """RMS-align trajectory to a reference structure using a selection.
 
@@ -568,7 +567,6 @@ class AlignTraj(AnalysisBase):
         performance substantially in some cases. In this case, no file
         is written out (`filename` and `prefix` are ignored) and only
         the coordinates of `mobile` are *changed in memory*.
-    ${VERBOSE_PARAMETER}
 
 
     Attributes
@@ -669,9 +667,7 @@ class AlignTraj(AnalysisBase):
 
         # do this after setting the memory reader to have a reference to the
         # right reader.
-        super(AlignTraj, self).__init__(mobile.trajectory, **kwargs)
-        if not self._verbose:
-            logging.disable(logging.WARN)
+        super(AlignTraj, self).__init__(mobile.trajectory)
 
         # store reference to mobile atoms
         self.mobile = mobile.atoms
@@ -693,6 +689,8 @@ class AlignTraj(AnalysisBase):
         logger.info("RMS-fitting on {0:d} atoms.".format(len(self.ref_atoms)))
 
     def _prepare(self):
+        if not self.verbose:
+            logging.disable(logging.WARN)
         # reference centre of mass system
         self._ref_com = self.ref_atoms.center(self._weights)
         self._ref_coordinates = self.ref_atoms.positions - self._ref_com
@@ -714,7 +712,7 @@ class AlignTraj(AnalysisBase):
 
     def _conclude(self):
         self._writer.close()
-        if not self._verbose:
+        if not self.verbose:
             logging.disable(logging.NOTSET)
 
     @property
@@ -726,7 +724,6 @@ class AlignTraj(AnalysisBase):
         return self.results.rmsd
 
 
-@set_verbose_doc
 class AverageStructure(AnalysisBase):
     """RMS-align trajectory to a reference structure using a selection,
     and calculate the average coordinates of the trajectory.
@@ -774,7 +771,6 @@ class AverageStructure(AnalysisBase):
         the coordinates of `mobile` are *changed in memory*.
     ref_frame : int (optional)
         frame index to select frame from `reference`
-    ${VERBOSE_PARAMETER}
 
 
     Attributes

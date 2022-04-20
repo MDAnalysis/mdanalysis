@@ -163,7 +163,6 @@ from .rms import rmsd
 logger = logging.getLogger("MDAnalysis.analysis.diffusionmap")
 
 
-@set_verbose_doc
 class DistanceMatrix(AnalysisBase):
     """Calculate the pairwise distance between each frame in a trajectory
     using a given metric
@@ -196,7 +195,6 @@ class DistanceMatrix(AnalysisBase):
         Default: 1EO-5
     weights : array, optional
         Weights to be given to coordinates for metric calculation
-    ${VERBOSE_PARAMETER}
 
     Attributes
     ----------

@@ -346,7 +346,6 @@ def contact_matrix(d, radius, out=None):
     return out
 
 
-@set_verbose_doc
 class Contacts(AnalysisBase):
     """Calculate contacts based observables.
 
@@ -383,7 +382,6 @@ class Contacts(AnalysisBase):
     kwargs : dict, optional
         dictionary of additional kwargs passed to `method`. Check
         respective functions for reasonable values.
-    ${VERBOSE_PARAMETER}
 
     Attributes
     ----------

@@ -257,7 +257,7 @@ def _find_torsions(root, atoms):
     return torsions
 
 
-@set_verbose_doc
+
 class BAT(AnalysisBase):
     """Calculate BAT coordinates for the specified AtomGroup.
 
@@ -282,7 +282,6 @@ class BAT(AnalysisBase):
         Name of a numpy binary file containing a saved bat array.
         If filename is not ``None``, the data will be loaded from this file
         instead of being recalculated using the run() method.
-    ${VERBOSE_PARAMETER}
 
     Raises
     ------

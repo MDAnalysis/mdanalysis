@@ -727,7 +727,6 @@ from ..base import AnalysisBase, set_verbose_doc
 logger = logging.getLogger('MDAnalysis.analysis.WaterBridgeAnalysis')
 
 
-@set_verbose_doc
 class WaterBridgeAnalysis(AnalysisBase):
     """Perform a water bridge analysis
 
@@ -841,7 +840,6 @@ class WaterBridgeAnalysis(AnalysisBase):
         disabled by default because it generates a very large amount of
         output in the log file. (Note that a logger must have been started
         to see the output, e.g. using :func:`MDAnalysis.start_logging`.)
-    ${VERBOSE_PARAMETER}
 
     Notes
     -----

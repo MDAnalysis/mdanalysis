@@ -275,7 +275,6 @@ def hole(pdbfile,
     return recarrays
 
 
-@set_verbose_doc
 class HoleAnalysis(AnalysisBase):
     r"""
     Run :program:`hole` on a trajectory.
@@ -380,7 +379,6 @@ class HoleAnalysis(AnalysisBase):
     write_input_files : bool, optional
         Whether to write out the input HOLE text as files.
         Files are called `hole.inp`.
-    ${VERBOSE_PARAMETER}
 
 
     Attributes
@@ -553,7 +551,6 @@ class HoleAnalysis(AnalysisBase):
         hole_filenames = '\n!    '.join(filenames)
         self._input_header = self.hole_header.format(hole_filenames)
 
-    @set_verbose_doc
     def run(self, start=None, stop=None, step=None, verbose=None,
             random_seed=None):
         """
@@ -567,13 +564,15 @@ class HoleAnalysis(AnalysisBase):
             stop frame of analysis
         step : int, optional
             number of frames to skip between each analysed frame
+        verbose : bool, optional
+            Toggle progress output and turn on more logging as well as
+            debugging.
         random_seed : int, optional
             integer number to start the random number generator.
             By default,
             :program:`hole` will use the time of the day.
             For reproducible runs (e.g., for testing) set ``random_seed``
             to an integer.
-        ${VERBOSE_PARAMETER}
         """
         self.random_seed = random_seed
         return super(HoleAnalysis, self).run(start=start, stop=stop,

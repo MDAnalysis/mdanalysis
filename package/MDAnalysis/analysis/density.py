@@ -165,7 +165,6 @@ from .base import AnalysisBase, set_verbose_doc
 logger = logging.getLogger("MDAnalysis.analysis.density")
 
 
-@set_verbose_doc
 class DensityAnalysis(AnalysisBase):
     r"""Volumetric density analysis.
 
@@ -193,7 +192,6 @@ class DensityAnalysis(AnalysisBase):
             User defined y dimension box edge in ångström.
     zdim : float (optional)
             User defined z dimension box edge in ångström.
-    ${VERBOSE_PARAMETER}
 
     Attributes
     ----------

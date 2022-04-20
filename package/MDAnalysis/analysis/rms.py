@@ -326,7 +326,6 @@ def process_selection(select):
     return select
 
 
-@set_verbose_doc
 class RMSD(AnalysisBase):
     r"""Class to perform RMSD analysis on a trajectory.
 
@@ -410,7 +409,6 @@ class RMSD(AnalysisBase):
             than `tol_mass`.
     ref_frame : int (optional)
             frame index to select frame from `reference`
-    ${VERBOSE_PARAMETER}
 
     Notes
     -----
@@ -723,7 +721,6 @@ class RMSD(AnalysisBase):
         return self.results.rmsd
 
 
-@set_verbose_doc
 class RMSF(AnalysisBase):
     r"""Calculate RMSF of given atoms across a trajectory.
 
@@ -731,7 +728,6 @@ class RMSF(AnalysisBase):
     ----------
     atomgroup : AtomGroup
         Atoms for which RMSF is calculated
-    ${VERBOSE_PARAMETER}
 
     Note
     ----

@@ -127,7 +127,6 @@ from ..lib import util
 from .base import AnalysisBase, set_verbose_doc
 
 
-@set_verbose_doc
 class PCA(AnalysisBase):
     """Principal component analysis on an MD trajectory.
 
@@ -160,7 +159,6 @@ class PCA(AnalysisBase):
     n_components : int, optional
         The number of principal components to be saved, default saves
         all principal components
-    ${VERBOSE_PARAMETER}
 
     Attributes
     ----------

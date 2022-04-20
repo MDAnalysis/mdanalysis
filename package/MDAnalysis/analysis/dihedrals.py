@@ -271,7 +271,6 @@ from MDAnalysis.analysis.data.filenames import Janin_ref, Rama_ref
 from MDAnalysis.lib.distances import calc_dihedrals
 
 
-@set_verbose_doc
 class Dihedral(AnalysisBase):
     """Calculate dihedral angles for specified atomgroups.
 
@@ -284,7 +283,6 @@ class Dihedral(AnalysisBase):
     atomgroups : list[AtomGroup]
         a list of :class:`~MDAnalysis.core.groups.AtomGroup` for which
         the dihedral angles are calculated
-    ${VERBOSE_PARAMETER}
 
     Raises
     ------
@@ -336,7 +334,6 @@ class Dihedral(AnalysisBase):
         return self.results.angles
 
 
-@set_verbose_doc
 class Ramachandran(AnalysisBase):
     r"""Calculate :math:`\phi` and :math:`\psi` dihedral angles of selected
     residues.
@@ -360,7 +357,6 @@ class Ramachandran(AnalysisBase):
     check_protein : bool (optional)
         whether to raise an error if the provided atomgroup is not a
         subset of protein atoms
-    ${VERBOSE_PARAMETER}
 
     Example
     -------

@@ -33,7 +33,6 @@ import numpy as np
 from MDAnalysis.analysis.base import AnalysisBase, Results, set_verbose_doc
 
 
-@set_verbose_doc
 class LinearDensity(AnalysisBase):
     """Linear density profile
 
@@ -49,7 +48,6 @@ class LinearDensity(AnalysisBase):
           Bin width in Angstrom used to build linear density
           histograms. Defines the resolution of the resulting density
           profile (smaller --> higher resolution)
-    ${VERBOSE_PARAMETER}
 
     Attributes
     ----------

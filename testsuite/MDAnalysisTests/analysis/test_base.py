@@ -143,22 +143,6 @@ class Test_Results:
         assert new_results.data is not results.data
 
 
-def test_verbose_parameter_doc():
-    assert "verbose : bool" in base.verbose_parameter_doc
-
-
-@pytest.mark.parametrize("doc, new_doc",
-                         [("${VERBOSE_PARAMETER}", base.verbose_parameter_doc),
-                          (None, None), ("", ""), ("foo", "foo")])
-def test_set_verbose_doc(doc, new_doc):
-    """Test decorator for setting of verbose parameter."""
-    def func():
-        pass
-    func.__doc__ = doc
-    func_decorated = base.set_verbose_doc(func)
-    assert func_decorated.__doc__ == new_doc
-
-
 class FrameAnalysis(base.AnalysisBase):
     """Just grabs frame numbers of frames it goes over"""
 

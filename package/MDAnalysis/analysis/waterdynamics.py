@@ -902,7 +902,6 @@ class MeanSquareDisplacement(object):
             self.timeseries.append(output)
 
 
-@set_verbose_doc
 class SurvivalProbability(object):
     r"""
     Survival Probability (SP) gives the probability for a group of particles to remain in a certain region.
@@ -922,8 +921,8 @@ class SurvivalProbability(object):
       Universe object
     select : str
       Selection string; any selection is allowed. With this selection you
-      define the region/zone where to analyze, e.g.: "resname SOL and around 5 (resid 10)". See `SP-examples`_.
-    ${VERBOSE_PARAMETER}
+      define the region/zone where to analyze,
+      e.g.: "resname SOL and around 5 (resid 10)". See `SP-examples`_.
 
 
     Notes
@@ -972,6 +971,9 @@ class SurvivalProbability(object):
             to `tau_max` to remove the overlap. Note that `step` and `tau_max`
             work consistently with intermittency. Default: None
             (use every frame).
+        verbose : bool, optional
+            Toggle progress output and turn on more logging as well as
+            debugging.
         tau_max : int, optional
             Survival probability is calculated for the range
             1 <= `tau` <= `tau_max`.

@@ -107,7 +107,6 @@ def sort_backbone(backbone):
     return sorted_backbone
 
 
-@set_verbose_doc
 class PersistenceLength(AnalysisBase):
     r"""Calculate the persistence length for polymer chains
 
@@ -136,7 +135,6 @@ class PersistenceLength(AnalysisBase):
     atomgroups : iterable
        List of AtomGroups. Each should represent a single
        polymer chain, ordered in the correct order.
-    ${VERBOSE_PARAMETER}
 
     Attributes
     ----------
