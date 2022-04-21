@@ -27,12 +27,10 @@ Analysis building blocks --- :mod:`MDAnalysis.analysis.base`
 The building blocks for creating Analysis classes.
 
 """
-import inspect
 import itertools
 import logging
 import warnings
 from collections import UserDict
-from typing import Callable
 
 import numpy as np
 from MDAnalysis import coordinates
@@ -226,12 +224,14 @@ class AnalysisBase(object):
         self._trajectory = trajectory
         self.results = Results()
 
-        if "verbose" in kwargs.keys():
+        try:
+            self._verbose = kwargs.pop("verbose")
             warnings.warn("The `verbose` paramater is deprecated and will be "
                           "removed in version 3.0.0. Please use the verbose "
                           "parameter of the `run` method instead.",
                           DeprecationWarning)
-            self._verbose = kwargs["verbose"]
+        except KeyError:
+            pass
 
     def _setup_frames(self, trajectory, start=None, stop=None, step=None):
         """
@@ -330,7 +330,7 @@ class AnalysisFromFunction(AnalysisBase):
     *args : list
         arguments for ``function``
     **kwargs : dict
-        arguments for ``function`` and :class:`AnalysisBase`
+        keyword arguments for ``function``
 
     Attributes
     ----------
@@ -461,58 +461,3 @@ def analysis_class(function):
                                                *args, **kwargs)
 
     return WrapperClass
-
-
-def _filter_baseanalysis_kwargs(function, kwargs):
-    """
-    create two dictionaries with kwargs separated for function and AnalysisBase
-
-    Parameters
-    ----------
-    function : callable
-        function to be called
-    kwargs : dict
-        keyword argument dictionary
-
-    Returns
-    -------
-    base_args : dict
-        dictionary of AnalysisBase kwargs
-    kwargs : dict
-        kwargs without AnalysisBase kwargs
-
-    Raises
-    ------
-    ValueError
-        if ``function`` has the same ``kwargs`` as :class:`AnalysisBase`
-    """
-    try:
-        # pylint: disable=deprecated-method
-        base_argspec = inspect.getfullargspec(AnalysisBase.__init__)
-    except AttributeError:
-        # pylint: disable=deprecated-method
-        base_argspec = inspect.getargspec(AnalysisBase.__init__)
-
-    n_base_defaults = len(base_argspec.defaults)
-    base_kwargs = {name: val
-                   for name, val in zip(base_argspec.args[-n_base_defaults:],
-                                        base_argspec.defaults)}
-
-    try:
-        # pylint: disable=deprecated-method
-        argspec = inspect.getfullargspec(function)
-    except AttributeError:
-        # pylint: disable=deprecated-method
-        argspec = inspect.getargspec(function)
-
-    for base_kw in base_kwargs.keys():
-        if base_kw in argspec.args:
-            raise ValueError(
-                "argument name '{}' clashes with AnalysisBase argument."
-                "Now allowed are: {}".format(base_kw, base_kwargs.keys()))
-
-    base_args = {}
-    for argname, default in base_kwargs.items():
-        base_args[argname] = kwargs.pop(argname, default)
-
-    return base_args, kwargs

@@ -273,7 +273,7 @@ class PCA(AnalysisBase):
 
         if self._calc_mean:
             for ts in ProgressBar(self._u.trajectory[self.start:self.stop:self.step],
-                                  verbose=self._verbose, desc="Mean Calculation"):
+                                  verbose=self.verbose, desc="Mean Calculation"):
                 if self.align:
                     mobile_cog = self._atoms.center_of_geometry()
                     mobile_atoms, old_rmsd = _fit_to(self._atoms.positions - mobile_cog,

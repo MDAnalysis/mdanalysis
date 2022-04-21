@@ -404,9 +404,10 @@ class TestHELANAL(object):
     def test_multiple_atoms_per_residues(self):
         u = mda.Universe(XYZ)
         with pytest.warns(UserWarning) as rec:
-            ha = hel.HELANAL(u, select='name H')
-        assert len(rec) == 1
-        assert 'multiple atoms' in rec[0].message.args[0]
+            hel.HELANAL(u, select='name H')
+        assert len(rec) >= 1
+        warnmsg = "".join([r.message.args[0] for r in rec])
+        assert 'multiple atoms' in warnmsg
 
     def test_residue_gaps_split(self, psf_ca):
         sel = 'resid 6:50 or resid 100:130 or resid 132:148'
@@ -416,8 +417,8 @@ class TestHELANAL(object):
             assert len(ha.atomgroups[0]) == 45
             assert len(ha.atomgroups[1]) == 31
             assert len(ha.atomgroups[2]) == 17
-        assert len(rec) == 1
-        warnmsg = rec[0].message.args[0]
+        assert len(rec) >= 1
+        warnmsg = "".join([r.message.args[0] for r in rec])
         assert 'has gaps in the residues' in warnmsg
         assert 'Splitting into 3 helices' in warnmsg
 
@@ -429,8 +430,8 @@ class TestHELANAL(object):
             ha.run()
             assert len(ha.atomgroups) == 1
             assert len(ha.atomgroups[0]) == 45+31+17
-        assert len(rec) == 1
-        warnmsg = rec[0].message.args[0]
+        assert len(rec) >= 1
+        warnmsg = "".join([r.message.args[0] for r in rec])
         assert 'has gaps in the residues' in warnmsg
         assert 'Splitting into' not in warnmsg
 

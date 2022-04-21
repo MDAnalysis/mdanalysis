@@ -667,7 +667,7 @@ class AlignTraj(AnalysisBase):
 
         # do this after setting the memory reader to have a reference to the
         # right reader.
-        super(AlignTraj, self).__init__(mobile.trajectory)
+        super(AlignTraj, self).__init__(mobile.trajectory, **kwargs)
 
         # store reference to mobile atoms
         self.mobile = mobile.atoms
@@ -873,8 +873,6 @@ class AverageStructure(AnalysisBase):
         # do this after setting the memory reader to have a reference to the
         # right reader.
         super(AverageStructure, self).__init__(mobile.trajectory, **kwargs)
-        if not self._verbose:
-            logging.disable(logging.WARN)
 
         self.reference = reference if reference is not None else mobile
 
@@ -913,6 +911,8 @@ class AverageStructure(AnalysisBase):
         logger.info("RMS-fitting on {0:d} atoms.".format(len(self.ref_atoms)))
 
     def _prepare(self):
+        if not self.verbose:
+            logging.disable(logging.WARN)
         current_frame = self.reference.universe.trajectory.ts.frame
         try:
             # Move to the ref_frame
@@ -948,7 +948,7 @@ class AverageStructure(AnalysisBase):
                 self.results.positions.reshape((1, -1, 3)))
         self._writer.write(self.results.universe.atoms)
         self._writer.close()
-        if not self._verbose:
+        if not self.verbose:
             logging.disable(logging.NOTSET)
 
     @property

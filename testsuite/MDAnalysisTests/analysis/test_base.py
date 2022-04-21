@@ -238,31 +238,6 @@ def test_old_api(u):
     OldAPIAnalysis(u.trajectory).run()
 
 
-def test_filter_baseanalysis_kwargs_VE():
-    def bad_f(mobile, verbose=2):
-        pass
-
-    kwargs = {'step': 3, 'foo': None}
-
-    with pytest.raises(ValueError):
-        base._filter_baseanalysis_kwargs(bad_f, kwargs)
-
-
-def test_filter_baseanalysis_kwargs():
-    def good_f(mobile, ref):
-        pass
-
-    kwargs = {'step': 3, 'foo': None}
-
-    base_kwargs, kwargs = base._filter_baseanalysis_kwargs(good_f, kwargs)
-
-    assert 2 == len(kwargs)
-    assert kwargs['foo'] == None
-
-    assert len(base_kwargs) == 1
-    assert base_kwargs['verbose'] is False
-
-
 def simple_function(mobile):
     return mobile.center_of_geometry()
 
