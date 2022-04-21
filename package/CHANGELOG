@@ -15,7 +15,8 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy,
          HenokB, umak1106, tamandeeps, Mrqeoqqt, megosato, AnirG, rishu235,
-         mtiberti, manishsaini6421, Sukeerti1, robotjellyzone, markvrma, alescoulie
+         mtiberti, manishsaini6421, Sukeerti1, robotjellyzone, markvrma, alescoulie,
+         PicoCentauri
 
  * 2.2.0
 
@@ -42,6 +43,7 @@ Fixes
   * Fixed BAT method Cartesian modifies input data. (Issue #3501)
 
 Enhancements
+  * Link PMDA in documentation
   * Added MSD example where multiple replicates are combined(Issue #3578
     PR #3633)
   * PCA class now has an inverse-PCA function. The inverse transform can
