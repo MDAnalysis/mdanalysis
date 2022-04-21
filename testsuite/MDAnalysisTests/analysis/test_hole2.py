@@ -307,6 +307,7 @@ class TestHoleNoneFilename(BaseTestHole):
             with hole2.HoleAnalysis(universe_none_filename) as h:
                 h.run()
 
+
 class TestHoleAnalysis(BaseTestHole):
 
     def test_correct_profile_values(self, hole, frames):
