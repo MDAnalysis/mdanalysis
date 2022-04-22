@@ -584,18 +584,24 @@ class TestEncoreClustering(object):
                               "clusters: {0} {1}".format(len(cc1), len(cc2))
 
     def test_ClusterCollection_init(self, cc):
-        assert_equal(cc.clusters[0].elements, [0, 1, 2])
-        assert_equal(cc.clusters[1].elements, [3, 4])
-        assert_equal(cc.clusters[2].elements, [5, 6, 7])
-        assert_equal(cc.clusters[1].centroid, 3)
-        assert_equal(cc.clusters[2].centroid, 5),
-        "ClusterCollection was not constructed correctly"
+        err_msg="ClusterCollection was not constructed correctly"
+        assert_equal(cc.clusters[0].elements, [0, 1, 2],
+        err_msg)
+        assert_equal(cc.clusters[1].elements, [3, 4],
+        err_msg)
+        assert_equal(cc.clusters[2].elements, [5, 6, 7],
+        err_msg)
+        assert_equal(cc.clusters[1].centroid, 3,
+        err_msg)
+        assert_equal(cc.clusters[2].centroid, 5,
+        err_msg)
 
 
     def test_Cluster_init(self, cluster):
-        assert_equal(cluster.elements, [0, 1, 2])
-        assert_equal(cluster.centroid, 1),
-        "Cluster was not constructed correctly"
+        err_msg="Cluster was not constructed correctly"
+        assert_equal(cluster.elements, [0, 1, 2], err_msg)
+        assert_equal(cluster.centroid, 1, err_msg)
+        
 
 
     def test_ClusterCollection_get_ids(self, cc):
