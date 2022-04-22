@@ -150,7 +150,7 @@ inconsistent results")
 
         for i,rmsd in enumerate(reference.rmsd):
             assert_almost_equal(conf_dist_matrix[0,i], rmsd[2], decimal=3,
-                                err_msg = "calculated RMSD values differ from \
+                                err_msg="calculated RMSD values differ from \
                                     the reference implementation")
 
     def test_rmsd_matrix_with_superimposition_custom_weights(self, ens1):
@@ -584,38 +584,28 @@ class TestEncoreClustering(object):
                               "clusters: {0} {1}".format(len(cc1), len(cc2))
 
     def test_ClusterCollection_init(self, cc):
-        err_msg="ClusterCollection was not constructed correctly"
-        assert_equal(cc.clusters[0].elements, [0, 1, 2],
-        err_msg)
-        assert_equal(cc.clusters[1].elements, [3, 4],
-        err_msg)
-        assert_equal(cc.clusters[2].elements, [5, 6, 7],
-        err_msg)
-        assert_equal(cc.clusters[1].centroid, 3,
-        err_msg)
-        assert_equal(cc.clusters[2].centroid, 5,
-        err_msg)
-
+        err_msg = "ClusterCollection was not constructed correctly"
+        assert_equal(cc.clusters[0].elements, [0, 1, 2], err_msg)
+        assert_equal(cc.clusters[1].elements, [3, 4], err_msg)
+        assert_equal(cc.clusters[2].elements, [5, 6, 7], err_msg)
+        assert_equal(cc.clusters[1].centroid, 3, err_msg)
+        assert_equal(cc.clusters[2].centroid, 5, err_msg)
 
     def test_Cluster_init(self, cluster):
-        err_msg="Cluster was not constructed correctly"
+        err_msg = "Cluster was not constructed correctly"
         assert_equal(cluster.elements, [0, 1, 2], err_msg)
         assert_equal(cluster.centroid, 1, err_msg)
         
-
-
     def test_ClusterCollection_get_ids(self, cc):
         assert_equal(
             cc.get_ids(),
             [0, 1, 2],
             err_msg="ClusterCollection ids aren't as expected")
 
-
     def test_ClusterCollection_get_centroids(self, cc):
         assert_equal(
             cc.get_centroids(), [1, 3, 5],
             err_msg="ClusterCollection centroids aren't as expected")
-
     def test_cluster_add_metadata(self, cluster):
         metadata = cluster.elements*10
         cluster.add_metadata('test', metadata)
