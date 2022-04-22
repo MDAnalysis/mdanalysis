@@ -107,8 +107,7 @@ class TestAtomAttr(TopologyAttrMixin):
         result = attr.get_atoms(DummyGroup([2, 1]))
 
         assert len(result) == 2
-        assert_equal(result,
-                           self.values[[2, 1]])
+        assert_equal(result, self.values[[2, 1]])
 
     def test_set_atoms_singular(self, attr):
         # set len 2 Group to len 1 value
@@ -137,8 +136,7 @@ class TestAtomAttr(TopologyAttrMixin):
         result = attr.get_residues(DummyGroup([2, 1]))
 
         assert len(result) == 2
-        assert_equal(result,
-                           [self.values[[2, 3, 9]], self.values[[4, 5, 8]]])
+        assert_equal(result, [self.values[[2, 3, 9]], self.values[[4, 5, 8]]])
 
     def test_get_segments(self, attr):
         """Unless overriden by child class, this should yield values for all
@@ -148,8 +146,7 @@ class TestAtomAttr(TopologyAttrMixin):
         result = attr.get_segments(DummyGroup([1]))
 
         assert len(result) == 1
-        assert_equal(result,
-                           [self.values[[4, 5, 8, 2, 3, 9]]])
+        assert_equal(result, [self.values[[4, 5, 8, 2, 3, 9]]])
 
 
 class TestAtomids(TestAtomAttr):
@@ -196,16 +193,16 @@ class TestAtomnames(TestAtomAttr):
 class AggregationMixin(TestAtomAttr):
     def test_get_residues(self, attr):
         assert_equal(attr.get_residues(DummyGroup([2, 1])),
-                           np.array([self.values[[2, 3, 9]].sum(),
-                                     self.values[[4, 5, 8]].sum()]))
+                     np.array([self.values[[2, 3, 9]].sum(),
+                               self.values[[4, 5, 8]].sum()]))
 
     def test_get_segments(self, attr):
         assert_equal(attr.get_segments(DummyGroup([1])),
-                           np.array([self.values[[4, 5, 8, 2, 3, 9]].sum()]))
+                     np.array([self.values[[4, 5, 8, 2, 3, 9]].sum()]))
 
     def test_get_segment(self, attr):
         assert_equal(attr.get_segments(DummyGroup(1)),
-                           np.sum(self.values[[4, 5, 8, 2, 3, 9]]))
+                     np.sum(self.values[[4, 5, 8, 2, 3, 9]]))
 
 
 class TestMasses(AggregationMixin):
@@ -253,9 +250,9 @@ class TestResidueAttr(TopologyAttrMixin):
 
     def test_set_residues_plural(self, attr):
         attr.set_residues(DummyGroup([3, 0, 1]),
-                               np.array([23, 504, 2]))
+                          np.array([23, 504, 2]))
         assert_almost_equal(attr.get_residues(DummyGroup([3, 0, 1])),
-                                  np.array([23, 504, 2]))
+                            np.array([23, 504, 2]))
 
     def test_set_residues_VE(self, attr):
         dg = DummyGroup([3, 0, 1])
@@ -269,7 +266,7 @@ class TestResidueAttr(TopologyAttrMixin):
 
         """
         assert_equal(attr.get_segments(DummyGroup([0, 1, 1])),
-                           [self.values[[0, 3]], self.values[[1, 2]], self.values[[1, 2]]])
+                     [self.values[[0, 3]], self.values[[1, 2]], self.values[[1, 2]]])
 
 
 class TestResnames(TestResidueAttr):
@@ -304,9 +301,9 @@ class TestResids(TestResidueAttr):
 
     def test_set_residues(self, attr):
         attr.set_residues(DummyGroup([3, 0, 1]),
-                               np.array([23, 504, 27]))
+                          np.array([23, 504, 27]))
         assert_almost_equal(attr.get_residues(DummyGroup([3, 0, 1])),
-                                  np.array([23, 504, 27]))
+                            np.array([23, 504, 27]))
 
 
 class TestSegmentAttr(TopologyAttrMixin):
@@ -324,11 +321,11 @@ class TestSegmentAttr(TopologyAttrMixin):
 
     def test_get_atoms(self, attr):
         assert_equal(attr.get_atoms(DummyGroup([2, 4, 1])),
-                           self.values[[1, 1, 0]])
+                     self.values[[1, 1, 0]])
 
     def test_get_residues(self, attr):
         assert_equal(attr.get_residues(DummyGroup([1, 2, 1, 3])),
-                           self.values[[1, 1, 1, 0]])
+                     self.values[[1, 1, 1, 0]])
 
     def test_get_segments(self, attr):
         """Unless overriden by child class, this should yield values for all
@@ -336,7 +333,7 @@ class TestSegmentAttr(TopologyAttrMixin):
 
         """
         assert_equal(attr.get_segments(DummyGroup([1, 0, 0])),
-                           self.values[[1, 0, 0]])
+                     self.values[[1, 0, 0]])
 
     def test_set_segments_singular(self, attr):
         dg = DummyGroup([0, 1])
@@ -447,7 +444,7 @@ class TestCrossLevelAttributeSetting(object):
     #         if hasattr(cls, attr_type) and getattr(cls, attr_type) == attr_name:
     #             return cls
 
-    def _check_crosslevel_fail(self, item, attr:str):
+    def _check_crosslevel_fail(self, item, attr: str):
         if attr.endswith('s'):
             dtype = self.dtypes[attr]
         else:
