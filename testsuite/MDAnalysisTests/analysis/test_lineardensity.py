@@ -101,9 +101,9 @@ def test_lineardensity(grouping, expected_masses, expected_charges,
     assert_allclose(ld.results.x.charge_density, expected_xcharge)
 
 
-def make_Universe_updating_atomgroup():
+def make_testing_Universe():
     """Generate a universe for testing whether LinearDensity works with
-       updating atom groups."""
+       updating atom groups. Also used for parallel analysis test."""
     n_atoms = 3
     u = mda.Universe.empty(n_atoms=n_atoms,
                            n_residues=n_atoms,
@@ -132,7 +132,7 @@ def make_Universe_updating_atomgroup():
 
 def test_updating_atomgroup():
     expected_z_pos = np.array([0., 0.91331783, 0.08302889, 0., 0., 0.])
-    u = make_Universe_updating_atomgroup()
+    u = make_testing_Universe()
     selection = u.select_atoms("prop z < 3", updating=True)
     ld = LinearDensity(selection, binsize=1).run()
     assert_allclose(ld.results.z.mass_density, expected_z_pos)
@@ -168,3 +168,19 @@ def test_old_name_deprecations():
         ld.results.x.mass_density_stddev
         ld.results.x.charge_density
         ld.results.x.charge_density_stddev
+
+
+def test_parallel_analysis():
+    """tests _add_other_result() method. Runs LinearDensity for all atoms of
+    a universe and for two subsets, then adds the results of the two subsets
+    and checks the results are the same."""
+    u = make_testing_Universe()
+    selection1 = u.select_atoms("prop x < 1.1")
+    selection2 = u.select_atoms("prop x >= 1.1")
+    selection_whole = u.select_atoms("all")
+    ld1 = LinearDensity(selection1, binsize=1).run()
+    ld2 = LinearDensity(selection2, binsize=1).run()
+    ld_whole = LinearDensity(selection_whole, binsize=1).run()
+
+    ld1._add_other_results(ld2)
+    assert_allclose(ld1.results.z.mass_density, ld_whole.results.z.mass_density)

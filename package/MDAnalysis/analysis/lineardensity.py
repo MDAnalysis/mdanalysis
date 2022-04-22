@@ -299,14 +299,6 @@ class LinearDensity(AnalysisBase):
 
     def _add_other_results(self, other):
         # For parallel analysis
-        results = self.results
         for dim in ['x', 'y', 'z']:
-            key = 'mass_density'
-            key_std = 'mass_density_stddev'
-            results[dim][key] += other[dim][key]
-            results[dim][key_std] += other[dim][key_std]
-
-            key = 'charge_density'
-            key_std = 'charge_density_stddev'
-            results[dim][key] += other[dim][key]
-            results[dim][key_std] += other[dim][key_std]
+            for key in self.keys:
+                self.results[dim][key] += other.results[dim][key]
