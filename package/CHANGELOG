@@ -21,6 +21,7 @@ The rules for this file:
  * 2.2.0
 
 Fixes
+  * Remove None from filenames in analysis.hole.HoleAnalysis (PR #3650)
   * Fixed Numpy deprecation warnings about elementwise comparisons.
     (Issue #3535, PR #3619)
   * Fixed encore.covariance.covariance_matrix not working when providing
@@ -40,7 +41,7 @@ Fixes
   * Fixed DumpReader triclinic box dimensions reading. (Issue #3386, PR #3403)
   * Updated the badge in README of MDAnalysisTest to point to Github CI Actions
   * Fixed FrameIteratorIndices doesn't rewind. (Issue #3416)
-  * Remove None from filenames in analysis.hole.HoleAnalysis (PR #3650)
+  * Fixed BAT method Cartesian modifies input data. (Issue #3501)
 
 Enhancements
   * Added MSD example where multiple replicates are combined(Issue #3578
