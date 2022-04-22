@@ -595,7 +595,7 @@ class TestEncoreClustering(object):
         err_msg = "Cluster was not constructed correctly"
         assert_equal(cluster.elements, [0, 1, 2], err_msg)
         assert_equal(cluster.centroid, 1, err_msg)
-        
+
     def test_ClusterCollection_get_ids(self, cc):
         assert_equal(
             cc.get_ids(),
