@@ -229,7 +229,8 @@ class TestResidueAttr(TopologyAttrMixin):
         # setting e.g. resname to 2 values should fail with VE
         res = universe.residues[0]
         with pytest.raises(ValueError):
-            setattr(res, self.attrclass.singular, self.values[:2])
+            casted_values = list(map(int, self.values))
+            setattr(res, self.attrclass.singular, casted_values[:2])
 
     def test_get_atoms(self, attr):
         assert_equal(attr.get_atoms(DummyGroup([7, 3, 9])),
@@ -319,7 +320,7 @@ class TestSegmentAttr(TopologyAttrMixin):
         u = make_Universe(('segids',))
         seg = u.segments[0]
         with pytest.raises(ValueError):
-            setattr(seg, 'segid', [1, 2, 3])
+            setattr(seg, 'segid', ['1', '2', '3'])
 
     def test_get_atoms(self, attr):
         assert_equal(attr.get_atoms(DummyGroup([2, 4, 1])),
@@ -414,6 +415,7 @@ class TestCrossLevelAttributeSetting(object):
     residueattr = 'resids'
     segmentattr = 'segids'
     attrs = {0: atomattr, 1: residueattr, 2: segmentattr}
+    dtypes = {atomattr: str, residueattr: int, segmentattr: str}
 
     @pytest.mark.parametrize('level_idx, level', levels.items())
     @pytest.mark.parametrize('attr_idx, attr', attrs.items())
@@ -438,10 +440,15 @@ class TestCrossLevelAttributeSetting(object):
             return
         self._check_crosslevel_fail(component, singular_attr)
 
-    @staticmethod
-    def _check_crosslevel_fail(item, attr):
+
+    def _check_crosslevel_fail(self, item, attr: str):
+        if attr.endswith('s'):
+            dtype = self.dtypes[attr]
+        else:
+            dtype = self.dtypes[attr + 's']
+        value = dtype(1)
         with pytest.raises(NotImplementedError):
-            setattr(item, attr, 1.0)
+            setattr(item, attr, value)
 
 
 class TestRecordTypes(object):
@@ -549,6 +556,16 @@ def test_warn_selection_for_strange_dtype():
             dtype = dict
 
 
+def test_check_dtype():
+    u = make_Universe(('names',))
+    atom = u.atoms[0]
+
+    err = "Setting Atom name to wrong data type. Must be of type `str`"
+
+    with pytest.raises(TypeError, match=err):
+        setattr(atom, 'name', 1)
+
+
 class TestDeprecateBFactor:
 
     MATCH = "use the tempfactor attribute"
@@ -567,9 +584,9 @@ class TestDeprecateBFactor:
 
     def test_deprecate_bfactors_set_group(self, universe):
         with pytest.warns(DeprecationWarning, match=self.MATCH):
-            universe.atoms[:2].bfactors = [3.14, 10]
+            universe.atoms[:2].bfactors = [3.14, 10.0]
         assert universe.atoms.tempfactors[0] == 3.14
-        assert universe.atoms.tempfactors[1] == 10
+        assert universe.atoms.tempfactors[1] == 10.0
 
         with pytest.warns(DeprecationWarning, match=self.MATCH):
             assert universe.atoms.bfactors[0] == 3.14
