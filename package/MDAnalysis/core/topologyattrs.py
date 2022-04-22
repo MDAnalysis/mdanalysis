@@ -1442,7 +1442,7 @@ class Masses(AtomAttr):
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
                       Atom, Residue, Segment]
     transplants = defaultdict(list)
-    dtype = np.float64
+    dtype = float
 
     groupdoc = """Mass of each component in the Group.
 
