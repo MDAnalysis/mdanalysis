@@ -440,8 +440,7 @@ class TestCrossLevelAttributeSetting(object):
             return
         self._check_crosslevel_fail(component, singular_attr)
 
-
-    def _check_crosslevel_fail(self, item, attr: str):
+    def _check_crosslevel_fail(self, item, attr):
         if attr.endswith('s'):
             dtype = self.dtypes[attr]
         else:
