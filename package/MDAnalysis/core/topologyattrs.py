@@ -121,8 +121,8 @@ def _check_dtype(func):
     """ Wrapper which validates the data type for the `values` argument to the
     __setitem__ method of the :class:`TopologyAttr` class.
 
-    Iterates through `values` if it's a list and assets that all its items match
-    the data type of the `group` class's `dtype` attribute.
+    Iterates through `values` if it's a list and assets that all its items
+    match the data type of the `group` class's `dtype` attribute.
     """
     _ERROR_MSG = "Setting {group} {attr_name} to wrong data type. " \
                  "Must be of type `{expected_dtype}`"
@@ -130,16 +130,19 @@ def _check_dtype(func):
 
     @functools.wraps(func)
     def wrapper(obj, group, values):
-        iter_values = values if isinstance(values, (list, np.ndarray)) else [values]
+        if isinstance(values, (list, np.ndarray)):
+            iter_values = values
+        else:
+            iter_values = [values]
 
         if isinstance(obj, TopologyAttr) and obj.dtype:
-            attr_name = obj.attrname if isinstance(values, list) else obj.singular
-            expected_dtype = str if obj.dtype is object else obj.dtype
-            if not all(map(lambda v: isinstance(v, expected_dtype), iter_values)):
+            attr_name = [obj.singular, obj.attrname][isinstance(values, list)]
+            exp_dtype = str if obj.dtype is object else obj.dtype
+            if not all(map(lambda v: isinstance(v, exp_dtype), iter_values)):
                 raise TypeError(_ERROR_MSG.format(
                     group=group.__class__.__name__,
                     attr_name=attr_name,
-                    expected_dtype=expected_dtype.__name__
+                    expected_dtype=exp_dtype.__name__
                 ))
 
         return func(obj, group, values)
