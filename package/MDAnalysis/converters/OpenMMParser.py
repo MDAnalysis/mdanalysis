@@ -108,18 +108,22 @@ class OpenMMTopologyParser(TopologyReaderBase):
         -------
         top : MDAnalysis.core.topology.Topology
 
+        Note
+        ----
+        When none of the elements are present in the openmm topolgy, their
+        atomtypes are guessed using their names and their masses are
+        then guessed using their atomtypes.
+
+        When partial elements are present, values from available elements
+        are used whereas the absent elements are assigned an empty string
+        with their atomtype set to 'X' and mass set to 0.0.
+
+        For elements with invalid and unreal symbols, the symbol is used
+        as it is for atomtypes but an empty string is used for elements.
 
         .. versionchanged:: 2.2.0
-           * The parser now works when element attribute is missing in some or
-             all the atoms.
-           * When none of the elements are present their atomtypes are guessed
-             using their names and their masses are then guessed using their
-             atomtypes.
-           * When partial elements are present, values from available elements
-             are used whereas the absent elements are assigned an empty string
-             with their atomtype set to 'X' and mass set to 0.0.
-           * For elements with invalid and unreal symbols, the symbol is used
-             as it is for atomtypes but an empty string is used for elements.
+           The parser now works when element attribute is missing in some or
+           all the atoms.
 
         """
 
