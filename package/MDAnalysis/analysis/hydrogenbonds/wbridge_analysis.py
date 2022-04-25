@@ -331,7 +331,7 @@ Use ``count_by_type``
 ---------------------
 
 We can use the :meth:`~WaterBridgeAnalysis.count_by_type` to
-generate the frequence of all water bridges in the simulation. ::
+generate the frequency of all water bridges in the simulation. ::
 
   w.count_by_type()
 
