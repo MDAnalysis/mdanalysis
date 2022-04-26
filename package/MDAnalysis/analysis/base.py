@@ -157,6 +157,10 @@ class AnalysisBase(object):
         results of calculation are stored after call
         to :meth:`AnalysisBase.run`
 
+    Note
+    ----
+    The call signature `trajectory, **kwargs`
+    is fixed and part of the API specification.
 
     Example
     -------
@@ -216,7 +220,7 @@ class AnalysisBase(object):
         Added :attr:`results`
 
     .. versionchanged:: 3.0.0
-        Support for setting ``verbose`` has been removed. This should now be 
+        Support for setting ``verbose`` has been removed. This should now be
         directly passed to :meth:`AnalysisBase.run`.
     """
 
@@ -227,7 +231,7 @@ class AnalysisBase(object):
         try:
             self._verbose = kwargs.pop("verbose")
             warnings.warn("The `verbose` paramater is deprecated and will be "
-                          "removed in version 3.0.0. Please use the verbose "
+                          "removed in version 3.0.0. Please use the `verbose` "
                           "parameter of the `run` method instead.",
                           DeprecationWarning)
         except KeyError:
