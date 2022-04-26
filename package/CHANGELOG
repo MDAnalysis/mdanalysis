@@ -16,11 +16,13 @@ The rules for this file:
 ??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy,
          HenokB, umak1106, tamandeeps, Mrqeoqqt, megosato, AnirG, rishu235,
          mtiberti, manishsaini6421, Sukeerti1, robotjellyzone, markvrma, alescoulie,
-         mjtadema, PicoCentauri
+         mjtadema, PicoCentauri, Atharva7K
 
  * 2.2.0
 
 Fixes
+  * Fixed `OpenMMTopologyParser` not working when some or none of the elements
+    are present in the openmm topology (Issue #3317, PR #3511).
   * Remove None from filenames in analysis.hole.HoleAnalysis (PR #3650)
   * Fixed Numpy deprecation warnings about elementwise comparisons.
     (Issue #3535, PR #3619)
@@ -57,7 +59,7 @@ Enhancements
     charges.
   * New optimized AnalysisBase derived Watson-Crick distance analysis class in
     analysis.nucleicacids
-  * CRD extended format can now be explicitly requested with the `extended` 
+  * CRD extended format can now be explicitly requested with the `extended`
     keyword (Issue #3605)
 
 Changes
