@@ -147,8 +147,11 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">from</span> <span class="nn">..topology.base</span> <span class="kn">import</span> <span class="n">TopologyReaderBase</span>
+<span class="kn">from</span> <span class="nn">..topology.tables</span> <span class="kn">import</span> <span class="n">SYMB2Z</span>
+<span class="kn">from</span> <span class="nn">..topology.guessers</span> <span class="kn">import</span> <span class="n">guess_types</span><span class="p">,</span> <span class="n">guess_masses</span>
 <span class="kn">from</span> <span class="nn">..core.topology</span> <span class="kn">import</span> <span class="n">Topology</span>
 <span class="kn">from</span> <span class="nn">..core.topologyattrs</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Atomids</span><span class="p">,</span>
@@ -196,16 +199,41 @@
 <span class="sd">        -------</span>
 <span class="sd">        top : MDAnalysis.core.topology.Topology</span>
 
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        When none of the elements are present in the openmm topolgy, their</span>
+<span class="sd">        atomtypes are guessed using their names and their masses are</span>
+<span class="sd">        then guessed using their atomtypes.</span>
+
+<span class="sd">        When partial elements are present, values from available elements</span>
+<span class="sd">        are used whereas the absent elements are assigned an empty string</span>
+<span class="sd">        with their atomtype set to &#39;X&#39; and mass set to 0.0.</span>
+
+<span class="sd">        For elements with invalid and unreal symbols, the symbol is used</span>
+<span class="sd">        as it is for atomtypes but an empty string is used for elements.</span>
+
+<span class="sd">        .. versionchanged:: 2.2.0</span>
+<span class="sd">           The parser now works when element attribute is missing in some or</span>
+<span class="sd">           all the atoms.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">openmm.unit</span> <span class="kn">import</span> <span class="n">daltons</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">simtk.unit</span> <span class="kn">import</span> <span class="n">daltons</span>
+            <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;OpenMM is required for the OpenMMParser but &quot;</span>
+                       <span class="s2">&quot;it&#39;s not installed. Try installing it with </span><span class="se">\n</span><span class="s2">&quot;</span>
+                       <span class="s2">&quot;conda install -c conda-forge openmm&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
         <span class="n">atom_resindex</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">residue</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">omm_topology</span><span class="o">.</span><span class="n">atoms</span><span class="p">()]</span>
         <span class="n">residue_segindex</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">omm_topology</span><span class="o">.</span><span class="n">residues</span><span class="p">()]</span>
         <span class="n">atomids</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">omm_topology</span><span class="o">.</span><span class="n">atoms</span><span class="p">()]</span>
         <span class="n">atomnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">omm_topology</span><span class="o">.</span><span class="n">atoms</span><span class="p">()]</span>
         <span class="n">chainids</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">residue</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">omm_topology</span><span class="o">.</span><span class="n">atoms</span><span class="p">()]</span>
-        <span class="n">elements</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">symbol</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">omm_topology</span><span class="o">.</span><span class="n">atoms</span><span class="p">()]</span>
-        <span class="n">atomtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">symbol</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">omm_topology</span><span class="o">.</span><span class="n">atoms</span><span class="p">()]</span>
-        <span class="n">masses</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">mass</span><span class="o">.</span><span class="n">_value</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">omm_topology</span><span class="o">.</span><span class="n">atoms</span><span class="p">()]</span>
         <span class="n">resnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">omm_topology</span><span class="o">.</span><span class="n">residues</span><span class="p">()]</span>
         <span class="n">resids</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">omm_topology</span><span class="o">.</span><span class="n">residues</span><span class="p">()]</span>
         <span class="n">resnums</span> <span class="o">=</span> <span class="n">resids</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -214,24 +242,63 @@
         <span class="n">bond_orders</span> <span class="o">=</span> <span class="p">[</span><span class="n">b</span><span class="o">.</span><span class="n">order</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">omm_topology</span><span class="o">.</span><span class="n">bonds</span><span class="p">()]</span>
         <span class="n">bond_types</span> <span class="o">=</span> <span class="p">[</span><span class="n">b</span><span class="o">.</span><span class="n">type</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">omm_topology</span><span class="o">.</span><span class="n">bonds</span><span class="p">()]</span>
 
-        <span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">atomids</span><span class="p">)</span>
-        <span class="n">n_residues</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">resids</span><span class="p">)</span>
-        <span class="n">n_segments</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">segids</span><span class="p">)</span>
-
         <span class="n">attrs</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">Atomids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">atomids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)),</span>
             <span class="n">Atomnames</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">atomnames</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)),</span>
-            <span class="n">Atomtypes</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">atomtypes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)),</span>
             <span class="n">Bonds</span><span class="p">(</span><span class="n">bonds</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="n">bond_types</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">bond_orders</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
             <span class="n">ChainIDs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">chainids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)),</span>
-            <span class="n">Elements</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)),</span>
-            <span class="n">Masses</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">masses</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)),</span>
             <span class="n">Resids</span><span class="p">(</span><span class="n">resids</span><span class="p">),</span>
             <span class="n">Resnums</span><span class="p">(</span><span class="n">resnums</span><span class="p">),</span>
             <span class="n">Resnames</span><span class="p">(</span><span class="n">resnames</span><span class="p">),</span>
             <span class="n">Segids</span><span class="p">(</span><span class="n">segids</span><span class="p">),</span>
         <span class="p">]</span>
 
+        <span class="n">validated_elements</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">masses</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">atomtypes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">omm_topology</span><span class="o">.</span><span class="n">atoms</span><span class="p">():</span>
+            <span class="n">elem</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">element</span>
+            <span class="k">if</span> <span class="n">elem</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">elem</span><span class="o">.</span><span class="n">symbol</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span> <span class="ow">in</span> <span class="n">SYMB2Z</span><span class="p">:</span>
+                    <span class="n">validated_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">symbol</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">validated_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="n">atomtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">symbol</span><span class="p">)</span>
+                <span class="n">masses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">mass</span><span class="o">.</span><span class="n">value_in_unit</span><span class="p">(</span><span class="n">daltons</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">validated_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="n">masses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+                <span class="n">atomtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">validated_elements</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">validated_elements</span><span class="p">):</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Element information missing for some atoms. &quot;</span>
+                              <span class="s2">&quot;These have been given an empty element record &quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="s1">&#39;X&#39;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">atomtypes</span><span class="p">):</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;For absent elements, atomtype has been  &quot;</span>
+                                  <span class="s2">&quot;set to &#39;X&#39; and mass has been set to 0.0. &quot;</span>
+                                  <span class="s2">&quot;If needed these can be guessed using &quot;</span>
+                                  <span class="s2">&quot;MDAnalysis.topology.guessers.&quot;</span><span class="p">)</span>
+                <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Elements</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">validated_elements</span><span class="p">,</span>
+                                               <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">atomtypes</span> <span class="o">=</span> <span class="n">guess_types</span><span class="p">(</span><span class="n">atomnames</span><span class="p">)</span>
+                <span class="n">masses</span> <span class="o">=</span> <span class="n">guess_masses</span><span class="p">(</span><span class="n">atomtypes</span><span class="p">)</span>
+                <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Element information is missing for all the atoms. &quot;</span>
+                        <span class="s2">&quot;Elements attribute will not be populated. &quot;</span>
+                        <span class="s2">&quot;Atomtype attribute will be guessed using atom &quot;</span>
+                        <span class="s2">&quot;name and mass will be guessed using atomtype.&quot;</span>
+                        <span class="s2">&quot;See MDAnalysis.topology.guessers.&quot;</span><span class="p">)</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Elements</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">validated_elements</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Atomtypes</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">atomtypes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Masses</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">masses</span><span class="p">)))</span>
+
+        <span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">atomids</span><span class="p">)</span>
+        <span class="n">n_residues</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">resids</span><span class="p">)</span>
+        <span class="n">n_segments</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">segids</span><span class="p">)</span>
         <span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span>
             <span class="n">n_atoms</span><span class="p">,</span>
             <span class="n">n_residues</span><span class="p">,</span>
@@ -282,7 +349,6 @@
         <span class="n">top</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mda_topology_from_omm_topology</span><span class="p">(</span><span class="n">omm_topology</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">top</span></div>
-
 </pre></div>
 
            </div>
