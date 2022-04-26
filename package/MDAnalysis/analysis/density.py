@@ -222,7 +222,8 @@ class DensityAnalysis(AnalysisBase):
 
     See Also
     --------
-    pmda.density.DensityAnalysis for a parallel version
+    pmda.density.DensityAnalysis
+        A parallel version of :class:`DensityAnalysis`
 
     Notes
     -----
