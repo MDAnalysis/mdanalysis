@@ -31,7 +31,6 @@ class AtomGroupMethodsBench(object):
                          'DUMMY':1.0}
         self.rot_matrix = np.ones((3,3))
         self.trans = np.ones((4,4))
-
     
     def time_bbox_pbc(self, num_atoms):
         """Benchmark bounding box calculation
@@ -200,8 +199,7 @@ class AtomGroupMethodsBench(object):
         """Benchmark wrap() operation on
         atomgroup with default params.
         """
-        self.ag.wrap()
-    
+        self.ag.wrap()    
 
 
 class AtomGroupAttrsBench(object):
@@ -413,8 +411,4 @@ class FragmentCaching(FragmentFinding):
         frags = self.u.atoms.fragments  # Priming the cache
 
     def time_find_cached_fragments(self, universe_type):
-        frags = self.u.atoms.fragments
-
-
-        
-         
+        frags = self.u.atoms.fragments        

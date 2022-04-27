@@ -1,4 +1,4 @@
-import MDAnalysis
+import MDAnalysis as mda
 import numpy as np
 
 try:
@@ -28,14 +28,15 @@ class DistancesBench(object):
         self.coords_2 = np.random.random_sample((num_atoms, 3)).astype(np.float32)
         np.random.seed(15809)
         self.coords_3 = np.random.random_sample((num_atoms, 3)).astype(np.float32)
-        
+        np.random.seed(871600)
+        self.coords_4 = np.random.random_sample((num_atoms, 3)).astype(np.float32)
 
         self.allocated_array_2D = np.empty((num_atoms, num_atoms),
                                             dtype=np.float64)
         self.array_shape_1D = int(num_atoms * (num_atoms - 1) / 2.)
         self.allocated_array_1D = np.empty(self.array_shape_1D,
                                            dtype=np.float64)
-        self.u = MDAnalysis.Universe(GRO)
+        self.u = mda.Universe(GRO)
         self.ag1 = self.u.atoms[:num_atoms]
         self.ag2 = self.u.atoms[num_atoms: 2 * num_atoms]
         self.ag3 = self.u.atoms[-num_atoms:]
@@ -134,30 +135,10 @@ class DistancesBench(object):
                           distance=15.0)
 
     def time_calc_bonds(self,num_atoms):
-        np.random.seed(17809)
-        self.coords_1 = np.random.random_sample((num_atoms, 3)).astype(np.float32)
-        np.random.seed(9008716)
-        self.coords_2 = np.random.random_sample((num_atoms, 3)).astype(np.float32)
-       
-        MDAnalysis.lib.distances.calc_bonds(self.coords_1,self.coords_2)
+        mda.lib.distances.calc_bonds(self.coords_1,self.coords_2)
 
     def time_calc_angles(self,num_atoms):
-        np.random.seed(17809)
-        self.coords_1 = np.random.random_sample((num_atoms, 3)).astype(np.float32)
-        np.random.seed(9008716)
-        self.coords_2 = np.random.random_sample((num_atoms, 3)).astype(np.float32)
-        np.random.seed(15809)
-        self.coords_3 = np.random.random_sample((num_atoms, 3)).astype(np.float32)
-     
-        MDAnalysis.lib.distances.calc_angles(self.coords_1,self.coords_2,self.coords_3)
+        mda.lib.distances.calc_angles(self.coords_1,self.coords_2,self.coords_3)
 
     def time_calc_dihedrals(self,num_atoms):
-        np.random.seed(17809)
-        self.coords_1 = np.random.random_sample((num_atoms, 3)).astype(np.float32)
-        np.random.seed(9008716)
-        self.coords_2 = np.random.random_sample((num_atoms, 3)).astype(np.float32)
-        np.random.seed(15809)
-        self.coords_3 = np.random.random_sample((num_atoms, 3)).astype(np.float32)
-        np.random.seed(871600)
-        self.coords_4 = np.random.random_sample((num_atoms, 3)).astype(np.float32)
-        MDAnalysis.lib.distances.calc_dihedrals(self.coords_1,self.coords_2,self.coords_3,self.coords_4)    
+        mda.lib.distances.calc_dihedrals(self.coords_1,self.coords_2,self.coords_3,self.coords_4)    
