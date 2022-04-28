@@ -83,8 +83,10 @@ class TestEncore(object):
 
         triangular_matrix[0, 1] = expected_value
 
-        assert_equal(triangular_matrix[0,1], expected_value,
-                     err_msg="Data error in TriangularMatrix: read/write are not consistent")
+        err_msg = (
+            "Data error in TriangularMatrix: read/write are not consistent"
+            )
+        assert_equal(triangular_matrix[0, 1], expected_value, err_msg)
 
         assert_equal(triangular_matrix[0,1], triangular_matrix[1,0],
                         err_msg="Data error in TriangularMatrix: matrix non symmetrical")
@@ -147,10 +149,11 @@ inconsistent results")
 
         reference = rms.RMSD(ens1, select="name CA")
         reference.run()
-        err_msg=("calculated RMSD values differ from"
-                " the reference implementation")
-        for i,rmsd in enumerate(reference.rmsd):
-            assert_almost_equal(conf_dist_matrix[0,i], rmsd[2], 3, err_msg)
+        err_msg = (
+            "Calculated RMSD values differ from "
+            "the reference implementation")
+        for i, rmsd in enumerate(reference.rmsd):
+            assert_almost_equal(conf_dist_matrix[0, i], rmsd[2], 3, err_msg)
 
     def test_rmsd_matrix_with_superimposition_custom_weights(self, ens1):
         conf_dist_matrix = encore.confdistmatrix.conformational_distance_matrix(
@@ -264,15 +267,18 @@ inconsistent results")
                                                          select="name CA and resnum 1:3",
                                                          estimator=encore.covariance.shrinkage_covariance_estimator,
                                                          reference=ens1)
-        assert_almost_equal(covariance, reference_cov, decimal=4,
-                            err_msg="Covariance matrix from covariance estimation not as expected")
+        err_msg = (
+                "Covariance matrix from covariance estimation not as expected"
+                )
+        assert_almost_equal(covariance, reference_cov, 4, err_msg)
 
     def test_hes_to_self(self, ens1):
         results, details = encore.hes([ens1, ens1])
         result_value = results[0, 1]
         expected_value = 0.
         assert_almost_equal(result_value, expected_value,
-                            err_msg="Harmonic Ensemble Similarity to itself not zero: {0:f}".format(result_value))
+                            err_msg="Harmonic Ensemble Similarity to itself\
+                                 not zero:{0:f}".format(result_value))
 
     def test_hes(self, ens1, ens2):
         results, details = encore.hes([ens1, ens2], weights='mass')
@@ -378,11 +384,16 @@ inconsistent results")
         averages, stdevs = encore.hes([ens1, ens1], estimate_error = True, bootstrapping_samples=10, select="name CA and resnum 1-10")
         average = averages[0,1]
         stdev = stdevs[0,1]
-
-        assert_almost_equal(average, expected_average, decimal=-2,
-                            err_msg="Unexpected average value for bootstrapped samples in Harmonic Ensemble imilarity")
-        assert_almost_equal(stdev, expected_stdev, decimal=-2,
-                            err_msg="Unexpected standard daviation  for bootstrapped samples in Harmonic Ensemble imilarity")
+        err_msg=(
+            "Unexpected average value for bootstrapped samples in Harmonic"
+            " Ensemble similarity"
+        )
+        error_msg=(
+            "Unexpected standard deviation for bootstrapped samples in"
+            " Harmonic Ensemble similarity"
+        )
+        assert_almost_equal(average, expected_average, -2, err_msg)
+        assert_almost_equal(stdev, expected_stdev, -2, error_msg)
 
     def test_ces_error_estimation(self, ens1):
         expected_average = 0.03
@@ -414,21 +425,25 @@ inconsistent results")
                                       bootstrapping_samples=10,
                                       clustering_method=encore.KMeans(n_clusters=2),
                                       select="name CA and resnum 1-10")
-        average = averages[0,1]
-        stdev = stdevs[0,1]
-
+        average = averages[0, 1]
+        stdev = stdevs[0, 1]
+        err_msg = (
+            "Unexpected average value for bootstrapped samples in"
+            " Clustering Ensemble similarity")
         assert_almost_equal(
             average,
             expected_average,
-            decimal=1,
-            err_msg="Unexpected average value for bootstrapped samples in \
-            Clustering Ensemble similarity")
+            1,
+            err_msg)
+        error_msg = (
+            "Unexpected standard deviation for bootstrapped samples in"
+            " Clustering Ensemble similarity"
+            )
         assert_almost_equal(
             stdev,
             expected_stdev,
-            decimal=1,
-            err_msg="Unexpected standard deviation for bootstrapped samples \
-            in Clustering Ensemble similarity")
+            1,
+            error_msg)
 
     def test_dres_error_estimation(self, ens1):
         average_upper_bound = 0.3
@@ -438,11 +453,16 @@ inconsistent results")
                                        select="name CA and resnum 1-10")
         average = averages[0,1]
         stdev = stdevs[0,1]
-
-        assert average < average_upper_bound, "Unexpected average value for " \
-                                               "bootstrapped samples in Dim. reduction Ensemble similarity"
-        assert stdev < stdev_upper_bound, "Unexpected standard deviation for" \
-                                           " bootstrapped samples in Dim. reduction Ensemble imilarity"
+        err_msg = (
+            "Unexpected average value for bootstrapped samples in Dim. "
+            "reduction Ensemble similarity"
+        )
+        error_msg = (
+            "Unexpected standard deviation for bootstrapped samples in Dim. "
+            "reduction Ensemble similarity"
+        )
+        assert average < average_upper_bound, err_msg
+        assert stdev < stdev_upper_bound, error_msg
 
 
 class TestEncoreClustering(object):
