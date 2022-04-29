@@ -384,11 +384,11 @@ inconsistent results")
         averages, stdevs = encore.hes([ens1, ens1], estimate_error = True, bootstrapping_samples=10, select="name CA and resnum 1-10")
         average = averages[0,1]
         stdev = stdevs[0,1]
-        err_msg=(
+        err_msg = (
             "Unexpected average value for bootstrapped samples in Harmonic"
             " Ensemble similarity"
         )
-        error_msg=(
+        error_msg = (
             "Unexpected standard deviation for bootstrapped samples in"
             " Harmonic Ensemble similarity"
         )
