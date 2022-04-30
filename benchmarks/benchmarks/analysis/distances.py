@@ -134,11 +134,11 @@ class DistancesBench(object):
                           B=self.ag2,
                           distance=15.0)
 
-    def time_calc_bonds(self,num_atoms):
-        mda.lib.distances.calc_bonds(self.coords_1,self.coords_2)
+    def time_calc_bonds(self, num_atoms):
+        mda.lib.distances.calc_bonds(self.coords_1, self.coords_2)
 
-    def time_calc_angles(self,num_atoms):
-        mda.lib.distances.calc_angles(self.coords_1,self.coords_2,self.coords_3)
+    def time_calc_angles(self, num_atoms):
+        mda.lib.distances.calc_angles(self.coords_1, self.coords_2, self.coords_3)
 
-    def time_calc_dihedrals(self,num_atoms):
-        mda.lib.distances.calc_dihedrals(self.coords_1,self.coords_2,self.coords_3,self.coords_4)    
+    def time_calc_dihedrals(self, num_atoms):
+        mda.lib.distances.calc_dihedrals(self.coords_1, self.coords_2, self.coords_3, self.coords_4)    
