@@ -16,14 +16,14 @@ The rules for this file:
 ??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy,
          HenokB, umak1106, tamandeeps, Mrqeoqqt, megosato, AnirG, rishu235,
          mtiberti, manishsaini6421, Sukeerti1, robotjellyzone, markvrma, alescoulie,
-         mjtadema, PicoCentauri, Atharva7K
+         mjtadema, PicoCentauri, Atharva7K, orbeckst
 
  * 2.2.0
 
 Fixes
   * Iterating a SingleFrameReaderBase trajectory now rewinds the
     reader, resetting any modified trajectory attributes to those
-    read from file (Issue #3423)
+    read from file. Fixes behavior that was previously undefined (Issue #3423)
   * Fixed `OpenMMTopologyParser` not working when some or none of the elements
     are present in the openmm topology (Issue #3317, PR #3511).
   * Remove None from filenames in analysis.hole.HoleAnalysis (PR #3650)

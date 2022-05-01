@@ -441,8 +441,19 @@ but instead should use the attribute above.
 Trajectory Reader class
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Trajectory readers are derived from :class:`MDAnalysis.coordinates.base.ReaderBase`.
-Typically, many methods and attributes are overriden.
+Trajectory readers are derived from
+:class:`MDAnalysis.coordinates.base.ReaderBase` (or from
+:class:`MDAnalysis.coordinates.base.ProtoReader` if they do not required
+:meth:`Reader.__del__` method). A special case are *SingleFrame readers* for
+formats that contain only a single coordinate frame. These readers are derived
+from a subclass of :class:`~MDAnalysis.coordinates.base.ProtoReader` named
+:`MDAnalysis.coordinates.base.SingleFrameReaderBase`.
+
+Typically, many methods and attributes are overriden but the ones listed below
+*must* be implemented.
+
+.. SeeAlso:: :ref:`Readers`
+
 
 Methods
 .......
@@ -470,6 +481,13 @@ The following methods must be implemented in a Reader class.
 
         for ts in trajectory:
             print(ts.frame)
+
+     Readers will automatically rewind the trajectory to before the initial
+     frame (often by re-opening the file) before starting the iteration. *Multi
+     frame readers* (see :ref:`Readers`) will also rewind the trajectory
+     *after* the iteration so that the current trajectory frame is set to the
+     first trajectory frame. *Single frame readers* do not explicitly rewind
+     after iteration but simply remain on the one frame in the trajectory.
 
  ``close()``
      close the file and cease I/O
@@ -529,10 +547,11 @@ deal with missing methods gracefully.
      a trajectory.
 
      The performance of the ``__getitem__()`` method depends on the underlying
-     trajectory reader and if it can implement random access to frames. In many
-     cases this is not easily (or reliably) implementable and thus one is
-     restricted to sequential iteration.
+     trajectory reader and if it can implement random access to frames. All
+     readers in MDAnalysis should support random access.
 
+     For external custom readers this may not be easily (or reliably)
+     implementable and thus one is restricted to sequential iteration.
      If the Reader is not able to provide random access to frames then it
      should raise :exc:`TypeError` on indexing. It is possible to partially
      implement ``__getitem__`` (as done on
@@ -543,7 +562,7 @@ deal with missing methods gracefully.
 
      When indexed with a slice, a sequence of indices, or a mask of booleans,
      the return value is an instance of :class:`FrameIteratorSliced` or
-     :class:`FrameIteratorIndices`.
+     :class:`FrameIteratorIndices`. See :ref:`FrameIterators` for more details.
 
  ``parse_n_atoms(filename, **kwargs)``
      Provide the number of atoms in the trajectory file, allowing the Reader

@@ -120,10 +120,17 @@ MDAnalysis.
    .. automethod:: copy_slice
 
 
+.. _FrameIterators:
+
 FrameIterators
 --------------
 
-Iterator classes used by the by the :class:`ProtoReader`.
+FrameIterators are "sliced trajectories" (a trajectory is a
+:ref:`Reader <Readers>`) that can be iterated over. They are typically
+created by slicing a trajectory or by fancy-indexing of a trajectory
+with an array of frame numbers or a boolean mask of all frames.
+
+Iterator classes used by the by the :class:`ProtoReader`:
 
 .. autoclass:: FrameIteratorBase
 
@@ -133,6 +140,8 @@ Iterator classes used by the by the :class:`ProtoReader`.
 
 .. autoclass:: FrameIteratorIndices
 
+
+.. _Readers:
 
 Readers
 -------
@@ -2301,9 +2310,10 @@ class SingleFrameReaderBase(ProtoReader):
     .. versionchanged:: 0.11.0
        Added attribute "_ts_kwargs" for subclasses
        Keywords "dt" and "time_offset" read into _ts_kwargs
-    .. versionchanged:: 2.1.0
+    .. versionchanged:: 2.2.0
        Calling `__iter__` now rewinds the reader before yielding a
-       :class:`Timestep` object.
+       :class:`Timestep` object (fixing behavior that was not
+       well defined previously).
     """
     _err = "{0} only contains a single frame"
 
