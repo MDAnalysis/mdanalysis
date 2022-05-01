@@ -2168,11 +2168,20 @@ class ReaderBase(ProtoReader):
         New Reader will have its own file handle and can seek/iterate
         independently of the original.
 
-        Will also copy the current state of the Timestep held in
-        the original Reader
+        Will also copy the current state of the Timestep held in the original
+        Reader.
+
+
+        .. warning:: No special kwargs are copied, only `convert_units` is
+                     preserved.
+
+        .. versionchanged:: 2.2.0
+           The :attr:`convert_units` attribute is correctly copied; previously
+           the unit conversion would always be set to ``True`` on copy.
         """
         new = self.__class__(self.filename,
-                             n_atoms=self.n_atoms)
+                             n_atoms=self.n_atoms,
+                             convert_units=self.convert_units)
         if self.transformations:
             new.add_transformations(*self.transformations)
         # seek the new reader to the same frame we started with
@@ -2344,11 +2353,20 @@ class SingleFrameReaderBase(ProtoReader):
         New Reader will have its own file handle and can seek/iterate
         independently of the original.
 
-        Will also copy the current state of the Timestep held in
-        the original Reader
+        Will also copy the current state of the Timestep held in the original
+        Reader.
+
+
+        .. warning:: No special kwargs are copied, only `convert_units` is
+                     preserved.
+
+        .. versionchanged:: 2.2.0
+           The :attr:`convert_units` attribute is correctly copied; previously
+           the unit conversion would always be set to ``True`` on copy.
         """
         new = self.__class__(self.filename,
-                             n_atoms=self.n_atoms)
+                             n_atoms=self.n_atoms,
+                             convert_units=self.convert_units)
         new.ts = self.ts.copy()
         for auxname, auxread in self._auxs.items():
             new.add_auxiliary(auxname, auxread.copy())

@@ -24,6 +24,7 @@ Fixes
   * Iterating a SingleFrameReaderBase trajectory now rewinds the
     reader, resetting any modified trajectory attributes to those
     read from file. Fixes behavior that was previously undefined (Issue #3423)
+  * Fixed Reader.copy() did not preserve convert_units=False (see PR #3642) 
   * Fixed `OpenMMTopologyParser` not working when some or none of the elements
     are present in the openmm topology (Issue #3317, PR #3511).
   * Remove None from filenames in analysis.hole.HoleAnalysis (PR #3650)
