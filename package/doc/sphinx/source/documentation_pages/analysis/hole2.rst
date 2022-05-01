@@ -20,7 +20,7 @@ under the Apache v2.0 license.)
 Module
 ------
 
-.. automodule:: MDAnalysis.analysis.hole2.hole
+.. automodule:: MDAnalysis.analysis.hole2
 		
 
 

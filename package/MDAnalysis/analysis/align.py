@@ -969,7 +969,7 @@ class AverageStructure(AnalysisBase):
     @property
     def positions(self):
         wmsg = ("The `positions` attribute was deprecated in MDAnalysis 2.0.0 "
-                "and will be removed in MDAnalyssi 3.0.0. Please use "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
                 "`results.positions` instead.")
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.positions
@@ -1093,7 +1093,7 @@ def fasta2select(fastafilename, is_aligned=False,
         filename of ClustalW alignment (clustal format) that is
         produced by *clustalw* when *is_aligned* = ``False``.
         default ``None`` uses the name and path of *fastafilename* and
-        subsititutes the suffix with '.aln'.
+        substitutes the suffix with '.aln'.
     treefilename: str (optional)
         filename of ClustalW guide tree (Newick format);
         if default ``None``  the the filename is generated from *alnfilename*

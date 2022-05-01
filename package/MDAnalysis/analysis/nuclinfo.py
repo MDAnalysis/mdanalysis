@@ -29,7 +29,7 @@ Nucleic acid analysis --- :mod:`MDAnalysis.analysis.nuclinfo`
 :Year: 2011
 :Copyright: GNU Public License v3
 
-The module provides functions to analyze nuclic acid structures, in
+The module provides functions to analyze nucleic acid structures, in
 particular
 
 - backbone dihedrals,

@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
@@ -21,30 +21,25 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-__all__ = [
-    'align',
-    'base',
-    'contacts',
-    'density',
-    'distances',
-    'diffusionmap',
-    'dihedrals',
-    'distances',
-    'dielectric',
-    'gnm',
-    'hbonds',
-    'helix_analysis',
-    'hole2',
-    'hydrogenbonds',
-    'leaflet',
-    'lineardensity',
-    'msd',
-    'nuclinfo',
-    'nucleicacids',
-    'polymer',
-    'pca',
-    'psa',
-    'rdf',
-    'rms',
-    'waterdynamics',
-]
+import MDAnalysis as mda
+import pytest
+from MDAnalysis.analysis.nucleicacids import WatsonCrickDist
+from MDAnalysisTests.datafiles import RNA_PSF, RNA_PDB
+from numpy.testing import assert_allclose
+
+
+@pytest.fixture(scope='module')
+def u():
+    return mda.Universe(RNA_PSF, RNA_PDB)
+
+
+def test_wc_dist(u):
+    strand: mda.AtomGroup = u.select_atoms("segid RNAA")
+    strand1 = [strand.residues[0], strand.residues[21]]
+    strand2 = [strand.residues[1], strand.residues[22]]
+
+    WC = WatsonCrickDist(strand1, strand2)
+    WC.run()
+
+    assert_allclose(WC.results[0][0], 4.3874702, atol=1e-3)
+    assert_allclose(WC.results[1][0], 4.1716404, atol=1e-3)

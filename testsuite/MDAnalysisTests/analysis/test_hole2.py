@@ -460,6 +460,13 @@ class TestHoleAnalysis(BaseTestHole):
             assert_almost_equal(z, radius)
             assert line.get_label() == str(frame)
 
+    def test_none_filename(self, tmpdir):
+        universe_none_filename = mda.Universe(PDB_HOLE, in_memory=True)
+        universe_none_filename.trajectory.filename = None
+        with tmpdir.as_cwd():
+            with hole2.HoleAnalysis(universe_none_filename) as h:
+                h.run()
+
 
 class TestHoleAnalysisLong(BaseTestHole):
 
