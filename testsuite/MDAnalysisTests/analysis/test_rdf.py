@@ -28,13 +28,15 @@ from MDAnalysis.analysis.rdf import InterRDF
 from MDAnalysisTests.datafiles import two_water_gro
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture()
 def u():
-    return mda.Universe(two_water_gro)
+    return mda.Universe(two_water_gro, in_memory=True)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture()
 def sels(u):
+    # modify the coordinates to produce specific test results
+    # (NOTE: requires in-memory coordinates to make them permanent)
     for at, (x, y) in zip(u.atoms, zip([1] * 3 + [2] * 3, [2, 1, 3] * 2)):
         at.position = x, y, 0.0
     s1 = u.select_atoms('name OW')
