@@ -92,11 +92,9 @@ import logging
 import warnings
 
 import numpy as np
+from MDAnalysis.analysis.base import Results
 
 from .base import AnalysisBase
-
-
-from MDAnalysis.analysis.base import Results
 
 logger = logging.getLogger('MDAnalysis.analysis.GNM')
 

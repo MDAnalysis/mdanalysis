@@ -388,13 +388,11 @@ Classes
    :inherited-members:
 
 """
-from MDAnalysis.lib.correlations import autocorrelation, correct_intermittency
-import MDAnalysis.analysis.hbonds
-from itertools import zip_longest
 import logging
-import warnings
-import numpy as np
+from itertools import zip_longest
 
+import numpy as np
+from MDAnalysis.lib.correlations import autocorrelation, correct_intermittency
 
 logger = logging.getLogger('MDAnalysis.analysis.waterdynamics')
 from MDAnalysis.lib.log import ProgressBar
@@ -922,9 +920,8 @@ class SurvivalProbability(object):
       Universe object
     select : str
       Selection string; any selection is allowed. With this selection you
-      define the region/zone where to analyze, e.g.: "resname SOL and around 5 (resid 10)". See `SP-examples`_.
-    verbose : Boolean, optional
-      When True, prints progress and comments to the console.
+      define the region/zone where to analyze,
+      e.g.: "resname SOL and around 5 (resid 10)". See `SP-examples`_.
 
 
     Notes
@@ -949,7 +946,6 @@ class SurvivalProbability(object):
        changed behaviour and will act in an `exclusive` manner (instead of it's
        previous `inclusive` behaviour),
     """
-
     def __init__(self, universe, select, verbose=False):
         self.universe = universe
         self.selection = select
@@ -974,6 +970,9 @@ class SurvivalProbability(object):
             to `tau_max` to remove the overlap. Note that `step` and `tau_max`
             work consistently with intermittency. Default: None
             (use every frame).
+        verbose : bool, optional
+            Toggle progress output and turn on more logging as well as
+            debugging.
         tau_max : int, optional
             Survival probability is calculated for the range
             1 <= `tau` <= `tau_max`.

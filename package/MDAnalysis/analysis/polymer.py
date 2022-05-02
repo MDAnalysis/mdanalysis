@@ -32,13 +32,14 @@ Polymer analysis --- :mod:`MDAnalysis.analysis.polymer`
 
 This module contains various commonly used tools in analysing polymers.
 """
+import logging
+import warnings
+
 import numpy as np
 import scipy.optimize
-import warnings
-import logging
 
 from .. import NoDataError
-from ..core.groups import requires, AtomGroup
+from ..core.groups import AtomGroup, requires
 from ..lib.distances import calc_bonds
 from .base import AnalysisBase
 
@@ -134,8 +135,6 @@ class PersistenceLength(AnalysisBase):
     atomgroups : iterable
        List of AtomGroups. Each should represent a single
        polymer chain, ordered in the correct order.
-    verbose : bool, optional
-       Show detailed progress of the calculation if set to ``True``.
 
     Attributes
     ----------

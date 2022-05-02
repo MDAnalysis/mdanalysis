@@ -118,13 +118,12 @@ import warnings
 
 import numpy as np
 import scipy.integrate
-
 from MDAnalysis import Universe
 from MDAnalysis.analysis.align import _fit_to
 from MDAnalysis.lib.log import ProgressBar
 
+from ..due import Doi, due
 from ..lib import util
-from ..due import due, Doi
 from .base import AnalysisBase
 
 
@@ -160,8 +159,6 @@ class PCA(AnalysisBase):
     n_components : int, optional
         The number of principal components to be saved, default saves
         all principal components
-    verbose : bool (optional)
-            Show detailed progress of the calculation if set to ``True``.
 
     Attributes
     ----------
@@ -276,7 +273,7 @@ class PCA(AnalysisBase):
 
         if self._calc_mean:
             for ts in ProgressBar(self._u.trajectory[self.start:self.stop:self.step],
-                                  verbose=self._verbose, desc="Mean Calculation"):
+                                  verbose=self.verbose, desc="Mean Calculation"):
                 if self.align:
                     mobile_cog = self._atoms.center_of_geometry()
                     mobile_atoms, old_rmsd = _fit_to(self._atoms.positions - mobile_cog,

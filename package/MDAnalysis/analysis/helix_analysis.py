@@ -82,10 +82,11 @@ equivalent::
 """
 
 import warnings
-import numpy as np
 
 import MDAnalysis as mda
-from ..lib import util, mdamath
+import numpy as np
+
+from ..lib import mdamath, util
 from .base import AnalysisBase
 
 
@@ -313,8 +314,6 @@ class HELANAL(AnalysisBase):
         If ``False``, the residues will be analysed as a single helix.
         If ``True``, each group of consecutive residues will be treated
         as a separate helix.
-    verbose : bool, optional
-        Turn on more logging and debugging.
 
     Attributes
     ----------

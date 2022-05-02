@@ -261,15 +261,14 @@ References
    <https://doi.org/10.6084/m9.figshare.6957296>`_
 
 """
-import numpy as np
-import matplotlib.pyplot as plt
-
 import warnings
 
+import matplotlib.pyplot as plt
 import MDAnalysis as mda
+import numpy as np
 from MDAnalysis.analysis.base import AnalysisBase
+from MDAnalysis.analysis.data.filenames import Janin_ref, Rama_ref
 from MDAnalysis.lib.distances import calc_dihedrals
-from MDAnalysis.analysis.data.filenames import Rama_ref, Janin_ref
 
 
 class Dihedral(AnalysisBase):
@@ -278,6 +277,17 @@ class Dihedral(AnalysisBase):
     Dihedral angles will be calculated for each atomgroup that is given for
     each step in the trajectory. Each :class:`~MDAnalysis.core.groups.AtomGroup`
     must contain 4 atoms.
+
+    Parameters
+    ----------
+    atomgroups : list[AtomGroup]
+        a list of :class:`~MDAnalysis.core.groups.AtomGroup` for which
+        the dihedral angles are calculated
+
+    Raises
+    ------
+    ValueError
+        If any atomgroups do not contain 4 atoms
 
     Note
     ----
@@ -289,22 +299,8 @@ class Dihedral(AnalysisBase):
     .. versionchanged:: 2.0.0
        :attr:`angles` results are now stored in a
        :class:`MDAnalysis.analysis.base.Results` instance.
-
     """
-
     def __init__(self, atomgroups, **kwargs):
-        """Parameters
-        ----------
-        atomgroups : list[AtomGroup]
-            a list of :class:`~MDAnalysis.core.groups.AtomGroup` for which
-            the dihedral angles are calculated
-
-        Raises
-        ------
-        ValueError
-            If any atomgroups do not contain 4 atoms
-
-        """
         super(Dihedral, self).__init__(
             atomgroups[0].universe.trajectory, **kwargs)
         self.atomgroups = atomgroups

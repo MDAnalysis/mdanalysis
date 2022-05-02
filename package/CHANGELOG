@@ -46,6 +46,8 @@ Fixes
   * Fixed BAT method Cartesian modifies input data. (Issue #3501)
 
 Enhancements
+  * Cleanup and restructure of AnalysisBase classes
+    (Issue #919, Issue #3651, PR #3644)
   * Link PMDA in documentation (PR #3652)
   * Added MSD example where multiple replicates are combined(Issue #3578
     PR #3633)
@@ -68,6 +70,7 @@ Changes
     in AMBER. (Issue #2417, PR #3564)
 
 Deprecations
+  * Deprecate `verbose` parameter in initialization of `AnalysisBase` (PR #3644)
 
 
 03/06/22 IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope,

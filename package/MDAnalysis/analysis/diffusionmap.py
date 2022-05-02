@@ -154,11 +154,11 @@ import logging
 import warnings
 
 import numpy as np
-
-from MDAnalysis.core.universe import Universe
 from MDAnalysis.core.groups import AtomGroup, UpdatingAtomGroup
-from .rms import rmsd
+from MDAnalysis.core.universe import Universe
+
 from .base import AnalysisBase
+from .rms import rmsd
 
 logger = logging.getLogger("MDAnalysis.analysis.diffusionmap")
 
@@ -195,9 +195,6 @@ class DistanceMatrix(AnalysisBase):
         Default: 1EO-5
     weights : array, optional
         Weights to be given to coordinates for metric calculation
-    verbose : bool, optional
-            Show detailed progress of the calculation if set to ``True``; the
-            default is ``False``.
 
     Attributes
     ----------

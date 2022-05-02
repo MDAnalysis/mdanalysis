@@ -20,20 +20,16 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from collections import UserDict
 import pickle
-
-import pytest
-
-import numpy as np
-
-from numpy.testing import assert_equal, assert_almost_equal
+from collections import UserDict
 
 import MDAnalysis as mda
+import numpy as np
+import pytest
 from MDAnalysis.analysis import base
-
-from MDAnalysisTests.datafiles import PSF, DCD, TPR, XTC
+from MDAnalysisTests.datafiles import DCD, PSF, TPR, XTC
 from MDAnalysisTests.util import no_deprecated_call
+from numpy.testing import assert_almost_equal, assert_equal
 
 
 class Test_Results:
@@ -212,6 +208,11 @@ def test_verbose(u):
     assert a._verbose
 
 
+def test_verbose_deprecated(u):
+    with pytest.warns(DeprecationWarning):
+        FrameAnalysis(u.trajectory, verbose=True)
+
+
 def test_verbose_progressbar(u, capsys):
     an = FrameAnalysis(u.trajectory).run()
     out, err = capsys.readouterr()
@@ -235,31 +236,6 @@ def test_incomplete_defined_analysis(u):
 
 def test_old_api(u):
     OldAPIAnalysis(u.trajectory).run()
-
-
-def test_filter_baseanalysis_kwargs_VE():
-    def bad_f(mobile, verbose=2):
-        pass
-
-    kwargs = {'step': 3, 'foo': None}
-
-    with pytest.raises(ValueError):
-        base._filter_baseanalysis_kwargs(bad_f, kwargs)
-
-
-def test_filter_baseanalysis_kwargs():
-    def good_f(mobile, ref):
-        pass
-
-    kwargs = {'step': 3, 'foo': None}
-
-    base_kwargs, kwargs = base._filter_baseanalysis_kwargs(good_f, kwargs)
-
-    assert 2 == len(kwargs)
-    assert kwargs['foo'] == None
-
-    assert len(base_kwargs) == 1
-    assert base_kwargs['verbose'] is False
 
 
 def simple_function(mobile):

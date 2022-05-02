@@ -20,28 +20,27 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-import os
 import errno
+import itertools
+import logging
+import os
 import tempfile
 import textwrap
-import logging
-import itertools
 import warnings
-
-import numpy as np
-import matplotlib
-import matplotlib.pyplot as plt
 from collections import OrderedDict
 
+import matplotlib
+import matplotlib.pyplot as plt
+import numpy as np
+
 from ...exceptions import ApplicationError
-from ..base import AnalysisBase
 from ...lib import util
-from .utils import (check_and_fix_long_filename, write_simplerad2,
-                    set_up_hole_input, run_hole, collect_hole,
-                    create_vmd_surface)
-from .templates import (hole_input, hole_lines, vmd_script_array,
-                        vmd_script_function, exe_err,
-                        IGNORE_RESIDUES)
+from ..base import AnalysisBase
+from .templates import (IGNORE_RESIDUES, exe_err, hole_input, hole_lines,
+                        vmd_script_array, vmd_script_function)
+from .utils import (check_and_fix_long_filename, collect_hole,
+                    create_vmd_surface, run_hole, set_up_hole_input,
+                    write_simplerad2)
 
 logger = logging.getLogger(__name__)
 
@@ -297,7 +296,6 @@ class HoleAnalysis(AnalysisBase):
 
     Parameters
     ----------
-
     universe : Universe or AtomGroup
         The Universe or AtomGroup to apply the analysis to.
     select : string, optional
@@ -563,16 +561,13 @@ class HoleAnalysis(AnalysisBase):
         ----------
         start : int, optional
             start frame of analysis
-
         stop : int, optional
             stop frame of analysis
-
         step : int, optional
             number of frames to skip between each analysed frame
-
         verbose : bool, optional
-            Turn on verbosity
-
+            Toggle progress output and turn on more logging as well as
+            debugging.
         random_seed : int, optional
             integer number to start the random number generator.
             By default,

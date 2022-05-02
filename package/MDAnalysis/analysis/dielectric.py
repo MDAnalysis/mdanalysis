@@ -31,11 +31,10 @@ Dielectric --- :mod:`MDAnalysis.analysis.dielectric`
 """
 
 import numpy as np
-
-from MDAnalysis.units import constants, convert
 from MDAnalysis.analysis.base import AnalysisBase
-from MDAnalysis.due import due, Doi
+from MDAnalysis.due import Doi, due
 from MDAnalysis.exceptions import NoDataError
+from MDAnalysis.units import constants, convert
 
 due.cite(Doi("10.1080/00268978300102721"),
          description="Dielectric analysis",
@@ -74,8 +73,6 @@ class DielectricConstant(AnalysisBase):
     make_whole : bool
       Make molecules whole; If the input already contains whole molecules
       this can be disabled to gain speedup
-    verbose : bool
-      Show detailed progress of the calculation
 
     Attributes
     ----------

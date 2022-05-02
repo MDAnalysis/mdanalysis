@@ -27,10 +27,10 @@ Analysis building blocks --- :mod:`MDAnalysis.analysis.base`
 The building blocks for creating Analysis classes.
 
 """
-from collections import UserDict
-import inspect
-import logging
 import itertools
+import logging
+import warnings
+from collections import UserDict
 
 import numpy as np
 from MDAnalysis import coordinates
@@ -144,8 +144,6 @@ class AnalysisBase(object):
     ----------
     trajectory : MDAnalysis.coordinates.base.ReaderBase
         A trajectory Reader
-    verbose : bool, optional
-        Turn on more logging and debugging
 
     Attributes
     ----------
@@ -159,6 +157,10 @@ class AnalysisBase(object):
         results of calculation are stored after call
         to :meth:`AnalysisBase.run`
 
+    Note
+    ----
+    The call signature `trajectory, **kwargs`
+    is fixed and part of the API specification.
 
     Example
     -------
@@ -216,12 +218,24 @@ class AnalysisBase(object):
 
     .. versionchanged:: 2.0.0
         Added :attr:`results`
+
+    .. versionchanged:: 3.0.0
+        Support for setting ``verbose`` has been removed. This should now be
+        directly passed to :meth:`AnalysisBase.run`.
     """
 
-    def __init__(self, trajectory, verbose=False, **kwargs):
+    def __init__(self, trajectory, **kwargs):
         self._trajectory = trajectory
-        self._verbose = verbose
         self.results = Results()
+
+        try:
+            self._verbose = kwargs.pop("verbose")
+            warnings.warn("The `verbose` paramater is deprecated and will be "
+                          "removed in version 3.0.0. Please use the `verbose` "
+                          "parameter of the `run` method instead.",
+                          DeprecationWarning)
+        except KeyError:
+            pass
 
     def _setup_frames(self, trajectory, start=None, stop=None, step=None):
         """
@@ -271,7 +285,7 @@ class AnalysisBase(object):
         pass  # pylint: disable=unnecessary-pass
 
     def run(self, start=None, stop=None, step=None, verbose=None):
-        """Perform the calculation
+        """Perform the calculations.
 
         Parameters
         ----------
@@ -282,11 +296,12 @@ class AnalysisBase(object):
         step : int, optional
             number of frames to skip between each analysed frame
         verbose : bool, optional
-            Turn on verbosity
+            Toggle progress output and turn on more logging as well as
+            debugging.
         """
         logger.info("Choosing frames to analyze")
-        # if verbose unchanged, use class default
-        verbose = getattr(self, '_verbose',
+        # if verbose unchanged, use class default; remove for 3.0.0 release
+        self.verbose = getattr(self, '_verbose',
                           False) if verbose is None else verbose
 
         self._setup_frames(self._trajectory, start, stop, step)
@@ -294,7 +309,7 @@ class AnalysisBase(object):
         self._prepare()
         for i, ts in enumerate(ProgressBar(
                 self._trajectory[self.start:self.stop:self.step],
-                verbose=verbose)):
+                verbose=self.verbose)):
             self._frame_index = i
             self._ts = ts
             self.frames[i] = ts.frame
@@ -319,7 +334,7 @@ class AnalysisFromFunction(AnalysisBase):
     *args : list
         arguments for ``function``
     **kwargs : dict
-        arguments for ``function`` and :class:`AnalysisBase`
+        keyword arguments for ``function``
 
     Attributes
     ----------
@@ -450,58 +465,3 @@ def analysis_class(function):
                                                *args, **kwargs)
 
     return WrapperClass
-
-
-def _filter_baseanalysis_kwargs(function, kwargs):
-    """
-    create two dictionaries with kwargs separated for function and AnalysisBase
-
-    Parameters
-    ----------
-    function : callable
-        function to be called
-    kwargs : dict
-        keyword argument dictionary
-
-    Returns
-    -------
-    base_args : dict
-        dictionary of AnalysisBase kwargs
-    kwargs : dict
-        kwargs without AnalysisBase kwargs
-
-    Raises
-    ------
-    ValueError
-        if ``function`` has the same ``kwargs`` as :class:`AnalysisBase`
-    """
-    try:
-        # pylint: disable=deprecated-method
-        base_argspec = inspect.getfullargspec(AnalysisBase.__init__)
-    except AttributeError:
-        # pylint: disable=deprecated-method
-        base_argspec = inspect.getargspec(AnalysisBase.__init__)
-
-    n_base_defaults = len(base_argspec.defaults)
-    base_kwargs = {name: val
-                   for name, val in zip(base_argspec.args[-n_base_defaults:],
-                                        base_argspec.defaults)}
-
-    try:
-        # pylint: disable=deprecated-method
-        argspec = inspect.getfullargspec(function)
-    except AttributeError:
-        # pylint: disable=deprecated-method
-        argspec = inspect.getargspec(function)
-
-    for base_kw in base_kwargs.keys():
-        if base_kw in argspec.args:
-            raise ValueError(
-                "argument name '{}' clashes with AnalysisBase argument."
-                "Now allowed are: {}".format(base_kw, base_kwargs.keys()))
-
-    base_args = {}
-    for argname, default in base_kwargs.items():
-        base_args[argname] = kwargs.pop(argname, default)
-
-    return base_args, kwargs

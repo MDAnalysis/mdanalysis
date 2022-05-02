@@ -260,9 +260,9 @@ protein.
 
 """
 import warnings
+
 import numpy as np
 
-from ..lib.util import blocks_of
 from ..lib import distances
 from .base import AnalysisBase
 
@@ -293,8 +293,6 @@ class InterRDF(AnalysisBase):
     exclusion_block : tuple (optional)
           A tuple representing the tile to exclude from the distance
           array.
-    verbose : bool (optional)
-          Show detailed progress of the calculation if set to ``True``
 
     Example
     -------
