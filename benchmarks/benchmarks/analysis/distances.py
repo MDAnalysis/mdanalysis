@@ -135,10 +135,25 @@ class DistancesBench(object):
                           distance=15.0)
 
     def time_calc_bonds(self, num_atoms):
-        mda.lib.distances.calc_bonds(self.coords_1, self.coords_2)
+        """Benchmark calculation of bonds between
+        atoms in two atomgroups.
+        """
+        mda.lib.distances.calc_bonds(self.coords_1, 
+                                     self.coords_2)
 
     def time_calc_angles(self, num_atoms):
-        mda.lib.distances.calc_angles(self.coords_1, self.coords_2, self.coords_3)
+        """Benchmark calculation of angles between
+        atoms in three atomgroups.
+        """
+        mda.lib.distances.calc_angles(self.coords_1,
+                                      self.coords_2, 
+                                      self.coords_3)
 
     def time_calc_dihedrals(self, num_atoms):
-        mda.lib.distances.calc_dihedrals(self.coords_1, self.coords_2, self.coords_3, self.coords_4)    
+        """Benchmark calculation of dihedrals between
+        atoms in four atomgroups.
+        """
+        mda.lib.distances.calc_dihedrals(self.coords_1, 
+                                         self.coords_2, 
+                                         self.coords_3, 
+                                         self.coords_4)    
