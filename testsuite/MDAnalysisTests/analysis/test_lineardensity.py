@@ -185,7 +185,8 @@ def test_parallel_analysis(testing_Universe):
     ld1 = LinearDensity(selection1, binsize=1).run()
     ld2 = LinearDensity(selection2, binsize=1).run()
     ld_whole = LinearDensity(selection_whole, binsize=1).run()
-    with pytest.warns(DeprecationWarning):
+    with pytest.warns(DeprecationWarning,
+                      match="`_add_other_results` is deprecated!"):
         ld1._add_other_results(ld2)
     assert_allclose(ld1.results.z.mass_density, ld_whole.results.z.mass_density)
     assert_allclose(ld1.results.x.mass_density, ld_whole.results.x.mass_density)
