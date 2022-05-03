@@ -112,6 +112,7 @@ Nucleic acids
    :maxdepth: 1
 
    analysis/nuclinfo
+   analysis/nucleicacids
 
 Polymers
 ========

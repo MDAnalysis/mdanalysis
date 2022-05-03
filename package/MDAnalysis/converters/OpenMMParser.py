@@ -56,8 +56,11 @@ Classes
 """
 
 import numpy as np
+import warnings
 
 from ..topology.base import TopologyReaderBase
+from ..topology.tables import SYMB2Z
+from ..topology.guessers import guess_types, guess_masses
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomids,
@@ -105,16 +108,41 @@ class OpenMMTopologyParser(TopologyReaderBase):
         -------
         top : MDAnalysis.core.topology.Topology
 
+        Note
+        ----
+        When none of the elements are present in the openmm topolgy, their
+        atomtypes are guessed using their names and their masses are
+        then guessed using their atomtypes.
+
+        When partial elements are present, values from available elements
+        are used whereas the absent elements are assigned an empty string
+        with their atomtype set to 'X' and mass set to 0.0.
+
+        For elements with invalid and unreal symbols, the symbol is used
+        as it is for atomtypes but an empty string is used for elements.
+
+        .. versionchanged:: 2.2.0
+           The parser now works when element attribute is missing in some or
+           all the atoms.
+
         """
+
+        try:
+            from openmm.unit import daltons
+        except ImportError:
+            try:
+                from simtk.unit import daltons
+            except ImportError:
+                msg = ("OpenMM is required for the OpenMMParser but "
+                       "it's not installed. Try installing it with \n"
+                       "conda install -c conda-forge openmm")
+                raise ImportError(msg)
 
         atom_resindex = [a.residue.index for a in omm_topology.atoms()]
         residue_segindex = [r.chain.index for r in omm_topology.residues()]
         atomids = [a.id for a in omm_topology.atoms()]
         atomnames = [a.name for a in omm_topology.atoms()]
         chainids = [a.residue.chain.id for a in omm_topology.atoms()]
-        elements = [a.element.symbol for a in omm_topology.atoms()]
-        atomtypes = [a.element.symbol for a in omm_topology.atoms()]
-        masses = [a.element.mass._value for a in omm_topology.atoms()]
         resnames = [r.name for r in omm_topology.residues()]
         resids = [r.index + 1 for r in omm_topology.residues()]
         resnums = resids.copy()
@@ -123,24 +151,63 @@ class OpenMMTopologyParser(TopologyReaderBase):
         bond_orders = [b.order for b in omm_topology.bonds()]
         bond_types = [b.type for b in omm_topology.bonds()]
 
-        n_atoms = len(atomids)
-        n_residues = len(resids)
-        n_segments = len(segids)
-
         attrs = [
             Atomids(np.array(atomids, dtype=np.int32)),
             Atomnames(np.array(atomnames, dtype=object)),
-            Atomtypes(np.array(atomtypes, dtype=object)),
             Bonds(bonds, types=bond_types, order=bond_orders, guessed=False),
             ChainIDs(np.array(chainids, dtype=object)),
-            Elements(np.array(elements, dtype=object)),
-            Masses(np.array(masses, dtype=np.float32)),
             Resids(resids),
             Resnums(resnums),
             Resnames(resnames),
             Segids(segids),
         ]
 
+        validated_elements = []
+        masses = []
+        atomtypes = []
+        for a in omm_topology.atoms():
+            elem = a.element
+            if elem is not None:
+                if elem.symbol.capitalize() in SYMB2Z:
+                    validated_elements.append(elem.symbol)
+                else:
+                    validated_elements.append('')
+                atomtypes.append(elem.symbol)
+                masses.append(elem.mass.value_in_unit(daltons))
+            else:
+                validated_elements.append('')
+                masses.append(0.0)
+                atomtypes.append('X')
+
+        if not all(validated_elements):
+            if any(validated_elements):
+                warnings.warn("Element information missing for some atoms. "
+                              "These have been given an empty element record ")
+                if any(i == 'X' for i in atomtypes):
+                    warnings.warn("For absent elements, atomtype has been  "
+                                  "set to 'X' and mass has been set to 0.0. "
+                                  "If needed these can be guessed using "
+                                  "MDAnalysis.topology.guessers.")
+                attrs.append(Elements(np.array(validated_elements,
+                                               dtype=object)))
+
+            else:
+                atomtypes = guess_types(atomnames)
+                masses = guess_masses(atomtypes)
+                wmsg = ("Element information is missing for all the atoms. "
+                        "Elements attribute will not be populated. "
+                        "Atomtype attribute will be guessed using atom "
+                        "name and mass will be guessed using atomtype."
+                        "See MDAnalysis.topology.guessers.")
+                warnings.warn(wmsg)
+        else:
+            attrs.append(Elements(np.array(validated_elements, dtype=object)))
+        attrs.append(Atomtypes(np.array(atomtypes, dtype=object)))
+        attrs.append(Masses(np.array(masses)))
+
+        n_atoms = len(atomids)
+        n_residues = len(resids)
+        n_segments = len(segids)
         top = Topology(
             n_atoms,
             n_residues,
@@ -191,4 +258,3 @@ class OpenMMAppTopologyParser(OpenMMTopologyParser):
         top = self._mda_topology_from_omm_topology(omm_topology)
 
         return top
-

@@ -25,6 +25,7 @@ from __future__ import absolute_import
 import numpy as np
 from numpy.testing import assert_equal, assert_almost_equal
 import pytest
+import copy
 
 import MDAnalysis as mda
 from MDAnalysisTests.datafiles import (PSF, DCD, mol2_comments_header, XYZ_mini,
@@ -127,3 +128,12 @@ class TestBAT(object):
         errmsg = 'Dimensions of array in loaded file'
         with pytest.raises(ValueError, match=errmsg):
             R = BAT(selected_residues, filename=bat_npz)
+
+    def test_Cartesian_does_not_modify_input(self, selected_residues, bat):
+        R = BAT(selected_residues)
+        pre_transformation = copy.deepcopy(bat[0])
+        R.Cartesian(bat[0])
+        assert_almost_equal(
+            pre_transformation, bat[0],
+            err_msg="BAT.Cartesian modified input data"
+        )
