@@ -29,6 +29,7 @@ from MDAnalysisTests.datafiles import waterPSF, waterDCD
 from MDAnalysis.analysis.lineardensity import LinearDensity
 from numpy.testing import assert_allclose
 from MDAnalysis.core._get_readers import get_reader_for
+from MDAnalysisTests.util import no_deprecated_call
 
 
 def test_invalid_grouping():
@@ -49,23 +50,23 @@ expected_masses_atoms = np.array([15.9994, 1.008, 1.008, 15.9994, 1.008, 1.008,
 expected_charges_atoms = np.array([-0.834, 0.417, 0.417, -0.834, 0.417,
                                    0.417, -0.834, 0.417, 0.417, -0.834,
                                    0.417, 0.417, -0.834, 0.417, 0.417])
-expected_xmass_atoms = np.array([0., 0., 0., 0.0072334, 0.00473299, 0.,
+expected_xmass_atoms = np.array([0., 0., 0., 0.00723323, 0.00473288, 0.,
                                 0., 0., 0., 0.])
-expected_xcharge_atoms = np.array([0., 0., 0., 2.2158751e-05, -2.2158751e-05,
-                                   0., 0., 0., 0., 0.])
+expected_xcharge_atoms = np.array([0., 0., 0., 2.21582311e-05,
+                                   -2.21582311e-05, 0., 0., 0., 0., 0.])
 
 # test data for grouping='residues'
 expected_masses_residues = np.array([18.0154, 18.0154, 18.0154, 18.0154,
                                      18.0154])
 expected_charges_residues = np.array([0, 0, 0, 0, 0])
-expected_xmass_residues = np.array([0., 0., 0., 0.00717983, 0.00478656,
+expected_xmass_residues = np.array([0., 0., 0., 0.00717967, 0.00478644,
                                    0., 0., 0., 0., 0.])
 expected_xcharge_residues = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
 
 # test data for grouping='segments'
 expected_masses_segments = np.array([90.0770])
 expected_charges_segments = np.array([0])
-expected_xmass_segments = np.array([0., 0., 0., 0.01196639, 0.,
+expected_xmass_segments = np.array([0., 0., 0., 0.01196611, 0.,
                                    0., 0., 0., 0., 0.])
 expected_xcharge_segments = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
 
@@ -73,7 +74,7 @@ expected_xcharge_segments = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
 expected_masses_fragments = np.array([18.0154, 18.0154, 18.0154, 18.0154,
                                       18.0154])
 expected_charges_fragments = np.array([0, 0, 0, 0, 0])
-expected_xmass_fragments = np.array([0., 0., 0., 0.00717983, 0.00478656,
+expected_xmass_fragments = np.array([0., 0., 0., 0.00717967, 0.00478644,
                                      0., 0., 0., 0., 0.])
 expected_xcharge_fragments = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
 
@@ -101,7 +102,8 @@ def test_lineardensity(grouping, expected_masses, expected_charges,
     assert_allclose(ld.results.x.charge_density, expected_xcharge)
 
 
-def make_testing_Universe():
+@pytest.fixture(scope="module")
+def testing_Universe():
     """Generate a universe for testing whether LinearDensity works with
        updating atom groups. Also used for parallel analysis test."""
     n_atoms = 3
@@ -130,9 +132,9 @@ def make_testing_Universe():
     return u
 
 
-def test_updating_atomgroup():
-    expected_z_pos = np.array([0., 0.91331783, 0.08302889, 0., 0., 0.])
-    u = make_testing_Universe()
+def test_updating_atomgroup(testing_Universe):
+    expected_z_pos = np.array([0., 0.91329641, 0.08302695, 0., 0., 0.])
+    u = testing_Universe
     selection = u.select_atoms("prop z < 3", updating=True)
     ld = LinearDensity(selection, binsize=1).run()
     assert_allclose(ld.results.z.mass_density, expected_z_pos)
@@ -147,6 +149,7 @@ testdict = {"pos": "mass_density",
             "char_std": "charge_density_stddev"}
 
 
+# TODO: Remove in 3.0.0
 def test_old_name_deprecations():
     universe = mda.Universe(waterPSF, waterDCD)
     sel_string = 'all'
@@ -162,19 +165,20 @@ def test_old_name_deprecations():
             assert_allclose(ld.results["x"][key],
                             ld.results["x"][testdict[key]])
 
-    with warnings.catch_warnings():
-        warnings.simplefilter("error")
+    # Check that no DeprecationWarning is raised with new attributes
+    with no_deprecated_call():
         ld.results.x.mass_density
         ld.results.x.mass_density_stddev
         ld.results.x.charge_density
         ld.results.x.charge_density_stddev
 
 
-def test_parallel_analysis():
+# TODO: deprecated, remove in 3.0.0
+def test_parallel_analysis(testing_Universe):
     """tests _add_other_result() method. Runs LinearDensity for all atoms of
     a universe and for two subsets, then adds the results of the two subsets
     and checks the results are the same."""
-    u = make_testing_Universe()
+    u = testing_Universe
     selection1 = u.select_atoms("prop x < 1.1")
     selection2 = u.select_atoms("prop x >= 1.1")
     selection_whole = u.select_atoms("all")
@@ -184,3 +188,4 @@ def test_parallel_analysis():
 
     ld1._add_other_results(ld2)
     assert_allclose(ld1.results.z.mass_density, ld_whole.results.z.mass_density)
+    assert_allclose(ld1.results.x.mass_density, ld_whole.results.x.mass_density)

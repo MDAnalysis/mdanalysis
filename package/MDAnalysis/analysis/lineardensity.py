@@ -34,6 +34,8 @@ import numpy as np
 import warnings
 
 from MDAnalysis.analysis.base import AnalysisBase, Results
+from MDAnalysis.units import constants
+from MDAnalysis.lib.util import deprecate
 
 
 # TODO: Remove in version 3.0.0
@@ -47,7 +49,7 @@ class Results(Results):
                          "char": "charge_density",
                          "char_std": "charge_density_stddev"}
 
-    def _deprication_warning(self, key):
+    def _deprecation_warning(self, key):
         warnings.warn(
             f"`{key}` is deprecated and will be removed in version 3.0.0. "
             f"Please use `{self._deprecation_dict[key]}` instead.",
@@ -55,13 +57,13 @@ class Results(Results):
 
     def __getitem__(self, key):
         if key in self._deprecation_dict.keys():
-            self._deprication_warning(key)
+            self._deprecation_warning(key)
             return super(Results, self).__getitem__(self._deprecation_dict[key])
         return super(Results, self).__getitem__(key)
 
     def __getattr__(self, attr):
         if attr in self._deprecation_dict.keys():
-            self._deprication_warning(attr)
+            self._deprecation_warning(attr)
             attr = self._deprecation_dict[attr]
         return super(Results, self).__getattr__(attr)
 
@@ -97,6 +99,30 @@ class LinearDensity(AnalysisBase):
            [xyz] direction
     results.x.charge_density_stddev : numpy.ndarray
            standard deviation of the charge density in [xyz] direction
+    results.x.pos: numpy.ndarray
+        Alias to the :attr:`results.x.mass_density` attribute.
+
+        .. deprecated:: 2.2.0
+           Will be removed in MDAnalysis 3.0.0. Please use
+           :attr:`results.x.mass_density` instead.
+    results.x.pos_std: numpy.ndarray
+        Alias to the :attr:`results.x.mass_density_stddev` attribute.
+
+        .. deprecated:: 2.2.0
+           Will be removed in MDAnalysis 3.0.0. Please use
+           :attr:`results.x.mass_density_stddev` instead.
+    results.x.char: numpy.ndarray
+        Alias to the :attr:`results.x.charge_density` attribute.
+
+        .. deprecated:: 2.2.0
+           Will be removed in MDAnalysis 3.0.0. Please use
+           :attr:`results.x.charge_density` instead.
+    results.x.char_std: numpy.ndarray
+        Alias to the :attr:`results.x.charge_density_stddev` attribute.
+
+        .. deprecated:: 2.2.0
+           Will be removed in MDAnalysis 3.0.0. Please use
+           :attr:`results.x.charge_density_stddev` instead.
     results.x.slice_volume : float
            volume of bin in [xyz] direction
     results.x.hist_bin_edges : numpy.ndarray
@@ -264,7 +290,7 @@ class LinearDensity(AnalysisBase):
             self.results[dim]['hist_bin_edges'] = bin_edges
 
     def _conclude(self):
-        avogadro = 6.022e23  # unit: mol^{-1}
+        avogadro = constants["N_Avogadro"]  # unit: mol^{-1}
         volume_conversion = 1e-24  # unit: A^3/cm^3
         # divide result values by avodagro and convert from A3 to cm3
         k = avogadro * volume_conversion
@@ -297,8 +323,12 @@ class LinearDensity(AnalysisBase):
             for key in self.keys:
                 self.results[dim][key] /= norm
 
+    # TODO: Remove in 3.0.0
+    @deprecate(release="2.2.0", remove="3.0.0",
+               message="It will be replaced by a :meth:`_reduce` "
+               "method in the future")
     def _add_other_results(self, other):
-        # For parallel analysis
+        """For parallel analysis"""
         for dim in ['x', 'y', 'z']:
             for key in self.keys:
                 self.results[dim][key] += other.results[dim][key]

@@ -28,6 +28,9 @@ Fixes
     an external reference (Issue #3539, PR #3621)
   * Fixed LinearDensity not working with grouping='residues' or 'segments'
     (Issue #3571, PR #3572)
+  * LinearDensity now uses the definition of Avogadro's number from 
+    MDAnalysis.units, which has more significant digits. 
+    (Issue #3571, PR #3572)
   * MOL2 can read files without providing optional columns:
     subst_id, subst_name and charge. (Issue #3385, PR #3598)
   * When converting an AtomGroup to an RDKit molecule (PR #3044):
@@ -62,16 +65,20 @@ Enhancements
     keyword (Issue #3605)
 
 Changes
-  * LinearDensity's results container was changed. (Issue #2508, PR #3617)
-    - "pos" is now "mass_density",
-    - "char" is now "charge_density"
-    - "std" entries are now "stddev"
-    - "hist_bin_edges" added to each dimension xyz.
+  * LinearDensity now saves the histogram bin edges for easier plotting as 
+    "hist_bin_edges" for each dimension xyz in the results dictionary.
+    (Issue #2508, PR #3617)
   * ITPParser no longer adds an angle for water molecules that have the SETTLE
     constraint applied to them. This mirrors the way the constraint is handled
     in AMBER. (Issue #2417, PR #3564)
 
 Deprecations
+  * The old results attributes for LinearDensity are now deprecated and will be
+    removed in version 3.0.0. (Issue #2508, PR #3617)
+    - "pos" is now "mass_density",
+    - "char" is now "charge_density"
+    - "std" entries are now "stddev"
+
 
 
 03/06/22 IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope,
