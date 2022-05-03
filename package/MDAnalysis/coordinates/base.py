@@ -141,7 +141,7 @@ Iterator classes used by the by the :class:`ProtoReader`:
 .. autoclass:: FrameIteratorIndices
 
 
-.. _Readers:
+.. _ReadersBase:
 
 Readers
 -------
@@ -178,6 +178,8 @@ case, :class:`ProtoReader` should be used.
    :members:
 
 
+
+.. _WritersBase:
 
 Writers
 -------

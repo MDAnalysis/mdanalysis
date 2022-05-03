@@ -43,10 +43,10 @@ object-oriented interface is one of the key capabilities of MDAnalysis.
 Readers
 -------
 
-All Readers are based on a :class:`ProtoReader` class that defines a common
-:ref:`Trajectory API` and allows other code to interface with all trajectory
-formats in the same way, independent of the details of the trajectory format
-itself.
+All Readers are based on a :class:`~MDAnalysis.coordinates.base.ProtoReader`
+class that defines a common :ref:`Trajectory API` and allows other code to
+interface with all trajectory formats in the same way, independent of the
+details of the trajectory format itself.
 
 The :class:`~MDAnalysis.core.universe.Universe` contains the API entry point
 attribute :attr:`Universe.trajectory` that points to the actual
@@ -447,12 +447,15 @@ Trajectory readers are derived from
 :meth:`Reader.__del__` method). A special case are *SingleFrame readers* for
 formats that contain only a single coordinate frame. These readers are derived
 from a subclass of :class:`~MDAnalysis.coordinates.base.ProtoReader` named
-:`MDAnalysis.coordinates.base.SingleFrameReaderBase`.
+:class:`MDAnalysis.coordinates.base.SingleFrameReaderBase`.
 
 Typically, many methods and attributes are overriden but the ones listed below
 *must* be implemented.
 
-.. SeeAlso:: :ref:`Readers`
+.. SeeAlso::
+
+   See the section on :ref:`ReadersBase` in :mod:`MDAnalysis.coordinates.base`
+   for implementation details.
 
 
 Methods
@@ -484,7 +487,7 @@ The following methods must be implemented in a Reader class.
 
      Readers will automatically rewind the trajectory to before the initial
      frame (often by re-opening the file) before starting the iteration. *Multi
-     frame readers* (see :ref:`Readers`) will also rewind the trajectory
+     frame readers* (see :ref:`ReadersBase`) will also rewind the trajectory
      *after* the iteration so that the current trajectory frame is set to the
      first trajectory frame. *Single frame readers* do not explicitly rewind
      after iteration but simply remain on the one frame in the trajectory.
@@ -656,6 +659,10 @@ or::
 
    w.write(AtomGroup)  # write a selection of Atoms from Universe
 
+.. SeeAlso::
+
+   See the section on :ref:`WritersBase` in :mod:`MDAnalysis.coordinates.base`
+   for implementation details.
 
 Methods
 .......
