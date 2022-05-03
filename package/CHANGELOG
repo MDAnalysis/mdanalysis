@@ -24,6 +24,11 @@ Fixes
   * Updated the badge in README of MDAnalysisTest to point to Github CI Actions
 
 Enhancements
+  * Added benchmarks in lib.distances for the following functions .
+    lib.distances.calc_bonds
+    lib.distances.calc_angles
+    lib.distances.calc_dihedrals
+
 
 Changes
   * ITPParser no longer adds an angle for water molecules that have the SETTLE
