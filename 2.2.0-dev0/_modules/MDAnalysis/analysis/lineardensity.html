@@ -122,12 +122,45 @@
 <span class="kn">import</span> <span class="nn">os.path</span> <span class="k">as</span> <span class="nn">path</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">from</span> <span class="nn">MDAnalysis.analysis.base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span><span class="p">,</span> <span class="n">Results</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.units</span> <span class="kn">import</span> <span class="n">constants</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">deprecate</span>
+
+
+<span class="c1"># TODO: Remove in version 3.0.0</span>
+<div class="viewcode-block" id="Results"><a class="viewcode-back" href="../../../documentation_pages/analysis/lineardensity.html#MDAnalysis.analysis.lineardensity.Results">[docs]</a><span class="k">class</span> <span class="nc">Results</span><span class="p">(</span><span class="n">Results</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;From version 3.0.0 onwards, some entries in Results will be renamed. See</span>
+<span class="sd">    the docstring for LinearDensity for details. The Results class is defined</span>
+<span class="sd">    here to implement deprecation warnings for the user.&quot;&quot;&quot;</span>
+
+    <span class="n">_deprecation_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;pos&quot;</span><span class="p">:</span> <span class="s2">&quot;mass_density&quot;</span><span class="p">,</span>
+                         <span class="s2">&quot;pos_std&quot;</span><span class="p">:</span> <span class="s2">&quot;mass_density_stddev&quot;</span><span class="p">,</span>
+                         <span class="s2">&quot;char&quot;</span><span class="p">:</span> <span class="s2">&quot;charge_density&quot;</span><span class="p">,</span>
+                         <span class="s2">&quot;char_std&quot;</span><span class="p">:</span> <span class="s2">&quot;charge_density_stddev&quot;</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_deprecation_warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">` is deprecated and will be removed in version 3.0.0. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Please use `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_deprecation_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">}</span><span class="s2">` instead.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deprecation_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_deprecation_warning</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">Results</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_deprecation_dict</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">Results</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deprecation_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_deprecation_warning</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+            <span class="n">attr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deprecation_dict</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">Results</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="LinearDensity"><a class="viewcode-back" href="../../../documentation_pages/analysis/lineardensity.html#MDAnalysis.analysis.lineardensity.LinearDensity">[docs]</a><span class="k">class</span> <span class="nc">LinearDensity</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Linear density profile</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Linear density profile</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -148,16 +181,45 @@
 <span class="sd">    ----------</span>
 <span class="sd">    results.x.dim : int</span>
 <span class="sd">           index of the [xyz] axes</span>
-<span class="sd">    results.x.pos : numpy.ndarray</span>
-<span class="sd">           mass density in [xyz] direction</span>
-<span class="sd">    results.x.pos_std : numpy.ndarray</span>
+<span class="sd">    results.x.mass_density : numpy.ndarray</span>
+<span class="sd">           mass density in :math:`g \cdot cm^{-3}` in [xyz] direction</span>
+<span class="sd">    results.x.mass_density_stddev : numpy.ndarray</span>
 <span class="sd">           standard deviation of the mass density in [xyz] direction</span>
-<span class="sd">    results.x.char : numpy.ndarray</span>
-<span class="sd">           charge density in [xyz] direction</span>
-<span class="sd">    results.x.char_std : numpy.ndarray</span>
+<span class="sd">    results.x.charge_density : numpy.ndarray</span>
+<span class="sd">           charge density in :math:`\mathrm{e} \cdot mol \cdot cm^{-3}` in</span>
+<span class="sd">           [xyz] direction</span>
+<span class="sd">    results.x.charge_density_stddev : numpy.ndarray</span>
 <span class="sd">           standard deviation of the charge density in [xyz] direction</span>
+<span class="sd">    results.x.pos: numpy.ndarray</span>
+<span class="sd">        Alias to the :attr:`results.x.mass_density` attribute.</span>
+
+<span class="sd">        .. deprecated:: 2.2.0</span>
+<span class="sd">           Will be removed in MDAnalysis 3.0.0. Please use</span>
+<span class="sd">           :attr:`results.x.mass_density` instead.</span>
+<span class="sd">    results.x.pos_std: numpy.ndarray</span>
+<span class="sd">        Alias to the :attr:`results.x.mass_density_stddev` attribute.</span>
+
+<span class="sd">        .. deprecated:: 2.2.0</span>
+<span class="sd">           Will be removed in MDAnalysis 3.0.0. Please use</span>
+<span class="sd">           :attr:`results.x.mass_density_stddev` instead.</span>
+<span class="sd">    results.x.char: numpy.ndarray</span>
+<span class="sd">        Alias to the :attr:`results.x.charge_density` attribute.</span>
+
+<span class="sd">        .. deprecated:: 2.2.0</span>
+<span class="sd">           Will be removed in MDAnalysis 3.0.0. Please use</span>
+<span class="sd">           :attr:`results.x.charge_density` instead.</span>
+<span class="sd">    results.x.char_std: numpy.ndarray</span>
+<span class="sd">        Alias to the :attr:`results.x.charge_density_stddev` attribute.</span>
+
+<span class="sd">        .. deprecated:: 2.2.0</span>
+<span class="sd">           Will be removed in MDAnalysis 3.0.0. Please use</span>
+<span class="sd">           :attr:`results.x.charge_density_stddev` instead.</span>
 <span class="sd">    results.x.slice_volume : float</span>
 <span class="sd">           volume of bin in [xyz] direction</span>
+<span class="sd">    results.x.hist_bin_edges : numpy.ndarray</span>
+<span class="sd">           edges of histogram bins for mass/charge densities, useful for, e.g.,</span>
+<span class="sd">           plotting of histogram data.</span>
+<span class="sd">    Note: These density units are likely to be changed in the future.</span>
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
@@ -169,7 +231,7 @@
 
 <span class="sd">       ldens = LinearDensity(selection)</span>
 <span class="sd">       ldens.run()</span>
-<span class="sd">       print(ldens.results.x.pos)</span>
+<span class="sd">       print(ldens.results.x.mass_density)</span>
 
 
 <span class="sd">    Alternatively, other types of grouping can be selected using the</span>
@@ -202,10 +264,24 @@
 <span class="sd">       via key and attribute.</span>
 
 <span class="sd">    .. versionchanged:: 2.2.0</span>
-<span class="sd">       Fixed a bug that caused LinearDensity to fail if grouping=&quot;residues&quot;</span>
-<span class="sd">       or grouping=&quot;segments&quot; were set.</span>
-<span class="sd">       Residues, segments, and fragments will be analysed based on their centre</span>
-<span class="sd">       of mass, not centre of geometry as previously stated.</span>
+
+<span class="sd">       *  Fixed a bug that caused LinearDensity to fail if grouping=&quot;residues&quot;</span>
+<span class="sd">          or grouping=&quot;segments&quot; were set.</span>
+<span class="sd">       *  Residues, segments, and fragments will be analysed based on their</span>
+<span class="sd">          centre of mass, not centre of geometry as previously stated.</span>
+<span class="sd">       *  LinearDensity now works with updating atom groups.</span>
+<span class="sd">       *  Added new result container :attr:`results.x.hist_bin_edges`.</span>
+<span class="sd">          It contains the bin edges of the histrogram bins for calculated</span>
+<span class="sd">          densities and can be used for easier plotting of histogram data.</span>
+
+
+<span class="sd">    .. deprecated:: 2.2.0</span>
+<span class="sd">       The `results` dictionary has been changed and the attributes</span>
+<span class="sd">       :attr:`results.x.pos`, :attr:`results.x.pos_std`, :attr:`results.x.char`</span>
+<span class="sd">       and :attr:`results.x.char_std` are now deprecated. They will be removed</span>
+<span class="sd">       in 3.0.0. Please use :attr:`results.x.mass_density`,</span>
+<span class="sd">       :attr:`results.x.mass_density_stddev`, :attr:`results.x.charge_density`,</span>
+<span class="sd">       and :attr:`results.x.charge_density_stddev` instead.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">grouping</span><span class="o">=</span><span class="s1">&#39;atoms&#39;</span><span class="p">,</span> <span class="n">binsize</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -225,6 +301,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Results</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Results</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Results</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
         <span class="c1"># Box sides</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
@@ -236,7 +313,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">nbins</span> <span class="o">=</span> <span class="n">bins</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
         <span class="n">slices_vol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">/</span> <span class="n">bins</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;pos&#39;</span><span class="p">,</span> <span class="s1">&#39;pos_std&#39;</span><span class="p">,</span> <span class="s1">&#39;char&#39;</span><span class="p">,</span> <span class="s1">&#39;char_std&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mass_density&#39;</span><span class="p">,</span> <span class="s1">&#39;mass_density_stddev&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;charge_density&#39;</span><span class="p">,</span> <span class="s1">&#39;charge_density_stddev&#39;</span><span class="p">]</span>
 
         <span class="c1"># Initialize results array with zeros</span>
         <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">:</span>
@@ -245,12 +323,12 @@
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nbins</span><span class="p">)</span>
 
-        <span class="c1"># Variables later defined in _prepare() method</span>
+        <span class="c1"># Variables later defined in _single_frame() method</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">masses</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">charges</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">totalmass</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Get masses and charges for the selection</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">grouping</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">masses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">masses</span>
@@ -266,7 +344,6 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">totalmass</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">masses</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">group</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">grouping</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">wrap</span><span class="p">(</span><span class="n">compound</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">grouping</span><span class="p">)</span>
 
@@ -280,8 +357,8 @@
         <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">]:</span>
             <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;dim&#39;</span><span class="p">]</span>
 
-            <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;pos&#39;</span>
-            <span class="n">key_std</span> <span class="o">=</span> <span class="s1">&#39;pos_std&#39;</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;mass_density&#39;</span>
+            <span class="n">key_std</span> <span class="o">=</span> <span class="s1">&#39;mass_density_stddev&#39;</span>
             <span class="c1"># histogram for positions weighted on masses</span>
             <span class="n">hist</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">positions</span><span class="p">[:,</span> <span class="n">idx</span><span class="p">],</span>
                                    <span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">masses</span><span class="p">,</span>
@@ -291,58 +368,61 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">+=</span> <span class="n">hist</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="n">key_std</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">hist</span><span class="p">)</span>
 
-            <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;char&#39;</span>
-            <span class="n">key_std</span> <span class="o">=</span> <span class="s1">&#39;char_std&#39;</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;charge_density&#39;</span>
+            <span class="n">key_std</span> <span class="o">=</span> <span class="s1">&#39;charge_density_stddev&#39;</span>
             <span class="c1"># histogram for positions weighted on charges</span>
-            <span class="n">hist</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">positions</span><span class="p">[:,</span> <span class="n">idx</span><span class="p">],</span>
-                                   <span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">charges</span><span class="p">,</span>
-                                   <span class="n">bins</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nbins</span><span class="p">,</span>
-                                   <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)))</span>
+            <span class="n">hist</span><span class="p">,</span> <span class="n">bin_edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">positions</span><span class="p">[:,</span> <span class="n">idx</span><span class="p">],</span>
+                                           <span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">charges</span><span class="p">,</span>
+                                           <span class="n">bins</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nbins</span><span class="p">,</span>
+                                           <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)))</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">+=</span> <span class="n">hist</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="n">key_std</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">hist</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;hist_bin_edges&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bin_edges</span>
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">k</span> <span class="o">=</span> <span class="mf">6.022e-1</span>  <span class="c1"># divide by avodagro and convert from A3 to cm3</span>
+        <span class="n">avogadro</span> <span class="o">=</span> <span class="n">constants</span><span class="p">[</span><span class="s2">&quot;N_Avogadro&quot;</span><span class="p">]</span>  <span class="c1"># unit: mol^{-1}</span>
+        <span class="n">volume_conversion</span> <span class="o">=</span> <span class="mf">1e-24</span>  <span class="c1"># unit: A^3/cm^3</span>
+        <span class="c1"># divide result values by avodagro and convert from A3 to cm3</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">avogadro</span> <span class="o">*</span> <span class="n">volume_conversion</span>
 
         <span class="c1"># Average results over the number of configurations</span>
         <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">]:</span>
-            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;pos&#39;</span><span class="p">,</span> <span class="s1">&#39;pos_std&#39;</span><span class="p">,</span> <span class="s1">&#39;char&#39;</span><span class="p">,</span> <span class="s1">&#39;char_std&#39;</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;mass_density&#39;</span><span class="p">,</span> <span class="s1">&#39;mass_density_stddev&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;charge_density&#39;</span><span class="p">,</span> <span class="s1">&#39;charge_density_stddev&#39;</span><span class="p">]:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span>
             <span class="c1"># Compute standard deviation for the error</span>
             <span class="c1"># For certain tests in testsuite, floating point imprecision</span>
             <span class="c1"># can lead to negative radicands of tiny magnitude (yielding nan).</span>
-            <span class="c1"># radicand_pos and radicand_char are therefore calculated first and</span>
+            <span class="c1"># radicand_mass and radicand_charge are therefore calculated first</span>
             <span class="c1"># and negative values set to 0 before the square root</span>
             <span class="c1"># is calculated.</span>
-            <span class="n">radicand_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span>
-                <span class="s1">&#39;pos_std&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;pos&#39;</span><span class="p">])</span>
-            <span class="n">radicand_pos</span><span class="p">[</span><span class="n">radicand_pos</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;pos_std&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">radicand_pos</span><span class="p">)</span>
+            <span class="n">radicand_mass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;mass_density_stddev&#39;</span><span class="p">]</span> <span class="o">-</span> \
+                <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;mass_density&#39;</span><span class="p">])</span>
+            <span class="n">radicand_mass</span><span class="p">[</span><span class="n">radicand_mass</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;mass_density_stddev&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">radicand_mass</span><span class="p">)</span>
 
-            <span class="n">radicand_char</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span>
-                <span class="s1">&#39;char_std&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;char&#39;</span><span class="p">])</span>
-            <span class="n">radicand_char</span><span class="p">[</span><span class="n">radicand_char</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;char_std&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">radicand_char</span><span class="p">)</span>
+            <span class="n">radicand_charge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;charge_density_stddev&#39;</span><span class="p">]</span> <span class="o">-</span> \
+                <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;charge_density&#39;</span><span class="p">])</span>
+            <span class="n">radicand_charge</span><span class="p">[</span><span class="n">radicand_charge</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;charge_density_stddev&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">radicand_charge</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">]:</span>
+            <span class="c1"># norming factor, units of mol^-1 cm^3</span>
             <span class="n">norm</span> <span class="o">=</span> <span class="n">k</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;slice_volume&#39;</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">/=</span> <span class="n">norm</span>
 
+    <span class="c1"># TODO: Remove in 3.0.0</span>
+    <span class="nd">@deprecate</span><span class="p">(</span><span class="n">release</span><span class="o">=</span><span class="s2">&quot;2.2.0&quot;</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="s2">&quot;3.0.0&quot;</span><span class="p">,</span>
+               <span class="n">message</span><span class="o">=</span><span class="s2">&quot;It will be replaced by a :meth:`_reduce` &quot;</span>
+               <span class="s2">&quot;method in the future&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_add_other_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="c1"># For parallel analysis</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span>
+        <span class="sd">&quot;&quot;&quot;For parallel analysis&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">]:</span>
-            <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;pos&#39;</span>
-            <span class="n">key_std</span> <span class="o">=</span> <span class="s1">&#39;pos_std&#39;</span>
-            <span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">+=</span> <span class="n">other</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
-            <span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="n">key_std</span><span class="p">]</span> <span class="o">+=</span> <span class="n">other</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="n">key_std</span><span class="p">]</span>
-
-            <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;char&#39;</span>
-            <span class="n">key_std</span> <span class="o">=</span> <span class="s1">&#39;char_std&#39;</span>
-            <span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">+=</span> <span class="n">other</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
-            <span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="n">key_std</span><span class="p">]</span> <span class="o">+=</span> <span class="n">other</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="n">key_std</span><span class="p">]</span></div>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">+=</span> <span class="n">other</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="n">key</span><span class="p">]</span></div>
 </pre></div>
 
            </div>

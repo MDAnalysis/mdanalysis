@@ -17,6 +17,7 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -146,9 +147,58 @@ profile (smaller –&gt; higher resolution)</p></li>
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.mass_density">
+<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">mass_density</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.mass_density" title="Permalink to this definition"></a></dt>
+<dd><p>mass density in <span class="math notranslate nohighlight">\(g \cdot cm^{-3}\)</span> in [xyz] direction</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.mass_density_stddev">
+<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">mass_density_stddev</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.mass_density_stddev" title="Permalink to this definition"></a></dt>
+<dd><p>standard deviation of the mass density in [xyz] direction</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.charge_density">
+<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">charge_density</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.charge_density" title="Permalink to this definition"></a></dt>
+<dd><p>charge density in <span class="math notranslate nohighlight">\(\mathrm{e} \cdot mol \cdot cm^{-3}\)</span> in
+[xyz] direction</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.charge_density_stddev">
+<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">charge_density_stddev</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.charge_density_stddev" title="Permalink to this definition"></a></dt>
+<dd><p>standard deviation of the charge density in [xyz] direction</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.pos">
 <span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">pos</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.pos" title="Permalink to this definition"></a></dt>
-<dd><p>mass density in [xyz] direction</p>
+<dd><p>Alias to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.x.mass_density</span></code> attribute.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 2.2.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">results.x.mass_density</span></code> instead.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
@@ -159,7 +209,11 @@ profile (smaller –&gt; higher resolution)</p></li>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.pos_std">
 <span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">pos_std</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.pos_std" title="Permalink to this definition"></a></dt>
-<dd><p>standard deviation of the mass density in [xyz] direction</p>
+<dd><p>Alias to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.x.mass_density_stddev</span></code> attribute.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 2.2.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">results.x.mass_density_stddev</span></code> instead.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
@@ -170,7 +224,11 @@ profile (smaller –&gt; higher resolution)</p></li>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.char">
 <span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">char</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.char" title="Permalink to this definition"></a></dt>
-<dd><p>charge density in [xyz] direction</p>
+<dd><p>Alias to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.x.charge_density</span></code> attribute.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 2.2.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">results.x.charge_density</span></code> instead.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
@@ -181,7 +239,11 @@ profile (smaller –&gt; higher resolution)</p></li>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.char_std">
 <span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">char_std</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.char_std" title="Permalink to this definition"></a></dt>
-<dd><p>standard deviation of the charge density in [xyz] direction</p>
+<dd><p>Alias to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.x.charge_density_stddev</span></code> attribute.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 2.2.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">results.x.charge_density_stddev</span></code> instead.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
@@ -200,13 +262,35 @@ profile (smaller –&gt; higher resolution)</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.hist_bin_edges">
+<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">hist_bin_edges</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.hist_bin_edges" title="Permalink to this definition"></a></dt>
+<dd><p>edges of histogram bins for mass/charge densities, useful for, e.g.,
+plotting of histogram data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.Note">
+<span class="sig-name descname"><span class="pre">Note</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.Note" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>These density units are likely to be changed in the future.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <p class="rubric">Example</p>
 <p>First create a <a class="reference internal" href="#MDAnalysis.analysis.lineardensity.LinearDensity" title="MDAnalysis.analysis.lineardensity.LinearDensity"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinearDensity</span></code></a> object by supplying a selection,
 then use the <code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code> method. Finally access the results
 stored in results, i.e. the mass density in the x direction.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ldens</span> <span class="o">=</span> <span class="n">LinearDensity</span><span class="p">(</span><span class="n">selection</span><span class="p">)</span>
 <span class="n">ldens</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ldens</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">pos</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ldens</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">mass_density</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Alternatively, other types of grouping can be selected using the
@@ -236,11 +320,34 @@ instead.</p>
 via key and attribute.</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 2.2.0: </span>Fixed a bug that caused LinearDensity to fail if grouping=”residues”
-or grouping=”segments” were set.
-Residues, segments, and fragments will be analysed based on their centre
-of mass, not centre of geometry as previously stated.</p>
+<p><span class="versionmodified changed">Changed in version 2.2.0: </span></p>
+<ul class="simple">
+<li><p>Fixed a bug that caused LinearDensity to fail if grouping=”residues”
+or grouping=”segments” were set.</p></li>
+<li><p>Residues, segments, and fragments will be analysed based on their
+centre of mass, not centre of geometry as previously stated.</p></li>
+<li><p>LinearDensity now works with updating atom groups.</p></li>
+<li><p>Added new result container <a class="reference internal" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.hist_bin_edges" title="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.hist_bin_edges"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.x.hist_bin_edges</span></code></a>.
+It contains the bin edges of the histrogram bins for calculated
+densities and can be used for easier plotting of histogram data.</p></li>
+</ul>
 </div>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 2.2.0: </span>The <cite>results</cite> dictionary has been changed and the attributes
+<a class="reference internal" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.pos" title="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.pos"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.x.pos</span></code></a>, <a class="reference internal" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.pos_std" title="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.pos_std"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.x.pos_std</span></code></a>, <a class="reference internal" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.char" title="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.char"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.x.char</span></code></a>
+and <a class="reference internal" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.char_std" title="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.char_std"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.x.char_std</span></code></a> are now deprecated. They will be removed
+in 3.0.0. Please use <a class="reference internal" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.mass_density" title="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.mass_density"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.x.mass_density</span></code></a>,
+<a class="reference internal" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.mass_density_stddev" title="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.mass_density_stddev"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.x.mass_density_stddev</span></code></a>, <a class="reference internal" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.charge_density" title="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.charge_density"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.x.charge_density</span></code></a>,
+and <a class="reference internal" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.charge_density_stddev" title="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.charge_density_stddev"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.x.charge_density_stddev</span></code></a> instead.</p>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.Results">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.lineardensity.</span></span><span class="sig-name descname"><span class="pre">Results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/lineardensity.html#Results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.Results" title="Permalink to this definition"></a></dt>
+<dd><p>From version 3.0.0 onwards, some entries in Results will be renamed. See
+the docstring for LinearDensity for details. The Results class is defined
+here to implement deprecation warnings for the user.</p>
 </dd></dl>
 
 </section>
