@@ -508,8 +508,8 @@ class DumpReader(base.ReaderBase):
     .. versionadded:: 0.19.0
     """
     format = 'LAMMPSDUMP'
-    _conventions = ["auto", "unscaled", "scaled", "unwrapped",
-                    "charge", "scaled_unwrapped"]
+    _conventions = ["auto", "unscaled", "scaled", "unwrapped", 
+            "scaled_unwrapped"]
 
     _coordtype_column_names = {
         "unscaled": ["x", "y", "z"],
@@ -522,7 +522,7 @@ class DumpReader(base.ReaderBase):
     def __init__(self, filename,
                  lammps_coordinate_convention="auto",
                  unwrap_images=False,
-                 **kwargs):
+                 additional_columns=False, **kwargs):
         super(DumpReader, self).__init__(filename, **kwargs)
 
         root, ext = os.path.splitext(self.filename)
@@ -536,6 +536,9 @@ class DumpReader(base.ReaderBase):
                              f"Please choose one of {option_string}")
 
         self._unwrap = unwrap_images
+
+        if additional_columns:
+            self._additional_columns = additional_columns
 
         self._cache = {}
 
@@ -683,13 +686,17 @@ class DumpReader(base.ReaderBase):
 
         ids = "id" in attr_to_col_ix
 
-        # Create the data arrays for additional attributes which will be saved 
+        # Create the data arrays for additional attributes which will be saved
         # under ts.data
         additional_keys = []
         if len(attrs) > 3:
             for attribute_key in attrs:
                 # Skip the normal columns
-                if attribute_key == "id" or attribute_key in self._coordtype_column_names[self.lammps_coordinate_convention]: 
+                if attribute_key == "id" or \
+                        attribute_key in \
+                        self._coordtype_column_names[
+                        self.lammps_coordinate_convention] \
+                        or attribute_key not in self._additional_columns:
                     continue
                 # Else this is an additional field
                 ts.data[attribute_key] = np.empty(self.n_atoms)
@@ -717,9 +724,11 @@ class DumpReader(base.ReaderBase):
                 ts.forces[i] = [fields[dim] for dim in force_cols]
 
             # Add the capability to also collect other data
-            if len(additional_keys) != 0: # Then there is also more than just the positional data
+            # Then there is also more than just the positional data
+            if len(additional_keys) != 0:
                 for attribute_key in additional_keys:
-                    ts.data[attribute_key][i] = fields[attr_to_col_ix[attribute_key]]
+                    ts.data[attribute_key][i] = \
+                            fields[attr_to_col_ix[attribute_key]]
 
         order = np.argsort(indices)
         ts.positions = ts.positions[order]
