@@ -25,9 +25,9 @@ import numpy as np
 from MDAnalysisTests import datafiles
 from MDAnalysisTests.datafiles import (PDB_small, PDB, LAMMPSdata,
                                        LAMMPSdata2, LAMMPSdcd2,
-                                       LAMMPSdata_mini, PSF_TRICLINIC,
-                                       DCD_TRICLINIC, PSF_NAMD_TRICLINIC,
-                                       DCD_NAMD_TRICLINIC)
+                                       LAMMPSdata_mini, LAMMPSdata_additional_columns,
+                                       PSF_TRICLINIC, DCD_TRICLINIC, 
+                                       PSF_NAMD_TRICLINIC, DCD_NAMD_TRICLINIC)
 
 
 class RefAdKSmall(object):
@@ -227,3 +227,7 @@ class RefLAMMPSDataMini(object):
                          dtype=np.float32)
     dimensions = np.array([60., 50., 30., 90., 90., 90.], dtype=np.float32)
 
+
+class RefLAMMPSDataAdditionalColumns(object):
+    filename = LAMMPSdata_additional_columns
+    n_atoms = 10
