@@ -64,7 +64,7 @@ import warnings
 from .guessers import guess_masses, guess_types
 from .tables import SYMB2Z
 from ..lib import util
-from .base import TopologyReaderBase, change_squash
+from .base import TopologyReaderBase, squash_by_attributes
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomnames,
@@ -386,8 +386,8 @@ class PDBParser(TopologyReaderBase):
         resnums = resids.copy()
         segids = np.array(segids, dtype=object)
 
-        residx, (resids, resnames, icodes, resnums, segids) = change_squash(
-            (resids, resnames, icodes, segids), (resids, resnames, icodes, resnums, segids))
+        residx, (resids, resnames, icodes, segids), (resnums,) = squash_by_attributes(
+            (resids, resnames, icodes, segids), resnums)
         n_residues = len(resids)
         attrs.append(Resnums(resnums))
         attrs.append(Resids(resids))
@@ -396,7 +396,7 @@ class PDBParser(TopologyReaderBase):
         attrs.append(Resnames(resnames))
 
         if any(segids) and not any(val is None for val in segids):
-            segidx, (segids,) = change_squash((segids,), (segids,))
+            segidx, (segids,), _ = squash_by_attributes((segids,))
             n_segments = len(segids)
             attrs.append(Segids(segids))
         else:

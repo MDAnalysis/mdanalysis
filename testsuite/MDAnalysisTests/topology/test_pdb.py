@@ -328,46 +328,18 @@ def test_nobonds_error():
         u.atoms.bonds
 
 
-def test_PDB_charges():
-    """The test checks whether formalcharges attribute are assigned
-    properly given a PDB file with a valid formal charges record.
-    """
-    u = mda.Universe(PDB_charges)
-    formal_charges = np.array([0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0,
-                               0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
-                               0, 0, 0, 0, 0], dtype=int)
-    assert_equal(u.atoms.formalcharges, formal_charges)
-
-
-PDB_charges_nosign = """\
-REMARK Invalid charge assignment - no sign for MG2+
-HETATM    1 CU    CU A   1      03.000  00.000  00.000  1.00 00.00          CU2+
-HETATM    2 FE    FE A   2      00.000  03.000  00.000  1.00 00.00          Fe2+
-HETATM    3 Mg    Mg A   3      03.000  03.000  03.000  1.00 00.00          MG2
-END
+pdb_repeat_resid = """\
+ATOM      1  CA  LYS A   1      65.978  40.866  -0.183  1.00  0.00           C
+ATOM      2  CA  SER A   2      64.324  40.006   3.164  1.00  0.00           C  
+ATOM      3  CA  LEU A   1      64.000  39.236   8.648  1.00  0.00           C  
+ATOM      4  N   LYS A   1      66.135  42.099  -1.007  1.00  0.00           N1+
 """
 
+def test_repeat_resid():
+    u = mda.Universe(StringIO(pdb_repeat_resid), format='PDB')
 
-PDB_charges_invertsign = """\
-REMARK Invalid charge format for MG2+
-HETATM    1 CU    CU A   1      03.000  00.000  00.000  1.00 00.00          CU2+
-HETATM    2 FE    FE A   2      00.000  03.000  00.000  1.00 00.00          Fe2+
-HETATM    3 Mg    Mg A   3      03.000  03.000  03.000  1.00 00.00          MG+2
-END
-"""
+    expected_resnames = np.array(['LYS', 'SER', 'LEU'], dtype=object)
+    assert_equal(u.residues.resnames, expected_resnames)
 
-
-@pytest.mark.parametrize('infile,entry', [
-        [PDB_charges_nosign, r'2'],
-        [PDB_charges_invertsign, r'\+2']
-])
-def test_PDB_bad_charges(infile, entry):
-    """
-    Test that checks that a warning is raised and formal charges are not set:
-        * If there are missing signs for a given formal charge entry
-        * If there is an unrecognised formal charge entry
-    """
-    wmsg = f"Unknown entry {entry} encountered in formal charge field."
-    with pytest.warns(UserWarning, match=wmsg):
-        u = mda.Universe(StringIO(infile), format='PDB')
-        assert not hasattr(u, 'formalcharges')
+    expected_resids = np.array([1, 2, 1])
+    assert_equal(u.residues.resids, expected_resids)

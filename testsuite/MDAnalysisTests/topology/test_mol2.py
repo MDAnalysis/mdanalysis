@@ -317,7 +317,7 @@ def test_unformat():
                        match='Some atoms in the mol2 file'):
         u = mda.Universe(StringIO(mol2_resname_unformat), format='MOL2')
 
-def test_resname_changed():
+def test_repeat_resid():
     u = mda.Universe(StringIO(mol2_repeat_resid), format='MOL2')
 
     expected_resnames = np.array(['LYS', 'SER', 'LEU'], dtype=object)
