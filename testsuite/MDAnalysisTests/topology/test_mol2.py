@@ -183,6 +183,7 @@ GASTEIGER
     1  CA        65.9780   40.8660   -0.1830 C.3     1  LYS        0.0532
     2  CA        64.3240   40.0060    3.1640 C.3     2  SER        0.1227
     3  CA        64.0000   39.2360    8.6480 C.3     1  LEU        0.0996
+    4  N         66.1350   42.0990   -1.0070 N.4     1  LYS        0.2273
 """
 
 
@@ -319,5 +320,8 @@ def test_unformat():
 def test_resname_changed():
     u = mda.Universe(StringIO(mol2_repeat_resid), format='MOL2')
 
-    expected = np.array(['LYS', 'SER', 'LEU'], dtype=object)
-    assert_equal(u.residues.resnames, expected)
+    expected_resnames = np.array(['LYS', 'SER', 'LEU'], dtype=object)
+    assert_equal(u.residues.resnames, expected_resnames)
+
+    expected_resids = np.array([1, 2, 1])
+    assert_equal(u.residues.resids, expected_resids)

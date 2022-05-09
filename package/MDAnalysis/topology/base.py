@@ -142,6 +142,38 @@ def squash_by(child_parent_ids, *attributes):
     return atom_idx, unique_resids, [attr[sort_mask] for attr in attributes]
 
 
+def squash_by_attributes(squash_attributes, *other_attributes):
+    """Squash a child-parent relationship using combinations of attributes
+    parents will retain their order of appearance 
+
+    Arguments
+    ---------
+    squash_attributes - list of attribute arrays (attributes used to identify the parent)
+    *other_attributes - other arrays that need to follow the sorting of ids
+
+    Returns
+    -------
+    child_parents_idx - an array of len(child) which points to the index of parent
+    parent_combos - len(parent) of the unique combinations
+    squashed_attrs - len(parent) of the attributes used for squashing
+    *other_attrs - len(parent) of the other attributes
+    """
+    squash_array = np.column_stack(squash_attributes).astype(str)
+    unique_combos, sort_mask, atom_idx = np.unique(squash_array, return_index=True, return_inverse=True, axis=0)
+
+
+    appearance_order = np.argsort(sort_mask)
+    new_index = np.arange(0,len(appearance_order))
+    resort_pairs = np.column_stack((appearance_order, new_index))
+    atom_idx_mapping = dict(resort_pairs)
+
+    sorted_atom_idx = np.vectorize(atom_idx_mapping.get)(atom_idx).astype(int)
+    sorted_unique_combos = unique_combos[appearance_order]
+    sorted_mask = np.sort(sort_mask)
+    
+    return sorted_atom_idx, sorted_unique_combos, [attr[sorted_mask] for attr in squash_attributes], [attr[sorted_mask] for attr in other_attributes]
+
+
 def change_squash(criteria, to_squash):
     """Squash per atom data to per residue according to changes in resid
 

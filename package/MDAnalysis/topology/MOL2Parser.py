@@ -46,7 +46,7 @@ import numpy as np
 
 from . import guessers
 from ..lib.util import openany
-from .base import TopologyReaderBase, squash_by
+from .base import TopologyReaderBase, squash_by, squash_by_attributes
 from ..core.topologyattrs import (
     Atomids,
     Atomnames,
@@ -252,9 +252,8 @@ class MOL2Parser(TopologyReaderBase):
         resnames = np.array(resnames, dtype=object)
 
         if np.all(resnames):
-            squash_ids = resnames + resids.astype(str)
-            residx, squash_ids, (resids, resnames,) = squash_by(
-                squash_ids, resids, resnames)
+            residx, _, (resids, resnames,), _ = squash_by_attributes(
+                [resids, resnames])
             n_residues = len(resids)
             attrs.append(Resids(resids))
             attrs.append(Resnums(resids.copy()))
