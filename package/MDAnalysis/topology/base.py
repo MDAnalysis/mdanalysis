@@ -168,10 +168,9 @@ def squash_by_attributes(squash_attributes, *other_attributes):
     atom_idx_mapping = dict(resort_pairs)
 
     sorted_atom_idx = np.vectorize(atom_idx_mapping.get)(atom_idx).astype(int)
-    sorted_unique_combos = unique_combos[appearance_order]
     sorted_mask = np.sort(sort_mask)
     
-    return sorted_atom_idx, sorted_unique_combos, [attr[sorted_mask] for attr in squash_attributes], [attr[sorted_mask] for attr in other_attributes]
+    return sorted_atom_idx, [attr[sorted_mask] for attr in squash_attributes], [attr[sorted_mask] for attr in other_attributes]
 
 
 def change_squash(criteria, to_squash):

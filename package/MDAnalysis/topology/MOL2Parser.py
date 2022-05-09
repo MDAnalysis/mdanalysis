@@ -252,7 +252,7 @@ class MOL2Parser(TopologyReaderBase):
         resnames = np.array(resnames, dtype=object)
 
         if np.all(resnames):
-            residx, _, (resids, resnames,), _ = squash_by_attributes(
+            residx, (resids, resnames,), _ = squash_by_attributes(
                 [resids, resnames])
             n_residues = len(resids)
             attrs.append(Resids(resids))
