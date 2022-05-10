@@ -148,18 +148,21 @@ def squash_by_attributes(squash_attributes, *other_attributes):
 
     Arguments
     ---------
-    squash_attributes - list of attribute arrays (attributes used to identify the parent)
+    squash_attributes - list of attribute arrays (attributes used to 
+                        identify the parent)
     *other_attributes - other arrays that need to follow the sorting of ids
 
     Returns
     -------
-    child_parents_idx - an array of len(child) which points to the index of parent
+    child_parents_idx - an array of len(child) which points to the index of
+                        parent
     parent_combos - len(parent) of the unique combinations
     squashed_attrs - len(parent) of the attributes used for squashing
     *other_attrs - len(parent) of the other attributes
     """
     squash_array = np.column_stack(squash_attributes).astype(str)
-    unique_combos, sort_mask, atom_idx = np.unique(squash_array, return_index=True, return_inverse=True, axis=0)
+    unique_combos, sort_mask, atom_idx = np.unique(
+        squash_array, return_index=True, return_inverse=True, axis=0)
 
 
     appearance_order = np.argsort(sort_mask)
@@ -170,7 +173,10 @@ def squash_by_attributes(squash_attributes, *other_attributes):
     sorted_atom_idx = np.vectorize(atom_idx_mapping.get)(atom_idx).astype(int)
     sorted_mask = np.sort(sort_mask)
     
-    return sorted_atom_idx, [attr[sorted_mask] for attr in squash_attributes], [attr[sorted_mask] for attr in other_attributes]
+    squashed_attrs = [attr[sorted_mask] for attr in squash_attributes]
+    other_attrs = [attr[sorted_mask] for attr in other_attributes]
+    
+    return sorted_atom_idx, squashed_attrs, other_attrs
 
 
 def change_squash(criteria, to_squash):

@@ -386,8 +386,8 @@ class PDBParser(TopologyReaderBase):
         resnums = resids.copy()
         segids = np.array(segids, dtype=object)
 
-        residx, (resids, resnames, icodes, segids), (resnums,) = squash_by_attributes(
-            (resids, resnames, icodes, segids), resnums)
+        residx, (resids, resnames, icodes, segids), (resnums,) =\
+            squash_by_attributes((resids, resnames, icodes, segids), resnums)
         n_residues = len(resids)
         attrs.append(Resnums(resnums))
         attrs.append(Resids(resids))
