@@ -317,6 +317,7 @@ def test_unformat():
                        match='Some atoms in the mol2 file'):
         u = mda.Universe(StringIO(mol2_resname_unformat), format='MOL2')
 
+
 def test_repeat_resid():
     u = mda.Universe(StringIO(mol2_repeat_resid), format='MOL2')
 
