@@ -27,7 +27,7 @@ from MDAnalysis.analysis.pca import (PCA, cosine_content,
                                      rmsip, cumulative_overlap)
 
 from numpy.testing import (assert_almost_equal, assert_equal,
-                           assert_array_almost_equal, assert_allclose)
+                           assert_array_almost_equal, assert_allclose,)
 
 from MDAnalysisTests.datafiles import (PSF, DCD, RANDOM_WALK, RANDOM_WALK_TOPO,
                                        waterPSF, waterDCD)
