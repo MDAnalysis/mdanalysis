@@ -156,7 +156,7 @@ References
 
 .. bibliography::
    :filter: False
-   
+
    Chang2003
    Hikiri2016
    Minh2020

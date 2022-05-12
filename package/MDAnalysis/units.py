@@ -151,7 +151,7 @@ References and footnotes
 
 .. bibliography::
    :filter: False
-   
+
    Jorgensen1998
 
 .. _AKMA: http://www.charmm.org/documentation/c37b1/usage.html#%20AKMA
