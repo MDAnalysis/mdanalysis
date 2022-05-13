@@ -19,6 +19,10 @@ import MDAnalysis as mda
 import msmb_theme  # for little versions pop-up
 # https://sphinx-rtd-theme.readthedocs.io/en/stable/
 import sphinx_rtd_theme
+# Custom MDA Formating
+from pybtex.style.formatting.unsrt import Style as UnsrtStyle
+from pybtex.style.labels import BaseLabelStyle
+from pybtex.plugin import register_plugin
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -43,6 +47,17 @@ extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx',
               'sphinxcontrib.bibtex']
 
 bibtex_bibfiles = ['references.bib']
+
+# Define custom MDA style for references
+class KeyLabelStyle(BaseLabelStyle):
+    def format_labels(self, sorted_entries):
+        return [entry.key for entry in sorted_entries]
+
+class KeyStyle(UnsrtStyle):
+    default_label_style = 'keylabel'
+
+register_plugin('pybtex.style.labels', 'keylabel', KeyLabelStyle)
+register_plugin('pybtex.style.formatting', 'MDA', KeyStyle)
 
 mathjax_path = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML'
 

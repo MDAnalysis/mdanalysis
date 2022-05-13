@@ -842,6 +842,7 @@ class RMSF(AnalysisBase):
         ----------
         .. bibliography::
             :filter: False
+            :style: MDA
 
             Welford1962
 

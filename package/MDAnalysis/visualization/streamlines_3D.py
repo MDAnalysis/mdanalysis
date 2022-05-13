@@ -27,7 +27,7 @@
 :Authors: Tyler Reddy and Matthieu Chavent
 :Year: 2014
 :Copyright: GNU Public License v3
-:Citation: [Chavent2014]_
+
 
 The :func:`generate_streamlines_3d` function can generate a 3D flow field from
 a MD trajectory, for instance, lipid molecules in a virus capsid. It can make
@@ -343,7 +343,7 @@ def generate_streamlines_3d(topology_file_path, trajectory_file_path, grid_spaci
     trajectory_file_path : str
             Absolute path to the trajectory file. It will normally be desirable
             to filter the trajectory with a tool such as GROMACS
-            :program:`g_filter` (see [Chavent2014]_)
+            :program:`g_filter` (see :cite:p:`Chavent2014`)
     grid_spacing : float
             The spacing between grid lines (angstroms)
     MDA_selection : str

@@ -135,6 +135,7 @@ module in published work please :cite:p:`Theobald2005`.
 
 .. bibliography::
     :filter: False
+    :style: MDA
 
     Coifman-Lafon
     deLaPorte2008

@@ -32,47 +32,27 @@
 
 This module provides functions to analyze water dynamics trajectories and water
 interactions with other molecules.  The functions in this module are: water
-orientational relaxation (WOR) [Yeh1999]_, hydrogen bond lifetimes (HBL)
-[Rapaport1983]_, angular distribution (AD) [Grigera1995]_, mean square
-displacement (MSD) [Brodka1994]_ and survival probability (SP) [Liu2004]_.
+orientational relaxation (WOR) :cite:p:`Yeh1999`, hydrogen bond lifetimes (HBL)
+:cite:p:`Rapaport1983`, angular distribution (AD) :cite:p:`Grigera1995`, mean
+square displacement (MSD) :cite:p:`Brodka1994` and survival probability (SP)
+:cite:p:`Liu2004`.
 
 For more information about this type of analysis please refer to
-[Araya-Secchi2014]_ (water in a protein cavity) and [Milischuk2011]_ (water in
-a nanopore).
+:cite:p:`ArayaSecchi2014` (water in a protein cavity) and
+:cite:p:`Milischuk2011` (water in a nanopore).
 
 .. rubric:: References
 
-.. [Rapaport1983] D.C. Rapaport (1983): Hydrogen bonds in water, Molecular
-            Physics: An International Journal at the Interface Between
-            Chemistry and Physics, 50:5, 1151-1162.
+.. bibliography::
+    :filter: False
+    :style: MDA
 
-.. [Yeh1999] Yu-ling Yeh and Chung-Yuan Mou (1999).  Orientational Relaxation
-             Dynamics of Liquid Water Studied by Molecular Dynamics Simulation,
-             J. Phys. Chem. B 1999, 103, 3699-3705.
-
-.. [Grigera1995] Raul Grigera, Susana G. Kalko and Jorge Fischbarg
-                 (1995). Wall-Water Interface.  A Molecular Dynamics Study,
-                 Langmuir 1996,12,154-158
-
-.. [Liu2004] Pu Liu, Edward Harder, and B. J. Berne (2004).On the Calculation
-             of Diffusion Coefficients in Confined Fluids and Interfaces with
-             an Application to the Liquid-Vapor Interface of Water,
-             J. Phys. Chem. B 2004, 108, 6595-6602.
-
-.. [Brodka1994] Aleksander Brodka (1994). Diffusion in restricted volume,
-                Molecular Physics, 1994, Vol.  82, No. 5, 1075-1078.
-
-.. [Araya-Secchi2014] Araya-Secchi, R., Tomas Perez-Acle, Seung-gu Kang, Tien
-                      Huynh, Alejandro Bernardin, Yerko Escalona, Jose-Antonio
-                      Garate, Agustin D. Martinez, Isaac E. Garcia, Juan
-                      C. Saez, Ruhong Zhou (2014). Characterization of a novel
-                      water pocket inside the human Cx26 hemichannel
-                      structure. Biophysical journal, 107(3), 599-612.
-
-.. [Milischuk2011] Anatoli A. Milischuk and Branka M. Ladanyi. Structure and
-                   dynamics of water confined in silica
-                   nanopores. J. Chem. Phys. 135, 174709 (2011); doi:
-                   10.1063/1.3657408
+    Rapaport1983
+    Yeh1999
+    Grigera1995
+    Liu2004
+    Brodka1994
+    Milischuk2011
 
 
 Example use of the analysis classes
@@ -404,7 +384,7 @@ class WaterOrientationalRelaxation(object):
     r"""Water orientation relaxation analysis
 
     Function to evaluate the Water Orientational Relaxation proposed by Yu-ling
-    Yeh and Chung-Yuan Mou [Yeh1999_]. WaterOrientationalRelaxation indicates
+    Yeh and Chung-Yuan Mou :cite:p:`Yeh1999`. WaterOrientationalRelaxation indicates
     "how fast" water molecules are rotating or changing direction. This is a
     time correlation function given by:
 

@@ -44,8 +44,9 @@ acount for intermittency before passing the results to
 
 This module is inspired by seemingly disparate analyses that rely on the same
 underlying calculation, including the survival probability of water around
-proteins [Araya-Secchi2014]_, hydrogen bond lifetimes [Gowers2015]_, [Araya-Secchi2014]_,
-and the rate of cholesterol flip-flop in lipid bilayers [Gu2019]_.
+proteins :cite:p:`ArayaSecchi2014`, hydrogen bond lifetimes
+:cite:p:`Gowers2015,ArayaSecchi2014`, and the rate of cholesterol
+flip-flop in lipid bilayers :cite:p:`Gu2019`.
 
 .. seeAlso::
 
@@ -61,10 +62,13 @@ and the rate of cholesterol flip-flop in lipid bilayers [Gu2019]_.
 
 .. rubric:: References
 
-.. [Gu2019] Gu, R.-X.; Baoukina, S.; Tieleman, D. P. (2019)
-            Cholesterol Flip-Flop in Heterogeneous Membranes.
-            J. Chem. Theory Comput. 15 (3), 2064–2070.
-            https://doi.org/10.1021/acs.jctc.8b00933.
+.. bibliography::
+    :filter: False
+    :style: MDA
+
+    ArayaSecchi2014
+    Gowers2015
+    Gu2019
 
 """
 
@@ -106,7 +110,7 @@ def autocorrelation(list_of_sets, tau_max, window_step=1):
     this feature is present at every frame from :math:`t_0` to :math:`N(t0, t_0 + \tau)`.
     The angular brackets represent an average over all time origins, :math:`t_0`.
 
-    See [Araya-Secchi2014]_ for a description survival probability.
+    See :cite:p:`ArayaSecchi2014` for a description survival probability.
 
     Parameters
     ----------
@@ -194,8 +198,8 @@ def correct_intermittency(list_of_sets, intermittency):
     The returned data can be used as input to the function :func:`autocorrelation` in order
     to calculate the survival probability with a given intermittency.
 
-    See [Gowers2015]_ for a description of
-    intermittency in the calculation of hydrogen bond lifetimes.
+    See :cite:p:`Gowers2015` for a description of intermittency in the 
+    calculation of hydrogen bond lifetimes.
 
     # TODO - is intermittency consitent with list of sets of sets? (hydrogen bonds)
 

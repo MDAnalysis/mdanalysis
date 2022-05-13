@@ -27,7 +27,7 @@
 :Authors: Tyler Reddy and Matthieu Chavent
 :Year: 2014
 :Copyright: GNU Public License v3
-:Citation: [Chavent2014]_
+
 
 The :func:`generate_streamlines` function can generate a 2D flow field from a
 MD trajectory, for instance, lipid molecules in a flat membrane. It can make
@@ -237,7 +237,7 @@ def generate_streamlines(topology_file_path, trajectory_file_path, grid_spacing,
     trajectory_file_path : str
             Absolute path to the trajectory file. It will normally be desirable
             to filter the trajectory with a tool such as GROMACS
-            :program:`g_filter` (see [Chavent2014]_)
+            :program:`g_filter` (see :cite:p:`Chavent2014`)
     grid_spacing : float
             The spacing between grid lines (angstroms)
     MDA_selection : str
@@ -302,12 +302,11 @@ def generate_streamlines(topology_file_path, trajectory_file_path, grid_spacing,
 
     References
     ----------
-    .. [Chavent2014] Chavent, M.*, Reddy, T.*, Dahl, C.E., Goose, J., Jobard,
-       B., and Sansom, M.S.P. Methodologies for the analysis of instantaneous
-       lipid diffusion in MD simulations of large membrane systems.  *Faraday
-       Discussions* **169** (2014), 455–475. doi: `10.1039/c3fd00145h`_
+    .. bibliography::
+        :filter: False
+        :style: MDA
 
-    .. _`10.1039/c3fd00145h`: https://doi.org/10.1039/c3fd00145h
+        Chavent2014
 
 
     See Also

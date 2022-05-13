@@ -155,11 +155,12 @@ References
 ----------
 
 .. bibliography::
-   :filter: False
+    :filter: False
+    :style: MDA
 
-   Chang2003
-   Hikiri2016
-   Minh2020
+    Chang2003
+    Hikiri2016
+    Minh2020
 """
 import logging
 import warnings

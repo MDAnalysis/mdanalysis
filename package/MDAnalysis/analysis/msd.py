@@ -229,6 +229,7 @@ References
 
 .. bibliography::
     :filter: False
+    :style: MDA
 
     Maginn2019
     Yeh2004

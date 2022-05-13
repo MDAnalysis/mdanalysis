@@ -30,8 +30,8 @@
 
 .. versionadded:: 1.0.0
 
-This module contains the tools to interface with HOLE_ [Smart1993]_
-[Smart1996]_ to analyse an ion channel pore or transporter pathway [Stelzl2014]_ .
+This module contains the tools to interface with HOLE_ :cite:p:`Smart1993`
+:cite:p:`Smart1996` to analyse an ion channel pore or transporter pathway :cite:p:`Stelzl2014` .
 
 Using HOLE on a PDB file
 ------------------------
@@ -257,21 +257,15 @@ Functions and classes
    :members:
 
 
-References
-----------
+.. rubric:: References
 
-.. [Smart1993] O.S. Smart, J.M. Goodfellow and B.A. Wallace.
-               The Pore Dimensions of Gramicidin A. Biophysical Journal 65:2455-2460, 1993.
-               DOI: 10.1016/S0006-3495(93)81293-1
-.. [Smart1996] O.S. Smart, J.G. Neduvelil, X. Wang, B.A. Wallace, and M.S.P. Sansom.
-               HOLE: A program for the analysis of the pore dimensions of ion channel
-               structural models. J.Mol.Graph., 14:354–360, 1996.
-               DOI: 10.1016/S0263-7855(97)00009-X
-               URL http://www.holeprogram.org/
-.. [Stelzl2014] L. S. Stelzl, P. W. Fowler, M. S. P. Sansom, and O. Beckstein.
-               Flexible gates generate occluded intermediates in the transport cycle
-               of LacY. J Mol Biol, 426:735–751, 2014.
-               DOI: 10.1016/j.jmb.2013.10.024
+.. bibliography::
+    :filter: False
+    :style: MDA
+
+    Smart1993
+    Smart1996
+    Stelzl2014
 
 .. Footnotes
 
