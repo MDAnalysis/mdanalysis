@@ -529,8 +529,12 @@ copy official attributes of the Timestep.</p>
 
 </section>
 <section id="frameiterators">
-<h2><span class="section-number">6.28.2. </span>FrameIterators<a class="headerlink" href="#frameiterators" title="Permalink to this headline"></a></h2>
-<p>Iterator classes used by the by the <a class="reference internal" href="#MDAnalysis.coordinates.base.ProtoReader" title="MDAnalysis.coordinates.base.ProtoReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProtoReader</span></code></a>.</p>
+<span id="id1"></span><h2><span class="section-number">6.28.2. </span>FrameIterators<a class="headerlink" href="#frameiterators" title="Permalink to this headline"></a></h2>
+<p>FrameIterators are “sliced trajectories” (a trajectory is a
+<a class="reference internal" href="init.html#readers"><span class="std std-ref">Reader</span></a>) that can be iterated over. They are typically
+created by slicing a trajectory or by fancy-indexing of a trajectory
+with an array of frame numbers or a boolean mask of all frames.</p>
+<p>Iterator classes used by the by the <a class="reference internal" href="#MDAnalysis.coordinates.base.ProtoReader" title="MDAnalysis.coordinates.base.ProtoReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProtoReader</span></code></a>:</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.base.FrameIteratorBase">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.base.</span></span><span class="sig-name descname"><span class="pre">FrameIteratorBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trajectory</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#FrameIteratorBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.FrameIteratorBase" title="Permalink to this definition"></a></dt>
@@ -597,7 +601,7 @@ trajectory.</p>
 
 </section>
 <section id="readers">
-<h2><span class="section-number">6.28.3. </span>Readers<a class="headerlink" href="#readers" title="Permalink to this headline"></a></h2>
+<span id="readersbase"></span><h2><span class="section-number">6.28.3. </span>Readers<a class="headerlink" href="#readers" title="Permalink to this headline"></a></h2>
 <p>Readers know how to take trajectory data in a given format and present it in a
 common API to the user in MDAnalysis. There are two types of readers:</p>
 <ol class="arabic simple">
@@ -999,8 +1003,17 @@ is avoided.</p>
 <dd><p>Return independent copy of this Reader.</p>
 <p>New Reader will have its own file handle and can seek/iterate
 independently of the original.</p>
-<p>Will also copy the current state of the Timestep held in
-the original Reader</p>
+<p>Will also copy the current state of the Timestep held in the original
+Reader.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>No special kwargs are copied, only <cite>convert_units</cite> is
+preserved.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.2.0: </span>The <code class="xref py py-attr docutils literal notranslate"><span class="pre">convert_units</span></code> attribute is correctly copied; previously
+the unit conversion would always be set to <code class="docutils literal notranslate"><span class="pre">True</span></code> on copy.</p>
+</div>
 </dd></dl>
 
 <dl class="py property">
@@ -1240,6 +1253,11 @@ read from file <cite>self.filename</cite>.  This should populate the attribute
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.11.0: </span>Added attribute “_ts_kwargs” for subclasses
 Keywords “dt” and “time_offset” read into _ts_kwargs</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.2.0: </span>Calling <cite>__iter__</cite> now rewinds the reader before yielding a
+<a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> object (fixing behavior that was not
+well defined previously).</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.base.SingleFrameReaderBase.OtherWriter">
@@ -1590,8 +1608,17 @@ is avoided.</p>
 <dd><p>Return independent copy of this Reader.</p>
 <p>New Reader will have its own file handle and can seek/iterate
 independently of the original.</p>
-<p>Will also copy the current state of the Timestep held in
-the original Reader</p>
+<p>Will also copy the current state of the Timestep held in the original
+Reader.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>No special kwargs are copied, only <cite>convert_units</cite> is
+preserved.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.2.0: </span>The <code class="xref py py-attr docutils literal notranslate"><span class="pre">convert_units</span></code> attribute is correctly copied; previously
+the unit conversion would always be set to <code class="docutils literal notranslate"><span class="pre">True</span></code> on copy.</p>
+</div>
 </dd></dl>
 
 <dl class="py property">
@@ -2213,7 +2240,7 @@ be considered to have a length of a single time step <cite>dt</cite> and a
 
 </section>
 <section id="writers">
-<h2><span class="section-number">6.28.4. </span>Writers<a class="headerlink" href="#writers" title="Permalink to this headline"></a></h2>
+<span id="writersbase"></span><h2><span class="section-number">6.28.4. </span>Writers<a class="headerlink" href="#writers" title="Permalink to this headline"></a></h2>
 <p>Writers know how to write information in a <a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> to a trajectory
 file.</p>
 <dl class="py class">

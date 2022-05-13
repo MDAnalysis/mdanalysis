@@ -521,8 +521,17 @@ is avoided.</p>
 <dd><p>Return independent copy of this Reader.</p>
 <p>New Reader will have its own file handle and can seek/iterate
 independently of the original.</p>
-<p>Will also copy the current state of the Timestep held in
-the original Reader</p>
+<p>Will also copy the current state of the Timestep held in the original
+Reader.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>No special kwargs are copied, only <cite>convert_units</cite> is
+preserved.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.2.0: </span>The <code class="xref py py-attr docutils literal notranslate"><span class="pre">convert_units</span></code> attribute is correctly copied; previously
+the unit conversion would always be set to <code class="docutils literal notranslate"><span class="pre">True</span></code> on copy.</p>
+</div>
 </dd></dl>
 
 <dl class="py property">

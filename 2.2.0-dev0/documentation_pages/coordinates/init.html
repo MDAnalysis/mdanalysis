@@ -153,10 +153,10 @@ underlying coordinate data. This abstraction of coordinate access through an
 object-oriented interface is one of the key capabilities of MDAnalysis.</p>
 <section id="readers">
 <span id="id1"></span><h2><span class="section-number">6.1.1. </span>Readers<a class="headerlink" href="#readers" title="Permalink to this headline"></a></h2>
-<p>All Readers are based on a <code class="xref py py-class docutils literal notranslate"><span class="pre">ProtoReader</span></code> class that defines a common
-<a class="reference internal" href="#trajectory-api"><span class="std std-ref">Trajectory API</span></a> and allows other code to interface with all trajectory
-formats in the same way, independent of the details of the trajectory format
-itself.</p>
+<p>All Readers are based on a <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.ProtoReader" title="MDAnalysis.coordinates.base.ProtoReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProtoReader</span></code></a>
+class that defines a common <a class="reference internal" href="#trajectory-api"><span class="std std-ref">Trajectory API</span></a> and allows other code to
+interface with all trajectory formats in the same way, independent of the
+details of the trajectory format itself.</p>
 <p>The <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> contains the API entry point
 attribute <code class="xref py py-attr docutils literal notranslate"><span class="pre">Universe.trajectory</span></code> that points to the actual
 <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.ProtoReader" title="MDAnalysis.coordinates.base.ProtoReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProtoReader</span></code></a> object; all Readers are accessible
@@ -621,8 +621,20 @@ this attribute.</p>
 </section>
 <section id="trajectory-reader-class">
 <h3><span class="section-number">6.1.5.3. </span>Trajectory Reader class<a class="headerlink" href="#trajectory-reader-class" title="Permalink to this headline"></a></h3>
-<p>Trajectory readers are derived from <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.ReaderBase" title="MDAnalysis.coordinates.base.ReaderBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.ReaderBase</span></code></a>.
-Typically, many methods and attributes are overriden.</p>
+<p>Trajectory readers are derived from
+<a class="reference internal" href="base.html#MDAnalysis.coordinates.base.ReaderBase" title="MDAnalysis.coordinates.base.ReaderBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.ReaderBase</span></code></a> (or from
+<a class="reference internal" href="base.html#MDAnalysis.coordinates.base.ProtoReader" title="MDAnalysis.coordinates.base.ProtoReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.ProtoReader</span></code></a> if they do not required
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">Reader.__del__()</span></code> method). A special case are <em>SingleFrame readers</em> for
+formats that contain only a single coordinate frame. These readers are derived
+from a subclass of <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.ProtoReader" title="MDAnalysis.coordinates.base.ProtoReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProtoReader</span></code></a> named
+<a class="reference internal" href="base.html#MDAnalysis.coordinates.base.SingleFrameReaderBase" title="MDAnalysis.coordinates.base.SingleFrameReaderBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.SingleFrameReaderBase</span></code></a>.</p>
+<p>Typically, many methods and attributes are overriden but the ones listed below
+<em>must</em> be implemented.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>See the section on <a class="reference internal" href="base.html#readersbase"><span class="std std-ref">Readers</span></a> in <a class="reference internal" href="base.html#module-MDAnalysis.coordinates.base" title="MDAnalysis.coordinates.base"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a>
+for implementation details.</p>
+</div>
 <section id="id18">
 <h4><span class="section-number">6.1.5.3.1. </span>Methods<a class="headerlink" href="#id18" title="Permalink to this headline"></a></h4>
 <p>The <a class="reference internal" href="DCD.html#MDAnalysis.coordinates.DCD.DCDReader" title="MDAnalysis.coordinates.DCD.DCDReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DCD.DCDReader</span></code></a> class is the primary
@@ -652,6 +664,12 @@ required.</p>
     <span class="nb">print</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>Readers will automatically rewind the trajectory to before the initial
+frame (often by re-opening the file) before starting the iteration. <em>Multi
+frame readers</em> (see <a class="reference internal" href="base.html#readersbase"><span class="std std-ref">Readers</span></a>) will also rewind the trajectory
+<em>after</em> the iteration so that the current trajectory frame is set to the
+first trajectory frame. <em>Single frame readers</em> do not explicitly rewind
+after iteration but simply remain on the one frame in the trajectory.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">close()</span></code></dt><dd><p>close the file and cease I/O</p>
 </dd>
@@ -705,10 +723,11 @@ reads every 100th frame until the end.</p>
 <p>A sequence of indices or a mask of booleans can also be provided to index
 a trajectory.</p>
 <p>The performance of the <code class="docutils literal notranslate"><span class="pre">__getitem__()</span></code> method depends on the underlying
-trajectory reader and if it can implement random access to frames. In many
-cases this is not easily (or reliably) implementable and thus one is
-restricted to sequential iteration.</p>
-<p>If the Reader is not able to provide random access to frames then it
+trajectory reader and if it can implement random access to frames. All
+readers in MDAnalysis should support random access.</p>
+<p>For external custom readers this may not be easily (or reliably)
+implementable and thus one is restricted to sequential iteration.
+If the Reader is not able to provide random access to frames then it
 should raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a> on indexing. It is possible to partially
 implement <code class="docutils literal notranslate"><span class="pre">__getitem__</span></code> (as done on
 <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.ProtoReader.__getitem__</span></code> where slicing the
@@ -717,7 +736,7 @@ full trajectory is equivalent to
 implemented) and other slices raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a>.</p>
 <p>When indexed with a slice, a sequence of indices, or a mask of booleans,
 the return value is an instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">FrameIteratorSliced</span></code> or
-<code class="xref py py-class docutils literal notranslate"><span class="pre">FrameIteratorIndices</span></code>.</p>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">FrameIteratorIndices</span></code>. See <a class="reference internal" href="base.html#frameiterators"><span class="std std-ref">FrameIterators</span></a> for more details.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">parse_n_atoms(filename,</span> <span class="pre">**kwargs)</span></code></dt><dd><p>Provide the number of atoms in the trajectory file, allowing the Reader
 to be used to provide an extremely minimal Topology.
@@ -810,6 +829,11 @@ another frame is appended to the trajectory.</p>
 <p>or:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">w</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">AtomGroup</span><span class="p">)</span>  <span class="c1"># write a selection of Atoms from Universe</span>
 </pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>See the section on <a class="reference internal" href="base.html#writersbase"><span class="std std-ref">Writers</span></a> in <a class="reference internal" href="base.html#module-MDAnalysis.coordinates.base" title="MDAnalysis.coordinates.base"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a>
+for implementation details.</p>
 </div>
 <section id="id20">
 <h4><span class="section-number">6.1.5.4.1. </span>Methods<a class="headerlink" href="#id20" title="Permalink to this headline"></a></h4>
