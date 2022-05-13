@@ -246,7 +246,7 @@ class AnalysisBase(object):
         .. versionchanged:: 1.0.0
             Added .frames and .times arrays as attributes
 
-        .. versionchanged:: 2.1.0
+        .. versionchanged:: 2.2.0
             Added ability to iterate through trajectory by passing a list of
             frame indices
         """
@@ -344,8 +344,6 @@ class AnalysisBase(object):
             self.frames[i] = ts.frame
             self.times[i] = ts.time
             self._single_frame()
-        # rewind added for behavioral consistency, Issue #3416
-        self._trajectory.rewind()
         logger.info("Finishing up")
         self._conclude()
         return self
