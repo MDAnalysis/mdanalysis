@@ -45,7 +45,7 @@ jobs:
               full-deps: true
               install_hole: true
               codecov: true
-            - name: macOS_catalina_py37
+            - name: macOS_catalina_py38
               os: macOS-10.15
               python-version: 3.8
               full-deps: true
