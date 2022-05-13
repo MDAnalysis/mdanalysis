@@ -53,6 +53,8 @@ Fixes
   * Fixed BAT method Cartesian modifies input data. (Issue #3501)
 
 Enhancements
+  * The minimm Python, NumPy, and SciPy versions are now 3.8, 1.19, and 1.5.0,
+    GSD now also have a minimum version of 1.9.3.
   * LinearDensity now works with updating AtomGroups (Issue #2508, PR #3617)
   * Link PMDA in documentation (PR #3652)
   * Added MSD example where multiple replicates are combined(Issue #3578
