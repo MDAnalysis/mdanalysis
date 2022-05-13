@@ -227,7 +227,7 @@ logger = logging.getLogger("MDAnalysis.analysis.contacts")
 def soft_cut_q(r, r0, beta=5.0, lambda_constant=1.8):
     r"""Calculate fraction of native contacts *Q* for a soft cut off
 
-    The native contact function is defined as [Best2013]_
+    The native contact function is defined as :cite:p:`Best2013`
 
     .. math::
 
@@ -256,11 +256,10 @@ def soft_cut_q(r, r0, beta=5.0, lambda_constant=1.8):
 
     References
     ----------
-    .. [Best2013] RB Best, G Hummer, and WA Eaton, "Native contacts determine protein
-       folding mechanisms in atomistic simulations" _PNAS_ **110** (2013),
-       17874–17879. doi: `10.1073/pnas.1311599110
-       <http://doi.org/10.1073/pnas.1311599110>`_.
+    .. bibliography::
+        :filter: False
 
+        Best2013
     """
     r = np.asarray(r)
     r0 = np.asarray(r0)

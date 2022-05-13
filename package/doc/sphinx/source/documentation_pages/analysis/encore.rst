@@ -10,7 +10,7 @@
 .. versionadded:: 0.16.0
 
 The module contains implementations of similarity measures between protein
-ensembles described in :cite:p:`LindorffLarsen2019`. The implementation and examples
+ensembles described in :cite:p:`LindorffLarsen2009`. The implementation and examples
 are described in :cite:p:`Tiberti2015`.
 
 The module includes facilities for handling ensembles and trajectories through
@@ -57,6 +57,6 @@ References
 
 .. bibliography::
    :filter: False
-   
-   LindorffLarsen2019
+
+   LindorffLarsen2009
    Tiberti2015

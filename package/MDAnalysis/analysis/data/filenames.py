@@ -37,9 +37,9 @@ Data files
 
    Reference Ramachandran histogram for
    :class:`MDAnalysis.analysis.dihedrals.Ramachandran`.  The data were
-   calculated on a data set of 500 PDB structures taken from [Lovell2003]_.
-   This is a numpy array in the :math:`\phi` and :math:`\psi` backbone dihedral
-   angles.
+   calculated on a data set of 500 PDB structures taken from
+   :cite:p:`Lovell2003`. This is a numpy array in the :math:`\phi` and
+   :math:`\psi` backbone dihedral angles.
 
    Load and plot it with ::
 
@@ -71,7 +71,7 @@ Data files
 
    Reference Janin histogram for :class:`MDAnalysis.analysis.dihedrals.Janin`.
    The data were calculated on a data set of 500 PDB structures taken from
-   [Lovell2003]_.  This is a numpy array in the :math:`\chi_1` and
+   :cite:p:`Lovell2003`. This is a numpy array in the :math:`\chi_1` and
    :math:`\chi_2` sidechain dihedral angles.
 
    Load and plot it with ::

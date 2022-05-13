@@ -31,7 +31,9 @@ Updated nucleic acid analysis --- :mod:`MDAnalysis.analysis.nucleicacids`
 
 The module provides classes for analyzing nucleic acids structures.
 This is an updated, higher performance version of previous nucleic acid tools.
-For applications see [Denning2011]_ and [Denning2012]_.
+For applications see :cite:p:`Denning2011` and :cite:p:`Denning2012`.
+
+.. rubric:: References
 
 Distances
 _________
