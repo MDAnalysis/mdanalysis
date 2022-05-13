@@ -215,7 +215,7 @@ unwrapped trajectories and maintaining a relatively small elapsed time between
 saved frames. Additionally, corrections for finite size effects are sometimes
 employed along with various means of estimating errors :cite:p:`Yeh2004`
 :cite:p:`Bulow2020` The reader is directed to the following review, which
-describes many of the common pitfalls :cite:p:`Maginn2019`. There are other 
+describes many of the common pitfalls :cite:p:`Maginn2019`. There are other
 ways to compute self-diffusivity, such as from a Green-Kubo integral. At this
 point in time, these methods are beyond the scope of this module.
 

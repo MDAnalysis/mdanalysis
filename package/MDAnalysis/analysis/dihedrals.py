@@ -117,7 +117,7 @@ To plot the data yourself, the angles can be accessed using
 Janin analysis
 ~~~~~~~~~~~~~~
 
-Janin plots :cite:p:`Janin1978` for side chain conformations (:math:`\chi_1` 
+Janin plots :cite:p:`Janin1978` for side chain conformations (:math:`\chi_1`
 and :math:`chi_2` angles) can be created with the
 :class:`~MDAnalysis.analysis.dihedrals.Janin` class. It works in the same way,
 only needing a list of residues; see the :ref:`Janin plot figure
