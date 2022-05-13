@@ -31,7 +31,8 @@
 .. versionadded:: 1.0.0
 
 This module contains the tools to interface with HOLE_ :cite:p:`Smart1993`
-:cite:p:`Smart1996` to analyse an ion channel pore or transporter pathway :cite:p:`Stelzl2014` .
+:cite:p:`Smart1996` to analyse an ion channel pore or transporter pathway
+:cite:p:`Stelzl2014`.
 
 Using HOLE on a PDB file
 ------------------------

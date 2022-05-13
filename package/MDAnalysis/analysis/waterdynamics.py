@@ -384,9 +384,9 @@ class WaterOrientationalRelaxation(object):
     r"""Water orientation relaxation analysis
 
     Function to evaluate the Water Orientational Relaxation proposed by Yu-ling
-    Yeh and Chung-Yuan Mou :cite:p:`Yeh1999`. WaterOrientationalRelaxation indicates
-    "how fast" water molecules are rotating or changing direction. This is a
-    time correlation function given by:
+    Yeh and Chung-Yuan Mou :cite:p:`Yeh1999`. WaterOrientationalRelaxation
+    indicates "how fast" water molecules are rotating or changing direction.
+    This is a time correlation function given by:
 
     .. math::
         C_{\hat u}(\tau)=\langle \mathit{P}_2[\mathbf{\hat{u}}(t_0)\cdot\mathbf{\hat{u}}(t_0+\tau)]\rangle

@@ -198,7 +198,7 @@ def correct_intermittency(list_of_sets, intermittency):
     The returned data can be used as input to the function :func:`autocorrelation` in order
     to calculate the survival probability with a given intermittency.
 
-    See :cite:p:`Gowers2015` for a description of intermittency in the 
+    See :cite:p:`Gowers2015` for a description of intermittency in the
     calculation of hydrogen bond lifetimes.
 
     # TODO - is intermittency consitent with list of sets of sets? (hydrogen bonds)

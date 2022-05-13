@@ -48,13 +48,16 @@ extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx',
 
 bibtex_bibfiles = ['references.bib']
 
+
 # Define custom MDA style for references
 class KeyLabelStyle(BaseLabelStyle):
     def format_labels(self, sorted_entries):
         return [entry.key for entry in sorted_entries]
 
+
 class KeyStyle(UnsrtStyle):
     default_label_style = 'keylabel'
+
 
 register_plugin('pybtex.style.labels', 'keylabel', KeyLabelStyle)
 register_plugin('pybtex.style.formatting', 'MDA', KeyStyle)

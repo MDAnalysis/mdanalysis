@@ -583,7 +583,8 @@ def hausdorff_neighbors(P, Q):
     -----
     - Hausdorff neighbors are those points on the two paths that are separated by
       the Hausdorff distance. They are the farthest nearest neighbors and are
-      maximally different in the sense of the Hausdorff distance :cite:p:`Seyler2015`.
+      maximally different in the sense of the Hausdorff distance
+      :cite:p:`Seyler2015`.
     - :func:`scipy.spatial.distance.directed_hausdorff` can also provide the
       hausdorff neighbors.
 
