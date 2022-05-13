@@ -72,9 +72,9 @@ the corresponding eigenvalues and eigenvectors.
 
 We leave determination of the appropriate scale parameter epsilon to the user,
 :cite:p:`Clementi2011` uses a complex method involving the k-nearest-neighbors
-of a trajectory frame, whereas others simple use a trial-and-error approach with
-a constant epsilon. Currently, the constant epsilon method is implemented by
-MDAnalysis.
+of a trajectory frame, whereas others simple use a trial-and-error approach
+with a constant epsilon. Currently, the constant epsilon method is implemented
+by MDAnalysis.
 
 .. code-block:: python
 
@@ -127,10 +127,10 @@ If you use this Dimension Reduction method in a publication, please
 cite :cite:p:`Coifman-Lafon`.
 
 If you choose the default metric, this module uses the fast QCP algorithm
-:cite:p:`Theobald2005` to calculate the root mean square distance (RMSD) between
-two coordinate sets (as implemented in
-:func:`MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix`).  When using this module
-in published work please :cite:p:`Theobald2005`.
+:cite:p:`Theobald2005` to calculate the root mean square distance (RMSD)
+between two coordinate sets (as implemented in
+:func:`MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix`).  When using this
+module in published work please :cite:p:`Theobald2005`.
 
 
 .. bibliography::

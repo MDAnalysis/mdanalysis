@@ -30,8 +30,8 @@ Ensemble Similarity Calculations --- :mod:`MDAnalysis.analysis.encore.similarity
 .. versionadded:: 0.16.0
 
 The module contains implementations of similarity measures between protein
-ensembles described in :cite:p:`LindorffLarsen2009`. The implementation and examples
-are described in :cite:p:`Tiberti2015`.
+ensembles described in :cite:p:`LindorffLarsen2009`. The implementation and
+examples are described in :cite:p:`Tiberti2015`.
 
 The module includes facilities for handling ensembles and trajectories through
 the :class:`Universe` class, performing clustering or dimensionality reduction

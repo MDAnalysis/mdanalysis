@@ -33,7 +33,8 @@ Elastic network analysis of MD trajectories --- :mod:`MDAnalysis.analysis.gnm`
 :Copyright: GNU Public License v2 or later
 
 
-Analyse a trajectory using elastic network models, following the approach of :cite:p:`Hall2007`.
+Analyse a trajectory using elastic network models, following the approach of
+:cite:p:`Hall2007`.
 
 An example is provided in the MDAnalysis Cookbook_, listed as GNMExample_.
 
