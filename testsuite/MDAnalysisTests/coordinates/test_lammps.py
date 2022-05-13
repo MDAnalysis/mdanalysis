@@ -518,15 +518,19 @@ class TestLammpsDumpReader(object):
     def u_add(self):
         f = LAMMPSDUMP_additional_columns
         top = LAMMPSdata_additional_columns
-        yield mda.Universe(top, f, format='LAMMPSDUMP',
+        yield (mda.Universe(top, f, format='LAMMPSDUMP',
                            lammps_coordinate_convention="auto",
-                           additional_columns=['q'])
+                           additional_columns=['q']), 
+              mda.Universe(top, f, format='LAMMPSDUMP',
+                           lammps_coordinate_convention="auto",
+                           additional_columns=['q', 'l']))
 
     @pytest.fixture()
     def reference_additional_columns(self):
         data['charges'] = np.array([2.58855e-03,  6.91952e-05,  1.05548e-02,  4.20319e-03,
                         9.19172e-03,  4.79777e-03,  6.36864e-04,  5.87125e-03,
                        -2.18125e-03,  6.88910e-03])
+        data['l'] = np.array([1.1,  1.2]*5) # random test data
         return data
 
     @pytest.fixture()
@@ -611,8 +615,10 @@ class TestLammpsDumpReader(object):
             assert_allclose(atom13.position, atom13_pos-bmin, atol=1e-5)
 
     def test_additional_colunmns(self, u_add, reference_additional_columns):
-        charges = u.trajectory[0].data['q']
+        charges = u_add[0].trajectory[0].data['q'] # this is the universe with just q
+        second  = u_add[1].trajectory[0].data['l'] # this is the universe with both
         assert_almost_equal(charges, reference_additional_columns['charges'])
+        assert_almost_equal(second, reference_additional_columns['l'])
 
 
 @pytest.mark.parametrize("convention",
