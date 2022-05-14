@@ -22,7 +22,7 @@ dependencies:
   - scikit-learn
   - scipy
   - pip
-  - sphinx==4.5.0
+  - sphinx
   - tidynamics>=1.0.0
   - tqdm>=4.43.0
   - sphinxcontrib-bibtex
