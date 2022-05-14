@@ -65,6 +65,7 @@ Functions
 .. autofunction:: transform_StoR
 .. autofunction:: augment_coordinates(coordinates, box, r)
 .. autofunction:: undo_augment(results, translation, nreal)
+.. autofunction:: minimize_vectors(vectors, box)
 """
 import numpy as np
 from numpy.lib.utils import deprecate
