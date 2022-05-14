@@ -717,7 +717,6 @@ def cosine_content(pca_space, i):
     ----------
     .. bibliography::
         :filter: False
-        :style: MDA
 
         BerkHess2002
 

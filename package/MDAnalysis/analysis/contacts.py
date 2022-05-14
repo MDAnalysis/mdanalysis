@@ -258,7 +258,6 @@ def soft_cut_q(r, r0, beta=5.0, lambda_constant=1.8):
     ----------
     .. bibliography::
         :filter: False
-        :style: MDA
 
         Best2013
     """

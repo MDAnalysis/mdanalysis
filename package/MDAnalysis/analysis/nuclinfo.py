@@ -50,7 +50,6 @@ nucleic acids and atom names.
 
 .. bibliography::
     :filter: False
-    :style: MDA
 
     Denning2011
     Denning2012

@@ -151,7 +151,6 @@ References and footnotes
 
 .. bibliography::
    :filter: False
-   :style: MDA
 
    Jorgensen1998
 

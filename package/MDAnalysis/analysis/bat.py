@@ -156,7 +156,6 @@ References
 
 .. bibliography::
     :filter: False
-    :style: MDA
 
     Chang2003
     Hikiri2016

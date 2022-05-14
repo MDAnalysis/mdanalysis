@@ -46,7 +46,6 @@ separately.
 
 .. bibliography::
     :filter: False
-    :style: MDA
 
     Lu2003
     Lu2008

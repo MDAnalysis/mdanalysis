@@ -304,7 +304,6 @@ def generate_streamlines(topology_file_path, trajectory_file_path, grid_spacing,
     ----------
     .. bibliography::
         :filter: False
-        :style: MDA
 
         Chavent2014
 

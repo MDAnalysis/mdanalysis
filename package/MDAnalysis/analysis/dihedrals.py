@@ -238,7 +238,6 @@ References
 
 .. bibliography::
     :filter: False
-    :style: MDA
 
     Ramachandran1963
     Janin1978

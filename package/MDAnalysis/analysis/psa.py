@@ -65,7 +65,6 @@ map-dendrogram plots from hierarchical clustering.
 
 .. bibliography::
     :filter: False
-    :style: MDA
 
     Seyler2015
 
@@ -425,7 +424,6 @@ def hausdorff(P, Q):
     ----------
     .. bibliography::
         :filter: False
-        :style: MDA
 
         Taha2015
 
@@ -654,7 +652,6 @@ def discrete_frechet(P, Q):
 
     .. bibliography::
         :filter: False
-        :style: MDA
 
         Frechet1906
         Alt1995

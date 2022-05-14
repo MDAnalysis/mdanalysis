@@ -64,7 +64,6 @@ used for further processing (see :cite:p:`Hall2007`).
 
 .. bibliography::
     :filter: False
-    :style: MDA
 
     Hall2007
 
