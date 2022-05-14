@@ -25,7 +25,7 @@ dependencies:
   - sphinx
   - tidynamics>=1.0.0
   - tqdm>=4.43.0
-  - sphinxcontrib-bibtex==2.4.2
+  - sphinxcontrib-bibtex
   - sphinx_rtd_theme
   - pip:
       - duecredit
