@@ -1588,6 +1588,7 @@ def minimize_vectors(vectors, box):
         Same shape and dtype as input.  The vectors from the input, but
         minimized according to the size of the box.
 
+
     .. versionadded:: 2.1.0
     """
     boxtype, box = check_box(box)
