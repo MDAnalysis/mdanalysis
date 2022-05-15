@@ -652,6 +652,7 @@ def discrete_frechet(P, Q):
 
     .. bibliography::
         :filter: False
+        :style: MDA
 
         Frechet1906
         Alt1995

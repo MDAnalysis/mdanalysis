@@ -110,7 +110,7 @@ def autocorrelation(list_of_sets, tau_max, window_step=1):
     this feature is present at every frame from :math:`t_0` to :math:`N(t0, t_0 + \tau)`.
     The angular brackets represent an average over all time origins, :math:`t_0`.
 
-    See :cite:p:`ArayaSecchi2014` for a description survival probability.
+    See :cite:`ArayaSecchi2014` for a description survival probability.
 
     Parameters
     ----------

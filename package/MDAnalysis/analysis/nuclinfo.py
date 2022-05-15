@@ -37,8 +37,8 @@ particular
 - AS or CP phase angles,
 - Watson-Crick N1-N3 distances, C2-O2 distances, N6-O4 distances, O6-N4 distances.
 
-For applications of this kind of analysis see :cite:p:`Denning2011` and
-:cite:`Denning2012`.
+For applications of this kind of analysis see 
+:cite:p:`a-Denning2011,a-Denning2012`.
 
 All functions take a :class:`~MDAnalysis.core.universe.Universe` as an
 argument together with further parameters that specify the base or bases in
@@ -50,6 +50,9 @@ nucleic acids and atom names.
 
 .. bibliography::
     :filter: False
+    :style: MDA
+    :keyprefix: a-
+    :labelprefix: ᵃ
 
     Denning2011
     Denning2012

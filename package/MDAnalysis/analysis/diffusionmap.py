@@ -41,8 +41,8 @@ locally. The order of the sampled structures in the trajectory is irrelevant.
 The :ref:`Diffusion-Map-tutorial` shows how to use diffusion map for dimension
 reduction.
 
-More details about diffusion maps are in :cite:p:`deLaPorte2008`,
-:cite:p:`Coifman-Lafon`, :cite:p:`Ferguson2011`, and :cite:p:`Clementi2011`.
+More details about diffusion maps are in 
+:cite:p:`deLaPorte2008,Coifman-Lafon,Ferguson2011,Clementi2011`.
 
 .. _Diffusion-Map-tutorial:
 
@@ -135,6 +135,7 @@ module in published work please :cite:p:`Theobald2005`.
 
 .. bibliography::
     :filter: False
+    :style: MDA
 
     Coifman-Lafon
     deLaPorte2008
@@ -327,8 +328,8 @@ class DiffusionMap(object):
             into a diffusion kernel.
         epsilon : Float
             Specifies the method used for the choice of scale parameter in the
-            diffusion map. More information in :cite:p:`Coifman-Lafon`,
-            :cite:p:`Ferguson2011` and :cite:p:`Clementi2011`, Default: 1.
+            diffusion map. More information in 
+            :cite:p:`Coifman-Lafon,Ferguson2011,Clementi2011`, Default: 1.
         **kwargs
             Parameters to be passed for the initialization of a
             :class:`DistanceMatrix`.

@@ -112,7 +112,8 @@ Two-dimensional contact analysis (q1-q2)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Analyze a single DIMS transition of AdK between its closed and open
-conformation and plot the trajectory projected on q1-q2 [Franklin2007]_ ::
+conformation and plot the trajectory projected on q1-q2
+:cite:p:`Franklin2007` ::
 
 
     import MDAnalysis as mda
@@ -133,7 +134,7 @@ conformation and plot the trajectory projected on q1-q2 [Franklin2007]_ ::
     f.show()
 
 Compare the resulting pathway to the `MinActionPath result for AdK`_
-[Franklin2007]_.
+cite:p:`Franklin2007`.
 
 .. _MinActionPath result for AdK:
    http://lorentz.dynstr.pasteur.fr/joel/adenylate.php
@@ -258,8 +259,10 @@ def soft_cut_q(r, r0, beta=5.0, lambda_constant=1.8):
     ----------
     .. bibliography::
         :filter: False
+        :style: MDA
 
         Best2013
+    
     """
     r = np.asarray(r)
     r0 = np.asarray(r0)
@@ -313,11 +316,11 @@ def radius_cut_q(r, r0, radius):
 
     References
     ----------
-    .. [Franklin2007] Franklin, J., Koehl, P., Doniach, S., & Delarue,
-       M. (2007).  MinActionPath: Maximum likelihood trajectory for large-scale
-       structural transitions in a coarse-grained locally harmonic energy
-       landscape.  Nucleic Acids Research, 35(SUPPL.2), 477–482.
-       doi: `10.1093/nar/gkm342 <http://doi.org/10.1093/nar/gkm342>`_
+    .. bibliography::
+        :filter: False
+        :style: MDA
+
+        Franklin2007
 
     """
     return hard_cut_q(r, radius)
@@ -519,7 +522,7 @@ def q1q2(u, select='all', radius=4.5):
     """Perform a q1-q2 analysis.
 
     Compares native contacts between the starting structure and final structure
-    of a trajectory [Franklin2007]_.
+    of a trajectory :cite:p:`Franklin2007`.
 
     Parameters
     ----------

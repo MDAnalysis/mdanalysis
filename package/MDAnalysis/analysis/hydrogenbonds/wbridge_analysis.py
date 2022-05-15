@@ -265,6 +265,7 @@ heavy atom names to MDAnalysis.
 
 .. bibliography::
     :filter: False
+    :style: MDA
 
     Gregoret1991
 

@@ -45,6 +45,7 @@ For more information about this type of analysis please refer to
 
 .. bibliography::
     :filter: False
+    :style: MDA
 
     Rapaport1983
     Yeh1999

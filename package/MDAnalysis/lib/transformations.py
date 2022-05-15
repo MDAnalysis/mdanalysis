@@ -103,6 +103,7 @@ be specified using a 4 character string or encoded 4-tuple:
 
 .. bibliography::
     :list: enumerated
+    :style: MDA
     :filter: id % "transformations"
 
 Examples
