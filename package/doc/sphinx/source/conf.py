@@ -51,8 +51,20 @@ bibtex_bibfiles = ['references.bib']
 
 # Define custom MDA style for references
 class KeyLabelStyle(BaseLabelStyle):
-    def format_labels(self, sorted_entries):
-        return [entry.key for entry in sorted_entries]
+    def format_labels(self, entries):
+        entry_list = []
+        for entry in entries:
+            authors = entry.persons['author']
+            first_author = str(authors[0]).split(",")[0]
+            second_author = str(authors[len(authors)-1]).split(",")[0]
+            year = entry.fields['year']
+            if len(authors) == 1:
+                entry_list.append(f"{first_author}{year}")
+            if len(authors) == 2:
+                entry_list.append(f"{first_author}-{second_author}{year}")
+            if len(authors) > 1:
+                entry_list.append(f"{first_author} et al. ({year})")
+        return entry_list
 
 
 class KeyStyle(UnsrtStyle):
