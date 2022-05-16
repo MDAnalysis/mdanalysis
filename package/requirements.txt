@@ -11,7 +11,7 @@ mmtf-python
 msmb_theme==1.2.0
 netcdf4
 networkx
-numpy>=1.16.0
+numpy>=1.19.0
 packaging
 parmed
 pytest
