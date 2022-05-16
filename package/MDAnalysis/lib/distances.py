@@ -65,6 +65,7 @@ Functions
 .. autofunction:: transform_StoR
 .. autofunction:: augment_coordinates(coordinates, box, r)
 .. autofunction:: undo_augment(results, translation, nreal)
+.. autofunction:: minimize_vectors(vectors, box)
 """
 import numpy as np
 from numpy.lib.utils import deprecate
@@ -1586,6 +1587,7 @@ def minimize_vectors(vectors, box):
     minimized_vectors : numpy.ndarray
         Same shape and dtype as input.  The vectors from the input, but
         minimized according to the size of the box.
+
 
     .. versionadded:: 2.1.0
     """
