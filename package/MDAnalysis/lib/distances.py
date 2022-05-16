@@ -105,7 +105,8 @@ def _run(funcname, args=None, kwargs=None, backend="serial"):
 
 # serial versions are always available (and are typically used within
 # the core and topology modules)
-from .c_distances import (calc_distance_array,
+from .c_distances import (_UINT64_MAX,
+                          calc_distance_array,
                           calc_distance_array_ortho,
                           calc_distance_array_triclinic,
                           calc_self_distance_array,
@@ -223,10 +224,14 @@ def distance_array(reference, configuration, box=None, result=None,
     confnum = configuration.shape[0]
     refnum = reference.shape[0]
 
+    # check resulting array will not overflow UINT64_MAX
+    if refnum * confnum > _UINT64_MAX:
+        raise ValueError(f"Size of resulting array {refnum * confnum} elements"
+                         " larger than size of maximum integer")
+
     distances = _check_result_array(result, (refnum, confnum))
     if len(distances) == 0:
         return distances
-
     if box is not None:
         boxtype, box = check_box(box)
         if boxtype == 'ortho':
@@ -295,11 +300,14 @@ def self_distance_array(reference, box=None, result=None, backend="serial"):
     """
     refnum = reference.shape[0]
     distnum = refnum * (refnum - 1) // 2
+    # check resulting array will not overflow UINT64_MAX
+    if distnum > _UINT64_MAX:
+        raise ValueError(f"Size of resulting array {distnum} elements larger"
+                         " than size of maximum integer")
 
     distances = _check_result_array(result, (distnum,))
     if len(distances) == 0:
         return distances
-
     if box is not None:
         boxtype, box = check_box(box)
         if boxtype == 'ortho':

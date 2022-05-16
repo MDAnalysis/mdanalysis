@@ -42,7 +42,7 @@ from MDAnalysis.analysis.hole2.utils import check_and_fix_long_filename
 from MDAnalysis.exceptions import ApplicationError
 from MDAnalysisTests.datafiles import PDB_HOLE, MULTIPDB_HOLE, DCD
 from MDAnalysisTests import executable_not_found
-
+from MDAnalysis.analysis.hole2.templates import exe_err
 
 def rlimits_missing():
     # return True if resources module not accesible (ie setting of rlimits)
@@ -264,6 +264,36 @@ class BaseTestHole(object):
             value = getattr(hole, attrname)
             assert value is hole.results[attrname]
 
+
+@pytest.mark.skipif(executable_not_found('hole'),
+                    reason="Test skipped because HOLE not found")
+class TestOSError:
+
+    @pytest.fixture()
+    def universe(self):
+        return mda.Universe(MULTIPDB_HOLE)
+
+    def test_hole_method_oserror(self):
+        errmsg = exe_err.format(name='dummy_path', kw='executable')
+        with pytest.raises(OSError, match=errmsg):
+            h = hole2.hole(PDB_HOLE, executable='dummy_path')
+
+    def test_hole_oserror(self, universe):
+        errmsg = exe_err.format(name='dummy_path', kw='executable')
+        with pytest.raises(OSError, match=errmsg):
+            h = hole2.HoleAnalysis(universe, executable='dummy_path')
+
+    def test_sos_triangle_oserror(self, universe):
+        errmsg = exe_err.format(name='dummy_path', kw='sos_triangle')
+        with pytest.raises(OSError, match=errmsg):
+            h = hole2.HoleAnalysis(universe, sos_triangle='dummy_path')
+
+    def test_sph_process_oserror(self, universe):
+        errmsg = exe_err.format(name='dummy_path', kw='sph_process')
+        with pytest.raises(OSError, match=errmsg):
+            h = hole2.HoleAnalysis(universe, sph_process='dummy_path')
+
+
 class TestHoleAnalysis(BaseTestHole):
 
     def test_correct_profile_values(self, hole, frames):
@@ -429,6 +459,13 @@ class TestHoleAnalysis(BaseTestHole):
             radius = np.where(profile.radius > 2.5, np.nan, profile.radius)
             assert_almost_equal(z, radius)
             assert line.get_label() == str(frame)
+
+    def test_none_filename(self, tmpdir):
+        universe_none_filename = mda.Universe(PDB_HOLE, in_memory=True)
+        universe_none_filename.trajectory.filename = None
+        with tmpdir.as_cwd():
+            with hole2.HoleAnalysis(universe_none_filename) as h:
+                h.run()
 
 
 class TestHoleAnalysisLong(BaseTestHole):

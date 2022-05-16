@@ -679,16 +679,13 @@ class SmartsSelection(Selection):
         if not pattern:
             raise ValueError(f"{self.pattern!r} is not a valid SMARTS query")
         mol = group.convert_to("RDKIT", **self.rdkit_kwargs)
-        # override GetSubstructMatches default values
         self.smarts_kwargs.setdefault("useChirality", True)
         self.smarts_kwargs.setdefault("maxMatches", 1000)
         matches = mol.GetSubstructMatches(pattern, **self.smarts_kwargs)
-        # convert rdkit indices to mdanalysis
-        indices = [
-            mol.GetAtomWithIdx(idx).GetIntProp("_MDAnalysis_index")
-            for match in matches for idx in match]
+        # flatten all matches and remove duplicated indices
+        indices = np.unique([idx for match in matches for idx in match])
         # create boolean mask for atoms based on index
-        mask = np.in1d(range(group.n_atoms), np.unique(indices))
+        mask = np.in1d(range(group.n_atoms), indices)
         return group[mask]
 
 

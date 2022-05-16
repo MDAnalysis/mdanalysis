@@ -725,6 +725,9 @@ class NamedStream(io.IOBase, os.PathLike):
                   always closes the underlying stream.
 
         """
+        if self.closed:
+            return
+
         if self.close_stream or force:
             try:
                 return self.stream.close()

@@ -120,10 +120,17 @@ MDAnalysis.
    .. automethod:: copy_slice
 
 
+.. _FrameIterators:
+
 FrameIterators
 --------------
 
-Iterator classes used by the by the :class:`ProtoReader`.
+FrameIterators are "sliced trajectories" (a trajectory is a
+:ref:`Reader <Readers>`) that can be iterated over. They are typically
+created by slicing a trajectory or by fancy-indexing of a trajectory
+with an array of frame numbers or a boolean mask of all frames.
+
+Iterator classes used by the by the :class:`ProtoReader`:
 
 .. autoclass:: FrameIteratorBase
 
@@ -133,6 +140,8 @@ Iterator classes used by the by the :class:`ProtoReader`.
 
 .. autoclass:: FrameIteratorIndices
 
+
+.. _ReadersBase:
 
 Readers
 -------
@@ -169,6 +178,8 @@ case, :class:`ProtoReader` should be used.
    :members:
 
 
+
+.. _WritersBase:
 
 Writers
 -------
@@ -1112,6 +1123,7 @@ class FrameIteratorIndices(FrameIteratorBase):
     def __iter__(self):
         for frame in self.frames:
             yield self.trajectory._read_frame_with_aux(frame)
+        self.trajectory.rewind()
 
     def __getitem__(self, frame):
         if isinstance(frame, numbers.Integral):
@@ -2158,11 +2170,20 @@ class ReaderBase(ProtoReader):
         New Reader will have its own file handle and can seek/iterate
         independently of the original.
 
-        Will also copy the current state of the Timestep held in
-        the original Reader
+        Will also copy the current state of the Timestep held in the original
+        Reader.
+
+
+        .. warning:: No special kwargs are copied, only `convert_units` is
+                     preserved.
+
+        .. versionchanged:: 2.2.0
+           The :attr:`convert_units` attribute is correctly copied; previously
+           the unit conversion would always be set to ``True`` on copy.
         """
         new = self.__class__(self.filename,
-                             n_atoms=self.n_atoms)
+                             n_atoms=self.n_atoms,
+                             convert_units=self.convert_units)
         if self.transformations:
             new.add_transformations(*self.transformations)
         # seek the new reader to the same frame we started with
@@ -2300,6 +2321,10 @@ class SingleFrameReaderBase(ProtoReader):
     .. versionchanged:: 0.11.0
        Added attribute "_ts_kwargs" for subclasses
        Keywords "dt" and "time_offset" read into _ts_kwargs
+    .. versionchanged:: 2.2.0
+       Calling `__iter__` now rewinds the reader before yielding a
+       :class:`Timestep` object (fixing behavior that was not
+       well defined previously).
     """
     _err = "{0} only contains a single frame"
 
@@ -2330,11 +2355,20 @@ class SingleFrameReaderBase(ProtoReader):
         New Reader will have its own file handle and can seek/iterate
         independently of the original.
 
-        Will also copy the current state of the Timestep held in
-        the original Reader
+        Will also copy the current state of the Timestep held in the original
+        Reader.
+
+
+        .. warning:: No special kwargs are copied, only `convert_units` is
+                     preserved.
+
+        .. versionchanged:: 2.2.0
+           The :attr:`convert_units` attribute is correctly copied; previously
+           the unit conversion would always be set to ``True`` on copy.
         """
         new = self.__class__(self.filename,
-                             n_atoms=self.n_atoms)
+                             n_atoms=self.n_atoms,
+                             convert_units=self.convert_units)
         new.ts = self.ts.copy()
         for auxname, auxread in self._auxs.items():
             new.add_auxiliary(auxname, auxread.copy())
@@ -2361,6 +2395,7 @@ class SingleFrameReaderBase(ProtoReader):
         raise StopIteration(self._err.format(self.__class__.__name__))
 
     def __iter__(self):
+        self.rewind()
         yield self.ts
         return
 
