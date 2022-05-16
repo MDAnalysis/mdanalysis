@@ -15,16 +15,27 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy,
          HenokB, umak1106, tamandeeps, Mrqeoqqt, megosato, AnirG, rishu235,
-         mtiberti, manishsaini6421, Sukeerti1, robotjellyzone
+         mtiberti, manishsaini6421, Sukeerti1, robotjellyzone, markvrma, alescoulie,
+         mjtadema, PicoCentauri, Atharva7K, aditi2906, orbeckst
 
  * 2.2.0
 
 Fixes
+  * Iterating a SingleFrameReaderBase trajectory now rewinds the
+    reader, resetting any modified trajectory attributes to those
+    read from file. Fixes behavior that was previously undefined (Issue #3423)
+  * Fixed Reader.copy() did not preserve convert_units=False (see PR #3642) 
+  * Fixed `OpenMMTopologyParser` not working when some or none of the elements
+    are present in the openmm topology (Issue #3317, PR #3511).
+  * Remove None from filenames in analysis.hole.HoleAnalysis (PR #3650)
   * Fixed Numpy deprecation warnings about elementwise comparisons.
     (Issue #3535, PR #3619)
   * Fixed encore.covariance.covariance_matrix not working when providing
     an external reference (Issue #3539, PR #3621)
   * Fixed LinearDensity not working with grouping='residues' or 'segments'
+    (Issue #3571, PR #3572)
+  * LinearDensity now uses the definition of Avogadro's number from 
+    MDAnalysis.units, which has more significant digits. 
     (Issue #3571, PR #3572)
   * MOL2 can read files without providing optional columns:
     subst_id, subst_name and charge. (Issue #3385, PR #3598)
@@ -39,23 +50,44 @@ Fixes
   * Fixed DumpReader triclinic box dimensions reading. (Issue #3386, PR #3403)
   * Updated the badge in README of MDAnalysisTest to point to Github CI Actions
   * Fixed FrameIteratorIndices doesn't rewind. (Issue #3416)
+  * Fixed BAT method Cartesian modifies input data. (Issue #3501)
 
 Enhancements
+  * LinearDensity now works with updating AtomGroups (Issue #2508, PR #3617)
+  * Link PMDA in documentation (PR #3652)
+  * Added MSD example where multiple replicates are combined(Issue #3578
+    PR #3633)
   * PCA class now has an inverse-PCA function. The inverse transform can
     also be extrapolated to certain non-PCA atoms. (PR #3596, Issue #2703)
- * `DistanceMatrix` class in MDAnalysis.analysis.diffusionmap now also
+  * `DistanceMatrix` class in MDAnalysis.analysis.diffusionmap now also
     accepts `AtomGroup` as a valid argument (Issue #3486, PR #3541)
   * Improves the RDKitConverter's accuracy (PR #3044): AtomGroups containing
     monatomic ion charges or edge cases with nitrogen, sulfur, phosphorus and
     conjugated systems should now have correctly assigned bond orders and
     charges.
+  * New optimized AnalysisBase derived Watson-Crick distance analysis class in
+    analysis.nucleicacids
+  * CRD extended format can now be explicitly requested with the `extended`
+    keyword (Issue #3605)
 
 Changes
+  * The minimm Python, NumPy, and SciPy versions (following NEP29) are now 3.8, 
+    1.19, and 1.5.0; GSD now also has a minimum version of 1.9.3 and networkx
+    has minimum version 2.0 (Issue #3665)
+  * LinearDensity now saves the histogram bin edges for easier plotting as 
+    "hist_bin_edges" for each dimension xyz in the results dictionary.
+    (Issue #2508, PR #3617)
   * ITPParser no longer adds an angle for water molecules that have the SETTLE
     constraint applied to them. This mirrors the way the constraint is handled
     in AMBER. (Issue #2417, PR #3564)
 
 Deprecations
+  * The old results attributes for LinearDensity are now deprecated and will be
+    removed in version 3.0.0. (Issue #2508, PR #3617)
+    - "pos" is now "mass_density",
+    - "char" is now "charge_density"
+    - "std" entries are now "stddev"
+
 
 
 03/06/22 IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope,
