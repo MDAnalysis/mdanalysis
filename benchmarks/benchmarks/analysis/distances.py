@@ -148,5 +148,3 @@ class DistancesBench(object):
         mda.lib.distances.calc_dihedrals(
             self.coords_1, self.coords_2, self.coords_3, self.coords_4
         )
-
-        
