@@ -567,6 +567,28 @@ class SelgroupSelection(Selection):
         return group[mask]
 
 
+class SingleCharSelection(Selection):
+    """for when an attribute is just a single character, eg RSChirality
+
+    .. versionadded:: 2.1.0
+    """
+    def __init__(self, parser, tokens):
+        super().__init__(parser, tokens)
+        vals = grab_not_keywords(tokens)
+        if not vals:
+            raise ValueError("Unexpected token '{0}'".format(tokens[0]))
+
+        self.values = vals
+
+    @return_empty_on_apply
+    def _apply(self, group):
+        attr = getattr(group, self.field)
+
+        mask = np.isin(attr, self.values)
+
+        return group[mask]
+
+
 class _ProtoStringSelection(Selection):
     """Selections based on text attributes
 
@@ -657,12 +679,10 @@ class SmartsSelection(Selection):
             raise ValueError(f"{self.pattern!r} is not a valid SMARTS query")
         mol = group.convert_to("RDKIT", **self.rdkit_kwargs)
         matches = mol.GetSubstructMatches(pattern, useChirality=True)
-        # convert rdkit indices to mdanalysis'
-        indices = [
-            mol.GetAtomWithIdx(idx).GetIntProp("_MDAnalysis_index")
-            for match in matches for idx in match]
+        # flatten all matches and remove duplicated indices
+        indices = np.unique([idx for match in matches for idx in match])
         # create boolean mask for atoms based on index
-        mask = np.in1d(range(group.n_atoms), np.unique(indices))
+        mask = np.in1d(range(group.n_atoms), indices)
         return group[mask]
 
 
@@ -1550,7 +1570,9 @@ def gen_selection_class(singular, attrname, dtype, per_object):
                "__module__": _selectors.__name__}
     name = f"{singular.capitalize()}Selection"
 
-    if issubclass(dtype, bool):
+    if dtype == 'U1':  # order is important here, U1 will trip up issubclass
+        basecls = SingleCharSelection
+    elif issubclass(dtype, bool):
         basecls = BoolSelection
     elif np.issubdtype(dtype, np.integer):
         basecls = RangeSelection

@@ -233,7 +233,8 @@ class DensityAnalysis(AnalysisBase):
 
     See Also
     --------
-    pmda.density.DensityAnalysis for a parallel version
+    pmda.density.DensityAnalysis
+        A parallel version of :class:`DensityAnalysis`
 
     Notes
     -----
@@ -865,7 +866,7 @@ class Density(Grid):
 
         """
         if not self.parameters['isDensity']:
-            errmsg = 'The grid is not a density so converty_density() makes no sense.'
+            errmsg = 'The grid is not a density so convert_density() makes no sense.'
             logger.fatal(errmsg)
             raise RuntimeError(errmsg)
         if unit == self.units['density']:

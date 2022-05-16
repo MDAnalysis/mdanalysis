@@ -53,7 +53,9 @@ packages with the help of :ref:`Selection exporters`.
         >>> np.all(ag3.ix == ag2.ix)
         True
 
-
+    For further details on ordered selections, see :ref:`ordered-selections-label`.
+    
+    
 Selection Keywords
 ==================
 
@@ -96,7 +98,7 @@ selection parser. The following applies to all selections:
     selection ranges.
 
 
-.. _`Defined topology attributes`: https://userguide.mdanalysis.org/2.0.0-dev0/topology_system.html#format-specific-attributes
+.. _`Defined topology attributes`: https://userguide.mdanalysis.org/stable/topology_system.html#format-specific-attributes
 
 
 Simple selections
@@ -166,6 +168,10 @@ smarts *SMARTS-query*
     find nitrogen atoms in rings. Requires RDKit. All matches (max 1000) are
     combined as a unique match.
 
+chiral *R | S*
+    select a particular stereocenter. e.g. ``name C and chirality S``
+    to select only S-chiral carbon atoms.  Only ``R`` and ``S`` will be
+    possible options but other values will not raise an error.
 
 Pattern matching
 ----------------
@@ -294,14 +300,26 @@ bynum *index-range*
     selects atoms 5 through 10 inclusive. All atoms in the
     :class:`MDAnalysis.Universe` are consecutively numbered, and the index
     runs from 1 up to the total number of atoms.
-
+    
+id *index-range*
+    selects all atoms in a range of (1-based) inclusive indices, e.g. ``id 1`` selects 
+    all the atoms with id 1; ``id 5:7`` selects all atoms with ids 5, all atoms with 
+    ids 6 and all atoms with ids 7.
+     
 index *index-range*
     selects all atoms within a range of (0-based) inclusive indices,
     e.g. ``index 0`` selects the first atom in the universe; ``index 5:10``
     selects atoms 6 through 11 inclusive. All atoms in the
     :class:`MDAnalysis.Universe` are consecutively numbered, and the index
     runs from 0 up to the total number of atoms - 1.
-
+    
+    
+.. note::
+    Conventionally, ``id`` corresponds to the serial number in the PDB format. In contrast 
+    to ``bynum``, the ``id`` topology attribute is not necessarily continuous, ordered, or 
+    unique, and can be arbitrarily assigned by the user. 
+    
+     
 .. _pre-selections-label:
 
 Preexisting selections and modifiers
@@ -401,7 +419,7 @@ The most straightforward way to concatentate two AtomGroups is by using the
 ``+`` operator::
 
  >>> ordered = u.select_atoms("segid DMPC and resid 3 and name P") + u.select_atoms("segid DMPC and resid 2 and name P")
- >>> print list(ordered)
+ >>> print(list(ordered))
  [< Atom 570: name 'P' of type '180' of resid 'DMPC', 3 and 'DMPC'>,
  < Atom 452: name 'P' of type '180' of resid 'DMPC', 2 and 'DMPC'>]
 
@@ -409,7 +427,7 @@ A shortcut is to provide *two or more* selections to
 :meth:`~MDAnalysis.core.universe.Universe.select_atoms`, which then
 does the concatenation automatically::
 
- >>> print list(universe.select_atoms("segid DMPC and resid 3 and name P", "segid DMPC and resid 2 and name P"))
+ >>> print(list(universe.select_atoms("segid DMPC and resid 3 and name P", "segid DMPC and resid 2 and name P")))
  [< Atom 570: name 'P' of type '180' of resid 'DMPC', 3 and 'DMPC'>,
  < Atom 452: name 'P' of type '180' of resid 'DMPC', 2 and 'DMPC'>]
 
@@ -417,6 +435,6 @@ Just for comparison to show that a single selection string does not
 work as one might expect::
 
  # WRONG!
- >>> print list(universe.select_atoms("segid DMPC and ( resid 3 or resid 2 ) and name P"))
+ >>> print(list(universe.select_atoms("segid DMPC and (resid 3 or resid 2) and name P")))
  [< Atom 452: name 'P' of type '180' of resid 'DMPC', 2 and 'DMPC'>,
  < Atom 570: name 'P' of type '180' of resid 'DMPC', 3 and 'DMPC'>]

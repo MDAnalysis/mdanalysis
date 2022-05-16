@@ -35,6 +35,7 @@ from libcpp.vector cimport vector
 from libcpp.utility cimport pair
 from cython.operator cimport dereference as deref
 
+np.import_array()
 
 __all__ = ['unique_int_1d', 'make_whole', 'find_fragments',
            '_sarrus_det_single', '_sarrus_det_multiple']

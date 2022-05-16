@@ -20,6 +20,9 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+import sys
+import platform
+import warnings
 import MDAnalysis as mda
 import pytest
 import numpy as np
@@ -492,7 +495,7 @@ class TestErrorsAndWarnings(object):
         with pytest.warns(UserWarning) as record:
             u = mda.Universe(parm)
 
-        assert len(record) == len(errmsgs)
-        # Assumes errmsgs list is in order of occurence
-        for i, msg in enumerate(errmsgs):
-            assert msg in str(record[i].message.args[0])
+        messages = [rec.message.args[0] for rec in record]
+
+        for msg in errmsgs:
+            assert any(msg in recmsg for recmsg in messages)

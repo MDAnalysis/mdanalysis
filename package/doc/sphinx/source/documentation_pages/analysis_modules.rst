@@ -112,6 +112,7 @@ Nucleic acids
    :maxdepth: 1
 
    analysis/nuclinfo
+   analysis/nucleicacids
 
 Polymers
 ========
@@ -153,6 +154,7 @@ Volumetric analysis
    analysis/density
    analysis/lineardensity
    analysis/waterdynamics
+   analysis/dielectric
 
 Dimensionality Reduction
 ========================

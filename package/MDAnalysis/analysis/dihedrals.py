@@ -295,8 +295,9 @@ class Dihedral(AnalysisBase):
     def __init__(self, atomgroups, **kwargs):
         """Parameters
         ----------
-        atomgroups : list
-            a list of atomgroups for which the dihedral angles are calculated
+        atomgroups : list[AtomGroup]
+            a list of :class:`~MDAnalysis.core.groups.AtomGroup` for which
+            the dihedral angles are calculated
 
         Raises
         ------
@@ -544,8 +545,8 @@ class Janin(Ramachandran):
     GLY, PRO, SER, THR, or VAL (the default of the `select_remove` keyword
     argument) then a warning will be raised and they will be removed from the
     list of residues, but the analysis will still run. Some topologies have
-    altloc attribues which can add duplicate atoms to the selection and must be
-    removed.
+    altloc attributes which can add duplicate atoms to the selection and must
+    be removed.
 
     """
 

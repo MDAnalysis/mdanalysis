@@ -31,11 +31,11 @@
 This module contains the non-linear dimension reduction method diffusion map.
 The eigenvectors of a diffusion matrix represent the 'collective coordinates'
 of a molecule; the largest eigenvalues are the more dominant collective
-coordinates. Assigning phyiscal meaning to the 'collective coordinates' is a
+coordinates. Assigning physical meaning to the 'collective coordinates' is a
 fundamentally difficult problem. The time complexity of the diffusion map is
 :math:`O(N^3)`, where N is the number of frames in the trajectory, and the in-memory
 storage complexity is :math:`O(N^2)`. Instead of a single trajectory a sample of
-protein structures can be used. The sample should be equiblibrated, at least
+protein structures can be used. The sample should be equilibrated, at least
 locally. The order of the sampled structures in the trajectory is irrelevant.
 
 The :ref:`Diffusion-Map-tutorial` shows how to use diffusion map for dimension
@@ -156,6 +156,7 @@ import warnings
 import numpy as np
 
 from MDAnalysis.core.universe import Universe
+from MDAnalysis.core.groups import AtomGroup, UpdatingAtomGroup
 from .rms import rmsd
 from .base import AnalysisBase
 
@@ -171,7 +172,7 @@ class DistanceMatrix(AnalysisBase):
 
     Parameters
     ----------
-    universe : `~MDAnalysis.core.universe.Universe`
+    universe : `~MDAnalysis.core.universe.Universe` or `~MDAnalysis.core.groups.AtomGroup`
         The MD Trajectory for dimension reduction, remember that
         computational cost of eigenvalue decomposition
         scales at O(N^3) where N is the number of frames.
@@ -243,12 +244,20 @@ class DistanceMatrix(AnalysisBase):
     .. versionchanged:: 2.0.0
          :attr:`dist_matrix` is now stored in a
          :class:`MDAnalysis.analysis.base.Results` instance.
-
+    .. versionchanged:: 2.2.0
+         :class:`DistanceMatrix` now also accepts `AtomGroup`.
     """
     def __init__(self, universe, select='all', metric=rmsd, cutoff=1E0-5,
                  weights=None, **kwargs):
         # remember that this must be called before referencing self.n_frames
-        super(DistanceMatrix, self).__init__(universe.trajectory, **kwargs)
+        super(DistanceMatrix, self).__init__(universe.universe.trajectory,
+                                             **kwargs)
+
+        if isinstance(universe, UpdatingAtomGroup):
+            wmsg = ("U must be a static AtomGroup. Parsing an updating AtomGroup "
+                    "will result in a static AtomGroup with the current frame "
+                    "atom selection.")
+            warnings.warn(wmsg)
 
         self.atoms = universe.select_atoms(select)
         self._metric = metric
@@ -309,14 +318,18 @@ class DiffusionMap(object):
     transform(n_eigenvectors, time)
         Perform an embedding of a frame into the eigenvectors representing
         the collective coordinates.
+
+
+    .. versionchanged:: 2.2.0
+         :class:`DiffusionMap` now also accepts `AtomGroup`.
     """
 
     def __init__(self, u, epsilon=1, **kwargs):
         """
         Parameters
         -------------
-        u : MDAnalysis Universe or DistanceMatrix object
-            Can be a Universe, in which case one must supply kwargs for the
+        u : MDAnalysis Universe or AtomGroup or DistanceMatrix object.
+            Can be a Universe or AtomGroup, in which case one must supply kwargs for the
             initialization of a DistanceMatrix. Otherwise, this can be a
             DistanceMatrix already initialized. Either way, this will be made
             into a diffusion kernel.
@@ -328,12 +341,12 @@ class DiffusionMap(object):
             Parameters to be passed for the initialization of a
             :class:`DistanceMatrix`.
         """
-        if isinstance(u, Universe):
+        if isinstance(u, AtomGroup) or isinstance(u, Universe):
             self._dist_matrix = DistanceMatrix(u, **kwargs)
         elif isinstance(u, DistanceMatrix):
             self._dist_matrix = u
         else:
-            raise ValueError("U is not a Universe or DistanceMatrix and"
+            raise ValueError("U is not a Universe or AtomGroup or DistanceMatrix and"
                              " so the DiffusionMap has no data to work with.")
         self._epsilon = epsilon
 

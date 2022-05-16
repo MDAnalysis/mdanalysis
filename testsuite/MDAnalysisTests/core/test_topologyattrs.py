@@ -176,7 +176,7 @@ class TestIndicesClasses(object):
 
 class TestAtomnames(TestAtomAttr):
     values = np.array(['O', 'C', 'CA', 'N', 'CB', 'CG', 'CD', 'NA', 'CL', 'OW'],
-                      dtype=np.object)
+                      dtype=object)
     single_value = 'Ca2'
     attrclass = tpattrs.Atomnames
 

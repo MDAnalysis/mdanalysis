@@ -60,6 +60,7 @@ from ..core.topologyattrs import (
     Resids,
     Resnums,
     Resnames,
+    RSChirality,
     Segids,
     AltLocs,
     ChainIDs,
@@ -70,6 +71,14 @@ from ..core.topologyattrs import (
 from ..core.topology import Topology
 
 logger = logging.getLogger("MDAnalysis.converters.RDKitParser")
+
+
+def _rdkit_atom_to_RS(atom):
+    """Fetches RDKit chiral tags"""
+    try:
+        return atom.GetProp("_CIPCode")
+    except KeyError:
+        return ""
 
 
 class RDKitParser(TopologyReaderBase):
@@ -85,6 +94,7 @@ class RDKitParser(TopologyReaderBase):
      - Bonds
      - Resids
      - Resnums
+     - RSChirality
      - Segids
 
     Guesses the following:
@@ -124,6 +134,8 @@ class RDKitParser(TopologyReaderBase):
     | atom.GetMonomerInfo().GetName()             | names                   |
     | atom.GetProp('_TriposAtomName')             |                         |
     +---------------------------------------------+-------------------------+
+    | atom.GetProp('_CIPCode')                    | chiralities             |
+    +---------------------------------------------+-------------------------+
     | atom.GetMonomerInfo().GetOccupancy()        | occupancies             |
     +---------------------------------------------+-------------------------+
     | atom.GetMonomerInfo().GetResidueName()      | resnames                |
@@ -142,6 +154,8 @@ class RDKitParser(TopologyReaderBase):
 
 
     .. versionadded:: 2.0.0
+    .. versionchanged:: 2.1.0
+       Added R/S chirality support
     """
     format = 'RDKIT'
 
@@ -167,6 +181,7 @@ class RDKitParser(TopologyReaderBase):
 
         # Atoms
         names = []
+        chiralities = []
         resnums = []
         resnames = []
         elements = []
@@ -204,6 +219,7 @@ class RDKitParser(TopologyReaderBase):
             elements.append(atom.GetSymbol())
             masses.append(atom.GetMass())
             aromatics.append(atom.GetIsAromatic())
+            chiralities.append(_rdkit_atom_to_RS(atom))
             mi = atom.GetMonomerInfo()
             if mi: # atom name and residue info are present
                 names.append(mi.GetName().strip())
@@ -258,6 +274,7 @@ class RDKitParser(TopologyReaderBase):
             (elements, Elements, object),
             (masses, Masses, np.float32),
             (aromatics, Aromaticities, bool),
+            (chiralities, RSChirality, 'U1'),
         ):
             attrs.append(Attr(np.array(vals, dtype=dtype)))
 
