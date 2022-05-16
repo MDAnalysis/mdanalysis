@@ -165,6 +165,9 @@ have to be rebuilt again.</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 1.0.0: </span>XDR offsets read from trajectory if offsets file read-in fails</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.0.0: </span>Add a InterProcessLock when generating offsets</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1052,7 +1055,8 @@ removed. Use AtomGroup or Universe as an input instead.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.XDR.offsets_filename">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.XDR.</span></span><span class="sig-name descname"><span class="pre">offsets_filename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ending</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'npz'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XDR.html#offsets_filename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.XDR.offsets_filename" title="Permalink to this definition"></a></dt>
-<dd><p>Return offset filename for XDR files. For this the filename is appended
+<dd><p>Return offset or its lock filename for XDR files.
+For this the filename is appended
 with <cite>_offsets.{ending}</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

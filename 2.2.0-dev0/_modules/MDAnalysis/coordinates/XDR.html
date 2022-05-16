@@ -129,13 +129,15 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">getctime</span><span class="p">,</span> <span class="n">getsize</span><span class="p">,</span> <span class="n">isfile</span><span class="p">,</span> <span class="n">split</span><span class="p">,</span> <span class="n">join</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">fasteners</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
 <span class="kn">from</span> <span class="nn">..lib.mdamath</span> <span class="kn">import</span> <span class="n">triclinic_box</span>
 
 
 <div class="viewcode-block" id="offsets_filename"><a class="viewcode-back" href="../../../documentation_pages/coordinates/XDR.html#MDAnalysis.coordinates.XDR.offsets_filename">[docs]</a><span class="k">def</span> <span class="nf">offsets_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">ending</span><span class="o">=</span><span class="s1">&#39;npz&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return offset filename for XDR files. For this the filename is appended</span>
+    <span class="sd">&quot;&quot;&quot;Return offset or its lock filename for XDR files.</span>
+<span class="sd">    For this the filename is appended</span>
 <span class="sd">    with `_offsets.{ending}`.</span>
 
 <span class="sd">    Parameters</span>
@@ -173,7 +175,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-    <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+
+    <span class="c1">#  `ValueError` is encountered when the offset file is corrupted.</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">):</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Failed to load offsets file </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
         <span class="k">return</span> <span class="kc">False</span></div>
 
@@ -204,6 +208,8 @@
 
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">       XDR offsets read from trajectory if offsets file read-in fails</span>
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">       Add a InterProcessLock when generating offsets</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sub</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -270,53 +276,68 @@
 
     <span class="k">def</span> <span class="nf">_load_offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;load frame offsets from file, reread them from the trajectory if that</span>
-<span class="sd">        fails&quot;&quot;&quot;</span>
+<span class="sd">        fails. To prevent the competition of generating the same offset file</span>
+<span class="sd">        from multiple processes, an `InterProcessLock` is used.&quot;&quot;&quot;</span>
         <span class="n">fname</span> <span class="o">=</span> <span class="n">offsets_filename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+        <span class="n">lock_name</span> <span class="o">=</span> <span class="n">offsets_filename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+                                     <span class="n">ending</span><span class="o">=</span><span class="s1">&#39;lock&#39;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">isfile</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_read_offsets</span><span class="p">(</span><span class="n">store</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="k">return</span>
-
-        <span class="c1"># if offsets file read correctly, data will be a dictionary of offsets</span>
-        <span class="c1"># if not, data will be False</span>
-        <span class="c1"># if False, offsets should be read from the trajectory</span>
-        <span class="c1"># this warning can be avoided by loading Universe like:</span>
-        <span class="c1"># u = mda.Universe(data.TPR, data.XTC, refresh_offsets=True)</span>
-        <span class="c1"># refer to Issue #1893</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">read_numpy_offsets</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Reading offsets from </span><span class="si">{}</span><span class="s2"> failed, &quot;</span>
-                          <span class="s2">&quot;reading offsets from trajectory instead</span><span class="se">\n</span><span class="s2">&quot;</span>
-                          <span class="s2">&quot;Consider setting &#39;refresh_offsets=True&#39; &quot;</span>
-                          <span class="s2">&quot;when loading your Universe&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fname</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_read_offsets</span><span class="p">(</span><span class="n">store</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="k">return</span>
-
-        <span class="n">ctime_ok</span> <span class="o">=</span> <span class="n">size_ok</span> <span class="o">=</span> <span class="n">n_atoms_ok</span> <span class="o">=</span> <span class="kc">False</span>
-
+        <span class="c1">#  check if the location of the lock is writable.</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">ctime_ok</span> <span class="o">=</span> <span class="n">getctime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="o">==</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;ctime&#39;</span><span class="p">]</span>
-            <span class="n">size_ok</span> <span class="o">=</span> <span class="n">getsize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="o">==</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">]</span>
-            <span class="n">n_atoms_ok</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xdr</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">==</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;n_atoms&#39;</span><span class="p">]</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="c1"># we tripped over some old offset formated file</span>
-            <span class="k">pass</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">ctime_ok</span> <span class="ow">and</span> <span class="n">size_ok</span> <span class="ow">and</span> <span class="n">n_atoms_ok</span><span class="p">):</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Reload offsets from trajectory</span><span class="se">\n</span><span class="s2"> &quot;</span>
-                          <span class="s2">&quot;ctime or size or n_atoms did not match&quot;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">fasteners</span><span class="o">.</span><span class="n">InterProcessLock</span><span class="p">(</span><span class="n">lock_name</span><span class="p">)</span> <span class="k">as</span> <span class="n">filelock</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="k">except</span> <span class="ne">PermissionError</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot write lock/offset file in same location as &quot;</span>
+                           <span class="s2">&quot;</span><span class="si">{self.filename}</span><span class="s2">. Using slow offset calculation.&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_read_offsets</span><span class="p">(</span><span class="n">store</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_xdr</span><span class="o">.</span><span class="n">set_offsets</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;offsets&#39;</span><span class="p">])</span>
+            <span class="k">return</span>
+
+        <span class="k">with</span> <span class="n">fasteners</span><span class="o">.</span><span class="n">InterProcessLock</span><span class="p">(</span><span class="n">lock_name</span><span class="p">)</span> <span class="k">as</span> <span class="n">filelock</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">isfile</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_read_offsets</span><span class="p">(</span><span class="n">store</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">return</span>
+
+            <span class="c1"># if offsets file read correctly, data will be a dictionary of offsets</span>
+            <span class="c1"># if not, data will be False</span>
+            <span class="c1"># if False, offsets should be read from the trajectory</span>
+            <span class="c1"># this warning can be avoided by loading Universe like:</span>
+            <span class="c1"># u = mda.Universe(data.TPR, data.XTC, refresh_offsets=True)</span>
+            <span class="c1"># refer to Issue #1893</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">read_numpy_offsets</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Reading offsets from </span><span class="si">{}</span><span class="s2"> failed, &quot;</span>
+                              <span class="s2">&quot;reading offsets from trajectory instead.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                              <span class="s2">&quot;Consider setting &#39;refresh_offsets=True&#39; &quot;</span>
+                              <span class="s2">&quot;when loading your Universe.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fname</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_read_offsets</span><span class="p">(</span><span class="n">store</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">return</span>
+
+            <span class="n">ctime_ok</span> <span class="o">=</span> <span class="n">size_ok</span> <span class="o">=</span> <span class="n">n_atoms_ok</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">ctime_ok</span> <span class="o">=</span> <span class="n">getctime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="o">==</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;ctime&#39;</span><span class="p">]</span>
+                <span class="n">size_ok</span> <span class="o">=</span> <span class="n">getsize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="o">==</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">]</span>
+                <span class="n">n_atoms_ok</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xdr</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">==</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;n_atoms&#39;</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="c1"># we tripped over some old offset formated file</span>
+                <span class="k">pass</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">ctime_ok</span> <span class="ow">and</span> <span class="n">size_ok</span> <span class="ow">and</span> <span class="n">n_atoms_ok</span><span class="p">):</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Reload offsets from trajectory</span><span class="se">\n</span><span class="s2"> &quot;</span>
+                              <span class="s2">&quot;ctime or size or n_atoms did not match&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_read_offsets</span><span class="p">(</span><span class="n">store</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_xdr</span><span class="o">.</span><span class="n">set_offsets</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;offsets&#39;</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">_read_offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">store</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;read frame offsets from trajectory&quot;&quot;&quot;</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="n">offsets_filename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
         <span class="n">offsets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xdr</span><span class="o">.</span><span class="n">offsets</span>
         <span class="k">if</span> <span class="n">store</span><span class="p">:</span>
             <span class="n">ctime</span> <span class="o">=</span> <span class="n">getctime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
             <span class="n">size</span> <span class="o">=</span> <span class="n">getsize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">savez</span><span class="p">(</span><span class="n">offsets_filename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">),</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">savez</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span>
                          <span class="n">offsets</span><span class="o">=</span><span class="n">offsets</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="n">ctime</span><span class="o">=</span><span class="n">ctime</span><span class="p">,</span>
                          <span class="n">n_atoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_xdr</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
