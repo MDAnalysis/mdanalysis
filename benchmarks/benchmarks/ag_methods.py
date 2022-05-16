@@ -413,4 +413,3 @@ class FragmentCaching(FragmentFinding):
 
     def time_find_cached_fragments(self, universe_type):
         frags = self.u.atoms.fragments
-        
