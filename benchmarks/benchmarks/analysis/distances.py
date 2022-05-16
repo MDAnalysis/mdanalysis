@@ -49,7 +49,7 @@ class DistancesBench(object):
         )
         self.u = mda.Universe(GRO)
         self.ag1 = self.u.atoms[:num_atoms]
-        self.ag2 = self.u.atoms[num_atoms : 2 * num_atoms]
+        self.ag2 = self.u.atoms[num_atoms: 2 * num_atoms]
         self.ag3 = self.u.atoms[-num_atoms:]
 
     def time_distance_array(self, num_atoms):
