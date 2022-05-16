@@ -185,12 +185,17 @@ class TestAtomnames(TestAtomAttr):
         return mda.Universe(PSF, DCD)
 
     def test_prev_emptyresidue(self, u):
-        assert_equal(u.residues[[]]._get_prev_residues_by_resid(),
-                     u.residues[[]])
+        # Checking group size rather than doing
+        # array comparison on zero-sized arrays (Issue #3535)
+        groupsize = len(u.residues[[]]._get_prev_residues_by_resid().atoms)
+        assert groupsize == 0
+        assert groupsize == len(u.residues[[]].atoms)
 
     def test_next_emptyresidue(self, u):
-        assert_equal(u.residues[[]]._get_next_residues_by_resid(),
-                     u.residues[[]])
+        # See above re: checking size for zero-sized arrays
+        groupsize = len(u.residues[[]]._get_next_residues_by_resid().atoms)
+        assert groupsize == 0
+        assert groupsize == len(u.residues[[]].atoms)
 
 
 class AggregationMixin(TestAtomAttr):
