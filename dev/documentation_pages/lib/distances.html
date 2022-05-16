@@ -832,6 +832,38 @@ their corresponding initial original indices.</p>
 </div>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="MDAnalysis.lib.distances.minimize_vectors">
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.distances.</span></span><span class="sig-name descname"><span class="pre">minimize_vectors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vectors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/distances.html#minimize_vectors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.distances.minimize_vectors" title="Permalink to this definition"></a></dt>
+<dd><p>Apply minimum image convention to an array of vectors</p>
+<p>This function is required for calculating the correct vectors between two
+points.  A naive approach of <code class="docutils literal notranslate"><span class="pre">ag1.positions</span> <span class="pre">-</span> <span class="pre">ag2.positions</span></code> will not
+provide the minimum vectors between particles, even if all particles are
+within the primary unit cell (box).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vectors</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>numpy.ndarray</em></a>) – Vector array of shape <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code>, either float32 or float64.  These
+represent many vectors (such as between two particles).</p></li>
+<li><p><strong>box</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>numpy.ndarray</em></a>) – The unitcell dimensions of the system, which can be orthogonal or
+triclinic and must be provided in the same format as returned by
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+<code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>minimized_vectors</strong> – Same shape and dtype as input.  The vectors from the input, but
+minimized according to the size of the box.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.1.0.</span></p>
+</div>
+</dd></dl>
+
 </section>
 </section>
 <section id="low-level-modules-for-mdanalysis-lib-distances">

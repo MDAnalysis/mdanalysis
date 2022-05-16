@@ -156,6 +156,7 @@
 <span class="sd">.. autofunction:: transform_StoR</span>
 <span class="sd">.. autofunction:: augment_coordinates(coordinates, box, r)</span>
 <span class="sd">.. autofunction:: undo_augment(results, translation, nreal)</span>
+<span class="sd">.. autofunction:: minimize_vectors(vectors, box)</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numpy.lib.utils</span> <span class="kn">import</span> <span class="n">deprecate</span>
@@ -1652,7 +1653,7 @@
     <span class="k">return</span> <span class="n">coords</span></div>
 
 
-<span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;vectors&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">enforce_dtype</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="viewcode-block" id="minimize_vectors"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.minimize_vectors">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;vectors&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">enforce_dtype</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">minimize_vectors</span><span class="p">(</span><span class="n">vectors</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Apply minimum image convention to an array of vectors</span>
 
@@ -1678,6 +1679,7 @@
 <span class="sd">        Same shape and dtype as input.  The vectors from the input, but</span>
 <span class="sd">        minimized according to the size of the box.</span>
 
+
 <span class="sd">    .. versionadded:: 2.1.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">boxtype</span><span class="p">,</span> <span class="n">box</span> <span class="o">=</span> <span class="n">check_box</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
@@ -1691,7 +1693,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">_minimize_vectors_triclinic</span><span class="p">(</span><span class="n">vectors</span><span class="p">,</span> <span class="n">box</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">output</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">output</span>
+    <span class="k">return</span> <span class="n">output</span></div>
 </pre></div>
 
            </div>
