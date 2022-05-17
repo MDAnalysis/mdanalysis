@@ -54,16 +54,9 @@ class KeyLabelStyle(BaseLabelStyle):
     def format_labels(self, entries):
         entry_list = []
         for entry in entries:
-            authors = entry.persons['author']
-            first_author = str(authors[0]).split(",")[0]
-            second_author = str(authors[len(authors)-1]).split(",")[0]
+            author = str(entry.persons['author'][0]).split(",")[0]
             year = entry.fields['year']
-            if len(authors) == 1:
-                entry_list.append(f"{first_author}{year}")
-            if len(authors) == 2:
-                entry_list.append(f"{first_author}-{second_author}{year}")
-            if len(authors) > 1:
-                entry_list.append(f"{first_author} et al. ({year})")
+            entry_list.append(f"{author}{year}")
         return entry_list
 
 
