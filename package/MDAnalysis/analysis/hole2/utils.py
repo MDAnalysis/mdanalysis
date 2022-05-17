@@ -35,6 +35,7 @@ HOLE Analysis --- :mod:`MDAnalysis.analysis.hole2.helper`
 Helper functions used in :mod:`MDAnalysis.analysis.hole2.hole`
 """
 import logging
+import shutil
 import tempfile
 import subprocess
 import os
@@ -514,16 +515,16 @@ def create_vmd_surface(sphpdb='hole.sph',
     fd, tmp_sos = tempfile.mkstemp(suffix=".sos", text=True)
     os.close(fd)
 
-    sph_process_path = util.which(sph_process)
+    sph_process_path = shutil.which(sph_process)
     if sph_process_path is None:
         raise OSError(errno.ENOENT, exe_err.format(name=sph_process,
                                                    kw='sph_process'))
     base_path = os.path.dirname(sph_process_path)
 
-    sos_triangle_path = util.which(sos_triangle)
+    sos_triangle_path = shutil.which(sos_triangle)
     if sos_triangle_path is None:
         path = os.path.join(base_path, sos_triangle)
-        sos_triangle_path = util.which(path)
+        sos_triangle_path = shutil.which(path)
     if sos_triangle_path is None:
         raise OSError(errno.ENOENT, exe_err.format(name=sos_triangle,
                                                    kw='sos_triangle'))

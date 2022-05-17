@@ -38,7 +38,7 @@ from numpy.testing import (
 
 import MDAnalysis as mda
 from MDAnalysis.analysis import hole2
-from MDAnalysis.analysis.hole2.utils import check_and_fix_long_filename
+from MDAnalysis.analysis.hole2.utils import check_and_fix_long_filename, create_vmd_surface
 from MDAnalysis.exceptions import ApplicationError
 from MDAnalysisTests.datafiles import PDB_HOLE, MULTIPDB_HOLE, DCD
 from MDAnalysisTests import executable_not_found
@@ -466,6 +466,21 @@ class TestHoleAnalysis(BaseTestHole):
         with tmpdir.as_cwd():
             with hole2.HoleAnalysis(universe_none_filename) as h:
                 h.run()
+
+    def test_create_vmd_surface(self, universe, tmpdir):
+        errmsg = exe_err.format(name='dummy_path', kw='sph_process')
+        with pytest.raises(OSError, match=errmsg):
+            create_vmd_surface(sph_process='dummy_path')
+        errmsg = exe_err.format(name='dummy_path', kw='sos_triangle')
+        with pytest.raises(OSError, match=errmsg):
+            create_vmd_surface(sos_triangle='dummy_path')
+        errmsg = 'sph_process failed'
+        with pytest.raises(OSError, match=errmsg):
+            create_vmd_surface()
+        with tmpdir.as_cwd():
+            h = hole2.HoleAnalysis(universe)
+            h.run()
+            h.create_vmd_surface()
 
 
 class TestHoleAnalysisLong(BaseTestHole):

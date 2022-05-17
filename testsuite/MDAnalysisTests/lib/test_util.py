@@ -39,7 +39,7 @@ import MDAnalysis as mda
 import MDAnalysis.lib.util as util
 import MDAnalysis.lib.mdamath as mdamath
 from MDAnalysis.lib.util import (cached, static_variables, warn_if_not_unique,
-                                 check_coords)
+                                 check_coords, which)
 from MDAnalysis.core.topologyattrs import Bonds
 from MDAnalysis.exceptions import NoDataError, DuplicateWarning
 
@@ -2104,3 +2104,8 @@ class TestCheckBox(object):
         with pytest.raises(ValueError):
             wrongbox = np.ones((3, 3), dtype=np.float32)
             boxtype, checked_box = util.check_box(wrongbox)
+
+
+def test_which_deprecated():
+    with pytest.deprecated_call():
+        which("python")

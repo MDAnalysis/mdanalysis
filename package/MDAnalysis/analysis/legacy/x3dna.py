@@ -140,7 +140,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from MDAnalysis import ApplicationError
-from MDAnalysis.lib.util import which, realpath, asiterable
+from MDAnalysis.lib.util import realpath, asiterable
 
 import logging
 
@@ -526,7 +526,7 @@ class X3DNA(BaseX3DNA):
         self.exe = {}
         x3dna_exe_name = kwargs.pop('executable', 'xdna_ensemble')
         self.x3dna_param = kwargs.pop('x3dna_param', True)
-        self.exe['xdna_ensemble'] = which(x3dna_exe_name)
+        self.exe['xdna_ensemble'] = shutil.which(x3dna_exe_name)
         if self.exe['xdna_ensemble'] is None:
             errmsg = "X3DNA binary {x3dna_exe_name!r} not found.".format(**vars())
             logger.fatal(errmsg)
@@ -543,7 +543,7 @@ class X3DNA(BaseX3DNA):
 
         # sanity checks
         for program, path in self.exe.items():
-            if path is None or which(path) is None:
+            if path is None or shutil.which(path) is None:
                 logger.error("Executable %(program)r not found, should have been %(path)r.",
                              vars())
         # results

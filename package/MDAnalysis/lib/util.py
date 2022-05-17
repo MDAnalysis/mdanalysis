@@ -534,39 +534,6 @@ def isstream(obj):
     return np.any(alternative_results)
 
 
-def which(program):
-    """Determine full path of executable `program` on :envvar:`PATH`.
-
-    (Jay at http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python)
-
-    Parameters
-    ----------
-    programe : str
-       name of the executable
-
-    Returns
-    -------
-    path : str or None
-       absolute path to the executable if it can be found, else ``None``
-
-    """
-
-    def is_exe(fpath):
-        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
-
-    fpath, fname = os.path.split(program)
-    if fpath:
-        real_program = realpath(program)
-        if is_exe(real_program):
-            return real_program
-    else:
-        for path in os.environ["PATH"].split(os.pathsep):
-            exe_file = os.path.join(path, program)
-            if is_exe(exe_file):
-                return exe_file
-    return None
-
-
 @functools.total_ordering
 class NamedStream(io.IOBase, os.PathLike):
     """Stream that also provides a (fake) name.
@@ -2417,3 +2384,38 @@ def check_box(box):
     if np.all(box[3:] == 90.):
         return 'ortho', box[:3]
     return 'tri_vecs', triclinic_vectors(box)
+
+# TODO: Remove in 3.0.0
+@deprecate(release="2.2.0", remove="3.0.0",
+           message="lib.util.which to be remove from 3.0.0 release")
+def which(program):
+    """Determine full path of executable `program` on :envvar:`PATH`.
+
+    (Jay at http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python)
+
+    Parameters
+    ----------
+    programe : str
+       name of the executable
+
+    Returns
+    -------
+    path : str or None
+       absolute path to the executable if it can be found, else ``None``
+
+    """
+
+    def is_exe(fpath):
+        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+
+    fpath, fname = os.path.split(program)
+    if fpath:
+        real_program = realpath(program)
+        if is_exe(real_program):
+            return real_program
+    else:
+        for path in os.environ["PATH"].split(os.pathsep):
+            exe_file = os.path.join(path, program)
+            if is_exe(exe_file):
+                return exe_file
+    return None
