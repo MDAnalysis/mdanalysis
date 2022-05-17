@@ -2385,13 +2385,15 @@ def check_box(box):
         return 'ortho', box[:3]
     return 'tri_vecs', triclinic_vectors(box)
 
+
 # TODO: Remove in 3.0.0
 @deprecate(release="2.2.0", remove="3.0.0",
            message="lib.util.which to be remove from 3.0.0 release")
 def which(program):
     """Determine full path of executable `program` on :envvar:`PATH`.
 
-    (Jay at http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python)
+    (Jay at http://stackoverflow.com/questions/377017/\
+        test-if-executable-exists-in-python)
 
     Parameters
     ----------

@@ -38,7 +38,9 @@ from numpy.testing import (
 
 import MDAnalysis as mda
 from MDAnalysis.analysis import hole2
-from MDAnalysis.analysis.hole2.utils import check_and_fix_long_filename, create_vmd_surface
+from MDAnalysis.analysis.hole2.utils import (check_and_fix_long_filename,
+                                             create_vmd_surface
+                                             )
 from MDAnalysis.exceptions import ApplicationError
 from MDAnalysisTests.datafiles import PDB_HOLE, MULTIPDB_HOLE, DCD
 from MDAnalysisTests import executable_not_found
