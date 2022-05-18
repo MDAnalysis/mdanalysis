@@ -71,6 +71,9 @@ Enhancements
     keyword (Issue #3605)
 
 Changes
+  * The minimm Python, NumPy, and SciPy versions (following NEP29) are now 3.8, 
+    1.19, and 1.5.0; GSD now also has a minimum version of 1.9.3 and networkx
+    has minimum version 2.0 (Issue #3665)
   * LinearDensity now saves the histogram bin edges for easier plotting as
     "hist_bin_edges" for each dimension xyz in the results dictionary.
     (Issue #2508, PR #3617)
