@@ -1434,7 +1434,9 @@ class SelectionParser(object):
         rdkit_kwargs : dict, optional
             Arguments passed to the RDKitConverter when using selection based
             on SMARTS queries
-
+        smarts_kwargs : dict, optional
+          Arguments passed internally to RDKit's `GetSubstructMatches
+          <https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol.GetSubstructMatches>`_.
 
         Returns
         -------
