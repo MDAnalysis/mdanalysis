@@ -3016,8 +3016,8 @@ class AtomGroup(GroupBase):
                 [#7;R]`` to find nitrogen atoms in rings. Requires RDKit.
                 All matches are combined as a single unique match. The `smarts`
                 selection accepts two sets of key word arguments from
-                `select_atoms()`: the rdkit_kwargs are passed internally to
-                `RDKitConverter.convert()` and the smarts_kwargs are passed to
+                `select_atoms()`: the ``rdkit_kwargs`` are passed internally to
+                `RDKitConverter.convert()` and the ``smarts_kwargs`` are passed to
                 RDKit's `GetSubstructMatches
                 <https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol.GetSubstructMatches>`_.
                 By default, the `useChirality` kwarg in rdkit_kwargs is set to true
