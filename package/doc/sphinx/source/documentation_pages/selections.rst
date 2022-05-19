@@ -175,6 +175,10 @@ smarts *SMARTS-query*
     By default, the `useChirality` kwarg in ``rdkit_kwargs`` is set to true
     and maxMatches in ``smarts_kwargs`` is ``10 * len(AtomGroup)`` or
     ``10 * len(Universe.atoms)``, whichever is applicable.
+    Note that the number of matches can occasionally exceed the default
+    value of maxMatches, causing too few atoms to be returned. If this
+    occurs, a warning will be issued. The problem can be fixed by increasing
+    the value of maxMatches. This behavior may be updated in the future.
 
 chiral *R | S*
     select a particular stereocenter. e.g. ``name C and chirality S``
