@@ -812,6 +812,13 @@ class PDBWriter(base.WriterBase):
                 not hasattr(self.obj.universe, 'bonds')):
             return
 
+        if self.obj.n_atoms >= 100000:
+            # PDB files with >100000 atoms are not supported to write
+            # bonds in CONECT.
+            warnings.warn("PDB files with more than 100000 atoms cannot"
+                          "write bonds in CONECT records.")
+            return
+
         bondset = set(itertools.chain(*(a.bonds for a in self.obj.atoms)))
         if self._reindex:
             index_attribute = 'index'
@@ -854,6 +861,7 @@ class PDBWriter(base.WriterBase):
         conect = ([mapping[a]] + sorted([mapping[at] for at in con[a]])
                   for a in atoms if a in con)
 
+        
         for c in conect:
             self.CONECT(c)
 
