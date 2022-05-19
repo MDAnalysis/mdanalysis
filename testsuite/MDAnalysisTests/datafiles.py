@@ -122,6 +122,7 @@ __all__ = [
     "DMS_DOMAINS",  # ADK closed with multiple segids
     "DMS_NO_SEGID",  # ADK closed with no segids or chains
     "CONECT",  # HIV Reverse Transcriptase with inhibitor
+    "CONECT_ERROR",  # PDB file with corrupt CONECT
     "TRZ", "TRZ_psf",
     "TRIC",
     "XTC_multi_frame",

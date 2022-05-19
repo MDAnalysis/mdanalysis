@@ -762,7 +762,7 @@ def test_write_bonds_with_100000_natoms(tmpdir):
 
     if ag.n_atoms < 100000:
         raise ValueError("test AtomGroup does not have"
-                        "more than 100000 atoms")
+                         "more than 100000 atoms")
 
     with pytest.warns(UserWarning, match='Atomgroup with >100000 atoms'):
         outfile = os.path.join(str(tmpdir), 'test.pdb')
