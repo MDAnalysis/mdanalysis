@@ -203,6 +203,9 @@ class PDBParser(TopologyReaderBase):
         except AttributeError:
             warnings.warn("Invalid atom serials were present, "
                           "bonds will not be parsed")
+        except RuntimeError:
+            warnings.warn("CONECT records was corrupt, "
+                          "bonds will not be parsed")
         else:
             # Issue 2832: don't append Bonds if there are no bonds
             if bonds:

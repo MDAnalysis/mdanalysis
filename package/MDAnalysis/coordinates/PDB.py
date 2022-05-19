@@ -861,7 +861,6 @@ class PDBWriter(base.WriterBase):
         conect = ([mapping[a]] + sorted([mapping[at] for at in con[a]])
                   for a in atoms if a in con)
 
-        
         for c in conect:
             self.CONECT(c)
 
