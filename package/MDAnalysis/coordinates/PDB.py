@@ -240,6 +240,9 @@ class PDBReader(base.ReaderBase):
     .. versionchanged:: 1.0.0
        Raise user warning for CRYST1_ record with unitary valuse
        (cubic box with sides of 1 Å) and do not set cell dimensions.
+    .. versionchanged:: 2.2.0
+       Raise `UserWarning` instead `RuntimeError`
+       when CONECT records are corrupt.
     """
     format = ['PDB', 'ENT']
     units = {'time': None, 'length': 'Angstrom'}
@@ -537,12 +540,14 @@ class PDBWriter(base.WriterBase):
        An indexing issue meant it previously used the first charater (Issue #2224)
 
     .. versionchanged:: 2.0.0
-        Add the `redindex` argument. Setting this keyword to ``True``
-        (the default) preserves the behavior in earlier versions of MDAnalysis.
-        The PDB writer checks for a valid chainID entry instead of using the
-        last character of segid. Should a chainID not be present, or not
-        conform to the PDB standard, the default value of  'X' is used.
+       Add the `redindex` argument. Setting this keyword to ``True``
+       (the default) preserves the behavior in earlier versions of MDAnalysis.
+       The PDB writer checks for a valid chainID entry instead of using the
+       last character of segid. Should a chainID not be present, or not
+       conform to the PDB standard, the default value of  'X' is used.
 
+    .. versionchanged:: 2.2.0
+       Do not write unusable conect records when n_atoms is larger than 100000.
     """
     fmt = {
         'ATOM': (
