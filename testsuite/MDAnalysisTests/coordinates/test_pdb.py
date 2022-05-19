@@ -37,7 +37,7 @@ from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        PDB_cm, PDB_cm_gz, PDB_cm_bz2,
                                        PDB_mc, PDB_mc_gz, PDB_mc_bz2,
                                        PDB_CRYOEM_BOX, MMTF_NOCRYST,
-                                       PDB_HOLE, mol2_molecule)
+                                       PDB_HOLE, mol2_molecule, CONECT_ERROR,)
 from numpy.testing import (assert_equal,
                            assert_array_almost_equal,
                            assert_almost_equal)
@@ -657,6 +657,10 @@ class TestMultiPDBReader(object):
         assert_equal(len(u1.atoms), 1890)
         assert_equal(len(u1.bonds), 1922)
 
+    def test_conect_error(self):
+        with pytest.warns(UserWarning, match='CONECT records was corrupt'):
+            u = mda.Universe(CONECT_ERROR)
+
     def test_numconnections(self, multiverse):
         u = multiverse
 
@@ -746,6 +750,23 @@ def test_write_bonds_partial(tmpdir):
     # check bonding is correct in new universe
     for a_ref, atom in zip(ag, u2.atoms):
         assert len(a_ref.bonds) == len(atom.bonds)
+
+
+def test_write_bonds_with_100000_natoms(tmpdir):
+    u = mda.Universe(CONECT)
+
+    # construct a AtomGroup with more than 100000 atoms
+    ag = u.atoms
+    for i in range(52):
+        ag += u.atoms
+
+    if ag.n_atoms < 100000:
+        raise ValueError("test AtomGroup does not have"
+                        "more than 100000 atoms")
+
+    with pytest.warns(UserWarning, match='Atomgroup with >100000 atoms'):
+        outfile = os.path.join(str(tmpdir), 'test.pdb')
+        ag.write(outfile)
 
 
 class TestMultiPDBWriter(object):

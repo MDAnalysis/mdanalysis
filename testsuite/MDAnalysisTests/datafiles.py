@@ -451,6 +451,7 @@ DMS_DOMAINS = resource_filename(__name__, 'data/adk_closed_domains.dms')
 DMS_NO_SEGID = resource_filename(__name__, 'data/adk_closed_no_segid.dms')
 
 CONECT = resource_filename(__name__, 'data/1hvr.pdb')
+CONECT_ERROR = resource_filename(__name__, 'data/conect_error.pdb')
 
 TRZ = resource_filename(__name__, 'data/trzfile.trz')
 TRZ_psf = resource_filename(__name__, 'data/trz_psf.psf')
