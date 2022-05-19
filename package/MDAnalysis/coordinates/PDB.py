@@ -240,9 +240,6 @@ class PDBReader(base.ReaderBase):
     .. versionchanged:: 1.0.0
        Raise user warning for CRYST1_ record with unitary valuse
        (cubic box with sides of 1 Å) and do not set cell dimensions.
-    .. versionchanged:: 2.2.0
-       Raise `UserWarning` instead `RuntimeError`
-       when CONECT records are corrupt.
     """
     format = ['PDB', 'ENT']
     units = {'time': None, 'length': 'Angstrom'}
