@@ -585,6 +585,10 @@ class TestSelectionRDKit(object):
         assert sel.n_atoms == 2
         sel2 = u2.select_atoms("smarts c")
         assert sel2.n_atoms == 4
+        with pytest.warns(UserWarning) as warnings:
+            u2.select_atoms("smarts C", smarts_kwargs=dict(maxMatches=2))
+            u2.select_atoms("smarts C", smarts_kwargs=dict(maxMatches=1000))
+            assert len(warnings) == 1
 
     def test_passing_use_chirality_to_converter(self):
         u = mda.Universe.from_smiles("CC[C@H](C)O")

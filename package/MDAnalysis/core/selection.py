@@ -680,8 +680,16 @@ class SmartsSelection(Selection):
             raise ValueError(f"{self.pattern!r} is not a valid SMARTS query")
         mol = group.convert_to("RDKIT", **self.rdkit_kwargs)
         self.smarts_kwargs.setdefault("useChirality", True)
-        self.smarts_kwargs.setdefault("maxMatches", 1000)
+        self.smarts_kwargs.setdefault("maxMatches", len(group) * 10)
         matches = mol.GetSubstructMatches(pattern, **self.smarts_kwargs)
+        if len(matches) == self.smarts_kwargs["maxMatches"]:
+            warnings.warn("Your smarts-based atom selection returned the max"
+                          "number of matches. This indicates that not all"
+                          "matching atoms were selected. When calling"
+                          "atom_group.select_atoms(), the default value"
+                          "of maxMatches is len(atom_group * 10). To fix, "
+                          "add the following argument to select_atoms: \n"
+                          "smarts_kwargs={maxMatches: <higher_value>}")
         # flatten all matches and remove duplicated indices
         indices = np.unique([idx for match in matches for idx in match])
         # create boolean mask for atoms based on index
