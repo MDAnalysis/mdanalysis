@@ -814,12 +814,6 @@ class PDBWriter(base.WriterBase):
                 not hasattr(self.obj.universe, 'bonds')):
             return
 
-        if (hasattr(self.obj, 'n_atoms') and self.obj.n_atoms >= 100000 or
-                self.obj.atoms.n_atoms >= 100000):
-            warnings.warn("Atomgroup with >100000 atoms cannot write "
-                          "bonds to PDB CONECT records.")
-            return
-
         bondset = set(itertools.chain(*(a.bonds for a in self.obj.atoms)))
         if self._reindex:
             index_attribute = 'index'
@@ -858,6 +852,11 @@ class PDBWriter(base.WriterBase):
                 continue
             con[a2].append(a1)
             con[a1].append(a2)
+
+        if not all(ag_ind <= 100000 for ag_ind in con.keys()):
+            warnings.warn("Atom with index >100000 cannot write "
+                              "bonds to PDB CONECT records.") 
+            return
 
         conect = ([mapping[a]] + sorted([mapping[at] for at in con[a]])
                   for a in atoms if a in con)

@@ -752,21 +752,15 @@ def test_write_bonds_partial(tmpdir):
         assert len(a_ref.bonds) == len(atom.bonds)
 
 
-def test_write_bonds_with_100000_natoms(tmpdir):
+def test_write_bonds_with_100000_ag_index(tmpdir):
     u = mda.Universe(CONECT)
 
-    # construct a AtomGroup with more than 100000 atoms
     ag = u.atoms
-    for i in range(52):
-        ag += u.atoms
+    ag.ids = ag.ids + 100000
 
-    if ag.n_atoms < 100000:
-        raise ValueError("test AtomGroup does not have"
-                         "more than 100000 atoms")
-
-    with pytest.warns(UserWarning, match='Atomgroup with >100000 atoms'):
+    with pytest.warns(UserWarning, match='Atom with index'):
         outfile = os.path.join(str(tmpdir), 'test.pdb')
-        ag.write(outfile)
+        ag.write(outfile, reindex=False)
 
 
 class TestMultiPDBWriter(object):
