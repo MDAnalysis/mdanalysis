@@ -1106,10 +1106,10 @@ class GroupBase(_MutableBase):
     @_pbc_to_wrap
     @check_wrap_and_unwrap
     def center_of_geometry(self, wrap=False, unwrap=False, compound='group'):
-        r"""Computes the center of geometry (a.k.a. centroid)
+        r"""Center of geometry of (compounds of) the group
 
         .. math::
-            \boldsymbol R = \frac{\sum_i \boldsymbol r_i}{\sum i} 
+            \boldsymbol R = \frac{\sum_i \boldsymbol r_i}{\sum i}
 
         where :math:`\boldsymbol r_i` of :class:`Atoms<Atom>` :math:`i`.
         Centers of geometry per :class:`Residue` or per :class:`Segment` can

@@ -1454,13 +1454,10 @@ class Masses(AtomAttr):
     @_pbc_to_wrap
     @check_wrap_and_unwrap
     def center_of_mass(group, wrap=False, unwrap=False, compound='group'):
-        r"""Center of mass of (compounds of) the group.
-
-        Computes the center of mass
+        r"""Center of mass of (compounds of) the group
 
         .. math::
-            \boldsymbol R = \frac{\sum_i \vert m_i \vert \boldsymbol r_i}
-                                 {\sum \vert m_i \vert}
+            \boldsymbol R = \frac{\sum_i m_i \boldsymbol r_i}{\sum m_i}
 
         where :math:`m_i` is the mass and :math:`\boldsymbol r_i` the
         position of atom :math:`i` in the given
@@ -1934,9 +1931,7 @@ class Charges(AtomAttr):
     @_pbc_to_wrap
     @check_wrap_and_unwrap
     def center_of_charge(group, wrap=False, unwrap=False, compound='group'):
-        r"""Center of (absolute) charge of (compounds of) the group.
-
-        Computes the center of charge
+        r"""Center of (absolute) charge of (compounds of) the group
 
         .. math::
             \boldsymbol R = \frac{\sum_i \vert q_i \vert \boldsymbol r_i}
@@ -1969,7 +1964,7 @@ class Charges(AtomAttr):
             If ``'group'``, the center of mass of all atoms in the group will
             be returned as a single position vector. Otherwise, the centers of
             mass of each :class:`Segment`, :class:`Residue`, molecule, or
-            fragment will be returned as an array of position vectors, i.e. 
+            fragment will be returned as an array of position vectors, i.e.
             a 2d array.
             Note that, in any case, *only* the positions of
             :class:`Atoms<Atom>` *belonging to the group* will be taken into
@@ -1982,8 +1977,8 @@ class Charges(AtomAttr):
             If `compound` was set to ``'group'``, the output will be a single
             position vector.
             If `compound` was set to ``'segments'`` or ``'residues'``, the
-            output will be a 2d coordinate array of shape ``(n, 3)`` where ``n``
-            is the number of compounds.
+            output will be a 2d coordinate array of shape ``(n, 3)`` where
+            ``n`` is the number of compounds.
 
         Note
         ----
