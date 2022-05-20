@@ -22,7 +22,7 @@ The rules for this file:
 
 Fixes
   * Fix reading error when PDB CONECT records are corrupt. (Issue #988)
-  * Fix writing unusable PDB CONECT records with many atoms. (Issue #988)
+  * Fix writing unusable PDB CONECT records with index>100000. (Issue #988)
   * Fix the competition when generating offsets from multiple processes by
     using a interprocess file lock. (Issue #1988, PR #3375)
   * Fix the error when trying to load a corrupted offset file (Issue #3230

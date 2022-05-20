@@ -544,7 +544,8 @@ class PDBWriter(base.WriterBase):
        conform to the PDB standard, the default value of  'X' is used.
 
     .. versionchanged:: 2.2.0
-       Do not write unusable conect records when n_atoms is larger than 100000.
+       Do not write unusable conect records when ag index
+       is larger than 100000.
     """
     fmt = {
         'ATOM': (
@@ -855,7 +856,7 @@ class PDBWriter(base.WriterBase):
 
         if not all(ag_ind <= 100000 for ag_ind in con.keys()):
             warnings.warn("Atom with index >100000 cannot write "
-                              "bonds to PDB CONECT records.") 
+                          "bonds to PDB CONECT records.")
             return
 
         conect = ([mapping[a]] + sorted([mapping[at] for at in con[a]])
