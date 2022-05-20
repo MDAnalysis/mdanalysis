@@ -539,6 +539,8 @@ class DumpReader(base.ReaderBase):
 
         if additional_columns:
             self._additional_columns = additional_columns
+        else:
+            self._additional_columns = []
 
         self._cache = {}
 
