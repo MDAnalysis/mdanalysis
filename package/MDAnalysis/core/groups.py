@@ -1109,7 +1109,7 @@ class GroupBase(_MutableBase):
         r"""Center of geometry of (compounds of) the group
 
         .. math::
-            \boldsymbol R = \frac{\sum_i \boldsymbol r_i}{\sum i}
+            \boldsymbol R = \frac{\sum_i \boldsymbol r_i}{\sum_i 1}
 
         where :math:`\boldsymbol r_i` of :class:`Atoms<Atom>` :math:`i`.
         Centers of geometry per :class:`Residue` or per :class:`Segment` can
