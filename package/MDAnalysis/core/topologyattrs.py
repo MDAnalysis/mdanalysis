@@ -1984,6 +1984,8 @@ class Charges(AtomAttr):
         ----
         This method can only be accessed if the underlying topology has
         information about atomic charges.
+
+        .. versionadded:: 2.2.0
         """
         atoms = group.atoms
         return atoms.center(weights=atoms.charges.__abs__(),
