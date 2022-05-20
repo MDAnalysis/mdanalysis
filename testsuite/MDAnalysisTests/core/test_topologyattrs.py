@@ -35,9 +35,10 @@ from MDAnalysisTests import make_Universe, no_deprecated_call
 
 import MDAnalysis as mda
 import MDAnalysis.core.topologyattrs as tpattrs
-from MDAnalysis.core import groups
+from MDAnalysis.core._get_readers import get_reader_for
 from MDAnalysis.core.topology import Topology
 from MDAnalysis.exceptions import NoDataError
+from soupsieve import escape
 
 
 class DummyGroup(object):
@@ -522,6 +523,7 @@ def test_static_typing_from_empty():
 
 @pytest.mark.parametrize('level, transplant_name', (
     ('atoms', 'center_of_mass'),
+    ('atoms', 'center_of_charge'),
     ('atoms', 'total_charge'),
     ('residues', 'total_charge'),
 ))
@@ -639,3 +641,54 @@ class TestStringInterning:
 
         assert len(ag2) == 5
         assert (ag2.ix == ag.ix).all()
+
+
+class Testcenter_of_charge():
+
+    compounds = ['group', 'segments', 'residues', 'molecules', 'fragments']
+
+    @pytest.fixture
+    def u(self):
+        """A universe containing two dimers with a finite dipole moment."""
+        universe = mda.Universe.empty(n_atoms=4,
+                                      n_residues=2,
+                                      n_segments=2,
+                                      atom_resindex=[0, 0, 1, 1],
+                                      residue_segindex=[0, 1])
+
+        universe.add_TopologyAttr("masses", [1, 0, 0, 1])
+        universe.add_TopologyAttr("charges", [1, -1, -1, 1])
+        universe.add_TopologyAttr("bonds", ((0, 1), (2, 3)))
+        universe.add_TopologyAttr("resids", [0, 1])
+        universe.add_TopologyAttr("molnums", [0, 1])
+
+        positions = np.array([[0, 0, 0], [0, 1, 0], [2, 1, 0], [2, 2, 0]])
+
+        universe.trajectory = get_reader_for(positions)(positions,
+                                                        order='fac',
+                                                        n_atoms=4)
+
+        for ts in universe.trajectory:
+            ts.dimensions = np.array([1, 2, 3, 90, 90, 90])
+
+        return universe
+
+    @pytest.mark.parametrize('compound', compounds)
+    def test_coc(self, u, compound):
+        coc = u.atoms.center_of_charge(compound=compound)
+        if compound == "group":
+            coc_ref = [1, 1, 0]
+        else:
+            coc_ref = [[0, 0.5, 0], [2, 1.5, 0]]
+        assert_equal(coc, coc_ref)
+
+    @pytest.mark.parametrize('compound', compounds)
+    def test_coc_wrap(self, u, compound):
+        coc = u.atoms[:2].center_of_charge(compound=compound, wrap=True)
+        assert_equal(coc.flatten(), [0, 0.5, 0])
+
+    @pytest.mark.parametrize('compound', compounds)
+    def test_coc_unwrap(self, u, compound):
+        u.atoms.wrap
+        coc = u.atoms[:2].center_of_charge(compound=compound, unwrap=True)
+        assert_equal(coc.flatten(), [0, -0.5, 0])

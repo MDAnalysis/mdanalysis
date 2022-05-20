@@ -57,6 +57,9 @@ Fixes
   * Fixed BAT method Cartesian modifies input data. (Issue #3501)
 
 Enhancements
+  * Added equations for `center_of_mass` and `center_of_geometry`to
+    documentation (PR #3671)
+  * Added `center_of_charge` attribute (PR #3671)
   * LinearDensity now works with updating AtomGroups (Issue #2508, PR #3617)
   * Link PMDA in documentation (PR #3652)
   * Added MSD example where multiple replicates are combined(Issue #3578

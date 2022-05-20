@@ -1106,12 +1106,14 @@ class GroupBase(_MutableBase):
     @_pbc_to_wrap
     @check_wrap_and_unwrap
     def center_of_geometry(self, wrap=False, unwrap=False, compound='group'):
-        """Center of geometry of (compounds of) the group.
+        r"""Computes the center of geometry (a.k.a. centroid)
 
-        Computes the center of geometry (a.k.a. centroid) of
-        :class:`Atoms<Atom>` in the group. Centers of geometry per
-        :class:`Residue`, :class:`Segment`, molecule, or fragment can be
-        obtained by setting the `compound` parameter accordingly.
+        .. math::
+            \boldsymbol R = \frac{\sum_i \boldsymbol r_i}{\sum i} 
+
+        where :math:`\boldsymbol r_i` of :class:`Atoms<Atom>` :math:`i`.
+        Centers of geometry per :class:`Residue` or per :class:`Segment` can
+        be obtained by setting the `compound` parameter accordingly.
 
         Parameters
         ----------
