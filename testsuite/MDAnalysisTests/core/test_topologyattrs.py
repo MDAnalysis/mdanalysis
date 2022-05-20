@@ -31,14 +31,13 @@ from numpy.testing import (
 )
 import pytest
 from MDAnalysisTests.datafiles import PSF, DCD, PDB_CHECK_RIGHTHAND_PA, MMTF
-from MDAnalysisTests import make_Universe, no_deprecated_call
+from MDAnalysisTests import make_Universe
 
 import MDAnalysis as mda
 import MDAnalysis.core.topologyattrs as tpattrs
 from MDAnalysis.core._get_readers import get_reader_for
 from MDAnalysis.core.topology import Topology
 from MDAnalysis.exceptions import NoDataError
-from soupsieve import escape
 
 
 class DummyGroup(object):
