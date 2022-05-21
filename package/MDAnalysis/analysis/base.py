@@ -308,7 +308,6 @@ class AnalysisBase(object):
         -------
 
         .. code-block:: python
-        
            import MDAnalysis as mda
            from MDAnalysisTests.datafiles import TPR, XTC
            from MDAnalysis.analysis import rms
