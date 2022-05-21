@@ -20,11 +20,105 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-"""
-Analysis building blocks --- :mod:`MDAnalysis.analysis.base`
+"""Analysis building blocks --- :mod:`MDAnalysis.analysis.base`
 ============================================================
 
-The building blocks for creating Analysis classes.
+MDAnalysis provides building blocks for creating analysis classes. One can
+think of each analysis class as a "tool" that performs a specific analysis over
+the trajectory frames and stores the results in the tool.
+
+Analysis classes are derived from :class:`AnalysisBase` by subclassing. This
+inheritance provides a common workflow and API for users and makes many
+additional features automatically available (such as frame selections and a
+verbose progressbar). The important points for analysis classes are:
+
+#. Analysis tools are Python classes derived from :class:`AnalysisBase`.
+#. When instantiating an analysis, the :class:`Universe` or :class:`AtomGroup`
+   that the analysis operates on is provided together with any other parameters
+   that are kept fixed for the specific analysis.
+#. The analysis is performed with :meth:`~AnalysisBase.run` method. It has a
+   common set of arguments such as being able to select the frames the analysis
+   is performed on. The `verbose` keyword argument enables additional output. A
+   progressbar is shown by default that also shows an estimate for the
+   remaining time until the end of the analysis.
+#. Results are always stored in the attribute :attr:`AnalysisBase.results`,
+   which is an instance of :class:`Results`, a kind of dictionary that allows
+   allows item access via attributes. Each analysis class decides what and how
+   to store in :class:`Results` and needs to document it. For time series, the
+   :attr:`AnalysisBase.times` contains the time stamps of the analyzed frames.
+
+
+Example of using a standard analysis tool
+-----------------------------------------
+
+For example, the :class:`MDAnalysis.analysis.rms.RMSD` performs a
+root-mean-square distance analysis in the following way:
+
+.. code-block:: python
+
+   import MDAnalysis as mda
+   from MDAnalysisTests.datafiles import TPR, XTC
+
+   from MDAnalysis.analysis import rms
+
+   u = mda.Universe(TPR, XTC)
+
+   # (2) instantiate analysis
+   rmsd = rms.RMSD(u, select='name CA')
+
+   # (3) the run() method can select frames in different ways
+   # run on all frames (with progressbar)
+   rmsd.run(verbose=True)
+
+   # or start, stop, and step can be used
+   rmsd.run(start=2, stop=8, step=2)
+
+   # a list of frames to run the analysis on can be passed
+   rmsd.run(frames=[0,2,3,6,9])
+
+   # a list of booleans the same length of the trajectory can be used
+   rmsd.run(frames=[True, False, True, True, False, False, True, False,
+                    False, True])
+
+   # (4) analyze the results, e.g., plot
+   t = rmsd.times
+   y = rmsd.results.rmsd[:, 2]   # RMSD at column index 2, see docs
+
+   import matplotlib.pyplot as plt
+   plt.plot(t, y)
+   plt.xlabel("time (ps)")
+   plt.ylabel("RMSD (Å)")
+
+
+Writing new analysis tools
+--------------------------
+
+In order to write new analysis tools, derive a class from :class:`AnalysisBase`
+and define at least the :meth:`_single_frame` method, as described in
+:class:`AnalysisBase`.
+
+.. SeeAlso::
+
+   The chapter `Writing your own trajectory analysis`_ in the *User Guide*
+   contains a step-by-step example for writing analysis tools with
+   :class:`AnalysisBase`.
+
+
+.. _`Writing your own trajectory analysis`:
+   https://userguide.mdanalysis.org/stable/examples/analysis/custom_trajectory_analysis.html
+
+
+Classes
+-------
+
+The :class:`Results` and :class:`AnalysisBase` classes are the essential
+building blocks for almost all MDAnalysis tools in the
+:mod:`MDAnalysis.analysis` module. They are supposed to be easily useable and
+extendable.
+
+:class:`AnalysisFromFunction` and the :func:`analysis_class` functions are
+simple wrappers that make it even easier to create fully-featured analysis
+tools if only the single-frame analysis function needs to be written.
 
 """
 from collections import UserDict
@@ -302,27 +396,6 @@ class AnalysisBase(object):
             array of integers or booleans to slice trajectory
         verbose : bool, optional
             Turn on verbosity
-
-
-        Example
-        -------
-
-        .. code-block:: python
-           import MDAnalysis as mda
-           from MDAnalysisTests.datafiles import TPR, XTC
-           from MDAnalysis.analysis import rms
-
-           u = mda.Universe(TPR, XTC)
-
-           rmsd = rms.RMSD(u, select='name CA')
-           # A list of frames to run the analysis on can be passed
-           rmsd.run(frames=[0,2,3,6,9])
-           # A list of booleans the same length of the trajectory can also be
-           # used
-           rmsd.run(frames=[True, False, True, True, False, False, True, False,
-                            False, True])
-           # Or start, stop, and step can be used
-           rmsd.run(start=2, stop=8, step=2)
 
 
         .. versionchanged:: 2.1.0
