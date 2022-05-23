@@ -73,6 +73,7 @@ Enhancements
     analysis.nucleicacids
   * CRD extended format can now be explicitly requested with the `extended`
     keyword (Issue #3605)
+  * Added benchmarks in lib.distances for enhancement (Issue #3205, PR #3641)
 
 Changes
   * `fasteners` package is now a core dependency (Issues #3230, #1988, PR #3375)
