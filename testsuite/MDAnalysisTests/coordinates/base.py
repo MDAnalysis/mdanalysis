@@ -659,9 +659,9 @@ def assert_timestep_equal(A, B, msg=''):
 
 
 def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):
-    if not isinstance(A, Timestep):
+    if not isinstance(A, mda.coordinates.timestep.Timestep):
         raise AssertionError('A is not of type Timestep')
-    if not isinstance(B, Timestep):
+    if not isinstance(B, mda.coordinates.timestep.Timestep):
         raise AssertionError('B is not of type Timestep')
 
     if A.frame != B.frame:

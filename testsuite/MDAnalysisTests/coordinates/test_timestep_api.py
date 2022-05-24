@@ -148,9 +148,9 @@ class TestTimestep(object):
     def test_coordinate_getter_shortcuts(self, ts):
         """testing that reading _x, _y, and _z works as expected
         # (Issue 224) (TestTimestep)"""
-        assert_equal(ts._x, ts._pos[:, 0])
-        assert_equal(ts._y, ts._pos[:, 1])
-        assert_equal(ts._z, ts._pos[:, 2])
+        assert_equal(ts._x, ts.positions[:, 0])
+        assert_equal(ts._y, ts.positions[:, 1])
+        assert_equal(ts._z, ts.positions[:, 2])
 
     def test_coordinate_setter_shortcuts(self, ts):
         # Check that _x _y and _z are read only
@@ -162,17 +162,17 @@ class TestTimestep(object):
     # n_atoms should be a read only property
     # all Timesteps require this attribute
     def test_n_atoms(self, ts):
-        assert_equal(ts.n_atoms, ts._n_atoms)
+        assert_equal(ts.n_atoms, self.size)
 
     def test_n_atoms_readonly(self, ts):
         with pytest.raises(AttributeError):
             ts.__setattr__('n_atoms', 20)
 
     def test_n_atoms_presence(self, ts):
-        assert_equal(hasattr(ts, '_n_atoms'), True)
+        assert_equal(hasattr(ts, 'n_atoms'), True)
 
     def test_unitcell_presence(self, ts):
-        assert_equal(hasattr(ts, '_unitcell'), True)
+        assert_equal(hasattr(ts, 'dimensions'), True)
 
     def test_data_presence(self, ts):
         assert_equal(hasattr(ts, 'data'), True)

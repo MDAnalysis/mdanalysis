@@ -31,7 +31,7 @@ import numpy as np
 cimport numpy as cnp
 cnp.import_array()
 
-from libc.stdint cimport uint64_t
+from libc.stdint cimport int64_t, uint64_t
 from libcpp cimport bool
 
 from . import core
@@ -47,12 +47,38 @@ from ..auxiliary.base import AuxReader
 from ..auxiliary.core import auxreader
 from ..lib.util import asiterable, Namespace
 
+ctypedef fused ArrayCastable:
+    cnp.ndarray
+    list
+
 cdef class Timestep:
+    """Timestep data for one frame
+
+    :Methods:
+
+      ``ts = Timestep(n_atoms)``
+
+         create a timestep object with space for n_atoms
+
+
+    .. versionchanged:: 0.11.0
+       Added :meth:`from_timestep` and :meth:`from_coordinates` constructor
+       methods.
+       :class:`Timestep` init now only accepts integer creation.
+       :attr:`n_atoms` now a read only property.
+       :attr:`frame` now 0-based instead of 1-based.
+       Attributes `status` and `step` removed.
+    .. versionchanged:: 2.0.0
+       Timestep now can be (un)pickled. Weakref for Reader
+       will be dropped.
+       Timestep now stores in to numpy array memory in 'C' order rather than
+       'F' (Fortran).
+    """
 
     order = 'C'
 
-    cdef public uint64_t n_atoms
-    cdef public uint64_t frame 
+    cdef uint64_t _n_atoms
+    cdef public int64_t frame 
 
 
     cdef bool _has_positions
@@ -73,7 +99,7 @@ cdef class Timestep:
 
     def __cinit__(self, uint64_t n_atoms, dtype=np.float32, **kwargs):
         # c++ level objects
-        self.n_atoms =  n_atoms
+        self._n_atoms =  n_atoms
         self.frame = -1
         self._has_positions = False
         self._has_velocities = False
@@ -108,6 +134,19 @@ cdef class Timestep:
     
     def __dealloc__(self):
             pass
+
+    @property
+    def n_atoms(self):
+        """A read only view of the number of atoms this Timestep has
+
+        .. versionchanged:: 0.11.0
+           Changed to read only property
+        """
+        # In future could do some magic here to make setting n_atoms
+        # resize the coordinate arrays, but
+        # - not sure if that is ever useful
+        # - not sure how to manage existing data upon extension
+        return self._n_atoms
 
     @property
     def dtype(self):
@@ -176,9 +215,9 @@ cdef class Timestep:
 
  
     @positions.setter
-    def positions(self,  cnp.ndarray new_positions):
+    def positions(self, new_positions):
         # force C contig memory order
-        self._positions = new_positions
+        self._positions[:,:] = np.ascontiguousarray(new_positions).copy()
         self._has_positions = True
 
 
@@ -223,7 +262,7 @@ cdef class Timestep:
             return self._dimensions
 
     @dimensions.setter
-    def dimensions(self, cnp.ndarray new_dimensions):
+    def dimensions(self,  new_dimensions):
         if new_dimensions is None:
             self._dimensions[:] = 0
         else:
@@ -300,7 +339,7 @@ cdef class Timestep:
 
  
     @velocities.setter
-    def velocities(self,  cnp.ndarray new_velocities):
+    def velocities(self,  new_velocities):
         # force C contig memory order
         self._velocities[:,:] = np.ascontiguousarray(new_velocities).copy()
         self._has_velocities = True
@@ -316,7 +355,7 @@ cdef class Timestep:
 
  
     @forces.setter
-    def forces(self,  cnp.ndarray new_forces):
+    def forces(self,  new_forces):
         # force C contig memory order
         self._forces[:,:] = np.ascontiguousarray(new_forces).copy()
         self._has_forces = True
@@ -481,9 +520,9 @@ cdef class Timestep:
            :attr:`MDAnalysis.core.groups.Atom.index` (0-based)
         """
         if isinstance(atoms, numbers.Integral):
-            return self._pos[atoms]
+            return self._positions[atoms]
         elif isinstance(atoms, (slice, np.ndarray)):
-            return self._pos[atoms]
+            return self._positions[atoms]
         else:
             raise TypeError
 
