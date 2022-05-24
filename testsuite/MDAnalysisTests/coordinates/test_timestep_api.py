@@ -52,7 +52,7 @@ class TestTimestep(object):
     comes into contact with.  Failures here are the Timesteps fault.
     """
     # define the class made in test
-    Timestep = mda.coordinates.base.Timestep
+    Timestep = mda.coordinates.timestep.Timestep
     name = "base"  # for error messages only
     size = 10  # size of arrays, 10 is enough to allow slicing etc
     # each coord is unique

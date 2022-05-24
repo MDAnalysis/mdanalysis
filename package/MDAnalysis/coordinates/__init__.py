@@ -749,6 +749,7 @@ Methods
 __all__ = ['reader', 'writer']
 
 from . import base
+from . import timestep
 from .core import reader, writer
 from . import chain
 from . import chemfiles
