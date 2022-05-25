@@ -76,7 +76,7 @@ cdef class Timestep:
     order = 'C'
 
     cdef uint64_t _n_atoms
-    cdef public int64_t  _frame 
+    cdef public int64_t  frame 
 
 
     cdef bool _has_positions
@@ -100,7 +100,7 @@ cdef class Timestep:
     def __cinit__(self, uint64_t n_atoms, dtype=np.float32, **kwargs):
         # c++ level objects
         self._n_atoms =  n_atoms
-        self._frame = -1
+        self.frame = -1
         self._has_positions = False
         self._has_velocities = False
         self._has_forces = False
@@ -119,6 +119,7 @@ cdef class Timestep:
                 pass
         try:
             # do I have a hook back to the Reader?
+            # can possibly __cinit__ this with PyWeakRefNew
             self._reader = weakref.ref(kwargs['reader'])
         except KeyError:
             pass
@@ -134,13 +135,13 @@ cdef class Timestep:
     def __dealloc__(self):
             pass
 
-    @property
-    def frame(self):
-        return self._frame
+    # @property
+    # def frame(self):
+    #     return self._frame
     
-    @frame.setter
-    def frame(self, frame):
-        self._frame = frame
+    # @frame.setter
+    # def frame(self, frame):
+    #     self._frame = frame
 
     @property
     def n_atoms(self):
@@ -381,7 +382,7 @@ cdef class Timestep:
                  forces=other.has_forces,
                  **kwargs)
         ts.frame = other.frame
-        if  other.dimensions:
+        if  other.dimensions is not None:
             ts.dimensions = other.dimensions.copy(order=cls.order)
         try:
             ts.positions = other.positions.copy(order=cls.order)
