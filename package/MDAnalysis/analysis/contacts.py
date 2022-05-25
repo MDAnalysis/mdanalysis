@@ -134,7 +134,7 @@ conformation and plot the trajectory projected on q1-q2
     f.show()
 
 Compare the resulting pathway to the `MinActionPath result for AdK`_
-cite:p:`Franklin2007`.
+:cite:p:`Franklin2007`.
 
 .. _MinActionPath result for AdK:
    http://lorentz.dynstr.pasteur.fr/joel/adenylate.php
@@ -262,7 +262,6 @@ def soft_cut_q(r, r0, beta=5.0, lambda_constant=1.8):
         :style: MDA
 
         Best2013
-    
     """
     r = np.asarray(r)
     r0 = np.asarray(r0)
