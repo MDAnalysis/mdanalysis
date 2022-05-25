@@ -30,7 +30,7 @@ from numpy.testing import (assert_equal, assert_almost_equal,
                            assert_array_almost_equal, assert_allclose)
 
 import MDAnalysis as mda
-from MDAnalysis.coordinates.base import Timestep
+from MDAnalysis.coordinates.timestep import Timestep
 from MDAnalysis.transformations import translate
 from MDAnalysis import NoDataError
 

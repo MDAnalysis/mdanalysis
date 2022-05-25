@@ -40,6 +40,7 @@ from MDAnalysisTests.datafiles import (PSF, XYZ_five, INPCRD, DCD, DLP_CONFIG,
                                        NCDF, TRZ_psf, TRZ)
 
 from MDAnalysisTests.coordinates.base import assert_timestep_equal, assert_timestep_almost_equal
+from MDAnalysis.coordinates.timestep import Timestep
 import pytest
 
 
@@ -52,7 +53,7 @@ class TestTimestep(object):
     comes into contact with.  Failures here are the Timesteps fault.
     """
     # define the class made in test
-    Timestep = mda.coordinates.timestep.Timestep
+    Timestep = Timestep
     name = "base"  # for error messages only
     size = 10  # size of arrays, 10 is enough to allow slicing etc
     # each coord is unique

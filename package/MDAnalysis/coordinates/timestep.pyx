@@ -78,20 +78,22 @@ cdef class Timestep:
     order = 'C'
 
     cdef uint64_t _n_atoms
-    cdef public int64_t frame 
+    cdef public int64_t  _frame 
 
 
     cdef bool _has_positions
     cdef bool _has_velocities
     cdef bool _has_forces
 
-    cdef cnp.ndarray _dimensions
-    cdef cnp.ndarray _positions
-    cdef cnp.ndarray _velocities
-    cdef cnp.ndarray _forces
+    # these have to be public for testing
+    cdef public cnp.ndarray _unitcell
+    cdef public cnp.ndarray _pos
+    cdef public cnp.ndarray _velocities
+    cdef public cnp.ndarray _forces
 
     cdef object _dtype
     cdef public dict data
+    cdef public object _reader
     cdef public object aux
 
 
@@ -100,13 +102,12 @@ cdef class Timestep:
     def __cinit__(self, uint64_t n_atoms, dtype=np.float32, **kwargs):
         # c++ level objects
         self._n_atoms =  n_atoms
-        self.frame = -1
+        self._frame = -1
         self._has_positions = False
         self._has_velocities = False
         self._has_forces = False
 
-        # match original can this be removed?
-        self._dimensions = np.zeros(6, dtype=np.float32)
+        self._unitcell = np.zeros(6, dtype=np.float32)
 
     def __init__(self, uint64_t n_atoms, dtype=np.float32, **kwargs):
         #python objects
@@ -136,6 +137,14 @@ cdef class Timestep:
             pass
 
     @property
+    def frame(self):
+        return self._frame
+    
+    @frame.setter
+    def frame(self, frame):
+        self._frame = frame
+
+    @property
     def n_atoms(self):
         """A read only view of the number of atoms this Timestep has
 
@@ -163,7 +172,7 @@ cdef class Timestep:
             # Setting this will always reallocate position data
             # ie
             # True -> False -> True will wipe data from first True state
-            self._positions = np.zeros((self.n_atoms, 3), dtype=self.dtype,
+            self._pos = np.zeros((self.n_atoms, 3), dtype=self.dtype,
                                  order=self.order)
             self._has_positions = True
         elif not val:
@@ -209,7 +218,7 @@ cdef class Timestep:
     @property
     def positions(self):
         if self._has_positions:
-            return self._positions
+            return self._pos
         else:
             raise NoDataError("This Timestep has no position information")
 
@@ -217,7 +226,7 @@ cdef class Timestep:
     @positions.setter
     def positions(self, new_positions):
         # force C contig memory order
-        self._positions[:,:] = np.ascontiguousarray(new_positions).copy()
+        self._pos[:,:] = np.ascontiguousarray(new_positions).copy()
         self._has_positions = True
 
 
@@ -256,17 +265,17 @@ cdef class Timestep:
         lengths *a*, *b*, *c* are in the MDAnalysis length unit (Å), and
         angles are in degrees.
         """
-        if (self._dimensions[:3] == 0).all():
+        if (self._unitcell[:3] == 0).all():
             return None
         else:
-            return self._dimensions
+            return self._unitcell
 
     @dimensions.setter
     def dimensions(self,  new_dimensions):
         if new_dimensions is None:
-            self._dimensions[:] = 0
+            self._unitcell[:] = 0
         else:
-            self._dimensions[:] = np.ascontiguousarray(new_dimensions).copy()
+            self._unitcell[:] = np.ascontiguousarray(new_dimensions).copy()
 
     
     @property
@@ -520,9 +529,9 @@ cdef class Timestep:
            :attr:`MDAnalysis.core.groups.Atom.index` (0-based)
         """
         if isinstance(atoms, numbers.Integral):
-            return self._positions[atoms]
+            return self._pos[atoms]
         elif isinstance(atoms, (slice, np.ndarray)):
-            return self._positions[atoms]
+            return self._pos[atoms]
         else:
             raise TypeError
 
@@ -672,6 +681,7 @@ cdef class Timestep:
             pass
         warnings.warn("Reader has no dt information, set to 1.0 ps")
         return 1.0
+    
     @dt.setter
     def dt(self, new):
         self.data['dt'] = new
