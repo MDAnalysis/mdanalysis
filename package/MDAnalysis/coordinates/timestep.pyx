@@ -76,7 +76,9 @@ cdef class Timestep:
     order = 'C'
 
     cdef uint64_t _n_atoms
-    cdef public int64_t  frame 
+    cdef public int64_t  frame
+    # no longer optional
+    cdef public int64_t  _frame  
 
 
     cdef bool _has_positions
@@ -101,6 +103,8 @@ cdef class Timestep:
         # c++ level objects
         self._n_atoms =  n_atoms
         self.frame = -1
+        # init to -1 may be incorrect for some readers?
+        self._frame = -1
         self._has_positions = False
         self._has_velocities = False
         self._has_forces = False
