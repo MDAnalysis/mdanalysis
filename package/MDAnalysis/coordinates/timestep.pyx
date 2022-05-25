@@ -384,17 +384,17 @@ cdef class Timestep:
                  **kwargs)
         ts.frame = other.frame
         if  other.dimensions is not None:
-            ts.dimensions = other.dimensions(order=cls.order)
+            ts.dimensions = other.dimensions.copy(order=cls.order)
         try:
-            ts.positions = other.positions(order=cls.order)
+            ts.positions = other.positions.copy(order=cls.order)
         except NoDataError:
             pass
         try:
-            ts.velocities = other.velocities(order=cls.order)
+            ts.velocities = other.velocities.copy(order=cls.order)
         except NoDataError:
             pass
         try:
-            ts.forces = other.forces(order=cls.order)
+            ts.forces = other.forces.copy(order=cls.order)
         except NoDataError:
             pass
 
