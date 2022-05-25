@@ -86,7 +86,7 @@ cdef class Timestep:
     cdef bool _has_forces
 
     # these have to be public for testing
-    cdef public cnp.ndarray _unitcell
+    cdef public cnp.ndarray _unitcell 
     cdef public cnp.ndarray _pos
     cdef public cnp.ndarray _velocities
     cdef public cnp.ndarray _forces
@@ -103,13 +103,17 @@ cdef class Timestep:
         # c++ level objects
         self._n_atoms =  n_atoms
         self.frame = -1
-        # init to -1 may be incorrect for some readers?
+        # init of _frame to -1 may be incorrect for some readers?
         self._frame = -1
+
         self._has_positions = False
         self._has_velocities = False
         self._has_forces = False
 
-        self._unitcell = np.zeros(6, dtype=np.float32)
+        self._unitcell = np.zeros(6, dtype=dtype)
+        self._pos = np.empty(shape=(n_atoms,3), dtype=dtype)
+        self._velocities = np.empty(shape=(n_atoms,3), dtype=dtype)
+        self._forces = np.empty(shape=(n_atoms,3), dtype=dtype)
 
     def __init__(self, uint64_t n_atoms, dtype=np.float32, **kwargs):
         #python objects
@@ -139,13 +143,6 @@ cdef class Timestep:
     def __dealloc__(self):
             pass
 
-    # @property
-    # def frame(self):
-    #     return self._frame
-    
-    # @frame.setter
-    # def frame(self, frame):
-    #     self._frame = frame
 
     @property
     def n_atoms(self):
@@ -229,8 +226,8 @@ cdef class Timestep:
     @positions.setter
     def positions(self, new_positions):
         # force C contig memory order
-        self._pos[:,:] = np.ascontiguousarray(new_positions).copy()
         self._has_positions = True
+        self._pos[:] = np.ascontiguousarray(new_positions)
 
 
 
@@ -278,7 +275,7 @@ cdef class Timestep:
         if new_dimensions is None:
             self._unitcell[:] = 0
         else:
-            self._unitcell[:] = np.ascontiguousarray(new_dimensions).copy()
+            self._unitcell[:] = np.ascontiguousarray(new_dimensions)
 
     
     @property
@@ -353,8 +350,8 @@ cdef class Timestep:
     @velocities.setter
     def velocities(self,  new_velocities):
         # force C contig memory order
-        self._velocities[:,:] = np.ascontiguousarray(new_velocities).copy()
         self._has_velocities = True
+        self._velocities[:] = np.ascontiguousarray(new_velocities)
 
 
     @property
@@ -369,13 +366,13 @@ cdef class Timestep:
     @forces.setter
     def forces(self,  new_forces):
         # force C contig memory order
-        self._forces[:,:] = np.ascontiguousarray(new_forces).copy()
         self._has_forces = True
+        self._forces[:] = np.ascontiguousarray(new_forces)
 
 
 
     @classmethod
-    def from_timestep(cls, other, **kwargs):
+    def from_timestep(cls, Timestep other, **kwargs):
         """Create a copy of another Timestep, in the format of this Timestep
 
         .. versionadded:: 0.11.0
@@ -387,17 +384,17 @@ cdef class Timestep:
                  **kwargs)
         ts.frame = other.frame
         if  other.dimensions is not None:
-            ts.dimensions = other.dimensions.copy(order=cls.order)
+            ts.dimensions = other.dimensions(order=cls.order)
         try:
-            ts.positions = other.positions.copy(order=cls.order)
+            ts.positions = other.positions(order=cls.order)
         except NoDataError:
             pass
         try:
-            ts.velocities = other.velocities.copy(order=cls.order)
+            ts.velocities = other.velocities(order=cls.order)
         except NoDataError:
             pass
         try:
-            ts.forces = other.forces.copy(order=cls.order)
+            ts.forces = other.forces(order=cls.order)
         except NoDataError:
             pass
 
