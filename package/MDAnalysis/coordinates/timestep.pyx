@@ -406,7 +406,7 @@ cdef class Timestep:
 
         try:
             other._reader = weakref.ref(ts._reader())
-        except TypeError:
+        except TypeError: # TypeError from calling None weakref
             pass
             
         ts.data = copy.deepcopy(other.data)
@@ -652,7 +652,7 @@ cdef class Timestep:
 
         try:
             new_TS._reader = weakref.ref(self._reader())
-        except TypeError: # TypeError from calling non callable weakref
+        except TypeError: # TypeError from calling None weakref
             pass
         new_TS.data = copy.deepcopy(self.data)
 
@@ -678,7 +678,7 @@ cdef class Timestep:
         try:
             dt = self.data['dt'] = self._reader()._get_dt()
             return dt
-        except (TypeError, AttributeError): # TypeError from calling non callable weakref
+        except TypeError: # TypeError from calling None weakref
             pass
         
         warnings.warn("Reader has no dt information, set to 1.0 ps")
