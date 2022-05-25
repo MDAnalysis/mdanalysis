@@ -23,6 +23,7 @@
 #
 
 import weakref
+from cpython.weakref cimport PyWeakref_NewRef
 import warnings
 import copy
 import numbers
@@ -47,9 +48,6 @@ from ..auxiliary.base import AuxReader
 from ..auxiliary.core import auxreader
 from ..lib.util import asiterable, Namespace
 
-ctypedef fused ArrayCastable:
-    cnp.ndarray
-    list
 
 cdef class Timestep:
     """Timestep data for one frame
@@ -93,7 +91,7 @@ cdef class Timestep:
 
     cdef object _dtype
     cdef public dict data
-    cdef public object _reader
+    cdef public object  _reader
     cdef public object aux
 
 
@@ -406,9 +404,11 @@ cdef class Timestep:
             except AttributeError:
                 pass
 
-        if hasattr(ts, '_reader'):
+        try:
             other._reader = weakref.ref(ts._reader())
-
+        except TypeError:
+            pass
+            
         ts.data = copy.deepcopy(other.data)
 
         return ts
@@ -650,9 +650,10 @@ cdef class Timestep:
             except AttributeError:
                 pass
 
-        if hasattr(self, '_reader'):
+        try:
             new_TS._reader = weakref.ref(self._reader())
-
+        except TypeError: # TypeError from calling non callable weakref
+            pass
         new_TS.data = copy.deepcopy(self.data)
 
         return new_TS
@@ -677,8 +678,9 @@ cdef class Timestep:
         try:
             dt = self.data['dt'] = self._reader()._get_dt()
             return dt
-        except AttributeError:
+        except (TypeError, AttributeError): # TypeError from calling non callable weakref
             pass
+        
         warnings.warn("Reader has no dt information, set to 1.0 ps")
         return 1.0
     
