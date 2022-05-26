@@ -113,7 +113,7 @@ Classes
 
 The :class:`Results` and :class:`AnalysisBase` classes are the essential
 building blocks for almost all MDAnalysis tools in the
-:mod:`MDAnalysis.analysis` module. They are supposed to be easily useable and
+:mod:`MDAnalysis.analysis` module. They aim to be easily useable and
 extendable.
 
 :class:`AnalysisFromFunction` and the :func:`analysis_class` functions are
