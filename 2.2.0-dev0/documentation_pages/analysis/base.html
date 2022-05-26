@@ -53,7 +53,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../analysis_modules.html#building-blocks-for-analysis">4.1. Building blocks for Analysis</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">4.1.1. Analysis building blocks — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">4.1.1. Analysis building blocks — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#example-of-using-a-standard-analysis-tool">4.1.1.1. Example of using a standard analysis tool</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#writing-new-analysis-tools">4.1.1.2. Writing new analysis tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#classes">4.1.1.3. Classes</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#distances-and-contacts">4.2. Distances and contacts</a></li>
@@ -110,7 +115,89 @@
              
   <span class="target" id="module-MDAnalysis.analysis.base"></span><section id="analysis-building-blocks-mdanalysis-analysis-base">
 <h1><span class="section-number">4.1.1. </span>Analysis building blocks — <a class="reference internal" href="#module-MDAnalysis.analysis.base" title="MDAnalysis.analysis.base"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base</span></code></a><a class="headerlink" href="#analysis-building-blocks-mdanalysis-analysis-base" title="Permalink to this headline"></a></h1>
-<p>The building blocks for creating Analysis classes.</p>
+<p>MDAnalysis provides building blocks for creating analysis classes. One can
+think of each analysis class as a “tool” that performs a specific analysis over
+the trajectory frames and stores the results in the tool.</p>
+<p>Analysis classes are derived from <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code></a> by subclassing. This
+inheritance provides a common workflow and API for users and makes many
+additional features automatically available (such as frame selections and a
+verbose progressbar). The important points for analysis classes are:</p>
+<ol class="arabic simple">
+<li><p>Analysis tools are Python classes derived from <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code></a>.</p></li>
+<li><p>When instantiating an analysis, the <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code>
+that the analysis operates on is provided together with any other parameters
+that are kept fixed for the specific analysis.</p></li>
+<li><p>The analysis is performed with <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.run" title="MDAnalysis.analysis.base.AnalysisBase.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code></a> method. It has a
+common set of arguments such as being able to select the frames the analysis
+is performed on. The <cite>verbose</cite> keyword argument enables additional output. A
+progressbar is shown by default that also shows an estimate for the
+remaining time until the end of the analysis.</p></li>
+<li><p>Results are always stored in the attribute <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.results" title="MDAnalysis.analysis.base.AnalysisBase.results"><code class="xref py py-attr docutils literal notranslate"><span class="pre">AnalysisBase.results</span></code></a>,
+which is an instance of <a class="reference internal" href="#MDAnalysis.analysis.base.Results" title="MDAnalysis.analysis.base.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a>, a kind of dictionary that allows
+allows item access via attributes. Each analysis class decides what and how
+to store in <a class="reference internal" href="#MDAnalysis.analysis.base.Results" title="MDAnalysis.analysis.base.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a> and needs to document it. For time series, the
+<a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.times" title="MDAnalysis.analysis.base.AnalysisBase.times"><code class="xref py py-attr docutils literal notranslate"><span class="pre">AnalysisBase.times</span></code></a> contains the time stamps of the analyzed frames.</p></li>
+</ol>
+<section id="example-of-using-a-standard-analysis-tool">
+<h2><span class="section-number">4.1.1.1. </span>Example of using a standard analysis tool<a class="headerlink" href="#example-of-using-a-standard-analysis-tool" title="Permalink to this headline"></a></h2>
+<p>For example, the <a class="reference internal" href="rms.html#MDAnalysis.analysis.rms.RMSD" title="MDAnalysis.analysis.rms.RMSD"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms.RMSD</span></code></a> performs a
+root-mean-square distance analysis in the following way:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="kn">from</span> <span class="nn">MDAnalysisTests.datafiles</span> <span class="kn">import</span> <span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span>
+
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">rms</span>
+
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
+
+<span class="c1"># (2) instantiate analysis</span>
+<span class="n">rmsd</span> <span class="o">=</span> <span class="n">rms</span><span class="o">.</span><span class="n">RMSD</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;name CA&#39;</span><span class="p">)</span>
+
+<span class="c1"># (3) the run() method can select frames in different ways</span>
+<span class="c1"># run on all frames (with progressbar)</span>
+<span class="n">rmsd</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># or start, stop, and step can be used</span>
+<span class="n">rmsd</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># a list of frames to run the analysis on can be passed</span>
+<span class="n">rmsd</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">frames</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">9</span><span class="p">])</span>
+
+<span class="c1"># a list of booleans the same length of the trajectory can be used</span>
+<span class="n">rmsd</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">frames</span><span class="o">=</span><span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">])</span>
+
+<span class="c1"># (4) analyze the results, e.g., plot</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">rmsd</span><span class="o">.</span><span class="n">times</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">rmsd</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">rmsd</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>   <span class="c1"># RMSD at column index 2, see docs</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;time (ps)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;RMSD (Å)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="writing-new-analysis-tools">
+<h2><span class="section-number">4.1.1.2. </span>Writing new analysis tools<a class="headerlink" href="#writing-new-analysis-tools" title="Permalink to this headline"></a></h2>
+<p>In order to write new analysis tools, derive a class from <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code></a>
+and define at least the <code class="xref py py-meth docutils literal notranslate"><span class="pre">_single_frame()</span></code> method, as described in
+<a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code></a>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>The chapter <a class="reference external" href="https://userguide.mdanalysis.org/stable/examples/analysis/custom_trajectory_analysis.html">Writing your own trajectory analysis</a> in the <em>User Guide</em>
+contains a step-by-step example for writing analysis tools with
+<a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code></a>.</p>
+</div>
+</section>
+<section id="classes">
+<h2><span class="section-number">4.1.1.3. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this headline"></a></h2>
+<p>The <a class="reference internal" href="#MDAnalysis.analysis.base.Results" title="MDAnalysis.analysis.base.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a> and <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code></a> classes are the essential
+building blocks for almost all MDAnalysis tools in the
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis</span></code> module. They aim to be easily useable and
+extendable.</p>
+<p><a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisFromFunction" title="MDAnalysis.analysis.base.AnalysisFromFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisFromFunction</span></code></a> and the <a class="reference internal" href="#MDAnalysis.analysis.base.analysis_class" title="MDAnalysis.analysis.base.analysis_class"><code class="xref py py-func docutils literal notranslate"><span class="pre">analysis_class()</span></code></a> functions are
+simple wrappers that make it even easier to create fully-featured analysis
+tools if only the single-frame analysis function needs to be written.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.base.AnalysisBase">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.base.</span></span><span class="sig-name descname"><span class="pre">AnalysisBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trajectory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/base.html#AnalysisBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisBase" title="Permalink to this definition"></a></dt>
@@ -222,7 +309,7 @@ removed. These should now be directly passed to
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.base.AnalysisBase.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/base.html#AnalysisBase.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisBase.run" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/base.html#AnalysisBase.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisBase.run" title="Permalink to this definition"></a></dt>
 <dd><p>Perform the calculation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -230,10 +317,15 @@ removed. These should now be directly passed to
 <li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</p></li>
 <li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</p></li>
 <li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – number of frames to skip between each analysed frame</p></li>
+<li><p><strong>frames</strong> (<em>array_like</em><em>, </em><em>optional</em>) – array of integers or booleans to slice trajectory</p></li>
 <li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on verbosity</p></li>
 </ul>
 </dd>
 </dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Added ability to iterate through trajectory by passing a list of
+frame indices</p>
+</div>
 </dd></dl>
 
 </dd></dl>
@@ -421,6 +513,7 @@ stored after call to <code class="xref py py-meth docutils literal notranslate">
 </dd></dl>
 
 </section>
+</section>
 
 
            </div>
@@ -433,7 +526,7 @@ stored after call to <code class="xref py py-meth docutils literal notranslate">
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.</p>
+    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.</p>
   </div>
 
   
