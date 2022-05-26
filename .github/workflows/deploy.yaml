@@ -73,7 +73,7 @@ jobs:
   upload_testpypi:
     if: |
       github.repository == 'MDAnalysis/mdanalysis' &&
-      github.event_name == 'push' && startsWith(github.ref, 'refs/tags/'
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/'))
     name: testpypi upload
     environment: deploy
     runs-on: ubuntu-latest
