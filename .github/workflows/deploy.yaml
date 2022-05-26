@@ -28,10 +28,14 @@ jobs:
   build_wheels:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     name: Build wheels
+    fail-fast: false
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
+    defaults:
+      run:
+        working-directory: ./package
 
     steps:
       - uses: actions/checkout@v3
@@ -53,6 +57,9 @@ jobs:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     name: build source distribution
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./package
 
     steps:
       - uses: actions/checkout@v3
@@ -82,7 +89,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: artifact
-          path: dist
+          path: package/dist
 
       - uses: pypa/gh-action-pypi-publish@v1.5
         with:
@@ -102,7 +109,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: artifact
-          path: dist
+          path: package/dist
 
       - uses: pypa/gh-action-pypi-publish@v1.5
         with:
