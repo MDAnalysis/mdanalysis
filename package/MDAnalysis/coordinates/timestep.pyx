@@ -22,6 +22,7 @@
 #
 #
 
+import cython 
 import weakref
 from cpython.weakref cimport PyWeakref_NewRef
 import warnings
@@ -47,7 +48,6 @@ from .. import units
 from ..auxiliary.base import AuxReader
 from ..auxiliary.core import auxreader
 from ..lib.util import asiterable, Namespace
-
 
 cdef class Timestep:
     """Timestep data for one frame
@@ -455,22 +455,6 @@ cdef class Timestep:
         return ts
 
 
-    def __getstate__(self):
-        #  The `dt` property is lazy loaded.
-        #  We need to load it once from the `_reader` (if exists)
-        #  attached to this timestep to get the dt value.
-        #  This will help to (un)pickle a `Timestep` without pickling `_reader`
-        #  and retain its dt value.
-        self.dt
-
-        state = self.__dict__.copy()
-        state.pop('_reader', None)
-
-        return state
-
-    def __setstate__(self, state):
-        self.__dict__.update(state)
-
     def __eq__(self, other):
         """Compare with another Timestep
 
@@ -572,6 +556,49 @@ cdef class Timestep:
 
     def __deepcopy__(self):
         return self.from_timestep(self)
+
+    # cython classes don't have the __dict__ attribute and we use __cinit__ 
+    # meaning we don't get a default __reduce__ implementation
+    # so we need to  implement __getstate__ __setstate__ and friends
+
+    def __getnewargs_ex__(self):
+        return (self.n_atoms,),{"dtype":self.dtype}
+
+    def __getstate__(self):
+        state = {
+            "frame" : self.frame,
+            "_n_atoms" : self._n_atoms,
+            "_frame" : self._frame, 
+            "_has_positions" : self._has_positions,
+            "_has_velocities" : self._has_velocities,
+            "_has_forces" : self._has_forces,
+
+            "_unitcell"  : self._unitcell,
+            "_pos" : self._pos,
+            "_velocities" : self._velocities,
+            "_forces" : self._forces,
+
+            "_dtype" : self._dtype,
+            "data" : self.data,
+            "aux" : self.aux,
+            "dt" : self.dt
+        }
+        return state
+
+    def __setstate__(self, state):
+        self.frame = state["frame"]
+        self._n_atoms = state["_n_atoms"]
+        self._frame = state["_frame"] 
+        self.has_positions = state["_has_positions"]
+        self._has_velocities = state["_has_velocities"]
+        self._has_forces = state["_has_forces"]
+        self._unitcell = state["_unitcell"]
+        self._pos = state["_pos"]
+        self._velocities = state["_velocities"]
+        self._forces = state["_forces"]
+        self._dtype = state["_dtype"] 
+        self.data = state["data"]
+        self.aux = state["aux"]
 
     def copy_slice(self, sel):
         """Make a new `Timestep` containing a subset of the original `Timestep`.
