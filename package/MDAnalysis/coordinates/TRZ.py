@@ -51,7 +51,7 @@ import os
 import errno
 
 from . import base
-from .base import Timestep
+from .timestep import Timestep
 from ..lib import util
 from ..lib.util import cached
 from .core import triclinic_box, triclinic_vectors

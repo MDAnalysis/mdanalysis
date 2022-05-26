@@ -159,6 +159,7 @@ import logging
 from math import isclose
 
 import MDAnalysis
+from .timestep import Timestep
 from . import base
 from ..lib import util
 logger = logging.getLogger("MDAnalysis.coordinates.AMBER")
@@ -169,19 +170,6 @@ try:
 except ImportError:
     netCDF4 = None
     logger.warning("netCDF4 is not available. Writing AMBER ncdf files will be slow.")
-
-
-class Timestep(base.Timestep):
-    """AMBER trajectory Timestep.
-
-    The Timestep can be initialized with `arg` being an integer
-    (the number of atoms) and an optional keyword argument `velocities` to
-    allocate space for both coordinates and velocities;
-
-    .. versionchanged:: 0.10.0
-       Added ability to contain Forces
-    """
-    order = 'C'
 
 
 class TRJReader(base.ReaderBase):
