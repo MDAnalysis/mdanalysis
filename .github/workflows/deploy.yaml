@@ -44,6 +44,8 @@ jobs:
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.6.0
+        with:
+          package-dir: package
 
       - name: upload artifacts
         if: |
@@ -51,7 +53,7 @@ jobs:
           (github.event_name == 'release' && github.event.action == 'published')
         uses: actions/upload-artifact@v2
         with:
-          path: ./wheelhouse/*.whl
+          path: ./package/wheelhouse/*.whl
 
   build_sdist:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
