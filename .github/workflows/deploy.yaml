@@ -28,9 +28,9 @@ jobs:
   build_wheels:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     name: Build wheels
-    fail-fast: false
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
     defaults:
@@ -77,6 +77,30 @@ jobs:
         with:
           path: dist/*.tar.gz
 
+  build_sdist_tests:
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
+    name: build source distribution
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./testsuite
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Build sdist
+        run: pipx run build --sdist
+
+      - name: upload artifacts
+        if: |
+          (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')) ||
+          (github.event_name == 'release' && github.event.action == 'published')
+        uses: actions/upload-artifact@v2
+        with:
+          path: dist/*.tar.gz
+
   upload_testpypi:
     if: |
       github.repository == 'MDAnalysis/mdanalysis' &&
@@ -89,7 +113,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: artifact
-          path: package/dist
+          path: dist
 
       - uses: pypa/gh-action-pypi-publish@v1.5
         with:
@@ -109,7 +133,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: artifact
-          path: package/dist
+          path: dist
 
       - uses: pypa/gh-action-pypi-publish@v1.5
         with:
