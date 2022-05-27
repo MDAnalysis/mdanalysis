@@ -147,6 +147,33 @@ MDAnalysis.
    .. automethod:: copy_slice
 
 """
+# adapted from 
+# https://stackoverflow.com/questions/8477122/numpy-c-api-convert-type-object-to-type-number
+# checks the dtype and converts to a enumerated type
+# cdef inline int _typenum_from_dtype(obj):
+
+#     cdef cnp.PyArray_Descr dtype
+#     if cnp.PyArray_DescrConverter(obj, dtype):
+#      return cnp.NPY_NOTYPE
+#     cdef int typeNum = dtype.type_num;
+#     return typeNum
+
+
+cdef inline cnp.ndarray _ndarray_c_contig_from_buffer(object buffer, int typenum, int mindepth, int maxdepth):
+    cdef int array_flag = 0
+    cdef int contig_flag = 0
+    array_flag = cnp.PyArray_Check(buffer)
+    if array_flag: # is it an array?
+        # force C contiguity
+        contig_flag = cnp.PyArray_IS_C_CONTIGUOUS(buffer)
+        if contig_flag: # its C contiguous 
+            return buffer 
+        else: # its not and we need to make it C contiguous 
+            return cnp.PyArray_NewCopy(buffer, cnp.NPY_CORDER)
+
+    else: # its not an array but implements buffer protocol otherwise will throw
+        return  cnp.PyArray_ContiguousFromAny(buffer, typenum, mindepth, maxdepth) 
+
 
 cdef class Timestep:
     """Timestep data for one frame
@@ -180,6 +207,7 @@ cdef class Timestep:
     # no longer optional
     cdef public int64_t  _frame  
 
+    cdef int _typenum
 
     cdef bool _has_positions
     cdef bool _has_velocities
@@ -205,15 +233,24 @@ cdef class Timestep:
         self.frame = -1
         # init of _frame no longer optional
         self._frame = -1
+        self._typenum = cnp.NPY_FLOAT
 
         self._has_positions = False
         self._has_velocities = False
         self._has_forces = False
 
-        self._unitcell = np.zeros(6, dtype=dtype)
-        self._pos = np.empty(shape=(n_atoms,3), dtype=dtype)
-        self._velocities = np.empty(shape=(n_atoms,3), dtype=dtype)
-        self._forces = np.empty(shape=(n_atoms,3), dtype=dtype)
+        cdef cnp.npy_intp unitcell_dim[1]
+        unitcell_dim[0] = 6
+
+        cdef cnp.npy_intp particle_dependent_dim[2]
+        particle_dependent_dim[0] = self._n_atoms
+        particle_dependent_dim[1] = 1
+
+        # these must be initialised but should they be initialised smaller
+        self._unitcell = cnp.PyArray_ZEROS(1, unitcell_dim, self._typenum, 0)
+        self._pos = cnp.PyArray_EMPTY(2, particle_dependent_dim, self._typenum, 0)
+        self._velocities = cnp.PyArray_EMPTY(2, particle_dependent_dim, self._typenum, 0)
+        self._forces = cnp.PyArray_EMPTY(2, particle_dependent_dim, self._typenum, 0)
 
     def __init__(self, uint64_t n_atoms, dtype=np.float32, **kwargs):
         #python objects
@@ -338,8 +375,8 @@ cdef class Timestep:
             else: # its not and we need to make it C contiguous 
                 self._pos = cnp.PyArray_NewCopy(new_positions, cnp.NPY_CORDER)
 
-        else: # its not an array but hopefully implements buffer protocol
-            self._pos = cnp.PyArray_ContiguousFromAny(new_positions, cnp.NPY_FLOAT, 2, 2) 
+        else: # its not an array but  implements buffer protocol otherwise will throw
+            self._pos = cnp.PyArray_ContiguousFromAny(new_positions, self._typenum, 2, 2) 
 
 
     @property
