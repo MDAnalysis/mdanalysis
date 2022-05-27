@@ -329,7 +329,8 @@ cdef class Timestep:
         cdef int flag = 0
         flag = cnp.PyArray_IS_C_CONTIGUOUS(new_positions)
         if not flag:
-            raise TypeError("Input array is not C-style contiguous")
+            pass
+            #raise TypeError("Input array is not C-style contiguous")
         self._has_positions = True
         self._pos = new_positions
 
@@ -382,7 +383,8 @@ cdef class Timestep:
             # force C contig memory order
             flag = cnp.PyArray_IS_C_CONTIGUOUS(new_dimensions)
             if not flag:
-                raise TypeError("Input array is not C-style contiguous")
+                pass
+                #raise TypeError("Input array is not C-style contiguous")
             self._unitcell = new_dimensions
 
     
@@ -438,7 +440,6 @@ cdef class Timestep:
     @triclinic_dimensions.setter
     def triclinic_dimensions(self, new_dimensions):
         """Set the unitcell for this Timestep as defined by triclinic vectors
-
         .. versionadded:: 0.11.0
         """
         cdef int flag = 0
@@ -449,7 +450,8 @@ cdef class Timestep:
             # force C contig memory order
             flag = cnp.PyArray_IS_C_CONTIGUOUS(new_dimensions)
             if not flag:
-                raise TypeError("Input array is not C-style contiguous")
+                pass
+                # raise TypeError("Input array is not C-style contiguous")
             self.dimensions = core.triclinic_box(*new_dimensions)
 
     @property
@@ -483,7 +485,8 @@ cdef class Timestep:
         cdef int flag
         flag = cnp.PyArray_IS_C_CONTIGUOUS(new_forces)
         if not flag:
-            raise TypeError("Input array is not C-style contiguous")
+            pass
+            #raise TypeError("Input array is not C-style contiguous")
         self._has_forces = True
         self._forces = new_forces
 
