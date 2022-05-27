@@ -1,6 +1,7 @@
 biopython
 codecov
 cython
+fasteners
 griddataformats
 gsd
 hypothesis
