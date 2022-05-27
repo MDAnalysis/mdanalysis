@@ -21,6 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 #
+# cython: profile=True
 
 import cython 
 import weakref
@@ -168,10 +169,9 @@ cdef inline cnp.ndarray _ndarray_c_contig_from_buffer(object buffer, int typenum
         # force C contiguity
         contig_flag = cnp.PyArray_IS_C_CONTIGUOUS(buffer)
         if contig_flag: # its C contiguous 
-            return cnp.PyArray_Cast(buffer, typenum)
+            return buffer
         else: # its not and we need to make it C contiguous 
-            return cnp.PyArray_Cast(cnp.PyArray_NewCopy(buffer, cnp.NPY_CORDER), typenum)
-
+            return cnp.PyArray_NewCopy(buffer, cnp.NPY_CORDER)
     else: # its not an array but implements buffer protocol otherwise will throw
         return  cnp.PyArray_ContiguousFromAny(buffer, typenum, mindepth, maxdepth) 
 
@@ -336,7 +336,8 @@ cdef class Timestep:
             # Setting this will always reallocate position data
             # ie
             # True -> False -> True will wipe data from first True state
-            self._pos = cnp.PyArray_ZEROS(2, self._particle_dependent_dim, self._typenum, 0)
+            self._pos = np.zeros((self.n_atoms, 3), dtype=self.dtype,
+                                 order=self.order)
             self._has_positions = True
         elif not val:
             # Unsetting val won't delete the numpy array
@@ -353,7 +354,8 @@ cdef class Timestep:
             # Setting this will always reallocate velocity data
             # ie
             # True -> False -> True will wipe data from first True state
-            self._velocities = cnp.PyArray_ZEROS(2, self._particle_dependent_dim, self._typenum, 0)
+            self._velocities = np.zeros((self.n_atoms, 3), dtype=self.dtype,
+                                 order=self.order)
             self._has_velocities = True
         elif not val:
             # Unsetting val won't delete the numpy array
@@ -369,7 +371,8 @@ cdef class Timestep:
             # Setting this will always reallocate force data
             # ie
             # True -> False -> True will wipe data from first True state
-            self._forces = cnp.PyArray_ZEROS(2, self._particle_dependent_dim, self._typenum, 0)
+            self._forces = np.zeros((self.n_atoms, 3), dtype=self.dtype,
+                                 order=self.order)
             self._has_forces = True
         elif not val:
             # Unsetting val won't delete the numpy array
