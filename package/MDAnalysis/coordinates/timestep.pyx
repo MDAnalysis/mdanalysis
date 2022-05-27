@@ -147,33 +147,45 @@ MDAnalysis.
    .. automethod:: copy_slice
 
 """
-# adapted from 
-# https://stackoverflow.com/questions/8477122/numpy-c-api-convert-type-object-to-type-number
-# checks the dtype and converts to a enumerated type
-# cdef inline int _typenum_from_dtype(obj):
 
-    cdef cnp.PyArray_Descr dtype
-    if cnp.PyArray_DescrConverter(obj, dtype):
-     return cnp.NPY_NOTYPE
-    cdef int typeNum = dtype.type_num;
-    return typeNum
-
-
+# use this to go from an array or buffer to a C contig array guaranteed
 cdef inline cnp.ndarray _ndarray_c_contig_from_buffer(object buffer, int typenum, int mindepth, int maxdepth):
     cdef int array_flag = 0
     cdef int contig_flag = 0
+    cdef int typenum_arrbuffer = cnp.NPY_NOTYPE
     array_flag = cnp.PyArray_Check(buffer)
     if array_flag: # is it an array?
+        # currently this does nothing, but we should think about casting carefully
+
+        # typenum_arrbuffer = cnp.PyArray_TYPE(buffer)
+        # if typenum_arrbuffer == typenum: # do the dtypes match
+        #     pass
+        # else:
+        #     pass # Do we cast if safe eg?
+            # if cnp.PyArray_CanCastSafely(typenum_arrbuffer, typenum):
+            #   tmp = cnp.PyArray_Cast() ...
+
         # force C contiguity
         contig_flag = cnp.PyArray_IS_C_CONTIGUOUS(buffer)
         if contig_flag: # its C contiguous 
-            return buffer 
+            return cnp.PyArray_Cast(buffer, typenum)
         else: # its not and we need to make it C contiguous 
-            return cnp.PyArray_NewCopy(buffer, cnp.NPY_CORDER)
+            return cnp.PyArray_Cast(cnp.PyArray_NewCopy(buffer, cnp.NPY_CORDER), typenum)
 
     else: # its not an array but implements buffer protocol otherwise will throw
         return  cnp.PyArray_ContiguousFromAny(buffer, typenum, mindepth, maxdepth) 
 
+
+# adapted from 
+# https://stackoverflow.com/questions/8477122/numpy-c-api-convert-type-object-to-type-number
+# # checks the dtype and converts to a enumerated type
+# # cdef inline int _typenum_from_dtype(obj):
+
+#     cdef cnp.PyArray_Descr dtype
+#     if cnp.PyArray_DescrConverter(obj, dtype):
+#      return cnp.NPY_NOTYPE
+#     cdef int typeNum = dtype.type_num;
+#     return typeNum
 
 cdef class Timestep:
     """Timestep data for one frame
@@ -207,7 +219,9 @@ cdef class Timestep:
     # no longer optional
     cdef public int64_t  _frame  
 
+    # info for numpy C API
     cdef int _typenum
+    cdef cnp.npy_intp _particle_dependent_dim[2]
 
     cdef bool _has_positions
     cdef bool _has_velocities
@@ -219,6 +233,7 @@ cdef class Timestep:
     cdef public cnp.ndarray _velocities
     cdef public cnp.ndarray _forces
 
+    # python objects
     cdef object _dtype
     cdef public dict data
     cdef public object  _reader
@@ -233,27 +248,39 @@ cdef class Timestep:
         self.frame = -1
         # init of _frame no longer optional
         self._frame = -1
+        #BUG  This is currently hardcoded to match MDA always casting to F32
+        # meaning the DTYPE set in the args is not respected.
+        # to fix remove hardcode with introspection of dtype following discussion of
+        # appropriate casting rules
         self._typenum = cnp.NPY_FLOAT
 
         self._has_positions = False
         self._has_velocities = False
         self._has_forces = False
 
-        cdef cnp.npy_intp unitcell_dim[1]
-        unitcell_dim[0] = 6
+        # use this to create numpy zeros and empties of the right shape using
+        # C API
+        self._particle_dependent_dim[0] = self._n_atoms
+        self._particle_dependent_dim[1] = 3
 
-        cdef cnp.npy_intp particle_dependent_dim[2]
-        particle_dependent_dim[0] = self._n_atoms
-        particle_dependent_dim[1] = 1
+        # unitcell uses a temp only as its size can vary
+        cdef cnp.npy_intp unitcell_dim_tmp[1]
+        unitcell_dim_tmp[0] = 6
 
-        # these must be initialised but should they be initialised smaller
-        self._unitcell = cnp.PyArray_ZEROS(1, unitcell_dim, self._typenum, 0)
-        self._pos = cnp.PyArray_EMPTY(2, particle_dependent_dim, self._typenum, 0)
-        self._velocities = cnp.PyArray_EMPTY(2, particle_dependent_dim, self._typenum, 0)
-        self._forces = cnp.PyArray_EMPTY(2, particle_dependent_dim, self._typenum, 0)
+        # use temps so that we don't have to allocate a bunch of empty
+        # arrays of large size, eg for vel and frc
+        cdef cnp.npy_intp particle_dependent_dim_tmp[2]
+        particle_dependent_dim_tmp[0] = 1
+        particle_dependent_dim_tmp[1] = 1
+
+        # these must be initialised, can we initialise small
+        self._unitcell = cnp.PyArray_ZEROS(1, unitcell_dim_tmp, self._typenum, 0)
+        self._pos = cnp.PyArray_EMPTY(2, particle_dependent_dim_tmp, self._typenum, 0)
+        self._velocities = cnp.PyArray_EMPTY(2, particle_dependent_dim_tmp, self._typenum, 0)
+        self._forces = cnp.PyArray_EMPTY(2, particle_dependent_dim_tmp, self._typenum, 0)
 
     def __init__(self, uint64_t n_atoms, dtype=np.float32, **kwargs):
-        #python objects
+        # python objects
         self._dtype = dtype
         self.data = {}
 
@@ -309,8 +336,7 @@ cdef class Timestep:
             # Setting this will always reallocate position data
             # ie
             # True -> False -> True will wipe data from first True state
-            self._pos = np.zeros((self.n_atoms, 3), dtype=self.dtype,
-                                 order=self.order)
+            self._pos = cnp.PyArray_ZEROS(2, self._particle_dependent_dim, self._typenum, 0)
             self._has_positions = True
         elif not val:
             # Unsetting val won't delete the numpy array
@@ -327,8 +353,7 @@ cdef class Timestep:
             # Setting this will always reallocate velocity data
             # ie
             # True -> False -> True will wipe data from first True state
-            self._velocities = np.zeros((self.n_atoms, 3), dtype=self.dtype,
-                                 order=self.order)
+            self._velocities = cnp.PyArray_ZEROS(2, self._particle_dependent_dim, self._typenum, 0)
             self._has_velocities = True
         elif not val:
             # Unsetting val won't delete the numpy array
@@ -344,8 +369,7 @@ cdef class Timestep:
             # Setting this will always reallocate force data
             # ie
             # True -> False -> True will wipe data from first True state
-            self._forces = np.zeros((self.n_atoms, 3), dtype=self.dtype,
-                                 order=self.order)
+            self._forces = cnp.PyArray_ZEROS(2, self._particle_dependent_dim, self._typenum, 0)
             self._has_forces = True
         elif not val:
             # Unsetting val won't delete the numpy array
