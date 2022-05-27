@@ -109,6 +109,7 @@ class TestDLPHistoryOrder(DLPBase):
     ref_filename = DLP_HISTORY_order
     format = 'HISTORY'
 
+
 class TestDLPHistoryClassic(DLPBase):
     parser = mda.topology.DLPolyParser.HistoryParser
     ref_filename = DLP_HISTORY_classic
