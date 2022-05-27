@@ -58,6 +58,8 @@ Fixes
   * Fixed BAT method Cartesian modifies input data. (Issue #3501)
 
 Enhancements
+  * Added DL_POLY Classic support. Now HISTORY files from DL_POLY Classic can be
+  * used. (Issue #3678)
   * Added `frames` argument to AnalysisBase.run to allow analysis to run on 
     arbitrary list of frames (Issue #1985)  
   * LinearDensity now works with updating AtomGroups (Issue #2508, PR #3617)

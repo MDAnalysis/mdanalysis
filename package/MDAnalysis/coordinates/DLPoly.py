@@ -144,8 +144,8 @@ class HistoryReader(base.ReaderBase):
         # "private" file handle
         self._file = util.anyopen(self.filename, 'r')
         self.title = self._file.readline().strip()
-        header = np.int64(self._file.readline().split())
-        self._levcfg, self._imcon, self.n_atoms, _, _ = header
+        header = np.int64(self._file.readline().split()[:3])
+        self._levcfg, self._imcon, self.n_atoms = header
         self._has_vels = True if self._levcfg > 0 else False
         self._has_forces = True if self._levcfg == 2 else False
 
