@@ -325,14 +325,21 @@ cdef class Timestep:
  
     @positions.setter
     def positions(self, new_positions):
-        # force C contig memory order
-        cdef int flag = 0
-        flag = cnp.PyArray_IS_C_CONTIGUOUS(new_positions)
-        if not flag:
-            pass
-            #raise TypeError("Input array is not C-style contiguous")
         self._has_positions = True
-        self._pos = new_positions
+        cdef int array_flag = 0
+        cdef int contig_flag = 0
+
+        array_flag = cnp.PyArray_Check(new_positions)
+        if array_flag: # is it an array?
+           # force C contiguity
+            contig_flag = cnp.PyArray_IS_C_CONTIGUOUS(new_positions)
+            if contig_flag: # its C contiguous 
+                self._pos = new_positions
+            else: # its not and we need to make it C contiguous 
+                self._pos = cnp.PyArray_NewCopy(new_positions, cnp.NPY_CORDER)
+
+        else: # its not an array but hopefully implements buffer protocol
+            self._pos = cnp.PyArray_ContiguousFromAny(new_positions, cnp.NPY_FLOAT, 2, 2) 
 
 
     @property
@@ -383,7 +390,7 @@ cdef class Timestep:
             # force C contig memory order
             flag = cnp.PyArray_IS_C_CONTIGUOUS(new_dimensions)
             if not flag:
-                pass
+                new_dimensions = np.ascontiguousarray(new_dimensions)
                 #raise TypeError("Input array is not C-style contiguous")
             self._unitcell = new_dimensions
 
@@ -450,7 +457,7 @@ cdef class Timestep:
             # force C contig memory order
             flag = cnp.PyArray_IS_C_CONTIGUOUS(new_dimensions)
             if not flag:
-                pass
+                new_dimensions = np.ascontiguousarray(new_dimensions)
                 # raise TypeError("Input array is not C-style contiguous")
             self.dimensions = core.triclinic_box(*new_dimensions)
 
@@ -465,7 +472,10 @@ cdef class Timestep:
  
     @velocities.setter
     def velocities(self,  new_velocities):
-        # force C contig memory order
+        cdef int flag = 0
+        flag = cnp.PyArray_IS_C_CONTIGUOUS(new_velocities)
+        if not flag:
+            new_velocities = np.ascontiguousarray(new_velocities)
         self._has_velocities = True
         self._velocities = new_velocities
 
@@ -482,10 +492,10 @@ cdef class Timestep:
     @forces.setter
     def forces(self,  new_forces):
         # force C contig memory order
-        cdef int flag
+        cdef int flag = 0
         flag = cnp.PyArray_IS_C_CONTIGUOUS(new_forces)
         if not flag:
-            pass
+            new_forces = np.ascontiguousarray(new_forces)
             #raise TypeError("Input array is not C-style contiguous")
         self._has_forces = True
         self._forces = new_forces
