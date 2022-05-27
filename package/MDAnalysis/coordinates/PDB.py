@@ -851,13 +851,12 @@ class PDBWriter(base.WriterBase):
         for a1, a2 in bonds:
             if not (a1 in mapping and a2 in mapping):
                 continue
+            if a1 >= 100000 or a2 >= 100000:
+                warnings.warn("Atom with index >100000 cannot write "
+                              "bonds to PDB CONECT records.")
+                return
             con[a2].append(a1)
             con[a1].append(a2)
-
-        if not all(ag_ind <= 100000 for ag_ind in con.keys()):
-            warnings.warn("Atom with index >100000 cannot write "
-                          "bonds to PDB CONECT records.")
-            return
 
         conect = ([mapping[a]] + sorted([mapping[at] for at in con[a]])
                   for a in atoms if a in con)
