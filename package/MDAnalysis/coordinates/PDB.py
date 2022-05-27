@@ -851,8 +851,8 @@ class PDBWriter(base.WriterBase):
         for a1, a2 in bonds:
             if not (a1 in mapping and a2 in mapping):
                 continue
-            if a1 >= 100000 or a2 >= 100000:
-                warnings.warn("Atom with index >100000 cannot write "
+            if mapping[a1] >= 100000 or mapping[a2] >= 100000:
+                warnings.warn("Atom with index >=100000 cannot write "
                               "bonds to PDB CONECT records.")
                 return
             con[a2].append(a1)
