@@ -66,6 +66,7 @@ MDAnalysis.
 
 .. class:: Timestep
 
+   .. automethodd:: __cinit__
    .. automethod:: __init__
    .. automethod:: from_coordinates
    .. automethod:: from_timestep
@@ -76,6 +77,12 @@ MDAnalysis.
 
       .. versionchanged:: 0.11.0
          Frames now 0-based; was 1-based
+
+   .. attribute::`_frame`
+       frame counter used optionally by some readers (0 based)
+
+      .. versionchanged:: 2.2.0
+         No longer optional and initialised to -1 
 
    .. autoattribute:: time
    .. autoattribute:: dt
@@ -88,7 +95,7 @@ MDAnalysis.
    .. attribute:: _pos
 
       :class:`numpy.ndarray` of dtype :class:`~numpy.float32` of shape
-      (*n_atoms*, 3) and internal FORTRAN order, holding the raw
+      (*n_atoms*, 3) and internal C order, holding the raw
       cartesian coordinates (in MDAnalysis units, i.e. Å).
 
       .. Note::
@@ -131,7 +138,8 @@ MDAnalysis.
 
       .. versionadded:: 0.11.0
          Added as optional to :class:`Timestep`
-
+  
+   .. autoattribute:: dtype
    .. autoattribute:: dimensions
    .. autoattribute:: triclinic_dimensions
    .. autoattribute:: volume
@@ -209,7 +217,11 @@ cdef class Timestep:
        will be dropped.
        Timestep now stores in to numpy array memory in 'C' order rather than
        'F' (Fortran).
-    .. versionchanged::
+    .. versionchanged:: 2.2.0
+        Timestep is now a Cython extension type.
+        _frame is now a compulsory variable and is intialised to -1.
+        A dtype for the Timestep can be specified with the `dtype` kwarg.
+        All arrays are now forced to be C contiguous using NumPy C API.
     """
 
     order = 'C'
@@ -243,6 +255,17 @@ cdef class Timestep:
 
 
     def __cinit__(self, uint64_t n_atoms, dtype=np.float32, **kwargs):
+        """Initialise C++ level parameters of a Timestep
+        Parameters
+        ----------
+        n_atoms : uint64
+          The total number of atoms this Timestep describes
+        dtype: numpy_dtype, optional
+          The NumPy dtype of the arrays in this timestep
+      
+        .. versionadded:: 2.2.0
+           Initialise C++ level parameters
+        """
         # c++ level objects
         self._n_atoms =  n_atoms
         self.frame = -1
@@ -250,8 +273,8 @@ cdef class Timestep:
         self._frame = -1
         #BUG  This is currently hardcoded to match MDA always casting to F32
         # meaning the DTYPE set in the args is not respected.
-        # to fix remove hardcode with introspection of dtype following discussion of
-        # appropriate casting rules
+        # to fix remove hardcode with introspection of dtype following
+        # discussion of appropriate casting rules
         self._typenum = cnp.NPY_FLOAT
 
         self._has_positions = False
@@ -259,7 +282,7 @@ cdef class Timestep:
         self._has_forces = False
 
         # use this to create numpy zeros and empties of the right shape using
-        # C API
+        # NumPy C API
         self._particle_dependent_dim[0] = self._n_atoms
         self._particle_dependent_dim[1] = 3
 
@@ -280,8 +303,42 @@ cdef class Timestep:
         self._forces = cnp.PyArray_EMPTY(2, particle_dependent_dim_tmp, self._typenum, 0)
 
     def __init__(self, uint64_t n_atoms, dtype=np.float32, **kwargs):
+        """Create a Timestep, representing a frame of a trajectory
+        Parameters
+        ----------
+        n_atoms : uint64
+          The total number of atoms this Timestep describes
+        dtype: numpy_dtype, optional
+          The NumPy dtype of the arrays in this timestep
+        positions : bool, optional
+          Whether this Timestep has position information [``True``]
+        velocities : bool (optional)
+          Whether this Timestep has velocity information [``False``]
+        forces : bool (optional)
+          Whether this Timestep has force information [``False``]
+        reader : Reader (optional)
+          A weak reference to the owning Reader.  Used for
+          when attributes require trajectory manipulation (e.g. dt)
+        dt : float (optional)
+          The time difference between frames (ps).  If :attr:`time`
+          is set, then `dt` will be ignored.
+        time_offset : float (optional)
+          The starting time from which to calculate time (in ps)
+
+
+        .. versionchanged:: 0.11.0
+           Added keywords for `positions`, `velocities` and `forces`.
+           Can add and remove position/velocity/force information by using
+           the ``has_*`` attribute.
+        
+        .. versionchanged:: 2.2.0
+           Added the `dtype` kwarg to specify a type for the timestep.
+        """
         # python objects
+        if dtype not in (np.float32, np.float64):
+            raise TypeError("dtype must be one of (np.float32, np.float64)")
         self._dtype = dtype
+        
         self.data = {}
 
         for att in ('dt', 'time_offset'):
@@ -323,11 +380,23 @@ cdef class Timestep:
 
     @property
     def dtype(self):
+        """The NumPy dtype of the timestep, all arrays in the timestep will
+            have this dtype (yet to be finalised)
+
+            .. versionadded:: 2.2.0
+            Added dtype
+        """
         return self._dtype
 
 
     @property
     def has_positions(self):
+        """A boolean of whether this Timestep has position data
+        This can be changed to ``True`` or ``False`` to allocate space for
+        or remove the data.
+
+        .. versionadded:: 0.11.0
+        """
         return self._has_positions
 
     @has_positions.setter
@@ -346,6 +415,12 @@ cdef class Timestep:
     
     @property
     def has_velocities(self):
+        """A boolean of whether this Timestep has velocity data
+        This can be changed to ``True`` or ``False`` to allocate space for
+        or remove the data.
+
+        .. versionadded:: 0.11.0
+        """
         return self._has_velocities
 
     @has_velocities.setter
@@ -363,6 +438,12 @@ cdef class Timestep:
     
     @property
     def has_forces(self):
+        """A boolean of whether this Timestep has force data
+        This can be changed to ``True`` or ``False`` to allocate space for
+        or remove the data.
+
+        .. versionadded:: 0.11.0
+        """
         return self._has_forces
 
     @has_forces.setter
@@ -381,6 +462,24 @@ cdef class Timestep:
 
     @property
     def positions(self):
+        """A record of the positions of all atoms in this Timestep
+        Setting this attribute will add positions to the Timestep if they
+        weren't originally present.
+
+        Returns
+        -------
+        positions : numpy.ndarray with dtype numpy.float32
+               position data of shape ``(n_atoms, 3)`` for all atoms
+
+        Raises
+        ------
+        :exc:`MDAnalysis.exceptions.NoDataError`
+               if the Timestep has no position data
+
+
+        .. versionchanged:: 0.11.0
+           Now can raise :exc:`NoDataError` when no position data present
+        """
         if self._has_positions:
             return self._pos
         else:
@@ -508,6 +607,23 @@ cdef class Timestep:
 
     @property
     def velocities(self):
+        """A record of the velocities of all atoms in this Timestep
+        Setting this attribute will add velocities to the Timestep if they
+        weren't originally present.
+
+        Returns
+        -------
+        velocities : numpy.ndarray with dtype numpy.float32
+               velocity data of shape ``(n_atoms, 3)`` for all atoms
+
+        Raises
+        ------
+        :exc:`MDAnalysis.exceptions.NoDataError`
+               if the Timestep has no velocity data
+
+
+        .. versionadded:: 0.11.0
+        """
         if self._has_velocities:
             return self._velocities
         else:
@@ -523,6 +639,22 @@ cdef class Timestep:
 
     @property
     def forces(self):
+        """A record of the forces of all atoms in this Timestep
+        Setting this attribute will add forces to the Timestep if they
+        weren't originally present.
+
+        Returns
+        -------
+
+        forces : numpy.ndarray with dtype numpy.float32
+               force data of shape ``(n_atoms, 3)`` for all atoms
+        Raises
+        ------
+
+        :exc:`MDAnalysis.exceptions.NoDataError`
+               if the Timestep has no force data
+        .. versionadded:: 0.11.0
+        """
         if self._has_forces:
           return self._forces
         else:
@@ -531,9 +663,7 @@ cdef class Timestep:
 
  
     @forces.setter
-    def forces(self,  new_forces):
-        # force C contig memory order
-        
+    def forces(self,  new_forces):        
         self._has_forces = True
         self._forces = _ndarray_c_contig_from_buffer(new_forces, self._typenum, 2, 2)
 
@@ -725,14 +855,16 @@ cdef class Timestep:
     def __deepcopy__(self):
         return self.from_timestep(self)
 
-    # cython classes don't have the __dict__ attribute and we use __cinit__ 
-    # meaning we don't get a default __reduce__ implementation
-    # so we need to  implement __getstate__ __setstate__ and friends
-
-    def __getnewargs_ex__(self):
-        return (self.n_atoms,),{"dtype":self.dtype}
-
     def __getstate__(self):
+        """Make a dictionary of the class state to pickle Timestep instance.
+
+           Must be done manually as Extension types do not have the __dict__
+           class attribute and we use a non-trivial `__cinit__`. This means
+           that cython cannot automatically  generate an `__reduce__` method
+           for us.
+        
+        .. versionadded:: 2.2.0
+        """
         state = {
             "frame" : self.frame,
             "_n_atoms" : self._n_atoms,
@@ -752,8 +884,21 @@ cdef class Timestep:
             "dt" : self.dt
         }
         return state
+    
+    def __getnewargs_ex__(self):
+        """Specify arguments to use in `__cinit__` and `__init__` to use in
+           unpickling of timestep instance
+        
+        .. versionadded:: 2.2.0
+        """
+        return (self.n_atoms,),{"dtype":self.dtype}
 
     def __setstate__(self, state):
+        """Restore class from `state` dictionary in unpickling of Timestep
+           instance
+        
+        .. versionadded:: 2.2.0
+        """
         self.frame = state["frame"]
         self._n_atoms = state["_n_atoms"]
         self._frame = state["_frame"] 
