@@ -160,26 +160,24 @@ MDAnalysis.
 cdef inline cnp.ndarray _ndarray_c_contig_from_buffer(object buffer, int typenum, int mindepth, int maxdepth):
     cdef int array_flag = 0
     cdef int contig_flag = 0
-    cdef int typenum_arrbuffer = cnp.NPY_NOTYPE
+    cdef int cast_flag = 0
     array_flag = cnp.PyArray_Check(buffer)
+    contig_flag = cnp.PyArray_IS_C_CONTIGUOUS(buffer)
+    # signals must be cast
+    cast_flag = cnp.PyArray_TYPE(buffer) != typenum
+   
     if array_flag: # is it an array?
-        # currently this does nothing, but we should think about casting carefully
-
-        # typenum_arrbuffer = cnp.PyArray_TYPE(buffer)
-        # if typenum_arrbuffer == typenum: # do the dtypes match
-        #     pass
-        # else:
-        #     pass # Do we cast if safe eg?
-            # if cnp.PyArray_CanCastSafely(typenum_arrbuffer, typenum):
-            #   tmp = cnp.PyArray_Cast() ...
-
-        # force C contiguity
-        contig_flag = cnp.PyArray_IS_C_CONTIGUOUS(buffer)
-        if contig_flag: # its C contiguous 
+        if contig_flag and not cast_flag: # its contiguous and no cast
             return buffer
-        else: # its not and we need to make it C contiguous 
+        elif contig_flag and cast_flag: # its contiguous but needs to be cast
+            return cnp.PyArray_Cast(buffer, typenum)
+        elif not contig_flag and not cast_flag: # its not contiguous but no cast
             return cnp.PyArray_NewCopy(buffer, cnp.NPY_CORDER)
+        else: # its not contiguous and needs to be cast
+            return cnp.PyArray_Cast(cnp.PyArray_NewCopy(buffer, cnp.NPY_CORDER), typenum)
+
     else: # its not an array but implements buffer protocol otherwise will throw
+        # parameters mindepth and maxdepth control how nested the buffer can be 
         return  cnp.PyArray_ContiguousFromAny(buffer, typenum, mindepth, maxdepth) 
 
 
@@ -274,7 +272,7 @@ cdef class Timestep:
         # meaning the DTYPE set in the args is not respected.
         # to fix remove hardcode with introspection of dtype following
         # discussion of appropriate casting rules
-        self._typenum = cnp.NPY_FLOAT
+        self._typenum = cnp.NPY_FLOAT32
 
         self._has_positions = False
         self._has_velocities = False
