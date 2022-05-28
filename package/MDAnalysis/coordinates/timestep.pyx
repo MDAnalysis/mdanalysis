@@ -492,8 +492,16 @@ cdef class Timestep:
     @positions.setter
     def positions(self,  new_positions):
         self._has_positions = True
+        if cnp.PyArray_Check(new_positions):
+            if cnp.PyArray_TYPE(new_positions) == self._typenum:
+                self._pos = cnp.PyArray_GETCONTIGUOUS(new_positions)
+            else:
+                self._pos = cnp.PyArray_Cast(cnp.PyArray_GETCONTIGUOUS(new_positions), self._typenum)
+        else:
+            self._pos[:] = new_positions
+
         # self._pos[:] = new_positions
-        self._pos = _ndarray_c_contig_from_buffer(new_positions, self._typenum, 2, 2, 2, self._particle_dependent_dim)
+        # self._pos = _ndarray_c_contig_from_buffer(new_positions, self._typenum, 2, 2, 2, self._particle_dependent_dim)
         # self._pos = np.ascontiguousarray(new_positions, dtype=self._dtype)
         # self._pos = new_positions
         # self._pos = cnp.Copy
