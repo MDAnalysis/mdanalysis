@@ -157,14 +157,21 @@ MDAnalysis.
 """
 
 # use this to go from an array or buffer to a C contig array guaranteed
-# can it be used to replace call to np.ascontiguousarray
-cdef inline cnp.ndarray _ndarray_c_contig_from_buffer(object buffer, int typenum, int mindepth, int maxdepth):
+cdef inline cnp.ndarray _ndarray_c_contig_from_buffer(object buffer, int typenum, int mindepth, int maxdepth, int ndim, cnp.npy_intp* dims):
     cdef int array_flag = 0
     cdef int contig_flag = 0
     cdef int cast_flag = 0
+    cdef int scalar_flag = 0
+
     array_flag = cnp.PyArray_Check(buffer)
-    
-    if array_flag: # is it an array?
+    scalar_flag = cnp.PyArray_IsPythonNumber(buffer)
+
+    if scalar_flag:
+        return cnp.PyArray_FILLWBYTE(cnp.PyArray_SimpleNew(ndim, dims, typenum), buffer)
+        
+
+    elif array_flag: # is it an array?
+
         contig_flag = cnp.PyArray_IS_C_CONTIGUOUS(buffer)
         # signals must be cast
         cast_flag = cnp.PyArray_TYPE(buffer) != typenum
@@ -174,9 +181,9 @@ cdef inline cnp.ndarray _ndarray_c_contig_from_buffer(object buffer, int typenum
         elif contig_flag and cast_flag: # its contiguous but needs to be cast
             return cnp.PyArray_Cast(buffer, typenum)
         elif not contig_flag and not cast_flag: # its not contiguous but no cast
-            return cnp.PyArray_NewCopy(buffer, cnp.NPY_CORDER)
+            return cnp.PyArray_GETCONTIGUOUS(buffer)
         else: # its not contiguous and needs to be cast
-            return cnp.PyArray_Cast(cnp.PyArray_NewCopy(buffer, cnp.NPY_CORDER), typenum)
+            return cnp.PyArray_Cast(cnp.PyArray_GETCONTIGUOUS(buffer), typenum)
 
     else: # its not an array but implements buffer protocol otherwise will throw
         # parameters mindepth and maxdepth control how nested the buffer can be 
@@ -483,9 +490,14 @@ cdef class Timestep:
 
  
     @positions.setter
-    def positions(self, new_positions):
+    def positions(self,  new_positions):
         self._has_positions = True
-        self._pos[:] = new_positions
+        # self._pos[:] = new_positions
+        self._pos = _ndarray_c_contig_from_buffer(new_positions, self._typenum, 2, 2, 2, self._particle_dependent_dim)
+        # self._pos = np.ascontiguousarray(new_positions, dtype=self._dtype)
+        # self._pos = new_positions
+        # self._pos = cnp.Copy
+        
 
 
     @property
