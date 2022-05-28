@@ -292,8 +292,8 @@ cdef class Timestep:
         # use temps so that we don't have to allocate a bunch of empty
         # arrays of large size, eg for vel and frc
         cdef cnp.npy_intp particle_dependent_dim_tmp[2]
-        particle_dependent_dim_tmp[0] = 1
-        particle_dependent_dim_tmp[1] = 1
+        particle_dependent_dim_tmp[0] = self.n_atoms
+        particle_dependent_dim_tmp[1] = 3
 
         # these must be initialised, can we initialise small
         self._unitcell = cnp.PyArray_ZEROS(1, unitcell_dim_tmp, self._typenum, 0)
@@ -485,7 +485,7 @@ cdef class Timestep:
     @positions.setter
     def positions(self, new_positions):
         self._has_positions = True
-        self._pos = _ndarray_c_contig_from_buffer(new_positions, self._typenum, 0, 2)
+        self._pos[:] = new_positions
 
 
     @property
@@ -532,8 +532,7 @@ cdef class Timestep:
         if new_dimensions is None:
             self._unitcell[:] = 0
         else:
-            self._unitcell = _ndarray_c_contig_from_buffer(new_dimensions, self._typenum, 0, 2)
-
+            self._unitcell[:] = new_dimensions
     
     @property
     def volume(self):
@@ -594,11 +593,6 @@ cdef class Timestep:
         if new_dimensions is None:
             self.dimensions = None
         else:
-            # force C contig memory order
-            flag = cnp.PyArray_IS_C_CONTIGUOUS(new_dimensions)
-            if not flag:
-                new_dimensions = np.ascontiguousarray(new_dimensions)
-                # raise TypeError("Input array is not C-style contiguous")
             self.dimensions = core.triclinic_box(*new_dimensions)
 
     @property
@@ -630,8 +624,7 @@ cdef class Timestep:
     @velocities.setter
     def velocities(self,  new_velocities):
         self._has_velocities = True
-        self._velocities = _ndarray_c_contig_from_buffer(new_velocities, self._typenum, 0, 2)
-
+        self._velocities[:] = new_velocities
 
     @property
     def forces(self):
@@ -661,7 +654,7 @@ cdef class Timestep:
     @forces.setter
     def forces(self,  new_forces):        
         self._has_forces = True
-        self._forces = _ndarray_c_contig_from_buffer(new_forces, self._typenum, 0, 2)
+        self._forces[:] = new_forces
 
 
 
