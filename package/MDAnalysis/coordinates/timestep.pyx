@@ -157,16 +157,18 @@ MDAnalysis.
 """
 
 # use this to go from an array or buffer to a C contig array guaranteed
+# can it be used to replace call to np.ascontiguousarray
 cdef inline cnp.ndarray _ndarray_c_contig_from_buffer(object buffer, int typenum, int mindepth, int maxdepth):
     cdef int array_flag = 0
     cdef int contig_flag = 0
     cdef int cast_flag = 0
     array_flag = cnp.PyArray_Check(buffer)
-    contig_flag = cnp.PyArray_IS_C_CONTIGUOUS(buffer)
-    # signals must be cast
-    cast_flag = cnp.PyArray_TYPE(buffer) != typenum
-   
+    
     if array_flag: # is it an array?
+        contig_flag = cnp.PyArray_IS_C_CONTIGUOUS(buffer)
+        # signals must be cast
+        cast_flag = cnp.PyArray_TYPE(buffer) != typenum
+
         if contig_flag and not cast_flag: # its contiguous and no cast
             return buffer
         elif contig_flag and cast_flag: # its contiguous but needs to be cast
@@ -402,8 +404,7 @@ cdef class Timestep:
             # Setting this will always reallocate position data
             # ie
             # True -> False -> True will wipe data from first True state
-            self._pos = np.zeros((self.n_atoms, 3), dtype=self.dtype,
-                                 order=self.order)
+            self._pos = cnp.PyArray_ZEROS(2, self._particle_dependent_dim, self._typenum, 0)
             self._has_positions = True
         elif not val:
             # Unsetting val won't delete the numpy array
@@ -426,8 +427,7 @@ cdef class Timestep:
             # Setting this will always reallocate velocity data
             # ie
             # True -> False -> True will wipe data from first True state
-            self._velocities = np.zeros((self.n_atoms, 3), dtype=self.dtype,
-                                 order=self.order)
+            self._velocities = cnp.PyArray_ZEROS(2, self._particle_dependent_dim, self._typenum, 0)
             self._has_velocities = True
         elif not val:
             # Unsetting val won't delete the numpy array
@@ -449,8 +449,7 @@ cdef class Timestep:
             # Setting this will always reallocate force data
             # ie
             # True -> False -> True will wipe data from first True state
-            self._forces = np.zeros((self.n_atoms, 3), dtype=self.dtype,
-                                 order=self.order)
+            self._forces = cnp.PyArray_ZEROS(2, self._particle_dependent_dim, self._typenum, 0)
             self._has_forces = True
         elif not val:
             # Unsetting val won't delete the numpy array
@@ -486,7 +485,7 @@ cdef class Timestep:
     @positions.setter
     def positions(self, new_positions):
         self._has_positions = True
-        self._pos = _ndarray_c_contig_from_buffer(new_positions, self._typenum, 2, 2)
+        self._pos = _ndarray_c_contig_from_buffer(new_positions, self._typenum, 0, 2)
 
 
     @property
@@ -533,7 +532,7 @@ cdef class Timestep:
         if new_dimensions is None:
             self._unitcell[:] = 0
         else:
-            self._unitcell = _ndarray_c_contig_from_buffer(new_dimensions, self._typenum, 1, 2)
+            self._unitcell = _ndarray_c_contig_from_buffer(new_dimensions, self._typenum, 0, 2)
 
     
     @property
@@ -631,7 +630,7 @@ cdef class Timestep:
     @velocities.setter
     def velocities(self,  new_velocities):
         self._has_velocities = True
-        self._velocities = _ndarray_c_contig_from_buffer(new_velocities, self._typenum, 2, 2)
+        self._velocities = _ndarray_c_contig_from_buffer(new_velocities, self._typenum, 0, 2)
 
 
     @property
@@ -662,7 +661,7 @@ cdef class Timestep:
     @forces.setter
     def forces(self,  new_forces):        
         self._has_forces = True
-        self._forces = _ndarray_c_contig_from_buffer(new_forces, self._typenum, 2, 2)
+        self._forces = _ndarray_c_contig_from_buffer(new_forces, self._typenum, 0, 2)
 
 
 
