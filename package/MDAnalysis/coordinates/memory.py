@@ -175,9 +175,6 @@ on the sub-system.
 Classes
 =======
 
-.. autoclass:: Timestep
-   :members:
-   :inherited-members:
 
 .. autoclass:: MemoryReader
    :members:

@@ -41,28 +41,6 @@ AMBER trajectories are assumed to be in the following units:
 * lengths in Angstrom (Å)
 * time in ps (but see below)
 
-AMBER trajectory coordinate frames are based on a custom :class:`Timestep`
-object.
-
-.. autoclass:: Timestep
-   :members:
-
-   .. attribute:: _pos
-
-      coordinates of the atoms as a :class:`numpy.ndarray` of shape `(n_atoms, 3)`
-
-   .. attribute:: _velocities
-
-      velocities of the atoms as a :class:`numpy.ndarray` of shape `(n_atoms, 3)`;
-      only available if the trajectory contains velocities or if the
-      *velocities* = ``True`` keyword has been supplied.
-
-   .. attribute:: _forces
-
-      forces of the atoms as a :class:`numpy.ndarray` of shape `(n_atoms, 3)`;
-      only available if the trajectory contains forces or if the
-      *forces* = ``True`` keyword has been supplied.
-
 
 .. _netcdf-trajectories:
 
