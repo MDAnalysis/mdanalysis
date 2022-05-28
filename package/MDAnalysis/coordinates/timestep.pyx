@@ -25,7 +25,6 @@
 
 import cython 
 import weakref
-from cpython.weakref cimport PyWeakref_NewRef
 import warnings
 import copy
 import numbers
@@ -52,7 +51,7 @@ from ..lib.util import asiterable, Namespace
 
 """\
 Timestep Class --- :mod:`MDAnalysis.coordinates.timestep`
-===================================================
+=========================================================
 
 Derive other Timestep, classes from the classes in this module.
 The derived classes must follow the :ref:`Trajectory API`.
