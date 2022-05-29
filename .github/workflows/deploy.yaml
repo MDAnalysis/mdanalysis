@@ -161,7 +161,13 @@ jobs:
         exclude:
           # Multiple deps don't like windows
           - os: windows-latest
-            python-version: ['3.8', '3.9', '3.10']
+            python-version: "3.8"
+            type: "FULL"
+          - os: windows-latest
+            python-version: "3.9"
+            type: "FULL"
+          - os: windows-latest
+            python-version: "3.10"
             type: "FULL"
           # OpenMM isn't available for this yet
           - os: macos-latest
