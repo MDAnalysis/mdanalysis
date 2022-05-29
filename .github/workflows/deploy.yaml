@@ -129,13 +129,13 @@ jobs:
           mv dist/MDAnalysisTests-* dist-test/dist
 
       - name: upload_source
-        uses: pypa/gh-action-pypi-publish@release/v1.5.0
+        uses: pypa/gh-action-pypi-publish@v1.5.0
         with:
           user: __token__
           password: ${{ secrets.TESTPYPI_API_TOKEN_SRC }}
 
       - name: upload_tests
-        uses: pypa/gh-action-pypi-publish@release/v1.5.0
+        uses: pypa/gh-action-pypi-publish@v1.5.0
         with:
           user: __token__
           password: ${{ secrets.TESTPYPI_API_TOKEN_TEST }}
@@ -161,13 +161,13 @@ jobs:
           mv dist/MDAnalysisTests-* dist-test/dist
 
       - name: upload_source
-        uses: pypa/gh-action-pypi-publish@release/v1.5.0
+        uses: pypa/gh-action-pypi-publish@v1.5.0
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN_SRC }}
 
       - name: upload_tests
-        uses: pypa/gh-action-pypi-publish@release/v1.5.0
+        uses: pypa/gh-action-pypi-publish@v1.5.0
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN_TEST }}
