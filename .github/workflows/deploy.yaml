@@ -133,6 +133,8 @@ jobs:
         with:
           user: __token__
           password: ${{ secrets.TESTPYPI_API_TOKEN_SRC }}
+          skip_existing: true
+          repository_url: https://test.pypi.org/legacy/
 
       - name: upload_tests
         uses: pypa/gh-action-pypi-publish@v1.5.0
@@ -140,6 +142,8 @@ jobs:
           user: __token__
           password: ${{ secrets.TESTPYPI_API_TOKEN_TEST }}
           packages_dir: dist-test/
+          skip_existing: true
+          repository_url: https://test.pypi.org/legacy/
  
   upload_pypi:
     if: |
