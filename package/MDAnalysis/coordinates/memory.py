@@ -187,7 +187,7 @@ import numpy as np
 import warnings
 
 from . import base
-from .base import Timestep
+from .timestep import Timestep
 
 
 # These methods all pass in an existing *view* onto a larger array
