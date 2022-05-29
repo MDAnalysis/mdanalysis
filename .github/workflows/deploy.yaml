@@ -120,11 +120,23 @@ jobs:
           name: artifact
           path: dist
 
-      - uses: pypa/gh-action-pypi-publish@v1.5
+      - name: move_test_dist
+        run: |
+          mkdir -p dist-test/dist
+          mv dist/MDAnalysisTests-* dist-test/dist
+
+      - name: upload_source
+        uses: pypa/gh-action-pypi-publish@v1.5
         with:
           user: __token__
-          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-          repository_url: https://test.pypi.org/legacy/
+          password: ${{ secrets.TESTPYPI_API_TOKEN_SRC }}
+
+      - name: upload_tests
+        uses: pypa/gh-action-pypi-publish@v1.5
+        with:
+          user: __token__
+          password: ${{ secrets.TESTPYPI_API_TOKEN_TEST }}
+          packages_dir: dist-test/
  
   upload_pypi:
     if: |
@@ -140,10 +152,23 @@ jobs:
           name: artifact
           path: dist
 
-      - uses: pypa/gh-action-pypi-publish@v1.5
+      - name: move_test_dist
+        run: |
+          mkdir -p dist-test/dist
+          mv dist/MDAnalysisTests-* dist-test/dist
+
+      - name: upload_source
+        uses: pypa/gh-action-pypi-publish@v1.5
         with:
           user: __token__
-          password: ${{ secrets.PYPI_API_TOKEN }}
+          password: ${{ secrets.PYPI_API_TOKEN_SRC }}
+
+      - name: upload_tests
+        uses: pypa/gh-action-pypi-publish@v1.5
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN_TEST }}
+          packages_dir: dist-test/
 
   check_testpypi:
     # if: |
@@ -204,8 +229,9 @@ jobs:
 
       - name: pip_install_mda
         run: |
-          pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple MDAnalysis
-          pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple MDAnalysisTests
+          ver=$(grep "__version__ =" package/MDAnalysis/version.py | awk '{print $3}')
+          pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple MDAnalysis==$ver
+          pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple MDAnalysisTests==$ver
 
       - name: run_tests
         run: |
