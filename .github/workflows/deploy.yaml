@@ -3,6 +3,7 @@ name: Build and upload to PyPI
 on:
   pull_request:
     branches:
+      - develop
       - "package-*"
   push:
     branches:
@@ -51,6 +52,7 @@ jobs:
           package-dir: package
         env:
           CIBW_BUILD: ${{ matrix.python }}-${{ matrix.buildplat[1] }}
+          CIBW_BUILD_VERBOSITY: 1
 
       - name: upload artifacts
         if: |
