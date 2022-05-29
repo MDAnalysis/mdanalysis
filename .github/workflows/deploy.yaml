@@ -110,9 +110,9 @@ jobs:
           retention-days: 7
 
   upload_testpypi:
-    if: |
-      github.repository == 'MDAnalysis/mdanalysis' &&
-      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/'))
+    #if: |
+    #  github.repository == 'MDAnalysis/mdanalysis' &&
+    #  (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/'))
     name: testpypi upload
     environment: deploy
     runs-on: ubuntu-latest
@@ -174,9 +174,9 @@ jobs:
           packages_dir: dist-test/
 
   check_testpypi:
-    if: |
-      github.repository == 'MDAnalysis/mdanalysis' &&
-      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/'))
+    #if: |
+    #  github.repository == 'MDAnalysis/mdanalysis' &&
+    #  (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/'))
     name: testpypi check
     runs-on: ${{ matrix.os }}
     needs: upload_testpypi
