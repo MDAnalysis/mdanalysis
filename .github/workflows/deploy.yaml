@@ -125,8 +125,8 @@ jobs:
 
       - name: move_test_dist
         run: |
-          mkdir -p dist-test/dist
-          mv dist/MDAnalysisTests-* dist-test/dist
+          mkdir -p testsuite/dist
+          mv dist/MDAnalysisTests-* testsuite/dist
 
       - name: upload_source
         uses: pypa/gh-action-pypi-publish@v1.5.0
@@ -141,7 +141,7 @@ jobs:
         with:
           user: __token__
           password: ${{ secrets.TESTPYPI_API_TOKEN_TEST }}
-          packages_dir: dist-test/
+          packages_dir: testsuite/
           skip_existing: true
           repository_url: https://test.pypi.org/legacy/
  
