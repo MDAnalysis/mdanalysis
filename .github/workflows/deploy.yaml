@@ -3,7 +3,7 @@ name: Build and upload to PyPI
 on:
   pull_request:
     branches:
-      - develop
+      - "package-*"
   push:
     branches:
       - "package-*"
@@ -53,9 +53,9 @@ jobs:
           CIBW_BUILD: ${{ matrix.python }}-${{ matrix.buildplat[1] }}
 
       - name: upload artifacts
-        #if: |
-        #  (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')) ||
-        #  (github.event_name == 'release' && github.event.action == 'published')
+        if: |
+          (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/package')) ||
+          (github.event_name == 'release' && github.event.action == 'published')
         uses: actions/upload-artifact@v2
         with:
           path: wheelhouse/*.whl
@@ -77,9 +77,9 @@ jobs:
         run: pipx run build --sdist
 
       - name: upload artifacts
-        #if: |
-        #  (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')) ||
-        #  (github.event_name == 'release' && github.event.action == 'published')
+        if: |
+          (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/package')) ||
+          (github.event_name == 'release' && github.event.action == 'published')
         uses: actions/upload-artifact@v2
         with:
           path: package/dist/*.tar.gz
@@ -101,18 +101,18 @@ jobs:
         run: pipx run build --sdist
 
       - name: upload artifacts
-        #if: |
-        #  (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')) ||
-        #  (github.event_name == 'release' && github.event.action == 'published')
+        if: |
+          (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/package')) ||
+          (github.event_name == 'release' && github.event.action == 'published')
         uses: actions/upload-artifact@v2
         with:
           path: testsuite/dist/*.tar.gz
           retention-days: 7
 
   upload_testpypi:
-    #if: |
-    #  github.repository == 'MDAnalysis/mdanalysis' &&
-    #  (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/'))
+    if: |
+      github.repository == 'MDAnalysis/mdanalysis' &&
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/package'))
     name: testpypi upload
     environment: deploy
     runs-on: ubuntu-latest
@@ -178,9 +178,9 @@ jobs:
           packages_dir: testsuite/dist
 
   check_testpypi:
-    #if: |
-    #  github.repository == 'MDAnalysis/mdanalysis' &&
-    #  (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/'))
+    if: |
+      github.repository == 'MDAnalysis/mdanalysis' &&
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/package'))
     name: testpypi check
     runs-on: ${{ matrix.os }}
     needs: upload_testpypi
