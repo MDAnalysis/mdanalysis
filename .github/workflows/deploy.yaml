@@ -6,9 +6,9 @@ on:
       - develop
   push:
     branches:
-      - develop
+      - "package-*"
     tags:
-      - "*"
+      - "package-*"
   release:
     types:
       - published
@@ -33,15 +33,13 @@ jobs:
       fail-fast: false
       matrix:
         buildplat:
-          - [ubuntu-latest, manylinux_x86_64]
+          - [ubuntu-18.04, manylinux_x86_64]
           - [macos-10.15, macosx_*]
           - [windows-2019, win_amd64]
-          - [windows-2019, win32]
         python: ["cp38", "cp39", "cp310"]
     defaults:
       run:
         working-directory: ./package
-
     steps:
       - uses: actions/checkout@v3
         with:
@@ -69,7 +67,6 @@ jobs:
     defaults:
       run:
         working-directory: ./package
-
     steps:
       - uses: actions/checkout@v3
         with:
@@ -84,7 +81,7 @@ jobs:
           (github.event_name == 'release' && github.event.action == 'published')
         uses: actions/upload-artifact@v2
         with:
-          path: dist/*.tar.gz
+          path: package/dist/*.tar.gz
 
   build_sdist_tests:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
@@ -93,7 +90,6 @@ jobs:
     defaults:
       run:
         working-directory: ./testsuite
-
     steps:
       - uses: actions/checkout@v3
         with:
@@ -108,7 +104,7 @@ jobs:
           (github.event_name == 'release' && github.event.action == 'published')
         uses: actions/upload-artifact@v2
         with:
-          path: dist/*.tar.gz
+          path: testsuite/dist/*.tar.gz
 
   upload_testpypi:
     if: |
@@ -148,3 +144,52 @@ jobs:
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
+
+  check_testpypi:
+    # if: |
+    #  github.repository == 'MDAnalysis/mdanalysis' &&
+    #  (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/'))
+    name: testpypi check
+    runs-on: ${{ matrix.os }}
+    # needs: upload_testpypi
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.8", "3.9", "3.10"]
+        type: ["FULL", "MIN"]
+    env:
+      MPLBACKEND: agg
+
+    steps:
+      - name: setup_miniconda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+          auto-update-conda: true
+          channel-priority: flexible
+          channels: conda-forge, bioconda
+          add-pip-as-python-dependency: true
+          mamba-version: "*"
+          architecture: x64
+
+      - name: install_full_deps
+        uses: ./.github/actions/setup-deps
+        if: "matrix.type == 'FULL'"
+        with:
+          mamba: true
+          full-deps: true
+
+      - name: install_min_deps
+        if: "matrix.type == 'MIN'"
+        run: |
+          pip install pytest pytest-xdist
+
+      - name: pip_install_mda
+        run: |
+          pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple MDAnalysis
+          pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple MDAnalysisTests
+
+      - name: run_tests
+        run: |
+          pytest -n2 --pyargs MDAnalysisTests
