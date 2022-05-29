@@ -58,7 +58,8 @@ jobs:
         #  (github.event_name == 'release' && github.event.action == 'published')
         uses: actions/upload-artifact@v2
         with:
-          path: ./package/wheelhouse/*.whl
+          path: wheelhouse/*.whl
+          retention-days: 7
 
   build_sdist:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
@@ -82,6 +83,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           path: package/dist/*.tar.gz
+          retention-days: 7
 
   build_sdist_tests:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
@@ -105,6 +107,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           path: testsuite/dist/*.tar.gz
+          retention-days: 7
 
   upload_testpypi:
     if: |
@@ -113,7 +116,7 @@ jobs:
     name: testpypi upload
     environment: deploy
     runs-on: ubuntu-latest
-    needs: [build_wheels, build_sdist]
+    needs: [build_wheels, build_sdist, build_sdist_tests]
     steps:
       - uses: actions/download-artifact@v2
         with:
@@ -145,7 +148,7 @@ jobs:
     name: pypi upload
     environment: deploy
     runs-on: ubuntu-latest
-    needs: [build_wheels, build_sdist]
+    needs: [build_wheels, build_sdist, build_sdist_tests]
     steps:
       - uses: actions/download-artifact@v2
         with:
