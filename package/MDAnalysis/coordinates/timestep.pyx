@@ -644,7 +644,13 @@ cdef class Timestep:
     @velocities.setter
     def velocities(self,  new_velocities):
         self._has_velocities = True
-        self._velocities[:] = new_velocities
+        if cnp.PyArray_Check(new_velocities):
+            if cnp.PyArray_TYPE(new_velocities) == self._typenum:
+                self._velocities = cnp.PyArray_GETCONTIGUOUS(new_velocities)
+            else:
+                self._velocities = cnp.PyArray_Cast(cnp.PyArray_GETCONTIGUOUS(new_velocities), self._typenum)
+        else:
+            self._velocities[:] = new_velocities
 
     @property
     def forces(self):
@@ -674,7 +680,13 @@ cdef class Timestep:
     @forces.setter
     def forces(self,  new_forces):        
         self._has_forces = True
-        self._forces[:] = new_forces
+        if cnp.PyArray_Check(new_forces):
+            if cnp.PyArray_TYPE(new_forces) == self._typenum:
+                self._forces = cnp.PyArray_GETCONTIGUOUS(new_forces)
+            else:
+                self._forces = cnp.PyArray_Cast(cnp.PyArray_GETCONTIGUOUS(new_forces), self._typenum)
+        else:
+            self._forces[:] = new_forces
 
 
 
