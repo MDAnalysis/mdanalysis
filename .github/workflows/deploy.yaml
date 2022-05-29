@@ -62,7 +62,7 @@ jobs:
 
   build_sdist:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
-    name: build source distribution
+    name: build package source distribution
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -85,7 +85,7 @@ jobs:
 
   build_sdist_tests:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
-    name: build source distribution
+    name: build test source distribution
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -162,6 +162,8 @@ jobs:
       MPLBACKEND: agg
 
     steps:
+      - uses: actions/checkout@v3
+
       - name: setup_miniconda
         uses: conda-incubator/setup-miniconda@v2
         with:
