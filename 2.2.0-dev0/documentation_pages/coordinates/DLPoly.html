@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -127,7 +128,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.coordinates.DLPoly"></span><section id="dl-poly-format-reader-mdanalysis-coordinates-dlpoly">
-<h1><span class="section-number">6.4. </span>DL_Poly format reader <a class="reference internal" href="#module-MDAnalysis.coordinates.DLPoly" title="MDAnalysis.coordinates.DLPoly"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DLPoly</span></code></a><a class="headerlink" href="#dl-poly-format-reader-mdanalysis-coordinates-dlpoly" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">6.4. </span>DL_Poly format reader <a class="reference internal" href="#module-MDAnalysis.coordinates.DLPoly" title="MDAnalysis.coordinates.DLPoly"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DLPoly</span></code></a><a class="headerlink" href="#dl-poly-format-reader-mdanalysis-coordinates-dlpoly" title="Permalink to this heading"></a></h1>
 <p>Read DL <a class="reference external" href="http://www.stfc.ac.uk/SCD/research/app/ccg/software/DL_POLY/44516.aspx">Poly</a> format coordinate files</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DLPoly.ConfigReader">
@@ -140,6 +141,13 @@
 <p><span class="versionmodified changed">Changed in version 2.0.0: </span>coordinates, velocities, and forces are no longer stored in ‘F’ memory
 layout, instead now using the numpy default of ‘C’.</p>
 </div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.DLPoly.ConfigReader.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">'ps',</span> <span class="pre">'velocity':</span> <span class="pre">'Angstrom/ps'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.DLPoly.ConfigReader.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -153,6 +161,13 @@ layout, instead now using the numpy default of ‘C’.</p>
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DLPoly.HistoryReader.close">
 <span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DLPoly.html#HistoryReader.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.DLPoly.HistoryReader.close" title="Permalink to this definition"></a></dt>
 <dd><p>Close the trajectory file.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.DLPoly.HistoryReader.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">'ps',</span> <span class="pre">'velocity':</span> <span class="pre">'Angstrom/ps'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.DLPoly.HistoryReader.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
 </dd></dl>
 
 </dd></dl>

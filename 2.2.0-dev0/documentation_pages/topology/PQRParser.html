@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -126,7 +127,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.topology.PQRParser"></span><section id="pqr-topology-parser">
-<h1><span class="section-number">5.18. </span>PQR topology parser<a class="headerlink" href="#pqr-topology-parser" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">5.18. </span>PQR topology parser<a class="headerlink" href="#pqr-topology-parser" title="Permalink to this heading"></a></h1>
 <p>Read atoms with charges from a <a class="reference external" href="https://apbs-pdb2pqr.readthedocs.io/en/latest/formats/pqr.html">PQR</a> file (as written by <a class="reference external" href="https://apbs-pdb2pqr.readthedocs.io/en/latest/pdb2pqr/index.html">PDB2PQR</a>). No
 connectivity is deduced.</p>
 <div class="admonition note">
@@ -134,7 +135,7 @@ connectivity is deduced.</p>
 <p>The file format is described in <a class="reference internal" href="../coordinates/PQR.html#module-MDAnalysis.coordinates.PQR" title="MDAnalysis.coordinates.PQR"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PQR</span></code></a>.</p>
 </div>
 <section id="classes">
-<h2><span class="section-number">5.18.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">5.18.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.topology.PQRParser.PQRParser">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.PQRParser.</span></span><span class="sig-name descname"><span class="pre">PQRParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/PQRParser.html#PQRParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.PQRParser.PQRParser" title="Permalink to this definition"></a></dt>
@@ -401,6 +402,13 @@ is avoided.</p>
 <dd class="field-odd"><p>A MDAnalysis Topology object</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.topology.PQRParser.PQRParser.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.topology.PQRParser.PQRParser.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
 </dd></dl>
 
 </dd></dl>

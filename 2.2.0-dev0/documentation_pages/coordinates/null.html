@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -130,13 +131,13 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.coordinates.null"></span><section id="null-output-mdanalysis-coordinates-null">
-<h1><span class="section-number">6.27. </span>Null output — <a class="reference internal" href="#module-MDAnalysis.coordinates.null" title="MDAnalysis.coordinates.null"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.null</span></code></a><a class="headerlink" href="#null-output-mdanalysis-coordinates-null" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">6.27. </span>Null output — <a class="reference internal" href="#module-MDAnalysis.coordinates.null" title="MDAnalysis.coordinates.null"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.null</span></code></a><a class="headerlink" href="#null-output-mdanalysis-coordinates-null" title="Permalink to this heading"></a></h1>
 <p>The <a class="reference internal" href="#MDAnalysis.coordinates.null.NullWriter" title="MDAnalysis.coordinates.null.NullWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NullWriter</span></code></a> provides a Writer instance that behaves like
 any other writer but effectively ignores its input and does not write
 any output files. This is similar to writing to <code class="docutils literal notranslate"><span class="pre">/dev/null</span></code>.</p>
 <p>This class exists to allow developers writing generic code and tests.</p>
 <section id="classes">
-<h2><span class="section-number">6.27.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.27.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.null.NullWriter">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.null.</span></span><span class="sig-name descname"><span class="pre">NullWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/null.html#NullWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.null.NullWriter" title="Permalink to this definition"></a></dt>
@@ -144,6 +145,13 @@ any output files. This is similar to writing to <code class="docutils literal no
 <p>The NullWriter is the equivalent to <code class="docutils literal notranslate"><span class="pre">/dev/null</span></code>: it behaves like
 a Writer but ignores all input. It can be used in order to
 suppress output.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.null.NullWriter.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">'ps'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.null.NullWriter.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
+</dd></dl>
+
 </dd></dl>
 
 </section>

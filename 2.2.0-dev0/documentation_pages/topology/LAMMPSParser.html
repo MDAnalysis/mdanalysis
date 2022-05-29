@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -127,13 +128,13 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.topology.LAMMPSParser"></span><section id="lammpsparser">
-<h1><span class="section-number">5.11. </span>LAMMPSParser<a class="headerlink" href="#lammpsparser" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">5.11. </span>LAMMPSParser<a class="headerlink" href="#lammpsparser" title="Permalink to this heading"></a></h1>
 <p>Parses <a class="reference external" href="DATAfileformat::http://lammps.sandia.gov/doc/2001/data_format.html">data</a> or <a class="reference external" href="http://lammps.sandia.gov/doc/dump.html">dump</a> files produced by <a class="reference external" href="http://lammps.sandia.gov/">LAMMPS</a>.</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 1.0.0: </span>Deprecated <code class="xref py py-class docutils literal notranslate"><span class="pre">LAMMPSDataConverter</span></code> has now been removed.</p>
 </div>
 <section id="atom-styles">
-<span id="atom-style-kwarg"></span><h2><span class="section-number">5.11.1. </span>Atom styles<a class="headerlink" href="#atom-styles" title="Permalink to this headline"></a></h2>
+<span id="atom-style-kwarg"></span><h2><span class="section-number">5.11.1. </span>Atom styles<a class="headerlink" href="#atom-styles" title="Permalink to this heading"></a></h2>
 <p>By default parsers and readers for Lammps data files expect either an
 <em>atomic</em> or <em>full</em> <a class="reference external" href="http://lammps.sandia.gov/doc/atom_style.html">atom_style</a>.  This can be customised by passing
 the <cite>atom_style</cite> keyword argument.  This should be a space separated
@@ -154,7 +155,7 @@ and any other specified field will be ignored.</p>
 </div>
 </section>
 <section id="classes">
-<h2><span class="section-number">5.11.2. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">5.11.2. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.topology.LAMMPSParser.DATAParser">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.LAMMPSParser.</span></span><span class="sig-name descname"><span class="pre">DATAParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/LAMMPSParser.html#DATAParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser" title="Permalink to this definition"></a></dt>
@@ -416,6 +417,13 @@ is avoided.</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.18.0: </span>Added atom_style kwarg</p>
 </div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.topology.LAMMPSParser.DATAParser.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
 </dd></dl>
 
 </dd></dl>

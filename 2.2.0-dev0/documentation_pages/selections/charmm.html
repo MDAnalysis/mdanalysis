@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -105,7 +106,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.selections.charmm"></span><section id="charmm-selections">
-<h1><span class="section-number">9.2.4. </span>CHARMM selections<a class="headerlink" href="#charmm-selections" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">9.2.4. </span>CHARMM selections<a class="headerlink" href="#charmm-selections" title="Permalink to this heading"></a></h1>
 <p>Write <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a> selection to a <cite>str</cite> file
 that defines a <a class="reference external" href="http://www.charmm.org/documentation/c34b1/select.html">CHARMM selection</a>. To be used in <a class="reference external" href="http://www.charmm.org">CHARMM</a> like this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">stream</span> <span class="n">macro</span><span class="o">.</span><span class="n">str</span>
@@ -146,6 +147,30 @@ to 0 or <code class="docutils literal notranslate"><span class="pre">False</span
 empty string is returned because presumably there is no way to enter
 comments into the file.</p>
 <p>A newline is appended to non-empty strings.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.selections.charmm.SelectionWriter.commentfmt">
+<span class="sig-name descname"><span class="pre">commentfmt</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'!</span> <span class="pre">%s'</span></em><a class="headerlink" href="#MDAnalysis.selections.charmm.SelectionWriter.commentfmt" title="Permalink to this definition"></a></dt>
+<dd><p>Comment format string; should contain ‘%s’ or <code class="docutils literal notranslate"><span class="pre">None</span></code> for no comments.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.selections.charmm.SelectionWriter.continuation">
+<span class="sig-name descname"><span class="pre">continuation</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'-'</span></em><a class="headerlink" href="#MDAnalysis.selections.charmm.SelectionWriter.continuation" title="Permalink to this definition"></a></dt>
+<dd><p>Special character to continue a line across a newline.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.selections.charmm.SelectionWriter.ext">
+<span class="sig-name descname"><span class="pre">ext</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'str'</span></em><a class="headerlink" href="#MDAnalysis.selections.charmm.SelectionWriter.ext" title="Permalink to this definition"></a></dt>
+<dd><p>Extension of output files.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.selections.charmm.SelectionWriter.format">
+<span class="sig-name descname"><span class="pre">format</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['CHARMM',</span> <span class="pre">'str']</span></em><a class="headerlink" href="#MDAnalysis.selections.charmm.SelectionWriter.format" title="Permalink to this definition"></a></dt>
+<dd><p>Name of the format.</p>
 </dd></dl>
 
 <dl class="py method">

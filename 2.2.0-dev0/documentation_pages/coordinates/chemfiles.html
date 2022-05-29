@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -132,13 +133,13 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.coordinates.chemfiles"></span><section id="reading-trajectories-with-chemfiles-mdanalysis-coordinates-chemfiles">
-<h1><span class="section-number">6.26. </span>Reading trajectories with <em>chemfiles</em> — <a class="reference internal" href="#module-MDAnalysis.coordinates.chemfiles" title="MDAnalysis.coordinates.chemfiles"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles</span></code></a><a class="headerlink" href="#reading-trajectories-with-chemfiles-mdanalysis-coordinates-chemfiles" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">6.26. </span>Reading trajectories with <em>chemfiles</em> — <a class="reference internal" href="#module-MDAnalysis.coordinates.chemfiles" title="MDAnalysis.coordinates.chemfiles"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles</span></code></a><a class="headerlink" href="#reading-trajectories-with-chemfiles-mdanalysis-coordinates-chemfiles" title="Permalink to this heading"></a></h1>
 <p>MDAnalysis interoperates with the <a class="reference external" href="https://chemfiles.org">chemfiles</a> library. The <em>chemfiles</em> C++ library
 supports an expanding set of file formats, some of which are not natively supported by
 MDAnalysis. Using the <em>CHEMFILES</em> reader you can use  <a class="reference external" href="https://chemfiles.org">chemfiles</a> for the low-level
 file reading. Check the list of <a class="reference external" href="formats">chemfile-supported file formats</a>.</p>
 <section id="using-the-chemfiles-reader">
-<h2><span class="section-number">6.26.1. </span>Using the CHEMFILES reader<a class="headerlink" href="#using-the-chemfiles-reader" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.26.1. </span>Using the CHEMFILES reader<a class="headerlink" href="#using-the-chemfiles-reader" title="Permalink to this heading"></a></h2>
 <p>When reading, set the <code class="docutils literal notranslate"><span class="pre">format=&quot;CHEMFILES&quot;</span></code> keyword argument and I/O is delegated to
 <a class="reference external" href="https://chemfiles.org">chemfiles</a>. For example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
@@ -159,7 +160,7 @@ MDAnalysis. For example, to write a mol2 file:</p>
 </div>
 </section>
 <section id="classes">
-<h2><span class="section-number">6.26.2. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.26.2. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
 <p>Classes to read and write files using the <a class="reference external" href="https://chemfiles.org">chemfiles</a> library. This library
 provides C++ implementation of multiple formats readers and writers.</p>
 <dl class="py class">
@@ -278,7 +279,7 @@ file extension.</p>
 
 </section>
 <section id="helper-functions">
-<h2><span class="section-number">6.26.3. </span>Helper functions<a class="headerlink" href="#helper-functions" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.26.3. </span>Helper functions<a class="headerlink" href="#helper-functions" title="Permalink to this heading"></a></h2>
 <dl class="py data">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.chemfiles.MIN_CHEMFILES_VERSION">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.chemfiles.</span></span><span class="sig-name descname"><span class="pre">MIN_CHEMFILES_VERSION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Version('0.10')&gt;</span></em><a class="headerlink" href="#MDAnalysis.coordinates.chemfiles.MIN_CHEMFILES_VERSION" title="Permalink to this definition"></a></dt>

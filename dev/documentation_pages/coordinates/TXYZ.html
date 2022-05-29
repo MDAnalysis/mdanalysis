@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -130,7 +131,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.coordinates.TXYZ"></span><section id="txyz-file-format-mdanalysis-coordinates-txyz">
-<h1><span class="section-number">6.21. </span>TXYZ file format — <a class="reference internal" href="#module-MDAnalysis.coordinates.TXYZ" title="MDAnalysis.coordinates.TXYZ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TXYZ</span></code></a><a class="headerlink" href="#txyz-file-format-mdanalysis-coordinates-txyz" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">6.21. </span>TXYZ file format — <a class="reference internal" href="#module-MDAnalysis.coordinates.TXYZ" title="MDAnalysis.coordinates.TXYZ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TXYZ</span></code></a><a class="headerlink" href="#txyz-file-format-mdanalysis-coordinates-txyz" title="Permalink to this heading"></a></h1>
 <p>Coordinate reader for <a class="reference external" href="https://dasher.wustl.edu/tinker/">Tinker</a> xyz files .txyz and trajectory .arc files.
 Differences between Tinker <a class="reference external" href="http://chembytes.wikidot.com/tnk-tut00#toc2">format</a> and normal xyz files:</p>
 <ul class="simple">
@@ -141,7 +142,7 @@ Differences between Tinker <a class="reference external" href="http://chembytes.
 bonded, according to numbering in column 1)</p></li>
 </ul>
 <section id="classes">
-<h2><span class="section-number">6.21.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.21.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.TXYZ.TXYZReader">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.TXYZ.</span></span><span class="sig-name descname"><span class="pre">TXYZReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TXYZ.html#TXYZReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TXYZ.TXYZReader" title="Permalink to this definition"></a></dt>
@@ -743,6 +744,13 @@ be considered to have a length of a single time step <cite>dt</cite> and a
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.TXYZ.TXYZReader.transformations">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">transformations</span></span><a class="headerlink" href="#MDAnalysis.coordinates.TXYZ.TXYZReader.transformations" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the list of transformations</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.TXYZ.TXYZReader.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">'ps'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.TXYZ.TXYZReader.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
 </dd></dl>
 
 </dd></dl>

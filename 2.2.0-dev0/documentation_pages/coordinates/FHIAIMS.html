@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -131,7 +132,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.coordinates.FHIAIMS"></span><section id="fhi-aims-file-format-mdanalysis-coordinates-fhiaims">
-<h1><span class="section-number">6.24. </span>FHI-AIMS file format — <a class="reference internal" href="#module-MDAnalysis.coordinates.FHIAIMS" title="MDAnalysis.coordinates.FHIAIMS"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.FHIAIMS</span></code></a><a class="headerlink" href="#fhi-aims-file-format-mdanalysis-coordinates-fhiaims" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">6.24. </span>FHI-AIMS file format — <a class="reference internal" href="#module-MDAnalysis.coordinates.FHIAIMS" title="MDAnalysis.coordinates.FHIAIMS"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.FHIAIMS</span></code></a><a class="headerlink" href="#fhi-aims-file-format-mdanalysis-coordinates-fhiaims" title="Permalink to this heading"></a></h1>
 <p>Classes to read and write <a class="reference external" href="https://aimsclub.fhi-berlin.mpg.de/">FHI-AIMS</a> coordinate files.</p>
 <p>The cell vectors are specified by the (optional) lines with the
 <code class="docutils literal notranslate"><span class="pre">lattice_vector</span></code> tag:</p>
@@ -163,7 +164,7 @@ cell.</p>
 <p>The field name is a string identifying the atomic species.  See also the
 specifications in the official <a class="reference external" href="https://doi.org/10.6084/m9.figshare.12413477.v1">FHI-AIMS format</a>.</p>
 <section id="classes">
-<h2><span class="section-number">6.24.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.24.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.FHIAIMS.FHIAIMSReader">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.FHIAIMS.</span></span><span class="sig-name descname"><span class="pre">FHIAIMSReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/FHIAIMS.html#FHIAIMSReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.FHIAIMS.FHIAIMSReader" title="Permalink to this definition"></a></dt>
@@ -764,6 +765,13 @@ be considered to have a length of a single time step <cite>dt</cite> and a
 <dd><p>Returns the list of transformations</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.FHIAIMS.FHIAIMSReader.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">'ps',</span> <span class="pre">'velocity':</span> <span class="pre">'Angstrom/ps'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.FHIAIMS.FHIAIMSReader.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -1023,6 +1031,13 @@ is avoided.</p>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.FHIAIMS.FHIAIMSWriter.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">'Angstrom/ps'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.FHIAIMS.FHIAIMSWriter.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.FHIAIMS.FHIAIMSWriter.write">
 <span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.FHIAIMS.FHIAIMSWriter.write" title="Permalink to this definition"></a></dt>
@@ -1047,7 +1062,7 @@ removed. Use AtomGroup or Universe as an input instead.</p>
 
 </section>
 <section id="developer-notes-fhiaimswriter-format-strings">
-<h2><span class="section-number">6.24.2. </span>Developer notes: <code class="docutils literal notranslate"><span class="pre">FHIAIMSWriter</span></code> format strings<a class="headerlink" href="#developer-notes-fhiaimswriter-format-strings" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.24.2. </span>Developer notes: <code class="docutils literal notranslate"><span class="pre">FHIAIMSWriter</span></code> format strings<a class="headerlink" href="#developer-notes-fhiaimswriter-format-strings" title="Permalink to this heading"></a></h2>
 <p>The <a class="reference internal" href="#MDAnalysis.coordinates.FHIAIMS.FHIAIMSWriter" title="MDAnalysis.coordinates.FHIAIMS.FHIAIMSWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">FHIAIMSWriter</span></code></a> class has a <a class="reference internal" href="#MDAnalysis.coordinates.FHIAIMS.FHIAIMSWriter.fmt" title="MDAnalysis.coordinates.FHIAIMS.FHIAIMSWriter.fmt"><code class="xref py py-attr docutils literal notranslate"><span class="pre">FHIAIMSWriter.fmt</span></code></a>
 attribute, which is a dictionary of different strings for writing
 lines in <code class="docutils literal notranslate"><span class="pre">.in</span></code> files.  These are as follows:</p>

@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -135,11 +136,11 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.coordinates.base"></span><section id="base-classes-mdanalysis-coordinates-base">
-<h1><span class="section-number">6.28. </span>Base classes — <a class="reference internal" href="#module-MDAnalysis.coordinates.base" title="MDAnalysis.coordinates.base"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a><a class="headerlink" href="#base-classes-mdanalysis-coordinates-base" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">6.28. </span>Base classes — <a class="reference internal" href="#module-MDAnalysis.coordinates.base" title="MDAnalysis.coordinates.base"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a><a class="headerlink" href="#base-classes-mdanalysis-coordinates-base" title="Permalink to this heading"></a></h1>
 <p>Derive other Timestep, FrameIterator, Reader and Writer classes from the classes
 in this module. The derived classes must follow the <a class="reference internal" href="init.html#trajectory-api"><span class="std std-ref">Trajectory API</span></a>.</p>
 <section id="timestep">
-<h2><span class="section-number">6.28.1. </span>Timestep<a class="headerlink" href="#timestep" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.28.1. </span>Timestep<a class="headerlink" href="#timestep" title="Permalink to this heading"></a></h2>
 <p>A <a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> holds information for the current time frame in
 the trajectory. It is one of the central data structures in
 MDAnalysis.</p>
@@ -529,7 +530,7 @@ copy official attributes of the Timestep.</p>
 
 </section>
 <section id="frameiterators">
-<span id="id1"></span><h2><span class="section-number">6.28.2. </span>FrameIterators<a class="headerlink" href="#frameiterators" title="Permalink to this headline"></a></h2>
+<span id="id1"></span><h2><span class="section-number">6.28.2. </span>FrameIterators<a class="headerlink" href="#frameiterators" title="Permalink to this heading"></a></h2>
 <p>FrameIterators are “sliced trajectories” (a trajectory is a
 <a class="reference internal" href="init.html#readers"><span class="std std-ref">Reader</span></a>) that can be iterated over. They are typically
 created by slicing a trajectory or by fancy-indexing of a trajectory
@@ -601,7 +602,7 @@ trajectory.</p>
 
 </section>
 <section id="readers">
-<span id="readersbase"></span><h2><span class="section-number">6.28.3. </span>Readers<a class="headerlink" href="#readers" title="Permalink to this headline"></a></h2>
+<span id="readersbase"></span><h2><span class="section-number">6.28.3. </span>Readers<a class="headerlink" href="#readers" title="Permalink to this heading"></a></h2>
 <p>Readers know how to take trajectory data in a given format and present it in a
 common API to the user in MDAnalysis. There are two types of readers:</p>
 <ol class="arabic simple">
@@ -1238,6 +1239,13 @@ be considered to have a length of a single time step <cite>dt</cite> and a
 <dd><p>Returns the list of transformations</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.base.ReaderBase.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.base.ReaderBase.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -1843,6 +1851,13 @@ be considered to have a length of a single time step <cite>dt</cite> and a
 <dd><p>Returns the list of transformations</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.base.SingleFrameReaderBase.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.base.SingleFrameReaderBase.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -2240,7 +2255,7 @@ be considered to have a length of a single time step <cite>dt</cite> and a
 
 </section>
 <section id="writers">
-<span id="writersbase"></span><h2><span class="section-number">6.28.4. </span>Writers<a class="headerlink" href="#writers" title="Permalink to this headline"></a></h2>
+<span id="writersbase"></span><h2><span class="section-number">6.28.4. </span>Writers<a class="headerlink" href="#writers" title="Permalink to this heading"></a></h2>
 <p>Writers know how to write information in a <a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> to a trajectory
 file.</p>
 <dl class="py class">
@@ -2487,6 +2502,13 @@ is avoided.</p>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.base.WriterBase.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.base.WriterBase.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.base.WriterBase.write">
 <span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#WriterBase.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.WriterBase.write" title="Permalink to this definition"></a></dt>
@@ -2511,7 +2533,7 @@ removed. Use AtomGroup or Universe as an input instead.</p>
 
 </section>
 <section id="converters">
-<h2><span class="section-number">6.28.5. </span>Converters<a class="headerlink" href="#converters" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.28.5. </span>Converters<a class="headerlink" href="#converters" title="Permalink to this heading"></a></h2>
 <p>Converters output information to other libraries.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.base.ConverterBase">
@@ -2726,11 +2748,18 @@ is avoided.</p>
 </div>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.base.ConverterBase.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.base.ConverterBase.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
+</dd></dl>
+
 </dd></dl>
 
 </section>
 <section id="helper-classes">
-<h2><span class="section-number">6.28.6. </span>Helper classes<a class="headerlink" href="#helper-classes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.28.6. </span>Helper classes<a class="headerlink" href="#helper-classes" title="Permalink to this heading"></a></h2>
 <p>The following classes contain basic functionality that all readers and
 writers share.</p>
 <dl class="py class">

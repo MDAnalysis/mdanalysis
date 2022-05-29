@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -127,7 +128,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.coordinates.GMS"></span><section id="gamess-trajectory-reader-mdanalysis-coordinates-gms">
-<h1><span class="section-number">6.6. </span>GAMESS trajectory reader — <a class="reference internal" href="#module-MDAnalysis.coordinates.GMS" title="MDAnalysis.coordinates.GMS"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GMS</span></code></a><a class="headerlink" href="#gamess-trajectory-reader-mdanalysis-coordinates-gms" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">6.6. </span>GAMESS trajectory reader — <a class="reference internal" href="#module-MDAnalysis.coordinates.GMS" title="MDAnalysis.coordinates.GMS"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GMS</span></code></a><a class="headerlink" href="#gamess-trajectory-reader-mdanalysis-coordinates-gms" title="Permalink to this heading"></a></h1>
 <p>Resources: the GMS output format is a common output format for different
 GAMESS distributions: US-GAMESS, Firefly (PC-GAMESS) and GAMESS-UK.</p>
 <p>Current version was approbated with US-GAMESS &amp; Firefly only.</p>
@@ -179,6 +180,13 @@ Added <cite>dt</cite> and <cite>time_offset</cite> keywords (passed to <code cla
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.GMS.GMSReader.runtyp">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">runtyp</span></span><a class="headerlink" href="#MDAnalysis.coordinates.GMS.GMSReader.runtyp" title="Permalink to this definition"></a></dt>
 <dd><p>RUNTYP property of the GAMESS run</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.GMS.GMSReader.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">'ps'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.GMS.GMSReader.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
 </dd></dl>
 
 </dd></dl>

@@ -16,6 +16,7 @@
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -113,7 +114,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.analysis.legacy.x3dna"></span><section id="generation-and-analysis-of-x3dna-helicoidal-parameter-profiles-mdanalysis-analysis-legacy-x3dna">
-<h1><span class="section-number">4.10.1.1.1. </span>Generation and Analysis of X3DNA helicoidal parameter profiles — <a class="reference internal" href="#module-MDAnalysis.analysis.legacy.x3dna" title="MDAnalysis.analysis.legacy.x3dna"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.legacy.x3dna</span></code></a><a class="headerlink" href="#generation-and-analysis-of-x3dna-helicoidal-parameter-profiles-mdanalysis-analysis-legacy-x3dna" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">4.10.1.1.1. </span>Generation and Analysis of X3DNA helicoidal parameter profiles — <a class="reference internal" href="#module-MDAnalysis.analysis.legacy.x3dna" title="MDAnalysis.analysis.legacy.x3dna"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.legacy.x3dna</span></code></a><a class="headerlink" href="#generation-and-analysis-of-x3dna-helicoidal-parameter-profiles-mdanalysis-analysis-legacy-x3dna" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Elizabeth Denning</p>
@@ -152,9 +153,9 @@ Nat Protoc. 3(7), 1213-27.</p>
 </dd>
 </dl>
 <section id="example-applications">
-<h2><span class="section-number">4.10.1.1.1.1. </span>Example applications<a class="headerlink" href="#example-applications" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.10.1.1.1.1. </span>Example applications<a class="headerlink" href="#example-applications" title="Permalink to this heading"></a></h2>
 <section id="single-structure">
-<h3><span class="section-number">4.10.1.1.1.1.1. </span>Single structure<a class="headerlink" href="#single-structure" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">4.10.1.1.1.1.1. </span>Single structure<a class="headerlink" href="#single-structure" title="Permalink to this heading"></a></h3>
 <p>B-DNA structure:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.x3dna</span> <span class="kn">import</span> <span class="n">X3DNA</span><span class="p">,</span> <span class="n">X3DNAtraj</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PDB_X3DNA</span>
@@ -168,7 +169,7 @@ Nat Protoc. 3(7), 1213-27.</p>
 </div>
 </section>
 <section id="trajectory">
-<h3><span class="section-number">4.10.1.1.1.1.2. </span>Trajectory<a class="headerlink" href="#trajectory" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">4.10.1.1.1.1.2. </span>Trajectory<a class="headerlink" href="#trajectory" title="Permalink to this heading"></a></h3>
 <p>Analyzing a trajectory:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">psf</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
 <span class="n">H</span> <span class="o">=</span> <span class="n">X3DNAtraj</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
@@ -184,7 +185,7 @@ next example.</p>
 </section>
 </section>
 <section id="analysis-classes">
-<h2><span class="section-number">4.10.1.1.1.2. </span>Analysis classes<a class="headerlink" href="#analysis-classes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.10.1.1.1.2. </span>Analysis classes<a class="headerlink" href="#analysis-classes" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.legacy.x3dna.X3DNA">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.legacy.x3dna.</span></span><span class="sig-name descname"><span class="pre">X3DNA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/legacy/x3dna.html#X3DNA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.legacy.x3dna.X3DNA" title="Permalink to this definition"></a></dt>
@@ -546,7 +547,7 @@ parameters. The order is <code class="docutils literal notranslate"><span class=
 
 </section>
 <section id="utilities">
-<h2><span class="section-number">4.10.1.1.1.3. </span>Utilities<a class="headerlink" href="#utilities" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.10.1.1.1.3. </span>Utilities<a class="headerlink" href="#utilities" title="Permalink to this heading"></a></h2>
 <dl class="py exception">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.legacy.x3dna.ApplicationError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.legacy.x3dna.</span></span><span class="sig-name descname"><span class="pre">ApplicationError</span></span><a class="reference internal" href="../../../_modules/MDAnalysis/exceptions.html#ApplicationError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.legacy.x3dna.ApplicationError" title="Permalink to this definition"></a></dt>

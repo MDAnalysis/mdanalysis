@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
@@ -115,7 +116,7 @@
            <div itemprop="articleBody">
              
   <section id="hole-analysis-mdanalysis-analysis-hole2">
-<h1><span class="section-number">4.4.1. </span>HOLE analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.hole2" title="MDAnalysis.analysis.hole2"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2</span></code></a><a class="headerlink" href="#hole-analysis-mdanalysis-analysis-hole2" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">4.4.1. </span>HOLE analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.hole2" title="MDAnalysis.analysis.hole2"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2</span></code></a><a class="headerlink" href="#hole-analysis-mdanalysis-analysis-hole2" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Lily Wang</p>
@@ -138,9 +139,9 @@ from <a class="reference external" href="http://www.holeprogram.org/">http://www
 <a class="reference external" href="https://github.com/osmart/hole2">https://github.com/osmart/hole2</a>. (HOLE is open source and available
 under the Apache v2.0 license.)</p>
 <section id="module-MDAnalysis.analysis.hole2">
-<span id="module"></span><h2><span class="section-number">4.4.1.1. </span>Module<a class="headerlink" href="#module-MDAnalysis.analysis.hole2" title="Permalink to this headline"></a></h2>
+<span id="module"></span><h2><span class="section-number">4.4.1.1. </span>Module<a class="headerlink" href="#module-MDAnalysis.analysis.hole2" title="Permalink to this heading"></a></h2>
 <section id="id4">
-<h3><span class="section-number">4.4.1.1.1. </span>HOLE Analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.hole2" title="MDAnalysis.analysis.hole2"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2</span></code></a><a class="headerlink" href="#id4" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">4.4.1.1.1. </span>HOLE Analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.hole2" title="MDAnalysis.analysis.hole2"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2</span></code></a><a class="headerlink" href="#id4" title="Permalink to this heading"></a></h3>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Lily Wang</p>
@@ -158,7 +159,7 @@ under the Apache v2.0 license.)</p>
 <p>This module contains the tools to interface with <a class="reference external" href="http://www.holeprogram.org">HOLE</a> <a class="reference internal" href="#smart1993" id="id5"><span>[Smart1993]</span></a>
 <a class="reference internal" href="#smart1996" id="id6"><span>[Smart1996]</span></a> to analyse an ion channel pore or transporter pathway <a class="reference internal" href="#stelzl2014" id="id7"><span>[Stelzl2014]</span></a> .</p>
 <section id="using-hole-on-a-pdb-file">
-<h4><span class="section-number">4.4.1.1.1.1. </span>Using HOLE on a PDB file<a class="headerlink" href="#using-hole-on-a-pdb-file" title="Permalink to this headline"></a></h4>
+<h4><span class="section-number">4.4.1.1.1.1. </span>Using HOLE on a PDB file<a class="headerlink" href="#using-hole-on-a-pdb-file" title="Permalink to this heading"></a></h4>
 <p>Use the :func:<code class="docutils literal notranslate"><span class="pre">hole</span></code> function to run <a class="reference external" href="http://www.holeprogram.org">HOLE</a> on a single PDB file. For example,
 the code below runs the <a class="reference external" href="http://www.holeprogram.org">HOLE</a> program installed at ‘~/hole2/exe/hole’</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PDB_HOLE</span>
@@ -194,7 +195,7 @@ delete the files after the function is wrong, set <cite>keep_files=False</cite>.
 mind that if you delete the sphpdb file, you cannot then create a VMD surface.</p>
 </section>
 <section id="using-hole-on-a-trajectory">
-<h4><span class="section-number">4.4.1.1.1.2. </span>Using HOLE on a trajectory<a class="headerlink" href="#using-hole-on-a-trajectory" title="Permalink to this headline"></a></h4>
+<h4><span class="section-number">4.4.1.1.1.2. </span>Using HOLE on a trajectory<a class="headerlink" href="#using-hole-on-a-trajectory" title="Permalink to this heading"></a></h4>
 <p>You can also run HOLE on a trajectory through the <a class="reference internal" href="#MDAnalysis.analysis.hole2.HoleAnalysis" title="MDAnalysis.analysis.hole2.HoleAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">HoleAnalysis</span></code></a> class.
 This behaves similarly to the <code class="docutils literal notranslate"><span class="pre">hole</span></code> function, although arguments such as <code class="docutils literal notranslate"><span class="pre">cpoint</span></code>
 and <code class="docutils literal notranslate"><span class="pre">cvect</span></code> become runtime arguments for the <a class="reference internal" href="#MDAnalysis.analysis.hole2.HoleAnalysis.run" title="MDAnalysis.analysis.hole2.HoleAnalysis.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code></a> function.</p>
@@ -230,7 +231,7 @@ files when you are finished with the context manager:</p>
 </div>
 </section>
 <section id="using-hole-with-vmd">
-<h4><span class="section-number">4.4.1.1.1.3. </span>Using HOLE with VMD<a class="headerlink" href="#using-hole-with-vmd" title="Permalink to this headline"></a></h4>
+<h4><span class="section-number">4.4.1.1.1.3. </span>Using HOLE with VMD<a class="headerlink" href="#using-hole-with-vmd" title="Permalink to this heading"></a></h4>
 <p>The <strong class="program">sos_triangle</strong> program that is part of <a class="reference external" href="http://www.holeprogram.org">HOLE</a> can write an input
 file for <a class="reference external" href="https://www.ks.uiuc.edu/Research/vmd/">VMD</a> to display a triangulated surface of the pore found by
 <strong class="program">hole</strong>. This functionality is available with the
@@ -239,7 +240,7 @@ file for <a class="reference external" href="https://www.ks.uiuc.edu/Research/vm
 <em>trajectory</em> of pore surfaces that can be animated in VMD together with the
 frames from the trajectory.</p>
 <section id="analyzing-a-full-trajectory">
-<h5><span class="section-number">4.4.1.1.1.3.1. </span>Analyzing a full trajectory<a class="headerlink" href="#analyzing-a-full-trajectory" title="Permalink to this headline"></a></h5>
+<h5><span class="section-number">4.4.1.1.1.3.1. </span>Analyzing a full trajectory<a class="headerlink" href="#analyzing-a-full-trajectory" title="Permalink to this heading"></a></h5>
 <p>To analyze a full trajectory and write pore surfaces for all frames to file
 <code class="file docutils literal notranslate"><span class="pre">hole_surface.vmd</span></code>, use</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
@@ -266,7 +267,7 @@ specific frames then you can either load the trajectory with the same
 subsampling into VMD or create a subsampled trajectory.</p>
 </section>
 <section id="creating-subsampled-hole-surface">
-<h5><span class="section-number">4.4.1.1.1.3.2. </span>Creating subsampled HOLE surface<a class="headerlink" href="#creating-subsampled-hole-surface" title="Permalink to this headline"></a></h5>
+<h5><span class="section-number">4.4.1.1.1.3.2. </span>Creating subsampled HOLE surface<a class="headerlink" href="#creating-subsampled-hole-surface" title="Permalink to this heading"></a></h5>
 <p>For example, if we want to start displaying at frame 1 (i.e., skip frame 0), stop at frame 7, and
 only show every other frame (step 2) then the HOLE analysis will be</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">hole2</span><span class="o">.</span><span class="n">HoleAnalysis</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">executable</span><span class="o">=</span><span class="s1">&#39;~/hole2/exe/hole&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">h2</span><span class="p">:</span>
@@ -282,7 +283,7 @@ only show every other frame (step 2) then the HOLE analysis will be</p>
 </div>
 </section>
 <section id="loading-a-trajectory-into-vmd-with-subsampling">
-<span id="id9"></span><h5><span class="section-number">4.4.1.1.1.3.3. </span>Loading a trajectory into VMD with subsampling<a class="headerlink" href="#loading-a-trajectory-into-vmd-with-subsampling" title="Permalink to this headline"></a></h5>
+<span id="id9"></span><h5><span class="section-number">4.4.1.1.1.3.3. </span>Loading a trajectory into VMD with subsampling<a class="headerlink" href="#loading-a-trajectory-into-vmd-with-subsampling" title="Permalink to this heading"></a></h5>
 <p>Load your system into VMD. This can mean to load the topology file with
 <span class="menuselection">File ‣ New Molecule</span> and adding the trajectory with
 <span class="menuselection">File ‣ Load Data into Molecule</span> or just <span class="menuselection">File
@@ -302,7 +303,7 @@ choose one less than the <code class="docutils literal notranslate"><span class=
 <p>You should see a different surface for each frame in the trajectory. <a class="footnote-reference brackets" href="#vmd-extra-frame" id="id10">2</a></p>
 </section>
 <section id="creating-a-subsampled-trajectory">
-<h5><span class="section-number">4.4.1.1.1.3.4. </span>Creating a subsampled trajectory<a class="headerlink" href="#creating-a-subsampled-trajectory" title="Permalink to this headline"></a></h5>
+<h5><span class="section-number">4.4.1.1.1.3.4. </span>Creating a subsampled trajectory<a class="headerlink" href="#creating-a-subsampled-trajectory" title="Permalink to this heading"></a></h5>
 <p>Instead of having VMD subsample the trajectory as described in
 <a class="reference internal" href="#loading-a-trajectory-into-vmd-with-subsampling"><span class="std std-ref">Loading a trajectory into VMD with subsampling</span></a> we can write a subsampled
 trajectory to a file. Although it requires more disk space, it can be
@@ -345,7 +346,7 @@ trajectory; you can use the menu commands if you prefer.</p>
 </section>
 </section>
 <section id="functions-and-classes">
-<h4><span class="section-number">4.4.1.1.1.4. </span>Functions and classes<a class="headerlink" href="#functions-and-classes" title="Permalink to this headline"></a></h4>
+<h4><span class="section-number">4.4.1.1.1.4. </span>Functions and classes<a class="headerlink" href="#functions-and-classes" title="Permalink to this heading"></a></h4>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.hole2.hole">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.hole2.</span></span><span class="sig-name descname"><span class="pre">hole</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pdbfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">infile_text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">infile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hole.out'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sphpdb_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hole.sph'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vdwradii_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">executable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hole'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmpdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">22.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cvect</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_residues</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['SOL',</span> <span class="pre">'WAT',</span> <span class="pre">'TIP',</span> <span class="pre">'HOH',</span> <span class="pre">'K</span>&#160; <span class="pre">',</span> <span class="pre">'NA</span> <span class="pre">',</span> <span class="pre">'CL</span> <span class="pre">']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dcd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dcd_iniskip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dcd_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hole2/hole.html#hole"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.hole2.hole" title="Permalink to this definition"></a></dt>
@@ -1114,9 +1115,9 @@ temporary PDB files for each frame of a
 </section>
 </section>
 <section id="module-MDAnalysis.analysis.hole2.utils">
-<span id="utility-functions-and-templates"></span><h2><span class="section-number">4.4.1.2. </span>Utility functions and templates<a class="headerlink" href="#module-MDAnalysis.analysis.hole2.utils" title="Permalink to this headline"></a></h2>
+<span id="utility-functions-and-templates"></span><h2><span class="section-number">4.4.1.2. </span>Utility functions and templates<a class="headerlink" href="#module-MDAnalysis.analysis.hole2.utils" title="Permalink to this heading"></a></h2>
 <section id="hole-analysis-mdanalysis-analysis-hole2-helper">
-<h3><span class="section-number">4.4.1.2.1. </span>HOLE Analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2.helper</span></code><a class="headerlink" href="#hole-analysis-mdanalysis-analysis-hole2-helper" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">4.4.1.2.1. </span>HOLE Analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2.helper</span></code><a class="headerlink" href="#hole-analysis-mdanalysis-analysis-hole2-helper" title="Permalink to this heading"></a></h3>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Lily Wang</p>
@@ -1264,7 +1265,7 @@ Default: 15</p></li>
 
 </section>
 <span class="target" id="module-MDAnalysis.analysis.hole2.templates"></span><section id="hole-analysis-mdanalysis-analysis-hole2-templates">
-<h3><span class="section-number">4.4.1.2.2. </span>HOLE Analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.hole2.templates" title="MDAnalysis.analysis.hole2.templates"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2.templates</span></code></a><a class="headerlink" href="#hole-analysis-mdanalysis-analysis-hole2-templates" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">4.4.1.2.2. </span>HOLE Analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.hole2.templates" title="MDAnalysis.analysis.hole2.templates"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2.templates</span></code></a><a class="headerlink" href="#hole-analysis-mdanalysis-analysis-hole2-templates" title="Permalink to this heading"></a></h3>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Lily Wang</p>

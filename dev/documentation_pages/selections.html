@@ -16,6 +16,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/js/versions.js"></script>
     <script src="../_static/js/theme.js"></script>
@@ -106,7 +107,7 @@
            <div itemprop="articleBody">
              
   <section id="selection-commands">
-<span id="selection-commands-label"></span><h1><span class="section-number">3. </span>Selection commands<a class="headerlink" href="#selection-commands" title="Permalink to this headline"></a></h1>
+<span id="selection-commands-label"></span><h1><span class="section-number">3. </span>Selection commands<a class="headerlink" href="#selection-commands" title="Permalink to this heading"></a></h1>
 <p>Once you have the <a class="reference internal" href="core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Universe()</span></code></a> object, you can
 select atoms (using a syntax very similar to <a class="reference external" href="https://www.charmm.org/charmm/documentation/by-version/c45b1/select.html">CHARMM’s atom selection
 syntax</a>):</p>
@@ -152,7 +153,7 @@ sixth atom in <code class="docutils literal notranslate"><span class="pre">ag</s
 <p>For further details on ordered selections, see <a class="reference internal" href="#ordered-selections-label"><span class="std std-ref">Ordered selections</span></a>.</p>
 </div>
 <section id="selection-keywords">
-<h2><span class="section-number">3.1. </span>Selection Keywords<a class="headerlink" href="#selection-keywords" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">3.1. </span>Selection Keywords<a class="headerlink" href="#selection-keywords" title="Permalink to this heading"></a></h2>
 <p>The following describes all selection keywords currently understood by the
 selection parser. The following applies to all selections:</p>
 <ul>
@@ -196,7 +197,7 @@ and <a class="reference internal" href="core/selection.html#MDAnalysis.core.sele
 selection ranges.</p>
 </div>
 <section id="simple-selections">
-<h3><span class="section-number">3.1.1. </span>Simple selections<a class="headerlink" href="#simple-selections" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">3.1.1. </span>Simple selections<a class="headerlink" href="#simple-selections" title="Permalink to this heading"></a></h3>
 <p>This is a non-exhaustive list of the available selection keywords. As noted
 in the dot point above, keywords will be automatically generated for any
 suitable <a class="reference internal" href="core/topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr" title="MDAnalysis.core.topologyattrs.TopologyAttr"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopologyAttr</span></code></a>. A list of
@@ -255,7 +256,7 @@ possible options but other values will not raise an error.</p>
 </dl>
 </section>
 <section id="pattern-matching">
-<h3><span class="section-number">3.1.2. </span>Pattern matching<a class="headerlink" href="#pattern-matching" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">3.1.2. </span>Pattern matching<a class="headerlink" href="#pattern-matching" title="Permalink to this heading"></a></h3>
 <p>The pattern matching notation described below is used to specify
 patterns for matching strings (based on <a class="reference external" href="https://docs.python.org/3/library/fnmatch.html#module-fnmatch" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fnmatch</span></code></a>):</p>
 <dl class="simple">
@@ -276,7 +277,7 @@ would match residues named “GLU” but would not match “GLN” or “GLY”.
 </dl>
 </section>
 <section id="boolean">
-<h3><span class="section-number">3.1.3. </span>Boolean<a class="headerlink" href="#boolean" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">3.1.3. </span>Boolean<a class="headerlink" href="#boolean" title="Permalink to this heading"></a></h3>
 <dl class="simple">
 <dt>not</dt><dd><p>all atoms not in the selection, e.g. <code class="docutils literal notranslate"><span class="pre">not</span> <span class="pre">protein</span></code> selects all atoms
 that aren’t part of a protein</p>
@@ -288,7 +289,7 @@ that belong to a protein, but are not in a lysine or alanine residue</p>
 </dl>
 </section>
 <section id="geometric">
-<h3><span class="section-number">3.1.4. </span>Geometric<a class="headerlink" href="#geometric" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">3.1.4. </span>Geometric<a class="headerlink" href="#geometric" title="Permalink to this heading"></a></h3>
 <dl>
 <dt>around <em>distance</em>  <em>selection</em></dt><dd><p>selects all atoms a certain cutoff away from another selection,
 e.g. <code class="docutils literal notranslate"><span class="pre">around</span> <span class="pre">3.5</span> <span class="pre">protein</span></code> selects all atoms not belonging to protein
@@ -347,7 +348,7 @@ argument of <a class="reference internal" href="core/groups.html#MDAnalysis.core
 </div>
 </section>
 <section id="similarity-and-connectivity">
-<h3><span class="section-number">3.1.5. </span>Similarity and connectivity<a class="headerlink" href="#similarity-and-connectivity" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">3.1.5. </span>Similarity and connectivity<a class="headerlink" href="#similarity-and-connectivity" title="Permalink to this heading"></a></h3>
 <dl class="simple">
 <dt>same <em>subkeyword</em> as <em>selection</em></dt><dd><p>selects all atoms that have the same <em>subkeyword</em> value as any atom in
 <em>selection</em>. Allowed <em>subkeyword</em> values are the atom properties: <code class="docutils literal notranslate"><span class="pre">name,</span>
@@ -366,7 +367,7 @@ oxygens</p>
 </dl>
 </section>
 <section id="index">
-<h3><span class="section-number">3.1.6. </span>Index<a class="headerlink" href="#index" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">3.1.6. </span>Index<a class="headerlink" href="#index" title="Permalink to this heading"></a></h3>
 <dl class="simple">
 <dt>bynum <em>index-range</em></dt><dd><p>selects all atoms within a range of (1-based) inclusive indices,
 e.g. <code class="docutils literal notranslate"><span class="pre">bynum</span> <span class="pre">1</span></code> selects the first atom in the universe; <code class="docutils literal notranslate"><span class="pre">bynum</span> <span class="pre">5:10</span></code>
@@ -393,7 +394,7 @@ unique, and can be arbitrarily assigned by the user.</p>
 </div>
 </section>
 <section id="preexisting-selections-and-modifiers">
-<span id="pre-selections-label"></span><h3><span class="section-number">3.1.7. </span>Preexisting selections and modifiers<a class="headerlink" href="#preexisting-selections-and-modifiers" title="Permalink to this headline"></a></h3>
+<span id="pre-selections-label"></span><h3><span class="section-number">3.1.7. </span>Preexisting selections and modifiers<a class="headerlink" href="#preexisting-selections-and-modifiers" title="Permalink to this heading"></a></h3>
 <dl class="simple">
 <dt>group <cite>group-name</cite></dt><dd><p>selects the atoms in the <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> passed to the function as an
 argument named <cite>group-name</cite>. Only the atoms common to <cite>group-name</cite> and the
@@ -424,7 +425,7 @@ itself be empty.  When issuing
 </section>
 </section>
 <section id="dynamic-selections">
-<h2><span class="section-number">3.2. </span>Dynamic selections<a class="headerlink" href="#dynamic-selections" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">3.2. </span>Dynamic selections<a class="headerlink" href="#dynamic-selections" title="Permalink to this heading"></a></h2>
 <p>By default <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.AtomGroup.select_atoms" title="MDAnalysis.core.groups.AtomGroup.select_atoms"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_atoms()</span></code></a> returns an
 <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>, in which the list of atoms is
 constant across trajectory frame changes. If
@@ -474,7 +475,7 @@ across frames:</p>
 </div>
 </section>
 <section id="ordered-selections">
-<span id="ordered-selections-label"></span><h2><span class="section-number">3.3. </span>Ordered selections<a class="headerlink" href="#ordered-selections" title="Permalink to this headline"></a></h2>
+<span id="ordered-selections-label"></span><h2><span class="section-number">3.3. </span>Ordered selections<a class="headerlink" href="#ordered-selections" title="Permalink to this heading"></a></h2>
 <p><a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.AtomGroup.select_atoms" title="MDAnalysis.core.groups.AtomGroup.select_atoms"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_atoms()</span></code></a> sorts the atoms
 in the <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> by atom index before
 returning them (this is to eliminate possible duplicates in the

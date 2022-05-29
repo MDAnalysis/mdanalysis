@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -108,7 +109,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.converters.ParmEdParser"></span><section id="parmed-topology-parser-mdanalysis-converters-parmedparser">
-<h1><span class="section-number">7.1. </span>ParmEd topology parser — <a class="reference internal" href="#module-MDAnalysis.converters.ParmEdParser" title="MDAnalysis.converters.ParmEdParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.ParmEdParser</span></code></a><a class="headerlink" href="#parmed-topology-parser-mdanalysis-converters-parmedparser" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">7.1. </span>ParmEd topology parser — <a class="reference internal" href="#module-MDAnalysis.converters.ParmEdParser" title="MDAnalysis.converters.ParmEdParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.ParmEdParser</span></code></a><a class="headerlink" href="#parmed-topology-parser-mdanalysis-converters-parmedparser" title="Permalink to this heading"></a></h1>
 <p>Converts a <a class="reference external" href="https://parmed.github.io/ParmEd/html">ParmEd</a>
 <a class="reference external" href="https://parmed.github.io/ParmEd/html/structobj/parmed.structure.Structure.html#parmed.structure.Structure" title="(in ParmEd v0+untagged.3319.g7a6168d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">parmed.structure.Structure</span></code></a> into a <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.Topology</span></code>.</p>
 <p class="rubric">Example</p>
@@ -154,7 +155,7 @@ energy.</p>
 </div>
 <p>Now you can continue on and run a simulation, if you wish.</p>
 <section id="classes">
-<h2><span class="section-number">7.1.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">7.1.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.converters.ParmEdParser.ParmEdParser">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.converters.ParmEdParser.</span></span><span class="sig-name descname"><span class="pre">ParmEdParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/ParmEdParser.html#ParmEdParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.ParmEdParser.ParmEdParser" title="Permalink to this definition"></a></dt>
@@ -380,6 +381,13 @@ then they will be assigned an empty string.</p>
 </div>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.converters.ParmEdParser.ParmEdParser.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.converters.ParmEdParser.ParmEdParser.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
+</dd></dl>
+
 </dd></dl>
 
 <div class="versionchanged">
@@ -389,7 +397,7 @@ then they will be assigned an empty string.</p>
 </section>
 </section>
 <span class="target" id="module-MDAnalysis.converters.ParmEd"></span><section id="parmed-structure-i-o-mdanalysis-converters-parmed">
-<h1><span class="section-number">7.2. </span>ParmEd structure I/O — <a class="reference internal" href="#module-MDAnalysis.converters.ParmEd" title="MDAnalysis.converters.ParmEd"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.ParmEd</span></code></a><a class="headerlink" href="#parmed-structure-i-o-mdanalysis-converters-parmed" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">7.2. </span>ParmEd structure I/O — <a class="reference internal" href="#module-MDAnalysis.converters.ParmEd" title="MDAnalysis.converters.ParmEd"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.ParmEd</span></code></a><a class="headerlink" href="#parmed-structure-i-o-mdanalysis-converters-parmed" title="Permalink to this heading"></a></h1>
 <p>Read coordinates data from a <a class="reference external" href="https://parmed.github.io/ParmEd/html">ParmEd</a> <a class="reference external" href="https://parmed.github.io/ParmEd/html/structobj/parmed.structure.Structure.html#parmed.structure.Structure" title="(in ParmEd v0+untagged.3319.g7a6168d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">parmed.structure.Structure</span></code></a>
 with <a class="reference internal" href="#MDAnalysis.converters.ParmEd.ParmEdReader" title="MDAnalysis.converters.ParmEd.ParmEdReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParmEdReader</span></code></a> into a MDAnalysis Universe. Convert it back to a
 <a class="reference external" href="https://parmed.github.io/ParmEd/html/structobj/parmed.structure.Structure.html#parmed.structure.Structure" title="(in ParmEd v0+untagged.3319.g7a6168d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">parmed.structure.Structure</span></code></a> with <a class="reference internal" href="#MDAnalysis.converters.ParmEd.ParmEdConverter" title="MDAnalysis.converters.ParmEd.ParmEdConverter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParmEdConverter</span></code></a>.</p>
@@ -422,11 +430,18 @@ masses.</p>
 </pre></div>
 </div>
 <section id="id2">
-<h2><span class="section-number">7.2.1. </span>Classes<a class="headerlink" href="#id2" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">7.2.1. </span>Classes<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.converters.ParmEd.ParmEdReader">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.converters.ParmEd.</span></span><span class="sig-name descname"><span class="pre">ParmEdReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/ParmEd.html#ParmEdReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.ParmEd.ParmEdReader" title="Permalink to this definition"></a></dt>
 <dd><p>Coordinate reader for ParmEd.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.converters.ParmEd.ParmEdReader.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.converters.ParmEd.ParmEdReader.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -451,6 +466,13 @@ masses.</p>
 <dd class="field-odd"><p><strong>obj</strong> (AtomGroup or Universe or <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code>) – </p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.converters.ParmEd.ParmEdConverter.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.converters.ParmEd.ParmEdConverter.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
 </dd></dl>
 
 </dd></dl>

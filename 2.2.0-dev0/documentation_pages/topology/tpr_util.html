@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -129,12 +130,12 @@
            <div itemprop="articleBody">
              
   <section id="utility-functions-for-the-tpr-topology-parser">
-<h1><span class="section-number">5.28. </span>Utility functions for the TPR topology parser<a class="headerlink" href="#utility-functions-for-the-tpr-topology-parser" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">5.28. </span>Utility functions for the TPR topology parser<a class="headerlink" href="#utility-functions-for-the-tpr-topology-parser" title="Permalink to this heading"></a></h1>
 <p>The <a class="reference internal" href="#module-MDAnalysis.topology.tpr" title="MDAnalysis.topology.tpr"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.tpr</span></code></a> module contains classes and
 functions on which the Gromacs TPR topology reader
 <a class="reference internal" href="TPRParser.html#MDAnalysis.topology.TPRParser.TPRParser" title="MDAnalysis.topology.TPRParser.TPRParser"><code class="xref py py-class docutils literal notranslate"><span class="pre">TPRParser</span></code></a> is built.</p>
 <span class="target" id="module-MDAnalysis.topology.tpr"></span><section id="tpr-support">
-<h2><span class="section-number">5.28.1. </span>TPR support<a class="headerlink" href="#tpr-support" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">5.28.1. </span>TPR support<a class="headerlink" href="#tpr-support" title="Permalink to this heading"></a></h2>
 <p>The <a class="reference internal" href="#module-MDAnalysis.topology.tpr" title="MDAnalysis.topology.tpr"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.tpr</span></code></a> module is required for the
 <a class="reference internal" href="TPRParser.html#module-MDAnalysis.topology.TPRParser" title="MDAnalysis.topology.TPRParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.TPRParser</span></code></a> module.</p>
 <dl class="py data">
@@ -154,7 +155,7 @@ If iterable is specified the tuple is initialized from iterable’s items.</p>
 </ul>
 </section>
 <span class="target" id="module-MDAnalysis.topology.tpr.setting"></span><section id="tprparser-settings">
-<h2><span class="section-number">5.28.2. </span>TPRParser settings<a class="headerlink" href="#tprparser-settings" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">5.28.2. </span>TPRParser settings<a class="headerlink" href="#tprparser-settings" title="Permalink to this heading"></a></h2>
 <p>Definition of constants.</p>
 <p>The currently read file format versions are defined in
 <a class="reference internal" href="#MDAnalysis.topology.tpr.setting.SUPPORTED_VERSIONS" title="MDAnalysis.topology.tpr.setting.SUPPORTED_VERSIONS"><code class="xref py py-data docutils literal notranslate"><span class="pre">SUPPORTED_VERSIONS</span></code></a>.</p>
@@ -748,7 +749,7 @@ If iterable is specified the tuple is initialized from iterable’s items.</p>
 
 </section>
 <span class="target" id="module-MDAnalysis.topology.tpr.obj"></span><section id="class-definitions-for-the-tprparser">
-<h2><span class="section-number">5.28.3. </span>Class definitions for the TPRParser<a class="headerlink" href="#class-definitions-for-the-tprparser" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">5.28.3. </span>Class definitions for the TPRParser<a class="headerlink" href="#class-definitions-for-the-tprparser" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.topology.tpr.obj.Atom">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.tpr.obj.</span></span><span class="sig-name descname"><span class="pre">Atom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typeB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ptype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resind</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atomnumber</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Atom" title="Permalink to this definition"></a></dt>
@@ -1165,7 +1166,7 @@ atom (e.g a coarse-grained particle), an empty string is returned.</p>
 
 </section>
 <span class="target" id="module-MDAnalysis.topology.tpr.utils"></span><section id="utilities-for-the-tprparser">
-<h2><span class="section-number">5.28.4. </span>Utilities for the TPRParser<a class="headerlink" href="#utilities-for-the-tprparser" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">5.28.4. </span>Utilities for the TPRParser<a class="headerlink" href="#utilities-for-the-tprparser" title="Permalink to this heading"></a></h2>
 <p>Function calling order:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">TPRParser</span><span class="o">.</span><span class="n">py</span> <span class="n">call</span> <span class="n">do_mtop</span><span class="p">)</span>
 <span class="n">do_mtop</span> <span class="o">-&gt;</span> <span class="n">do_symtab</span>

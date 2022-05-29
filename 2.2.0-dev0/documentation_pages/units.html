@@ -16,6 +16,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../_static/js/versions.js"></script>
@@ -102,7 +103,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.units"></span><section id="constants-and-unit-conversion-mdanalysis-units">
-<h1><span class="section-number">15. </span>Constants and unit conversion — <a class="reference internal" href="#module-MDAnalysis.units" title="MDAnalysis.units"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a><a class="headerlink" href="#constants-and-unit-conversion-mdanalysis-units" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">15. </span>Constants and unit conversion — <a class="reference internal" href="#module-MDAnalysis.units" title="MDAnalysis.units"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a><a class="headerlink" href="#constants-and-unit-conversion-mdanalysis-units" title="Permalink to this heading"></a></h1>
 <p>The base units of MDAnalysis trajectories are the <strong>Å</strong> (<strong>ångström</strong>) for
 <strong>length</strong> and <strong>ps</strong> (<strong>pico second</strong>) for <strong>time</strong>. By default, all positions
 are in Å and all times are in ps, regardless of how the MD code stored
@@ -152,7 +153,7 @@ table on <a class="reference internal" href="#table-baseunits"><span class="std 
 </tbody>
 </table>
 <section id="implementation-notes">
-<h2><span class="section-number">15.1. </span>Implementation notes<a class="headerlink" href="#implementation-notes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">15.1. </span>Implementation notes<a class="headerlink" href="#implementation-notes" title="Permalink to this heading"></a></h2>
 <p>All conversions with <a class="reference internal" href="#MDAnalysis.units.convert" title="MDAnalysis.units.convert"><code class="xref py py-func docutils literal notranslate"><span class="pre">convert()</span></code></a> are carried out in a simple fashion: the
 conversion factor <span class="math notranslate nohighlight">\(f_{b,b'}\)</span> from the base unit <span class="math notranslate nohighlight">\(b\)</span> to another unit
 <span class="math notranslate nohighlight">\(b'\)</span> is precomputed and stored (see <a class="reference internal" href="#data"><span class="std std-ref">Data</span></a>). The numerical value of
@@ -173,7 +174,7 @@ an intermediate step:</p>
 </pre></div>
 </div>
 <section id="conversions">
-<h3><span class="section-number">15.1.1. </span>Conversions<a class="headerlink" href="#conversions" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">15.1.1. </span>Conversions<a class="headerlink" href="#conversions" title="Permalink to this heading"></a></h3>
 <p>Examples for how to calculate some of the conversion factors that are
 hard-coded in <a class="reference internal" href="#module-MDAnalysis.units" title="MDAnalysis.units"><code class="xref py py-mod docutils literal notranslate"><span class="pre">units</span></code></a> (see <a class="reference internal" href="#data"><span class="std std-ref">Data</span></a>).</p>
 <dl>
@@ -212,7 +213,7 @@ hard-coded in <a class="reference internal" href="#module-MDAnalysis.units" titl
 </section>
 </section>
 <section id="functions">
-<h2><span class="section-number">15.2. </span>Functions<a class="headerlink" href="#functions" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">15.2. </span>Functions<a class="headerlink" href="#functions" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.units.get_conversion_factor">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.units.</span></span><span class="sig-name descname"><span class="pre">get_conversion_factor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unit_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MDAnalysis/units.html#get_conversion_factor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.units.get_conversion_factor" title="Permalink to this definition"></a></dt>
@@ -244,7 +245,7 @@ hard-coded in <a class="reference internal" href="#module-MDAnalysis.units" titl
 
 </section>
 <section id="data">
-<span id="id2"></span><h2><span class="section-number">15.3. </span>Data<a class="headerlink" href="#data" title="Permalink to this headline"></a></h2>
+<span id="id2"></span><h2><span class="section-number">15.3. </span>Data<a class="headerlink" href="#data" title="Permalink to this heading"></a></h2>
 <dl class="py data">
 <dt class="sig sig-object py" id="MDAnalysis.units.constants">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.units.</span></span><span class="sig-name descname"><span class="pre">constants</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'Boltzman_constant':</span> <span class="pre">0.008314462159,</span> <span class="pre">'N_Avogadro':</span> <span class="pre">6.02214129e+23,</span> <span class="pre">'calorie':</span> <span class="pre">4.184,</span> <span class="pre">'electric_constant':</span> <span class="pre">0.00552635,</span> <span class="pre">'elementary_charge':</span> <span class="pre">1.602176565e-19}</span></em><a class="headerlink" href="#MDAnalysis.units.constants" title="Permalink to this definition"></a></dt>
@@ -362,7 +363,7 @@ unit type.</p>
 
 </section>
 <section id="references-and-footnotes">
-<h2><span class="section-number">15.4. </span>References and footnotes<a class="headerlink" href="#references-and-footnotes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">15.4. </span>References and footnotes<a class="headerlink" href="#references-and-footnotes" title="Permalink to this heading"></a></h2>
 <dl class="citation">
 <dt class="label" id="jorgensen1998"><span class="brackets"><a class="fn-backref" href="#id3">Jorgensen1998</a></span></dt>
 <dd><ol class="upperalpha simple" start="23">

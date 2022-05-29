@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -133,7 +134,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.coordinates.LAMMPS"></span><section id="lammps-dcd-trajectory-and-data-i-o-mdanalysis-coordinates-lammps">
-<h1><span class="section-number">6.11. </span>LAMMPS DCD trajectory and DATA I/O  — <a class="reference internal" href="#module-MDAnalysis.coordinates.LAMMPS" title="MDAnalysis.coordinates.LAMMPS"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></code></a><a class="headerlink" href="#lammps-dcd-trajectory-and-data-i-o-mdanalysis-coordinates-lammps" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">6.11. </span>LAMMPS DCD trajectory and DATA I/O  — <a class="reference internal" href="#module-MDAnalysis.coordinates.LAMMPS" title="MDAnalysis.coordinates.LAMMPS"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></code></a><a class="headerlink" href="#lammps-dcd-trajectory-and-data-i-o-mdanalysis-coordinates-lammps" title="Permalink to this heading"></a></h1>
 <p>Classes to read and write <a class="reference external" href="http://lammps.sandia.gov/">LAMMPS</a> DCD binary trajectories, LAMMPS DATA files
 and LAMMPS dump files.  Trajectories can be read regardless of system-endianness
 as this is auto-detected.</p>
@@ -153,17 +154,17 @@ keywords <em>timeunit</em> and/or <em>lengthunit</em> to <a class="reference int
 <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> (which then calls
 <a class="reference internal" href="#MDAnalysis.coordinates.LAMMPS.DCDReader" title="MDAnalysis.coordinates.LAMMPS.DCDReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">DCDReader</span></code></a>).</p>
 <section id="data-file-formats">
-<h2><span class="section-number">6.11.1. </span>Data file formats<a class="headerlink" href="#data-file-formats" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.11.1. </span>Data file formats<a class="headerlink" href="#data-file-formats" title="Permalink to this heading"></a></h2>
 <p>By default either the <cite>atomic</cite> or <cite>full</cite> atom styles are expected,
 however this can be customised, see <a class="reference internal" href="../topology/LAMMPSParser.html#atom-style-kwarg"><span class="std std-ref">Atom styles</span></a>.</p>
 </section>
 <section id="dump-files">
-<h2><span class="section-number">6.11.2. </span>Dump files<a class="headerlink" href="#dump-files" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.11.2. </span>Dump files<a class="headerlink" href="#dump-files" title="Permalink to this heading"></a></h2>
 <p>The DumpReader expects ascii dump files written with the default
 <a class="reference external" href="http://lammps.sandia.gov/doc/dump.html">LAMMPS dump format</a> of ‘atom’</p>
 </section>
 <section id="example-loading-a-lammps-simulation">
-<h2><span class="section-number">6.11.3. </span>Example: Loading a LAMMPS simulation<a class="headerlink" href="#example-loading-a-lammps-simulation" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.11.3. </span>Example: Loading a LAMMPS simulation<a class="headerlink" href="#example-loading-a-lammps-simulation" title="Permalink to this heading"></a></h2>
 <p>To load a LAMMPS simulation from a LAMMPS data file (using the
 <a class="reference internal" href="../topology/LAMMPSParser.html#MDAnalysis.topology.LAMMPSParser.DATAParser" title="MDAnalysis.topology.LAMMPSParser.DATAParser"><code class="xref py py-class docutils literal notranslate"><span class="pre">DATAParser</span></code></a>) together with a
 LAMMPS DCD with “<em>real</em>” provide the keyword <em>format=”LAMMPS</em>”:</p>
@@ -193,7 +194,7 @@ for other recognized values and the documentation for the LAMMPS
 </div>
 </section>
 <section id="classes">
-<h2><span class="section-number">6.11.4. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.11.4. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.LAMMPS.DCDReader">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.LAMMPS.</span></span><span class="sig-name descname"><span class="pre">DCDReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dcdfilename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/LAMMPS.html#DCDReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader" title="Permalink to this definition"></a></dt>
@@ -851,6 +852,13 @@ be considered to have a length of a single time step <cite>dt</cite> and a
 <dd><p>Returns the list of transformations</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.LAMMPS.DCDReader.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">'AKMA'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -1117,6 +1125,13 @@ is avoided.</p>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)">bool</a></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.LAMMPS.DCDWriter.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">'AKMA'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1735,6 +1750,13 @@ be considered to have a length of a single time step <cite>dt</cite> and a
 <dd><p>Returns the list of transformations</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.LAMMPS.DATAReader.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">'Angstrom/fs'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAReader.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -2002,6 +2024,13 @@ is avoided.</p>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)">bool</a></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.LAMMPS.DATAWriter.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAWriter.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2654,6 +2683,13 @@ be considered to have a length of a single time step <cite>dt</cite> and a
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.LAMMPS.DumpReader.transformations">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">transformations</span></span><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DumpReader.transformations" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the list of transformations</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.LAMMPS.DumpReader.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DumpReader.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
 </dd></dl>
 
 </dd></dl>

@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -126,12 +127,12 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.topology.MinimalParser"></span><section id="minimal-topology-parser">
-<h1><span class="section-number">5.12. </span>Minimal topology parser<a class="headerlink" href="#minimal-topology-parser" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">5.12. </span>Minimal topology parser<a class="headerlink" href="#minimal-topology-parser" title="Permalink to this heading"></a></h1>
 <p>Parses only the number of atoms from a coordinate/trajectory file.
 This minimal topology can be used to access coordinate data without the need
 for a full-fledged topology file.</p>
 <section id="classes">
-<h2><span class="section-number">5.12.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">5.12.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.topology.MinimalParser.MinimalParser">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.MinimalParser.</span></span><span class="sig-name descname"><span class="pre">MinimalParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/MinimalParser.html#MinimalParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser" title="Permalink to this definition"></a></dt>
@@ -355,6 +356,13 @@ is avoided.</p>
 <dt class="sig sig-object py" id="MDAnalysis.topology.MinimalParser.MinimalParser.parse">
 <span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/MinimalParser.html#MinimalParser.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.parse" title="Permalink to this definition"></a></dt>
 <dd><p>Return the minimal <em>Topology</em> object</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.topology.MinimalParser.MinimalParser.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.topology.MinimalParser.MinimalParser.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
 </dd></dl>
 
 </dd></dl>

@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -132,11 +133,11 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.coordinates.MOL2"></span><section id="mol2-file-format-mdanalysis-coordinates-mol2">
-<h1><span class="section-number">6.13. </span>MOL2 file format — <a class="reference internal" href="#module-MDAnalysis.coordinates.MOL2" title="MDAnalysis.coordinates.MOL2"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a><a class="headerlink" href="#mol2-file-format-mdanalysis-coordinates-mol2" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">6.13. </span>MOL2 file format — <a class="reference internal" href="#module-MDAnalysis.coordinates.MOL2" title="MDAnalysis.coordinates.MOL2"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a><a class="headerlink" href="#mol2-file-format-mdanalysis-coordinates-mol2" title="Permalink to this heading"></a></h1>
 <p>Classes to work with <a class="reference external" href="http://www.tripos.com/">Tripos</a> molecule structure format (<a class="reference external" href="http://www.tripos.com/data/support/mol2.pdf">MOL2</a>) coordinate and
 topology files. Used, for instance, by the <a class="reference external" href="http://dock.compbio.ucsf.edu/">DOCK</a> docking code.</p>
 <section id="example-for-working-with-mol2-files">
-<h2><span class="section-number">6.13.1. </span>Example for working with mol2 files<a class="headerlink" href="#example-for-working-with-mol2-files" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.13.1. </span>Example for working with mol2 files<a class="headerlink" href="#example-for-working-with-mol2-files" title="Permalink to this heading"></a></h2>
 <p>To open a mol2, remove all hydrogens and save as a new file, use the following:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;Molecule.mol2&quot;</span><span class="p">)</span>
 <span class="n">gr</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;not name H*&quot;</span><span class="p">)</span>
@@ -154,7 +155,7 @@ topology files. Used, for instance, by the <a class="reference external" href="h
 </div>
 </section>
 <section id="classes">
-<h2><span class="section-number">6.13.2. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.13.2. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.MOL2.MOL2Reader">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.MOL2.</span></span><span class="sig-name descname"><span class="pre">MOL2Reader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/MOL2.html#MOL2Reader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.MOL2.MOL2Reader" title="Permalink to this definition"></a></dt>
@@ -180,6 +181,13 @@ Ignores status bit strings</p>
 <dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><a class="reference internal" href="../lib/util.html#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><em>NamedStream</em></a>) – name of the mol2 file or stream</p>
 </dd>
 </dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.MOL2.MOL2Reader.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.MOL2.MOL2Reader.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -231,6 +239,13 @@ See page 7 for list of SYBYL atomtypes
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.MOL2.MOL2Writer.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.MOL2.MOL2Writer.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
+</dd></dl>
+
 </dd></dl>
 
 <p class="rubric">Notes</p>
@@ -243,7 +258,7 @@ dimensions set to <code class="docutils literal notranslate"><span class="pre">N
 </ul>
 </section>
 <section id="mol2-format-notes">
-<h2><span class="section-number">6.13.3. </span>MOL2 format notes<a class="headerlink" href="#mol2-format-notes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.13.3. </span>MOL2 format notes<a class="headerlink" href="#mol2-format-notes" title="Permalink to this heading"></a></h2>
 <ul>
 <li><p>MOL2 Format Specification:  (<a class="reference external" href="http://www.tripos.com/data/support/mol2.pdf">http://www.tripos.com/data/support/mol2.pdf</a>)</p></li>
 <li><p>Example file (<a class="reference external" href="http://www.tripos.com/mol2/mol2_format3.html">http://www.tripos.com/mol2/mol2_format3.html</a>):</p>

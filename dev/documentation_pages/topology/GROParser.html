@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -126,7 +127,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.topology.GROParser"></span><section id="gro-topology-parser">
-<h1><span class="section-number">5.7. </span>GRO topology parser<a class="headerlink" href="#gro-topology-parser" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">5.7. </span>GRO topology parser<a class="headerlink" href="#gro-topology-parser" title="Permalink to this heading"></a></h1>
 <p>Read a list of atoms from a GROMOS/Gromacs GRO coordinate file to
 build a basic topology.</p>
 <p>Atom types and masses are guessed.</p>
@@ -135,7 +136,7 @@ build a basic topology.</p>
 <p><a class="reference internal" href="../coordinates/GRO.html#module-MDAnalysis.coordinates.GRO" title="MDAnalysis.coordinates.GRO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GRO</span></code></a></p>
 </div>
 <section id="classes">
-<h2><span class="section-number">5.7.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">5.7.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.topology.GROParser.GROParser">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.GROParser.</span></span><span class="sig-name descname"><span class="pre">GROParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/GROParser.html#GROParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.GROParser.GROParser" title="Permalink to this definition"></a></dt>
@@ -363,6 +364,13 @@ is avoided.</p>
 <dt class="sig sig-object py" id="MDAnalysis.topology.GROParser.GROParser.parse">
 <span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/GROParser.html#GROParser.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.GROParser.GROParser.parse" title="Permalink to this definition"></a></dt>
 <dd><p>Return the <em>Topology</em> object for this file</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.topology.GROParser.GROParser.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.topology.GROParser.GROParser.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
 </dd></dl>
 
 </dd></dl>

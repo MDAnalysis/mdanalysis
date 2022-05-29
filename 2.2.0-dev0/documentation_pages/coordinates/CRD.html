@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -127,7 +128,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.coordinates.CRD"></span><section id="crd-structure-files-in-mdanalysis-mdanalysis-coordinates-crd">
-<h1><span class="section-number">6.2. </span>CRD structure files in MDAnalysis — <a class="reference internal" href="#module-MDAnalysis.coordinates.CRD" title="MDAnalysis.coordinates.CRD"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.CRD</span></code></a><a class="headerlink" href="#crd-structure-files-in-mdanalysis-mdanalysis-coordinates-crd" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">6.2. </span>CRD structure files in MDAnalysis — <a class="reference internal" href="#module-MDAnalysis.coordinates.CRD" title="MDAnalysis.coordinates.CRD"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.CRD</span></code></a><a class="headerlink" href="#crd-structure-files-in-mdanalysis-mdanalysis-coordinates-crd" title="Permalink to this heading"></a></h1>
 <p>Read and write coordinates in CHARMM CARD coordinate format (suffix
 “crd”). The CHARMM “extended format” is handled automatically.</p>
 <dl class="py class">
@@ -150,6 +151,13 @@ Frames now 0-based instead of 1-based.</p>
 <dd class="field-even"><p><a class="reference internal" href="#MDAnalysis.coordinates.CRD.CRDWriter" title="MDAnalysis.coordinates.CRD.CRDWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">CRDWriter</span></code></a></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.CRD.CRDReader.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.CRD.CRDReader.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
 </dd></dl>
 
 </dd></dl>
@@ -189,6 +197,13 @@ of the setting of <cite>extended</cite>.</p>
 </ul>
 </dd>
 </dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.CRD.CRDWriter.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.CRD.CRDWriter.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.CRD.CRDWriter.write">
 <span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">selection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/CRD.html#CRDWriter.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.CRD.CRDWriter.write" title="Permalink to this definition"></a></dt>

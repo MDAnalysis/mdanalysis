@@ -15,6 +15,7 @@
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -1545,9 +1546,14 @@
     <span class="nd">@_pbc_to_wrap</span>
     <span class="nd">@check_wrap_and_unwrap</span>
     <span class="k">def</span> <span class="nf">center_of_mass</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Center of mass of (compounds of) the group.</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Center of mass of (compounds of) the group</span>
 
-<span class="sd">        Computes the center of mass of :class:`Atoms&lt;Atom&gt;` in the group.</span>
+<span class="sd">        .. math::</span>
+<span class="sd">            \boldsymbol R = \frac{\sum_i m_i \boldsymbol r_i}{\sum m_i}</span>
+
+<span class="sd">        where :math:`m_i` is the mass and :math:`\boldsymbol r_i` the</span>
+<span class="sd">        position of atom :math:`i` in the given</span>
+<span class="sd">        :class:`MDAnalysis.core.groups.AtomGroup`.</span>
 <span class="sd">        Centers of mass per :class:`Residue`, :class:`Segment`, molecule, or</span>
 <span class="sd">        fragment can be obtained by setting the `compound` parameter</span>
 <span class="sd">        accordingly. If the masses of a compound sum up to zero, the</span>
@@ -2012,6 +2018,75 @@
             <span class="n">charges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">row</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">segatoms</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="n">charges</span></div>
+
+<div class="viewcode-block" id="Charges.center_of_charge"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Charges.center_of_charge">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
+    <span class="nd">@_pbc_to_wrap</span>
+    <span class="nd">@check_wrap_and_unwrap</span>
+    <span class="k">def</span> <span class="nf">center_of_charge</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Center of (absolute) charge of (compounds of) the group</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            \boldsymbol R = \frac{\sum_i \vert q_i \vert \boldsymbol r_i}</span>
+<span class="sd">                                 {\sum_i \vert q_i \vert}</span>
+
+<span class="sd">        where :math:`q_i` is the charge and :math:`\boldsymbol r_i` the</span>
+<span class="sd">        position of atom :math:`i` in the given</span>
+<span class="sd">        :class:`MDAnalysis.core.groups.AtomGroup`.</span>
+<span class="sd">        Centers of charge per :class:`Residue`, :class:`Segment`, molecule, or</span>
+<span class="sd">        fragment can be obtained by setting the `compound` parameter</span>
+<span class="sd">        accordingly. If the charges of a compound sum up to zero, the</span>
+<span class="sd">        center of mass coordinates of that compound will be ``nan`` (not a</span>
+<span class="sd">        number).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        wrap : bool, optional</span>
+<span class="sd">            If ``True`` and `compound` is ``&#39;group&#39;``, move all atoms to the</span>
+<span class="sd">            primary unit cell before calculation.</span>
+<span class="sd">            If ``True`` and `compound` is not ``group``, the</span>
+<span class="sd">            centers of mass of each compound will be calculated without moving</span>
+<span class="sd">            any atoms to keep the compounds intact. Instead, the resulting</span>
+<span class="sd">            center-of-mass position vectors will be moved to the primary unit</span>
+<span class="sd">            cell after calculation.</span>
+<span class="sd">        unwrap : bool, optional</span>
+<span class="sd">            If ``True``, compounds will be unwrapped before computing their</span>
+<span class="sd">            centers.</span>
+<span class="sd">        compound : {&#39;group&#39;, &#39;segments&#39;, &#39;residues&#39;, &#39;molecules&#39;, \</span>
+<span class="sd">                    &#39;fragments&#39;}, optional</span>
+<span class="sd">            If ``&#39;group&#39;``, the center of mass of all atoms in the group will</span>
+<span class="sd">            be returned as a single position vector. Otherwise, the centers of</span>
+<span class="sd">            mass of each :class:`Segment`, :class:`Residue`, molecule, or</span>
+<span class="sd">            fragment will be returned as an array of position vectors, i.e.</span>
+<span class="sd">            a 2d array.</span>
+<span class="sd">            Note that, in any case, *only* the positions of</span>
+<span class="sd">            :class:`Atoms&lt;Atom&gt;` *belonging to the group* will be taken into</span>
+<span class="sd">            account.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        center : numpy.ndarray</span>
+<span class="sd">            Position vector(s) of the center(s) of charge of the group.</span>
+<span class="sd">            If `compound` was set to ``&#39;group&#39;``, the output will be a single</span>
+<span class="sd">            position vector.</span>
+<span class="sd">            If `compound` was set to ``&#39;segments&#39;`` or ``&#39;residues&#39;``, the</span>
+<span class="sd">            output will be a 2d coordinate array of shape ``(n, 3)`` where</span>
+<span class="sd">            ``n`` is the number of compounds.</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        This method can only be accessed if the underlying topology has</span>
+<span class="sd">        information about atomic charges.</span>
+
+<span class="sd">        .. versionadded:: 2.2.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">atoms</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">atoms</span>
+        <span class="k">return</span> <span class="n">atoms</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">weights</span><span class="o">=</span><span class="n">atoms</span><span class="o">.</span><span class="n">charges</span><span class="o">.</span><span class="fm">__abs__</span><span class="p">(),</span>
+                            <span class="n">wrap</span><span class="o">=</span><span class="n">wrap</span><span class="p">,</span>
+                            <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">,</span>
+                            <span class="n">unwrap</span><span class="o">=</span><span class="n">unwrap</span><span class="p">)</span></div>
+
+    <span class="n">transplants</span><span class="p">[</span><span class="n">GroupBase</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="p">(</span><span class="s1">&#39;center_of_charge&#39;</span><span class="p">,</span> <span class="n">center_of_charge</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Charges.total_charge"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Charges.total_charge">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
     <span class="k">def</span> <span class="nf">total_charge</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>

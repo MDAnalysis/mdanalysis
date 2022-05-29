@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -125,13 +126,13 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.lib.util"></span><section id="helper-functions-mdanalysis-lib-util">
-<h1><span class="section-number">13.2.10. </span>Helper functions — <a class="reference internal" href="#module-MDAnalysis.lib.util" title="MDAnalysis.lib.util"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a><a class="headerlink" href="#helper-functions-mdanalysis-lib-util" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">13.2.10. </span>Helper functions — <a class="reference internal" href="#module-MDAnalysis.lib.util" title="MDAnalysis.lib.util"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a><a class="headerlink" href="#helper-functions-mdanalysis-lib-util" title="Permalink to this heading"></a></h1>
 <p>Small helper functions that don’t fit anywhere else.</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.11.0: </span>Moved mathematical functions into lib.mdamath</p>
 </div>
 <section id="files-and-directories">
-<h2><span class="section-number">13.2.10.1. </span>Files and directories<a class="headerlink" href="#files-and-directories" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">13.2.10.1. </span>Files and directories<a class="headerlink" href="#files-and-directories" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.filename">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">filename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#filename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.filename" title="Permalink to this definition"></a></dt>
@@ -387,7 +388,7 @@ at for a hint to the format</p>
 
 </section>
 <section id="streams">
-<h2><span class="section-number">13.2.10.2. </span>Streams<a class="headerlink" href="#streams" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">13.2.10.2. </span>Streams<a class="headerlink" href="#streams" title="Permalink to this heading"></a></h2>
 <p>Many of the readers are not restricted to just reading files. They can
 also use gzip-compressed or bzip2-compressed files (through the
 internal use of <a class="reference internal" href="#MDAnalysis.lib.util.openany" title="MDAnalysis.lib.util.openany"><code class="xref py py-func docutils literal notranslate"><span class="pre">openany()</span></code></a>). It is also possible to provide more
@@ -661,7 +662,7 @@ is supplied). The current file position is not changed.</p>
 
 </section>
 <section id="containers-and-lists">
-<h2><span class="section-number">13.2.10.3. </span>Containers and lists<a class="headerlink" href="#containers-and-lists" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">13.2.10.3. </span>Containers and lists<a class="headerlink" href="#containers-and-lists" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.iterable">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">iterable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#iterable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.iterable" title="Permalink to this definition"></a></dt>
@@ -695,7 +696,7 @@ with a single element.</p>
 
 </section>
 <section id="arrays">
-<h2><span class="section-number">13.2.10.4. </span>Arrays<a class="headerlink" href="#arrays" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">13.2.10.4. </span>Arrays<a class="headerlink" href="#arrays" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.unique_int_1d">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">unique_int_1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.util.unique_int_1d" title="Permalink to this definition"></a></dt>
@@ -823,7 +824,7 @@ sequences.</p>
 
 </section>
 <section id="file-parsing">
-<h2><span class="section-number">13.2.10.5. </span>File parsing<a class="headerlink" href="#file-parsing" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">13.2.10.5. </span>File parsing<a class="headerlink" href="#file-parsing" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.FORTRANReader">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">FORTRANReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fmt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#FORTRANReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.FORTRANReader" title="Permalink to this definition"></a></dt>
@@ -915,7 +916,7 @@ and neither are the scientific notation <em>Ew.dEe</em> forms.</p>
 
 </section>
 <section id="data-manipulation-and-handling">
-<h2><span class="section-number">13.2.10.6. </span>Data manipulation and handling<a class="headerlink" href="#data-manipulation-and-handling" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">13.2.10.6. </span>Data manipulation and handling<a class="headerlink" href="#data-manipulation-and-handling" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.fixedwidth_bins">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">fixedwidth_bins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmax</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#fixedwidth_bins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.fixedwidth_bins" title="Permalink to this definition"></a></dt>
@@ -1036,7 +1037,7 @@ by user <a class="reference external" href="https://stackoverflow.com/users/1897
 
 </section>
 <section id="strings">
-<h2><span class="section-number">13.2.10.7. </span>Strings<a class="headerlink" href="#strings" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">13.2.10.7. </span>Strings<a class="headerlink" href="#strings" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.convert_aa_code">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">convert_aa_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#convert_aa_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.convert_aa_code" title="Permalink to this definition"></a></dt>
@@ -1102,7 +1103,7 @@ otherwise the original object is passed back.</p>
 
 </section>
 <section id="class-decorators">
-<h2><span class="section-number">13.2.10.8. </span>Class decorators<a class="headerlink" href="#class-decorators" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">13.2.10.8. </span>Class decorators<a class="headerlink" href="#class-decorators" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.cached">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">cached</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">universe_validation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#cached"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.cached" title="Permalink to this definition"></a></dt>
@@ -1144,7 +1145,7 @@ decorator:</p>
 
 </section>
 <section id="function-decorators">
-<h2><span class="section-number">13.2.10.9. </span>Function decorators<a class="headerlink" href="#function-decorators" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">13.2.10.9. </span>Function decorators<a class="headerlink" href="#function-decorators" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.static_variables">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">static_variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#static_variables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.static_variables" title="Permalink to this definition"></a></dt>
@@ -1290,7 +1291,7 @@ same number of coordinates. Default: <code class="docutils literal notranslate">
 
 </section>
 <section id="code-management">
-<h2><span class="section-number">13.2.10.10. </span>Code management<a class="headerlink" href="#code-management" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">13.2.10.10. </span>Code management<a class="headerlink" href="#code-management" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.deprecate">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">deprecate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#deprecate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.deprecate" title="Permalink to this definition"></a></dt>
@@ -1405,7 +1406,7 @@ line</p>
 
 </section>
 <section id="data-format-checks">
-<h2><span class="section-number">13.2.10.11. </span>Data format checks<a class="headerlink" href="#data-format-checks" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">13.2.10.11. </span>Data format checks<a class="headerlink" href="#data-format-checks" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.util.check_box">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">check_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">box</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#check_box"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.check_box" title="Permalink to this definition"></a></dt>

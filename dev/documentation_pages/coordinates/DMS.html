@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -127,7 +128,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.coordinates.DMS"></span><section id="desres-file-format-mdanalysis-coordinates-dms">
-<h1><span class="section-number">6.5. </span>DESRES file format — <a class="reference internal" href="#module-MDAnalysis.coordinates.DMS" title="MDAnalysis.coordinates.DMS"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DMS</span></code></a><a class="headerlink" href="#desres-file-format-mdanalysis-coordinates-dms" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">6.5. </span>DESRES file format — <a class="reference internal" href="#module-MDAnalysis.coordinates.DMS" title="MDAnalysis.coordinates.DMS"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DMS</span></code></a><a class="headerlink" href="#desres-file-format-mdanalysis-coordinates-dms" title="Permalink to this heading"></a></h1>
 <p>Classes to read <a class="reference external" href="http://www.deshawresearch.com">DESRES</a> Molecular Structure file format (<a class="reference external" href="http://www.deshawresearch.com/Desmond_Users_Guide-0.7.pdf">DMS</a>)
 coordinate files (as used by the <a class="reference external" href="http://www.deshawresearch.com/resources_desmond.html">Desmond</a> MD package).</p>
 <dl class="py class">
@@ -137,6 +138,13 @@ coordinate files (as used by the <a class="reference external" href="http://www.
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.11.0: </span>Frames now 0-based instead of 1-based</p>
 </div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.DMS.DMSReader.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'A',</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">'A/ps'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.DMS.DMSReader.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
+</dd></dl>
+
 </dd></dl>
 
 </section>

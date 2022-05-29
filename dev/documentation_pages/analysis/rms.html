@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
@@ -121,7 +122,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.analysis.rms"></span><section id="calculating-root-mean-square-quantities-mdanalysis-analysis-rms">
-<h1><span class="section-number">4.2.4. </span>Calculating root mean square quantities — <a class="reference internal" href="#module-MDAnalysis.analysis.rms" title="MDAnalysis.analysis.rms"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code></a><a class="headerlink" href="#calculating-root-mean-square-quantities-mdanalysis-analysis-rms" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">4.2.4. </span>Calculating root mean square quantities — <a class="reference internal" href="#module-MDAnalysis.analysis.rms" title="MDAnalysis.analysis.rms"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code></a><a class="headerlink" href="#calculating-root-mean-square-quantities-mdanalysis-analysis-rms" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Oliver Beckstein, David L. Dotson, John Detlefs</p>
@@ -160,9 +161,9 @@ implemented in
 </dl>
 </div>
 <section id="example-applications">
-<h2><span class="section-number">4.2.4.1. </span>Example applications<a class="headerlink" href="#example-applications" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.2.4.1. </span>Example applications<a class="headerlink" href="#example-applications" title="Permalink to this heading"></a></h2>
 <section id="calculating-rmsd-for-multiple-domains">
-<h3><span class="section-number">4.2.4.1.1. </span>Calculating RMSD for multiple domains<a class="headerlink" href="#calculating-rmsd-for-multiple-domains" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">4.2.4.1.1. </span>Calculating RMSD for multiple domains<a class="headerlink" href="#calculating-rmsd-for-multiple-domains" title="Permalink to this heading"></a></h3>
 <p>In this example we will globally fit a protein to a reference
 structure and investigate the relative movements of domains by
 computing the RMSD of the domains to the reference. The example is a
@@ -215,7 +216,7 @@ using backbone atoms</p></li>
 </section>
 </section>
 <section id="functions">
-<h2><span class="section-number">4.2.4.2. </span>Functions<a class="headerlink" href="#functions" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.2.4.2. </span>Functions<a class="headerlink" href="#functions" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rms.rmsd">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.rms.</span></span><span class="sig-name descname"><span class="pre">rmsd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">superposition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rms.html#rmsd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.rms.rmsd" title="Permalink to this definition"></a></dt>
@@ -277,7 +278,7 @@ the number of coordinates.</p>
 
 </section>
 <section id="analysis-classes">
-<h2><span class="section-number">4.2.4.3. </span>Analysis classes<a class="headerlink" href="#analysis-classes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.2.4.3. </span>Analysis classes<a class="headerlink" href="#analysis-classes" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rms.RMSD">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.rms.</span></span><span class="sig-name descname"><span class="pre">RMSD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomgroup</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groupselections</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_groupselections</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rms.html#RMSD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD" title="Permalink to this definition"></a></dt>

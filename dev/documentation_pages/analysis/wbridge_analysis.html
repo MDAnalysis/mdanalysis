@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -122,7 +123,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.analysis.hydrogenbonds.wbridge_analysis"></span><section id="water-bridge-analysis-mdanalysis-analysis-hydrogenbonds-waterbridgeanalysis">
-<h1><span class="section-number">4.3.3. </span>Water Bridge analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.WaterBridgeAnalysis</span></code><a class="headerlink" href="#water-bridge-analysis-mdanalysis-analysis-hydrogenbonds-waterbridgeanalysis" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">4.3.3. </span>Water Bridge analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.WaterBridgeAnalysis</span></code><a class="headerlink" href="#water-bridge-analysis-mdanalysis-analysis-hydrogenbonds-waterbridgeanalysis" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Zhiyi Wu</p>
@@ -167,7 +168,7 @@ water</p></li>
 </ul>
 </div></blockquote>
 <section id="theory">
-<h2><span class="section-number">4.3.3.1. </span>Theory<a class="headerlink" href="#theory" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.3.3.1. </span>Theory<a class="headerlink" href="#theory" title="Permalink to this heading"></a></h2>
 <p>This module attempts to find multi-order water bridge by an approach similar
 to breadth-first search, where the first solvation shell of selection 1 is
 selected, followed by the selection of the second solvation shell as well as
@@ -176,7 +177,7 @@ shell, as well as any binding partners from selection 2, are detected. This
 process is repeated until the maximum order of water bridges is reached.</p>
 </section>
 <section id="output-as-network">
-<span id="wb-analysis-network"></span><h2><span class="section-number">4.3.3.2. </span>Output as Network<a class="headerlink" href="#output-as-network" title="Permalink to this headline"></a></h2>
+<span id="wb-analysis-network"></span><h2><span class="section-number">4.3.3.2. </span>Output as Network<a class="headerlink" href="#output-as-network" title="Permalink to this heading"></a></h2>
 <p>Since the waters connecting the two ends of the selections are by nature a
 network. We provide a network representation of the water network. Water bridge
 data are returned per frame, which is stored in
@@ -209,7 +210,7 @@ it is followed by the index of the corresponding heavy atom
 If the atom is a hydrogen bond acceptor, it is followed by none.</p>
 </section>
 <section id="output-as-timeseries">
-<span id="wb-analysis-timeseries"></span><h2><span class="section-number">4.3.3.3. </span>Output as Timeseries<a class="headerlink" href="#output-as-timeseries" title="Permalink to this headline"></a></h2>
+<span id="wb-analysis-timeseries"></span><h2><span class="section-number">4.3.3.3. </span>Output as Timeseries<a class="headerlink" href="#output-as-timeseries" title="Permalink to this heading"></a></h2>
 <p>For lower order water bridges, it might be desirable to represent the
 connections as <a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis.results.timeseries" title="MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis.results.timeseries"><code class="xref py py-attr docutils literal notranslate"><span class="pre">WaterBridgeAnalysis.results.timeseries</span></code></a>. The results
 are returned per frame and are a list of hydrogen bonds between the selection
@@ -257,7 +258,7 @@ the results as a flat “normalised” table that is easier to import into a
 database or dataframe for further processing.</p>
 </section>
 <section id="detection-of-water-bridges">
-<h2><span class="section-number">4.3.3.4. </span>Detection of water bridges<a class="headerlink" href="#detection-of-water-bridges" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.3.3.4. </span>Detection of water bridges<a class="headerlink" href="#detection-of-water-bridges" title="Permalink to this heading"></a></h2>
 <p>Water bridges are recorded if a bridging water simultaneously forms
 hydrogen bonds with selection 1 and selection 2.</p>
 <p>Hydrogen bonds are detected based on a geometric criterion:</p>
@@ -450,7 +451,7 @@ F.E. Cohen. Hydrogen bonds involving sulfur atoms in proteins. Proteins,
 </dl>
 </section>
 <section id="how-to-perform-waterbridgeanalysis">
-<h2><span class="section-number">4.3.3.5. </span>How to perform <code class="docutils literal notranslate"><span class="pre">WaterBridgeAnalysis</span></code><a class="headerlink" href="#how-to-perform-waterbridgeanalysis" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.3.3.5. </span>How to perform <code class="docutils literal notranslate"><span class="pre">WaterBridgeAnalysis</span></code><a class="headerlink" href="#how-to-perform-waterbridgeanalysis" title="Permalink to this heading"></a></h2>
 <p>All water bridges between arginine and aspartic acid can be analysed with</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
 <span class="kn">import</span> <span class="nn">MDAnalysis.analysis.hbonds</span>
@@ -502,7 +503,7 @@ the carboxylic group (ASP3:OD2).</p>
 </div>
 </section>
 <section id="use-count-by-type">
-<span id="wb-count-by-type"></span><h2><span class="section-number">4.3.3.6. </span>Use <code class="docutils literal notranslate"><span class="pre">count_by_type</span></code><a class="headerlink" href="#use-count-by-type" title="Permalink to this headline"></a></h2>
+<span id="wb-count-by-type"></span><h2><span class="section-number">4.3.3.6. </span>Use <code class="docutils literal notranslate"><span class="pre">count_by_type</span></code><a class="headerlink" href="#use-count-by-type" title="Permalink to this heading"></a></h2>
 <p>We can use the <a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis.count_by_type" title="MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis.count_by_type"><code class="xref py py-meth docutils literal notranslate"><span class="pre">count_by_type()</span></code></a> to
 generate the frequency of all water bridges in the simulation.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">w</span><span class="o">.</span><span class="n">count_by_type</span><span class="p">()</span>
@@ -740,7 +741,7 @@ to <a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.wbridg
 </div>
 </section>
 <section id="use-count-by-time">
-<span id="wb-count-by-time"></span><h2><span class="section-number">4.3.3.7. </span>Use <code class="docutils literal notranslate"><span class="pre">count_by_time</span></code><a class="headerlink" href="#use-count-by-time" title="Permalink to this headline"></a></h2>
+<span id="wb-count-by-time"></span><h2><span class="section-number">4.3.3.7. </span>Use <code class="docutils literal notranslate"><span class="pre">count_by_time</span></code><a class="headerlink" href="#use-count-by-time" title="Permalink to this heading"></a></h2>
 <p><a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis.count_by_type" title="MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis.count_by_type"><code class="xref py py-meth docutils literal notranslate"><span class="pre">count_by_type()</span></code></a> aggregates data across frames, which
 might be desirable in some cases but not the others.
 <a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis.count_by_time" title="MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis.count_by_time"><code class="xref py py-meth docutils literal notranslate"><span class="pre">count_by_time()</span></code></a> provides additional functionality
@@ -837,7 +838,7 @@ selection 2.</p></li>
 </div>
 </section>
 <section id="classes">
-<h2><span class="section-number">4.3.3.8. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.3.3.8. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.</span></span><span class="sig-name descname"><span class="pre">WaterBridgeAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selection1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'protein'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selection2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'not</span> <span class="pre">resname</span> <span class="pre">SOL'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">water_selection</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'resname</span> <span class="pre">SOL'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selection1_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'both'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_selection</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_water_selection</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_first</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hydrogen'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">120.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forcefield</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CHARMM27'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">donors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acceptors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sele1_sele2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hydrogenbonds/wbridge_analysis.html#WaterBridgeAnalysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis" title="Permalink to this definition"></a></dt>
@@ -1010,7 +1011,7 @@ and the bridging waters, for each frame.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_ACCEPTORS">
-<span class="sig-name descname"><span class="pre">DEFAULT_ACCEPTORS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'CHARMM27':</span> <span class="pre">('OG',</span> <span class="pre">'OE2',</span> <span class="pre">'OW',</span> <span class="pre">'NE2',</span> <span class="pre">'ND1',</span> <span class="pre">'OD2',</span> <span class="pre">'OH2',</span> <span class="pre">'OG1',</span> <span class="pre">'OC2',</span> <span class="pre">'OD1',</span> <span class="pre">'OH',</span> <span class="pre">'OC1',</span> <span class="pre">'SG',</span> <span class="pre">'OE1',</span> <span class="pre">'SD',</span> <span class="pre">'O'),</span> <span class="pre">'GLYCAM06':</span> <span class="pre">('OW',</span> <span class="pre">'OY',</span> <span class="pre">'N',</span> <span class="pre">'SM',</span> <span class="pre">'OH',</span> <span class="pre">'NT',</span> <span class="pre">'OS',</span> <span class="pre">'O2',</span> <span class="pre">'O'),</span> <span class="pre">'other':</span> <span class="pre">()}</span></em><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">DEFAULT_ACCEPTORS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'CHARMM27':</span> <span class="pre">('SG',</span> <span class="pre">'OH2',</span> <span class="pre">'OG1',</span> <span class="pre">'OC2',</span> <span class="pre">'ND1',</span> <span class="pre">'OH',</span> <span class="pre">'OW',</span> <span class="pre">'OC1',</span> <span class="pre">'OE1',</span> <span class="pre">'OD1',</span> <span class="pre">'OD2',</span> <span class="pre">'SD',</span> <span class="pre">'OE2',</span> <span class="pre">'O',</span> <span class="pre">'OG',</span> <span class="pre">'NE2'),</span> <span class="pre">'GLYCAM06':</span> <span class="pre">('OS',</span> <span class="pre">'O2',</span> <span class="pre">'OH',</span> <span class="pre">'OW',</span> <span class="pre">'OY',</span> <span class="pre">'SM',</span> <span class="pre">'O',</span> <span class="pre">'NT',</span> <span class="pre">'N'),</span> <span class="pre">'other':</span> <span class="pre">()}</span></em><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition"></a></dt>
 <dd><p>default atom names that are treated as hydrogen <em>acceptors</em>
 (see <a class="reference internal" href="#default-atom-names-for-water-bridge-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>acceptors</cite> to add a list of additional acceptor names.</p>
@@ -1018,7 +1019,7 @@ use the keyword <cite>acceptors</cite> to add a list of additional acceptor name
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_DONORS">
-<span class="sig-name descname"><span class="pre">DEFAULT_DONORS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'CHARMM27':</span> <span class="pre">('NH1',</span> <span class="pre">'NZ',</span> <span class="pre">'OW',</span> <span class="pre">'NH2',</span> <span class="pre">'ND1',</span> <span class="pre">'OG1',</span> <span class="pre">'OH2',</span> <span class="pre">'N',</span> <span class="pre">'OH',</span> <span class="pre">'ND2',</span> <span class="pre">'SG',</span> <span class="pre">'NE',</span> <span class="pre">'NE1',</span> <span class="pre">'OG',</span> <span class="pre">'NE2'),</span> <span class="pre">'GLYCAM06':</span> <span class="pre">('OW',</span> <span class="pre">'N3',</span> <span class="pre">'N',</span> <span class="pre">'OH',</span> <span class="pre">'NT'),</span> <span class="pre">'other':</span> <span class="pre">()}</span></em><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_DONORS" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">DEFAULT_DONORS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'CHARMM27':</span> <span class="pre">('NE1',</span> <span class="pre">'SG',</span> <span class="pre">'OH2',</span> <span class="pre">'OG1',</span> <span class="pre">'ND1',</span> <span class="pre">'ND2',</span> <span class="pre">'OW',</span> <span class="pre">'NH2',</span> <span class="pre">'OH',</span> <span class="pre">'NH1',</span> <span class="pre">'OG',</span> <span class="pre">'NE',</span> <span class="pre">'N',</span> <span class="pre">'NZ',</span> <span class="pre">'NE2'),</span> <span class="pre">'GLYCAM06':</span> <span class="pre">('OH',</span> <span class="pre">'OW',</span> <span class="pre">'N3',</span> <span class="pre">'NT',</span> <span class="pre">'N'),</span> <span class="pre">'other':</span> <span class="pre">()}</span></em><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_DONORS" title="Permalink to this definition"></a></dt>
 <dd><p>default heavy atom names whose hydrogens are treated as <em>donors</em>
 (see <a class="reference internal" href="#default-atom-names-for-water-bridge-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>donors</cite> to add a list of additional donor names.</p>

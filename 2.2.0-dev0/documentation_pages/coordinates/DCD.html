@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -130,7 +131,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.coordinates.DCD"></span><section id="dcd-trajectory-i-o-mdanalysis-coordinates-dcd">
-<h1><span class="section-number">6.3. </span>DCD trajectory I/O  — <a class="reference internal" href="#module-MDAnalysis.coordinates.DCD" title="MDAnalysis.coordinates.DCD"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DCD</span></code></a><a class="headerlink" href="#dcd-trajectory-i-o-mdanalysis-coordinates-dcd" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">6.3. </span>DCD trajectory I/O  — <a class="reference internal" href="#module-MDAnalysis.coordinates.DCD" title="MDAnalysis.coordinates.DCD"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DCD</span></code></a><a class="headerlink" href="#dcd-trajectory-i-o-mdanalysis-coordinates-dcd" title="Permalink to this heading"></a></h1>
 <p>Classes to read and write DCD binary trajectories, the format used by
 CHARMM, NAMD, and also LAMMPS. Trajectories can be read regardless of
 system-endianness as this is auto-detected.</p>
@@ -150,7 +151,7 @@ are correctly interpreted.</p>
 </dl>
 </div>
 <section id="classes">
-<h2><span class="section-number">6.3.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.3.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.DCD.</span></span><span class="sig-name descname"><span class="pre">DCDReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader" title="Permalink to this definition"></a></dt>
@@ -832,6 +833,13 @@ be considered to have a length of a single time step <cite>dt</cite> and a
 <dd><p>Returns the list of transformations</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDReader.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">'AKMA'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -1104,6 +1112,13 @@ is avoided.</p>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)">bool</a></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.DCD.DCDWriter.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">'AKMA'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
 </dd></dl>
 
 <dl class="py method">

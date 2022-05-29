@@ -15,6 +15,7 @@
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -1197,12 +1198,14 @@
     <span class="nd">@_pbc_to_wrap</span>
     <span class="nd">@check_wrap_and_unwrap</span>
     <span class="k">def</span> <span class="nf">center_of_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Center of geometry of (compounds of) the group.</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Center of geometry of (compounds of) the group</span>
 
-<span class="sd">        Computes the center of geometry (a.k.a. centroid) of</span>
-<span class="sd">        :class:`Atoms&lt;Atom&gt;` in the group. Centers of geometry per</span>
-<span class="sd">        :class:`Residue`, :class:`Segment`, molecule, or fragment can be</span>
-<span class="sd">        obtained by setting the `compound` parameter accordingly.</span>
+<span class="sd">        .. math::</span>
+<span class="sd">            \boldsymbol R = \frac{\sum_i \boldsymbol r_i}{\sum_i 1}</span>
+
+<span class="sd">        where :math:`\boldsymbol r_i` of :class:`Atoms&lt;Atom&gt;` :math:`i`.</span>
+<span class="sd">        Centers of geometry per :class:`Residue` or per :class:`Segment` can</span>
+<span class="sd">        be obtained by setting the `compound` parameter accordingly.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>

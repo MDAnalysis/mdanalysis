@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
@@ -118,9 +119,9 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.lib.nsgrid"></span><section id="neighbor-search-library-mdanalysis-lib-nsgrid">
-<h1><span class="section-number">13.2.4. </span>Neighbor search library — <a class="reference internal" href="#module-MDAnalysis.lib.nsgrid" title="MDAnalysis.lib.nsgrid"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a><a class="headerlink" href="#neighbor-search-library-mdanalysis-lib-nsgrid" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">13.2.4. </span>Neighbor search library — <a class="reference internal" href="#module-MDAnalysis.lib.nsgrid" title="MDAnalysis.lib.nsgrid"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a><a class="headerlink" href="#neighbor-search-library-mdanalysis-lib-nsgrid" title="Permalink to this heading"></a></h1>
 <section id="about-the-code">
-<h2><span class="section-number">13.2.4.1. </span>About the code<a class="headerlink" href="#about-the-code" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">13.2.4.1. </span>About the code<a class="headerlink" href="#about-the-code" title="Permalink to this heading"></a></h2>
 <p>This Neighbor search library is a serialized Cython version greatly
 inspired by the NS grid search implemented in
 <a class="reference external" href="http://www.gromacs.org/">GROMACS</a> .</p>
@@ -131,7 +132,7 @@ was used as reference to write this file.</p>
 <p>GROMACS 4.x code is released under the GNU Public Licence v2.</p>
 </section>
 <section id="about-the-algorithm">
-<h2><span class="section-number">13.2.4.2. </span>About the algorithm<a class="headerlink" href="#about-the-algorithm" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">13.2.4.2. </span>About the algorithm<a class="headerlink" href="#about-the-algorithm" title="Permalink to this heading"></a></h2>
 <p>The neighbor search implemented here is based on
 <a class="reference external" href="https://en.wikipedia.org/wiki/Cell_lists">cell lists</a> which allow
 computation of pairs <a class="footnote-reference brackets" href="#id2" id="id1">1</a> with a cost of <span class="math notranslate nohighlight">\(O(N)\)</span>, instead
@@ -162,7 +163,7 @@ a 32 bit signed integer.</p>
 </div>
 </section>
 <section id="classes">
-<h2><span class="section-number">13.2.4.3. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">13.2.4.3. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.lib.nsgrid.FastNS">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.nsgrid.</span></span><span class="sig-name descname"><span class="pre">FastNS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.FastNS" title="Permalink to this definition"></a></dt>

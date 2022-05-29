@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
@@ -118,7 +119,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.analysis.density"></span><section id="generating-densities-from-trajectories-mdanalysis-analysis-density">
-<h1><span class="section-number">4.8.1. </span>Generating densities from trajectories — <a class="reference internal" href="#module-MDAnalysis.analysis.density" title="MDAnalysis.analysis.density"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.density</span></code></a><a class="headerlink" href="#generating-densities-from-trajectories-mdanalysis-analysis-density" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">4.8.1. </span>Generating densities from trajectories — <a class="reference internal" href="#module-MDAnalysis.analysis.density" title="MDAnalysis.analysis.density"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.density</span></code></a><a class="headerlink" href="#generating-densities-from-trajectories-mdanalysis-analysis-density" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Oliver Beckstein</p>
@@ -137,7 +138,7 @@ volumetric data, in particular densities.</p>
 <code class="xref py py-func docutils literal notranslate"><span class="pre">Bfactor2RMSF()</span></code> have now been removed.</p>
 </div>
 <section id="generating-a-density-from-a-md-trajectory">
-<h2><span class="section-number">4.8.1.1. </span>Generating a density from a MD trajectory<a class="headerlink" href="#generating-a-density-from-a-md-trajectory" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.8.1.1. </span>Generating a density from a MD trajectory<a class="headerlink" href="#generating-a-density-from-a-md-trajectory" title="Permalink to this heading"></a></h2>
 <p>A common use case is to analyze the solvent density around a protein of
 interest. The density is calculated with <a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis" title="MDAnalysis.analysis.density.DensityAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">DensityAnalysis</span></code></a> in the
 fixed coordinate system of the simulation unit cell. It is therefore necessary
@@ -184,7 +185,7 @@ for the density is stored as a NumPy array in <a class="reference internal" href
 be processed in any manner.</p>
 </section>
 <section id="creating-densities">
-<h2><span class="section-number">4.8.1.2. </span>Creating densities<a class="headerlink" href="#creating-densities" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.8.1.2. </span>Creating densities<a class="headerlink" href="#creating-densities" title="Permalink to this heading"></a></h2>
 <p>The <a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis" title="MDAnalysis.analysis.density.DensityAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">DensityAnalysis</span></code></a> class generates a <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> from an
 atomgroup.</p>
 <dl class="py class">
@@ -450,14 +451,14 @@ frame indices</p>
 
 </section>
 <section id="density-object">
-<h2><span class="section-number">4.8.1.3. </span>Density object<a class="headerlink" href="#density-object" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.8.1.3. </span>Density object<a class="headerlink" href="#density-object" title="Permalink to this heading"></a></h2>
 <p>The main output of the density creation functions is a <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a>
 instance, which is derived from a <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.core.Grid</span></code></a>. A
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> is essentially a 3D array with origin and lengths.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.density.Density">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.density.</span></span><span class="sig-name descname"><span class="pre">Density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#Density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.density.Density" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.core.Grid</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Grid</span></code></a></p>
 <p>Class representing a density on a regular cartesian grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -737,6 +738,12 @@ and floating point artifacts for multiple conversions.</p></li>
 user’s responsibility to supply the appropriate unit if the Grid object
 is constructed from a density. It is suggested to start from a
 histogram and a length unit and use <a class="reference internal" href="#MDAnalysis.analysis.density.Density.make_density" title="MDAnalysis.analysis.density.Density.make_density"><code class="xref py py-meth docutils literal notranslate"><span class="pre">make_density()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.density.Density.default_format">
+<span class="sig-name descname"><span class="pre">default_format</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'DX'</span></em><a class="headerlink" href="#MDAnalysis.analysis.density.Density.default_format" title="Permalink to this definition"></a></dt>
+<dd><p>Default format for exporting with <a class="reference internal" href="#MDAnalysis.analysis.density.Density.export" title="MDAnalysis.analysis.density.Density.export"><code class="xref py py-meth docutils literal notranslate"><span class="pre">export()</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py method">

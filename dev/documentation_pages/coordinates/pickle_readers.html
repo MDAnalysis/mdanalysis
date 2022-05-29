@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -142,7 +143,7 @@
            <div itemprop="articleBody">
              
   <section id="serialization-of-coordinate-readers">
-<span id="serialization"></span><h1><span class="section-number">6.30. </span>Serialization of Coordinate Readers<a class="headerlink" href="#serialization-of-coordinate-readers" title="Permalink to this headline"></a></h1>
+<span id="serialization"></span><h1><span class="section-number">6.30. </span>Serialization of Coordinate Readers<a class="headerlink" href="#serialization-of-coordinate-readers" title="Permalink to this heading"></a></h1>
 <p>To achieve a working implementation of parallelism, this document illustrates
 the basic idea of how different coordinate readers are being serialized in MDAnalysis,
 and what developers should do to serialize a new reader.</p>
@@ -154,9 +155,9 @@ This means that for a successful unpickle, the original file still has to
 be accessible with its filename. To retain the current frame of the trajectory,
 <code class="xref py py-func docutils literal notranslate"><span class="pre">_read_frame(previous</span> <span class="pre">frame)()</span></code> will be called during unpickling.</p>
 <section id="how-to-serialize-a-new-reader">
-<span id="id1"></span><h2><span class="section-number">6.30.1. </span>How to serialize a new reader<a class="headerlink" href="#how-to-serialize-a-new-reader" title="Permalink to this headline"></a></h2>
+<span id="id1"></span><h2><span class="section-number">6.30.1. </span>How to serialize a new reader<a class="headerlink" href="#how-to-serialize-a-new-reader" title="Permalink to this heading"></a></h2>
 <section id="file-access">
-<h3><span class="section-number">6.30.1.1. </span>File Access<a class="headerlink" href="#file-access" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">6.30.1.1. </span>File Access<a class="headerlink" href="#file-access" title="Permalink to this heading"></a></h3>
 <p>If the new reader uses <code class="xref py py-func docutils literal notranslate"><span class="pre">util.anyopen()</span></code>
 (e.g. <a class="reference internal" href="PDB.html#MDAnalysis.coordinates.PDB.PDBReader" title="MDAnalysis.coordinates.PDB.PDBReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDB.PDBReader</span></code></a>),
 the reading handler can be pickled without modification.
@@ -171,7 +172,7 @@ pickle <a class="reference external" href="https://docs.python.org/3/library/pic
 to allow file handler serialization.</p>
 </section>
 <section id="to-seek-or-not-to-seek">
-<h3><span class="section-number">6.30.1.2. </span>To seek or not to seek<a class="headerlink" href="#to-seek-or-not-to-seek" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">6.30.1.2. </span>To seek or not to seek<a class="headerlink" href="#to-seek-or-not-to-seek" title="Permalink to this heading"></a></h3>
 <p>Some I/O classes support <code class="xref py py-func docutils literal notranslate"><span class="pre">seek()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">tell()</span></code> functions to allow the file
 to be pickled with an offset. It is normally not needed for MDAnalysis with
 random access. But if error occurs during testing, find a way to make the offset work.
@@ -183,7 +184,7 @@ its previous frame and <code class="xref py py-func docutils literal notranslate
 for such machinery to work.</p>
 </section>
 <section id="miscellaneous">
-<h3><span class="section-number">6.30.1.3. </span>Miscellaneous<a class="headerlink" href="#miscellaneous" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">6.30.1.3. </span>Miscellaneous<a class="headerlink" href="#miscellaneous" title="Permalink to this heading"></a></h3>
 <p>If pickle still fails due to some unpicklable attributes, try to find a way
 to pickle those, or write custom <code class="xref py py-func docutils literal notranslate"><span class="pre">__getstate__()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">__setstate__()</span></code>
 methods for the reader.</p>
@@ -192,14 +193,14 @@ methods for the reader.</p>
 </section>
 </section>
 <section id="tests">
-<span id="test-pickle"></span><h2><span class="section-number">6.30.2. </span>Tests<a class="headerlink" href="#tests" title="Permalink to this headline"></a></h2>
+<span id="test-pickle"></span><h2><span class="section-number">6.30.2. </span>Tests<a class="headerlink" href="#tests" title="Permalink to this heading"></a></h2>
 <section id="singleframereader-test">
-<h3><span class="section-number">6.30.2.1. </span>_SingleFrameReader Test<a class="headerlink" href="#singleframereader-test" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">6.30.2.1. </span>_SingleFrameReader Test<a class="headerlink" href="#singleframereader-test" title="Permalink to this heading"></a></h3>
 <p>If the new reader is a single-frame reader, the basic test should normally
 inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">_SingleFrameReader</span></code>, where the pickliablity is tested.</p>
 </section>
 <section id="basereadertest-and-multiframereadertest">
-<h3><span class="section-number">6.30.2.2. </span>BaseReaderTest and MultiframeReaderTest<a class="headerlink" href="#basereadertest-and-multiframereadertest" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">6.30.2.2. </span>BaseReaderTest and MultiframeReaderTest<a class="headerlink" href="#basereadertest-and-multiframereadertest" title="Permalink to this heading"></a></h3>
 <p>If the test for the new reader uses <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseReaderTest</span></code> or
 <code class="xref py py-class docutils literal notranslate"><span class="pre">MultiframeReaderTest</span></code>, whether the current timestep information is
 saved (the former), whether its relative position is maintained,
@@ -207,7 +208,7 @@ i.e. next() reads the right next timestep, and whether its last timestep
 can be pickled, are already tested.</p>
 </section>
 <section id="file-handler-test">
-<h3><span class="section-number">6.30.2.3. </span>File handler Test<a class="headerlink" href="#file-handler-test" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">6.30.2.3. </span>File handler Test<a class="headerlink" href="#file-handler-test" title="Permalink to this heading"></a></h3>
 <p>If the new reader accesses the file with <code class="xref py py-func docutils literal notranslate"><span class="pre">util.anyopen()</span></code>, add necessary
 tests inside <code class="docutils literal notranslate"><span class="pre">parallelism/test_multiprocessing.py</span></code> for the reader.</p>
 <p>If the new reader accessed the file with a new picklable I/O class,
@@ -216,7 +217,7 @@ add necessary tests inside <code class="docutils literal notranslate"><span clas
 </section>
 </section>
 <section id="currently-implemented-picklable-io-formats">
-<span id="implemented-fileio"></span><h2><span class="section-number">6.30.3. </span>Currently implemented picklable IO Formats<a class="headerlink" href="#currently-implemented-picklable-io-formats" title="Permalink to this headline"></a></h2>
+<span id="implemented-fileio"></span><h2><span class="section-number">6.30.3. </span>Currently implemented picklable IO Formats<a class="headerlink" href="#currently-implemented-picklable-io-formats" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.FileIOPicklable" title="MDAnalysis.lib.picklable_file_io.FileIOPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.FileIOPicklable</span></code></a></p></li>
 <li><p><a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.BufferIOPicklable" title="MDAnalysis.lib.picklable_file_io.BufferIOPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.BufferIOPicklable</span></code></a></p></li>

@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -137,7 +138,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.coordinates.H5MD"></span><section id="h5md-trajectories-mdanalysis-coordinates-h5md">
-<h1><span class="section-number">6.9. </span>H5MD trajectories — <a class="reference internal" href="#module-MDAnalysis.coordinates.H5MD" title="MDAnalysis.coordinates.H5MD"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.H5MD</span></code></a><a class="headerlink" href="#h5md-trajectories-mdanalysis-coordinates-h5md" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">6.9. </span>H5MD trajectories — <a class="reference internal" href="#module-MDAnalysis.coordinates.H5MD" title="MDAnalysis.coordinates.H5MD"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.H5MD</span></code></a><a class="headerlink" href="#h5md-trajectories-mdanalysis-coordinates-h5md" title="Permalink to this heading"></a></h1>
 <p>The <a class="reference external" href="https://nongnu.org/h5md/index.html">H5MD</a> trajectory file format is based upon the general, high performance
 <a class="reference external" href="https://www.hdfgroup.org/solutions/hdf5/">HDF5</a> file format.
 HDF5 files are self documenting and can be accessed with the <a class="reference external" href="http://docs.h5py.org/">h5py</a> library.
@@ -147,7 +148,7 @@ interface of the HDF5 library to improve parallel reads and writes.</p>
 cannot be read by MDAnalysis. If <a class="reference external" href="http://docs.h5py.org/">h5py</a> is not installed, a
 <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> is raised.</p>
 <section id="units">
-<h2><span class="section-number">6.9.1. </span>Units<a class="headerlink" href="#units" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.9.1. </span>Units<a class="headerlink" href="#units" title="Permalink to this heading"></a></h2>
 <p>H5MD files are very flexible and can store data in a wide range of physical
 units. The <a class="reference internal" href="#MDAnalysis.coordinates.H5MD.H5MDReader" title="MDAnalysis.coordinates.H5MD.H5MDReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">H5MDReader</span></code></a> will attempt to match the units in order to
 convert all data to the standard MDAnalysis units (see
@@ -168,7 +169,7 @@ this case, the writer will write the corresponding dataset with the selected
 unit only if it is recognized by <a class="reference external" href="https://userguide.mdanalysis.org/units.html">MDAnalysis units</a>.</p>
 </section>
 <section id="example-loading-an-h5md-simulation">
-<h2><span class="section-number">6.9.2. </span>Example: Loading an H5MD simulation<a class="headerlink" href="#example-loading-an-h5md-simulation" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.9.2. </span>Example: Loading an H5MD simulation<a class="headerlink" href="#example-loading-an-h5md-simulation" title="Permalink to this heading"></a></h2>
 <p>To load an H5MD simulation from an H5MD trajectory data file (using the
 <a class="reference internal" href="#MDAnalysis.coordinates.H5MD.H5MDReader" title="MDAnalysis.coordinates.H5MD.H5MDReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">H5MDReader</span></code></a>), pass the topology
 and trajectory files to <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>:</p>
@@ -190,7 +191,7 @@ See issue <a class="reference external" href="https://github.com/MDAnalysis/mdan
 </div>
 </section>
 <section id="example-writing-an-h5md-file">
-<h2><span class="section-number">6.9.3. </span>Example: Writing an H5MD file<a class="headerlink" href="#example-writing-an-h5md-file" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.9.3. </span>Example: Writing an H5MD file<a class="headerlink" href="#example-writing-an-h5md-file" title="Permalink to this heading"></a></h2>
 <p>To write to an H5MD file from a trajectory loaded with MDAnalysis, do:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;topology.tpr&quot;</span><span class="p">,</span> <span class="s2">&quot;trajectory.h5md&quot;</span><span class="p">)</span>
@@ -214,7 +215,7 @@ number of frames to be written and set <code class="docutils literal notranslate
 </div>
 </section>
 <section id="example-opening-an-h5md-file-in-parallel">
-<h2><span class="section-number">6.9.4. </span>Example: Opening an H5MD file in parallel<a class="headerlink" href="#example-opening-an-h5md-file-in-parallel" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.9.4. </span>Example: Opening an H5MD file in parallel<a class="headerlink" href="#example-opening-an-h5md-file-in-parallel" title="Permalink to this heading"></a></h2>
 <p>The parallel features of HDF5 can be accessed through h5py
 (see <a class="reference external" href="https://docs.h5py.org/en/stable/mpi.html">parallel h5py docs</a> for more detail) by using the <a class="reference external" href="https://mpi4py.readthedocs.io/en/stable/index.html">mpi4py</a> Python
 package with a Parallel build of HDF5. To load a an H5MD simulation with
@@ -233,7 +234,7 @@ HDF5 build, and HDF5 and <code class="xref py py-mod docutils literal notranslat
 implementation. See instructions below.</p>
 </div>
 <section id="building-parallel-h5py-and-hdf5-on-linux">
-<h3><span class="section-number">6.9.4.1. </span>Building parallel h5py and HDF5 on Linux<a class="headerlink" href="#building-parallel-h5py-and-hdf5-on-linux" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">6.9.4.1. </span>Building parallel h5py and HDF5 on Linux<a class="headerlink" href="#building-parallel-h5py-and-hdf5-on-linux" title="Permalink to this heading"></a></h3>
 <p>Building a working parallel HDF5/h5py/mpi4py environment can be
 challenging and is often specific to your local computing resources,
 e.g., the supercomputer that you’re running on typically already has
@@ -278,7 +279,7 @@ parallel hdf5/h5py/mpi4py please let everyone know on the
 </section>
 </section>
 <section id="classes">
-<h2><span class="section-number">6.9.5. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.9.5. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.H5MD.H5MDReader">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.H5MD.</span></span><span class="sig-name descname"><span class="pre">H5MDReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">driver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/H5MD.html#H5MDReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.H5MDReader" title="Permalink to this definition"></a></dt>
@@ -1057,6 +1058,13 @@ be considered to have a length of a single time step <cite>dt</cite> and a
 <dd><p>Returns the list of transformations</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.H5MD.H5MDReader.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.H5MDReader.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -1462,6 +1470,13 @@ dictionary to the observables group in the H5MD file</p>
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.H5MD.H5MDWriter.has_velocities">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_velocities</span></span><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.H5MDWriter.has_velocities" title="Permalink to this definition"></a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if writer is writing velocities from Timestep.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.H5MD.H5MDWriter.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.H5MDWriter.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
 </dd></dl>
 
 <dl class="py method">

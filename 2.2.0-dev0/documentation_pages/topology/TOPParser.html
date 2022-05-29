@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -126,7 +127,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.topology.TOPParser"></span><section id="amber-prmtop-topology-parser">
-<h1><span class="section-number">5.20. </span>AMBER PRMTOP topology parser<a class="headerlink" href="#amber-prmtop-topology-parser" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">5.20. </span>AMBER PRMTOP topology parser<a class="headerlink" href="#amber-prmtop-topology-parser" title="Permalink to this heading"></a></h1>
 <p>Reads an AMBER top file to build the system.</p>
 <p>Amber keywords are turned into the following attributes:</p>
 <table class="docutils align-default">
@@ -190,7 +191,7 @@ to invoke the element guessers after parsing the topology file. Please see
 <a class="reference internal" href="guessers.html#module-MDAnalysis.topology.guessers" title="MDAnalysis.topology.guessers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a> for more details.</p>
 </div>
 <section id="classes">
-<h2><span class="section-number">5.20.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">5.20.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.topology.TOPParser.TOPParser">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.TOPParser.</span></span><span class="sig-name descname"><span class="pre">TOPParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser" title="Permalink to this definition"></a></dt>
@@ -741,6 +742,13 @@ until we find the next %FLAG entry and return that</p>
 <dd class="field-even"><p>string</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.topology.TOPParser.TOPParser.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
 </dd></dl>
 
 </dd></dl>

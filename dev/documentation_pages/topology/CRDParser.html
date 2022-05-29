@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -126,7 +127,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.topology.CRDParser"></span><section id="crd-topology-parser">
-<h1><span class="section-number">5.2. </span>CRD topology parser<a class="headerlink" href="#crd-topology-parser" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">5.2. </span>CRD topology parser<a class="headerlink" href="#crd-topology-parser" title="Permalink to this heading"></a></h1>
 <p>Read a list of atoms from a CHARMM CARD coordinate file (<a class="reference external" href="https://www.charmmtutorial.org/index.php/CHARMM:The_Basics">CRD</a>)
 to build a basic topology.  Reads atom ids (ATOMNO), atom names (TYPES),
 resids (RESID), residue numbers (RESNO), residue names (RESNames), segment ids
@@ -135,7 +136,7 @@ the name of the atom.</p>
 <p>Residues are detected through a change is either resid or resname
 while segments are detected according to changes in segid.</p>
 <section id="classes">
-<h2><span class="section-number">5.2.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">5.2.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.topology.CRDParser.CRDParser">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.CRDParser.</span></span><span class="sig-name descname"><span class="pre">CRDParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/CRDParser.html#CRDParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.CRDParser.CRDParser" title="Permalink to this definition"></a></dt>
@@ -371,6 +372,13 @@ is avoided.</p>
 <dd class="field-odd"><p>MDAnalysis Topology object</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.topology.CRDParser.CRDParser.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.topology.CRDParser.CRDParser.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
 </dd></dl>
 
 </dd></dl>

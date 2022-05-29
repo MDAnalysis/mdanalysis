@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
@@ -115,7 +116,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.analysis.msd"></span><section id="mean-squared-displacement-mdanalysis-analysis-msd">
-<h1><span class="section-number">4.7.2.2. </span>Mean Squared Displacement — <a class="reference internal" href="#module-MDAnalysis.analysis.msd" title="MDAnalysis.analysis.msd"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.msd</span></code></a><a class="headerlink" href="#mean-squared-displacement-mdanalysis-analysis-msd" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">4.7.2.2. </span>Mean Squared Displacement — <a class="reference internal" href="#module-MDAnalysis.analysis.msd" title="MDAnalysis.analysis.msd"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.msd</span></code></a><a class="headerlink" href="#mean-squared-displacement-mdanalysis-analysis-msd" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Authors</dt>
 <dd class="field-odd"><p>Hugo MacDermott-Opeskin</p>
@@ -167,7 +168,7 @@ convert coordinates to the unwrapped convention. In GROMACS for example,
 this can be done using <code class="docutils literal notranslate"><span class="pre">gmx</span> <span class="pre">trjconv</span></code> with the <code class="docutils literal notranslate"><span class="pre">-pbc</span> <span class="pre">nojump</span></code> flag.</p>
 </div>
 <section id="computing-an-msd">
-<h2><span class="section-number">4.7.2.2.1. </span>Computing an MSD<a class="headerlink" href="#computing-an-msd" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.7.2.2.1. </span>Computing an MSD<a class="headerlink" href="#computing-an-msd" title="Permalink to this heading"></a></h2>
 <p>This example computes a 3D MSD for the movement of 100 particles undergoing a
 random walk. Files provided as part of the MDAnalysis test suite are used
 (in the variables <code class="xref py py-data docutils literal notranslate"><span class="pre">RANDOM_WALK</span></code> and
@@ -233,7 +234,7 @@ having a slope of 1.</p>
 a self-diffusivity.</p>
 </section>
 <section id="computing-self-diffusivity">
-<h2><span class="section-number">4.7.2.2.2. </span>Computing Self-Diffusivity<a class="headerlink" href="#computing-self-diffusivity" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.7.2.2.2. </span>Computing Self-Diffusivity<a class="headerlink" href="#computing-self-diffusivity" title="Permalink to this heading"></a></h2>
 <p>Self-diffusivity is closely related to the MSD.</p>
 <div class="math notranslate nohighlight">
 \[D_d = \frac{1}{2d} \lim_{t \to \infty} \frac{d}{dt} MSD(r_{d})\]</div>
@@ -257,7 +258,7 @@ is used to demonstrate selection of a MSD segment.</p>
 <p>We have now computed a self-diffusivity!</p>
 </section>
 <section id="combining-multiple-replicates">
-<h2><span class="section-number">4.7.2.2.3. </span>Combining Multiple Replicates<a class="headerlink" href="#combining-multiple-replicates" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.7.2.2.3. </span>Combining Multiple Replicates<a class="headerlink" href="#combining-multiple-replicates" title="Permalink to this heading"></a></h2>
 <p>It is common practice to combine replicates when calculating MSDs. An example
 of this is shown below using MSD1 and MSD2.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">u1</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">RANDOM_WALK_TOPO</span><span class="p">,</span> <span class="n">RANDOM_WALK</span><span class="p">)</span>
@@ -314,7 +315,7 @@ arXiv:2003.09205 [Cond-Mat, Physics:Physics].</p>
 </dl>
 </section>
 <section id="classes">
-<h2><span class="section-number">4.7.2.2.4. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.7.2.2.4. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.msd.EinsteinMSD">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.msd.</span></span><span class="sig-name descname"><span class="pre">EinsteinMSD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msd_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'xyz'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fft</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/msd.html#EinsteinMSD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD" title="Permalink to this definition"></a></dt>

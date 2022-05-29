@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -118,7 +119,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.analysis.hydrogenbonds.hbond_analysis"></span><section id="hydrogen-bond-analysis-mdanalysis-analysis-hydrogenbonds-hbond-analysis">
-<h1><span class="section-number">4.3.1. </span>Hydrogen Bond Analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.hydrogenbonds.hbond_analysis" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span></code></a><a class="headerlink" href="#hydrogen-bond-analysis-mdanalysis-analysis-hydrogenbonds-hbond-analysis" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">4.3.1. </span>Hydrogen Bond Analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.hydrogenbonds.hbond_analysis" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span></code></a><a class="headerlink" href="#hydrogen-bond-analysis-mdanalysis-analysis-hydrogenbonds-hbond-analysis" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Paul Smith</p>
@@ -139,7 +140,7 @@
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.hbond_analysis</span></code>, which itself was modeled after the <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/hbonds/">VMD
 HBONDS plugin</a>.</p>
 <section id="input">
-<h2><span class="section-number">4.3.1.1. </span>Input<a class="headerlink" href="#input" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.3.1.1. </span>Input<a class="headerlink" href="#input" title="Permalink to this heading"></a></h2>
 <dl class="simple">
 <dt>Required:</dt><dd><ul class="simple">
 <li><p><em>universe</em> : an MDAnalysis Universe object</p></li>
@@ -158,7 +159,7 @@ HBONDS plugin</a>.</p>
 </dl>
 </section>
 <section id="output">
-<h2><span class="section-number">4.3.1.2. </span>Output<a class="headerlink" href="#output" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.3.1.2. </span>Output<a class="headerlink" href="#output" title="Permalink to this heading"></a></h2>
 <blockquote>
 <div><ul class="simple">
 <li><p><em>frame</em> : frame at which a hydrogen bond was found</p></li>
@@ -186,7 +187,7 @@ and can be accessed via <a class="reference internal" href="#MDAnalysis.analysis
 </div>
 </section>
 <section id="example-use-of-hydrogenbondanalysis">
-<h2><span class="section-number">4.3.1.3. </span>Example use of <a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">HydrogenBondAnalysis</span></code></a><a class="headerlink" href="#example-use-of-hydrogenbondanalysis" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.3.1.3. </span>Example use of <a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">HydrogenBondAnalysis</span></code></a><a class="headerlink" href="#example-use-of-hydrogenbondanalysis" title="Permalink to this heading"></a></h2>
 <p>The simplest use case is to allow <a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">HydrogenBondAnalysis</span></code></a> to guess the acceptor and hydrogen atoms, and to
 identify donor-hydrogen pairs via the bonding information in the topology:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
@@ -308,7 +309,7 @@ donor-hydrogen pairs will be identified via a distance cutoff,
 </div>
 </section>
 <section id="the-class-and-its-methods">
-<h2><span class="section-number">4.3.1.4. </span>The class and its methods<a class="headerlink" href="#the-class-and-its-methods" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.3.1.4. </span>The class and its methods<a class="headerlink" href="#the-class-and-its-methods" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_analysis.</span></span><span class="sig-name descname"><span class="pre">HydrogenBondAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">donors_sel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hydrogens_sel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acceptors_sel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">between</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_h_cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_a_cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_h_a_angle_cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">150</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_selections</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hydrogenbonds/hbond_analysis.html#HydrogenBondAnalysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis" title="Permalink to this definition"></a></dt>

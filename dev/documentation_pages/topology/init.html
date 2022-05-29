@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -134,7 +135,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.topology.__init__"></span><section id="topology-readers-mdanalysis-topology">
-<h1><span class="section-number">5.1. </span>Topology readers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology</span></code><a class="headerlink" href="#topology-readers-mdanalysis-topology" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">5.1. </span>Topology readers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology</span></code><a class="headerlink" href="#topology-readers-mdanalysis-topology" title="Permalink to this heading"></a></h1>
 <p>This submodule contains the topology readers. A topology file supplies the list
 of atoms in the system, their connectivity and possibly additional information
 such as B-factors, partial charges, etc. The details depend on the file format
@@ -411,7 +412,7 @@ in <a class="reference internal" href="TPRParser.html#module-MDAnalysis.topology
 <p><a class="reference internal" href="../coordinates_modules.html#coordinates"><span class="std std-ref">Coordinates modules</span></a> with the <a class="reference internal" href="../coordinates/init.html#id2"><span class="std std-ref">Table of supported coordinate formats</span></a></p>
 </div>
 <section id="developer-notes">
-<span id="topology-parsers-developer-notes"></span><h2><span class="section-number">5.1.1. </span>Developer Notes<a class="headerlink" href="#developer-notes" title="Permalink to this headline"></a></h2>
+<span id="topology-parsers-developer-notes"></span><h2><span class="section-number">5.1.1. </span>Developer Notes<a class="headerlink" href="#developer-notes" title="Permalink to this heading"></a></h2>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.8.</span></p>
 </div>
@@ -443,7 +444,7 @@ historical reasons and in order to distinguish them from coordinate
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">parse()</span></code> method that
 returns a <a class="reference internal" href="../core/topology.html#MDAnalysis.core.topology.Topology" title="MDAnalysis.core.topology.Topology"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.topology.Topology</span></code></a> instance.</p>
 <section id="atoms">
-<h3><span class="section-number">5.1.1.1. </span>atoms<a class="headerlink" href="#atoms" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">5.1.1.1. </span>atoms<a class="headerlink" href="#atoms" title="Permalink to this heading"></a></h3>
 <p>The <strong>atoms</strong> appear to the user as an array of
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a> instances. However, under the
 hood this is essentially only an array of atom indices that are used
@@ -457,33 +458,33 @@ data read from the topology file.</p>
 </div>
 </section>
 <section id="bonds">
-<h3><span class="section-number">5.1.1.2. </span>bonds<a class="headerlink" href="#bonds" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">5.1.1.2. </span>bonds<a class="headerlink" href="#bonds" title="Permalink to this heading"></a></h3>
 <p><strong>Bonds</strong> are represented as a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>. Each tuple
 contains two atom numbers, which indicate the atoms between which the
 bond is formed. Only one of the two permutations is stored, typically
 the one with the lower atom number first.</p>
 </section>
 <section id="bondorder">
-<h3><span class="section-number">5.1.1.3. </span>bondorder<a class="headerlink" href="#bondorder" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">5.1.1.3. </span>bondorder<a class="headerlink" href="#bondorder" title="Permalink to this heading"></a></h3>
 <p>Some <strong>bonds</strong> have additional information called <strong>order</strong>. When available
 this is stored in a dictionary of format {bondtuple:order}.  This extra
 information is then passed to Bond initialisation in u._init_bonds()</p>
 </section>
 <section id="angles">
-<h3><span class="section-number">5.1.1.4. </span>angles<a class="headerlink" href="#angles" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">5.1.1.4. </span>angles<a class="headerlink" href="#angles" title="Permalink to this heading"></a></h3>
 <p><strong>Angles</strong> are represented by a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>. Each
 tuple contains three atom numbers.  The second of these numbers
 represents the apex of the angle.</p>
 </section>
 <section id="dihedrals">
-<h3><span class="section-number">5.1.1.5. </span>dihedrals<a class="headerlink" href="#dihedrals" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">5.1.1.5. </span>dihedrals<a class="headerlink" href="#dihedrals" title="Permalink to this heading"></a></h3>
 <p><strong>Proper dihedral angles</strong> are represented by a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>. Each
 tuple contains four atom numbers. The angle of the torsion
 is defined by the angle between the planes formed by atoms 1, 2, and 3,
 and 2, 3, and 4.</p>
 </section>
 <section id="impropers">
-<h3><span class="section-number">5.1.1.6. </span>impropers<a class="headerlink" href="#impropers" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">5.1.1.6. </span>impropers<a class="headerlink" href="#impropers" title="Permalink to this heading"></a></h3>
 <p><strong>Improper dihedral angles</strong> are represented by a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>. Each
 tuple contains four atom numbers.  The angle of the improper torsion
 is again defined by the angle between the planes formed by atoms 1, 2, and 3,

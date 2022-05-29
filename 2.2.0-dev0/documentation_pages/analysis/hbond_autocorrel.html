@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
@@ -120,7 +121,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel"></span><section id="hydrogen-bond-autocorrelation-mdanalysis-analysis-hydrogenbonds-hbond-autocorrel">
-<h1><span class="section-number">4.3.2. </span>Hydrogen bond autocorrelation — <a class="reference internal" href="#module-MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel" title="MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel</span></code></a><a class="headerlink" href="#hydrogen-bond-autocorrelation-mdanalysis-analysis-hydrogenbonds-hbond-autocorrel" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">4.3.2. </span>Hydrogen bond autocorrelation — <a class="reference internal" href="#module-MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel" title="MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel</span></code></a><a class="headerlink" href="#hydrogen-bond-autocorrelation-mdanalysis-analysis-hydrogenbonds-hbond-autocorrel" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Richard J. Gowers</p>
@@ -140,7 +141,7 @@
 <a class="reference internal" href="#module-MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel" title="MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel</span></code></a>.</p>
 </div>
 <section id="description">
-<h2><span class="section-number">4.3.2.1. </span>Description<a class="headerlink" href="#description" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.3.2.1. </span>Description<a class="headerlink" href="#description" title="Permalink to this heading"></a></h2>
 <p>Calculates the time autocorrelation function, <span class="math notranslate nohighlight">\(C_x(t)\)</span>, for the hydrogen
 bonds in the selections passed to it.  The population of hydrogen bonds at a
 given startpoint, <span class="math notranslate nohighlight">\(t_0\)</span>, is evaluated based on geometric criteria and
@@ -180,7 +181,7 @@ DOI:http://dx.doi.org/10.1063/1.4922445</p>
 </dl>
 </section>
 <section id="input">
-<h2><span class="section-number">4.3.2.2. </span>Input<a class="headerlink" href="#input" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.3.2.2. </span>Input<a class="headerlink" href="#input" title="Permalink to this heading"></a></h2>
 <p>Three AtomGroup selections representing the <strong>hydrogens</strong>, <strong>donors</strong> and
 <strong>acceptors</strong> that you wish to analyse.  Note that the <strong>hydrogens</strong> and
 <strong>donors</strong> selections must be aligned, that is <strong>hydrogens[0]</strong> and
@@ -230,7 +231,7 @@ are performed and an average calculated.  For each pass, <strong>nsamples</stron
 of points along the run are calculated.</p>
 </section>
 <section id="output">
-<h2><span class="section-number">4.3.2.3. </span>Output<a class="headerlink" href="#output" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.3.2.3. </span>Output<a class="headerlink" href="#output" title="Permalink to this heading"></a></h2>
 <p>All results of the analysis are available through the <em>solution</em> attribute.
 This is a dictionary with the following keys</p>
 <ul class="simple">
@@ -250,7 +251,7 @@ This is a dictionary with the following keys</p>
 used.</p>
 </section>
 <section id="worked-example-for-polyamide">
-<h2><span class="section-number">4.3.2.4. </span>Worked Example for Polyamide<a class="headerlink" href="#worked-example-for-polyamide" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.3.2.4. </span>Worked Example for Polyamide<a class="headerlink" href="#worked-example-for-polyamide" title="Permalink to this heading"></a></h2>
 <p>This example finds the continuous hydrogen bond lifetime between N-H..O in a
 polyamide system.  This will use the default geometric definition for hydrogen
 bonds of length 3.0 Å and angle of 130 degrees.
@@ -290,7 +291,7 @@ points to build a better average.</p>
 </div>
 </section>
 <section id="functions-and-classes">
-<h2><span class="section-number">4.3.2.5. </span>Functions and Classes<a class="headerlink" href="#functions-and-classes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.3.2.5. </span>Functions and Classes<a class="headerlink" href="#functions-and-classes" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.find_hydrogen_donors">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.</span></span><span class="sig-name descname"><span class="pre">find_hydrogen_donors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hydrogens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hydrogenbonds/hbond_autocorrel.html#find_hydrogen_donors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.find_hydrogen_donors" title="Permalink to this definition"></a></dt>

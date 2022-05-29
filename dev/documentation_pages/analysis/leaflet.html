@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
@@ -115,7 +116,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.analysis.leaflet"></span><section id="leaflet-identification-mdanalysis-analysis-leaflet">
-<h1><span class="section-number">4.4.2. </span>Leaflet identification — <a class="reference internal" href="#module-MDAnalysis.analysis.leaflet" title="MDAnalysis.analysis.leaflet"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.leaflet</span></code></a><a class="headerlink" href="#leaflet-identification-mdanalysis-analysis-leaflet" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">4.4.2. </span>Leaflet identification — <a class="reference internal" href="#module-MDAnalysis.analysis.leaflet" title="MDAnalysis.analysis.leaflet"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.leaflet</span></code></a><a class="headerlink" href="#leaflet-identification-mdanalysis-analysis-leaflet" title="Permalink to this heading"></a></h1>
 <p>This module implements the <em>LeafletFinder</em> algorithm, described in
 <a class="reference internal" href="../references.html#michaud-agrawal2011" id="id1"><span>[Michaud-Agrawal2011]</span></a>. It can identify the lipids in a bilayer of
 arbitrary shape and topology, including planar and undulating bilayers
@@ -134,7 +135,7 @@ of distances from the centre of geometry (or possibly simply the
 (slow) heuristic method to find the best cut off for the LeafletFinder
 algorithm.</p>
 <section id="algorithm">
-<h2><span class="section-number">4.4.2.1. </span>Algorithm<a class="headerlink" href="#algorithm" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.4.2.1. </span>Algorithm<a class="headerlink" href="#algorithm" title="Permalink to this heading"></a></h2>
 <ol class="arabic simple">
 <li><p>build a graph of all phosphate distances &lt; cutoff</p></li>
 <li><p>identify the largest connected subgraphs</p></li>
@@ -143,7 +144,7 @@ algorithm.</p>
 <p>For further details see <a class="reference internal" href="../references.html#michaud-agrawal2011" id="id2"><span>[Michaud-Agrawal2011]</span></a>.</p>
 </section>
 <section id="classes-and-functions">
-<h2><span class="section-number">4.4.2.2. </span>Classes and Functions<a class="headerlink" href="#classes-and-functions" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.4.2.2. </span>Classes and Functions<a class="headerlink" href="#classes-and-functions" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.leaflet.LeafletFinder">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.leaflet.</span></span><span class="sig-name descname"><span class="pre">LeafletFinder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder" title="Permalink to this definition"></a></dt>

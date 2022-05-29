@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -102,7 +103,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.auxiliary.XVG"></span><section id="xvg-auxiliary-reader-mdanalysis-auxiliary-xvg">
-<h1><span class="section-number">10.4. </span>XVG auxiliary reader — <a class="reference internal" href="#module-MDAnalysis.auxiliary.XVG" title="MDAnalysis.auxiliary.XVG"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.XVG</span></code></a><a class="headerlink" href="#xvg-auxiliary-reader-mdanalysis-auxiliary-xvg" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">10.4. </span>XVG auxiliary reader — <a class="reference internal" href="#module-MDAnalysis.auxiliary.XVG" title="MDAnalysis.auxiliary.XVG"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.XVG</span></code></a><a class="headerlink" href="#xvg-auxiliary-reader-mdanalysis-auxiliary-xvg" title="Permalink to this heading"></a></h1>
 <p>xvg files are produced by Gromacs during simulation or analysis, formatted
 for plotting data with Grace.</p>
 <p>Data is column-formatted; time/data selection is enabled by providing column
@@ -137,7 +138,7 @@ be stored in <code class="docutils literal notranslate"><span class="pre">data</
 </dd></dl>
 
 <section id="xvg-readers">
-<h2><span class="section-number">10.4.1. </span>XVG Readers<a class="headerlink" href="#xvg-readers" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">10.4.1. </span>XVG Readers<a class="headerlink" href="#xvg-readers" title="Permalink to this heading"></a></h2>
 <p>The default <a class="reference internal" href="#MDAnalysis.auxiliary.XVG.XVGReader" title="MDAnalysis.auxiliary.XVG.XVGReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">XVGReader</span></code></a> reads and stores the full contents of the .xvg
 file on initialisation, while a second reader (<a class="reference internal" href="#MDAnalysis.auxiliary.XVG.XVGFileReader" title="MDAnalysis.auxiliary.XVG.XVGFileReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">XVGFileReader</span></code></a>) that
 reads steps one at a time as required is also provided for when a lower memory

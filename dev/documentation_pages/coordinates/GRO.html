@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -132,11 +133,11 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.coordinates.GRO"></span><section id="gro-file-format-mdanalysis-coordinates-gro">
-<h1><span class="section-number">6.8. </span>GRO file format — <a class="reference internal" href="#module-MDAnalysis.coordinates.GRO" title="MDAnalysis.coordinates.GRO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GRO</span></code></a><a class="headerlink" href="#gro-file-format-mdanalysis-coordinates-gro" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">6.8. </span>GRO file format — <a class="reference internal" href="#module-MDAnalysis.coordinates.GRO" title="MDAnalysis.coordinates.GRO"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GRO</span></code></a><a class="headerlink" href="#gro-file-format-mdanalysis-coordinates-gro" title="Permalink to this heading"></a></h1>
 <p>Classes to read and write <a class="reference external" href="http://www.gromacs.org">Gromacs</a> <a class="reference external" href="http://manual.gromacs.org/current/online/gro.html">GRO</a> coordinate files; see the notes on the
 <a class="reference external" href="http://chembytes.wikidot.com/g-grofile">GRO format</a> which includes a conversion routine for the box.</p>
 <section id="writing-gro-files">
-<h2><span class="section-number">6.8.1. </span>Writing GRO files<a class="headerlink" href="#writing-gro-files" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.8.1. </span>Writing GRO files<a class="headerlink" href="#writing-gro-files" title="Permalink to this heading"></a></h2>
 <p>By default any written GRO files will renumber the atom ids to move sequentially
 from 1.  This can be disabled, and instead the original atom ids kept, by
 using the <cite>reindex=False</cite> keyword argument.  This is useful when writing a
@@ -154,7 +155,7 @@ identities of atoms.</p>
 </div>
 </section>
 <section id="classes">
-<h2><span class="section-number">6.8.2. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.8.2. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.GRO.GROReader">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.GRO.</span></span><span class="sig-name descname"><span class="pre">GROReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/GRO.html#GROReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.GRO.GROReader" title="Permalink to this definition"></a></dt>
@@ -190,6 +191,13 @@ to <code class="docutils literal notranslate"><span class="pre">None</span></cod
 <dd class="field-even"><p><a class="reference internal" href="#MDAnalysis.coordinates.GRO.GROWriter" title="MDAnalysis.coordinates.GRO.GROWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">GROWriter</span></code></a></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.GRO.GROReader.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'nm',</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">'nm/ps'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.GRO.GROReader.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
 </dd></dl>
 
 </dd></dl>
@@ -270,6 +278,13 @@ below.:</p>
 of 3 decimal places is hard-coded here.</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.GRO.GROWriter.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'nm',</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">'nm/ps'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.GRO.GROWriter.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.GRO.GROWriter.write">
 <span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/GRO.html#GROWriter.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.GRO.GROWriter.write" title="Permalink to this definition"></a></dt>
@@ -301,7 +316,7 @@ Use AtomGroup or Universe as an input instead.</p>
 
 </section>
 <section id="developer-notes-growriter-format-strings">
-<h2><span class="section-number">6.8.3. </span>Developer notes: <code class="docutils literal notranslate"><span class="pre">GROWriter</span></code> format strings<a class="headerlink" href="#developer-notes-growriter-format-strings" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.8.3. </span>Developer notes: <code class="docutils literal notranslate"><span class="pre">GROWriter</span></code> format strings<a class="headerlink" href="#developer-notes-growriter-format-strings" title="Permalink to this heading"></a></h2>
 <p>The <a class="reference internal" href="#MDAnalysis.coordinates.GRO.GROWriter" title="MDAnalysis.coordinates.GRO.GROWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">GROWriter</span></code></a> class has a <a class="reference internal" href="#MDAnalysis.coordinates.GRO.GROWriter.fmt" title="MDAnalysis.coordinates.GRO.GROWriter.fmt"><code class="xref py py-attr docutils literal notranslate"><span class="pre">GROWriter.fmt</span></code></a> attribute, which is a dictionary of different
 strings for writing lines in <code class="docutils literal notranslate"><span class="pre">.gro</span></code> files.  These are as follows:</p>
 <dl>

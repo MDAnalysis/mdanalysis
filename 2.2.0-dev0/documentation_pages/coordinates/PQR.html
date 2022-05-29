@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -127,7 +128,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.coordinates.PQR"></span><section id="pqr-file-format-mdanalysis-coordinates-pqr">
-<h1><span class="section-number">6.17. </span>PQR file format — <a class="reference internal" href="#module-MDAnalysis.coordinates.PQR" title="MDAnalysis.coordinates.PQR"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PQR</span></code></a><a class="headerlink" href="#pqr-file-format-mdanalysis-coordinates-pqr" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">6.17. </span>PQR file format — <a class="reference internal" href="#module-MDAnalysis.coordinates.PQR" title="MDAnalysis.coordinates.PQR"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PQR</span></code></a><a class="headerlink" href="#pqr-file-format-mdanalysis-coordinates-pqr" title="Permalink to this heading"></a></h1>
 <p>Read atoms with charges from a <a class="reference external" href="https://apbs-pdb2pqr.readthedocs.io/en/latest/formats/pqr.html">PQR</a> file (as written by <a class="reference external" href="https://apbs-pdb2pqr.readthedocs.io/en/latest/pdb2pqr/index.html">PDB2PQR</a>). The
 following is adopted from the description of the <a class="reference external" href="https://apbs-pdb2pqr.readthedocs.io/en/latest/formats/pqr.html">PQR</a> format as used by <a class="reference external" href="https://apbs-pdb2pqr.readthedocs.io/en/latest/apbs/index.html">APBS</a>:</p>
 <p><em>MDAnalysis</em> reads very loosely-formatted PQR files: all fields are
@@ -216,6 +217,13 @@ In all cases the <cite>dimensions</cite> attribute will be set to <cite>None</ci
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.PQR.PQRReader.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.PQR.PQRReader.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -247,6 +255,13 @@ top of the PQR file</p></li>
 </ul>
 </dd>
 </dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.PQR.PQRWriter.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'Angstrom',</span> <span class="pre">'time':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.PQR.PQRWriter.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.PQR.PQRWriter.write">
 <span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">selection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PQR.html#PQRWriter.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.PQR.PQRWriter.write" title="Permalink to this definition"></a></dt>

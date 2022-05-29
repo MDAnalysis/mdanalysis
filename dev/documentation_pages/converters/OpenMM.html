@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -108,7 +109,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.converters.OpenMMParser"></span><section id="openmm-topology-parser-mdanalysis-converters-openmmparser">
-<h1><span class="section-number">7.5. </span>OpenMM topology parser <a class="reference internal" href="#module-MDAnalysis.converters.OpenMMParser" title="MDAnalysis.converters.OpenMMParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.OpenMMParser</span></code></a><a class="headerlink" href="#openmm-topology-parser-mdanalysis-converters-openmmparser" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">7.5. </span>OpenMM topology parser <a class="reference internal" href="#module-MDAnalysis.converters.OpenMMParser" title="MDAnalysis.converters.OpenMMParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.OpenMMParser</span></code></a><a class="headerlink" href="#openmm-topology-parser-mdanalysis-converters-openmmparser" title="Permalink to this heading"></a></h1>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 2.0.0.</span></p>
 </div>
@@ -127,7 +128,7 @@
 </div></blockquote>
 <p>The <a class="reference internal" href="#MDAnalysis.converters.OpenMMParser.OpenMMTopologyParser" title="MDAnalysis.converters.OpenMMParser.OpenMMTopologyParser"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpenMMTopologyParser</span></code></a> generates a topology from an OpenMM Topology object.</p>
 <section id="classes">
-<h2><span class="section-number">7.5.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">7.5.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.converters.OpenMMParser.OpenMMTopologyParser">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.converters.OpenMMParser.</span></span><span class="sig-name descname"><span class="pre">OpenMMTopologyParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/OpenMMParser.html#OpenMMTopologyParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.OpenMMParser.OpenMMTopologyParser" title="Permalink to this definition"></a></dt>
@@ -334,6 +335,13 @@ is avoided.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.7.5.</span></p>
 </div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.converters.OpenMMParser.OpenMMTopologyParser.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.converters.OpenMMParser.OpenMMTopologyParser.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
 </dd></dl>
 
 </dd></dl>
@@ -546,12 +554,19 @@ is avoided.</p>
 </div>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.converters.OpenMMParser.OpenMMAppTopologyParser.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.converters.OpenMMParser.OpenMMAppTopologyParser.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
+</dd></dl>
+
 </dd></dl>
 
 </section>
 </section>
 <span class="target" id="module-MDAnalysis.converters.OpenMM"></span><section id="openmm-structure-i-o-mdanalysis-converters-openmm">
-<h1><span class="section-number">7.6. </span>OpenMM structure I/O — <a class="reference internal" href="#module-MDAnalysis.converters.OpenMM" title="MDAnalysis.converters.OpenMM"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.OpenMM</span></code></a><a class="headerlink" href="#openmm-structure-i-o-mdanalysis-converters-openmm" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">7.6. </span>OpenMM structure I/O — <a class="reference internal" href="#module-MDAnalysis.converters.OpenMM" title="MDAnalysis.converters.OpenMM"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.OpenMM</span></code></a><a class="headerlink" href="#openmm-structure-i-o-mdanalysis-converters-openmm" title="Permalink to this heading"></a></h1>
 <p>Read coordinates data from a
 <a class="reference external" href="http://docs.openmm.org/latest/api-python/generated/openmm.app.simulation.Simulation.html#openmm.app.simulation.Simulation">OpenMM</a>
 <code class="xref py py-class docutils literal notranslate"><span class="pre">openmm.app.simulation.Simulation</span></code> with <code class="xref py py-class docutils literal notranslate"><span class="pre">OpenMMReader</span></code>
@@ -577,7 +592,7 @@ MDAnalysis can then convert some of these OpenMM objects into MDAnalysis Univers
 </pre></div>
 </div>
 <section id="id5">
-<h2><span class="section-number">7.6.1. </span>Classes<a class="headerlink" href="#id5" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">7.6.1. </span>Classes<a class="headerlink" href="#id5" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.converters.OpenMM.OpenMMSimulationReader">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.converters.OpenMM.</span></span><span class="sig-name descname"><span class="pre">OpenMMSimulationReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/OpenMM.html#OpenMMSimulationReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.OpenMM.OpenMMSimulationReader" title="Permalink to this definition"></a></dt>
@@ -585,6 +600,13 @@ MDAnalysis can then convert some of these OpenMM objects into MDAnalysis Univers
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 2.0.0.</span></p>
 </div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.converters.OpenMM.OpenMMSimulationReader.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'energy':</span> <span class="pre">'kJ/mol',</span> <span class="pre">'force':</span> <span class="pre">'kJ/(mol*nm)',</span> <span class="pre">'length':</span> <span class="pre">'nm',</span> <span class="pre">'time':</span> <span class="pre">'ps',</span> <span class="pre">'velocity':</span> <span class="pre">'nm/ps'}</span></em><a class="headerlink" href="#MDAnalysis.converters.OpenMM.OpenMMSimulationReader.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -595,6 +617,13 @@ MDAnalysis can then convert some of these OpenMM objects into MDAnalysis Univers
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 2.0.0.</span></p>
 </div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.converters.OpenMM.OpenMMAppReader.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">'nm',</span> <span class="pre">'time':</span> <span class="pre">'ps'}</span></em><a class="headerlink" href="#MDAnalysis.converters.OpenMM.OpenMMAppReader.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
+</dd></dl>
+
 </dd></dl>
 
 </section>

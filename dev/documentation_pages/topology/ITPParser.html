@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -127,7 +128,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.topology.ITPParser"></span><section id="itp-topology-parser">
-<h1><span class="section-number">5.10. </span>ITP topology parser<a class="headerlink" href="#itp-topology-parser" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">5.10. </span>ITP topology parser<a class="headerlink" href="#itp-topology-parser" title="Permalink to this heading"></a></h1>
 <p>Reads a GROMACS <a class="reference external" href="http://manual.gromacs.org/current/reference-manual/topologies/topology-file-formats.html#molecule-itp-file">ITP</a> or <a class="reference external" href="http://manual.gromacs.org/current/reference-manual/file-formats.html#top">TOP</a> file to build the system. The topology will
 contain atom IDs, segids, residue IDs, residue names, atom names, atom types,
 charges, chargegroups, masses (guessed if not found), moltypes, and molnums.
@@ -160,7 +161,7 @@ to read GROMACS top files, pass <code class="docutils literal notranslate"><span
 </div>
 </div>
 <section id="preprocessor-variables">
-<span id="itp-define-kwargs"></span><h2><span class="section-number">5.10.1. </span>Preprocessor variables<a class="headerlink" href="#preprocessor-variables" title="Permalink to this headline"></a></h2>
+<span id="itp-define-kwargs"></span><h2><span class="section-number">5.10.1. </span>Preprocessor variables<a class="headerlink" href="#preprocessor-variables" title="Permalink to this heading"></a></h2>
 <p>ITP files are often defined with lines that depend on
 whether a keyword flag is given. For example, this modified TIP5P water file:</p>
 <blockquote>
@@ -205,7 +206,7 @@ will have charges of 3 for the HW1 and HW2 atoms:</p>
 </div>
 </section>
 <section id="classes">
-<h2><span class="section-number">5.10.2. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">5.10.2. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.topology.ITPParser.ITPParser">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.ITPParser.</span></span><span class="sig-name descname"><span class="pre">ITPParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/ITPParser.html#ITPParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.ITPParser.ITPParser" title="Permalink to this definition"></a></dt>
@@ -455,6 +456,13 @@ found, this keyword is ignored.</p></li>
 <dd class="field-even"><p>MDAnalysis <em>Topology</em> object</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.topology.ITPParser.ITPParser.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.topology.ITPParser.ITPParser.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
 </dd></dl>
 
 </dd></dl>

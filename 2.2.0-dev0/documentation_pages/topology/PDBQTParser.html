@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -126,7 +127,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.topology.PDBQTParser"></span><section id="pdbqt-topology-parser">
-<h1><span class="section-number">5.17. </span>PDBQT topology parser<a class="headerlink" href="#pdbqt-topology-parser" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">5.17. </span>PDBQT topology parser<a class="headerlink" href="#pdbqt-topology-parser" title="Permalink to this heading"></a></h1>
 <p>Use a <a class="reference external" href="http://autodock.scripps.edu/faqs-help/faq/what-is-the-format-of-a-pdbqt-file">PDBQT</a> file to build a minimum internal structure representation (list of
 atoms), including <a class="reference external" href="http://autodock.scripps.edu/">AutoDock</a> atom types (stored as <code class="xref py py-attr docutils literal notranslate"><span class="pre">Atom.type</span></code>) and
 partial charges (<code class="xref py py-attr docutils literal notranslate"><span class="pre">Atom.charge</span></code>).</p>
@@ -142,7 +143,7 @@ deduced. Masses are guessed and set to 0 if unknown.</p>
 <p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </div>
 <section id="classes">
-<h2><span class="section-number">5.17.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">5.17.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.topology.PDBQTParser.PDBQTParser">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.PDBQTParser.</span></span><span class="sig-name descname"><span class="pre">PDBQTParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/PDBQTParser.html#PDBQTParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.PDBQTParser.PDBQTParser" title="Permalink to this definition"></a></dt>
@@ -386,6 +387,13 @@ is avoided.</p>
 <dd class="field-odd"><p>MDAnalysis Topology object</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.topology.PDBQTParser.PDBQTParser.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.topology.PDBQTParser.PDBQTParser.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
 </dd></dl>
 
 </dd></dl>

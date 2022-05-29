@@ -16,6 +16,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/js/versions.js"></script>
     <script src="../_static/js/theme.js"></script>
@@ -108,7 +109,7 @@
            <div itemprop="articleBody">
              
   <section id="selection-exporters">
-<span id="id1"></span><h1><span class="section-number">9. </span>Selection exporters<a class="headerlink" href="#selection-exporters" title="Permalink to this headline"></a></h1>
+<span id="id1"></span><h1><span class="section-number">9. </span>Selection exporters<a class="headerlink" href="#selection-exporters" title="Permalink to this heading"></a></h1>
 <p>The classes in this module allow writing a selection to a file that can be read by
 <em>another program</em> to select the atoms in a MDAnalysis
 <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a>. Such cross-package interoperability
@@ -163,9 +164,9 @@ module <a class="reference internal" href="selections/jmol.html#module-MDAnalysi
 </tbody>
 </table>
 <section id="how-to-write-selections">
-<h2><span class="section-number">9.1. </span>How to write selections<a class="headerlink" href="#how-to-write-selections" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">9.1. </span>How to write selections<a class="headerlink" href="#how-to-write-selections" title="Permalink to this heading"></a></h2>
 <section id="single-atomgroup">
-<h3><span class="section-number">9.1.1. </span>Single AtomGroup<a class="headerlink" href="#single-atomgroup" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">9.1.1. </span>Single AtomGroup<a class="headerlink" href="#single-atomgroup" title="Permalink to this heading"></a></h3>
 <p>The typical situation is that one has an
 <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> and wants to work with the
 same selection of atoms in a different package, for example, to
@@ -188,7 +189,7 @@ Representations</span> window in the list <span class="guilabel">Selections: Sin
 “mda_protein”.</p>
 </section>
 <section id="multiple-selections">
-<h3><span class="section-number">9.1.2. </span>Multiple selections<a class="headerlink" href="#multiple-selections" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">9.1.2. </span>Multiple selections<a class="headerlink" href="#multiple-selections" title="Permalink to this heading"></a></h3>
 <p>The <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.AtomGroup.write" title="MDAnalysis.core.groups.AtomGroup.write"><code class="xref py py-class docutils literal notranslate"><span class="pre">write</span></code></a> method can take
 additional keyword arguments, including <code class="docutils literal notranslate"><span class="pre">mode</span></code>. The default is
 <code class="docutils literal notranslate"><span class="pre">mode=&quot;w&quot;</span></code>, which will overwrite the provided file. If <code class="docutils literal notranslate"><span class="pre">mode=&quot;a&quot;</span></code>
@@ -211,7 +212,7 @@ described next.</p>
 </section>
 </section>
 <section id="selection-writers">
-<h2><span class="section-number">9.2. </span>Selection writers<a class="headerlink" href="#selection-writers" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">9.2. </span>Selection writers<a class="headerlink" href="#selection-writers" title="Permalink to this heading"></a></h2>
 <p>There exist different <a class="reference internal" href="selections/base.html#MDAnalysis.selections.base.SelectionWriterBase" title="MDAnalysis.selections.base.SelectionWriterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionWriterBase</span></code></a>
 classes for different packages. The
 <a class="reference internal" href="#MDAnalysis.selections.get_writer" title="MDAnalysis.selections.get_writer"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_writer()</span></code></a> function can automatically pick

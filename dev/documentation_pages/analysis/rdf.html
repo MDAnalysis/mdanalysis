@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
@@ -115,7 +116,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.analysis.rdf"></span><section id="radial-distribution-functions-mdanalysis-analysis-rdf">
-<h1><span class="section-number">4.7.2.1. </span>Radial Distribution Functions — <a class="reference internal" href="#module-MDAnalysis.analysis.rdf" title="MDAnalysis.analysis.rdf"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rdf</span></code></a><a class="headerlink" href="#radial-distribution-functions-mdanalysis-analysis-rdf" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">4.7.2.1. </span>Radial Distribution Functions — <a class="reference internal" href="#module-MDAnalysis.analysis.rdf" title="MDAnalysis.analysis.rdf"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rdf</span></code></a><a class="headerlink" href="#radial-distribution-functions-mdanalysis-analysis-rdf" title="Permalink to this heading"></a></h1>
 <p>This module contains two classes to calculate radial
 <a class="reference external" href="https://en.wikipedia.org/wiki/Pair_distribution_function">pair distribution functions</a> (<a class="reference external" href="https://en.wikipedia.org/wiki/Radial_distribution_function">radial distribution functions</a> or “RDF”).
 The RDF <span class="math notranslate nohighlight">\(g_{ab}(r)\)</span> between types of particles <span class="math notranslate nohighlight">\(a\)</span> and <span class="math notranslate nohighlight">\(b\)</span> is</p>
@@ -143,7 +144,7 @@ distance <span class="math notranslate nohighlight">\(r\)</span> around a <span 
 <div class="math notranslate nohighlight" id="equation-nab">
 \[n_{ab}(r) = \rho g_{ab}(r)\]</div>
 <section id="average-radial-distribution-function">
-<h2><span class="section-number">4.7.2.1.1. </span>Average radial distribution function<a class="headerlink" href="#average-radial-distribution-function" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.7.2.1.1. </span>Average radial distribution function<a class="headerlink" href="#average-radial-distribution-function" title="Permalink to this heading"></a></h2>
 <p><a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF" title="MDAnalysis.analysis.rdf.InterRDF"><code class="xref py py-class docutils literal notranslate"><span class="pre">InterRDF</span></code></a> is a tool to calculate average radial distribution functions
 between two groups of atoms. Suppose we have two AtomGroups <code class="docutils literal notranslate"><span class="pre">A</span></code> and
 <code class="docutils literal notranslate"><span class="pre">B</span></code>. <code class="docutils literal notranslate"><span class="pre">A</span></code> contains atom <code class="docutils literal notranslate"><span class="pre">A1</span></code>, <code class="docutils literal notranslate"><span class="pre">A2</span></code>, and <code class="docutils literal notranslate"><span class="pre">B</span></code> contains <code class="docutils literal notranslate"><span class="pre">B1</span></code>,
@@ -313,7 +314,7 @@ frame indices</p>
 
 </section>
 <section id="site-specific-radial-distribution-function">
-<h2><span class="section-number">4.7.2.1.2. </span>Site-specific radial distribution function<a class="headerlink" href="#site-specific-radial-distribution-function" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.7.2.1.2. </span>Site-specific radial distribution function<a class="headerlink" href="#site-specific-radial-distribution-function" title="Permalink to this heading"></a></h2>
 <p><a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s" title="MDAnalysis.analysis.rdf.InterRDF_s"><code class="xref py py-class docutils literal notranslate"><span class="pre">InterRDF_s</span></code></a> calculates site-specific radial distribution
 functions. Instead of two groups of atoms it takes as input a list of pairs of
 AtomGroup, <code class="docutils literal notranslate"><span class="pre">[[A,</span> <span class="pre">B],</span> <span class="pre">[C,</span> <span class="pre">D],</span> <span class="pre">...]</span></code>. Given the same <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code> to

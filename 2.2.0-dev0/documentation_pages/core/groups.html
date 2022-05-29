@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
@@ -107,7 +108,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.core.groups"></span><section id="core-objects-containers-mdanalysis-core-groups">
-<h1><span class="section-number">11.2.2. </span>Core objects: Containers — <a class="reference internal" href="#module-MDAnalysis.core.groups" title="MDAnalysis.core.groups"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.groups</span></code></a><a class="headerlink" href="#core-objects-containers-mdanalysis-core-groups" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">11.2.2. </span>Core objects: Containers — <a class="reference internal" href="#module-MDAnalysis.core.groups" title="MDAnalysis.core.groups"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.groups</span></code></a><a class="headerlink" href="#core-objects-containers-mdanalysis-core-groups" title="Permalink to this heading"></a></h1>
 <p>The <a class="reference internal" href="universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> instance contains all the
 particles in the system (which MDAnalysis calls <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a>). Groups of
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">atoms</span></code></a> are handled as <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> instances. The
@@ -120,9 +121,9 @@ simply by slicing).</p>
 solvent) also exist as containers, as well as groups of these units
 (<a class="reference internal" href="#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResidueGroup</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.SegmentGroup" title="MDAnalysis.core.groups.SegmentGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">SegmentGroup</span></code></a>).</p>
 <section id="classes">
-<h2><span class="section-number">11.2.2.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">11.2.2.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
 <section id="collections">
-<h3><span class="section-number">11.2.2.1.1. </span>Collections<a class="headerlink" href="#collections" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">11.2.2.1.1. </span>Collections<a class="headerlink" href="#collections" title="Permalink to this heading"></a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.AtomGroup">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.groups.</span></span><span class="sig-name descname"><span class="pre">AtomGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/groups.html#AtomGroup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup" title="Permalink to this definition"></a></dt>
@@ -760,13 +761,79 @@ is deprecated and will be removed in version 3.0.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.core.groups.AtomGroup.center_of_charge">
+<span class="sig-name descname"><span class="pre">center_of_charge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.center_of_charge" title="Permalink to this definition"></a></dt>
+<dd><p>Center of (absolute) charge of (compounds of) the group</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol R = \frac{\sum_i \vert q_i \vert \boldsymbol r_i}
+                     {\sum_i \vert q_i \vert}\]</div>
+<p>where <span class="math notranslate nohighlight">\(q_i\)</span> is the charge and <span class="math notranslate nohighlight">\(\boldsymbol r_i\)</span> the
+position of atom <span class="math notranslate nohighlight">\(i\)</span> in the given
+<a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a>.
+Centers of charge per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly. If the charges of a compound sum up to zero, the
+center of mass coordinates of that compound will be <code class="docutils literal notranslate"><span class="pre">nan</span></code> (not a
+number).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+primary unit cell before calculation.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is not <code class="docutils literal notranslate"><span class="pre">group</span></code>, the
+centers of mass of each compound will be calculated without moving
+any atoms to keep the compounds intact. Instead, the resulting
+center-of-mass position vectors will be moved to the primary unit
+cell after calculation.</p></li>
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers.</p></li>
+<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of mass of all atoms in the group will
+be returned as a single position vector. Otherwise, the centers of
+mass of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or
+fragment will be returned as an array of position vectors, i.e.
+a 2d array.
+Note that, in any case, <em>only</em> the positions of
+<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> <em>belonging to the group</em> will be taken into
+account.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>center</strong> – Position vector(s) of the center(s) of charge of the group.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
+position vector.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the
+output will be a 2d coordinate array of shape <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> where
+<code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method can only be accessed if the underlying topology has
+information about atomic charges.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.2.0.</span></p>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This requires the underlying topology to have charges. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.AtomGroup.center_of_geometry">
 <span class="sig-name descname"><span class="pre">center_of_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.center_of_geometry" title="Permalink to this definition"></a></dt>
-<dd><p>Center of geometry of (compounds of) the group.</p>
-<p>Computes the center of geometry (a.k.a. centroid) of
-<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group. Centers of geometry per
-<a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or fragment can be
-obtained by setting the <cite>compound</cite> parameter accordingly.</p>
+<dd><p>Center of geometry of (compounds of) the group</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol R = \frac{\sum_i \boldsymbol r_i}{\sum_i 1}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\boldsymbol r_i\)</span> of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> <span class="math notranslate nohighlight">\(i\)</span>.
+Centers of geometry per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> or per <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> can
+be obtained by setting the <cite>compound</cite> parameter accordingly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -824,8 +891,12 @@ is deprecated and will be removed in version 3.0.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.AtomGroup.center_of_mass">
 <span class="sig-name descname"><span class="pre">center_of_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.center_of_mass" title="Permalink to this definition"></a></dt>
-<dd><p>Center of mass of (compounds of) the group.</p>
-<p>Computes the center of mass of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
+<dd><p>Center of mass of (compounds of) the group</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol R = \frac{\sum_i m_i \boldsymbol r_i}{\sum m_i}\]</div>
+<p>where <span class="math notranslate nohighlight">\(m_i\)</span> is the mass and <span class="math notranslate nohighlight">\(\boldsymbol r_i\)</span> the
+position of atom <span class="math notranslate nohighlight">\(i\)</span> in the given
+<a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a>.
 Centers of mass per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
 fragment can be obtained by setting the <cite>compound</cite> parameter
 accordingly. If the masses of a compound sum up to zero, the
@@ -843,7 +914,8 @@ center-of-mass position vectors will be moved to the primary unit
 cell after calculation.</p></li>
 <li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
 centers.</p></li>
-<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,                   </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of mass of all atoms in the group will
+<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of mass of all atoms in the group will
 be returned as a single position vector. Otherwise, the centers of
 mass of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or
 fragment will be returned as an array of position vectors, i.e. a 2d
@@ -893,11 +965,12 @@ is deprecated and will be removed in version 3.0.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.AtomGroup.centroid">
 <span class="sig-name descname"><span class="pre">centroid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.centroid" title="Permalink to this definition"></a></dt>
-<dd><p>Center of geometry of (compounds of) the group.</p>
-<p>Computes the center of geometry (a.k.a. centroid) of
-<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group. Centers of geometry per
-<a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or fragment can be
-obtained by setting the <cite>compound</cite> parameter accordingly.</p>
+<dd><p>Center of geometry of (compounds of) the group</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol R = \frac{\sum_i \boldsymbol r_i}{\sum_i 1}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\boldsymbol r_i\)</span> of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> <span class="math notranslate nohighlight">\(i\)</span>.
+Centers of geometry per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> or per <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> can
+be obtained by setting the <cite>compound</cite> parameter accordingly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1004,7 +1077,7 @@ are preserved when performing a concatenation.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.AtomGroup.convert_to">
 <span class="sig-name descname"><span class="pre">convert_to</span></span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.convert_to" title="Permalink to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="accessors.html#MDAnalysis.core.accessors.ConverterWrapper" title="MDAnalysis.core.accessors.ConverterWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.accessors.ConverterWrapper</span></code></a></p>
+<dd><p>alias of <a class="reference internal" href="accessors.html#MDAnalysis.core.accessors.ConverterWrapper" title="MDAnalysis.core.accessors.ConverterWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConverterWrapper</span></code></a></p>
 </dd></dl>
 
 <dl class="py method">
@@ -3106,13 +3179,79 @@ is deprecated and will be removed in version 3.0.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.core.groups.ResidueGroup.center_of_charge">
+<span class="sig-name descname"><span class="pre">center_of_charge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.center_of_charge" title="Permalink to this definition"></a></dt>
+<dd><p>Center of (absolute) charge of (compounds of) the group</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol R = \frac{\sum_i \vert q_i \vert \boldsymbol r_i}
+                     {\sum_i \vert q_i \vert}\]</div>
+<p>where <span class="math notranslate nohighlight">\(q_i\)</span> is the charge and <span class="math notranslate nohighlight">\(\boldsymbol r_i\)</span> the
+position of atom <span class="math notranslate nohighlight">\(i\)</span> in the given
+<a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a>.
+Centers of charge per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly. If the charges of a compound sum up to zero, the
+center of mass coordinates of that compound will be <code class="docutils literal notranslate"><span class="pre">nan</span></code> (not a
+number).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+primary unit cell before calculation.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is not <code class="docutils literal notranslate"><span class="pre">group</span></code>, the
+centers of mass of each compound will be calculated without moving
+any atoms to keep the compounds intact. Instead, the resulting
+center-of-mass position vectors will be moved to the primary unit
+cell after calculation.</p></li>
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers.</p></li>
+<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of mass of all atoms in the group will
+be returned as a single position vector. Otherwise, the centers of
+mass of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or
+fragment will be returned as an array of position vectors, i.e.
+a 2d array.
+Note that, in any case, <em>only</em> the positions of
+<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> <em>belonging to the group</em> will be taken into
+account.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>center</strong> – Position vector(s) of the center(s) of charge of the group.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
+position vector.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the
+output will be a 2d coordinate array of shape <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> where
+<code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method can only be accessed if the underlying topology has
+information about atomic charges.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.2.0.</span></p>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This requires the underlying topology to have charges. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.ResidueGroup.center_of_geometry">
 <span class="sig-name descname"><span class="pre">center_of_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.center_of_geometry" title="Permalink to this definition"></a></dt>
-<dd><p>Center of geometry of (compounds of) the group.</p>
-<p>Computes the center of geometry (a.k.a. centroid) of
-<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group. Centers of geometry per
-<a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or fragment can be
-obtained by setting the <cite>compound</cite> parameter accordingly.</p>
+<dd><p>Center of geometry of (compounds of) the group</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol R = \frac{\sum_i \boldsymbol r_i}{\sum_i 1}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\boldsymbol r_i\)</span> of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> <span class="math notranslate nohighlight">\(i\)</span>.
+Centers of geometry per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> or per <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> can
+be obtained by setting the <cite>compound</cite> parameter accordingly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -3170,8 +3309,12 @@ is deprecated and will be removed in version 3.0.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.ResidueGroup.center_of_mass">
 <span class="sig-name descname"><span class="pre">center_of_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.center_of_mass" title="Permalink to this definition"></a></dt>
-<dd><p>Center of mass of (compounds of) the group.</p>
-<p>Computes the center of mass of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
+<dd><p>Center of mass of (compounds of) the group</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol R = \frac{\sum_i m_i \boldsymbol r_i}{\sum m_i}\]</div>
+<p>where <span class="math notranslate nohighlight">\(m_i\)</span> is the mass and <span class="math notranslate nohighlight">\(\boldsymbol r_i\)</span> the
+position of atom <span class="math notranslate nohighlight">\(i\)</span> in the given
+<a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a>.
 Centers of mass per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
 fragment can be obtained by setting the <cite>compound</cite> parameter
 accordingly. If the masses of a compound sum up to zero, the
@@ -3189,7 +3332,8 @@ center-of-mass position vectors will be moved to the primary unit
 cell after calculation.</p></li>
 <li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
 centers.</p></li>
-<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,                   </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of mass of all atoms in the group will
+<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of mass of all atoms in the group will
 be returned as a single position vector. Otherwise, the centers of
 mass of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or
 fragment will be returned as an array of position vectors, i.e. a 2d
@@ -3239,11 +3383,12 @@ is deprecated and will be removed in version 3.0.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.ResidueGroup.centroid">
 <span class="sig-name descname"><span class="pre">centroid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.centroid" title="Permalink to this definition"></a></dt>
-<dd><p>Center of geometry of (compounds of) the group.</p>
-<p>Computes the center of geometry (a.k.a. centroid) of
-<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group. Centers of geometry per
-<a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or fragment can be
-obtained by setting the <cite>compound</cite> parameter accordingly.</p>
+<dd><p>Center of geometry of (compounds of) the group</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol R = \frac{\sum_i \boldsymbol r_i}{\sum_i 1}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\boldsymbol r_i\)</span> of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> <span class="math notranslate nohighlight">\(i\)</span>.
+Centers of geometry per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> or per <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> can
+be obtained by setting the <cite>compound</cite> parameter accordingly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -4997,13 +5142,79 @@ is deprecated and will be removed in version 3.0.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.core.groups.SegmentGroup.center_of_charge">
+<span class="sig-name descname"><span class="pre">center_of_charge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.center_of_charge" title="Permalink to this definition"></a></dt>
+<dd><p>Center of (absolute) charge of (compounds of) the group</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol R = \frac{\sum_i \vert q_i \vert \boldsymbol r_i}
+                     {\sum_i \vert q_i \vert}\]</div>
+<p>where <span class="math notranslate nohighlight">\(q_i\)</span> is the charge and <span class="math notranslate nohighlight">\(\boldsymbol r_i\)</span> the
+position of atom <span class="math notranslate nohighlight">\(i\)</span> in the given
+<a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a>.
+Centers of charge per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly. If the charges of a compound sum up to zero, the
+center of mass coordinates of that compound will be <code class="docutils literal notranslate"><span class="pre">nan</span></code> (not a
+number).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+primary unit cell before calculation.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is not <code class="docutils literal notranslate"><span class="pre">group</span></code>, the
+centers of mass of each compound will be calculated without moving
+any atoms to keep the compounds intact. Instead, the resulting
+center-of-mass position vectors will be moved to the primary unit
+cell after calculation.</p></li>
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers.</p></li>
+<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of mass of all atoms in the group will
+be returned as a single position vector. Otherwise, the centers of
+mass of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or
+fragment will be returned as an array of position vectors, i.e.
+a 2d array.
+Note that, in any case, <em>only</em> the positions of
+<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> <em>belonging to the group</em> will be taken into
+account.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>center</strong> – Position vector(s) of the center(s) of charge of the group.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
+position vector.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the
+output will be a 2d coordinate array of shape <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> where
+<code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method can only be accessed if the underlying topology has
+information about atomic charges.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.2.0.</span></p>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This requires the underlying topology to have charges. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.SegmentGroup.center_of_geometry">
 <span class="sig-name descname"><span class="pre">center_of_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.center_of_geometry" title="Permalink to this definition"></a></dt>
-<dd><p>Center of geometry of (compounds of) the group.</p>
-<p>Computes the center of geometry (a.k.a. centroid) of
-<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group. Centers of geometry per
-<a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or fragment can be
-obtained by setting the <cite>compound</cite> parameter accordingly.</p>
+<dd><p>Center of geometry of (compounds of) the group</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol R = \frac{\sum_i \boldsymbol r_i}{\sum_i 1}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\boldsymbol r_i\)</span> of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> <span class="math notranslate nohighlight">\(i\)</span>.
+Centers of geometry per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> or per <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> can
+be obtained by setting the <cite>compound</cite> parameter accordingly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -5061,8 +5272,12 @@ is deprecated and will be removed in version 3.0.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.SegmentGroup.center_of_mass">
 <span class="sig-name descname"><span class="pre">center_of_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.center_of_mass" title="Permalink to this definition"></a></dt>
-<dd><p>Center of mass of (compounds of) the group.</p>
-<p>Computes the center of mass of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
+<dd><p>Center of mass of (compounds of) the group</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol R = \frac{\sum_i m_i \boldsymbol r_i}{\sum m_i}\]</div>
+<p>where <span class="math notranslate nohighlight">\(m_i\)</span> is the mass and <span class="math notranslate nohighlight">\(\boldsymbol r_i\)</span> the
+position of atom <span class="math notranslate nohighlight">\(i\)</span> in the given
+<a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a>.
 Centers of mass per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
 fragment can be obtained by setting the <cite>compound</cite> parameter
 accordingly. If the masses of a compound sum up to zero, the
@@ -5080,7 +5295,8 @@ center-of-mass position vectors will be moved to the primary unit
 cell after calculation.</p></li>
 <li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
 centers.</p></li>
-<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,                   </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of mass of all atoms in the group will
+<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of mass of all atoms in the group will
 be returned as a single position vector. Otherwise, the centers of
 mass of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or
 fragment will be returned as an array of position vectors, i.e. a 2d
@@ -5130,11 +5346,12 @@ is deprecated and will be removed in version 3.0.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.SegmentGroup.centroid">
 <span class="sig-name descname"><span class="pre">centroid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.centroid" title="Permalink to this definition"></a></dt>
-<dd><p>Center of geometry of (compounds of) the group.</p>
-<p>Computes the center of geometry (a.k.a. centroid) of
-<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group. Centers of geometry per
-<a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or fragment can be
-obtained by setting the <cite>compound</cite> parameter accordingly.</p>
+<dd><p>Center of geometry of (compounds of) the group</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol R = \frac{\sum_i \boldsymbol r_i}{\sum_i 1}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\boldsymbol r_i\)</span> of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> <span class="math notranslate nohighlight">\(i\)</span>.
+Centers of geometry per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> or per <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> can
+be obtained by setting the <cite>compound</cite> parameter accordingly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -6409,7 +6626,7 @@ the last update occurred under a different trajectory frame.</p>
 
 </section>
 <section id="chemical-units">
-<h3><span class="section-number">11.2.2.1.2. </span>Chemical units<a class="headerlink" href="#chemical-units" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">11.2.2.1.2. </span>Chemical units<a class="headerlink" href="#chemical-units" title="Permalink to this heading"></a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.Atom">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.groups.</span></span><span class="sig-name descname"><span class="pre">Atom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/groups.html#Atom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.groups.Atom" title="Permalink to this definition"></a></dt>
@@ -6901,7 +7118,7 @@ If it is a <a class="reference internal" href="#MDAnalysis.core.groups.Segment" 
 
 </section>
 <section id="levels">
-<h3><span class="section-number">11.2.2.1.3. </span>Levels<a class="headerlink" href="#levels" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">11.2.2.1.3. </span>Levels<a class="headerlink" href="#levels" title="Permalink to this heading"></a></h3>
 <p>Each of the above classes has a <em>level</em> attribute.  This can be used to verify
 that two objects are of the same level, or to access a particular class:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">()</span>

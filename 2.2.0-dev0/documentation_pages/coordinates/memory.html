@@ -16,6 +16,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -137,7 +138,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.coordinates.memory"></span><section id="reading-trajectories-from-memory-mdanalysis-coordinates-memory">
-<h1><span class="section-number">6.25. </span>Reading trajectories from memory — <a class="reference internal" href="#module-MDAnalysis.coordinates.memory" title="MDAnalysis.coordinates.memory"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></a><a class="headerlink" href="#reading-trajectories-from-memory-mdanalysis-coordinates-memory" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">6.25. </span>Reading trajectories from memory — <a class="reference internal" href="#module-MDAnalysis.coordinates.memory" title="MDAnalysis.coordinates.memory"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></a><a class="headerlink" href="#reading-trajectories-from-memory-mdanalysis-coordinates-memory" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Wouter Boomsma</p>
@@ -163,12 +164,12 @@ trajectory (e.g. through
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.positions" title="MDAnalysis.core.groups.AtomGroup.positions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup.positions</span></code></a>) without having
 to write the entire state to file.</p>
 <section id="how-to-use-the-memoryreader">
-<h2><span class="section-number">6.25.1. </span>How to use the <a class="reference internal" href="#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryReader</span></code></a><a class="headerlink" href="#how-to-use-the-memoryreader" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.25.1. </span>How to use the <a class="reference internal" href="#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryReader</span></code></a><a class="headerlink" href="#how-to-use-the-memoryreader" title="Permalink to this heading"></a></h2>
 <p>The <a class="reference internal" href="#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryReader</span></code></a> can be used to either directly generate a
 trajectory as a numpy array or by transferring an existing trajectory
 to memory.</p>
 <section id="in-memory-representation-of-arbitrary-trajectories">
-<h3><span class="section-number">6.25.1.1. </span>In-memory representation of arbitrary trajectories<a class="headerlink" href="#in-memory-representation-of-arbitrary-trajectories" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">6.25.1.1. </span>In-memory representation of arbitrary trajectories<a class="headerlink" href="#in-memory-representation-of-arbitrary-trajectories" title="Permalink to this heading"></a></h3>
 <p>If sufficient memory is available to hold a whole trajectory in memory
 then analysis can be sped up substantially by transferring the
 trajectory to memory.</p>
@@ -186,7 +187,7 @@ automatically transfers a trajectory to memory:</p>
 trajectory.</p>
 </section>
 <section id="switching-a-trajectory-to-an-in-memory-representation">
-<h3><span class="section-number">6.25.1.2. </span>Switching a trajectory to an in-memory representation<a class="headerlink" href="#switching-a-trajectory-to-an-in-memory-representation" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">6.25.1.2. </span>Switching a trajectory to an in-memory representation<a class="headerlink" href="#switching-a-trajectory-to-an-in-memory-representation" title="Permalink to this heading"></a></h3>
 <p>The decision to transfer the trajectory to memory can be made at any
 time with the
 <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe.transfer_to_memory" title="MDAnalysis.core.universe.Universe.transfer_to_memory"><code class="xref py py-meth docutils literal notranslate"><span class="pre">transfer_to_memory()</span></code></a> method
@@ -200,7 +201,7 @@ displayed) but then subsequent operations on the trajectory directly
 operate on the in-memory array and will be very fast.</p>
 </section>
 <section id="constructing-a-reader-from-a-numpy-array">
-<h3><span class="section-number">6.25.1.3. </span>Constructing a Reader from a numpy array<a class="headerlink" href="#constructing-a-reader-from-a-numpy-array" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">6.25.1.3. </span>Constructing a Reader from a numpy array<a class="headerlink" href="#constructing-a-reader-from-a-numpy-array" title="Permalink to this heading"></a></h3>
 <p>The <a class="reference internal" href="#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryReader</span></code></a> provides great flexibility because it
 becomes possible to create a <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> directly
 from a numpy array.</p>
@@ -239,7 +240,7 @@ same functionality for any supported trajectory format:</p>
 </div>
 </section>
 <section id="creating-an-in-memory-trajectory-of-a-sub-system">
-<span id="creating-in-memory-trajectory-label"></span><h3><span class="section-number">6.25.1.4. </span>Creating an in-memory trajectory of a sub-system<a class="headerlink" href="#creating-an-in-memory-trajectory-of-a-sub-system" title="Permalink to this headline"></a></h3>
+<span id="creating-in-memory-trajectory-label"></span><h3><span class="section-number">6.25.1.4. </span>Creating an in-memory trajectory of a sub-system<a class="headerlink" href="#creating-an-in-memory-trajectory-of-a-sub-system" title="Permalink to this heading"></a></h3>
 <p>Creating a trajectory for just a selection of an existing trajectory
 requires the transfer of the appropriate coordinates as well as
 creation of a topology of the sub-system. For the latter one can use
@@ -278,7 +279,7 @@ on the sub-system.</p>
 </section>
 </section>
 <section id="classes">
-<h2><span class="section-number">6.25.2. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.25.2. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.memory.Timestep">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.memory.</span></span><span class="sig-name descname"><span class="pre">Timestep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.memory.Timestep" title="Permalink to this definition"></a></dt>
@@ -1265,6 +1266,13 @@ be considered to have a length of a single time step <cite>dt</cite> and a
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.memory.MemoryReader.transformations">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">transformations</span></span><a class="headerlink" href="#MDAnalysis.coordinates.memory.MemoryReader.transformations" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the list of transformations</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.memory.MemoryReader.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.memory.MemoryReader.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
 </dd></dl>
 
 </dd></dl>
