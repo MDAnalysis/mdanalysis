@@ -21,7 +21,6 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 #
-# cython: profile=True
 
 import cython 
 import weakref
@@ -156,50 +155,6 @@ MDAnalysis.
 
 """
 
-# use this to go from an array or buffer to a C contig array guaranteed
-cdef inline cnp.ndarray _ndarray_c_contig_from_buffer(object buffer, int typenum, int mindepth, int maxdepth, int ndim, cnp.npy_intp* dims):
-    cdef int array_flag = 0
-    cdef int contig_flag = 0
-    cdef int cast_flag = 0
-    cdef int scalar_flag = 0
-
-    array_flag = cnp.PyArray_Check(buffer)
-    scalar_flag = cnp.PyArray_IsPythonNumber(buffer)
-
-    if scalar_flag:
-        return cnp.PyArray_FILLWBYTE(cnp.PyArray_SimpleNew(ndim, dims, typenum), buffer)
-        
-
-    elif array_flag: # is it an array?
-
-        contig_flag = cnp.PyArray_IS_C_CONTIGUOUS(buffer)
-        # signals must be cast
-        cast_flag = cnp.PyArray_TYPE(buffer) != typenum
-
-        if contig_flag and not cast_flag: # its contiguous and no cast
-            return buffer
-        elif contig_flag and cast_flag: # its contiguous but needs to be cast
-            return cnp.PyArray_Cast(buffer, typenum)
-        elif not contig_flag and not cast_flag: # its not contiguous but no cast
-            return cnp.PyArray_GETCONTIGUOUS(buffer)
-        else: # its not contiguous and needs to be cast
-            return cnp.PyArray_Cast(cnp.PyArray_GETCONTIGUOUS(buffer), typenum)
-
-    else: # its not an array but implements buffer protocol otherwise will throw
-        # parameters mindepth and maxdepth control how nested the buffer can be 
-        return  cnp.PyArray_ContiguousFromAny(buffer, typenum, mindepth, maxdepth) 
-
-
-# adapted from 
-# https://stackoverflow.com/questions/8477122/numpy-c-api-convert-type-object-to-type-number
-# # checks the dtype and converts to a enumerated type
-# # cdef inline int _typenum_from_dtype(obj):
-
-#     cdef cnp.PyArray_Descr dtype
-#     if cnp.PyArray_DescrConverter(obj, dtype):
-#      return cnp.NPY_NOTYPE
-#     cdef int typeNum = dtype.type_num;
-#     return typeNum
 
 cdef class Timestep:
     """Timestep data for one frame
@@ -277,7 +232,8 @@ cdef class Timestep:
         self.frame = -1
         # init of _frame no longer optional
         self._frame = -1
-        #BUG  This is currently hardcoded to match MDA always casting to F32
+
+        # BUG  This is currently hardcoded to match MDA always casting to F32
         # meaning the DTYPE set in the args is not respected.
         # to fix remove hardcode with introspection of dtype following
         # discussion of appropriate casting rules
@@ -299,10 +255,10 @@ cdef class Timestep:
         # use temps so that we don't have to allocate a bunch of empty
         # arrays of large size, eg for vel and frc
         cdef cnp.npy_intp particle_dependent_dim_tmp[2]
-        particle_dependent_dim_tmp[0] = self.n_atoms
-        particle_dependent_dim_tmp[1] = 3
+        particle_dependent_dim_tmp[0] = 1
+        particle_dependent_dim_tmp[1] = 1
 
-        # these must be initialised, can we initialise small
+        # these must be initialised, we initialise small
         self._unitcell = cnp.PyArray_ZEROS(1, unitcell_dim_tmp, self._typenum, 0)
         self._pos = cnp.PyArray_EMPTY(2, particle_dependent_dim_tmp, self._typenum, 0)
         self._velocities = cnp.PyArray_EMPTY(2, particle_dependent_dim_tmp, self._typenum, 0)
@@ -499,14 +455,7 @@ cdef class Timestep:
                 self._pos = cnp.PyArray_Cast(cnp.PyArray_GETCONTIGUOUS(new_positions), self._typenum)
         else:
             self._pos[:] = new_positions
-
-        # self._pos[:] = new_positions
-        # self._pos = _ndarray_c_contig_from_buffer(new_positions, self._typenum, 2, 2, 2, self._particle_dependent_dim)
-        # self._pos = np.ascontiguousarray(new_positions, dtype=self._dtype)
-        # self._pos = new_positions
-        # self._pos = cnp.Copy
         
-
 
     @property
     def _x(self):
