@@ -182,7 +182,7 @@ cdef class Timestep:
         Timestep is now a Cython extension type.
         _frame is now a compulsory variable and is intialised to -1.
         A dtype for the Timestep can be specified with the `dtype` kwarg.
-        All arrays are now forced to be C contiguous using NumPy C API.
+        All arrays are now forced to be C contiguous using the NumPy C API.
     """
 
     order = 'C'
@@ -448,10 +448,10 @@ cdef class Timestep:
     @positions.setter
     def positions(self,  new_positions):
         self._has_positions = True
-        if cnp.PyArray_Check(new_positions):
-            if cnp.PyArray_TYPE(new_positions) == self._typenum:
+        if cnp.PyArray_Check(new_positions): # is it an array?
+            if cnp.PyArray_TYPE(new_positions) == self._typenum: # does it need casting
                 self._pos = cnp.PyArray_GETCONTIGUOUS(new_positions)
-            else:
+            else: 
                 self._pos = cnp.PyArray_Cast(cnp.PyArray_GETCONTIGUOUS(new_positions), self._typenum)
         else:
             self._pos[:] = new_positions
@@ -593,8 +593,8 @@ cdef class Timestep:
     @velocities.setter
     def velocities(self,  new_velocities):
         self._has_velocities = True
-        if cnp.PyArray_Check(new_velocities):
-            if cnp.PyArray_TYPE(new_velocities) == self._typenum:
+        if cnp.PyArray_Check(new_velocities): # is it an array?
+            if cnp.PyArray_TYPE(new_velocities) == self._typenum: # does it need casting
                 self._velocities = cnp.PyArray_GETCONTIGUOUS(new_velocities)
             else:
                 self._velocities = cnp.PyArray_Cast(cnp.PyArray_GETCONTIGUOUS(new_velocities), self._typenum)
@@ -629,8 +629,8 @@ cdef class Timestep:
     @forces.setter
     def forces(self,  new_forces):        
         self._has_forces = True
-        if cnp.PyArray_Check(new_forces):
-            if cnp.PyArray_TYPE(new_forces) == self._typenum:
+        if cnp.PyArray_Check(new_forces): # is it an array?
+            if cnp.PyArray_TYPE(new_forces) == self._typenum: # does it need casting
                 self._forces = cnp.PyArray_GETCONTIGUOUS(new_forces)
             else:
                 self._forces = cnp.PyArray_Cast(cnp.PyArray_GETCONTIGUOUS(new_forces), self._typenum)
