@@ -25,9 +25,7 @@ import numpy as np
 from numpy.testing import (assert_allclose, assert_equal)
 
 import MDAnalysis as mda
-from MDAnalysis.coordinates.INPCRD import INPReader
 from MDAnalysisTests.datafiles import (INPCRD, XYZ_five)
-from MDAnalysisTests.coordinates.base import BaseCopyTest
 
 
 class TestINPCRDReader(object):
@@ -45,6 +43,7 @@ class TestINPCRDReader(object):
             assert_allclose(ref, val)
 
     def test_reader(self):
+        from MDAnalysis.coordinates.INPCRD import INPReader
         r = INPReader(INPCRD)
         assert_equal(r.n_atoms, 5)
         self._check_ts(r.ts)
@@ -56,8 +55,3 @@ class TestINPCRDReader(object):
     def test_universe_restrt(self):
         u = mda.Universe(XYZ_five, INPCRD, format='RESTRT')
         self._check_ts(u.trajectory.ts)
-
-
-class TestINPCRDCopy(BaseCopyTest):
-    filename = INPCRD
-    reader_cls = INPReader
