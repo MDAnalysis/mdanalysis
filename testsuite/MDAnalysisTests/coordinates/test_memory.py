@@ -222,6 +222,8 @@ class TestMemoryReader(MultiframeReaderTest):
         assert new_reader.ts.data['time_offset'] == 10
         assert new_reader._kwargs['foo'] == 'bar'
         assert new_reader._kwargs['bar'] == 'foo'
+        assert_almost_equal(new_reader.velocity_array, reader.velocity_array)
+        assert new_reader.velocity_array is not reader.velocity_array
 
 
 class TestMemoryReaderVelsForces(object):

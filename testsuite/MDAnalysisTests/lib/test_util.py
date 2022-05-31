@@ -2131,9 +2131,9 @@ class StoredClass:
 
 class TestStoreInitArguments:
     def test_store_arguments_default(self):
-        store = StoredClass('parsnips', 'roast')
+        store = StoredClass('parsnips', ['roast'])
         assert store.a == store._kwargs['a'] == 'parsnips'
-        assert store.b == store._kwargs['b'] == 'roast'
+        assert store.b is store._kwargs['b'] == ['roast']
         assert store._kwargs['c'] == 'foo'
         assert store._kwargs['d'] == 'bar'
         assert store._kwargs['e'] == 'foobar'
@@ -2143,6 +2143,7 @@ class TestStoreInitArguments:
 
         store2 = store.copy()
         assert store2.__dict__ == store.__dict__
+        assert store2.__dict__["b"] is not store.__dict__["b"]
 
     def test_store_arguments_withkwargs(self):
         store = StoredClass('parsnips', 'roast', 'honey', 'glaze', c='richard', d='has',
