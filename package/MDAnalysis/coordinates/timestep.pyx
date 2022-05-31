@@ -256,8 +256,8 @@ cdef class Timestep:
         # use temps so that we don't have to allocate a bunch of empty
         # arrays of large size, eg for vel and frc
         cdef cnp.npy_intp particle_dependent_dim_tmp[2]
-        particle_dependent_dim_tmp[0] = 1
-        particle_dependent_dim_tmp[1] = 1
+        particle_dependent_dim_tmp[0] = 0
+        particle_dependent_dim_tmp[1] = 0
 
         # these must be initialised, we initialise small
         self._unitcell = cnp.PyArray_ZEROS(1, unitcell_dim_tmp, self._typenum, 0)
