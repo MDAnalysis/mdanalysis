@@ -22,7 +22,21 @@
 #
 #
 
-import cython 
+from ..lib.util import asiterable, Namespace
+from ..auxiliary.core import auxreader
+from ..auxiliary.base import AuxReader
+from .. import units
+from .. import (
+    _READERS, _READER_HINTS,
+    _SINGLEFRAME_WRITERS,
+    _MULTIFRAME_WRITERS,
+    _CONVERTERS
+)
+from .. import NoDataError
+from . import core
+from libcpp cimport bool
+from libc.stdint cimport int64_t, uint64_t
+import cython
 import weakref
 import warnings
 import copy
@@ -32,21 +46,6 @@ import numpy as np
 cimport numpy as cnp
 cnp.import_array()
 
-from libc.stdint cimport int64_t, uint64_t
-from libcpp cimport bool
-
-from . import core
-from .. import NoDataError
-from .. import (
-    _READERS, _READER_HINTS,
-    _SINGLEFRAME_WRITERS,
-    _MULTIFRAME_WRITERS,
-    _CONVERTERS
-)
-from .. import units
-from ..auxiliary.base import AuxReader
-from ..auxiliary.core import auxreader
-from ..lib.util import asiterable, Namespace
 
 """Timestep Class --- :mod:`MDAnalysis.coordinates.timestep`
 ============================================================
@@ -189,7 +188,7 @@ cdef class Timestep:
     cdef uint64_t _n_atoms
     cdef public int64_t  frame
     # no longer optional
-    cdef public int64_t  _frame  
+    cdef public int64_t  _frame
 
     # info for numpy C API
     cdef int _typenum
@@ -200,7 +199,7 @@ cdef class Timestep:
     cdef bool _has_forces
 
     # these have to be public for testing
-    cdef public cnp.ndarray _unitcell 
+    cdef public cnp.ndarray _unitcell
     cdef public cnp.ndarray _pos
     cdef public cnp.ndarray _velocities
     cdef public cnp.ndarray _forces
@@ -210,9 +209,6 @@ cdef class Timestep:
     cdef public dict data
     cdef public object  _reader
     cdef public object aux
-
-
-
 
     def __cinit__(self, uint64_t n_atoms, dtype=np.float32, **kwargs):
         """Initialise C++ level parameters of a Timestep
@@ -229,7 +225,7 @@ cdef class Timestep:
            Initialise C++ level parameters
         """
         # c++ level objects
-        self._n_atoms =  n_atoms
+        self._n_atoms = n_atoms
         self.frame = -1
         # init of _frame no longer optional
         self._frame = -1
@@ -260,10 +256,14 @@ cdef class Timestep:
         particle_dependent_dim_tmp[1] = 0
 
         # these must be initialised, we initialise small
-        self._unitcell = cnp.PyArray_ZEROS(1, unitcell_dim_tmp, self._typenum, 0)
-        self._pos = cnp.PyArray_EMPTY(2, particle_dependent_dim_tmp, self._typenum, 0)
-        self._velocities = cnp.PyArray_EMPTY(2, particle_dependent_dim_tmp, self._typenum, 0)
-        self._forces = cnp.PyArray_EMPTY(2, particle_dependent_dim_tmp, self._typenum, 0)
+        self._unitcell = cnp.PyArray_ZEROS(
+            1, unitcell_dim_tmp, self._typenum, 0)
+        self._pos = cnp.PyArray_EMPTY(
+            2, particle_dependent_dim_tmp, self._typenum, 0)
+        self._velocities = cnp.PyArray_EMPTY(
+            2, particle_dependent_dim_tmp, self._typenum, 0)
+        self._forces = cnp.PyArray_EMPTY(
+            2, particle_dependent_dim_tmp, self._typenum, 0)
 
     def __init__(self, uint64_t n_atoms, dtype=np.float32, **kwargs):
         """Create a Timestep, representing a frame of a trajectory
@@ -301,7 +301,7 @@ cdef class Timestep:
         if dtype not in (np.float32, np.float64):
             raise TypeError("dtype must be one of (np.float32, np.float64)")
         self._dtype = dtype
-        
+
         self.data = {}
 
         for att in ('dt', 'time_offset'):
@@ -322,11 +322,9 @@ cdef class Timestep:
 
         # set up aux namespace for adding auxiliary data
         self.aux = Namespace()
-        
-    
-    def __dealloc__(self):
-            pass
 
+    def __dealloc__(self):
+        pass
 
     @property
     def n_atoms(self):
@@ -351,7 +349,6 @@ cdef class Timestep:
         """
         return self._dtype
 
-
     @property
     def has_positions(self):
         """A boolean of whether this Timestep has position data
@@ -368,13 +365,13 @@ cdef class Timestep:
             # Setting this will always reallocate position data
             # ie
             # True -> False -> True will wipe data from first True state
-            self._pos = cnp.PyArray_ZEROS(2, self._particle_dependent_dim, self._typenum, 0)
+            self._pos = cnp.PyArray_ZEROS(
+                2, self._particle_dependent_dim, self._typenum, 0)
             self._has_positions = True
         elif not val:
             # Unsetting val won't delete the numpy array
             self._has_positions = False
 
-    
     @property
     def has_velocities(self):
         """A boolean of whether this Timestep has velocity data
@@ -391,12 +388,13 @@ cdef class Timestep:
             # Setting this will always reallocate velocity data
             # ie
             # True -> False -> True will wipe data from first True state
-            self._velocities = cnp.PyArray_ZEROS(2, self._particle_dependent_dim, self._typenum, 0)
+            self._velocities = cnp.PyArray_ZEROS(
+                2, self._particle_dependent_dim, self._typenum, 0)
             self._has_velocities = True
         elif not val:
             # Unsetting val won't delete the numpy array
             self._has_velocities = False
-    
+
     @property
     def has_forces(self):
         """A boolean of whether this Timestep has force data
@@ -413,12 +411,12 @@ cdef class Timestep:
             # Setting this will always reallocate force data
             # ie
             # True -> False -> True will wipe data from first True state
-            self._forces = cnp.PyArray_ZEROS(2, self._particle_dependent_dim, self._typenum, 0)
+            self._forces = cnp.PyArray_ZEROS(
+                2, self._particle_dependent_dim, self._typenum, 0)
             self._has_forces = True
         elif not val:
             # Unsetting val won't delete the numpy array
             self._has_forces = False
-
 
     @property
     def positions(self):
@@ -445,18 +443,17 @@ cdef class Timestep:
         else:
             raise NoDataError("This Timestep has no position information")
 
- 
     @positions.setter
     def positions(self,  new_positions):
         self._has_positions = True
-        if cnp.PyArray_Check(new_positions): # is it an array?
-            if cnp.PyArray_TYPE(new_positions) == self._typenum: # does it need casting
+        if cnp.PyArray_Check(new_positions):  # is it an array?
+            if cnp.PyArray_TYPE(new_positions) == self._typenum:  # does it need casting
                 self._pos = cnp.PyArray_GETCONTIGUOUS(new_positions)
-            else: 
-                self._pos = cnp.PyArray_Cast(cnp.PyArray_GETCONTIGUOUS(new_positions), self._typenum)
+            else:
+                self._pos = cnp.PyArray_Cast(
+                    cnp.PyArray_GETCONTIGUOUS(new_positions), self._typenum)
         else:
             self._pos[:] = new_positions
-        
 
     @property
     def _x(self):
@@ -503,7 +500,7 @@ cdef class Timestep:
             self._unitcell[:] = 0
         else:
             self._unitcell[:] = new_dimensions
-    
+
     @property
     def volume(self):
         """volume of the unitcell"""
@@ -589,16 +586,15 @@ cdef class Timestep:
         else:
             raise NoDataError("This Timestep has no velocities information")
 
-
- 
     @velocities.setter
     def velocities(self,  new_velocities):
         self._has_velocities = True
-        if cnp.PyArray_Check(new_velocities): # is it an array?
-            if cnp.PyArray_TYPE(new_velocities) == self._typenum: # does it need casting
+        if cnp.PyArray_Check(new_velocities):  # is it an array?
+            if cnp.PyArray_TYPE(new_velocities) == self._typenum:  # does it need casting
                 self._velocities = cnp.PyArray_GETCONTIGUOUS(new_velocities)
             else:
-                self._velocities = cnp.PyArray_Cast(cnp.PyArray_GETCONTIGUOUS(new_velocities), self._typenum)
+                self._velocities = cnp.PyArray_Cast(
+                    cnp.PyArray_GETCONTIGUOUS(new_velocities), self._typenum)
         else:
             self._velocities[:] = new_velocities
 
@@ -621,24 +617,21 @@ cdef class Timestep:
         .. versionadded:: 0.11.0
         """
         if self._has_forces:
-          return self._forces
+            return self._forces
         else:
             raise NoDataError("This Timestep has no force information")
 
-
- 
     @forces.setter
-    def forces(self,  new_forces):        
+    def forces(self,  new_forces):
         self._has_forces = True
-        if cnp.PyArray_Check(new_forces): # is it an array?
-            if cnp.PyArray_TYPE(new_forces) == self._typenum: # does it need casting
+        if cnp.PyArray_Check(new_forces):  # is it an array?
+            if cnp.PyArray_TYPE(new_forces) == self._typenum:  # does it need casting
                 self._forces = cnp.PyArray_GETCONTIGUOUS(new_forces)
             else:
-                self._forces = cnp.PyArray_Cast(cnp.PyArray_GETCONTIGUOUS(new_forces), self._typenum)
+                self._forces = cnp.PyArray_Cast(
+                    cnp.PyArray_GETCONTIGUOUS(new_forces), self._typenum)
         else:
             self._forces[:] = new_forces
-
-
 
     @classmethod
     def from_timestep(cls, Timestep other, **kwargs):
@@ -652,7 +645,7 @@ cdef class Timestep:
                  forces=other.has_forces,
                  **kwargs)
         ts.frame = other.frame
-        if  other.dimensions is not None:
+        if other.dimensions is not None:
             ts.dimensions = other.dimensions.copy(order=cls.order)
         try:
             ts.positions = other.positions.copy(order=cls.order)
@@ -677,9 +670,9 @@ cdef class Timestep:
 
         try:
             other._reader = weakref.ref(ts._reader())
-        except TypeError: # TypeError from calling None weakref
+        except TypeError:  # TypeError from calling None weakref
             pass
-            
+
         ts.data = copy.deepcopy(other.data)
 
         return ts
@@ -722,7 +715,6 @@ cdef class Timestep:
             ts.forces = forces
 
         return ts
-
 
     def __eq__(self, other):
         """Compare with another Timestep
@@ -833,50 +825,50 @@ cdef class Timestep:
            class attribute and we use a non-trivial `__cinit__`. This means
            that cython cannot automatically  generate an `__reduce__` method
            for us.
-        
+
         .. versionadded:: 2.2.0
         """
         state = {
-            "frame" : self.frame,
-            "_n_atoms" : self._n_atoms,
-            "_frame" : self._frame, 
-            "_has_positions" : self._has_positions,
-            "_has_velocities" : self._has_velocities,
-            "_has_forces" : self._has_forces,
+            "frame": self.frame,
+            "_n_atoms": self._n_atoms,
+            "_frame": self._frame,
+            "_has_positions": self._has_positions,
+            "_has_velocities": self._has_velocities,
+            "_has_forces": self._has_forces,
 
-            "_unitcell"  : self._unitcell,
-            "_pos" : self._pos,
-            "_velocities" : self._velocities,
-            "_forces" : self._forces,
+            "_unitcell": self._unitcell,
+            "_pos": self._pos,
+            "_velocities": self._velocities,
+            "_forces": self._forces,
 
-            "_dtype" : self._dtype,
-            "data" : self.data,
-            "aux" : self.aux,
-            "dt" : self.dt
+            "_dtype": self._dtype,
+            "data": self.data,
+            "aux": self.aux,
+            "dt": self.dt
         }
         return state
-    
+
     def __getnewargs_ex__(self):
         """Specify arguments to use in `__cinit__` and `__init__` to use in
            unpickling of timestep instance
-        
+
         .. versionchanged:: 2.2.0
            removed implementations that use `__dict__` class attribute
 
         """
-        return (self.n_atoms,),{"dtype":self.dtype}
+        return (self.n_atoms,), {"dtype": self.dtype}
 
     def __setstate__(self, state):
         """Restore class from `state` dictionary in unpickling of Timestep
            instance
-        
+
         .. versionchanged:: 2.2.0
            removed implementations that use `__dict__` class attribute
 
         """
         self.frame = state["frame"]
         self._n_atoms = state["_n_atoms"]
-        self._frame = state["_frame"] 
+        self._frame = state["_frame"]
         self.has_positions = state["_has_positions"]
         self._has_velocities = state["_has_velocities"]
         self._has_forces = state["_has_forces"]
@@ -884,7 +876,7 @@ cdef class Timestep:
         self._pos = state["_pos"]
         self._velocities = state["_velocities"]
         self._forces = state["_forces"]
-        self._dtype = state["_dtype"] 
+        self._dtype = state["_dtype"]
         self.data = state["data"]
         self.aux = state["aux"]
 
@@ -969,13 +961,11 @@ cdef class Timestep:
 
         try:
             new_TS._reader = weakref.ref(self._reader())
-        except TypeError: # TypeError from calling None weakref
+        except TypeError:  # TypeError from calling None weakref
             pass
         new_TS.data = copy.deepcopy(self.data)
 
         return new_TS
-
-
 
     @property
     def dt(self):
@@ -999,10 +989,10 @@ cdef class Timestep:
         # AttributeError from ._get_dt()
         except (TypeError, AttributeError):
             pass
-        
+
         warnings.warn("Reader has no dt information, set to 1.0 ps")
         return 1.0
-    
+
     @dt.setter
     def dt(self, new):
         self.data['dt'] = new
@@ -1038,4 +1028,3 @@ cdef class Timestep:
     @time.deleter
     def time(self):
         del self.data['time']
-    
