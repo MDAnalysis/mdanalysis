@@ -22,6 +22,8 @@
 #
 #
 
+# cython: embedsignature=True
+
 from ..lib.util import asiterable, Namespace
 from ..auxiliary.core import auxreader
 from ..auxiliary.base import AuxReader
@@ -46,6 +48,8 @@ import numpy as np
 cimport numpy as cnp
 cnp.import_array()
 
+
+__all__ = ['Timestep']
 
 """Timestep Class --- :mod:`MDAnalysis.coordinates.timestep`
 ============================================================
