@@ -221,7 +221,7 @@ cdef class Timestep:
         ----------
         n_atoms : uint64
           The total number of atoms this Timestep describes
-        dtype: numpy_dtype, optional
+        dtype : `numpy_dtype`, optional
           The NumPy dtype of the arrays in this timestep
 
 
@@ -267,7 +267,7 @@ cdef class Timestep:
 
     def __init__(self, uint64_t n_atoms, dtype=np.float32, **kwargs):
         """Create a Timestep, representing a frame of a trajectory
-        
+
         Parameters
         ----------
         n_atoms : uint64
