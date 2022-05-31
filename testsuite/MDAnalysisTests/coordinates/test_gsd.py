@@ -28,7 +28,6 @@ from numpy.testing import assert_almost_equal
 import MDAnalysis as mda
 from MDAnalysis.coordinates.GSD import GSDReader
 from MDAnalysisTests.datafiles import GSD
-from MDAnalysisTests.coordinates.base import BaseCopyTest
 
 
 @pytest.fixture
@@ -60,9 +59,3 @@ def test_gsd_dimensions(GSD_U):
 def test_gsd_data_step(GSD_U):
     assert GSD_U.trajectory[0].data['step'] == 0
     assert GSD_U.trajectory[1].data['step'] == 500
-
-
-class TestGSDCopy(BaseCopyTest):
-    # Check that the GSD reader can be copied
-    filename = GSD
-    reader_cls = GSDReader

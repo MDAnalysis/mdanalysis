@@ -26,7 +26,6 @@ import pytest
 
 from numpy.testing import (assert_equal, assert_allclose)
 
-from MDAnalysisTests.coordinates.base import BaseCopyTest
 from MDAnalysisTests.datafiles import (DLP_CONFIG, DLP_CONFIG_minimal,
                                        DLP_CONFIG_order, DLP_HISTORY,
                                        DLP_HISTORY_minimal, DLP_HISTORY_order,
@@ -223,15 +222,3 @@ class TestDLPolyHistoryMinimalCell(_DLHistory):
     def test_force(self, u):
         with pytest.raises(mda.NoDataError):
             getattr(u.atoms[0], 'force')
-
-
-class TestHistoryReaderCopy(BaseCopyTest):
-    # Test to check Reader copying works
-    filename = DLP_HISTORY
-    reader_cls = mda.coordinates.DLPoly.HistoryReader
-
-
-class TestConfigReaderCopy(BaseCopyTest):
-    # Test to check Reader copying works
-    filename = DLP_CONFIG
-    reader_cls = mda.coordinates.DLPoly.ConfigReader

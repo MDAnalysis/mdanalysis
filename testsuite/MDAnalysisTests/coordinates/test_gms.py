@@ -28,7 +28,6 @@ from numpy.testing import (assert_equal, assert_almost_equal)
 import MDAnalysis as mda
 from MDAnalysis.coordinates.GMS import GMSReader
 from MDAnalysisTests.datafiles import (GMS_ASYMOPT, GMS_ASYMSURF, GMS_SYMOPT)
-from MDAnalysisTests.coordinates.base import BaseCopyTest
 
 
 class _GMSBase(object):
@@ -108,9 +107,3 @@ class TestGMSReaderASS(_GMSBase):
     flavour = "GAMESS C1 surface"
     step5d = -0.499996
     filename = GMS_ASYMSURF
-
-
-class TestGMSCopyTest(BaseCopyTest):
-    # Check that copying a GMS reader works
-    filename = GMS_ASYMOPT
-    reader_cls = GMSReader

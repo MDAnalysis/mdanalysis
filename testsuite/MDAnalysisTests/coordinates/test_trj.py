@@ -31,7 +31,6 @@ from numpy.testing import (
 import MDAnalysis as mda
 from MDAnalysis.coordinates.TRJ import TRJReader
 from MDAnalysisTests.coordinates.reference import RefACHE, RefCappedAla
-from MDAnalysisTests.coordinates.base import BaseCopyTest
 from MDAnalysisTests.datafiles import (PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2)
 
 
@@ -138,9 +137,3 @@ class TestBzippedTRJReaderPBC(_TRJReaderTest, RefCappedAla):
 def test_trj_no_natoms():
     with pytest.raises(ValueError):
         mda.coordinates.TRJ.TRJReader('somefile.txt')
-
-
-class TestTRJCopy(BaseCopyTest):
-    # Test to check if we can copy a TRJ reader
-    filename = TRJ
-    reader_cls = TRJReader

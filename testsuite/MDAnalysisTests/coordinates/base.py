@@ -127,29 +127,6 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
         assert_equal(reader.ts, reader_p.ts,
                      "Single-frame timestep is changed after pickling")
 
-    def test_copy_reader(self):
-        new_u = mda.Universe(self.filename, convert_units=False, dt=2,
-                             time_offset=10, foo="bar")
-        reader = new_u.trajectory
-
-        # test that variables have been allocated properly
-        assert reader.convert_units is False
-        assert reader._ts_kwargs['dt'] == 2
-        assert reader._ts_kwargs['time_offset'] == 10
-
-        # copy the reader and check that variables are the same
-        new_reader = reader.copy()
-
-        assert new_reader.convert_units is False
-        assert new_reader._ts_kwargs['dt'] == 2
-        assert new_reader._ts_kwargs['time_offset'] == 10
-        assert new_reader._kwargs['foo'] == 'bar'
-        assert new_reader.filename == reader.filename
-        # n_atoms gets updated by the reader but here we check
-        # things got passed properly
-        assert new_reader.n_atoms == new_reader._kwargs['n_atoms']
-        assert new_reader.n_atoms == reader.n_atoms
-
 
 class BaseReference(object):
     def __init__(self):
@@ -468,26 +445,6 @@ class BaseReaderTest(object):
         assert_equal(reader.ts, reader_p.ts,
                      "Timestep is changed after pickling")
 
-    def test_copy(self, ref):
-        reader = ref.reader(ref.trajectory, convert_units=False, dt=2,
-                            time_offset=10, foo="bar")
-
-        # test that variables have been allocated properly
-        assert reader.convert_units is False
-        assert reader._ts_kwargs['dt'] == 2
-        assert reader._ts_kwargs['time_offset'] == 10
-
-        # copy the reader and check that variables are the same
-        new_reader = reader.copy()
-
-        assert new_reader.convert_units is False
-        assert new_reader._ts_kwargs['dt'] == 2
-        assert new_reader._ts_kwargs['time_offset'] == 10
-        assert new_reader._kwargs['foo'] == 'bar'
-        assert new_reader.filename == reader.filename
-        # n_atoms does not get passed, but check that it's the same anyways
-        assert new_reader.n_atoms == reader.n_atoms
-
 
 class MultiframeReaderTest(BaseReaderTest):
     def test_last_frame(self, ref, reader):
@@ -754,32 +711,3 @@ def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):
     if len(A.aux) > 0 and len(B.aux) > 0:
         assert_equal(A.aux, B.aux, err_msg='Auxiliary values do not match: '
                                   'A.aux = {}, B.aux = {}'.format(A.aux, B.aux))
-
-
-class BaseCopyTest:
-    """
-    A simple class to inherit from for all the reader tests that don't
-    currently use the base classes for testing.
-
-    Requires self.reader_cls and self.filename to be set.
-    """
-    def test_copy(self):
-        reader = self.reader_cls(self.filename, convert_units=False, dt=2,
-                                 time_offset=10, foo="bar")
-        # test that variables have been allocated properly
-        assert reader.convert_units == False
-        assert reader._ts_kwargs['dt'] == reader.ts.data['dt'] == 2
-        assert reader._ts_kwargs['time_offset'] == 10
-        assert reader.ts.data['time_offset'] == 10
-
-        # copy the reader and check that variables are the same
-        new_reader = reader.copy()
-
-        assert new_reader.convert_units == False
-        assert new_reader._ts_kwargs['dt'] == new_reader.ts.data['dt'] == 2
-        assert new_reader._ts_kwargs['time_offset'] == 10
-        assert new_reader.ts.data['time_offset'] == 10
-        assert new_reader._kwargs['foo'] == 'bar'
-        assert new_reader.filename == reader.filename
-        # n_atoms does not get passed, but check that it's the same anyways
-        assert new_reader.n_atoms == reader.n_atoms
