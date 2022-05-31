@@ -33,7 +33,9 @@ from MDAnalysisTests.datafiles import (
     mol2_molecules, mol2_molecule, mol2_broken_molecule,
     mol2_zinc, mol2_comments_header, mol2_ligand, mol2_sodium_ion
 )
+from MDAnalysisTests.coordinates.base import BaseCopyTest
 from MDAnalysis import Universe
+from MDAnalysis.coordinates.MOL2 import MOL2Reader
 import MDAnalysis as mda
 from MDAnalysisTests import make_Universe
 
@@ -216,3 +218,8 @@ def test_mol2_universe_write(tmpdir):
         assert_almost_equal(u.atoms.positions, u2.atoms.positions)
         # MDA does not current implement @<TRIPOS>CRYSIN reading
         assert u2.dimensions is None
+
+
+class TestCopy(BaseCopyTest):
+    filename = mol2_molecules
+    reader_cls = MOL2Reader

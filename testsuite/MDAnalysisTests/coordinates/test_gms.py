@@ -28,6 +28,7 @@ from numpy.testing import (assert_equal, assert_almost_equal)
 import MDAnalysis as mda
 from MDAnalysis.coordinates.GMS import GMSReader
 from MDAnalysisTests.datafiles import (GMS_ASYMOPT, GMS_ASYMSURF, GMS_SYMOPT)
+from MDAnalysisTests.coordinates.base import BaseCopyTest
 
 
 class _GMSBase(object):
@@ -87,28 +88,6 @@ class _GMSBase(object):
                             err_msg="Wrong 1-4 atom distance change after "
                                     "5 steps for {}".format(self.flavour))
 
-    def test_copy(self):
-        reader = GMSReader(self.filename, convert_units=False, dt=2,
-                           time_offset=10, foo="bar")
-
-        # test that variables have been allocated properly
-        assert reader.convert_units is False
-        assert reader._ts_kwargs['dt'] == reader.ts.data['dt'] == 2
-        assert reader._ts_kwargs['time_offset'] == 10
-        assert reader.ts.data['time_offset'] == 10
-
-        # copy the reader and check that variables are the same
-        new_reader = reader.copy()
-
-        assert new_reader.convert_units is False
-        assert new_reader._ts_kwargs['dt'] == new_reader.ts.data['dt'] == 2
-        assert new_reader._ts_kwargs['time_offset'] == 10
-        assert new_reader.ts.data['time_offset'] == 10
-        assert new_reader._kwargs['foo'] == 'bar'
-        assert new_reader.filename == self.filename
-        # n_atoms does not get passed, but check that it's the same anyways
-        assert new_reader.n_atoms == reader.n_atoms
-
 
 class TestGMSReader(_GMSBase):
     n_frames = 21
@@ -129,3 +108,9 @@ class TestGMSReaderASS(_GMSBase):
     flavour = "GAMESS C1 surface"
     step5d = -0.499996
     filename = GMS_ASYMSURF
+
+
+class TestGMSCopyTest(BaseCopyTest):
+    # Check that copying a GMS reader works
+    filename = GMS_ASYMOPT
+    reader_cls = GMSReader

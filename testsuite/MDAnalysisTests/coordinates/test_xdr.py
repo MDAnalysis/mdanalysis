@@ -213,6 +213,33 @@ class _GromacsReader(object):
         with pytest.raises(StopIteration):
             go_beyond_EOF()
 
+    def test_copy(self, universe):
+        reader_cls = universe.trajectory.__class__
+        reader = reader_cls(self.filename, convert_units=False, dt=2,
+                            time_offset=10, foo="bar")
+
+        # test that variables have been allocated properly
+        assert reader.convert_units is False
+        # dt is not kept in timestep if it can be obtained from
+        # time difference
+        assert reader._ts_kwargs['dt'] == 2
+        assert reader.ts.data['dt'] != 2
+        assert reader._ts_kwargs['time_offset'] == 10
+        assert reader.ts.data['time_offset'] == 10
+
+        # copy the reader and check that variables are the same
+        new_reader = reader.copy()
+
+        assert new_reader.convert_units is False
+        assert new_reader._ts_kwargs['dt'] == 2
+        assert new_reader.ts.data['dt'] == reader.ts.data['dt']
+        assert new_reader._ts_kwargs['time_offset'] == 10
+        assert new_reader.ts.data['time_offset'] == 10
+        assert new_reader._kwargs['foo'] == 'bar'
+        assert new_reader.filename == reader.filename
+        # n_atoms does not get passed, but check that it's the same anyways
+        assert new_reader.n_atoms == reader.n_atoms
+
 
 class TestXTCReader(_GromacsReader):
     filename = XTC

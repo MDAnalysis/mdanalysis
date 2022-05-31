@@ -28,6 +28,7 @@ from numpy.testing import assert_almost_equal
 import MDAnalysis as mda
 from MDAnalysis.coordinates.GSD import GSDReader
 from MDAnalysisTests.datafiles import GSD
+from MDAnalysisTests.coordinates.base import BaseCopyTest
 
 
 @pytest.fixture
@@ -61,24 +62,7 @@ def test_gsd_data_step(GSD_U):
     assert GSD_U.trajectory[1].data['step'] == 500
 
 
-def test_copy():
-    reader = GSDReader(GSD, convert_units=False, dt=2,
-                       time_offset=10, foo="bar")
-
-    # test that variables have been allocated properly
-    assert reader.convert_units is False
-    assert reader._ts_kwargs['dt'] == reader.ts.data['dt'] == 2
-    assert reader._ts_kwargs['time_offset'] == 10
-    assert reader.ts.data['time_offset'] == 10
-
-    # copy the reader and check that variables are the same
-    new_reader = reader.copy()
-
-    assert new_reader.convert_units is False
-    assert new_reader._ts_kwargs['dt'] == new_reader.ts.data['dt'] == 2
-    assert new_reader._ts_kwargs['time_offset'] == 10
-    assert new_reader.ts.data['time_offset'] == 10
-    assert new_reader._kwargs['foo'] == 'bar'
-    assert new_reader.filename == reader.filename
-    # n_atoms does not get passed, but check that it's the same anyways
-    assert new_reader.n_atoms == reader.n_atoms
+class TestGSDCopy(BaseCopyTest):
+    # Check that the GSD reader can be copied
+    filename = GSD
+    reader_cls = GSDReader
