@@ -34,7 +34,7 @@ from . import base
 from .base import Timestep
 from . import core
 from ..lib import util
-from ..lib.util import cached
+from ..lib.util import cached, store_init_arguments
 
 _DLPOLY_UNITS = {'length': 'Angstrom', 'velocity': 'Angstrom/ps', 'time': 'ps'}
 
@@ -137,6 +137,7 @@ class HistoryReader(base.ReaderBase):
     format = 'HISTORY'
     units = _DLPOLY_UNITS
 
+    @store_init_arguments
     def __init__(self, filename, **kwargs):
         super(HistoryReader, self).__init__(filename, **kwargs)
         self._cache = {}

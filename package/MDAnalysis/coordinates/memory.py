@@ -188,6 +188,7 @@ import logging
 import errno
 import numpy as np
 import warnings
+import copy
 
 from . import base
 from .base import Timestep
@@ -302,11 +303,15 @@ class MemoryReader(base.ProtoReader):
         .. versionchanged:: 0.19.0
             The input to the MemoryReader now must be a np.ndarray
             Added optional velocities and forces
+        .. versionchanged:: 2.2.0
+            Input kwargs are now stored under the `_kwargs` attribute, and
+            are passed on class creation in :meth:`copy`.
         """
 
         super(MemoryReader, self).__init__()
         self.filename = filename
         self.stored_order = order
+        self._kwargs = kwargs
 
         # See Issue #1685. The block below checks if the coordinate array
         # passed is of shape (N, 3) and if it is, the coordiante array is
@@ -444,6 +449,7 @@ class MemoryReader(base.ProtoReader):
             forces=fors,
             dt=self.ts.dt,
             filename=self.filename,
+            **self._kwargs
         )
         new[self.ts.frame]
 

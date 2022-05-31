@@ -125,6 +125,7 @@ import numpy as np
 
 from . import base
 from ..lib import util
+from MDAnalysis.lib.util import store_init_arguments
 
 
 class MOL2Reader(base.ReaderBase):
@@ -145,6 +146,7 @@ class MOL2Reader(base.ReaderBase):
     format = 'MOL2'
     units = {'time': None, 'length': 'Angstrom'}
 
+    @store_init_arguments
     def __init__(self, filename, **kwargs):
         """Read coordinates from `filename`.
 

@@ -197,6 +197,32 @@ class TestMemoryReader(MultiframeReaderTest):
         reader[0]
         assert_almost_equal(reader.ts.positions, new_positions)
 
+    def test_copy(self, ref):
+        """
+        Can't pass kwargs via Universe.transfer_to_memory, so for now
+        we'll just use a custom MemoryReader like we do in
+        TestMemoryReaderVelsForces
+
+        Notes
+        -----
+        * Objective here is just to check that _kwargs is populated properly
+          and that it's passed on copy. The rest of the copy checks are already
+          done later in the tests.
+        """
+        pos = np.arange(30).reshape(1, 10, 3)
+        vels = np.arange(30).reshape(1, 10, 3) + 100
+        reader = MemoryReader(pos, velocities=vels, time_offset=10,
+                              foo='bar', bar='foo')
+        assert reader.ts.data['time_offset'] == 10
+        assert reader._kwargs['foo'] == 'bar'
+        assert reader._kwargs['bar'] == 'foo'
+
+        new_reader = reader.copy()
+
+        assert new_reader.ts.data['time_offset'] == 10
+        assert new_reader._kwargs['foo'] == 'bar'
+        assert new_reader._kwargs['bar'] == 'foo'
+
 
 class TestMemoryReaderVelsForces(object):
     @staticmethod
