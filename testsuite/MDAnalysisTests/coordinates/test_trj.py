@@ -20,7 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-import MDAnalysis as mda
 import numpy as np
 import pytest
 
@@ -29,6 +28,8 @@ from numpy.testing import (
     assert_almost_equal
 )
 
+import MDAnalysis as mda
+from MDAnalysis.coordinates.TRJ import TRJReader
 from MDAnalysisTests.coordinates.reference import RefACHE, RefCappedAla
 from MDAnalysisTests.datafiles import (PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2)
 
@@ -106,6 +107,27 @@ class _TRJReaderTest(object):
         universe.trajectory[2]
 
         assert_equal(universe.atoms[0].position, pos3)
+
+    def test_copy(self):
+        reader = TRJReader(self.trajectory_file, n_atoms=self.ref_n_atoms, 
+                           convert_units=False, dt=2,
+                           time_offset=10, foo="bar")
+        # test that variables have been allocated properly
+        assert reader.convert_units == False
+        assert reader._ts_kwargs['dt'] == reader.ts.data['dt'] == 2
+        assert reader._ts_kwargs['time_offset'] == 10
+        assert reader.ts.data['time_offset'] == 10
+
+        # copy the reader and check that variables are the same
+        new_reader = reader.copy()
+
+        assert new_reader.convert_units == False
+        assert new_reader._ts_kwargs['dt'] == new_reader.ts.data['dt'] == 2
+        assert new_reader._ts_kwargs['time_offset'] == 10
+        assert new_reader.ts.data['time_offset'] == 10
+        assert new_reader._kwargs['foo'] == 'bar'
+        assert new_reader.filename == reader.filename
+        assert new_reader.n_atoms == reader.n_atoms == self.ref_n_atoms
 
 
 class TestTRJReader(_TRJReaderTest, RefACHE):

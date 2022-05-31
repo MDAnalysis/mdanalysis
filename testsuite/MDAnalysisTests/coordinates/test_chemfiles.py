@@ -132,6 +132,11 @@ class TestChemfiles(object):
         for ts in u.trajectory:
             assert ts.n_atoms == 18364
 
+        # check that chemfiles format is passed to copies Issue #3664
+        new_reader = u.trajectory.copy()
+        assert new_reader._format == "LAMMPS Data"
+        assert new_reader._kwargs['chemfiles_format'] == "LAMMPS Data"
+
     def test_changing_system_size(self, tmpdir):
         outfile = "chemfiles-changing-size.xyz"
         with tmpdir.as_cwd():

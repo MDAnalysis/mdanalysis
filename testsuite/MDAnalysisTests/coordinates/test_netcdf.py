@@ -90,6 +90,29 @@ class _NCDFReaderTest(_TRJReaderTest):
         # default is None
         assert universe.trajectory._mmap == None
 
+    def test_copy(self):
+        reader = NCDFReader(self.filename, n_atoms=self.ref_n_atoms,
+                            mmap=False, convert_units=False, dt=2,
+                            time_offset=10, foo="bar")
+        # test that variables have been allocated properly
+        assert reader.convert_units is False
+        assert reader._mmap is False
+        assert reader._ts_kwargs['dt'] == reader.ts.data['dt'] == 2
+        assert reader._ts_kwargs['time_offset'] == 10
+        assert reader.ts.data['time_offset'] == 10
+
+        # copy the reader and check that variables are the same
+        new_reader = reader.copy()
+
+        assert new_reader.convert_units is False
+        assert new_reader._mmap is False
+        assert new_reader._ts_kwargs['dt'] == new_reader.ts.data['dt'] == 2
+        assert new_reader._ts_kwargs['time_offset'] == 10
+        assert new_reader.ts.data['time_offset'] == 10
+        assert new_reader._kwargs['foo'] == 'bar'
+        assert new_reader.filename == reader.filename
+        assert new_reader.n_atoms == reader.n_atoms == self.ref_n_atoms
+
 
 # Ugly way to create the tests for mmap
 
