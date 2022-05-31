@@ -59,6 +59,10 @@ Fixes
 
 Enhancements
   * Added `frames` argument to AnalysisBase.run to allow analysis to run on
+  * Added equations for `center_of_mass` and `center_of_geometry`to
+    documentation (PR #3671)
+  * Added `center_of_charge` attribute (PR #3671)
+  * Added `frames` argument to AnalysisBase.run to allow analysis to run on 
     arbitrary list of frames (Issue #1985)
   * LinearDensity now works with updating AtomGroups (Issue #2508, PR #3617)
   * Link PMDA in documentation (PR #3652)
