@@ -27,7 +27,7 @@ from MDAnalysis.analysis.rdf import InterRDF
 
 from MDAnalysisTests.datafiles import two_water_gro
 
-from numpy.testing import  assert_allclose
+from numpy.testing import assert_allclose
 
 
 @pytest.fixture()
@@ -101,6 +101,7 @@ def test_rdf_attr_warning(sels, attr):
     wmsg = f"The `{attr}` attribute was deprecated in MDAnalysis 2.0.0"
     with pytest.warns(DeprecationWarning, match=wmsg):
         getattr(rdf, attr) is rdf.results[attr]
+
 
 @pytest.mark.parametrize("norm, value", [
     ("density", 1.956823),
