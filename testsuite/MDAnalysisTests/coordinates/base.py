@@ -470,7 +470,7 @@ class BaseReaderTest(object):
 
     def test_copy(self, ref):
         reader = ref.reader(ref.trajectory, convert_units=False, dt=2,
-                             time_offset=10, foo="bar")
+                            time_offset=10, foo="bar")
 
         # test that variables have been allocated properly
         assert reader.convert_units == False

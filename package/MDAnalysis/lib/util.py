@@ -2432,8 +2432,8 @@ def store_init_arguments(func):
     * Only does a shallow copy, if the arguments are changed
       by the class after passing through the decorator this will be
       reflected in the stored arguments.
-    * If not empty, ``*args`` is not unpacked and stored as-is in the
-      dictionary. If no *args are passed, then no ``arg`` entry will be
+    * If not empty, ``args`` is not unpacked and stored as-is in the
+      dictionary. If no ``args`` are passed, then no ``arg`` entry will be
       stored in the dictionary.
 
 
