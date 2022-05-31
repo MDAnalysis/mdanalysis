@@ -92,7 +92,7 @@ class _GMSBase(object):
                            time_offset=10, foo="bar")
 
         # test that variables have been allocated properly
-        assert reader.convert_units == False
+        assert reader.convert_units is False
         assert reader._ts_kwargs['dt'] == reader.ts.data['dt'] == 2
         assert reader._ts_kwargs['time_offset'] == 10
         assert reader.ts.data['time_offset'] == 10
@@ -100,7 +100,7 @@ class _GMSBase(object):
         # copy the reader and check that variables are the same
         new_reader = reader.copy()
 
-        assert new_reader.convert_units == False
+        assert new_reader.convert_units is False
         assert new_reader._ts_kwargs['dt'] == new_reader.ts.data['dt'] == 2
         assert new_reader._ts_kwargs['time_offset'] == 10
         assert new_reader.ts.data['time_offset'] == 10

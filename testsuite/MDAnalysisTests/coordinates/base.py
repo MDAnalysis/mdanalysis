@@ -133,14 +133,14 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
         reader = new_u.trajectory
 
         # test that variables have been allocated properly
-        assert reader.convert_units == False
+        assert reader.convert_units is False
         assert reader._ts_kwargs['dt'] == 2
         assert reader._ts_kwargs['time_offset'] == 10
 
         # copy the reader and check that variables are the same
         new_reader = reader.copy()
 
-        assert new_reader.convert_units == False
+        assert new_reader.convert_units is False
         assert new_reader._ts_kwargs['dt'] == 2
         assert new_reader._ts_kwargs['time_offset'] == 10
         assert new_reader._kwargs['foo'] == 'bar'
@@ -473,14 +473,14 @@ class BaseReaderTest(object):
                             time_offset=10, foo="bar")
 
         # test that variables have been allocated properly
-        assert reader.convert_units == False
+        assert reader.convert_units is False
         assert reader._ts_kwargs['dt'] == 2
         assert reader._ts_kwargs['time_offset'] == 10
 
         # copy the reader and check that variables are the same
         new_reader = reader.copy()
 
-        assert new_reader.convert_units == False
+        assert new_reader.convert_units is False
         assert new_reader._ts_kwargs['dt'] == 2
         assert new_reader._ts_kwargs['time_offset'] == 10
         assert new_reader._kwargs['foo'] == 'bar'

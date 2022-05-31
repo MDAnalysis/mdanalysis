@@ -2146,8 +2146,8 @@ class TestStoreInitArguments:
         assert store2.__dict__["b"] is not store.__dict__["b"]
 
     def test_store_arguments_withkwargs(self):
-        store = StoredClass('parsnips', 'roast', 'honey', 'glaze', c='richard', d='has',
-                            e='a', f='recipe', g='allegedly')
+        store = StoredClass('parsnips', 'roast', 'honey', 'glaze', c='richard',
+                            d='has', e='a', f='recipe', g='allegedly')
         assert store.a == store._kwargs['a'] == "parsnips"
         assert store.b == store._kwargs['b'] == "roast"
         assert store.c == store._kwargs['c'] == "richard"
