@@ -48,9 +48,8 @@ from ..auxiliary.base import AuxReader
 from ..auxiliary.core import auxreader
 from ..lib.util import asiterable, Namespace
 
-"""\
-Timestep Class --- :mod:`MDAnalysis.coordinates.timestep`
-=========================================================
+"""Timestep Class --- :mod:`MDAnalysis.coordinates.timestep`
+============================================================
 
 Derive other Timestep, classes from the classes in this module.
 The derived classes must follow the :ref:`Trajectory API`.
@@ -64,7 +63,6 @@ MDAnalysis.
 
 .. class:: Timestep
 
-   .. automethodd:: __cinit__
    .. automethod:: __init__
    .. automethod:: from_coordinates
    .. automethod:: from_timestep
@@ -77,7 +75,8 @@ MDAnalysis.
          Frames now 0-based; was 1-based
 
    .. attribute::`_frame`
-       frame counter used optionally by some readers (0 based)
+      
+      frame counter used optionally by some readers (0 based)
 
       .. versionchanged:: 2.2.0
          No longer optional and initialised to -1 
@@ -217,13 +216,15 @@ cdef class Timestep:
 
     def __cinit__(self, uint64_t n_atoms, dtype=np.float32, **kwargs):
         """Initialise C++ level parameters of a Timestep
+
         Parameters
         ----------
         n_atoms : uint64
           The total number of atoms this Timestep describes
         dtype: numpy_dtype, optional
           The NumPy dtype of the arrays in this timestep
-      
+
+
         .. versionadded:: 2.2.0
            Initialise C++ level parameters
         """
@@ -266,6 +267,7 @@ cdef class Timestep:
 
     def __init__(self, uint64_t n_atoms, dtype=np.float32, **kwargs):
         """Create a Timestep, representing a frame of a trajectory
+        
         Parameters
         ----------
         n_atoms : uint64
@@ -292,7 +294,6 @@ cdef class Timestep:
            Added keywords for `positions`, `velocities` and `forces`.
            Can add and remove position/velocity/force information by using
            the ``has_*`` attribute.
-        
         .. versionchanged:: 2.2.0
            Added the `dtype` kwarg to specify a type for the timestep.
         """
@@ -345,8 +346,8 @@ cdef class Timestep:
         """The NumPy dtype of the timestep, all arrays in the timestep will
             have this dtype (yet to be finalised)
 
-            .. versionadded:: 2.2.0
-            Added dtype
+        .. versionadded:: 2.2.0
+           Added dtype
         """
         return self._dtype
 
@@ -859,7 +860,9 @@ cdef class Timestep:
         """Specify arguments to use in `__cinit__` and `__init__` to use in
            unpickling of timestep instance
         
-        .. versionadded:: 2.2.0
+        .. versionchanged:: 2.2.0
+           removed implementations that use `__dict__` class attribute
+
         """
         return (self.n_atoms,),{"dtype":self.dtype}
 
@@ -867,7 +870,9 @@ cdef class Timestep:
         """Restore class from `state` dictionary in unpickling of Timestep
            instance
         
-        .. versionadded:: 2.2.0
+        .. versionchanged:: 2.2.0
+           removed implementations that use `__dict__` class attribute
+
         """
         self.frame = state["frame"]
         self._n_atoms = state["_n_atoms"]
