@@ -24,34 +24,9 @@
 
 # cython: embedsignature=True
 
-from ..lib.util import asiterable, Namespace
-from ..auxiliary.core import auxreader
-from ..auxiliary.base import AuxReader
-from .. import units
-from .. import (
-    _READERS, _READER_HINTS,
-    _SINGLEFRAME_WRITERS,
-    _MULTIFRAME_WRITERS,
-    _CONVERTERS
-)
-from .. import NoDataError
-from . import core
-from libcpp cimport bool
-from libc.stdint cimport int64_t, uint64_t
-import cython
-import weakref
-import warnings
-import copy
-import numbers
 
-import numpy as np
-cimport numpy as cnp
-cnp.import_array()
-
-
-__all__ = ['Timestep']
-
-"""Timestep Class --- :mod:`MDAnalysis.coordinates.timestep`
+"""
+Timestep Class --- :mod:`MDAnalysis.coordinates.timestep`
 ============================================================
 
 Derive other Timestep, classes from the classes in this module.
@@ -70,18 +45,18 @@ MDAnalysis.
    .. automethod:: from_coordinates
    .. automethod:: from_timestep
    .. autoattribute:: n_atoms
-   .. attribute::`frame`
+   .. attribute:: frame
 
       frame number (0-based)
 
       .. versionchanged:: 0.11.0
          Frames now 0-based; was 1-based
 
-   .. attribute::`_frame`
+   .. attribute:: _frame
       
       frame counter used optionally by some readers (0 based)
 
-      .. versionchanged:: 2.2.0
+      .. versionchanged:: 2.3.0
          No longer optional and initialised to -1 
 
    .. autoattribute:: time
@@ -158,6 +133,32 @@ MDAnalysis.
 """
 
 
+from ..lib.util import asiterable, Namespace
+from ..auxiliary.core import auxreader
+from ..auxiliary.base import AuxReader
+from .. import units
+from .. import (
+    _READERS, _READER_HINTS,
+    _SINGLEFRAME_WRITERS,
+    _MULTIFRAME_WRITERS,
+    _CONVERTERS
+)
+from .. import NoDataError
+from . import core
+from libcpp cimport bool
+from libc.stdint cimport int64_t, uint64_t
+import cython
+import weakref
+import warnings
+import copy
+import numbers
+
+import numpy as np
+cimport numpy as cnp
+cnp.import_array()
+
+
+
 cdef class Timestep:
     """Timestep data for one frame
 
@@ -180,7 +181,7 @@ cdef class Timestep:
        will be dropped.
        Timestep now stores in to numpy array memory in 'C' order rather than
        'F' (Fortran).
-    .. versionchanged:: 2.2.0
+    .. versionchanged:: 2.3.0
         Timestep is now a Cython extension type.
         _frame is now a compulsory variable and is intialised to -1.
         A dtype for the Timestep can be specified with the `dtype` kwarg.
@@ -225,7 +226,7 @@ cdef class Timestep:
           The NumPy dtype of the arrays in this timestep
 
 
-        .. versionadded:: 2.2.0
+        .. versionadded:: 2.3.0
            Initialise C++ level parameters
         """
         # c++ level objects
@@ -298,7 +299,7 @@ cdef class Timestep:
            Added keywords for `positions`, `velocities` and `forces`.
            Can add and remove position/velocity/force information by using
            the ``has_*`` attribute.
-        .. versionchanged:: 2.2.0
+        .. versionchanged:: 2.3.0
            Added the `dtype` kwarg to specify a type for the timestep.
         """
         # python objects
@@ -348,7 +349,7 @@ cdef class Timestep:
         """The NumPy dtype of the timestep, all arrays in the timestep will
             have this dtype (yet to be finalised)
 
-        .. versionadded:: 2.2.0
+        .. versionadded:: 2.3.0
            Added dtype
         """
         return self._dtype
@@ -830,7 +831,7 @@ cdef class Timestep:
            that cython cannot automatically  generate an `__reduce__` method
            for us.
 
-        .. versionadded:: 2.2.0
+        .. versionadded:: 2.3.0
         """
         state = {
             "frame": self.frame,
@@ -856,7 +857,7 @@ cdef class Timestep:
         """Specify arguments to use in `__cinit__` and `__init__` to use in
            unpickling of timestep instance
 
-        .. versionchanged:: 2.2.0
+        .. versionchanged:: 2.3.0
            removed implementations that use `__dict__` class attribute
 
         """
@@ -866,7 +867,7 @@ cdef class Timestep:
         """Restore class from `state` dictionary in unpickling of Timestep
            instance
 
-        .. versionchanged:: 2.2.0
+        .. versionchanged:: 2.3.0
            removed implementations that use `__dict__` class attribute
 
         """
