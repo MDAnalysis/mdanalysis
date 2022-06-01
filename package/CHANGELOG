@@ -58,6 +58,8 @@ Fixes
   * Fixed BAT method Cartesian modifies input data. (Issue #3501)
 
 Enhancements
+  * Wheels and dist now get automatically built and deployed on release
+    triggers (Issue #1300, PR #3680)
   * Added equations for `center_of_mass` and `center_of_geometry`to
     documentation (PR #3671)
   * Added `center_of_charge` attribute (PR #3671)
