@@ -450,7 +450,7 @@ cdef class Timestep:
 
     @positions.setter
     def positions(self,  new_positions):
-        self._has_positions = True
+        self.has_positions = True
         if cnp.PyArray_Check(new_positions):  # is it an array?
             if cnp.PyArray_TYPE(new_positions) == self._typenum:  # does it need casting
                 self._pos = cnp.PyArray_GETCONTIGUOUS(new_positions)
@@ -593,7 +593,7 @@ cdef class Timestep:
 
     @velocities.setter
     def velocities(self,  new_velocities):
-        self._has_velocities = True
+        self.has_velocities = True
         if cnp.PyArray_Check(new_velocities):  # is it an array?
             if cnp.PyArray_TYPE(new_velocities) == self._typenum:  # does it need casting
                 self._velocities = cnp.PyArray_GETCONTIGUOUS(new_velocities)
@@ -628,7 +628,7 @@ cdef class Timestep:
 
     @forces.setter
     def forces(self,  new_forces):
-        self._has_forces = True
+        self.has_forces = True
         if cnp.PyArray_Check(new_forces):  # is it an array?
             if cnp.PyArray_TYPE(new_forces) == self._typenum:  # does it need casting
                 self._forces = cnp.PyArray_GETCONTIGUOUS(new_forces)
