@@ -50,10 +50,11 @@ molecule::
 .. warning::
     The RDKit converter is currently *experimental* and may not work as
     expected for all molecules. Currently the converter accurately
-    infers the structures of approximately 90% of the `ChEMBL27`_ dataset.
+    infers the structures of approximately 99% of the `ChEMBL27`_ dataset.
     Work is currently ongoing on further improving this and updates to the
     converter are expected in future releases of MDAnalysis.
-    Please see `Pull Request #3044`_ for more details.
+    Please see `Issue #3339`_ and the `RDKitConverter benchmark`_ for more
+    details.
 
 
 
@@ -76,22 +77,22 @@ Classes
 .. Links
 
 .. _`ChEMBL27`: https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl_27/
-.. _`Pull Request #3044`: https://github.com/MDAnalysis/mdanalysis/pull/3044
-
+.. _`Issue #3339`: https://github.com/MDAnalysis/mdanalysis/issues/3339
+.. _`RDKitConverter benchmark`: https://github.com/MDAnalysis/RDKitConverter-benchmark
 """
 
 import warnings
-import re
 import copy
 from functools import lru_cache
+from io import StringIO
 
 import numpy as np
 
 from ..exceptions import NoDataError
-from ..topology.guessers import guess_atom_element
 from ..core.topologyattrs import _TOPOLOGY_ATTRS
 from ..coordinates import memory
 from ..coordinates import base
+from ..coordinates.PDB import PDBWriter
 
 try:
     from rdkit import Chem
@@ -120,6 +121,9 @@ else:
         "tempfactors": "TempFactor",
     }
     PERIODIC_TABLE = Chem.GetPeriodicTable()
+
+
+_deduce_PDB_atom_name = PDBWriter(StringIO())._deduce_PDB_atom_name
 
 
 class RDKitReader(memory.MemoryReader):
@@ -191,6 +195,7 @@ class RDKitConverter(base.ConverterBase):
     | icodes                | atom.GetMonomerInfo().GetInsertionCode()  |
     +-----------------------+-------------------------------------------+
     | names                 | atom.GetMonomerInfo().GetName()           |
+    |                       | atom.GetProp("_MDAnalysis_name")          |
     +-----------------------+-------------------------------------------+
     | occupancies           | atom.GetMonomerInfo().GetOccupancy()      |
     +-----------------------+-------------------------------------------+
@@ -262,8 +267,29 @@ class RDKitConverter(base.ConverterBase):
     cache since the arguments given are different. You can pass a
     ``cache=False`` argument to the converter to bypass the caching system.
 
+    The ``_MDAnalysis_index`` property of the resulting molecule corresponds
+    to the index of the specific :class:`~MDAnalysis.core.groups.AtomGroup`
+    that was converted, which may not always match the ``index`` property.
+
+    To get a better understanding of how the converter works under the hood,
+    please refer to the following RDKit UGM presentation:
+
+    * `Video (4:55 to 8:05) <https://youtu.be/5b5wYmK4URU>`__
+    * `Slides <https://github.com/rdkit/UGM_2020/blob/master/Presentations/C%C3%A9dricBouysset_From_RDKit_to_the_Universe.pdf>`__
+
+    There are some molecules containing specific patterns that the converter
+    cannot currently tackle correctly. See
+    `Issue #3339 <https://github.com/MDAnalysis/mdanalysis/issues/3339>`__ for
+    more info.
 
     .. versionadded:: 2.0.0
+
+    .. versionchanged:: 2.2.0
+        Improved the accuracy of the converter. Atoms in the resulting molecule
+        now follow the same order as in the AtomGroup. The output of
+        ``atom.GetMonomerInfo().GetName()`` now follows the guidelines for PDB
+        files while the original name is still available through
+        ``atom.GetProp("_MDAnalysis_name")``
 
     """
 
@@ -278,7 +304,6 @@ class RDKitConverter(base.ConverterBase):
         Parameters
         -----------
         obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe`
-
         cache : bool
             Use a cached copy of the molecule's topology when available. To be
             used, the cached molecule and the new one have to be made from the
@@ -325,9 +350,9 @@ class RDKitConverter(base.ConverterBase):
                 # assign coordinates
                 conf = Chem.Conformer(mol.GetNumAtoms())
                 for atom in mol.GetAtoms():
-                    idx = atom.GetIntProp("_MDAnalysis_index")
+                    idx = atom.GetIdx()
                     xyz = ag.positions[idx].astype(float)
-                    conf.SetAtomPosition(atom.GetIdx(), xyz)
+                    conf.SetAtomPosition(idx, xyz)
                 mol.AddConformer(conf)
                 # assign R/S to atoms and Z/E to bonds
                 Chem.AssignStereochemistryFrom3D(mol)
@@ -383,9 +408,16 @@ def atomgroup_to_mol(ag, NoImplicit=True, max_iter=200, force=False):
     for attr in RDATTRIBUTES.keys():
         if hasattr(ag, attr):
             pdb_attrs[attr] = getattr(ag, attr)
+    resnames = pdb_attrs.get("resnames", None)
+    if resnames is None:
+        def get_resname(idx):
+            return ""
+    else:
+        def get_resname(idx):
+            return resnames[idx]
 
     other_attrs = {}
-    for attr in ["charges", "segids", "types"]:
+    for attr in ["charges", "segids", "types", "names"]:
         if hasattr(ag, attr):
             other_attrs[attr] = getattr(ag, attr)
 
@@ -401,7 +433,7 @@ def atomgroup_to_mol(ag, NoImplicit=True, max_iter=200, force=False):
         # add PDB-like properties
         mi = Chem.AtomPDBResidueInfo()
         for attr, values in pdb_attrs.items():
-            _add_mda_attr_to_rdkit(attr, values[i], mi)
+            _add_mda_attr_to_rdkit(attr, values[i], mi, get_resname(i))
         rdatom.SetMonomerInfo(mi)
         # other properties
         for attr in other_attrs.keys():
@@ -435,9 +467,17 @@ def atomgroup_to_mol(ag, NoImplicit=True, max_iter=200, force=False):
         # infer bond orders and formal charges from the connectivity
         _infer_bo_and_charges(mol)
         mol = _standardize_patterns(mol, max_iter)
+        # reorder atoms to match MDAnalysis, since the reactions from
+        # _standardize_patterns will mess up the original order
+        order = np.argsort([atom.GetIntProp("_MDAnalysis_index")
+                            for atom in mol.GetAtoms()])
+        mol = Chem.RenumberAtoms(mol, order.astype(int).tolist())
 
-    # sanitize
-    Chem.SanitizeMol(mol)
+    # sanitize if possible
+    err = Chem.SanitizeMol(mol, catchErrors=True)
+    if err:
+        warnings.warn("Could not sanitize molecule: "
+                      f"failed during step {err!r}")
 
     return mol
 
@@ -456,7 +496,7 @@ def set_converter_cache_size(maxsize):
     atomgroup_to_mol = lru_cache(maxsize=maxsize)(atomgroup_to_mol.__wrapped__)
 
 
-def _add_mda_attr_to_rdkit(attr, value, mi):
+def _add_mda_attr_to_rdkit(attr, value, mi, resname=""):
     """Converts an MDAnalysis atom attribute into the RDKit equivalent and
     stores it into an RDKit :class:`~rdkit.Chem.rdchem.AtomPDBResidueInfo`.
 
@@ -468,37 +508,64 @@ def _add_mda_attr_to_rdkit(attr, value, mi):
         Attribute value as found in the AtomGroup
     mi : rdkit.Chem.rdchem.AtomPDBResidueInfo
         MonomerInfo object that will store the relevant atom attributes
+    resname : str
+        Residue name of the atom, if available
     """
     if isinstance(value, np.generic):
         # convert numpy types to python standard types
         value = value.item()
     if attr == "names":
-        # RDKit needs the name to be properly formatted for a
-        # PDB file (1 letter elements start at col 14)
-        name = re.findall(r'(\D+|\d+)', value)
-        if len(name) == 2:
-            symbol, number = name
-            if len(number) > 2 and len(symbol) == 1:
-                value = "{}{}".format(symbol, number)
-            else:
-                value = "{:>2.2}{:<2.2}".format(symbol, number)
-        else:
-            # no number in the name
-            value = " {:<}".format(name[0])
+        # RDKit needs the name to be properly formatted for a PDB file
+        value = _deduce_PDB_atom_name(value, resname)
 
     # set attribute value in RDKit MonomerInfo
     rdattr = RDATTRIBUTES[attr]
     getattr(mi, "Set%s" % rdattr)(value)
 
 
+def _set_str_prop(atom, attr, value):
+    atom.SetProp(attr, value)
+
+
+def _set_float_prop(atom, attr, value):
+    atom.SetDoubleProp(attr, value)
+
+
+def _set_np_float_prop(atom, attr, value):
+    atom.SetDoubleProp(attr, float(value))
+
+
+def _set_int_prop(atom, attr, value):
+    atom.SetIntProp(attr, value)
+
+
+def _set_np_int_prop(atom, attr, value):
+    atom.SetIntProp(attr, int(value))
+
+
+def _ignore_prop(atom, attr, value):
+    pass
+
+
+_atom_property_dispatcher = {
+    str: _set_str_prop,
+    float: _set_float_prop,
+    np.float32: _set_np_float_prop,
+    np.float64: _set_np_float_prop,
+    int: _set_int_prop,
+    np.int8: _set_np_int_prop,
+    np.int16: _set_np_int_prop,
+    np.int32: _set_np_int_prop,
+    np.int64: _set_np_int_prop,
+    np.uint8: _set_np_int_prop,
+    np.uint16: _set_np_int_prop,
+    np.uint32: _set_np_int_prop,
+    np.uint64: _set_np_int_prop,
+}
+
 def _set_atom_property(atom, attr, value):
     """Saves any attribute and value into an RDKit atom property"""
-    if isinstance(value, (float, np.floating)):
-        atom.SetDoubleProp(attr, float(value))
-    elif isinstance(value, (int, np.integer)):
-        atom.SetIntProp(attr, int(value))
-    else:
-        atom.SetProp(attr, value)
+    _atom_property_dispatcher.get(type(value), _ignore_prop)(atom, attr, value)
 
 
 def _infer_bo_and_charges(mol):
@@ -525,9 +592,30 @@ def _infer_bo_and_charges(mol):
     R-C(-O)-O the first oxygen read will receive a double bond and the other
     one will be charged. It will also affect more complex conjugated systems.
     """
+    # sort atoms according to their NUE
+    atoms = sorted([a for a in mol.GetAtoms() if a.GetAtomicNum() > 1],
+                   reverse=True,
+                   key=lambda a: _get_nb_unpaired_electrons(a)[0])
 
-    for atom in sorted(mol.GetAtoms(), reverse=True,
-                       key=lambda a: _get_nb_unpaired_electrons(a)[0]):
+    # charges that should be assigned to monatomic cations
+    # structure --> atomic number : formal charge
+    # anion charges are directly handled by the code using the typical valence
+    # of the atom
+    MONATOMIC_CATION_CHARGES = {
+        3: 1, 11: 1, 19: 1, 37: 1, 47: 1, 55: 1,
+        12: 2, 20: 2, 29: 2, 30: 2, 38: 2, 56: 2,
+        26: 2,  # Fe could also be +3
+        13: 3,
+    }
+
+    for atom in atoms:
+        # monatomic ions
+        if atom.GetDegree() == 0:
+            atom.SetFormalCharge(MONATOMIC_CATION_CHARGES.get(
+                                 atom.GetAtomicNum(),
+                                 -_get_nb_unpaired_electrons(atom)[0]))
+            mol.UpdatePropertyCache(strict=False)
+            continue
         # get NUE for each possible valence
         nue = _get_nb_unpaired_electrons(atom)
         # if there's only one possible valence state and the corresponding
@@ -543,7 +631,7 @@ def _infer_bo_and_charges(mol):
             neighbors = sorted(atom.GetNeighbors(), reverse=True,
                                key=lambda a: _get_nb_unpaired_electrons(a)[0])
             # check if one of the neighbors has a common NUE
-            for i, na in enumerate(neighbors, start=1):
+            for na in neighbors:
                 # get NUE for the neighbor
                 na_nue = _get_nb_unpaired_electrons(na)
                 # smallest common NUE
@@ -559,15 +647,16 @@ def _infer_bo_and_charges(mol):
                     order = common_nue + 1
                     bond.SetBondType(RDBONDORDER[order])
                     mol.UpdatePropertyCache(strict=False)
-                    if i < len(neighbors):
-                        # recalculate nue for atom
-                        nue = _get_nb_unpaired_electrons(atom)
+                    # go to next atom if one of the valences is complete
+                    nue = _get_nb_unpaired_electrons(atom)
+                    if any([n == 0 for n in nue]):
+                        break
 
-            # if the atom still has unpaired electrons
-            nue = _get_nb_unpaired_electrons(atom)[0]
-            if nue > 0:
-                # transform it to a negative charge
-                atom.SetFormalCharge(-nue)
+            # if atom valence is still not filled
+            nue = _get_nb_unpaired_electrons(atom)
+            if not any([n == 0 for n in nue]):
+                # transform nue to charge
+                atom.SetFormalCharge(-nue[0])
                 atom.SetNumRadicalElectrons(0)
                 mol.UpdatePropertyCache(strict=False)
 
@@ -618,25 +707,27 @@ def _standardize_patterns(mol, max_iter=200):
     +---------------+------------------------------------------------------------------------------+
     | Name          | Reaction                                                                     |
     +===============+==============================================================================+
-    | conjugated    | ``[*-;!O:1]-[*:2]=[*:3]-[*-:4]>>[*+0:1]=[*:2]-[*:3]=[*+0:4]``                |
+    | conjugated    | ``[*-:1]-[*:2]=[*:3]-[*-:4]>>[*+0:1]=[*:2]-[*:3]=[*+0:4]``                   |
     +---------------+------------------------------------------------------------------------------+
-    | conjugated-N+ | ``[N;X3;v3:1]-[*:2]=[*:3]-[*-:4]>>[N+:1]=[*:2]-[*:3]=[*+0:4]``               |
+    | conjugated N+ | ``[N;X3;v3:1]-[*:2]=[*:3]-[*-:4]>>[N+:1]=[*:2]-[*:3]=[*+0:4]``               |
     +---------------+------------------------------------------------------------------------------+
-    | conjugated-O- | ``[O:1]=[#6:2]-[*:3]=[*:4]-[*-:5]>>[O-:1]-[*:2]=[*:3]-[*:4]=[*+0:5]``        |
+    | conjugated O- | ``[O:1]=[#6+0,#7+:2]-[*:3]=[*:4]-[*-:5]>>[O-:1]-[*:2]=[*:3]-[*:4]=[*+0:5]``  |
     +---------------+------------------------------------------------------------------------------+
-    | Cterm         | ``[C-;X2:1]=[O:2]>>[C+0:1]=[O:2]``                                           |
+    | conjug. S=O   | ``[O-:1]-[S;D4;v4:2]-[*:3]=[*:4]-[*-:5]>>[O+0:1]=[*:2]=[*:3]-[*:4]=[*+0:5]`` |
     +---------------+------------------------------------------------------------------------------+
-    | Nterm         | ``[N-;X2;H1:1]>>[N+0:1]``                                                    |
+    | Cterm         | ``[C-;X2;H0:1]=[O:2]>>[C+0:1]=[O:2]``                                        |
+    +---------------+------------------------------------------------------------------------------+
+    | Nterm         | ``[N-;X2;H1;$(N-[*^3]):1]>>[N+0:1]``                                         |
     +---------------+------------------------------------------------------------------------------+
     | keto-enolate  | ``[#6-:1]-[#6:2]=[O:3]>>[#6+0:1]=[#6:2]-[O-:3]``                             |
     +---------------+------------------------------------------------------------------------------+
-    | arginine      | ``[N;H1:1]-[C-;X3;H0:2](-[N;H2:3])-[N;H2:4]>>[N:1]-[C+0:2](-[N:3])=[N+:4]``  |
+    | arginine      | ``[C-;v3:1]-[#7+0;v3;H2:2]>>[#6+0:1]=[#7+:2]``                               |
     +---------------+------------------------------------------------------------------------------+
     | histidine     | ``[#6+0;H0:1]=[#6+0:2]-[#7;X3:3]-[#6-;X3:4]>>[#6:1]=[#6:2]-[#7+:3]=[#6+0:4]``|
     +---------------+------------------------------------------------------------------------------+
-    | sulfone       | ``[S;X4;v4:1](-[O-;X1:2])-[O-;X1:3]>>[S:1](=[O+0:2])=[O+0:3]``               |
+    | sulfone       | ``[S;D4;!v6:1]-[*-:2]>>[S;v6:1]=[*+0:2]``                                    |
     +---------------+------------------------------------------------------------------------------+
-    | nitro         | ``[N;X3;v3:1](-[O-;X1:2])-[O-;X1:3]>>[N+:1](-[O-:2])=[O+0:3]``               |
+    | charged N     | ``[#7+0;X3:1]-[*-:2]>>[#7+:1]=[*+0:2]``                                      |
     +---------------+------------------------------------------------------------------------------+
 
     """
@@ -644,34 +735,36 @@ def _standardize_patterns(mol, max_iter=200):
     # standardize conjugated systems
     _rebuild_conjugated_bonds(mol, max_iter)
 
+    # list of sanitized reactions
+    reactions = []
+    for rxn in [
+        "[C-;X2;H0:1]=[O:2]>>[C+0:1]=[O:2]",  # Cterm
+        "[N-;X2;H1;$(N-[*^3]):1]>>[N+0:1]",  # Nterm
+        "[#6-:1]-[#6:2]=[O:3]>>[#6+0:1]=[#6:2]-[O-:3]",  # keto-enolate
+        "[C-;v3:1]-[#7+0;v3;H2:2]>>[#6+0:1]=[#7+:2]",  # ARG
+        "[#6+0;H0:1]=[#6+0:2]-[#7;X3:3]-[#6-;X3:4]"
+        ">>[#6:1]=[#6:2]-[#7+:3]=[#6+0:4]",  # HIP
+        "[S;D4;!v6:1]-[*-:2]>>[S;v6:1]=[*+0:2]",  # sulfone
+        "[#7+0;X3:1]-[*-:2]>>[#7+:1]=[*+0:2]",  # charged-N
+    ]:
+        reaction = AllChem.ReactionFromSmarts(rxn)
+        reactions.append(reaction)
+
     fragments = []
     for reactant in Chem.GetMolFrags(mol, asMols=True):
-
-        for name, reaction in [
-            ("Cterm", "[C-;X2:1]=[O:2]>>[C+0:1]=[O:2]"),
-            ("Nterm", "[N-;X2;H1:1]>>[N+0:1]"),
-            ("keto-enolate", "[#6-:1]-[#6:2]=[O:3]>>[#6+0:1]=[#6:2]-[O-:3]"),
-            ("ARG", "[N;H1:1]-[C-;X3;H0:2](-[N;H2:3])-[N;H2:4]"
-                    ">>[N:1]-[C+0:2](-[N:3])=[N+:4]"),
-            ("HIP", "[#6+0;H0:1]=[#6+0:2]-[#7;X3:3]-[#6-;X3:4]"
-                    ">>[#6:1]=[#6:2]-[#7+:3]=[#6+0:4]"),
-            ("sulfone", "[S;X4;v4:1](-[O-;X1:2])-[O-;X1:3]"
-                        ">>[S:1](=[O+0:2])=[O+0:3]"),
-            ("nitro", "[N;X3;v3:1](-[O-;X1:2])-[O-;X1:3]"
-                      ">>[N+:1](-[O-:2])=[O+0:3]"),
-        ]:
-            reactant.UpdatePropertyCache(strict=False)
-            Chem.Kekulize(reactant)
+        for reaction in reactions:
             reactant = _run_reaction(reaction, reactant)
-
         fragments.append(reactant)
 
     # recombine fragments
-    mol = fragments.pop(0)
+    newmol = fragments.pop(0)
     for fragment in fragments:
-        mol = Chem.CombineMols(mol, fragment)
+        newmol = Chem.CombineMols(newmol, fragment)
 
-    return mol
+    # reassign all properties
+    _transfer_properties(mol, newmol)
+
+    return newmol
 
 
 def _run_reaction(reaction, reactant):
@@ -683,8 +776,8 @@ def _run_reaction(reaction, reactant):
 
     Parameters
     ----------
-    reaction : str
-        SMARTS reaction
+    reaction : rdkit.Chem.rdChemReactions.ChemicalReaction
+        Reaction from SMARTS
     reactant : rdkit.Chem.rdchem.Mol
         The molecule to transform
 
@@ -693,27 +786,30 @@ def _run_reaction(reaction, reactant):
     product : rdkit.Chem.rdchem.Mol
         The final product of the reaction
     """
-    # count how many times the reaction should be run
-    pattern = Chem.MolFromSmarts(reaction.split(">>")[0])
-    n_matches = len(reactant.GetSubstructMatches(pattern))
-
-    # run the reaction for each matched pattern
-    rxn = AllChem.ReactionFromSmarts(reaction)
-    for n in range(n_matches):
-        products = rxn.RunReactants((reactant,))
-        # only keep the first product
+    # repeat the reaction until all matching moeities have been transformed
+    # note: this loop is meant to be ended by a `break` statement
+    # but let's avoid using `while` loops just in case
+    for n in range(reactant.GetNumAtoms()):
+        reactant.UpdatePropertyCache(strict=False)
+        Chem.Kekulize(reactant)
+        products = reaction.RunReactants((reactant,))
         if products:
+            # structure: tuple[tuple[mol]]
+            # length of 1st tuple: number of matches in reactant
+            # length of 2nd tuple: number of products yielded by the reaction
+            # if there's no match in reactant, returns an empty tuple
+            # here we have at least one match, and the reaction used yield
+            # a single product hence `products[0][0]`
             product = products[0][0]
             # map back atom properties from the reactant to the product
-            _reassign_props_after_reaction(reactant, product)
+            _reassign_index_after_reaction(reactant, product)
             # apply the next reaction to the product
-            product.UpdatePropertyCache(strict=False)
             reactant = product
+        # exit the loop if there was nothing to transform
         else:
-            # exit the n_matches loop if there's no product. Example
-            # where this is needed: SO^{4}_{2-} will match the sulfone
-            # pattern 6 times but the reaction is only needed once
             break
+    reactant.UpdatePropertyCache(strict=False)
+    Chem.Kekulize(reactant)
     return reactant
 
 
@@ -736,6 +832,7 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
     Since ``anion-*=*`` is the same as ``*=*-anion`` in terms of SMARTS, we can
     control that we don't transform the same triplet of atoms back and forth by
     adding their indices to a list.
+    This function also handles conjugated systems with triple bonds.
     The molecule needs to be kekulized first to also cover systems
     with aromatic rings.
 
@@ -745,86 +842,148 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
         The molecule to transform, modified inplace
     max_iter : int
         Maximum number of iterations performed by the function
+
+    Notes
+    -----
+    The molecule is modified inplace
     """
     mol.UpdatePropertyCache(strict=False)
     Chem.Kekulize(mol)
-    pattern = Chem.MolFromSmarts("[*-;!O]-[*+0]=[*+0]")
+    # pattern used to find problematic conjugated bonds
+    # there's usually an even number of matches for this
+    pattern = Chem.MolFromSmarts("[*-{1-2}]-,=[*+0]=,#[*+0]")
+    # pattern used to finish fixing a series of conjugated bonds
+    base_end_pattern = Chem.MolFromSmarts(
+        "[*-{1-2}]-,=[*+0]=,#[*+0]-,=[*-{1-2}]")
+    # used when there's an odd number of matches for `pattern`
+    odd_end_pattern = Chem.MolFromSmarts(
+        "[*-]-[*+0]=[*+0]-[*-,$([#7;X3;v3]),$([#6+0,#7+1]=O),"
+        "$([S;D4;v4]-[O-])]")
     # number of unique matches with the pattern
     n_matches = len(set([match[0]
                          for match in mol.GetSubstructMatches(pattern)]))
+    # nothing to standardize
     if n_matches == 0:
-        # nothing to standardize
         return
-    # check if there's an even number of anion-*=* patterns
-    elif n_matches % 2 == 0:
-        end_pattern = Chem.MolFromSmarts("[*-;!O]-[*+0]=[*+0]-[*-]")
-    else:
+    # single match (unusual)
+    elif n_matches == 1:
         # as a last resort, the only way to standardize is to find a nitrogen
         # that can accept a double bond and a positive charge
         # or a carbonyl that will become an enolate
-        end_pattern = Chem.MolFromSmarts(
-            "[*-;!O]-[*+0]=[*+0]-[$([#7;X3;v3]),$([#6+0]=O)]")
+        end_pattern = odd_end_pattern
+    # at least 2 matches
+    else:
+        # give priority to base end pattern and then deal with the odd one if
+        # necessary
+        end_pattern = base_end_pattern
     backtrack = []
+    backtrack_cycles = 0
     for _ in range(max_iter):
-        # simplest case where n=1
+        # check for ending pattern
         end_match = mol.GetSubstructMatch(end_pattern)
         if end_match:
             # index of each atom
             anion1, a1, a2, anion2 = end_match
             term_atom = mol.GetAtomWithIdx(anion2)
-            # [*-]-*=*-C=O
-            if term_atom.GetAtomicNum() == 6 and term_atom.GetFormalCharge() == 0:
+            # edge-case 1: C-[O-] or [N+]-[O-]
+            # [*-]-*=*-[C,N+]=O --> *=*-*=[C,N+]-[O-]
+            # transform the =O to -[O-]
+            if (
+                term_atom.GetAtomicNum() == 6
+                and term_atom.GetFormalCharge() == 0
+            ) or (
+                term_atom.GetAtomicNum() == 7
+                and term_atom.GetFormalCharge() == 1
+            ):
                 for neighbor in term_atom.GetNeighbors():
                     bond = mol.GetBondBetweenAtoms(anion2, neighbor.GetIdx())
-                    if neighbor.GetAtomicNum() == 8 and bond.GetBondTypeAsDouble() == 2:
+                    if (neighbor.GetAtomicNum() == 8 and
+                            bond.GetBondTypeAsDouble() == 2):
                         bond.SetBondType(Chem.BondType.SINGLE)
                         neighbor.SetFormalCharge(-1)
+                        break
+            # edge-case 2: S=O
+            # [*-]-*=*-[Sv4]-[O-] --> *=*-*=[Sv6]=O
+            # transform -[O-] to =O
+            elif (term_atom.GetAtomicNum() == 16 and
+                  term_atom.GetFormalCharge() == 0):
+                for neighbor in term_atom.GetNeighbors():
+                    bond = mol.GetBondBetweenAtoms(anion2, neighbor.GetIdx())
+                    if (neighbor.GetAtomicNum() == 8 and
+                        neighbor.GetFormalCharge() == -1 and
+                            bond.GetBondTypeAsDouble() == 1):
+                        bond.SetBondType(Chem.BondType.DOUBLE)
+                        neighbor.SetFormalCharge(0)
+                        break
+            # not an edge case:
+            # increment the charge
             else:
-                # [*-]-*=*-N
-                if term_atom.GetAtomicNum() == 7 and term_atom.GetFormalCharge() == 0:
-                    end_charge = 1
-                # [*-]-*=*-[*-]
-                else:
-                    end_charge = 0
-                mol.GetAtomWithIdx(anion2).SetFormalCharge(end_charge)
-            # common part of the conjugated systems: [*-]-*=*
-            mol.GetAtomWithIdx(anion1).SetFormalCharge(0)
-            mol.GetBondBetweenAtoms(anion1, a1).SetBondType(
-                Chem.BondType.DOUBLE)
-            mol.GetBondBetweenAtoms(a1, a2).SetBondType(Chem.BondType.SINGLE)
-            mol.GetBondBetweenAtoms(a2, anion2).SetBondType(
-                Chem.BondType.DOUBLE)
+                term_atom.SetFormalCharge(term_atom.GetFormalCharge() + 1)
+            # common to all cases:
+            # [*-]-*=*-[R] --> *=*-*=[R]
+            # increment the charge and switch single and double bonds
+            a = mol.GetAtomWithIdx(anion1)
+            a.SetFormalCharge(a.GetFormalCharge() + 1)
+            b = mol.GetBondBetweenAtoms(anion1, a1)
+            b.SetBondType(RDBONDORDER[b.GetBondTypeAsDouble() + 1])
+            b = mol.GetBondBetweenAtoms(a1, a2)
+            b.SetBondType(RDBONDORDER[b.GetBondTypeAsDouble() - 1])
+            b = mol.GetBondBetweenAtoms(a2, anion2)
+            b.SetBondType(RDBONDORDER[b.GetBondTypeAsDouble() + 1])
             mol.UpdatePropertyCache(strict=False)
+            continue
 
-        # shorten the anion-anion pattern from n to n-1
+        # switch the position of the charge and the double bond
         matches = mol.GetSubstructMatches(pattern)
         if matches:
             # check if we haven't already transformed this triplet
             for match in matches:
-                # sort the indices for the comparison
-                g = tuple(sorted(match))
+                # store order-independent atom indices
+                g = set(match)
+                # already transformed --> try the next one
                 if g in backtrack:
-                    # already transformed
                     continue
+                # add to backtracking and start the switch
                 else:
-                    # take the first one that hasn't been tried
                     anion, a1, a2 = match
                     backtrack.append(g)
                     break
+            # already performed all changes
             else:
-                anion, a1, a2 = matches[0]
-            # charges
-            mol.GetAtomWithIdx(anion).SetFormalCharge(0)
-            mol.GetAtomWithIdx(a2).SetFormalCharge(-1)
-            # bonds
-            mol.GetBondBetweenAtoms(anion, a1).SetBondType(
-                Chem.BondType.DOUBLE)
-            mol.GetBondBetweenAtoms(a1, a2).SetBondType(Chem.BondType.SINGLE)
+                if backtrack_cycles == 1:
+                    # might be stuck because there were 2 "odd" end patterns
+                    # misqualified as a single base one
+                    end_pattern = odd_end_pattern
+                elif backtrack_cycles > 1:
+                    # likely stuck changing the same bonds over and over so
+                    # let's stop here
+                    mol.UpdatePropertyCache(strict=False)
+                    return
+                match = matches[0]
+                anion, a1, a2 = match
+                backtrack = [set(match)]
+                backtrack_cycles += 1
+
+            # switch charges
+            a = mol.GetAtomWithIdx(anion)
+            a.SetFormalCharge(a.GetFormalCharge() + 1)
+            a = mol.GetAtomWithIdx(a2)
+            a.SetFormalCharge(a.GetFormalCharge() - 1)
+            # switch bond orders
+            b = mol.GetBondBetweenAtoms(anion, a1)
+            b.SetBondType(RDBONDORDER[b.GetBondTypeAsDouble() + 1])
+            b = mol.GetBondBetweenAtoms(a1, a2)
+            b.SetBondType(RDBONDORDER[b.GetBondTypeAsDouble() - 1])
             mol.UpdatePropertyCache(strict=False)
+            # update number of matches for the end pattern
+            n_matches = len(set([match[0] for match in matches]))
+            if n_matches == 1:
+                end_pattern = odd_end_pattern
             # start new iteration
             continue
 
         # no more changes to apply
+        mol.UpdatePropertyCache(strict=False)
         return
 
     # reached max_iter
@@ -832,23 +991,33 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
                   "reasonable number of iterations")
 
 
-def _reassign_props_after_reaction(reactant, product):
-    """Maps back atomic properties from the reactant to the product.
+def _reassign_index_after_reaction(reactant, product):
+    """Maps back MDAnalysis index from the reactant to the product.
     The product molecule is modified inplace.
     """
-    for atom in product.GetAtoms():
-        try:
-            atom.GetIntProp("old_mapno")
-        except KeyError:
-            pass
-        else:
-            atom.ClearProp("old_mapno")
+    prop = "_MDAnalysis_index"
+    if reactant.GetAtoms()[0].HasProp(prop):
+        for atom in product.GetAtoms():
             idx = atom.GetUnsignedProp("react_atom_idx")
             old_atom = reactant.GetAtomWithIdx(idx)
-            for prop, value in old_atom.GetPropsAsDict().items():
-                _set_atom_property(atom, prop, value)
-            # fix bonds with "crossed" stereo
-            for bond in atom.GetBonds():
-                if bond.GetStereo() == Chem.BondStereo.STEREOANY:
-                    bond.SetStereo(Chem.BondStereo.STEREONONE)
-        atom.ClearProp("react_atom_idx")
+            value = old_atom.GetIntProp(prop)
+            _set_atom_property(atom, prop, value)
+
+
+def _transfer_properties(mol, newmol):
+    """Transfer properties between two RDKit molecules. Requires the
+    `_MDAnalysis_index` property to be present. Modifies `newmol` inplace.
+    """
+    atoms = mol.GetAtoms()
+    if atoms[0].HasProp("_MDAnalysis_index"):
+        props = {}
+        for atom in atoms:
+            ix = atom.GetIntProp("_MDAnalysis_index")
+            props[ix] = atom.GetPropsAsDict()
+        for atom in newmol.GetAtoms():
+            ix = atom.GetIntProp("_MDAnalysis_index")
+            for attr, value in props[ix].items():
+                _set_atom_property(atom, attr, value)
+            # remove properties assigned during reactions
+            atom.ClearProp("old_mapno")
+            atom.ClearProp("react_atom_idx")

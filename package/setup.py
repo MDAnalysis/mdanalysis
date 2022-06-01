@@ -57,8 +57,8 @@ import warnings
 import platform
 
 # Make sure I have the right Python version.
-if sys.version_info[:2] < (3, 7):
-    print('MDAnalysis requires Python 3.7 or better. Python {0:d}.{1:d} detected'.format(*
+if sys.version_info[:2] < (3, 8):
+    print('MDAnalysis requires Python 3.8 or better. Python {0:d}.{1:d} detected'.format(*
           sys.version_info[:2]))
     print('Please upgrade your version of Python.')
     sys.exit(-1)
@@ -74,18 +74,19 @@ else:
     from commands import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "2.2.0-dev0"
+RELEASE = "2.2.0"
 
 is_release = 'dev' not in RELEASE
 
 # Handle cython modules
 try:
     # cython has to be >=0.16 <0.28 to support cython.parallel
+    # minimum cython version now set to 0.28 to match pyproject.toml
     import Cython
     from Cython.Build import cythonize
     cython_found = True
 
-    required_version = "0.16"
+    required_version = "0.28"
     if not Version(Cython.__version__) >= Version(required_version):
         # We don't necessarily die here. Maybe we already have
         #  the cythonized '.c' files.
@@ -189,7 +190,7 @@ def get_numpy_include():
         import numpy as np
     except ImportError:
         print('*** package "numpy" not found ***')
-        print('MDAnalysis requires a version of NumPy (>=1.18.0), even for setup.')
+        print('MDAnalysis requires a version of NumPy (>=1.19.0), even for setup.')
         print('Please get it from http://numpy.scipy.org/ or install it through '
               'your package manager.')
         sys.exit(-1)
@@ -576,7 +577,6 @@ if __name__ == '__main__':
         'Operating System :: Microsoft :: Windows ',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
@@ -590,23 +590,20 @@ if __name__ == '__main__':
     exts, cythonfiles = extensions(config)
 
     install_requires = [
-          'numpy>=1.18.0',
+          'numpy>=1.19.0',
           'biopython>=1.71',
-          'networkx>=1.0',
+          'networkx>=2.0',
           'GridDataFormats>=0.4.0',
           'mmtf-python>=1.0.0',
           'joblib>=0.12',
-          'scipy>=1.0.0',
+          'scipy>=1.5.0',
           'matplotlib>=1.5.1',
           'tqdm>=4.43.0',
           'threadpoolctl',
           'packaging',
+          'fasteners',
+          'gsd>=1.9.3',
     ]
-
-    if not os.name == 'nt':
-        install_requires.append('gsd>=1.4.0')
-    else:
-        install_requires.append('gsd>=1.9.3')
 
     setup(name='MDAnalysis',
           version=RELEASE,
@@ -638,11 +635,11 @@ if __name__ == '__main__':
                         ],
           },
           ext_modules=exts,
-          python_requires='>=3.7',
+          python_requires='>=3.8',
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           setup_requires=[
-              'numpy>=1.18.0',
+              'numpy>=1.19.0',
               'packaging',
           ],
           install_requires=install_requires,
