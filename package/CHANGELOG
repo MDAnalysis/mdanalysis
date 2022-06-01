@@ -58,6 +58,8 @@ Fixes
   * Fixed BAT method Cartesian modifies input data. (Issue #3501)
 
 Enhancements
+  * Add smarts_kwargs to allow greater flexiblity with smarts atom selection
+    (Issue #3469, PR #3470).
   * Added `frames` argument to AnalysisBase.run to allow analysis to run on
   * Added equations for `center_of_mass` and `center_of_geometry`to
     documentation (PR #3671)
@@ -81,10 +83,10 @@ Enhancements
   * CRD extended format can now be explicitly requested with the `extended`
     keyword (Issue #3605)
   * Added benchmarks in lib.distances for enhancement (Issue #3205, PR #3641)
-  * Add smarts_kwargs to allow greater flexiblity with smarts atom selection
-    (Issue #3469, PR #3470).
 
 Changes
+  * smarts selection's `maxMatches` now defaults to max(1000, n_atoms*10)
+    instead of the standard RDKit default of 1000 (Issue #3469, PR #3470).
   * `fasteners` package is now a core dependency (Issues #3230, #1988, PR #3375)
   * The minimm Python, NumPy, and SciPy versions (following NEP29) are now 3.8,
     1.19, and 1.5.0; GSD now also has a minimum version of 1.9.3 and networkx

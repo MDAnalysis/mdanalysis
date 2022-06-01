@@ -637,6 +637,15 @@ class SmartsSelection(Selection):
 
     Uses RDKit to run the query and converts the result to MDAnalysis.
     Supports chirality.
+
+    .. versionchanged:: 2.2.0
+       ``rdkit_wargs`` and ``smarts_kwargs`` can now be passed to control
+       the behaviour of the RDKit converter and RDKit's ``GetSubstructMatches``
+       respectively.
+       The default ``maxMatches`` value passed to ``GetSubstructMatches`` has
+       been changed from ``1000`` to ``max(1000, n_atoms * 10)`` in order to
+       limit cases where too few matches were generated. A warning is now also
+       thrown if ``maxMatches`` has been reached.
     """
     token = 'smarts'
 
@@ -680,15 +689,16 @@ class SmartsSelection(Selection):
             raise ValueError(f"{self.pattern!r} is not a valid SMARTS query")
         mol = group.convert_to("RDKIT", **self.rdkit_kwargs)
         self.smarts_kwargs.setdefault("useChirality", True)
-        self.smarts_kwargs.setdefault("maxMatches", len(group) * 10)
+        self.smarts_kwargs.setdefault("maxMatches", max(1000, len(group) * 10))
         matches = mol.GetSubstructMatches(pattern, **self.smarts_kwargs)
         if len(matches) == self.smarts_kwargs["maxMatches"]:
             warnings.warn("Your smarts-based atom selection returned the max"
                           "number of matches. This indicates that not all"
                           "matching atoms were selected. When calling"
                           "atom_group.select_atoms(), the default value"
-                          "of maxMatches is len(atom_group * 10). To fix, "
-                          "add the following argument to select_atoms: \n"
+                          "of maxMatches is max(100, len(atom_group * 10)). "
+                          "To fix this, add the following argument to "
+                          "select_atoms: \n"
                           "smarts_kwargs={maxMatches: <higher_value>}")
         # flatten all matches and remove duplicated indices
         indices = np.unique([idx for match in matches for idx in match])
@@ -1460,6 +1470,9 @@ class SelectionParser(object):
         .. versionchanged:: 2.0.0
             Added `atol` and `rtol` keywords to select float values. Added
             `rdkit_kwargs` to pass arguments to the RDKitConverter
+        .. versionchanged:: 2.2.0
+            Added ``smarts_kwargs`` argument, allowing users to pass a
+            a dictionary of arguments to RDKit's ``GetSubstructMatches``.
         """
         self.periodic = periodic
         self.atol = atol

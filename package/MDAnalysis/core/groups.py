@@ -3023,12 +3023,14 @@ class AtomGroup(GroupBase):
                 RDKit's `GetSubstructMatches
                 <https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol.GetSubstructMatches>`_.
                 By default, the `useChirality` kwarg in ``rdkit_kwargs`` is set to true
-                and maxMatches in ``smarts_kwargs`` is ``10 * len(AtomGroup)`` or
-                ``10 * len(Universe.atoms)``, whichever is applicable.
-                Note that the number of matches can occasionally exceed the default
-                value of maxMatches, causing too few atoms to be returned. If this
-                occurs, a warning will be issued. The problem can be fixed by increasing
-                the value of maxMatches. This behavior may be updated in the future.
+                and maxMatches in ``smarts_kwargs`` is
+                ``max(1000, 10 * n_atoms)``, where ``n_atoms`` is either
+                ``len(AtomGroup)`` or ``len(Universe.atoms)``, whichever is
+                applicable. Note that the number of matches can occasionally
+                exceed the default value of maxMatches, causing too few atoms
+                to be returned. If this occurs, a warning will be issued. The
+                problem can be fixed by increasing the value of maxMatches.
+                This behavior may be updated in the future.
 
                 >>> universe.select_atoms("C", smarts_kwargs={"maxMatches": 100})
                 <AtomGroup with 100 atoms>
@@ -3188,7 +3190,7 @@ class AtomGroup(GroupBase):
             Added the *smarts* selection. Added `atol` and `rtol` keywords
             to select float values. Added the ``sort`` keyword. Added
             `rdkit_kwargs` to pass parameters to the RDKitConverter.
-        .. versionchanged:: 2.0.1
+        .. versionchanged:: 2.2.0
             Added `smarts_kwargs` to pass parameters to the RDKit
             GetSubstructMatch for *smarts* selection.
         """
