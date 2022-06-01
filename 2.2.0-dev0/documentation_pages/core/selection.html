@@ -349,7 +349,7 @@ expressions into nested Selection tree.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.selection.SelectionParser.parse">
-<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">selectstr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selgroups</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periodic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sorted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rdkit_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#SelectionParser.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.selection.SelectionParser.parse" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">selectstr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selgroups</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periodic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sorted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rdkit_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smarts_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#SelectionParser.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.selection.SelectionParser.parse" title="Permalink to this definition"></a></dt>
 <dd><p>Create a Selection object from a string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -365,6 +365,7 @@ Passed to <a class="reference external" href="https://numpy.org/doc/stable/refer
 <li><p><strong>sorted</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to sorted the output AtomGroup.</p></li>
 <li><p><strong>rdkit_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a><em>, </em><em>optional</em>) – Arguments passed to the RDKitConverter when using selection based
 on SMARTS queries</p></li>
+<li><p><strong>smarts_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a><em>, </em><em>optional</em>) – Arguments passed internally to RDKit’s <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol.GetSubstructMatches">GetSubstructMatches</a>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -381,6 +382,10 @@ on SMARTS queries</p></li>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 2.0.0: </span>Added <cite>atol</cite> and <cite>rtol</cite> keywords to select float values. Added
 <cite>rdkit_kwargs</cite> to pass arguments to the RDKitConverter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.2.0: </span>Added <code class="docutils literal notranslate"><span class="pre">smarts_kwargs</span></code> argument, allowing users to pass a
+a dictionary of arguments to RDKit’s <code class="docutils literal notranslate"><span class="pre">GetSubstructMatches</span></code>.</p>
 </div>
 </dd></dl>
 
@@ -401,6 +406,15 @@ on SMARTS queries</p></li>
 <dd><p>Select atoms based on SMARTS queries.</p>
 <p>Uses RDKit to run the query and converts the result to MDAnalysis.
 Supports chirality.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.2.0: </span><code class="docutils literal notranslate"><span class="pre">rdkit_wargs</span></code> and <code class="docutils literal notranslate"><span class="pre">smarts_kwargs</span></code> can now be passed to control
+the behaviour of the RDKit converter and RDKit’s <code class="docutils literal notranslate"><span class="pre">GetSubstructMatches</span></code>
+respectively.
+The default <code class="docutils literal notranslate"><span class="pre">maxMatches</span></code> value passed to <code class="docutils literal notranslate"><span class="pre">GetSubstructMatches</span></code> has
+been changed from <code class="docutils literal notranslate"><span class="pre">1000</span></code> to <code class="docutils literal notranslate"><span class="pre">max(1000,</span> <span class="pre">n_atoms</span> <span class="pre">*</span> <span class="pre">10)</span></code> in order to
+limit cases where too few matches were generated. A warning is now also
+thrown if <code class="docutils literal notranslate"><span class="pre">maxMatches</span></code> has been reached.</p>
+</div>
 </dd></dl>
 
 <dl class="py function">
