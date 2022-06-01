@@ -238,7 +238,7 @@ jobs:
 
       - name: pip_install_mda
         run: |
-          grep "__version__ =" package/MDAnalysis/version.py | awk '{print $3}' > version.dat
+          grep "__version__ =" package/MDAnalysis/version.py | awk '{print $3}' | tr -d \" > version.dat
           ver=$(python maintainer/norm_version.py --file version.dat)
           pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple MDAnalysis==$ver
           pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple MDAnalysisTests==$ver
