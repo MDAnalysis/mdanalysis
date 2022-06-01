@@ -22,6 +22,8 @@ The rules for this file:
  * 2.2.0
 
 Fixes
+  * Fixed issue where Reader.copy() did not preserve optional arguments
+    and kwargs passed to the original class (Issue #3664, PR #3685)
   * Iterating a SingleFrameReaderBase trajectory now rewinds the
     reader, resetting any modified trajectory attributes to those
     read from file. Fixes behavior that was previously undefined (Issue #3423)
