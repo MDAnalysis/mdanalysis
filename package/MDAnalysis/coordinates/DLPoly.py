@@ -31,10 +31,10 @@ Read DL Poly_ format coordinate files
 import numpy as np
 
 from . import base
-from .base import Timestep
 from . import core
 from ..lib import util
 from ..lib.util import cached
+from .timestep import Timestep
 
 _DLPOLY_UNITS = {'length': 'Angstrom', 'velocity': 'Angstrom/ps', 'time': 'ps'}
 
