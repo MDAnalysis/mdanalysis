@@ -525,14 +525,11 @@ is avoided.</p>
 independently of the original.</p>
 <p>Will also copy the current state of the Timestep held in the original
 Reader.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>No special kwargs are copied, only <cite>convert_units</cite> is
-preserved.</p>
-</div>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 2.2.0: </span>The <code class="xref py py-attr docutils literal notranslate"><span class="pre">convert_units</span></code> attribute is correctly copied; previously
-the unit conversion would always be set to <code class="docutils literal notranslate"><span class="pre">True</span></code> on copy.</p>
+<p><span class="versionmodified changed">Changed in version 2.2.0: </span>Arguments used to construct the reader are correctly captured and
+passed to the creation of the new class. Previously the only
+<code class="docutils literal notranslate"><span class="pre">n_atoms</span></code> was passed to class copies, leading to a class created
+with default parameters which may differ from the original class.</p>
 </div>
 </dd></dl>
 

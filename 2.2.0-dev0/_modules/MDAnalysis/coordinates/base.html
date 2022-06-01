@@ -321,7 +321,7 @@
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">units</span>
 <span class="kn">from</span> <span class="nn">..auxiliary.base</span> <span class="kn">import</span> <span class="n">AuxReader</span>
 <span class="kn">from</span> <span class="nn">..auxiliary.core</span> <span class="kn">import</span> <span class="n">auxreader</span>
-<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">asiterable</span><span class="p">,</span> <span class="n">Namespace</span>
+<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">asiterable</span><span class="p">,</span> <span class="n">Namespace</span><span class="p">,</span> <span class="n">store_init_arguments</span>
 
 
 <div class="viewcode-block" id="Timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.base.Timestep">[docs]</a><span class="k">class</span> <span class="nc">Timestep</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -2238,7 +2238,7 @@
 <span class="sd">       Removed deprecated flags functionality, use convert_units kwarg instead</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
+    <span class="nd">@store_init_arguments</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">ReaderBase</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
@@ -2266,16 +2266,15 @@
 <span class="sd">        Reader.</span>
 
 
-<span class="sd">        .. warning:: No special kwargs are copied, only `convert_units` is</span>
-<span class="sd">                     preserved.</span>
-
 <span class="sd">        .. versionchanged:: 2.2.0</span>
-<span class="sd">           The :attr:`convert_units` attribute is correctly copied; previously</span>
-<span class="sd">           the unit conversion would always be set to ``True`` on copy.</span>
+<span class="sd">           Arguments used to construct the reader are correctly captured and</span>
+<span class="sd">           passed to the creation of the new class. Previously the only</span>
+<span class="sd">           ``n_atoms`` was passed to class copies, leading to a class created</span>
+<span class="sd">           with default parameters which may differ from the original class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
-                             <span class="n">n_atoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
-                             <span class="n">convert_units</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">)</span>
+
+        <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformations</span><span class="p">:</span>
             <span class="n">new</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">transformations</span><span class="p">)</span>
         <span class="c1"># seek the new reader to the same frame we started with</span>
@@ -2420,6 +2419,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_err</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> only contains a single frame&quot;</span>
 
+    <span class="nd">@store_init_arguments</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">SingleFrameReaderBase</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
@@ -2451,16 +2451,14 @@
 <span class="sd">        Reader.</span>
 
 
-<span class="sd">        .. warning:: No special kwargs are copied, only `convert_units` is</span>
-<span class="sd">                     preserved.</span>
-
 <span class="sd">        .. versionchanged:: 2.2.0</span>
-<span class="sd">           The :attr:`convert_units` attribute is correctly copied; previously</span>
-<span class="sd">           the unit conversion would always be set to ``True`` on copy.</span>
+<span class="sd">           Arguments used to construct the reader are correctly captured and</span>
+<span class="sd">           passed to the creation of the new class. Previously the only</span>
+<span class="sd">           ``n_atoms`` was passed to class copies, leading to a class created</span>
+<span class="sd">           with default parameters which may differ from the original class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
-                             <span class="n">n_atoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
-                             <span class="n">convert_units</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">)</span>
+        <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">)</span>
+
         <span class="n">new</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">auxname</span><span class="p">,</span> <span class="n">auxread</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">new</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="n">auxname</span><span class="p">,</span> <span class="n">auxread</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>

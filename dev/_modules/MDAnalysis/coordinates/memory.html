@@ -280,6 +280,7 @@
 <span class="kn">import</span> <span class="nn">errno</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">copy</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">Timestep</span>
@@ -394,11 +395,15 @@
 <span class="sd">        .. versionchanged:: 0.19.0</span>
 <span class="sd">            The input to the MemoryReader now must be a np.ndarray</span>
 <span class="sd">            Added optional velocities and forces</span>
+<span class="sd">        .. versionchanged:: 2.2.0</span>
+<span class="sd">            Input kwargs are now stored under the :attr:`_kwargs` attribute,</span>
+<span class="sd">            and are passed on class creation in :meth:`copy`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="nb">super</span><span class="p">(</span><span class="n">MemoryReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stored_order</span> <span class="o">=</span> <span class="n">order</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
 
         <span class="c1"># See Issue #1685. The block below checks if the coordinate array</span>
         <span class="c1"># passed is of shape (N, 3) and if it is, the coordiante array is</span>
@@ -536,6 +541,7 @@
             <span class="n">forces</span><span class="o">=</span><span class="n">fors</span><span class="p">,</span>
             <span class="n">dt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span><span class="p">,</span>
             <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+            <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span>
         <span class="p">)</span>
         <span class="n">new</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">]</span>
 

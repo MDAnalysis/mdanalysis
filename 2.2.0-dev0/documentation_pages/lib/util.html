@@ -1143,6 +1143,25 @@ decorator:</p>
 </div>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="MDAnalysis.lib.util.store_init_arguments">
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">store_init_arguments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#store_init_arguments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.store_init_arguments" title="Permalink to this definition"></a></dt>
+<dd><p>Decorator to store arguments passed to the init method of a class.</p>
+<p>Arguments are stored as a dictionary in <code class="docutils literal notranslate"><span class="pre">cls._kwargs</span></code>.</p>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Only does a shallow copy, if the arguments are changed
+by the class after passing through the decorator this will be
+reflected in the stored arguments.</p></li>
+<li><p>If not empty, <code class="docutils literal notranslate"><span class="pre">args</span></code> is not unpacked and stored as-is in the
+dictionary. If no <code class="docutils literal notranslate"><span class="pre">args</span></code> are passed, then no <code class="docutils literal notranslate"><span class="pre">arg</span></code> entry will be
+stored in the dictionary.</p></li>
+</ul>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.2.0.</span></p>
+</div>
+</dd></dl>
+
 </section>
 <section id="function-decorators">
 <h2><span class="section-number">13.2.10.9. </span>Function decorators<a class="headerlink" href="#function-decorators" title="Permalink to this heading"></a></h2>

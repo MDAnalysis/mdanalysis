@@ -134,6 +134,7 @@
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
 <span class="kn">from</span> <span class="nn">..lib.mdamath</span> <span class="kn">import</span> <span class="n">triclinic_box</span>
+<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">store_init_arguments</span>
 
 
 <div class="viewcode-block" id="offsets_filename"><a class="viewcode-back" href="../../../documentation_pages/coordinates/XDR.html#MDAnalysis.coordinates.XDR.offsets_filename">[docs]</a><span class="k">def</span> <span class="nf">offsets_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">ending</span><span class="o">=</span><span class="s1">&#39;npz&#39;</span><span class="p">):</span>
@@ -213,6 +214,7 @@
 <span class="sd">       Add a InterProcessLock when generating offsets</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nd">@store_init_arguments</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sub</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">refresh_offsets</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

@@ -244,6 +244,7 @@
 <span class="sd">----------------</span>
 
 <span class="sd">.. autofunction:: cached</span>
+<span class="sd">.. autofunction:: store_init_arguments</span>
 
 <span class="sd">Function decorators</span>
 <span class="sd">-------------------</span>
@@ -2509,6 +2510,45 @@
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">box</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">==</span> <span class="mf">90.</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;ortho&#39;</span><span class="p">,</span> <span class="n">box</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
     <span class="k">return</span> <span class="s1">&#39;tri_vecs&#39;</span><span class="p">,</span> <span class="n">triclinic_vectors</span><span class="p">(</span><span class="n">box</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="store_init_arguments"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.store_init_arguments">[docs]</a><span class="k">def</span> <span class="nf">store_init_arguments</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Decorator to store arguments passed to the init method of a class.</span>
+
+<span class="sd">    Arguments are stored as a dictionary in ``cls._kwargs``.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    * Only does a shallow copy, if the arguments are changed</span>
+<span class="sd">      by the class after passing through the decorator this will be</span>
+<span class="sd">      reflected in the stored arguments.</span>
+<span class="sd">    * If not empty, ``args`` is not unpacked and stored as-is in the</span>
+<span class="sd">      dictionary. If no ``args`` are passed, then no ``arg`` entry will be</span>
+<span class="sd">      stored in the dictionary.</span>
+
+
+<span class="sd">    .. versionadded:: 2.2.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sig</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_kwargs&quot;</span><span class="p">):</span>
+            <span class="n">arg_values</span> <span class="o">=</span> <span class="n">sig</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">arg_values</span><span class="o">.</span><span class="n">apply_defaults</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">arg_values</span><span class="o">.</span><span class="n">arguments</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s2">&quot;self&quot;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">arg</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+                    <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;args&quot;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">arg</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">arg</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">wrapper</span></div>
 </pre></div>
 
            </div>
