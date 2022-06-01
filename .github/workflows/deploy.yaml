@@ -3,6 +3,7 @@ name: Build and upload to PyPI
 on:
   pull_request:
     branches:
+      - develop
       - "package-*"
   push:
     branches:
@@ -179,12 +180,12 @@ jobs:
           packages_dir: testsuite/dist
 
   check_testpypi:
-    if: |
-      github.repository == 'MDAnalysis/mdanalysis' &&
-      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/package'))
+    #if: |
+    #  github.repository == 'MDAnalysis/mdanalysis' &&
+    #  (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/package'))
     name: testpypi check
     runs-on: ${{ matrix.os }}
-    needs: upload_testpypi
+    #needs: upload_testpypi
     strategy:
       fail-fast: false
       matrix:
@@ -237,7 +238,7 @@ jobs:
 
       - name: pip_install_mda
         run: |
-          awk '/__version__ =/ {print $3; quit}' package/MDAnalysis/version.py | tr -d \" > version.dat
+          grep "__version__ =" package/MDAnalysis/version.py | awk '{print $3}' > version.dat
           ver=$(python maintainer/norm_version.py --file version.dat)
           pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple MDAnalysis==$ver
           pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple MDAnalysisTests==$ver
