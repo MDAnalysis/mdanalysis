@@ -452,11 +452,9 @@ cdef class Timestep:
     def positions(self,  new_positions):
         self.has_positions = True
         if cnp.PyArray_Check(new_positions):  # is it an array?
-            if cnp.PyArray_TYPE(new_positions) == self._typenum:  # does it need casting
-                self._pos = cnp.PyArray_GETCONTIGUOUS(new_positions)
-            else:
-                self._pos = cnp.PyArray_Cast(
-                    cnp.PyArray_GETCONTIGUOUS(new_positions), self._typenum)
+            cnp.PyArray_CopyInto(self._pos, new_positions)
+            # copy into target, handles dtype conversion
+            # should we check return code?
         else:
             self._pos[:] = new_positions
 
@@ -595,11 +593,9 @@ cdef class Timestep:
     def velocities(self,  new_velocities):
         self.has_velocities = True
         if cnp.PyArray_Check(new_velocities):  # is it an array?
-            if cnp.PyArray_TYPE(new_velocities) == self._typenum:  # does it need casting
-                self._velocities = cnp.PyArray_GETCONTIGUOUS(new_velocities)
-            else:
-                self._velocities = cnp.PyArray_Cast(
-                    cnp.PyArray_GETCONTIGUOUS(new_velocities), self._typenum)
+            cnp.PyArray_CopyInto(self._velocities, new_velocities)
+            # copy into target, handles dtype conversion
+            # should we check return code?
         else:
             self._velocities[:] = new_velocities
 
@@ -630,11 +626,9 @@ cdef class Timestep:
     def forces(self,  new_forces):
         self.has_forces = True
         if cnp.PyArray_Check(new_forces):  # is it an array?
-            if cnp.PyArray_TYPE(new_forces) == self._typenum:  # does it need casting
-                self._forces = cnp.PyArray_GETCONTIGUOUS(new_forces)
-            else:
-                self._forces = cnp.PyArray_Cast(
-                    cnp.PyArray_GETCONTIGUOUS(new_forces), self._typenum)
+            cnp.PyArray_CopyInto(self._forces, new_forces)
+            # copy into target, handles dtype conversion
+            # should we check return code?
         else:
             self._forces[:] = new_forces
 
