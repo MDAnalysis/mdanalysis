@@ -61,7 +61,7 @@ class TXYZReader(base.ReaderBase):
     format = ['TXYZ', 'ARC']
     # these are assumed!
     units = {'time': 'ps', 'length': 'Angstrom'}
-    _Timestep = base.Timestep
+    _Timestep = timestep.Timestep
 
     def __init__(self, filename, **kwargs):
         super(TXYZReader, self).__init__(filename, **kwargs)

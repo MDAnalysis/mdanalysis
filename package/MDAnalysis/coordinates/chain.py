@@ -555,7 +555,7 @@ class ChainReader(base.ProtoReader):
 
     def _read_frame(self, frame):
         """Position trajectory at frame index `frame` and
-        return :class:`~MDAnalysis.coordinates.base.Timestep`.
+        return :class:`~MDAnalysis.coordinates.timestep.Timestep`.
 
         The frame is translated to the corresponding reader and local
         frame index and the :class:`Timestep` instance in

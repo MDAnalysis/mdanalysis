@@ -446,7 +446,7 @@ class PCA(AnalysisBase):
         -------
         function
             The resulting function f(ts) takes as input a
-            :class:`~MDAnalysis.coordinates.base.Timestep` ts,
+            :class:`~MDAnalysis.coordinates.timestep.Timestep` ts,
             and returns ts with the projected structure
 
             .. warning::

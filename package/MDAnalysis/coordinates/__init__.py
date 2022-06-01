@@ -596,8 +596,8 @@ Attributes
  ``n_frames``
      total number of frames (if known) -- ``None`` if not known
  ``ts``
-     the :class:`~base.Timestep` object; typically customized for each
-     trajectory format and derived from :class:`base.Timestep`.
+     the :class:`~timestep.Timestep` object; typically customized for each
+     trajectory format and derived from :class:`timestep.Timestep`.
  ``units``
      dictionary with keys *time*, *length*, *speed*, *force* and the
      appropriate unit (e.g. 'AKMA' and 'Angstrom' for Charmm dcds, 'ps' and

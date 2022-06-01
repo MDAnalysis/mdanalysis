@@ -242,11 +242,11 @@ class H5MDReader(base.ReaderBase):
 
     Additional data in the *observables* group of the H5MD file are
     loaded into the :attr:`Timestep.data
-    <MDAnalysis.coordinates.base.Timestep.data>` dictionary.
+    <MDAnalysis.coordinates.timestep.Timestep.data>` dictionary.
 
     Only 3D-periodic boxes or no periodicity are supported; for no
     periodicity, :attr:`Timestep.dimensions
-    <MDAnalysis.coordinates.base.Timestep.dimensions>` will return ``None``.
+    <MDAnalysis.coordinates.timestep.Timestep.dimensions>` will return ``None``.
 
     Although H5MD can store varying numbers of particles per time step
     as produced by, e.g., GCMC simulations, MDAnalysis can currently
@@ -824,7 +824,7 @@ class H5MDWriter(base.WriterBase):
     H5MD trajectories are automatically recognised by the
     file extension ".h5md".
 
-    All data from the input :class:`~MDAnalysis.coordinates.base.Timestep` is
+    All data from the input :class:`~MDAnalysis.coordinates.timestep.Timestep` is
     written by default. For detailed information on how :class:`H5MDWriter`
     handles units, compression, and chunking, see the Notes section below.
 
@@ -932,7 +932,7 @@ class H5MDWriter(base.WriterBase):
 
     By default, the writer will write all available data (positions,
     velocities, and forces) if detected in the input
-    :class:`~MDAnalysis.coordinates.base.Timestep`. In addition, the settings
+    :class:`~MDAnalysis.coordinates.timestep.Timestep`. In addition, the settings
     for `compression` and `compression_opts` will be read from
     the first available group of positions, velocities, or forces and used as
     the default value. To write a file without any one of these datsets,
