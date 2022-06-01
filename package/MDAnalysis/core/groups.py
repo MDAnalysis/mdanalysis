@@ -2861,7 +2861,7 @@ class AtomGroup(GroupBase):
 
     def select_atoms(self, sel, *othersel, periodic=True, rtol=1e-05,
                      atol=1e-08, updating=False, sorted=True,
-                     rdkit_kwargs=None, **selgroups):
+                     rdkit_kwargs=None, smarts_kwargs=None, **selgroups):
         """Select atoms from within this Group using a selection string.
 
         Returns an :class:`AtomGroup` sorted according to their index in the
@@ -2894,6 +2894,10 @@ class AtomGroup(GroupBase):
           Arguments passed to the
           :class:`~MDAnalysis.converters.RDKit.RDKitConverter` when using
           selection based on SMARTS queries
+        smarts_kwargs : dict (optional)
+          Arguments passed internally to RDKit's `GetSubstructMatches
+          <https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol.GetSubstructMatches>`_.
+
         **selgroups : keyword arguments of str: AtomGroup (optional)
           when using the "group" keyword in selections, groups are defined by
           passing them as keyword arguments.  See section on **preexisting
@@ -3012,7 +3016,25 @@ class AtomGroup(GroupBase):
             smarts *SMARTS-query*
                 select atoms using Daylight's SMARTS queries, e.g. ``smarts
                 [#7;R]`` to find nitrogen atoms in rings. Requires RDKit.
-                All matches (max 1000) are combined as a unique match
+                All matches are combined as a single unique match. The `smarts`
+                selection accepts two sets of key word arguments from
+                `select_atoms()`: the ``rdkit_kwargs`` are passed internally to
+                `RDKitConverter.convert()` and the ``smarts_kwargs`` are passed to
+                RDKit's `GetSubstructMatches
+                <https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol.GetSubstructMatches>`_.
+                By default, the `useChirality` kwarg in ``rdkit_kwargs`` is set to true
+                and maxMatches in ``smarts_kwargs`` is
+                ``max(1000, 10 * n_atoms)``, where ``n_atoms`` is either
+                ``len(AtomGroup)`` or ``len(Universe.atoms)``, whichever is
+                applicable. Note that the number of matches can occasionally
+                exceed the default value of maxMatches, causing too few atoms
+                to be returned. If this occurs, a warning will be issued. The
+                problem can be fixed by increasing the value of maxMatches.
+                This behavior may be updated in the future.
+
+                >>> universe.select_atoms("C", smarts_kwargs={"maxMatches": 100})
+                <AtomGroup with 100 atoms>
+
             chiral *R | S*
                 select a particular stereocenter. e.g. ``name C and chirality
                 S`` to select only S-chiral carbon atoms.  Only ``R`` and
@@ -3168,6 +3190,9 @@ class AtomGroup(GroupBase):
             Added the *smarts* selection. Added `atol` and `rtol` keywords
             to select float values. Added the ``sort`` keyword. Added
             `rdkit_kwargs` to pass parameters to the RDKitConverter.
+        .. versionchanged:: 2.2.0
+            Added `smarts_kwargs` to pass parameters to the RDKit
+            GetSubstructMatch for *smarts* selection.
         """
 
         if not sel:
@@ -3187,7 +3212,8 @@ class AtomGroup(GroupBase):
                                                    periodic=periodic,
                                                    atol=atol, rtol=rtol,
                                                    sorted=sorted,
-                                                   rdkit_kwargs=rdkit_kwargs)
+                                                   rdkit_kwargs=rdkit_kwargs,
+                                                   smarts_kwargs=smarts_kwargs)
                             for s in sel_strs))
         if updating:
             atomgrp = UpdatingAtomGroup(self, selections, sel_strs)
