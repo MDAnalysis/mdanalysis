@@ -52,12 +52,6 @@ MDAnalysis.
       .. versionchanged:: 0.11.0
          Frames now 0-based; was 1-based
 
-   .. attribute:: _frame
-      
-      frame counter used optionally by some readers (0 based)
-
-      .. versionchanged:: 2.3.0
-         No longer optional and initialised to -1 
 
    .. autoattribute:: time
    .. autoattribute:: dt
@@ -183,7 +177,6 @@ cdef class Timestep:
        'F' (Fortran).
     .. versionchanged:: 2.3.0
         Timestep is now a Cython extension type.
-        _frame is now a compulsory variable and is intialised to -1.
         A dtype for the Timestep can be specified with the `dtype` kwarg.
         All arrays are now forced to be C contiguous using the NumPy C API.
     """
@@ -192,8 +185,7 @@ cdef class Timestep:
 
     cdef uint64_t _n_atoms
     cdef public int64_t  frame
-    # no longer optional
-    cdef public int64_t  _frame
+
 
     # info for numpy C API
     cdef int _typenum
@@ -232,8 +224,6 @@ cdef class Timestep:
         # c++ level objects
         self._n_atoms = n_atoms
         self.frame = -1
-        # init of _frame no longer optional
-        self._frame = -1
 
         # BUG  This is currently hardcoded to match MDA always casting to F32
         # meaning the DTYPE set in the args is not respected.
@@ -659,13 +649,6 @@ cdef class Timestep:
         except NoDataError:
             pass
 
-        # Optional attributes that don't live in .data
-        # should probably iron out these last kinks
-        for att in ('_frame',):
-            try:
-                setattr(ts, att, getattr(other, att))
-            except AttributeError:
-                pass
 
         try:
             other._reader = weakref.ref(ts._reader())
@@ -830,7 +813,6 @@ cdef class Timestep:
         state = {
             "frame": self.frame,
             "_n_atoms": self._n_atoms,
-            "_frame": self._frame,
             "_has_positions": self._has_positions,
             "_has_velocities": self._has_velocities,
             "_has_forces": self._has_forces,
@@ -867,7 +849,6 @@ cdef class Timestep:
         """
         self.frame = state["frame"]
         self._n_atoms = state["_n_atoms"]
-        self._frame = state["_frame"]
         self.has_positions = state["_has_positions"]
         self._has_velocities = state["_has_velocities"]
         self._has_forces = state["_has_forces"]
@@ -952,11 +933,6 @@ cdef class Timestep:
 
         new_TS.frame = self.frame
 
-        for att in ('_frame',):
-            try:
-                setattr(new_TS, att, getattr(self, att))
-            except AttributeError:
-                pass
 
         try:
             new_TS._reader = weakref.ref(self._reader())
