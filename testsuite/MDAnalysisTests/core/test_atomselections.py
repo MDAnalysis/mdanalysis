@@ -585,7 +585,8 @@ class TestSelectionRDKit(object):
             sel = u2.select_atoms("smarts C", smarts_kwargs=dict(maxMatches=2))
             sel2 = u2.select_atoms(
                     "smarts C", smarts_kwargs=dict(maxMatches=1000))
-            assert sel.n_atoms == sel2.n_atoms == 2
+            assert sel.n_atoms == 2
+            assert sel2.n_atoms == 3
 
         sel3 = u2.select_atoms("smarts c")
         assert sel3.n_atoms == 4
