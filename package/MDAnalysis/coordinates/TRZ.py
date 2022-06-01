@@ -51,6 +51,7 @@ import os
 import errno
 
 from . import base
+from ..exceptions import NoDataError
 from .timestep import Timestep
 from ..lib import util
 from ..lib.util import cached
@@ -542,8 +543,8 @@ class TRZWriter(base.WriterBase):
             unitcell = np.zeros(9, dtype=np.float32)
 
         try:
-            vels = ts._velocities
-        except AttributeError:
+            vels = ts.velocities
+        except NoDataError:
             vels = np.zeros((self.n_atoms, 3), dtype=np.float32, order='F')
             warnings.warn("Timestep didn't have velocity information, "
                           "this will be set to zero in output trajectory. ")
