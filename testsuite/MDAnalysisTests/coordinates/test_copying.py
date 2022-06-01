@@ -177,7 +177,7 @@ def test_reader_copied_extra_attributes(original_and_copy_extra_args):
     # Issue #3664
     original, copy = original_and_copy_extra_args
 
-    # memory and chair readers subclass protoreader directly and
+    # memory and chain readers subclass protoreader directly and
     # therefore don't have convert_units or _ts_kwargs
     if original.__class__.__bases__[0].__name__ != "ProtoReader":
         assert original.format not in ('MEMORY', 'CHAIN')
