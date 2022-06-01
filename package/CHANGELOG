@@ -17,7 +17,7 @@ The rules for this file:
          HenokB, umak1106, tamandeeps, Mrqeoqqt, megosato, AnirG, rishu235,
          mtiberti, manishsaini6421, Sukeerti1, robotjellyzone, markvrma, alescoulie,
          mjtadema, PicoCentauri, Atharva7K, aditi2906, orbeckst,  yuxuanzhuang,
-         rsexton2, orioncohen
+         rsexton2, rafaelpap, richardjgowers, orioncohen
 
  * 2.2.0
 
@@ -61,6 +61,10 @@ Enhancements
   * Add smarts_kwargs to allow greater flexiblity with smarts atom selection
     (Issue #3469, PR #3470).
   * Added `frames` argument to AnalysisBase.run to allow analysis to run on
+  * Added DL_POLY Classic support. Now HISTORY files from DL_POLY Classic can be
+  * used. (Issue #3678)
+  * Wheels and dist now get automatically built and deployed on release
+    triggers (Issue #1300, PR #3680)
   * Added equations for `center_of_mass` and `center_of_geometry`to
     documentation (PR #3671)
   * Added `center_of_charge` attribute (PR #3671)
