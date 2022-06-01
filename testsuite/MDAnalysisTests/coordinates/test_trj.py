@@ -29,7 +29,6 @@ from numpy.testing import (
 )
 
 import MDAnalysis as mda
-from MDAnalysis.coordinates.TRJ import TRJReader
 from MDAnalysisTests.coordinates.reference import RefACHE, RefCappedAla
 from MDAnalysisTests.datafiles import (PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2)
 

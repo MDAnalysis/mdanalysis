@@ -204,8 +204,6 @@ import functools
 from functools import wraps
 import textwrap
 import weakref
-import copy
-import shutil
 
 import mmtf
 import numpy as np

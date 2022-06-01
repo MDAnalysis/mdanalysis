@@ -34,7 +34,6 @@ from MDAnalysisTests.datafiles import (
     mol2_zinc, mol2_comments_header, mol2_ligand, mol2_sodium_ion
 )
 from MDAnalysis import Universe
-from MDAnalysis.coordinates.MOL2 import MOL2Reader
 import MDAnalysis as mda
 from MDAnalysisTests import make_Universe
 
