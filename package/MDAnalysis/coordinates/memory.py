@@ -304,7 +304,7 @@ class MemoryReader(base.ProtoReader):
             The input to the MemoryReader now must be a np.ndarray
             Added optional velocities and forces
         .. versionchanged:: 2.2.0
-            Input kwargs are now stored under the `_kwargs` attribute, and
+            Input kwargs are now stored under the :attr:`_kwargs` attribute, and
             are passed on class creation in :meth:`copy`.
         """
 
