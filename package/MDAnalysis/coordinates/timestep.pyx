@@ -143,7 +143,7 @@ from .. import (
     _MULTIFRAME_WRITERS,
     _CONVERTERS
 )
-from .. import NoDataError
+from ..exceptions import NoDataError
 from . import core
 from libcpp cimport bool
 from libc.stdint cimport int64_t, uint64_t
