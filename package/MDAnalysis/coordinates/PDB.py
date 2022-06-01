@@ -152,6 +152,7 @@ import numpy as np
 
 from ..lib import util
 from . import base
+from .timestep import Timestep
 from ..topology.core import guess_atom_element
 from ..exceptions import NoDataError
 
@@ -874,7 +875,7 @@ class PDBWriter(base.WriterBase):
         called at least once to enable extracting topology information from the
         current frame.
         """
-        if isinstance(obj, timestep.Timestep):
+        if isinstance(obj, Timestep):
             raise TypeError("PDBWriter cannot write Timestep objects "
                             "directly, since they lack topology information ("
                             "atom names and types) required in PDB files")

@@ -52,6 +52,7 @@ import errno
 from ..lib import util
 from . import base
 from ..lib.util import openany, cached
+from .timestep import Timestep
 
 
 class TXYZReader(base.ReaderBase):
@@ -61,7 +62,7 @@ class TXYZReader(base.ReaderBase):
     format = ['TXYZ', 'ARC']
     # these are assumed!
     units = {'time': 'ps', 'length': 'Angstrom'}
-    _Timestep = timestep.Timestep
+    _Timestep = Timestep
 
     def __init__(self, filename, **kwargs):
         super(TXYZReader, self).__init__(filename, **kwargs)
