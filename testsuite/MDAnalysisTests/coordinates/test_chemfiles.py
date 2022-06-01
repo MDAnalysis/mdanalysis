@@ -102,7 +102,6 @@ class TestChemfilesReader(MultiframeReaderTest):
     def ref():
         return ChemfilesXYZReference()
 
-
     def test_copy(self, ref):
         # Issue #3664 - test not done in test_copying due to dependencies
         original = ChemfilesReader(ref.trajectory, convert_units=False, dt=2,

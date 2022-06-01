@@ -80,9 +80,8 @@ class TestH5MDReaderBaseAPI(MultiframeReaderTest):
         # Issue #3664 - test not done in test_copying due to dependencies
         original = mda.coordinates.H5MD.H5MDReader(
                 ref.trajectory, convert_units=False, dt=2,
-                                time_offset=10, foo="bar")
+                time_offset=10, foo="bar")
         copy = original.copy()
-
 
         assert original.format not in ('MEMORY', 'CHAIN')
         assert original.convert_units is False
