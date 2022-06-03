@@ -18,6 +18,7 @@ The rules for this file:
  * 2.3.0
 
 Fixes
+  * Fixes awk call in deploy.yaml tests for macos runners (Issue #3693)
 
 Enhancements
 
@@ -75,7 +76,6 @@ Fixes
 Enhancements
   * Add smarts_kwargs to allow greater flexiblity with smarts atom selection
     (Issue #3469, PR #3470).
-  * Added `frames` argument to AnalysisBase.run to allow analysis to run on
   * Added DL_POLY Classic support. Now HISTORY files from DL_POLY Classic can be
   * used. (Issue #3678)
   * Wheels and dist now get automatically built and deployed on release
