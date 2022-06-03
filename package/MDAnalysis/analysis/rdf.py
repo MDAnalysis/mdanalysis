@@ -118,10 +118,10 @@ class InterRDF(AnalysisBase):
     norm : str, {'rdf', 'density', 'none'}
           For 'rdf' calculate :math:`g_{ab}(r)`. For
           'density' the :ref:`single particle density<equation-nab>`
-          :math:`n_{ab}(r)` is computed. 'none' calculates the number of
+          :math:`n_{ab}(r)` is computed. 'none' computes the number of
           particles occurences in each spherical shell.
 
-          .. versionadded:: 2.2.0
+          .. versionadded:: 2.3.0
 
     exclusion_block : tuple
         A tuple representing the tile to exclude from the distance array.
@@ -354,10 +354,10 @@ class InterRDF_s(AnalysisBase):
     norm : str, {'rdf', 'density', 'none'}
         For 'rdf' calculate :math:`g_{ab}(r)`. For
         'density' the :ref:`single particle density<equation-nab>`
-        :math:`n_{ab}(r)` is computed. 'none' calculates the number of
+        :math:`n_{ab}(r)` is computed. 'none' computes the number of
         particles occurences in each spherical shell.
 
-        .. versionadded:: 2.2.0
+        .. versionadded:: 2.3.0
 
     density : bool
         `False`: calculate :math:`g_{ab}(r)`; `True`: calculate
@@ -371,7 +371,7 @@ class InterRDF_s(AnalysisBase):
             meaning. Since 1.0.1 it is officially supported as
             documented.
 
-        .. deprecated:: 2.2.0
+        .. deprecated:: 2.3.0
             Instead of `density=True` use `norm='density'`
 
     Attributes
@@ -505,9 +505,9 @@ class InterRDF_s(AnalysisBase):
        and ``cdf`` of the ``results`` attribute
        of :class:`~MDAnalysis.analysis.AnalysisBase`.
 
-    .. versionchanged:: 2.2.0
+    .. versionchanged:: 2.3.0
        Introduce `norm` and `exclusion_blocks` attributes.
-    .. deprecated:: 2.2.0
+    .. deprecated:: 2.3.0
        Instead of `density=True` use `norm='density'`
     """
     def __init__(self,
@@ -535,7 +535,7 @@ class InterRDF_s(AnalysisBase):
 
         if density:
             warnings.warn("The `density` attribute was deprecated in "
-                          "MDAnalysis 2.2.0 and will be removed in "
+                          "MDAnalysis 2.3.0 and will be removed in "
                           "MDAnalysis 3.0.0. Please use `norm=density` "
                           "instead.", DeprecationWarning)
             self.norm = "density"
