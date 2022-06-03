@@ -28,17 +28,11 @@ jobs:
         fail-fast: false
         matrix:
           os: [ubuntu-latest, ]
-          python-version: [3.8, 3.9]
+          python-version: [3.8, 3.9, "3.10"]
           full-deps: [true, ]
           install_hole: [true, ]
           codecov: [true, ]
           include:
-            - name: linux_mindeps_py3_10
-              os: ubuntu-latest
-              python-version: "3.10"
-              full-deps: false
-              install_hole: true
-              codecov: true
             - name: macOS_bigsur_py39
               os: macOS-11
               python-version: 3.9

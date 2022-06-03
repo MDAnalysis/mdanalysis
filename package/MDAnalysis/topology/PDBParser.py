@@ -186,7 +186,7 @@ class PDBParser(TopologyReaderBase):
        are now assigned (Issue #2422).
        Aliased ``bfactors`` topologyattribute to ``tempfactors``.
        ``bfactors`` is deprecated and will be removed in 3.0 (Issue #1901)
-    .. versionchanged:: 2.2.0
+    .. versionchanged:: 2.3.0
        Raise `UserWarning` instead `RuntimeError`
        when CONECT records are corrupt.
     """

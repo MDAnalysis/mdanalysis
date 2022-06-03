@@ -151,6 +151,7 @@ import collections
 import numpy as np
 
 from ..lib import util
+from ..lib.util import store_init_arguments
 from . import base
 from ..topology.core import guess_atom_element
 from ..exceptions import NoDataError
@@ -244,6 +245,7 @@ class PDBReader(base.ReaderBase):
     format = ['PDB', 'ENT']
     units = {'time': None, 'length': 'Angstrom'}
 
+    @store_init_arguments
     def __init__(self, filename, **kwargs):
         """Read coordinates from *filename*.
 
@@ -543,7 +545,7 @@ class PDBWriter(base.WriterBase):
        last character of segid. Should a chainID not be present, or not
        conform to the PDB standard, the default value of  'X' is used.
 
-    .. versionchanged:: 2.2.0
+    .. versionchanged:: 2.3.0
        Do not write unusable conect records when ag index
        is larger than 100000.
     """
