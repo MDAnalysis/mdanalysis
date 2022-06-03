@@ -43,6 +43,7 @@ import re
 
 from . import base
 import MDAnalysis.lib.util as util
+from MDAnalysis.lib.util import store_init_arguments
 
 
 class GMSReader(base.ReaderBase):
@@ -76,6 +77,7 @@ class GMSReader(base.ReaderBase):
     # these are assumed!
     units = {'time': 'ps', 'length': 'Angstrom'}
 
+    @store_init_arguments
     def __init__(self, outfilename, **kwargs):
         super(GMSReader, self).__init__(outfilename, **kwargs)
 

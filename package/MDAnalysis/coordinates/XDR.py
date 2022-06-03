@@ -42,6 +42,7 @@ import fasteners
 
 from . import base
 from ..lib.mdamath import triclinic_box
+from ..lib.util import store_init_arguments
 
 
 def offsets_filename(filename, ending='npz'):
@@ -121,6 +122,7 @@ class XDRBaseReader(base.ReaderBase):
        Add a InterProcessLock when generating offsets
 
     """
+    @store_init_arguments
     def __init__(self, filename, convert_units=True, sub=None,
                  refresh_offsets=False, **kwargs):
         """
