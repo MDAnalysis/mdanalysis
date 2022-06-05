@@ -227,7 +227,7 @@ cdef class Timestep:
         particle_dependent_dim_tmp[0] = 0
         particle_dependent_dim_tmp[1] = 0
 
-        # these must be initialised, we initialise small
+        # these must be initialised, we initialise size 0
         self._unitcell = cnp.PyArray_ZEROS(
             1, unitcell_dim_tmp, self._typenum, 0)
         self._pos = cnp.PyArray_EMPTY(
