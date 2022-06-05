@@ -379,6 +379,7 @@ static void _triclinic_pbc(coordinate* coords, uint64_t numcoords, float* box)
     }
 }
 
+
 static void _calc_distance_array(coordinate* ref, uint64_t numref, coordinate* conf,
                                  uint64_t numconf, double* distances)
 {
@@ -399,6 +400,21 @@ static void _calc_distance_array(coordinate* ref, uint64_t numref, coordinate* c
     }
   }
 }
+
+
+
+
+
+template <typename T, typename  U>
+void DistanceArray(T ref, uint64_t numref, U conf, uint64_t numconf, double *distances)
+{
+
+    auto ref_ = _wraps_ag(ref); 
+    auto conf_ = _wraps_ag(conf);
+    
+    _calc_distance_array((coordinate *)ref_, numref, (coordinate *)conf_, numconf, distances);
+}
+
 
 static void _calc_distance_array_ortho(coordinate* ref, uint64_t numref, coordinate* conf,
                                        uint64_t numconf, float* box, double* distances)

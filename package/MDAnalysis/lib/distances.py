@@ -69,7 +69,8 @@ Functions
 """
 import numpy as np
 from numpy.lib.utils import deprecate
-
+from typing import Union, Optional
+from ..core.groups import AtomGroup
 from .util import check_coords, check_box
 from .mdamath import triclinic_vectors
 from ._augment import augment_coordinates, undo_augment
@@ -172,8 +173,8 @@ def _check_result_array(result, shape):
 
 @check_coords('reference', 'configuration', reduce_result_if_single=False,
               check_lengths_match=False)
-def distance_array(reference, configuration, box=None, result=None,
-                   backend="serial"):
+def distance_array(reference: Union[np.ndarray, AtomGroup], configuration: Union[np.ndarray, AtomGroup], box: Optional[np.ndarray] = None, result=None,
+                   backend: str = "serial") -> None:
     """Calculate all possible distances between a reference set and another
     configuration.
 
