@@ -681,7 +681,7 @@ cdef class Timestep:
         .. versionadded:: 0.11.0
         """
         if not isinstance(other, Timestep):
-            return False
+            return NotImplemented
 
         if not self.frame == other.frame:
             return False
