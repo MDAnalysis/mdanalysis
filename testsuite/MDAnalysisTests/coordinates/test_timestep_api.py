@@ -154,6 +154,14 @@ class TestTimestep(object):
         ts.triclinic_dimensions = ref_vec
         assert_equal(ts.dimensions, self.newbox)
 
+    def test_set_dimensions_None(self,ts):
+        ts.dimensions = None
+        assert(not ts._unitcell.any())
+
+    def test_set_triclinic_dimensions_None(self,ts):
+        ts.triclinic_dimensions = None
+        assert(not ts._unitcell.any())
+
     def test_coordinate_getter_shortcuts(self, ts):
         """testing that reading _x, _y, and _z works as expected
         # (Issue 224) (TestTimestep)"""
