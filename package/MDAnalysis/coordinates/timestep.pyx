@@ -718,8 +718,8 @@ cdef class Timestep:
 
         return True
 
-    def __ne__(self, other):
-        return not self == other
+    # __ne__ is defers to __eq__ and inverts
+
 
     def __getitem__(self, atoms):
         """Get a selection of coordinates
