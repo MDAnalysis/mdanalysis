@@ -1,5 +1,5 @@
 from libcpp cimport bool
-from libc.stdint cimport int64_t, uint64_t
+from libc.stdint cimport uint64_t
 cimport numpy as cnp
 cnp.import_array()
 
