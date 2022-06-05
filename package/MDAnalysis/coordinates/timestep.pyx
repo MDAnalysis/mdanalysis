@@ -202,7 +202,7 @@ cdef class Timestep:
         self._n_atoms = n_atoms
         self.frame = -1
 
-        # BUG  This is currently hardcoded to match MDA always casting to F32
+        # NOTE  This is currently hardcoded to match MDA always casting to F32
         # meaning the DTYPE set in the args is not respected.
         # to fix remove hardcode with introspection of dtype following
         # discussion of appropriate casting rules
