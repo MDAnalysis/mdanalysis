@@ -1,5 +1,5 @@
 from libcpp cimport bool
-from libc.stdint cimport uint64_t
+from libc.stdint cimport uint64_t, int64_t
 cimport numpy as cnp
 cnp.import_array()
 
@@ -24,7 +24,7 @@ cdef class Timestep:
     cdef bool _has_velocities
     cdef bool _has_forces
 
-    # 
+    # unitcell and particle dependent data
     # these have to be public for testing
     cdef public cnp.ndarray _unitcell
     cdef public cnp.ndarray _pos
