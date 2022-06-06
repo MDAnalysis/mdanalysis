@@ -130,10 +130,6 @@ class TestTimestep(object):
     def test_default_dtype_npf32(self, ts):
         assert_equal(ts.dtype, np.float32)
 
-    @pytest.mark.parametrize('dtype', [int, np.int8, np.bool, np.complex])
-    def test_dtype_not_floating(self, dtype):
-        with pytest.raises(TypeError, match='dtype must be one of'):
-            self.Timestep(self.size, dtype=dtype)
 
     # Dimensions has 2 possible cases
     # Timestep doesn't do dimensions,

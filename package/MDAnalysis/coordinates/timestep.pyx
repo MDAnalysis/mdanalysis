@@ -176,21 +176,18 @@ cdef class Timestep:
        'F' (Fortran).
     .. versionchanged:: 2.3.0
         Timestep is now a Cython extension type.
-        A dtype for the Timestep can be specified with the `dtype` kwarg.
         All arrays are now forced to be C contiguous using the NumPy C API.
     """
 
     order = 'C'
 
-    def __cinit__(self, uint64_t n_atoms, dtype=np.float32, **kwargs):
+    def __cinit__(self, uint64_t n_atoms, **kwargs):
         """Initialise C++ level parameters of a Timestep
 
         Parameters
         ----------
         n_atoms : uint64
           The total number of atoms this Timestep describes
-        dtype : `numpy_dtype`, optional
-          The NumPy dtype of the arrays in this timestep
 
 
         .. versionadded:: 2.3.0
@@ -202,7 +199,7 @@ cdef class Timestep:
 
         # NOTE  This is currently hardcoded to match MDA always casting to F32
         # meaning the DTYPE set in the args is not respected.
-        # to fix remove hardcode with introspection of dtype following
+        # to fix remove hardcode with introspection of a dtype kwarg following
         # discussion of appropriate casting rules
         self._typenum = cnp.NPY_FLOAT32
 
@@ -240,15 +237,13 @@ cdef class Timestep:
         self._forces = cnp.PyArray_EMPTY(
             2, particle_dependent_dim_tmp, self._typenum, 0)
 
-    def __init__(self, uint64_t n_atoms, dtype=np.float32, **kwargs):
+    def __init__(self, uint64_t n_atoms, **kwargs):
         """Create a Timestep, representing a frame of a trajectory
 
         Parameters
         ----------
         n_atoms : uint64
           The total number of atoms this Timestep describes
-        dtype: numpy_dtype, optional
-          The NumPy dtype of the arrays in this timestep
         positions : bool, optional
           Whether this Timestep has position information [``True``]
         velocities : bool (optional)
@@ -270,12 +265,10 @@ cdef class Timestep:
            Can add and remove position/velocity/force information by using
            the ``has_*`` attribute.
         .. versionchanged:: 2.3.0
-           Added the `dtype` kwarg to specify a type for the timestep.
+           Added the `dtype` attribute hardcoded to :class:`~numpy.float32`.
         """
-        # python objects
-        if dtype not in (np.float32, np.float64):
-            raise TypeError("dtype must be one of (np.float32, np.float64)")
-        self._dtype = dtype
+        # hardcoded
+        self._dtype = np.float32
 
         self.data = {}
 
@@ -317,7 +310,7 @@ cdef class Timestep:
     @property
     def dtype(self):
         """The NumPy dtype of the timestep, all arrays in the timestep will
-            have this dtype (yet to be finalised)
+            have this dtype. Currently hardcoded to :class:`~numpy.float32`.
 
         .. versionadded:: 2.3.0
            Added dtype
@@ -439,7 +432,6 @@ cdef class Timestep:
         if cnp.PyArray_Check(new_positions):  # is it an array?
             cnp.PyArray_CopyInto(self._pos, new_positions)
             # copy into target, handles dtype conversion
-            # should we check return code?
         else:
             self._pos[:] = new_positions
 
@@ -580,7 +572,6 @@ cdef class Timestep:
         if cnp.PyArray_Check(new_velocities):  # is it an array?
             cnp.PyArray_CopyInto(self._velocities, new_velocities)
             # copy into target, handles dtype conversion
-            # should we check return code?
         else:
             self._velocities[:] = new_velocities
 
@@ -613,7 +604,6 @@ cdef class Timestep:
         if cnp.PyArray_Check(new_forces):  # is it an array?
             cnp.PyArray_CopyInto(self._forces, new_forces)
             # copy into target, handles dtype conversion
-            # should we check return code?
         else:
             self._forces[:] = new_forces
 
@@ -830,7 +820,7 @@ cdef class Timestep:
            removed implementations that use `__dict__` class attribute
 
         """
-        return (self.n_atoms,), {"dtype": self.dtype}
+        return (self.n_atoms,), {}
 
     def __setstate__(self, state):
         """Restore class from `state` dictionary in unpickling of Timestep
