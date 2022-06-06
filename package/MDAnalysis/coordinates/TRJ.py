@@ -140,6 +140,7 @@ import MDAnalysis
 from .timestep import Timestep
 from . import base
 from ..lib import util
+from ..lib.util import store_init_arguments
 logger = logging.getLogger("MDAnalysis.coordinates.AMBER")
 
 
@@ -175,6 +176,7 @@ class TRJReader(base.ReaderBase):
     units = {'time': 'ps', 'length': 'Angstrom'}
     _Timestep = Timestep
 
+    @store_init_arguments
     def __init__(self, filename, n_atoms=None, **kwargs):
         super(TRJReader, self).__init__(filename, **kwargs)
         if n_atoms is None:
@@ -433,6 +435,7 @@ class NCDFReader(base.ReaderBase):
 
     _Timestep = Timestep
 
+    @store_init_arguments
     def __init__(self, filename, n_atoms=None, mmap=None, **kwargs):
 
         self._mmap = mmap

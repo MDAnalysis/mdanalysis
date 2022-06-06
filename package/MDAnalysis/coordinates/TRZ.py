@@ -54,7 +54,7 @@ from . import base
 from ..exceptions import NoDataError
 from .timestep import Timestep
 from ..lib import util
-from ..lib.util import cached
+from ..lib.util import cached, store_init_arguments
 from .core import triclinic_box, triclinic_vectors
 
 
@@ -92,6 +92,7 @@ class TRZReader(base.ReaderBase):
 
     units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps'}
 
+    @store_init_arguments
     def __init__(self, trzfilename, n_atoms=None, **kwargs):
         """Creates a TRZ Reader
 

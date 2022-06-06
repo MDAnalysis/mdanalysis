@@ -213,6 +213,7 @@ import MDAnalysis as mda
 from . import base, core
 from ..exceptions import NoDataError
 from ..due import due, Doi
+from MDAnalysis.lib.util import store_init_arguments
 try:
     import h5py
 except ImportError:
@@ -387,6 +388,7 @@ class H5MDReader(base.ReaderBase):
     @due.dcite(Doi("10.1016/j.cpc.2014.01.018"),
                description="Specifications of the H5MD standard",
                path=__name__, version='1.1')
+    @store_init_arguments
     def __init__(self, filename,
                  convert_units=True,
                  driver=None,

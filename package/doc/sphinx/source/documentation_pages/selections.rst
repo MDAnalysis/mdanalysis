@@ -164,9 +164,22 @@ moltype *molecule-type*
     the TPR format defines the molecule type.
 
 smarts *SMARTS-query*
-    select atoms using Daylight's SMARTS queries, e.g. ``smarts [#7;R]`` to
-    find nitrogen atoms in rings. Requires RDKit. All matches (max 1000) are
-    combined as a unique match.
+    select atoms using Daylight's SMARTS queries, e.g. ``smarts
+    [#7;R]`` to find nitrogen atoms in rings. Requires RDKit.
+    All matches are combined as a single unique match. The `smarts`
+    selection accepts two sets of key word arguments from
+    `select_atoms()`: the ``rdkit_kwargs`` are passed internally to
+    `RDKitConverter.convert()` and the ``smarts_kwargs`` are passed to
+    RDKit's `GetSubstructMatches
+    <https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol.GetSubstructMatches>`_.
+    By default, the `useChirality` kwarg in ``rdkit_kwargs`` is set to true
+    and maxMatches in ``smarts_kwargs`` is ``max(1000, 10 * n_atoms)``, where
+    ``n_atoms`` is either ``len(AtomGroup)`` or ``len(Universe.atoms)``,
+    whichever is applicable. Note that the number of matches can occasionally
+    exceed the default value of maxMatches, causing too few atoms to be
+    returned. If this occurs, a warning will be issued. The problem can be
+    fixed by increasing the value of maxMatches. This behavior may be updated
+    in the future
 
 chiral *R | S*
     select a particular stereocenter. e.g. ``name C and chirality S``

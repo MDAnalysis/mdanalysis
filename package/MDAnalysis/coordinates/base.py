@@ -140,7 +140,7 @@ from .. import (
 from .. import units
 from ..auxiliary.base import AuxReader
 from ..auxiliary.core import auxreader
-from ..lib.util import asiterable, Namespace
+from ..lib.util import asiterable, Namespace, store_init_arguments
 
 
 class FrameIteratorBase(object):
@@ -1349,7 +1349,7 @@ class ReaderBase(ProtoReader):
        Removed deprecated flags functionality, use convert_units kwarg instead
 
     """
-
+    @store_init_arguments
     def __init__(self, filename, convert_units=True, **kwargs):
         super(ReaderBase, self).__init__()
 
@@ -1377,16 +1377,15 @@ class ReaderBase(ProtoReader):
         Reader.
 
 
-        .. warning:: No special kwargs are copied, only `convert_units` is
-                     preserved.
-
         .. versionchanged:: 2.2.0
-           The :attr:`convert_units` attribute is correctly copied; previously
-           the unit conversion would always be set to ``True`` on copy.
+           Arguments used to construct the reader are correctly captured and
+           passed to the creation of the new class. Previously the only
+           ``n_atoms`` was passed to class copies, leading to a class created
+           with default parameters which may differ from the original class.
         """
-        new = self.__class__(self.filename,
-                             n_atoms=self.n_atoms,
-                             convert_units=self.convert_units)
+
+        new = self.__class__(**self._kwargs)
+
         if self.transformations:
             new.add_transformations(*self.transformations)
         # seek the new reader to the same frame we started with
@@ -1531,6 +1530,7 @@ class SingleFrameReaderBase(ProtoReader):
     """
     _err = "{0} only contains a single frame"
 
+    @store_init_arguments
     def __init__(self, filename, convert_units=True, n_atoms=None, **kwargs):
         super(SingleFrameReaderBase, self).__init__()
 
@@ -1562,16 +1562,14 @@ class SingleFrameReaderBase(ProtoReader):
         Reader.
 
 
-        .. warning:: No special kwargs are copied, only `convert_units` is
-                     preserved.
-
         .. versionchanged:: 2.2.0
-           The :attr:`convert_units` attribute is correctly copied; previously
-           the unit conversion would always be set to ``True`` on copy.
+           Arguments used to construct the reader are correctly captured and
+           passed to the creation of the new class. Previously the only
+           ``n_atoms`` was passed to class copies, leading to a class created
+           with default parameters which may differ from the original class.
         """
-        new = self.__class__(self.filename,
-                             n_atoms=self.n_atoms,
-                             convert_units=self.convert_units)
+        new = self.__class__(**self._kwargs)
+
         new.ts = self.ts.copy()
         for auxname, auxread in self._auxs.items():
             new.add_auxiliary(auxname, auxread.copy())

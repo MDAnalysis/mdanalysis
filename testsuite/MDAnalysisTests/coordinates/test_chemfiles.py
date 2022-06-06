@@ -20,6 +20,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import numpy as np
+from numpy.testing import assert_allclose
 import pytest
 
 import MDAnalysis as mda
@@ -101,6 +102,38 @@ class TestChemfilesReader(MultiframeReaderTest):
     def ref():
         return ChemfilesXYZReference()
 
+    def test_copy(self, ref):
+        # Issue #3664 - test not done in test_copying due to dependencies
+        original = ChemfilesReader(ref.trajectory, convert_units=False, dt=2,
+                                   time_offset=10, foo="bar")
+        copy = original.copy()
+
+        assert original.format not in ('MEMORY', 'CHAIN')
+        assert original.convert_units is False
+        assert copy.convert_units is False
+        assert original._ts_kwargs['time_offset'] == 10
+        assert copy._ts_kwargs['time_offset'] == 10
+        assert original._ts_kwargs['dt'] == 2
+        assert copy._ts_kwargs['dt'] == 2
+
+        assert original.ts.data['time_offset'] == 10
+        assert copy.ts.data['time_offset'] == 10
+
+        assert original.ts.data['dt'] == 2
+        assert copy.ts.data['dt'] == 2
+
+        assert copy._kwargs['foo'] == 'bar'
+
+        # check coordinates
+        assert original.ts.frame == copy.ts.frame
+        assert_allclose(original.ts.positions, copy.ts.positions)
+
+        original.next()
+        copy.next()
+
+        assert original.ts.frame == copy.ts.frame
+        assert_allclose(original.ts.positions, copy.ts.positions)
+
 
 @pytest.mark.skipif(not check_chemfiles_version(), reason="Wrong version of chemfiles")
 class TestChemfilesWriter(BaseWriterTest):
@@ -131,6 +164,11 @@ class TestChemfiles(object):
 
         for ts in u.trajectory:
             assert ts.n_atoms == 18364
+
+        # check that chemfiles format is passed to copies Issue #3664
+        new_reader = u.trajectory.copy()
+        assert new_reader._format == "LAMMPS Data"
+        assert new_reader._kwargs['chemfiles_format'] == "LAMMPS Data"
 
     def test_changing_system_size(self, tmpdir):
         outfile = "chemfiles-changing-size.xyz"

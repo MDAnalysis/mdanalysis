@@ -51,9 +51,8 @@ import errno
 
 from ..lib import util
 from . import base
-from ..lib.util import openany, cached
+from ..lib.util import openany, cached, store_init_arguments
 from .timestep import Timestep
-
 
 class TXYZReader(base.ReaderBase):
     """Reads from a TXYZ file"""
@@ -64,6 +63,7 @@ class TXYZReader(base.ReaderBase):
     units = {'time': 'ps', 'length': 'Angstrom'}
     _Timestep = Timestep
 
+    @store_init_arguments
     def __init__(self, filename, **kwargs):
         super(TXYZReader, self).__init__(filename, **kwargs)
 

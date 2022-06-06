@@ -151,6 +151,7 @@ import collections
 import numpy as np
 
 from ..lib import util
+from ..lib.util import store_init_arguments
 from . import base
 from .timestep import Timestep
 from ..topology.core import guess_atom_element
@@ -245,6 +246,7 @@ class PDBReader(base.ReaderBase):
     format = ['PDB', 'ENT']
     units = {'time': None, 'length': 'Angstrom'}
 
+    @store_init_arguments
     def __init__(self, filename, **kwargs):
         """Read coordinates from *filename*.
 
