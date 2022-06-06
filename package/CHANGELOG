@@ -13,11 +13,13 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay
+??/??/?? IAlibay, hmacdope
 
  * 2.3.0
 
 Fixes
+  * Timestep has been converted to a Cython Extension type
+    (CZI Performance track, PR #3683)
   * Fixes awk call in deploy.yaml tests for macos runners (Issue #3693)
 
 Enhancements
