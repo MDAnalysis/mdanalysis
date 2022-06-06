@@ -119,6 +119,13 @@ class TestTimestep(object):
 
     def test_repr(self, ts):
         assert_equal(type(repr(ts)), str)
+    
+    def test_repr_with_box(self, ts):
+        assert("with unit cell dimensions" in repr(ts))
+
+    def test_repr_no_box(self, ts):
+        ts.dimensions = None
+        assert("with unit cell dimensions" not in repr(ts))
 
     def test_default_dtype_npf32(self, ts):
         assert_equal(ts.dtype, np.float32)
