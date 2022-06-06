@@ -764,9 +764,9 @@ cdef class Timestep:
 
     def __repr__(self):
         desc = "< Timestep {0}".format(self.frame)
-        try:
+        if self.dimensions is not None:
             tail = " with unit cell dimensions {0} >".format(self.dimensions)
-        except NotImplementedError:
+        else: 
             tail = " >"
         return desc + tail
 
