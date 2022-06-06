@@ -24,6 +24,12 @@ cdef class Timestep:
     cdef bool _has_velocities
     cdef bool _has_forces
 
+
+    # tracks whether particle associated data has been allocated correct shape
+    cdef bool _positions_alloc
+    cdef bool _velocities_alloc
+    cdef bool _forces_alloc
+
     # unitcell and particle dependent data
     # these have to be public for testing
     cdef public cnp.ndarray _unitcell

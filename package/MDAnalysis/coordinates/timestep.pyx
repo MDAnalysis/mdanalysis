@@ -152,7 +152,6 @@ cimport numpy as cnp
 cnp.import_array()
 
 
-
 cdef class Timestep:
     """Timestep data for one frame
 
@@ -183,7 +182,6 @@ cdef class Timestep:
 
     order = 'C'
 
-
     def __cinit__(self, uint64_t n_atoms, dtype=np.float32, **kwargs):
         """Initialise C++ level parameters of a Timestep
 
@@ -211,6 +209,11 @@ cdef class Timestep:
         self._has_positions = False
         self._has_velocities = False
         self._has_forces = False
+
+        # track whether array has been allocated correct size
+        self._positions_alloc = False
+        self._velocities_alloc = False
+        self._forces_alloc = False
 
         # use this to create numpy zeros and empties of the right shape using
         # NumPy C API
@@ -334,12 +337,17 @@ cdef class Timestep:
     @has_positions.setter
     def has_positions(self, val):
         if val and not self._has_positions:
-            # Setting this will always reallocate position data
-            # ie
-            # True -> False -> True will wipe data from first True state
-            self._pos = cnp.PyArray_ZEROS(
-                2, self._particle_dependent_dim, self._typenum, 0)
-            self._has_positions = True
+            if self._positions_alloc:  # already allocated
+                # Setting this will always zero fill position data
+                # ie
+                # True -> False -> True will wipe data from first True state
+                cnp.PyArray_FILLWBYTE(self._pos, 0)
+                self._has_positions = True
+            else:  # first time, we need to allocate to correct shape
+                self._pos = cnp.PyArray_ZEROS(
+                    2, self._particle_dependent_dim, self._typenum, 0)
+                self._has_positions = True
+                self._positions_alloc = True
         elif not val:
             # Unsetting val won't delete the numpy array
             self._has_positions = False
@@ -357,12 +365,17 @@ cdef class Timestep:
     @has_velocities.setter
     def has_velocities(self, val):
         if val and not self._has_velocities:
-            # Setting this will always reallocate velocity data
-            # ie
-            # True -> False -> True will wipe data from first True state
-            self._velocities = cnp.PyArray_ZEROS(
-                2, self._particle_dependent_dim, self._typenum, 0)
-            self._has_velocities = True
+            if self._velocities_alloc:  # already allocated
+                # Setting this will always zero fill velocity data
+                # ie
+                # True -> False -> True will wipe data from first True state
+                cnp.PyArray_FILLWBYTE(self._velocities, 0)
+                self._has_velocities = True
+            else:  # first time, we need to allocate to correct shape
+                self._velocities = cnp.PyArray_ZEROS(
+                    2, self._particle_dependent_dim, self._typenum, 0)
+                self._has_velocities = True
+                self._velocities_alloc = True
         elif not val:
             # Unsetting val won't delete the numpy array
             self._has_velocities = False
@@ -380,12 +393,17 @@ cdef class Timestep:
     @has_forces.setter
     def has_forces(self, val):
         if val and not self._has_forces:
-            # Setting this will always reallocate force data
-            # ie
-            # True -> False -> True will wipe data from first True state
-            self._forces = cnp.PyArray_ZEROS(
-                2, self._particle_dependent_dim, self._typenum, 0)
-            self._has_forces = True
+            if self._forces_alloc:  # already allocated
+                # Setting this will always zero fill force data
+                # ie
+                # True -> False -> True will wipe data from first True state
+                cnp.PyArray_FILLWBYTE(self._forces, 0)
+                self._has_forces = True
+            else:  # first time, we need to allocate to correct shape
+                self._forces = cnp.PyArray_ZEROS(
+                    2, self._particle_dependent_dim, self._typenum, 0)
+                self._has_forces = True
+                self._forces_alloc = True
         elif not val:
             # Unsetting val won't delete the numpy array
             self._has_forces = False
@@ -626,7 +644,6 @@ cdef class Timestep:
         except NoDataError:
             pass
 
-
         try:
             other._reader = weakref.ref(ts._reader())
         except TypeError:  # TypeError from calling None weakref
@@ -720,7 +737,6 @@ cdef class Timestep:
 
     # __ne__ is defers to __eq__ and inverts
 
-
     def __getitem__(self, atoms):
         """Get a selection of coordinates
 
@@ -766,7 +782,7 @@ cdef class Timestep:
         desc = "< Timestep {0}".format(self.frame)
         if self.dimensions is not None:
             tail = " with unit cell dimensions {0} >".format(self.dimensions)
-        else: 
+        else:
             tail = " >"
         return desc + tail
 
@@ -909,7 +925,6 @@ cdef class Timestep:
         new_TS.dimensions = self.dimensions
 
         new_TS.frame = self.frame
-
 
         try:
             new_TS._reader = weakref.ref(self._reader())
