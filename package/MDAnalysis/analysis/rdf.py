@@ -99,7 +99,7 @@ class InterRDF(AnalysisBase):
     periodic boundary conditions into account via the minimum image
     convention.
 
-    The ``exclusion_block`` keyword may be used to exclude a set of distances
+    The `exclusion_block` keyword may be used to exclude a set of distances
     from the calculations.
 
     Results are available in the attributes :attr:`results.rdf`
@@ -197,7 +197,7 @@ class InterRDF(AnalysisBase):
 
       plt.plot(rdf.results.bins, rdf.results.rdf)
 
-    The ``exclusion_block`` keyword allows the masking of pairs from
+    The `exclusion_block` keyword allows the masking of pairs from
     within the same molecule. For example, if there are 7 of each
     atom in each molecule, the exclusion mask ``(7, 7)`` can be used.
 
@@ -205,12 +205,12 @@ class InterRDF(AnalysisBase):
     .. versionadded:: 0.13.0
 
     .. versionchanged:: 1.0.0
-       Support for the ``start``, ``stop``, and ``step`` keywords has been
+       Support for the `start`, `stop`, and `step` keywords has been
        removed. These should instead be passed to :meth:`InterRDF.run`.
 
     .. versionchanged:: 2.0.0
-       Store results as attributes ``bins``, ``edges``, ``rdf`` and ``count``
-       of the ``results`` attribute of
+       Store results as attributes `bins`, `edges`, `rdf` and `count`
+       of the `results` attribute of
        :class:`~MDAnalysis.analysis.AnalysisBase`.
     """
     def __init__(self,
@@ -343,7 +343,7 @@ class InterRDF_s(AnalysisBase):
     Parameters
     ----------
     u : Universe
-        a Universe that contains atoms in ``ags``
+        a Universe that contains atoms in `ags`
 
        .. deprecated:: 2.3.0
            This parameter is superflous and will be removed in
@@ -382,7 +382,7 @@ class InterRDF_s(AnalysisBase):
     Attributes
     ----------
     results.bins : numpy.ndarray
-        :class:`numpy.ndarray` of the centers of the ``nbins`` histogram
+        :class:`numpy.ndarray` of the centers of the `nbins` histogram
         bins; all individual site-specific RDFs have the same bins.
 
         .. versionadded:: 2.0.0
@@ -409,9 +409,9 @@ class InterRDF_s(AnalysisBase):
 
     results.rdf : list
         :class:`list` of the site-specific :ref:`radial distribution
-        functions<equation-gab>` if `norm='rdf' or :ref:`density
+        functions<equation-gab>` if `norm='rdf'` or :ref:`density
         functions<equation-nab>` for the :attr:`bins`
-        if ``norm='density'``. The list contains
+        if `norm='density'`. The list contains
         ``len(ags)`` entries. Each entry for the ``i``-th pair `[A, B]
         = ags[i]` in `ags` is a :class:`numpy.ndarray` with shape
         ``(len(A), len(B))``, i.e., a stack of RDFs. For example,
@@ -502,12 +502,12 @@ class InterRDF_s(AnalysisBase):
     .. versionadded:: 0.19.0
 
     .. versionchanged:: 1.0.0
-       Support for the ``start``, ``stop``, and ``step`` keywords has been
+       Support for the `start`, `stop`, and `step` keywords has been
        removed. These should instead be passed to :meth:`InterRDF_s.run`.
 
     .. versionchanged:: 2.0.0
-       Store results as attributes ``bins``, ``edges``, ``rdf``, ``count``
-       and ``cdf`` of the ``results`` attribute
+       Store results as attributes `bins`, `edges`, `rdf`, `count`
+       and `cdf` of the `results` attribute
        of :class:`~MDAnalysis.analysis.AnalysisBase`.
 
     .. versionchanged:: 2.3.0
