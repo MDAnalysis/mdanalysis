@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay
+??/??/?? IAlibay, PicoCentauri
 
  * 2.3.0
 
@@ -21,10 +21,14 @@ Fixes
   * Fixes awk call in deploy.yaml tests for macos runners (Issue #3693)
 
 Enhancements
+  * Add `norm` parameter to InterRDF, InterRDF_s to normalize as rdf,
+    number density or do not normalize at all. (Issue #3687)
 
 Changes
 
 Deprecations
+  * Deprecate `density` parameter in favor of `norm` in InterRDF_s
+    (Issue #3687)
 
 
 06/01/22 IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy,
