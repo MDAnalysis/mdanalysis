@@ -344,6 +344,11 @@ class InterRDF_s(AnalysisBase):
     ----------
     u : Universe
         a Universe that contains atoms in ``ags``
+
+       .. deprecated:: 2.3.0
+           This parameter is superflous and will be removed in
+           MDAnalysis 3.0.0.
+
     ags : list
         a list of pairs of :class:`~MDAnalysis.core.groups.AtomGroup`
         instances
@@ -404,7 +409,7 @@ class InterRDF_s(AnalysisBase):
 
     results.rdf : list
         :class:`list` of the site-specific :ref:`radial distribution
-        functions<equation-gab>` if ``norm='rdf'` or :ref:`density
+        functions<equation-gab>` if `norm='rdf' or :ref:`density
         functions<equation-nab>` for the :attr:`bins`
         if ``norm='density'``. The list contains
         ``len(ags)`` entries. Each entry for the ``i``-th pair `[A, B]
@@ -509,6 +514,8 @@ class InterRDF_s(AnalysisBase):
        Introduce `norm` and `exclusion_blocks` attributes.
     .. deprecated:: 2.3.0
        Instead of `density=True` use `norm='density'`
+    .. deprecated:: 2.3.0
+       The `universe` parameter is superflous.
     """
     def __init__(self,
                  u,
