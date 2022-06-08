@@ -249,7 +249,7 @@ def test_PDB_hex():
     assert u.atoms[4].id == 100003
 
 
-@pytest.mark.filterwarnings("error")
+@pytest.mark.filterwarnings("error:Failed to guess the mass")
 def test_PDB_metals():
     from MDAnalysis.topology import tables
 
@@ -260,8 +260,6 @@ def test_PDB_metals():
     assert u.atoms[1].mass == pytest.approx(tables.masses["FE"])
     assert u.atoms[2].mass == pytest.approx(tables.masses["CA"])
     assert u.atoms[3].mass == pytest.approx(tables.masses["MG"])
-
-
 
 
 def test_PDB_elements():

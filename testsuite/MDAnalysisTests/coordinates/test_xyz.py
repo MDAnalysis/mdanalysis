@@ -48,7 +48,7 @@ class XYZReference(BaseReference):
         self.writer = mda.coordinates.XYZ.XYZWriter
         self.ext = 'xyz'
         self.volume = 0
-        self.dimensions = np.zeros(6)
+        self.dimensions = None
         self.container_format = True
 
 

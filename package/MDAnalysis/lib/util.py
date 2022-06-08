@@ -152,6 +152,7 @@ Class decorators
 ----------------
 
 .. autofunction:: cached
+.. autofunction:: store_init_arguments
 
 Function decorators
 -------------------
@@ -218,6 +219,20 @@ except ImportError:
     raise ImportError("MDAnalysis not installed properly. "
                       "This can happen if your C extensions "
                       "have not been built.")
+
+
+def int_array_is_sorted(array):
+    mask = array[:-1] <= array[1:]
+    try:
+        return mask[0] and mask.argmin() == 0
+    except IndexError:
+        # Empty arrays are sorted, I guess...
+        return True
+
+
+def unique_int_1d_unsorted(array):
+    values, indices = np.unique(array, return_index=True)
+    return array[np.sort(indices)]
 
 
 def filename(name, ext=None, keep=False):
@@ -710,6 +725,9 @@ class NamedStream(io.IOBase, os.PathLike):
                   always closes the underlying stream.
 
         """
+        if self.closed:
+            return
+
         if self.close_stream or force:
             try:
                 return self.stream.close()
@@ -1938,6 +1956,8 @@ def check_coords(*coord_names, **options):
         * **enforce_copy** (:class:`bool`, optional) -- Enforce working on a
           copy of the coordinate arrays. This is useful to ensure that the input
           arrays are left unchanged. Default: ``True``
+        * **enforce_dtype** (:class:`bool`, optional) -- Enforce a conversion
+          to float32.  Default: ``True``
         * **allow_single** (:class:`bool`, optional) -- Allow the input
           coordinate array to be a single coordinate with shape ``(3,)``.
         * **convert_single** (:class:`bool`, optional) -- If ``True``, single
@@ -1993,6 +2013,7 @@ def check_coords(*coord_names, **options):
     .. versionadded:: 0.19.0
     """
     enforce_copy = options.get('enforce_copy', True)
+    enforce_dtype = options.get('enforce_dtype', True)
     allow_single = options.get('allow_single', True)
     convert_single = options.get('convert_single', True)
     reduce_result_if_single = options.get('reduce_result_if_single', True)
@@ -2038,13 +2059,14 @@ def check_coords(*coord_names, **options):
                 if (coords.ndim != 2) or (coords.shape[1] != 3):
                     raise ValueError("{}(): {}.shape must be (n, 3), got {}."
                                      "".format(fname, argname, coords.shape))
-            try:
-                coords = coords.astype(
-                    np.float32, order='C', copy=enforce_copy)
-            except ValueError:
-                errmsg = (f"{fname}(): {argname}.dtype must be convertible to "
-                          f"float32, got {coords.dtype}.")
-                raise TypeError(errmsg) from None
+            if enforce_dtype:
+                try:
+                    coords = coords.astype(
+                        np.float32, order='C', copy=enforce_copy)
+                except ValueError:
+                    errmsg = (f"{fname}(): {argname}.dtype must be convertible to "
+                              f"float32, got {coords.dtype}.")
+                    raise TypeError(errmsg) from None
             return coords, is_single
 
         @wraps(func)
@@ -2377,6 +2399,8 @@ def check_box(box):
          in :mod:`~MDAnalysis.lib.c_distances`.
        * Removed obsolete box types ``tri_box`` and ``tri_vecs_bad``.
     """
+    if box is None:
+        raise ValueError("Box is None")
     from .mdamath import triclinic_vectors  # avoid circular import
     box = np.asarray(box, dtype=np.float32, order='C')
     if box.shape != (6,):
@@ -2385,3 +2409,42 @@ def check_box(box):
     if np.all(box[3:] == 90.):
         return 'ortho', box[:3]
     return 'tri_vecs', triclinic_vectors(box)
+
+
+def store_init_arguments(func):
+    """Decorator to store arguments passed to the init method of a class.
+
+    Arguments are stored as a dictionary in ``cls._kwargs``.
+
+    Notes
+    -----
+    * Only does a shallow copy, if the arguments are changed
+      by the class after passing through the decorator this will be
+      reflected in the stored arguments.
+    * If not empty, ``args`` is not unpacked and stored as-is in the
+      dictionary. If no ``args`` are passed, then no ``arg`` entry will be
+      stored in the dictionary.
+
+
+    .. versionadded:: 2.2.0
+    """
+    sig = inspect.signature(func)
+
+    @functools.wraps(func)
+    def wrapper(self, *args, **kwargs):
+        if not hasattr(self, "_kwargs"):
+            arg_values = sig.bind(self, *args, **kwargs)
+            arg_values.apply_defaults()
+            self._kwargs = {}
+            for key, arg in arg_values.arguments.items():
+                if key != "self":
+                    if key == "kwargs":
+                        for k, v in arg.items():
+                            self._kwargs[k] = v
+                    elif key == "args":
+                        if len(arg) > 0:
+                            self._kwargs[key] = arg
+                    else:
+                        self._kwargs[key] = arg
+        return func(self, *args, **kwargs)
+    return wrapper

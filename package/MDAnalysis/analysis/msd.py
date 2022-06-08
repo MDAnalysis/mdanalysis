@@ -62,6 +62,17 @@ installed; otherwise the code will raise an :exc:`ImportError`.
 Please cite [Calandri2011]_ [Buyl2018]_ if you use this module in addition to
 the normal MDAnalysis citations.
 
+.. warning::
+    To correctly compute the MSD using this analysis module, you must supply
+    coordinates in the **unwrapped** convention. That is, when atoms pass
+    the periodic boundary, they must not be **wrapped** back into the primary
+    simulation cell. MDAnalysis does not currently offer this functionality in
+    the ``MDAnalysis.transformations`` API despite having functions with
+    similar names. We plan to implement the appropriate transformations in the
+    future. In the meantime, various simulation packages provide utilities to
+    convert coordinates to the unwrapped convention. In GROMACS for example,
+    this can be done using ``gmx trjconv`` with the ``-pbc nojump`` flag.
+
 Computing an MSD
 ----------------
 This example computes a 3D MSD for the movement of 100 particles undergoing a
@@ -75,14 +86,14 @@ First load all modules and test data
 
     import MDAnalysis as mda
     import MDAnalysis.analysis.msd as msd
-    from MDAnalysis.tests.datafiles import RANDOM_WALK, RANDOM_WALK_TOPO
+    from MDAnalysis.tests.datafiles import RANDOM_WALK_TOPO, RANDOM_WALK
 
 Given a universe containing trajectory data we can extract the MSD
 analysis by using the class :class:`EinsteinMSD`
 
 .. code-block:: python
 
-    u = mda.Universe(RANDOM_WALK, RANDOM_WALK_TOPO)
+    u = mda.Universe(RANDOM_WALK_TOPO, RANDOM_WALK)
     MSD = msd.EinsteinMSD(u, select='all', msd_type='xyz', fft=True)
     MSD.run()
 
@@ -90,7 +101,7 @@ The MSD can then be accessed as
 
 .. code-block:: python
 
-    msd =  MSD.timeseries
+    msd =  MSD.results.timeseries
 
 Visual inspection of the MSD is important, so let's take a look at it with a
  simple plot.
@@ -170,6 +181,29 @@ is used to demonstrate selection of a MSD segment.
 
 We have now computed a self-diffusivity!
 
+Combining Multiple Replicates
+--------------------------------
+It is common practice to combine replicates when calculating MSDs. An example
+of this is shown below using MSD1 and MSD2.
+
+.. code-block:: python
+
+    u1 = mda.Universe(RANDOM_WALK_TOPO, RANDOM_WALK)
+    MSD1 = msd.EinsteinMSD(u1, select='all', msd_type='xyz', fft=True)
+    MSD1.run()
+
+    u2 = mda.Universe(RANDOM_WALK_TOPO, RANDOM_WALK)
+    MSD2 = msd.EinsteinMSD(u2, select='all', msd_type='xyz', fft=True)
+    MSD2.run()
+
+    combined_msds = np.concatenate((MSD1.results.msds_by_particle,
+                                    MSD2.results.msds_by_particle), axis=1)
+    average_msd = np.mean(combined_msds, axis=1)
+
+The same cannot be achieved by concatenating the replicas in a single run as
+the jump between the last frame of the first trajectory and frame 0 of the
+next trajectory will lead to an artificial inflation of the MSD and hence
+any subsequent diffusion coefficient calculated.
 
 Notes
 _____
@@ -261,9 +295,9 @@ class EinsteinMSD(AnalysisBase):
     ----------
     dim_fac : int
         Dimensionality :math:`d` of the MSD.
-    timeseries : :class:`numpy.ndarray`
+    results.timeseries : :class:`numpy.ndarray`
         The averaged MSD over all the particles with respect to lag-time.
-    msds_by_particle : :class:`numpy.ndarray`
+    results.msds_by_particle : :class:`numpy.ndarray`
         The MSD of each individual particle with respect to lag-time.
     ag : :class:`AtomGroup`
         The :class:`AtomGroup` resulting from your selection
@@ -271,6 +305,9 @@ class EinsteinMSD(AnalysisBase):
         Number of frames included in the analysis.
     n_particles : int
         Number of particles MSD was calculated over.
+
+
+    .. versionadded:: 2.0.0
     """
 
     def __init__(self, u, select='all', msd_type='xyz', fft=True, **kwargs):
@@ -307,16 +344,17 @@ class EinsteinMSD(AnalysisBase):
         self._position_array = None
 
         # result
-        self.msds_by_particle = None
-        self.timeseries = None
+        self.results.msds_by_particle = None
+        self.results.timeseries = None
 
     def _prepare(self):
         # self.n_frames only available here
         # these need to be zeroed prior to each run() call
-        self.msds_by_particle = np.zeros((self.n_frames, self.n_particles))
+        self.results.msds_by_particle = np.zeros((self.n_frames,
+                                                  self.n_particles))
         self._position_array = np.zeros(
             (self.n_frames, self.n_particles, self.dim_fac))
-        # self.timeseries not set here
+        # self.results.timeseries not set here
 
     def _parse_msd_type(self):
         r""" Sets up the desired dimensionality of the MSD.
@@ -360,8 +398,8 @@ class EinsteinMSD(AnalysisBase):
         for lag in lagtimes:
             disp = positions[:-lag, :, :] - positions[lag:, :, :]
             sqdist = np.square(disp).sum(axis=-1)
-            self.msds_by_particle[lag, :] = np.mean(sqdist, axis=0)
-        self.timeseries = self.msds_by_particle.mean(axis=1)
+            self.results.msds_by_particle[lag, :] = np.mean(sqdist, axis=0)
+        self.results.timeseries = self.results.msds_by_particle.mean(axis=1)
 
     def _conclude_fft(self):  # with FFT, np.float64 bit prescision required.
         r""" Calculates the MSD via the FCA fast correlation algorithm.
@@ -382,6 +420,6 @@ class EinsteinMSD(AnalysisBase):
 
         positions = self._position_array.astype(np.float64)
         for n in range(self.n_particles):
-            self.msds_by_particle[:, n] = tidynamics.msd(
+            self.results.msds_by_particle[:, n] = tidynamics.msd(
                 positions[:, n, :])
-        self.timeseries = self.msds_by_particle.mean(axis=1)
+        self.results.timeseries = self.results.msds_by_particle.mean(axis=1)

@@ -32,12 +32,13 @@ from MDAnalysis.tests.datafiles import (
     TPR450, TPR451, TPR452, TPR453, TPR454, TPR455, TPR455Double,
     TPR460, TPR461, TPR502, TPR504, TPR505, TPR510, TPR510_bonded,
     TPR2016, TPR2018, TPR2019B3, TPR2020B2, TPR2020, TPR2020Double,
-    TPR2021, TPR2021Double,
+    TPR2021, TPR2021Double, TPR2022RC1,
     TPR2016_bonded, TPR2018_bonded, TPR2019B3_bonded,
     TPR2020B2_bonded, TPR2020_bonded, TPR2020_double_bonded,
     TPR2021_bonded, TPR2021_double_bonded, TPR334_bonded,
+    TPR2022RC1_bonded,
     TPR_EXTRA_2021, TPR_EXTRA_2020, TPR_EXTRA_2018,
-    TPR_EXTRA_2016, TPR_EXTRA_407,
+    TPR_EXTRA_2016, TPR_EXTRA_407, TPR_EXTRA_2022RC1,
     XTC,
 )
 from MDAnalysisTests.topology.base import ParserBase
@@ -53,6 +54,8 @@ BONDED_TPRS = (
     TPR2021_double_bonded,
     TPR2020_bonded,
     TPR2020_double_bonded,
+    TPR2022RC1_bonded,
+    TPR_EXTRA_2022RC1,
     TPR_EXTRA_2021,
     TPR_EXTRA_2020,
     TPR_EXTRA_2018,
@@ -108,7 +111,7 @@ class TestTPRGromacsVersions(TPRAttrs):
                             TPR407, TPR450, TPR451, TPR452, TPR453, TPR454,
                             TPR455, TPR502, TPR504, TPR505, TPR510, TPR2016,
                             TPR2018, TPR2019B3, TPR2020, TPR2020Double,
-                            TPR2021, TPR2021Double])
+                            TPR2021, TPR2021Double, TPR2022RC1])
     def filename(self, request):
         return request.param
 

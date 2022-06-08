@@ -27,14 +27,18 @@ from MDAnalysis.analysis.rdf import InterRDF
 
 from MDAnalysisTests.datafiles import two_water_gro
 
+from numpy.testing import assert_allclose
 
-@pytest.fixture(scope='module')
+
+@pytest.fixture()
 def u():
-    return mda.Universe(two_water_gro)
+    return mda.Universe(two_water_gro, in_memory=True)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture()
 def sels(u):
+    # modify the coordinates to produce specific test results
+    # (NOTE: requires in-memory coordinates to make them permanent)
     for at, (x, y) in zip(u.atoms, zip([1] * 3 + [2] * 3, [2, 1, 3] * 2)):
         at.position = x, y, 0.0
     s1 = u.select_atoms('name OW')
@@ -47,7 +51,7 @@ def test_nbins(u):
     s2 = u.atoms[3:]
     rdf = InterRDF(s1, s2, nbins=412).run()
 
-    assert len(rdf.bins) == 412
+    assert len(rdf.results.bins) == 412
 
 
 def test_range(u):
@@ -56,8 +60,8 @@ def test_range(u):
     rmin, rmax = 1.0, 13.0
     rdf = InterRDF(s1, s2, range=(rmin, rmax)).run()
 
-    assert rdf.edges[0] == rmin
-    assert rdf.edges[-1] == rmax
+    assert rdf.results.edges[0] == rmin
+    assert rdf.results.edges[-1] == rmax
 
 
 def test_count_sum(sels):
@@ -65,14 +69,14 @@ def test_count_sum(sels):
     # should see 8 comparisons in count
     s1, s2 = sels
     rdf = InterRDF(s1, s2).run()
-    assert rdf.count.sum() == 8
+    assert rdf.results.count.sum() == 8
 
 
 def test_count(sels):
     # should see two distances with 4 counts each
     s1, s2 = sels
     rdf = InterRDF(s1, s2).run()
-    assert len(rdf.count[rdf.count == 4]) == 2
+    assert len(rdf.results.count[rdf.results.count == 4]) == 2
 
 
 def test_double_run(sels):
@@ -80,11 +84,44 @@ def test_double_run(sels):
     s1, s2 = sels
     rdf = InterRDF(s1, s2).run()
     rdf.run()
-    assert len(rdf.count[rdf.count == 4]) == 2
+    assert len(rdf.results.count[rdf.results.count == 4]) == 2
 
 
 def test_exclusion(sels):
     # should see two distances with 4 counts each
     s1, s2 = sels
     rdf = InterRDF(s1, s2, exclusion_block=(1, 2)).run()
-    assert rdf.count.sum() == 4
+    assert rdf.results.count.sum() == 4
+
+
+@pytest.mark.parametrize("attr", ("rdf", "bins", "edges", "count"))
+def test_rdf_attr_warning(sels, attr):
+    s1, s2 = sels
+    rdf = InterRDF(s1, s2).run()
+    wmsg = f"The `{attr}` attribute was deprecated in MDAnalysis 2.0.0"
+    with pytest.warns(DeprecationWarning, match=wmsg):
+        getattr(rdf, attr) is rdf.results[attr]
+
+
+@pytest.mark.parametrize("norm, value", [
+    ("density", 1.956823),
+    ("rdf", 244602.88385),
+    ("none", 4)])
+def test_norm(sels, norm, value):
+    s1, s2 = sels
+    rdf = InterRDF(s1, s2, norm=norm).run()
+    assert_allclose(max(rdf.results.rdf), value)
+
+
+@pytest.mark.parametrize("norm, norm_required", [
+    ("Density", "density"), (None, "none")])
+def test_norm_values(sels, norm, norm_required):
+    s1, s2 = sels
+    rdf = InterRDF(s1, s2, norm=norm).run()
+    assert rdf.norm == norm_required
+
+
+def test_unknown_norm(sels):
+    s1, s2 = sels
+    with pytest.raises(ValueError, match="invalid norm"):
+        InterRDF(s1, s2, sels, norm="foo")

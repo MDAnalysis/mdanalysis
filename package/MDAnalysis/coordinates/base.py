@@ -27,8 +27,7 @@ Base classes --- :mod:`MDAnalysis.coordinates.base`
 ===================================================
 
 Derive other Timestep, FrameIterator, Reader and Writer classes from the classes
-in this module. The derived classes must follow the :ref:`Trajectory API`
-in :mod:`MDAnalysis.coordinates.__init__`.
+in this module. The derived classes must follow the :ref:`Trajectory API`.
 
 Timestep
 --------
@@ -42,7 +41,6 @@ MDAnalysis.
    .. automethod:: __init__
    .. automethod:: from_coordinates
    .. automethod:: from_timestep
-   .. automethod:: _init_unitcell
    .. autoattribute:: n_atoms
    .. attribute::`frame`
 
@@ -109,6 +107,12 @@ MDAnalysis.
    .. autoattribute:: dimensions
    .. autoattribute:: triclinic_dimensions
    .. autoattribute:: volume
+   .. attribute:: data
+
+      :class:`dict` that holds arbitrary per Timestep data
+
+      .. versionadded:: 0.11.0
+
    .. automethod:: __getitem__
    .. automethod:: __eq__
    .. automethod:: __iter__
@@ -116,10 +120,17 @@ MDAnalysis.
    .. automethod:: copy_slice
 
 
+.. _FrameIterators:
+
 FrameIterators
 --------------
 
-Iterator classes used by the by the :class:`ProtoReader`.
+FrameIterators are "sliced trajectories" (a trajectory is a
+:ref:`Reader <Readers>`) that can be iterated over. They are typically
+created by slicing a trajectory or by fancy-indexing of a trajectory
+with an array of frame numbers or a boolean mask of all frames.
+
+Iterator classes used by the by the :class:`ProtoReader`:
 
 .. autoclass:: FrameIteratorBase
 
@@ -129,6 +140,8 @@ Iterator classes used by the by the :class:`ProtoReader`.
 
 .. autoclass:: FrameIteratorIndices
 
+
+.. _ReadersBase:
 
 Readers
 -------
@@ -142,7 +155,7 @@ common API to the user in MDAnalysis. There are two types of readers:
 
 2. Readers for *single frame formats*: These file formats only contain a single
    coordinate set. These readers are derived from
-   :class`:SingleFrameReaderBase`.
+   :class:`SingleFrameReaderBase`.
 
 The underlying low-level readers handle closing of files in different
 ways. Typically, the MDAnalysis readers try to ensure that files are always
@@ -165,6 +178,8 @@ case, :class:`ProtoReader` should be used.
    :members:
 
 
+
+.. _WritersBase:
 
 Writers
 -------
@@ -214,7 +229,7 @@ from .. import (
 from .. import units
 from ..auxiliary.base import AuxReader
 from ..auxiliary.core import auxreader
-from ..lib.util import asiterable, Namespace
+from ..lib.util import asiterable, Namespace, store_init_arguments
 
 
 class Timestep(object):
@@ -237,8 +252,10 @@ class Timestep(object):
     .. versionchanged:: 2.0.0
        Timestep now can be (un)pickled. Weakref for Reader
        will be dropped.
+       Timestep now stores in to numpy array memory in 'C' order rather than
+       'F' (Fortran).
     """
-    order = 'F'
+    order = 'C'
 
     def __init__(self, n_atoms, **kwargs):
         """Create a Timestep, representing a frame of a trajectory
@@ -292,6 +309,7 @@ class Timestep(object):
         self._has_positions = False
         self._has_velocities = False
         self._has_forces = False
+        self._has_dimensions = False
 
         # These will allocate the arrays if the has flag
         # gets set to True
@@ -299,7 +317,7 @@ class Timestep(object):
         self.has_velocities = kwargs.get('velocities', False)
         self.has_forces = kwargs.get('forces', False)
 
-        self._unitcell = self._init_unitcell()
+        self._unitcell = np.zeros(6, dtype=np.float32)
 
         # set up aux namespace for adding auxiliary data
         self.aux = Namespace()
@@ -400,11 +418,6 @@ class Timestep(object):
     def __setstate__(self, state):
         self.__dict__.update(state)
 
-    def _init_unitcell(self):
-        """Create custom datastructure for :attr:`_unitcell`."""
-        # override for other Timesteps
-        return np.zeros((6), np.float32)
-
     def __eq__(self, other):
         """Compare with another Timestep
 
@@ -423,6 +436,15 @@ class Timestep(object):
             return False
         if self.has_positions:
             if not (self.positions == other.positions).all():
+                return False
+
+        if self.dimensions is None:
+            if other.dimensions is not None:
+                return False
+        else:
+            if other.dimensions is None:
+                return False
+            if not (self.dimensions == other.dimensions).all():
                 return False
 
         if not self.has_velocities == other.has_velocities:
@@ -567,7 +589,7 @@ class Timestep(object):
             velocities=vel,
             forces=force)
 
-        new_TS._unitcell = self._unitcell.copy()
+        new_TS.dimensions = self.dimensions
 
         new_TS.frame = self.frame
 
@@ -781,28 +803,30 @@ class Timestep(object):
 
     @property
     def dimensions(self):
-        """unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
+        """View of unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
 
         lengths *a*, *b*, *c* are in the MDAnalysis length unit (Å), and
         angles are in degrees.
-
-        Setting dimensions will populate the underlying native format
-        description of box dimensions
         """
-        # The actual Timestep._unitcell depends on the underlying
-        # trajectory format. It can be e.g. six floats representing
-        # the box edges and angles or the 6 unique components of the
-        # box matrix or the full box matrix.
-        return self._unitcell
+        if (self._unitcell[:3] == 0).all():
+            return None
+        else:
+            return self._unitcell
 
     @dimensions.setter
     def dimensions(self, box):
-        self._unitcell[:] = box
+        if box is None:
+            self._unitcell[:] = 0
+        else:
+            self._unitcell[:] = box
 
     @property
     def volume(self):
         """volume of the unitcell"""
-        return core.box_volume(self.dimensions)
+        if self.dimensions is None:
+            return 0
+        else:
+            return core.box_volume(self.dimensions)
 
     @property
     def triclinic_dimensions(self):
@@ -840,7 +864,10 @@ class Timestep(object):
 
         .. versionadded:: 0.11.0
         """
-        return core.triclinic_vectors(self.dimensions)
+        if self.dimensions is None:
+            return None
+        else:
+            return core.triclinic_vectors(self.dimensions)
 
     @triclinic_dimensions.setter
     def triclinic_dimensions(self, new):
@@ -848,7 +875,10 @@ class Timestep(object):
 
         .. versionadded:: 0.11.0
         """
-        self.dimensions = core.triclinic_box(*new)
+        if new is None:
+            self.dimensions = None
+        else:
+            self.dimensions = core.triclinic_box(*new)
 
     @property
     def dt(self):
@@ -1093,6 +1123,7 @@ class FrameIteratorIndices(FrameIteratorBase):
     def __iter__(self):
         for frame in self.frames:
             yield self.trajectory._read_frame_with_aux(frame)
+        self.trajectory.rewind()
 
     def __getitem__(self, frame):
         if isinstance(frame, numbers.Integral):
@@ -1615,7 +1646,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         # self._jump_to_frame(frame)
         # ts = self.ts
         # ts.frame = self._read_next_frame(ts._x, ts._y, ts._z,
-        #                                  ts._unitcell, 1)
+        #                                  ts.dimensions, 1)
         # return ts
 
     def _read_frame_with_aux(self, frame):
@@ -2096,8 +2127,7 @@ class ReaderBase(ProtoReader):
     handles). Readers that are inherently safe in this regard should subclass
     :class:`ProtoReader` instead.
 
-    See the :ref:`Trajectory API` definition in
-    :mod:`MDAnalysis.coordinates.__init__` for the required attributes and
+    See the :ref:`Trajectory API` definition in for the required attributes and
     methods.
 
     See Also
@@ -2114,8 +2144,9 @@ class ReaderBase(ProtoReader):
        Provides kwargs to be passed to :class:`Timestep`
     .. versionchanged:: 1.0
        Removed deprecated flags functionality, use convert_units kwarg instead
-    """
 
+    """
+    @store_init_arguments
     def __init__(self, filename, convert_units=True, **kwargs):
         super(ReaderBase, self).__init__()
 
@@ -2139,11 +2170,19 @@ class ReaderBase(ProtoReader):
         New Reader will have its own file handle and can seek/iterate
         independently of the original.
 
-        Will also copy the current state of the Timestep held in
-        the original Reader
+        Will also copy the current state of the Timestep held in the original
+        Reader.
+
+
+        .. versionchanged:: 2.2.0
+           Arguments used to construct the reader are correctly captured and
+           passed to the creation of the new class. Previously the only
+           ``n_atoms`` was passed to class copies, leading to a class created
+           with default parameters which may differ from the original class.
         """
-        new = self.__class__(self.filename,
-                             n_atoms=self.n_atoms)
+
+        new = self.__class__(**self._kwargs)
+
         if self.transformations:
             new.add_transformations(*self.transformations)
         # seek the new reader to the same frame we started with
@@ -2190,13 +2229,14 @@ class _Writermeta(type):
 class WriterBase(IOBase, metaclass=_Writermeta):
     """Base class for trajectory writers.
 
-    See Trajectory API definition in :mod:`MDAnalysis.coordinates.__init__` for
-    the required attributes and methods.
+    See :ref:`Trajectory API` definition in for the required attributes and
+    methods.
 
 
     .. versionchanged:: 2.0.0
        Deprecated :func:`write_next_timestep` has now been removed, please use
        :func:`write` instead.
+
     """
 
     def convert_dimensions_to_unitcell(self, ts, inplace=True):
@@ -2207,7 +2247,10 @@ class WriterBase(IOBase, metaclass=_Writermeta):
         """
         # override if the native trajectory format does NOT use
         # [A,B,C,alpha,beta,gamma]
-        lengths, angles = ts.dimensions[:3], ts.dimensions[3:]
+        if ts.dimensions is None:
+            lengths, angles = np.zeros(3), np.zeros(3)
+        else:
+            lengths, angles = ts.dimensions[:3], ts.dimensions[3:]
         if not inplace:
             lengths = lengths.copy()
         lengths = self.convert_pos_to_native(lengths)
@@ -2277,9 +2320,14 @@ class SingleFrameReaderBase(ProtoReader):
     .. versionchanged:: 0.11.0
        Added attribute "_ts_kwargs" for subclasses
        Keywords "dt" and "time_offset" read into _ts_kwargs
+    .. versionchanged:: 2.2.0
+       Calling `__iter__` now rewinds the reader before yielding a
+       :class:`Timestep` object (fixing behavior that was not
+       well defined previously).
     """
     _err = "{0} only contains a single frame"
 
+    @store_init_arguments
     def __init__(self, filename, convert_units=True, n_atoms=None, **kwargs):
         super(SingleFrameReaderBase, self).__init__()
 
@@ -2307,11 +2355,18 @@ class SingleFrameReaderBase(ProtoReader):
         New Reader will have its own file handle and can seek/iterate
         independently of the original.
 
-        Will also copy the current state of the Timestep held in
-        the original Reader
+        Will also copy the current state of the Timestep held in the original
+        Reader.
+
+
+        .. versionchanged:: 2.2.0
+           Arguments used to construct the reader are correctly captured and
+           passed to the creation of the new class. Previously the only
+           ``n_atoms`` was passed to class copies, leading to a class created
+           with default parameters which may differ from the original class.
         """
-        new = self.__class__(self.filename,
-                             n_atoms=self.n_atoms)
+        new = self.__class__(**self._kwargs)
+
         new.ts = self.ts.copy()
         for auxname, auxread in self._auxs.items():
             new.add_auxiliary(auxname, auxread.copy())
@@ -2338,6 +2393,7 @@ class SingleFrameReaderBase(ProtoReader):
         raise StopIteration(self._err.format(self.__class__.__name__))
 
     def __iter__(self):
+        self.rewind()
         yield self.ts
         return
 
@@ -2424,6 +2480,10 @@ class _Convertermeta(type):
 
 class ConverterBase(IOBase, metaclass=_Convertermeta):
     """Base class for converting to other libraries.
+
+    See Also
+    --------
+    :mod:`MDAnalysis.converters`
     """
 
     def __repr__(self):

@@ -90,7 +90,7 @@ being added.
 Creating transformations
 ------------------------
 
-A simple *transformation* can also be  a function that takes a
+A simple *transformation* can also be a function that takes a
 :class:`~MDAnalysis.coordinates.base.Timestep` as input, modifies it, and
 returns it. If it takes no other arguments but a :class:`Timestep`
 can be defined as the following example:
@@ -113,17 +113,23 @@ the following two methods can be used to create such transformation:
 Creating complex transformation classes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 
-It is implemented by defining :func:`__call__` for the transformation class
-and can be applied directly to a :class:`Timestep`.
+It is implemented by inheriting from
+:class:`MDAnalysis.transformations.base.TransformationBase`,
+which defines :func:`__call__` for the transformation class
+and can be applied directly to a :class:`Timestep`. :func:`_transform` has to
+be defined and include the operations on the :class:`MDAnalysis.coordinates.base.Timestep`.
+
 So, a transformation class can be roughly defined as follows:
 
 .. code-block:: python
 
-    class up_by_x_class(object):
+    from MDAnalysis.transformations import TransformationBase
+
+    class up_by_x_class(TransformationBase):
         def __init__(self, distance):
             self.distance = distance
 
-        def __call__(self, ts):
+        def _transform(self, ts):
             ts.positions = ts.positions + np.array([0, 0, self.distance], dtype=np.float32)
             return ts
 
@@ -185,7 +191,14 @@ any of these transformations, the module must first be imported:
 
    import MDAnalysis.transformations
 
-A workflow can then be added to a trajectory as described above.
+A workflow can then be added to a trajectory as described above. Notably,
+the parameter `max_threads` can be defined when creating a transformation
+instance to limit the maximum threads.
+(See :class:`MDAnalysis.transformations.base.TransformationBase` for more details) 
+Whether a specific transformation can be used along with parallel analysis
+can be assessed by checking its 
+:attr:`~MDAnalysis.transformations.base.TransformationBase.parallelizable`
+attribute.
 
 See :ref:`implemented-transformations` for more on the existing
 transformations in :mod:`MDAnalysis.transformations`.
@@ -221,6 +234,30 @@ Giving a workflow as a keyword argument when defining the universe:
     u = MDAnalysis.Universe(topology, trajectory, transformations=workflow)
     
 
+.. _building-block-transformation:
+
+Building blocks for Transformation Classes
+------------------------------------------
+Transformations normally ultilize the power of NumPy to get better performance
+on array operations. However, when it comes to parallelism, NumPy will sometimes
+oversubscribe the threads, either by hyper threading (when it uses OpenBlas backend),
+or by working with other parallel engines (e.g. Dask).
+
+In MDAnalysis, we use `threadpoolctl <https://github.com/joblib/threadpoolctl>`_
+inside :class:`~MDAnalysis.transformations.base.TransformationBase` to control the maximum threads for transformations.
+
+It is also possible to apply a global thread limit by setting the external environmental
+varibale, e.g. :code:`OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
+BLIS_NUM_THREADS=1 python script.py`. Read more about parallelism and resource management
+in `scikit-learn documentations <https://scikit-learn.org/dev/computing/parallelism.html>`_.
+
+Users are advised to benchmark code because interaction between different
+libraries can lead to sub-optimal performance with defaults.
+
+.. toctree::
+
+   ./transformations/base
+
 .. _implemented-transformations:
 
 Currently implemented transformations
@@ -233,4 +270,5 @@ Currently implemented transformations
    ./transformations/positionaveraging
    ./transformations/fit
    ./transformations/wrap
+   ./transformations/boxdimensions
 

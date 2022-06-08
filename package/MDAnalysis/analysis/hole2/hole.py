@@ -20,136 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-
-"""HOLE Analysis --- :mod:`MDAnalysis.analysis.hole2.hole`
-=====================================================================================
-
-:Author: Lily Wang
-:Year: 2020
-:Copyright: GNU Public License v3
-
-.. versionadded:: 1.0.0
-
-This module contains the tools to interface with HOLE_ [Smart1993]_
-[Smart1996]_ to analyse an ion channel pore or transporter pathway [Stelzl2014]_ .
-
-Using HOLE on a PDB file
-------------------------
-
-Use the :func:``hole`` function to run `HOLE`_ on a single PDB file. For example,
-the code below runs the `HOLE`_ program installed at '~/hole2/exe/hole' ::
-
-    from MDAnalysis.tests.datafiles import PDB_HOLE
-    from MDAnalysis.analysis import hole2
-    profiles = hole2.hole(PDB_HOLE, executable='~/hole2/exe/hole')
-    # to create a VMD surface of the pore
-    hole2.create_vmd_surface(filename='hole.vmd')
-
-``profiles`` is a dictionary of HOLE profiles, indexed by the frame number. If only
-a PDB file is passed to the function, there will only be one profile at frame 0.
-You can visualise the pore by loading your PDB file into VMD, and in
-Extensions > Tk Console, type::
-
-    source hole.vmd
-
-You can also pass a DCD trajectory with the same atoms in the same order as
-your PDB file with the ``dcd`` keyword argument. In that case, ``profiles`` will
-contain multiple HOLE profiles, indexed by frame.
-
-The HOLE program will create some output files:
-
-    * an output file (default name: hole.out)
-    * an sphpdb file (default name: hole.sph)
-    * a file of van der Waals' radii
-      (if not specified with ``vdwradii_file``. Default name: simple2.rad)
-    * a symlink of your PDB or DCD files (if the original name is too long)
-    * the input text (if you specify ``infile``)
-
-By default (`keep_files=True`), these files are kept. If you would like to
-delete the files after the function is wrong, set `keep_files=False`. Keep in
-mind that if you delete the sphpdb file, you cannot then create a VMD surface.
-
-
-Using HOLE on a trajectory
---------------------------
-
-You can also run HOLE on a trajectory through the :class:`HoleAnalysis` class.
-This behaves similarly to the ``hole`` function, although arguments such as ``cpoint``
-and ``cvect`` become runtime arguments for the :meth:`~HoleAnalysis.run` function.
-
-The class can be set-up and run like a normal MDAnalysis analysis class::
-
-    import MDAnalysis as mda
-    from MDAnalysis.tests.datafiles import MULTIPDB_HOLE
-    from MDAnalysis.analysis import hole2
-
-    ha = hole2.HoleAnalysis(u, executable='~/hole2/exe/hole') as h2:
-    ha.run()
-    ha.create_vmd_surface(filename='hole.vmd')
-
-The VMD surface created by the class updates the pore for each frame of the trajectory.
-Use it as normal by loading your trajectory in VMD and sourcing the file in the Tk Console.
-
-Again, HOLE writes out files for each frame. If you would like to delete these files
-after the analysis, you can call :meth:`~HoleAnalysis.delete_temporary_files`::
-
-    ha.delete_temporary_files()
-
-Alternatively, you can use HoleAnalysis as a context manager that deletes temporary
-files when you are finished with the context manager::
-
-    import MDAnalysis as mda
-    from MDAnalysis.tests.datafiles import MULTIPDB_HOLE
-    from MDAnalysis.analysis import hole2
-
-    with hole2.HoleAnalysis(u, executable='~/hole2/exe/hole') as h2:
-        h2.run()
-        h2.create_vmd_surface()
-
-
-.. _HOLE: http://www.holeprogram.org
-
-
-Functions and classes
----------------------
-
-.. autofunction:: hole
-
-.. autoclass:: HoleAnalysis
-   :members:
-
-
-References
-----------
-
-.. [Smart1993] O.S. Smart, J.M. Goodfellow and B.A. Wallace.
-               The Pore Dimensions of Gramicidin A. Biophysical Journal 65:2455-2460, 1993.
-               DOI: 10.1016/S0006-3495(93)81293-1
-.. [Smart1996] O.S. Smart, J.G. Neduvelil, X. Wang, B.A. Wallace, and M.S.P. Sansom.
-               HOLE: A program for the analysis of the pore dimensions of ion channel
-               structural models. J.Mol.Graph., 14:354–360, 1996.
-               DOI: 10.1016/S0263-7855(97)00009-X
-               URL http://www.holeprogram.org/
-.. [Stelzl2014] L. S. Stelzl, P. W. Fowler, M. S. P. Sansom, and O. Beckstein.
-               Flexible gates generate occluded intermediates in the transport cycle
-               of LacY. J Mol Biol, 426:735–751, 2014.
-               DOI: 10.1016/j.jmb.2013.10.024
-
-.. Footnotes
-
-.. [#HOLEDCD] PDB files are not the only files that :program:`hole` can
-              read. In principle, it is also able to read CHARMM DCD
-              trajectories and generate a hole profile for each frame. However,
-              native support for DCD in :program:`hole` is patchy and not every
-              DCD is recognized. In particular, At the moment, DCDs generated
-              with MDAnalysis are not accepted by HOLE. To overcome this
-              PDB / DCD limitation, use :class:`HoleAnalysis` which creates
-              temporary PDB files for each frame of a
-              :class:`~MDAnalysis.core.universe.Universe` or
-              :class:`~MDAnalysis.core.universe.AtomGroup` and runs
-              :func:``hole`` on each of them.
-
-"""
 import os
 import errno
 import tempfile
@@ -170,7 +40,7 @@ from .utils import (check_and_fix_long_filename, write_simplerad2,
                     set_up_hole_input, run_hole, collect_hole,
                     create_vmd_surface)
 from .templates import (hole_input, hole_lines, vmd_script_array,
-                        vmd_script_function,
+                        vmd_script_function, exe_err,
                         IGNORE_RESIDUES)
 
 logger = logging.getLogger(__name__)
@@ -513,13 +383,51 @@ class HoleAnalysis(AnalysisBase):
         Files are called `hole.inp`.
 
 
-    Returns
-    -------
-    dict
+    Attributes
+    ----------
+    results.sphpdbs: numpy.ndarray
+        Array of sphpdb filenames
+
+        .. versionadded:: 2.0.0
+
+    results.outfiles: numpy.ndarray
+        Arrau of output filenames
+
+        .. versionadded:: 2.0.0
+
+    results.profiles: dict
+        Profiles generated by HOLE2.
         A dictionary of :class:`numpy.recarray`\ s, indexed by frame.
 
+        .. versionadded:: 2.0.0
+
+    sphpdbs: numpy.ndarray
+        Alias of :attr:`results.sphpdbs`
+
+        .. deprecated:: 2.0.0
+            This will be removed in MDAnalysis 3.0.0. Please use
+            :attr:`results.sphpdbs` instead.
+
+    outfiles: numpy.ndarray
+        Alias of :attr:`results.outfiles`
+
+        .. deprecated:: 2.0.0
+            This will be removed in MDAnalysis 3.0.0. Please use
+            :attr:`results.outfiles` instead.
+
+    profiles: dict
+        Alias of :attr:`results.profiles`
+
+        .. deprecated:: 2.0.0
+            This will be removed in MDAnalysis 3.0.0. Please use
+            :attr:`results.profiles` instead.
 
     .. versionadded:: 1.0
+
+    .. versionchanged:: 2.0.0
+        :attr:`sphpdbs`, :attr:`outfiles` and :attr:`profiles `
+        are now stored in a :class:`MDAnalysis.analysis.base.Results`
+        instance.
 
     """
 
@@ -551,11 +459,6 @@ class HoleAnalysis(AnalysisBase):
         """)
 
     _guess_cpoint = False
-
-    sphpdbs = None
-    outfiles = None
-    frames = None
-    profiles = None
 
     def __init__(self, universe,
                  select='protein',
@@ -605,7 +508,7 @@ class HoleAnalysis(AnalysisBase):
         # --- finding executables ----
         hole = util.which(executable)
         if hole is None:
-            raise OSError(errno.ENOENT, exe_err.format(name=hole,
+            raise OSError(errno.ENOENT, exe_err.format(name=executable,
                                                        kw='executable'))
         self.base_path = os.path.dirname(hole)
 
@@ -618,7 +521,7 @@ class HoleAnalysis(AnalysisBase):
                                                        kw='sos_triangle'))
         sph_process_path = util.which(sph_process)
         if sph_process_path is None:
-            path = os.path.join(self.base_path, 'sph_process')
+            path = os.path.join(self.base_path, sph_process)
             sph_process_path = util.which(path)
         if sph_process_path is None:
             raise OSError(errno.ENOENT, exe_err.format(name=sph_process,
@@ -647,6 +550,7 @@ class HoleAnalysis(AnalysisBase):
             filenames.extend(universe.trajectory.filenames)
         except AttributeError:
             filenames.append(universe.trajectory.filename)
+        filenames = [name for name in filenames if name is not None]
         hole_filenames = '\n!    '.join(filenames)
         self._input_header = self.hole_header.format(hole_filenames)
 
@@ -680,13 +584,36 @@ class HoleAnalysis(AnalysisBase):
         return super(HoleAnalysis, self).run(start=start, stop=stop,
                                              step=step, verbose=verbose)
 
+    @property
+    def sphpdbs(self):
+        wmsg = ("The `sphpdbs` attribute was deprecated in "
+                "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
+                "Please use `results.sphpdbs` instead.")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.sphpdbs
+
+    @property
+    def outfiles(self):
+        wmsg = ("The `outfiles` attribute was deprecated in "
+                "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
+                "Please use `results.outfiles` instead.")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.outfiles
+
+    @property
+    def profiles(self):
+        wmsg = ("The `profiles` attribute was deprecated in "
+                "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
+                "Please use `results.profiles` instead.")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.profiles
+
     def _prepare(self):
         """Set up containers and generate input file text"""
         # set up containers
-        self.sphpdbs = np.zeros(self.n_frames, dtype=object)
-        self.outfiles = np.zeros(self.n_frames, dtype=object)
-        self.frames = np.zeros(self.n_frames, dtype=int)
-        self.profiles = {}
+        self.results.sphpdbs = np.zeros(self.n_frames, dtype=object)
+        self.results.outfiles = np.zeros(self.n_frames, dtype=object)
+        self.results.profiles = {}
 
         # generate input file
         body = set_up_hole_input('',
@@ -725,15 +652,14 @@ class HoleAnalysis(AnalysisBase):
         i = self._frame_index
         outfile = self.output_file.format(prefix=self.prefix, i=frame)
         sphpdb = self.sphpdb_file.format(prefix=self.prefix, i=frame)
-        self.sphpdbs[i] = sphpdb
-        self.outfiles[i] = outfile
+        self.results.sphpdbs[i] = sphpdb
+        self.results.outfiles[i] = outfile
         if outfile not in self.tmp_files:
             self.tmp_files.append(outfile)
         if sphpdb not in self.tmp_files:
             self.tmp_files.append(sphpdb)
         else:
             self.tmp_files.append(sphpdb + '.old')
-        self.frames[i] = frame
 
         # temp pdb
         logger.info('HOLE analysis frame {}'.format(frame))
@@ -763,7 +689,7 @@ class HoleAnalysis(AnalysisBase):
 
         recarrays = collect_hole(outfile=outfile)
         try:
-            self.profiles[frame] = recarrays[0]
+            self.results.profiles[frame] = recarrays[0]
         except KeyError:
             msg = 'No profile found in HOLE output. Output level: {}'
             logger.info(msg.format(self.output_level))
@@ -773,11 +699,15 @@ class HoleAnalysis(AnalysisBase):
                            double_water_color='blue'):
         """Process HOLE output to create a smooth pore surface suitable for VMD.
 
-        Takes the ``sphpdb`` file for each frame and feeds it to `sph_process <http://www.holeprogram.org/doc/old/hole_d04.html#sph_process>`_
-        and `sos_triangle <http://www.holeprogram.org/doc/old/hole_d04.html#sos_triangle>`_ as described under `Visualization of HOLE
-        results <http://www.holeprogram.org/doc/index.html>`_.
+        Takes the ``sphpdb`` file for each frame and feeds it to `sph_process
+        <http://www.holeprogram.org/doc/old/hole_d04.html#sph_process>`_ and
+        `sos_triangle
+        <http://www.holeprogram.org/doc/old/hole_d04.html#sos_triangle>`_ as
+        described under `Visualization of HOLE results
+        <http://www.holeprogram.org/doc/index.html>`_.
 
-        Load the output file *filename* into VMD in Extensions > Tk Console ::
+        Load the output file *filename* into VMD in :menuselection:`Extensions
+        --> Tk Console` ::
 
            source hole.vmd
 
@@ -821,11 +751,12 @@ class HoleAnalysis(AnalysisBase):
             ``filename`` with the pore surfaces.
 
         """
-        if self.sphpdbs is None or len(self.sphpdbs) == 0:
+        if not np.any(self.results.get("sphpdbs", [])):
             raise ValueError('No sphpdb files to read. Try calling run()')
 
         frames = []
-        for i, sphpdb in zip(self.frames, self.sphpdbs[self.frames]):
+        for i, frame in enumerate(self.frames):
+            sphpdb = self.results.sphpdbs[i]
             tmp_tri = create_vmd_surface(sphpdb=sphpdb,
                                          sph_process=self.exe['sph_process'],
                                          sos_triangle=self.exe['sos_triangle'],
@@ -855,7 +786,7 @@ class HoleAnalysis(AnalysisBase):
                 pass
 
             tri = '{ { ' + ' } { '.join(list(map(' '.join, shapes))) + ' } }'
-            frames.append('set triangles({i}) '.format(i=i) + tri)
+            frames.append(f'set triangles({i}) ' + tri)
 
         trinorms = '\n'.join(frames)
         vmd_1 = vmd_script_array.format(no_water_color=no_water_color,
@@ -870,15 +801,10 @@ class HoleAnalysis(AnalysisBase):
 
     def min_radius(self):
         """Return the minimum radius over all profiles as a function of q"""
-        if not self.profiles:
+        profiles = self.results.get("profiles")
+        if not profiles:
             raise ValueError('No profiles available. Try calling run()')
-        return np.array([[q, p.radius.min()] for q, p in self.profiles.items()])
-
-    def min_radius(self):
-        """Return the minimum radius over all profiles as a function of q"""
-        if not self.profiles:
-            raise ValueError('No profiles available. Try calling run()')
-        return np.array([[q, p.radius.min()] for q, p in self.profiles.items()])
+        return np.array([[q, p.radius.min()] for q, p in profiles.items()])
 
     def delete_temporary_files(self):
         """Delete temporary files"""
@@ -888,8 +814,8 @@ class HoleAnalysis(AnalysisBase):
             except OSError:
                 pass
         self.tmp_files = []
-        self.outfiles = []
-        self.sphpdbs = []
+        self.results.outfiles = []
+        self.results.sphpdbs = []
 
     def __enter__(self):
         return self
@@ -987,17 +913,17 @@ class HoleAnalysis(AnalysisBase):
 
         """
 
-        if not self.profiles:
+        if not self.results.get("profiles"):
             raise ValueError('No profiles available. Try calling run()')
 
         if ax is None:
             fig, ax = plt.subplots()
 
-        fcl = self._process_plot_kwargs(frames=frames,
-                                        color=color, cmap=cmap, linestyle=linestyle)
+        fcl = self._process_plot_kwargs(frames=frames, color=color,
+                                        cmap=cmap, linestyle=linestyle)
 
         for i, (frame, c, ls) in enumerate(zip(*fcl)):
-            profile = self.profiles[frame]
+            profile = self.results.profiles[frame]
             dy = i*y_shift
             ax.plot(profile.rxn_coord, profile.radius+dy, color=c,
                     linestyle=ls, zorder=-frame, label=str(frame),
@@ -1051,7 +977,7 @@ class HoleAnalysis(AnalysisBase):
 
         """
 
-        if not self.profiles:
+        if not self.results.get("profiles"):
             raise ValueError('No profiles available. Try calling run()')
 
         from mpl_toolkits.mplot3d import Axes3D
@@ -1065,7 +991,7 @@ class HoleAnalysis(AnalysisBase):
                                         linestyle=linestyle)
 
         for frame, c, ls in zip(*fcl):
-            profile = self.profiles[frame]
+            profile = self.results.profiles[frame]
             if r_max is None:
                 radius = profile.radius
                 rxn_coord = profile.rxn_coord
@@ -1104,7 +1030,7 @@ class HoleAnalysis(AnalysisBase):
             sorted dictionary of {order_parameter:profile}
 
         """
-        if not self.profiles:
+        if not self.results.get("profiles"):
             raise ValueError('No profiles available. Try calling run()')
         if isinstance(order_parameters, str):
             try:
@@ -1137,7 +1063,7 @@ class HoleAnalysis(AnalysisBase):
 
         profiles = OrderedDict()
         for frame in sorted_frames:
-            profiles[order_parameters[frame]] = self.profiles[frame]
+            profiles[order_parameters[frame]] = self.results.profiles[frame]
 
         return profiles
 
@@ -1220,7 +1146,7 @@ class HoleAnalysis(AnalysisBase):
         if frames is None:
             frames = self.frames
         frames = util.asiterable(frames)
-        profiles = [self.profiles[k] for k in frames]
+        profiles = [self.results.profiles[k] for k in frames]
 
         rxncoords = [p.rxn_coord for p in profiles]
         radii = [p.radius for p in profiles]
@@ -1245,14 +1171,14 @@ class HoleAnalysis(AnalysisBase):
             Profiles to include by frame. If ``None``, includes
             all frames.
         bins : int or iterable of edges, optional
-            If bins is an int, it defines the number of equal-width bins in the given 
-            range. If bins is a sequence, it defines a monotonically increasing array of 
+            If bins is an int, it defines the number of equal-width bins in the given
+            range. If bins is a sequence, it defines a monotonically increasing array of
             bin edges, including the rightmost edge, allowing for non-uniform bin widths.
         range : (float, float), optional
             The lower and upper range of the bins.
             If not provided, ``range`` is simply ``(a.min(), a.max())``,
             where ``a`` is the array of reaction coordinates.
-            Values outside the range are ignored. The first element of the range must be 
+            Values outside the range are ignored. The first element of the range must be
             less than or equal to the second.
 
 
@@ -1303,14 +1229,14 @@ class HoleAnalysis(AnalysisBase):
             Profiles to include by frame. If ``None``, includes
             all frames.
         bins : int or iterable of edges, optional
-            If bins is an int, it defines the number of equal-width bins in the given 
-            range. If bins is a sequence, it defines a monotonically increasing array of 
+            If bins is an int, it defines the number of equal-width bins in the given
+            range. If bins is a sequence, it defines a monotonically increasing array of
             bin edges, including the rightmost edge, allowing for non-uniform bin widths.
         range : (float, float), optional
             The lower and upper range of the bins.
             If not provided, ``range`` is simply ``(a.min(), a.max())``,
             where ``a`` is the array of reaction coordinates.
-            Values outside the range are ignored. The first element of the range must be 
+            Values outside the range are ignored. The first element of the range must be
             less than or equal to the second.
 
 
@@ -1339,14 +1265,14 @@ class HoleAnalysis(AnalysisBase):
             Profiles to include by frame. If ``None``, includes
             all frames.
         bins : int or iterable of edges, optional
-            If bins is an int, it defines the number of equal-width bins in the given 
-            range. If bins is a sequence, it defines a monotonically increasing array of 
+            If bins is an int, it defines the number of equal-width bins in the given
+            range. If bins is a sequence, it defines a monotonically increasing array of
             bin edges, including the rightmost edge, allowing for non-uniform bin widths.
         range : (float, float), optional
             The lower and upper range of the bins.
             If not provided, ``range`` is simply ``(a.min(), a.max())``,
             where ``a`` is the array of reaction coordinates.
-            Values outside the range are ignored. The first element of the range must be 
+            Values outside the range are ignored. The first element of the range must be
             less than or equal to the second.
         color : str or array-like, optional
             Color for the plot.
