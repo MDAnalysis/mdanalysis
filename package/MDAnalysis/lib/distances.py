@@ -223,8 +223,15 @@ def distance_array(reference: Union[np.ndarray, AtomGroup], configuration: Union
        Internal dtype conversion of input coordinates to ``numpy.float32``.
        Now also accepts single coordinates as input.
     """
-    confnum = configuration.shape[0]
-    refnum = reference.shape[0]
+    if isinstance(reference, np.ndarray):
+        refnum = reference.shape[0]
+    elif isinstance(reference, AtomGroup):
+        refnum = reference.n_atoms
+
+    if isinstance(configuration, np.ndarray):
+        confnum = configuration.shape[0]
+    elif isinstance(reference, AtomGroup):
+        confnum = configuration.n_atoms
 
     # check resulting array will not overflow UINT64_MAX
     if refnum * confnum > _UINT64_MAX:
