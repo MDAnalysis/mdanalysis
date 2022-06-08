@@ -1529,8 +1529,8 @@ class TestInitGroup(object):
 
 class TestDecorator(object):
     @groups._pbc_to_wrap
-    @groups.check_pbc_and_unwrap
-    def dummy_function(cls, compound="group", pbc=True, unwrap=True):
+    @groups.check_wrap_and_unwrap
+    def dummy_function(cls, compound="group", wrap=True, unwrap=True):
         return 0
 
     @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
@@ -1538,6 +1538,7 @@ class TestDecorator(object):
     @pytest.mark.parametrize('pbc', (True, False))
     @pytest.mark.parametrize('unwrap', (True, False))
     def test_wrap_and_unwrap_deprecation(self, compound, pbc, unwrap):
+
         if pbc and unwrap:
             with pytest.raises(ValueError):
                 # We call a deprecated argument that does not appear in the
@@ -1559,6 +1560,7 @@ class TestDecorator(object):
     @pytest.mark.parametrize('wrap', (True, False))
     @pytest.mark.parametrize('unwrap', (True, False))
     def test_wrap_and_unwrap(self, compound, wrap, unwrap):
+
         if wrap and unwrap:
             with pytest.raises(ValueError):
                 self.dummy_function(compound=compound, wrap=wrap, unwrap=unwrap)
