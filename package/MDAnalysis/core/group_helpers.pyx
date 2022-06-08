@@ -38,7 +38,7 @@ cimport numpy as cnp
 cnp.import_array()
 
 
-cdef class AtomGroupIterHelper:
+cdef public class AtomGroupIterHelper  [object c_PyRect, type c_PyRect_t]:
 
     def __cinit__(self, uint64_t n_atoms ** kwargs):
         self.n_atoms = n_atoms

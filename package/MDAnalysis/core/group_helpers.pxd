@@ -29,7 +29,7 @@ cimport cython
 cimport numpy as cnp
 cnp.import_array()
 
-cdef class AtomGroupIterHelper:
+cdef public class AtomGroupIterHelper [object c_PyRect, type c_PyRect_t]:
     # number of atoms in the AtomGroup
     cdef uint64_t n_atoms
 
