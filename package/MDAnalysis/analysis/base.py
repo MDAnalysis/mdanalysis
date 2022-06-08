@@ -137,10 +137,10 @@ logger = logging.getLogger(__name__)
 class Results(UserDict):
     r"""Container object for storing results.
 
-    ``Results`` are dictionaries that provide two ways by which values can be
-    accessed: by dictionary key ``results["value_key"]`` or by object
-    attribute, ``results.value_key``. ``Results`` stores all results obtained
-    from an analysis after calling :func:`run()`.
+    :class:`Results` are dictionaries that provide two ways by which values
+    can be accessed: by dictionary key ``results["value_key"]`` or by object
+    attribute, ``results.value_key``. :class:`Results` stores all results
+    obtained from an analysis after calling :meth:`~AnalysisBase.run()`.
 
     The implementation is similar to the :class:`sklearn.utils.Bunch`
     class in `scikit-learn`_.
@@ -228,7 +228,7 @@ class AnalysisBase(object):
     reader for iterating, and it offers to show a progress meter.
     Computed results are stored inside the :attr:`results` attribute.
 
-    To define a new Analysis, `AnalysisBase` needs to be subclassed
+    To define a new Analysis, :class:`AnalysisBase` needs to be subclassed
     and :meth:`_single_frame` must be defined. It is also possible to define
     :meth:`_prepare` and :meth:`_conclude` for pre- and post-processing.
     All results should be stored as attributes of the :class:`Results`
@@ -304,12 +304,12 @@ class AnalysisBase(object):
 
 
     .. versionchanged:: 1.0.0
-        Support for setting ``start``, ``stop``, and ``step`` has been
-        removed. These should now be directly passed to
-        :meth:`AnalysisBase.run`.
+        Support for setting `start`, `stop`, and `step` has been removed. These
+        should now be directly passed to :meth:`AnalysisBase.run`.
 
     .. versionchanged:: 2.0.0
         Added :attr:`results`
+
     """
 
     def __init__(self, trajectory, verbose=False, **kwargs):
@@ -319,8 +319,7 @@ class AnalysisBase(object):
 
     def _setup_frames(self, trajectory, start=None, stop=None, step=None,
                       frames=None):
-        """
-        Pass a Reader object and define the desired iteration pattern
+        """Pass a Reader object and define the desired iteration pattern
         through the trajectory
 
         Parameters
@@ -334,7 +333,16 @@ class AnalysisBase(object):
         step : int, optional
             number of frames to skip between each analysed frame
         frames : array_like, optional
-            array of integers or booleans to slice trajectory
+            array of integers or booleans to slice trajectory; cannot be
+            combined with `start`, `stop`, `step`
+
+            .. versionadded:: 2.2.0
+
+        Raises
+        ------
+        ValueError
+            if *both* `frames` and at least one of `start`, `stop`, or `frames`
+            is provided (i.e., set to another value than ``None``)
 
 
         .. versionchanged:: 1.0.0
@@ -342,7 +350,8 @@ class AnalysisBase(object):
 
         .. versionchanged:: 2.2.0
             Added ability to iterate through trajectory by passing a list of
-            frame indices
+            frame indices in the `frames` keyword argument
+
         """
         self._trajectory = trajectory
         if frames is not None:
@@ -393,14 +402,21 @@ class AnalysisBase(object):
         step : int, optional
             number of frames to skip between each analysed frame
         frames : array_like, optional
-            array of integers or booleans to slice trajectory
+            array of integers or booleans to slice trajectory; `frames` can
+            only be used *instead* of `start`, `stop`, and `step`. Setting
+            *both* `frames` and at least one of `start`, `stop`, `step` to a
+            non-default value will raise a :exc:`ValueError`.
+
+            .. versionadded:: 2.2.0
+
         verbose : bool, optional
             Turn on verbosity
 
 
-        .. versionchanged:: 2.1.0
-            Added ability to iterate through trajectory by passing a list of
-            frame indices
+        .. versionchanged:: 2.2.0
+            Added ability to analyze arbitrary frames by passing a list of
+            frame indices in the `frames` keyword argument.
+
         """
         logger.info("Choosing frames to analyze")
         # if verbose unchanged, use class default
@@ -411,6 +427,8 @@ class AnalysisBase(object):
                            step=step, frames=frames)
         logger.info("Starting preparation")
         self._prepare()
+        logger.info("Starting analysis loop over %d trajectory frames",
+                    self.n_frames)
         for i, ts in enumerate(ProgressBar(
                 self._sliced_trajectory,
                 verbose=verbose)):
@@ -431,13 +449,13 @@ class AnalysisFromFunction(AnalysisBase):
     ----------
     function : callable
         function to evaluate at each frame
-    trajectory : mda.coordinates.Reader, optional
+    trajectory : MDAnalysis.coordinates.Reader, optional
         trajectory to iterate over. If ``None`` the first AtomGroup found in
         args and kwargs is used as a source for the trajectory.
     *args : list
-        arguments for ``function``
+        arguments for `function`
     **kwargs : dict
-        arguments for ``function`` and :class:`AnalysisBase`
+        arguments for `function` and :class:`AnalysisBase`
 
     Attributes
     ----------
@@ -452,7 +470,7 @@ class AnalysisFromFunction(AnalysisBase):
     Raises
     ------
     ValueError
-        if ``function`` has the same ``kwargs`` as :class:`AnalysisBase`
+        if `function` has the same `kwargs` as :class:`AnalysisBase`
 
     Example
     -------
@@ -467,9 +485,9 @@ class AnalysisFromFunction(AnalysisBase):
 
 
     .. versionchanged:: 1.0.0
-        Support for directly passing the ``start``, ``stop``, and ``step``
-        arguments has been removed. These should instead be passed
-        to :meth:`AnalysisFromFunction.run`.
+        Support for directly passing the `start`, `stop`, and `step` arguments
+        has been removed. These should instead be passed to
+        :meth:`AnalysisFromFunction.run`.
 
     .. versionchanged:: 2.0.0
         Former :attr:`results` are now stored as :attr:`results.timeseries`
@@ -533,7 +551,7 @@ def analysis_class(function):
     Raises
     ------
     ValueError
-        if ``function`` has the same ``kwargs`` as :class:`AnalysisBase`
+        if `function` has the same `kwargs` as :class:`AnalysisBase`
 
     Examples
     --------
@@ -559,7 +577,7 @@ def analysis_class(function):
 
 
     .. versionchanged:: 2.0.0
-        Former ``results`` are now stored as ``results.timeseries``
+        Former :attr:`results` are now stored as :attr:`results.timeseries`
     """
 
     class WrapperClass(AnalysisFromFunction):
@@ -572,7 +590,8 @@ def analysis_class(function):
 
 def _filter_baseanalysis_kwargs(function, kwargs):
     """
-    create two dictionaries with kwargs separated for function and AnalysisBase
+    Create two dictionaries with `kwargs` separated for `function` and
+    :class:`AnalysisBase`
 
     Parameters
     ----------
@@ -591,7 +610,8 @@ def _filter_baseanalysis_kwargs(function, kwargs):
     Raises
     ------
     ValueError
-        if ``function`` has the same ``kwargs`` as :class:`AnalysisBase`
+        if `function` has the same `kwargs` as :class:`AnalysisBase`
+
     """
     try:
         # pylint: disable=deprecated-method

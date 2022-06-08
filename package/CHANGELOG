@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, PicoCentauri
+??/??/?? IAlibay, PicoCentauri, orbeckst
 
  * 2.3.0
 
@@ -23,6 +23,7 @@ Fixes
 Enhancements
   * Add `norm` parameter to InterRDF, InterRDF_s to normalize as rdf,
     number density or do not normalize at all. (Issue #3687)
+  * Additional logger.info output when per-frame analysis starts (PR #3710)
 
 Changes
 
