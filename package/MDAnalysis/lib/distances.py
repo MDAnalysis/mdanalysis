@@ -252,7 +252,7 @@ def distance_array(reference: Union[np.ndarray, AtomGroup], configuration: Union
                  args=(reference, configuration, box, distances),
                  backend=backend)
     else:
-        _run("calc_distance_array",
+        _run("calc_distance_array_batched",
              args=(reference, configuration, distances),
              backend=backend)
 
