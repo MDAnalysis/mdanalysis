@@ -32,9 +32,21 @@ Helpers
 
 cimport cython
 from libc.stdint cimport uint64_t, UINT64_MAX
+from libcpp.vector cimport vector
 import numpy
 cimport numpy as cnp
 cnp.import_array()
 
 
-cdef class AtomGroupIterHelper
+cdef class AtomGroupIterHelper:
+    
+    def __cinit__(self, uint64_t n_atoms **kwargs):
+        pass
+    
+    def __init__(self, **kwargs):
+        pass
+
+    def set_ix(self, cnp.ndarray ix):
+        pass
+        
+

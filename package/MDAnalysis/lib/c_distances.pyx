@@ -38,6 +38,8 @@ numpy.import_array()
 from libc.math cimport fabs, round as cround
 from libc.float cimport FLT_MAX, DBL_MAX
 
+from ..libmda cimport group_helpers
+
 # make UINT64_MAX visible at the python layer
 _UINT64_MAX = UINT64_MAX
 
@@ -68,6 +70,9 @@ cdef extern from "calc_distances.h":
     void minimum_image(double* x, float* box, float* inverse_box)
     void minimum_image_triclinic(float* x, float* box, float* inverse_box)
 
+cdef extern from "batched_distances.h":
+    void _calc_distance_array_batched[T, U](T ref, U conf, double *distances, int batchsize)
+
 OPENMP_ENABLED = True if USED_OPENMP else False
 
 def calc_distance_array(numpy.ndarray ref, numpy.ndarray conf,
@@ -80,10 +85,10 @@ def calc_distance_array(numpy.ndarray ref, numpy.ndarray conf,
                          <coordinate*> conf.data, confnum,
                          <double*> result.data)
 
-def calc_distance_array_batched(ref, conf,
+def calc_distance_array_batched(group_helpers.AtomGroupIterHelper ref, group_helpers.AtomGroupIterHelper conf,
                         numpy.ndarray result, batchsize=256):
     cdef int _batchsize = batchsize
-    
+
     _calc_distance_array_batched(ref, 
                          conf,
                          <double*> result.data, _batchsize)
