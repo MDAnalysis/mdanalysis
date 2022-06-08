@@ -89,9 +89,7 @@ def calc_distance_array_batched(group_helpers.AtomGroupIterHelper ref, group_hel
                         numpy.ndarray result, batchsize=256):
     cdef int _batchsize = batchsize
 
-    _calc_distance_array_batched(ref, 
-                         conf,
-                         <double*> result.data, _batchsize)
+    _calc_distance_array_batched(ref, conf, <double*> result.data, _batchsize)
 
 def calc_distance_array_ortho(numpy.ndarray ref, numpy.ndarray conf,
                               numpy.ndarray box, numpy.ndarray result):

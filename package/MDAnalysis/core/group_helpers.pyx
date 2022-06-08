@@ -30,23 +30,32 @@ Compiled helpers for group iteration --- :mod:`MDAnalysis.core.group_helpers`
 Helpers
 """
 
-cimport cython
-from libc.stdint cimport uint64_t, UINT64_MAX
-from libcpp.vector cimport vector
 import numpy
+from libcpp.vector cimport vector
+from libc.stdint cimport uint64_t, UINT64_MAX
+cimport cython
 cimport numpy as cnp
 cnp.import_array()
 
 
 cdef class AtomGroupIterHelper:
-    
-    def __cinit__(self, uint64_t n_atoms **kwargs):
-        pass
-    
-    def __init__(self, **kwargs):
-        pass
 
-    def set_ix(self, cnp.ndarray ix):
-        pass
+    def __cinit__(self, uint64_t n_atoms ** kwargs):
+        self.n_atoms = n_atoms
+        self._i = 0
+        # self._coord_view = 
+
+    # buffer passed in must be 3x as large as n_idx
+    cdef void _load_to_external_buffer(self, float * buffer, uint64_t n_idx):
+        cdef uint64_t i
+        for i in range(n_idx):
+            buffer[3*self._i] = self._coord_view[3*self._i,0]
+            buffer[3*self._i + 1] = self._coord_view[3*self._i + 1,1]
+            buffer[3*self._i + 2] = self._coord_view[3*self._i + 2,2]
+            self._i += 1
+
+    cdef void _reset_iteration(self):
+        self._i = 0
+
+    
         
-
