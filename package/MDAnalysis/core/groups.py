@@ -1966,7 +1966,8 @@ class GroupBase(_MutableBase):
                         raise ValueError("Cannot perform unwrap with "
                                          "reference='com' because the total "
                                          "mass of the group is zero.")
-                    refpos = np.sum(positions * unique_atoms.masses[:, None], axis=0)
+                    refpos = np.sum(positions * unique_atoms.masses[:, None],
+                                    axis=0)
                     refpos /= total_mass
                 else:  # reference == 'cog'
                     refpos = positions.mean(axis=0)
