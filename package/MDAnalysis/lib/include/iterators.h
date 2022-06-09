@@ -30,6 +30,8 @@ public:
     uint64_t i;
     float *ptr;
 
+    _AtomGroupIterator() {}
+
     explicit _AtomGroupIterator(uint64_t n_atoms) : n_atoms(n_atoms), i(0), ptr(nullptr)
     {
     }
@@ -44,14 +46,14 @@ public:
         i = i;
     }
 
-    void preload_external(float *buffer, uint64_t n_idx)
+    void load_into_external_buffer(float *buffer, uint64_t n_idx)
     {
         for (uint64_t i = 0; i < n_idx; i++)
         {
-            buffer[3 * i] = coords[3 * ix[i_preload]];
-            buffer[3 * i + 1] = coords[3 * ix[i_preload] + 1];
-            buffer[3 * i + 2] = coords[3 * ix[i_preload] + 2];
-            i += 1;
+            // buffer[3 * i] = coords[3 * ix[i_preload]];
+            // buffer[3 * i + 1] = coords[3 * ix[i_preload] + 1];
+            // buffer[3 * i + 2] = coords[3 * ix[i_preload] + 2];
+            // i += 1;
         }
     }
 };
@@ -62,6 +64,8 @@ public:
     uint64_t n_atoms;
     uint64_t i;
     float *ptr;
+
+    _ArrayIterator() {}
 
     explicit _ArrayIterator(uint64_t n_atoms) : n_atoms(n_atoms), i(0), ptr(nullptr)
     {
@@ -77,7 +81,7 @@ public:
         i = i;
     }
 
-    void preload_external(float *buffer, uint64_t n_idx)
+    void load_into_external_buffer(float *buffer, uint64_t n_idx)
     {
         buffer = ptr;
     }

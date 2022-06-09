@@ -30,6 +30,7 @@ Compiled helpers for group iteration --- :mod:`MDAnalysis.core.group_helpers`
 Helpers
 """
 
+from ..libmda cimport iterators
 import numpy
 from libcpp.vector cimport vector
 from libc.stdint cimport uint64_t, UINT64_MAX
@@ -48,6 +49,5 @@ cdef class AtomGroupIterator:
 cdef class ArrayIterator:
 
     def __cinit__(self, uint64_t n_atoms ** kwargs):
-        self._array_iterator = 
         self.n_atoms = n_atoms
         self.i = 0

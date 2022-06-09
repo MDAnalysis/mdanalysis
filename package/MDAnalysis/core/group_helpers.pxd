@@ -22,7 +22,7 @@
 #
 #
 
-from iterators cimport  _AtomGroupIterator, _ArrayIterator
+from ..libmda cimport iterators
 import numpy
 from libcpp.vector cimport vector
 from libc.stdint cimport uint64_t, UINT64_MAX
@@ -32,7 +32,7 @@ cnp.import_array()
 
 cdef class AtomGroupIterator:
     # C++ class for iterator
-    cdef _AtomGroupIterator _ag_iterator
+    cdef iterators._AtomGroupIterator _ag_iterator
     # number of atoms in the AtomGroup
     cdef uint64_t n_atoms
     # view of coordinates 
@@ -41,8 +41,9 @@ cdef class AtomGroupIterator:
 
 cdef class ArrayIterator:
     # C++ class for iterator
-    cdef _AtomGroupIterator _array_iterator
+    cdef iterators._AtomGroupIterator _array_iterator
     # number of atoms in the AtomGroup
     cdef uint64_t n_atoms
     # view of coordinates 
     cdef float[:, :] _coord_view
+

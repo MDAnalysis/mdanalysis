@@ -20,7 +20,7 @@
 #define __BATCHED_DISTANCES_H
 
 #include <cstdint>
-#include "wrapper_classes.h"
+#include "iterators.h"
 
 template <typename T, typename U>
 void _calc_distance_array_batched(T ref, U conf, double *distances, uint64_t batchsize)
@@ -30,8 +30,8 @@ void _calc_distance_array_batched(T ref, U conf, double *distances, uint64_t bat
     float ref_buffer[atom_bufsize];
     float conf_buffer[atom_bufsize];
 
-    uint64_t nref = ref->n_atoms;
-    uint64_t nconf = conf->n_atoms;
+    uint64_t nref = ref.n_atoms;
+    uint64_t nconf = conf.n_atoms;
     uint64_t bsize_ref = std::min(nref, batchsize); // is  our batchsize larger than the number of coords?
     uint64_t bsize_conf = std::min(nconf, batchsize);
 
@@ -65,7 +65,7 @@ void _calc_distance_array_batched(T ref, U conf, double *distances, uint64_t bat
             }
         }
 
-        reset_iteration(conf);
+        conf.reset_iteration();
         iter_conf = 0;
     }
 }

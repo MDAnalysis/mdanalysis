@@ -444,7 +444,7 @@ def extensions(config):
     group_helpers = MDAExtension('MDAnalysis.core.group_helpers',
                          sources=['MDAnalysis/core/group_helpers' + cpp_source_suffix],
                          language='c++',
-                         include_dirs=include_dirs,
+                         include_dirs=include_dirs + ['MDAnalysis/lib/include'],
                          define_macros=define_macros,
                          extra_compile_args=cpp_extra_compile_args,
                          extra_link_args= cpp_extra_link_args)
