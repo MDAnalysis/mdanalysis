@@ -85,7 +85,7 @@ def calc_distance_array(numpy.ndarray ref, numpy.ndarray conf,
                          <coordinate*> conf.data, confnum,
                          <double*> result.data)
 
-def calc_distance_array_batched(group_helpers.AtomGroupIterHelper ref, group_helpers.AtomGroupIterHelper conf,
+def calc_distance_array_batched(group_helpers.AgWrapper ref, group_helpers.AgWrapper conf,
                         numpy.ndarray result, batchsize=256):
     cdef int _batchsize = batchsize
 

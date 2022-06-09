@@ -22,6 +22,7 @@
 #
 #
 
+from iterators cimport  _AtomGroupIterator, _ArrayIterator
 import numpy
 from libcpp.vector cimport vector
 from libc.stdint cimport uint64_t, UINT64_MAX
@@ -29,26 +30,19 @@ cimport cython
 cimport numpy as cnp
 cnp.import_array()
 
-cdef public class AtomGroupIterHelper [object c_PyRect, type c_PyRect_t]:
+cdef class AtomGroupIterator:
+    # C++ class for iterator
+    cdef _AtomGroupIterator _ag_iterator
     # number of atoms in the AtomGroup
     cdef uint64_t n_atoms
-
-    cdef float [:,:] _coord_view
-
-    # ix indicies of the atomgroup
-    cdef vector[int] _ix
-
-    # coordinte base array
-    cdef cnp.ndarray _pos
-
-    # index for iterating through _ix
-    # shared index for internal and external iteration
-    cdef uint64_t _i
-
-    cdef void _load_to_external_buffer(self, float* buffer, uint64_t n_idx)
-
-    cdef void _reset_iteration(self)
+    # view of coordinates 
+    cdef float[:, :] _coord_view
 
 
-
-
+cdef class ArrayIterator:
+    # C++ class for iterator
+    cdef _AtomGroupIterator _array_iterator
+    # number of atoms in the AtomGroup
+    cdef uint64_t n_atoms
+    # view of coordinates 
+    cdef float[:, :] _coord_view

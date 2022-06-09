@@ -225,13 +225,18 @@ def distance_array(reference: Union[np.ndarray, AtomGroup], configuration: Union
     """
     if isinstance(reference, np.ndarray):
         refnum = reference.shape[0]
+        _ref = ArrayIter(reference)
     elif isinstance(reference, AtomGroup):
         refnum = reference.n_atoms
+        _ref = AgWrapper(reference)
+
 
     if isinstance(configuration, np.ndarray):
         confnum = configuration.shape[0]
+        _conf = ArrayWrapper(configuration):
     elif isinstance(reference, AtomGroup):
         confnum = configuration.n_atoms
+        _conf = AgWrapper(configuration)
 
     # check resulting array will not overflow UINT64_MAX
     if refnum * confnum > _UINT64_MAX:
@@ -253,7 +258,7 @@ def distance_array(reference: Union[np.ndarray, AtomGroup], configuration: Union
                  backend=backend)
     else:
         _run("calc_distance_array_batched",
-             args=(reference, configuration, distances),
+             args=(_ref, _conf, distances),
              backend=backend)
 
     return distances

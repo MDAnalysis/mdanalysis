@@ -38,24 +38,16 @@ cimport numpy as cnp
 cnp.import_array()
 
 
-cdef public class AtomGroupIterHelper  [object c_PyRect, type c_PyRect_t]:
+cdef class AtomGroupIterator:
 
     def __cinit__(self, uint64_t n_atoms ** kwargs):
         self.n_atoms = n_atoms
         self._i = 0
-        # self._coord_view = 
 
-    # buffer passed in must be 3x as large as n_idx
-    cdef void _load_to_external_buffer(self, float * buffer, uint64_t n_idx):
-        cdef uint64_t i
-        for i in range(n_idx):
-            buffer[3*self._i] = self._coord_view[3*self._i,0]
-            buffer[3*self._i + 1] = self._coord_view[3*self._i + 1,1]
-            buffer[3*self._i + 2] = self._coord_view[3*self._i + 2,2]
-            self._i += 1
 
-    cdef void _reset_iteration(self):
-        self._i = 0
+cdef class ArrayIterator:
 
-    
-        
+    def __cinit__(self, uint64_t n_atoms ** kwargs):
+        self._array_iterator = 
+        self.n_atoms = n_atoms
+        self.i = 0
