@@ -229,10 +229,10 @@
 <div class="viewcode-block" id="Results"><a class="viewcode-back" href="../../../documentation_pages/analysis/base.html#MDAnalysis.analysis.base.Results">[docs]</a><span class="k">class</span> <span class="nc">Results</span><span class="p">(</span><span class="n">UserDict</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Container object for storing results.</span>
 
-<span class="sd">    ``Results`` are dictionaries that provide two ways by which values can be</span>
-<span class="sd">    accessed: by dictionary key ``results[&quot;value_key&quot;]`` or by object</span>
-<span class="sd">    attribute, ``results.value_key``. ``Results`` stores all results obtained</span>
-<span class="sd">    from an analysis after calling :func:`run()`.</span>
+<span class="sd">    :class:`Results` are dictionaries that provide two ways by which values</span>
+<span class="sd">    can be accessed: by dictionary key ``results[&quot;value_key&quot;]`` or by object</span>
+<span class="sd">    attribute, ``results.value_key``. :class:`Results` stores all results</span>
+<span class="sd">    obtained from an analysis after calling :meth:`~AnalysisBase.run()`.</span>
 
 <span class="sd">    The implementation is similar to the :class:`sklearn.utils.Bunch`</span>
 <span class="sd">    class in `scikit-learn`_.</span>
@@ -320,7 +320,7 @@
 <span class="sd">    reader for iterating, and it offers to show a progress meter.</span>
 <span class="sd">    Computed results are stored inside the :attr:`results` attribute.</span>
 
-<span class="sd">    To define a new Analysis, `AnalysisBase` needs to be subclassed</span>
+<span class="sd">    To define a new Analysis, :class:`AnalysisBase` needs to be subclassed</span>
 <span class="sd">    and :meth:`_single_frame` must be defined. It is also possible to define</span>
 <span class="sd">    :meth:`_prepare` and :meth:`_conclude` for pre- and post-processing.</span>
 <span class="sd">    All results should be stored as attributes of the :class:`Results`</span>
@@ -396,12 +396,12 @@
 
 
 <span class="sd">    .. versionchanged:: 1.0.0</span>
-<span class="sd">        Support for setting ``start``, ``stop``, and ``step`` has been</span>
-<span class="sd">        removed. These should now be directly passed to</span>
-<span class="sd">        :meth:`AnalysisBase.run`.</span>
+<span class="sd">        Support for setting `start`, `stop`, and `step` has been removed. These</span>
+<span class="sd">        should now be directly passed to :meth:`AnalysisBase.run`.</span>
 
 <span class="sd">    .. versionchanged:: 2.0.0</span>
 <span class="sd">        Added :attr:`results`</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -411,8 +411,7 @@
 
     <span class="k">def</span> <span class="nf">_setup_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                       <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Pass a Reader object and define the desired iteration pattern</span>
+        <span class="sd">&quot;&quot;&quot;Pass a Reader object and define the desired iteration pattern</span>
 <span class="sd">        through the trajectory</span>
 
 <span class="sd">        Parameters</span>
@@ -426,7 +425,16 @@
 <span class="sd">        step : int, optional</span>
 <span class="sd">            number of frames to skip between each analysed frame</span>
 <span class="sd">        frames : array_like, optional</span>
-<span class="sd">            array of integers or booleans to slice trajectory</span>
+<span class="sd">            array of integers or booleans to slice trajectory; cannot be</span>
+<span class="sd">            combined with `start`, `stop`, `step`</span>
+
+<span class="sd">            .. versionadded:: 2.2.0</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            if *both* `frames` and at least one of `start`, `stop`, or `frames`</span>
+<span class="sd">            is provided (i.e., set to another value than ``None``)</span>
 
 
 <span class="sd">        .. versionchanged:: 1.0.0</span>
@@ -434,7 +442,8 @@
 
 <span class="sd">        .. versionchanged:: 2.2.0</span>
 <span class="sd">            Added ability to iterate through trajectory by passing a list of</span>
-<span class="sd">            frame indices</span>
+<span class="sd">            frame indices in the `frames` keyword argument</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span> <span class="o">=</span> <span class="n">trajectory</span>
         <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -485,14 +494,21 @@
 <span class="sd">        step : int, optional</span>
 <span class="sd">            number of frames to skip between each analysed frame</span>
 <span class="sd">        frames : array_like, optional</span>
-<span class="sd">            array of integers or booleans to slice trajectory</span>
+<span class="sd">            array of integers or booleans to slice trajectory; `frames` can</span>
+<span class="sd">            only be used *instead* of `start`, `stop`, and `step`. Setting</span>
+<span class="sd">            *both* `frames` and at least one of `start`, `stop`, `step` to a</span>
+<span class="sd">            non-default value will raise a :exc:`ValueError`.</span>
+
+<span class="sd">            .. versionadded:: 2.2.0</span>
+
 <span class="sd">        verbose : bool, optional</span>
 <span class="sd">            Turn on verbosity</span>
 
 
-<span class="sd">        .. versionchanged:: 2.1.0</span>
-<span class="sd">            Added ability to iterate through trajectory by passing a list of</span>
-<span class="sd">            frame indices</span>
+<span class="sd">        .. versionchanged:: 2.2.0</span>
+<span class="sd">            Added ability to analyze arbitrary frames by passing a list of</span>
+<span class="sd">            frame indices in the `frames` keyword argument.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Choosing frames to analyze&quot;</span><span class="p">)</span>
         <span class="c1"># if verbose unchanged, use class default</span>
@@ -503,6 +519,8 @@
                            <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="n">frames</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting preparation&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prepare</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting analysis loop over </span><span class="si">%d</span><span class="s2"> trajectory frames&quot;</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ProgressBar</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="p">,</span>
                 <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)):</span>
@@ -523,13 +541,13 @@
 <span class="sd">    ----------</span>
 <span class="sd">    function : callable</span>
 <span class="sd">        function to evaluate at each frame</span>
-<span class="sd">    trajectory : mda.coordinates.Reader, optional</span>
+<span class="sd">    trajectory : MDAnalysis.coordinates.Reader, optional</span>
 <span class="sd">        trajectory to iterate over. If ``None`` the first AtomGroup found in</span>
 <span class="sd">        args and kwargs is used as a source for the trajectory.</span>
 <span class="sd">    *args : list</span>
-<span class="sd">        arguments for ``function``</span>
+<span class="sd">        arguments for `function`</span>
 <span class="sd">    **kwargs : dict</span>
-<span class="sd">        arguments for ``function`` and :class:`AnalysisBase`</span>
+<span class="sd">        arguments for `function` and :class:`AnalysisBase`</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
@@ -544,7 +562,7 @@
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
-<span class="sd">        if ``function`` has the same ``kwargs`` as :class:`AnalysisBase`</span>
+<span class="sd">        if `function` has the same `kwargs` as :class:`AnalysisBase`</span>
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
@@ -559,9 +577,9 @@
 
 
 <span class="sd">    .. versionchanged:: 1.0.0</span>
-<span class="sd">        Support for directly passing the ``start``, ``stop``, and ``step``</span>
-<span class="sd">        arguments has been removed. These should instead be passed</span>
-<span class="sd">        to :meth:`AnalysisFromFunction.run`.</span>
+<span class="sd">        Support for directly passing the `start`, `stop`, and `step` arguments</span>
+<span class="sd">        has been removed. These should instead be passed to</span>
+<span class="sd">        :meth:`AnalysisFromFunction.run`.</span>
 
 <span class="sd">    .. versionchanged:: 2.0.0</span>
 <span class="sd">        Former :attr:`results` are now stored as :attr:`results.timeseries`</span>
@@ -625,7 +643,7 @@
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
-<span class="sd">        if ``function`` has the same ``kwargs`` as :class:`AnalysisBase`</span>
+<span class="sd">        if `function` has the same `kwargs` as :class:`AnalysisBase`</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -651,7 +669,7 @@
 
 
 <span class="sd">    .. versionchanged:: 2.0.0</span>
-<span class="sd">        Former ``results`` are now stored as ``results.timeseries``</span>
+<span class="sd">        Former :attr:`results` are now stored as :attr:`results.timeseries`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">class</span> <span class="nc">WrapperClass</span><span class="p">(</span><span class="n">AnalysisFromFunction</span><span class="p">):</span>
@@ -664,7 +682,8 @@
 
 <span class="k">def</span> <span class="nf">_filter_baseanalysis_kwargs</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    create two dictionaries with kwargs separated for function and AnalysisBase</span>
+<span class="sd">    Create two dictionaries with `kwargs` separated for `function` and</span>
+<span class="sd">    :class:`AnalysisBase`</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -683,7 +702,8 @@
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
-<span class="sd">        if ``function`` has the same ``kwargs`` as :class:`AnalysisBase`</span>
+<span class="sd">        if `function` has the same `kwargs` as :class:`AnalysisBase`</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># pylint: disable=deprecated-method</span>

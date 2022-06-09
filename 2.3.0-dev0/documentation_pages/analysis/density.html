@@ -436,14 +436,21 @@ grid box center</p></li>
 <li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</p></li>
 <li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</p></li>
 <li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – number of frames to skip between each analysed frame</p></li>
-<li><p><strong>frames</strong> (<em>array_like</em><em>, </em><em>optional</em>) – array of integers or booleans to slice trajectory</p></li>
+<li><p><strong>frames</strong> (<em>array_like</em><em>, </em><em>optional</em>) – <p>array of integers or booleans to slice trajectory; <cite>frames</cite> can
+only be used <em>instead</em> of <cite>start</cite>, <cite>stop</cite>, and <cite>step</cite>. Setting
+<em>both</em> <cite>frames</cite> and at least one of <cite>start</cite>, <cite>stop</cite>, <cite>step</cite> to a
+non-default value will raise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a>.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.2.0.</span></p>
+</div>
+</p></li>
 <li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on verbosity</p></li>
 </ul>
 </dd>
 </dl>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Added ability to iterate through trajectory by passing a list of
-frame indices</p>
+<p><span class="versionmodified changed">Changed in version 2.2.0: </span>Added ability to analyze arbitrary frames by passing a list of
+frame indices in the <cite>frames</cite> keyword argument.</p>
 </div>
 </dd></dl>
 
