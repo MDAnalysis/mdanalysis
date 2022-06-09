@@ -32,7 +32,7 @@ cnp.import_array()
 
 cdef class AtomGroupIterator:
     # C++ class for iterator
-    cdef iterators._AtomGroupIterator _ag_iterator
+    cdef iterators._AtomGroupIterator _iterator
     # number of atoms in the AtomGroup
     cdef uint64_t n_atoms
     # view of coordinates 
@@ -41,7 +41,7 @@ cdef class AtomGroupIterator:
 
 cdef class ArrayIterator:
     # C++ class for iterator
-    cdef iterators._AtomGroupIterator _array_iterator
+    cdef iterators._ArrayIterator _iterator
     # number of atoms in the AtomGroup
     cdef uint64_t n_atoms
     # view of coordinates 

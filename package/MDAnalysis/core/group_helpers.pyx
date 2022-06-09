@@ -42,12 +42,17 @@ cnp.import_array()
 cdef class AtomGroupIterator:
 
     def __cinit__(self, uint64_t n_atoms ** kwargs):
-        self.n_atoms = n_atoms
-        self._i = 0
+        self._iterator = iterators._AtomGroupIterator(n_atoms)
 
+    @property
+    def n_atoms(self):
+        return self._ag_iterator.n_atoms
 
 cdef class ArrayIterator:
 
     def __cinit__(self, uint64_t n_atoms ** kwargs):
-        self.n_atoms = n_atoms
-        self.i = 0
+        self._iterator = iterators._ArrayIterator(n_atoms)
+    
+    @property
+    def n_atoms(self):
+        return self._ag_iterator.n_atoms
