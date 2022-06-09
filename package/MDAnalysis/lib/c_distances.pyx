@@ -90,7 +90,7 @@ def calc_distance_array_batched(group_helpers.IteratorBase ref, group_helpers.It
                         numpy.ndarray result, batchsize=256):
     cdef int _batchsize = batchsize
 
-    _calc_distance_array_batched(ref.get_iterator(), conf.get_iterator(), <double*> result.data, _batchsize)
+    _calc_distance_array_batched(ref._iterator, conf._iterator, <double*> result.data, _batchsize)
 
 def calc_distance_array_ortho(numpy.ndarray ref, numpy.ndarray conf,
                               numpy.ndarray box, numpy.ndarray result):
