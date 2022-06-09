@@ -76,6 +76,8 @@ from .mdamath import triclinic_vectors
 from ._augment import augment_coordinates, undo_augment
 from .nsgrid import FastNS
 from .c_distances import _minimize_vectors_ortho, _minimize_vectors_triclinic
+from ..core.group_helpers import AtomGroupIterator, ArrayIterator
+
 
 
 # hack to select backend with backend=<backend> kwarg. Note that
@@ -225,18 +227,18 @@ def distance_array(reference: Union[np.ndarray, AtomGroup], configuration: Union
     """
     if isinstance(reference, np.ndarray):
         refnum = reference.shape[0]
-        _ref = ArrayIter(reference)
+        _ref = ArrayIterator(reference)
     elif isinstance(reference, AtomGroup):
         refnum = reference.n_atoms
-        _ref = AgWrapper(reference)
+        _ref = AtomGroupIterator(reference)
 
 
     if isinstance(configuration, np.ndarray):
         confnum = configuration.shape[0]
-        _conf = ArrayWrapper(configuration):
+        _conf = ArrayIterator(configuration):
     elif isinstance(reference, AtomGroup):
         confnum = configuration.n_atoms
-        _conf = AgWrapper(configuration)
+        _conf = AtomGroupIterator(configuration)
 
     # check resulting array will not overflow UINT64_MAX
     if refnum * confnum > _UINT64_MAX:

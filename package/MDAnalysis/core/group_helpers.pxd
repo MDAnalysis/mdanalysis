@@ -30,6 +30,7 @@ cimport cython
 cimport numpy as cnp
 cnp.import_array()
 
+
 cdef class AtomGroupIterator:
     # C++ class for iterator
     cdef iterators._AtomGroupIterator _iterator

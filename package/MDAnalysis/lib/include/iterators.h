@@ -22,6 +22,7 @@
 #include <cstdint>
 #include <vector>
 
+
 class _AtomGroupIterator
 {
 public:
