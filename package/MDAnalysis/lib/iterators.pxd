@@ -14,21 +14,12 @@ cdef extern from "iterators.h":
 
 
 cdef extern from "iterators.h":
-    cdef cppclass _AtomGroupIterator:
-        uint64_t n_atoms
-        vector[uint64_t] ix
-        uint64_t i
-        float *ptr
+    cdef cppclass _AtomGroupIterator(_IteratorBase):
         _AtomGroupIterator()
-        _AtomGroupIterator(uint64_t n_atoms)
-        void load_into_external_buffer(float *buffer, uint64_t n_idx)
+        _AtomGroupIterator(uint64_t n_atoms) 
+
 
 cdef extern from "iterators.h":
-    cdef cppclass _ArrayIterator:
-        uint64_t n_atoms
-        vector[uint64_t] ix
-        uint64_t i
-        float *ptr
+    cdef cppclass _ArrayIterator(_IteratorBase):
         _ArrayIterator()
-        _ArrayIterator(uint64_t n_atoms)
-        void load_into_external_buffer(float *buffer, uint64_t n_idx)
+        _ArrayIterator(uint64_t n_atoms) 

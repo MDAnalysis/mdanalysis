@@ -86,7 +86,7 @@ def calc_distance_array(numpy.ndarray ref, numpy.ndarray conf,
                          <double*> result.data)
 
 # add polymorphism so can add type
-def calc_distance_array_batched(group_helpers.AtomGroupIterator ref, group_helpers.AtomGroupIterator conf,
+def calc_distance_array_batched(group_helpers.IteratorBase ref, group_helpers.IteratorBase conf,
                         numpy.ndarray result, batchsize=256):
     cdef int _batchsize = batchsize
 

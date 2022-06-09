@@ -31,7 +31,8 @@ cimport numpy as cnp
 cnp.import_array()
 
 
-cdef class AtomGroupIterator:
+cdef class IteratorBase:
+    cdef iterators._IteratorBase* thisptr
     # C++ class for iterator
     cdef iterators._AtomGroupIterator _iterator
     # number of atoms in the AtomGroup
@@ -39,12 +40,11 @@ cdef class AtomGroupIterator:
     # view of coordinates 
     cdef float[:, :] _coord_view
 
+cdef class AtomGroupIterator(IteratorBase):
+    cdef int dummy1
 
-cdef class ArrayIterator:
-    # C++ class for iterator
-    cdef iterators._ArrayIterator _iterator
-    # number of atoms in the AtomGroup
-    cdef uint64_t n_atoms
-    # view of coordinates 
-    cdef float[:, :] _coord_view
+
+
+cdef class ArrayIterator(IteratorBase):
+    cdef int dummy2
 

@@ -23,7 +23,7 @@
 #include <vector>
 
 
-class _AtomGroupIterator
+class _IteratorBase
 {
 public:
     uint64_t n_atoms;
@@ -31,9 +31,9 @@ public:
     uint64_t i;
     float *ptr;
 
-    _AtomGroupIterator() {}
+    _IteratorBase() {}
 
-    explicit _AtomGroupIterator(uint64_t n_atoms) : n_atoms(n_atoms), i(0), ptr(nullptr)
+    _IteratorBase(uint64_t n_atoms) : n_atoms(n_atoms), i(0), ptr(nullptr)
     {
     }
 
@@ -59,29 +59,32 @@ public:
     }
 };
 
-class _ArrayIterator
+class _AtomGroupIterator: public _IteratorBase
 {
 public:
-    uint64_t n_atoms;
-    uint64_t i;
-    float *ptr;
+    _AtomGroupIterator() {}
+    _AtomGroupIterator(uint64_t n_atoms) : _IteratorBase(n_atoms) {}
 
-    _ArrayIterator() {}
 
-    explicit _ArrayIterator(uint64_t n_atoms) : n_atoms(n_atoms), i(0), ptr(nullptr)
+    void load_into_external_buffer(float *buffer, uint64_t n_idx)
     {
+        for (uint64_t i = 0; i < n_idx; i++)
+        {
+            // buffer[3 * i] = coords[3 * ix[i_preload]];
+            // buffer[3 * i + 1] = coords[3 * ix[i_preload] + 1];
+            // buffer[3 * i + 2] = coords[3 * ix[i_preload] + 2];
+            // i += 1;
+        }
     }
+};
 
-    void inline reset_iteration()
-    {
-        i = 0;
-    }
+class _ArrayIterator: public _IteratorBase
+{
+public:
+    _ArrayIterator(){}
+    _ArrayIterator(uint64_t n_atoms) : _IteratorBase(n_atoms) {}
 
-    void seek(int i)
-    {
-        i = i;
-    }
-
+ 
     void load_into_external_buffer(float *buffer, uint64_t n_idx)
     {
         buffer = ptr;
