@@ -1303,7 +1303,7 @@ class HoleAnalysis(AnalysisBase):
 
         binned, bins = self.bin_radii(frames=frames, bins=bins, range=range)
         mean = np.array(list(map(np.mean, binned)))
-        midpoints = 0.5 * bins[1:] + bins[:-1]
+        midpoints = 0.5 * bins[1:] + 0.5 * bins[:-1]
 
         fig, ax = plt.subplots()
         if n_std:
