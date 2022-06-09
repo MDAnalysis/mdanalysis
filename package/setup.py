@@ -63,15 +63,8 @@ if sys.version_info[:2] < (3, 8):
     print('Please upgrade your version of Python.')
     sys.exit(-1)
 
-if sys.version_info[0] < 3:
-    import ConfigParser as configparser
-else:
-    import configparser
-
-if sys.version_info[0] >= 3:
-    from subprocess import getoutput
-else:
-    from commands import getoutput
+import configparser
+from subprocess import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
 RELEASE = "2.3.0-dev0"
@@ -650,6 +643,10 @@ if __name__ == '__main__':
               'AMBER': [
                   'netCDF4>=1.0',  # for fast AMBER writing, also needs HDF5
               ],
+              'extra_formats': [   # additional file formats
+                  'netCDF4>=1.0',  # for fast AMBER writing, also needs HDF5
+                  'h5py>=2.10',    # H5MD
+                  ],
               'analysis': [
                   'seaborn',  # for annotated heat map and nearest neighbor
                               # plotting in PSA
