@@ -69,7 +69,7 @@ analysis, and many more.
 Installation and availability
 =============================
 
-The latest release can be **installed via ``pip`` or ``conda``** as
+The latest release can be **installed via pip or conda** as
 described in the `Installation Quick Start`_.
 
 **Source code** is hosted in a git repository at
