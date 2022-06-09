@@ -39,21 +39,27 @@ cimport numpy as cnp
 cnp.import_array()
 
 
-cdef class IteratorBase:
 
-    def __cinit__(self, uint64_t n_atoms ** kwargs):
-        self.thisptr = new iterators._IteratorBase(n_atoms)
-
-cdef class AtomGroupIterator(IteratorBase):
+cdef class AtomGroupIterator:
 
     def __cinit__(self, uint64_t n_atoms ** kwargs):
         self.thisptr = new iterators._AtomGroupIterator(n_atoms)
+    
+    cdef iterators._AtomGroupIterator get_iterator(self):
+        return   self.thisptr[0] 
 
+    def __dealloc__(self):
+        del self.thisptr
 
-
-cdef class ArrayIterator(IteratorBase):
+cdef class ArrayIterator:
 
     def __cinit__(self, uint64_t n_atoms ** kwargs):
         self.thisptr = new iterators._ArrayIterator(n_atoms)
+
+    cdef iterators._ArrayIterator get_iterator(self):
+        return   self.thisptr[0] 
+
+    def __dealloc__(self):
+        del self.thisptr
     
 

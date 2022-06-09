@@ -34,7 +34,7 @@ cnp.import_array()
 cdef class IteratorBase:
     cdef iterators._IteratorBase* thisptr
     # C++ class for iterator
-    cdef iterators._AtomGroupIterator _iterator
+    cdef iterators._IteratorBase _iterator
     # number of atoms in the AtomGroup
     cdef uint64_t n_atoms
     # view of coordinates 
