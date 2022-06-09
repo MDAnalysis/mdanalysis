@@ -25,10 +25,15 @@ Enhancements
     number density or do not normalize at all. (Issue #3687)
 
 Changes
+  * To add additional optional packages for different file formats when
+    using `pip` use the new "extra_formats" extras_require target as in
+    `pip install ./package[extra_formats]` (Issue #3701)
 
 Deprecations
   * Deprecate `density` parameter in favor of `norm` in InterRDF_s
     (Issue #3687)
+  * The extras_requires target "AMBER" for `pip install ./package[AMBER]`
+    will be removed in 3.0. Use "extra_formats". (Issue #3701, PR #3711)
 
 
 06/01/22 IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy,
