@@ -54,7 +54,7 @@ inputs:
   clustalw:
     default: 'clustalw=2.1'
   h5py:
-    default: 'h5py'
+    default: 'h5py>=2.10'
   joblib:
     default: 'joblib>=0.12'
   netcdf4:
