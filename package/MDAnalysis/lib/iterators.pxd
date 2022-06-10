@@ -9,6 +9,7 @@ cdef extern from "iterators.h":
         float *ptr
         _AtomGroupIterator()
         _AtomGroupIterator(int64_t n_atoms)
+        void print_ix()
         void copy_ix(const int64_t* source )
         void load_into_external_buffer(float *buffer, int64_t n_idx)
 

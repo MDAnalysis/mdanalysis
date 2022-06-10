@@ -21,6 +21,7 @@
 
 #include <cstdint>
 #include <vector>
+#include <cstdio>
 
 class _AtomGroupIterator
 {
@@ -34,7 +35,6 @@ public:
 
     explicit _AtomGroupIterator(int64_t n_atoms) : n_atoms(n_atoms), i(0), ptr(nullptr)
     {
-        ix.reserve(n_atoms);
     }
 
     // can possibly use std::reference wrapper here to avoid the copy
@@ -42,6 +42,14 @@ public:
     {
         std::vector<int64_t> tmp(source, source + n_atoms);
         ix = tmp;
+    }
+
+    void print_ix()
+    {
+        for (int64_t n = 0; n < n_atoms; n++)
+        {
+            printf("ix %ld val %ld \n",n, ix[n]);
+        }
     }
 
     void inline reset_iteration()

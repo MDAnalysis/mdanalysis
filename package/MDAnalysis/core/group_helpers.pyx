@@ -58,12 +58,17 @@ cdef class AtomGroupIterator:
     @property
     def ix(self):
         cdef cnp.npy_intp dims[1]
-        dims[0] = self.n_atoms
-        return _to_numpy_from_spec(self, 1, dims, cnp.NPY_INT64, self._iterator.ix.data())
+        dims[0] = self._iterator.n_atoms
+        cdef cnp.ndarray arr 
+        arr =  _to_numpy_from_spec(self, 1, dims, cnp.NPY_INT64, self._iterator.ix.data())
+        return arr
 
     @property
     def n_atoms(self):
         return self._iterator.n_atoms
+    
+    def print_ix(self):
+        self._iterator.print_ix()
 
 
 cdef class ArrayIterator:
