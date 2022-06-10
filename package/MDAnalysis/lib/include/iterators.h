@@ -31,7 +31,7 @@ public:
     int64_t i;
     float *ptr;
 
-    _AtomGroupIterator() {}
+    _AtomGroupIterator() : n_atoms(0), i(0), ptr(nullptr) {}
 
     explicit _AtomGroupIterator(int64_t n_atoms) : n_atoms(n_atoms), i(0), ptr(nullptr)
     {
@@ -48,7 +48,7 @@ public:
     {
         for (int64_t n = 0; n < n_atoms; n++)
         {
-            printf("ix %ld val %ld \n",n, ix[n]);
+            printf("ix %ld val %ld \n", n, ix[n]);
         }
     }
 
@@ -81,7 +81,7 @@ public:
     int64_t i;
     float *ptr;
 
-    _ArrayIterator() {}
+    _ArrayIterator() : n_atoms(0), i(0), ptr(nullptr) {}
 
     explicit _ArrayIterator(int64_t n_atoms) : n_atoms(n_atoms), i(0), ptr(nullptr)
     {
