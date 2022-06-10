@@ -40,6 +40,11 @@ from libc.float cimport FLT_MAX, DBL_MAX
 
 from ..libmda cimport group_helpers
 
+# fused type for iterators
+ctypedef fused iterator_t:
+    group_helpers.AtomGroupIterator
+    group_helpers.ArrayIterator
+
 # make UINT64_MAX visible at the python layer
 _UINT64_MAX = UINT64_MAX
 
@@ -84,9 +89,6 @@ def calc_distance_array(numpy.ndarray ref, numpy.ndarray conf,
     _calc_distance_array(<coordinate*> ref.data, refnum,
                          <coordinate*> conf.data, confnum,
                          <double*> result.data)
-ctypedef fused iterator_t:
-    group_helpers.AtomGroupIterator
-    group_helpers.ArrayIterator
 
 def calc_distance_array_batched(iterator_t ref, iterator_t conf,
                         numpy.ndarray result, batchsize=256):

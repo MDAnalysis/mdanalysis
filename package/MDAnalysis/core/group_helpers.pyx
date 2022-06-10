@@ -30,29 +30,57 @@ Compiled helpers for group iteration --- :mod:`MDAnalysis.core.group_helpers`
 Helpers
 """
 
+from .groups import AtomGroup
 from ..libmda cimport iterators
-import numpy
 from libcpp.vector cimport vector
-from libc.stdint cimport uint64_t, UINT64_MAX
+from libc.stdint cimport int64_t
 cimport cython
 cimport numpy as cnp
 cnp.import_array()
 
 
+cdef inline _to_numpy_from_spec(object owner, int ndim, cnp.npy_intp * shape, int npy_type, void * pointer):
+    array = cnp.PyArray_SimpleNewFromData(ndim, shape, npy_type, pointer)
+    cnp.PyArray_SetBaseObject(array, owner)
+    cnp.Py_INCREF(owner)
+    return array
+
 cdef class AtomGroupIterator:
 
-    def __cinit__(self, uint64_t n_atoms ** kwargs):
+    def __cinit__(self, int64_t n_atoms ** kwargs):
         self._iterator = iterators._AtomGroupIterator(n_atoms)
+
+    def attach_Atomgroup(self, ag):
+        self._coord_view = ag.universe.trajectory.ts.positions
+        self._iterator.ptr = &self._coord_view[0, 0]
+        self._iterator.copy_ix( < int64_t*>cnp.PyArray_DATA(ag.ix_array))
+
+    @property
+    def ix(self):
+        cdef cnp.npy_intp dims[1]
+        dims[0] = self.n_atoms
+        return _to_numpy_from_spec(self, 1, dims, cnp.NPY_INT64, self._iterator.ix.data())
 
     @property
     def n_atoms(self):
-        return self._ag_iterator.n_atoms
+        return self._iterator.n_atoms
+
 
 cdef class ArrayIterator:
 
-    def __cinit__(self, uint64_t n_atoms ** kwargs):
+    def __cinit__(self, int64_t n_atoms ** kwargs):
         self._iterator = iterators._ArrayIterator(n_atoms)
-    
+
+    def attach_Array(self, cnp.ndarray arr):
+        if arr.shape[0] != self.n_atoms:
+            raise ValueError(
+                f"input array has incorrect first dimension, must be {self.n_atoms}")
+        if arr.shape[1] != 3:
+            raise ValueError(
+                "input array has incorrect second dimension, must be 3")
+        self._coord_view = arr
+        self._iterator.ptr = &self._coord_view[0, 0]
+
     @property
     def n_atoms(self):
-        return self._ag_iterator.n_atoms
+        return self._iterator.n_atoms

@@ -22,19 +22,26 @@
 #include <cstdint>
 #include <vector>
 
-
 class _AtomGroupIterator
 {
 public:
-    uint64_t n_atoms;
-    std::vector<uint64_t> ix;
-    uint64_t i;
+    int64_t n_atoms;
+    std::vector<int64_t> ix;
+    int64_t i;
     float *ptr;
 
     _AtomGroupIterator() {}
 
-    explicit _AtomGroupIterator(uint64_t n_atoms) : n_atoms(n_atoms), i(0), ptr(nullptr)
+    explicit _AtomGroupIterator(int64_t n_atoms) : n_atoms(n_atoms), i(0), ptr(nullptr)
     {
+        ix.reserve(n_atoms);
+    }
+
+    // can possibly use std::reference wrapper here to avoid the copy
+    void copy_ix(const int64_t *source)
+    {
+        std::vector<int64_t> tmp(source, source + n_atoms);
+        ix = tmp;
     }
 
     void inline reset_iteration()
@@ -47,14 +54,14 @@ public:
         i = i;
     }
 
-    void load_into_external_buffer(float *buffer, uint64_t n_idx)
+    void load_into_external_buffer(float *buffer, int64_t n_idx)
     {
-        for (uint64_t i = 0; i < n_idx; i++)
+        for (int64_t n = 0; n < n_idx; n++)
         {
-            // buffer[3 * i] = coords[3 * ix[i_preload]];
-            // buffer[3 * i + 1] = coords[3 * ix[i_preload] + 1];
-            // buffer[3 * i + 2] = coords[3 * ix[i_preload] + 2];
-            // i += 1;
+            buffer[3 * n] = ptr[3 * ix[i]];
+            buffer[3 * n + 1] = ptr[3 * ix[i] + 1];
+            buffer[3 * n + 2] = ptr[3 * ix[i] + 2];
+            i += 1;
         }
     }
 };
@@ -62,13 +69,13 @@ public:
 class _ArrayIterator
 {
 public:
-    uint64_t n_atoms;
-    uint64_t i;
+    int64_t n_atoms;
+    int64_t i;
     float *ptr;
 
     _ArrayIterator() {}
 
-    explicit _ArrayIterator(uint64_t n_atoms) : n_atoms(n_atoms), i(0), ptr(nullptr)
+    explicit _ArrayIterator(int64_t n_atoms) : n_atoms(n_atoms), i(0), ptr(nullptr)
     {
     }
 
@@ -82,7 +89,7 @@ public:
         i = i;
     }
 
-    void load_into_external_buffer(float *buffer, uint64_t n_idx)
+    void load_into_external_buffer(float *buffer, int64_t n_idx)
     {
         buffer = ptr;
     }

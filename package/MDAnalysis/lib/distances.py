@@ -235,7 +235,7 @@ def distance_array(reference: Union[np.ndarray, AtomGroup], configuration: Union
 
     if isinstance(configuration, np.ndarray):
         confnum = configuration.shape[0]
-        _conf = ArrayIterator(configuration):
+        _conf = ArrayIterator(configuration)
     elif isinstance(reference, AtomGroup):
         confnum = configuration.n_atoms
         _conf = AtomGroupIterator(configuration)
