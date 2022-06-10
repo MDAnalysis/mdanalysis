@@ -640,13 +640,13 @@ if __name__ == '__main__':
           # you might prefer to use the version available through your
           # packaging system
           extras_require={
-              'AMBER': [           # REMOVE AMBER for 3.0.0, use 'extra_formats'
+              'AMBER': [           # REMOVE for 3.0.0, use 'extra_formats'
                   'netCDF4>=1.0',  # for fast AMBER writing, also needs HDF5
               ],
               'extra_formats': [   # additional file formats
                   'netCDF4>=1.0',  # for fast AMBER writing, also needs HDF5
                   'h5py>=2.10',    # H5MD
-                  'chemfiles>=0.10', # multiple formats supported by chemfiles
+                  'chemfiles>=0.10',  # multiple formats supported by chemfiles
                   ],
               'analysis': [
                   'seaborn',  # for annotated heat map and nearest neighbor
