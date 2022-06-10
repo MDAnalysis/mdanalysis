@@ -651,8 +651,8 @@ if __name__ == '__main__':
               'analysis': [
                   'seaborn',  # for annotated heat map and nearest neighbor
                               # plotting in PSA
-                  'sklearn',  # For clustering and dimensionality reduction
-                              # functionality in encore
+                  'scikit-learn',  # For clustering and dimensionality
+                                   # reduction functionality in encore
                   'tidynamics>=1.0.0', # For MSD analysis method
               ],
           },
