@@ -166,9 +166,9 @@ reader for .xvg files.</p></td>
 <p>Auxiliary readers inherit from the base
 <a class="reference internal" href="base.html#MDAnalysis.auxiliary.base.AuxReader" title="MDAnalysis.auxiliary.base.AuxReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">AuxReader</span></code></a>. In stand-alone use they
 allow iteration over each step in a set of auxiliary data:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aux</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">auxiliary</span><span class="o">.</span><span class="n">xvg</span><span class="o">.</span><span class="n">XVGReader</span><span class="p">(</span><span class="s1">&#39;auxdata.xvg&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aux</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">auxiliary</span><span class="o">.</span><span class="n">XVG</span><span class="o">.</span><span class="n">XVGReader</span><span class="p">(</span><span class="s1">&#39;auxdata.xvg&#39;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">auxstep</span> <span class="ow">in</span> <span class="n">aux</span><span class="p">:</span>
-    <span class="nb">print</span> <span class="n">auxstep</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">auxstep</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>To iterate over only certain sections of the auxiliary:</p>
@@ -191,9 +191,9 @@ reading steps one-at-time as needed.</p>
 return an appropriate <a class="reference internal" href="base.html#MDAnalysis.auxiliary.base.AuxReader" title="MDAnalysis.auxiliary.base.AuxReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">AuxReader</span></code></a> class for
 a supplied format or set of auxiliary data, guessing the format from the
 datatype/file extension:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">auxreader</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">auxiliary</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">get_auxreader_for</span><span class="p">(</span><span class="s1">&#39;auxdata.xvg&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">auxreader</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">auxiliary</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">get_auxreader_for</span><span class="p">(</span><span class="s1">&#39;auxdata.xvg&#39;</span><span class="p">)</span>
 <span class="c1"># will return the default XVGReader class</span>
-<span class="n">auxreader</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">auxiliary</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">get_auxreader_for</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;XVG-F&#39;</span><span class="p">)</span>
+<span class="n">auxreader</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">auxiliary</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">get_auxreader_for</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;XVG-F&#39;</span><span class="p">)</span>
 <span class="c1"># will return the XVGFileReader class</span>
 </pre></div>
 </div>
@@ -246,7 +246,7 @@ through only trajectory timesteps to which one or more steps that fall within
 avoid representative values set to <code class="docutils literal notranslate"><span class="pre">np.nan</span></code>, particularly when auxiliary data
 is less frequent:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="s1">&#39;low_f&#39;</span><span class="p">,</span> <span class="s1">&#39;low_freq_aux_data.xvg&#39;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">iter_as_aux</span><span class="p">(</span><span class="s1">&#39;low_f&#39;</span><span class="p">):</span>
+<span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">iter_as_aux</span><span class="p">(</span><span class="s1">&#39;low_f&#39;</span><span class="p">):</span>
     <span class="n">do_something</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">aux</span><span class="o">.</span><span class="n">low_f</span><span class="p">)</span> <span class="c1"># do something with &#39;low_f&#39; auxiliary data without</span>
                                <span class="c1"># worrying about having to deal with np.nan</span>
 </pre></div>
@@ -255,18 +255,18 @@ is less frequent:</p>
 sufficiently high, <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.next_as_aux" title="MDAnalysis.coordinates.base.ProtoReader.next_as_aux"><code class="xref py py-meth docutils literal notranslate"><span class="pre">next_as_aux()</span></code></a>
 and <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.iter_as_aux" title="MDAnalysis.coordinates.base.ProtoReader.iter_as_aux"><code class="xref py py-meth docutils literal notranslate"><span class="pre">iter_as_aux()</span></code></a> behave the same
 as the <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader" title="MDAnalysis.coordinates.base.ProtoReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProtoReader</span></code></a>
-meth:<cite>~MDAnalysis.coordinates.base.ProtoReader.next</cite> and
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.next" title="MDAnalysis.coordinates.base.ProtoReader.next"><code class="xref py py-meth docutils literal notranslate"><span class="pre">next()</span></code></a> and
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">__iter__()</span></code>.</p>
-<p>In order to acess auxiliary values at every individual step, including those
+<p>In order to access auxiliary values at every individual step, including those
 outside the time range of the trajectory,
 <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.iter_auxiliary" title="MDAnalysis.coordinates.base.ProtoReader.iter_auxiliary"><code class="xref py py-meth docutils literal notranslate"><span class="pre">iter_auxiliary()</span></code></a> allows iteration
 over the auxiliary independent of the trajectory:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">auxstep</span> <span class="ow">in</span> <span class="n">trajectory</span><span class="o">.</span><span class="n">iter_auxiliary</span><span class="p">(</span><span class="s1">&#39;pullforce&#39;</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">auxstep</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">iter_auxiliary</span><span class="p">(</span><span class="s1">&#39;pullforce&#39;</span><span class="p">):</span>
     <span class="n">do_something</span><span class="p">(</span><span class="n">auxstep</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>To iterate over only a certain section of the auxiliary:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">auxstep</span> <span class="ow">in</span> <span class="n">trajectory</span><span class="o">.</span><span class="n">iter_auxiliary</span><span class="p">(</span><span class="s1">&#39;pullforce&#39;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">auxstep</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">iter_auxiliary</span><span class="p">(</span><span class="s1">&#39;pullforce&#39;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
     <span class="c1"># every 10th step from 100</span>
     <span class="n">do_something</span><span class="p">(</span><span class="n">auxstep</span><span class="p">)</span>
 </pre></div>
@@ -278,17 +278,17 @@ timestep after iteration is complete.</p>
 <h4><span class="section-number">10.1.2.1.3. </span>Accessing auxiliary attributes<a class="headerlink" href="#accessing-auxiliary-attributes" title="Permalink to this heading"></a></h4>
 <p>To check the values of attributes of an added auxiliary, use
 <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.get_aux_attribute" title="MDAnalysis.coordinates.base.ProtoReader.get_aux_attribute"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_aux_attribute()</span></code></a>, e.g.:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pullf_dt</span> <span class="o">=</span> <span class="n">trajectory</span><span class="o">.</span><span class="n">get_aux_attribute</span><span class="p">(</span><span class="s1">&#39;pullforce&#39;</span><span class="p">,</span> <span class="s1">&#39;dt&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pullf_dt</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">get_aux_attribute</span><span class="p">(</span><span class="s1">&#39;pullforce&#39;</span><span class="p">,</span> <span class="s1">&#39;dt&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>If attributes are settable, they can be changed using
 <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.set_aux_attribute" title="MDAnalysis.coordinates.base.ProtoReader.set_aux_attribute"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_aux_attribute()</span></code></a>, e.g.:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">trajectory</span><span class="o">.</span><span class="n">set_aux_attribute</span><span class="p">(</span><span class="s1">&#39;pullforce&#39;</span><span class="p">,</span> <span class="s1">&#39;data_selector&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">set_aux_attribute</span><span class="p">(</span><span class="s1">&#39;pullforce&#39;</span><span class="p">,</span> <span class="s1">&#39;data_selector&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>The auxiliary may be renamed using <code class="docutils literal notranslate"><span class="pre">set_aux_attribute</span></code> with ‘auxname’, or more
 directly by using <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.rename_aux" title="MDAnalysis.coordinates.base.ProtoReader.rename_aux"><code class="xref py py-meth docutils literal notranslate"><span class="pre">rename_aux()</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">trajectory</span><span class="o">.</span><span class="n">rename_aux</span><span class="p">(</span><span class="s1">&#39;pullforce&#39;</span><span class="p">,</span> <span class="s1">&#39;pullf&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">rename_aux</span><span class="p">(</span><span class="s1">&#39;pullforce&#39;</span><span class="p">,</span> <span class="s1">&#39;pullf&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -302,28 +302,28 @@ The returned dictionary can then be passed to
 original auxiliary reader:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">description</span> <span class="o">=</span> <span class="n">aux</span><span class="o">.</span><span class="n">get_description</span><span class="p">()</span>
 <span class="k">del</span><span class="p">(</span><span class="n">aux</span><span class="p">)</span>
-<span class="n">reload_aux</span> <span class="o">=</span> <span class="n">auxiliary</span><span class="o">.</span><span class="n">auxreader</span><span class="p">(</span><span class="o">**</span><span class="n">description</span><span class="p">)</span>
+<span class="n">reload_aux</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">auxiliary</span><span class="o">.</span><span class="n">auxreader</span><span class="p">(</span><span class="o">**</span><span class="n">description</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The ‘description’ of any or all the auxiliaries added to a trajectory can be
 obtained using <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.get_aux_descriptions" title="MDAnalysis.coordinates.base.ProtoReader.get_aux_descriptions"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_aux_descriptions()</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">descriptions</span> <span class="o">=</span> <span class="n">trajectory</span><span class="o">.</span><span class="n">get_aux_descriptions</span><span class="p">()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">descriptions</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">get_aux_descriptions</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Get descriptions for selected auxiliaries only:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">descriptions</span> <span class="o">=</span> <span class="n">trajectory</span><span class="o">.</span><span class="n">get_aux_descriptions</span><span class="p">([</span><span class="s1">&#39;pullf&#39;</span><span class="p">,</span> <span class="s1">&#39;pullx&#39;</span><span class="p">])</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">descriptions</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">get_aux_descriptions</span><span class="p">([</span><span class="s1">&#39;pullf&#39;</span><span class="p">,</span> <span class="s1">&#39;pullx&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>And to reload:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">descr</span> <span class="ow">in</span> <span class="n">descriptions</span><span class="p">:</span>
-    <span class="n">new_trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="o">**</span><span class="n">descr</span><span class="p">)</span>
+    <span class="n">new_u</span><span class="o">.</span><span class="n">new_trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="o">**</span><span class="n">descr</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="auxstep-class">
 <span id="auxstep-api"></span><h3><span class="section-number">10.1.2.3. </span>AuxStep class<a class="headerlink" href="#auxstep-class" title="Permalink to this heading"></a></h3>
 <p>An AuxStep instance holds the auxiliary data for the current step. It is
-updated whenever the a new auxiliary step is read.</p>
+updated whenever a new auxiliary step is read.</p>
 <p>AuxStep classes are derived from the base class
 <a class="reference internal" href="base.html#MDAnalysis.auxiliary.base.AuxStep" title="MDAnalysis.auxiliary.base.AuxStep"><code class="xref py py-class docutils literal notranslate"><span class="pre">AuxStep</span></code></a>. The appropriate AuxStep class for
 a given auxiliary reader is identified in the reader by the <cite>_Auxstep</cite> attribute.</p>
@@ -346,8 +346,9 @@ Determined from <code class="docutils literal notranslate"><span class="pre">_da
 </dd>
 </dl>
 </div></blockquote>
-<p>The following are stored in AuxStep but can be accessed through the parent
-auxiliary reader (see <a class="reference internal" href="#auxreader-api"><span class="std std-ref">AuxReader class</span></a> below).</p>
+<p>The following are stored in AuxStep. The parent
+auxiliary reader has the equivalent attributes, though non-private (no _)
+(see <a class="reference internal" href="#auxreader-api"><span class="std std-ref">AuxReader class</span></a> below).</p>
 <blockquote>
 <div><dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">_dt</span></code></dt><dd><p>Change in time between auxiliary steps (in ps). If not specified, will
@@ -368,7 +369,7 @@ read with each step (<code class="docutils literal notranslate"><span class="pre
 by the reader). As for <code class="docutils literal notranslate"><span class="pre">time_selector</span></code>, type depends on the auxiliary
 format. If <code class="docutils literal notranslate"><span class="pre">None</span></code> (default value), <code class="docutils literal notranslate"><span class="pre">_data</span></code> is returned.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">constant_dt</span></code></dt><dd><p>Boolean of whether dt is constant throughout auxiliary data. Default is
+<dt><code class="docutils literal notranslate"><span class="pre">_constant_dt</span></code></dt><dd><p>Boolean of whether dt is constant throughout auxiliary data. Default is
 <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 </dd>
 </dl>
@@ -453,8 +454,8 @@ timestep.</p>
 </dd>
 </dl>
 </div></blockquote>
-<p>The following are stored in <code class="docutils literal notranslate"><span class="pre">auxstep</span></code> but may be accessed from the auxiliary
-reader; see the <a class="reference internal" href="#auxstep-api"><span class="std std-ref">AuxStep class</span></a> above.</p>
+<p>The following are stored in <code class="docutils literal notranslate"><span class="pre">auxstep</span></code> as private attributes (with _)
+but may be accessed from the auxiliary reader; see the <a class="reference internal" href="#auxstep-api"><span class="std std-ref">AuxStep class</span></a> above.</p>
 <blockquote>
 <div><p><code class="docutils literal notranslate"><span class="pre">step</span></code></p>
 <p><code class="docutils literal notranslate"><span class="pre">time</span></code></p>
@@ -573,8 +574,8 @@ set during <cite>__init__</cite>).</p>
 </dl>
 <p><code class="docutils literal notranslate"><span class="pre">close()</span></code></p>
 </div></blockquote>
-<p>For convenience, when reading auxiliary data from an open file, step at a time,
-<a class="reference internal" href="base.html#MDAnalysis.auxiliary.base.AuxFileReader" title="MDAnalysis.auxiliary.base.AuxFileReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">AuxFileReader</span></code></a>
+<p>For convenience, when reading auxiliary data from an open file, one step at a
+time, <a class="reference internal" href="base.html#MDAnalysis.auxiliary.base.AuxFileReader" title="MDAnalysis.auxiliary.base.AuxFileReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">AuxFileReader</span></code></a>
 extends <a class="reference internal" href="base.html#MDAnalysis.auxiliary.base.AuxReader" title="MDAnalysis.auxiliary.base.AuxReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">AuxReader</span></code></a> by providing the
 following (these may be overwritten by subclasses as appropriate):</p>
 <blockquote>
