@@ -13,13 +13,135 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope,
-         orbeckst, scal444, p-j-smith, edisj, Atharva7K, ojeda-e
+??/??/?? IAlibay, PicoCentauri, orbeckst
+
+ * 2.3.0
+
+Fixes
+  * Fixes awk call in deploy.yaml tests for macos runners (Issue #3693)
+
+Enhancements
+  * Add `norm` parameter to InterRDF, InterRDF_s to normalize as rdf,
+    number density or do not normalize at all. (Issue #3687)
+  * Additional logger.info output when per-frame analysis starts (PR #3710)
+
+Changes
+
+Deprecations
+  * Deprecate `density` parameter in favor of `norm` in InterRDF_s
+    (Issue #3687)
+
+
+06/01/22 IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy,
+         HenokB, umak1106, tamandeeps, Mrqeoqqt, megosato, AnirG, rishu235,
+         mtiberti, manishsaini6421, Sukeerti1, robotjellyzone, markvrma, alescoulie,
+         mjtadema, PicoCentauri, Atharva7K, aditi2906, orbeckst,  yuxuanzhuang,
+         rsexton2, rafaelpap, richardjgowers, orioncohen
+
+ * 2.2.0
+
+Fixes
+  * Fixed issue where Reader.copy() did not preserve optional arguments
+    and kwargs passed to the original class (Issue #3664, PR #3685)
+  * Iterating a SingleFrameReaderBase trajectory now rewinds the
+    reader, resetting any modified trajectory attributes to those
+    read from file. Fixes behavior that was previously undefined (Issue #3423)
+  * Fixed Reader.copy() did not preserve convert_units=False (see PR #3642)
+  * Fix the competition when generating offsets from multiple processes by
+    using a interprocess file lock. (Issue #1988, PR #3375)
+  * Fix the error when trying to load a corrupted offset file (Issue #3230
+    PR #3375)
+  * Fixed `OpenMMTopologyParser` not working when some or none of the elements
+    are present in the openmm topology (Issue #3317, PR #3511).
+  * Remove None from filenames in analysis.hole.HoleAnalysis (PR #3650)
+  * Fixed Numpy deprecation warnings about elementwise comparisons.
+    (Issue #3535, PR #3619)
+  * Fixed encore.covariance.covariance_matrix not working when providing
+    an external reference (Issue #3539, PR #3621)
+  * Fixed LinearDensity not working with grouping='residues' or 'segments'
+    (Issue #3571, PR #3572)
+  * LinearDensity now uses the definition of Avogadro's number from
+    MDAnalysis.units, which has more significant digits.
+    (Issue #3571, PR #3572)
+  * MOL2 can read files without providing optional columns:
+    subst_id, subst_name and charge. (Issue #3385, PR #3598)
+  * When converting an AtomGroup to an RDKit molecule (PR #3044):
+    - the atoms are now in the same order
+    - the output of `atom.GetMonomerInfo().GetName()` now follows the
+      guidelines for PDB files while the original name is still available
+      through `atom.GetProp("_MDAnalysis_name")`
+    - using `NoImplicit=False` should no longer throw a `SanitizationError`
+  * Contacts can now accept static AtomGroups as well as selection texts.
+    (Issue #2666, PR #3565)
+  * Fixed DumpReader triclinic box dimensions reading. (Issue #3386, PR #3403)
+  * Updated the badge in README of MDAnalysisTest to point to Github CI Actions
+  * Fixed FrameIteratorIndices doesn't rewind. (Issue #3416)
+  * Fixed BAT method Cartesian modifies input data. (Issue #3501)
+
+Enhancements
+  * Add smarts_kwargs to allow greater flexiblity with smarts atom selection
+    (Issue #3469, PR #3470).
+  * Added DL_POLY Classic support. Now HISTORY files from DL_POLY Classic can be
+  * used. (Issue #3678)
+  * Wheels and dist now get automatically built and deployed on release
+    triggers (Issue #1300, PR #3680)
+  * Added equations for `center_of_mass` and `center_of_geometry`to
+    documentation (PR #3671)
+  * Added `center_of_charge` attribute (PR #3671)
+  * Added `frames` argument to AnalysisBase.run to allow analysis to run on 
+    arbitrary list of frames (Issue #1985)
+  * LinearDensity now works with updating AtomGroups (Issue #2508, PR #3617)
+  * Link PMDA in documentation (PR #3652)
+  * Added MSD example where multiple replicates are combined(Issue #3578
+    PR #3633)
+  * PCA class now has an inverse-PCA function. The inverse transform can
+    also be extrapolated to certain non-PCA atoms. (PR #3596, Issue #2703)
+  * `DistanceMatrix` class in MDAnalysis.analysis.diffusionmap now also
+    accepts `AtomGroup` as a valid argument (Issue #3486, PR #3541)
+  * Improves the RDKitConverter's accuracy (PR #3044): AtomGroups containing
+    monatomic ion charges or edge cases with nitrogen, sulfur, phosphorus and
+    conjugated systems should now have correctly assigned bond orders and
+    charges.
+  * New optimized AnalysisBase derived Watson-Crick distance analysis class in
+    analysis.nucleicacids
+  * CRD extended format can now be explicitly requested with the `extended`
+    keyword (Issue #3605)
+  * Added benchmarks in lib.distances for enhancement (Issue #3205, PR #3641)
+
+Changes
+  * smarts selection's `maxMatches` now defaults to max(1000, n_atoms*10)
+    instead of the standard RDKit default of 1000 (Issue #3469, PR #3470).
+  * `fasteners` package is now a core dependency (Issues #3230, #1988, PR #3375)
+  * The minimm Python, NumPy, and SciPy versions (following NEP29) are now 3.8,
+    1.19, and 1.5.0; GSD now also has a minimum version of 1.9.3 and networkx
+    has minimum version 2.0 (Issue #3665)
+  * LinearDensity now saves the histogram bin edges for easier plotting as
+    "hist_bin_edges" for each dimension xyz in the results dictionary.
+    (Issue #2508, PR #3617)
+  * ITPParser no longer adds an angle for water molecules that have the SETTLE
+    constraint applied to them. This mirrors the way the constraint is handled
+    in AMBER. (Issue #2417, PR #3564)
+
+Deprecations
+  * The old results attributes for LinearDensity are now deprecated and will be
+    removed in version 3.0.0. (Issue #2508, PR #3617)
+    - "pos" is now "mass_density",
+    - "char" is now "charge_density"
+    - "std" entries are now "stddev"
+
+
+
+03/06/22 IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope,
+         orbeckst, scal444, p-j-smith, edisj, Atharva7K, ojeda-e, jbarnoud,
+         yangtcai
 
  * 2.1.0
 
 Fixes
-  * Added missing exe_err import in hole.py. Fixed a bug in HoleAnalysis where 
+  * Use uint64_t loop counters in C level distance functions to avoid overflow
+    for large arrays (Issue #3512, PR #3513).
+  * Prevents attempts to close an already closed NamedStream (Issue #3386)
+  * Added missing exe_err import in hole.py. Fixed a bug in HoleAnalysis where
     kwarg was passed instead of object to generate path (Issue #3493, PR #3496)
   * Fixes creation of vmd surfaces in hole2 when using non-contiguous frames
     with start/stop/step (Issue #3476)
@@ -34,6 +156,8 @@ Fixes
     created using add_Residue and add_Segment (Issue #3437)
 
 Enhancements
+  * Added dielectric analysis module (PR #2118)
+  * Supports TPR files produced by Gromacs 2022 (PR #3514)
   * Add support for millisecond and microsecond units (Issue #3473, PR #3491)
   * Adds :meth:`parse_n_atoms` to H5MD reader (Issue #3465)
   * Add option for custom compiler flags for C/C++ on build and remove march
@@ -42,12 +166,17 @@ Enhancements
   * Added MDAnalysis.lib.distances.minimize_vectors
 
 Changes
+  * `packaging` is now a core dependency for MDAnalysis
+  * Indexing a group (AtomGroup, ResidueGroup, or SegmentGroup) with None
+    raises a TypeError (Issue #3092, PR #3517)
   * TRZReader now defaults to a `dt` of 1.0 (instead of 0.0 previously) when
     it cannot be obtained from file (Issue #3257)
   * Dropped python 3.6 support and raised minimum numpy version to 1.18.0
     (NEP29)
 
 Deprecations
+  * Deprecated the 'pbc' kwarg for various Group methods, the 'wrap' kwarg
+    should be used instead. (Issue #1760)
 
 
 08/21/21 tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,

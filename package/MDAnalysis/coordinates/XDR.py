@@ -38,13 +38,16 @@ import errno
 import numpy as np
 from os.path import getctime, getsize, isfile, split, join
 import warnings
+import fasteners
 
 from . import base
 from ..lib.mdamath import triclinic_box
+from ..lib.util import store_init_arguments
 
 
 def offsets_filename(filename, ending='npz'):
-    """Return offset filename for XDR files. For this the filename is appended
+    """Return offset or its lock filename for XDR files.
+    For this the filename is appended
     with `_offsets.{ending}`.
 
     Parameters
@@ -82,7 +85,9 @@ def read_numpy_offsets(filename):
     """
     try:
         return {k: v for k, v in np.load(filename).items()}
-    except IOError:
+
+    #  `ValueError` is encountered when the offset file is corrupted.
+    except (ValueError, IOError):
         warnings.warn("Failed to load offsets file {}\n".format(filename))
         return False
 
@@ -113,8 +118,11 @@ class XDRBaseReader(base.ReaderBase):
 
     .. versionchanged:: 1.0.0
        XDR offsets read from trajectory if offsets file read-in fails
+    .. versionchanged:: 2.0.0
+       Add a InterProcessLock when generating offsets
 
     """
+    @store_init_arguments
     def __init__(self, filename, convert_units=True, sub=None,
                  refresh_offsets=False, **kwargs):
         """
@@ -179,53 +187,68 @@ class XDRBaseReader(base.ReaderBase):
 
     def _load_offsets(self):
         """load frame offsets from file, reread them from the trajectory if that
-        fails"""
+        fails. To prevent the competition of generating the same offset file
+        from multiple processes, an `InterProcessLock` is used."""
         fname = offsets_filename(self.filename)
+        lock_name = offsets_filename(self.filename,
+                                     ending='lock')
 
-        if not isfile(fname):
-            self._read_offsets(store=True)
-            return
-
-        # if offsets file read correctly, data will be a dictionary of offsets
-        # if not, data will be False
-        # if False, offsets should be read from the trajectory
-        # this warning can be avoided by loading Universe like:
-        # u = mda.Universe(data.TPR, data.XTC, refresh_offsets=True)
-        # refer to Issue #1893
-        data = read_numpy_offsets(fname)
-        if not data:
-            warnings.warn("Reading offsets from {} failed, "
-                          "reading offsets from trajectory instead\n"
-                          "Consider setting 'refresh_offsets=True' "
-                          "when loading your Universe".format(fname))
-            self._read_offsets(store=True)
-            return
-
-        ctime_ok = size_ok = n_atoms_ok = False
-
+        #  check if the location of the lock is writable.
         try:
-            ctime_ok = getctime(self.filename) == data['ctime']
-            size_ok = getsize(self.filename) == data['size']
-            n_atoms_ok = self._xdr.n_atoms == data['n_atoms']
-        except KeyError:
-            # we tripped over some old offset formated file
-            pass
-
-        if not (ctime_ok and size_ok and n_atoms_ok):
-            warnings.warn("Reload offsets from trajectory\n "
-                          "ctime or size or n_atoms did not match")
+            with fasteners.InterProcessLock(lock_name) as filelock:
+                pass
+        except PermissionError:
+            warnings.warn(f"Cannot write lock/offset file in same location as "
+                           "{self.filename}. Using slow offset calculation.")
             self._read_offsets(store=True)
-        else:
-            self._xdr.set_offsets(data['offsets'])
+            return
+
+        with fasteners.InterProcessLock(lock_name) as filelock:
+            if not isfile(fname):
+                self._read_offsets(store=True)
+                return
+
+            # if offsets file read correctly, data will be a dictionary of offsets
+            # if not, data will be False
+            # if False, offsets should be read from the trajectory
+            # this warning can be avoided by loading Universe like:
+            # u = mda.Universe(data.TPR, data.XTC, refresh_offsets=True)
+            # refer to Issue #1893
+            data = read_numpy_offsets(fname)
+            if not data:
+                warnings.warn("Reading offsets from {} failed, "
+                              "reading offsets from trajectory instead.\n"
+                              "Consider setting 'refresh_offsets=True' "
+                              "when loading your Universe.".format(fname))
+                self._read_offsets(store=True)
+                return
+
+            ctime_ok = size_ok = n_atoms_ok = False
+
+            try:
+                ctime_ok = getctime(self.filename) == data['ctime']
+                size_ok = getsize(self.filename) == data['size']
+                n_atoms_ok = self._xdr.n_atoms == data['n_atoms']
+            except KeyError:
+                # we tripped over some old offset formated file
+                pass
+
+            if not (ctime_ok and size_ok and n_atoms_ok):
+                warnings.warn("Reload offsets from trajectory\n "
+                              "ctime or size or n_atoms did not match")
+                self._read_offsets(store=True)
+            else:
+                self._xdr.set_offsets(data['offsets'])
 
     def _read_offsets(self, store=False):
         """read frame offsets from trajectory"""
+        fname = offsets_filename(self.filename)
         offsets = self._xdr.offsets
         if store:
             ctime = getctime(self.filename)
             size = getsize(self.filename)
             try:
-                np.savez(offsets_filename(self.filename),
+                np.savez(fname,
                          offsets=offsets, size=size, ctime=ctime,
                          n_atoms=self._xdr.n_atoms)
             except Exception as e:

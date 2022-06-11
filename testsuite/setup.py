@@ -78,8 +78,8 @@ class MDA_SDist(sdist.sdist):
 
 
 # Make sure I have the right Python version.
-if sys.version_info[:2] < (3, 7):
-    print("MDAnalysis requires Python 3.7 or better. "
+if sys.version_info[:2] < (3, 8):
+    print("MDAnalysis requires Python 3.8 or better. "
           "Python {0:d}.{1:d} detected".format(*sys.version_info[:2]))
     print("Please upgrade your version of Python.")
     sys.exit(-1)
@@ -87,7 +87,7 @@ if sys.version_info[:2] < (3, 7):
 
 if __name__ == '__main__':
     # this must be in-sync with MDAnalysis
-    RELEASE = "2.1.0-dev0"
+    RELEASE = "2.3.0-dev0"
     with open("README") as summary:
         LONG_DESCRIPTION = summary.read()
 
@@ -101,9 +101,9 @@ if __name__ == '__main__':
         'Operating System :: Microsoft :: Windows ',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'Programming Language :: C',
         'Topic :: Scientific/Engineering',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
@@ -180,6 +180,7 @@ if __name__ == '__main__':
                          'data/*.sdf',
                         ],
           },
+          python_requires='>=3.8',
           install_requires=[
               'MDAnalysis=={0!s}'.format(RELEASE),  # same as this release!
               'pytest>=3.3.0', # Raised to 3.3.0 due to Issue 2329

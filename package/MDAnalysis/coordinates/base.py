@@ -120,10 +120,17 @@ MDAnalysis.
    .. automethod:: copy_slice
 
 
+.. _FrameIterators:
+
 FrameIterators
 --------------
 
-Iterator classes used by the by the :class:`ProtoReader`.
+FrameIterators are "sliced trajectories" (a trajectory is a
+:ref:`Reader <Readers>`) that can be iterated over. They are typically
+created by slicing a trajectory or by fancy-indexing of a trajectory
+with an array of frame numbers or a boolean mask of all frames.
+
+Iterator classes used by the by the :class:`ProtoReader`:
 
 .. autoclass:: FrameIteratorBase
 
@@ -133,6 +140,8 @@ Iterator classes used by the by the :class:`ProtoReader`.
 
 .. autoclass:: FrameIteratorIndices
 
+
+.. _ReadersBase:
 
 Readers
 -------
@@ -169,6 +178,8 @@ case, :class:`ProtoReader` should be used.
    :members:
 
 
+
+.. _WritersBase:
 
 Writers
 -------
@@ -218,7 +229,7 @@ from .. import (
 from .. import units
 from ..auxiliary.base import AuxReader
 from ..auxiliary.core import auxreader
-from ..lib.util import asiterable, Namespace
+from ..lib.util import asiterable, Namespace, store_init_arguments
 
 
 class Timestep(object):
@@ -1112,6 +1123,7 @@ class FrameIteratorIndices(FrameIteratorBase):
     def __iter__(self):
         for frame in self.frames:
             yield self.trajectory._read_frame_with_aux(frame)
+        self.trajectory.rewind()
 
     def __getitem__(self, frame):
         if isinstance(frame, numbers.Integral):
@@ -2134,7 +2146,7 @@ class ReaderBase(ProtoReader):
        Removed deprecated flags functionality, use convert_units kwarg instead
 
     """
-
+    @store_init_arguments
     def __init__(self, filename, convert_units=True, **kwargs):
         super(ReaderBase, self).__init__()
 
@@ -2158,11 +2170,19 @@ class ReaderBase(ProtoReader):
         New Reader will have its own file handle and can seek/iterate
         independently of the original.
 
-        Will also copy the current state of the Timestep held in
-        the original Reader
+        Will also copy the current state of the Timestep held in the original
+        Reader.
+
+
+        .. versionchanged:: 2.2.0
+           Arguments used to construct the reader are correctly captured and
+           passed to the creation of the new class. Previously the only
+           ``n_atoms`` was passed to class copies, leading to a class created
+           with default parameters which may differ from the original class.
         """
-        new = self.__class__(self.filename,
-                             n_atoms=self.n_atoms)
+
+        new = self.__class__(**self._kwargs)
+
         if self.transformations:
             new.add_transformations(*self.transformations)
         # seek the new reader to the same frame we started with
@@ -2300,9 +2320,14 @@ class SingleFrameReaderBase(ProtoReader):
     .. versionchanged:: 0.11.0
        Added attribute "_ts_kwargs" for subclasses
        Keywords "dt" and "time_offset" read into _ts_kwargs
+    .. versionchanged:: 2.2.0
+       Calling `__iter__` now rewinds the reader before yielding a
+       :class:`Timestep` object (fixing behavior that was not
+       well defined previously).
     """
     _err = "{0} only contains a single frame"
 
+    @store_init_arguments
     def __init__(self, filename, convert_units=True, n_atoms=None, **kwargs):
         super(SingleFrameReaderBase, self).__init__()
 
@@ -2330,11 +2355,18 @@ class SingleFrameReaderBase(ProtoReader):
         New Reader will have its own file handle and can seek/iterate
         independently of the original.
 
-        Will also copy the current state of the Timestep held in
-        the original Reader
+        Will also copy the current state of the Timestep held in the original
+        Reader.
+
+
+        .. versionchanged:: 2.2.0
+           Arguments used to construct the reader are correctly captured and
+           passed to the creation of the new class. Previously the only
+           ``n_atoms`` was passed to class copies, leading to a class created
+           with default parameters which may differ from the original class.
         """
-        new = self.__class__(self.filename,
-                             n_atoms=self.n_atoms)
+        new = self.__class__(**self._kwargs)
+
         new.ts = self.ts.copy()
         for auxname, auxread in self._auxs.items():
             new.add_auxiliary(auxname, auxread.copy())
@@ -2361,6 +2393,7 @@ class SingleFrameReaderBase(ProtoReader):
         raise StopIteration(self._err.format(self.__class__.__name__))
 
     def __iter__(self):
+        self.rewind()
         yield self.ts
         return
 

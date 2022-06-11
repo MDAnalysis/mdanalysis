@@ -161,6 +161,7 @@ from math import isclose
 import MDAnalysis
 from . import base
 from ..lib import util
+from ..lib.util import store_init_arguments
 logger = logging.getLogger("MDAnalysis.coordinates.AMBER")
 
 
@@ -209,6 +210,7 @@ class TRJReader(base.ReaderBase):
     units = {'time': 'ps', 'length': 'Angstrom'}
     _Timestep = Timestep
 
+    @store_init_arguments
     def __init__(self, filename, n_atoms=None, **kwargs):
         super(TRJReader, self).__init__(filename, **kwargs)
         if n_atoms is None:
@@ -419,7 +421,7 @@ class NCDFReader(base.ReaderBase):
     to memory (using the :class:`~mmap.mmap`); ``mmap=False`` may consume large
     amounts of memory because it loads the whole trajectory into memory but it
     might be faster. The default is ``mmap=None`` and then default behavior of
-    :class:`scipy.io.netcdf.netcdf_file` prevails, i.e. ``True`` when
+    :class:`scipy.io.netcdf_file` prevails, i.e. ``True`` when
     *filename* is a file name, ``False`` when *filename* is a file-like object.
 
     .. _AMBER NETCDF format: http://ambermd.org/netcdf/nctraj.xhtml
@@ -448,7 +450,7 @@ class NCDFReader(base.ReaderBase):
        Support for reading `degrees` units for `cell_angles` has now been
        removed (Issue #2327)
     .. versionchanged:: 2.0.0
-       Now use a picklable :class:`scipy.io.netcdf.netcdf_file`--
+       Now use a picklable :class:`scipy.io.netcdf_file`--
        :class:`NCDFPicklable`.
        Reading of `dt` now defaults to 1.0 ps if `dt` cannot be extracted from
        the first two frames of the trajectory.
@@ -467,6 +469,7 @@ class NCDFReader(base.ReaderBase):
 
     _Timestep = Timestep
 
+    @store_init_arguments
     def __init__(self, filename, n_atoms=None, mmap=None, **kwargs):
 
         self._mmap = mmap
@@ -639,7 +642,7 @@ class NCDFReader(base.ReaderBase):
 
     @staticmethod
     def parse_n_atoms(filename, **kwargs):
-        with scipy.io.netcdf.netcdf_file(filename, mmap=None) as f:
+        with scipy.io.netcdf_file(filename, mmap=None) as f:
             n_atoms = f.dimensions['atom']
         return n_atoms
 
@@ -980,9 +983,9 @@ class NCDFWriter(base.WriterBase):
             ncfile = netCDF4.Dataset(self.filename, 'w',
                                      format='NETCDF3_64BIT')
         else:
-            ncfile = scipy.io.netcdf.netcdf_file(self.filename,
-                                                 mode='w', version=2,
-                                                 maskandscale=False)
+            ncfile = scipy.io.netcdf_file(self.filename,
+                                          mode='w', version=2,
+                                          maskandscale=False)
             wmsg = ("Could not find netCDF4 module. Falling back to MUCH "
                     "slower scipy.io.netcdf implementation for writing.")
             logger.warning(wmsg)
@@ -1206,11 +1209,11 @@ class NCDFWriter(base.WriterBase):
             self.trjfile = None
 
 
-class NCDFPicklable(scipy.io.netcdf.netcdf_file):
+class NCDFPicklable(scipy.io.netcdf_file):
     """NetCDF file object (read-only) that can be pickled.
 
     This class provides a file-like object (as returned by
-    :class:`scipy.io.netcdf.netcdf_file`) that,
+    :class:`scipy.io.netcdf_file`) that,
     unlike standard Python file objects,
     can be pickled. Only read mode is supported.
 
@@ -1222,7 +1225,7 @@ class NCDFPicklable(scipy.io.netcdf.netcdf_file):
 
 
     .. note::
-        This class subclasses :class:`scipy.io.netcdf.netcdf_file`, please
+        This class subclasses :class:`scipy.io.netcdf_file`, please
         see the `scipy netcdf API documentation`_ for more information on
         the parameters and how the class behaviour.
 
