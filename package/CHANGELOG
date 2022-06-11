@@ -30,10 +30,10 @@ Changes
     `pip install ./package[extra_formats]` (Issue #3701)
 
 Deprecations
-  * Deprecate `density` parameter in favor of `norm` in InterRDF_s
-    (Issue #3687)
   * The extras_requires target "AMBER" for `pip install ./package[AMBER]`
     will be removed in 3.0. Use "extra_formats". (Issue #3701, PR #3711)
+  * Deprecate `density` parameter in favor of `norm` in InterRDF_s
+    (Issue #3687)
 
 
 06/01/22 IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy,
