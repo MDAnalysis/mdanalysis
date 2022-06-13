@@ -406,7 +406,7 @@ class TestHoleAnalysis(BaseTestHole):
         stds = np.array(list(map(np.std, binned)))
         midpoints = 0.5 * bins[1:] + 0.5 * bins[:-1]
         # assume a bin of length 1.5
-        assert_allclose(midpoints, bins[1:], atol=0.75) 
+        assert_allclose(midpoints, bins[1:], atol=0.75)
 
         ylow = list(mean-(2*stds))
         yhigh = list(mean+(2*stds))
