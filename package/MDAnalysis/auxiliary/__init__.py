@@ -112,7 +112,7 @@ the auxiliary data for that timestep.
 
 'Assignment' of auxiliary steps to trajectory timesteps is determined from the time 
 of the auxiliary step, ``dt`` of the trajectory and time at the first frame of the 
-trajectory (obtained through a :class:`~MDAnalysis.coordinates.base.Timestep` 
+trajectory (obtained through a :class:`~MDAnalysis.coordinates.timestep.Timestep` 
 instance from the trajectory), as::
 
     frame = floor((time_at_step - time_at_frame_0 + dt/2)/dt)
