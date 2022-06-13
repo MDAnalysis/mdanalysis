@@ -1523,7 +1523,7 @@ class GroupBase(_MutableBase):
         box : array_like
             Box dimensions, can be either orthogonal or triclinic information.
             Cell dimensions must be in an identical to format to those returned
-            by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,
+            by :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`,
             ``[lx, ly, lz, alpha, beta, gamma]``. If ``None``, uses these
             timestep dimensions.
         inplace : bool
@@ -1545,7 +1545,7 @@ class GroupBase(_MutableBase):
            x_i' = x_i - \left\lfloor\frac{x_i}{L_i}\right\rfloor
 
         The default is to take unit cell information from the underlying
-        :class:`~MDAnalysis.coordinates.base.Timestep` instance. The optional
+        :class:`~MDAnalysis.coordinates.timestep.Timestep` instance. The optional
         argument `box` can be used to provide alternative unit cell information
         (in the MDAnalysis standard format
         ``[Lx, Ly, Lz, alpha, beta, gamma]``).
@@ -1588,7 +1588,7 @@ class GroupBase(_MutableBase):
         box : array_like, optional
             The unitcell dimensions of the system, which can be orthogonal or
             triclinic and must be provided in the same format as returned by
-            :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+            :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
             ``[lx, ly, lz, alpha, beta, gamma]``.
             If ``None``, uses the
             dimensions of the current time step.
@@ -1643,9 +1643,9 @@ class GroupBase(_MutableBase):
 
 
         `box` allows a unit cell to be given for the transformation. If not
-        specified, the :attr:`~MDAnalysis.coordinates.base.Timestep.dimensions`
+        specified, the :attr:`~MDAnalysis.coordinates.timestep.Timestep.dimensions`
         information from the current
-        :class:`~MDAnalysis.coordinates.base.Timestep` will be used.
+        :class:`~MDAnalysis.coordinates.timestep.Timestep` will be used.
 
         .. note::
             :meth:`AtomGroup.wrap` is currently faster than
@@ -2768,9 +2768,9 @@ class AtomGroup(GroupBase):
         Raises
         ------
         ~MDAnalysis.exceptions.NoDataError
-            If the underlying :class:`~MDAnalysis.coordinates.base.Timestep`
+            If the underlying :class:`~MDAnalysis.coordinates.timestep.Timestep`
             does not contain
-            :attr:`~MDAnalysis.coordinates.base.Timestep.positions`.
+            :attr:`~MDAnalysis.coordinates.timestep.Timestep.positions`.
         """
         return self.universe.trajectory.ts.positions[self.ix]
 
@@ -2796,9 +2796,9 @@ class AtomGroup(GroupBase):
         Raises
         ------
         ~MDAnalysis.exceptions.NoDataError
-            If the underlying :class:`~MDAnalysis.coordinates.base.Timestep`
+            If the underlying :class:`~MDAnalysis.coordinates.timestep.Timestep`
             does not contain
-            :attr:`~MDAnalysis.coordinates.base.Timestep.velocities`.
+            :attr:`~MDAnalysis.coordinates.timestep.Timestep.velocities`.
         """
         ts = self.universe.trajectory.ts
         return np.array(ts.velocities[self.ix])
@@ -2825,8 +2825,8 @@ class AtomGroup(GroupBase):
         Raises
         ------
         ~MDAnalysis.exceptions.NoDataError
-            If the :class:`~MDAnalysis.coordinates.base.Timestep` does not
-            contain :attr:`~MDAnalysis.coordinates.base.Timestep.forces`.
+            If the :class:`~MDAnalysis.coordinates.timestep.Timestep` does not
+            contain :attr:`~MDAnalysis.coordinates.timestep.Timestep.forces`.
         """
         ts = self.universe.trajectory.ts
         return ts.forces[self.ix]
@@ -2840,7 +2840,7 @@ class AtomGroup(GroupBase):
     def ts(self):
         """Temporary Timestep that contains the selection coordinates.
 
-        A :class:`~MDAnalysis.coordinates.base.Timestep` instance,
+        A :class:`~MDAnalysis.coordinates.timestep.Timestep` instance,
         which can be passed to a trajectory writer.
 
         If :attr:`~AtomGroup.ts` is modified then these modifications
@@ -2849,7 +2849,7 @@ class AtomGroup(GroupBase):
         :attr:`~MDAnalysis.core.universe.Universe.trajectory` frame changes).
 
         It is not possible to assign a new
-        :class:`~MDAnalysis.coordinates.base.Timestep` to the
+        :class:`~MDAnalysis.coordinates.timestep.Timestep` to the
         :attr:`AtomGroup.ts` attribute; change attributes of the object.
         """
         trj_ts = self.universe.trajectory.ts  # original time step
@@ -4174,9 +4174,9 @@ class Atom(ComponentBase):
         Raises
         ------
         ~MDAnalysis.exceptions.NoDataError
-            If the underlying :class:`~MDAnalysis.coordinates.base.Timestep`
+            If the underlying :class:`~MDAnalysis.coordinates.timestep.Timestep`
             does not contain
-            :attr:`~MDAnalysis.coordinates.base.Timestep.positions`.
+            :attr:`~MDAnalysis.coordinates.timestep.Timestep.positions`.
         """
         return self.universe.trajectory.ts.positions[self.ix].copy()
 
@@ -4197,9 +4197,9 @@ class Atom(ComponentBase):
         Raises
         ------
         ~MDAnalysis.exceptions.NoDataError
-            If the underlying :class:`~MDAnalysis.coordinates.base.Timestep`
+            If the underlying :class:`~MDAnalysis.coordinates.timestep.Timestep`
             does not contain
-            :attr:`~MDAnalysis.coordinates.base.Timestep.velocities`.
+            :attr:`~MDAnalysis.coordinates.timestep.Timestep.velocities`.
         """
         ts = self.universe.trajectory.ts
         return ts.velocities[self.ix].copy()
@@ -4222,9 +4222,9 @@ class Atom(ComponentBase):
         Raises
         ------
         ~MDAnalysis.exceptions.NoDataError
-            If the underlying :class:`~MDAnalysis.coordinates.base.Timestep`
+            If the underlying :class:`~MDAnalysis.coordinates.timestep.Timestep`
             does not contain
-            :attr:`~MDAnalysis.coordinates.base.Timestep.forces`.
+            :attr:`~MDAnalysis.coordinates.timestep.Timestep.forces`.
         """
         ts = self.universe.trajectory.ts
         return ts.forces[self.ix].copy()

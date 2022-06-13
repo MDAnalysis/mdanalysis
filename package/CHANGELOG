@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, PicoCentauri, orbeckst
+??/??/?? IAlibay, PicoCentauri, orbeckst, hmacdope
 
  * 2.3.0
 
@@ -23,6 +23,9 @@ Fixes
 Enhancements
   * Add `norm` parameter to InterRDF, InterRDF_s to normalize as rdf,
     number density or do not normalize at all. (Issue #3687)
+  * Additional logger.info output when per-frame analysis starts (PR #3710)
+  * Timestep has been converted to a Cython Extension type
+    (CZI Performance track, PR #3683)
 
 Changes
   * To add additional optional packages for different file formats when
