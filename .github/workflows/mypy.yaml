@@ -17,6 +17,83 @@ defaults:
     shell: bash -l {0}
 
 jobs:
+
+  main:
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
+    runs-on: ${{ matrix.os }}
+    strategy:
+        fail-fast: false
+        matrix:
+          os: [ubuntu-latest, ]
+          python-version: [3.8, 3.9, "3.10"]
+          full-deps: [true, ]
+          install_hole: [true, ]
+          codecov: [true, ]
+          include:
+            - name: macOS_bigsur_py39
+              os: macOS-11
+              python-version: 3.9
+              full-deps: true
+              install_hole: true
+              codecov: true
+            - name: macOS_catalina_py38
+              os: macOS-10.15
+              python-version: 3.8
+              full-deps: true
+              install_hole: true
+              codecov: false
+            - name: minimal-ubuntu
+              os: ubuntu-latest
+              python-version: 3.8
+              full-deps: false
+              install_hole: false
+              codecov: true
+            - name: numpy_min
+              os: ubuntu-latest
+              python-version: 3.8
+              full-deps: false
+              install_hole: false
+              codecov: false
+              numpy: numpy=1.19.0
+            - name: asv_check
+              os: ubuntu-latest
+              python-version: 3.8
+              full-deps: true
+              install_hole: false
+              codecov: false
+              extra-pip-deps: asv
+    env:
+      CYTHON_TRACE_NOGIL: 1
+      MPLBACKEND: agg
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: setup_os
+      uses: ./.github/actions/setup-os
+      with:
+        os-type: ${{ matrix.os }}
+
+    - name: setup_miniconda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+        auto-update-conda: true
+        channel-priority: flexible
+        channels: conda-forge, bioconda
+        add-pip-as-python-dependency: true
+        mamba-version: "*"
+        architecture: x64
+
+    - name: install_deps
+      uses: ./.github/actions/setup-deps
+      with:
+        mamba: true
+        full-deps: ${{ matrix.full-deps }}
+        # in most cases will just default to empty, i.e. pick up max version from other deps
+        numpy: ${{ matrix.numpy }}
+        extra-pip-deps: ${{ matrix.extra-pip-deps }}
+
   mypy :
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
@@ -37,7 +114,6 @@ jobs:
       - name: install
         run: |
           python -m pip install mypy
-
       - name: "Run mypy"
         run: |
           mypy package/MDAnalysis/
