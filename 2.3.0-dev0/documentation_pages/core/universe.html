@@ -210,7 +210,7 @@ trajectory.</p></li>
 <span class="sig-name descname"><span class="pre">dimensions</span></span><a class="headerlink" href="#MDAnalysis.core.universe.Universe.dimensions" title="Permalink to this definition"></a></dt>
 <dd><p>system dimensions (simulation unit cell, if set in the
 trajectory) at the <em>current time step</em>
-(see <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>).
+(see <a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep.dimensions" title="MDAnalysis.coordinates.timestep.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep.Timestep.dimensions</span></code></a>).
 The unit cell can be set for the current time step (but the change is
 not permanent unless written to a file).</p>
 <dl class="field-list simple">
@@ -534,7 +534,7 @@ they <em>must</em> be from the same Universe.</p></li>
 <p>The raw trajectory coordinates are <code class="xref py py-attr docutils literal notranslate"><span class="pre">Universe.coord.positions</span></code>,
 represented as a <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.float32</span></code> array.</p>
 <p>Because <a class="reference internal" href="#MDAnalysis.core.universe.Universe.coord" title="MDAnalysis.core.universe.Universe.coord"><code class="xref py py-attr docutils literal notranslate"><span class="pre">coord</span></code></a> is a reference to a
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>, it changes its contents
+<a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>, it changes its contents
 while one is stepping through the trajectory.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>

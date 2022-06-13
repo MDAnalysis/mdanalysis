@@ -143,7 +143,8 @@
 <span class="kn">import</span> <span class="nn">errno</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">Timestep</span>
+<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
+<span class="kn">from</span> <span class="nn">.timestep</span> <span class="kn">import</span> <span class="n">Timestep</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
 <span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">cached</span><span class="p">,</span> <span class="n">store_init_arguments</span>
 <span class="kn">from</span> <span class="nn">.core</span> <span class="kn">import</span> <span class="n">triclinic_box</span><span class="p">,</span> <span class="n">triclinic_vectors</span>
@@ -154,8 +155,8 @@
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    ts : base.Timestep</span>
-<span class="sd">         :class:`~MDAnalysis.coordinates.base.Timestep` object containing</span>
+<span class="sd">    ts : timestep.Timestep</span>
+<span class="sd">         :class:`~MDAnalysis.coordinates.timestep.Timestep` object containing</span>
 <span class="sd">         coordinates of current frame</span>
 
 <span class="sd">    Note</span>
@@ -175,6 +176,8 @@
 <span class="sd">    .. versionchanged:: 2.1.0</span>
 <span class="sd">       TRZReader now returns a default :attr:`dt` of 1.0 when it cannot be</span>
 <span class="sd">       obtained from the difference between two frames.</span>
+<span class="sd">    .. versionchanged:: 2.3.0</span>
+<span class="sd">       _frame attribute moved to `ts.data` dictionary.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;TRZ&quot;</span>
@@ -290,7 +293,7 @@
                                  <span class="s2">&quot;Maybe `topology` is wrong?&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                                                              <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">))</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;nframe&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1"># 0 based for MDA</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;ntrj&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;frame&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;ntrj&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># moved from attr to data</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;treal&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">triclinic_box</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;box&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)))</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;pressure&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;pressure&#39;</span><span class="p">]</span>
@@ -387,9 +390,9 @@
         <span class="sd">&quot;&quot;&quot;Timesteps between trajectory frames&quot;&quot;&quot;</span>
         <span class="n">curr_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">t0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_frame</span>
+            <span class="n">t0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;frame&#39;</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
-            <span class="n">t1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_frame</span>
+            <span class="n">t1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;frame&#39;</span><span class="p">]</span>
             <span class="n">skip_timestep</span> <span class="o">=</span> <span class="n">t1</span> <span class="o">-</span> <span class="n">t0</span>
         <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">0</span>
@@ -612,8 +615,8 @@
                     <span class="n">data</span><span class="p">[</span><span class="n">att</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
                 <span class="n">faked_attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">att</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;step&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">_frame</span>
-        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;step&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;frame&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="n">data</span><span class="p">[</span><span class="s1">&#39;step&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
             <span class="n">faked_attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;step&#39;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
@@ -635,8 +638,8 @@
             <span class="n">unitcell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">vels</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">_velocities</span>
-        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">vels</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">velocities</span>
+        <span class="k">except</span> <span class="n">NoDataError</span><span class="p">:</span>
             <span class="n">vels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">)</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Timestep didn&#39;t have velocity information, &quot;</span>
                           <span class="s2">&quot;this will be set to zero in output trajectory. &quot;</span><span class="p">)</span>

@@ -1615,7 +1615,7 @@
 <span class="sd">        box : array_like</span>
 <span class="sd">            Box dimensions, can be either orthogonal or triclinic information.</span>
 <span class="sd">            Cell dimensions must be in an identical to format to those returned</span>
-<span class="sd">            by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,</span>
+<span class="sd">            by :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`,</span>
 <span class="sd">            ``[lx, ly, lz, alpha, beta, gamma]``. If ``None``, uses these</span>
 <span class="sd">            timestep dimensions.</span>
 <span class="sd">        inplace : bool</span>
@@ -1637,7 +1637,7 @@
 <span class="sd">           x_i&#39; = x_i - \left\lfloor\frac{x_i}{L_i}\right\rfloor</span>
 
 <span class="sd">        The default is to take unit cell information from the underlying</span>
-<span class="sd">        :class:`~MDAnalysis.coordinates.base.Timestep` instance. The optional</span>
+<span class="sd">        :class:`~MDAnalysis.coordinates.timestep.Timestep` instance. The optional</span>
 <span class="sd">        argument `box` can be used to provide alternative unit cell information</span>
 <span class="sd">        (in the MDAnalysis standard format</span>
 <span class="sd">        ``[Lx, Ly, Lz, alpha, beta, gamma]``).</span>
@@ -1680,7 +1680,7 @@
 <span class="sd">        box : array_like, optional</span>
 <span class="sd">            The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">            triclinic and must be provided in the same format as returned by</span>
-<span class="sd">            :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">            :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:</span>
 <span class="sd">            ``[lx, ly, lz, alpha, beta, gamma]``.</span>
 <span class="sd">            If ``None``, uses the</span>
 <span class="sd">            dimensions of the current time step.</span>
@@ -1735,9 +1735,9 @@
 
 
 <span class="sd">        `box` allows a unit cell to be given for the transformation. If not</span>
-<span class="sd">        specified, the :attr:`~MDAnalysis.coordinates.base.Timestep.dimensions`</span>
+<span class="sd">        specified, the :attr:`~MDAnalysis.coordinates.timestep.Timestep.dimensions`</span>
 <span class="sd">        information from the current</span>
-<span class="sd">        :class:`~MDAnalysis.coordinates.base.Timestep` will be used.</span>
+<span class="sd">        :class:`~MDAnalysis.coordinates.timestep.Timestep` will be used.</span>
 
 <span class="sd">        .. note::</span>
 <span class="sd">            :meth:`AtomGroup.wrap` is currently faster than</span>
@@ -2860,9 +2860,9 @@
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        ~MDAnalysis.exceptions.NoDataError</span>
-<span class="sd">            If the underlying :class:`~MDAnalysis.coordinates.base.Timestep`</span>
+<span class="sd">            If the underlying :class:`~MDAnalysis.coordinates.timestep.Timestep`</span>
 <span class="sd">            does not contain</span>
-<span class="sd">            :attr:`~MDAnalysis.coordinates.base.Timestep.positions`.</span>
+<span class="sd">            :attr:`~MDAnalysis.coordinates.timestep.Timestep.positions`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span>
 
@@ -2888,9 +2888,9 @@
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        ~MDAnalysis.exceptions.NoDataError</span>
-<span class="sd">            If the underlying :class:`~MDAnalysis.coordinates.base.Timestep`</span>
+<span class="sd">            If the underlying :class:`~MDAnalysis.coordinates.timestep.Timestep`</span>
 <span class="sd">            does not contain</span>
-<span class="sd">            :attr:`~MDAnalysis.coordinates.base.Timestep.velocities`.</span>
+<span class="sd">            :attr:`~MDAnalysis.coordinates.timestep.Timestep.velocities`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">velocities</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">])</span>
@@ -2917,8 +2917,8 @@
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        ~MDAnalysis.exceptions.NoDataError</span>
-<span class="sd">            If the :class:`~MDAnalysis.coordinates.base.Timestep` does not</span>
-<span class="sd">            contain :attr:`~MDAnalysis.coordinates.base.Timestep.forces`.</span>
+<span class="sd">            If the :class:`~MDAnalysis.coordinates.timestep.Timestep` does not</span>
+<span class="sd">            contain :attr:`~MDAnalysis.coordinates.timestep.Timestep.forces`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
         <span class="k">return</span> <span class="n">ts</span><span class="o">.</span><span class="n">forces</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span>
@@ -2932,7 +2932,7 @@
     <span class="k">def</span> <span class="nf">ts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Temporary Timestep that contains the selection coordinates.</span>
 
-<span class="sd">        A :class:`~MDAnalysis.coordinates.base.Timestep` instance,</span>
+<span class="sd">        A :class:`~MDAnalysis.coordinates.timestep.Timestep` instance,</span>
 <span class="sd">        which can be passed to a trajectory writer.</span>
 
 <span class="sd">        If :attr:`~AtomGroup.ts` is modified then these modifications</span>
@@ -2941,7 +2941,7 @@
 <span class="sd">        :attr:`~MDAnalysis.core.universe.Universe.trajectory` frame changes).</span>
 
 <span class="sd">        It is not possible to assign a new</span>
-<span class="sd">        :class:`~MDAnalysis.coordinates.base.Timestep` to the</span>
+<span class="sd">        :class:`~MDAnalysis.coordinates.timestep.Timestep` to the</span>
 <span class="sd">        :attr:`AtomGroup.ts` attribute; change attributes of the object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">trj_ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>  <span class="c1"># original time step</span>
@@ -4266,9 +4266,9 @@
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        ~MDAnalysis.exceptions.NoDataError</span>
-<span class="sd">            If the underlying :class:`~MDAnalysis.coordinates.base.Timestep`</span>
+<span class="sd">            If the underlying :class:`~MDAnalysis.coordinates.timestep.Timestep`</span>
 <span class="sd">            does not contain</span>
-<span class="sd">            :attr:`~MDAnalysis.coordinates.base.Timestep.positions`.</span>
+<span class="sd">            :attr:`~MDAnalysis.coordinates.timestep.Timestep.positions`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
@@ -4289,9 +4289,9 @@
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        ~MDAnalysis.exceptions.NoDataError</span>
-<span class="sd">            If the underlying :class:`~MDAnalysis.coordinates.base.Timestep`</span>
+<span class="sd">            If the underlying :class:`~MDAnalysis.coordinates.timestep.Timestep`</span>
 <span class="sd">            does not contain</span>
-<span class="sd">            :attr:`~MDAnalysis.coordinates.base.Timestep.velocities`.</span>
+<span class="sd">            :attr:`~MDAnalysis.coordinates.timestep.Timestep.velocities`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
         <span class="k">return</span> <span class="n">ts</span><span class="o">.</span><span class="n">velocities</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -4314,9 +4314,9 @@
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        ~MDAnalysis.exceptions.NoDataError</span>
-<span class="sd">            If the underlying :class:`~MDAnalysis.coordinates.base.Timestep`</span>
+<span class="sd">            If the underlying :class:`~MDAnalysis.coordinates.timestep.Timestep`</span>
 <span class="sd">            does not contain</span>
-<span class="sd">            :attr:`~MDAnalysis.coordinates.base.Timestep.forces`.</span>
+<span class="sd">            :attr:`~MDAnalysis.coordinates.timestep.Timestep.forces`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
         <span class="k">return</span> <span class="n">ts</span><span class="o">.</span><span class="n">forces</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>

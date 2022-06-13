@@ -321,7 +321,7 @@ assigned to that timestep (as in the case of less frequent auxiliary
 data), the first auxiliary step after <em>ts</em>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ts</strong> (<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> object) – The trajectory timestep before which the auxiliary reader is to
+<dd class="field-odd"><p><strong>ts</strong> (<a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> object) – The trajectory timestep before which the auxiliary reader is to
 be positioned.</p>
 </dd>
 </dl>
@@ -350,7 +350,7 @@ are assigned and fall within the cutoff.</p>
 data is reached before a trajectory frame is found, None is returned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ts</strong> (<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> object) – Any timestep from the trajectory for which the next ‘non-empty’
+<dd class="field-odd"><p><strong>ts</strong> (<a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> object) – Any timestep from the trajectory for which the next ‘non-empty’
 frame is to be found.</p>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -378,7 +378,7 @@ auxiliary steps.</p>
 <p>To update <em>ts</em> with the representative value, use <code class="docutils literal notranslate"><span class="pre">update_ts</span></code> instead.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ts</strong> (<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> object) – The trajectory timestep for which corresponding auxiliary data is
+<dd class="field-odd"><p><strong>ts</strong> (<a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> object) – The trajectory timestep for which corresponding auxiliary data is
 to be read.</p>
 </dd>
 </dl>
@@ -432,7 +432,7 @@ also optionally be returned with <em>return_time_diff</em>.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Number of the auxiliary step to calculate closest trajectory frame
 for.</p></li>
-<li><p><strong>ts</strong> (<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> object) – (Any) timestep from the trajectory the calculated frame number is to
+<li><p><strong>ts</strong> (<a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> object) – (Any) timestep from the trajectory the calculated frame number is to
 correspond to.</p></li>
 <li><p><strong>return_time_diff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – (Default: False) Additionally return the time difference between
 <em>step</em> and returned frame.</p></li>
@@ -506,7 +506,7 @@ timestep <em>ts</em>.</p>
 <em>ts</em> as <code class="docutils literal notranslate"><span class="pre">ts.aux.auxname</span></code> or <code class="docutils literal notranslate"><span class="pre">ts.aux['auxname']</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ts</strong> (<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> object) – The trajectory timestep for which corresponding auxiliary data is
+<dd class="field-odd"><p><strong>ts</strong> (<a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> object) – The trajectory timestep for which corresponding auxiliary data is
 to be read and updated.</p>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -514,7 +514,7 @@ to be read and updated.</p>
 value in <code class="docutils literal notranslate"><span class="pre">ts.aux</span></code> be updated appropriately.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a></p>
+<dd class="field-odd"><p><a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a></p>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">auxname</span></code> is not set.</p>

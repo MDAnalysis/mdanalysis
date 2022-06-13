@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>6.29. Common functions for coordinate reading — MDAnalysis.coordinates.core &mdash; MDAnalysis 2.3.0-dev0 documentation</title>
+  <title>6.30. Common functions for coordinate reading — MDAnalysis.coordinates.core &mdash; MDAnalysis 2.3.0-dev0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
@@ -25,8 +25,8 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="6.30. Serialization of Coordinate Readers" href="pickle_readers.html" />
-    <link rel="prev" title="6.28. Base classes — MDAnalysis.coordinates.base" href="base.html" /> 
+    <link rel="next" title="6.31. Serialization of Coordinate Readers" href="pickle_readers.html" />
+    <link rel="prev" title="6.29. Base classes — MDAnalysis.coordinates.base" href="base.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -82,11 +82,12 @@
 <li class="toctree-l2"><a class="reference internal" href="memory.html">6.25. Reading trajectories from memory — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="chemfiles.html">6.26. Reading trajectories with <em>chemfiles</em> — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="null.html">6.27. Null output — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="base.html">6.28. Base classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">6.29. Common functions for coordinate reading — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="pickle_readers.html">6.30. Serialization of Coordinate Readers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chain.html">6.31. ChainReader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.32. XDR based trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="timestep.html">6.28. Timestep Class — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">6.29. Base classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">6.30. Common functions for coordinate reading — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="pickle_readers.html">6.31. Serialization of Coordinate Readers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chain.html">6.32. ChainReader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.33. XDR based trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
@@ -117,7 +118,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../coordinates_modules.html"><span class="section-number">6. </span>Coordinates modules</a> &raquo;</li>
-      <li><span class="section-number">6.29. </span>Common functions for coordinate reading — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></li>
+      <li><span class="section-number">6.30. </span>Common functions for coordinate reading — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/documentation_pages/coordinates/core.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -128,7 +129,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.coordinates.core"></span><section id="common-functions-for-coordinate-reading-mdanalysis-coordinates-core">
-<h1><span class="section-number">6.29. </span>Common functions for coordinate reading — <a class="reference internal" href="#module-MDAnalysis.coordinates.core" title="MDAnalysis.coordinates.core"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a><a class="headerlink" href="#common-functions-for-coordinate-reading-mdanalysis-coordinates-core" title="Permalink to this heading"></a></h1>
+<h1><span class="section-number">6.30. </span>Common functions for coordinate reading — <a class="reference internal" href="#module-MDAnalysis.coordinates.core" title="MDAnalysis.coordinates.core"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a><a class="headerlink" href="#common-functions-for-coordinate-reading-mdanalysis-coordinates-core" title="Permalink to this heading"></a></h1>
 <p>Important base classes are collected in <a class="reference internal" href="base.html#module-MDAnalysis.coordinates.base" title="MDAnalysis.coordinates.base"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a>.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.core.reader">
@@ -300,8 +301,8 @@ deduced from <cite>filename</cite>.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="base.html" class="btn btn-neutral float-left" title="6.28. Base classes — MDAnalysis.coordinates.base" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pickle_readers.html" class="btn btn-neutral float-right" title="6.30. Serialization of Coordinate Readers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="base.html" class="btn btn-neutral float-left" title="6.29. Base classes — MDAnalysis.coordinates.base" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pickle_readers.html" class="btn btn-neutral float-right" title="6.31. Serialization of Coordinate Readers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

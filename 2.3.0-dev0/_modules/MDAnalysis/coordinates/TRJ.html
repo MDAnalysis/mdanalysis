@@ -133,28 +133,6 @@
 <span class="sd">* lengths in Angstrom (Å)</span>
 <span class="sd">* time in ps (but see below)</span>
 
-<span class="sd">AMBER trajectory coordinate frames are based on a custom :class:`Timestep`</span>
-<span class="sd">object.</span>
-
-<span class="sd">.. autoclass:: Timestep</span>
-<span class="sd">   :members:</span>
-
-<span class="sd">   .. attribute:: _pos</span>
-
-<span class="sd">      coordinates of the atoms as a :class:`numpy.ndarray` of shape `(n_atoms, 3)`</span>
-
-<span class="sd">   .. attribute:: _velocities</span>
-
-<span class="sd">      velocities of the atoms as a :class:`numpy.ndarray` of shape `(n_atoms, 3)`;</span>
-<span class="sd">      only available if the trajectory contains velocities or if the</span>
-<span class="sd">      *velocities* = ``True`` keyword has been supplied.</span>
-
-<span class="sd">   .. attribute:: _forces</span>
-
-<span class="sd">      forces of the atoms as a :class:`numpy.ndarray` of shape `(n_atoms, 3)`;</span>
-<span class="sd">      only available if the trajectory contains forces or if the</span>
-<span class="sd">      *forces* = ``True`` keyword has been supplied.</span>
-
 
 <span class="sd">.. _netcdf-trajectories:</span>
 
@@ -251,6 +229,7 @@
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">isclose</span>
 
 <span class="kn">import</span> <span class="nn">MDAnalysis</span>
+<span class="kn">from</span> <span class="nn">.timestep</span> <span class="kn">import</span> <span class="n">Timestep</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
 <span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">store_init_arguments</span>
@@ -262,19 +241,6 @@
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">netCDF4</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;netCDF4 is not available. Writing AMBER ncdf files will be slow.&quot;</span><span class="p">)</span>
-
-
-<div class="viewcode-block" id="Timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRJ.html#MDAnalysis.coordinates.TRJ.Timestep">[docs]</a><span class="k">class</span> <span class="nc">Timestep</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;AMBER trajectory Timestep.</span>
-
-<span class="sd">    The Timestep can be initialized with `arg` being an integer</span>
-<span class="sd">    (the number of atoms) and an optional keyword argument `velocities` to</span>
-<span class="sd">    allocate space for both coordinates and velocities;</span>
-
-<span class="sd">    .. versionchanged:: 0.10.0</span>
-<span class="sd">       Added ability to contain Forces</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">order</span> <span class="o">=</span> <span class="s1">&#39;C&#39;</span></div>
 
 
 <div class="viewcode-block" id="TRJReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRJ.html#MDAnalysis.coordinates.TRJ.TRJReader">[docs]</a><span class="k">class</span> <span class="nc">TRJReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>

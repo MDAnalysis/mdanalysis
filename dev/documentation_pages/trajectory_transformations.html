@@ -177,7 +177,7 @@ being added.</p>
 <section id="creating-transformations">
 <span id="custom-transformations"></span><h2><span class="section-number">8.2. </span>Creating transformations<a class="headerlink" href="#creating-transformations" title="Permalink to this heading"></a></h2>
 <p>A simple <em>transformation</em> can also be a function that takes a
-<a class="reference internal" href="coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> as input, modifies it, and
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code> as input, modifies it, and
 returns it. If it takes no other arguments but a <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code>
 can be defined as the following example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">up_by_2</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
@@ -196,7 +196,7 @@ the following two methods can be used to create such transformation:</p>
 <a class="reference internal" href="transformations/base.html#MDAnalysis.transformations.base.TransformationBase" title="MDAnalysis.transformations.base.TransformationBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.transformations.base.TransformationBase</span></code></a>,
 which defines <code class="xref py py-func docutils literal notranslate"><span class="pre">__call__()</span></code> for the transformation class
 and can be applied directly to a <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code>. <code class="xref py py-func docutils literal notranslate"><span class="pre">_transform()</span></code> has to
-be defined and include the operations on the <a class="reference internal" href="coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep</span></code></a>.</p>
+be defined and include the operations on the <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep</span></code>.</p>
 <p>So, a transformation class can be roughly defined as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.transformations</span> <span class="kn">import</span> <span class="n">TransformationBase</span>
 

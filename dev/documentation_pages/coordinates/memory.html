@@ -92,11 +92,12 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="chemfiles.html">6.26. Reading trajectories with <em>chemfiles</em> — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="null.html">6.27. Null output — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="base.html">6.28. Base classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="core.html">6.29. Common functions for coordinate reading — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="pickle_readers.html">6.30. Serialization of Coordinate Readers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chain.html">6.31. ChainReader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.32. XDR based trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="timestep.html">6.28. Timestep Class — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">6.29. Base classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">6.30. Common functions for coordinate reading — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="pickle_readers.html">6.31. Serialization of Coordinate Readers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chain.html">6.32. ChainReader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.33. XDR based trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
@@ -281,312 +282,6 @@ on the sub-system.</p>
 <section id="classes">
 <h2><span class="section-number">6.25.2. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.memory.Timestep">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.memory.</span></span><span class="sig-name descname"><span class="pre">Timestep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.memory.Timestep" title="Permalink to this definition"></a></dt>
-<dd><p>Timestep data for one frame</p>
-<dl class="field-list">
-<dt class="field-odd">Methods</dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">ts</span> <span class="pre">=</span> <span class="pre">Timestep(n_atoms)</span></code></p>
-<blockquote>
-<div><p>create a timestep object with space for n_atoms</p>
-</div></blockquote>
-</dd>
-</dl>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.11.0: </span>Added <a class="reference internal" href="#MDAnalysis.coordinates.memory.Timestep.from_timestep" title="MDAnalysis.coordinates.memory.Timestep.from_timestep"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_timestep()</span></code></a> and <a class="reference internal" href="#MDAnalysis.coordinates.memory.Timestep.from_coordinates" title="MDAnalysis.coordinates.memory.Timestep.from_coordinates"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_coordinates()</span></code></a> constructor
-methods.
-<a class="reference internal" href="#MDAnalysis.coordinates.memory.Timestep" title="MDAnalysis.coordinates.memory.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> init now only accepts integer creation.
-<a class="reference internal" href="#MDAnalysis.coordinates.memory.Timestep.n_atoms" title="MDAnalysis.coordinates.memory.Timestep.n_atoms"><code class="xref py py-attr docutils literal notranslate"><span class="pre">n_atoms</span></code></a> now a read only property.
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">frame</span></code> now 0-based instead of 1-based.
-Attributes <cite>status</cite> and <cite>step</cite> removed.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 2.0.0: </span>Timestep now can be (un)pickled. Weakref for Reader
-will be dropped.
-Timestep now stores in to numpy array memory in ‘C’ order rather than
-‘F’ (Fortran).</p>
-</div>
-<p>Create a Timestep, representing a frame of a trajectory</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The total number of atoms this Timestep describes</p></li>
-<li><p><strong>positions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether this Timestep has position information [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</p></li>
-<li><p><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has velocity information [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p></li>
-<li><p><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has force information [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p></li>
-<li><p><strong>reader</strong> (<em>Reader</em><em> (</em><em>optional</em><em>)</em>) – A weak reference to the owning Reader.  Used for
-when attributes require trajectory manipulation (e.g. dt)</p></li>
-<li><p><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The time difference between frames (ps).  If <a class="reference internal" href="#MDAnalysis.coordinates.memory.Timestep.time" title="MDAnalysis.coordinates.memory.Timestep.time"><code class="xref py py-attr docutils literal notranslate"><span class="pre">time</span></code></a>
-is set, then <cite>dt</cite> will be ignored.</p></li>
-<li><p><strong>time_offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The starting time from which to calculate time (in ps)</p></li>
-</ul>
-</dd>
-</dl>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.11.0: </span>Added keywords for <cite>positions</cite>, <cite>velocities</cite> and <cite>forces</cite>.
-Can add and remove position/velocity/force information by using
-the <code class="docutils literal notranslate"><span class="pre">has_*</span></code> attribute.</p>
-</div>
-<dl class="py method">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.memory.Timestep.copy">
-<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.memory.Timestep.copy" title="Permalink to this definition"></a></dt>
-<dd><p>Make an independent (“deep”) copy of the whole <a class="reference internal" href="#MDAnalysis.coordinates.memory.Timestep" title="MDAnalysis.coordinates.memory.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.memory.Timestep.copy_slice">
-<span class="sig-name descname"><span class="pre">copy_slice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sel</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.copy_slice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.memory.Timestep.copy_slice" title="Permalink to this definition"></a></dt>
-<dd><p>Make a new <cite>Timestep</cite> containing a subset of the original <cite>Timestep</cite>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>sel</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.10)"><em>slice</em></a>) – The underlying position, velocity, and force arrays are sliced
-using a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a>, or any array-like.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A <cite>Timestep</cite> object of the same type containing all header
-information and all atom information relevant to the selection.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#MDAnalysis.coordinates.memory.Timestep" title="MDAnalysis.coordinates.memory.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a></p>
-</dd>
-</dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The selection must be a 0 based <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> or array of the atom indices
-in this <a class="reference internal" href="#MDAnalysis.coordinates.memory.Timestep" title="MDAnalysis.coordinates.memory.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a></p>
-</div>
-<p class="rubric">Example</p>
-<p>Using a Python <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> object:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">new_ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">copy_slice</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">))</span>
-</pre></div>
-</div>
-<p>Using a list of indices:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">new_ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">copy_slice</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">23</span><span class="p">])</span>
-</pre></div>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified added">New in version 0.8.</span></p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.11.0: </span>Reworked to follow new Timestep API.  Now will strictly only
-copy official attributes of the Timestep.</p>
-</div>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.memory.Timestep.dimensions">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dimensions</span></span><a class="headerlink" href="#MDAnalysis.coordinates.memory.Timestep.dimensions" title="Permalink to this definition"></a></dt>
-<dd><p>View of unitcell dimensions (<em>A</em>, <em>B</em>, <em>C</em>, <em>alpha</em>, <em>beta</em>, <em>gamma</em>)</p>
-<p>lengths <em>a</em>, <em>b</em>, <em>c</em> are in the MDAnalysis length unit (Å), and
-angles are in degrees.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.memory.Timestep.dt">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dt</span></span><a class="headerlink" href="#MDAnalysis.coordinates.memory.Timestep.dt" title="Permalink to this definition"></a></dt>
-<dd><p>The time difference in ps between timesteps</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This defaults to 1.0 ps in the absence of time data</p>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified added">New in version 0.11.0.</span></p>
-</div>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.memory.Timestep.forces">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">forces</span></span><a class="headerlink" href="#MDAnalysis.coordinates.memory.Timestep.forces" title="Permalink to this definition"></a></dt>
-<dd><p>A record of the forces of all atoms in this Timestep</p>
-<p>Setting this attribute will add forces to the Timestep if they
-weren’t originally present.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>forces</strong> – force data of shape <code class="docutils literal notranslate"><span class="pre">(n_atoms,</span> <span class="pre">3)</span></code> for all atoms</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>numpy.ndarray with dtype numpy.float32</p>
-</dd>
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><strong>MDAnalysis.exceptions.NoDataError</strong></a> – if the Timestep has no force data</p>
-</dd>
-</dl>
-<div class="versionadded">
-<p><span class="versionmodified added">New in version 0.11.0.</span></p>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.memory.Timestep.from_coordinates">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">positions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forces</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.from_coordinates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.memory.Timestep.from_coordinates" title="Permalink to this definition"></a></dt>
-<dd><p>Create an instance of this Timestep, from coordinate data</p>
-<p>Can pass position, velocity and force data to form a Timestep.</p>
-<div class="versionadded">
-<p><span class="versionmodified added">New in version 0.11.0.</span></p>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.memory.Timestep.from_timestep">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_timestep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.from_timestep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.memory.Timestep.from_timestep" title="Permalink to this definition"></a></dt>
-<dd><p>Create a copy of another Timestep, in the format of this Timestep</p>
-<div class="versionadded">
-<p><span class="versionmodified added">New in version 0.11.0.</span></p>
-</div>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.memory.Timestep.has_forces">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_forces</span></span><a class="headerlink" href="#MDAnalysis.coordinates.memory.Timestep.has_forces" title="Permalink to this definition"></a></dt>
-<dd><p>A boolean of whether this Timestep has force data</p>
-<p>This can be changed to <code class="docutils literal notranslate"><span class="pre">True</span></code> or <code class="docutils literal notranslate"><span class="pre">False</span></code> to allocate space for
-or remove the data.</p>
-<div class="versionadded">
-<p><span class="versionmodified added">New in version 0.11.0.</span></p>
-</div>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.memory.Timestep.has_positions">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_positions</span></span><a class="headerlink" href="#MDAnalysis.coordinates.memory.Timestep.has_positions" title="Permalink to this definition"></a></dt>
-<dd><p>A boolean of whether this Timestep has position data</p>
-<p>This can be changed to <code class="docutils literal notranslate"><span class="pre">True</span></code> or <code class="docutils literal notranslate"><span class="pre">False</span></code> to allocate space for
-or remove the data.</p>
-<div class="versionadded">
-<p><span class="versionmodified added">New in version 0.11.0.</span></p>
-</div>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.memory.Timestep.has_velocities">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_velocities</span></span><a class="headerlink" href="#MDAnalysis.coordinates.memory.Timestep.has_velocities" title="Permalink to this definition"></a></dt>
-<dd><p>A boolean of whether this Timestep has velocity data</p>
-<p>This can be changed to <code class="docutils literal notranslate"><span class="pre">True</span></code> or <code class="docutils literal notranslate"><span class="pre">False</span></code> to allocate space for
-or remove the data.</p>
-<div class="versionadded">
-<p><span class="versionmodified added">New in version 0.11.0.</span></p>
-</div>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.memory.Timestep.n_atoms">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_atoms</span></span><a class="headerlink" href="#MDAnalysis.coordinates.memory.Timestep.n_atoms" title="Permalink to this definition"></a></dt>
-<dd><p>A read only view of the number of atoms this Timestep has</p>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.11.0: </span>Changed to read only property</p>
-</div>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.memory.Timestep.positions">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">positions</span></span><a class="headerlink" href="#MDAnalysis.coordinates.memory.Timestep.positions" title="Permalink to this definition"></a></dt>
-<dd><p>A record of the positions of all atoms in this Timestep</p>
-<p>Setting this attribute will add positions to the Timestep if they
-weren’t originally present.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>positions</strong> – position data of shape <code class="docutils literal notranslate"><span class="pre">(n_atoms,</span> <span class="pre">3)</span></code> for all atoms</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>numpy.ndarray with dtype numpy.float32</p>
-</dd>
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><strong>MDAnalysis.exceptions.NoDataError</strong></a> – if the Timestep has no position data</p>
-</dd>
-</dl>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.11.0: </span>Now can raise <code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code> when no position data present</p>
-</div>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.memory.Timestep.time">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">time</span></span><a class="headerlink" href="#MDAnalysis.coordinates.memory.Timestep.time" title="Permalink to this definition"></a></dt>
-<dd><p>The time in ps of this timestep</p>
-<p>This is calculated as:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">time</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;time_offset&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">ts</span><span class="o">.</span><span class="n">time</span>
-</pre></div>
-</div>
-<p>Or, if the trajectory doesn’t provide time information:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">time</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;time_offset&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">*</span> <span class="n">ts</span><span class="o">.</span><span class="n">dt</span>
-</pre></div>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified added">New in version 0.11.0.</span></p>
-</div>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.memory.Timestep.triclinic_dimensions">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">triclinic_dimensions</span></span><a class="headerlink" href="#MDAnalysis.coordinates.memory.Timestep.triclinic_dimensions" title="Permalink to this definition"></a></dt>
-<dd><p>The unitcell dimensions represented as triclinic vectors</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A (3, 3) numpy.ndarray of unit cell vectors</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<p>The unitcell for a given system can be queried as either three
-vectors lengths followed by their respective angle, or as three
-triclinic vectors.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span>
-<span class="go">array([ 13.,  14.,  15.,  90.,  90.,  90.], dtype=float32)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">triclinic_dimensions</span>
-<span class="go">array([[ 13.,   0.,   0.],</span>
-<span class="go">       [  0.,  14.,   0.],</span>
-<span class="go">       [  0.,   0.,  15.]], dtype=float32)</span>
-</pre></div>
-</div>
-<p>Setting the attribute also works:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">triclinic_dimensions</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">15</span><span class="p">]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span>
-<span class="go">array([ 15.        ,  15.81138802,  16.58312416,  67.58049774,</span>
-<span class="go">        72.45159912,  71.56504822], dtype=float32)</span>
-</pre></div>
-</div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p><a class="reference internal" href="../lib/mdamath.html#MDAnalysis.lib.mdamath.triclinic_vectors" title="MDAnalysis.lib.mdamath.triclinic_vectors"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.mdamath.triclinic_vectors()</span></code></a></p>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified added">New in version 0.11.0.</span></p>
-</div>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.memory.Timestep.velocities">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">velocities</span></span><a class="headerlink" href="#MDAnalysis.coordinates.memory.Timestep.velocities" title="Permalink to this definition"></a></dt>
-<dd><p>A record of the velocities of all atoms in this Timestep</p>
-<p>Setting this attribute will add velocities to the Timestep if they
-weren’t originally present.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>velocities</strong> – velocity data of shape <code class="docutils literal notranslate"><span class="pre">(n_atoms,</span> <span class="pre">3)</span></code> for all atoms</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>numpy.ndarray with dtype numpy.float32</p>
-</dd>
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><strong>MDAnalysis.exceptions.NoDataError</strong></a> – if the Timestep has no velocity data</p>
-</dd>
-</dl>
-<div class="versionadded">
-<p><span class="versionmodified added">New in version 0.11.0.</span></p>
-</div>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.memory.Timestep.volume">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">volume</span></span><a class="headerlink" href="#MDAnalysis.coordinates.memory.Timestep.volume" title="Permalink to this definition"></a></dt>
-<dd><p>volume of the unitcell</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.memory.MemoryReader">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.memory.</span></span><span class="sig-name descname"><span class="pre">MemoryReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coordinate_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fac'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimensions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forces</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/memory.html#MemoryReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.memory.MemoryReader" title="Permalink to this definition"></a></dt>
 <dd><p>MemoryReader works with trajectories represented as numpy arrays.</p>
@@ -701,7 +396,7 @@ the <a class="reference internal" href="../auxiliary/init.html#auxiliary-api"><s
 <dd><p>Add all transformations to be applied to the trajectory.</p>
 <p>This function take as list of transformations as an argument. These
 transformations are functions that will be called by the Reader and given
-a <a class="reference internal" href="#MDAnalysis.coordinates.memory.Timestep" title="MDAnalysis.coordinates.memory.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> object as argument, which will be transformed and returned
+a <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code> object as argument, which will be transformed and returned
 to the Reader.
 The transformations can be part of the <a class="reference internal" href="../trajectory_transformations.html#module-MDAnalysis.transformations" title="MDAnalysis.transformations"><code class="xref py py-mod docutils literal notranslate"><span class="pre">transformations</span></code></a>
 module, or created by the user, and are stored as a list <cite>transformations</cite>.
@@ -1224,7 +919,7 @@ coordinates).</p></li>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">time</span></span><a class="headerlink" href="#MDAnalysis.coordinates.memory.MemoryReader.time" title="Permalink to this definition"></a></dt>
 <dd><p>Time of the current frame in MDAnalysis time units (typically ps).</p>
 <p>This is either read straight from the Timestep, or calculated as
-time = <code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestep.frame</span></code> * <a class="reference internal" href="#MDAnalysis.coordinates.memory.Timestep.dt" title="MDAnalysis.coordinates.memory.Timestep.dt"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestep.dt</span></code></a></p>
+time = <code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestep.frame</span></code> * <code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestep.dt</span></code></p>
 </dd></dl>
 
 <dl class="py method">

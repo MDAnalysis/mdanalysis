@@ -92,11 +92,12 @@
 <li class="toctree-l2"><a class="reference internal" href="memory.html">6.25. Reading trajectories from memory — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="chemfiles.html">6.26. Reading trajectories with <em>chemfiles</em> — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="null.html">6.27. Null output — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="base.html">6.28. Base classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="core.html">6.29. Common functions for coordinate reading — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="pickle_readers.html">6.30. Serialization of Coordinate Readers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chain.html">6.31. ChainReader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.32. XDR based trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="timestep.html">6.28. Timestep Class — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">6.29. Base classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">6.30. Common functions for coordinate reading — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="pickle_readers.html">6.31. Serialization of Coordinate Readers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chain.html">6.32. ChainReader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.33. XDR based trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
@@ -290,9 +291,9 @@ for a detailed overview of the H5MD file format.</p>
 the standard MDAnalysis units (<a class="reference internal" href="../units.html#module-MDAnalysis.units" title="MDAnalysis.units"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a>) if
 <cite>convert_units</cite> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 <p>Additional data in the <em>observables</em> group of the H5MD file are
-loaded into the <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.Timestep.data" title="MDAnalysis.coordinates.base.Timestep.data"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestep.data</span></code></a> dictionary.</p>
+loaded into the <a class="reference internal" href="timestep.html#MDAnalysis.coordinates.timestep.Timestep.data" title="MDAnalysis.coordinates.timestep.Timestep.data"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestep.data</span></code></a> dictionary.</p>
 <p>Only 3D-periodic boxes or no periodicity are supported; for no
-periodicity, <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestep.dimensions</span></code></a> will return <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+periodicity, <a class="reference internal" href="timestep.html#MDAnalysis.coordinates.timestep.Timestep.dimensions" title="MDAnalysis.coordinates.timestep.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestep.dimensions</span></code></a> will return <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 <p>Although H5MD can store varying numbers of particles per time step
 as produced by, e.g., GCMC simulations, MDAnalysis can currently
 only process a fixed number of particles per step. If the number
@@ -1070,7 +1071,7 @@ be considered to have a length of a single time step <cite>dt</cite> and a
 <dd><p>Writer for <a class="reference external" href="https://nongnu.org/h5md/index.html">H5MD</a> format (version 1.1).</p>
 <p>H5MD trajectories are automatically recognised by the
 file extension “.h5md”.</p>
-<p>All data from the input <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> is
+<p>All data from the input <a class="reference internal" href="timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> is
 written by default. For detailed information on how <a class="reference internal" href="#MDAnalysis.coordinates.H5MD.H5MDWriter" title="MDAnalysis.coordinates.H5MD.H5MDWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">H5MDWriter</span></code></a>
 handles units, compression, and chunking, see the Notes section below.</p>
 <div class="admonition note">
@@ -1153,7 +1154,7 @@ custom unit, must be recognizable by MDAnalysis</p></li>
 <p class="rubric">Notes</p>
 <p>By default, the writer will write all available data (positions,
 velocities, and forces) if detected in the input
-<a class="reference internal" href="base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>. In addition, the settings
+<a class="reference internal" href="timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>. In addition, the settings
 for <cite>compression</cite> and <cite>compression_opts</cite> will be read from
 the first available group of positions, velocities, or forces and used as
 the default value. To write a file without any one of these datsets,

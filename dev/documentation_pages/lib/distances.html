@@ -186,7 +186,7 @@ arbitrary, will be converted to <code class="docutils literal notranslate"><span
 arbitrary, will be converted to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code> internally).</p></li>
 <li><p><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+<a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep.dimensions" title="MDAnalysis.coordinates.timestep.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep.Timestep.dimensions</span></code></a>:
 <code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p></li>
 <li><p><strong>result</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – Preallocated result array which must have the shape <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">m)</span></code> and dtype
 <code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code>.
@@ -229,7 +229,7 @@ filled. This can speed up calculations.</p>
 arbitrary, will be converted to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code> internally).</p></li>
 <li><p><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+<a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep.dimensions" title="MDAnalysis.coordinates.timestep.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep.Timestep.dimensions</span></code></a>:
 <code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p></li>
 <li><p><strong>result</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – Preallocated result array which must have the shape <code class="docutils literal notranslate"><span class="pre">(n*(n-1)/2,)</span></code> and
 dtype <code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code>. Avoids creating the array which saves time when
@@ -284,7 +284,7 @@ implemented.</p>
 <li><p><strong>min_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – Minimum cutoff distance between reference and configuration.</p></li>
 <li><p><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+<a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep.dimensions" title="MDAnalysis.coordinates.timestep.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep.Timestep.dimensions</span></code></a>:
 <code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p></li>
 <li><p><strong>method</strong> (<em>{'bruteforce'</em><em>, </em><em>'nsgrid'</em><em>, </em><em>'pkdtree'}</em><em>, </em><em>optional</em>) – Keyword to override the automatic guessing of the employed search
 method.</p></li>
@@ -353,7 +353,7 @@ implemented.</p>
 <li><p><strong>min_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – Minimum cutoff distance between <cite>reference</cite> coordinates.</p></li>
 <li><p><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+<a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep.dimensions" title="MDAnalysis.coordinates.timestep.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep.Timestep.dimensions</span></code></a>:
 <code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p></li>
 <li><p><strong>method</strong> (<em>{'bruteforce'</em><em>, </em><em>'nsgrid'</em><em>, </em><em>'pkdtree'}</em><em>, </em><em>optional</em>) – Keyword to override the automatic guessing of the employed search
 method.</p></li>
@@ -438,7 +438,7 @@ a single or <code class="docutils literal notranslate"><span class="pre">n</span
 converted to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code> internally).</p></li>
 <li><p><strong>box</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+<a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep.dimensions" title="MDAnalysis.coordinates.timestep.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep.Timestep.dimensions</span></code></a>:
 <code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p></li>
 <li><p><strong>result</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – Preallocated result array of dtype <code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code> and shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
 (for <code class="docutils literal notranslate"><span class="pre">n</span></code> coordinate pairs). Avoids recreating the array in repeated
@@ -503,7 +503,7 @@ other side of a single or <code class="docutils literal notranslate"><span class
 arbitrary, will be converted to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code> internally)</p></li>
 <li><p><strong>box</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+<a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep.dimensions" title="MDAnalysis.coordinates.timestep.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep.Timestep.dimensions</span></code></a>:
 <code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p></li>
 <li><p><strong>result</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – Preallocated result array of dtype <code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code> and shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
 (for <code class="docutils literal notranslate"><span class="pre">n</span></code> coordinate triplets). Avoids recreating the array in repeated
@@ -581,7 +581,7 @@ positions in dihedrals (dtype is arbitrary, will be converted to
 <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code> internally)</p></li>
 <li><p><strong>box</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+<a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep.dimensions" title="MDAnalysis.coordinates.timestep.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep.Timestep.dimensions</span></code></a>:
 <code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p></li>
 <li><p><strong>result</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – Preallocated result array of dtype <code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code> and shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
 (for <code class="docutils literal notranslate"><span class="pre">n</span></code> coordinate quadruplets). Avoids recreating the array in
@@ -629,7 +629,7 @@ Now also accepts single coordinates as input.</p>
 will be converted to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code> internally).</p></li>
 <li><p><strong>box</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>numpy.ndarray</em></a>) – The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+<a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep.dimensions" title="MDAnalysis.coordinates.timestep.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep.Timestep.dimensions</span></code></a>:
 <code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p></li>
 <li><p><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</p></li>
 </ul>
@@ -668,7 +668,7 @@ lambda space)</p>
 be converted to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code> internally).</p></li>
 <li><p><strong>box</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>numpy.ndarray</em></a>) – The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+<a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep.dimensions" title="MDAnalysis.coordinates.timestep.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep.Timestep.dimensions</span></code></a>:
 <code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p></li>
 <li><p><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</p></li>
 </ul>
@@ -702,7 +702,7 @@ Now also accepts (and, likewise, returns) a single coordinate.</p>
 be converted to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code> internally).</p></li>
 <li><p><strong>box</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>numpy.ndarray</em></a>) – The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+<a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep.dimensions" title="MDAnalysis.coordinates.timestep.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep.Timestep.dimensions</span></code></a>:
 <code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p></li>
 <li><p><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</p></li>
 </ul>
@@ -762,7 +762,7 @@ used to generate duplicate images in the vicinity of the central cell. All
 coordinates must be within the primary unit cell.</p></li>
 <li><p><strong>box</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>numpy.ndarray</em></a>) – Box dimensions of shape <code class="docutils literal notranslate"><span class="pre">(6,)</span></code> and dtype <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code>. The
 dimensions must be provided in the same format as returned
-by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+by <code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code>:
 <code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code></p></li>
 <li><p><strong>r</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – Thickness of cutoff region for duplicate image generation.</p></li>
 </ul>
@@ -848,7 +848,7 @@ within the primary unit cell (box).</p>
 represent many vectors (such as between two particles).</p></li>
 <li><p><strong>box</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>numpy.ndarray</em></a>) – The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+<a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep.dimensions" title="MDAnalysis.coordinates.timestep.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep.Timestep.dimensions</span></code></a>:
 <code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p></li>
 </ul>
 </dd>

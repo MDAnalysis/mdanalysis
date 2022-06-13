@@ -291,7 +291,7 @@
 <span class="sd">    box : array_like, optional</span>
 <span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
-<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:</span>
 <span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
 <span class="sd">    result : numpy.ndarray, optional</span>
 <span class="sd">        Preallocated result array which must have the shape ``(n, m)`` and dtype</span>
@@ -363,7 +363,7 @@
 <span class="sd">    box : array_like, optional</span>
 <span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
-<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:</span>
 <span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
 <span class="sd">    result : numpy.ndarray, optional</span>
 <span class="sd">        Preallocated result array which must have the shape ``(n*(n-1)/2,)`` and</span>
@@ -449,7 +449,7 @@
 <span class="sd">    box : array_like, optional</span>
 <span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
-<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:</span>
 <span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
 <span class="sd">    method : {&#39;bruteforce&#39;, &#39;nsgrid&#39;, &#39;pkdtree&#39;}, optional</span>
 <span class="sd">        Keyword to override the automatic guessing of the employed search</span>
@@ -528,7 +528,7 @@
 <span class="sd">    box : numpy.ndarray</span>
 <span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
-<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:</span>
 <span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
 <span class="sd">    method : {&#39;bruteforce&#39;, &#39;nsgrid&#39;, &#39;pkdtree&#39;}, optional</span>
 <span class="sd">        Keyword to override the automatic guessing of the employed search</span>
@@ -613,7 +613,7 @@
 <span class="sd">    box : numpy.ndarray, optional</span>
 <span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
-<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:</span>
 <span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
 <span class="sd">    return_distances : bool, optional</span>
 <span class="sd">        If set to ``True``, distances will also be returned.</span>
@@ -690,7 +690,7 @@
 <span class="sd">    box : numpy.ndarray, optional</span>
 <span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
-<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:</span>
 <span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
 <span class="sd">    return_distances : bool, optional</span>
 <span class="sd">        If set to ``True``, distances will also be returned.</span>
@@ -772,7 +772,7 @@
 <span class="sd">    box : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``), optional</span>
 <span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
-<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:</span>
 <span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
 <span class="sd">    return_distances : bool, optional</span>
 <span class="sd">        If set to ``True``, distances will also be returned.</span>
@@ -864,7 +864,7 @@
 <span class="sd">    box : array_like, optional</span>
 <span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
-<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:</span>
 <span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
 <span class="sd">    method : {&#39;bruteforce&#39;, &#39;nsgrid&#39;, &#39;pkdtree&#39;}, optional</span>
 <span class="sd">        Keyword to override the automatic guessing of the employed search</span>
@@ -947,7 +947,7 @@
 <span class="sd">    box : numpy.ndarray</span>
 <span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
-<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:</span>
 <span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
 <span class="sd">    method : {&#39;bruteforce&#39;, &#39;nsgrid&#39;, &#39;pkdtree&#39;}, optional</span>
 <span class="sd">        Keyword to override the automatic guessing of the employed search</span>
@@ -1020,7 +1020,7 @@
 <span class="sd">    box : numpy.ndarray, optional</span>
 <span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
-<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:</span>
 <span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
 <span class="sd">    return_distances : bool, optional</span>
 <span class="sd">        If set to ``True``, distances will also be returned.</span>
@@ -1095,7 +1095,7 @@
 <span class="sd">    box : numpy.ndarray, optional</span>
 <span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
-<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:</span>
 <span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
 <span class="sd">    return_distances : bool, optional</span>
 <span class="sd">        If set to ``True``, distances will also be returned.</span>
@@ -1171,7 +1171,7 @@
 <span class="sd">    box : numpy.ndarray, optional</span>
 <span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
-<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:</span>
 <span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
 
 <span class="sd">    Returns</span>
@@ -1256,7 +1256,7 @@
 <span class="sd">    box : numpy.ndarray</span>
 <span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
-<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:</span>
 <span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
 <span class="sd">    backend : {&#39;serial&#39;, &#39;OpenMP&#39;}, optional</span>
 <span class="sd">        Keyword selecting the type of acceleration.</span>
@@ -1305,7 +1305,7 @@
 <span class="sd">    box : numpy.ndarray</span>
 <span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
-<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:</span>
 <span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
 <span class="sd">    backend : {&#39;serial&#39;, &#39;OpenMP&#39;}, optional</span>
 <span class="sd">        Keyword selecting the type of acceleration.</span>
@@ -1369,7 +1369,7 @@
 <span class="sd">    box : numpy.ndarray, optional</span>
 <span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
-<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:</span>
 <span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
 <span class="sd">    result : numpy.ndarray, optional</span>
 <span class="sd">        Preallocated result array of dtype ``numpy.float64`` and shape ``(n,)``</span>
@@ -1458,7 +1458,7 @@
 <span class="sd">    box : numpy.ndarray, optional</span>
 <span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
-<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:</span>
 <span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
 <span class="sd">    result : numpy.ndarray, optional</span>
 <span class="sd">        Preallocated result array of dtype ``numpy.float64`` and shape ``(n,)``</span>
@@ -1560,7 +1560,7 @@
 <span class="sd">    box : numpy.ndarray, optional</span>
 <span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
-<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:</span>
 <span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
 <span class="sd">    result : numpy.ndarray, optional</span>
 <span class="sd">        Preallocated result array of dtype ``numpy.float64`` and shape ``(n,)``</span>
@@ -1624,7 +1624,7 @@
 <span class="sd">    box : numpy.ndarray</span>
 <span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
-<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:</span>
 <span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
 <span class="sd">    backend : {&#39;serial&#39;, &#39;OpenMP&#39;}, optional</span>
 <span class="sd">        Keyword selecting the type of acceleration.</span>
@@ -1671,7 +1671,7 @@
 <span class="sd">    box : numpy.ndarray</span>
 <span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
-<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:</span>
 <span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
 
 <span class="sd">    Returns</span>

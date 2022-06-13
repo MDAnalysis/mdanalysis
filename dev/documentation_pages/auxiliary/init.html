@@ -213,7 +213,7 @@ assigned to a trajectory timestep and calculate ‘representative’ value(s) of
 the auxiliary data for that timestep.</p>
 <p>‘Assignment’ of auxiliary steps to trajectory timesteps is determined from the time
 of the auxiliary step, <code class="docutils literal notranslate"><span class="pre">dt</span></code> of the trajectory and time at the first frame of the
-trajectory (obtained through a <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>
+trajectory (obtained through a <a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>
 instance from the trajectory), as:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">frame</span> <span class="o">=</span> <span class="n">floor</span><span class="p">((</span><span class="n">time_at_step</span> <span class="o">-</span> <span class="n">time_at_frame_0</span> <span class="o">+</span> <span class="n">dt</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">dt</span><span class="p">)</span>
 </pre></div>

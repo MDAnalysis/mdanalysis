@@ -1152,8 +1152,8 @@ individual forces or <code class="docutils literal notranslate"><span class="pre
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> a zero <a class="reference internal" href="#MDAnalysis.core.groups.Atom.force" title="MDAnalysis.core.groups.Atom.force"><code class="xref py py-attr docutils literal notranslate"><span class="pre">force</span></code></a>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><strong>NoDataError</strong></a> – If the <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> does not
-    contain <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.forces" title="MDAnalysis.coordinates.base.Timestep.forces"><code class="xref py py-attr docutils literal notranslate"><span class="pre">forces</span></code></a>.</p>
+<dd class="field-odd"><p><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><strong>NoDataError</strong></a> – If the <a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> does not
+    contain <a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep.forces" title="MDAnalysis.coordinates.timestep.Timestep.forces"><code class="xref py py-attr docutils literal notranslate"><span class="pre">forces</span></code></a>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1622,7 +1622,7 @@ cell.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>box</strong> (<em>array_like</em>) – Box dimensions, can be either orthogonal or triclinic information.
 Cell dimensions must be in an identical to format to those returned
-by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>,
+by <a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep.dimensions" title="MDAnalysis.coordinates.timestep.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep.Timestep.dimensions</span></code></a>,
 <code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, uses these
 timestep dimensions.</p></li>
 <li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> to change coordinates in place.</p></li>
@@ -1642,7 +1642,7 @@ simulation box is taken to be at (0,0,0):</p>
 <div class="math notranslate nohighlight">
 \[x_i' = x_i - \left\lfloor\frac{x_i}{L_i}\right\rfloor\]</div>
 <p>The default is to take unit cell information from the underlying
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> instance. The optional
+<a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> instance. The optional
 argument <cite>box</cite> can be used to provide alternative unit cell information
 (in the MDAnalysis standard format
 <code class="docutils literal notranslate"><span class="pre">[Lx,</span> <span class="pre">Ly,</span> <span class="pre">Lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>).</p>
@@ -1689,9 +1689,9 @@ method was used.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><strong>NoDataError</strong></a> – If the underlying <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>
+<dd class="field-odd"><p><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><strong>NoDataError</strong></a> – If the underlying <a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>
     does not contain
-    <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.positions" title="MDAnalysis.coordinates.base.Timestep.positions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">positions</span></code></a>.</p>
+    <a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep.positions" title="MDAnalysis.coordinates.timestep.Timestep.positions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">positions</span></code></a>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2495,14 +2495,14 @@ from current coordinates <span class="math notranslate nohighlight">\(\mathbf{x}
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.AtomGroup.ts">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ts</span></span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.ts" title="Permalink to this definition"></a></dt>
 <dd><p>Temporary Timestep that contains the selection coordinates.</p>
-<p>A <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> instance,
+<p>A <a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> instance,
 which can be passed to a trajectory writer.</p>
 <p>If <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.ts" title="MDAnalysis.core.groups.AtomGroup.ts"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ts</span></code></a> is modified then these modifications
 will be present until the frame number changes (which
 typically happens when the underlying
 <a class="reference internal" href="universe.html#MDAnalysis.core.universe.Universe.trajectory" title="MDAnalysis.core.universe.Universe.trajectory"><code class="xref py py-attr docutils literal notranslate"><span class="pre">trajectory</span></code></a> frame changes).</p>
 <p>It is not possible to assign a new
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> to the
+<a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> to the
 <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.ts" title="MDAnalysis.core.groups.AtomGroup.ts"><code class="xref py py-attr docutils literal notranslate"><span class="pre">AtomGroup.ts</span></code></a> attribute; change attributes of the object.</p>
 </dd></dl>
 
@@ -2680,9 +2680,9 @@ individual velocities or <code class="docutils literal notranslate"><span class=
 all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> zero <a class="reference internal" href="#MDAnalysis.core.groups.Atom.velocity" title="MDAnalysis.core.groups.Atom.velocity"><code class="xref py py-attr docutils literal notranslate"><span class="pre">velocity</span></code></a>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><strong>NoDataError</strong></a> – If the underlying <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>
+<dd class="field-odd"><p><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><strong>NoDataError</strong></a> – If the underlying <a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>
     does not contain
-    <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.velocities" title="MDAnalysis.coordinates.base.Timestep.velocities"><code class="xref py py-attr docutils literal notranslate"><span class="pre">velocities</span></code></a>.</p>
+    <a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep.velocities" title="MDAnalysis.coordinates.timestep.Timestep.velocities"><code class="xref py py-attr docutils literal notranslate"><span class="pre">velocities</span></code></a>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2707,7 +2707,7 @@ in any case, <em>only</em> the positions of <a class="reference internal" href="
 <code class="docutils literal notranslate"><span class="pre">'atoms'</span></code>, this parameter is meaningless and therefore ignored.</p></li>
 <li><p><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+<a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep.dimensions" title="MDAnalysis.coordinates.timestep.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep.Timestep.dimensions</span></code></a>:
 <code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.
 If <code class="docutils literal notranslate"><span class="pre">None</span></code>, uses the
 dimensions of the current time step.</p></li>
@@ -2756,9 +2756,9 @@ taken into account!</p>
 This can be either <code class="docutils literal notranslate"><span class="pre">'com'</span></code> for center of mass, or <code class="docutils literal notranslate"><span class="pre">'cog'</span></code> for
 center of geometry.</p>
 <p><cite>box</cite> allows a unit cell to be given for the transformation. If not
-specified, the <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dimensions</span></code></a>
+specified, the <a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep.dimensions" title="MDAnalysis.coordinates.timestep.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dimensions</span></code></a>
 information from the current
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> will be used.</p>
+<a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> will be used.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.wrap" title="MDAnalysis.core.groups.AtomGroup.wrap"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AtomGroup.wrap()</span></code></a> is currently faster than
@@ -3963,7 +3963,7 @@ cell.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>box</strong> (<em>array_like</em>) – Box dimensions, can be either orthogonal or triclinic information.
 Cell dimensions must be in an identical to format to those returned
-by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>,
+by <a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep.dimensions" title="MDAnalysis.coordinates.timestep.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep.Timestep.dimensions</span></code></a>,
 <code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, uses these
 timestep dimensions.</p></li>
 <li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> to change coordinates in place.</p></li>
@@ -3983,7 +3983,7 @@ simulation box is taken to be at (0,0,0):</p>
 <div class="math notranslate nohighlight">
 \[x_i' = x_i - \left\lfloor\frac{x_i}{L_i}\right\rfloor\]</div>
 <p>The default is to take unit cell information from the underlying
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> instance. The optional
+<a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> instance. The optional
 argument <cite>box</cite> can be used to provide alternative unit cell information
 (in the MDAnalysis standard format
 <code class="docutils literal notranslate"><span class="pre">[Lx,</span> <span class="pre">Ly,</span> <span class="pre">Lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>).</p>
@@ -4717,7 +4717,7 @@ in any case, <em>only</em> the positions of <a class="reference internal" href="
 <code class="docutils literal notranslate"><span class="pre">'atoms'</span></code>, this parameter is meaningless and therefore ignored.</p></li>
 <li><p><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+<a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep.dimensions" title="MDAnalysis.coordinates.timestep.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep.Timestep.dimensions</span></code></a>:
 <code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.
 If <code class="docutils literal notranslate"><span class="pre">None</span></code>, uses the
 dimensions of the current time step.</p></li>
@@ -4766,9 +4766,9 @@ taken into account!</p>
 This can be either <code class="docutils literal notranslate"><span class="pre">'com'</span></code> for center of mass, or <code class="docutils literal notranslate"><span class="pre">'cog'</span></code> for
 center of geometry.</p>
 <p><cite>box</cite> allows a unit cell to be given for the transformation. If not
-specified, the <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dimensions</span></code></a>
+specified, the <a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep.dimensions" title="MDAnalysis.coordinates.timestep.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dimensions</span></code></a>
 information from the current
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> will be used.</p>
+<a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> will be used.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.wrap" title="MDAnalysis.core.groups.AtomGroup.wrap"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AtomGroup.wrap()</span></code></a> is currently faster than
@@ -5864,7 +5864,7 @@ cell.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>box</strong> (<em>array_like</em>) – Box dimensions, can be either orthogonal or triclinic information.
 Cell dimensions must be in an identical to format to those returned
-by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>,
+by <a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep.dimensions" title="MDAnalysis.coordinates.timestep.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep.Timestep.dimensions</span></code></a>,
 <code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, uses these
 timestep dimensions.</p></li>
 <li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> to change coordinates in place.</p></li>
@@ -5884,7 +5884,7 @@ simulation box is taken to be at (0,0,0):</p>
 <div class="math notranslate nohighlight">
 \[x_i' = x_i - \left\lfloor\frac{x_i}{L_i}\right\rfloor\]</div>
 <p>The default is to take unit cell information from the underlying
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> instance. The optional
+<a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> instance. The optional
 argument <cite>box</cite> can be used to provide alternative unit cell information
 (in the MDAnalysis standard format
 <code class="docutils literal notranslate"><span class="pre">[Lx,</span> <span class="pre">Ly,</span> <span class="pre">Lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>).</p>
@@ -6468,7 +6468,7 @@ in any case, <em>only</em> the positions of <a class="reference internal" href="
 <code class="docutils literal notranslate"><span class="pre">'atoms'</span></code>, this parameter is meaningless and therefore ignored.</p></li>
 <li><p><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+<a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep.dimensions" title="MDAnalysis.coordinates.timestep.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep.Timestep.dimensions</span></code></a>:
 <code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.
 If <code class="docutils literal notranslate"><span class="pre">None</span></code>, uses the
 dimensions of the current time step.</p></li>
@@ -6517,9 +6517,9 @@ taken into account!</p>
 This can be either <code class="docutils literal notranslate"><span class="pre">'com'</span></code> for center of mass, or <code class="docutils literal notranslate"><span class="pre">'cog'</span></code> for
 center of geometry.</p>
 <p><cite>box</cite> allows a unit cell to be given for the transformation. If not
-specified, the <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dimensions</span></code></a>
+specified, the <a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep.dimensions" title="MDAnalysis.coordinates.timestep.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dimensions</span></code></a>
 information from the current
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> will be used.</p>
+<a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> will be used.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.wrap" title="MDAnalysis.core.groups.AtomGroup.wrap"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AtomGroup.wrap()</span></code></a> is currently faster than
@@ -6695,9 +6695,9 @@ from the file</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><strong>NoDataError</strong></a> – If the underlying <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>
+<dd class="field-odd"><p><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><strong>NoDataError</strong></a> – If the underlying <a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>
     does not contain
-    <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.forces" title="MDAnalysis.coordinates.base.Timestep.forces"><code class="xref py py-attr docutils literal notranslate"><span class="pre">forces</span></code></a>.</p>
+    <a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep.forces" title="MDAnalysis.coordinates.timestep.Timestep.forces"><code class="xref py py-attr docutils literal notranslate"><span class="pre">forces</span></code></a>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -6799,9 +6799,9 @@ that from the file</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><strong>NoDataError</strong></a> – If the underlying <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>
+<dd class="field-odd"><p><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><strong>NoDataError</strong></a> – If the underlying <a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>
     does not contain
-    <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.positions" title="MDAnalysis.coordinates.base.Timestep.positions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">positions</span></code></a>.</p>
+    <a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep.positions" title="MDAnalysis.coordinates.timestep.Timestep.positions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">positions</span></code></a>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -6819,9 +6819,9 @@ that from the file</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><strong>NoDataError</strong></a> – If the underlying <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>
+<dd class="field-odd"><p><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><strong>NoDataError</strong></a> – If the underlying <a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>
     does not contain
-    <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.velocities" title="MDAnalysis.coordinates.base.Timestep.velocities"><code class="xref py py-attr docutils literal notranslate"><span class="pre">velocities</span></code></a>.</p>
+    <a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep.velocities" title="MDAnalysis.coordinates.timestep.Timestep.velocities"><code class="xref py py-attr docutils literal notranslate"><span class="pre">velocities</span></code></a>.</p>
 </dd>
 </dl>
 </dd></dl>

@@ -447,13 +447,13 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        ts : :class:`~MDAnalysis.coordinates.base.Timestep` object</span>
+<span class="sd">        ts : :class:`~MDAnalysis.coordinates.timestep.Timestep` object</span>
 <span class="sd">            The trajectory timestep for which corresponding auxiliary data is</span>
 <span class="sd">            to be read and updated.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        :class:`~MDAnalysis.coordinates.base.Timestep`</span>
+<span class="sd">        :class:`~MDAnalysis.coordinates.timestep.Timestep`</span>
 <span class="sd">            *ts* with the representative auxiliary</span>
 <span class="sd">            value in ``ts.aux`` be updated appropriately.</span>
 
@@ -487,7 +487,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        ts : :class:`~MDAnalysis.coordinates.base.Timestep` object</span>
+<span class="sd">        ts : :class:`~MDAnalysis.coordinates.timestep.Timestep` object</span>
 <span class="sd">            The trajectory timestep for which corresponding auxiliary data is</span>
 <span class="sd">            to be read.</span>
 
@@ -541,7 +541,7 @@
 <span class="sd">        step : int</span>
 <span class="sd">            Number of the auxiliary step to calculate closest trajectory frame</span>
 <span class="sd">            for.</span>
-<span class="sd">        ts : :class:`~MDAnalysis.coordinates.base.Timestep` object</span>
+<span class="sd">        ts : :class:`~MDAnalysis.coordinates.timestep.Timestep` object</span>
 <span class="sd">            (Any) timestep from the trajectory the calculated frame number is to</span>
 <span class="sd">            correspond to.</span>
 <span class="sd">        return_time_diff : bool, optional</span>
@@ -584,7 +584,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        ts : :class:`~MDAnalysis.coordinates.base.Timestep` object</span>
+<span class="sd">        ts : :class:`~MDAnalysis.coordinates.timestep.Timestep` object</span>
 <span class="sd">            The trajectory timestep before which the auxiliary reader is to</span>
 <span class="sd">            be positioned.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -618,7 +618,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        ts : :class:`~MDAnalysis.coordinates.base.Timestep` object</span>
+<span class="sd">        ts : :class:`~MDAnalysis.coordinates.timestep.Timestep` object</span>
 <span class="sd">            Any timestep from the trajectory for which the next &#39;non-empty&#39;</span>
 <span class="sd">            frame is to be found.</span>
 

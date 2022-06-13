@@ -335,11 +335,11 @@
 
 <span class="sd">    Additional data in the *observables* group of the H5MD file are</span>
 <span class="sd">    loaded into the :attr:`Timestep.data</span>
-<span class="sd">    &lt;MDAnalysis.coordinates.base.Timestep.data&gt;` dictionary.</span>
+<span class="sd">    &lt;MDAnalysis.coordinates.timestep.Timestep.data&gt;` dictionary.</span>
 
 <span class="sd">    Only 3D-periodic boxes or no periodicity are supported; for no</span>
 <span class="sd">    periodicity, :attr:`Timestep.dimensions</span>
-<span class="sd">    &lt;MDAnalysis.coordinates.base.Timestep.dimensions&gt;` will return ``None``.</span>
+<span class="sd">    &lt;MDAnalysis.coordinates.timestep.Timestep.dimensions&gt;` will return ``None``.</span>
 
 <span class="sd">    Although H5MD can store varying numbers of particles per time step</span>
 <span class="sd">    as produced by, e.g., GCMC simulations, MDAnalysis can currently</span>
@@ -918,7 +918,7 @@
 <span class="sd">    H5MD trajectories are automatically recognised by the</span>
 <span class="sd">    file extension &quot;.h5md&quot;.</span>
 
-<span class="sd">    All data from the input :class:`~MDAnalysis.coordinates.base.Timestep` is</span>
+<span class="sd">    All data from the input :class:`~MDAnalysis.coordinates.timestep.Timestep` is</span>
 <span class="sd">    written by default. For detailed information on how :class:`H5MDWriter`</span>
 <span class="sd">    handles units, compression, and chunking, see the Notes section below.</span>
 
@@ -1026,7 +1026,7 @@
 
 <span class="sd">    By default, the writer will write all available data (positions,</span>
 <span class="sd">    velocities, and forces) if detected in the input</span>
-<span class="sd">    :class:`~MDAnalysis.coordinates.base.Timestep`. In addition, the settings</span>
+<span class="sd">    :class:`~MDAnalysis.coordinates.timestep.Timestep`. In addition, the settings</span>
 <span class="sd">    for `compression` and `compression_opts` will be read from</span>
 <span class="sd">    the first available group of positions, velocities, or forces and used as</span>
 <span class="sd">    the default value. To write a file without any one of these datsets,</span>

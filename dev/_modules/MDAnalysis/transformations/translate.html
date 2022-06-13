@@ -136,7 +136,7 @@
 
 <div class="viewcode-block" id="translate"><a class="viewcode-back" href="../../../documentation_pages/transformations/translate.html#MDAnalysis.transformations.translate.translate">[docs]</a><span class="k">class</span> <span class="nc">translate</span><span class="p">(</span><span class="n">TransformationBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Translates the coordinates of a given :class:`~MDAnalysis.coordinates.base.Timestep`</span>
+<span class="sd">    Translates the coordinates of a given :class:`~MDAnalysis.coordinates.timestep.Timestep`</span>
 <span class="sd">    instance by a given vector.</span>
 
 <span class="sd">    Example</span>
@@ -152,7 +152,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    :class:`~MDAnalysis.coordinates.base.Timestep` object</span>
+<span class="sd">    :class:`~MDAnalysis.coordinates.timestep.Timestep` object</span>
 
 
 <span class="sd">    .. versionchanged:: 2.0.0</span>
@@ -181,7 +181,7 @@
 
 <div class="viewcode-block" id="center_in_box"><a class="viewcode-back" href="../../../documentation_pages/transformations/translate.html#MDAnalysis.transformations.translate.center_in_box">[docs]</a><span class="k">class</span> <span class="nc">center_in_box</span><span class="p">(</span><span class="n">TransformationBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Translates the coordinates of a given :class:`~MDAnalysis.coordinates.base.Timestep`</span>
+<span class="sd">    Translates the coordinates of a given :class:`~MDAnalysis.coordinates.timestep.Timestep`</span>
 <span class="sd">    instance so that the center of geometry/mass of the given :class:`~MDAnalysis.core.groups.AtomGroup`</span>
 <span class="sd">    is centered on the unit cell. The unit cell dimensions are taken from the input Timestep object.</span>
 <span class="sd">    If a point is given, the center of the atomgroup will be translated to this point instead.</span>
@@ -212,7 +212,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    :class:`~MDAnalysis.coordinates.base.Timestep` object</span>
+<span class="sd">    :class:`~MDAnalysis.coordinates.timestep.Timestep` object</span>
 
 
 <span class="sd">    .. versionchanged:: 2.0.0</span>

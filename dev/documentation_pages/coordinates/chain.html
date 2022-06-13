@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>6.31. ChainReader — MDAnalysis.coordinates.chain &mdash; MDAnalysis 2.3.0-dev0 documentation</title>
+  <title>6.32. ChainReader — MDAnalysis.coordinates.chain &mdash; MDAnalysis 2.3.0-dev0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
@@ -25,8 +25,8 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="6.32. XDR based trajectory files — MDAnalysis.coordinates.XDR" href="XDR.html" />
-    <link rel="prev" title="6.30. Serialization of Coordinate Readers" href="pickle_readers.html" /> 
+    <link rel="next" title="6.33. XDR based trajectory files — MDAnalysis.coordinates.XDR" href="XDR.html" />
+    <link rel="prev" title="6.31. Serialization of Coordinate Readers" href="pickle_readers.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -82,11 +82,12 @@
 <li class="toctree-l2"><a class="reference internal" href="memory.html">6.25. Reading trajectories from memory — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="chemfiles.html">6.26. Reading trajectories with <em>chemfiles</em> — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="null.html">6.27. Null output — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="base.html">6.28. Base classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="core.html">6.29. Common functions for coordinate reading — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="pickle_readers.html">6.30. Serialization of Coordinate Readers</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">6.31. ChainReader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.32. XDR based trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="timestep.html">6.28. Timestep Class — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">6.29. Base classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">6.30. Common functions for coordinate reading — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="pickle_readers.html">6.31. Serialization of Coordinate Readers</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">6.32. ChainReader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.33. XDR based trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
@@ -117,7 +118,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../coordinates_modules.html"><span class="section-number">6. </span>Coordinates modules</a> &raquo;</li>
-      <li><span class="section-number">6.31. </span>ChainReader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></li>
+      <li><span class="section-number">6.32. </span>ChainReader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/documentation_pages/coordinates/chain.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -128,7 +129,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.coordinates.chain"></span><section id="chainreader-mdanalysis-coordinates-chain">
-<h1><span class="section-number">6.31. </span>ChainReader — <a class="reference internal" href="#module-MDAnalysis.coordinates.chain" title="MDAnalysis.coordinates.chain"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a><a class="headerlink" href="#chainreader-mdanalysis-coordinates-chain" title="Permalink to this heading"></a></h1>
+<h1><span class="section-number">6.32. </span>ChainReader — <a class="reference internal" href="#module-MDAnalysis.coordinates.chain" title="MDAnalysis.coordinates.chain"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a><a class="headerlink" href="#chainreader-mdanalysis-coordinates-chain" title="Permalink to this heading"></a></h1>
 <p>The <a class="reference internal" href="#MDAnalysis.coordinates.chain.ChainReader" title="MDAnalysis.coordinates.chain.ChainReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChainReader</span></code></a> is used by MDAnalysis internally to represent multiple
 trajectories as one virtual trajectory. Users typically do not need to use the
 <a class="reference internal" href="#MDAnalysis.coordinates.chain.ChainReader" title="MDAnalysis.coordinates.chain.ChainReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChainReader</span></code></a> explicitly and the following documentation is primarily of
@@ -284,7 +285,7 @@ the chained trajectory.</p>
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.chain.ChainReader._read_frame">
 <span class="sig-name descname"><span class="pre">_read_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/chain.html#ChainReader._read_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.chain.ChainReader._read_frame" title="Permalink to this definition"></a></dt>
 <dd><p>Position trajectory at frame index <cite>frame</cite> and
-return <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>.</p>
+return <a class="reference internal" href="timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>.</p>
 <p>The frame is translated to the corresponding reader and local
 frame index and the <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code> instance in
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">ChainReader.ts</span></code> is updated.</p>
@@ -494,8 +495,8 @@ returned.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pickle_readers.html" class="btn btn-neutral float-left" title="6.30. Serialization of Coordinate Readers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="XDR.html" class="btn btn-neutral float-right" title="6.32. XDR based trajectory files — MDAnalysis.coordinates.XDR" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pickle_readers.html" class="btn btn-neutral float-left" title="6.31. Serialization of Coordinate Readers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="XDR.html" class="btn btn-neutral float-right" title="6.33. XDR based trajectory files — MDAnalysis.coordinates.XDR" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

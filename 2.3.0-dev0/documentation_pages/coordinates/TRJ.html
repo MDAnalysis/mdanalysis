@@ -86,11 +86,12 @@
 <li class="toctree-l2"><a class="reference internal" href="memory.html">6.25. Reading trajectories from memory — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="chemfiles.html">6.26. Reading trajectories with <em>chemfiles</em> — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="null.html">6.27. Null output — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="base.html">6.28. Base classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="core.html">6.29. Common functions for coordinate reading — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="pickle_readers.html">6.30. Serialization of Coordinate Readers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chain.html">6.31. ChainReader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.32. XDR based trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="timestep.html">6.28. Timestep Class — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">6.29. Base classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">6.30. Common functions for coordinate reading — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="pickle_readers.html">6.31. Serialization of Coordinate Readers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chain.html">6.32. ChainReader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.33. XDR based trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
@@ -148,63 +149,6 @@ on the <a class="reference external" href="https://groups.google.com/group/mdnal
 <li><p>lengths in Angstrom (Å)</p></li>
 <li><p>time in ps (but see below)</p></li>
 </ul>
-<p>AMBER trajectory coordinate frames are based on a custom <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.Timestep" title="MDAnalysis.coordinates.TRJ.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>
-object.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.TRJ.Timestep">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.TRJ.</span></span><span class="sig-name descname"><span class="pre">Timestep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#Timestep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep" title="Permalink to this definition"></a></dt>
-<dd><p>AMBER trajectory Timestep.</p>
-<p>The Timestep can be initialized with <cite>arg</cite> being an integer
-(the number of atoms) and an optional keyword argument <cite>velocities</cite> to
-allocate space for both coordinates and velocities;</p>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.10.0: </span>Added ability to contain Forces</p>
-</div>
-<p>Create a Timestep, representing a frame of a trajectory</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The total number of atoms this Timestep describes</p></li>
-<li><p><strong>positions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether this Timestep has position information [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</p></li>
-<li><p><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has velocity information [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p></li>
-<li><p><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has force information [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p></li>
-<li><p><strong>reader</strong> (<em>Reader</em><em> (</em><em>optional</em><em>)</em>) – A weak reference to the owning Reader.  Used for
-when attributes require trajectory manipulation (e.g. dt)</p></li>
-<li><p><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The time difference between frames (ps).  If <code class="xref py py-attr docutils literal notranslate"><span class="pre">time</span></code>
-is set, then <cite>dt</cite> will be ignored.</p></li>
-<li><p><strong>time_offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The starting time from which to calculate time (in ps)</p></li>
-</ul>
-</dd>
-</dl>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.11.0: </span>Added keywords for <cite>positions</cite>, <cite>velocities</cite> and <cite>forces</cite>.
-Can add and remove position/velocity/force information by using
-the <code class="docutils literal notranslate"><span class="pre">has_*</span></code> attribute.</p>
-</div>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.TRJ.Timestep._pos">
-<span class="sig-name descname"><span class="pre">_pos</span></span><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep._pos" title="Permalink to this definition"></a></dt>
-<dd><p>coordinates of the atoms as a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape <cite>(n_atoms, 3)</cite></p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.TRJ.Timestep._velocities">
-<span class="sig-name descname"><span class="pre">_velocities</span></span><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep._velocities" title="Permalink to this definition"></a></dt>
-<dd><p>velocities of the atoms as a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape <cite>(n_atoms, 3)</cite>;
-only available if the trajectory contains velocities or if the
-<em>velocities</em> = <code class="docutils literal notranslate"><span class="pre">True</span></code> keyword has been supplied.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.TRJ.Timestep._forces">
-<span class="sig-name descname"><span class="pre">_forces</span></span><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep._forces" title="Permalink to this definition"></a></dt>
-<dd><p>forces of the atoms as a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape <cite>(n_atoms, 3)</cite>;
-only available if the trajectory contains forces or if the
-<em>forces</em> = <code class="docutils literal notranslate"><span class="pre">True</span></code> keyword has been supplied.</p>
-</dd></dl>
-
-</dd></dl>
-
 <section id="binary-netcdf-trajectories">
 <span id="netcdf-trajectories"></span><h2><span class="section-number">6.18.1. </span>Binary NetCDF trajectories<a class="headerlink" href="#binary-netcdf-trajectories" title="Permalink to this heading"></a></h2>
 <p>The <a class="reference external" href="http://ambermd.org/netcdf/nctraj.xhtml">AMBER netcdf</a> format make use of <a class="reference external" href="http://www.unidata.ucar.edu/software/netcdf">NetCDF</a> (Network Common Data
@@ -226,9 +170,9 @@ be read from the trajectory. The trajectory reader can randomly access
 frames and therefore supports direct indexing (with 0-based frame
 indices) and full-feature trajectory iteration, including slicing.</p>
 <p>Velocities are autodetected and read into the
-<a class="reference internal" href="#MDAnalysis.coordinates.TRJ.Timestep._velocities" title="MDAnalysis.coordinates.TRJ.Timestep._velocities"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestep._velocities</span></code></a> attribute.</p>
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestep._velocities</span></code> attribute.</p>
 <p>Forces are autodetected and read into the
-<a class="reference internal" href="#MDAnalysis.coordinates.TRJ.Timestep._forces" title="MDAnalysis.coordinates.TRJ.Timestep._forces"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestep._forces</span></code></a> attribute.</p>
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestep._forces</span></code> attribute.</p>
 <p>Periodic unit cell information is detected and used to populate the
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestep.dimensions</span></code> attribute. (If no unit cell is available in
 the trajectory, then <code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestep.dimensions</span></code> will return
@@ -353,7 +297,7 @@ before the file can be closed.</p>
 <p>AMBER binary trajectories are automatically recognised by the
 file extension “.ncdf” or “.nc”.</p>
 <p>Velocities are written out if they are detected in the input
-<a class="reference internal" href="#MDAnalysis.coordinates.TRJ.Timestep" title="MDAnalysis.coordinates.TRJ.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>. The trajectories are always written with ångström
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code>. The trajectories are always written with ångström
 for the lengths and picoseconds for the time (and hence Å/ps for
 velocities and kilocalorie/mole/Å for forces).</p>
 <p>Scale factor variables for time, velocities, cell lengths, cell angles,
@@ -465,7 +409,7 @@ seen from AMBER).</p>
 <dd><p>Test if timestep <code class="docutils literal notranslate"><span class="pre">ts</span></code> contains a periodic box.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ts</strong> (<a class="reference internal" href="#MDAnalysis.coordinates.TRJ.Timestep" title="MDAnalysis.coordinates.TRJ.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>) – <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.Timestep" title="MDAnalysis.coordinates.TRJ.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> instance containing coordinates to
+<dd class="field-odd"><p><strong>ts</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code>) – <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code> instance containing coordinates to
 be written to trajectory file</p>
 </dd>
 <dt class="field-even">Returns</dt>

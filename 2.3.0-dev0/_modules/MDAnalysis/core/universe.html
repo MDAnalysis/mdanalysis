@@ -354,7 +354,7 @@
 <span class="sd">    dimensions : numpy.ndarray</span>
 <span class="sd">        system dimensions (simulation unit cell, if set in the</span>
 <span class="sd">        trajectory) at the *current time step*</span>
-<span class="sd">        (see :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`).</span>
+<span class="sd">        (see :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`).</span>
 <span class="sd">        The unit cell can be set for the current time step (but the change is</span>
 <span class="sd">        not permanent unless written to a file).</span>
 <span class="sd">    atoms : AtomGroup</span>
@@ -831,7 +831,7 @@
 <span class="sd">        represented as a :class:`numpy.float32` array.</span>
 
 <span class="sd">        Because :attr:`coord` is a reference to a</span>
-<span class="sd">        :class:`~MDAnalysis.coordinates.base.Timestep`, it changes its contents</span>
+<span class="sd">        :class:`~MDAnalysis.coordinates.timestep.Timestep`, it changes its contents</span>
 <span class="sd">        while one is stepping through the trajectory.</span>
 
 <span class="sd">        .. Note::</span>

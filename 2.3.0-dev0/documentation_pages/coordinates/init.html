@@ -96,11 +96,12 @@
 <li class="toctree-l2"><a class="reference internal" href="memory.html">6.25. Reading trajectories from memory — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="chemfiles.html">6.26. Reading trajectories with <em>chemfiles</em> — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="null.html">6.27. Null output — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="base.html">6.28. Base classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="core.html">6.29. Common functions for coordinate reading — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="pickle_readers.html">6.30. Serialization of Coordinate Readers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chain.html">6.31. ChainReader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.32. XDR based trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="timestep.html">6.28. Timestep Class — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">6.29. Base classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">6.30. Common functions for coordinate reading — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="pickle_readers.html">6.31. Serialization of Coordinate Readers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chain.html">6.32. ChainReader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.33. XDR based trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
@@ -219,12 +220,12 @@ the last frame has been written.</p>
 <section id="timesteps">
 <h2><span class="section-number">6.1.3. </span>Timesteps<a class="headerlink" href="#timesteps" title="Permalink to this heading"></a></h2>
 <p>Both Readers and Writers use Timesteps as their working object.  A
-<a class="reference internal" href="base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> represents all data for a given
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code> represents all data for a given
 frame in a trajectory.  The data inside a
-<a class="reference internal" href="base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> is often accessed indirectly
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code> is often accessed indirectly
 through a <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> but it is also possible to
 manipulate Timesteps directly.</p>
-<p>The current <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> can be accessed
+<p>The current <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code> can be accessed
 through the <code class="xref py py-attr docutils literal notranslate"><span class="pre">ts</span></code> attribute of
 the trajectory attached to the active
 <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>:</p>
@@ -513,7 +514,7 @@ by default, ie we assume all Writers can also do a single frame.</p>
 <p>A Timestep instance holds data for the current frame. It is updated whenever a
 new frame of the trajectory is read.</p>
 <p>Timestep classes are derived from
-<a class="reference internal" href="base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep</span></code></a>, which is the primary
+<a class="reference internal" href="timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep.Timestep</span></code></a>, which is the primary
 implementation example (and used directly for the DCDReader).</p>
 <p>The discussion on this format is detailed in <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/250">Issue 250</a></p>
 <section id="methods">
@@ -610,7 +611,7 @@ but instead should use the attribute above.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">_unitcell</span></code></dt><dd><p>native unit cell description; the format depends on the
 underlying trajectory format. A user should use the
-<a class="reference internal" href="base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-class docutils literal notranslate"><span class="pre">dimensions</span></code></a>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">dimensions</span></code>
 attribute to access the data in a canonical format instead of
 accessing <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep._unitcell</span></code> directly.</p>
 <p>The method <code class="xref py py-meth docutils literal notranslate"><span class="pre">Timestep._init_unitcell()</span></code> is a hook to initialize
@@ -767,7 +768,7 @@ filled in; the actual keyword arguments depend on the Writer.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">n_frames</span></code></dt><dd><p>total number of frames (if known) – <code class="docutils literal notranslate"><span class="pre">None</span></code> if not known</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">ts</span></code></dt><dd><p>the <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code> object; typically customized for each
-trajectory format and derived from <code class="xref py py-class docutils literal notranslate"><span class="pre">base.Timestep</span></code>.</p>
+trajectory format and derived from <code class="xref py py-class docutils literal notranslate"><span class="pre">timestep.Timestep</span></code>.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">units</span></code></dt><dd><p>dictionary with keys <em>time</em>, <em>length</em>, <em>speed</em>, <em>force</em> and the
 appropriate unit (e.g. ‘AKMA’ and ‘Angstrom’ for Charmm dcds, ‘ps’ and
@@ -920,7 +921,7 @@ to the file and closes the file</p>
 <p class="admonition-title">Note</p>
 <p>Trajectory and Frame writers can be used in almost exactly the same
 manner with the one difference that Frame writers cannot deal with
-raw <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> objects.</p>
+raw <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code> objects.</p>
 </div>
 </section>
 </section>
