@@ -13,12 +13,13 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, PicoCentauri, orbeckst
+??/??/?? IAlibay, PicoCentauri, orbeckst, Tengyu Xie
 
  * 2.3.0
 
 Fixes
   * Fixes awk call in deploy.yaml tests for macos runners (Issue #3693)
+  * add a 0.5 for correct midpoints in hole analysis (Issue #3715)
 
 Enhancements
   * Add `norm` parameter to InterRDF, InterRDF_s to normalize as rdf,
