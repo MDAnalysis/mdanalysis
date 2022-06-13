@@ -50,7 +50,7 @@ class AtomNeighborSearch(object):
           list of atoms
         box : array-like or ``None``, optional, default ``None``
           Simulation cell dimensions in the form of
-          :attr:`MDAnalysis.trajectory.base.Timestep.dimensions` when
+          :attr:`MDAnalysis.trajectory.timestep.Timestep.dimensions` when
           periodic boundary conditions should be taken into account for
           the calculation of contacts.
         """

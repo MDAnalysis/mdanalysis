@@ -90,6 +90,7 @@ import logging
 logger = logging.getLogger('MDAnalysis.coordinates.XYZ')
 
 from . import base
+from .timestep import Timestep
 from ..lib import util
 from ..lib.util import cached, store_init_arguments
 from ..exceptions import NoDataError
@@ -334,7 +335,7 @@ class XYZReader(base.ReaderBase):
     format = "XYZ"
     # these are assumed!
     units = {'time': 'ps', 'length': 'Angstrom'}
-    _Timestep = base.Timestep
+    _Timestep = Timestep
 
     @store_init_arguments
     def __init__(self, filename, **kwargs):
