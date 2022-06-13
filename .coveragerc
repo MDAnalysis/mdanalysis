@@ -6,6 +6,7 @@ omit =
     */MDAnalysis/tests/*
     */legacy/*
     */due.py
+concurrency = thread, multiprocessing
 
 [report]
 exclude_lines =
