@@ -35,6 +35,11 @@ import numpy
 cimport numpy
 numpy.import_array()
 
+# fused type for iterators
+ctypedef fused iterator_t:
+    group_helpers.AtomGroupIterator
+    group_helpers.ArrayIterator
+
 cdef extern from "string.h":
     void* memcpy(void* dst, void* src, int len)
 
@@ -60,6 +65,8 @@ cdef extern from "calc_distances.h":
     void _ortho_pbc(coordinate* coords, uint64_t numcoords, float* box)
     void _triclinic_pbc(coordinate* coords, uint64_t numcoords, float* box)
 
+cdef extern from "batched_distances.h":
+    void _calc_distance_array_batched[T, U](T ref, U conf, double *distances, int batchsize)
 
 OPENMP_ENABLED = True if USED_OPENMP else False
 
@@ -73,6 +80,12 @@ def calc_distance_array(numpy.ndarray ref, numpy.ndarray conf,
     _calc_distance_array(<coordinate*> ref.data, refnum,
                          <coordinate*> conf.data, confnum,
                          <double*> result.data)
+
+# prototype contains no OpenMP constructs
+def calc_distance_array_batched(iterator_t ref, iterator_t conf,
+                        numpy.ndarray result, batchsize=256):
+    cdef int _batchsize = batchsize
+    _calc_distance_array_batched(ref._iterator, conf._iterator, <double*> result.data, _batchsize)  
 
 def calc_distance_array_ortho(numpy.ndarray ref, numpy.ndarray conf,
                               numpy.ndarray box, numpy.ndarray result):
