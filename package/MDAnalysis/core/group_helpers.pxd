@@ -24,28 +24,32 @@
 
 from ..libmda cimport iterators
 import numpy
-from libcpp.vector cimport vector
 from libc.stdint cimport int64_t 
 cimport cython
 cimport numpy as cnp
 cnp.import_array()
 
+"""
+Cython header for iterators of groups, used in low level functions in `lib`.
+Light wrapper around C++ iterator classes in `lib/include/iterators.h`
+For full documentation, see `group_helpers.pyx`.
+"""
 
 cdef class AtomGroupIterator:
-    # C++ class for iterator
+    # C++ class for iteration of an AtomGroup 
     cdef iterators._AtomGroupIterator _iterator
-    # int64_t of atoms in the AtomGroup
+    # number of atoms in the AtomGroup
     cdef int64_t n_atoms
-    # view of coordinates 
+    # view of coordinates, requires target array C contiguous
     cdef float [:, ::1] _coord_view
 
 
 
 cdef class ArrayIterator:
-    # C++ class for iterator
+    # C++ class for iteration of a NumPy Array
     cdef iterators._ArrayIterator _iterator
-    # number of atoms in the AtomGroup
+    # number of atoms in the array
     cdef int64_t n_atoms
-    # view of coordinates 
+    # view of coordinates, requires target array C contiguous
     cdef float[:, ::1] _coord_view
 
