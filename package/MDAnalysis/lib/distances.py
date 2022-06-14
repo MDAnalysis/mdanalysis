@@ -173,8 +173,8 @@ def _check_result_array(result, shape):
     return result
 
 
-@check_coords('reference', 'configuration', reduce_result_if_single=False,
-              check_lengths_match=False)
+# @check_coords('reference', 'configuration', reduce_result_if_single=False,
+#               check_lengths_match=False)
 def distance_array(reference: Union[np.ndarray, AtomGroup], configuration: Union[np.ndarray, AtomGroup], box: Optional[np.ndarray] = None, result=None,
                    backend: str = "serial") -> None:
     """Calculate all possible distances between a reference set and another
@@ -231,14 +231,18 @@ def distance_array(reference: Union[np.ndarray, AtomGroup], configuration: Union
     elif isinstance(reference, AtomGroup):
         refnum = reference.n_atoms
         _ref = AtomGroupIterator(reference)
-
+    else:
+        raise TypeError("reference parameter must be an AtomGroup or np.ndarray")
 
     if isinstance(configuration, np.ndarray):
         confnum = configuration.shape[0]
         _conf = ArrayIterator(configuration)
+
     elif isinstance(reference, AtomGroup):
         confnum = configuration.n_atoms
         _conf = AtomGroupIterator(configuration)
+    else:
+        raise TypeError("conf parameter must be an AtomGroup or np.ndarray")
 
     # check resulting array will not overflow UINT64_MAX
     if refnum * confnum > _UINT64_MAX:

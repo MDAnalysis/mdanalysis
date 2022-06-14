@@ -57,10 +57,11 @@ public:
         i = 0;
     }
 
-    void seek(int i)
+    void seek(int64_t i)
     {
         i = i;
     }
+
 
     void load_into_external_buffer(float *buffer, int64_t n_idx)
     {
@@ -92,7 +93,7 @@ public:
         i = 0;
     }
 
-    void seek(int i)
+    void seek(int64_t i)
     {
         i = i;
     }

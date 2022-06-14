@@ -93,7 +93,8 @@ def calc_distance_array(numpy.ndarray ref, numpy.ndarray conf,
 def calc_distance_array_batched(iterator_t ref, iterator_t conf,
                         numpy.ndarray result, batchsize=256):
     cdef int _batchsize = batchsize
-
+    ref.print_coords()
+    conf.print_coords()
     _calc_distance_array_batched(ref._iterator, conf._iterator, <double*> result.data, _batchsize)
 
 def calc_distance_array_ortho(numpy.ndarray ref, numpy.ndarray conf,

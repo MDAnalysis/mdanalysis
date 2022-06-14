@@ -37,7 +37,7 @@ cdef class AtomGroupIterator:
     # int64_t of atoms in the AtomGroup
     cdef int64_t n_atoms
     # view of coordinates 
-    cdef float[:, :] _coord_view
+    cdef float [:, ::1] _coord_view
 
 
 
@@ -47,5 +47,5 @@ cdef class ArrayIterator:
     # number of atoms in the AtomGroup
     cdef int64_t n_atoms
     # view of coordinates 
-    cdef float[:, :] _coord_view
+    cdef float[:, ::1] _coord_view
 

@@ -36,6 +36,7 @@ from libcpp.vector cimport vector
 from libc.stdint cimport int64_t
 cimport cython
 cimport numpy as cnp
+import numpy as np
 cnp.import_array()
 
 
@@ -50,8 +51,11 @@ cdef class AtomGroupIterator:
     def __cinit__(self, ag):
         self._iterator = iterators._AtomGroupIterator(ag.n_atoms)
         self._coord_view = ag.universe.trajectory.ts.positions
-        self._iterator.ptr = &self._coord_view[0, 0]
+        self._iterator.ptr = &self._coord_view[0,0]
         self._iterator.copy_ix( < int64_t*>cnp.PyArray_DATA(ag.ix_array))
+    
+    def print_coords(self):
+        print(np.asarray(self._coord_view))
 
     @property
     def ix(self):
@@ -77,7 +81,11 @@ cdef class ArrayIterator:
                 "input array has incorrect second dimension, must be 3")
         self._iterator = iterators._ArrayIterator(arr.shape[0])
         self._coord_view = arr
-        self._iterator.ptr = &self._coord_view[0, 0]
+        self._iterator.ptr = &self._coord_view[0,0]
+
+    def print_coords(self):
+        print(np.asarray(self._coord_view))
+
 
     @property
     def n_atoms(self):

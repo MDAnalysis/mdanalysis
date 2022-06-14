@@ -47,7 +47,7 @@ void _calc_distance_array_batched(T ref, U conf, double *distances, uint64_t bat
     for (; iter_ref < nref - ref_overhang; iter_ref += bsize_ref)
     {
         ref.load_into_external_buffer(ref_buffer, bsize_ref);
-
+        
         for (; iter_conf < nconf - conf_overhang; iter_conf += bsize_conf)
         {
             conf.load_into_external_buffer(conf_buffer, bsize_conf);
