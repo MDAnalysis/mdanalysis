@@ -98,7 +98,7 @@ public:
         i = i;
     }
 
-    void load_into_external_buffer(float *buffer, int64_t n_idx)
+    void load_into_external_buffer(float *&buffer, int64_t n_idx)
     {
         buffer = ptr;
     }

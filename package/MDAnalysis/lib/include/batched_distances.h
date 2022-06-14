@@ -28,7 +28,9 @@ void _calc_distance_array_batched(T ref, U conf, double *distances, uint64_t bat
 
     const uint64_t atom_bufsize = 3 * batchsize;
     float ref_buffer[atom_bufsize];
+    float * ref_buffer_ = ref_buffer;
     float conf_buffer[atom_bufsize];
+    float * conf_buffer_ = conf_buffer;
 
     uint64_t nref = ref.n_atoms;
     uint64_t nconf = conf.n_atoms;
@@ -46,19 +48,19 @@ void _calc_distance_array_batched(T ref, U conf, double *distances, uint64_t bat
 
     for (; iter_ref < nref - ref_overhang; iter_ref += bsize_ref)
     {
-        ref.load_into_external_buffer(ref_buffer, bsize_ref);
+        ref.load_into_external_buffer(ref_buffer_, bsize_ref);
         
         for (; iter_conf < nconf - conf_overhang; iter_conf += bsize_conf)
         {
-            conf.load_into_external_buffer(conf_buffer, bsize_conf);
+            conf.load_into_external_buffer(conf_buffer_, bsize_conf);
 
             for (i = 0; i < bsize_ref; i++)
             {
                 for (j = 0; j < bsize_conf; j++)
                 {
-                    dx[0] = conf_buffer[3 * j] - ref_buffer[3 * i];
-                    dx[1] = conf_buffer[3 * j + 1] - ref_buffer[3 * i + 1];
-                    dx[2] = conf_buffer[3 * j + 2] - ref_buffer[3 * i + 2];
+                    dx[0] = conf_buffer_[3 * j] - ref_buffer_[3 * i];
+                    dx[1] = conf_buffer_[3 * j + 1] - ref_buffer_[3 * i + 1];
+                    dx[2] = conf_buffer_[3 * j + 2] - ref_buffer_[3 * i + 2];
                     rsq = (dx[0] * dx[0]) + (dx[1] * dx[1]) + (dx[2] * dx[2]);
                     *(distances + iter_ref * nconf + iter_conf + i * nconf + j) = sqrt(rsq);
                 }
