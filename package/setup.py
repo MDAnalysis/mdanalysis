@@ -367,6 +367,7 @@ def extensions(config):
                                  ['MDAnalysis/lib/c_distances_openmp' + source_suffix],
                                  include_dirs=include_dirs + ['MDAnalysis/lib/include'],
                                  libraries=mathlib + parallel_libraries,
+                                 language='c++',
                                  define_macros=define_macros + parallel_macros,
                                  extra_compile_args=parallel_args + extra_compile_args,
                                  extra_link_args=parallel_args)

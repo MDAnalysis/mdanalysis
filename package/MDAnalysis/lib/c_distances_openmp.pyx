@@ -31,6 +31,7 @@ Contains OpenMP versions of the contents of "calc_distances.h"
 """
 
 from libc.stdint cimport uint64_t
+from ..libmda cimport group_helpers
 import numpy
 cimport numpy
 numpy.import_array()
