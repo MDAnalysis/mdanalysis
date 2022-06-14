@@ -47,6 +47,11 @@ parse `id` ('atom-ID' in data_ doc), `type` ('atom-type' in data_ doc), `resid`
 and `z` attributes. The `resid` and `charge` attributes are optional and any
 other specified attribute will be ignored.
 
+A LAMMPS DATA file can contain inforamtion about coordinates and velocities,
+but this information is overwritten by the coordinates and velocities
+information of the first frame of a LAMMPS DUMP file if a pair of LAMMPS DATA
+and a LAMMPS DUMP files is passed to `~MDAnalysis.core.universe.Universe`.
+
 Valid atom styles as defined in `data`_  doc::
 
     'angle', 'atomic', 'body', 'bond', 'charge', 'dipole', 'dpd', 'edpd',
@@ -114,128 +119,6 @@ logger = logging.getLogger("MDAnalysis.topology.LAMMPS")
 # NOTE: The SECTIONS, HEADERS, and ATOM_STYLES are only used in DATAParser, so
 # it is better to defined them as class attributes in the DATAParser, not.
 
-# Sections will all start with one of these words
-# and run until the next section title
-SECTIONS = set([
-    'Atoms',  # Molecular topology sections
-    'Velocities',
-    'Masses',
-    'Ellipsoids',
-    'Lines',
-    'Triangles',
-    'Bodies',
-    'Bonds',  # Forcefield sections
-    'Angles',
-    'Dihedrals',
-    'Impropers',
-    'Pair Coeffs',
-    'PairLJ Coeffs',
-    'Bond Coeffs',
-    'Angle Coeffs',
-    'Dihedral Coeffs',
-    'Improper Coeffs',
-    'BondBond Coeffs',  # Class 2 FF sections
-    'BondAngle Coeffs',
-    'MiddleBondTorsion Coeffs',
-    'EndBondTorsion Coeffs',
-    'AngleTorsion Coeffs',
-    'AngleAngleTorsion Coeffs',
-    'BondBond13 Coeffs',
-    'AngleAngle Coeffs',
-])
-# We usually check by splitting around whitespace, so check
-# if any SECTION keywords will trip up on this
-# and add them
-for val in list(SECTIONS):
-    if len(val.split()) > 1:
-        SECTIONS.add(val.split()[0])
-
-
-HEADERS = set([
-    'atoms',
-    'bonds',
-    'angles',
-    'dihedrals',
-    'impropers',
-    'atom types',
-    'bond types',
-    'angle types',
-    'dihedral types',
-    'improper types',
-    'extra bond per atom',
-    'extra angle per atom',
-    'extra dihedral per atom',
-    'extra improper per atom',
-    'extra special per atom',
-    'ellipsoids',
-    'lines',
-    'triangles',
-    'bodies',
-    'xlo xhi',
-    'ylo yhi',
-    'zlo zhi',
-    'xy xz yz',
-])
-
-# List of valid atom styles for Atoms section:
-# Each atom style can optionally have three image flags: nx, ny, nz
-# This mapping is used between LAMMPS and MDAnalysis attributes:
-# LAMMPS -> MDAnalysis: atom-ID -> id, molecule-ID -> segid, atom-type -> type
-# q -> charge.
-# Some commments about the some atom styles:
-# 'smd': molecule is defined differently from molecule-ID.
-# 'tdpd': this style can have n+5 columns for n cc species.
-# 'template': the order of id and resid is swapped.
-# 'hybrid': this style can have n+5 columns for n sub-styles.
-# See below for an up-to-date list of valid atom styles and their usage:
-# https://docs.lammps.org/atom_style.html
-# See below for an up-to-date list of valid atom styles and how they defined in
-# a LAMMPS DATA file:
-# https://docs.lammps.org/read_data.html
-
-# NOTE: In MDAnalysis, 'id', 'type', 'x', 'y', 'z' are the mandatory
-# attributes, and 'segid' and 'charge' are the optional ones.
-# What about the other attributes defined in LAMMPS and cannot/are not
-# mapped to corresponding attributes in MDAnalysis? Are they ignored as
-# mentioned in the doc above?
-# An idea is to keep all the atom styles defined below, and just read in
-# the attributes that are compatible with MDAnalysis and ignore the rest.
-# This way, MDAnalysis can read all types of LAMMPS data file but only read
-# in the 5 mendatory and 2 optional attributes, and warns about how it handles
-# atom styles that have other attributes than these 7 attributes.
-
-ATOM_STYLES = {
-    'angle': ['id', 'segid', 'type', 'x', 'y', 'z'],
-    'atomic': ['id', 'type', 'x', 'y', 'z'],
-    'body': ['id', 'type', 'bodyflag', 'mass', 'x', 'y', 'z'],
-    'bond': ['id', 'resid', 'type', 'x', 'y', 'z'],
-    'charge': ['id', 'type', 'charge', 'x', 'y', 'z'],
-    'dipole': ['id', 'type', 'charge', 'x', 'y', 'z', 'mux', 'muy', 'muz'],
-    'dpd': ['id', 'type', 'theta', 'x', 'y', 'z'],
-    'edpd': ['id', 'type', 'edpd_temp', 'edpd_cv', 'x', 'y', 'z'],
-    'electron': ['id', 'type', 'charge', 'spin', 'eradius', 'x', 'y', 'z'],
-    'ellipsoid': ['id', 'type', 'ellipsoidflag', 'density', 'x', 'y', 'z'],
-    'full': ['id', 'resid', 'type', 'charge', 'x', 'y', 'z'],
-    'line': ['id', 'resid', 'type', 'lineflag', 'density', 'x', 'y', 'z'],
-    'mdpd': ['id', 'type', 'rho', 'x', 'y', 'z'],
-    'mesont': ['id', 'segid', 'type', 'bond_nt', 'mass', 'mradius', 'mlength',
-               'buckling', 'x', 'y', 'z'],
-    'molecular': ['id', 'segid', 'type', 'x', 'y', 'z'],
-    'peri': ['id', 'type', 'volume', 'density', 'x', 'y', 'z'],
-    'smd': ['id', 'type', 'molecule', 'volume', 'mass', 'kradius', 'cradius',
-            'x0', 'y0', 'z0', 'x', 'y', 'z'],
-    'sph': ['id', 'type', 'rho', 'esph', 'cv', 'x', 'y', 'z'],
-    'sphere': ['id', 'type', 'diameter', 'density', 'x', 'y', 'z'],
-    'spin': ['id', 'type', 'x', 'y', 'z', 'spx', 'spy', 'spz', 'sp'],
-    'tdpd': ['id', 'type', 'x', 'y', 'z'],
-    'template': ['id', 'type', 'resid', 'template-index', 'template-atom', 'x',
-                 'y', 'z'],
-    'tri': ['id', 'segid', 'type', 'triangleflag', 'density', 'x', 'y', 'z'],
-    'wavepacket': ['id', 'type', 'charge', 'spin', 'eradius', 'etag', 'cs_re',
-                   'cs_im', 'x', 'y', 'z'],
-    'hybrid': ['id', 'type', 'x', 'y', 'z']
-}
-
 
 class DATAParser(TopologyReaderBase):
     """Parse a LAMMPS DATA file for topology and coordinates.
@@ -253,6 +136,117 @@ class DATAParser(TopologyReaderBase):
     .. versionadded:: 0.9.0
     """
     format = 'DATA'
+
+    # Sections will all start with one of these words
+    # and run until the next section title.
+    SECTIONS = set([
+        'Atoms',  # Atom-property sections
+        'Velocities',
+        'Masses',
+        'Ellipsoids',
+        'Lines',
+        'Triangles',
+        'Bodies',
+        'Bonds',  # Molecular topology sections
+        'Angles',
+        'Dihedrals',
+        'Impropers',
+        'Pair Coeffs',  # Forcefield sections
+        'PairLJ Coeffs',
+        'Bond Coeffs',
+        'Angle Coeffs',
+        'Dihedral Coeffs',
+        'Improper Coeffs',
+        'BondBond Coeffs',  # Class 2 FF sections
+        'BondAngle Coeffs',
+        'MiddleBondTorsion Coeffs',
+        'EndBondTorsion Coeffs',
+        'AngleTorsion Coeffs',
+        'AngleAngleTorsion Coeffs',
+        'BondBond13 Coeffs',
+        'AngleAngle Coeffs',
+    ])
+    # We usually check by splitting around whitespace, so check
+    # if any SECTION keywords will trip up on this
+    # and add them
+    for val in list(SECTIONS):
+        if len(val.split()) > 1:
+            SECTIONS.add(val.split()[0])
+
+    HEADERS = set([
+        'atoms',
+        'bonds',
+        'angles',
+        'dihedrals',
+        'impropers',
+        'atom types',
+        'bond types',
+        'angle types',
+        'dihedral types',
+        'improper types',
+        'extra bond per atom',
+        'extra angle per atom',
+        'extra dihedral per atom',
+        'extra improper per atom',
+        'extra special per atom',
+        'ellipsoids',
+        'lines',
+        'triangles',
+        'bodies',
+        'xlo xhi',
+        'ylo yhi',
+        'zlo zhi',
+        'xy xz yz',
+    ])
+
+    # List of valid atom styles for Atoms section:
+    # Each atom style can optionally have three image flags: nx, ny, nz
+    # This mapping is used between LAMMPS and MDAnalysis attributes:
+    # LAMMPS -> MDAnalysis:
+    # atom-ID -> id, molecule-ID -> segid, atom-type -> type, q -> charge.
+    # Some commments about the some atom styles:
+    # 'smd': molecule is defined differently from molecule-ID.
+    # 'tdpd': this style can have n+5 columns for n cc species.
+    # 'template': the order of id and resid is swapped.
+    # 'hybrid': this style can have n+5 columns for n sub-styles.
+    # See below for an up-to-date list of valid atom styles and their usage:
+    # https://docs.lammps.org/atom_style.html
+    # See below for an up-to-date list of valid atom styles and
+    # how they defined ina LAMMPS DATA file:
+    # https://docs.lammps.org/read_data.html
+
+    ATOM_STYLES = {
+        'angle': ['id', 'segid', 'type', 'x', 'y', 'z'],
+        'atomic': ['id', 'type', 'x', 'y', 'z'],
+        'body': ['id', 'type', 'bodyflag', 'mass', 'x', 'y', 'z'],
+        'bond': ['id', 'resid', 'type', 'x', 'y', 'z'],
+        'charge': ['id', 'type', 'charge', 'x', 'y', 'z'],
+        'dipole': ['id', 'type', 'charge', 'x', 'y', 'z', 'mux', 'muy', 'muz'],
+        'dpd': ['id', 'type', 'theta', 'x', 'y', 'z'],
+        'edpd': ['id', 'type', 'edpd_temp', 'edpd_cv', 'x', 'y', 'z'],
+        'electron': ['id', 'type', 'charge', 'spin', 'eradius', 'x', 'y', 'z'],
+        'ellipsoid': ['id', 'type', 'ellipsoidflag', 'density', 'x', 'y', 'z'],
+        'full': ['id', 'resid', 'type', 'charge', 'x', 'y', 'z'],
+        'line': ['id', 'resid', 'type', 'lineflag', 'density', 'x', 'y', 'z'],
+        'mdpd': ['id', 'type', 'rho', 'x', 'y', 'z'],
+        'mesont': ['id', 'segid', 'type', 'bond_nt', 'mass', 'mradius',
+                   'mlength', 'buckling', 'x', 'y', 'z'],
+        'molecular': ['id', 'segid', 'type', 'x', 'y', 'z'],
+        'peri': ['id', 'type', 'volume', 'density', 'x', 'y', 'z'],
+        'smd': ['id', 'type', 'molecule', 'volume', 'mass', 'kradius',
+                'cradius', 'x0', 'y0', 'z0', 'x', 'y', 'z'],
+        'sph': ['id', 'type', 'rho', 'esph', 'cv', 'x', 'y', 'z'],
+        'sphere': ['id', 'type', 'diameter', 'density', 'x', 'y', 'z'],
+        'spin': ['id', 'type', 'x', 'y', 'z', 'spx', 'spy', 'spz', 'sp'],
+        'tdpd': ['id', 'type', 'x', 'y', 'z'],  # can contain many species
+        'template': ['id', 'type', 'resid', 'template-index', 'template-atom',
+                     'x', 'y', 'z'],
+        'tri': ['id', 'segid', 'type', 'triangleflag', 'density', 'x', 'y',
+                'z'],
+        'wavepacket': ['id', 'type', 'charge', 'spin', 'eradius', 'etag',
+                       'cs_re', 'cs_im', 'x', 'y', 'z'],
+        'hybrid': ['id', 'type', 'x', 'y', 'z']  # can contain many sub-styles
+    }
 
     def iterdata(self):
         with openany(self.filename) as f:
@@ -277,7 +271,7 @@ class DATAParser(TopologyReaderBase):
 
         # finding the starting line of each section:
         starts = [i for i, line in enumerate(f)
-                  if line.split()[0] in SECTIONS]
+                  if line.split()[0] in self.SECTIONS]
         # adding None to properly handle lines in the last SECTION below
         starts += [None]
 
@@ -285,7 +279,7 @@ class DATAParser(TopologyReaderBase):
 
         # lines before the first SECTION found in the file are about HEADERS:
         for line in f[:starts[0]]:
-            for token in HEADERS:
+            for token in self.HEADERS:
                 if line.endswith(token):
                     header[token] = line.split(token)[0]
                     continue
@@ -332,12 +326,23 @@ class DATAParser(TopologyReaderBase):
         dict:
             a map between the attributes' names and attributes' locations.
         """
-        style_dict = {}
-
-        for loc, attr in enumerate(ATOM_STYLES[atom_style]):
-            style_dict[attr] = loc
-
+        style_dict = {attr: loc for loc, attr in
+                      enumerate(DATAParser.ATOM_STYLES[atom_style])
+                      }
         return style_dict
+
+    def invalid_atom_style(self, atom_style):
+        """Raise value error if  a `atom_style` is invalid (helper function).
+        """
+        if atom_style in self.ATOM_STYLES.keys():
+            self.style_dict = self._interpret_atom_style(atom_style)
+        else:
+            atom_styles_string = "'" + "', '".join(
+                self.ATOM_STYLES.keys()) + "'"
+            raise ValueError(
+                f"'{atom_style}' "
+                "is not a valid atom style. Please select one of "
+                f"{atom_styles_string} atom_styles.")
 
     def parse(self, **kwargs):
         """Parses a LAMMPS_ DATA file.
@@ -346,22 +351,8 @@ class DATAParser(TopologyReaderBase):
         -------
         MDAnalysis Topology object.
         """
-
-        # Using'full' atom_style as default value:
-        # See: https://docs.python.org/3.9/library/stdtypes.html#dict.get
         atom_style = kwargs.get('atom_style', 'full')
-
-        # handling invalid atom_style keywords:
-        if atom_style in ATOM_STYLES.keys():
-            self.style_dict = self._interpret_atom_style(atom_style)
-        else:
-            atom_styles_string = "'" + "', '".join(
-                ATOM_STYLES.keys()) + "'"
-            raise ValueError(
-                f"'{atom_style}' "
-                "is not a valid atom style. Please select one of "
-                f"{atom_styles_string} atom_styles.")
-
+        self.invalid_atom_style(self, atom_style)
         header, sects = self.grab_datafile()
 
         try:
@@ -414,19 +405,8 @@ class DATAParser(TopologyReaderBase):
         .. versionchanged:: 0.18.0
            Added atom_style kwarg
         """
-        # handling invalid atom_style keywords:
-        if atom_style in ATOM_STYLES.keys():
-            self.style_dict = self._interpret_atom_style(atom_style)
-        else:
-            atom_styles_string = "'" + "', '".join(
-                ATOM_STYLES.keys()) + "'"
-            raise ValueError(
-                f"'{atom_style}' "
-                "is not a valid atom style. Please select one of "
-                f"{atom_styles_string} atom_styles.")
-
+        self.invalid_atom_style(self, atom_style)
         header, sects = self.grab_datafile()
-
         unitcell = self._parse_box(header)
 
         try:
@@ -814,7 +794,7 @@ class LammpsDumpParser(TopologyReaderBase):
             line = fin.readline()  # ITEM ATOMS
             # column describtors comes after '# ITEM ATOMS ' as explained in
             # http://lammps.sandia.gov/doc/dump.html
-            cols = line.split("# ITEM ATOMS ")[1].split()
+            cols = line.split("ITEM: ATOMS ")[1].split()
             style_dict = {}
             for attr in valid_attrs:
                 try:
