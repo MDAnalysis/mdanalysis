@@ -28,9 +28,9 @@ Compiled helpers for group iteration --- :mod:`MDAnalysis.core.group_iterators`
 ===============================================================================
 
 This module contains Cython extension types that allow various low level
-routines to use groups such as a :class:`AtomGroup` or a NumPy
-:class:`numpy.ndarray` interchangeably. In general this module is primarily of
-interest to developers and should be modified with caution.
+routines to use groups such as an :class:`~MDAnalysis.core.groups.AtomGroup`
+or a NumPy :class:`numpy.ndarray` interchangeably. In general this module is
+primarily of interest to developers and should be modified with caution.
 
 The Cython extension types in this module are lightweight wrappers around the 
 C++ classes defined in `MDAnalysis/lib/include/iterators.h`. These C++ classes
@@ -42,6 +42,16 @@ information.
 The classes in this module are primarily responsible for hooking any data
 required for iteration onto the `._iterator` C++ class instance which provides
 the iteration interface.
+
+Classes
+-------
+
+.. autoclass:: AtomGroupIterator
+   :members:
+
+.. autoclass:: ArrayIterator
+   :members:
+
 """
 
 import numpy as np
@@ -61,21 +71,36 @@ cdef inline _to_numpy_from_spec(object owner, int ndim, cnp.npy_intp * shape, in
     return array
 
 cdef class AtomGroupIterator:
-    """ Iterator for a :class:`AtomGroup`
+    """Iterator for an :class:`~MDAnalysis.core.groups.AtomGroup`
 
+    .. attribute:: _iterator
+
+      :class:`_AtomGroupIterator` C++ class instance from
+      `MDAnalysis.lib.include.iterators.h`
+
+    .. versionadded:: 2.3.0
     """
 
     def __cinit__(self, ag):
+        """
+        Parameters
+        ----------
+        ag : :class:`~MDAnalysis.core.groups.AtomGroup`
+             atomgroup to be iterated
+        """
         self._iterator = iterators._AtomGroupIterator(ag.n_atoms)
         # hook iterator pointer onto base array
         self._iterator.ptr = <float*>cnp.PyArray_DATA(ag.universe.trajectory.ts.positions)
-        self._iterator.copy_ix( < int64_t*>cnp.PyArray_DATA(ag.ix_array))
-
-    def print_coords(self):
-        print(np.asarray(self._coord_view))
+        self._iterator.copy_ix(<int64_t*>cnp.PyArray_DATA(ag.ix_array))
 
     @property
     def ix(self):
+        """
+        Read only view of global indices of the
+        :class:`~MDAnalysis.core.groups.AtomGroup` being iterated.
+
+        .. versionadded:: 2.3.0
+        """
         cdef cnp.npy_intp dims[1]
         dims[0] = self._iterator.n_atoms
         cdef cnp.ndarray arr
@@ -85,22 +110,43 @@ cdef class AtomGroupIterator:
 
     @property
     def n_atoms(self):
+        """
+        Read only view of the number of atoms of the
+        :class:`~MDAnalysis.core.groups.AtomGroup` being iterated.
+
+        .. versionadded:: 2.3.0
+        """
         return self._iterator.n_atoms
 
 
 cdef class ArrayIterator:
-    """ Iterator for a :class:`numpy.ndarray`
+    """Iterator for a :class:`numpy.ndarray`
 
+    .. attribute:: _iterator
+
+      :class:`_ArrayIterator` C++ class instance from
+      `MDAnalysis.lib.include.iterators.h`
+
+    .. versionadded:: 2.3.0
     """
 
     def __cinit__(self, cnp.ndarray arr):
+        """
+        Parameters
+        ----------
+        arr : :class:`numpy.ndarry`
+             array to be iterated
+        """
         self._iterator = iterators._ArrayIterator(arr.shape[0])
         # hook iterator pointer onto base array
-        self._iterator.ptr = <float*>cnp.PyArray_DATA(arr) 
-
-    def print_coords(self):
-        print(np.asarray(self._coord_view))
+        self._iterator.ptr = <float*>cnp.PyArray_DATA(arr)
 
     @property
     def n_atoms(self):
+        """
+        Read only view of the number of atoms (size of first dimension) of
+        the :class:`numpy.ndarray` being iterated.
+
+        .. versionadded:: 2.3.0
+        """
         return self._iterator.n_atoms
