@@ -94,9 +94,7 @@ cdef class ArrayIterator:
     """
 
     def __cinit__(self, cnp.ndarray arr):
-        if arr.shape[1] != 3:
-            raise ValueError(
-                "input array has incorrect second dimension, must be 3")
+        # single coordinates are allowed eg (3,) or (n, 3)
         self._iterator = iterators._ArrayIterator(arr.shape[0])
         self._coord_view = arr
         self._iterator.ptr = &self._coord_view[0, 0]

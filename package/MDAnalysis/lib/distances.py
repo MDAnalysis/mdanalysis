@@ -173,8 +173,8 @@ def _check_result_array(result, shape):
     return result
 
 
-# @check_coords('reference', 'configuration', reduce_result_if_single=False,
-#               check_lengths_match=False)
+@check_coords('reference', 'configuration', reduce_result_if_single=False,
+              check_lengths_match=False)
 def distance_array(reference: Union[np.ndarray, AtomGroup], configuration: Union[np.ndarray, AtomGroup], box: Optional[np.ndarray] = None, result=None,
                    backend: str = "serial") -> None:
     """Calculate all possible distances between a reference set and another
