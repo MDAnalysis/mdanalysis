@@ -40,8 +40,6 @@ cdef class AtomGroupIterator:
     cdef iterators._AtomGroupIterator _iterator
     # number of atoms in the AtomGroup
     cdef int64_t n_atoms
-    # view of coordinates, requires target array C contiguous
-    cdef float [:, ::1] _coord_view
 
 
 
@@ -50,6 +48,4 @@ cdef class ArrayIterator:
     cdef iterators._ArrayIterator _iterator
     # number of atoms in the array
     cdef int64_t n_atoms
-    # view of coordinates, requires target array C contiguous
-    cdef float[:, ::1] _coord_view
 
