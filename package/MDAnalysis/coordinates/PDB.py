@@ -153,6 +153,7 @@ import numpy as np
 from ..lib import util
 from ..lib.util import store_init_arguments
 from . import base
+from .timestep import Timestep
 from ..topology.core import guess_atom_element
 from ..exceptions import NoDataError
 
@@ -870,13 +871,13 @@ class PDBWriter(base.WriterBase):
         * :attr:`PDBWriter.trajectory` (the underlying trajectory
           :class:`~MDAnalysis.coordinates.base.Reader`)
         * :attr:`PDBWriter.timestep` (the underlying trajectory
-          :class:`~MDAnalysis.coordinates.base.Timestep`)
+          :class:`~MDAnalysis.coordinates.timestep.Timestep`)
 
         Before calling :meth:`_write_next_frame` this method **must** be
         called at least once to enable extracting topology information from the
         current frame.
         """
-        if isinstance(obj, base.Timestep):
+        if isinstance(obj, Timestep):
             raise TypeError("PDBWriter cannot write Timestep objects "
                             "directly, since they lack topology information ("
                             "atom names and types) required in PDB files")
@@ -970,14 +971,14 @@ class PDBWriter(base.WriterBase):
 
         :Keywords:
           *ts*
-             :class:`base.Timestep` object containing coordinates to be written to trajectory file;
+             :class:`timestep.Timestep` object containing coordinates to be written to trajectory file;
              if ``None`` then :attr:`PDBWriter.ts`` is tried.
           *multiframe*
              ``False``: write a single frame (default); ``True`` behave as a trajectory writer
 
         .. Note::
 
-           Before using this method with another :class:`base.Timestep` in the *ts*
+           Before using this method with another :class:`timestep.Timestep` in the *ts*
            argument, :meth:`PDBWriter._update_frame` *must* be called
            with the :class:`~MDAnalysis.core.groups.AtomGroup.Universe` as
            its argument so that topology information can be gathered.
