@@ -31,15 +31,15 @@ Contains OpenMP versions of the contents of "calc_distances.h"
 """
 
 from libc.stdint cimport uint64_t
-from ..libmda cimport group_helpers
+from ..libmda cimport group_iterators
 import numpy
 cimport numpy
 numpy.import_array()
 
 # fused type for iterators
 ctypedef fused iterator_t:
-    group_helpers.AtomGroupIterator
-    group_helpers.ArrayIterator
+    group_iterators.AtomGroupIterator
+    group_iterators.ArrayIterator
 
 cdef extern from "string.h":
     void* memcpy(void* dst, void* src, int len)

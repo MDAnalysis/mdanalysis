@@ -24,10 +24,11 @@
 
 
 """
-Compiled helpers for group iteration --- :mod:`MDAnalysis.core.group_helpers`
-=============================================================================
+Compiled helpers for group iteration --- :mod:`MDAnalysis.core.group_iterators`
+===============================================================================
 
 Helpers
+
 """
 
 from .groups import AtomGroup
@@ -47,6 +48,9 @@ cdef inline _to_numpy_from_spec(object owner, int ndim, cnp.npy_intp * shape, in
     return array
 
 cdef class AtomGroupIterator:
+    """ Iterator for a :class:`AtomGroup`
+
+    """
 
     def __cinit__(self, ag):
         self._iterator = iterators._AtomGroupIterator(ag.n_atoms)
@@ -69,11 +73,12 @@ cdef class AtomGroupIterator:
     def n_atoms(self):
         return self._iterator.n_atoms
     
-    def print_ix(self):
-        self._iterator.print_ix()
 
 
 cdef class ArrayIterator:
+    """ Iterator for a :class:`numpy.ndarray`
+
+    """
 
     def __cinit__(self, cnp.ndarray arr):
         if arr.shape[1] != 3:

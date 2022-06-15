@@ -442,8 +442,8 @@ def extensions(config):
                              define_macros=define_macros,
                              extra_compile_args=cpp_extra_compile_args,
                              extra_link_args= cpp_extra_link_args)
-    group_helpers = MDAExtension('MDAnalysis.core.group_helpers',
-                         sources=['MDAnalysis/core/group_helpers' + cpp_source_suffix],
+    group_iterators = MDAExtension('MDAnalysis.core.group_iterators',
+                         sources=['MDAnalysis/core/group_iterators' + cpp_source_suffix],
                          language='c++',
                          include_dirs=include_dirs + ['MDAnalysis/lib/include'],
                          define_macros=define_macros,
@@ -451,7 +451,7 @@ def extensions(config):
                          extra_link_args= cpp_extra_link_args)
     pre_exts = [libdcd, distances, distances_omp, qcprot,
                 transformation, libmdaxdr, util, encore_utils,
-                ap_clustering, spe_dimred, cutil, augment, nsgrid, group_helpers]
+                ap_clustering, spe_dimred, cutil, augment, nsgrid, group_iterators]
 
 
     cython_generated = []

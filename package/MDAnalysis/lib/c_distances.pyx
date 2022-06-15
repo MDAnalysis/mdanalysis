@@ -31,6 +31,7 @@ Serial versions of all distance calculations
 
 cimport cython
 from libc.stdint cimport uint64_t, UINT64_MAX
+from ..libmda cimport group_iterators
 import numpy
 cimport numpy
 numpy.import_array()
@@ -38,12 +39,11 @@ numpy.import_array()
 from libc.math cimport fabs, round as cround
 from libc.float cimport FLT_MAX, DBL_MAX
 
-from ..libmda cimport group_helpers
 
 # fused type for iterators
 ctypedef fused iterator_t:
-    group_helpers.AtomGroupIterator
-    group_helpers.ArrayIterator
+    group_iterators.AtomGroupIterator
+    group_iterators.ArrayIterator
 
 # make UINT64_MAX visible at the python layer
 _UINT64_MAX = UINT64_MAX

@@ -76,7 +76,7 @@ from .mdamath import triclinic_vectors
 from ._augment import augment_coordinates, undo_augment
 from .nsgrid import FastNS
 from .c_distances import _minimize_vectors_ortho, _minimize_vectors_triclinic
-from ..core.group_helpers import AtomGroupIterator, ArrayIterator
+from ..core.group_iterators import AtomGroupIterator, ArrayIterator
 
 
 

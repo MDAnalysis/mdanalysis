@@ -57,3 +57,14 @@ The selection system is primarily of interest to developers.
 
    core/selection
 
+
+Iterator system
+===============
+
+The iterator system is primarily of interest to developers.
+
+.. toctree::
+   :maxdepth: 1
+
+   core/group_helpers
+

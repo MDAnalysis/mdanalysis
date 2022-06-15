@@ -32,7 +32,7 @@ cnp.import_array()
 """
 Cython header for iterators of groups, used in low level functions in `lib`.
 Light wrapper around C++ iterator classes in `lib/include/iterators.h`
-For full documentation, see `group_helpers.pyx`.
+For full documentation, see `group_iterators.pyx`.
 """
 
 cdef class AtomGroupIterator:
