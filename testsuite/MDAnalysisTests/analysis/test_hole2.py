@@ -404,10 +404,14 @@ class TestHoleAnalysis(BaseTestHole):
         binned, bins = hole.bin_radii(bins=100)
         mean = np.array(list(map(np.mean, binned)))
         stds = np.array(list(map(np.std, binned)))
-        midpoints = 0.5 * bins[1:] + 0.5 * bins[:-1]
-        # assume a bin of length 1.5
+        midpoints = 0.5 * (bins[1:] + bins[:-1])
+        
+        binwidths = np.diff(bins)
+        binwidth = binwidths[0]
+        assert_allclose(binwidths, binwidth)  # just making sure that we have equidistant bins
+
         difference_right = bins[1:] - midpoints
-        assert_allclose(difference_right, 0.75)
+        assert_allclose(difference_right, binwidth/2)
 
         ylow = list(mean-(2*stds))
         yhigh = list(mean+(2*stds))
