@@ -20,6 +20,7 @@
 #define __BATCHED_DISTANCES_H
 
 #include <cstdint>
+#include <numeric>
 #include "iterators.h"
 
 /* Functions in this header file calculate distances using batched algorithms
@@ -37,6 +38,27 @@
  multiple overloads for functions that accept many iterators.
 
 */
+
+/* _calc_distance_array_batched uses the following batched algorithm:
+   - figure out how many perfect tiles of size (batchsize, batchsize) we can do
+   - figure out how overhanging our remaining distances are
+   - figure out the maximum number of coordinates at a time for overhang (gcd)
+   - calculate distances in tiles
+   - if overhanging in ref dimension, do overhang NOTE: non contiguous access
+   - if overhanging in conf dimension, do overhang
+
+   NOTE: possible poor performance on overhanging portion when gcd is low (ie a
+   prime number of distances). Should be investigated.
+ */
+
+
+// implement gcd because we don't compile with C++17
+template<typename T>
+T _gcd(T a, T b) {
+   if (b == 0)
+   return a;
+   return _gcd(b, a % b);
+}
 
 template <typename T, typename U>
 void _calc_distance_array_batched(T ref, U conf, double *distances, uint64_t batchsize)
@@ -60,20 +82,29 @@ void _calc_distance_array_batched(T ref, U conf, double *distances, uint64_t bat
     uint64_t bsize_ref = std::min(nref, batchsize);
     uint64_t bsize_conf = std::min(nconf, batchsize);
 
-
     // internals
     double rsq;
     float dx[3];
+    uint64_t iter_ref;
+    uint64_t iter_conf;
 
     // what is modulo number of particles?
-    int ref_overhang = nref % bsize_ref;
-    int conf_overhang = nconf % bsize_conf;
+    uint64_t ref_overhang = nref % bsize_ref;
+    uint64_t conf_overhang = nconf % bsize_conf;
 
-    for (uint64_t iter_ref = 0; iter_ref < nref - ref_overhang; iter_ref += bsize_ref)
+    // what is the gcd to do iteration of overhang?
+    // using a gcd allows us to use the maximum size of memory buffer that fits
+    // remaining iteration in (gcd_ref, gcd_conf) sized tiles
+    int64_t gcd_conf = _gcd(nconf, bsize_conf);
+    int64_t gcd_ref = _gcd(nref, bsize_ref);
+
+    // note i is used as index of ref and j is used as index of conf.
+
+    for (iter_ref = 0; iter_ref < nref - ref_overhang; iter_ref += bsize_ref)
     {
         ref.load_into_external_buffer(ref_buffer_, bsize_ref);
 
-        for (uint64_t iter_conf = 0; iter_conf < nconf - conf_overhang; iter_conf += bsize_conf)
+        for (iter_conf = 0; iter_conf < nconf - conf_overhang; iter_conf += bsize_conf)
         {
             conf.load_into_external_buffer(conf_buffer_, bsize_conf);
 
@@ -91,6 +122,57 @@ void _calc_distance_array_batched(T ref, U conf, double *distances, uint64_t bat
         }
 
         conf.reset_iteration();
+    }
+
+    if (ref_overhang)
+    {
+        // deal with overhang in ref dimension, strided outer dim
+        // if ref is overhanging we enter this block with just the overhang left
+        // we enter this block with conf already reset
+        ref.load_into_external_buffer(ref_buffer_, ref_overhang);
+
+        for (uint64_t i = 0; i < nconf; i += gcd_conf)
+        {
+            conf.load_into_external_buffer(conf_buffer_, gcd_conf);
+            for (uint64_t ii = 0; ii < ref_overhang; ii++)
+            {
+                for (uint64_t jj = 0; jj < gcd_conf; jj++)
+                {
+                    dx[0] = conf_buffer[3 * jj] - ref_buffer[3 * ii];
+                    dx[1] = conf_buffer[3 * jj + 1] - ref_buffer[3 * ii + 1];
+                    dx[2] = conf_buffer[3 * jj + 2] - ref_buffer[3 * ii + 2];
+                    rsq = (dx[0] * dx[0]) + (dx[1] * dx[1]) + (dx[2] * dx[2]);
+                    *(distances + iter_ref * nconf + ii * nconf + i + jj) = sqrt(rsq);
+                }
+            }
+        }
+    }
+
+    if (conf_overhang)
+    {
+        // deal with overhang in the conf dimension, contiguous inner dim
+        // we need to rewind ref
+        ref.reset_iteration();
+        // if we had a ref overhang we are at the end of conf and need to rewind
+        conf.seek(nconf - conf_overhang);
+
+        conf.load_into_external_buffer(conf_buffer_, conf_overhang);
+
+        for (uint64_t j = 0; j < nref; j += gcd_ref)
+        {
+            ref.load_into_external_buffer(ref_buffer_, gcd_ref);
+            for (uint64_t jj = 0; jj < conf_overhang; jj++)
+            {
+                for (uint64_t ii = 0; ii < gcd_ref; ii++)
+                {
+                    dx[0] = conf_buffer[3 * jj] - ref_buffer[3 * ii];
+                    dx[1] = conf_buffer[3 * jj + 1] - ref_buffer[3 * ii + 1];
+                    dx[2] = conf_buffer[3 * jj + 2] - ref_buffer[3 * ii + 2];
+                    rsq = (dx[0] * dx[0]) + (dx[1] * dx[1]) + (dx[2] * dx[2]);
+                    *(distances + iter_conf + j * nref + ii * nconf + jj) = sqrt(rsq);
+                }
+            }
+        }
     }
 }
 
