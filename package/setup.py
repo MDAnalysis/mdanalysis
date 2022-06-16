@@ -74,7 +74,7 @@ else:
     from commands import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "2.2.0"
+RELEASE = "2.3.0-dev0"
 
 is_release = 'dev' not in RELEASE
 
@@ -414,6 +414,13 @@ def extensions(config):
                          define_macros=define_macros,
                          extra_compile_args=cpp_extra_compile_args,
                          extra_link_args= cpp_extra_link_args)
+    timestep = MDAExtension('MDAnalysis.coordinates.timestep',
+                         sources=['MDAnalysis/coordinates/timestep' + cpp_source_suffix],
+                         language='c++',
+                         include_dirs=include_dirs,
+                         define_macros=define_macros,
+                         extra_compile_args=cpp_extra_compile_args,
+                         extra_link_args= cpp_extra_link_args)
 
 
     encore_utils = MDAExtension('MDAnalysis.analysis.encore.cutils',
@@ -451,7 +458,8 @@ def extensions(config):
                          extra_link_args= cpp_extra_link_args)
     pre_exts = [libdcd, distances, distances_omp, qcprot,
                 transformation, libmdaxdr, util, encore_utils,
-                ap_clustering, spe_dimred, cutil, augment, nsgrid, group_iterators]
+                ap_clustering, spe_dimred, cutil, augment, nsgrid,
+                timestep, group_iterators]
 
 
     cython_generated = []

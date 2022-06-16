@@ -13,6 +13,27 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+??/??/?? IAlibay, PicoCentauri, orbeckst, hmacdope
+
+ * 2.3.0
+
+Fixes
+  * Fixes awk call in deploy.yaml tests for macos runners (Issue #3693)
+
+Enhancements
+  * Add `norm` parameter to InterRDF, InterRDF_s to normalize as rdf,
+    number density or do not normalize at all. (Issue #3687)
+  * Additional logger.info output when per-frame analysis starts (PR #3710)
+  * Timestep has been converted to a Cython Extension type
+    (CZI Performance track, PR #3683)
+
+Changes
+
+Deprecations
+  * Deprecate `density` parameter in favor of `norm` in InterRDF_s
+    (Issue #3687)
+
+
 06/01/22 IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy,
          HenokB, umak1106, tamandeeps, Mrqeoqqt, megosato, AnirG, rishu235,
          mtiberti, manishsaini6421, Sukeerti1, robotjellyzone, markvrma, alescoulie,
@@ -62,7 +83,6 @@ Fixes
 Enhancements
   * Add smarts_kwargs to allow greater flexiblity with smarts atom selection
     (Issue #3469, PR #3470).
-  * Added `frames` argument to AnalysisBase.run to allow analysis to run on
   * Added DL_POLY Classic support. Now HISTORY files from DL_POLY Classic can be
   * used. (Issue #3678)
   * Wheels and dist now get automatically built and deployed on release

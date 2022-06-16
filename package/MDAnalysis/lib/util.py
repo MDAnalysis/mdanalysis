@@ -2385,7 +2385,7 @@ def check_box(box):
     box : array_like
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
 
     Returns
