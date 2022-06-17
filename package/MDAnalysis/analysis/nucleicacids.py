@@ -44,6 +44,14 @@ _________
     :members:
     :inherited-members:
 
+.. autoclass:: MinorPairDist
+    :members:
+    :inherited-members:
+
+.. autoclass:: MajorPairDist
+    :members:
+    :inherited-members:
+
 .. versionadded 2.2.0
 
 """
@@ -209,3 +217,155 @@ class WatsonCrickDist(NucPairDist):
             sel2.append(s[1].atoms.select_atoms(f'name {a2}'))
 
         super(WatsonCrickDist, self).__init__(sel1, sel2, **kwargs)
+
+
+class MinorPairDist(NucPairDist):
+    r"""Minor-Pair basepair distance for selected residues over a trajectory.
+
+    Takes two lists of :class:`~MDAnalysis.core.groups.Residue` objects and calculates
+    the Watson-Crick distance between them over the trajectory. Bases are matched by
+    their index in the lists given as arguments.
+
+    Parameters
+    __________
+    strand1: List[Residue]
+        First list of bases
+    strand2: List[Residue]
+        Second list of bases
+    o2_name: str (optional)
+        Name of Oxygen 2 of nucleic acids
+        by default assigned to N1
+    c2_name: str (optional)
+        Name of Carbon 2 of nucleic acids
+        by default assigned to N3
+    g_name: str (optional)
+        Name of Guanine in topology
+        by default assigned to G
+    a_name: str (optional)
+        Name of Adenine in topology
+        by default assigned to G
+    u_name: str (optional)
+        Name of Uracil in topology
+        by default assigned to U
+    t_name: str (optional)
+        Name of Thymine in topology
+        by default assigned to T
+    c_name: str (optional)
+        Name of Cytosine in topology
+        by default assigned to C
+    **kwargs: dict
+        arguments for :class:`~MDAnalysis.analysis.base.AnalysisBase`
+
+    Attributes
+    __________
+    results: numpy.ndarray
+    first index is selection second index is time
+    results.times: numpy.ndarray
+    times used in analysis
+
+    Raises
+    ______
+    ValueError
+    if the residues given are not amino acids
+    ValueError
+    if the selections given are not the same length
+
+    """
+
+    def __init__(self, strand1: List[Residue], strand2: List[Residue],
+                 o2_name: str = 'O2', c2_name: str = "C2",
+                 g_name: str = 'G', a_name: str = 'A', u_name: str = 'U',
+                 t_name: str = 'T', c_name: str = 'C',
+                 **kwargs) -> None:
+        sel1: List[mda.AtomGroup] = []
+        sel2: List[mda.AtomGroup] = []
+        strand = zip(strand1, strand2)
+
+        for s in strand:
+            if s[0].resname[0] in [c_name, t_name, u_name]:
+                a1, a2 = o2_name, c2_name
+            elif s[0].resname[0] in [a_name, g_name]:
+                a1, a2 = c2_name, o2_name
+            else:
+                raise ValueError(f"{s} are not valid nucleic acids")
+
+            sel1.append(s[0].atoms.select_atoms(f'name {a1}'))
+            sel2.append(s[1].atoms.select_atoms(f'name {a2}'))
+
+        super(MinorPairDist, self).__init__(sel1, sel2, **kwargs)
+
+
+class MajorPairDist(NucPairDist):
+    r"""Minor-Pair basepair distance for selected residues over a trajectory.
+
+    Takes two lists of :class:`~MDAnalysis.core.groups.Residue` objects and calculates
+    the Watson-Crick distance between them over the trajectory. Bases are matched by
+    their index in the lists given as arguments.
+
+    Parameters
+    __________
+    strand1: List[Residue]
+        First list of bases
+    strand2: List[Residue]
+        Second list of bases
+    o6_name: str (optional)
+        Name of Oxygen 6 of nucleic acids
+        by default assigned to N1
+    n4_name: str (optional)
+        Name of Nitrogen 4 of nucleic acids
+        by default assigned to N3
+    g_name: str (optional)
+        Name of Guanine in topology
+        by default assigned to G
+    a_name: str (optional)
+        Name of Adenine in topology
+        by default assigned to G
+    u_name: str (optional)
+        Name of Uracil in topology
+        by default assigned to U
+    t_name: str (optional)
+        Name of Thymine in topology
+        by default assigned to T
+    c_name: str (optional)
+        Name of Cytosine in topology
+        by default assigned to C
+    **kwargs: dict
+        arguments for :class:`~MDAnalysis.analysis.base.AnalysisBase`
+
+    Attributes
+    __________
+    results: numpy.ndarray
+    first index is selection second index is time
+    results.times: numpy.ndarray
+    times used in analysis
+
+    Raises
+    ______
+    ValueError
+    if the residues given are not amino acids
+    ValueError
+    if the selections given are not the same length
+
+    """
+
+    def __init__(self, strand1: List[Residue], strand2: List[Residue],
+                 n4_name: str = 'N4', o6_name: str = "O6",
+                 g_name: str = 'G', a_name: str = 'A', u_name: str = 'U',
+                 t_name: str = 'T', c_name: str = 'C',
+                 **kwargs) -> None:
+        sel1: List[mda.AtomGroup] = []
+        sel2: List[mda.AtomGroup] = []
+        strand = zip(strand1, strand2)
+
+        for s in strand:
+            if s[0].resname[0] in [c_name, t_name, u_name]:
+                a1, a2 = n4_name, o6_name
+            elif s[0].resname[0] in [a_name, g_name]:
+                a1, a2 = o6_name, n4_name
+            else:
+                raise ValueError(f"{s} are not valid nucleic acids")
+
+            sel1.append(s[0].atoms.select_atoms(f'name {a1}'))
+            sel2.append(s[1].atoms.select_atoms(f'name {a2}'))
+
+        super(MajorPairDist, self).__init__(sel1, sel2, **kwargs)
