@@ -55,4 +55,13 @@ def test_minor_dist(u):
     assert_allclose(MI.results[0][0], 15.06506, atol=1e-3)
     assert_allclose(MI.results[1][0], 3.219116, atol=1e-3)
 
+def test_major_dist(u):
+    strand: mda.AtomGroup = u.select_atoms("segid RNAA")
+    strand1 = [strand.residues[1], strand.residues[4]]
+    strand2 = [strand.residues[11], strand.residues[8]]
 
+    MA = MajorPairDist(strand1, strand2)
+    MA.run()
+
+    assert_allclose(MA.results[0][0], 26.884272, atol=1e-3)
+    assert_allclose(MA.results[1][0], 13.578535, atol=1e-3)
