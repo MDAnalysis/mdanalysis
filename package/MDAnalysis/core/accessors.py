@@ -63,10 +63,14 @@ Classes
    :members:
 
 """
+from __future__ import absolute_import
+from __future__ import annotations
 
 from functools import partial, update_wrapper
 
 from .. import _CONVERTERS
+import typing as t
+from groups import AtomGroup
 
 
 class Accessor:
@@ -97,7 +101,7 @@ class Accessor:
     .. versionadded:: 2.0.0
     """
 
-    def __init__(self, name, accessor):
+    def __init__(self, name: str, accessor: Accessor) -> None:
         self._accessor = accessor
         self._name = name
 
@@ -168,9 +172,9 @@ class ConverterWrapper:
         be accessed as a method with the name of the package in lowercase, i.e.
         `convert_to.parmed()`
     """
-    _CONVERTERS = {}
+    _CONVERTERS: t.Dict[str, t.Type[_CONVERTERS]] = {}
 
-    def __init__(self, ag):
+    def __init__(self, ag: t.Type[AtomGroup]) -> None:
         """
         Parameters
         ----------
@@ -195,7 +199,7 @@ class ConverterWrapper:
             update_wrapper(convert, converter)
             setattr(self, method_name, convert)
 
-    def __call__(self, package, *args, **kwargs):
+    def __call__(self, package: str, *args: int, **kwargs: int) -> t.Type[_CONVERTERS]:
         try:
             convert = getattr(self, package.lower())
         except AttributeError:
