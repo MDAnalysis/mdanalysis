@@ -115,26 +115,21 @@ def make_downshift_arrays(upshift, nparents):
     if not len(upshift):
         return np.array([], dtype=object)
 
-    order = np.argsort(upshift)
+    upshift = np.array(upshift)
+    order = np.argsort(upshift, kind="mergesort")
 
     upshift_sorted = upshift[order]
-    borders = [None] + list(np.nonzero(np.diff(upshift_sorted))[0] + 1) + [None]
+    u_values, indices = np.unique(upshift_sorted, return_index=True)
+    residue_indices = np.zeros(nparents, dtype=int)
+    missing_resids = np.sort(np.setdiff1d(np.arange(nparents), u_values))
+    indices = np.append(indices, upshift_sorted.shape[0])
 
-    # returns an array of arrays
-    downshift = []
-    counter = -1
-    # don't use enumerate, we modify counter in place
-    for x, y in zip(borders[:-1], borders[1:]):
-        counter += 1
-        # If parent is skipped, eg (0, 0, 2, 2, etc)
-        while counter != upshift[order[x:y][0]]:
-            downshift.append(np.array([], dtype=np.intp))
-            counter += 1
-        downshift.append(np.sort(np.array(order[x:y], copy=True, dtype=np.intp)))
-    # Add entries for childless parents at end of range
-    while counter < (nparents - 1):
-        downshift.append(np.array([], dtype=np.intp))
-        counter += 1
+    residue_indices[u_values] = indices[1:]
+
+    for missing_resid in missing_resids:
+        residue_indices[missing_resid] = residue_indices[missing_resid-1]
+
+    downshift = np.split(order, residue_indices[:-1])
     # Add None to end of array to force it to be of type Object
     # Without this, a rectangular array gets squashed into a single array
     downshift.append(None)
@@ -416,6 +411,21 @@ class TransTable(object):
         self._SR = make_downshift_arrays(self._RS, self.n_segments)
 
         return self.n_segments - 1
+
+    def __getstate__(self):
+        return (self.n_atoms, self.n_residues, self.n_segments,
+                self._AR, self._RS)
+
+    def __setstate__(self, args):
+        # rebuild _RA and _SR instead of serializing them.
+        n_atoms = args[0]
+        n_residues = args[1]
+        n_segments = args[2]
+        _AR = args[3]
+        _RS = args[4]
+        return self.__init__(n_atoms, n_residues, n_segments,
+                            atom_resindex=_AR, residue_segindex=_RS)
+
 
 
 class Topology(object):
