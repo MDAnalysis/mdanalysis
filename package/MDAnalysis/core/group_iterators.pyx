@@ -56,7 +56,7 @@ Classes
 
 import numpy as np
 from .groups import AtomGroup
-from ..libmda cimport iterators
+from ..lib cimport iterators
 from libcpp.vector cimport vector
 from libc.stdint cimport int64_t
 cimport cython
