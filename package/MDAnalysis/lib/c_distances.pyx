@@ -91,7 +91,7 @@ def calc_distance_array(numpy.ndarray ref, numpy.ndarray conf,
                          <double*> result.data)
 
 def calc_distance_array_batched(iterator_t ref, iterator_t conf,
-                        numpy.ndarray result, batchsize=5):
+                        numpy.ndarray result, batchsize=256):
     cdef int _batchsize = batchsize
     _calc_distance_array_batched(ref._iterator, conf._iterator, <double*> result.data, _batchsize)
 

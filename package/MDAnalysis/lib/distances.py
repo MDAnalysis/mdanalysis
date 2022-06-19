@@ -111,6 +111,7 @@ def _run(funcname, args=None, kwargs=None, backend="serial"):
 # the core and topology modules)
 from .c_distances import (_UINT64_MAX,
                           calc_distance_array,
+                          calc_distance_array_batched,
                           calc_distance_array_ortho,
                           calc_distance_array_triclinic,
                           calc_self_distance_array,
