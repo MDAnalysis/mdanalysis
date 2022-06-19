@@ -127,7 +127,10 @@ def make_downshift_arrays(upshift, nparents):
     residue_indices[u_values] = indices[1:]
 
     for missing_resid in missing_resids:
-        residue_indices[missing_resid] = residue_indices[missing_resid-1]
+        if missing_resid == 0:
+            residue_indices[missing_resid] = 0
+        else:
+            residue_indices[missing_resid] = residue_indices[missing_resid-1]
 
     downshift = np.split(order, residue_indices[:-1])
     # Add None to end of array to force it to be of type Object
