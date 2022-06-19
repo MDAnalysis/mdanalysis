@@ -136,7 +136,8 @@ public:
     // coordinate pointer (ptr).
     void load_into_external_buffer(float *&buffer, int64_t n_idx)
     {
-        buffer = ptr;
+        buffer = ptr + 3*i;
+        i += n_idx;
     }
 };
 #endif //__ITERATORS_H

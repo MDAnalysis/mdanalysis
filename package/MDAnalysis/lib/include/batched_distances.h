@@ -51,13 +51,13 @@
    prime number of distances). Should be investigated.
  */
 
-
 // implement gcd because we don't compile with C++17
-template<typename T>
-T _gcd(T a, T b) {
-   if (b == 0)
-   return a;
-   return _gcd(b, a % b);
+template <typename T>
+T _gcd(T a, T b)
+{
+    if (b == 0)
+        return a;
+    return _gcd(b, a % b);
 }
 
 template <typename T, typename U>
@@ -98,8 +98,6 @@ void _calc_distance_array_batched(T ref, U conf, double *distances, uint64_t bat
     int64_t gcd_conf = _gcd(nconf, bsize_conf);
     int64_t gcd_ref = _gcd(nref, bsize_ref);
 
-    // note i is used as index of ref and j is used as index of conf.
-
     for (iter_ref = 0; iter_ref < nref - ref_overhang; iter_ref += bsize_ref)
     {
         ref.load_into_external_buffer(ref_buffer_, bsize_ref);
@@ -124,9 +122,9 @@ void _calc_distance_array_batched(T ref, U conf, double *distances, uint64_t bat
         conf.reset_iteration();
     }
 
-    if (ref_overhang)
+    if (ref_overhang) // technically not required but may help with branch prediction
     {
-        // deal with overhang in ref dimension, strided outer dim
+        // deal with overhang in ref dimension, contiguous dim
         // if ref is overhanging we enter this block with just the overhang left
         // we enter this block with conf already reset
         ref.load_into_external_buffer(ref_buffer_, ref_overhang);
@@ -134,42 +132,42 @@ void _calc_distance_array_batched(T ref, U conf, double *distances, uint64_t bat
         for (uint64_t i = 0; i < nconf; i += gcd_conf)
         {
             conf.load_into_external_buffer(conf_buffer_, gcd_conf);
-            for (uint64_t ii = 0; ii < ref_overhang; ii++)
+            for (uint64_t j = 0; j < ref_overhang; j++)
             {
-                for (uint64_t jj = 0; jj < gcd_conf; jj++)
+                for (uint64_t k = 0; k < gcd_conf; k++)
                 {
-                    dx[0] = conf_buffer[3 * jj] - ref_buffer[3 * ii];
-                    dx[1] = conf_buffer[3 * jj + 1] - ref_buffer[3 * ii + 1];
-                    dx[2] = conf_buffer[3 * jj + 2] - ref_buffer[3 * ii + 2];
+                    dx[0] = conf_buffer_[3 * k] - ref_buffer_[3 * j];
+                    dx[1] = conf_buffer_[3 * k + 1] - ref_buffer_[3 * j + 1];
+                    dx[2] = conf_buffer_[3 * k + 2] - ref_buffer_[3 * j + 2];
                     rsq = (dx[0] * dx[0]) + (dx[1] * dx[1]) + (dx[2] * dx[2]);
-                    *(distances + iter_ref * nconf + ii * nconf + i + jj) = sqrt(rsq);
+                    *(distances + iter_ref * nconf + j * nconf + i + k) = sqrt(rsq);
                 }
             }
         }
     }
 
-    if (conf_overhang)
+    if (conf_overhang) // technically not required but may help with branch prediction
     {
-        // deal with overhang in the conf dimension, contiguous inner dim
+        // deal with overhang in the conf dimension, strided dim
         // we need to rewind ref
         ref.reset_iteration();
-        // if we had a ref overhang we are at the end of conf and need to rewind
+        // we are at the beginning or end of conf depending if we had an
+        // overhang or not and need to rewind
         conf.seek(nconf - conf_overhang);
-
         conf.load_into_external_buffer(conf_buffer_, conf_overhang);
 
-        for (uint64_t j = 0; j < nref; j += gcd_ref)
+        for (uint64_t i = 0; i < nref; i += gcd_ref)
         {
             ref.load_into_external_buffer(ref_buffer_, gcd_ref);
-            for (uint64_t jj = 0; jj < conf_overhang; jj++)
+            for (uint64_t j = 0; j < conf_overhang; j++)
             {
-                for (uint64_t ii = 0; ii < gcd_ref; ii++)
+                for (uint64_t k = 0; k < gcd_ref; k++)
                 {
-                    dx[0] = conf_buffer[3 * jj] - ref_buffer[3 * ii];
-                    dx[1] = conf_buffer[3 * jj + 1] - ref_buffer[3 * ii + 1];
-                    dx[2] = conf_buffer[3 * jj + 2] - ref_buffer[3 * ii + 2];
+                    dx[0] = conf_buffer_[3 * j] - ref_buffer_[3 * k];
+                    dx[1] = conf_buffer_[3 * j + 1] - ref_buffer_[3 * k + 1];
+                    dx[2] = conf_buffer_[3 * j + 2] - ref_buffer_[3 * k + 2];
                     rsq = (dx[0] * dx[0]) + (dx[1] * dx[1]) + (dx[2] * dx[2]);
-                    *(distances + iter_conf + j * nref + ii * nconf + jj) = sqrt(rsq);
+                    *(distances + iter_conf + i * nconf + k * nconf + j) = sqrt(rsq);
                 }
             }
         }
