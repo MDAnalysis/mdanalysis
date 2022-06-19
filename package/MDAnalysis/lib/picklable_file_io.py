@@ -157,6 +157,8 @@ class BufferIOPicklable(io.BufferedReader):
 
 
     def __setstate__(self, args):
+        # raw in BufferIOPicklable is immutable.
+        # need to reconstruct from class
         raw_class = args[0]
         name = args[1]
         raw = raw_class(name)
