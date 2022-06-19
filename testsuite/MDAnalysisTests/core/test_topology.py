@@ -544,6 +544,14 @@ class TestDownshiftArrays(object):
                                          np.array([], dtype=int),
                                          None], dtype=object))
 
+    def test_missing_start_values_2(self):
+        out = make_downshift_arrays(np.array([1, 1, 2, 2, 3, 3]), 4)
+        self.assert_rows_match(out,
+                               np.array([np.array([], dtype=int),
+                                         np.array([0, 1]),
+                                         np.array([2, 3]),
+                                         np.array([4, 5]),
+                                         None], dtype=object))
 
 class TestAddingResidues(object):
     """Tests for adding residues and segments to a Universe

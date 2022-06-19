@@ -120,6 +120,10 @@ def make_downshift_arrays(upshift, nparents):
 
     upshift_sorted = upshift[order]
     u_values, indices = np.unique(upshift_sorted, return_index=True)
+
+    # reset nparents to the larger one between input and heuristic from data
+    # This is useful for creating empty Universe where default value is 1.
+    nparents = np.max([nparents, u_values.max()+1])
     residue_indices = np.zeros(nparents, dtype=int)
     missing_resids = np.sort(np.setdiff1d(np.arange(nparents), u_values))
     indices = np.append(indices, upshift_sorted.shape[0])
@@ -427,7 +431,7 @@ class TransTable(object):
         _AR = args[3]
         _RS = args[4]
         return self.__init__(n_atoms, n_residues, n_segments,
-                            atom_resindex=_AR, residue_segindex=_RS)
+                             atom_resindex=_AR, residue_segindex=_RS)
 
 
 
