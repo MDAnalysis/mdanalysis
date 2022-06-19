@@ -1316,10 +1316,6 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
 
         return ts
 
-    def __setstate__(self, state):
-        self.__dict__ = state
-        self[self.ts.frame]
-
 
 class ReaderBase(ProtoReader):
     """Base class for trajectory readers that extends :class:`ProtoReader` with a

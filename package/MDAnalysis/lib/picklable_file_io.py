@@ -117,7 +117,7 @@ class FileIOPicklable(io.FileIO):
 
     def __setstate__(self, args):
         name = args[0]
-        super().__init__(name, mode='r')
+        self.__init__(name, mode='r')
         self.seek(args[1])
 
 
@@ -149,18 +149,25 @@ class BufferIOPicklable(io.BufferedReader):
     """
     def __init__(self, raw):
         super().__init__(raw)
+#        self.raw = raw
         self.raw_class = raw.__class__
 
+
     def __getstate__(self):
+#        return (self.raw, self.tell())
         return self.raw_class, self.name, self.tell()
 
+
     def __setstate__(self, args):
+#        raw = args[0]
+#        self.__init__(raw)
+#        self.seek(args[1])
+
         raw_class = args[0]
         name = args[1]
         raw = raw_class(name)
-        super().__init__(raw)
+        self.__init__(raw)
         self.seek(args[2])
-
 
 class TextIOPicklable(io.TextIOWrapper):
     """Character and line based picklable file-like object.
@@ -195,23 +202,13 @@ class TextIOPicklable(io.TextIOWrapper):
     """
     def __init__(self, raw):
         super().__init__(raw)
-        self.raw_class = raw.__class__
+        self.raw = raw
 
     def __getstate__(self):
-        try:
-            name = self.name
-        except AttributeError:
-            # This is kind of ugly--BZ2File does not save its name.
-            name = self.buffer._fp.name
-        return self.raw_class, name
+        return self.raw
 
-    def __setstate__(self, args):
-        raw_class = args[0]
-        name = args[1]
-        # raw_class is used for further expansion this functionality to
-        # Gzip files, which also requires a text wrapper.
-        raw = raw_class(name)
-        super().__init__(raw)
+    def __setstate__(self, raw):
+        self.__init__(raw)
 
 
 class BZ2Picklable(bz2.BZ2File):
@@ -272,7 +269,7 @@ class BZ2Picklable(bz2.BZ2File):
         return self._fp.name, self.tell()
 
     def __setstate__(self, args):
-        super().__init__(args[0])
+        self.__init__(args[0])
         self.seek(args[1])
 
 
@@ -334,7 +331,7 @@ class GzipPicklable(gzip.GzipFile):
         return self.name, self.tell()
 
     def __setstate__(self, args):
-        super().__init__(args[0])
+        self.__init__(args[0])
         self.seek(args[1])
 
 
