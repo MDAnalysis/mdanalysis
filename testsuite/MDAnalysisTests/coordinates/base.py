@@ -123,9 +123,13 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
     def test_pickle_singleframe_reader(self):
         reader = self.universe.trajectory
         reader_p = pickle.loads(pickle.dumps(reader))
+        reader_p_p = pickle.loads(pickle.dumps(reader_p))
         assert_equal(len(reader), len(reader_p))
         assert_equal(reader.ts, reader_p.ts,
                      "Single-frame timestep is changed after pickling")
+        assert_equal(len(reader), len(reader_p_p))
+        assert_equal(reader.ts, reader_p_p.ts,
+                     "Single-frame timestep is changed after double pickling")
 
 
 class BaseReference(object):
@@ -444,6 +448,10 @@ class BaseReaderTest(object):
         assert_equal(len(reader), len(reader_p))
         assert_equal(reader.ts, reader_p.ts,
                      "Timestep is changed after pickling")
+        reader_p_p = pickle.loads(pickle.dumps(reader_p))
+        assert_equal(len(reader), len(reader_p_p))
+        assert_equal(reader.ts, reader_p_p.ts,
+                     "Timestep is changed after double pickling")
 
 
 class MultiframeReaderTest(BaseReaderTest):
@@ -527,6 +535,9 @@ class MultiframeReaderTest(BaseReaderTest):
         reader_p = pickle.loads(pickle.dumps(reader))
         assert_equal(next(reader), next(reader_p),
                      "Next timestep is changed after pickling")
+        reader_p_p = pickle.loads(pickle.dumps(reader_p))
+        assert_equal(next(reader), next(reader_p_p),
+                     "Next timestep is changed after double pickling")
 
     #  To make sure pickle works for last frame.
     def test_pickle_last_ts_reader(self, reader):

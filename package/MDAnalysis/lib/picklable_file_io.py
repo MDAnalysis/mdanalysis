@@ -149,20 +149,14 @@ class BufferIOPicklable(io.BufferedReader):
     """
     def __init__(self, raw):
         super().__init__(raw)
-#        self.raw = raw
         self.raw_class = raw.__class__
 
 
     def __getstate__(self):
-#        return (self.raw, self.tell())
         return self.raw_class, self.name, self.tell()
 
 
     def __setstate__(self, args):
-#        raw = args[0]
-#        self.__init__(raw)
-#        self.seek(args[1])
-
         raw_class = args[0]
         name = args[1]
         raw = raw_class(name)
@@ -205,10 +199,18 @@ class TextIOPicklable(io.TextIOWrapper):
         self.raw = raw
 
     def __getstate__(self):
-        return self.raw
+        try:
+            curr_loc = self.tell()
+        # some readers (e.g. GMS) disable tell() due to using next()
+        except OSError:
+            curr_loc = None
+        return self.raw, curr_loc
 
-    def __setstate__(self, raw):
+    def __setstate__(self, args):
+        raw = args[0]
         self.__init__(raw)
+        if args[1] is not None:
+            self.seek(args[1])
 
 
 class BZ2Picklable(bz2.BZ2File):
