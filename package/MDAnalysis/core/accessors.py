@@ -70,7 +70,7 @@ from functools import partial, update_wrapper
 
 from .. import _CONVERTERS
 import typing as t
-from groups import AtomGroup
+from .groups import AtomGroup
 
 
 class Accessor:
