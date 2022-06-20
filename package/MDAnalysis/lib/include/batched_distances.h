@@ -44,11 +44,11 @@
    - figure out how overhanging our remaining distances are
    - figure out the maximum number of coordinates at a time for overhang (gcd)
    - calculate distances in tiles
-   - if overhanging in ref dimension, do overhang NOTE: non contiguous access
+   - if overhanging in ref dimension, do overhang 
    - if overhanging in conf dimension, do overhang
 
-   NOTE: possible poor performance on overhanging portion when gcd is low (ie a
-   prime number of distances). Should be investigated.
+   NOTE: small memory segments will be used for overhanging portion when gcd
+         is low (e.g. a prime number of distances).
  */
 
 // implement gcd because we don't compile with C++17

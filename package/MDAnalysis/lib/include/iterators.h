@@ -30,7 +30,7 @@
    - reset_iteration() -> rewind to start of group/array
    - load_into_external_buffer -> pass values from group/array into an external
      buffer (likely a stack allocated array)
-   - seek (optional/unused) -> go to a particular atom in the group/array
+   - seek -> go to a particular atom in the group/array
 
    Classes in this header do not inherit from an abstract base as this can
    become quite complicated when wrapped with Cython. Instead they are designed
