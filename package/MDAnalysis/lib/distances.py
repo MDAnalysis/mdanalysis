@@ -233,17 +233,19 @@ def distance_array(reference: Union[np.ndarray, AtomGroup], configuration: Union
         refnum = reference.n_atoms
         _ref = AtomGroupIterator(reference)
     else:
-        raise TypeError("reference parameter must be an AtomGroup or np.ndarray")
+        raise TypeError(f"reference parameter must be an AtomGroup or np.ndarray"
+                        " you provided {type(reference)}")
 
     if isinstance(configuration, np.ndarray):
         confnum = configuration.shape[0]
         _conf = ArrayIterator(configuration)
 
-    elif isinstance(reference, AtomGroup):
+    elif isinstance(configuration, AtomGroup):
         confnum = configuration.n_atoms
         _conf = AtomGroupIterator(configuration)
     else:
-        raise TypeError("conf parameter must be an AtomGroup or np.ndarray")
+        raise TypeError(f"conf parameter must be an AtomGroup or np.ndarray"
+                        " you provided {type(configuration)}")
 
     # check resulting array will not overflow UINT64_MAX
     if refnum * confnum > _UINT64_MAX:
