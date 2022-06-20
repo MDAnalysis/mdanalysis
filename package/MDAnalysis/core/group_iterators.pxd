@@ -49,3 +49,14 @@ cdef class ArrayIterator:
     # number of atoms in the array
     cdef int64_t n_atoms
 
+
+# fused type for iterators, we need TWO of these to get a full cross product of
+# type specialisations required to specialise template<typename T, typename U ... >
+# with different types. See the Cython documentation for more information.
+ctypedef fused iterator_t0:
+    AtomGroupIterator
+    ArrayIterator
+
+ctypedef fused iterator_t1:
+    AtomGroupIterator
+    ArrayIterator

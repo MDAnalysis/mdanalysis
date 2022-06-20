@@ -39,12 +39,6 @@ numpy.import_array()
 from libc.math cimport fabs, round as cround
 from libc.float cimport FLT_MAX, DBL_MAX
 
-
-# fused type for iterators
-ctypedef fused iterator_t:
-    group_iterators.AtomGroupIterator
-    group_iterators.ArrayIterator
-
 # make UINT64_MAX visible at the python layer
 _UINT64_MAX = UINT64_MAX
 
@@ -90,8 +84,9 @@ def calc_distance_array(numpy.ndarray ref, numpy.ndarray conf,
                          <coordinate*> conf.data, confnum,
                          <double*> result.data)
 
-def calc_distance_array_batched(iterator_t ref, iterator_t conf,
-                        numpy.ndarray result, batchsize=256):
+def calc_distance_array_batched(group_iterators.iterator_t0 ref, 
+                                group_iterators.iterator_t1 conf,
+                                numpy.ndarray result, batchsize=256):
     cdef int _batchsize = batchsize
     _calc_distance_array_batched(ref._iterator, conf._iterator, <double*> result.data, _batchsize)
 

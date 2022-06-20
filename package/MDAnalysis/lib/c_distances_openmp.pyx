@@ -36,10 +36,6 @@ import numpy
 cimport numpy
 numpy.import_array()
 
-# fused type for iterators
-ctypedef fused iterator_t:
-    group_iterators.AtomGroupIterator
-    group_iterators.ArrayIterator
 
 cdef extern from "string.h":
     void* memcpy(void* dst, void* src, int len)
@@ -83,8 +79,9 @@ def calc_distance_array(numpy.ndarray ref, numpy.ndarray conf,
                          <double*> result.data)
 
 # prototype contains no OpenMP constructs
-def calc_distance_array_batched(iterator_t ref, iterator_t conf,
-                        numpy.ndarray result, batchsize=256):
+def calc_distance_array_batched(group_iterators.iterator_t0 ref, 
+                                group_iterators.iterator_t1 conf,
+                                numpy.ndarray result, batchsize=256):
     cdef int _batchsize = batchsize
     _calc_distance_array_batched(ref._iterator, conf._iterator, <double*> result.data, _batchsize)  
 
