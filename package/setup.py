@@ -362,14 +362,14 @@ def extensions(config):
                              libraries=mathlib,
                              language='c++',
                              define_macros=define_macros,
-                             extra_compile_args=extra_compile_args)
+                             extra_compile_args=cpp_extra_compile_args)
     distances_omp = MDAExtension('MDAnalysis.lib.c_distances_openmp',
                                  ['MDAnalysis/lib/c_distances_openmp' + source_suffix],
                                  include_dirs=include_dirs + ['MDAnalysis/lib/include'],
                                  libraries=mathlib + parallel_libraries,
                                  language='c++',
                                  define_macros=define_macros + parallel_macros,
-                                 extra_compile_args=parallel_args + extra_compile_args,
+                                 extra_compile_args=parallel_args + cpp_extra_compile_args,
                                  extra_link_args=parallel_args)
     qcprot = MDAExtension('MDAnalysis.lib.qcprot',
                           ['MDAnalysis/lib/qcprot' + source_suffix],
