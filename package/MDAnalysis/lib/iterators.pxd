@@ -4,7 +4,7 @@ from libc.stdint cimport int64_t
 cdef extern from "iterators.h":
     cdef cppclass _AtomGroupIterator:
         int64_t n_atoms
-        vector[int64_t] ix
+        int64_t *ix
         int64_t i
         float *ptr
         _AtomGroupIterator()
@@ -16,7 +16,6 @@ cdef extern from "iterators.h":
 cdef extern from "iterators.h":
     cdef cppclass _ArrayIterator:
         int64_t n_atoms
-        vector[int64_t] ix
         int64_t i
         float *ptr
         _ArrayIterator()

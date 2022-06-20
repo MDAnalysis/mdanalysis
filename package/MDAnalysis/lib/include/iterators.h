@@ -50,34 +50,20 @@ class _AtomGroupIterator
 public:
     // number of atoms in the AtomGroup
     int64_t n_atoms;
-    // array of indices in the AtomGroup
-    std::vector<int64_t> ix;
+    // pointer for indices in the AtomGroup, hooked onto ix_array in Cython layer
+    int64_t *ix;
     // internal index for iteration
     int64_t i;
-    // pointer for coordinates, hooked onto coordinate memoryview in Cython layer
+    // pointer for coordinates, hooked onto coordinate array in Cython layer
     float *ptr;
 
     // nullary constructor so is stack allocatable
-    _AtomGroupIterator() : n_atoms(0), i(0), ptr(nullptr) {}
+    _AtomGroupIterator() : n_atoms(0), ix(nullptr), i(0), ptr(nullptr) {}
 
-    explicit _AtomGroupIterator(int64_t n_atoms) : n_atoms(n_atoms), i(0), ptr(nullptr)
+    explicit _AtomGroupIterator(int64_t n_atoms) : n_atoms(n_atoms), ix(nullptr), i(0), ptr(nullptr)
     {
-    }
-    // copy indices from AtomGroup
-    // can possibly use pointer or std::reference wrapper here to avoid the copy
-    void copy_ix(const int64_t *source)
-    {
-        std::vector<int64_t> tmp(source, source + n_atoms);
-        ix = tmp;
     }
 
-    void print_ix()
-    {
-        for (int64_t n = 0; n < n_atoms; n++)
-        {
-            printf("ix %ld val %ld \n", n, ix[n]);
-        }
-    }
     // rewind to start of AtomGroup
     void inline reset_iteration()
     {
@@ -110,7 +96,7 @@ public:
     int64_t n_atoms;
     // internal index for iteration
     int64_t i;
-    // pointer for coordinates, hooked onto coordinate memoryview in Cython layer
+    // pointer for coordinates, hooked onto coordinate array in Cython layer
     float *ptr;
 
     // nullary constructor so is stack allocatable

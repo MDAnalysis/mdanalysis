@@ -88,10 +88,13 @@ cdef class AtomGroupIterator:
         ag : :class:`~MDAnalysis.core.groups.AtomGroup`
              atomgroup to be iterated
         """
+        if ag.ix_array.dtype != np.int64:
+            raise(TypeError, "AtomGroup must have ix_array datatype of np.int64")
+            
         self._iterator = iterators._AtomGroupIterator(ag.n_atoms)
-        # hook iterator pointer onto base array
-        self._iterator.ptr = <float*>cnp.PyArray_DATA(ag.universe.trajectory.ts.positions)
-        self._iterator.copy_ix(<int64_t*>cnp.PyArray_DATA(ag.ix_array))
+        # hook iterator pointers onto base arrays
+        self._iterator.ptr = <float*>cnp.PyArray_DATA(ag.universe.trajectory.ts.positions)          
+        self._iterator.ix = <int64_t*>cnp.PyArray_DATA(ag.ix_array)
 
     @property
     def ix(self):
@@ -105,7 +108,7 @@ cdef class AtomGroupIterator:
         dims[0] = self._iterator.n_atoms
         cdef cnp.ndarray arr
         arr = _to_numpy_from_spec(
-            self, 1, dims, cnp.NPY_INT64, self._iterator.ix.data())
+            self, 1, dims, cnp.NPY_INT64, self._iterator.ix)
         return arr
 
     @property
@@ -138,7 +141,7 @@ cdef class ArrayIterator:
              array to be iterated
         """
         self._iterator = iterators._ArrayIterator(arr.shape[0])
-        # hook iterator pointer onto base array
+        # hook iterator pointers onto base arrays
         self._iterator.ptr = <float*>cnp.PyArray_DATA(arr)
 
     @property
