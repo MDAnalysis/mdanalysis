@@ -68,12 +68,6 @@ void _calc_distance_array_batched(T ref, U conf, double *distances, uint64_t bat
     float ref_buffer[atom_bufsize];
     float conf_buffer[atom_bufsize];
 
-    // slight indirection required here to homogenize interface between
-    // _AtomGroupIterator and _ArrayIterator where passing stack allocated
-    // array as float*& does not decay to a float* as desired.
-    float *ref_buffer_ = ref_buffer;
-    float *conf_buffer_ = conf_buffer;
-
     uint64_t nref = ref.n_atoms;
     uint64_t nconf = conf.n_atoms;
 
@@ -100,11 +94,11 @@ void _calc_distance_array_batched(T ref, U conf, double *distances, uint64_t bat
 
     for (iter_ref = 0; iter_ref < nref - ref_overhang; iter_ref += bsize_ref)
     {
-        ref.load_into_external_buffer(ref_buffer_, bsize_ref);
+        float* ref_buffer_ = ref.load_into_external_buffer(ref_buffer, bsize_ref);
 
         for (iter_conf = 0; iter_conf < nconf - conf_overhang; iter_conf += bsize_conf)
         {
-            conf.load_into_external_buffer(conf_buffer_, bsize_conf);
+            float* conf_buffer_ =  conf.load_into_external_buffer(conf_buffer, bsize_conf);
 
             for (uint64_t i = 0; i < bsize_ref; i++)
             {
@@ -127,11 +121,11 @@ void _calc_distance_array_batched(T ref, U conf, double *distances, uint64_t bat
         // deal with overhang in ref dimension, contiguous dim
         // if ref is overhanging we enter this block with just the overhang left
         // we enter this block with conf already reset
-        ref.load_into_external_buffer(ref_buffer_, ref_overhang);
+        float* ref_buffer_ = ref.load_into_external_buffer(ref_buffer, ref_overhang);
 
         for (uint64_t i = 0; i < nconf; i += gcd_conf)
         {
-            conf.load_into_external_buffer(conf_buffer_, gcd_conf);
+           float* conf_buffer_ =  conf.load_into_external_buffer(conf_buffer, gcd_conf);
             for (uint64_t j = 0; j < ref_overhang; j++)
             {
                 for (uint64_t k = 0; k < gcd_conf; k++)
@@ -154,11 +148,11 @@ void _calc_distance_array_batched(T ref, U conf, double *distances, uint64_t bat
         // we are at the beginning or end of conf depending if we had an
         // overhang or not and need to rewind
         conf.seek(nconf - conf_overhang);
-        conf.load_into_external_buffer(conf_buffer_, conf_overhang);
+        float* conf_buffer_ = conf.load_into_external_buffer(conf_buffer, conf_overhang);
 
         for (int j = 0; j < nref; j += gcd_ref)
         {
-            ref.load_into_external_buffer(ref_buffer_, gcd_ref);
+            float* ref_buffer_ =  ref.load_into_external_buffer(ref_buffer, gcd_ref);
             for (int i = 0; i < conf_overhang; i++)
             {
                 for (int k = 0; k < gcd_ref; k++)

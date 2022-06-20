@@ -77,7 +77,7 @@ public:
     // load n_idx coordinate values into external buffer of size 3*n_atoms.
     // No checking done for maximal performance, callee's responsibility to not
     // overrun buffer or coordinate pointer (ptr).
-    void load_into_external_buffer(float *buffer, int64_t n_idx)
+    float *load_into_external_buffer(float *buffer, int64_t n_idx)
     {
         for (int64_t n = 0; n < n_idx; n++)
         {
@@ -86,6 +86,8 @@ public:
             buffer[3 * n + 2] = ptr[3 * ix[i] + 2];
             i += 1;
         }
+
+        return buffer;
     }
 };
 
@@ -116,14 +118,14 @@ public:
         i = i_;
     }
     // load coordinate values into external buffer. For an array this is done by
-    // passing incoming pointer by reference and setting it equal to the correct
-    // location of the coordinate pointer (ptr). No checking done for maximal
+    // passing incoming pointer and then ignoring it. We then return a pointer
+    // to the correct point in the NumPy array. No checking done for maximal
     // performance, callee's responsibility to not overrun buffer or
     // coordinate pointer (ptr).
-    void load_into_external_buffer(float *&buffer, int64_t n_idx)
+    float *load_into_external_buffer(float *buffer, int64_t n_idx)
     {
-        buffer = ptr + i * 3;
         i += n_idx;
+        return ptr + (i - n_idx) * 3;
     }
 };
 #endif //__ITERATORS_H
