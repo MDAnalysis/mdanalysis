@@ -156,18 +156,18 @@ void _calc_distance_array_batched(T ref, U conf, double *distances, uint64_t bat
         conf.seek(nconf - conf_overhang);
         conf.load_into_external_buffer(conf_buffer_, conf_overhang);
 
-        for (uint64_t i = 0; i < nref; i += gcd_ref)
+        for (int j = 0; j < nref; j += gcd_ref)
         {
             ref.load_into_external_buffer(ref_buffer_, gcd_ref);
-            for (uint64_t j = 0; j < conf_overhang; j++)
+            for (int i = 0; i < conf_overhang; i++)
             {
-                for (uint64_t k = 0; k < gcd_ref; k++)
+                for (int k = 0; k < gcd_ref; k++)
                 {
-                    dx[0] = conf_buffer_[3 * j] - ref_buffer_[3 * k];
-                    dx[1] = conf_buffer_[3 * j + 1] - ref_buffer_[3 * k + 1];
-                    dx[2] = conf_buffer_[3 * j + 2] - ref_buffer_[3 * k + 2];
+                    dx[0] = conf_buffer_[3 * i] - ref_buffer_[3 * k];
+                    dx[1] = conf_buffer_[3 * i + 1] - ref_buffer_[3 * k + 1];
+                    dx[2] = conf_buffer_[3 * i + 2] - ref_buffer_[3 * k + 2];
                     rsq = (dx[0] * dx[0]) + (dx[1] * dx[1]) + (dx[2] * dx[2]);
-                    *(distances + iter_conf + i * nconf + k * nconf + j) = sqrt(rsq);
+                    *(distances + iter_conf + j * nconf + i + k * nconf) = sqrt(rsq);
                 }
             }
         }

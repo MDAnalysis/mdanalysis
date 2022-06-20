@@ -84,9 +84,9 @@ public:
         i = 0;
     }
     // seek to atom i
-    void seek(int64_t i)
+    void seek(int64_t i_)
     {
-        i = i;
+        i = i_;
     }
     // load n_idx coordinate values into external buffer of size 3*n_atoms.
     // No checking done for maximal performance, callee's responsibility to not
@@ -125,18 +125,18 @@ public:
         i = 0;
     }
     // seek to atom i
-    void seek(int64_t i)
+    void seek(int64_t i_)
     {
-        i = i;
+        i = i_;
     }
     // load coordinate values into external buffer. For an array this is done by
     // passing incoming pointer by reference and setting it equal to the correct
     // location of the coordinate pointer (ptr). No checking done for maximal
-    // performance, callee's responsibility to not overrun buffer or 
+    // performance, callee's responsibility to not overrun buffer or
     // coordinate pointer (ptr).
     void load_into_external_buffer(float *&buffer, int64_t n_idx)
     {
-        buffer = ptr + 3*i;
+        buffer = ptr + i * 3;
         i += n_idx;
     }
 };
