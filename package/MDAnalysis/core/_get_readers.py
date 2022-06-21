@@ -1,4 +1,4 @@
-#-*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
@@ -28,10 +28,12 @@ from .. import (_READERS, _READER_HINTS,
                 _PARSERS, _PARSER_HINTS,
                 _MULTIFRAME_WRITERS, _SINGLEFRAME_WRITERS, _CONVERTERS)
 from ..lib import util
-from typing import Optional, Union, Type
+from typing import Optional, Union, Type, Any
+from ..coordinates.base import ProtoReader, WriterBase, ConverterBase
+from ..topology.base import TopologyReaderBase
 
 
-def get_reader_for(filename: str, format: Optional[Union[str, _READERS]] = None) -> _READERS:
+def get_reader_for(filename: Any, format: Optional[Union[str, ProtoReader]] = None) -> ProtoReader:
     """Return the appropriate trajectory reader class for `filename`.
 
     Parameters
@@ -110,7 +112,8 @@ def get_reader_for(filename: str, format: Optional[Union[str, _READERS]] = None)
         raise ValueError(errmsg) from None
 
 
-def get_writer_for(filename: Optional[str], format: Optional[str] = None, multiframe: Optional[bool] = None) -> Union[_SINGLEFRAME_WRITERS, _MULTIFRAME_WRITERS]:
+def get_writer_for(filename: Optional[str], format: Optional[str] = None, multiframe: Optional[bool] = None) -> \
+        Type[WriterBase]:
     """Return an appropriate trajectory or frame writer class for `filename`.
 
     The format is determined by the `format` argument or the extension of
@@ -205,7 +208,7 @@ def get_writer_for(filename: Optional[str], format: Optional[str] = None, multif
         raise TypeError(errmsg.format(format)) from None
 
 
-def get_parser_for(filename: Union[str, mmtf.MMTFDecoder], format: Optional[str] = None) -> _PARSERS:
+def get_parser_for(filename: Any, format: Union[str, Type[TopologyReaderBase], None] = None) -> Type[TopologyReaderBase]:
     """Return the appropriate topology parser for `filename`.
 
     Automatic detection is disabled when an explicit `format` is
@@ -261,7 +264,7 @@ def get_parser_for(filename: Union[str, mmtf.MMTFDecoder], format: Optional[str]
             return _PARSERS['MINIMAL']
 
 
-def get_converter_for(format: str) -> Type[_CONVERTERS]:
+def get_converter_for(format: str) -> Type[ConverterBase]:
     """Return the appropriate topology converter for ``format``.
 
     Parameters
