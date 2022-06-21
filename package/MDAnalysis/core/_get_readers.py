@@ -30,12 +30,12 @@ from .. import (_READERS, _READER_HINTS,
 from ..lib import util
 from typing import Optional, Union, Type, Any, TYPE_CHECKING
 if TYPE_CHECKING:
-    
+
     from ..coordinates.base import ProtoReader, WriterBase, ConverterBase
     from ..topology.base import TopologyReaderBase
 
 
-def get_reader_for(filename: Any, format: Optional[Union[str, ProtoReader]] = None) -> ProtoReader:
+def get_reader_for(filename: Any, format: Optional[Union[str, Type[ProtoReader]]] = None) -> Type[ProtoReader]:
     """Return the appropriate trajectory reader class for `filename`.
 
     Parameters
