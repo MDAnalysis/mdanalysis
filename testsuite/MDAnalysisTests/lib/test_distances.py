@@ -255,6 +255,13 @@ def ref_system():
 
     return box, points, ref, conf
 
+@pytest.fixture()
+def ref_system_universe(ref_system):
+    box, points, ref, conf = ref_system
+    u  = MDAnalysis.Universe.empty(points.shape[0], trajectory=True)
+    u.atoms.positions = points
+    u.trajectory.ts.dimensions = box
+    return u
 
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestDistanceArray(object):
@@ -275,6 +282,21 @@ class TestDistanceArray(object):
             self._dist(points[2], ref[0]),
             self._dist(points[3], ref[0])]
         ]))
+
+    def test_noPBC_atomgroup(self, backend, ref_system_universe, ref_system):
+        box, points, ref, conf = ref_system
+        ref_ag = ref_system_universe.select_atoms("index 0")
+        d = distances.distance_array(ref_ag, ref_system_universe.atoms,
+                                     backend=backend)
+        assert_almost_equal(d, np.array([[
+            self._dist(points[0], ref[0]),
+            self._dist(points[1], ref[0]),
+            self._dist(points[2], ref[0]),
+            self._dist(points[3], ref[0])]
+        ]))
+
+
+
 
     def test_PBC(self, backend, ref_system):
         box, points, ref, conf = ref_system
