@@ -378,6 +378,55 @@ class TestDistanceArrayDCD(object):
                             err_msg="wrong maximum distance value with PBC")
 
 
+    def test_2x_atomgroup_simple(self, DCD_Universe, backend):
+        # need two copies as moving timestep updates underlying array on atomgroup
+        U1, trajectory1 = DCD_Universe
+        U2 = MDAnalysis.Universe(PSF, DCD)
+        trajectory2 = U2.trajectory
+        trajectory1.rewind()
+        trajectory2.rewind()
+        x0 = U1.select_atoms("all")
+        trajectory2[10]
+        x1 = U2.select_atoms("all")
+        d = distances.distance_array(x0, x1, backend=backend)
+        assert_equal(d.shape, (3341, 3341), "wrong shape (should be (Natoms,Natoms))")
+        assert_almost_equal(d.min(), 0.11981228170520701, self.prec,
+                            err_msg="wrong minimum distance value")
+        assert_almost_equal(d.max(), 53.572192429459619, self.prec,
+                            err_msg="wrong maximum distance value")
+
+    @pytest.mark.parametrize("sel_or_slice", [("all", np.s_[:,:]),
+                            ("index 0 to 8 ", np.s_[0:9,:])])
+    def test_atomgroup_matches_numpy(self, DCD_Universe, backend, sel_or_slice):
+        # need two copies as moving timestep updates underlying array on atomgroup
+        U1, trajectory1 = DCD_Universe
+        U2 = MDAnalysis.Universe(PSF, DCD)
+        trajectory2 = U2.trajectory
+        trajectory1.rewind()
+        trajectory2.rewind()
+        x0_arr = U1.atoms.positions[sel_or_slice[1]]
+        x0_ag = U1.select_atoms(sel_or_slice[0])
+        trajectory2[10]
+        x1_arr = U2.atoms.positions[sel_or_slice[1]]
+        x1_ag = U2.select_atoms(sel_or_slice[0])
+        d_ag = distances.distance_array(x0_ag, x1_ag, backend=backend)
+        d_arr = distances.distance_array(x0_arr, x1_arr, backend=backend)
+        assert_allclose(d_ag, d_arr,
+                        err_msg="AtomGroup and NumPy distances do not match")
+
+
+    def test_iterator_mixed_array_ag_simple(self, DCD_Universe, backend):
+        U, trajectory = DCD_Universe
+        trajectory.rewind()
+        x0 = U.atoms.positions
+        trajectory[10]
+        x1 = U.select_atoms("all")
+        d = distances.distance_array(x0, x1, backend=backend)
+        assert_equal(d.shape, (3341, 3341), "wrong shape (should be (Natoms,Natoms))")
+        assert_almost_equal(d.min(), 0.11981228170520701, self.prec,
+                            err_msg="wrong minimum distance value")
+        assert_almost_equal(d.max(), 53.572192429459619, self.prec,
+                            err_msg="wrong maximum distance value")
 
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestSelfDistanceArrayDCD(object):
