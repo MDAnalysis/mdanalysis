@@ -176,7 +176,8 @@ def _check_result_array(result, shape):
               check_lengths_match=False)
 def distance_array(reference: Union[np.ndarray, AtomGroup],
                    configuration: Union[np.ndarray, AtomGroup],
-                   box: Optional[np.ndarray] = None, result=None,
+                   box: Optional[np.ndarray] = None,
+                   result: Optional[np.ndarray] = None,
                    backend: str = "serial") -> None:
     """Calculate all possible distances between a reference set and another
     configuration.
@@ -225,6 +226,8 @@ def distance_array(reference: Union[np.ndarray, AtomGroup],
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
        Now also accepts single coordinates as input.
+    .. versionchanged:: 2.3.0
+       Now accepts AtomGroups as input and checks types using type hinting.
     """
     confnum = configuration.shape[0]
     refnum = reference.shape[0]
@@ -256,7 +259,10 @@ def distance_array(reference: Union[np.ndarray, AtomGroup],
 
 
 @check_coords('reference', reduce_result_if_single=False)
-def self_distance_array(reference, box=None, result=None, backend="serial"):
+def self_distance_array(reference: Union[np.ndarray, AtomGroup],
+                        box: Optional[np.ndarray] = None,
+                        result: Optional[np.ndarray] = None,
+                        backend: str = "serial") -> None:
     """Calculate all possible distances within a configuration `reference`.
 
     If the optional argument `box` is supplied, the minimum image convention is
@@ -302,6 +308,8 @@ def self_distance_array(reference, box=None, result=None, backend="serial"):
        Added *backend* keyword.
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
+    .. versionchanged:: 2.3.0
+       Now accepts AtomGroups as input and checks types using type hinting.
     """
     refnum = reference.shape[0]
     distnum = refnum * (refnum - 1) // 2
