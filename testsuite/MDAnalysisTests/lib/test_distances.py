@@ -284,7 +284,7 @@ class TestDistanceArray(object):
         ]))
 
     def test_noPBC_atomgroup(self, backend, ref_system_universe, ref_system):
-        box, points, ref, conf = ref_system
+        _, points, ref, _ = ref_system
         ref_ag = ref_system_universe.select_atoms("index 0")
         d = distances.distance_array(ref_ag, ref_system_universe.atoms,
                                      backend=backend)
@@ -294,16 +294,44 @@ class TestDistanceArray(object):
             self._dist(points[2], ref[0]),
             self._dist(points[3], ref[0])]
         ]))
-
-
-
+    
+    def test_noPBC_mixed_ag_arr(self, backend, ref_system_universe, ref_system):
+        _, points, ref, _ = ref_system
+        ref_ag = ref_system_universe.select_atoms("index 0")
+        d = distances.distance_array(ref_ag, points,
+                                     backend=backend)
+        assert_almost_equal(d, np.array([[
+            self._dist(points[0], ref[0]),
+            self._dist(points[1], ref[0]),
+            self._dist(points[2], ref[0]),
+            self._dist(points[3], ref[0])]
+        ]))
 
     def test_PBC(self, backend, ref_system):
         box, points, ref, conf = ref_system
 
         d = distances.distance_array(ref, points, box=box, backend=backend)
 
-        assert_almost_equal(d, np.array([[0., 0., 0., self._dist(points[3], ref=[1, 1, 2])]]))
+        assert_almost_equal(d, np.array([[0., 0., 0., self._dist(points[3],
+                            ref=[1, 1, 2])]]))
+
+    def test_PBC_atomgroup(self, backend, ref_system, ref_system_universe):
+        _, points, ref, _ = ref_system
+        ref_ag = ref_system_universe.select_atoms("index 0")
+        d = distances.distance_array(ref_ag, ref_system_universe.atoms,
+                                     box=ref_system_universe.dimensions,
+                                     backend=backend)
+        assert_almost_equal(d, np.array([[0., 0., 0., self._dist(points[3],
+                            ref=[1, 1, 2])]]))
+
+    def test_PBC_mixed_ag_arr(self, backend, ref_system, ref_system_universe):
+        _, points, ref, _ = ref_system
+        ref_ag = ref_system_universe.select_atoms("index 0")
+        d = distances.distance_array(ref_ag, points,
+                                     box=ref_system_universe.dimensions,
+                                     backend=backend)
+        assert_almost_equal(d, np.array([[0., 0., 0., self._dist(points[3],
+                            ref=[1, 1, 2])]]))
 
     def test_PBC2(self, backend):
         a = np.array([7.90146923, -13.72858524, 3.75326586], dtype=np.float32)
