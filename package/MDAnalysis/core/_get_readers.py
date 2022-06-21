@@ -28,9 +28,11 @@ from .. import (_READERS, _READER_HINTS,
                 _PARSERS, _PARSER_HINTS,
                 _MULTIFRAME_WRITERS, _SINGLEFRAME_WRITERS, _CONVERTERS)
 from ..lib import util
-from typing import Optional, Union, Type, Any
-from ..coordinates.base import ProtoReader, WriterBase, ConverterBase
-from ..topology.base import TopologyReaderBase
+from typing import Optional, Union, Type, Any, TYPE_CHECKING
+if TYPE_CHECKING:
+    
+    from ..coordinates.base import ProtoReader, WriterBase, ConverterBase
+    from ..topology.base import TopologyReaderBase
 
 
 def get_reader_for(filename: Any, format: Optional[Union[str, ProtoReader]] = None) -> ProtoReader:
