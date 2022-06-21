@@ -70,7 +70,7 @@ Functions
 import numpy as np
 from numpy.lib.utils import deprecate
 
-from typing import Union, Optional
+from typing import Union, Optional, Callable
 from ..core.groups import AtomGroup
 from .util import check_coords, check_box
 from .mdamath import triclinic_vectors
@@ -93,7 +93,8 @@ except ImportError:
     pass
 del importlib
 
-def _run(funcname, args=None, kwargs=None, backend="serial"):
+def _run(funcname: Callable, args: Optional[tuple] = None,
+         kwargs: Optional[dict] = None, backend: str = "serial"):
     """Helper function to select a backend function `funcname`."""
     args = args if args is not None else tuple()
     kwargs = kwargs if kwargs is not None else dict()
@@ -131,7 +132,7 @@ from .c_distances import (_UINT64_MAX,
 from .c_distances_openmp import OPENMP_ENABLED as USED_OPENMP
 
 
-def _check_result_array(result, shape):
+def _check_result_array(result: np.ndarray, shape: tuple):
     """Check if the result array is ok to use.
 
     The `result` array must meet the following requirements:
@@ -195,10 +196,10 @@ def distance_array(reference: Union[np.ndarray, AtomGroup],
 
     Parameters
     ----------
-    reference : numpy.ndarray
+    reference :numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Reference coordinate array of shape ``(3,)`` or ``(n, 3)`` (dtype is
         arbitrary, will be converted to ``numpy.float32`` internally).
-    configuration : numpy.ndarray
+    configuration : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Configuration coordinate array of shape ``(3,)`` or ``(m, 3)`` (dtype is
         arbitrary, will be converted to ``numpy.float32`` internally).
     box : array_like, optional
@@ -275,7 +276,7 @@ def self_distance_array(reference: Union[np.ndarray, AtomGroup],
 
     Parameters
     ----------
-    reference : numpy.ndarray
+    reference : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Reference coordinate array of shape ``(3,)`` or ``(n, 3)`` (dtype is
         arbitrary, will be converted to ``numpy.float32`` internally).
     box : array_like, optional
