@@ -214,6 +214,8 @@ import inspect
 from .picklable_file_io import pickle_open, bz2_pickle_open, gzip_pickle_open
 
 from ..exceptions import StreamWarning, DuplicateWarning
+import MDAnalysis as mda
+
 try:
     from ._cutil import unique_int_1d
 except ImportError:
@@ -2020,6 +2022,9 @@ def check_coords(*coord_names, **options):
 
 
     .. versionadded:: 0.19.0
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`AtomGroup` as input, number of coordinates now
+       calculated in inner function _check_coords.
     """
     enforce_copy = options.get('enforce_copy', True)
     enforce_dtype = options.get('enforce_dtype', True)
@@ -2051,32 +2056,40 @@ def check_coords(*coord_names, **options):
                                  "".format(name, func.__name__))
 
         def _check_coords(coords, argname):
-            if not isinstance(coords, np.ndarray):
-                raise TypeError("{}(): Parameter '{}' must be a numpy.ndarray, "
-                                "got {}.".format(fname, argname, type(coords)))
             is_single = False
-            if allow_single:
-                if (coords.ndim not in (1, 2)) or (coords.shape[-1] != 3):
-                    raise ValueError("{}(): {}.shape must be (3,) or (n, 3), "
-                                     "got {}.".format(fname, argname,
-                                                      coords.shape))
-                if coords.ndim == 1:
-                    is_single = True
-                    if convert_single:
-                        coords = coords[None, :]
+            if isinstance(coords, np.ndarray):
+                if allow_single:
+                    if (coords.ndim not in (1, 2)) or (coords.shape[-1] != 3):
+                        raise ValueError("{}(): {}.shape must be (3,) or (n, 3), "
+                                         "got {}.".format(fname, argname,
+                                                          coords.shape))
+                    if coords.ndim == 1:
+                        is_single = True
+                        if convert_single:
+                            coords = coords[None, :]
+                else:
+                    if (coords.ndim != 2) or (coords.shape[1] != 3):
+                        raise ValueError("{}(): {}.shape must be (n, 3), got {}."
+                                         "".format(fname, argname, coords.shape))
+                if enforce_dtype:
+                    try:
+                        coords = coords.astype(
+                            np.float32, order='C', copy=enforce_copy)
+                    except ValueError:
+                        errmsg = (f"{fname}(): {argname}.dtype must be convertible to "
+                                  f"float32, got {coords.dtype}.")
+                        raise TypeError(errmsg) from None
+                # coordinates should now be the right shape
+                ncoord = coords.shape[0]
+            elif isinstance(coords, mda.core.groups.AtomGroup):
+                coords = coords.positions # homogenise to a numpy array
+                ncoord = coords.shape[0]
             else:
-                if (coords.ndim != 2) or (coords.shape[1] != 3):
-                    raise ValueError("{}(): {}.shape must be (n, 3), got {}."
-                                     "".format(fname, argname, coords.shape))
-            if enforce_dtype:
-                try:
-                    coords = coords.astype(
-                        np.float32, order='C', copy=enforce_copy)
-                except ValueError:
-                    errmsg = (f"{fname}(): {argname}.dtype must be convertible to "
-                              f"float32, got {coords.dtype}.")
-                    raise TypeError(errmsg) from None
-            return coords, is_single
+                raise TypeError("{}(): Parameter '{}' must be a numpy.ndarray "
+                                " or an AtomGroup, got {}.".format(fname,
+                                argname, type(coords)))
+
+            return coords, is_single, ncoord
 
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -2107,14 +2120,14 @@ def check_coords(*coord_names, **options):
             for name in coord_names:
                 idx = posargnames.index(name)
                 if idx < len(args):
-                    args[idx], is_single = _check_coords(args[idx], name)
+                    args[idx], is_single, ncoord = _check_coords(args[idx], name)
                     all_single &= is_single
-                    ncoords.append(args[idx].shape[0])
+                    ncoords.append(ncoord)
                 else:
-                    kwargs[name], is_single = _check_coords(kwargs[name],
+                    kwargs[name], is_single, ncoord = _check_coords(kwargs[name],
                                                             name)
                     all_single &= is_single
-                    ncoords.append(kwargs[name].shape[0])
+                    ncoords.append(ncoord)
             if check_lengths_match and ncoords:
                 if ncoords.count(ncoords[0]) != len(ncoords):
                     raise ValueError("{}(): {} must contain the same number of "
