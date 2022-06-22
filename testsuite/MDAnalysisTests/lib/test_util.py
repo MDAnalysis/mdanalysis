@@ -1865,6 +1865,20 @@ class TestCheckCoords(object):
         # Assert arrays are just passed through:
         assert res_a is a_2d
         assert res_b is b_2d
+    
+    def test_atomgroup_mismatched_lengths(self ):
+        u = mda.Universe(PSF,DCD)
+        ag1 = u.select_atoms("index 0 to 10")
+        ag2 = u.atoms
+        
+        @check_coords('ag1', 'ag2', check_lengths_match=True)
+        def func(ag1, ag2):
+
+            return ag1,  ag2
+
+        with pytest.raises(ValueError, match="must contain the same number of "
+                                     "coordinates"):
+            _, _ = func(ag1, ag2)
 
     def test_invalid_input(self):
 
