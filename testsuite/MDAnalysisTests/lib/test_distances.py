@@ -1421,7 +1421,6 @@ def test_minimize_vectors(box, shift, dtype):
     assert res.dtype == dtype
 
 
-# TODO: Check all OpenMP functions against the serial implementation
 def test_issue_3725():
     """
     Code from @hmacdope
@@ -1436,3 +1435,13 @@ def test_issue_3725():
     self_da_openmp_tric = distances.self_distance_array(pos_tric, box=box_tric, backend='openmp')
     
     np.testing.assert_allclose(self_da_serial_tric, self_da_openmp_tric)
+
+def test_DCD_serial_vs_omp(DCD_Universe):
+    U, trajectory = DCD_Universe
+    trajectory.rewind()
+    x0 = U.atoms.positions
+    
+    d_serial = distances.self_distance_array(x0, box=U.coord.dimensions, backend="serial")
+    d_omp =  distances.self_distance_array(x0, box=U.coord.dimensions, backend="openmp")
+    
+    np.testing.assert_allclose(d_serial, d_omp)
