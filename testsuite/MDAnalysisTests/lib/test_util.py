@@ -43,9 +43,9 @@ from MDAnalysis.lib.util import (cached, static_variables, warn_if_not_unique,
                                  check_coords, store_init_arguments,)
 from MDAnalysis.core.topologyattrs import Bonds
 from MDAnalysis.exceptions import NoDataError, DuplicateWarning
+from MDAnalysis.core.groups import AtomGroup
 
-
-from MDAnalysisTests.datafiles import (
+from MDAnalysisTests.datafiles import (PSF, DCD, 
     Make_Whole, TPR, GRO, fullerene, two_water_gro,
 )
 
@@ -1737,6 +1737,36 @@ class TestCheckCoords(object):
         # check that check_lenghts_match is True by default:
         with pytest.raises(ValueError):
             res = func(a_in, b_in2)
+
+    # check atomgroup handling with every option
+    @pytest.mark.parametrize('enforce_copy', [True, False])
+    @pytest.mark.parametrize('enforce_dtype', [True, False])
+    @pytest.mark.parametrize('allow_single', [True, False])
+    @pytest.mark.parametrize('convert_single', [True, False])
+    @pytest.mark.parametrize('reduce_result_if_single', [True, False])
+    @pytest.mark.parametrize('check_lengths_match', [True, False])
+    def test_atomgroup(self, enforce_copy, enforce_dtype, allow_single,
+                       convert_single, reduce_result_if_single,
+                       check_lengths_match):
+        u = mda.Universe(PSF,DCD)
+        ag1 = u.atoms
+        ag2 = u.atoms
+        
+        @check_coords('ag1', 'ag2', enforce_copy=enforce_copy,
+                      enforce_dtype=enforce_dtype, allow_single=allow_single,
+                      convert_single=convert_single,
+                      reduce_result_if_single=reduce_result_if_single,
+                      check_lengths_match=check_lengths_match)
+        def func(ag1, ag2):
+            assert_allclose(ag1, ag2)
+            assert isinstance(ag1, np.ndarray)
+            assert isinstance(ag2, np.ndarray)
+            assert ag1.dtype == ag2.dtype == np.float32
+            return ag1 + ag2
+
+        res = func(ag1, ag2)
+
+        assert_allclose(res, u.atoms.positions*2) 
 
     def test_enforce_copy(self):
 

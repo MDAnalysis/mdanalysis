@@ -589,7 +589,7 @@ class TestSelfDistanceArrayDCD(object):
                                          backend='serial')
         assert_allclose(d_ag, d_arr,
                         err_msg="AtomGroup and NumPy distances do not match")
-        # raise Exception
+
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestTriclinicDistances(object):
     """Unit tests for the Triclinic PBC functions.
