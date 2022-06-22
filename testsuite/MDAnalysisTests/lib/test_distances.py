@@ -374,6 +374,12 @@ def DCD_Universe():
 
     return universe, trajectory
 
+@pytest.fixture()
+def Triclinic_Universe():
+    universe =  MDAnalysis.Universe(TRIC)
+    trajectory = universe.trajectory
+    return universe, trajectory
+
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestDistanceArrayDCD(object):
     # reasonable precision so that tests succeed on 32 and 64 bit machines
@@ -444,12 +450,11 @@ class TestDistanceArrayDCD(object):
         assert_almost_equal(d.max(), 53.572192429459619, self.prec,
                             err_msg="wrong maximum distance value")
 
-    # check all three box types and some slices
-    @pytest.mark.parametrize('box', [None, [50, 50, 50, 90, 90, 90],
-                             [50, 50, 50, 60, 60, 60]])
+    # check no box and ortho box types and some slices
+    @pytest.mark.parametrize('box', [None, [50, 50, 50, 90, 90, 90]])
     @pytest.mark.parametrize("sel, np_slice", [("all", np.s_[:,:]),
                             ("index 0 to 8 ", np.s_[0:9,:]),
-                            ("index 9", np.s_[-1,:])])
+                            ("index 9", np.s_[8,:])])
     def test_atomgroup_matches_numpy(self, DCD_Universe, backend, sel, np_slice,
                                      box):
         U, _ = DCD_Universe
@@ -460,6 +465,23 @@ class TestDistanceArrayDCD(object):
         d_ag = distances.distance_array(x0_ag, x1_ag, box=box,
                                  backend=backend)
         d_arr = distances.distance_array(x0_arr, x1_arr, box=box,
+                                         backend=backend)
+        assert_allclose(d_ag, d_arr,
+                        err_msg="AtomGroup and NumPy distances do not match")
+    
+    # check triclinic box and some slices
+    @pytest.mark.parametrize("sel, np_slice", [("all", np.s_[:,:]),
+                            ("index 0 to 8 ", np.s_[0:9,:]),
+                            ("index 9", np.s_[8,:])])
+    def test_atomgroup_matches_numpy_tric(self, Triclinic_Universe, backend, sel, np_slice):
+        U, _ = Triclinic_Universe
+        x0_ag = U.select_atoms(sel)
+        x0_arr = U.atoms.positions[np_slice]
+        x1_ag = U.select_atoms(sel)
+        x1_arr = U.atoms.positions[np_slice]
+        d_ag = distances.distance_array(x0_ag, x1_ag, box=U.coord.dimensions,
+                                 backend=backend)
+        d_arr = distances.distance_array(x0_arr, x1_arr, box=U.coord.dimensions,
                                          backend=backend)
         assert_allclose(d_ag, d_arr,
                         err_msg="AtomGroup and NumPy distances do not match")
@@ -522,7 +544,51 @@ class TestSelfDistanceArrayDCD(object):
         assert_almost_equal(d.max(), 52.4702570624190590, self.prec,
                             err_msg="wrong maximum distance value with PBC")
 
+    def test_atomgroup_simple(self, DCD_Universe, backend):
+        U, trajectory = DCD_Universe
+        trajectory.rewind()
+        x0 = U.select_atoms("all")
+        d = distances.self_distance_array(x0, backend=backend)
+        N = 3341 * (3341 - 1) / 2
+        assert_equal(d.shape, (N,), "wrong shape (should be (Natoms*(Natoms-1)/2,))")
+        assert_almost_equal(d.min(), 0.92905562402529318, self.prec,
+                            err_msg="wrong minimum distance value")
+        assert_almost_equal(d.max(), 52.4702570624190590, self.prec,
+                            err_msg="wrong maximum distance value")
 
+    # check no box and ortho box types and some slices
+    @pytest.mark.parametrize('box', [None, [50, 50, 50, 90, 90, 90]] )
+    @pytest.mark.parametrize("sel, np_slice", [("all", np.s_[:,:]),
+                            ("index 0 to 8 ", np.s_[0:9,:]),
+                            ("index 9", np.s_[8,:])])
+    def test_atomgroup_matches_numpy(self, DCD_Universe, backend, sel, np_slice,
+                                     box):
+        U, _ = DCD_Universe
+
+        x0_ag = U.select_atoms(sel)
+        x0_arr = U.atoms.positions[np_slice]
+        d_ag = distances.self_distance_array(x0_ag, box=box,
+                                 backend=backend)
+        d_arr = distances.self_distance_array(x0_arr, box=box,
+                                         backend=backend)
+        assert_allclose(d_ag, d_arr,
+                        err_msg="AtomGroup and NumPy distances do not match")
+
+    # # check triclinic box and some slices
+    # @pytest.mark.parametrize("sel, np_slice", [
+    #                         ("index 0 to 8 ", np.s_[0:9,:]),
+    #                         ("index 9", np.s_[8,:])])
+    # def test_atomgroup_matches_numpy_tric(self, Triclinic_Universe, backend, sel, np_slice):
+    #     U, _ = Triclinic_Universe
+    #     x0_ag = U.select_atoms(sel)
+    #     x0_arr = U.atoms.positions[np_slice]
+    #     d_ag = distances.self_distance_array(x0_ag, box=U.coord.dimensions,
+    #                              backend=backend)
+    #     d_arr = distances.self_distance_array(x0_arr, box=U.coord.dimensions,
+    #                                      backend=backend)
+    #     assert_allclose(d_ag, d_arr,
+    #                     err_msg="AtomGroup and NumPy distances do not match")
+    
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestTriclinicDistances(object):
     """Unit tests for the Triclinic PBC functions.
