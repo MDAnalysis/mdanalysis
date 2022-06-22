@@ -116,9 +116,6 @@ from ..lib import util
 from ..lib import mdamath
 
 
-from .base import Timestep
-
-
 class FHIAIMSReader(base.SingleFrameReaderBase):
     """Reader for the FHIAIMS geometry format.
 
