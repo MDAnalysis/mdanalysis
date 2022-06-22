@@ -43,8 +43,10 @@ class TestDMSReader(object):
     def test_global_cell(self, ts):
         assert ts.dimensions is None
 
+    # cythonised class can no longer raise AttributeError
+    # so changed to test of has_velocities 
     def test_velocities(self, ts):
-        assert_equal(hasattr(ts, "_velocities"), False)
+        assert_equal(ts.has_velocities, False)
 
     def test_number_of_coords(self, universe):
         # Desired value taken from VMD

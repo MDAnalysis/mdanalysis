@@ -62,7 +62,7 @@ class set_dimensions(TransformationBase):
 
     Returns
     -------
-    :class:`~MDAnalysis.coordinates.base.Timestep` object
+    :class:`~MDAnalysis.coordinates.timestep.Timestep` object
     """
 
     def __init__(self,
