@@ -1255,7 +1255,11 @@ def transform_StoR(coords, box, backend="serial"):
 
 
 @check_coords('coords1', 'coords2')
-def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
+def calc_bonds(coords1: Union[np.ndarray, AtomGroup],
+               coords2: Union[np.ndarray, AtomGroup],
+               box: Optional[np.ndarray] = None,
+               result: Optional[np.ndarray] = None,
+               backend: str = "serial") -> None:
     """Calculates the bond lengths between pairs of atom positions from the two
     coordinate arrays `coords1` and `coords2`, which must contain the same
     number of coordinates. ``coords1[i]`` and ``coords2[i]`` represent the
@@ -1337,8 +1341,12 @@ def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
 
 
 @check_coords('coords1', 'coords2', 'coords3')
-def calc_angles(coords1, coords2, coords3, box=None, result=None,
-                backend="serial"):
+def calc_angles(coords1: Union[np.ndarray, AtomGroup],
+                coords2: Union[np.ndarray, AtomGroup],
+                coords3: Union[np.ndarray, AtomGroup],
+                box: Optional[np.ndarray] = None,
+                result: Optional[np.ndarray] = None,
+                backend: str = "serial") -> None:
     """Calculates the angles formed between triplets of atom positions from the
     three coordinate arrays `coords1`, `coords2`, and `coords3`. All coordinate
     arrays must contain the same number of coordinates.
@@ -1429,8 +1437,13 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None,
 
 
 @check_coords('coords1', 'coords2', 'coords3', 'coords4')
-def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
-                   backend="serial"):
+def calc_dihedrals(coords1: Union[np.ndarray, AtomGroup],
+                   coords2: Union[np.ndarray, AtomGroup],
+                   coords3: Union[np.ndarray, AtomGroup],
+                   coords4: Union[np.ndarray, AtomGroup],
+                   box: Optional[np.ndarray] = None,
+                   result: Optional[np.ndarray] = None,
+                   backend: str = "serial") -> None:
     r"""Calculates the dihedral angles formed between quadruplets of positions
     from the four coordinate arrays `coords1`, `coords2`, `coords3`, and
     `coords4`, which must contain the same number of coordinates.
