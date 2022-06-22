@@ -1440,11 +1440,12 @@ def test_issue_3725():
 
     np.testing.assert_allclose(self_da_serial_tric, self_da_openmp_tric)
 
+
 def test_DCD_serial_vs_omp(DCD_Universe):
     U, trajectory = DCD_Universe
     trajectory.rewind()
     x0 = U.atoms.positions
-    
+
     d_serial = distances.self_distance_array(
         x0, box=U.coord.dimensions, backend="serial"
     )
