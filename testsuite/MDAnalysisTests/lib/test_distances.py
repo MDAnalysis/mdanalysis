@@ -580,7 +580,7 @@ class TestSelfDistanceArrayDCD(object):
                             ("index 9", np.s_[8,:])])
     def test_atomgroup_matches_numpy_tric(self, Triclinic_Universe, backend, sel, np_slice):
         U, trajectory = Triclinic_Universe
-
+        #BUG serial only for now as the OMP code path appears broken
         x0_ag = U.select_atoms(sel)
         x0_arr = U.atoms.positions[np_slice]
         d_ag = distances.self_distance_array(x0_ag, box=U.coord.dimensions,
