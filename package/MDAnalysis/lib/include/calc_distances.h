@@ -443,14 +443,15 @@ static void _calc_distance_array_triclinic(coordinate* ref, uint64_t numref,
 static void _calc_self_distance_array(coordinate* ref, uint64_t numref,
                                       double* distances)
 {
-    uint64_t distpos = 0;
 #ifdef PARALLEL
-#pragma omp parallel for private(distpos) shared(distances)
+#pragma omp parallel for shared(distances)
 #endif
   for (uint64_t i = 0; i < numref; i++) {
 #ifdef PARALLEL
-    distpos =
+    uint64_t distpos =
         i * (2 * numref - i - 1) / 2; // calculates the offset into distances
+#else
+    uint64_t distpos = 0;
 #endif
     for (uint64_t j = i + 1; j < numref; j++) {
       double dx[3];
@@ -473,15 +474,15 @@ static void _calc_self_distance_array_ortho(coordinate* ref, uint64_t numref,
   inverse_box[1] = 1.0 / box[1];
   inverse_box[2] = 1.0 / box[2];
 
-  uint64_t distpos = 0;
-
 #ifdef PARALLEL
-#pragma omp parallel for private(distpos) shared(distances)
+#pragma omp parallel for shared(distances)
 #endif
   for (uint64_t i = 0; i < numref; i++) {
 #ifdef PARALLEL
-    distpos =
+    uint64_t distpos =
         i * (2 * numref - i - 1) / 2; // calculates the offset into distances
+#else
+    uint64_t distpos = 0;
 #endif
     for (uint64_t j = i + 1; j < numref; j++) {
       double dx[3];
@@ -502,15 +503,15 @@ static void _calc_self_distance_array_triclinic(coordinate* ref, uint64_t numref
 {
   _triclinic_pbc(ref, numref, box);
 
-  uint64_t distpos = 0;
-
 #ifdef PARALLEL
 #pragma omp parallel for shared(distances)
 #endif
   for (uint64_t i = 0; i < numref; i++) {
 #ifdef PARALLEL
-    distpos =
+    uint64_t distpos =
         i * (2 * numref - i - 1) / 2; // calculates the offset into distances
+#else
+    uint64_t distpos = 0;
 #endif
     for (uint64_t j = i + 1; j < numref; j++) {
       double dx[3];
