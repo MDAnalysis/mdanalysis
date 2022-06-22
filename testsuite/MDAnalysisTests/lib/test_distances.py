@@ -574,21 +574,22 @@ class TestSelfDistanceArrayDCD(object):
         assert_allclose(d_ag, d_arr,
                         err_msg="AtomGroup and NumPy distances do not match")
 
-    # # check triclinic box and some slices
-    # @pytest.mark.parametrize("sel, np_slice", [
-    #                         ("index 0 to 8 ", np.s_[0:9,:]),
-    #                         ("index 9", np.s_[8,:])])
-    # def test_atomgroup_matches_numpy_tric(self, Triclinic_Universe, backend, sel, np_slice):
-    #     U, _ = Triclinic_Universe
-    #     x0_ag = U.select_atoms(sel)
-    #     x0_arr = U.atoms.positions[np_slice]
-    #     d_ag = distances.self_distance_array(x0_ag, box=U.coord.dimensions,
-    #                              backend=backend)
-    #     d_arr = distances.self_distance_array(x0_arr, box=U.coord.dimensions,
-    #                                      backend=backend)
-    #     assert_allclose(d_ag, d_arr,
-    #                     err_msg="AtomGroup and NumPy distances do not match")
-    
+    # check triclinic box and some slices
+    @pytest.mark.parametrize("sel, np_slice", [
+                            ("index 0 to 8 ", np.s_[0:9,:]),
+                            ("index 9", np.s_[8,:])])
+    def test_atomgroup_matches_numpy_tric(self, Triclinic_Universe, backend, sel, np_slice):
+        U, trajectory = Triclinic_Universe
+
+        x0_ag = U.select_atoms(sel)
+        x0_arr = U.atoms.positions[np_slice]
+        d_ag = distances.self_distance_array(x0_ag, box=U.coord.dimensions,
+                                 backend='serial')
+        d_arr = distances.self_distance_array(x0_arr, box=U.coord.dimensions,
+                                         backend='serial')
+        assert_allclose(d_ag, d_arr,
+                        err_msg="AtomGroup and NumPy distances do not match")
+        # raise Exception
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestTriclinicDistances(object):
     """Unit tests for the Triclinic PBC functions.
