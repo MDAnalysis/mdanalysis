@@ -56,6 +56,7 @@ functionality should first read the :ref:`Trajectory API`.
 .. toctree::
    :maxdepth: 1
 
+   coordinates/timestep
    coordinates/base
    coordinates/core
    coordinates/pickle_readers
