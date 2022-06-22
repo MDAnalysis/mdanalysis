@@ -434,7 +434,6 @@ class TestDistanceArrayDCD(object):
         U2 = MDAnalysis.Universe(PSF, DCD)
         trajectory2 = U2.trajectory
         trajectory1.rewind()
-        trajectory2.rewind()
         x0 = U1.select_atoms("all")
         trajectory2[10]
         x1 = U2.select_atoms("all")
@@ -445,21 +444,27 @@ class TestDistanceArrayDCD(object):
         assert_almost_equal(d.max(), 53.572192429459619, self.prec,
                             err_msg="wrong maximum distance value")
 
-    @pytest.mark.parametrize("sel_or_slice", [("all", np.s_[:,:]),
+    # check all three box types and some slices
+    @pytest.mark.parametrize('box', [None, [50, 50, 50, 90, 90, 90],
+                             [50, 50, 50, 60, 60, 60]])
+    @pytest.mark.parametrize("sel, np_slice", [("all", np.s_[:,:]),
                             ("index 0 to 8 ", np.s_[0:9,:]),
                             ("index 9", np.s_[-1,:])])
-    def test_atomgroup_matches_numpy(self, DCD_Universe, backend, sel_or_slice):
-        U, trajectory = DCD_Universe
-        x0_ag = U.select_atoms(sel_or_slice[0])
-        x0_arr = U.atoms.positions[sel_or_slice[1]]
-        x1_ag = U.select_atoms(sel_or_slice[0])
-        x1_arr = U.atoms.positions[sel_or_slice[1]]
-        d_ag = distances.distance_array(x0_ag, x1_ag, backend=backend)
-        d_arr = distances.distance_array(x0_arr, x1_arr, backend=backend)
+    def test_atomgroup_matches_numpy(self, DCD_Universe, backend, sel, np_slice,
+                                     box):
+        U, _ = DCD_Universe
+        x0_ag = U.select_atoms(sel)
+        x0_arr = U.atoms.positions[np_slice]
+        x1_ag = U.select_atoms(sel)
+        x1_arr = U.atoms.positions[np_slice]
+        d_ag = distances.distance_array(x0_ag, x1_ag, box=box,
+                                 backend=backend)
+        d_arr = distances.distance_array(x0_arr, x1_arr, box=box,
+                                         backend=backend)
         assert_allclose(d_ag, d_arr,
                         err_msg="AtomGroup and NumPy distances do not match")
-
-    def test_mixed_ag_arr(self, DCD_Universe, backend):
+        
+    def test_mixed_ag_arr_simple(self, DCD_Universe, backend):
         U, trajectory = DCD_Universe
         trajectory.rewind()
         x0 = U.atoms.positions
