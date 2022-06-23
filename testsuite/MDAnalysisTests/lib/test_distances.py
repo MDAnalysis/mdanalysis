@@ -262,7 +262,8 @@ def ref_system_universe(ref_system):
     u  = MDAnalysis.Universe.empty(points.shape[0], trajectory=True)
     u.atoms.positions = points
     u.trajectory.ts.dimensions = box
-    return u
+    return box, u.atoms, u.select_atoms("index 0"), u.select_atoms("index 1 to" 
+                                                                  " 3")
 
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestDistanceArray(object):
@@ -272,33 +273,21 @@ class TestDistanceArray(object):
         r = x - ref
         return np.sqrt(np.dot(r, r))
 
-    def test_noPBC(self, backend, ref_system):
-        box, points, ref, conf = ref_system
-
-        d = distances.distance_array(ref, points, backend=backend)
-
+    @pytest.mark.parametrize('pos', ['ref_system', 'ref_system_universe'])
+    def test_noPBC(self, backend, ref_system, pos, request):
+        _, all, ref, _ = request.getfixturevalue(pos)
+        _, points, reference, _ = ref_system
+        d = distances.distance_array(ref, all, backend=backend)
         assert_almost_equal(d, np.array([[
-            self._dist(points[0], ref[0]),
-            self._dist(points[1], ref[0]),
-            self._dist(points[2], ref[0]),
-            self._dist(points[3], ref[0])]
-        ]))
-
-    def test_noPBC_atomgroup(self, backend, ref_system_universe, ref_system):
-        _, points, ref, _ = ref_system
-        ref_ag = ref_system_universe.select_atoms("index 0")
-        d = distances.distance_array(ref_ag, ref_system_universe.atoms,
-                                     backend=backend)
-        assert_almost_equal(d, np.array([[
-            self._dist(points[0], ref[0]),
-            self._dist(points[1], ref[0]),
-            self._dist(points[2], ref[0]),
-            self._dist(points[3], ref[0])]
+            self._dist(points[0], reference[0]),
+            self._dist(points[1], reference[0]),
+            self._dist(points[2], reference[0]),
+            self._dist(points[3], reference[0])]
         ]))
     
     def test_noPBC_mixed_ag_arr(self, backend, ref_system_universe, ref_system):
         _, points, ref, _ = ref_system
-        ref_ag = ref_system_universe.select_atoms("index 0")
+        _, _, ref_ag, _ = ref_system_universe
         d = distances.distance_array(ref_ag, points,
                                      backend=backend)
         assert_almost_equal(d, np.array([[
@@ -308,28 +297,21 @@ class TestDistanceArray(object):
             self._dist(points[3], ref[0])]
         ]))
 
-    def test_PBC(self, backend, ref_system):
-        box, points, ref, conf = ref_system
+    @pytest.mark.parametrize('pos', ['ref_system', 'ref_system_universe'])
+    def test_PBC(self, backend, ref_system, pos, request):
+        box, points, _, _ = ref_system
+        _, all, ref, _ = request.getfixturevalue(pos) 
 
-        d = distances.distance_array(ref, points, box=box, backend=backend)
+        d = distances.distance_array(ref, all, box=box, backend=backend)
 
-        assert_almost_equal(d, np.array([[0., 0., 0., self._dist(points[3],
-                            ref=[1, 1, 2])]]))
-
-    def test_PBC_atomgroup(self, backend, ref_system, ref_system_universe):
-        _, points, ref, _ = ref_system
-        ref_ag = ref_system_universe.select_atoms("index 0")
-        d = distances.distance_array(ref_ag, ref_system_universe.atoms,
-                                     box=ref_system_universe.dimensions,
-                                     backend=backend)
         assert_almost_equal(d, np.array([[0., 0., 0., self._dist(points[3],
                             ref=[1, 1, 2])]]))
 
     def test_PBC_mixed_ag_arr(self, backend, ref_system, ref_system_universe):
         _, points, ref, _ = ref_system
-        ref_ag = ref_system_universe.select_atoms("index 0")
+        box, _, ref_ag, _ = ref_system_universe
         d = distances.distance_array(ref_ag, points,
-                                     box=ref_system_universe.dimensions,
+                                     box=box,
                                      backend=backend)
         assert_almost_equal(d, np.array([[0., 0., 0., self._dist(points[3],
                             ref=[1, 1, 2])]]))
