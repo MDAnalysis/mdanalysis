@@ -98,7 +98,7 @@ except ImportError:
 del importlib
 
 def _run(funcname: Callable, args: Optional[tuple] = None,
-         kwargs: Optional[dict] = None, backend: str = "serial"):
+         kwargs: Optional[dict] = None, backend: str = "serial") -> Callable:
     """Helper function to select a backend function `funcname`."""
     args = args if args is not None else tuple()
     kwargs = kwargs if kwargs is not None else dict()
@@ -183,7 +183,7 @@ def distance_array(reference: Union[np.ndarray, AtomGroup],
                    configuration: Union[np.ndarray, AtomGroup],
                    box: Optional[np.ndarray] = None,
                    result: Optional[np.ndarray] = None,
-                   backend: str = "serial") -> None:
+                   backend: str = "serial") -> np.ndarray:
     """Calculate all possible distances between a reference set and another
     configuration.
 
@@ -270,7 +270,7 @@ def distance_array(reference: Union[np.ndarray, AtomGroup],
 def self_distance_array(reference: Union[np.ndarray, AtomGroup],
                         box: Optional[np.ndarray] = None,
                         result: Optional[np.ndarray] = None,
-                        backend: str = "serial") -> None:
+                        backend: str = "serial") -> np.ndarray:
     """Calculate all possible distances within a configuration `reference`.
 
     If the optional argument `box` is supplied, the minimum image convention is
