@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, PicoCentauri, orbeckst, hmacdope
+??/??/?? IAlibay, PicoCentauri, orbeckst, hmacdope, yuxuanzhuang
 
  * 2.3.0
 
@@ -26,6 +26,8 @@ Enhancements
   * Additional logger.info output when per-frame analysis starts (PR #3710)
   * Timestep has been converted to a Cython Extension type
     (CZI Performance track, PR #3683)
+  * Refactor make_downshift_arrays with vector operation in numpy(PR #3724)
+  * Optimize topology serialization by reconstructing _RA and _SR.
 
 Changes
 
