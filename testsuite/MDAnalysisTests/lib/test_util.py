@@ -1738,6 +1738,12 @@ class TestCheckCoords(object):
         with pytest.raises(ValueError):
             res = func(a_in, b_in2)
 
+    @pytest.fixture()
+    def atomgroup(self):
+        u = mda.Universe(PSF,DCD)
+        return u.atoms
+
+
     # check atomgroup handling with every option except allow_atomgroup
     @pytest.mark.parametrize('enforce_copy', [True, False])
     @pytest.mark.parametrize('enforce_dtype', [True, False])
@@ -1745,12 +1751,11 @@ class TestCheckCoords(object):
     @pytest.mark.parametrize('convert_single', [True, False])
     @pytest.mark.parametrize('reduce_result_if_single', [True, False])
     @pytest.mark.parametrize('check_lengths_match', [True, False])
-    def test_atomgroup(self, enforce_copy, enforce_dtype, allow_single,
+    def test_atomgroup(self, atomgroup, enforce_copy, enforce_dtype, allow_single,
                        convert_single, reduce_result_if_single,
                        check_lengths_match):
-        u = mda.Universe(PSF,DCD)
-        ag1 = u.atoms
-        ag2 = u.atoms
+        ag1 = atomgroup
+        ag2 = atomgroup
         
         @check_coords('ag1', 'ag2', enforce_copy=enforce_copy,
                       enforce_dtype=enforce_dtype, allow_single=allow_single,
@@ -1767,26 +1772,25 @@ class TestCheckCoords(object):
 
         res = func(ag1, ag2)
 
-        assert_allclose(res, u.atoms.positions*2) 
+        assert_allclose(res, atomgroup.positions*2) 
     
-    def test_atomgroup_not_allowed(self):
-        u = mda.Universe(PSF,DCD)
-        ag1 = u.atoms
+    def test_atomgroup_not_allowed(self, atomgroup):
         
         @check_coords('ag1', allow_atomgroup=False)
         def func(ag1):
             return ag1
         
         with pytest.raises(TypeError, match="allow_atomgroup is False"):
-            _ = func(ag1)
+            _ = func(atomgroup)
     
-        # check that not allowing ag is default
+    def test_atomgroup_not_allowed_default(self, atomgroup):
+
         @check_coords('ag1')
         def func_default(ag1):
             return ag1
 
         with pytest.raises(TypeError, match="allow_atomgroup is False"):
-            _ = func_default(ag1)
+            _ = func_default(atomgroup)
         
 
     def test_enforce_copy(self):
