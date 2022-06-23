@@ -27,7 +27,7 @@ Enhancements
   * Timestep has been converted to a Cython Extension type
     (CZI Performance track, PR #3683)
   * Refactor make_downshift_arrays with vector operation in numpy(PR #3724)
-  * Optimize topology serialization by reconstructing _RA and _SR.
+  * Optimize topology serialization/construction by lazy-building _RA and _SR.
 
 Changes
 

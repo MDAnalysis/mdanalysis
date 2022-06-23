@@ -57,7 +57,7 @@ class TestTransTableCopy(object):
         refTT.n_atoms = -10
         assert new.n_atoms == old
 
-    @pytest.mark.parametrize('attr', ['_AR', '_RA', '_RS', '_SR'])
+    @pytest.mark.parametrize('attr', ['_AR', 'RA', '_RS', 'SR'])
     def test_AR(self, refTT, attr):
         new = refTT.copy()
         ref = getattr(refTT, attr)
@@ -66,7 +66,7 @@ class TestTransTableCopy(object):
         for a, b in zip(ref, other):
             assert_equal(a, b)
 
-    @pytest.mark.parametrize('attr', ['_AR', '_RA', '_RS', '_SR'])
+    @pytest.mark.parametrize('attr', ['_AR', 'RA', '_RS', 'SR'])
     def test_AR_independent(self, refTT, attr):
         new = refTT.copy()
         ref = getattr(refTT, attr)

@@ -173,6 +173,9 @@ class TransTable(object):
     size : tuple
         tuple ``(n_atoms, n_residues, n_segments)`` describing the shape of
         the TransTable
+
+    .. versionchanged:: 2.3.0
+        Lazy building RA and SR.
     """
     def __init__(self,
                  n_atoms, n_residues, n_segments,  # Size of tables
