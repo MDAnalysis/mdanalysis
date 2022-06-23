@@ -820,7 +820,7 @@ class TestCythonFunctions(object):
         assert_almost_equal(dists_pbc[3], 3.46410072, self.prec,
                             err_msg="PBC check #w with box")
 
-    def test_bonds_atomgroup(self, box, backend, positions_atomgroups):
+    def test_bonds_atomgroup(self, positions_atomgroups, box, backend, ):
         ag_a, ag_b, _, _ = positions_atomgroups
         dists = distances.calc_bonds(ag_a, ag_b, backend=backend)
         assert_equal(len(dists), 4, err_msg="calc_bonds results have wrong length")
@@ -903,6 +903,20 @@ class TestCythonFunctions(object):
         assert_almost_equal(angles[3], 0.098174833, self.prec,
                             err_msg="Small angle failed in calc_angles")
 
+    def test_angles_atomgroup(self, positions_atomgroups, backend):
+        ag_a, ag_b, ag_c, _ = positions_atomgroups
+        angles = distances.calc_angles(ag_a, ag_b, ag_c, backend=backend)
+        # Check calculated values
+        assert_equal(len(angles), 4, err_msg="calc_angles results have wrong length")
+        #        assert_almost_equal(angles[0], 0.0, self.prec,
+        #                           err_msg="Zero length angle calculation failed") # What should this be?
+        assert_almost_equal(angles[1], np.pi, self.prec,
+                            err_msg="180 degree angle calculation failed")
+        assert_almost_equal(np.rad2deg(angles[2]), 90., self.prec,
+                            err_msg="Ninety degree angle in calc_angles failed")
+        assert_almost_equal(angles[3], 0.098174833, self.prec,
+                            err_msg="Small angle failed in calc_angles")
+
     def test_angles_bad_result(self, positions, backend):
         a, b, c, d = positions
         badresult = np.zeros(len(a) - 1)  # Bad result array
@@ -938,6 +952,17 @@ class TestCythonFunctions(object):
     def test_dihedrals(self, positions, backend, dtype):
         a, b, c, d = self.convert_position_dtype(*positions, dtype=dtype)
         dihedrals = distances.calc_dihedrals(a, b, c, d, backend=backend)
+        # Check calculated values
+        assert_equal(len(dihedrals), 4, err_msg="calc_dihedrals results have wrong length")
+        assert np.isnan(dihedrals[0]), "Zero length dihedral failed"
+        assert np.isnan(dihedrals[1]), "Straight line dihedral failed"
+        assert_almost_equal(dihedrals[2], np.pi, self.prec, err_msg="180 degree dihedral failed")
+        assert_almost_equal(dihedrals[3], -0.50714064, self.prec,
+                            err_msg="arbitrary dihedral angle failed")
+
+    def test_dihedrals_atomgroup(self, positions_atomgroups, backend):
+        ag_a, ag_b, ag_c, ag_d = positions_atomgroups
+        dihedrals = distances.calc_dihedrals(ag_a, ag_b, ag_c, ag_d, backend=backend)
         # Check calculated values
         assert_equal(len(dihedrals), 4, err_msg="calc_dihedrals results have wrong length")
         assert np.isnan(dihedrals[0]), "Zero length dihedral failed"
