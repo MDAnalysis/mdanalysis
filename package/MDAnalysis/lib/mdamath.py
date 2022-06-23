@@ -63,11 +63,13 @@ from ..exceptions import NoDataError
 from . import util
 from ._cutil import (make_whole, find_fragments, _sarrus_det_single,
                      _sarrus_det_multiple)
+from numpy.typing import ArrayLike, NDArray, DTypeLike
+from typing import Union
 
 # geometric functions
 
 
-def norm(v):
+def norm(v: ArrayLike) -> float:
     r"""Calculate the norm of a vector v.
 
     .. math:: v = \sqrt{\mathbf{v}\cdot\mathbf{v}}
@@ -90,7 +92,7 @@ def norm(v):
     return np.sqrt(np.dot(v, v))
 
 
-def normal(vec1, vec2):
+def normal(vec1: NDArray, vec2: NDArray) -> NDArray:
     r"""Returns the unit vector normal to two vectors.
 
     .. math::
@@ -110,7 +112,7 @@ def normal(vec1, vec2):
     return normal / n
 
 
-def pdot(a, b):
+def pdot(a: NDArray, b: NDArray) -> NDArray:
     """Pairwise dot product.
 
     ``a`` must be the same shape as ``b``.
@@ -127,7 +129,7 @@ def pdot(a, b):
     return np.einsum('ij,ij->i', a, b)
 
 
-def pnorm(a):
+def pnorm(a: NDArray) -> NDArray:
     """Euclidean norm of each vector in a matrix
 
     Parameters
@@ -141,7 +143,7 @@ def pnorm(a):
     return pdot(a, a)**0.5
 
 
-def angle(a, b):
+def angle(a: NDArray, b: NDArray) -> float:
     """Returns the angle between two vectors in radians
 
     .. versionchanged:: 0.11.0
@@ -156,7 +158,7 @@ def angle(a, b):
     return np.arccos(x)
 
 
-def stp(vec1, vec2, vec3):
+def stp(vec1: ArrayLike, vec2: ArrayLike, vec3: ArrayLike) -> float:
     r"""Takes the scalar triple product of three vectors.
 
     Returns the volume *V* of the parallel epiped spanned by the three
@@ -172,7 +174,7 @@ def stp(vec1, vec2, vec3):
     return np.dot(vec3, np.cross(vec1, vec2))
 
 
-def dihedral(ab, bc, cd):
+def dihedral(ab: ArrayLike, bc: ArrayLike, cd: ArrayLike) -> float:
     r"""Returns the dihedral angle in radians between vectors connecting A,B,C,D.
 
     The dihedral measures the rotation around bc::
@@ -194,7 +196,7 @@ def dihedral(ab, bc, cd):
     return (x if stp(ab, bc, cd) <= 0.0 else -x)
 
 
-def sarrus_det(matrix):
+def sarrus_det(matrix: NDArray) -> Union[float, NDArray[np.float64]]:
     """Computes the determinant of a 3x3 matrix according to the
     `rule of Sarrus`_.
 
@@ -239,7 +241,7 @@ def sarrus_det(matrix):
     return _sarrus_det_multiple(m.reshape((-1, 3, 3))).reshape(shape[:-2])
 
 
-def triclinic_box(x, y, z):
+def triclinic_box(x: ArrayLike, y: ArrayLike, z: ArrayLike) -> NDArray[np.float32]:
     """Convert the three triclinic box vectors to
     ``[lx, ly, lz, alpha, beta, gamma]``.
 
@@ -301,7 +303,7 @@ def triclinic_box(x, y, z):
     return np.zeros(6, dtype=np.float32)
 
 
-def triclinic_vectors(dimensions, dtype=np.float32):
+def triclinic_vectors(dimensions: ArrayLike, dtype: DTypeLike = np.float32) -> NDArray:
     """Convert ``[lx, ly, lz, alpha, beta, gamma]`` to a triclinic matrix
     representation.
 
@@ -399,7 +401,7 @@ def triclinic_vectors(dimensions, dtype=np.float32):
     return box_matrix
 
 
-def box_volume(dimensions):
+def box_volume(dimensions: ArrayLike) -> float:
     """Return the volume of the unitcell described by `dimensions`.
 
     The volume is computed as the product of the box matrix trace, with the
