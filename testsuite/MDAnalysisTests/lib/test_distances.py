@@ -771,13 +771,17 @@ class TestCythonFunctions(object):
 
     @staticmethod
     @pytest.fixture()
-    def dummy_universes_a_b(positions):
-        a, b, _, _ = positions
+    def positions_atomgroups(positions):
+        a, b, c, d = positions
         u_a = MDAnalysis.Universe.empty(a.shape[0], trajectory=True)
         u_a.atoms.positions = a
         u_b = MDAnalysis.Universe.empty(b.shape[0], trajectory=True)
         u_b.atoms.positions = b
-        return u_a, u_b
+        u_c = MDAnalysis.Universe.empty(c.shape[0], trajectory=True)
+        u_c.atoms.positions = c
+        u_d = MDAnalysis.Universe.empty(d.shape[0], trajectory=True)
+        u_d.atoms.positions = d
+        return u_a.atoms, u_b.atoms, u_c.atoms, u_d.atoms
 
     @staticmethod
     def convert_position_dtype(a, b, c, d, dtype):
@@ -816,10 +820,8 @@ class TestCythonFunctions(object):
         assert_almost_equal(dists_pbc[3], 3.46410072, self.prec,
                             err_msg="PBC check #w with box")
 
-    def test_bonds_atomgroup(self, box, backend, dummy_universes_a_b):
-        u_a, u_b = dummy_universes_a_b
-        ag_a = u_a.atoms
-        ag_b = u_b.atoms
+    def test_bonds_atomgroup(self, box, backend, positions_atomgroups):
+        ag_a, ag_b, _, _ = positions_atomgroups
         dists = distances.calc_bonds(ag_a, ag_b, backend=backend)
         assert_equal(len(dists), 4, err_msg="calc_bonds results have wrong length")
         dists_pbc = distances.calc_bonds(ag_a, ag_b, box=box, backend=backend)
@@ -860,11 +862,9 @@ class TestCythonFunctions(object):
         reference = np.array([0.0, 1.7320508, 1.4142136, 2.82842712])
         assert_almost_equal(dists, reference, self.prec, err_msg="calc_bonds with triclinic box failed")
     
-    def test_bonds_triclinic_atomgroup(self, dummy_universes_a_b,
+    def test_bonds_triclinic_atomgroup(self, positions_atomgroups,
                                        triclinic_box, backend):
-        u_a, u_b = dummy_universes_a_b
-        ag_a = u_a.atoms
-        ag_b = u_b.atoms
+        ag_a, ag_b, _, _ = positions_atomgroups
         dists = distances.calc_bonds(ag_a, ag_b, box=triclinic_box, backend=backend)
         reference = np.array([0.0, 1.7320508, 1.4142136, 2.82842712])
         assert_almost_equal(dists, reference, self.prec, err_msg="calc_bonds with triclinic box failed")
