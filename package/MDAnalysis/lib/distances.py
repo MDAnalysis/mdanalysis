@@ -1581,9 +1581,10 @@ def apply_PBC(coords: Union[np.ndarray, AtomGroup],
 
     Parameters
     ----------
-    coords : numpy.ndarray
+    coords : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` (dtype is arbitrary,
-        will be converted to ``numpy.float32`` internally).
+        will be converted to ``numpy.float32`` internally). Also accepts an 
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
     box : numpy.ndarray
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by

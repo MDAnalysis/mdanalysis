@@ -1062,25 +1062,18 @@ class Test_apply_PBC(object):
 
         assert_almost_equal(cyth2, reference, self.prec,
                             err_msg="Ortho apply_PBC #2 failed comparison with np")
-
-    def test_ortho_PBC_atomgroup(self, backend):
-        U = MDAnalysis.Universe(PSF, DCD)
-        atoms = U.atoms.positions
+        # also test atomgroup
         ag = U.atoms
-        box = np.array([2.5, 2.5, 3.5, 90., 90., 90.], dtype=np.float32)
-        with pytest.raises(ValueError):
-            cyth1 = distances.apply_PBC(ag, box[:3], backend=backend)
-        cyth2 = distances.apply_PBC(ag, box, backend=backend)
-        reference = atoms - np.floor(atoms / box[:3]) * box[:3]
-
-        assert_almost_equal(cyth2, reference, self.prec,
-                            err_msg="Ortho apply_PBC #2 failed comparison with np")
+        cyth3 = distances.apply_PBC(ag, box, backend=backend)
+        assert_almost_equal(cyth3, reference, self.prec,
+                            err_msg="Ortho AtomGroup apply_PBC #2 failed"
+                            " comparison with np")
 
     def test_tric_PBC(self, backend):
         U = MDAnalysis.Universe(TRIC)
         atoms = U.atoms.positions
         box = U.dimensions
-
+        ag = U.atoms
         def numpy_PBC(coords, box):
             # move to fractional coordinates
             fractional = distances.transform_RtoS(coords, box)
@@ -1090,10 +1083,16 @@ class Test_apply_PBC(object):
             return distances.transform_StoR(fractional, box)
 
         cyth1 = distances.apply_PBC(atoms, box, backend=backend)
+        # also test atomgroup
+        cyth_ag = distances.apply_PBC(ag, box, backend=backend)
+
         reference = numpy_PBC(atoms, box)
 
         assert_almost_equal(cyth1, reference, decimal=4,
                             err_msg="Triclinic apply_PBC failed comparison with np")
+        assert_almost_equal(cyth_ag, reference, decimal=4,
+                            err_msg="Triclinic AtomGroup apply_PBC failed" 
+                            "comparison with np")
 
         box = np.array([10, 7, 3, 45, 60, 90], dtype=np.float32)
         r = np.array([5.75, 0.36066014, 0.75], dtype=np.float32)
