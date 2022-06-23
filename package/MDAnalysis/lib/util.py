@@ -1939,12 +1939,17 @@ def check_coords(*coord_names, **options):
     :mod:`MDAnalysis.lib.distances`.
     It takes an arbitrary number of positional arguments which must correspond
     to names of positional arguments of the decorated function.
-    It then checks if the corresponding values are valid coordinate arrays.
-    If all these arrays are single coordinates (i.e., their shape is ``(3,)``),
-    the decorated function can optionally return a single coordinate (or angle)
-    instead of an array of coordinates (or angles). This can be used to enable
-    computations of single observables using functions originally designed to
-    accept only 2-d coordinate arrays.
+    It then checks if the corresponding values are valid coordinate arrays or an
+    :class:`~MDAnalysis.core.groups.AtomGroup`.
+    If the input is an array and all these arrays are single coordinates
+    (i.e., their shape is ``(3,)``), the decorated function can optionally
+    return a single coordinate (or angle) instead of an array of coordinates
+    (or angles). This can be used to enable computations of single observables
+    using functions originally designed to accept only 2-d coordinate arrays.
+
+    If the input is an :class:`~MDAnalysis.core.groups.AtomGroup` it is
+    converted into its corresponding position array via a call to
+    `AtomGroup.positions`.
 
     The checks performed on each individual coordinate array are:
 
@@ -1994,7 +1999,8 @@ def check_coords(*coord_names, **options):
 
         If any of the coordinate arrays has a wrong shape.
     TypeError
-        If any of the coordinate arrays is not a :class:`numpy.ndarray`.
+        If any of the coordinate arrays is not a :class:`numpy.ndarray` or an
+        :class:`~MDAnalysis.core.groups.AtomGroup`. 
 
         If the dtype of any of the coordinate arrays is not convertible to
           ``numpy.float32``.
@@ -2016,6 +2022,11 @@ def check_coords(*coord_names, **options):
     >>> coordsum(np.zeros(3), np.ones(6)[::2])
     array([1., 1., 1.], dtype=float32)
     >>>
+    >>> # automatic handling of AtomGroups
+    >>> u = mda.Universe(PSF,DCD)
+    >>> coordsum(u.atoms, u.select_atoms("index 1 to 10"))
+    ...
+    >>> 
     >>> # automatic shape checking:
     >>> coordsum(np.zeros(3), np.ones(6))
     ValueError: coordsum(): coords2.shape must be (3,) or (n, 3), got (6,).

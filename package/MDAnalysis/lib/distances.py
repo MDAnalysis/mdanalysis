@@ -132,7 +132,7 @@ from .c_distances import (_UINT64_MAX,
 from .c_distances_openmp import OPENMP_ENABLED as USED_OPENMP
 
 
-def _check_result_array(result: np.ndarray, shape: tuple):
+def _check_result_array(result: np.ndarray, shape: tuple) -> np.ndarray:
     """Check if the result array is ok to use.
 
     The `result` array must meet the following requirements:
@@ -1293,7 +1293,7 @@ def calc_bonds(coords1: Union[np.ndarray, AtomGroup],
         single or ``n`` bonds, respectively (dtype is arbitrary, will be
         converted to ``numpy.float32`` internally).  Also accepts an
         :class:`~MDAnalysis.core.groups.AtomGroup`.
-    coords2 : numpy.ndarray
+    coords2 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` for the other half of
         a single or ``n`` bonds, respectively (dtype is arbitrary, will be
         converted to ``numpy.float32`` internally). Also accepts an
