@@ -1225,6 +1225,15 @@ class TestInputUnchanged(object):
                 np.array([[0.1, 0.1, 1.9], [-0.9, -0.9,  0.9]], dtype=np.float32),
                 np.array([[0.1, 1.9, 1.9], [-0.9,  0.9,  0.9]], dtype=np.float32),
                 np.array([[0.1, 1.9, 0.1], [-0.9,  0.9, -0.9]], dtype=np.float32)]
+    
+    @staticmethod
+    @pytest.fixture()
+    def coords_atomgroups(coords):
+        universes = [MDAnalysis.Universe.empty(arr.shape[0], trajectory=True)
+                     for arr in coords]
+        for u, a in zip(universes, coords):
+            u.atoms.positions = a
+        return [u.atoms for u in universes]
 
     @pytest.mark.parametrize('box', boxes)
     @pytest.mark.parametrize('backend', ['serial', 'openmp'])
@@ -1237,11 +1246,31 @@ class TestInputUnchanged(object):
 
     @pytest.mark.parametrize('box', boxes)
     @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_input_unchanged_distance_array_atomgroup(self, coords_atomgroups,
+                                                      box, backend):
+        crds = coords_atomgroups[:2]
+        refs = [crd.positions.copy() for crd in crds]
+        res = distances.distance_array(crds[0], crds[1], box=box,
+                                       backend=backend)
+        assert_equal([crd.positions for crd in crds], refs)
+
+    @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
     def test_input_unchanged_self_distance_array(self, coords, box, backend):
         crd = coords[0]
         ref = crd.copy()
         res = distances.self_distance_array(crd, box=box, backend=backend)
         assert_equal(crd, ref)
+
+    @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_input_unchanged_self_distance_array_atomgroup(self,
+                                                           coords_atomgroups,
+                                                           box, backend):
+        crd = coords_atomgroups[0]
+        ref = crd.positions.copy()
+        res = distances.self_distance_array(crd, box=box, backend=backend)
+        assert_equal(crd.positions, ref)
 
     @pytest.mark.parametrize('box', boxes)
     @pytest.mark.parametrize('met', ["bruteforce", "pkdtree", "nsgrid", None])
@@ -1284,12 +1313,31 @@ class TestInputUnchanged(object):
 
     @pytest.mark.parametrize('box', boxes)
     @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_input_unchanged_calc_bonds_atomgroup(self, coords_atomgroups,
+                                                  box, backend):
+        crds = coords_atomgroups[:2]
+        refs = [crd.positions.copy() for crd in crds]
+        res = distances.calc_bonds(crds[0], crds[1], box=box, backend=backend)
+        assert_equal([crd.positions for crd in crds], refs)
+
+    @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
     def test_input_unchanged_calc_angles(self, coords, box, backend):
         crds = coords[:3]
         refs = [crd.copy() for crd in crds]
         res = distances.calc_angles(crds[0], crds[1], crds[2], box=box,
                                     backend=backend)
         assert_equal(crds, refs)
+
+    @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_input_unchanged_calc_angles_atomgroup(self, coords_atomgroups, box,
+                                                   backend):
+        crds = coords_atomgroups[:3]
+        refs = [crd.positions.copy() for crd in crds]
+        res = distances.calc_angles(crds[0], crds[1], crds[2], box=box,
+                                    backend=backend)
+        assert_equal([crd.positions for crd in crds], refs)
 
     @pytest.mark.parametrize('box', boxes)
     @pytest.mark.parametrize('backend', ['serial', 'openmp'])
@@ -1300,6 +1348,16 @@ class TestInputUnchanged(object):
                                        box=box, backend=backend)
         assert_equal(crds, refs)
 
+    @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_input_unchanged_calc_dihedrals_atomgroup(self, coords_atomgroups,
+                                                      box, backend):
+        crds = coords_atomgroups
+        refs = [crd.positions.copy() for crd in crds]
+        res = distances.calc_dihedrals(crds[0], crds[1], crds[2], crds[3],
+                                       box=box, backend=backend)
+        assert_equal([crd.positions for crd in crds], refs)
+
     @pytest.mark.parametrize('box', boxes[:2])
     @pytest.mark.parametrize('backend', ['serial', 'openmp'])
     def test_input_unchanged_apply_PBC(self, coords, box, backend):
@@ -1308,6 +1366,14 @@ class TestInputUnchanged(object):
         res = distances.apply_PBC(crd, box, backend=backend)
         assert_equal(crd, ref)
 
+    @pytest.mark.parametrize('box', boxes[:2])
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_input_unchanged_apply_PBC_atomgroup(self, coords_atomgroups, box,
+                                                 backend):
+        crd = coords_atomgroups[0]
+        ref = crd.positions.copy()
+        res = distances.apply_PBC(crd, box, backend=backend)
+        assert_equal(crd.positions, ref)
 
 class TestEmptyInputCoordinates(object):
     """Tests ensuring that the following functions in MDAnalysis.lib.distances
