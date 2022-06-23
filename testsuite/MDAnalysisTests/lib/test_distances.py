@@ -20,6 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from turtle import position
 import pytest
 import numpy as np
 from numpy.testing import assert_equal, assert_almost_equal, assert_allclose
@@ -769,6 +770,16 @@ class TestCythonFunctions(object):
         return a, b, c, d
 
     @staticmethod
+    @pytest.fixture()
+    def dummy_universes_a_b(positions):
+        a, b, _, _ = positions
+        u_a = MDAnalysis.Universe.empty(a.shape[0], trajectory=True)
+        u_a.atoms.positions = a
+        u_b = MDAnalysis.Universe.empty(b.shape[0], trajectory=True)
+        u_b.atoms.positions = b
+        return u_a, u_b
+
+    @staticmethod
     def convert_position_dtype(a, b, c, d, dtype):
         return a.astype(dtype), b.astype(dtype), c.astype(dtype), d.astype(dtype)
 
@@ -805,6 +816,27 @@ class TestCythonFunctions(object):
         assert_almost_equal(dists_pbc[3], 3.46410072, self.prec,
                             err_msg="PBC check #w with box")
 
+    def test_bonds_atomgroup(self, box, backend, dummy_universes_a_b):
+        u_a, u_b = dummy_universes_a_b
+        ag_a = u_a.atoms
+        ag_b = u_b.atoms
+        dists = distances.calc_bonds(ag_a, ag_b, backend=backend)
+        assert_equal(len(dists), 4, err_msg="calc_bonds results have wrong length")
+        dists_pbc = distances.calc_bonds(ag_a, ag_b, box=box, backend=backend)
+        #tests 0 length
+        assert_almost_equal(dists[0], 0.0, self.prec, err_msg="Zero length calc_bonds fail")
+        assert_almost_equal(dists[1], 1.7320508075688772, self.prec,
+                            err_msg="Standard length calc_bonds fail")  # arbitrary length check
+        # PBC checks, 2 without, 2 with
+        assert_almost_equal(dists[2], 11.0, self.prec,
+                            err_msg="PBC check #1 w/o box")  # pbc check 1, subtract single box length
+        assert_almost_equal(dists_pbc[2], 1.0, self.prec,
+                            err_msg="PBC check #1 with box")
+        assert_almost_equal(dists[3], 104.26888318, self.prec,  # pbc check 2, subtract multiple box
+                            err_msg="PBC check #2 w/o box")  # lengths in all directions
+        assert_almost_equal(dists_pbc[3], 3.46410072, self.prec,
+                            err_msg="PBC check #w with box")
+
     def test_bonds_badbox(self, positions, backend):
         a, b, c, d = positions
         badbox1 = np.array([10., 10., 10.], dtype=np.float64)
@@ -825,6 +857,15 @@ class TestCythonFunctions(object):
     def test_bonds_triclinic(self, positions, triclinic_box, backend):
         a, b, c, d = positions
         dists = distances.calc_bonds(a, b, box=triclinic_box, backend=backend)
+        reference = np.array([0.0, 1.7320508, 1.4142136, 2.82842712])
+        assert_almost_equal(dists, reference, self.prec, err_msg="calc_bonds with triclinic box failed")
+    
+    def test_bonds_triclinic_atomgroup(self, dummy_universes_a_b,
+                                       triclinic_box, backend):
+        u_a, u_b = dummy_universes_a_b
+        ag_a = u_a.atoms
+        ag_b = u_b.atoms
+        dists = distances.calc_bonds(ag_a, ag_b, box=triclinic_box, backend=backend)
         reference = np.array([0.0, 1.7320508, 1.4142136, 2.82842712])
         assert_almost_equal(dists, reference, self.prec, err_msg="calc_bonds with triclinic box failed")
 
