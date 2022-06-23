@@ -505,7 +505,7 @@ static void _calc_self_distance_array_triclinic(coordinate* ref, uint64_t numref
   uint64_t distpos = 0;
 
 #ifdef PARALLEL
-#pragma omp parallel for shared(distances)
+#pragma omp parallel for private(distpos) shared(distances)
 #endif
   for (uint64_t i = 0; i < numref; i++) {
 #ifdef PARALLEL
