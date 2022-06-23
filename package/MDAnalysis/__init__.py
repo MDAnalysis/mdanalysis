@@ -167,18 +167,18 @@ except ImportError:
 
 # Registry of Readers, Parsers and Writers known to MDAnalysis
 # Metaclass magic fills these as classes are declared.
-_READERS = {}
-_READER_HINTS = {}
-_SINGLEFRAME_WRITERS = {}
-_MULTIFRAME_WRITERS = {}
-_PARSERS = {}
-_PARSER_HINTS = {}
-_SELECTION_WRITERS = {}
-_CONVERTERS = {}
+_READERS = {}  # type: dict
+_READER_HINTS = {}  # type: dict
+_SINGLEFRAME_WRITERS = {}  # type: dict
+_MULTIFRAME_WRITERS = {}  # type: dict
+_PARSERS = {}  # type: dict
+_PARSER_HINTS = {}  # type: dict
+_SELECTION_WRITERS = {}  # type: dict
+_CONVERTERS = {}  # type: dict
 # Registry of TopologyAttributes
-_TOPOLOGY_ATTRS = {}  # {attrname: cls}
-_TOPOLOGY_TRANSPLANTS = {}   # {name: [attrname, method, transplant class]}
-_TOPOLOGY_ATTRNAMES = {}  # {lower case name w/o _ : name}
+_TOPOLOGY_ATTRS = {}  # type: dict # {attrname: cls}
+_TOPOLOGY_TRANSPLANTS = {}   # type: dict # {name: [attrname, method, transplant class]}
+_TOPOLOGY_ATTRNAMES = {}  # type: dict # {lower case name w/o _ : name}
 
 
 # custom exceptions and warnings
