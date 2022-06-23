@@ -154,11 +154,11 @@ class TestTransTable(object):
         assert_equal(tt._RA, None)
         RA = tt.RA
         assert_rows_match(tt.RA,
-                     np.array([np.array([0, 1]),
-                               np.array([4, 5, 8]),
-                               np.array([2, 3, 9]),
-                               np.array([6, 7]),
-                               None], dtype=object))
+                          np.array([np.array([0, 1]),
+                                    np.array([4, 5, 8]),
+                                    np.array([2, 3, 9]),
+                                    np.array([6, 7]),
+                                    None], dtype=object))
 
         tt.move_atom(1, 3)
         assert_equal(tt._RA, None)
@@ -167,9 +167,9 @@ class TestTransTable(object):
         assert_equal(tt._SR, None)
         SR = tt.SR
         assert_rows_match(tt.SR,
-                     np.array([np.array([0, 3]),
-                               np.array([1, 2]),
-                               None], dtype=object))
+                          np.array([np.array([0, 3]),
+                                    np.array([1, 2]),
+                                    None], dtype=object))
 
         tt.move_residue(1, 0)
         assert_equal(tt._SR, None)
@@ -581,11 +581,11 @@ class TestDownshiftArrays(object):
     def test_missing_start_values_2(self):
         out = make_downshift_arrays(np.array([1, 1, 2, 2, 3, 3]), 4)
         assert_rows_match(out,
-                               np.array([np.array([], dtype=int),
-                                         np.array([0, 1]),
-                                         np.array([2, 3]),
-                                         np.array([4, 5]),
-                                         None], dtype=object))
+                          np.array([np.array([], dtype=int),
+                                    np.array([0, 1]),
+                                    np.array([2, 3]),
+                                    np.array([4, 5]),
+                                    None], dtype=object))
 
 class TestAddingResidues(object):
     """Tests for adding residues and segments to a Universe
