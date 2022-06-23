@@ -739,6 +739,29 @@ class TestTriclinicDistances(object):
         # expected.
         assert np.linalg.norm(point_a - point_b) != dist[0, 0]
 
+@pytest.mark.parametrize("box", 
+    [
+        None, 
+        np.array([10., 15., 20., 90., 90., 90.]), # otrho
+        np.array([10., 15., 20., 70.53571, 109.48542, 70.518196]), # TRIC
+    ]
+)
+def test_issue_3725(box):
+    """
+    Code from @hmacdope
+    https://github.com/MDAnalysis/mdanalysis/issues/3725
+    """
+    random_coords = np.random.uniform(-50, 50, (1000, 3))
+
+    self_da_serial = distances.self_distance_array(
+        random_coords, box=box, backend='serial'
+    )
+    self_da_openmp = distances.self_distance_array(
+        random_coords, box=box, backend='openmp'
+    )
+
+    np.testing.assert_allclose(self_da_serial, self_da_openmp)
+
 
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestCythonFunctions(object):

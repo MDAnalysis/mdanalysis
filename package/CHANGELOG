@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, PicoCentauri, orbeckst, hmacdope
+??/??/?? IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli
 
  * 2.3.0
 
@@ -30,6 +30,8 @@ Enhancements
     (CZI Performance track, PR #3683)
 
 Changes
+  * Narrowed variable scope to reduce use of OpenMP `private` clause (PR #3706, PR
+    #3728)
 
 Deprecations
   * Deprecate `density` parameter in favor of `norm` in InterRDF_s
