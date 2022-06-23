@@ -1547,6 +1547,9 @@ def calc_dihedrals(coords1: Union[np.ndarray, AtomGroup],
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
        Now also accepts single coordinates as input.
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
     numatom = coords1.shape[0]
     dihedrals = _check_result_array(result, (numatom,))
@@ -1570,8 +1573,10 @@ def calc_dihedrals(coords1: Union[np.ndarray, AtomGroup],
     return dihedrals
 
 
-@check_coords('coords')
-def apply_PBC(coords, box, backend="serial"):
+@check_coords('coords', allow_atomgroup=True)
+def apply_PBC(coords: Union[np.ndarray, AtomGroup],
+              box: Optional[np.ndarray] = None,
+              backend: str = "serial") -> None:
     """Moves coordinates into the primary unit cell.
 
     Parameters
@@ -1600,6 +1605,9 @@ def apply_PBC(coords, box, backend="serial"):
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
        Now also accepts (and, likewise, returns) single coordinates.
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
     if len(coords) == 0:
         return coords

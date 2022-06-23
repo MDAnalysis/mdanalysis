@@ -1063,6 +1063,19 @@ class Test_apply_PBC(object):
         assert_almost_equal(cyth2, reference, self.prec,
                             err_msg="Ortho apply_PBC #2 failed comparison with np")
 
+    def test_ortho_PBC_atomgroup(self, backend):
+        U = MDAnalysis.Universe(PSF, DCD)
+        atoms = U.atoms.positions
+        ag = U.atoms
+        box = np.array([2.5, 2.5, 3.5, 90., 90., 90.], dtype=np.float32)
+        with pytest.raises(ValueError):
+            cyth1 = distances.apply_PBC(ag, box[:3], backend=backend)
+        cyth2 = distances.apply_PBC(ag, box, backend=backend)
+        reference = atoms - np.floor(atoms / box[:3]) * box[:3]
+
+        assert_almost_equal(cyth2, reference, self.prec,
+                            err_msg="Ortho apply_PBC #2 failed comparison with np")
+
     def test_tric_PBC(self, backend):
         U = MDAnalysis.Universe(TRIC)
         atoms = U.atoms.positions
