@@ -178,7 +178,7 @@ def _check_result_array(result: np.ndarray, shape: tuple) -> np.ndarray:
 
 
 @check_coords('reference', 'configuration', reduce_result_if_single=False,
-              check_lengths_match=False)
+              check_lengths_match=False, allow_atomgroup=True)
 def distance_array(reference: Union[np.ndarray, AtomGroup],
                    configuration: Union[np.ndarray, AtomGroup],
                    box: Optional[np.ndarray] = None,
@@ -266,7 +266,7 @@ def distance_array(reference: Union[np.ndarray, AtomGroup],
     return distances
 
 
-@check_coords('reference', reduce_result_if_single=False)
+@check_coords('reference', reduce_result_if_single=False, allow_atomgroup=True)
 def self_distance_array(reference: Union[np.ndarray, AtomGroup],
                         box: Optional[np.ndarray] = None,
                         result: Optional[np.ndarray] = None,
@@ -1263,7 +1263,7 @@ def transform_StoR(coords, box, backend="serial"):
     return coords
 
 
-@check_coords('coords1', 'coords2')
+@check_coords('coords1', 'coords2', allow_atomgroup=True)
 def calc_bonds(coords1: Union[np.ndarray, AtomGroup],
                coords2: Union[np.ndarray, AtomGroup],
                box: Optional[np.ndarray] = None,
@@ -1354,7 +1354,7 @@ def calc_bonds(coords1: Union[np.ndarray, AtomGroup],
     return bondlengths
 
 
-@check_coords('coords1', 'coords2', 'coords3')
+@check_coords('coords1', 'coords2', 'coords3', allow_atomgroup=True)
 def calc_angles(coords1: Union[np.ndarray, AtomGroup],
                 coords2: Union[np.ndarray, AtomGroup],
                 coords3: Union[np.ndarray, AtomGroup],
@@ -1456,7 +1456,7 @@ def calc_angles(coords1: Union[np.ndarray, AtomGroup],
     return angles
 
 
-@check_coords('coords1', 'coords2', 'coords3', 'coords4')
+@check_coords('coords1', 'coords2', 'coords3', 'coords4', allow_atomgroup=True)
 def calc_dihedrals(coords1: Union[np.ndarray, AtomGroup],
                    coords2: Union[np.ndarray, AtomGroup],
                    coords3: Union[np.ndarray, AtomGroup],

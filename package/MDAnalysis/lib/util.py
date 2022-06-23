@@ -1986,6 +1986,9 @@ def check_coords(*coord_names, **options):
         * **check_lengths_match** (:class:`bool`, optional) -- If ``True``, a
           :class:`ValueError` is raised if not all coordinate arrays contain the
           same number of coordinates. Default: ``True``
+        * **allow_atomgroup** (:class:`bool`, optional) -- If ``False``, a
+          :class:`TypeError` is raised if an :class:`AtomGroup` is supplied 
+          Default: ``False``
 
     Raises
     ------
@@ -2008,7 +2011,7 @@ def check_coords(*coord_names, **options):
     Example
     -------
 
-    >>> @check_coords('coords1', 'coords2')
+    >>> @check_coords('coords1', 'coords2', allow_atomgroup=True)
     ... def coordsum(coords1, coords2):
     ...     assert coords1.dtype == np.float32
     ...     assert coords2.flags['C_CONTIGUOUS']
@@ -2034,8 +2037,8 @@ def check_coords(*coord_names, **options):
 
     .. versionadded:: 0.19.0
     .. versionchanged:: 2.3.0
-       Can now accept an :class:`AtomGroup` as input, number of coordinates now
-       calculated in inner function _check_coords.
+       Can now accept an :class:`AtomGroup` as input, and added option
+       allow_atomgroup with default False to retain old behaviour
     """
     enforce_copy = options.get('enforce_copy', True)
     enforce_dtype = options.get('enforce_dtype', True)
@@ -2044,6 +2047,7 @@ def check_coords(*coord_names, **options):
     reduce_result_if_single = options.get('reduce_result_if_single', True)
     check_lengths_match = options.get('check_lengths_match',
                                       len(coord_names) > 1)
+    allow_atomgroup = options.get('allow_atomgroup', False)
     if not coord_names:
         raise ValueError("Decorator check_coords() cannot be used without "
                          "positional arguments.")
@@ -2093,8 +2097,12 @@ def check_coords(*coord_names, **options):
                 # coordinates should now be the right shape
                 ncoord = coords.shape[0]
             elif isinstance(coords, mda.core.groups.AtomGroup):
-                coords = coords.positions # homogenise to a numpy array
-                ncoord = coords.shape[0]
+                if allow_atomgroup:
+                    coords = coords.positions # homogenise to a numpy array
+                    ncoord = coords.shape[0]
+                else:
+                    raise TypeError("AtomGroup supplied as an argument, but "
+                                    "allow_atomgroup is False")
             else:
                 raise TypeError("{}(): Parameter '{}' must be a numpy.ndarray "
                                 " or an AtomGroup, got {}.".format(fname,

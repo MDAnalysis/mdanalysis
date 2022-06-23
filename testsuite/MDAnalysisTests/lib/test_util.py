@@ -1738,7 +1738,7 @@ class TestCheckCoords(object):
         with pytest.raises(ValueError):
             res = func(a_in, b_in2)
 
-    # check atomgroup handling with every option
+    # check atomgroup handling with every option except allow_atomgroup
     @pytest.mark.parametrize('enforce_copy', [True, False])
     @pytest.mark.parametrize('enforce_dtype', [True, False])
     @pytest.mark.parametrize('allow_single', [True, False])
@@ -1756,7 +1756,8 @@ class TestCheckCoords(object):
                       enforce_dtype=enforce_dtype, allow_single=allow_single,
                       convert_single=convert_single,
                       reduce_result_if_single=reduce_result_if_single,
-                      check_lengths_match=check_lengths_match)
+                      check_lengths_match=check_lengths_match,
+                      allow_atomgroup=True)
         def func(ag1, ag2):
             assert_allclose(ag1, ag2)
             assert isinstance(ag1, np.ndarray)
@@ -1767,6 +1768,26 @@ class TestCheckCoords(object):
         res = func(ag1, ag2)
 
         assert_allclose(res, u.atoms.positions*2) 
+    
+    def test_atomgroup_not_allowed(self):
+        u = mda.Universe(PSF,DCD)
+        ag1 = u.atoms
+        
+        @check_coords('ag1', allow_atomgroup=False)
+        def func(ag1):
+            return ag1
+        
+        with pytest.raises(TypeError, match="allow_atomgroup is False"):
+            _ = func(ag1)
+    
+        # check that not allowing ag is default
+        @check_coords('ag1')
+        def func_default(ag1):
+            return ag1
+
+        with pytest.raises(TypeError, match="allow_atomgroup is False"):
+            _ = func_default(ag1)
+        
 
     def test_enforce_copy(self):
 
@@ -1871,7 +1892,8 @@ class TestCheckCoords(object):
         ag1 = u.select_atoms("index 0 to 10")
         ag2 = u.atoms
         
-        @check_coords('ag1', 'ag2', check_lengths_match=True)
+        @check_coords('ag1', 'ag2', check_lengths_match=True,
+                      allow_atomgroup=True)
         def func(ag1, ag2):
 
             return ag1,  ag2
