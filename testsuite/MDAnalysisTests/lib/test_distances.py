@@ -424,22 +424,6 @@ class TestSelfDistanceArrayDCD(object):
         assert_almost_equal(d.max(), 52.4702570624190590, self.prec,
                             err_msg="wrong maximum distance value with PBC")
 
-
-def test_DCD_serial_vs_omp(DCD_Universe):
-    U, trajectory = DCD_Universe
-    trajectory.rewind()
-    x0 = U.atoms.positions
-
-    d_serial = distances.self_distance_array(
-        x0, box=U.coord.dimensions, backend="serial"
-    )
-    d_omp = distances.self_distance_array(
-        x0, box=U.coord.dimensions, backend="openmp"
-    )
-
-    np.testing.assert_allclose(d_serial, d_omp)
-
-
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestTriclinicDistances(object):
     """Unit tests for the Triclinic PBC functions.
@@ -588,25 +572,28 @@ class TestTriclinicDistances(object):
         # expected.
         assert np.linalg.norm(point_a - point_b) != dist[0, 0]
 
-
-def test_issue_3725():
+@pytest.mark.parametrize("box", 
+    [
+        None, 
+        np.array([10., 15., 20., 90., 90., 90.]), # otrho
+        np.array([10., 15., 20., 70.53571, 109.48542, 70.518196]), # TRIC
+    ]
+)
+def test_issue_3725(box):
     """
     Code from @hmacdope
     https://github.com/MDAnalysis/mdanalysis/issues/3725
     """
-    U_tric = MDAnalysis.Universe(TRIC)
+    random_coords = np.random.uniform(-50, 50, (1000, 3))
 
-    pos_tric = U_tric.coord.positions
-    box_tric = U_tric.coord.dimensions
-
-    self_da_serial_tric = distances.self_distance_array(
-        pos_tric, box=box_tric, backend='serial'
+    self_da_serial = distances.self_distance_array(
+        random_coords, box=box, backend='serial'
     )
-    self_da_openmp_tric = distances.self_distance_array(
-        pos_tric, box=box_tric, backend='openmp'
+    self_da_openmp = distances.self_distance_array(
+        random_coords, box=box, backend='openmp'
     )
 
-    np.testing.assert_allclose(self_da_serial_tric, self_da_openmp_tric)
+    np.testing.assert_allclose(self_da_serial, self_da_openmp)
 
 
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
