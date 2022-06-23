@@ -26,10 +26,11 @@
 ===================================================================
 
 Fast C-routines to calculate arrays of distances or angles from coordinate
-arrays. Many of the functions also exist in parallel versions, which typically
-provide higher performance than the serial code.
-The boolean attribute `MDAnalysis.lib.distances.USED_OPENMP` can be checked to
-see if OpenMP was used in the compilation of MDAnalysis.
+arrays. Distance functions can accept a NumPy :class:`np.ndarray` or an
+:class:`~MDAnalysis.core.groups.AtomGroup`. Many of the functions also exist
+in parallel versions, which typically provide higher performance than the
+serial code. The boolean attribute `MDAnalysis.lib.distances.USED_OPENMP` can be
+checked to see if OpenMP was used in the compilation of MDAnalysis.
 
 Selection of acceleration ("backend")
 -------------------------------------
@@ -50,6 +51,9 @@ case-insensitive):
    ========== ========================= ======================================
 
 .. versionadded:: 0.13.0
+.. versionchanged:: 2.3.0
+   Distance functions can now accept an 
+   :class:`~MDAnalysis.core.groups.AtomGroup` or an :class:`np.ndarray`
 
 Functions
 ---------
