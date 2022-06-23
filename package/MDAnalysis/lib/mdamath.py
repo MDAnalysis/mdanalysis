@@ -92,7 +92,7 @@ def norm(v: npt.ArrayLike) -> float:
     return np.sqrt(np.dot(v, v))
 
 
-def normal(vec1: npt.NDArray, vec2: npt.NDArray) -> npt.NDArray:
+def normal(vec1: npt.ArrayLike, vec2: npt.ArrayLike) -> npt.NDArray:
     r"""Returns the unit vector normal to two vectors.
 
     .. math::
@@ -112,7 +112,7 @@ def normal(vec1: npt.NDArray, vec2: npt.NDArray) -> npt.NDArray:
     return normal / n
 
 
-def pdot(a: npt.NDArray, b: npt.NDArray) -> npt.NDArray:
+def pdot(a: npt.ArrayLike, b: npt.ArrayLike) -> npt.NDArray:
     """Pairwise dot product.
 
     ``a`` must be the same shape as ``b``.
@@ -129,7 +129,7 @@ def pdot(a: npt.NDArray, b: npt.NDArray) -> npt.NDArray:
     return np.einsum('ij,ij->i', a, b)
 
 
-def pnorm(a: npt.NDArray) -> npt.NDArray:
+def pnorm(a: npt.ArrayLike) -> npt.NDArray:
     """Euclidean norm of each vector in a matrix
 
     Parameters
@@ -143,7 +143,7 @@ def pnorm(a: npt.NDArray) -> npt.NDArray:
     return pdot(a, a)**0.5
 
 
-def angle(a: npt.NDArray, b: npt.NDArray) -> float:
+def angle(a: npt.ArrayLike, b: npt.ArrayLike) -> float:
     """Returns the angle between two vectors in radians
 
     .. versionchanged:: 0.11.0
