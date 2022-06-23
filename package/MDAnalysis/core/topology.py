@@ -64,16 +64,6 @@ from .topologyattrs import Atomindices, Resindices, Segindices
 from ..exceptions import NoDataError
 
 
-# TODO Notes:
-#   Could make downshift tables lazily built! This would
-#     a) Make these not get built when not used
-#     b) Optimise moving multiple atoms between residues as only built once
-#     afterwards
-
-#   Could optimise moves by only updating the two parent tables rather than
-#   rebuilding everything!
-
-
 def make_downshift_arrays(upshift, nparents):
     """From an upwards translation table, create the opposite direction
 
@@ -99,7 +89,7 @@ def make_downshift_arrays(upshift, nparents):
     To find the residue to atom mappings for a given atom to residue mapping:
 
     >>> atom2res = np.array([0, 1, 0, 2, 2, 0, 2])
-    >>> make_downshift_arrays(atom2res)
+    >>> make_downshift_arrays(atom2res, 3)
     array([array([0, 2, 5]), array([1]), array([3, 4, 6]), None], dtype=object)
 
     Entry 0 corresponds to residue 0 and says that this contains atoms 0, 2 & 5
@@ -115,7 +105,7 @@ def make_downshift_arrays(upshift, nparents):
     if not len(upshift):
         return np.array([], dtype=object)
 
-    upshift = np.array(upshift)
+    # mergesort for a stable ordered array for the same value.
     order = np.argsort(upshift, kind="mergesort")
 
     upshift_sorted = upshift[order]
@@ -199,7 +189,7 @@ class TransTable(object):
             self._AR = np.asarray(atom_resindex, dtype=np.intp).copy()
             if not len(self._AR) == n_atoms:
                 raise ValueError("atom_resindex must be len n_atoms")
-        self._RA = make_downshift_arrays(self._AR, n_residues)
+        self._RA = None
 
         # built residue-to-segment mapping, and vice-versa
         if residue_segindex is None:
@@ -208,12 +198,26 @@ class TransTable(object):
             self._RS = np.asarray(residue_segindex, dtype=np.intp).copy()
             if not len(self._RS) == n_residues:
                 raise ValueError("residue_segindex must be len n_residues")
-        self._SR = make_downshift_arrays(self._RS, n_segments)
+        self._SR = None
 
     def copy(self):
         """Return a deepcopy of this Transtable"""
         return self.__class__(self.n_atoms, self.n_residues, self.n_segments,
                               atom_resindex=self._AR, residue_segindex=self._RS)
+
+    @property
+    def RA(self):
+        if self._RA is None:
+            self._RA = make_downshift_arrays(self._AR,
+                                             self.n_residues)
+        return self._RA
+
+    @property
+    def SR(self):
+        if self._SR is None:
+            self._SR = make_downshift_arrays(self._RS,
+                                             self.n_segments)
+        return self._SR
 
     @property
     def size(self):
@@ -253,11 +257,12 @@ class TransTable(object):
             indices of atoms present in residues, collectively
 
         """
+        RA = self.RA
         try:
-            return np.concatenate(self._RA[rix])
+            return np.concatenate(RA[rix])
         except ValueError:  # rix is not iterable or empty
             # don't accidentally return a view!
-            return self._RA[rix].astype(np.intp, copy=True)
+            return RA[rix].astype(np.intp, copy=True)
 
     def residues2atoms_2d(self, rix):
         """Get atom indices represented by each residue index.
@@ -275,10 +280,11 @@ class TransTable(object):
             in that residue
 
         """
+        RA = self.RA
         try:
-            return [self._RA[r].copy() for r in rix]
+            return [RA[r].copy() for r in rix]
         except TypeError:
-            return [self._RA[rix].copy()]  # why would this be singular for 2d?
+            return [RA[rix].copy()]  # why would this be singular for 2d?
 
     def residues2segments(self, rix):
         """Get segment indices for each residue.
@@ -310,11 +316,12 @@ class TransTable(object):
             sorted indices of residues present in segments, collectively
 
         """
+        SR = self.SR
         try:
-            return np.concatenate(self._SR[six])
+            return np.concatenate(SR[six])
         except ValueError:  # six is not iterable or empty
             # don't accidentally return a view!
-            return self._SR[six].astype(np.intp, copy=True)
+            return SR[six].astype(np.intp, copy=True)
 
     def segments2residues_2d(self, six):
         """Get residue indices represented by each segment index.
@@ -332,10 +339,11 @@ class TransTable(object):
             present in that segment
 
         """
+        SR = self.SR
         try:
-            return [self._SR[s].copy() for s in six]
+            return [SR[s].copy() for s in six]
         except TypeError:
-            return [self._SR[six].copy()]
+            return [SR[six].copy()]
 
     # Compound moves, does 2 translations
     def atoms2segments(self, aix):
@@ -396,43 +404,34 @@ class TransTable(object):
     def move_atom(self, aix, rix):
         """Move aix to be in rix"""
         self._AR[aix] = rix
-        self._RA = make_downshift_arrays(self._AR, self.n_residues)
+        self._RA = None
 
     def move_residue(self, rix, six):
         """Move rix to be in six"""
         self._RS[rix] = six
-        self._SR = make_downshift_arrays(self._RS, self.n_segments)
+        self._SR = None
 
     def add_Residue(self, segidx):
         # segidx - index of parent
         self.n_residues += 1
-        self._RA = make_downshift_arrays(self._AR, self.n_residues)
+        self._RA = None
         self._RS = np.concatenate([self._RS, np.array([segidx])])
-        self._SR = make_downshift_arrays(self._RS, self.n_segments)
+        self._SR = None
+
 
         return self.n_residues - 1
 
     def add_Segment(self):
         self.n_segments += 1
-        # self._RS remains the same, no residues point to the new segment yet
-        self._SR = make_downshift_arrays(self._RS, self.n_segments)
-
+        self._SR = None
         return self.n_segments - 1
 
     def __getstate__(self):
-        return (self.n_atoms, self.n_residues, self.n_segments,
-                self._AR, self._RS)
-
-    def __setstate__(self, args):
-        # rebuild _RA and _SR instead of serializing them.
-        n_atoms = args[0]
-        n_residues = args[1]
-        n_segments = args[2]
-        _AR = args[3]
-        _RS = args[4]
-        return self.__init__(n_atoms, n_residues, n_segments,
-                             atom_resindex=_AR, residue_segindex=_RS)
-
+        # don't serialize _RA and _SR for performance.
+        attrs = self.__dict__
+        attrs['_RA'] = None
+        attrs['_SR'] = None
+        return attrs
 
 
 class Topology(object):
