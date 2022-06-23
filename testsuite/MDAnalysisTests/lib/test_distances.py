@@ -425,6 +425,21 @@ class TestSelfDistanceArrayDCD(object):
                             err_msg="wrong maximum distance value with PBC")
 
 
+def test_DCD_serial_vs_omp(DCD_Universe):
+    U, trajectory = DCD_Universe
+    trajectory.rewind()
+    x0 = U.atoms.positions
+
+    d_serial = distances.self_distance_array(
+        x0, box=U.coord.dimensions, backend="serial"
+    )
+    d_omp = distances.self_distance_array(
+        x0, box=U.coord.dimensions, backend="openmp"
+    )
+
+    np.testing.assert_allclose(d_serial, d_omp)
+
+
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestTriclinicDistances(object):
     """Unit tests for the Triclinic PBC functions.
@@ -572,6 +587,26 @@ class TestTriclinicDistances(object):
         # check that our distance is different from the wassenaar distance as
         # expected.
         assert np.linalg.norm(point_a - point_b) != dist[0, 0]
+
+
+def test_issue_3725():
+    """
+    Code from @hmacdope
+    https://github.com/MDAnalysis/mdanalysis/issues/3725
+    """
+    U_tric = MDAnalysis.Universe(TRIC)
+
+    pos_tric = U_tric.coord.positions
+    box_tric = U_tric.coord.dimensions
+
+    self_da_serial_tric = distances.self_distance_array(
+        pos_tric, box=box_tric, backend='serial'
+    )
+    self_da_openmp_tric = distances.self_distance_array(
+        pos_tric, box=box_tric, backend='openmp'
+    )
+
+    np.testing.assert_allclose(self_da_serial_tric, self_da_openmp_tric)
 
 
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
@@ -1419,38 +1454,3 @@ def test_minimize_vectors(box, shift, dtype):
 
     assert_allclose(res, vec, atol=0.00001)
     assert res.dtype == dtype
-
-
-def test_issue_3725():
-    """
-    Code from @hmacdope
-    https://github.com/MDAnalysis/mdanalysis/issues/3725
-    """
-    U_tric = MDAnalysis.Universe(TRIC)
-
-    pos_tric = U_tric.coord.positions
-    box_tric = U_tric.coord.dimensions
-
-    self_da_serial_tric = distances.self_distance_array(
-        pos_tric, box=box_tric, backend='serial'
-    )
-    self_da_openmp_tric = distances.self_distance_array(
-        pos_tric, box=box_tric, backend='openmp'
-    )
-
-    np.testing.assert_allclose(self_da_serial_tric, self_da_openmp_tric)
-
-
-def test_DCD_serial_vs_omp(DCD_Universe):
-    U, trajectory = DCD_Universe
-    trajectory.rewind()
-    x0 = U.atoms.positions
-
-    d_serial = distances.self_distance_array(
-        x0, box=U.coord.dimensions, backend="serial"
-    )
-    d_omp = distances.self_distance_array(
-        x0, box=U.coord.dimensions, backend="openmp"
-    )
-
-    np.testing.assert_allclose(d_serial, d_omp)
