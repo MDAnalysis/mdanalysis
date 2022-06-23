@@ -1268,7 +1268,7 @@ def calc_bonds(coords1: Union[np.ndarray, AtomGroup],
                coords2: Union[np.ndarray, AtomGroup],
                box: Optional[np.ndarray] = None,
                result: Optional[np.ndarray] = None,
-               backend: str = "serial") -> None:
+               backend: str = "serial") -> np.ndarray:
     """Calculates the bond lengths between pairs of atom positions from the two
     coordinate arrays `coords1` and `coords2`, which must contain the same
     number of coordinates. ``coords1[i]`` and ``coords2[i]`` represent the
@@ -1360,7 +1360,7 @@ def calc_angles(coords1: Union[np.ndarray, AtomGroup],
                 coords3: Union[np.ndarray, AtomGroup],
                 box: Optional[np.ndarray] = None,
                 result: Optional[np.ndarray] = None,
-                backend: str = "serial") -> None:
+                backend: str = "serial") -> np.ndarray:
     """Calculates the angles formed between triplets of atom positions from the
     three coordinate arrays `coords1`, `coords2`, and `coords3`. All coordinate
     arrays must contain the same number of coordinates.
@@ -1463,7 +1463,7 @@ def calc_dihedrals(coords1: Union[np.ndarray, AtomGroup],
                    coords4: Union[np.ndarray, AtomGroup],
                    box: Optional[np.ndarray] = None,
                    result: Optional[np.ndarray] = None,
-                   backend: str = "serial") -> None:
+                   backend: str = "serial") -> np.ndarray:
     r"""Calculates the dihedral angles formed between quadruplets of positions
     from the four coordinate arrays `coords1`, `coords2`, `coords3`, and
     `coords4`, which must contain the same number of coordinates.
@@ -1576,7 +1576,7 @@ def calc_dihedrals(coords1: Union[np.ndarray, AtomGroup],
 @check_coords('coords', allow_atomgroup=True)
 def apply_PBC(coords: Union[np.ndarray, AtomGroup],
               box: Optional[np.ndarray] = None,
-              backend: str = "serial") -> None:
+              backend: str = "serial") -> np.ndarray:
     """Moves coordinates into the primary unit cell.
 
     Parameters
@@ -1622,7 +1622,7 @@ def apply_PBC(coords: Union[np.ndarray, AtomGroup],
 
 
 @check_coords('vectors', enforce_copy=False, enforce_dtype=False)
-def minimize_vectors(vectors, box):
+def minimize_vectors(vectors: np.ndarray, box: np.ndarray) -> np.ndarray:
     """Apply minimum image convention to an array of vectors
 
     This function is required for calculating the correct vectors between two

@@ -773,15 +773,11 @@ class TestCythonFunctions(object):
     @pytest.fixture()
     def positions_atomgroups(positions):
         a, b, c, d = positions
-        u_a = MDAnalysis.Universe.empty(a.shape[0], trajectory=True)
-        u_a.atoms.positions = a
-        u_b = MDAnalysis.Universe.empty(b.shape[0], trajectory=True)
-        u_b.atoms.positions = b
-        u_c = MDAnalysis.Universe.empty(c.shape[0], trajectory=True)
-        u_c.atoms.positions = c
-        u_d = MDAnalysis.Universe.empty(d.shape[0], trajectory=True)
-        u_d.atoms.positions = d
-        return u_a.atoms, u_b.atoms, u_c.atoms, u_d.atoms
+        arrs = [a,b,c,d]
+        universes = [MDAnalysis.Universe.empty(arr.shape[0], trajectory=True) for arr in arrs]
+        for u, a in zip(universes, arrs):
+            u.atoms.positions = a
+        return tuple([u.atoms for u in universes])
 
     @staticmethod
     def convert_position_dtype(a, b, c, d, dtype):
