@@ -1491,22 +1491,26 @@ def calc_dihedrals(coords1: Union[np.ndarray, AtomGroup],
 
     Parameters
     ----------
-    coords1 : numpy.ndarray
+    coords1 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 1st
         positions in dihedrals (dtype is arbitrary, will be converted to
-        ``numpy.float32`` internally)
-    coords2 : numpy.ndarray
+        ``numpy.float32`` internally).  Also accepts an 
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
+    coords2 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 2nd
         positions in dihedrals (dtype is arbitrary, will be converted to
-        ``numpy.float32`` internally)
-    coords3 : numpy.ndarray
+        ``numpy.float32`` internally).  Also accepts an 
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
+    coords3 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 3rd
         positions in dihedrals (dtype is arbitrary, will be converted to
-        ``numpy.float32`` internally)
-    coords4 : numpy.ndarray
+        ``numpy.float32`` internally).  Also accepts an 
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
+    coords4 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 4th
         positions in dihedrals (dtype is arbitrary, will be converted to
-        ``numpy.float32`` internally)
+        ``numpy.float32`` internally).  Also accepts an 
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
