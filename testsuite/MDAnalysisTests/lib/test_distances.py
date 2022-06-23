@@ -382,7 +382,7 @@ def Triclinic_Universe():
     return universe, trajectory
 
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
-class TestDistanceArrayDCD(object):
+class TestDistanceArrayDCD_TRIC(object):
     # reasonable precision so that tests succeed on 32 and 64 bit machines
     # (the reference values were obtained on 64 bit)
     # Example:
@@ -501,7 +501,7 @@ class TestDistanceArrayDCD(object):
                             err_msg="wrong maximum distance value")
 
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
-class TestSelfDistanceArrayDCD(object):
+class TestSelfDistanceArrayDCD_TRIC(object):
     prec = 5
 
     def test_simple(self, DCD_Universe, backend):
@@ -580,7 +580,7 @@ class TestSelfDistanceArrayDCD(object):
                             ("index 0 to 8 ", np.s_[0:9,:]),
                             ("index 9", np.s_[8,:])])
     def test_atomgroup_matches_numpy_tric(self, Triclinic_Universe, backend, sel, np_slice):
-        U, trajectory = Triclinic_Universe
+        U, _ = Triclinic_Universe
         #BUG serial only for now as the OMP code path appears broken
         x0_ag = U.select_atoms(sel)
         x0_arr = U.atoms.positions[np_slice]
