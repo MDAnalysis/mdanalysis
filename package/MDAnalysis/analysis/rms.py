@@ -852,16 +852,15 @@ class SymmRMSD(AnalysisBase):
         # Allocate adjacency matrix
         A = np.zeros((n_atoms, n_atoms), dtype=int)
 
-        # TODO: Catch NoDataError in case of missing bonds?
-        # FIXME: Make this more efficient
-        # Loop over all bonds
-        for bond in atoms.bonds:
-            for i, ai in enumerate(atoms.atoms):
-                for j, aj in enumerate(atoms.atoms):
-                    if ai in bond and aj in bond and i != j:
-                        A[i, j] = 1
+        # Map bond indices to selection adjacency matrix
+        b = atoms.bonds.to_indices()
+        _, indices_flat = np.unique(b, return_inverse=True)
+        indices = indices_flat.reshape(b.shape)
 
-        return A
+        A = np.zeros((n_atoms, n_atoms), dtype=int)
+        A[indices[:, 0], indices[:, 1]] = 1
+
+        return A + A.T
 
 
 class RMSF(AnalysisBase):
