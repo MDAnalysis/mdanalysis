@@ -553,15 +553,15 @@ class TestSelfDistanceArrayDCD_TRIC(object):
                             ("index 0 to 8 ", np.s_[0:9, :]),
                             ("index 9", np.s_[8, :])])
     def test_atomgroup_matches_numpy(self, DCD_Universe, backend,
-                                     sel, np_slice,box):
+                                     sel, np_slice, box):
         U, _ = DCD_Universe
 
         x0_ag = U.select_atoms(sel)
         x0_arr = U.atoms.positions[np_slice]
         d_ag = distances.self_distance_array(x0_ag, box=box,
-                                 backend=backend)
+                                             backend=backend)
         d_arr = distances.self_distance_array(x0_arr, box=box,
-                                         backend=backend)
+                                              backend=backend)
         assert_allclose(d_ag, d_arr,
                         err_msg="AtomGroup and NumPy distances do not match")
 
@@ -799,8 +799,9 @@ class TestCythonFunctions(object):
     @pytest.fixture()
     def positions_atomgroups(positions):
         a, b, c, d = positions
-        arrs = [a,b,c,d]
-        universes = [MDAnalysis.Universe.empty(arr.shape[0], trajectory=True) for arr in arrs]
+        arrs = [a, b, c, d]
+        universes = [MDAnalysis.Universe.empty(arr.shape[0],
+                     trajectory=True) for arr in arrs]
         for u, a in zip(universes, arrs):
             u.atoms.positions = a
         return tuple([u.atoms for u in universes])
@@ -859,7 +860,8 @@ class TestCythonFunctions(object):
 
     @pytest.mark.parametrize('dtype', (np.float32, np.float64))
     @pytest.mark.parametrize('pos', ['positions', 'positions_atomgroups'])
-    def test_bonds_triclinic(self, triclinic_box, backend, dtype, pos, request):
+    def test_bonds_triclinic(self, triclinic_box, backend, dtype, pos,
+                             request):
         a, b, c, d = request.getfixturevalue(pos)
         a, b, c, d = convert_position_dtype_if_ndarray(a, b, c, d, dtype)
         dists = distances.calc_bonds(a, b, box=triclinic_box, backend=backend)
@@ -1036,7 +1038,7 @@ class Test_apply_PBC(object):
     def DCD_universe_ag(self, DCD_Universe):
         U, _ = DCD_Universe
         return U.atoms
-    
+
     @pytest.fixture()
     def Triclinic_universe_pos_box(self, Triclinic_Universe):
         U, _ = Triclinic_Universe
@@ -1057,7 +1059,7 @@ class Test_apply_PBC(object):
         atoms = U.atoms
         box = U.dimensions
         return atoms, box
-    
+
     @pytest.mark.parametrize('pos', ['DCD_universe_pos', 'DCD_universe_ag'])
     def test_ortho_PBC(self, backend, pos, request, DCD_universe_pos):
         positions = request.getfixturevalue(pos)
@@ -1071,7 +1073,7 @@ class Test_apply_PBC(object):
                             err_msg="Ortho apply_PBC #2 failed comparison with np")
 
     @pytest.mark.parametrize('pos', ['Triclinic_universe_pos_box',
-                        'Triclinic_universe_ag_box'])
+                             'Triclinic_universe_ag_box'])
     def test_tric_PBC(self, backend, pos, request):
         positions, box = request.getfixturevalue(pos)
         def numpy_PBC(coords, box):
@@ -1229,7 +1231,7 @@ class TestInputUnchanged(object):
                 np.array([[0.1, 0.1, 1.9], [-0.9, -0.9,  0.9]], dtype=np.float32),
                 np.array([[0.1, 1.9, 1.9], [-0.9,  0.9,  0.9]], dtype=np.float32),
                 np.array([[0.1, 1.9, 0.1], [-0.9,  0.9, -0.9]], dtype=np.float32)]
-    
+
     @staticmethod
     @pytest.fixture()
     def coords_atomgroups(coords):
@@ -1335,8 +1337,8 @@ class TestInputUnchanged(object):
 
     @pytest.mark.parametrize('box', boxes)
     @pytest.mark.parametrize('backend', ['serial', 'openmp'])
-    def test_input_unchanged_calc_angles_atomgroup(self, coords_atomgroups, box,
-                                                   backend):
+    def test_input_unchanged_calc_angles_atomgroup(self, coords_atomgroups,
+                                                   box, backend):
         crds = coords_atomgroups[:3]
         refs = [crd.positions.copy() for crd in crds]
         res = distances.calc_angles(crds[0], crds[1], crds[2], box=box,
