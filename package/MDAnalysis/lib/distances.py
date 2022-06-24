@@ -29,8 +29,8 @@ Fast C-routines to calculate arrays of distances or angles from coordinate
 arrays. Distance functions can accept a NumPy :class:`np.ndarray` or an
 :class:`~MDAnalysis.core.groups.AtomGroup`. Many of the functions also exist
 in parallel versions, which typically provide higher performance than the
-serial code. The boolean attribute `MDAnalysis.lib.distances.USED_OPENMP` can be
-checked to see if OpenMP was used in the compilation of MDAnalysis.
+serial code. The boolean attribute `MDAnalysis.lib.distances.USED_OPENMP` can
+be checked to see if OpenMP was used in the compilation of MDAnalysis.
 
 Selection of acceleration ("backend")
 -------------------------------------
@@ -52,7 +52,7 @@ case-insensitive):
 
 .. versionadded:: 0.13.0
 .. versionchanged:: 2.3.0
-   Distance functions can now accept an 
+   Distance functions can now accept an
    :class:`~MDAnalysis.core.groups.AtomGroup` or an :class:`np.ndarray`
 
 Functions
@@ -96,6 +96,7 @@ try:
 except ImportError:
     pass
 del importlib
+
 
 def _run(funcname: Callable, args: Optional[tuple] = None,
          kwargs: Optional[dict] = None, backend: str = "serial") -> Callable:
@@ -1394,7 +1395,7 @@ def calc_angles(coords1: Union[np.ndarray, AtomGroup],
     coords2 :  numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Array of shape ``(3,)`` or ``(n, 3)`` containing the coordinates of the
         apices of a single or ``n`` angles, respectively (dtype is arbitrary,
-        will be converted to ``numpy.float32`` internally). Also accepts an 
+        will be converted to ``numpy.float32`` internally). Also accepts an
         :class:`~MDAnalysis.core.groups.AtomGroup`.
     coords3 :  numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Array of shape ``(3,)`` or ``(n, 3)`` containing the coordinates of the
@@ -1498,22 +1499,22 @@ def calc_dihedrals(coords1: Union[np.ndarray, AtomGroup],
     coords1 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 1st
         positions in dihedrals (dtype is arbitrary, will be converted to
-        ``numpy.float32`` internally).  Also accepts an 
+        ``numpy.float32`` internally).  Also accepts an
         :class:`~MDAnalysis.core.groups.AtomGroup`.
     coords2 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 2nd
         positions in dihedrals (dtype is arbitrary, will be converted to
-        ``numpy.float32`` internally).  Also accepts an 
+        ``numpy.float32`` internally).  Also accepts an
         :class:`~MDAnalysis.core.groups.AtomGroup`.
     coords3 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 3rd
         positions in dihedrals (dtype is arbitrary, will be converted to
-        ``numpy.float32`` internally).  Also accepts an 
+        ``numpy.float32`` internally).  Also accepts an
         :class:`~MDAnalysis.core.groups.AtomGroup`.
     coords4 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 4th
         positions in dihedrals (dtype is arbitrary, will be converted to
-        ``numpy.float32`` internally).  Also accepts an 
+        ``numpy.float32`` internally).  Also accepts an
         :class:`~MDAnalysis.core.groups.AtomGroup`.
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
@@ -1583,7 +1584,7 @@ def apply_PBC(coords: Union[np.ndarray, AtomGroup],
     ----------
     coords : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` (dtype is arbitrary,
-        will be converted to ``numpy.float32`` internally). Also accepts an 
+        will be converted to ``numpy.float32`` internally). Also accepts an
         :class:`~MDAnalysis.core.groups.AtomGroup`.
     box : numpy.ndarray
         The unitcell dimensions of the system, which can be orthogonal or

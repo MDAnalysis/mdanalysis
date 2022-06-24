@@ -1939,8 +1939,8 @@ def check_coords(*coord_names, **options):
     :mod:`MDAnalysis.lib.distances`.
     It takes an arbitrary number of positional arguments which must correspond
     to names of positional arguments of the decorated function.
-    It then checks if the corresponding values are valid coordinate arrays or an
-    :class:`~MDAnalysis.core.groups.AtomGroup`.
+    It then checks if the corresponding values are valid coordinate arrays or
+    an :class:`~MDAnalysis.core.groups.AtomGroup`.
     If the input is an array and all these arrays are single coordinates
     (i.e., their shape is ``(3,)``), the decorated function can optionally
     return a single coordinate (or angle) instead of an array of coordinates
@@ -1987,7 +1987,7 @@ def check_coords(*coord_names, **options):
           :class:`ValueError` is raised if not all coordinate arrays contain the
           same number of coordinates. Default: ``True``
         * **allow_atomgroup** (:class:`bool`, optional) -- If ``False``, a
-          :class:`TypeError` is raised if an :class:`AtomGroup` is supplied 
+          :class:`TypeError` is raised if an :class:`AtomGroup` is supplied
           Default: ``False``
 
     Raises
@@ -2003,7 +2003,7 @@ def check_coords(*coord_names, **options):
         If any of the coordinate arrays has a wrong shape.
     TypeError
         If any of the coordinate arrays is not a :class:`numpy.ndarray` or an
-        :class:`~MDAnalysis.core.groups.AtomGroup`. 
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
 
         If the dtype of any of the coordinate arrays is not convertible to
           ``numpy.float32``.
@@ -2029,7 +2029,7 @@ def check_coords(*coord_names, **options):
     >>> u = mda.Universe(PSF,DCD)
     >>> coordsum(u.atoms, u.select_atoms("index 1 to 10"))
     ...
-    >>> 
+    >>>
     >>> # automatic shape checking:
     >>> coordsum(np.zeros(3), np.ones(6))
     ValueError: coordsum(): coords2.shape must be (3,) or (n, 3), got (6,).
@@ -2075,30 +2075,32 @@ def check_coords(*coord_names, **options):
             if isinstance(coords, np.ndarray):
                 if allow_single:
                     if (coords.ndim not in (1, 2)) or (coords.shape[-1] != 3):
-                        raise ValueError("{}(): {}.shape must be (3,) or (n, 3), "
-                                         "got {}.".format(fname, argname,
-                                                          coords.shape))
+                        raise ValueError("{}(): {}.shape must be (3,) or"
+                                         "(n, 3), got {}.".format(fname,
+                                                                  argname,
+                                                                  coords.shape))
                     if coords.ndim == 1:
                         is_single = True
                         if convert_single:
                             coords = coords[None, :]
                 else:
                     if (coords.ndim != 2) or (coords.shape[1] != 3):
-                        raise ValueError("{}(): {}.shape must be (n, 3), got {}."
-                                         "".format(fname, argname, coords.shape))
+                        raise ValueError("{}(): {}.shape must be (n, 3),"
+                                        " got {}.".format(fname, argname,
+                                                          coords.shape))
                 if enforce_dtype:
                     try:
                         coords = coords.astype(
                             np.float32, order='C', copy=enforce_copy)
                     except ValueError:
-                        errmsg = (f"{fname}(): {argname}.dtype must be convertible to "
-                                  f"float32, got {coords.dtype}.")
+                        errmsg = (f"{fname}(): {argname}.dtype must be"
+                                 f"convertible to float32, got {coords.dtype}.")
                         raise TypeError(errmsg) from None
                 # coordinates should now be the right shape
                 ncoord = coords.shape[0]
             elif isinstance(coords, mda.core.groups.AtomGroup):
                 if allow_atomgroup:
-                    coords = coords.positions # homogenise to a numpy array
+                    coords = coords.positions  # homogenise to a numpy array
                     ncoord = coords.shape[0]
                 else:
                     raise TypeError("AtomGroup supplied as an argument, but "
@@ -2139,12 +2141,13 @@ def check_coords(*coord_names, **options):
             for name in coord_names:
                 idx = posargnames.index(name)
                 if idx < len(args):
-                    args[idx], is_single, ncoord = _check_coords(args[idx], name)
+                    args[idx], is_single, ncoord = _check_coords(args[idx],
+                                                                 name)
                     all_single &= is_single
                     ncoords.append(ncoord)
                 else:
                     kwargs[name], is_single, ncoord = _check_coords(kwargs[name],
-                                                            name)
+                                                                    name)
                     all_single &= is_single
                     ncoords.append(ncoord)
             if check_lengths_match and ncoords:
