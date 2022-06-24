@@ -1773,7 +1773,7 @@ class TestCheckCoords(object):
         assert_allclose(res, atomgroup.positions*2)
 
     def test_atomgroup_not_allowed(self, atomgroup):
-        
+
         @check_coords('ag1', allow_atomgroup=False)
         def func(ag1):
             return ag1

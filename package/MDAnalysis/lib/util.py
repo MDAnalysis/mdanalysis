@@ -2076,7 +2076,7 @@ def check_coords(*coord_names, **options):
                 if allow_single:
                     if (coords.ndim not in (1, 2)) or (coords.shape[-1] != 3):
                         raise ValueError("{}(): {}.shape must be (3,) or"
-                                         "(n, 3), got {}.".format(fname,
+                                         " (n, 3), got {}.".format(fname,
                                          argname, coords.shape))
                     if coords.ndim == 1:
                         is_single = True
@@ -2085,7 +2085,7 @@ def check_coords(*coord_names, **options):
                 else:
                     if (coords.ndim != 2) or (coords.shape[1] != 3):
                         raise ValueError("{}(): {}.shape must be (n, 3),"
-                                        " got {}.".format(fname, argname,
+                                         " got {}.".format(fname, argname,
                                                           coords.shape))
                 if enforce_dtype:
                     try:
