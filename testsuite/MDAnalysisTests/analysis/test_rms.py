@@ -381,7 +381,9 @@ def test_adjacency_matrix():
         [5, 0],
     ])
 
-    benzene = mda.Universe.empty(6, trajectory=True)
+    benzene = mda.Universe.empty(
+        6, atom_resindex=[0] * 6, residue_segindex=[0], trajectory=True
+    )
     benzene.add_TopologyAttr('bonds', bonds)
 
     A = rms.adjacency_matrix(benzene.atoms)
