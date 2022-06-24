@@ -712,6 +712,36 @@ class RMSD(AnalysisBase):
         return self.results.rmsd
 
 
+def adjacency_matrix(atoms):
+        """
+        Compute adjacency matrix for selection based on bonds.
+
+        Parameters
+        ----------
+        atoms: AtomGroup
+            Selection
+        
+        Returns
+        -------
+        np.array
+            Adjacency matrix
+        """
+        n_atoms = len(atoms)
+
+        # Allocate adjacency matrix
+        A = np.zeros((n_atoms, n_atoms), dtype=int)
+
+        # Map bond indices to selection adjacency matrix
+        b = atoms.bonds.to_indices()
+        _, indices_flat = np.unique(b, return_inverse=True)
+        indices = indices_flat.reshape(b.shape)
+
+        A = np.zeros((n_atoms, n_atoms), dtype=int)
+        A[indices[:, 0], indices[:, 1]] = 1
+
+        return A + A.T
+
+
 @due.dcite(
         Doi('10.1186/s13321-020-00455-2'),
     )
@@ -720,14 +750,13 @@ class SymmRMSD(AnalysisBase):
     Compute symmetry-corrected RMSD for small molecules.
     """
 
-
     def __init__(
             self,
             mobile,
             reference=None,
             ref_frame=0,
             **kwargs
-        ):
+            ) -> None:
         """
         Parameters
         ----------
@@ -762,7 +791,7 @@ class SymmRMSD(AnalysisBase):
             logger.exception(err)
             raise SelectionError(err)
 
-    def _prepare(self):
+    def _prepare(self) -> None:
         current_frame = self.ref_atoms.universe.trajectory.ts.frame
 
         # Columns: frame, time, rmsd
@@ -770,7 +799,7 @@ class SymmRMSD(AnalysisBase):
 
         self.ref_adj = self._adjacency_matrix(self.ref_atoms)
         self.ref_aprops = self.ref_atoms.types.copy()
-        
+
         self.mobile_adj = self._adjacency_matrix(self.mobile_atoms)
         self.mobile_aprops = self.mobile_atoms.types.copy()
 
@@ -796,7 +825,7 @@ class SymmRMSD(AnalysisBase):
         # Pre-allocate memory for the results
         self.results.rmsd = np.zeros((self.n_frames, 3))
 
-    def _single_frame(self):
+    def _single_frame(self) -> None:
         """
         Raises
         ------
@@ -819,7 +848,7 @@ class SymmRMSD(AnalysisBase):
                     conda install spyrmsd -c conda-forge
 
                 """
-            )
+                )
 
         # Get current coordinates
         self._mobile_coordinates64[:] = self.mobile_atoms.positions
@@ -842,25 +871,6 @@ class SymmRMSD(AnalysisBase):
         )
 
         self.results.rmsd[self._frame_index, -1] = min_rmsd
-
-    def _adjacency_matrix(self, atoms):
-        """
-        Compute adjacency matrix for selection based on bonds.
-        """
-        n_atoms = len(atoms)
-
-        # Allocate adjacency matrix
-        A = np.zeros((n_atoms, n_atoms), dtype=int)
-
-        # Map bond indices to selection adjacency matrix
-        b = atoms.bonds.to_indices()
-        _, indices_flat = np.unique(b, return_inverse=True)
-        indices = indices_flat.reshape(b.shape)
-
-        A = np.zeros((n_atoms, n_atoms), dtype=int)
-        A[indices[:, 0], indices[:, 1]] = 1
-
-        return A + A.T
 
 
 class RMSF(AnalysisBase):

@@ -31,7 +31,7 @@ from numpy.testing import assert_equal, assert_almost_equal
 import numpy as np
 import pytest
 
-from MDAnalysis.exceptions import SelectionError, NoDataError
+from MDAnalysis.exceptions import SelectionError
 from MDAnalysisTests.datafiles import GRO, XTC, rmsfArray, PSF, DCD
 
 
@@ -368,36 +368,53 @@ class TestRMSD(object):
             assert_equal(RMSD.rmsd, RMSD.results.rmsd)
 
 
+def test_adjacency_matrix():
+    """
+    Test construction of the adjacency matrix.
+    """
+    bonds = np.array([
+        [0, 1],
+        [1, 2],
+        [2, 3],
+        [3, 4],
+        [4, 5],
+        [5, 0],
+    ])
+
+    benzene = mda.Universe.empty(6, trajectory=True)
+    benzene.add_TopologyAttr('bonds', bonds)
+
+    A = rms.adjacency_matrix(benzene.atoms)
+
+    expected = np.array([
+        [0, 1, 0, 0, 0, 1],
+        [1, 0, 1, 0, 0, 0],
+        [0, 1, 0, 1, 0, 0],
+        [0, 0, 1, 0, 1, 0],
+        [0, 0, 0, 1, 0, 1],
+        [1, 0, 0, 0, 1, 0],
+    ])
+
+    np.testing.assert_array_equal(A, expected)
+
+
 class TestSymmRMSD(object):
     @pytest.fixture()
     def universe(self):
         return MDAnalysis.Universe(PSF, DCD)
 
-    @pytest.fixture()
-    def correct_values(self):
-        raise NotImplementedError
-
-    def test_rmsd(self, universe, correct_values):
+    def test_rmsd(self, universe):
         # Find suitable trajectory for test
         # See https://github.com/MDAnalysis/MDAnalysisData/issues/45
         raise NotImplementedError
 
-    def test_adjacency_matrix(self, universe, correct_values):
-        """
-        Test construction of the adjacency matrix.
-        """
-        # Find suitable trajectory for test
-        # See https://github.com/MDAnalysis/MDAnalysisData/issues/45
-        raise NotImplementedError
-
-    def test_isomorphisms(self, universe, correct_values):
+    def test_isomorphisms(self, universe):
         """
         Test isomorphisms between two selections.
         """
         # Find suitable trajectory for test
         # See https://github.com/MDAnalysis/MDAnalysisData/issues/45
         raise NotImplementedError
-
 
 
 class TestRMSF(object):
