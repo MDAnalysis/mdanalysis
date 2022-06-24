@@ -290,7 +290,7 @@ class TestDistanceArray(object):
     # cycle through combinations of numpy array and AtomGroup
     @pytest.mark.parametrize('pos0', ['ref_system', 'ref_system_universe'] )
     @pytest.mark.parametrize('pos1', ['ref_system', 'ref_system_universe'])
-    def test_noPBC_mixed_ag_arr(self, backend, ref_system, pos0, pos1, request):
+    def test_noPBC_mixed_combinations(self, backend, ref_system, pos0, pos1, request):
         _, points, reference, _ = ref_system # reference values
         _, _, ref_val, _ = request.getfixturevalue(pos0)
         _, points_val, _, _ = request.getfixturevalue(pos1)
@@ -317,7 +317,7 @@ class TestDistanceArray(object):
     # cycle through combinations of numpy array and AtomGroup
     @pytest.mark.parametrize('pos0', ['ref_system', 'ref_system_universe'] )
     @pytest.mark.parametrize('pos1', ['ref_system', 'ref_system_universe'])
-    def test_PBC_mixed_ag_arr(self, backend, ref_system, pos0, pos1, request):
+    def test_PBC_mixed_combinations(self, backend, ref_system, pos0, pos1, request):
         box, points, _, _ = ref_system
         _, _, ref_val, _ = request.getfixturevalue(pos0)
         _, points_val, _, _ = request.getfixturevalue(pos1)
@@ -479,18 +479,6 @@ class TestDistanceArrayDCD_TRIC(object):
         assert_allclose(d_ag, d_arr,
                         err_msg="AtomGroup and NumPy distances do not match")
         
-    def test_mixed_ag_arr_simple(self, DCD_Universe, backend):
-        U, trajectory = DCD_Universe
-        trajectory.rewind()
-        x0 = U.atoms.positions
-        trajectory[10]
-        x1 = U.select_atoms("all")
-        d = distances.distance_array(x0, x1, backend=backend)
-        assert_equal(d.shape, (3341, 3341), "wrong shape (should be (Natoms,Natoms))")
-        assert_almost_equal(d.min(), 0.11981228170520701, self.prec,
-                            err_msg="wrong minimum distance value")
-        assert_almost_equal(d.max(), 53.572192429459619, self.prec,
-                            err_msg="wrong maximum distance value")
 
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestSelfDistanceArrayDCD_TRIC(object):
@@ -573,13 +561,12 @@ class TestSelfDistanceArrayDCD_TRIC(object):
                             ("index 9", np.s_[8,:])])
     def test_atomgroup_matches_numpy_tric(self, Triclinic_Universe, backend, sel, np_slice):
         U, _ = Triclinic_Universe
-        #BUG serial only for now as the OMP code path appears broken
         x0_ag = U.select_atoms(sel)
         x0_arr = U.atoms.positions[np_slice]
         d_ag = distances.self_distance_array(x0_ag, box=U.coord.dimensions,
-                                 backend='serial')
+                                 backend=backend)
         d_arr = distances.self_distance_array(x0_arr, box=U.coord.dimensions,
-                                         backend='serial')
+                                         backend=backend)
         assert_allclose(d_ag, d_arr,
                         err_msg="AtomGroup and NumPy distances do not match")
 
