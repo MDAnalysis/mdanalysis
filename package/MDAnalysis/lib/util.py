@@ -2077,8 +2077,7 @@ def check_coords(*coord_names, **options):
                     if (coords.ndim not in (1, 2)) or (coords.shape[-1] != 3):
                         raise ValueError("{}(): {}.shape must be (3,) or"
                                          "(n, 3), got {}.".format(fname,
-                                                                  argname,
-                                                                  coords.shape))
+                                         argname, coords.shape))
                     if coords.ndim == 1:
                         is_single = True
                         if convert_single:
@@ -2094,7 +2093,8 @@ def check_coords(*coord_names, **options):
                             np.float32, order='C', copy=enforce_copy)
                     except ValueError:
                         errmsg = (f"{fname}(): {argname}.dtype must be"
-                                 f"convertible to float32, got {coords.dtype}.")
+                                  f"convertible to float32, got"
+                                  f" {coords.dtype}.")
                         raise TypeError(errmsg) from None
                 # coordinates should now be the right shape
                 ncoord = coords.shape[0]
