@@ -741,6 +741,17 @@ def test_issue_3725(box):
 
     np.testing.assert_allclose(self_da_serial, self_da_openmp)
 
+def conv_dtype_if_ndarr(a, dtype):
+    if isinstance(a, np.ndarray):
+        return a.astype(dtype)
+    else:
+        return a
+
+def convert_position_dtype_if_ndarray(a, b, c, d, dtype):
+    return conv_dtype_if_ndarr(a ,dtype), \
+    conv_dtype_if_ndarr(b ,dtype), \
+    conv_dtype_if_ndarr(c ,dtype), \
+    conv_dtype_if_ndarr(d ,dtype)
 
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestCythonFunctions(object):
@@ -782,10 +793,6 @@ class TestCythonFunctions(object):
         return tuple([u.atoms for u in universes])
 
     @staticmethod
-    def convert_position_dtype(a, b, c, d, dtype):
-        return a.astype(dtype), b.astype(dtype), c.astype(dtype), d.astype(dtype)
-
-    @staticmethod
     @pytest.fixture()
     def wronglength():
         # has a different length to other inputs and should raise ValueError
@@ -799,30 +806,13 @@ class TestCythonFunctions(object):
               ((4, 3, -2), (-2, 2, 2), (-5, 2, 2), (0, 2, 2))]  # multiple boxlengths
 
     @pytest.mark.parametrize('dtype', (np.float32, np.float64))
-    def test_bonds(self, positions, box, backend, dtype):
-        a, b, c, d = self.convert_position_dtype(*positions, dtype=dtype)
+    @pytest.mark.parametrize('pos', ['positions', 'positions_atomgroups'])
+    def test_bonds(self, box, backend, dtype, pos, request):
+        a, b, c, d = request.getfixturevalue(pos)
+        a, b, c, d = convert_position_dtype_if_ndarray(a, b, c, d, dtype)
         dists = distances.calc_bonds(a, b, backend=backend)
         assert_equal(len(dists), 4, err_msg="calc_bonds results have wrong length")
         dists_pbc = distances.calc_bonds(a, b, box=box, backend=backend)
-        #tests 0 length
-        assert_almost_equal(dists[0], 0.0, self.prec, err_msg="Zero length calc_bonds fail")
-        assert_almost_equal(dists[1], 1.7320508075688772, self.prec,
-                            err_msg="Standard length calc_bonds fail")  # arbitrary length check
-        # PBC checks, 2 without, 2 with
-        assert_almost_equal(dists[2], 11.0, self.prec,
-                            err_msg="PBC check #1 w/o box")  # pbc check 1, subtract single box length
-        assert_almost_equal(dists_pbc[2], 1.0, self.prec,
-                            err_msg="PBC check #1 with box")
-        assert_almost_equal(dists[3], 104.26888318, self.prec,  # pbc check 2, subtract multiple box
-                            err_msg="PBC check #2 w/o box")  # lengths in all directions
-        assert_almost_equal(dists_pbc[3], 3.46410072, self.prec,
-                            err_msg="PBC check #w with box")
-
-    def test_bonds_atomgroup(self, positions_atomgroups, box, backend, ):
-        ag_a, ag_b, _, _ = positions_atomgroups
-        dists = distances.calc_bonds(ag_a, ag_b, backend=backend)
-        assert_equal(len(dists), 4, err_msg="calc_bonds results have wrong length")
-        dists_pbc = distances.calc_bonds(ag_a, ag_b, box=box, backend=backend)
         #tests 0 length
         assert_almost_equal(dists[0], 0.0, self.prec, err_msg="Zero length calc_bonds fail")
         assert_almost_equal(dists[1], 1.7320508075688772, self.prec,
@@ -854,16 +844,12 @@ class TestCythonFunctions(object):
         with pytest.raises(ValueError):
             distances.calc_bonds(a, b, result=badresult, backend=backend)
 
-    def test_bonds_triclinic(self, positions, triclinic_box, backend):
-        a, b, c, d = positions
+    @pytest.mark.parametrize('dtype', (np.float32, np.float64))
+    @pytest.mark.parametrize('pos', ['positions', 'positions_atomgroups'])
+    def test_bonds_triclinic(self, triclinic_box, backend, dtype, pos, request):
+        a, b, c, d = request.getfixturevalue(pos)
+        a, b, c, d = convert_position_dtype_if_ndarray(a, b, c, d, dtype)
         dists = distances.calc_bonds(a, b, box=triclinic_box, backend=backend)
-        reference = np.array([0.0, 1.7320508, 1.4142136, 2.82842712])
-        assert_almost_equal(dists, reference, self.prec, err_msg="calc_bonds with triclinic box failed")
-    
-    def test_bonds_triclinic_atomgroup(self, positions_atomgroups,
-                                       triclinic_box, backend):
-        ag_a, ag_b, _, _ = positions_atomgroups
-        dists = distances.calc_bonds(ag_a, ag_b, box=triclinic_box, backend=backend)
         reference = np.array([0.0, 1.7320508, 1.4142136, 2.82842712])
         assert_almost_equal(dists, reference, self.prec, err_msg="calc_bonds with triclinic box failed")
 
@@ -887,23 +873,11 @@ class TestCythonFunctions(object):
         assert_almost_equal(result, reference, decimal=self.prec)
 
     @pytest.mark.parametrize('dtype', (np.float32, np.float64))
-    def test_angles(self, positions, backend, dtype):
-        a, b, c, d = self.convert_position_dtype(*positions, dtype=dtype)
+    @pytest.mark.parametrize('pos', ['positions', 'positions_atomgroups'])
+    def test_angles(self, backend, dtype, pos, request):
+        a, b, c, d = request.getfixturevalue(pos)
+        a, b, c, d = convert_position_dtype_if_ndarray(a, b, c, d, dtype)
         angles = distances.calc_angles(a, b, c, backend=backend)
-        # Check calculated values
-        assert_equal(len(angles), 4, err_msg="calc_angles results have wrong length")
-        #        assert_almost_equal(angles[0], 0.0, self.prec,
-        #                           err_msg="Zero length angle calculation failed") # What should this be?
-        assert_almost_equal(angles[1], np.pi, self.prec,
-                            err_msg="180 degree angle calculation failed")
-        assert_almost_equal(np.rad2deg(angles[2]), 90., self.prec,
-                            err_msg="Ninety degree angle in calc_angles failed")
-        assert_almost_equal(angles[3], 0.098174833, self.prec,
-                            err_msg="Small angle failed in calc_angles")
-
-    def test_angles_atomgroup(self, positions_atomgroups, backend):
-        ag_a, ag_b, ag_c, _ = positions_atomgroups
-        angles = distances.calc_angles(ag_a, ag_b, ag_c, backend=backend)
         # Check calculated values
         assert_equal(len(angles), 4, err_msg="calc_angles results have wrong length")
         #        assert_almost_equal(angles[0], 0.0, self.prec,
@@ -947,20 +921,11 @@ class TestCythonFunctions(object):
         assert_almost_equal(result, reference, decimal=4)
 
     @pytest.mark.parametrize('dtype', (np.float32, np.float64))
-    def test_dihedrals(self, positions, backend, dtype):
-        a, b, c, d = self.convert_position_dtype(*positions, dtype=dtype)
+    @pytest.mark.parametrize('pos', ['positions', 'positions_atomgroups'])
+    def test_dihedrals(self, backend, dtype, pos, request):
+        a, b, c, d = request.getfixturevalue(pos)
+        a, b, c, d = convert_position_dtype_if_ndarray(a, b, c, d, dtype)
         dihedrals = distances.calc_dihedrals(a, b, c, d, backend=backend)
-        # Check calculated values
-        assert_equal(len(dihedrals), 4, err_msg="calc_dihedrals results have wrong length")
-        assert np.isnan(dihedrals[0]), "Zero length dihedral failed"
-        assert np.isnan(dihedrals[1]), "Straight line dihedral failed"
-        assert_almost_equal(dihedrals[2], np.pi, self.prec, err_msg="180 degree dihedral failed")
-        assert_almost_equal(dihedrals[3], -0.50714064, self.prec,
-                            err_msg="arbitrary dihedral angle failed")
-
-    def test_dihedrals_atomgroup(self, positions_atomgroups, backend):
-        ag_a, ag_b, ag_c, ag_d = positions_atomgroups
-        dihedrals = distances.calc_dihedrals(ag_a, ag_b, ag_c, ag_d, backend=backend)
         # Check calculated values
         assert_equal(len(dihedrals), 4, err_msg="calc_dihedrals results have wrong length")
         assert np.isnan(dihedrals[0]), "Zero length dihedral failed"
@@ -1049,30 +1014,59 @@ class TestCythonFunctions(object):
 class Test_apply_PBC(object):
     prec = 6
 
-    def test_ortho_PBC(self, backend):
-        U = MDAnalysis.Universe(PSF, DCD)
+    @pytest.fixture()
+    def DCD_universe_pos(self, DCD_Universe):
+        U, _ = DCD_Universe
+        return U.atoms.positions
+
+    @pytest.fixture()
+    def DCD_universe_ag(self, DCD_Universe):
+        U, _ = DCD_Universe
+        return U.atoms
+    
+    @pytest.fixture()
+    def Triclinic_universe_pos_box(self, Triclinic_Universe):
+        U, _ = Triclinic_Universe
         atoms = U.atoms.positions
+        box = U.dimensions
+        return atoms, box
+
+    @pytest.fixture()
+    def Triclinic_universe_pos_box(self, Triclinic_Universe):
+        U, _ = Triclinic_Universe
+        atoms = U.atoms.positions
+        box = U.dimensions
+        return atoms, box
+
+    @pytest.fixture()
+    def Triclinic_universe_ag_box(self, Triclinic_Universe):
+        U, _ = Triclinic_Universe
+        atoms = U.atoms
+        box = U.dimensions
+        return atoms, box
+    
+    @pytest.mark.parametrize('pos', ['DCD_universe_pos', 'DCD_universe_ag'])
+    def test_ortho_PBC(self, backend, pos, request, DCD_universe_pos):
+        positions = request.getfixturevalue(pos)
         box = np.array([2.5, 2.5, 3.5, 90., 90., 90.], dtype=np.float32)
         with pytest.raises(ValueError):
-            cyth1 = distances.apply_PBC(atoms, box[:3], backend=backend)
-        cyth2 = distances.apply_PBC(atoms, box, backend=backend)
-        reference = atoms - np.floor(atoms / box[:3]) * box[:3]
+            cyth1 = distances.apply_PBC(positions, box[:3], backend=backend)
+        cyth2 = distances.apply_PBC(positions, box, backend=backend)
+        reference = DCD_universe_pos - np.floor(DCD_universe_pos / box[:3]) * box[:3]
 
         assert_almost_equal(cyth2, reference, self.prec,
                             err_msg="Ortho apply_PBC #2 failed comparison with np")
-        # also test atomgroup
-        ag = U.atoms
-        cyth3 = distances.apply_PBC(ag, box, backend=backend)
-        assert_almost_equal(cyth3, reference, self.prec,
-                            err_msg="Ortho AtomGroup apply_PBC #2 failed"
-                            " comparison with np")
 
-    def test_tric_PBC(self, backend):
-        U = MDAnalysis.Universe(TRIC)
-        atoms = U.atoms.positions
-        box = U.dimensions
-        ag = U.atoms
+    @pytest.mark.parametrize('pos', ['Triclinic_universe_pos_box',
+                        'Triclinic_universe_ag_box'])
+    def test_tric_PBC(self, backend, pos, request):
+        positions, box = request.getfixturevalue(pos)
         def numpy_PBC(coords, box):
+            # need this to allow both AtomGroup and array
+            if isinstance(coords, MDAnalysis.core.AtomGroup):
+                coords = coords.positions
+            else:
+                pass
             # move to fractional coordinates
             fractional = distances.transform_RtoS(coords, box)
             # move fractional coordinates to central cell
@@ -1080,17 +1074,12 @@ class Test_apply_PBC(object):
             # move back to real coordinates
             return distances.transform_StoR(fractional, box)
 
-        cyth1 = distances.apply_PBC(atoms, box, backend=backend)
-        # also test atomgroup
-        cyth_ag = distances.apply_PBC(ag, box, backend=backend)
+        cyth1 = distances.apply_PBC(positions, box, backend=backend)
 
-        reference = numpy_PBC(atoms, box)
+        reference = numpy_PBC(positions, box)
 
         assert_almost_equal(cyth1, reference, decimal=4,
                             err_msg="Triclinic apply_PBC failed comparison with np")
-        assert_almost_equal(cyth_ag, reference, decimal=4,
-                            err_msg="Triclinic AtomGroup apply_PBC failed" 
-                            "comparison with np")
 
         box = np.array([10, 7, 3, 45, 60, 90], dtype=np.float32)
         r = np.array([5.75, 0.36066014, 0.75], dtype=np.float32)
