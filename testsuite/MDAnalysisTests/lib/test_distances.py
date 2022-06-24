@@ -273,10 +273,12 @@ class TestDistanceArray(object):
         r = x - ref
         return np.sqrt(np.dot(r, r))
 
+    # test both AtomGroup and numpy array
     @pytest.mark.parametrize('pos', ['ref_system', 'ref_system_universe'])
     def test_noPBC(self, backend, ref_system, pos, request):
+        _, points, reference, _ = ref_system # reference values
         _, all, ref, _ = request.getfixturevalue(pos)
-        _, points, reference, _ = ref_system
+
         d = distances.distance_array(ref, all, backend=backend)
         assert_almost_equal(d, np.array([[
             self._dist(points[0], reference[0]),
@@ -284,19 +286,24 @@ class TestDistanceArray(object):
             self._dist(points[2], reference[0]),
             self._dist(points[3], reference[0])]
         ]))
-    
-    def test_noPBC_mixed_ag_arr(self, backend, ref_system_universe, ref_system):
-        _, points, ref, _ = ref_system
-        _, _, ref_ag, _ = ref_system_universe
-        d = distances.distance_array(ref_ag, points,
+
+    # cycle through combinations of numpy array and AtomGroup
+    @pytest.mark.parametrize('pos0', ['ref_system', 'ref_system_universe'] )
+    @pytest.mark.parametrize('pos1', ['ref_system', 'ref_system_universe'])
+    def test_noPBC_mixed_ag_arr(self, backend, ref_system, pos0, pos1, request):
+        _, points, reference, _ = ref_system # reference values
+        _, _, ref_val, _ = request.getfixturevalue(pos0)
+        _, points_val, _, _ = request.getfixturevalue(pos1)
+        d = distances.distance_array(ref_val, points_val,
                                      backend=backend)
         assert_almost_equal(d, np.array([[
-            self._dist(points[0], ref[0]),
-            self._dist(points[1], ref[0]),
-            self._dist(points[2], ref[0]),
-            self._dist(points[3], ref[0])]
+            self._dist(points[0], reference[0]),
+            self._dist(points[1], reference[0]),
+            self._dist(points[2], reference[0]),
+            self._dist(points[3], reference[0])]
         ]))
 
+    # test both AtomGroup and numpy array
     @pytest.mark.parametrize('pos', ['ref_system', 'ref_system_universe'])
     def test_PBC(self, backend, ref_system, pos, request):
         box, points, _, _ = ref_system
@@ -307,10 +314,14 @@ class TestDistanceArray(object):
         assert_almost_equal(d, np.array([[0., 0., 0., self._dist(points[3],
                             ref=[1, 1, 2])]]))
 
-    def test_PBC_mixed_ag_arr(self, backend, ref_system, ref_system_universe):
-        _, points, ref, _ = ref_system
-        box, _, ref_ag, _ = ref_system_universe
-        d = distances.distance_array(ref_ag, points,
+    # cycle through combinations of numpy array and AtomGroup
+    @pytest.mark.parametrize('pos0', ['ref_system', 'ref_system_universe'] )
+    @pytest.mark.parametrize('pos1', ['ref_system', 'ref_system_universe'])
+    def test_PBC_mixed_ag_arr(self, backend, ref_system, pos0, pos1, request):
+        box, points, _, _ = ref_system
+        _, _, ref_val, _ = request.getfixturevalue(pos0)
+        _, points_val, _, _ = request.getfixturevalue(pos1)
+        d = distances.distance_array(ref_val, points_val,
                                      box=box,
                                      backend=backend)
         assert_almost_equal(d, np.array([[0., 0., 0., self._dist(points[3],
@@ -354,7 +365,6 @@ def test_self_distance_array_overflow_exception():
 def DCD_Universe():
     universe = MDAnalysis.Universe(PSF, DCD)
     trajectory = universe.trajectory
-
     return universe, trajectory
 
 @pytest.fixture()
