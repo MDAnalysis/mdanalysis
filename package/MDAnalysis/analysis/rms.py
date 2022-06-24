@@ -713,33 +713,33 @@ class RMSD(AnalysisBase):
 
 
 def adjacency_matrix(atoms):
-        """
-        Compute adjacency matrix for selection based on bonds.
+    """
+    Compute adjacency matrix for selection based on bonds.
 
-        Parameters
-        ----------
-        atoms: AtomGroup
-            Selection
-        
-        Returns
-        -------
-        np.array
-            Adjacency matrix
-        """
-        n_atoms = len(atoms)
+    Parameters
+    ----------
+    atoms: AtomGroup
+        Selection
 
-        # Allocate adjacency matrix
-        A = np.zeros((n_atoms, n_atoms), dtype=int)
+    Returns
+    -------
+    np.array
+        Adjacency matrix
+    """
+    n_atoms = len(atoms)
 
-        # Map bond indices to selection adjacency matrix
-        b = atoms.bonds.to_indices()
-        _, indices_flat = np.unique(b, return_inverse=True)
-        indices = indices_flat.reshape(b.shape)
+    # Allocate adjacency matrix
+    A = np.zeros((n_atoms, n_atoms), dtype=int)
 
-        A = np.zeros((n_atoms, n_atoms), dtype=int)
-        A[indices[:, 0], indices[:, 1]] = 1
+    # Map bond indices to selection adjacency matrix
+    b = atoms.bonds.to_indices()
+    _, indices_flat = np.unique(b, return_inverse=True)
+    indices = indices_flat.reshape(b.shape)
 
-        return A + A.T
+    A = np.zeros((n_atoms, n_atoms), dtype=int)
+    A[indices[:, 0], indices[:, 1]] = 1
+
+    return A + A.T
 
 
 @due.dcite(
@@ -847,8 +847,7 @@ class SymmRMSD(AnalysisBase):
 
                     conda install spyrmsd -c conda-forge
 
-                """
-                )
+                """)
 
         # Get current coordinates
         self._mobile_coordinates64[:] = self.mobile_atoms.positions
