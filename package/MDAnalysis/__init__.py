@@ -156,10 +156,7 @@ __all__ = ['Universe', 'Writer', 'fetch_mmtf',
 import logging
 import warnings
 from typing import Dict
-from .coordinates.base import ProtoReader, WriterBase, ConverterBase
-from .topology.base import TopologyReaderBase
-from .selections.base import SelectionWriterBase
-from .core.topologyattrs import  TopologyAttr
+
 
 logger = logging.getLogger("MDAnalysis.__init__")
 
@@ -172,18 +169,18 @@ except ImportError:
 
 # Registry of Readers, Parsers and Writers known to MDAnalysis
 # Metaclass magic fills these as classes are declared.
-_READERS: Dict[str, ProtoReader] = {}
-_READER_HINTS: Dict[str, ProtoReader] = {}
-_SINGLEFRAME_WRITERS: Dict[str, WriterBase] = {}
-_MULTIFRAME_WRITERS: Dict[str, WriterBase] = {}
-_PARSERS: Dict[str, TopologyReaderBase] = {}
-_PARSER_HINTS: Dict[str, TopologyReaderBase] = {}
-_SELECTION_WRITERS: Dict[str, SelectionWriterBase] = {}
-_CONVERTERS: Dict[str, ConverterBase] = {}
+_READERS: Dict = {}
+_READER_HINTS: Dict = {}
+_SINGLEFRAME_WRITERS: Dict = {}
+_MULTIFRAME_WRITERS: Dict = {}
+_PARSERS: Dict = {}
+_PARSER_HINTS: Dict = {}
+_SELECTION_WRITERS: Dict = {}
+_CONVERTERS: Dict = {}
 # Registry of TopologyAttributes
-_TOPOLOGY_ATTRS: Dict[str, TopologyAttr] = {}   # {attrname: cls}
-_TOPOLOGY_TRANSPLANTS: Dict[str, TopologyAttr] = {}   # {name: [attrname, method, transplant class]}
-_TOPOLOGY_ATTRNAMES: Dict[str, TopologyAttr] = {}   # {lower case name w/o _ : name}
+_TOPOLOGY_ATTRS: Dict = {}   # {attrname: cls}
+_TOPOLOGY_TRANSPLANTS: Dict = {}   # {name: [attrname, method, transplant class]}
+_TOPOLOGY_ATTRNAMES: Dict = {}   # {lower case name w/o _ : name}
 
 
 # custom exceptions and warnings
