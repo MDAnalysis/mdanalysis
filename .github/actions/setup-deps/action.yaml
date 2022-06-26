@@ -73,7 +73,7 @@ inputs:
   coverage:
     default: 'coverage'
   pytest-cov:
-    default: 'pytest-cov'
+    default: 'pytest-cov<=2.8.1'
   pytest-xdist:
     default: 'pytest-xdist'
   # pip-install optional dependencies
