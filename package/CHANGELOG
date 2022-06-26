@@ -26,6 +26,8 @@ Enhancements
   * Additional logger.info output when per-frame analysis starts (PR #3710)
   * Timestep has been converted to a Cython Extension type
     (CZI Performance track, PR #3683)
+  * Add higher performance AnalysisBase derived Major and Minor pair distances to
+    overhauled nucleic acids module.
 
 Changes
 
