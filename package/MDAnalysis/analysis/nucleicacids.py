@@ -64,6 +64,7 @@ import MDAnalysis as mda
 from .distances import calc_bonds
 from .base import AnalysisBase, Results
 from MDAnalysis.core.groups import Residue
+from .dihedrals import Dihedral
 
 
 class NucPairDist(AnalysisBase):
@@ -222,9 +223,9 @@ class WatsonCrickDist(NucPairDist):
 class MinorPairDist(NucPairDist):
     r"""Minor-Pair basepair distance for selected residues over a trajectory.
 
-    Takes two lists of :class:`~MDAnalysis.core.groups.Residue` objects and calculates
-    the Watson-Crick distance between them over the trajectory. Bases are matched by
-    their index in the lists given as arguments.
+    Takes two lists of :class:`~MDAnalysis.core.groups.Residue` objects and
+    calculates the Watson-Crick distance between them over the trajectory.
+    Bases are matched by their index in the lists given as arguments.
 
     Parameters
     __________
@@ -298,9 +299,9 @@ class MinorPairDist(NucPairDist):
 class MajorPairDist(NucPairDist):
     r"""Minor-Pair basepair distance for selected residues over a trajectory.
 
-    Takes two lists of :class:`~MDAnalysis.core.groups.Residue` objects and calculates
-    the Watson-Crick distance between them over the trajectory. Bases are matched by
-    their index in the lists given as arguments.
+    Takes two lists of :class:`~MDAnalysis.core.groups.Residue` objects and
+    calculates the Watson-Crick distance between them over the trajectory.
+    Bases are matched by their index in the lists given as arguments.
 
     Parameters
     __________

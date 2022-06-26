@@ -23,7 +23,8 @@
 
 import MDAnalysis as mda
 import pytest
-from MDAnalysis.analysis.nucleicacids import WatsonCrickDist, MajorPairDist, MinorPairDist
+from MDAnalysis.analysis.nucleicacids import WatsonCrickDist,\
+    MajorPairDist, MinorPairDist
 from MDAnalysisTests.datafiles import RNA_PSF, RNA_PDB
 from numpy.testing import assert_allclose
 
@@ -44,6 +45,7 @@ def test_wc_dist(u):
     assert_allclose(WC.results[0][0], 4.3874702, atol=1e-3)
     assert_allclose(WC.results[1][0], 4.1716404, atol=1e-3)
 
+
 def test_minor_dist(u):
     strand: mda.AtomGroup = u.select_atoms("segid RNAA")
     strand1 = [strand.residues[2], strand.residues[19]]
@@ -54,6 +56,7 @@ def test_minor_dist(u):
 
     assert_allclose(MI.results[0][0], 15.06506, atol=1e-3)
     assert_allclose(MI.results[1][0], 3.219116, atol=1e-3)
+
 
 def test_major_dist(u):
     strand: mda.AtomGroup = u.select_atoms("segid RNAA")
