@@ -37,6 +37,8 @@ from ._augment import augment_coordinates, undo_augment
 from .util import unique_rows
 
 from MDAnalysis.lib.distances import apply_PBC
+import numpy.typing as npt
+from typing import Optional, List, Iterable, Union
 
 __all__ = [
     'PeriodicKDTree'
@@ -61,7 +63,7 @@ class PeriodicKDTree(object):
     :func:`MDAnalysis.lib.distances.undo_augment` function.
 
     """
-    def __init__(self, box=None, leafsize=10):
+    def __init__(self, box: npt.ArrayLike = None, leafsize: int = 10) -> None:
         """
 
         Parameters
@@ -95,7 +97,7 @@ class PeriodicKDTree(object):
         """
         return self.box is not None
 
-    def set_coords(self, coords, cutoff=None):
+    def set_coords(self, coords: npt.ArrayLike, cutoff: Union[float, None] = None) -> None:
         """Constructs KDTree from the coordinates
 
         Wrapping of coordinates to the primary unit cell is enforced
@@ -155,7 +157,7 @@ class PeriodicKDTree(object):
             self.ckdt = cKDTree(self.coords, self.leafsize)
         self._built = True
 
-    def search(self, centers, radius):
+    def search(self, centers: npt.ArrayLike, radius: float) -> npt.NDArray:
         """Search all points within radius from centers and their periodic images.
 
         All the centers coordinates are wrapped around the central cell
@@ -202,7 +204,7 @@ class PeriodicKDTree(object):
         self._indices = np.asarray(unique_int_1d(self._indices))
         return self._indices
 
-    def get_indices(self):
+    def get_indices(self) -> npt.NDArray:
         """Return the neighbors from the last query.
 
         Returns
@@ -212,7 +214,7 @@ class PeriodicKDTree(object):
         """
         return self._indices
 
-    def search_pairs(self, radius):
+    def search_pairs(self, radius: float) -> npt.NDArray:
         """Search all the pairs within a specified radius
 
         Parameters
@@ -245,7 +247,7 @@ class PeriodicKDTree(object):
             pairs = unique_rows(pairs)
         return pairs
 
-    def search_tree(self, centers, radius):
+    def search_tree(self, centers: npt.ArrayLike, radius: float) -> npt.NDArray:
         """
         Searches all the pairs within `radius` between `centers`
         and ``coords``
