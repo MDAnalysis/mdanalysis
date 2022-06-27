@@ -16,7 +16,7 @@ dependencies:
   - mmtf-python
   - mock
   - networkx
-  - numpy>=1.19
+  - numpy>=1.20
   - pytest
   - python==3.8
   - scikit-learn
