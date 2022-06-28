@@ -25,8 +25,9 @@ import numpy as np
 from MDAnalysisTests import datafiles
 from MDAnalysisTests.datafiles import (PDB_small, PDB, LAMMPSdata,
                                        LAMMPSdata2, LAMMPSdcd2,
-                                       LAMMPSdata_mini, LAMMPSdata_additional_columns,
-                                       PSF_TRICLINIC, DCD_TRICLINIC, 
+                                       LAMMPSdata_mini,
+                                       LAMMPSdata_additional_columns,
+                                       PSF_TRICLINIC, DCD_TRICLINIC,
                                        PSF_NAMD_TRICLINIC, DCD_NAMD_TRICLINIC)
 
 
@@ -230,6 +231,6 @@ class RefLAMMPSDataMini(object):
 
 class RefLAMMPSDataAdditionalColumns(object):
     charges = np.array([2.58855e-03, 6.91952e-05, 1.05548e-02, 4.20319e-03,
-                         9.19172e-03, 4.79777e-03, 6.36864e-04, 5.87125e-03,
+                        9.19172e-03, 4.79777e-03, 6.36864e-04, 5.87125e-03,
                         -2.18125e-03, 6.88910e-03])
     additional_data = np.array(5 * [1.1, 1.2])
