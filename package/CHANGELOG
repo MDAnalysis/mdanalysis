@@ -15,7 +15,7 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, ianmkenney, PicoCentauri, pgbarletta, p-j-smith, 
-         richardjgowers, lilyminium
+         richardjgowers, lilyminium, pstaerk
 
  * 2.7.0
 
@@ -29,6 +29,7 @@ Fixes
   * Fixes hydrogenbonds tutorial path to point to hbonds (Issue #4285, PR #4286)
 
 Enhancements
+  * Added parsing of arbitrary columns of the LAMMPS dump parser.
   * Adds external sidebar links (Issue #4296)
   * Updated lib.qcprot.CalcRMSDRotationalMatrix to accept either float32 or float64
     inputs (PR #4273, part of #3927)
