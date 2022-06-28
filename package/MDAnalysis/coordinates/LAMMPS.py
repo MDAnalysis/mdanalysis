@@ -736,11 +736,10 @@ class DumpReader(base.ReaderBase):
             for attribute_key in attrs:
                 # Skip the normal columns
                 if (attribute_key == "id" or
-                    attribute_key in
-                    self._coordtype_column_names[
-                        self.lammps_coordinate_convention
-                    ] or 
-                    attribute_key not in self._additional_columns):
+                        attribute_key in
+                        self._coordtype_column_names[
+                            self.lammps_coordinate_convention
+                        ] or attribute_key not in self._additional_columns):
                     continue
                 # Else this is an additional field
                 ts.data[attribute_key] = np.empty(self.n_atoms)
