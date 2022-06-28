@@ -76,7 +76,9 @@ from numpy.lib.utils import deprecate
 import numpy.typing as npt
 
 from typing import Union, Optional, Callable
-from ..core.groups import AtomGroup
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from ..core.groups import AtomGroup
 from .util import check_coords, check_box
 from .mdamath import triclinic_vectors
 from ._augment import augment_coordinates, undo_augment
@@ -181,8 +183,8 @@ def _check_result_array(result: npt.NDArray, shape: tuple) -> npt.NDArray:
 
 @check_coords('reference', 'configuration', reduce_result_if_single=False,
               check_lengths_match=False, allow_atomgroup=True)
-def distance_array(reference: Union[npt.NDArray, AtomGroup],
-                   configuration: Union[npt.NDArray, AtomGroup],
+def distance_array(reference: Union[npt.NDArray, 'AtomGroup'],
+                   configuration: Union[npt.NDArray, 'AtomGroup'],
                    box: Optional[npt.NDArray] = None,
                    result: Optional[npt.NDArray] = None,
                    backend: str = "serial") -> npt.NDArray:
@@ -269,7 +271,7 @@ def distance_array(reference: Union[npt.NDArray, AtomGroup],
 
 
 @check_coords('reference', reduce_result_if_single=False, allow_atomgroup=True)
-def self_distance_array(reference: Union[npt.NDArray, AtomGroup],
+def self_distance_array(reference: Union[npt.NDArray, 'AtomGroup'],
                         box: Optional[npt.NDArray] = None,
                         result: Optional[npt.NDArray] = None,
                         backend: str = "serial") -> npt.NDArray:
@@ -1266,8 +1268,8 @@ def transform_StoR(coords, box, backend="serial"):
 
 
 @check_coords('coords1', 'coords2', allow_atomgroup=True)
-def calc_bonds(coords1: Union[npt.NDArray, AtomGroup],
-               coords2: Union[npt.NDArray, AtomGroup],
+def calc_bonds(coords1: Union[npt.NDArray, 'AtomGroup'],
+               coords2: Union[npt.NDArray, 'AtomGroup'],
                box: Optional[npt.NDArray] = None,
                result: Optional[npt.NDArray] = None,
                backend: str = "serial") -> npt.NDArray:
@@ -1357,9 +1359,9 @@ def calc_bonds(coords1: Union[npt.NDArray, AtomGroup],
 
 
 @check_coords('coords1', 'coords2', 'coords3', allow_atomgroup=True)
-def calc_angles(coords1: Union[npt.NDArray, AtomGroup],
-                coords2: Union[npt.NDArray, AtomGroup],
-                coords3: Union[npt.NDArray, AtomGroup],
+def calc_angles(coords1: Union[npt.NDArray, 'AtomGroup'],
+                coords2: Union[npt.NDArray, 'AtomGroup'],
+                coords3: Union[npt.NDArray, 'AtomGroup'],
                 box: Optional[npt.NDArray] = None,
                 result: Optional[npt.NDArray] = None,
                 backend: str = "serial") -> npt.NDArray:
@@ -1459,10 +1461,10 @@ def calc_angles(coords1: Union[npt.NDArray, AtomGroup],
 
 
 @check_coords('coords1', 'coords2', 'coords3', 'coords4', allow_atomgroup=True)
-def calc_dihedrals(coords1: Union[npt.NDArray, AtomGroup],
-                   coords2: Union[npt.NDArray, AtomGroup],
-                   coords3: Union[npt.NDArray, AtomGroup],
-                   coords4: Union[npt.NDArray, AtomGroup],
+def calc_dihedrals(coords1: Union[npt.NDArray, 'AtomGroup'],
+                   coords2: Union[npt.NDArray, 'AtomGroup'],
+                   coords3: Union[npt.NDArray, 'AtomGroup'],
+                   coords4: Union[npt.NDArray, 'AtomGroup'],
                    box: Optional[npt.NDArray] = None,
                    result: Optional[npt.NDArray] = None,
                    backend: str = "serial") -> npt.NDArray:
@@ -1576,7 +1578,7 @@ def calc_dihedrals(coords1: Union[npt.NDArray, AtomGroup],
 
 
 @check_coords('coords', allow_atomgroup=True)
-def apply_PBC(coords: Union[npt.NDArray, AtomGroup],
+def apply_PBC(coords: Union[npt.NDArray, 'AtomGroup'],
               box: Optional[npt.NDArray] = None,
               backend: str = "serial") -> npt.NDArray:
     """Moves coordinates into the primary unit cell.

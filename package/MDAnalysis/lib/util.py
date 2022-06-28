@@ -214,7 +214,6 @@ import inspect
 from .picklable_file_io import pickle_open, bz2_pickle_open, gzip_pickle_open
 
 from ..exceptions import StreamWarning, DuplicateWarning
-import MDAnalysis as mda
 
 try:
     from ._cutil import unique_int_1d
@@ -2098,18 +2097,23 @@ def check_coords(*coord_names, **options):
                         raise TypeError(errmsg) from None
                 # coordinates should now be the right shape
                 ncoord = coords.shape[0]
-            elif isinstance(coords, mda.core.groups.AtomGroup):
-                if allow_atomgroup:
+            else:
+                try:
                     coords = coords.positions  # homogenise to a numpy array
                     ncoord = coords.shape[0]
-                else:
-                    raise TypeError("AtomGroup supplied as an argument, but "
+                    if allow_atomgroup:
+                        pass
+                    else:
+                        err = TypeError("AtomGroup supplied as an argument, but"
                                     "allow_atomgroup is False")
-            else:
-                raise TypeError("{}(): Parameter '{}' must be a numpy.ndarray "
+                        raise err
+                except TypeError:
+                    raise err
+                except:
+                    raise TypeError("{}(): Parameter '{}' must be a numpy.ndarray "
                                 " or an AtomGroup, got {}.".format(fname,
                                 argname, type(coords)))
-
+            
             return coords, is_single, ncoord
 
         @wraps(func)
