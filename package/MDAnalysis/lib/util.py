@@ -2101,9 +2101,7 @@ def check_coords(*coord_names, **options):
                 try:
                     coords = coords.positions  # homogenise to a numpy array
                     ncoord = coords.shape[0]
-                    if allow_atomgroup:
-                        pass
-                    else:
+                    if not allow_atomgroup:
                         err = TypeError("AtomGroup or other class with a"
                                         "`.positions` method supplied as an"
                                         "argument, but allow_atomgroup is"
@@ -2111,7 +2109,7 @@ def check_coords(*coord_names, **options):
                         raise err
                 except TypeError:
                     raise err
-                except:
+                except AttributeError:
                     raise TypeError("{}(): Parameter '{}' must be a"
                                     " numpy.ndarray or an AtomGroup,"
                                     " got {}.".format(fname,
