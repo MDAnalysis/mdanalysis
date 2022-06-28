@@ -4,8 +4,9 @@ source = MDAnalysis
 plugins = Cython.Coverage
 omit =
     */due.py
-    # */MDAnalysis/tests/*
-    # */legacy/*
+    */legacy/*
+concurrency = thread, multiprocessing
+parallel = True
 
 [report]
 exclude_lines =

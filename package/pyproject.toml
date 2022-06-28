@@ -1,0 +1,16 @@
+[build-system]
+# Minimum requirements for the build system to execute
+requires = [
+    "Cython>=0.28",
+    "packaging",
+    # lowest NumPy we can use for a given Python,
+    # except for more exotic platforms (linux/Mac ARM flavors)
+    "numpy==1.19; python_version=='3.8' and (platform_machine!='arm64' or platform_system!='Darwin') and platform_machine!='aarch64'",
+    "numpy==1.19.3; python_version=='3.9' and (platform_machine!='arm64' or platform_system!='Darwin') and platform_machine!='aarch64'",
+    "numpy==1.21.4; python_version=='3.10' and platform_python_implementation != 'PyPy'",
+    "setuptools",
+    "wheel",
+    # arm64 on Darwin supports Python 3.8 and above and requires numpy>=1.20.0
+    "numpy==1.20.0; python_version=='3.8' and platform_machine=='arm64' and platform_system=='Darwin'",
+    "numpy==1.20.0; python_version=='3.9' and platform_machine=='arm64' and platform_system=='Darwin'",
+]

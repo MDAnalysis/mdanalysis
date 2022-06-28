@@ -56,6 +56,7 @@ import gsd.fl
 import gsd.hoomd
 
 from . import base
+from MDAnalysis.lib.util import store_init_arguments
 
 
 class GSDReader(base.ReaderBase):
@@ -65,6 +66,7 @@ class GSDReader(base.ReaderBase):
     format = 'GSD'
     units = {'time': None, 'length': None}
 
+    @store_init_arguments
     def __init__(self, filename, **kwargs):
         """
         Parameters

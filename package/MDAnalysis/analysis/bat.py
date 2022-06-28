@@ -175,6 +175,7 @@ import logging
 import warnings
 
 import numpy as np
+import copy
 
 import MDAnalysis as mda
 from .base import AnalysisBase
@@ -499,7 +500,7 @@ class BAT(AnalysisBase):
         n_torsions = (self._ag.n_atoms - 3)
         bonds = bat_frame[9:n_torsions + 9]
         angles = bat_frame[n_torsions + 9:2 * n_torsions + 9]
-        torsions = bat_frame[2 * n_torsions + 9:]
+        torsions = copy.deepcopy(bat_frame[2 * n_torsions + 9:])
         # When appropriate, convert improper to proper torsions
         shift = torsions[self._primary_torsion_indices]
         shift[self._unique_primary_torsion_indices] = 0.

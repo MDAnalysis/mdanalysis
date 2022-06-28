@@ -27,7 +27,7 @@ from MDAnalysis.coordinates.base import (
     SingleFrameReaderBase,
     ReaderBase
 )
-from numpy.testing import assert_equal
+from numpy.testing import assert_equal, assert_allclose
 
 import pytest
 """
@@ -379,3 +379,18 @@ class TestSingleFrameReader(_Single):
     def test_read_frame(self, reader):
         with pytest.raises(IndexError):
             reader._read_frame(1)
+
+    def test_iter_rewind(self, reader):
+        # Issue #3423
+        # positions should be zero to start with
+        assert_allclose(reader.ts.positions, np.zeros((10, 3)))
+
+        # modify positions in place
+        reader.ts.positions = np.ones((10, 3))
+        assert_allclose(reader.ts.positions, np.ones((10, 3)))
+
+        # iterate the reader
+        for ts in reader:
+            assert_allclose(ts.positions, np.zeros((10, 3)))
+
+        assert_allclose(reader.ts.positions, np.zeros((10, 3)))

@@ -152,6 +152,7 @@ Class decorators
 ----------------
 
 .. autofunction:: cached
+.. autofunction:: store_init_arguments
 
 Function decorators
 -------------------
@@ -2372,7 +2373,7 @@ def check_box(box):
     box : array_like
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
 
     Returns
@@ -2417,3 +2418,42 @@ def check_box(box):
     if np.all(box[3:] == 90.):
         return 'ortho', box[:3]
     return 'tri_vecs', triclinic_vectors(box)
+
+
+def store_init_arguments(func):
+    """Decorator to store arguments passed to the init method of a class.
+
+    Arguments are stored as a dictionary in ``cls._kwargs``.
+
+    Notes
+    -----
+    * Only does a shallow copy, if the arguments are changed
+      by the class after passing through the decorator this will be
+      reflected in the stored arguments.
+    * If not empty, ``args`` is not unpacked and stored as-is in the
+      dictionary. If no ``args`` are passed, then no ``arg`` entry will be
+      stored in the dictionary.
+
+
+    .. versionadded:: 2.2.0
+    """
+    sig = inspect.signature(func)
+
+    @functools.wraps(func)
+    def wrapper(self, *args, **kwargs):
+        if not hasattr(self, "_kwargs"):
+            arg_values = sig.bind(self, *args, **kwargs)
+            arg_values.apply_defaults()
+            self._kwargs = {}
+            for key, arg in arg_values.arguments.items():
+                if key != "self":
+                    if key == "kwargs":
+                        for k, v in arg.items():
+                            self._kwargs[k] = v
+                    elif key == "args":
+                        if len(arg) > 0:
+                            self._kwargs[key] = arg
+                    else:
+                        self._kwargs[key] = arg
+        return func(self, *args, **kwargs)
+    return wrapper

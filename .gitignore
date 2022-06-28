@@ -50,3 +50,4 @@ benchmarks/results
 *~
 .idea
 .vscode
+*.lock

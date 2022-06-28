@@ -71,7 +71,7 @@ def test_transform_StoR_pass(coord_dtype):
 
     test_r = distances.transform_StoR(s, box)
 
-    assert_equal(original_r, test_r)
+    assert_allclose(original_r, test_r)
 
 
 def test_capped_distance_noresults():
@@ -298,6 +298,24 @@ class TestDistanceArray(object):
         assert_almost_equal(val, ref, decimal=6,
                             err_msg="Issue 151 not correct (PBC in distance array)")
 
+def test_distance_array_overflow_exception():
+    class FakeArray(np.ndarray):
+        shape = (4294967296, 3)  # upper limit is sqrt(UINT64_MAX)
+        ndim = 2
+    dummy_array = FakeArray([1, 2, 3])
+    box = np.array([100, 100, 100, 90., 90., 90.], dtype=np.float32)
+    with pytest.raises(ValueError, match="Size of resulting array"):
+        distances.distance_array.__wrapped__(dummy_array, dummy_array, box=box)
+
+def test_self_distance_array_overflow_exception():
+    class FakeArray(np.ndarray):
+        shape = (6074001001, 3)  # solution of x**2 -x = 2*UINT64_MAX
+        ndim = 2
+    dummy_array = FakeArray([1, 2, 3])
+    box = np.array([100, 100, 100, 90., 90., 90.], dtype=np.float32)
+    with pytest.raises(ValueError, match="Size of resulting array"):
+        distances.self_distance_array.__wrapped__(dummy_array, box=box)
+
 
 @pytest.fixture()
 def DCD_Universe():
@@ -405,7 +423,6 @@ class TestSelfDistanceArrayDCD(object):
                             err_msg="wrong minimum distance value with PBC")
         assert_almost_equal(d.max(), 52.4702570624190590, self.prec,
                             err_msg="wrong maximum distance value with PBC")
-
 
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestTriclinicDistances(object):
@@ -554,6 +571,29 @@ class TestTriclinicDistances(object):
         # check that our distance is different from the wassenaar distance as
         # expected.
         assert np.linalg.norm(point_a - point_b) != dist[0, 0]
+
+@pytest.mark.parametrize("box", 
+    [
+        None, 
+        np.array([10., 15., 20., 90., 90., 90.]), # otrho
+        np.array([10., 15., 20., 70.53571, 109.48542, 70.518196]), # TRIC
+    ]
+)
+def test_issue_3725(box):
+    """
+    Code from @hmacdope
+    https://github.com/MDAnalysis/mdanalysis/issues/3725
+    """
+    random_coords = np.random.uniform(-50, 50, (1000, 3))
+
+    self_da_serial = distances.self_distance_array(
+        random_coords, box=box, backend='serial'
+    )
+    self_da_openmp = distances.self_distance_array(
+        random_coords, box=box, backend='openmp'
+    )
+
+    np.testing.assert_allclose(self_da_serial, self_da_openmp)
 
 
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
