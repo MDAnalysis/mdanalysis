@@ -2025,7 +2025,7 @@ def check_coords(*coord_names, **options):
     array([1., 1., 1.], dtype=float32)
     >>>
     >>> # automatic handling of AtomGroups
-    >>> u = mda.Universe(PSF,DCD)
+    >>> u = mda.Universe(PSF, DCD)
     >>> coordsum(u.atoms, u.select_atoms("index 1 to 10"))
     ...
     >>>
