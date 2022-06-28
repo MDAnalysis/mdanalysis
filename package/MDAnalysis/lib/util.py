@@ -2104,15 +2104,18 @@ def check_coords(*coord_names, **options):
                     if allow_atomgroup:
                         pass
                     else:
-                        err = TypeError("AtomGroup supplied as an argument, but"
-                                    "allow_atomgroup is False")
+                        err = TypeError("AtomGroup or other class with a"
+                                        "`.positions` method supplied as an"
+                                        "argument, but allow_atomgroup is"
+                                        " False")
                         raise err
                 except TypeError:
                     raise err
                 except:
-                    raise TypeError("{}(): Parameter '{}' must be a numpy.ndarray "
-                                " or an AtomGroup, got {}.".format(fname,
-                                argname, type(coords)))
+                    raise TypeError("{}(): Parameter '{}' must be a"
+                                    " numpy.ndarray or an AtomGroup,"
+                                    " got {}.".format(fname,
+                                    argname, type(coords)))
             
             return coords, is_single, ncoord
 
