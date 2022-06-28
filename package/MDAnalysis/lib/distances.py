@@ -77,7 +77,7 @@ import numpy.typing as npt
 
 from typing import Union, Optional, Callable
 from typing import TYPE_CHECKING
-if TYPE_CHECKING:
+if TYPE_CHECKING: # pragma: no cover
     from ..core.groups import AtomGroup
 from .util import check_coords, check_box
 from .mdamath import triclinic_vectors
