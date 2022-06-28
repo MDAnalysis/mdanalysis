@@ -492,7 +492,7 @@ class DumpReader(base.ReaderBase):
     Then you may parse the additional columns `q` and `l` via.
 
     ```
-    u = mda.Universe('path_to_data', 'path_to_lammpsdump', 
+    u = mda.Universe('path_to_data', 'path_to_lammpsdump',
                      additional_columns=['q', 'l'])
     ```
 
@@ -549,7 +549,8 @@ class DumpReader(base.ReaderBase):
     .. versionadded:: 0.19.0
     """
     format = 'LAMMPSDUMP'
-    _conventions = ["auto", "unscaled", "scaled", "unwrapped", "scaled_unwrapped"]
+    _conventions = ["auto", "unscaled", "scaled", "unwrapped",
+                    "scaled_unwrapped"]
 
     _coordtype_column_names = {
         "unscaled": ["x", "y", "z"],
@@ -737,8 +738,9 @@ class DumpReader(base.ReaderBase):
                 if (attribute_key == "id" or
                     attribute_key in
                     self._coordtype_column_names[
-                    self.lammps_coordinate_convention]
-                    or attribute_key not in self._additional_columns):
+                        self.lammps_coordinate_convention
+                    ] or 
+                    attribute_key not in self._additional_columns):
                     continue
                 # Else this is an additional field
                 ts.data[attribute_key] = np.empty(self.n_atoms)

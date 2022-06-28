@@ -608,12 +608,12 @@ class TestLammpsDumpReader(object):
 
     def test_additional_columns(self, u_add, reference_additional_columns):
         # this is the universe with just q
-        charges = u_add[0].trajectory[0].data['q']  
+        charges = u_add[0].trajectory[0].data['q']
         # this is the universe with both
         second = u_add[1].trajectory[0].data['l']
-        assert_almost_equal(charges, 
+        assert_almost_equal(charges,
                             RefLAMMPSDataAdditionalColumns.charges)
-        assert_almost_equal(second, 
+        assert_almost_equal(second,
                             RefLAMMPSDataAdditionalColumns.additional_data)
 
 
