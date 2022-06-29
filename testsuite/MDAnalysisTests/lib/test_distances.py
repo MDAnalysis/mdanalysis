@@ -326,8 +326,8 @@ class TestDistanceArray(object):
         d = distances.distance_array(ref_val, points_val,
                                      box=box,
                                      backend=backend)
-        assert_almost_equal(d, np.array([[0., 0., 0., self._dist(points[3],
-                            ref=[1, 1, 2])]]))
+        assert_almost_equal(
+            d, np.array([[0., 0., 0., self._dist(points[3], ref=[1, 1, 2])]]))
 
     def test_PBC2(self, backend):
         a = np.array([7.90146923, -13.72858524, 3.75326586], dtype=np.float32)
