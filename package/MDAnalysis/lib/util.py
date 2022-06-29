@@ -2111,7 +2111,7 @@ def check_coords(*coord_names, **options):
                     raise TypeError(f"{fname}(): Parameter '{argname}' must be"
                                     f" a numpy.ndarray or an AtomGroup,"
                                     f" got {type(coords)}.")
-            
+
             return coords, is_single, ncoord
 
         @wraps(func)

@@ -369,13 +369,15 @@ def DCD_Universe():
     trajectory = universe.trajectory
     return universe, trajectory
 
-# second independent universe required for 
+
+# second independent universe required for
 # TestDistanceArrayDCD_TRIC.test_atomgroup_simple
 @pytest.fixture()
 def DCD_Universe2():
     universe = MDAnalysis.Universe(PSF, DCD)
     trajectory = universe.trajectory
     return universe, trajectory
+
 
 @pytest.fixture()
 def Triclinic_Universe():
@@ -767,9 +769,9 @@ def conv_dtype_if_ndarr(a, dtype):
 
 
 def convert_position_dtype_if_ndarray(a, b, c, d, dtype):
-    return (conv_dtype_if_ndarr(a, dtype), 
-            conv_dtype_if_ndarr(b, dtype), 
-            conv_dtype_if_ndarr(c, dtype), 
+    return (conv_dtype_if_ndarr(a, dtype),
+            conv_dtype_if_ndarr(b, dtype),
+            conv_dtype_if_ndarr(c, dtype),
             conv_dtype_if_ndarr(d, dtype))
 
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
@@ -1073,7 +1075,8 @@ class Test_apply_PBC(object):
         with pytest.raises(ValueError):
             cyth1 = distances.apply_PBC(positions, box[:3], backend=backend)
         cyth2 = distances.apply_PBC(positions, box, backend=backend)
-        reference = DCD_universe_pos - np.floor(DCD_universe_pos / box[:3]) * box[:3]
+        reference = (DCD_universe_pos - 
+                     np.floor(DCD_universe_pos / box[:3]) * box[:3])
 
         assert_almost_equal(cyth2, reference, self.prec,
                             err_msg="Ortho apply_PBC #2 failed comparison with np")
