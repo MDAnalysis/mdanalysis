@@ -2107,8 +2107,6 @@ def check_coords(*coord_names, **options):
                                         "argument, but allow_atomgroup is"
                                         " False")
                         raise err
-                except TypeError:
-                    raise err
                 except AttributeError:
                     raise TypeError("{}(): Parameter '{}' must be a"
                                     " numpy.ndarray or an AtomGroup,"
