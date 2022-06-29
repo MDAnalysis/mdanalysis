@@ -484,6 +484,7 @@ class DumpReader(base.ReaderBase):
     saved in a LAMMPS dump such as
 
     .. code-block:: python
+
         ITEM: ATOMS id x y z q l
         1 2.84 8.17 -25 0.00258855 1.1
         2 7.1 8.17 -25 6.91952e-05 1.2
@@ -491,6 +492,7 @@ class DumpReader(base.ReaderBase):
     Then you may parse the additional columns `q` and `l` via.
 
     .. code-block:: python
+
         u = mda.Universe('path_to_data', 'path_to_lammpsdump',
                          additional_columns=['q', 'l'])
 
@@ -498,6 +500,7 @@ class DumpReader(base.ReaderBase):
     (as the value of the `data` dictionary, sorted by the ids of the atoms).
 
     .. code-block:: python
+
         for ts in u.trajectory:
             charges = ts.data['q'] # Access the additional data, sorted by the id
             ls = ts.data['l']
