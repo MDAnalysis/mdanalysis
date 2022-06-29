@@ -483,28 +483,25 @@ class DumpReader(base.ReaderBase):
     name of the data column. For instance, if you have time-dependent charges
     saved in a LAMMPS dump such as
 
-    ```
-    ITEM: ATOMS id x y z q l
-    1 2.84 8.17 -25 0.00258855 1.1
-    2 7.1 8.17 -25 6.91952e-05 1.2
-    ```
+    .. code-block:: python
+        ITEM: ATOMS id x y z q l
+        1 2.84 8.17 -25 0.00258855 1.1
+        2 7.1 8.17 -25 6.91952e-05 1.2
 
     Then you may parse the additional columns `q` and `l` via.
 
-    ```
-    u = mda.Universe('path_to_data', 'path_to_lammpsdump',
-                     additional_columns=['q', 'l'])
-    ```
+    .. code-block:: python
+        u = mda.Universe('path_to_data', 'path_to_lammpsdump',
+                         additional_columns=['q', 'l'])
 
     The additional data is then available for each time step via
     (as the value of the `data` dictionary, sorted by the ids of the atoms).
 
-    ```
-    for ts in u.trajectory:
-        charges = ts.data['q'] # Access the additional data, sorted by the id
-        ls = ts.data['l']
+    .. code-block:: python
+        for ts in u.trajectory:
+            charges = ts.data['q'] # Access the additional data, sorted by the id
+            ls = ts.data['l']
         ...
-    ```
 
     Parameters
     ----------
