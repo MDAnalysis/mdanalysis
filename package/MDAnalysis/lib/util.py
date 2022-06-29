@@ -2108,10 +2108,9 @@ def check_coords(*coord_names, **options):
                                         " False")
                         raise err
                 except AttributeError:
-                    raise TypeError("{}(): Parameter '{}' must be a"
-                                    " numpy.ndarray or an AtomGroup,"
-                                    " got {}.".format(fname,
-                                    argname, type(coords)))
+                    raise TypeError(f"{fname}(): Parameter '{argname}' must be"
+                                    f" a numpy.ndarray or an AtomGroup,"
+                                    f" got {type(coords)}.")
             
             return coords, is_single, ncoord
 
