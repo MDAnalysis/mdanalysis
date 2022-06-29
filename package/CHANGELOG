@@ -13,12 +13,13 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, PicoCentauri, orbeckst, hmacdope, yuxuanzhuang
+??/??/?? IAlibay, PicoCentauri, orbeckst, hmacdope, yuxuanzhuang, rmeli, miss77jun
 
  * 2.3.0
 
 Fixes
   * Fixes awk call in deploy.yaml tests for macos runners (Issue #3693)
+  * add a 0.5 for correct midpoints in hole analysis (Issue #3715)
 
 Enhancements
   * Add `norm` parameter to InterRDF, InterRDF_s to normalize as rdf,
@@ -30,6 +31,8 @@ Enhancements
   * Optimize topology serialization/construction by lazy-building _RA and _SR.
 
 Changes
+  * Narrowed variable scope to reduce use of OpenMP `private` clause (PR #3706, PR
+    #3728)
 
 Deprecations
   * Deprecate `density` parameter in favor of `norm` in InterRDF_s
