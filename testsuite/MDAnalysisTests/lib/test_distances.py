@@ -369,6 +369,13 @@ def DCD_Universe():
     trajectory = universe.trajectory
     return universe, trajectory
 
+# second independent universe required for 
+# TestDistanceArrayDCD_TRIC.test_atomgroup_simple
+@pytest.fixture()
+def DCD_Universe2():
+    universe = MDAnalysis.Universe(PSF, DCD)
+    trajectory = universe.trajectory
+    return universe, trajectory
 
 @pytest.fixture()
 def Triclinic_Universe():
@@ -432,12 +439,12 @@ class TestDistanceArrayDCD_TRIC(object):
         assert_almost_equal(d.max(), 53.572192429459619, self.prec,
                             err_msg="wrong maximum distance value with PBC")
 
-    def test_atomgroup_simple(self, DCD_Universe, backend):
+    def test_atomgroup_simple(self, DCD_Universe, DCD_Universe2, backend):
         # need two copies as moving ts updates underlying array on atomgroup
         U1, trajectory1 = DCD_Universe
-        U2 = MDAnalysis.Universe(PSF, DCD)
-        trajectory2 = U2.trajectory
+        U2, trajectory2 = DCD_Universe2
         trajectory1.rewind()
+        trajectory2.rewind()
         x0 = U1.select_atoms("all")
         trajectory2[10]
         x1 = U2.select_atoms("all")
