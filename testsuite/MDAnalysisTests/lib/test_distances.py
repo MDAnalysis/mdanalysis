@@ -262,8 +262,8 @@ def ref_system_universe(ref_system):
     u = MDAnalysis.Universe.empty(points.shape[0], trajectory=True)
     u.atoms.positions = points
     u.trajectory.ts.dimensions = box
-    return box, u.atoms, u.select_atoms("index 0"), u.select_atoms("index 1 to"
-                                                                   " 3")
+    return (box, u.atoms, u.select_atoms("index 0"),
+            u.select_atoms("index 1 to 3"))
 
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestDistanceArray(object):
