@@ -767,10 +767,10 @@ def conv_dtype_if_ndarr(a, dtype):
 
 
 def convert_position_dtype_if_ndarray(a, b, c, d, dtype):
-    return conv_dtype_if_ndarr(a, dtype), \
-    conv_dtype_if_ndarr(b, dtype), \
-    conv_dtype_if_ndarr(c, dtype), \
-    conv_dtype_if_ndarr(d, dtype)
+    return (conv_dtype_if_ndarr(a, dtype), 
+            conv_dtype_if_ndarr(b, dtype), 
+            conv_dtype_if_ndarr(c, dtype), 
+            conv_dtype_if_ndarr(d, dtype))
 
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestCythonFunctions(object):
