@@ -1075,7 +1075,7 @@ class Test_apply_PBC(object):
         with pytest.raises(ValueError):
             cyth1 = distances.apply_PBC(positions, box[:3], backend=backend)
         cyth2 = distances.apply_PBC(positions, box, backend=backend)
-        reference = (DCD_universe_pos - 
+        reference = (DCD_universe_pos -
                      np.floor(DCD_universe_pos / box[:3]) * box[:3])
 
         assert_almost_equal(cyth2, reference, self.prec,
