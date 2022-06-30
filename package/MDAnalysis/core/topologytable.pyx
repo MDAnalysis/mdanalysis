@@ -23,13 +23,14 @@
 #
 from libcpp.vector cimport vector
 from libcpp.map cimport map
+from ..lib._cutil import unique_int_1d
 import numpy as np
 cimport numpy as cnp
 cnp.import_array()
 
 
 cdef class TopologyTable:
-    def __cinit__(self, unsigned int nval, unsigned int npair, int[:,:] val,  int[:] typ, int[:] guess, int[:] order,  **kwargs):
+    def __cinit__(self, unsigned int nval, unsigned int npair, int[:,:] val, int[:] flat_vals,  int[:] typ, int[:] guess, int[:] order,  **kwargs):
         """Initialise C++ level parameters of a TopologyTable
 
         Parameters
@@ -45,6 +46,8 @@ cdef class TopologyTable:
         print("cinit")
         self._nval = nval
         self._npair = npair
+        self._unique = unique_int_1d(flat_vals)
+        self._nunique = unique.shape[0]
         self._construct_empty_tables()
         self._parse(val, typ, guess, order)
         print("parsed")
@@ -57,28 +60,22 @@ cdef class TopologyTable:
         # for _ in range(10):
         #     tmp.push_back(0)
 
-        for i in range(self._nval):
+        for i in range(self._nunique):
             self.values.push_back(tmp)
             self.types.push_back(tmp)
             self.guessed.push_back(tmp)
-        print(i)
     
     def _parse(self, int[:,:] val,  int[:] typ, int[:] guess, int[:] ord):
         cdef int i
-        for i in range(self._nval):
-            # print(f"{i}, {val[i,0]}, {val[i,1]}")
-            self.vmap_fwd[val[i,0]] = i
-            self.vmap_rev[i] = val[i,0]
-        for i in range(self._nval):
-            self.values[self.vmap_fwd[val[i,0]]].push_back(val[i,1])
-            self.values[self.vmap_fwd[val[i,1]]].push_back(val[i,0])
-
-
+        for i in range(self._npair):
+            print(f" {i}, {val[i,0]}, {val[i,1]}")
+            self.values[val[i,0]].push_back(val[i,1])
+            self.values[val[i,1]].push_back(val[i,0])  
 
 
     def print_values(self):
         for i in range(self._nval):
-            print(f" {i} {self.vmap_rev[i]} {self.values[i]}")
+            print(f" {i} {self.values[i]}")
 
     def print_types(self):
         for i in range(self._nval):

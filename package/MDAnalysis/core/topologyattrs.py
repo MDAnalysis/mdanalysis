@@ -2482,7 +2482,7 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
 
     @_check_connection_values
     def __init__(self, values, types=None, guessed=False, order=None):
-        self.values = np.asarray(values, dtype=np.int32)
+        self.values = values
         if types is None:
             types = [-1] * len(values)
         self.types = types
@@ -2495,7 +2495,9 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
             order = [-1] * len(values)
         self.order = order
         print(self.values)
-        self._toptable = TopologyTable(len(values), 2, self.values, np.asarray(self.types, dtype=np.int32),
+        vals_arr = np.asarray(self.values,dtype=np.int32)
+        print(vals_arr.max())
+        self._toptable = TopologyTable(vals_arr.max(), len(vals_arr), vals_arr, vals_arr.ravel, np.asarray(self.types, dtype=np.int32),
                              np.asarray(self._guessed, dtype=np.int32), np.asarray(self.order, dtype=np.int32))
         self._toptable.print_values()
         self._cache = dict()

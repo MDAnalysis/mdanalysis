@@ -29,6 +29,9 @@ cdef class TopologyTable:
 
     cdef unsigned int _nval
     cdef unsigned int _npair
+    cdef unsigned int _nunique
+
+    cdef np.ndarray _unique
 
     cdef map[int,int] vmap_fwd
     cdef map[int,int] vmap_rev
