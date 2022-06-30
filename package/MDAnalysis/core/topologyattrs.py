@@ -2497,7 +2497,7 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
         print(self.values)
         vals_arr = np.asarray(self.values,dtype=np.int32)
         print(vals_arr.max())
-        self._toptable = TopologyTable(vals_arr.max(), len(vals_arr), vals_arr, vals_arr.ravel, np.asarray(self.types, dtype=np.int32),
+        self._toptable = TopologyTable(len(vals_arr), 2, vals_arr, vals_arr.ravel().astype(np.intp), np.asarray(self.types, dtype=np.int32),
                              np.asarray(self._guessed, dtype=np.int32), np.asarray(self.order, dtype=np.int32))
         self._toptable.print_values()
         self._cache = dict()

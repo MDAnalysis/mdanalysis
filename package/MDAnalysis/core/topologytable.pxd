@@ -23,6 +23,9 @@
 
 from libcpp.vector cimport vector
 from libcpp.map cimport map
+import numpy as np
+cimport numpy as cnp
+cnp.import_array()
 
 cdef class TopologyTable:
 
@@ -31,7 +34,7 @@ cdef class TopologyTable:
     cdef unsigned int _npair
     cdef unsigned int _nunique
 
-    cdef np.ndarray _unique
+    cdef cnp.ndarray _unique
 
     cdef map[int,int] vmap_fwd
     cdef map[int,int] vmap_rev

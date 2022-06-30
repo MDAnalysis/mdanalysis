@@ -30,7 +30,7 @@ cnp.import_array()
 
 
 cdef class TopologyTable:
-    def __cinit__(self, unsigned int nval, unsigned int npair, int[:,:] val, int[:] flat_vals,  int[:] typ, int[:] guess, int[:] order,  **kwargs):
+    def __cinit__(self, unsigned int nval, unsigned int npair, int[:,:] val, cnp.intp_t[:] flat_vals,  int[:] typ, int[:] guess, int[:] order,  **kwargs):
         """Initialise C++ level parameters of a TopologyTable
 
         Parameters
@@ -47,7 +47,7 @@ cdef class TopologyTable:
         self._nval = nval
         self._npair = npair
         self._unique = unique_int_1d(flat_vals)
-        self._nunique = unique.shape[0]
+        self._nunique = self._unique.shape[0]
         self._construct_empty_tables()
         self._parse(val, typ, guess, order)
         print("parsed")
@@ -64,29 +64,31 @@ cdef class TopologyTable:
             self.values.push_back(tmp)
             self.types.push_back(tmp)
             self.guessed.push_back(tmp)
+            self.vmap_fwd[self._unique[i]] = i
+            self.vmap_rev[i] = self._unique[i]
     
     def _parse(self, int[:,:] val,  int[:] typ, int[:] guess, int[:] ord):
         cdef int i
-        for i in range(self._npair):
+        for i in range(self._nval):
             print(f" {i}, {val[i,0]}, {val[i,1]}")
-            self.values[val[i,0]].push_back(val[i,1])
-            self.values[val[i,1]].push_back(val[i,0])  
+            self.values[self.vmap_fwd[val[i,0]]].push_back(val[i,1])
+            self.values[self.vmap_fwd[val[i,1]]].push_back(val[i,0])  
 
 
     def print_values(self):
-        for i in range(self._nval):
-            print(f" {i} {self.values[i]}")
+        for i in range(self._nunique):
+            print(f" {i} {self.vmap_rev[i]} {self.values[i]}")
 
     def print_types(self):
-        for i in range(self._nval):
+        for i in range(self._nunique):
             print(self.types[i])
 
     def print_guessed(self):
-        for i in range(self._nval):
+        for i in range(self._nunique):
             print(self.guessed[i])
 
     def print_order(self):
-        for i in range(self._nval):
+        for i in range(self._nunique):
             print(self.order[i])
 
 
