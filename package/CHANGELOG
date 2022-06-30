@@ -13,20 +13,31 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, yuxuanzhuang
+??/??/?? IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli, miss77jun,
+         yuxuanzhuang
 
  * 2.3.0
 
 Fixes
   * Fixes awk call in deploy.yaml tests for macos runners (Issue #3693)
+  * add a 0.5 for correct midpoints in hole analysis (Issue #3715)
   * Fix reading error when PDB CONECT records are corrupt. (Issue #988)
   * Fix writing unusable PDB CONECT records with index>100000. (Issue #988)
 
 Enhancements
+  * Add `norm` parameter to InterRDF, InterRDF_s to normalize as rdf,
+    number density or do not normalize at all. (Issue #3687)
+  * Additional logger.info output when per-frame analysis starts (PR #3710)
+  * Timestep has been converted to a Cython Extension type
+    (CZI Performance track, PR #3683)
 
 Changes
+  * Narrowed variable scope to reduce use of OpenMP `private` clause (PR #3706, PR
+    #3728)
 
 Deprecations
+  * Deprecate `density` parameter in favor of `norm` in InterRDF_s
+    (Issue #3687)
 
 
 06/01/22 IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy,

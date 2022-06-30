@@ -175,9 +175,6 @@ on the sub-system.
 Classes
 =======
 
-.. autoclass:: Timestep
-   :members:
-   :inherited-members:
 
 .. autoclass:: MemoryReader
    :members:
@@ -191,7 +188,7 @@ import warnings
 import copy
 
 from . import base
-from .base import Timestep
+from .timestep import Timestep
 
 
 # These methods all pass in an existing *view* onto a larger array

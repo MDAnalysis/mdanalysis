@@ -133,7 +133,7 @@ class PositionAverager(TransformationBase):
 
     Returns
     -------
-    MDAnalysis.coordinates.base.Timestep
+    MDAnalysis.coordinates.timestep.Timestep
 
 
     .. versionchanged:: 2.0.0
