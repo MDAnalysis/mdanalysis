@@ -21,15 +21,15 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 #
-
-import cython
+from libcpp.vector cimport vector
+from libcpp.map cimport map
 import numpy as np
 cimport numpy as cnp
 cnp.import_array()
 
 
 cdef class TopologyTable:
-     def __cinit__(self, unsigned int order, **kwargs):
+    def __cinit__(self, unsigned int nval, unsigned int npair, int[:,:] val,  int[:] typ, int[:] guess, int[:] order,  **kwargs):
         """Initialise C++ level parameters of a TopologyTable
 
         Parameters
@@ -40,5 +40,59 @@ cdef class TopologyTable:
         .. versionadded:: 2.3.0
            Initialise C++ level parameters
         """
+    
         # c++ level objects
-        self._order = order
+        print("cinit")
+        self._nval = nval
+        self._npair = npair
+        self._construct_empty_tables()
+        self._parse(val, typ, guess, order)
+        print("parsed")
+    
+    cdef _construct_empty_tables(self):
+        cdef size_t i
+        cdef vector[int] tmp
+        tmp.reserve(8)
+        # cdef int t
+        # for _ in range(10):
+        #     tmp.push_back(0)
+
+        for i in range(self._nval):
+            self.values.push_back(tmp)
+            self.types.push_back(tmp)
+            self.guessed.push_back(tmp)
+        print(i)
+    
+    def _parse(self, int[:,:] val,  int[:] typ, int[:] guess, int[:] ord):
+        cdef int i
+        for i in range(self._nval):
+            # print(f"{i}, {val[i,0]}, {val[i,1]}")
+            self.vmap_fwd[val[i,0]] = i
+            self.vmap_rev[i] = val[i,0]
+        for i in range(self._nval):
+            self.values[self.vmap_fwd[val[i,0]]].push_back(val[i,1])
+            self.values[self.vmap_fwd[val[i,1]]].push_back(val[i,0])
+
+
+
+
+    def print_values(self):
+        for i in range(self._nval):
+            print(f" {i} {self.vmap_rev[i]} {self.values[i]}")
+
+    def print_types(self):
+        for i in range(self._nval):
+            print(self.types[i])
+
+    def print_guessed(self):
+        for i in range(self._nval):
+            print(self.guessed[i])
+
+    def print_order(self):
+        for i in range(self._nval):
+            print(self.order[i])
+
+
+
+    
+

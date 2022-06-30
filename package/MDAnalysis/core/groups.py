@@ -408,6 +408,7 @@ class _MutableBase(object):
 
         .. versionadded:: 1.1.0
         """
+        print("get connections called")
         # AtomGroup has handy error messages for missing attributes
         ugroup = getattr(self.universe.atoms, typename)
         if not ugroup:

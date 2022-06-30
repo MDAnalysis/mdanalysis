@@ -56,6 +56,7 @@ from .groups import (ComponentBase, GroupBase,
                      Atom, Residue, Segment,
                      AtomGroup, ResidueGroup, SegmentGroup,
                      check_wrap_and_unwrap, _pbc_to_wrap)
+from .topologytable import TopologyTable
 from .. import _TOPOLOGY_ATTRS, _TOPOLOGY_TRANSPLANTS, _TOPOLOGY_ATTRNAMES
 
 
@@ -2481,9 +2482,9 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
 
     @_check_connection_values
     def __init__(self, values, types=None, guessed=False, order=None):
-        self.values = values
+        self.values = np.asarray(values, dtype=np.int32)
         if types is None:
-            types = [None] * len(values)
+            types = [-1] * len(values)
         self.types = types
         if guessed in (True, False):
             # if single value passed, multiply this across
@@ -2491,8 +2492,12 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
             guessed = [guessed] * len(values)
         self._guessed = guessed
         if order is None:
-            order = [None] * len(values)
+            order = [-1] * len(values)
         self.order = order
+        print(self.values)
+        self._toptable = TopologyTable(len(values), 2, self.values, np.asarray(self.types, dtype=np.int32),
+                             np.asarray(self._guessed, dtype=np.int32), np.asarray(self.order, dtype=np.int32))
+        self._toptable.print_values()
         self._cache = dict()
 
     def copy(self):
@@ -2511,10 +2516,17 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
         """Lazily built mapping of atoms:bonds"""
         bd = defaultdict(list)
 
+        # print(self.values)
+        # print(self.types)
+        # print(self._guessed)
+        # print(self.order)
         for b, t, g, o in zip(self.values, self.types,
                               self._guessed, self.order):
+            # print(f"b {b} t {t} g {g} o {o}")
             for a in b:
                 bd[a].append((b, t, g, o))
+                # print(f"a {a}" )
+        # raise Exception
         return bd
 
     def set_atoms(self, ag):
@@ -2530,6 +2542,8 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
         ag : AtomGroup
 
         """
+        print("get_atoms called")
+        print(self._bondDict)
         try:
             unique_bonds = set(itertools.chain(
                 *[self._bondDict[a] for a in ag.ix]))

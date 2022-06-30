@@ -21,7 +21,27 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 
 
+from libcpp.vector cimport vector
+from libcpp.map cimport map
+
 cdef class TopologyTable:
 
 
-    cdef unsigned int _order
+    cdef unsigned int _nval
+    cdef unsigned int _npair
+
+    cdef map[int,int] vmap_fwd
+    cdef map[int,int] vmap_rev
+
+
+    cdef vector[vector[int]] values
+    cdef vector[vector[int]] types
+    cdef vector[vector[int]] guessed
+    cdef vector[vector[int]] order
+
+
+    cdef _construct_empty_tables(self)
+
+    # cdef _parse(self, int[:,:] val,  int[:] typ, int[:] guess, int[:] ord)
+
+
