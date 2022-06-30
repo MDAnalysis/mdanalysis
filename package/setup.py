@@ -419,6 +419,13 @@ def extensions(config):
                          define_macros=define_macros,
                          extra_compile_args=cpp_extra_compile_args,
                          extra_link_args= cpp_extra_link_args)
+    topologytable = MDAExtension('MDAnalysis.core.topologytable',
+                         sources=['MDAnalysis/core/topologytable' + cpp_source_suffix],
+                         language='c++',
+                         include_dirs=include_dirs,
+                         define_macros=define_macros,
+                         extra_compile_args=cpp_extra_compile_args,
+                         extra_link_args= cpp_extra_link_args)
 
 
     encore_utils = MDAExtension('MDAnalysis.analysis.encore.cutils',
@@ -447,9 +454,11 @@ def extensions(config):
                              define_macros=define_macros,
                              extra_compile_args=cpp_extra_compile_args,
                              extra_link_args= cpp_extra_link_args)
+
     pre_exts = [libdcd, distances, distances_omp, qcprot,
                 transformation, libmdaxdr, util, encore_utils,
-                ap_clustering, spe_dimred, cutil, augment, nsgrid, timestep]
+                ap_clustering, spe_dimred, cutil, augment, nsgrid, timestep,
+                topologytable]
 
 
     cython_generated = []
