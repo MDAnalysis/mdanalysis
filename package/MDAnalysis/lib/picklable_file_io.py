@@ -171,12 +171,6 @@ class TextIOPicklable(io.TextIOWrapper):
     This class provides a file-like :class:`io.TextIOWrapper` object that can
     be pickled. Note that this only works in read mode.
 
-    Note
-    ----
-    After pickling, the current position is reset. `universe.trajectory[i]` has
-    to be used to return to its original frame.
-
-
     Parameters
     ----------
     raw : FileIO object
@@ -195,6 +189,12 @@ class TextIOPicklable(io.TextIOWrapper):
 
 
     .. versionadded:: 2.0.0
+    .. versionchanged:: 2.3.0
+       The raw class instance instead of the class name
+       that is wrapped inside will be serialized.
+       After deserialization, the current position is no longer reset
+       so `universe.trajectory[i]` is not needed to seek to the
+       original position.
     """
     def __init__(self, raw):
         super().__init__(raw)

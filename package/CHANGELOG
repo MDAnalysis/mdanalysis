@@ -19,6 +19,8 @@ The rules for this file:
 
 Fixes
   * Fixes awk call in deploy.yaml tests for macos runners (Issue #3693)
+  * Fixes failure in double-serialization of TextIOPicklable file reader.
+    (Issue #3723, PR #3722)
 
 Enhancements
   * Add `norm` parameter to InterRDF, InterRDF_s to normalize as rdf,
@@ -26,8 +28,12 @@ Enhancements
   * Additional logger.info output when per-frame analysis starts (PR #3710)
   * Timestep has been converted to a Cython Extension type
     (CZI Performance track, PR #3683)
+  * Improve performance in Universe serialization by no explicit redirection to
+    the timestep. (Issue #3721, PR #3722)
 
 Changes
+  * TextIOPicklable serializes the raw class instance instead of class name.
+    (PR #3722)
 
 Deprecations
   * Deprecate `density` parameter in favor of `norm` in InterRDF_s
