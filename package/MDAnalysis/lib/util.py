@@ -2148,7 +2148,7 @@ def check_coords(*coord_names, **options):
                     all_single &= is_single
                     ncoords.append(ncoord)
                 else:
-                    kwargs[name], is_single, ncoord = _check_coords(kwargs[name], # nopep8
+                    kwargs[name], is_single, ncoord = _check_coords(kwargs[name],
                                                                     name)
                     all_single &= is_single
                     ncoords.append(ncoord)
