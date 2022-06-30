@@ -13,12 +13,13 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, PicoCentauri, orbeckst, hmacdope
+??/??/?? IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli, miss77jun
 
  * 2.3.0
 
 Fixes
   * Fixes awk call in deploy.yaml tests for macos runners (Issue #3693)
+  * add a 0.5 for correct midpoints in hole analysis (Issue #3715)
   * Fixes failure in double-serialization of TextIOPicklable file reader.
     (Issue #3723, PR #3722)
 
@@ -32,6 +33,8 @@ Enhancements
     the timestep. (Issue #3721, PR #3722)
 
 Changes
+  * Narrowed variable scope to reduce use of OpenMP `private` clause (PR #3706, PR
+    #3728)
   * TextIOPicklable serializes the raw class instance instead of class name.
     (PR #3722)
 
