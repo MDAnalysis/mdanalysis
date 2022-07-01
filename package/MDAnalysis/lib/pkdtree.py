@@ -38,7 +38,7 @@ from .util import unique_rows
 
 from MDAnalysis.lib.distances import apply_PBC
 import numpy.typing as npt
-from typing import Optional, List, Iterable, Union
+from typing import Optional
 
 __all__ = [
     'PeriodicKDTree'
@@ -84,7 +84,7 @@ class PeriodicKDTree(object):
         self.dim = 3  # 3D systems
         self.box = box
         self._built = False
-        self.cutoff = None
+        self.cutoff: Optional[float] = None
 
     @property
     def pbc(self):
@@ -97,7 +97,7 @@ class PeriodicKDTree(object):
         """
         return self.box is not None
 
-    def set_coords(self, coords: npt.ArrayLike, cutoff: Union[float, None] = None) -> None:
+    def set_coords(self, coords: npt.ArrayLike, cutoff: Optional[float] = None) -> None:
         """Constructs KDTree from the coordinates
 
         Wrapping of coordinates to the primary unit cell is enforced
@@ -178,7 +178,8 @@ class PeriodicKDTree(object):
         centers = np.asarray(centers)
         if centers.shape == (self.dim, ):
             centers = centers.reshape((1, self.dim))
-
+        if self.cutoff is None:
+            raise RuntimeError("Provide cutoff distance")
         # Sanity check
         if self.pbc:
             if self.cutoff < radius:
@@ -209,7 +210,7 @@ class PeriodicKDTree(object):
 
         Returns
         ------
-        indices : list
+        indices : NDArray
           neighbors for the last query points and search radius
         """
         return self._indices
@@ -229,7 +230,8 @@ class PeriodicKDTree(object):
         """
         if not self._built:
             raise RuntimeError(' Unbuilt Tree. Run tree.set_coords(...)')
-
+        if self.cutoff is None:
+            raise RuntimeError("Provide cutoff distance")
         if self.pbc:
             if self.cutoff < radius:
                 raise RuntimeError('Set cutoff greater or equal to the radius.')
@@ -284,6 +286,8 @@ class PeriodicKDTree(object):
         centers = np.asarray(centers)
         if centers.shape == (self.dim, ):
             centers = centers.reshape((1, self.dim))
+        if self.cutoff is None:
+            raise RuntimeError("Provide cutoff distance")
 
         # Sanity check
         if self.pbc:
