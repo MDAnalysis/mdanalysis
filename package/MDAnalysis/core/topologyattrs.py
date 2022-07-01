@@ -2537,14 +2537,14 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
         print("get_atoms called")
         # print(self._bondDict)
         try:
-            # unique_bonds = set(itertools.chain(
-            #     *[self._bondDict[a] for a in ag.ix]))
+            unique_bonds = set(itertools.chain(
+                *[self._bondDict[a] for a in ag.ix]))
         except TypeError:
             # maybe we got passed an Atom
             unique_bonds = self._bondDict[ag.ix]
-        print(unique_bonds)
-        # unique_bonds = np.array(sorted(unique_bonds), dtype=object)
-        # bond_idx, types, guessed, order = np.hsplit(unique_bonds, 4)
+        # print(unique_bonds)
+        unique_bonds = np.array(sorted(unique_bonds), dtype=object)
+        _, types, guessed, order = np.hsplit(unique_bonds, 4)
         # bond_idx = np.array(bond_idx.ravel().tolist(), dtype=np.int32)
         types = types.ravel()
         guessed = guessed.ravel()

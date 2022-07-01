@@ -126,7 +126,6 @@ cdef class TopologyTable:
         return list(a)
                         
 
-
         
     def print_values(self):
         for i in range(self._nunique):
