@@ -30,9 +30,9 @@ cnp.import_array()
 cdef class TopologyTable:
 
 
-    cdef unsigned int _nval
-    cdef unsigned int _npair
-    cdef unsigned int _nunique
+    cdef  int _nval
+    cdef  int _npair
+    cdef  int _nunique
 
     cdef cnp.ndarray _unique
 
@@ -46,8 +46,13 @@ cdef class TopologyTable:
     cdef vector[vector[int]] order
 
 
-    cdef _construct_empty_tables(self)
+    cdef _construct_empty_tables_and_maps(self)
 
-    # cdef _parse(self, int[:,:] val,  int[:] typ, int[:] guess, int[:] ord)
+    cdef _parse(self, int[:,:] val,  int[:] typ, int[:] guess, int[:] ord)
+
+    cdef _canonicalise_all(self)
+
+
+    cdef vector[int] _canonicalise_vec(self, vector[int] inp)
 
 

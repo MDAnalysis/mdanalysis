@@ -2494,9 +2494,7 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
         if order is None:
             order = [-1] * len(values)
         self.order = order
-        print(self.values)
         vals_arr = np.asarray(self.values,dtype=np.int32)
-        print(vals_arr.max())
         self._toptable = TopologyTable(len(vals_arr), 2, vals_arr, vals_arr.ravel().astype(np.intp), np.asarray(self.types, dtype=np.int32),
                              np.asarray(self._guessed, dtype=np.int32), np.asarray(self.order, dtype=np.int32))
         self._toptable.print_values()
@@ -2517,18 +2515,10 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
     def _bondDict(self):
         """Lazily built mapping of atoms:bonds"""
         bd = defaultdict(list)
-
-        # print(self.values)
-        # print(self.types)
-        # print(self._guessed)
-        # print(self.order)
         for b, t, g, o in zip(self.values, self.types,
                               self._guessed, self.order):
-            # print(f"b {b} t {t} g {g} o {o}")
             for a in b:
                 bd[a].append((b, t, g, o))
-                # print(f"a {a}" )
-        # raise Exception
         return bd
 
     def set_atoms(self, ag):
@@ -2545,19 +2535,22 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
 
         """
         print("get_atoms called")
-        print(self._bondDict)
+        # print(self._bondDict)
         try:
-            unique_bonds = set(itertools.chain(
-                *[self._bondDict[a] for a in ag.ix]))
+            # unique_bonds = set(itertools.chain(
+            #     *[self._bondDict[a] for a in ag.ix]))
         except TypeError:
             # maybe we got passed an Atom
             unique_bonds = self._bondDict[ag.ix]
-        unique_bonds = np.array(sorted(unique_bonds), dtype=object)
-        bond_idx, types, guessed, order = np.hsplit(unique_bonds, 4)
-        bond_idx = np.array(bond_idx.ravel().tolist(), dtype=np.int32)
+        print(unique_bonds)
+        # unique_bonds = np.array(sorted(unique_bonds), dtype=object)
+        # bond_idx, types, guessed, order = np.hsplit(unique_bonds, 4)
+        # bond_idx = np.array(bond_idx.ravel().tolist(), dtype=np.int32)
         types = types.ravel()
         guessed = guessed.ravel()
         order = order.ravel()
+        # print("toptable")
+        bond_idx = self._toptable.unique_bonds()
         return TopologyGroup(bond_idx, ag.universe,
                              self.singular[:-1],
                              types,
