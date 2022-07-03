@@ -40,10 +40,10 @@ cdef class TopologyTable:
     cdef map[int,int] vmap_rev
 
 
-    cdef vector[vector[int]] values
-    cdef vector[vector[int]] types
-    cdef vector[vector[int]] guessed
-    cdef vector[vector[int]] order
+    cdef vector[vector[int]] _values
+    cdef vector[int] _types
+    cdef vector[int] _guessed
+    cdef vector[int] _order
 
 
     cdef _construct_empty_tables_and_maps(self)
@@ -54,5 +54,7 @@ cdef class TopologyTable:
 
 
     cdef vector[int] _canonicalise_vec(self, vector[int] inp)
+
+    cdef _copy_types_guessed_order(self, int[:] typ, int[:] guess, int[:] order)
 
 

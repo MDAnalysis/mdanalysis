@@ -2497,7 +2497,6 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
         vals_arr = np.asarray(self.values,dtype=np.int32)
         self._toptable = TopologyTable(len(vals_arr), 2, vals_arr, vals_arr.ravel().astype(np.intp), np.asarray(self.types, dtype=np.int32),
                              np.asarray(self._guessed, dtype=np.int32), np.asarray(self.order, dtype=np.int32))
-        self._toptable.print_values()
         self._cache = dict()
 
     def copy(self):
@@ -2519,7 +2518,7 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
                               self._guessed, self.order):
             for a in b:
                 bd[a].append((b, t, g, o))
-        return bd
+        return bd 
 
     def set_atoms(self, ag):
         return NotImplementedError("Cannot set bond information")
@@ -2544,14 +2543,19 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
             unique_bonds = self._bondDict[ag.ix]
         # print(unique_bonds)
         unique_bonds = np.array(sorted(unique_bonds), dtype=object)
-        _, types, guessed, order = np.hsplit(unique_bonds, 4)
-        # bond_idx = np.array(bond_idx.ravel().tolist(), dtype=np.int32)
+        b_idx, types, guessed, order = np.hsplit(unique_bonds, 4)
+        b_idx = np.array(b_idx.ravel().tolist(), dtype=np.int32)
         types = types.ravel()
+        print(types)
         guessed = guessed.ravel()
         order = order.ravel()
-        # print("toptable")
-        bond_idx = self._toptable.unique_bonds()
-        return TopologyGroup(bond_idx, ag.universe,
+        bond = self._toptable.unique_bonds()
+        typ = self._toptable.types()
+        guess = self._toptable.guessed()
+        ordr = self._toptable.order()
+        print(order)
+        print(ordr)
+        return TopologyGroup(b_idx, ag.universe,
                              self.singular[:-1],
                              types,
                              guessed,
