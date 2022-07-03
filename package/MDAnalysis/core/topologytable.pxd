@@ -28,6 +28,10 @@ import numpy as np
 cimport numpy as cnp
 cnp.import_array()
 
+
+ctypedef cpair[vector[int], vector[int]] int_vec_pair
+
+
 cdef class TopologyTable:
 
 
@@ -43,9 +47,9 @@ cdef class TopologyTable:
 
 
     cdef vector[vector[int]] _values
-    cdef vector[int] _types
-    cdef vector[int] _guessed
-    cdef vector[int] _order
+    cdef vector[vector[int]] _types
+    cdef vector[vector[int]] _guessed
+    cdef vector[vector[int]] _order
 
 
     cdef _construct_empty_tables_and_maps(self)
@@ -57,6 +61,6 @@ cdef class TopologyTable:
 
     cdef vector[int] _canonicalise_vec(self, vector[int] inp)
 
-    cdef _copy_types_guessed_order(self, int[:] typ, int[:] guess, int[:] order)
+    # cdef _copy_types_guessed_order(self, int[:] typ, int[:] guess, int[:] order)
 
 

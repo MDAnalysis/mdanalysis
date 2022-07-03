@@ -70,15 +70,18 @@ cdef class TopologyTable:
 
         for i in range(self._nunique):
             self._values.push_back(tmp)
+            self._types.push_back(tmp)
+            self._order.push_back(tmp)
+            self._guessed.push_back(tmp)
             self.vmap_fwd[self._unique[i]] = i
             self.vmap_rev[i] = self._unique[i]
     
-    cdef _copy_types_guessed_order(self, int[:] typ, int[:] guess, int[:] order):
-        cdef int i 
-        for i in range(self._nval):
-            self._types.push_back(typ[i])
-            self._guessed.push_back(guess[i])
-            self._order.push_back(order[i])
+    # cdef _copy_types_guessed_order(self, int[:] typ, int[:] guess, int[:] order):
+    #     cdef int i 
+    #     for i in range(self._nval):
+    #         self._types.push_back(typ[i])
+    #         self._guessed.push_back(guess[i])
+    #         self._order.push_back(order[i])
     
     cdef _parse(self, int[:,:] val,  int[:] typ, int[:] guess, int[:] order):
         cdef int i
