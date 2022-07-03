@@ -513,3 +513,9 @@ def find_fragments(atoms, bondlist):
         frags.append(np.asarray(this_frag))
 
     return frags
+
+cdef inline to_numpy_from_spec(object owner, int ndim, np.npy_intp * shape, int npy_type, void * pointer):
+    array = np.PyArray_SimpleNewFromData(ndim, shape, npy_type, pointer)
+    np.PyArray_SetBaseObject(array, owner)
+    np.Py_INCREF(owner)
+    return array
