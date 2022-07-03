@@ -59,8 +59,7 @@ cdef class TopologyTable:
     cdef _canonicalise_all(self)
 
 
-    cdef vector[int] _canonicalise_vec(self, vector[int] inp)
-
+    cdef void _canonicalise_vec(self, vector[int]& values, vector[int]& typ, vector[int]& guess, vector[int]& order)
     # cdef _copy_types_guessed_order(self, int[:] typ, int[:] guess, int[:] order)
 
 

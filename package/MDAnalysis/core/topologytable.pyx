@@ -98,23 +98,26 @@ cdef class TopologyTable:
     cdef  _canonicalise_all(self):
         cdef int i
         for i in range(self._nunique):
-            self.values[i] = self._canonicalise_vec(self._values[i])
+            self._canonicalise_vec(self._values[i], self._types[i], self._guessed[i], self._order[i])
 
 
         
 
-    cdef vector[int] _canonicalise_vec(self, vector[int] inp):
+    cdef void _canonicalise_vec(self, vector[int]& values, vector[int]& typ, vector[int]& guess, vector[int]& order):
         cdef unordered_set[int] tmp_set
-        cdef int size = inp.size()
+        cdef int size = values.size()
         cdef int i
         cdef vector[int] unique_ix
-        cdef cpair[vector[int], vector[int]] p
+
         for i in range(size):
-            tmp_set.insert(inp[i])
+            tmp_set.insert(values[i])
             unique_ix.push_back(i)
-        inp.assign(tmp_set.begin(), tmp_set.end())
-        # unique_unique_ix(inp, unique_ix)
-        return inp
+        values.assign(tmp_set.begin(), tmp_set.end())
+        for i in range(unique_ix.size()):
+            typ.erase(typ.begin() + unique_ix[i])
+            guess.erase(guess.begin() + unique_ix[i])
+            order.erase(order.begin() + unique_ix[i])
+
     
     def query_table(self, int atom):
         cdef int idx
