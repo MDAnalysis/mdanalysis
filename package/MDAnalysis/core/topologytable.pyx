@@ -22,8 +22,10 @@
 #
 #
 from libcpp.vector cimport vector
-from libcpp.map cimport map
+from libcpp.map cimport map as cmap
 from libcpp.unordered_set cimport unordered_set
+from libcpp.pair cimport pair as cpair
+
 from ..lib._cutil import unique_int_1d
 from ..lib._cutil cimport to_numpy_from_spec
 import numpy as np
@@ -73,7 +75,7 @@ cdef class TopologyTable:
     
     cdef _copy_types_guessed_order(self, int[:] typ, int[:] guess, int[:] order):
         cdef int i 
-        for i in range(self._nval):   
+        for i in range(self._nval):
             self._types.push_back(typ[i])
             self._guessed.push_back(guess[i])
             self._order.push_back(order[i])
@@ -82,26 +84,33 @@ cdef class TopologyTable:
         cdef int i
         for i in range(self._nval):
             self._values[self.vmap_fwd[val[i,0]]].push_back(val[i,1])
-            self._values[self.vmap_fwd[val[i,1]]].push_back(val[i,0])  
-            # self.types[self.vmap_fwd[val[i,0]]].push_back(typ[i])
-            # self.types[self.vmap_fwd[val[i,1]]].push_back(typ[i])  
-            # self.guessed[self.vmap_fwd[val[i,0]]].push_back(guess[i])
-            # self.guessed[self.vmap_fwd[val[i,1]]].push_back(guess[i])  
-            # self.order[self.vmap_fwd[val[i,0]]].push_back(order[i])
-            # self.order[self.vmap_fwd[val[i,1]]].push_back(order[i])  
+            self._values[self.vmap_fwd[val[i,1]]].push_back(val[i,0])
+            self._types[self.vmap_fwd[val[i,0]]].push_back(typ[i])
+            self._types[self.vmap_fwd[val[i,1]]].push_back(typ[i])  
+            self._guessed[self.vmap_fwd[val[i,0]]].push_back(guess[i])
+            self._guessed[self.vmap_fwd[val[i,1]]].push_back(guess[i])  
+            self._order[self.vmap_fwd[val[i,0]]].push_back(order[i])
+            self._order[self.vmap_fwd[val[i,1]]].push_back(order[i])  
 
     cdef  _canonicalise_all(self):
         cdef int i
         for i in range(self._nunique):
-            self._values[i] = self._canonicalise_vec(self._values[i])
+            self.values[i] = self._canonicalise_vec(self._values[i])
+
+
+        
 
     cdef vector[int] _canonicalise_vec(self, vector[int] inp):
         cdef unordered_set[int] tmp_set
         cdef int size = inp.size()
-        cdef int i 
+        cdef int i
+        cdef vector[int] unique_ix
+        cdef cpair[vector[int], vector[int]] p
         for i in range(size):
             tmp_set.insert(inp[i])
+            unique_ix.push_back(i)
         inp.assign(tmp_set.begin(), tmp_set.end())
+        # unique_unique_ix(inp, unique_ix)
         return inp
     
     def query_table(self, int atom):

@@ -2553,8 +2553,10 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
         typ = self._toptable.types()
         guess = self._toptable.guessed()
         ordr = self._toptable.order()
-        print(order)
-        print(ordr)
+        # np.testing.assert_allclose(order, ordr)
+        # np.testing.assert_allclose(guessed, guess)
+        # np.testing.assert_allclose(types, typ)
+        np.testing.assert_allclose(b_idx, np.asarray(bond))
         return TopologyGroup(b_idx, ag.universe,
                              self.singular[:-1],
                              types,
