@@ -25,7 +25,7 @@ from libcpp.vector cimport vector
 from libcpp.map cimport map as cmap
 from libcpp.unordered_set cimport unordered_set
 from libcpp.pair cimport pair as cpair
-
+from libcpp.iterator cimport iterator
 from ..lib._cutil import unique_int_1d
 from ..lib._cutil cimport to_numpy_from_spec
 import numpy as np
@@ -107,16 +107,17 @@ cdef class TopologyTable:
         cdef unordered_set[int] tmp_set
         cdef int size = values.size()
         cdef int i
-        cdef vector[int] unique_ix
-
+        cdef vector[int] non_unique_ix
+        cdef cpair[iterator, bool]  rval
         for i in range(size):
-            tmp_set.insert(values[i])
-            unique_ix.push_back(i)
+            rval = tmp_set.insert(values[i])
+            if not rval.second(): #if insertion failed record index
+                non_unique_ix.push_back(i)
         values.assign(tmp_set.begin(), tmp_set.end())
         for i in range(unique_ix.size()):
-            typ.erase(typ.begin() + unique_ix[i])
-            guess.erase(guess.begin() + unique_ix[i])
-            order.erase(order.begin() + unique_ix[i])
+            typ.erase(typ.begin() + non_unique_ix[i])
+            guess.erase(guess.begin() + non_unique_ix[i])
+            order.erase(order.begin() + non_unique_ix[i])
 
     
     def query_table(self, int atom):
