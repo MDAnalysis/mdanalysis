@@ -66,12 +66,13 @@ Classes
 from functools import partial, update_wrapper
 
 from .. import _CONVERTERS
-from ..coordinates.base import ConverterBase
 from typing import TYPE_CHECKING
 from typing import Type, Any
 
 if TYPE_CHECKING:
     from .groups import AtomGroup
+
+    from ..coordinates.base import ConverterBase
 
 
 
@@ -103,7 +104,7 @@ class Accessor:
     .. versionadded:: 2.0.0
     """
 
-    def __init__(self, name: str, accessor: Accessor) -> None:
+    def __init__(self, name: str, accessor: Any) -> None:
         self._accessor = accessor
         self._name = name
 
@@ -176,7 +177,7 @@ class ConverterWrapper:
     """
     _CONVERTERS: Type[ConverterBase] = {}
 
-    def __init__(self, ag: Type[AtomGroup]) -> None:
+    def __init__(self, ag: "AtomGroup") -> None:
         """
         Parameters
         ----------
@@ -201,7 +202,7 @@ class ConverterWrapper:
             update_wrapper(convert, converter)
             setattr(self, method_name, convert)
 
-    def __call__(self, package: str, *args: int, **kwargs: int) -> Type[ConverterBase]:
+    def __call__(self, package: str, *args: int, **kwargs: int) -> "ConverterBase":
         try:
             convert = getattr(self, package.lower())
         except AttributeError:
