@@ -29,6 +29,8 @@ Enhancements
     (CZI Performance track, PR #3683)
 
 Changes
+  * Minimum supported NumPy version is now 1.20 (1.21 for macosx-arm64)
+    as per NEP29 (PR #3737)
   * Narrowed variable scope to reduce use of OpenMP `private` clause (PR #3706, PR
     #3728)
 
