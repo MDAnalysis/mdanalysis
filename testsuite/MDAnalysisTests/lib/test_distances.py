@@ -265,6 +265,7 @@ def ref_system_universe(ref_system):
     return (box, u.atoms, u.select_atoms("index 0"),
             u.select_atoms("index 1 to 3"))
 
+
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestDistanceArray(object):
     @staticmethod
@@ -461,8 +462,8 @@ class TestDistanceArrayDCD_TRIC(object):
     # check no box and ortho box types and some slices
     @pytest.mark.parametrize('box', [None, [50, 50, 50, 90, 90, 90]])
     @pytest.mark.parametrize("sel, np_slice", [("all", np.s_[:, :]),
-                            ("index 0 to 8 ", np.s_[0:9, :]),
-                            ("index 9", np.s_[8, :])])
+                             ("index 0 to 8 ", np.s_[0:9, :]),
+                             ("index 9", np.s_[8, :])])
     def test_atomgroup_matches_numpy(self, DCD_Universe, backend, sel,
                                      np_slice, box):
         U, _ = DCD_Universe
@@ -479,8 +480,8 @@ class TestDistanceArrayDCD_TRIC(object):
 
     # check triclinic box and some slices
     @pytest.mark.parametrize("sel, np_slice", [("all", np.s_[:, :]),
-                            ("index 0 to 8 ", np.s_[0:9, :]),
-                            ("index 9", np.s_[8, :])])
+                             ("index 0 to 8 ", np.s_[0:9, :]),
+                             ("index 9", np.s_[8, :])])
     def test_atomgroup_matches_numpy_tric(self, Triclinic_Universe, backend,
                                           sel, np_slice):
         U, _ = Triclinic_Universe
@@ -558,8 +559,8 @@ class TestSelfDistanceArrayDCD_TRIC(object):
     # check no box and ortho box types and some slices
     @pytest.mark.parametrize('box', [None, [50, 50, 50, 90, 90, 90]])
     @pytest.mark.parametrize("sel, np_slice", [("all", np.s_[:, :]),
-                            ("index 0 to 8 ", np.s_[0:9, :]),
-                            ("index 9", np.s_[8, :])])
+                             ("index 0 to 8 ", np.s_[0:9, :]),
+                             ("index 9", np.s_[8, :])])
     def test_atomgroup_matches_numpy(self, DCD_Universe, backend,
                                      sel, np_slice, box):
         U, _ = DCD_Universe
@@ -588,6 +589,7 @@ class TestSelfDistanceArrayDCD_TRIC(object):
                                               backend=backend)
         assert_allclose(d_ag, d_arr,
                         err_msg="AtomGroup and NumPy distances do not match")
+
 
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestTriclinicDistances(object):
@@ -773,6 +775,7 @@ def convert_position_dtype_if_ndarray(a, b, c, d, dtype):
             conv_dtype_if_ndarr(b, dtype),
             conv_dtype_if_ndarr(c, dtype),
             conv_dtype_if_ndarr(d, dtype))
+
 
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestCythonFunctions(object):
@@ -1389,6 +1392,7 @@ class TestInputUnchanged(object):
         ref = crd.positions.copy()
         res = distances.apply_PBC(crd, box, backend=backend)
         assert_equal(crd.positions, ref)
+        
 
 class TestEmptyInputCoordinates(object):
     """Tests ensuring that the following functions in MDAnalysis.lib.distances
