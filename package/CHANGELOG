@@ -13,18 +13,51 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy,
+??/??/?? IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli, miss77jun
+
+ * 2.3.0
+
+Fixes
+  * Fixes awk call in deploy.yaml tests for macos runners (Issue #3693)
+  * add a 0.5 for correct midpoints in hole analysis (Issue #3715)
+
+Enhancements
+  * Add `norm` parameter to InterRDF, InterRDF_s to normalize as rdf,
+    number density or do not normalize at all. (Issue #3687)
+  * Additional logger.info output when per-frame analysis starts (PR #3710)
+  * Timestep has been converted to a Cython Extension type
+    (CZI Performance track, PR #3683)
+
+Changes
+  * Minimum supported NumPy version is now 1.20 (1.21 for macosx-arm64)
+    as per NEP29 (PR #3737)
+  * Narrowed variable scope to reduce use of OpenMP `private` clause (PR #3706, PR
+    #3728)
+
+Deprecations
+  * Deprecate `density` parameter in favor of `norm` in InterRDF_s
+    (Issue #3687)
+
+
+06/01/22 IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy,
          HenokB, umak1106, tamandeeps, Mrqeoqqt, megosato, AnirG, rishu235,
          mtiberti, manishsaini6421, Sukeerti1, robotjellyzone, markvrma, alescoulie,
-         mjtadema, PicoCentauri, Atharva7K, aditi2906, orbeckst
+         mjtadema, PicoCentauri, Atharva7K, aditi2906, orbeckst,  yuxuanzhuang,
+         rsexton2, rafaelpap, richardjgowers, orioncohen
 
  * 2.2.0
 
 Fixes
+  * Fixed issue where Reader.copy() did not preserve optional arguments
+    and kwargs passed to the original class (Issue #3664, PR #3685)
   * Iterating a SingleFrameReaderBase trajectory now rewinds the
     reader, resetting any modified trajectory attributes to those
     read from file. Fixes behavior that was previously undefined (Issue #3423)
-  * Fixed Reader.copy() did not preserve convert_units=False (see PR #3642) 
+  * Fixed Reader.copy() did not preserve convert_units=False (see PR #3642)
+  * Fix the competition when generating offsets from multiple processes by
+    using a interprocess file lock. (Issue #1988, PR #3375)
+  * Fix the error when trying to load a corrupted offset file (Issue #3230
+    PR #3375)
   * Fixed `OpenMMTopologyParser` not working when some or none of the elements
     are present in the openmm topology (Issue #3317, PR #3511).
   * Remove None from filenames in analysis.hole.HoleAnalysis (PR #3650)
@@ -34,8 +67,8 @@ Fixes
     an external reference (Issue #3539, PR #3621)
   * Fixed LinearDensity not working with grouping='residues' or 'segments'
     (Issue #3571, PR #3572)
-  * LinearDensity now uses the definition of Avogadro's number from 
-    MDAnalysis.units, which has more significant digits. 
+  * LinearDensity now uses the definition of Avogadro's number from
+    MDAnalysis.units, which has more significant digits.
     (Issue #3571, PR #3572)
   * MOL2 can read files without providing optional columns:
     subst_id, subst_name and charge. (Issue #3385, PR #3598)
@@ -53,6 +86,17 @@ Fixes
   * Fixed BAT method Cartesian modifies input data. (Issue #3501)
 
 Enhancements
+  * Add smarts_kwargs to allow greater flexiblity with smarts atom selection
+    (Issue #3469, PR #3470).
+  * Added DL_POLY Classic support. Now HISTORY files from DL_POLY Classic can be
+  * used. (Issue #3678)
+  * Wheels and dist now get automatically built and deployed on release
+    triggers (Issue #1300, PR #3680)
+  * Added equations for `center_of_mass` and `center_of_geometry`to
+    documentation (PR #3671)
+  * Added `center_of_charge` attribute (PR #3671)
+  * Added `frames` argument to AnalysisBase.run to allow analysis to run on 
+    arbitrary list of frames (Issue #1985)
   * LinearDensity now works with updating AtomGroups (Issue #2508, PR #3617)
   * Link PMDA in documentation (PR #3652)
   * Added MSD example where multiple replicates are combined(Issue #3578
@@ -69,9 +113,16 @@ Enhancements
     analysis.nucleicacids
   * CRD extended format can now be explicitly requested with the `extended`
     keyword (Issue #3605)
+  * Added benchmarks in lib.distances for enhancement (Issue #3205, PR #3641)
 
 Changes
-  * LinearDensity now saves the histogram bin edges for easier plotting as 
+  * smarts selection's `maxMatches` now defaults to max(1000, n_atoms*10)
+    instead of the standard RDKit default of 1000 (Issue #3469, PR #3470).
+  * `fasteners` package is now a core dependency (Issues #3230, #1988, PR #3375)
+  * The minimm Python, NumPy, and SciPy versions (following NEP29) are now 3.8,
+    1.19, and 1.5.0; GSD now also has a minimum version of 1.9.3 and networkx
+    has minimum version 2.0 (Issue #3665)
+  * LinearDensity now saves the histogram bin edges for easier plotting as
     "hist_bin_edges" for each dimension xyz in the results dictionary.
     (Issue #2508, PR #3617)
   * ITPParser no longer adds an angle for water molecules that have the SETTLE

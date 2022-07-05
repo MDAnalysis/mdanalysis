@@ -65,6 +65,7 @@ Functions
 .. autofunction:: transform_StoR
 .. autofunction:: augment_coordinates(coordinates, box, r)
 .. autofunction:: undo_augment(results, translation, nreal)
+.. autofunction:: minimize_vectors(vectors, box)
 """
 import numpy as np
 from numpy.lib.utils import deprecate
@@ -198,7 +199,7 @@ def distance_array(reference, configuration, box=None, result=None,
     box : array_like, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     result : numpy.ndarray, optional
         Preallocated result array which must have the shape ``(n, m)`` and dtype
@@ -270,7 +271,7 @@ def self_distance_array(reference, box=None, result=None, backend="serial"):
     box : array_like, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     result : numpy.ndarray, optional
         Preallocated result array which must have the shape ``(n*(n-1)/2,)`` and
@@ -356,7 +357,7 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None,
     box : array_like, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     method : {'bruteforce', 'nsgrid', 'pkdtree'}, optional
         Keyword to override the automatic guessing of the employed search
@@ -435,7 +436,7 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
     box : numpy.ndarray
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     method : {'bruteforce', 'nsgrid', 'pkdtree'}, optional
         Keyword to override the automatic guessing of the employed search
@@ -520,7 +521,7 @@ def _bruteforce_capped(reference, configuration, max_cutoff, min_cutoff=None,
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     return_distances : bool, optional
         If set to ``True``, distances will also be returned.
@@ -597,7 +598,7 @@ def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None,
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     return_distances : bool, optional
         If set to ``True``, distances will also be returned.
@@ -679,7 +680,7 @@ def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
     box : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``), optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     return_distances : bool, optional
         If set to ``True``, distances will also be returned.
@@ -771,7 +772,7 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None, box=None,
     box : array_like, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     method : {'bruteforce', 'nsgrid', 'pkdtree'}, optional
         Keyword to override the automatic guessing of the employed search
@@ -854,7 +855,7 @@ def _determine_method_self(reference, max_cutoff, min_cutoff=None, box=None,
     box : numpy.ndarray
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     method : {'bruteforce', 'nsgrid', 'pkdtree'}, optional
         Keyword to override the automatic guessing of the employed search
@@ -927,7 +928,7 @@ def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     return_distances : bool, optional
         If set to ``True``, distances will also be returned.
@@ -1002,7 +1003,7 @@ def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     return_distances : bool, optional
         If set to ``True``, distances will also be returned.
@@ -1078,7 +1079,7 @@ def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
 
     Returns
@@ -1163,7 +1164,7 @@ def transform_RtoS(coords, box, backend="serial"):
     box : numpy.ndarray
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     backend : {'serial', 'OpenMP'}, optional
         Keyword selecting the type of acceleration.
@@ -1212,7 +1213,7 @@ def transform_StoR(coords, box, backend="serial"):
     box : numpy.ndarray
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     backend : {'serial', 'OpenMP'}, optional
         Keyword selecting the type of acceleration.
@@ -1276,7 +1277,7 @@ def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     result : numpy.ndarray, optional
         Preallocated result array of dtype ``numpy.float64`` and shape ``(n,)``
@@ -1365,7 +1366,7 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None,
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     result : numpy.ndarray, optional
         Preallocated result array of dtype ``numpy.float64`` and shape ``(n,)``
@@ -1467,7 +1468,7 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     result : numpy.ndarray, optional
         Preallocated result array of dtype ``numpy.float64`` and shape ``(n,)``
@@ -1531,7 +1532,7 @@ def apply_PBC(coords, box, backend="serial"):
     box : numpy.ndarray
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     backend : {'serial', 'OpenMP'}, optional
         Keyword selecting the type of acceleration.
@@ -1578,7 +1579,7 @@ def minimize_vectors(vectors, box):
     box : numpy.ndarray
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
 
     Returns
@@ -1586,6 +1587,7 @@ def minimize_vectors(vectors, box):
     minimized_vectors : numpy.ndarray
         Same shape and dtype as input.  The vectors from the input, but
         minimized according to the size of the box.
+
 
     .. versionadded:: 2.1.0
     """

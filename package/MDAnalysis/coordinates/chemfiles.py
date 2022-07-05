@@ -84,6 +84,7 @@ import warnings
 from packaging.version import Version
 
 from . import base
+from ..lib.util import store_init_arguments
 
 try:
     import chemfiles
@@ -140,6 +141,7 @@ class ChemfilesReader(base.ReaderBase):
     format = "chemfiles"
     units = {"time": "fs", "length": "Angstrom"}
 
+    @store_init_arguments
     def __init__(self, filename, chemfiles_format="", **kwargs):
         """
         Parameters
