@@ -13,12 +13,13 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, PicoCentauri, orbeckst, hmacdope
+??/??/?? IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli, miss77jun
 
  * 2.3.0
 
 Fixes
   * Fixes awk call in deploy.yaml tests for macos runners (Issue #3693)
+  * add a 0.5 for correct midpoints in hole analysis (Issue #3715)
 
 Enhancements
   * Add `norm` parameter to InterRDF, InterRDF_s to normalize as rdf,
@@ -31,6 +32,8 @@ Changes
   * To add additional optional packages for different file formats when
     using `pip` use the new "extra_formats" extras_require target as in
     `pip install ./package[extra_formats]` (Issue #3701, PR #3711)
+  * Narrowed variable scope to reduce use of OpenMP `private` clause (PR #3706, PR
+    #3728)
 
 Deprecations
   * The extras_requires target "AMBER" for `pip install ./package[AMBER]`

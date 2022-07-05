@@ -71,9 +71,9 @@ inputs:
     default: 'tidynamics>=1.0.0'
   # pip-installed min dependencies
   coverage:
-    default: 'coverage'
+    default: 'coverage<5.0'
   pytest-cov:
-    default: 'pytest-cov'
+    default: 'pytest-cov<=2.10.1'
   pytest-xdist:
     default: 'pytest-xdist'
   # pip-install optional dependencies
