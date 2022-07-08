@@ -29,10 +29,17 @@ Enhancements
     (CZI Performance track, PR #3683)
 
 Changes
+  * To add additional optional packages for different file formats when
+    using `pip` use the new "extra_formats" extras_require target as in
+    `pip install ./package[extra_formats]` (Issue #3701, PR #3711)
+  * Minimum supported NumPy version is now 1.20 (1.21 for macosx-arm64)
+    as per NEP29 (PR #3737)
   * Narrowed variable scope to reduce use of OpenMP `private` clause (PR #3706, PR
     #3728)
 
 Deprecations
+  * The extras_requires target "AMBER" for `pip install ./package[AMBER]`
+    will be removed in 2.4. Use "extra_formats". (Issue #3701, PR #3711)
   * Deprecate `density` parameter in favor of `norm` in InterRDF_s
     (Issue #3687)
 
