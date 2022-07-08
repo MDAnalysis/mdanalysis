@@ -523,4 +523,5 @@ _AUXREADERS = {}
 
 from . import base
 from . import XVG
+from . import EDR
 from .core import auxreader
