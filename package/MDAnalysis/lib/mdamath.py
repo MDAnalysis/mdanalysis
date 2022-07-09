@@ -92,7 +92,8 @@ def norm(v: npt.ArrayLike) -> float:
     return np.sqrt(np.dot(v, v))
 
 
-def normal(vec1: npt.ArrayLike, vec2: npt.ArrayLike) -> npt.NDArray:
+# typing: numpy
+def normal(vec1: npt.ArrayLike, vec2: npt.ArrayLike) -> np.ndarray:
     r"""Returns the unit vector normal to two vectors.
 
     .. math::
@@ -112,7 +113,8 @@ def normal(vec1: npt.ArrayLike, vec2: npt.ArrayLike) -> npt.NDArray:
     return normal / n
 
 
-def pdot(a: npt.ArrayLike, b: npt.ArrayLike) -> npt.NDArray:
+# typing: numpy
+def pdot(a: npt.ArrayLike, b: npt.ArrayLike) -> np.ndarray:
     """Pairwise dot product.
 
     ``a`` must be the same shape as ``b``.
@@ -129,7 +131,8 @@ def pdot(a: npt.ArrayLike, b: npt.ArrayLike) -> npt.NDArray:
     return np.einsum('ij,ij->i', a, b)
 
 
-def pnorm(a: npt.ArrayLike) -> npt.NDArray:
+# typing: numpy
+def pnorm(a: npt.ArrayLike) -> np.ndarray:
     """Euclidean norm of each vector in a matrix
 
     Parameters
@@ -196,7 +199,8 @@ def dihedral(ab: npt.ArrayLike, bc: npt.ArrayLike, cd: npt.ArrayLike) -> float:
     return (x if stp(ab, bc, cd) <= 0.0 else -x)
 
 
-def sarrus_det(matrix: npt.NDArray) -> Union[float, npt.NDArray[np.float64]]:
+# typing: numpy
+def sarrus_det(matrix: np.ndarray) -> Union[float, np.ndarray]:
     """Computes the determinant of a 3x3 matrix according to the
     `rule of Sarrus`_.
 
@@ -241,7 +245,8 @@ def sarrus_det(matrix: npt.NDArray) -> Union[float, npt.NDArray[np.float64]]:
     return _sarrus_det_multiple(m.reshape((-1, 3, 3))).reshape(shape[:-2])
 
 
-def triclinic_box(x: npt.ArrayLike, y: npt.ArrayLike, z: npt.ArrayLike) -> npt.NDArray[np.float32]:
+# typing: numpy
+def triclinic_box(x: npt.ArrayLike, y: npt.ArrayLike, z: npt.ArrayLike) -> np.ndarray:
     """Convert the three triclinic box vectors to
     ``[lx, ly, lz, alpha, beta, gamma]``.
 
@@ -303,7 +308,8 @@ def triclinic_box(x: npt.ArrayLike, y: npt.ArrayLike, z: npt.ArrayLike) -> npt.N
     return np.zeros(6, dtype=np.float32)
 
 
-def triclinic_vectors(dimensions: npt.ArrayLike, dtype: npt.DTypeLike = np.float32) -> npt.NDArray:
+# typing: numpy
+def triclinic_vectors(dimensions: npt.ArrayLike, dtype: npt.DTypeLike = np.float32) -> np.ndarray:
     """Convert ``[lx, ly, lz, alpha, beta, gamma]`` to a triclinic matrix
     representation.
 
