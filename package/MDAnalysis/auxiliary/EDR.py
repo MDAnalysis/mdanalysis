@@ -32,12 +32,15 @@ system.
 panedr is a Python package ( https://github.com/mdanalysis/panedr ) that reads
 these binary files and returns them human-readable form, either as a Pandas
 DataFrame or as a dictionary of NumPy arrays. It is used by the EDR auxiliary
-reader to parse EDR files.
+reader to parse EDR files. As such, a dictionary with string keys and numpy
+array values is loaded into the EDRReader.
 
 The EDR auxiliary reader takes the output from panedr and loads the energy data
 as auxiliary data into Universes. Standalone usage is also possible, where the
 energy terms are extracted without associating them with the trajectory, for
 example, to allow easy plotting of the energy terms.
+
+
 
 """
 import numbers
@@ -71,12 +74,14 @@ class EDRStep(base.AuxStep):
     :class:`~MDAnalysis.auxiliary.base.AuxStep`
     """
 
-    def __init__(self, time_selector=0, data_selector=None, **kwargs):
+    def __init__(self, time_selector="Time", data_selector=None, **kwargs):
+        
         super(EDRStep, self).__init__(time_selector=time_selector,
                                       data_selector=data_selector,
                                       **kwargs)
-
+        
     def _select_time(self, key):
+        return self._select_data(key)
         if key is None:
             # here so that None is a valid value; just return
             return
@@ -86,6 +91,7 @@ class EDRStep(base.AuxStep):
             raise ValueError('Time selector must be single index')
 
     def _select_data(self, key):
+        return self._data[key]
         if key is None:
             # here so that None is a valid value; just return
             return
@@ -130,10 +136,12 @@ class EDRReader(base.AuxReader):
         self._auxfile = os.path.abspath(filename)
         self.auxdata = panedr.edr_to_dict(filename)
         self._n_steps = len(self.auxdata["Time"])
+        # attribute to communicate found energy terms to user
         self.terms = [key for key in self.auxdata.keys()]
         super(EDRReader, self).__init__(**kwargs)
 
     def _read_next_step(self):
+        
         """ Read next auxiliary step and update ``auxstep``.
 
         Returns
@@ -149,10 +157,12 @@ class EDRReader(base.AuxReader):
         auxstep = self.auxstep
         new_step = self.step + 1
         if new_step < self.n_steps:
-            auxstep._data = self.auxdata[new_step]
+            auxstep._data = {term: self.auxdata[term][self.step] for term in self.terms}
+            print(auxstep._data)
             auxstep.step = new_step
             return auxstep
         else:
             self.rewind()
             raise StopIteration
+            
 
