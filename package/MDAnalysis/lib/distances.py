@@ -73,7 +73,6 @@ Functions
 """
 import numpy as np
 from numpy.lib.utils import deprecate
-import numpy.typing as npt
 
 from typing import Union, Optional, Callable
 from typing import TYPE_CHECKING
@@ -140,7 +139,7 @@ from .c_distances import (_UINT64_MAX,
 from .c_distances_openmp import OPENMP_ENABLED as USED_OPENMP
 
 
-def _check_result_array(result: npt.NDArray, shape: tuple) -> npt.NDArray:
+def _check_result_array(result: np.ndarray, shape: tuple) -> np.ndarray:
     """Check if the result array is ok to use.
 
     The `result` array must meet the following requirements:
@@ -183,11 +182,11 @@ def _check_result_array(result: npt.NDArray, shape: tuple) -> npt.NDArray:
 
 @check_coords('reference', 'configuration', reduce_result_if_single=False,
               check_lengths_match=False, allow_atomgroup=True)
-def distance_array(reference: Union[npt.NDArray, 'AtomGroup'],
-                   configuration: Union[npt.NDArray, 'AtomGroup'],
-                   box: Optional[npt.NDArray] = None,
-                   result: Optional[npt.NDArray] = None,
-                   backend: str = "serial") -> npt.NDArray:
+def distance_array(reference: Union[np.ndarray, 'AtomGroup'],
+                   configuration: Union[np.ndarray, 'AtomGroup'],
+                   box: Optional[np.ndarray] = None,
+                   result: Optional[np.ndarray] = None,
+                   backend: str = "serial") -> np.ndarray:
     """Calculate all possible distances between a reference set and another
     configuration.
 
@@ -271,10 +270,10 @@ def distance_array(reference: Union[npt.NDArray, 'AtomGroup'],
 
 
 @check_coords('reference', reduce_result_if_single=False, allow_atomgroup=True)
-def self_distance_array(reference: Union[npt.NDArray, 'AtomGroup'],
-                        box: Optional[npt.NDArray] = None,
-                        result: Optional[npt.NDArray] = None,
-                        backend: str = "serial") -> npt.NDArray:
+def self_distance_array(reference: Union[np.ndarray, 'AtomGroup'],
+                        box: Optional[np.ndarray] = None,
+                        result: Optional[np.ndarray] = None,
+                        backend: str = "serial") -> np.ndarray:
     """Calculate all possible distances within a configuration `reference`.
 
     If the optional argument `box` is supplied, the minimum image convention is
@@ -1268,11 +1267,11 @@ def transform_StoR(coords, box, backend="serial"):
 
 
 @check_coords('coords1', 'coords2', allow_atomgroup=True)
-def calc_bonds(coords1: Union[npt.NDArray, 'AtomGroup'],
-               coords2: Union[npt.NDArray, 'AtomGroup'],
-               box: Optional[npt.NDArray] = None,
-               result: Optional[npt.NDArray] = None,
-               backend: str = "serial") -> npt.NDArray:
+def calc_bonds(coords1: Union[np.ndarray, 'AtomGroup'],
+               coords2: Union[np.ndarray, 'AtomGroup'],
+               box: Optional[np.ndarray] = None,
+               result: Optional[np.ndarray] = None,
+               backend: str = "serial") -> np.ndarray:
     """Calculates the bond lengths between pairs of atom positions from the two
     coordinate arrays `coords1` and `coords2`, which must contain the same
     number of coordinates. ``coords1[i]`` and ``coords2[i]`` represent the
@@ -1359,12 +1358,12 @@ def calc_bonds(coords1: Union[npt.NDArray, 'AtomGroup'],
 
 
 @check_coords('coords1', 'coords2', 'coords3', allow_atomgroup=True)
-def calc_angles(coords1: Union[npt.NDArray, 'AtomGroup'],
-                coords2: Union[npt.NDArray, 'AtomGroup'],
-                coords3: Union[npt.NDArray, 'AtomGroup'],
-                box: Optional[npt.NDArray] = None,
-                result: Optional[npt.NDArray] = None,
-                backend: str = "serial") -> npt.NDArray:
+def calc_angles(coords1: Union[np.ndarray, 'AtomGroup'],
+                coords2: Union[np.ndarray, 'AtomGroup'],
+                coords3: Union[np.ndarray, 'AtomGroup'],
+                box: Optional[np.ndarray] = None,
+                result: Optional[np.ndarray] = None,
+                backend: str = "serial") -> np.ndarray:
     """Calculates the angles formed between triplets of atom positions from the
     three coordinate arrays `coords1`, `coords2`, and `coords3`. All coordinate
     arrays must contain the same number of coordinates.
@@ -1461,13 +1460,13 @@ def calc_angles(coords1: Union[npt.NDArray, 'AtomGroup'],
 
 
 @check_coords('coords1', 'coords2', 'coords3', 'coords4', allow_atomgroup=True)
-def calc_dihedrals(coords1: Union[npt.NDArray, 'AtomGroup'],
-                   coords2: Union[npt.NDArray, 'AtomGroup'],
-                   coords3: Union[npt.NDArray, 'AtomGroup'],
-                   coords4: Union[npt.NDArray, 'AtomGroup'],
-                   box: Optional[npt.NDArray] = None,
-                   result: Optional[npt.NDArray] = None,
-                   backend: str = "serial") -> npt.NDArray:
+def calc_dihedrals(coords1: Union[np.ndarray, 'AtomGroup'],
+                   coords2: Union[np.ndarray, 'AtomGroup'],
+                   coords3: Union[np.ndarray, 'AtomGroup'],
+                   coords4: Union[np.ndarray, 'AtomGroup'],
+                   box: Optional[np.ndarray] = None,
+                   result: Optional[np.ndarray] = None,
+                   backend: str = "serial") -> np.ndarray:
     r"""Calculates the dihedral angles formed between quadruplets of positions
     from the four coordinate arrays `coords1`, `coords2`, `coords3`, and
     `coords4`, which must contain the same number of coordinates.
@@ -1578,9 +1577,9 @@ def calc_dihedrals(coords1: Union[npt.NDArray, 'AtomGroup'],
 
 
 @check_coords('coords', allow_atomgroup=True)
-def apply_PBC(coords: Union[npt.NDArray, 'AtomGroup'],
-              box: Optional[npt.NDArray] = None,
-              backend: str = "serial") -> npt.NDArray:
+def apply_PBC(coords: Union[np.ndarray, 'AtomGroup'],
+              box: Optional[np.ndarray] = None,
+              backend: str = "serial") -> np.ndarray:
     """Moves coordinates into the primary unit cell.
 
     Parameters
@@ -1626,7 +1625,7 @@ def apply_PBC(coords: Union[npt.NDArray, 'AtomGroup'],
 
 
 @check_coords('vectors', enforce_copy=False, enforce_dtype=False)
-def minimize_vectors(vectors: npt.NDArray, box: npt.NDArray) -> npt.NDArray:
+def minimize_vectors(vectors: np.ndarray, box: np.ndarray) -> np.ndarray:
     """Apply minimum image convention to an array of vectors
 
     This function is required for calculating the correct vectors between two
