@@ -71,6 +71,10 @@ from typing import Optional
 import numpy as np
 from numpy.lib.utils import deprecate
 
+from typing import Union, Optional, Callable
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:  # pragma: no cover
+    from ..core.groups import AtomGroup
 from .util import check_coords, check_box
 from .mdamath import triclinic_vectors
 from ._augment import augment_coordinates, undo_augment
