@@ -67,7 +67,6 @@ Functions
 .. autofunction:: undo_augment(results, translation, nreal)
 .. autofunction:: minimize_vectors(vectors, box)
 """
-from typing import Optional
 import numpy as np
 from numpy.lib.utils import deprecate
 
