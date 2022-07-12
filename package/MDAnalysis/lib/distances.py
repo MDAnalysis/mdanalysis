@@ -358,7 +358,8 @@ def capped_distance(reference: Union[np.ndarray, 'AtomGroup'],
                     configuration: Union[np.ndarray, 'AtomGroup'],
                     max_cutoff: float, min_cutoff: Optional[float]=None,
                     box: Optional[np.ndarray]=None,
-                    method: Optional[str]=None, return_distances: bool=True):
+                    method: Optional[str]=None,
+                    return_distances: Optional[bool]=True):
     """Calculates pairs of indices corresponding to entries in the `reference`
     and `configuration` arrays which are separated by a distance lying within
     the specified cutoff(s). Optionally, these distances can be returned as
@@ -531,7 +532,7 @@ def _bruteforce_capped(reference: Union[np.ndarray, 'AtomGroup'],
                        configuration: Union[np.ndarray, 'AtomGroup'],
                        max_cutoff: float, min_cutoff: Optional[float]=None,
                        box: Optional[np.ndarray]=None,
-                       return_distances: bool=True):
+                       return_distances: Optional[bool]=True):
     """Capped distance evaluations using a brute force method.
 
     Computes and returns an array containing pairs of indices corresponding to
@@ -618,7 +619,7 @@ def _pkdtree_capped(reference: Union[np.ndarray, 'AtomGroup'],
                        configuration: Union[np.ndarray, 'AtomGroup'],
                        max_cutoff: float, min_cutoff: Optional[float]=None,
                        box: Optional[np.ndarray]=None,
-                       return_distances: bool=True):
+                       return_distances: Optional[bool]=True):
     """Capped distance evaluations using a KDtree method.
 
     Computes and returns an array containing pairs of indices corresponding to
@@ -710,7 +711,7 @@ def _nsgrid_capped(reference: Union[np.ndarray, 'AtomGroup'],
                    configuration: Union[np.ndarray, 'AtomGroup'],
                    max_cutoff: float, min_cutoff: Optional[float]=None,
                    box: Optional[np.ndarray]=None,
-                   return_distances: bool=True):
+                   return_distances: Optional[bool]=True):
     """Capped distance evaluations using a grid-based search method.
 
     Computes and returns an array containing pairs of indices corresponding to
@@ -818,7 +819,7 @@ def self_capped_distance(reference: Union[np.ndarray, 'AtomGroup'],
                          max_cutoff: float, min_cutoff: Optional[float]=None,
                          box: Optional[np.ndarray]=None,
                          method: Optional[str]=None,
-                         return_distances: bool=True):
+                         return_distances: Optional[bool]=True):
     """Calculates pairs of indices corresponding to entries in the `reference`
     array which are separated by a distance lying within the specified
     cutoff(s). Optionally, these distances can be returned as well.
@@ -984,7 +985,7 @@ def _determine_method_self(reference: np.ndarray, max_cutoff: float,
 def _bruteforce_capped_self(reference: Union[np.ndarray, 'AtomGroup'],
                             max_cutoff: float, min_cutoff: Optional[float]=None,
                             box: Optional[np.ndarray]=None,
-                            return_distances: bool=True):
+                            return_distances: Optional[bool]=True):
     """Capped distance evaluations using a brute force method.
 
     Computes and returns an array containing pairs of indices corresponding to
@@ -1066,7 +1067,7 @@ def _bruteforce_capped_self(reference: Union[np.ndarray, 'AtomGroup'],
 def _pkdtree_capped_self(reference: Union[np.ndarray, 'AtomGroup'],
                             max_cutoff: float, min_cutoff: Optional[float]=None,
                             box: Optional[np.ndarray]=None,
-                            return_distances: bool=True):
+                            return_distances: Optional[bool]=True):
     """Capped distance evaluations using a KDtree method.
 
     Computes and returns an array containing pairs of indices corresponding to
@@ -1149,7 +1150,7 @@ def _pkdtree_capped_self(reference: Union[np.ndarray, 'AtomGroup'],
 def _nsgrid_capped_self(reference: Union[np.ndarray, 'AtomGroup'],
                         max_cutoff: float, min_cutoff: Optional[float]=None,
                         box: Optional[np.ndarray]=None,
-                        return_distances: bool=True):
+                        return_distances: Optional[bool]=True):
     """Capped distance evaluations using a grid-based search method.
 
     Computes and returns an array containing pairs of indices corresponding to
