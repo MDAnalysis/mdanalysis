@@ -26,10 +26,11 @@
 ===================================================================
 
 Fast C-routines to calculate arrays of distances or angles from coordinate
-arrays. Many of the functions also exist in parallel versions, which typically
-provide higher performance than the serial code.
-The boolean attribute `MDAnalysis.lib.distances.USED_OPENMP` can be checked to
-see if OpenMP was used in the compilation of MDAnalysis.
+arrays. Distance functions can accept a NumPy :class:`np.ndarray` or an
+:class:`~MDAnalysis.core.groups.AtomGroup`. Many of the functions also exist
+in parallel versions, which typically provide higher performance than the
+serial code. The boolean attribute `MDAnalysis.lib.distances.USED_OPENMP` can
+be checked to see if OpenMP was used in the compilation of MDAnalysis.
 
 Selection of acceleration ("backend")
 -------------------------------------
@@ -50,6 +51,9 @@ case-insensitive):
    ========== ========================= ======================================
 
 .. versionadded:: 0.13.0
+.. versionchanged:: 2.3.0
+   Distance functions can now accept an
+   :class:`~MDAnalysis.core.groups.AtomGroup` or an :class:`np.ndarray`
 
 Functions
 ---------
@@ -95,7 +99,9 @@ except ImportError:
     pass
 del importlib
 
-def _run(funcname, args=None, kwargs=None, backend="serial"):
+
+def _run(funcname: Callable, args: Optional[tuple] = None,
+         kwargs: Optional[dict] = None, backend: str = "serial") -> Callable:
     """Helper function to select a backend function `funcname`."""
     args = args if args is not None else tuple()
     kwargs = kwargs if kwargs is not None else dict()
@@ -132,8 +138,8 @@ from .c_distances import (_UINT64_MAX,
 
 from .c_distances_openmp import OPENMP_ENABLED as USED_OPENMP
 
-
-def _check_result_array(result, shape):
+# typing: numpy
+def _check_result_array(result: np.ndarray, shape: tuple) -> np.ndarray:
     """Check if the result array is ok to use.
 
     The `result` array must meet the following requirements:
@@ -173,11 +179,14 @@ def _check_result_array(result, shape):
 #        raise ValueError("{0} is not C-contiguous.".format(desc))
     return result
 
-
+# typing: numpy
 @check_coords('reference', 'configuration', reduce_result_if_single=False,
-              check_lengths_match=False)
-def distance_array(reference, configuration, box=None, result=None,
-                   backend="serial"):
+              check_lengths_match=False, allow_atomgroup=True)
+def distance_array(reference: Union[np.ndarray, 'AtomGroup'],
+                   configuration: Union[np.ndarray, 'AtomGroup'],
+                   box: Optional[np.ndarray] = None,
+                   result: Optional[np.ndarray] = None,
+                   backend: str = "serial") -> np.ndarray:
     """Calculate all possible distances between a reference set and another
     configuration.
 
@@ -194,12 +203,14 @@ def distance_array(reference, configuration, box=None, result=None,
 
     Parameters
     ----------
-    reference : numpy.ndarray
+    reference :numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Reference coordinate array of shape ``(3,)`` or ``(n, 3)`` (dtype is
-        arbitrary, will be converted to ``numpy.float32`` internally).
-    configuration : numpy.ndarray
+        arbitrary, will be converted to ``numpy.float32`` internally). Also
+        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.
+    configuration : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Configuration coordinate array of shape ``(3,)`` or ``(m, 3)`` (dtype is
-        arbitrary, will be converted to ``numpy.float32`` internally).
+        arbitrary, will be converted to ``numpy.float32`` internally). Also
+        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.
     box : array_like, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
@@ -225,6 +236,9 @@ def distance_array(reference, configuration, box=None, result=None,
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
        Now also accepts single coordinates as input.
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
     confnum = configuration.shape[0]
     refnum = reference.shape[0]
@@ -254,9 +268,12 @@ def distance_array(reference, configuration, box=None, result=None,
 
     return distances
 
-
-@check_coords('reference', reduce_result_if_single=False)
-def self_distance_array(reference, box=None, result=None, backend="serial"):
+# typing: numpy
+@check_coords('reference', reduce_result_if_single=False, allow_atomgroup=True)
+def self_distance_array(reference: Union[np.ndarray, 'AtomGroup'],
+                        box: Optional[np.ndarray] = None,
+                        result: Optional[np.ndarray] = None,
+                        backend: str = "serial") -> np.ndarray:
     """Calculate all possible distances within a configuration `reference`.
 
     If the optional argument `box` is supplied, the minimum image convention is
@@ -269,9 +286,10 @@ def self_distance_array(reference, box=None, result=None, backend="serial"):
 
     Parameters
     ----------
-    reference : numpy.ndarray
+    reference : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Reference coordinate array of shape ``(3,)`` or ``(n, 3)`` (dtype is
-        arbitrary, will be converted to ``numpy.float32`` internally).
+        arbitrary, will be converted to ``numpy.float32`` internally). Also
+        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.
     box : array_like, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
@@ -302,6 +320,9 @@ def self_distance_array(reference, box=None, result=None, backend="serial"):
        Added *backend* keyword.
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
     refnum = reference.shape[0]
     distnum = refnum * (refnum - 1) // 2
@@ -1318,9 +1339,13 @@ def transform_StoR(coords, box, backend="serial"):
     _run("coord_transform", args=(coords, box), backend=backend)
     return coords
 
-
-@check_coords('coords1', 'coords2')
-def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
+# typing: numpy
+@check_coords('coords1', 'coords2', allow_atomgroup=True)
+def calc_bonds(coords1: Union[np.ndarray, 'AtomGroup'],
+               coords2: Union[np.ndarray, 'AtomGroup'],
+               box: Optional[np.ndarray] = None,
+               result: Optional[np.ndarray] = None,
+               backend: str = "serial") -> np.ndarray:
     """Calculates the bond lengths between pairs of atom positions from the two
     coordinate arrays `coords1` and `coords2`, which must contain the same
     number of coordinates. ``coords1[i]`` and ``coords2[i]`` represent the
@@ -1344,14 +1369,16 @@ def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
 
     Parameters
     ----------
-    coords1 : numpy.ndarray
+    coords1 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` for one half of a
         single or ``n`` bonds, respectively (dtype is arbitrary, will be
-        converted to ``numpy.float32`` internally).
-    coords2 : numpy.ndarray
+        converted to ``numpy.float32`` internally).  Also accepts an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
+    coords2 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` for the other half of
         a single or ``n`` bonds, respectively (dtype is arbitrary, will be
-        converted to ``numpy.float32`` internally).
+        converted to ``numpy.float32`` internally). Also accepts an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
@@ -1378,6 +1405,9 @@ def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
        Now also accepts single coordinates as input.
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
     numatom = coords1.shape[0]
     bondlengths = _check_result_array(result, (numatom,))
@@ -1400,10 +1430,14 @@ def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
 
     return bondlengths
 
-
-@check_coords('coords1', 'coords2', 'coords3')
-def calc_angles(coords1, coords2, coords3, box=None, result=None,
-                backend="serial"):
+# typing: numpy
+@check_coords('coords1', 'coords2', 'coords3', allow_atomgroup=True)
+def calc_angles(coords1: Union[np.ndarray, 'AtomGroup'],
+                coords2: Union[np.ndarray, 'AtomGroup'],
+                coords3: Union[np.ndarray, 'AtomGroup'],
+                box: Optional[np.ndarray] = None,
+                result: Optional[np.ndarray] = None,
+                backend: str = "serial") -> np.ndarray:
     """Calculates the angles formed between triplets of atom positions from the
     three coordinate arrays `coords1`, `coords2`, and `coords3`. All coordinate
     arrays must contain the same number of coordinates.
@@ -1429,18 +1463,21 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None,
 
     Parameters
     ----------
-    coords1 : numpy.ndarray
+    coords1 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Array of shape ``(3,)`` or ``(n, 3)`` containing the coordinates of one
         side of a single or ``n`` angles, respectively (dtype is arbitrary, will
-        be converted to ``numpy.float32`` internally)
-    coords2 : numpy.ndarray
+        be converted to ``numpy.float32`` internally). Also accepts an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
+    coords2 :  numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Array of shape ``(3,)`` or ``(n, 3)`` containing the coordinates of the
         apices of a single or ``n`` angles, respectively (dtype is arbitrary,
-        will be converted to ``numpy.float32`` internally)
-    coords3 : numpy.ndarray
+        will be converted to ``numpy.float32`` internally). Also accepts an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
+    coords3 :  numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Array of shape ``(3,)`` or ``(n, 3)`` containing the coordinates of the
         other side of a single or ``n`` angles, respectively (dtype is
-        arbitrary, will be converted to ``numpy.float32`` internally)
+        arbitrary, will be converted to ``numpy.float32`` internally).
+        Also accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
@@ -1470,6 +1507,9 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None,
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
        Now also accepts single coordinates as input.
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
     numatom = coords1.shape[0]
     angles = _check_result_array(result, (numatom,))
@@ -1492,10 +1532,15 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None,
 
     return angles
 
-
-@check_coords('coords1', 'coords2', 'coords3', 'coords4')
-def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
-                   backend="serial"):
+# typing: numpy
+@check_coords('coords1', 'coords2', 'coords3', 'coords4', allow_atomgroup=True)
+def calc_dihedrals(coords1: Union[np.ndarray, 'AtomGroup'],
+                   coords2: Union[np.ndarray, 'AtomGroup'],
+                   coords3: Union[np.ndarray, 'AtomGroup'],
+                   coords4: Union[np.ndarray, 'AtomGroup'],
+                   box: Optional[np.ndarray] = None,
+                   result: Optional[np.ndarray] = None,
+                   backend: str = "serial") -> np.ndarray:
     r"""Calculates the dihedral angles formed between quadruplets of positions
     from the four coordinate arrays `coords1`, `coords2`, `coords3`, and
     `coords4`, which must contain the same number of coordinates.
@@ -1527,22 +1572,26 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
 
     Parameters
     ----------
-    coords1 : numpy.ndarray
+    coords1 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 1st
         positions in dihedrals (dtype is arbitrary, will be converted to
-        ``numpy.float32`` internally)
-    coords2 : numpy.ndarray
+        ``numpy.float32`` internally).  Also accepts an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
+    coords2 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 2nd
         positions in dihedrals (dtype is arbitrary, will be converted to
-        ``numpy.float32`` internally)
-    coords3 : numpy.ndarray
+        ``numpy.float32`` internally).  Also accepts an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
+    coords3 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 3rd
         positions in dihedrals (dtype is arbitrary, will be converted to
-        ``numpy.float32`` internally)
-    coords4 : numpy.ndarray
+        ``numpy.float32`` internally).  Also accepts an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
+    coords4 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 4th
         positions in dihedrals (dtype is arbitrary, will be converted to
-        ``numpy.float32`` internally)
+        ``numpy.float32`` internally).  Also accepts an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
@@ -1575,6 +1624,9 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
        Now also accepts single coordinates as input.
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
     numatom = coords1.shape[0]
     dihedrals = _check_result_array(result, (numatom,))
@@ -1597,16 +1649,19 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
 
     return dihedrals
 
-
-@check_coords('coords')
-def apply_PBC(coords, box, backend="serial"):
+# typing: numpy
+@check_coords('coords', allow_atomgroup=True)
+def apply_PBC(coords: Union[np.ndarray, 'AtomGroup'],
+              box: Optional[np.ndarray] = None,
+              backend: str = "serial") -> np.ndarray:
     """Moves coordinates into the primary unit cell.
 
     Parameters
     ----------
-    coords : numpy.ndarray
+    coords : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` (dtype is arbitrary,
-        will be converted to ``numpy.float32`` internally).
+        will be converted to ``numpy.float32`` internally). Also accepts an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
     box : numpy.ndarray
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
@@ -1628,6 +1683,9 @@ def apply_PBC(coords, box, backend="serial"):
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
        Now also accepts (and, likewise, returns) single coordinates.
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
     if len(coords) == 0:
         return coords
@@ -1639,9 +1697,9 @@ def apply_PBC(coords, box, backend="serial"):
 
     return coords
 
-
+# typing: numpy
 @check_coords('vectors', enforce_copy=False, enforce_dtype=False)
-def minimize_vectors(vectors, box):
+def minimize_vectors(vectors: np.ndarray, box: np.ndarray) -> np.ndarray:
     """Apply minimum image convention to an array of vectors
 
     This function is required for calculating the correct vectors between two
