@@ -67,6 +67,7 @@ Functions
 .. autofunction:: undo_augment(results, translation, nreal)
 .. autofunction:: minimize_vectors(vectors, box)
 """
+from typing import Optional
 import numpy as np
 from numpy.lib.utils import deprecate
 
@@ -326,9 +327,14 @@ def self_distance_array(reference, box=None, result=None, backend="serial"):
 
     return distances
 
-
-def capped_distance(reference, configuration, max_cutoff, min_cutoff=None,
-                    box=None, method=None, return_distances=True):
+@check_coords('reference', 'configuration', enforce_copy=False,
+              reduce_result_if_single=False, check_lengths_match=False,
+              allow_atomgroup=True)
+def capped_distance(reference: Union[np.ndarray, 'AtomGroup'],
+                    configuration: Union[np.ndarray, 'AtomGroup'],
+                    max_cutoff: float, min_cutoff: Optional[float]=None,
+                    box: Optional[np.ndarray]=None,
+                    method: Optional[str]=None, return_distances: bool=True):
     """Calculates pairs of indices corresponding to entries in the `reference`
     and `configuration` arrays which are separated by a distance lying within
     the specified cutoff(s). Optionally, these distances can be returned as
@@ -346,10 +352,12 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None,
 
     Parameters
     -----------
-    reference : numpy.ndarray
-        Reference coordinate array with shape ``(3,)`` or ``(n, 3)``.
-    configuration : numpy.ndarray
-        Configuration coordinate array with shape ``(3,)`` or ``(m, 3)``.
+    reference : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
+        Reference coordinate array with shape ``(3,)`` or ``(n, 3)``. Also
+        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.
+    configuration : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
+        Configuration coordinate array with shape ``(3,)`` or ``(m, 3)``. Also
+        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.
     max_cutoff : float
         Maximum cutoff distance between the reference and configuration.
     min_cutoff : float, optional
@@ -403,6 +411,9 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None,
        #2670, #2930)
     .. versionchanged:: 1.0.2
        nsgrid enabled again
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
     if box is not None:
         box = np.asarray(box, dtype=np.float32)
@@ -416,8 +427,10 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None,
                   box=box, return_distances=return_distances)
 
 
-def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
-                      box=None, method=None):
+def _determine_method(reference: np.ndarray, configuration: np.ndarray,
+                      max_cutoff: float, min_cutoff: Optional[float] = None,
+                      box: Optional[np.ndarray] = None,
+                      method: Optional[str] = None):
     """Guesses the fastest method for capped distance calculations based on the
     size of the coordinate sets and the relative size of the target volume.
 
@@ -488,9 +501,13 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
 
 
 @check_coords('reference', 'configuration', enforce_copy=False,
-              reduce_result_if_single=False, check_lengths_match=False)
-def _bruteforce_capped(reference, configuration, max_cutoff, min_cutoff=None,
-                       box=None, return_distances=True):
+              reduce_result_if_single=False, check_lengths_match=False,
+              allow_atomgroup=True)
+def _bruteforce_capped(reference: Union[np.ndarray, 'AtomGroup'],
+                       configuration: Union[np.ndarray, 'AtomGroup'],
+                       max_cutoff: float, min_cutoff: Optional[float]=None,
+                       box: Optional[np.ndarray]=None,
+                       return_distances: bool=True):
     """Capped distance evaluations using a brute force method.
 
     Computes and returns an array containing pairs of indices corresponding to
@@ -506,12 +523,14 @@ def _bruteforce_capped(reference, configuration, max_cutoff, min_cutoff=None,
 
     Parameters
     ----------
-    reference : numpy.ndarray
+    reference : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Reference coordinate array with shape ``(3,)`` or ``(n, 3)`` (dtype will
-        be converted to ``numpy.float32`` internally).
-    configuration : array
+        be converted to ``numpy.float32`` internally). Also
+        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.
+    configuration : array or :class:`~MDAnalysis.core.groups.AtomGroup`
         Configuration coordinate array with shape ``(3,)`` or ``(m, 3)`` (dtype
-        will be converted to ``numpy.float32`` internally).
+        will be converted to ``numpy.float32`` internally). Also
+        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.
     max_cutoff : float
         Maximum cutoff distance between `reference` and `configuration`
         coordinates.
@@ -541,6 +560,10 @@ def _bruteforce_capped(reference, configuration, max_cutoff, min_cutoff=None,
         ``k``-th pair returned in `pairs` and gives the distance between the
         coordinates ``reference[pairs[k, 0]]`` and
         ``configuration[pairs[k, 1]]``.
+    
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
     # Default return values (will be overwritten only if pairs are found):
     pairs = np.empty((0, 2), dtype=np.intp)
@@ -565,9 +588,13 @@ def _bruteforce_capped(reference, configuration, max_cutoff, min_cutoff=None,
 
 
 @check_coords('reference', 'configuration', enforce_copy=False,
-              reduce_result_if_single=False, check_lengths_match=False)
-def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None,
-                    box=None, return_distances=True):
+              reduce_result_if_single=False, check_lengths_match=False,
+              allow_atomgroup=True)
+def _pkdtree_capped(reference: Union[np.ndarray, 'AtomGroup'],
+                       configuration: Union[np.ndarray, 'AtomGroup'],
+                       max_cutoff: float, min_cutoff: Optional[float]=None,
+                       box: Optional[np.ndarray]=None,
+                       return_distances: bool=True):
     """Capped distance evaluations using a KDtree method.
 
     Computes and returns an array containing pairs of indices corresponding to
@@ -583,12 +610,14 @@ def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None,
 
     Parameters
     ----------
-    reference : numpy.ndarray
+    reference : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Reference coordinate array with shape ``(3,)`` or ``(n, 3)`` (dtype will
-        be converted to ``numpy.float32`` internally).
-    configuration : array
+        be converted to ``numpy.float32`` internally). Also
+        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.
+    configuration : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Configuration coordinate array with shape ``(3,)`` or ``(m, 3)`` (dtype
-        will be converted to ``numpy.float32`` internally).
+        will be converted to ``numpy.float32`` internally). Also
+        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.
     max_cutoff : float
         Maximum cutoff distance between `reference` and `configuration`
         coordinates.
@@ -618,6 +647,10 @@ def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None,
         ``k``-th pair returned in `pairs` and gives the distance between the
         coordinates ``reference[pairs[k, 0]]`` and
         ``configuration[pairs[k, 1]]``.
+
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
     from .pkdtree import PeriodicKDTree  # must be here to avoid circular import
 
@@ -647,9 +680,13 @@ def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None,
 
 
 @check_coords('reference', 'configuration', enforce_copy=False,
-              reduce_result_if_single=False, check_lengths_match=False)
-def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
-                   box=None, return_distances=True):
+              reduce_result_if_single=False, check_lengths_match=False,
+              allow_atomgroup=True)
+def _nsgrid_capped(reference: Union[np.ndarray, 'AtomGroup'],
+                   configuration: Union[np.ndarray, 'AtomGroup'],
+                   max_cutoff: float, min_cutoff: Optional[float]=None,
+                   box: Optional[np.ndarray]=None,
+                   return_distances: bool=True):
     """Capped distance evaluations using a grid-based search method.
 
     Computes and returns an array containing pairs of indices corresponding to
@@ -665,12 +702,14 @@ def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
 
     Parameters
     ----------
-    reference : numpy.ndarray
+    reference : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Reference coordinate array with shape ``(3,)`` or ``(n, 3)`` (dtype will
-        be converted to ``numpy.float32`` internally).
-    configuration : array
+        be converted to ``numpy.float32`` internally).  Also
+        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.
+    configuration : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Configuration coordinate array with shape ``(3,)`` or ``(m, 3)`` (dtype
-        will be converted to ``numpy.float32`` internally).
+        will be converted to ``numpy.float32`` internally).  Also
+        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.
     max_cutoff : float
         Maximum cutoff distance between `reference` and `configuration`
         coordinates.
@@ -700,6 +739,10 @@ def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
         ``k``-th pair returned in `pairs` and gives the distance between the
         coordinates ``reference[pairs[k, 0]]`` and
         ``configuration[pairs[k, 1]]``.
+
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
     # Default return values (will be overwritten only if pairs are found):
     pairs = np.empty((0, 2), dtype=np.intp)
