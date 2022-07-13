@@ -211,7 +211,7 @@ __all__ = [
     "SDF_molecule",  # MDL SDFile for rdkit
     "PDBX",  # PDBxfile
     "PDB_elements",  # PDB file with elements
-    "PDB_elements",  # PDB file with elements
+    "PDB_charges",  # PDB file with formal charges
     "SURFACE_PDB",  # 111 FCC lattice topology for NSGrid bug #2345
     "SURFACE_TRR",  # full precision coordinates for NSGrid bug #2345
 ]
@@ -582,7 +582,7 @@ NAMDBIN = resource_filename(__name__, 'data/adk_open.coor')
 SDF_molecule = resource_filename(__name__, 'data/molecule.sdf')
 
 PDB_elements = resource_filename(__name__, 'data/elements.pdb')
-
+PDB_charges = resource_filename(__name__, 'data/charges.pdb')
 
 PDBX = resource_filename(__name__, "data/4x8u.pdbx")
 
