@@ -91,7 +91,7 @@ class TestCappedDistances(object):
 
     @pytest.fixture()
     def query_2(self):
-        q2 = np.array([[0.1, 0.1, 0.1],[0.2, 0.1, 0.1]], dtype=np.float32)
+        q2 = np.array([[0.1, 0.1, 0.1], [0.2, 0.1, 0.1]], dtype=np.float32)
         return q2
 
     @pytest.fixture()
@@ -100,7 +100,7 @@ class TestCappedDistances(object):
         u = MDAnalysis.Universe.empty(len(q1), trajectory=True)
         u.atoms.positions = q1
         return u.atoms
-    
+
     @pytest.fixture()
     def query_2_atomgroup(self, query_2):
         q2 = query_2
@@ -116,7 +116,8 @@ class TestCappedDistances(object):
         point1 = np.array([0.1, 0.1, 0.1], dtype=np.float32)
         point2 = np.array([0.95, 0.1, 0.1], dtype=np.float32)
 
-        pairs, dists = distances.capped_distance(point1, point2, max_cutoff=0.2)
+        pairs, dists = distances.capped_distance(point1,
+                                                 point2, max_cutoff=0.2)
 
         assert_equal(len(pairs), 0)
 
@@ -126,18 +127,19 @@ class TestCappedDistances(object):
     @pytest.mark.parametrize('box', boxes_1)
     @pytest.mark.parametrize('method', method_1)
     @pytest.mark.parametrize('min_cutoff', min_cutoff_1)
-    def test_capped_distance_checkbrute(self, npoints, box, method, min_cutoff, query, request):
+    def test_capped_distance_checkbrute(self, npoints, box, method,
+                                        min_cutoff, query, request):
         q = request.getfixturevalue(query)
         np.random.seed(90003)
         points = (np.random.uniform(low=0, high=1.0,
-                            size=(npoints, 3))*(self.boxes_1[0][:3])).astype(np.float32)
+                  size=(npoints, 3))*(self.boxes_1[0][:3])).astype(np.float32)
         max_cutoff = 2.5
         # capped distance should be able to handle array of vectors
         # as well as single vectors.
         pairs, dist = distances.capped_distance(q, points, max_cutoff,
                                                 min_cutoff=min_cutoff, box=box,
                                                 method=method)
-    
+
         if pairs.shape != (0, ):
             found_pairs = pairs[:, 1]
         else:
@@ -146,9 +148,9 @@ class TestCappedDistances(object):
         if isinstance(q, np.ndarray):
             if(q.shape[0] == 3):
                 q = q.reshape((1, 3))
-    
+
         dists = distances.distance_array(q, points, box=box)
-    
+
         if min_cutoff is None:
             min_cutoff = 0.
         indices = np.where((dists <= max_cutoff) & (dists > min_cutoff))
@@ -183,11 +185,11 @@ class TestCappedDistances(object):
             if(q.shape[0] == 3):
                 q = q.reshape((1, 3))
 
-        dists = distances.distance_array(q, points, box=box)    
+        dists = distances.distance_array(q, points, box=box)
 
         if min_cutoff is None:
             min_cutoff = 0.
-        indices = np.where((dists <= max_cutoff) & (dists > min_cutoff))    
+        indices = np.where((dists <= max_cutoff) & (dists > min_cutoff))
 
         assert_equal(np.sort(found_pairs, axis=0), np.sort(indices[1], axis=0)) 
 
@@ -247,8 +249,10 @@ class TestCappedDistances(object):
 
 
     @pytest.mark.parametrize('box', (None,
-                                     np.array([1, 1, 1,  90, 90, 90], dtype=np.float32),
-                                     np.array([1, 1, 1, 60, 75, 80], dtype=np.float32)))
+                                     np.array([1, 1, 1,  90, 90, 90],
+                                     dtype=np.float32),
+                                     np.array([1, 1, 1, 60, 75, 80],
+                                     dtype=np.float32)))
     @pytest.mark.parametrize('npoints,cutoff,meth',
                              [(1, 0.02, '_bruteforce_capped_self'),
                               (1, 0.2, '_bruteforce_capped_self'),
@@ -263,8 +267,10 @@ class TestCappedDistances(object):
 
 
     @pytest.mark.parametrize('box', (None,
-                                     np.array([1, 1, 1,  90, 90, 90], dtype=np.float32),
-                                     np.array([1, 1, 1, 60, 75, 80], dtype=np.float32)))
+                                     np.array([1, 1, 1,  90, 90, 90],
+                                     dtype=np.float32),
+                                     np.array([1, 1, 1, 60, 75, 80],
+                                     dtype=np.float32)))
     @pytest.mark.parametrize('npoints,cutoff,meth',
                              [(1, 0.02, '_bruteforce_capped'),
                               (1, 0.2, '_bruteforce_capped'),
@@ -274,9 +280,9 @@ class TestCappedDistances(object):
     def test_method_selection(self, box, npoints, cutoff, meth):
         np.random.seed(90003)
         points = (np.random.uniform(low=0, high=1.0,
-                            size=(npoints, 3)).astype(np.float32))
+                  size=(npoints, 3)).astype(np.float32))
         method = distances._determine_method(points, points, cutoff, box=box)
-        assert_equal(method.__name__, meth) 
+        assert_equal(method.__name__, meth)
 
 
 @pytest.fixture()

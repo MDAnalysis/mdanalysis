@@ -353,6 +353,7 @@ def self_distance_array(reference: Union[np.ndarray, 'AtomGroup'],
 
     return distances
 
+
 @check_coords('reference', 'configuration', enforce_copy=False,
               reduce_result_if_single=False, check_lengths_match=False,
               allow_atomgroup=True)
@@ -587,7 +588,7 @@ def _bruteforce_capped(reference: Union[np.ndarray, 'AtomGroup'],
         ``k``-th pair returned in `pairs` and gives the distance between the
         coordinates ``reference[pairs[k, 0]]`` and
         ``configuration[pairs[k, 1]]``.
-    
+
     .. versionchanged:: 2.3.0
        Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
        argument in any position and checks inputs using type hinting.
@@ -618,10 +619,10 @@ def _bruteforce_capped(reference: Union[np.ndarray, 'AtomGroup'],
               reduce_result_if_single=False, check_lengths_match=False,
               allow_atomgroup=True)
 def _pkdtree_capped(reference: Union[np.ndarray, 'AtomGroup'],
-                       configuration: Union[np.ndarray, 'AtomGroup'],
-                       max_cutoff: float, min_cutoff: Optional[float] = None,
-                       box: Optional[np.ndarray] = None,
-                       return_distances: Optional[bool] = True):
+                    configuration: Union[np.ndarray, 'AtomGroup'],
+                    max_cutoff: float, min_cutoff: Optional[float] = None,
+                    box: Optional[np.ndarray] = None,
+                    return_distances: Optional[bool] = True):
     """Capped distance evaluations using a KDtree method.
 
     Computes and returns an array containing pairs of indices corresponding to
@@ -813,6 +814,7 @@ def _nsgrid_capped(reference: Union[np.ndarray, 'AtomGroup'],
         return pairs, distances
     else:
         return pairs
+
 
 @check_coords('reference', enforce_copy=False,
               reduce_result_if_single=False, check_lengths_match=False,
@@ -1069,10 +1071,10 @@ def _bruteforce_capped_self(reference: Union[np.ndarray, 'AtomGroup'],
 @check_coords('reference', enforce_copy=False, reduce_result_if_single=False,
               allow_atomgroup=True)
 def _pkdtree_capped_self(reference: Union[np.ndarray, 'AtomGroup'],
-                            max_cutoff: float,
-                            min_cutoff: Optional[float] = None,
-                            box: Optional[np.ndarray] = None,
-                            return_distances: Optional[bool] = True):
+                         max_cutoff: float,
+                         min_cutoff: Optional[float] = None,
+                         box: Optional[np.ndarray] = None,
+                         return_distances: Optional[bool] = True):
     """Capped distance evaluations using a KDtree method.
 
     Computes and returns an array containing pairs of indices corresponding to
@@ -1346,6 +1348,7 @@ def transform_StoR(coords, box, backend="serial"):
     _run("coord_transform", args=(coords, box), backend=backend)
     return coords
 
+
 # typing: numpy
 @check_coords('coords1', 'coords2', allow_atomgroup=True)
 def calc_bonds(coords1: Union[np.ndarray, 'AtomGroup'],
@@ -1436,6 +1439,7 @@ def calc_bonds(coords1: Union[np.ndarray, 'AtomGroup'],
                  backend=backend)
 
     return bondlengths
+
 
 # typing: numpy
 @check_coords('coords1', 'coords2', 'coords3', allow_atomgroup=True)
@@ -1538,6 +1542,7 @@ def calc_angles(coords1: Union[np.ndarray, 'AtomGroup'],
                    backend=backend)
 
     return angles
+
 
 # typing: numpy
 @check_coords('coords1', 'coords2', 'coords3', 'coords4', allow_atomgroup=True)
@@ -1655,6 +1660,7 @@ def calc_dihedrals(coords1: Union[np.ndarray, 'AtomGroup'],
                  backend=backend)
 
     return dihedrals
+
 
 # typing: numpy
 @check_coords('coords', allow_atomgroup=True)
