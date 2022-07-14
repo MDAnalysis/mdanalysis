@@ -262,7 +262,7 @@ class TestCappedDistances(object):
     def test_method_selfselection(self, box, npoints, cutoff, meth):
         np.random.seed(90003)
         points = (np.random.uniform(low=0, high=1.0,
-                            size=(npoints, 3))).astype(np.float32)
+                  size=(npoints, 3))).astype(np.float32)
         method = distances._determine_method_self(points, cutoff, box=box)
         assert_equal(method.__name__, meth)
 
