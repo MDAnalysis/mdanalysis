@@ -20,6 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from tkinter import FALSE
 import pytest
 import numpy as np
 from numpy.testing import assert_equal, assert_almost_equal, assert_allclose
@@ -190,16 +191,27 @@ class TestCappedDistances(object):
 
         assert_equal(np.sort(found_pairs, axis=0), np.sort(indices[1], axis=0)) 
 
+    def points_or_ag_self_capped(self, npoints, atomgroup=False):
+        np.random.seed(90003)
+        points = (np.random.uniform(low=0, high=1.0,
+        size=(npoints, 3))*(self.boxes_1[0][:3])).astype(np.float32)
+        if atomgroup:
+            u = MDAnalysis.Universe.empty(points.shape[0], trajectory=True)
+            u.atoms.positions = points
+            return u.atoms
+        else:
+            return points
+
 
     @pytest.mark.parametrize('npoints', npoints_1)
     @pytest.mark.parametrize('box', boxes_1)
     @pytest.mark.parametrize('method', method_1)
     @pytest.mark.parametrize('min_cutoff', min_cutoff_1)
     @pytest.mark.parametrize('ret_dist', (False, True))
-    def test_self_capped_distance(self, npoints, box, method, min_cutoff, ret_dist):
-        np.random.seed(90003)
-        points = (np.random.uniform(low=0, high=1.0,
-                             size=(npoints, 3))*(self.boxes_1[0][:3])).astype(np.float32)
+    @pytest.mark.parametrize('atomgroup', (False, True))
+    def test_self_capped_distance(self, npoints, box, method, min_cutoff,
+                                  ret_dist, atomgroup):
+        points = self.points_or_ag_self_capped(npoints, atomgroup=atomgroup)
         max_cutoff = 0.2
         result = distances.self_capped_distance(points, max_cutoff,
                                                 min_cutoff=min_cutoff, box=box,
