@@ -154,8 +154,8 @@ class TestCappedDistances(object):
         if min_cutoff is None:
             min_cutoff = 0.
         indices = np.where((dists <= max_cutoff) & (dists > min_cutoff))
-    
-        assert_equal(np.sort(found_pairs, axis=0), np.sort(indices[1], axis=0)) 
+
+        assert_equal(np.sort(found_pairs, axis=0), np.sort(indices[1], axis=0))
 
     # for coverage
     @pytest.mark.parametrize('query', ['query_1', 'query_2',
@@ -164,22 +164,24 @@ class TestCappedDistances(object):
     @pytest.mark.parametrize('box', boxes_1)
     @pytest.mark.parametrize('method', method_1)
     @pytest.mark.parametrize('min_cutoff', min_cutoff_1)
-    def test_capped_distance_return(self, npoints, box, query, request, method, min_cutoff):
+    def test_capped_distance_return(self, npoints, box, query, request,
+                                    method, min_cutoff):
         q = request.getfixturevalue(query)
         np.random.seed(90003)
         points = (np.random.uniform(low=0, high=1.0,
-                            size=(npoints, 3))*(self.boxes_1[0][:3])).astype(np.float32)
+                  size=(npoints, 3))*(self.boxes_1[0][:3])).astype(np.float32)
         max_cutoff = 0.3
         # capped distance should be able to handle array of vectors
         # as well as single vectors.
         pairs = distances.capped_distance(q, points, max_cutoff,
                                           min_cutoff=min_cutoff, box=box,
-                                          method=method, return_distances=False)    
+                                          method=method,
+                                          return_distances=False)
 
         if pairs.shape != (0, ):
             found_pairs = pairs[:, 1]
         else:
-            found_pairs = list()    
+            found_pairs = list()
 
         if isinstance(q, np.ndarray):
             if(q.shape[0] == 3):
@@ -191,19 +193,19 @@ class TestCappedDistances(object):
             min_cutoff = 0.
         indices = np.where((dists <= max_cutoff) & (dists > min_cutoff))
 
-        assert_equal(np.sort(found_pairs, axis=0), np.sort(indices[1], axis=0)) 
+        assert_equal(np.sort(found_pairs, axis=0),
+                     np.sort(indices[1], axis=0))
 
     def points_or_ag_self_capped(self, npoints, atomgroup=False):
         np.random.seed(90003)
         points = (np.random.uniform(low=0, high=1.0,
-        size=(npoints, 3))*(self.boxes_1[0][:3])).astype(np.float32)
+                  size=(npoints, 3))*(self.boxes_1[0][:3])).astype(np.float32)
         if atomgroup:
             u = MDAnalysis.Universe.empty(points.shape[0], trajectory=True)
             u.atoms.positions = points
             return u.atoms
         else:
             return points
-
 
     @pytest.mark.parametrize('npoints', npoints_1)
     @pytest.mark.parametrize('box', boxes_1)
@@ -222,14 +224,14 @@ class TestCappedDistances(object):
         if ret_dist:
             pairs, cdists = result
         else:
-            pairs = result  
+            pairs = result
 
         # Check we found all hits
         ref = distances.self_distance_array(points, box)
         ref_d = ref[ref < 0.2]
-        if not min_cutoff is None:
+        if min_cutoff is not None:
             ref_d = ref_d[ref_d > min_cutoff]
-        assert len(ref_d) == len(pairs) 
+        assert len(ref_d) == len(pairs)
 
         # Go through hit by hit and check we got the indices correct too
         ref = distances.distance_array(points, points, box)
@@ -237,22 +239,21 @@ class TestCappedDistances(object):
             for (i, j), d in zip(pairs, cdists):
                 d_ref = ref[i, j]
                 assert d_ref < 0.2
-                if not min_cutoff is None:
+                if min_cutoff is not None:
                     assert d_ref > min_cutoff
                 assert_almost_equal(d, d_ref, decimal=6)
         else:
             for i, j in pairs:
                 d_ref = ref[i, j]
                 assert d_ref < 0.2
-                if not min_cutoff is None:
-                    assert d_ref > min_cutoff   
-
+                if min_cutoff is not None:
+                    assert d_ref > min_cutoff
 
     @pytest.mark.parametrize('box', (None,
                                      np.array([1, 1, 1,  90, 90, 90],
-                                     dtype=np.float32),
+                                              dtype=np.float32),
                                      np.array([1, 1, 1, 60, 75, 80],
-                                     dtype=np.float32)))
+                                              dtype=np.float32)))
     @pytest.mark.parametrize('npoints,cutoff,meth',
                              [(1, 0.02, '_bruteforce_capped_self'),
                               (1, 0.2, '_bruteforce_capped_self'),
@@ -263,14 +264,13 @@ class TestCappedDistances(object):
         points = (np.random.uniform(low=0, high=1.0,
                             size=(npoints, 3))).astype(np.float32)
         method = distances._determine_method_self(points, cutoff, box=box)
-        assert_equal(method.__name__, meth) 
-
+        assert_equal(method.__name__, meth)
 
     @pytest.mark.parametrize('box', (None,
                                      np.array([1, 1, 1,  90, 90, 90],
-                                     dtype=np.float32),
+                                              dtype=np.float32),
                                      np.array([1, 1, 1, 60, 75, 80],
-                                     dtype=np.float32)))
+                                              dtype=np.float32)))
     @pytest.mark.parametrize('npoints,cutoff,meth',
                              [(1, 0.02, '_bruteforce_capped'),
                               (1, 0.2, '_bruteforce_capped'),
@@ -1435,7 +1435,7 @@ class TestInputUnchanged(object):
         ref = crd.positions.copy()
         res = distances.apply_PBC(crd, box, backend=backend)
         assert_equal(crd.positions, ref)
-        
+
 
 class TestEmptyInputCoordinates(object):
     """Tests ensuring that the following functions in MDAnalysis.lib.distances
