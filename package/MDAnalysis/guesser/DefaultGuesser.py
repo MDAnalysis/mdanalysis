@@ -24,7 +24,8 @@ class DefaultGuesser(GuesserBase):
         return masses
 
     def validate_atom_types(self, atom_types):
-        """Vaildates the atom types based on whether they are available in our tables
+        """Vaildates the atom types based on whether they are available
+        in our tables
 
         Parameters
         ----------
@@ -45,7 +46,8 @@ class DefaultGuesser(GuesserBase):
                 try:
                     tables.masses[atom_type.upper()]
                 except KeyError:
-                    warnings.warn("Failed to guess the mass for the following atom types: {}".format(atom_type))
+                    warnings.warn("Failed to guess the mass for the following atom types: {}".
+                                  format(atom_type))
 
     def get_atom_mass(self, element):
         """Return the atomic mass in u for *element*.
