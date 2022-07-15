@@ -7,7 +7,7 @@ GUESSERS = {'DEFAULT': DefaultGuesser}
 
 
 def get_guesser(atoms, context):
-    """get an appropiate guesser to the universe and pass 
+    """get an appropiate guesser to the universe and pass
        the atomGroup of the universe to the guesser
 
     Parameters
