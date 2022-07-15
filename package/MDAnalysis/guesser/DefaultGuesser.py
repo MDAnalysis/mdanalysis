@@ -47,7 +47,7 @@ class DefaultGuesser(GuesserBase):
                     tables.masses[atom_type.upper()]
                 except KeyError:
                     warnings.warn
-                    ("Failed to guess the mass for the following atom types: {}"
+                    ("Failed to guess the mass for the following atoms: {}"
                      .format(atom_type))
 
     def get_atom_mass(self, element):
