@@ -6,11 +6,10 @@ from . import tables
 
 class DefaultGuesser(GuesserBase):
     context = 'default'
-    
+
     def __init__(self):
-        self._guess = {'mass': self.guess_masses
-              }
-        
+        self._guess = {'mass': self.guess_masses}
+  
     def guess_masses(self):
         """Guess the mass of many atoms based upon their type
 
