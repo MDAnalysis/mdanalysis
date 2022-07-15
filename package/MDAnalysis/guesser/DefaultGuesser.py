@@ -47,7 +47,8 @@ class DefaultGuesser(GuesserBase):
                     tables.masses[atom_type.upper()]
                 except KeyError:
                     warnings.warn
-                    ("Failed to guess the mass for the following atom types: {}".format(atom_type))
+                    ("Failed to guess the mass for the following atom types: {}".
+                     format(atom_type))
 
     def get_atom_mass(self, element):
         """Return the atomic mass in u for *element*.
@@ -72,7 +73,7 @@ class DefaultGuesser(GuesserBase):
 
         :func:`guess_atom_element` is used to determine the kind of atom.
 
-        .. warning:: Anything not recognized is simply set to 0; 
+        .. warning:: Anything not recognized is simply set to 0;
         if you rely on the masses you might want to double check.
         """
         return self.get_atom_mass(self.guess_atom_element(atomname))
