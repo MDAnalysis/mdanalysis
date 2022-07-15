@@ -19,8 +19,8 @@ class DefaultGuesser(GuesserBase):
         """
         atom_types = self._atoms.types
         self.validate_atom_types(atom_types)
-        masses = np.array([self.get_atom_mass(atom_t) for atom_t in atom_types],
-                          dtype=np.float64)
+        masses = np.array([self.get_atom_mass(atom_t)
+                           for atom_t in atom_types], dtype=np.float64)
         return masses
 
     def validate_atom_types(self, atom_types):
@@ -73,4 +73,4 @@ class DefaultGuesser(GuesserBase):
         .. warning:: Anything not recognized is simply set to 0; if you rely on the
                      masses you might want to double check.
         """
-        return self.get_atom_mass(self.guess_atom_element(atomname)) 
+        return self.get_atom_mass(self.guess_atom_element(atomname))
