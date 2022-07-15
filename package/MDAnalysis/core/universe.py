@@ -172,7 +172,7 @@ def _generate_from_topology(universe):
     universe.segments = SegmentGroup(
             np.arange(universe._topology.n_segments), universe)
 
-      
+  
 class Universe(object):
     """The MDAnalysis Universe contains all the information describing the system.
 
@@ -315,7 +315,7 @@ class Universe(object):
     """
     def __init__(self, topology=None, *coordinates, all_coordinates=False,
                  format=None, topology_format=None, transformations=None,
-                 guess_bonds=False, vdwradii=None, context='default', 
+                 guess_bonds=False, vdwradii=None, context='default',
                  to_guess=[], in_memory=False,
                  in_memory_step=1, **kwargs):
 
@@ -1452,8 +1452,7 @@ class Universe(object):
         if self._guesser.is_guessed(to_guess):
             for attr in to_guess:
                 values = self._guesser.guessTopologyAttribute(attr)
-                self.add_TopologyAttr(attr, values)
-      
+                self.add_TopologyAttr(attr, values) 
 
 def Merge(*args):
     """Create a new new :class:`Universe` from one or more
