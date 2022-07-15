@@ -331,7 +331,7 @@ class PDBParser(TopologyReaderBase):
                     validated_elements.append('')
             attrs.append(Elements(np.array(validated_elements, dtype=object)))
 
-        
+    
         # Residue level stuff from here
         resids = np.array(resids, dtype=np.int32)
         resnames = np.array(resnames, dtype=object)
