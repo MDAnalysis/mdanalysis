@@ -47,7 +47,6 @@ class DefaultGuesser(GuesserBase):
                 except KeyError:
                     warnings.warn("Failed to guess the mass for the following atom types: {}".format(atom_type))
 
-
     def get_atom_mass(self, element):
         """Return the atomic mass in u for *element*.
 
@@ -66,7 +65,6 @@ class DefaultGuesser(GuesserBase):
             except KeyError:
                 return 0.0
 
-
     def guess_atom_mass(self, atomname):
         """Guess a mass based on the atom name.
 
@@ -75,7 +73,4 @@ class DefaultGuesser(GuesserBase):
         .. warning:: Anything not recognized is simply set to 0; if you rely on the
                      masses you might want to double check.
         """
-        return self.get_atom_mass(self.guess_atom_element(atomname))
-
-
-   
+        return self.get_atom_mass(self.guess_atom_element(atomname)) 
