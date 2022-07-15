@@ -3,10 +3,12 @@ import numpy as np
 import warnings
 from . import tables
 
+
 class DefaultGuesser(GuesserBase):
 
 
     context = 'default'
+    
     def __init__(self):
         self._guess = {'mass': self.guess_masses
               }
