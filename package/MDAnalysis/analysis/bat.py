@@ -179,16 +179,19 @@ import copy
 
 import MDAnalysis as mda
 from .base import AnalysisBase
+from MDAnalysis.core.groups import AtomGroup
+from MDAnalysis.core.universe import Universe
 
 from MDAnalysis.lib.distances import calc_bonds, calc_angles, calc_dihedrals
 from MDAnalysis.lib.mdamath import make_whole
+from typing import List, Union, Optional
 
 from ..due import due, Doi
 
 logger = logging.getLogger(__name__)
 
 
-def _sort_atoms_by_mass(atoms, reverse=False):
+def _sort_atoms_by_mass(atoms: AtomGroup, reverse: bool = False) -> List[AtomGroup]:
     r"""Sorts a list of atoms by name and then by index
 
     The atom index is used as a tiebreaker so that the ordering is reproducible.
@@ -208,7 +211,7 @@ def _sort_atoms_by_mass(atoms, reverse=False):
     return sorted(atoms, key=lambda a: (a.mass, a.index), reverse=reverse)
 
 
-def _find_torsions(root, atoms):
+def _find_torsions(root: AtomGroup, atoms: AtomGroup) -> List[AtomGroup]:
     """Constructs a list of torsion angles
 
     Parameters
@@ -271,7 +274,8 @@ class BAT(AnalysisBase):
     @due.dcite(Doi("10.1002/jcc.26036"),
                description="Bond-Angle-Torsions Coordinate Transformation",
                path="MDAnalysis.analysis.bat.BAT")
-    def __init__(self, ag, initial_atom=None, filename=None, **kwargs):
+    def __init__(self, ag: Union[AtomGroup, Universe], initial_atom: Optional[AtomGroup] = None,
+                 filename: Optional[str] = None, **kwargs: int) -> None:
         r"""Parameters
         ----------
         ag : AtomGroup or Universe
@@ -364,11 +368,11 @@ class BAT(AnalysisBase):
         if filename is not None:
             self.load(filename)
 
-    def _prepare(self):
+    def _prepare(self) -> None:
         self.results.bat = np.zeros(
                 (self.n_frames, 3*self._ag.n_atoms), dtype=np.float64)
 
-    def _single_frame(self):
+    def _single_frame(self) -> None:
         # Calculate coordinates based on the root atoms
         # The rotation axis is a normalized vector pointing from atom 0 to 1
         # It is described in two degrees of freedom
@@ -426,7 +430,7 @@ class BAT(AnalysisBase):
         self.results.bat[self._frame_index, :] = np.concatenate(
                 (root_based, bonds, angles, torsions))
 
-    def load(self, filename, start=None, stop=None, step=None):
+    def load(self, filename: str, start: Optional[int] = None, stop: Optional[int] = None, step: Optional[int] = None):
         """Loads the bat trajectory from a file in numpy binary format
 
         Parameters
@@ -463,7 +467,7 @@ class BAT(AnalysisBase):
                 'inconsistent with current trajectory in starting frame.')
         return self
 
-    def save(self, filename):
+    def save(self, filename: str) -> None:
         """Saves the bat trajectory in a file in numpy binary format
 
         See Also
@@ -472,7 +476,8 @@ class BAT(AnalysisBase):
         """
         np.save(filename, self.results.bat)
 
-    def Cartesian(self, bat_frame):
+    # typing: numpy
+    def Cartesian(self, bat_frame: np.ndarray) -> np.ndarray:
         """Conversion of a single frame from BAT to Cartesian coordinates
 
         One application of this function is to determine the new
@@ -569,6 +574,6 @@ class BAT(AnalysisBase):
         return XYZ
 
     @property
-    def atoms(self):
+    def atoms(self) -> AtomGroup:
         """The atomgroup for which BAT are computed (read-only property)"""
         return self._ag
