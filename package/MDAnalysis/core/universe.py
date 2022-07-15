@@ -171,8 +171,7 @@ def _generate_from_topology(universe):
 
     universe.segments = SegmentGroup(
             np.arange(universe._topology.n_segments), universe)
-
-  
+ 
 class Universe(object):
     """The MDAnalysis Universe contains all the information describing the system.
 
