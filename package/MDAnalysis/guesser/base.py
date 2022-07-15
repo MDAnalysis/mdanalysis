@@ -14,8 +14,8 @@ class GuesserBase:
         """
         for a in to_guess:
             if a.lower() not in self._guess:
-                raise ValueError('{0} guesser can not guess the {1} atrribute '
-                .format(self.context, a))
+                raise ValueError('{0} guesser can not guess the {1} atrribute'
+                                 .format(self.context, a))
         return True
 
     def guessTopologyAttribute(self, to_guess):
@@ -30,7 +30,7 @@ class GuesserBase:
         values: list of guessed values
         """
         values = self._guess[to_guess]()
-        return values   
+        return values
 
     def setAtoms(self, atoms):
         """get the AtomGroup of the universe to use its attributes
