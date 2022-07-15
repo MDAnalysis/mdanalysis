@@ -1,7 +1,7 @@
 class GuesserBase:
-    context="base"
+    context = "base"
     _guess={}
-    
+
     def is_guessed(self, to_guess):
         """check that the passed atrributes in the to_guess list can be guessed by the class
 
