@@ -86,9 +86,9 @@ from .groups import (ComponentBase, GroupBase,
 from .topology import Topology
 from .topologyattrs import AtomAttr, ResidueAttr, SegmentAttr, BFACTOR_WARNING
 from .topologyobjects import TopologyObject
-
-logger = logging.getLogger("MDAnalysis.core.universe")
 from ..guesser.core import get_guesser
+logger = logging.getLogger("MDAnalysis.core.universe")
+
 
 
 def _check_file_like(topology):
@@ -172,8 +172,7 @@ def _generate_from_topology(universe):
     universe.segments = SegmentGroup(
             np.arange(universe._topology.n_segments), universe)
 
-   
-        
+       
 class Universe(object):
     """The MDAnalysis Universe contains all the information describing the system.
 
