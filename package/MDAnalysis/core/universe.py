@@ -72,7 +72,7 @@ import sys
 import os
 import uuid
 
-from .. import _TOPOLOGY_ATTRS, _PARSERS
+from .. import _TOPOLOGY_ATTRS, _PARSERS, _GUESSERS
 from ..exceptions import NoDataError
 from ..lib import util
 from ..lib.log import ProgressBar
@@ -87,9 +87,8 @@ from .topology import Topology
 from .topologyattrs import AtomAttr, ResidueAttr, SegmentAttr, BFACTOR_WARNING
 from .topologyobjects import TopologyObject
 
-
 logger = logging.getLogger("MDAnalysis.core.universe")
-
+from ..guesser.core import get_guesser
 
 
 def _check_file_like(topology):
@@ -173,7 +172,8 @@ def _generate_from_topology(universe):
     universe.segments = SegmentGroup(
             np.arange(universe._topology.n_segments), universe)
 
-
+   
+        
 class Universe(object):
     """The MDAnalysis Universe contains all the information describing the system.
 
@@ -316,7 +316,8 @@ class Universe(object):
     """
     def __init__(self, topology=None, *coordinates, all_coordinates=False,
                  format=None, topology_format=None, transformations=None,
-                 guess_bonds=False, vdwradii=None, in_memory=False,
+                 guess_bonds=False, vdwradii=None, context = 'default', 
+                 to_guess = [], in_memory=False,
                  in_memory_step=1, **kwargs):
 
         self._trajectory = None  # managed attribute holding Reader
@@ -328,6 +329,8 @@ class Universe(object):
 
         self._kwargs = {
             'transformations': transformations,
+            'context': context,
+            'to_guess': to_guess,
             'guess_bonds': guess_bonds,
             'vdwradii': vdwradii,
             'in_memory': in_memory,
@@ -338,6 +341,7 @@ class Universe(object):
         }
         self._kwargs.update(kwargs)
 
+        
         format, topology_format = _resolve_formats(*coordinates, format=format,
                                                    topology_format=topology_format)
 
@@ -372,6 +376,8 @@ class Universe(object):
 
         if guess_bonds:
             self.atoms.guess_bonds(vdwradii=vdwradii)
+            
+        self.guess_topoloyAttribute(context, to_guess)
 
     def copy(self):
         """Return an independent copy of this Universe"""
@@ -1435,7 +1441,21 @@ class Universe(object):
             AllChem.EmbedMultipleConfs(mol, numConfs, **rdkit_kwargs)
 
         return cls(mol, **kwargs)
+    
+    def guess_topoloyAttribute(self, context, to_guess):
+        """guess attributes passed to the universe within specific context
 
+        Parameters
+        ----------
+        context: string or Guesser class
+        to_guess: list of atrributes to be guessed then added to the universe
+        """
+        self._guesser = get_guesser(self.atoms, context)
+        if self._guesser.is_guessed(to_guess):
+            for attr in to_guess:
+                values = self._guesser.guessTopologyAttribute(attr)
+                self.add_TopologyAttr(attr, values)
+            
 
 def Merge(*args):
     """Create a new new :class:`Universe` from one or more

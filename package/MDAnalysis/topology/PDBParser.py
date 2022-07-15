@@ -39,8 +39,8 @@ numbers up to 99,999.
 
 .. Note::
 
-   The parser processes atoms and their names. Masses are guessed and set to 0
-   if unknown. Partial charges are not set. Elements are parsed if they are
+   The parser processes atoms and their names.
+   Partial charges are not set. Elements are parsed if they are
    valid. If partially missing or incorrect, empty records are assigned.
 
 See Also
@@ -61,7 +61,7 @@ Classes
 import numpy as np
 import warnings
 
-from .guessers import guess_masses, guess_types
+from .guessers import guess_types
 from .tables import SYMB2Z
 from ..lib import util
 from .base import TopologyReaderBase, change_squash
@@ -75,7 +75,6 @@ from ..core.topologyattrs import (
     Atomtypes,
     Elements,
     ICodes,
-    Masses,
     Occupancies,
     RecordTypes,
     Resids,
@@ -167,8 +166,7 @@ class PDBParser(TopologyReaderBase):
      - elements
      - bonds
 
-    Guesses the following Attributes:
-     - masses
+
 
     See Also
     --------
@@ -308,8 +306,6 @@ class PDBParser(TopologyReaderBase):
                 (occupancies, Occupancies, np.float32),
         ):
             attrs.append(Attr(np.array(vals, dtype=dtype)))
-        # Guessed attributes
-        # masses from types if they exist
         # OPT: We do this check twice, maybe could refactor to avoid this
         if not any(elements):
             atomtypes = guess_types(names)
@@ -335,9 +331,7 @@ class PDBParser(TopologyReaderBase):
                     validated_elements.append('')
             attrs.append(Elements(np.array(validated_elements, dtype=object)))
 
-        masses = guess_masses(atomtypes)
-        attrs.append(Masses(masses, guessed=True))
-
+        
         # Residue level stuff from here
         resids = np.array(resids, dtype=np.int32)
         resnames = np.array(resnames, dtype=object)
