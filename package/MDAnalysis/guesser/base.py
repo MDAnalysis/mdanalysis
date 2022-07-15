@@ -1,6 +1,5 @@
-             
 class GuesserBase:
-    context = "base"
+    context="base"
     _guess={}
     
     def is_guessed(self, to_guess):
