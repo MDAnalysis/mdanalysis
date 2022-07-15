@@ -5,8 +5,6 @@ from . import tables
 
 
 class DefaultGuesser(GuesserBase):
-
-
     context = 'default'
     
     def __init__(self):
