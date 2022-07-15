@@ -9,7 +9,7 @@ class DefaultGuesser(GuesserBase):
 
     def __init__(self):
         self._guess = {'mass': self.guess_masses}
-  
+
     def guess_masses(self):
         """Guess the mass of many atoms based upon their type
 
@@ -19,7 +19,8 @@ class DefaultGuesser(GuesserBase):
         """
         atom_types = self._atoms.types
         self.validate_atom_types(atom_types)
-        masses = np.array([self.get_atom_mass(atom_t) for atom_t in atom_types], dtype=np.float64)
+        masses = np.array([self.get_atom_mass(atom_t) for atom_t in atom_types],
+                          dtype=np.float64)
         return masses
 
     def validate_atom_types(self, atom_types):
