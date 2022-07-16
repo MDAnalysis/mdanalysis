@@ -168,6 +168,9 @@ from MDAnalysis import NoDataError, MissingDataWarning
 from .. import units
 from ..lib import distances
 from MDAnalysis.lib.log import ProgressBar
+from MDAnalysis.core.groups import AtomGroup
+from typing import Optional, Tuple, Dict 
+from __future__ import annotations
 
 from .base import AnalysisBase
 
@@ -398,10 +401,11 @@ class DensityAnalysis(AnalysisBase):
 
     """
 
-    def __init__(self, atomgroup, delta=1.0,
-                 metadata=None, padding=2.0,
-                 gridcenter=None,
-                 xdim=None, ydim=None, zdim=None):
+    # typing : numpy
+    def __init__(self, atomgroup: AtomGroup, delta: float = 1.0,
+                 metadata=None, padding: float = 2.0,
+                 gridcenter: Optional[np.ndarray] = None,
+                 xdim: Optional[float] = None, ydim: Optional[float] = None, zdim: Optional[float] = None) -> None:
         u = atomgroup.universe
         super(DensityAnalysis, self).__init__(u.trajectory)
         self._atomgroup = atomgroup
@@ -412,7 +416,7 @@ class DensityAnalysis(AnalysisBase):
         self._ydim = ydim
         self._zdim = zdim
 
-    def _prepare(self):
+    def _prepare(self) -> None:
         coord = self._atomgroup.positions
         if (self._gridcenter is not None or
                 any([self._xdim, self._ydim, self._zdim])):
@@ -490,15 +494,17 @@ class DensityAnalysis(AnalysisBase):
         self.results.density = density
 
     @property
-    def density(self):
+    def density(self) -> Density:
         wmsg = ("The `density` attribute was deprecated in MDAnalysis 2.0.0 "
                 "and will be removed in MDAnalysis 3.0.0. Please use "
                 "`results.density` instead")
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.density
 
+    # typing : numpy
     @staticmethod
-    def _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax):
+    def _set_user_grid(gridcenter: np.ndarray, xdim: float, ydim: float, zdim: float,
+                       smin: np.ndarray, smax: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
         """Helper function to set the grid dimensions to user defined values
 
         Parameters
@@ -733,7 +739,7 @@ class Density(Grid):
         self.parameters = parameters  # isDensity: set by make_density()
         self.units = units
 
-    def _check_set_unit(self, u):
+    def _check_set_unit(self, u: Dict) -> None:
         """Check and set units.
 
         First check that all units and their values in the dict `u` are valid
@@ -802,7 +808,7 @@ class Density(Grid):
         # see units.densityUnit_factor for units
         self.units['density'] = self.units['length'] + "^{-3}"
 
-    def convert_length(self, unit='Angstrom'):
+    def convert_length(self, unit: str = 'Angstrom') -> None:
         """Convert Grid object to the new `unit`.
 
         Parameters
@@ -826,7 +832,7 @@ class Density(Grid):
         self.units['length'] = unit
         self._update()  # needed to recalculate midpoints and origin
 
-    def convert_density(self, unit='Angstrom'):
+    def convert_density(self, unit: str = 'Angstrom') -> None:
         """Convert the density to the physical units given by `unit`.
 
         Parameters
