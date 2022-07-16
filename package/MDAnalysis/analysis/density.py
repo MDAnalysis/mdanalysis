@@ -150,6 +150,7 @@ instance, which is derived from a :class:`gridData.core.Grid`. A
 .. _`gmx trjconv`: http://manual.gromacs.org/programs/gmx-trjconv.html
 
 """
+from __future__ import annotations
 import numpy as np
 import sys
 import os
@@ -169,8 +170,7 @@ from .. import units
 from ..lib import distances
 from MDAnalysis.lib.log import ProgressBar
 from MDAnalysis.core.groups import AtomGroup
-from typing import Optional, Tuple, Dict 
-from __future__ import annotations
+from typing import Optional, Tuple, Dict
 
 from .base import AnalysisBase
 
