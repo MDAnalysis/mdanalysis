@@ -36,6 +36,7 @@ from MDAnalysis.units import constants, convert
 from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.due import due, Doi
 from MDAnalysis.exceptions import NoDataError
+from MDAnalysis.core.groups import AtomGroup
 
 due.cite(Doi("10.1080/00268978300102721"),
          description="Dielectric analysis",
@@ -117,14 +118,14 @@ class DielectricConstant(AnalysisBase):
 
     .. versionadded:: 2.1.0
     """
-    def __init__(self, atomgroup, temperature=300, make_whole=True, **kwargs):
+    def __init__(self, atomgroup: AtomGroup, temperature: float = 300, make_whole: bool = True, **kwargs: int) -> None:
         super(DielectricConstant, self).__init__(atomgroup.universe.trajectory,
                                                  **kwargs)
         self.atomgroup = atomgroup
         self.temperature = temperature
         self.make_whole = make_whole
 
-    def _prepare(self):
+    def _prepare(self) -> None:
         if not hasattr(self.atomgroup, "charges"):
             raise NoDataError("No charges defined given atomgroup.")
 
@@ -141,7 +142,7 @@ class DielectricConstant(AnalysisBase):
         self.results.eps = np.zeros(3)
         self.results.eps_mean = 0
 
-    def _single_frame(self):
+    def _single_frame(self) -> None:
         if self.make_whole:
             self.atomgroup.unwrap()
 
@@ -151,7 +152,7 @@ class DielectricConstant(AnalysisBase):
         self.results.M += M
         self.results.M2 += M * M
 
-    def _conclude(self):
+    def _conclude(self) -> None:
         self.results.M /= self.n_frames
         self.results.M2 /= self.n_frames
         self.volume /= self.n_frames
