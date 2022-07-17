@@ -351,7 +351,7 @@ END
 def test_PDB_charge_nosign_error():
     """Test to check if there are missing signs for a given formal charge
     entry"""
-    errmsg = r"Formal charge 2 does not have \+ or - assignment"
+    errmsg = r"Formal charge 2 is unrecognized"
     with pytest.raises(ValueError, match=errmsg):
         u = mda.Universe(StringIO(PDB_charges_nosign), format='PDB')
 

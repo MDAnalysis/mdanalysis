@@ -344,7 +344,13 @@ class PDBParser(TopologyReaderBase):
         if any(formalcharges):
             for i, entry in enumerate(formalcharges):
                 if not entry == '':
-                    if ('+' in entry) or ('-' in entry):
+                    if entry == '0':
+                        # Technically a lack of charge shouldn't be in the PDB
+                        # but MDA has a few files that specifically have 0
+                        # entries, indicating that some folks interpret 0 as
+                        # an allowed entry
+                        formalcharges[i] = 0
+                    elif ('+' in entry) or ('-' in entry):
                         try:
                             formalcharges[i] = int(entry[::-1])
                         except ValueError:
@@ -352,8 +358,7 @@ class PDBParser(TopologyReaderBase):
                                       "encountered")
                             raise ValueError(errmsg)
                     else:
-                        errmsg = (f"Formal charge {entry} does not have + or -"
-                                  " assignment")
+                        errmsg = (f"Formal charge {entry} is unrecognized")
                         raise ValueError(errmsg)
                 else:
                     formalcharges[i] = 0
