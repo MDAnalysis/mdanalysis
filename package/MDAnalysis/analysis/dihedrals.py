@@ -269,7 +269,10 @@ import warnings
 import MDAnalysis as mda
 from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.lib.distances import calc_dihedrals
+from MDAnalysis.core.groups import AtomGroup, ResidueGroup
 from MDAnalysis.analysis.data.filenames import Rama_ref, Janin_ref
+from typing import List, Union, Optional
+from matplotlib.axes import Axes
 
 
 class Dihedral(AnalysisBase):
@@ -292,7 +295,7 @@ class Dihedral(AnalysisBase):
 
     """
 
-    def __init__(self, atomgroups, **kwargs):
+    def __init__(self, atomgroups: List[AtomGroup], **kwargs: int) -> None:
         """Parameters
         ----------
         atomgroups : list[AtomGroup]
@@ -317,20 +320,20 @@ class Dihedral(AnalysisBase):
         self.ag3 = mda.AtomGroup([ag[2] for ag in atomgroups])
         self.ag4 = mda.AtomGroup([ag[3] for ag in atomgroups])
 
-    def _prepare(self):
+    def _prepare(self) -> None:
         self.results.angles = []
 
-    def _single_frame(self):
+    def _single_frame(self) -> None:
         angle = calc_dihedrals(self.ag1.positions, self.ag2.positions,
                                self.ag3.positions, self.ag4.positions,
                                box=self.ag1.dimensions)
         self.results.angles.append(angle)
 
-    def _conclude(self):
+    def _conclude(self) -> None:
         self.results.angles = np.rad2deg(np.array(self.results.angles))
 
     @property
-    def angles(self):
+    def angles(self) -> np.ndarray:
         wmsg = ("The `angle` attribute was deprecated in MDAnalysis 2.0.0 "
                 "and will be removed in MDAnalysis 3.0.0. Please use "
                 "`results.angles` instead")
@@ -404,8 +407,8 @@ class Ramachandran(AnalysisBase):
 
     """
 
-    def __init__(self, atomgroup, c_name='C', n_name='N', ca_name='CA',
-                 check_protein=True, **kwargs):
+    def __init__(self, atomgroup: Union[AtomGroup, ResidueGroup], c_name: str = 'C', n_name: str = 'N',
+                 ca_name: str = 'CA', check_protein: bool = True, **kwargs: int) -> None:
         super(Ramachandran, self).__init__(
             atomgroup.universe.trajectory, **kwargs)
         self.atomgroup = atomgroup
@@ -456,10 +459,10 @@ class Ramachandran(AnalysisBase):
         self.ag5 = nxt.atoms[nxt.atoms.names == n_name]
 
 
-    def _prepare(self):
+    def _prepare(self) -> None:
         self.results.angles = []
 
-    def _single_frame(self):
+    def _single_frame(self) -> None:
         phi_angles = calc_dihedrals(self.ag1.positions, self.ag2.positions,
                                     self.ag3.positions, self.ag4.positions,
                                     box=self.ag1.dimensions)
@@ -469,10 +472,10 @@ class Ramachandran(AnalysisBase):
         phi_psi = [(phi, psi) for phi, psi in zip(phi_angles, psi_angles)]
         self.results.angles.append(phi_psi)
 
-    def _conclude(self):
+    def _conclude(self) -> None:
         self.results.angles = np.rad2deg(np.array(self.results.angles))
 
-    def plot(self, ax=None, ref=False, **kwargs):
+    def plot(self, ax: Optional[Axes] = None, ref: Optional[bool] = False, **kwargs: Optional[int]) -> Axes:
         """Plots data into standard Ramachandran plot.
 
         Each time step in :attr:`Ramachandran.results.angles` is plotted onto
@@ -521,7 +524,7 @@ class Ramachandran(AnalysisBase):
         return ax
 
     @property
-    def angles(self):
+    def angles(self) -> np.ndarray:
         wmsg = ("The `angle` attribute was deprecated in MDAnalysis 2.0.0 "
                 "and will be removed in MDAnalysis 3.0.0. Please use "
                 "`results.angles` instead")
@@ -550,10 +553,10 @@ class Janin(Ramachandran):
 
     """
 
-    def __init__(self, atomgroup,
-                 select_remove="resname ALA CYS* GLY PRO SER THR VAL",
-                 select_protein="protein",
-                 **kwargs):
+    def __init__(self, atomgroup: Union[AtomGroup, ResidueGroup],
+                 select_remove: str = "resname ALA CYS* GLY PRO SER THR VAL",
+                 select_protein: str = "protein",
+                 **kwargs) -> None:
         r"""Parameters
         ----------
         atomgroup : AtomGroup or ResidueGroup
@@ -619,11 +622,11 @@ class Janin(Ramachandran):
             raise ValueError("Too many or too few atoms selected. Check for "
                              "missing or duplicate atoms in topology.")
 
-    def _conclude(self):
+    def _conclude(self) -> None:
         self.results.angles = (np.rad2deg(np.array(
             self.results.angles)) + 360) % 360
 
-    def plot(self, ax=None, ref=False, **kwargs):
+    def plot(self, ax: Optional[Axes] = None, ref: Optional[bool] = False, **kwargs) -> Axes:
         """Plots data into standard Janin plot.
 
         Each time step in :attr:`Janin.results.angles` is plotted onto the
