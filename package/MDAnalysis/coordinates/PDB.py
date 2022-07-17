@@ -1200,7 +1200,7 @@ class PDBWriter(base.WriterBase):
             vals['segID'] = segids[i][:4]
             vals['chainID'] = chainids[i]
             vals['element'] = elements[i][:2].upper()
-            vals['charge'] = formal_charges[i] 
+            vals['charge'] = formal_charges[i]
 
             # record_type attribute, if exists, can be ATOM or HETATM
             try:
