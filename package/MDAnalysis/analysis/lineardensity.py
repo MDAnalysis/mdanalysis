@@ -34,6 +34,7 @@ import numpy as np
 import warnings
 
 from MDAnalysis.analysis.base import AnalysisBase, Results
+from MDAnalysis.core.groups import AtomGroup
 from MDAnalysis.units import constants
 from MDAnalysis.lib.util import deprecate
 
@@ -193,7 +194,7 @@ class LinearDensity(AnalysisBase):
        and :attr:`results.x.charge_density_stddev` instead.
     """
 
-    def __init__(self, select, grouping='atoms', binsize=0.25, **kwargs):
+    def __init__(self, select: AtomGroup, grouping: str = 'atoms', binsize: float = 0.25, **kwargs) -> None:
         super(LinearDensity, self).__init__(select.universe.trajectory,
                                             **kwargs)
         # allows use of run(parallel=True)
@@ -237,7 +238,7 @@ class LinearDensity(AnalysisBase):
         self.charges = None
         self.totalmass = None
 
-    def _single_frame(self):
+    def _single_frame(self) -> None:
         # Get masses and charges for the selection
         if self.grouping == "atoms":
             self.masses = self._ags[0].masses
@@ -289,7 +290,7 @@ class LinearDensity(AnalysisBase):
             self.results[dim][key_std] += np.square(hist)
             self.results[dim]['hist_bin_edges'] = bin_edges
 
-    def _conclude(self):
+    def _conclude(self) -> None:
         avogadro = constants["N_Avogadro"]  # unit: mol^{-1}
         volume_conversion = 1e-24  # unit: A^3/cm^3
         # divide result values by avodagro and convert from A3 to cm3
