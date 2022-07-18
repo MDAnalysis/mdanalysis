@@ -63,6 +63,7 @@ class PeriodicKDTree(object):
     :func:`MDAnalysis.lib.distances.undo_augment` function.
 
     """
+
     def __init__(self, box: npt.ArrayLike = None, leafsize: int = 10) -> None:
         """
 
@@ -179,8 +180,8 @@ class PeriodicKDTree(object):
         centers = np.asarray(centers)
         if centers.shape == (self.dim, ):
             centers = centers.reshape((1, self.dim))
-        if self.cutoff is None:
-            raise RuntimeError("Provide cutoff distance")
+        if self.pbc and (self.cutoff is not None):
+            raise ValueError("Provide cutoff distance")
         # Sanity check
         if self.pbc:
             if self.cutoff < radius:
