@@ -68,6 +68,7 @@ Classes and Functions
 .. autofunction:: optimize_cutoff
 
 """
+from __future__ import annotations
 import warnings
 
 import numpy as np
@@ -76,6 +77,9 @@ import networkx as NX
 from .. import core
 from . import distances
 from .. import selections
+from MDAnalysis.core.groups import AtomGroup
+from MDAnalysis.core.universe import Universe
+from typing import Union, Optional, List, Dict, Tuple
 
 from ..due import due, Doi
 
@@ -140,7 +144,8 @@ class LeafletFinder(object):
        create a :class:`~MDAnalysis.core.universe.Universe` first.
     """
 
-    def __init__(self, universe, select, cutoff=15.0, pbc=False, sparse=None):
+    def __init__(self, universe: Universe, select: Union[AtomGroup, str], cutoff: Optional[float] = 15.0,
+                 pbc: bool = False, sparse: Optional[bool] = None) -> None:
         self.universe = universe
         self.selectionstring = select
         if isinstance(self.selectionstring, core.groups.AtomGroup):
@@ -151,7 +156,7 @@ class LeafletFinder(object):
         self.sparse = sparse
         self._init_graph(cutoff)
 
-    def _init_graph(self, cutoff):
+    def _init_graph(self, cutoff: Optional[float]) -> None:
         self.cutoff = cutoff
         self.graph = self._get_graph()
         self.components = self._get_components()
@@ -195,21 +200,22 @@ class LeafletFinder(object):
                 adj = distances.contact_matrix(coord, cutoff=self.cutoff, returntype="sparse", box=box)
         return NX.Graph(adj)
 
-    def _get_components(self):
+    # typing : numpy
+    def _get_components(self) -> List[np.ndarray]:
         """Return connected components (as sorted numpy arrays), sorted by size."""
         return [np.sort(list(component)) for component in NX.connected_components(self.graph)]
 
-    def update(self, cutoff=None):
+    def update(self, cutoff: Optional[float] = None):
         """Update components, possibly with a different *cutoff*"""
         if cutoff is None:
             cutoff = self.cutoff
         self._init_graph(cutoff)
 
-    def sizes(self):
+    def sizes(self) -> Dict:
         """Dict of component index with size of component."""
         return dict(((idx, len(component)) for idx, component in enumerate(self.components)))
 
-    def groups(self, component_index=None):
+    def groups(self, component_index: Optional[int] = None) -> Union[List, AtomGroup]:
         """Return a :class:`MDAnalysis.core.groups.AtomGroup` for *component_index*.
 
         If no argument is supplied, then a list of all leaflet groups is returned.
@@ -224,7 +230,7 @@ class LeafletFinder(object):
         else:
             return self.group(component_index)
 
-    def group(self, component_index):
+    def group(self, component_index: int) -> AtomGroup:
         """Return a :class:`MDAnalysis.core.groups.AtomGroup` for *component_index*."""
         # maybe cache this?
         indices = [i for i in self.components[component_index]]
@@ -235,7 +241,7 @@ class LeafletFinder(object):
         for component_index in range(len(self.components)):
             yield self.group(component_index)
 
-    def write_selection(self, filename, **kwargs):
+    def write_selection(self, filename: str, **kwargs: str) -> None:
         """Write selections for the leaflets to *filename*.
 
         The format is typically determined by the extension of *filename*
@@ -259,8 +265,9 @@ class LeafletFinder(object):
             len(self.components))
 
 
-def optimize_cutoff(universe, select, dmin=10.0, dmax=20.0, step=0.5,
-                    max_imbalance=0.2, **kwargs):
+def optimize_cutoff(universe: Universe, select: Optional[AtomGroup, str], dmin: float = 10.0,
+                    dmax: float = 20.0, step: float = 0.5,
+                    max_imbalance: float = 0.2, **kwargs) -> Tuple[Optional[float], int]:
     r"""Find cutoff that minimizes number of disconnected groups.
 
     Applies heuristics to find best groups:
