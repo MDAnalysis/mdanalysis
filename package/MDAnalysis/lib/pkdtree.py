@@ -157,7 +157,8 @@ class PeriodicKDTree(object):
             self.ckdt = cKDTree(self.coords, self.leafsize)
         self._built = True
 
-    def search(self, centers: npt.ArrayLike, radius: float) -> npt.NDArray:
+    #  typing: numpy
+    def search(self, centers: npt.ArrayLike, radius: float) -> np.ndarray:
         """Search all points within radius from centers and their periodic images.
 
         All the centers coordinates are wrapped around the central cell
@@ -205,7 +206,8 @@ class PeriodicKDTree(object):
         self._indices = np.asarray(unique_int_1d(self._indices))
         return self._indices
 
-    def get_indices(self) -> npt.NDArray:
+    # typing: numpy
+    def get_indices(self) -> np.ndarray:
         """Return the neighbors from the last query.
 
         Returns
@@ -215,7 +217,8 @@ class PeriodicKDTree(object):
         """
         return self._indices
 
-    def search_pairs(self, radius: float) -> npt.NDArray:
+    # typing: numpy
+    def search_pairs(self, radius: float) -> np.ndarray:
         """Search all the pairs within a specified radius
 
         Parameters
@@ -230,8 +233,8 @@ class PeriodicKDTree(object):
         """
         if not self._built:
             raise RuntimeError(' Unbuilt Tree. Run tree.set_coords(...)')
-        if self.cutoff is None:
-            raise RuntimeError("Provide cutoff distance")
+        if self.pbc and (self.cutoff is None):
+            raise ValueError("Provide a cutoff distance")
         if self.pbc:
             if self.cutoff < radius:
                 raise RuntimeError('Set cutoff greater or equal to the radius.')
@@ -249,7 +252,7 @@ class PeriodicKDTree(object):
             pairs = unique_rows(pairs)
         return pairs
 
-    def search_tree(self, centers: npt.ArrayLike, radius: float) -> npt.NDArray:
+    def search_tree(self, centers: npt.ArrayLike, radius: float) -> np.ndarray:
         """
         Searches all the pairs within `radius` between `centers`
         and ``coords``
@@ -286,8 +289,8 @@ class PeriodicKDTree(object):
         centers = np.asarray(centers)
         if centers.shape == (self.dim, ):
             centers = centers.reshape((1, self.dim))
-        if self.cutoff is None:
-            raise RuntimeError("Provide cutoff distance")
+        if self.pbc and (self.cutoff is None):
+            raise ValueError("Provide cutoff distance")
 
         # Sanity check
         if self.pbc:
