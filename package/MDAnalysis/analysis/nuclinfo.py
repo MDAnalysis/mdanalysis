@@ -105,11 +105,13 @@ Dihedral angles
 """
 import numpy as np
 from math import pi, sin, cos, atan2, sqrt, pow
+from MDAnalysis.core.universe import Universe
+from typing import List
 
 from MDAnalysis.lib import mdamath
 
 
-def wc_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
+def wc_pair(universe: Universe, i: int, bp: int, seg1: str = "SYSTEM", seg2: str = "SYSTEM") -> float:
     """Watson-Crick basepair distance for residue `i` with residue `bp`.
 
     The distance of the nitrogen atoms in a Watson-Crick hydrogen bond is
@@ -152,7 +154,7 @@ def wc_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
     return wc
 
 
-def minor_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
+def minor_pair(universe: Universe, i: int, bp: int, seg1: str = "SYSTEM", seg2: str = "SYSTEM") -> float:
     """Minor-Groove basepair distance for residue `i` with residue `bp`.
 
     The distance of the nitrogen and oxygen atoms in a Minor-groove hydrogen
@@ -194,7 +196,7 @@ def minor_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
     return c2o2
 
 
-def major_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
+def major_pair(universe: Universe, i: int, bp: int, seg1: str = "SYSTEM", seg2: str = "SYSTEM") -> float:
     """Major-Groove basepair distance for residue `i` with residue `bp`.
 
     The distance of the nitrogen and oxygen atoms in a Major-groove hydrogen
@@ -243,7 +245,7 @@ def major_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
     return major
 
 
-def phase_cp(universe, seg, i):
+def phase_cp(universe: Universe, seg: str, i: int) -> float:
     """Pseudo-angle describing the phase of the ribose pucker for residue `i` using the CP method.
 
     The angle is computed by the positions of atoms in the ribose ring.
@@ -314,7 +316,7 @@ def phase_cp(universe, seg, i):
     return phase_ang % 360
 
 
-def phase_as(universe, seg, i):
+def phase_as(universe: Universe, seg: str, i: int) -> float:
     """Pseudo-angle describing the phase of the ribose pucker for residue `i` using the AS method
 
     The angle is computed by the position vector of atoms in the ribose ring.
@@ -383,7 +385,7 @@ def phase_as(universe, seg, i):
     return phase_ang % 360
 
 
-def tors(universe, seg, i):
+def tors(universe: Universe, seg: str, i: int) -> List[float]:
     """Calculation of nucleic backbone dihedral angles.
 
     The dihedral angles are alpha, beta, gamma, delta, epsilon, zeta, chi.
@@ -462,7 +464,7 @@ def tors(universe, seg, i):
     return [alpha, beta, gamma, delta, epsilon, zeta, chi]
 
 
-def tors_alpha(universe, seg, i):
+def tors_alpha(universe: Universe, seg: str, i: int) -> float:
     """alpha backbone dihedral
 
     The dihedral is computed based on position atoms for resid `i`.
@@ -492,7 +494,7 @@ def tors_alpha(universe, seg, i):
     return alpha
 
 
-def tors_beta(universe, seg, i):
+def tors_beta(universe: Universe, seg: str, i: int) -> float:
     """beta  backbone dihedral
 
     The dihedral is computed based on position atoms for resid `i`.
@@ -522,7 +524,7 @@ def tors_beta(universe, seg, i):
     return beta
 
 
-def tors_gamma(universe, seg, i):
+def tors_gamma(universe: Universe, seg: str, i: int) -> float:
     """ Gamma backbone dihedral
 
     The dihedral is computed based on position atoms for resid `i`.
@@ -552,7 +554,7 @@ def tors_gamma(universe, seg, i):
     return gamma
 
 
-def tors_delta(universe, seg, i):
+def tors_delta(universe: Universe, seg: str, i: int) -> float:
     """delta backbone dihedral
 
     The dihedral is computed based on position atoms for resid `i`.
@@ -582,7 +584,7 @@ def tors_delta(universe, seg, i):
     return delta
 
 
-def tors_eps(universe, seg, i):
+def tors_eps(universe: Universe, seg: str, i: int) -> float:
     """Epsilon backbone dihedral
 
     The dihedral is computed based on position atoms for resid `i`.
@@ -612,7 +614,7 @@ def tors_eps(universe, seg, i):
     return epsilon
 
 
-def tors_zeta(universe, seg, i):
+def tors_zeta(universe: Universe, seg: str, i: int) -> float:
     """Zeta backbone dihedral
 
     The dihedral is computed based on position atoms for resid `i`.
@@ -642,7 +644,7 @@ def tors_zeta(universe, seg, i):
     return zeta
 
 
-def tors_chi(universe, seg, i):
+def tors_chi(universe: Universe, seg: str, i: int) -> float:
     """chi nucleic acid dihedral
 
      The dihedral is computed based on position atoms for resid `i`.
@@ -677,7 +679,7 @@ def tors_chi(universe, seg, i):
     return chi
 
 
-def hydroxyl(universe, seg, i):
+def hydroxyl(universe: Universe, seg: str, i: int) -> float:
     """2-hydroxyl dihedral. Useful only for RNA calculations.
 
      .. Note:: This dihedral calculation will only work if using atom
@@ -716,8 +718,8 @@ def hydroxyl(universe, seg, i):
     return hydr
 
 
-def pseudo_dihe_baseflip(universe, bp1, bp2, i,
-                         seg1="SYSTEM", seg2="SYSTEM", seg3="SYSTEM"):
+def pseudo_dihe_baseflip(universe: Universe, bp1: int, bp2: int, i: int,
+                         seg1: str = "SYSTEM", seg2: str = "SYSTEM", seg3: str = "SYSTEM") -> float:
     """pseudo dihedral for flipped bases. Useful only for nucleic acid base flipping
 
     The dihedral is computed based on position atoms for resid `i`
