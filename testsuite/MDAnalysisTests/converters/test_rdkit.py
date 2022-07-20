@@ -215,10 +215,11 @@ class TestRDKitConverter(object):
         assert_equal(u.atoms.bonds, u2.atoms.bonds)
         assert_equal(u.atoms.elements, u2.atoms.elements)
         assert_equal(u.atoms.names, u2.atoms.names)
-        assert_allclose(u.atoms.positions,
-                        u2.atoms.positions,
-                        rtol=0,
-                        atol=1e-7)
+        assert_allclose(
+            u.atoms.positions,
+            u2.atoms.positions,
+            rtol=0,
+            atol=1e-7)
 
     def test_raise_requires_elements(self):
         u = mda.Universe(mol2_molecule)
