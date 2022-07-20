@@ -28,7 +28,7 @@ import MDAnalysis as mda
 from MDAnalysis.topology.guessers import guess_atom_element
 import numpy as np
 from numpy.testing import (assert_equal,
-                           assert_almost_equal)
+                           assert_allclose)
 
 from MDAnalysisTests.datafiles import mol2_molecule, PDB_full, GRO, PDB_helix
 from MDAnalysisTests.util import import_not_available
@@ -216,7 +216,7 @@ class TestRDKitConverter(object):
         assert_equal(u.atoms.bonds, u2.atoms.bonds)
         assert_equal(u.atoms.elements, u2.atoms.elements)
         assert_equal(u.atoms.names, u2.atoms.names)
-        assert_almost_equal(u.atoms.positions, u2.atoms.positions, decimal=7)
+        assert_allclose(u.atoms.positions, u2.atoms.positions, rtol=0, atol=1e-7)
 
     def test_raise_requires_elements(self):
         u = mda.Universe(mol2_molecule)
@@ -304,7 +304,7 @@ class TestRDKitConverter(object):
     def test_assign_coordinates(self, pdb):
         mol = pdb.atoms.convert_to.rdkit(NoImplicit=False)
         positions = mol.GetConformer().GetPositions()
-        assert_almost_equal(positions, pdb.atoms.positions)
+        assert_allclose(positions, pdb.atoms.positions)
 
     def test_assign_stereochemistry(self, mol2):
         umol = mol2.atoms.convert_to("RDKIT")
@@ -317,7 +317,7 @@ class TestRDKitConverter(object):
         for ts in u.trajectory:
             mol = u.atoms.convert_to("RDKIT")
             positions = mol.GetConformer().GetPositions()
-            assert_almost_equal(positions, ts.positions)
+            assert_allclose(positions, ts.positions)
 
     def test_nan_coords(self):
         u = mda.Universe.from_smiles("CCO")
