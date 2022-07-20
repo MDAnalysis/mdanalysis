@@ -70,8 +70,8 @@ class TestOpenMMBasicSimulationReader():
             np.array([20., 20., 20., 90., 90., 90.]),
             rtol=0,
             atol=1e-3,
-            err_msg="OpenMMBasicSimulationReader failed to get unitcell dimensions " +
-            "from OpenMM Simulation Object",
+            err_msg="OpenMMBasicSimulationReader failed to get unitcell " +
+            "dimensions from OpenMM Simulation Object",
         )
 
     def test_coordinates(self, omm_sim_uni):

@@ -23,8 +23,7 @@
 import pytest
 import MDAnalysis as mda
 
-from numpy.testing import (assert_equal,
-                           assert_allclose)
+from numpy.testing import (assert_allclose, assert_equal)
 
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
@@ -186,7 +185,12 @@ class BaseTestParmEdConverter:
             for attr in self.almost_equal_atom_attrs:
                 ra = getattr(r, attr)
                 oa = getattr(o, attr)
-                assert_allclose(ra, oa, rtol=0, atol=1e-2, err_msg='atom {} not almost equal for atoms {} and {}'.format(attr, r, o))
+                assert_allclose(
+                    ra,
+                    oa,
+                    rtol=0,
+                    atol=1e-2,
+                    err_msg='atom {} not almost equal for atoms {} and {}'.format(attr, r, o))
 
     @pytest.mark.parametrize('attr', ('bonds', 'angles', 'impropers',
                      'cmaps'))
