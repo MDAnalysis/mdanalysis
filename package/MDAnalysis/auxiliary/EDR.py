@@ -25,30 +25,29 @@
 EDR auxiliary reader --- :mod:`MDAnalysis.auxiliary.EDR`
 ========================================================
 
-EDR files are binary files following the XDR protocol. They are written by
-GROMACS during simulations and contain  the time-series energy data of the
+EDR files are binary files following the XDR protocol
+(https://datatracker.ietf.org/doc/html/rfc1014). They are written by
+GROMACS during simulations and contain the time-series energy data of the
 system.
 
-panedr is a Python package ( https://github.com/mdanalysis/panedr ) that reads
-these binary files and returns them human-readable form, either as a Pandas
-DataFrame or as a dictionary of NumPy arrays. It is used by the EDR auxiliary
-reader to parse EDR files. As such, a dictionary with string keys and numpy
-array values is loaded into the EDRReader.
+pyedr is a Python package ( https://github.com/mdanalysis/panedr ) that reads
+EDR binary files and returns them human-readable form as a dictionary of NumPy
+arrays. It is used by the EDR auxiliary reader to parse EDR files. As such, a
+dictionary with string keys and numpy array values is loaded into the
+EDRReader.
 
-The EDR auxiliary reader takes the output from panedr and loads the energy data
-as auxiliary data into Universes. Standalone usage is also possible, where the
-energy terms are extracted without associating them with the trajectory, for
-example, to allow easy plotting of the energy terms.
+The EDR auxiliary reader takes the output from pyedr and loads the energy data
+as auxiliary data into :class:`~MDAnalysis.core.universe.Universe`. Standalone
+usage is also possible, where the energy terms are extracted without
+associating them with the trajectory, for example, to allow easy plotting of
+the energy terms.
 
 
 
 """
-import numbers
 import os
-import numpy as np
 from . import base
-from ..lib.util import anyopen
-import panedrlite as panedr
+import pyedr
 
 
 class EDRStep(base.AuxStep):
@@ -75,41 +74,28 @@ class EDRStep(base.AuxStep):
     """
 
     def __init__(self, time_selector="Time", data_selector=None, **kwargs):
-        
         super(EDRStep, self).__init__(time_selector=time_selector,
                                       data_selector=data_selector,
                                       **kwargs)
-        
+
     def _select_time(self, key):
+        """'Time' is one of the entries in the dict returned by pyedr.
+        The base AuxStep Class uses the time_selector 'Time' to return the
+        time value of each step."""
         return self._select_data(key)
-        if key is None:
-            # here so that None is a valid value; just return
-            return
-        if isinstance(key, numbers.Integral):
-            return self._select_data(key)
-        else:
-            raise ValueError('Time selector must be single index')
 
     def _select_data(self, key):
-        return self._data[key]
-        if key is None:
-            # here so that None is a valid value; just return
-            return
-        if isinstance(key, numbers.Integral):
-            try:
-                return self._data[key]
-            except IndexError:
-                errmsg = (f'{key} not a valid index for data with '
-                          f'{len(self._data)} columns')
-                raise ValueError(errmsg) from None
-        else:
-            return np.array([self._select_data(i) for i in key])
+        try:
+            return self._data[key]
+        except KeyError:
+            raise KeyError(f"'{key}' is not a key in the auxdata dictionary. "
+                           "Check the EDRReader.terms attribute")
 
 
 class EDRReader(base.AuxReader):
     """ Auxiliary reader to read data from a .edr file.
 
-    Detault reader for .edr files. All data from the file will be read and
+    Default reader for .edr files. All data from the file will be read and
     stored on initialisation.
 
     Parameters
@@ -134,15 +120,14 @@ class EDRReader(base.AuxReader):
 
     def __init__(self, filename, **kwargs):
         self._auxfile = os.path.abspath(filename)
-        self.auxdata = panedr.edr_to_dict(filename)
+        self.auxdata = pyedr.edr_to_dict(filename)
         self._n_steps = len(self.auxdata["Time"])
         # attribute to communicate found energy terms to user
         self.terms = [key for key in self.auxdata.keys()]
         super(EDRReader, self).__init__(**kwargs)
 
     def _read_next_step(self):
-        
-        """ Read next auxiliary step and update ``auxstep``.
+        """Read next auxiliary step and update ``auxstep``.
 
         Returns
         -------
@@ -157,12 +142,44 @@ class EDRReader(base.AuxReader):
         auxstep = self.auxstep
         new_step = self.step + 1
         if new_step < self.n_steps:
-            auxstep._data = {term: self.auxdata[term][self.step] for term in self.terms}
-            print(auxstep._data)
+            auxstep._data = {term: self.auxdata[term][self.step + 1]
+                             for term in self.terms}
             auxstep.step = new_step
             return auxstep
         else:
             self.rewind()
             raise StopIteration
-            
 
+    def _go_to_step(self, i):
+        """ Move to and read i-th auxiliary step.
+
+        Parameters
+        ----------
+        i: int
+            Step number (0-indexed) to move to
+
+        Returns
+        -------
+        :class:`EDRStep`
+
+        Raises
+        ------
+        ValueError
+            If step index not in valid range.
+        """
+        if i >= self.n_steps or i < 0:
+            raise ValueError("Step index {0} is not valid for auxiliary "
+                             "(num. steps {1})".format(i, self.n_steps))
+        self.auxstep.step = i - 1
+        self.next()
+        return self.auxstep
+
+    def read_all_times(self):
+        """ Get list of time at each step.
+
+        Returns
+        -------
+        NumPy array of float
+            Time at each step.
+        """
+        return self.auxdata[self.time_selector]
