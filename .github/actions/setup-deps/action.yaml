@@ -76,6 +76,8 @@ inputs:
     default: 'pytest-cov<=2.10.1'
   pytest-xdist:
     default: 'pytest-xdist'
+  pyedr:
+    default: 'pyedr'
   # pip-install optional dependencies
   duecredit:
     default: 'duecredit'
@@ -132,7 +134,7 @@ runs:
         else
           conda install ${CONDA_DEPS}
         fi
-          
+
     - name: pip_install
       shell: bash -l {0}
       env:
@@ -140,6 +142,7 @@ runs:
           ${{ inputs.coverage }}
           ${{ inputs.pytest-cov }}
           ${{ inputs.pytest-xdist }}
+          ${{ inputs.pyedr }}
         PIP_OPT_DEPS: |
           ${{ inputs.duecredit }}
           ${{ inputs.parmed }}
@@ -150,7 +153,6 @@ runs:
         else
           PIP_DEPS="${PIP_MIN_DEPS} ${{ inputs.extra-pip-deps }}"
         fi
-        
+
         # do the install
         pip install ${PIP_DEPS}
-
