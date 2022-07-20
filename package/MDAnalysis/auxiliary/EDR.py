@@ -119,7 +119,7 @@ class EDRReader(base.AuxReader):
     _Auxstep = EDRStep
 
     def __init__(self, filename, **kwargs):
-        self._auxfile = os.path.abspath(filename)
+        self._auxdata = os.path.abspath(filename)
         self.auxdata = pyedr.edr_to_dict(filename)
         self._n_steps = len(self.auxdata["Time"])
         # attribute to communicate found energy terms to user
