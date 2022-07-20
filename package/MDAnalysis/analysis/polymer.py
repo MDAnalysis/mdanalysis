@@ -41,12 +41,15 @@ from .. import NoDataError
 from ..core.groups import requires, AtomGroup
 from ..lib.distances import calc_bonds
 from .base import AnalysisBase
+from typing import Optional, List, Union
+from matplotlib.axes import Axes
+import numpy.typing as npt
 
 logger = logging.getLogger(__name__)
 
 
 @requires('bonds')
-def sort_backbone(backbone):
+def sort_backbone(backbone: AtomGroup) -> AtomGroup:
     """Rearrange a linear AtomGroup into backbone order
 
     Requires that the backbone has bond information,
@@ -229,7 +232,7 @@ class PersistenceLength(AnalysisBase):
        :attr:`lb`, :attr:`lp`, :attr:`fit` are now stored in a
        :class:`MDAnalysis.analysis.base.Results` instance.
     """
-    def __init__(self, atomgroups, **kwargs):
+    def __init__(self, atomgroups: List[AtomGroup], **kwargs) -> None:
         super(PersistenceLength, self).__init__(
             atomgroups[0].universe.trajectory, **kwargs)
         self._atomgroups = atomgroups
@@ -242,7 +245,7 @@ class PersistenceLength(AnalysisBase):
 
         self._results = np.zeros(chainlength - 1, dtype=np.float32)
 
-    def _single_frame(self):
+    def _single_frame(self) -> None:
         # could optimise this by writing a "self dot array"
         # we're only using the upper triangle of np.inner
         # function would accept a bunch of coordinates and spit out the
@@ -260,7 +263,7 @@ class PersistenceLength(AnalysisBase):
                 self._results[:(n-1)-i] += inner_pr[i, i:]
 
     @property
-    def lb(self):
+    def lb(self) -> float:
         wmsg = ("The `lb` attribute was deprecated in "
                 "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
                 "Please use `results.variance` instead.")
@@ -268,7 +271,7 @@ class PersistenceLength(AnalysisBase):
         return self.results.lb
 
     @property
-    def lp(self):
+    def lp(self) -> float:
         wmsg = ("The `lp` attribute was deprecated in "
                 "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
                 "Please use `results.variance` instead.")
@@ -276,14 +279,14 @@ class PersistenceLength(AnalysisBase):
         return self.results.lp
 
     @property
-    def fit(self):
+    def fit(self) -> np.ndarray:
         wmsg = ("The `fit` attribute was deprecated in "
                 "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
                 "Please use `results.variance` instead.")
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.fit
 
-    def _conclude(self):
+    def _conclude(self) -> None:
         n = len(self._atomgroups[0])
 
         norm = np.linspace(n - 1, 1, n - 1)
@@ -294,7 +297,7 @@ class PersistenceLength(AnalysisBase):
 
         self._perform_fit()
 
-    def _calc_bond_length(self):
+    def _calc_bond_length(self) -> None:
         """calculate average bond length"""
         bs = []
         for ag in self._atomgroups:
@@ -303,7 +306,7 @@ class PersistenceLength(AnalysisBase):
             bs.append(b)
         self.results.lb = np.mean(bs)
 
-    def _perform_fit(self):
+    def _perform_fit(self) -> None:
         """Fit the results to an exponential decay"""
         try:
             self.results.bond_autocorrelation
@@ -317,7 +320,7 @@ class PersistenceLength(AnalysisBase):
 
         self.results.fit = np.exp(-self.results.x/self.results.lp)
 
-    def plot(self, ax=None):
+    def plot(self, ax: Optional[Axes] = None) -> Axes:
         """Visualize the results and fit
 
         Parameters
@@ -348,7 +351,7 @@ class PersistenceLength(AnalysisBase):
         return ax
 
 
-def fit_exponential_decay(x, y):
+def fit_exponential_decay(x: npt.ArrayLike, y: npt.ArrayLike) -> float:
     r"""Fit a function to an exponential decay
 
     .. math::  y = \exp\left(- \frac{x}{a}\right)
