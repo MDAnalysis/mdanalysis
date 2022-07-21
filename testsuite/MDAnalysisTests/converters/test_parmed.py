@@ -187,13 +187,9 @@ class BaseTestParmEdConverter:
             for attr in self.almost_equal_atom_attrs:
                 ra = getattr(r, attr)
                 oa = getattr(o, attr)
-                assert_allclose(
-                    ra,
-                    oa,
-                    rtol=0,
-                    atol=1e-2,
-                    err_msg=('atom {} not almost equal for atoms' +
-                             '{} and {}').format(attr, r, o))
+                assert_allclose(ra, oa, rtol=0, atol=1e-2,
+                    err_msg=f'atom {attr} not almost equal for atoms '
+                            f'{r} and {o}')
 
     @pytest.mark.parametrize('attr', ('bonds', 'angles', 'impropers',
                      'cmaps'))
