@@ -94,6 +94,7 @@ class TestOpenMMPDBFileReader(_SingleFrameReader):
     def setUp(self):
         self.universe = mda.Universe(app.PDBFile(RefAdKSmall.filename))
         self.ref = mda.Universe(RefAdKSmall.filename)
+        self.prec = 3
 
     def test_dimensions(self):
         assert_allclose(
@@ -119,6 +120,7 @@ class TestOpenMMModellerReader(_SingleFrameReader):
         modeller = app.Modeller(pdb_obj.topology, pdb_obj.positions)
         self.universe = mda.Universe(modeller)
         self.ref = mda.Universe(RefAdKSmall.filename)
+        self.prec = 3
 
     def test_dimensions(self):
         assert_allclose(
@@ -152,6 +154,7 @@ class TestOpenMMSimulationReader(_SingleFrameReader):
         sim.context.setPositions(pdb.positions)
         self.universe = mda.Universe(sim)
         self.ref = mda.Universe(RefAdKSmall.filename)
+        self.prec = 3
 
     def test_dimensions(self):
         assert_allclose(
