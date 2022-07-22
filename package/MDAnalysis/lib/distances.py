@@ -138,6 +138,7 @@ from .c_distances import (_UINT64_MAX,
 
 from .c_distances_openmp import OPENMP_ENABLED as USED_OPENMP
 
+
 # typing: numpy
 def _check_result_array(result: np.ndarray, shape: tuple) -> np.ndarray:
     """Check if the result array is ok to use.
@@ -178,6 +179,7 @@ def _check_result_array(result: np.ndarray, shape: tuple) -> np.ndarray:
 #    if not coords.flags['C_CONTIGUOUS']:
 #        raise ValueError("{0} is not C-contiguous.".format(desc))
     return result
+
 
 # typing: numpy
 @check_coords('reference', 'configuration', reduce_result_if_single=False,
@@ -267,6 +269,7 @@ def distance_array(reference: Union[np.ndarray, 'AtomGroup'],
              backend=backend)
 
     return distances
+
 
 # typing: numpy
 @check_coords('reference', reduce_result_if_single=False, allow_atomgroup=True)
@@ -1265,6 +1268,7 @@ def transform_StoR(coords, box, backend="serial"):
     _run("coord_transform", args=(coords, box), backend=backend)
     return coords
 
+
 # typing: numpy
 @check_coords('coords1', 'coords2', allow_atomgroup=True)
 def calc_bonds(coords1: Union[np.ndarray, 'AtomGroup'],
@@ -1355,6 +1359,7 @@ def calc_bonds(coords1: Union[np.ndarray, 'AtomGroup'],
                  backend=backend)
 
     return bondlengths
+
 
 # typing: numpy
 @check_coords('coords1', 'coords2', 'coords3', allow_atomgroup=True)
@@ -1457,6 +1462,7 @@ def calc_angles(coords1: Union[np.ndarray, 'AtomGroup'],
                    backend=backend)
 
     return angles
+
 
 # typing: numpy
 @check_coords('coords1', 'coords2', 'coords3', 'coords4', allow_atomgroup=True)
@@ -1575,6 +1581,7 @@ def calc_dihedrals(coords1: Union[np.ndarray, 'AtomGroup'],
 
     return dihedrals
 
+
 # typing: numpy
 @check_coords('coords', allow_atomgroup=True)
 def apply_PBC(coords: Union[np.ndarray, 'AtomGroup'],
@@ -1622,6 +1629,7 @@ def apply_PBC(coords: Union[np.ndarray, 'AtomGroup'],
         _run("triclinic_pbc", args=(coords, box), backend=backend)
 
     return coords
+
 
 # typing: numpy
 @check_coords('vectors', enforce_copy=False, enforce_dtype=False)

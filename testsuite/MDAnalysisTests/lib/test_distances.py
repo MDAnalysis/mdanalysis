@@ -1392,7 +1392,6 @@ class TestInputUnchanged(object):
         ref = crd.positions.copy()
         res = distances.apply_PBC(crd, box, backend=backend)
         assert_equal(crd.positions, ref)
-        
 
 class TestEmptyInputCoordinates(object):
     """Tests ensuring that the following functions in MDAnalysis.lib.distances

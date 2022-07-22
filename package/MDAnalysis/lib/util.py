@@ -2074,8 +2074,8 @@ def check_coords(*coord_names, **options):
             if isinstance(coords, np.ndarray):
                 if allow_single:
                     if (coords.ndim not in (1, 2)) or (coords.shape[-1] != 3):
-                        errmsg = (f"{fname}(): {argname}.shape must be (3,) or "
-                                  f"(n, 3), got {coords.shape}")
+                        errmsg = (f"{fname}(): {argname}.shape must be (3,) "
+                                  f"or (n, 3), got {coords.shape}")
                         raise ValueError(errmsg)
                     if coords.ndim == 1:
                         is_single = True
