@@ -118,10 +118,11 @@
 <span class="sd">===================================================================</span>
 
 <span class="sd">Fast C-routines to calculate arrays of distances or angles from coordinate</span>
-<span class="sd">arrays. Many of the functions also exist in parallel versions, which typically</span>
-<span class="sd">provide higher performance than the serial code.</span>
-<span class="sd">The boolean attribute `MDAnalysis.lib.distances.USED_OPENMP` can be checked to</span>
-<span class="sd">see if OpenMP was used in the compilation of MDAnalysis.</span>
+<span class="sd">arrays. Distance functions can accept a NumPy :class:`np.ndarray` or an</span>
+<span class="sd">:class:`~MDAnalysis.core.groups.AtomGroup`. Many of the functions also exist</span>
+<span class="sd">in parallel versions, which typically provide higher performance than the</span>
+<span class="sd">serial code. The boolean attribute `MDAnalysis.lib.distances.USED_OPENMP` can</span>
+<span class="sd">be checked to see if OpenMP was used in the compilation of MDAnalysis.</span>
 
 <span class="sd">Selection of acceleration (&quot;backend&quot;)</span>
 <span class="sd">-------------------------------------</span>
@@ -142,6 +143,9 @@
 <span class="sd">   ========== ========================= ======================================</span>
 
 <span class="sd">.. versionadded:: 0.13.0</span>
+<span class="sd">.. versionchanged:: 2.3.0</span>
+<span class="sd">   Distance functions can now accept an</span>
+<span class="sd">   :class:`~MDAnalysis.core.groups.AtomGroup` or an :class:`np.ndarray`</span>
 
 <span class="sd">Functions</span>
 <span class="sd">---------</span>
@@ -162,6 +166,10 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numpy.lib.utils</span> <span class="kn">import</span> <span class="n">deprecate</span>
 
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+    <span class="kn">from</span> <span class="nn">..core.groups</span> <span class="kn">import</span> <span class="n">AtomGroup</span>
 <span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="n">check_coords</span><span class="p">,</span> <span class="n">check_box</span>
 <span class="kn">from</span> <span class="nn">.mdamath</span> <span class="kn">import</span> <span class="n">triclinic_vectors</span>
 <span class="kn">from</span> <span class="nn">._augment</span> <span class="kn">import</span> <span class="n">augment_coordinates</span><span class="p">,</span> <span class="n">undo_augment</span>
@@ -183,7 +191,9 @@
     <span class="k">pass</span>
 <span class="k">del</span> <span class="n">importlib</span>
 
-<span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="n">funcname</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
+
+<span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="n">funcname</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+         <span class="n">kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;serial&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Helper function to select a backend function `funcname`.&quot;&quot;&quot;</span>
     <span class="n">args</span> <span class="o">=</span> <span class="n">args</span> <span class="k">if</span> <span class="n">args</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">tuple</span><span class="p">()</span>
     <span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span> <span class="k">if</span> <span class="n">kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">dict</span><span class="p">()</span>
@@ -221,7 +231,8 @@
 <span class="kn">from</span> <span class="nn">.c_distances_openmp</span> <span class="kn">import</span> <span class="n">OPENMP_ENABLED</span> <span class="k">as</span> <span class="n">USED_OPENMP</span>
 
 
-<span class="k">def</span> <span class="nf">_check_result_array</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
+<span class="c1"># typing: numpy</span>
+<span class="k">def</span> <span class="nf">_check_result_array</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">shape</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Check if the result array is ok to use.</span>
 
 <span class="sd">    The `result` array must meet the following requirements:</span>
@@ -262,10 +273,14 @@
     <span class="k">return</span> <span class="n">result</span>
 
 
+<span class="c1"># typing: numpy</span>
 <div class="viewcode-block" id="distance_array"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.distance_array">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="s1">&#39;configuration&#39;</span><span class="p">,</span> <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-              <span class="n">check_lengths_match</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">distance_array</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                   <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
+              <span class="n">check_lengths_match</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">distance_array</span><span class="p">(</span><span class="n">reference</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="s1">&#39;AtomGroup&#39;</span><span class="p">],</span>
+                   <span class="n">configuration</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="s1">&#39;AtomGroup&#39;</span><span class="p">],</span>
+                   <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                   <span class="n">result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                   <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;serial&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Calculate all possible distances between a reference set and another</span>
 <span class="sd">    configuration.</span>
 
@@ -282,12 +297,14 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    reference : numpy.ndarray</span>
+<span class="sd">    reference :numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`</span>
 <span class="sd">        Reference coordinate array of shape ``(3,)`` or ``(n, 3)`` (dtype is</span>
-<span class="sd">        arbitrary, will be converted to ``numpy.float32`` internally).</span>
-<span class="sd">    configuration : numpy.ndarray</span>
+<span class="sd">        arbitrary, will be converted to ``numpy.float32`` internally). Also</span>
+<span class="sd">        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
+<span class="sd">    configuration : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`</span>
 <span class="sd">        Configuration coordinate array of shape ``(3,)`` or ``(m, 3)`` (dtype is</span>
-<span class="sd">        arbitrary, will be converted to ``numpy.float32`` internally).</span>
+<span class="sd">        arbitrary, will be converted to ``numpy.float32`` internally). Also</span>
+<span class="sd">        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
 <span class="sd">    box : array_like, optional</span>
 <span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
@@ -313,6 +330,9 @@
 <span class="sd">    .. versionchanged:: 0.19.0</span>
 <span class="sd">       Internal dtype conversion of input coordinates to ``numpy.float32``.</span>
 <span class="sd">       Now also accepts single coordinates as input.</span>
+<span class="sd">    .. versionchanged:: 2.3.0</span>
+<span class="sd">       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an</span>
+<span class="sd">       argument in any position and checks inputs using type hinting.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">confnum</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">refnum</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -343,8 +363,12 @@
     <span class="k">return</span> <span class="n">distances</span></div>
 
 
-<div class="viewcode-block" id="self_distance_array"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.self_distance_array">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">self_distance_array</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
+<span class="c1"># typing: numpy</span>
+<div class="viewcode-block" id="self_distance_array"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.self_distance_array">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">self_distance_array</span><span class="p">(</span><span class="n">reference</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="s1">&#39;AtomGroup&#39;</span><span class="p">],</span>
+                        <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="n">result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;serial&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Calculate all possible distances within a configuration `reference`.</span>
 
 <span class="sd">    If the optional argument `box` is supplied, the minimum image convention is</span>
@@ -357,9 +381,10 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    reference : numpy.ndarray</span>
+<span class="sd">    reference : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`</span>
 <span class="sd">        Reference coordinate array of shape ``(3,)`` or ``(n, 3)`` (dtype is</span>
-<span class="sd">        arbitrary, will be converted to ``numpy.float32`` internally).</span>
+<span class="sd">        arbitrary, will be converted to ``numpy.float32`` internally). Also</span>
+<span class="sd">        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
 <span class="sd">    box : array_like, optional</span>
 <span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
@@ -390,6 +415,9 @@
 <span class="sd">       Added *backend* keyword.</span>
 <span class="sd">    .. versionchanged:: 0.19.0</span>
 <span class="sd">       Internal dtype conversion of input coordinates to ``numpy.float32``.</span>
+<span class="sd">    .. versionchanged:: 2.3.0</span>
+<span class="sd">       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an</span>
+<span class="sd">       argument in any position and checks inputs using type hinting.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">refnum</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">distnum</span> <span class="o">=</span> <span class="n">refnum</span> <span class="o">*</span> <span class="p">(</span><span class="n">refnum</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
@@ -1333,8 +1361,13 @@
     <span class="k">return</span> <span class="n">coords</span></div>
 
 
-<div class="viewcode-block" id="calc_bonds"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_bonds">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;coords1&#39;</span><span class="p">,</span> <span class="s1">&#39;coords2&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">calc_bonds</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
+<span class="c1"># typing: numpy</span>
+<div class="viewcode-block" id="calc_bonds"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_bonds">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;coords1&#39;</span><span class="p">,</span> <span class="s1">&#39;coords2&#39;</span><span class="p">,</span> <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">calc_bonds</span><span class="p">(</span><span class="n">coords1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="s1">&#39;AtomGroup&#39;</span><span class="p">],</span>
+               <span class="n">coords2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="s1">&#39;AtomGroup&#39;</span><span class="p">],</span>
+               <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+               <span class="n">result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+               <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;serial&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Calculates the bond lengths between pairs of atom positions from the two</span>
 <span class="sd">    coordinate arrays `coords1` and `coords2`, which must contain the same</span>
 <span class="sd">    number of coordinates. ``coords1[i]`` and ``coords2[i]`` represent the</span>
@@ -1358,14 +1391,16 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    coords1 : numpy.ndarray</span>
+<span class="sd">    coords1 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`</span>
 <span class="sd">        Coordinate array of shape ``(3,)`` or ``(n, 3)`` for one half of a</span>
 <span class="sd">        single or ``n`` bonds, respectively (dtype is arbitrary, will be</span>
-<span class="sd">        converted to ``numpy.float32`` internally).</span>
-<span class="sd">    coords2 : numpy.ndarray</span>
+<span class="sd">        converted to ``numpy.float32`` internally).  Also accepts an</span>
+<span class="sd">        :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
+<span class="sd">    coords2 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`</span>
 <span class="sd">        Coordinate array of shape ``(3,)`` or ``(n, 3)`` for the other half of</span>
 <span class="sd">        a single or ``n`` bonds, respectively (dtype is arbitrary, will be</span>
-<span class="sd">        converted to ``numpy.float32`` internally).</span>
+<span class="sd">        converted to ``numpy.float32`` internally). Also accepts an</span>
+<span class="sd">        :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
 <span class="sd">    box : numpy.ndarray, optional</span>
 <span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
@@ -1392,6 +1427,9 @@
 <span class="sd">    .. versionchanged:: 0.19.0</span>
 <span class="sd">       Internal dtype conversion of input coordinates to ``numpy.float32``.</span>
 <span class="sd">       Now also accepts single coordinates as input.</span>
+<span class="sd">    .. versionchanged:: 2.3.0</span>
+<span class="sd">       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an</span>
+<span class="sd">       argument in any position and checks inputs using type hinting.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">numatom</span> <span class="o">=</span> <span class="n">coords1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">bondlengths</span> <span class="o">=</span> <span class="n">_check_result_array</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="p">(</span><span class="n">numatom</span><span class="p">,))</span>
@@ -1415,9 +1453,14 @@
     <span class="k">return</span> <span class="n">bondlengths</span></div>
 
 
-<div class="viewcode-block" id="calc_angles"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_angles">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;coords1&#39;</span><span class="p">,</span> <span class="s1">&#39;coords2&#39;</span><span class="p">,</span> <span class="s1">&#39;coords3&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">calc_angles</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
+<span class="c1"># typing: numpy</span>
+<div class="viewcode-block" id="calc_angles"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_angles">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;coords1&#39;</span><span class="p">,</span> <span class="s1">&#39;coords2&#39;</span><span class="p">,</span> <span class="s1">&#39;coords3&#39;</span><span class="p">,</span> <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">calc_angles</span><span class="p">(</span><span class="n">coords1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="s1">&#39;AtomGroup&#39;</span><span class="p">],</span>
+                <span class="n">coords2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="s1">&#39;AtomGroup&#39;</span><span class="p">],</span>
+                <span class="n">coords3</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="s1">&#39;AtomGroup&#39;</span><span class="p">],</span>
+                <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;serial&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Calculates the angles formed between triplets of atom positions from the</span>
 <span class="sd">    three coordinate arrays `coords1`, `coords2`, and `coords3`. All coordinate</span>
 <span class="sd">    arrays must contain the same number of coordinates.</span>
@@ -1443,18 +1486,21 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    coords1 : numpy.ndarray</span>
+<span class="sd">    coords1 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`</span>
 <span class="sd">        Array of shape ``(3,)`` or ``(n, 3)`` containing the coordinates of one</span>
 <span class="sd">        side of a single or ``n`` angles, respectively (dtype is arbitrary, will</span>
-<span class="sd">        be converted to ``numpy.float32`` internally)</span>
-<span class="sd">    coords2 : numpy.ndarray</span>
+<span class="sd">        be converted to ``numpy.float32`` internally). Also accepts an</span>
+<span class="sd">        :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
+<span class="sd">    coords2 :  numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`</span>
 <span class="sd">        Array of shape ``(3,)`` or ``(n, 3)`` containing the coordinates of the</span>
 <span class="sd">        apices of a single or ``n`` angles, respectively (dtype is arbitrary,</span>
-<span class="sd">        will be converted to ``numpy.float32`` internally)</span>
-<span class="sd">    coords3 : numpy.ndarray</span>
+<span class="sd">        will be converted to ``numpy.float32`` internally). Also accepts an</span>
+<span class="sd">        :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
+<span class="sd">    coords3 :  numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`</span>
 <span class="sd">        Array of shape ``(3,)`` or ``(n, 3)`` containing the coordinates of the</span>
 <span class="sd">        other side of a single or ``n`` angles, respectively (dtype is</span>
-<span class="sd">        arbitrary, will be converted to ``numpy.float32`` internally)</span>
+<span class="sd">        arbitrary, will be converted to ``numpy.float32`` internally).</span>
+<span class="sd">        Also accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
 <span class="sd">    box : numpy.ndarray, optional</span>
 <span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
@@ -1484,6 +1530,9 @@
 <span class="sd">    .. versionchanged:: 0.19.0</span>
 <span class="sd">       Internal dtype conversion of input coordinates to ``numpy.float32``.</span>
 <span class="sd">       Now also accepts single coordinates as input.</span>
+<span class="sd">    .. versionchanged:: 2.3.0</span>
+<span class="sd">       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an</span>
+<span class="sd">       argument in any position and checks inputs using type hinting.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">numatom</span> <span class="o">=</span> <span class="n">coords1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">angles</span> <span class="o">=</span> <span class="n">_check_result_array</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="p">(</span><span class="n">numatom</span><span class="p">,))</span>
@@ -1507,9 +1556,15 @@
     <span class="k">return</span> <span class="n">angles</span></div>
 
 
-<div class="viewcode-block" id="calc_dihedrals"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_dihedrals">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;coords1&#39;</span><span class="p">,</span> <span class="s1">&#39;coords2&#39;</span><span class="p">,</span> <span class="s1">&#39;coords3&#39;</span><span class="p">,</span> <span class="s1">&#39;coords4&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">calc_dihedrals</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">coords4</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                   <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
+<span class="c1"># typing: numpy</span>
+<div class="viewcode-block" id="calc_dihedrals"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_dihedrals">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;coords1&#39;</span><span class="p">,</span> <span class="s1">&#39;coords2&#39;</span><span class="p">,</span> <span class="s1">&#39;coords3&#39;</span><span class="p">,</span> <span class="s1">&#39;coords4&#39;</span><span class="p">,</span> <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">calc_dihedrals</span><span class="p">(</span><span class="n">coords1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="s1">&#39;AtomGroup&#39;</span><span class="p">],</span>
+                   <span class="n">coords2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="s1">&#39;AtomGroup&#39;</span><span class="p">],</span>
+                   <span class="n">coords3</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="s1">&#39;AtomGroup&#39;</span><span class="p">],</span>
+                   <span class="n">coords4</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="s1">&#39;AtomGroup&#39;</span><span class="p">],</span>
+                   <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                   <span class="n">result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                   <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;serial&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculates the dihedral angles formed between quadruplets of positions</span>
 <span class="sd">    from the four coordinate arrays `coords1`, `coords2`, `coords3`, and</span>
 <span class="sd">    `coords4`, which must contain the same number of coordinates.</span>
@@ -1541,22 +1596,26 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    coords1 : numpy.ndarray</span>
+<span class="sd">    coords1 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`</span>
 <span class="sd">        Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 1st</span>
 <span class="sd">        positions in dihedrals (dtype is arbitrary, will be converted to</span>
-<span class="sd">        ``numpy.float32`` internally)</span>
-<span class="sd">    coords2 : numpy.ndarray</span>
+<span class="sd">        ``numpy.float32`` internally).  Also accepts an</span>
+<span class="sd">        :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
+<span class="sd">    coords2 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`</span>
 <span class="sd">        Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 2nd</span>
 <span class="sd">        positions in dihedrals (dtype is arbitrary, will be converted to</span>
-<span class="sd">        ``numpy.float32`` internally)</span>
-<span class="sd">    coords3 : numpy.ndarray</span>
+<span class="sd">        ``numpy.float32`` internally).  Also accepts an</span>
+<span class="sd">        :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
+<span class="sd">    coords3 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`</span>
 <span class="sd">        Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 3rd</span>
 <span class="sd">        positions in dihedrals (dtype is arbitrary, will be converted to</span>
-<span class="sd">        ``numpy.float32`` internally)</span>
-<span class="sd">    coords4 : numpy.ndarray</span>
+<span class="sd">        ``numpy.float32`` internally).  Also accepts an</span>
+<span class="sd">        :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
+<span class="sd">    coords4 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`</span>
 <span class="sd">        Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 4th</span>
 <span class="sd">        positions in dihedrals (dtype is arbitrary, will be converted to</span>
-<span class="sd">        ``numpy.float32`` internally)</span>
+<span class="sd">        ``numpy.float32`` internally).  Also accepts an</span>
+<span class="sd">        :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
 <span class="sd">    box : numpy.ndarray, optional</span>
 <span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
@@ -1589,6 +1648,9 @@
 <span class="sd">    .. versionchanged:: 0.19.0</span>
 <span class="sd">       Internal dtype conversion of input coordinates to ``numpy.float32``.</span>
 <span class="sd">       Now also accepts single coordinates as input.</span>
+<span class="sd">    .. versionchanged:: 2.3.0</span>
+<span class="sd">       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an</span>
+<span class="sd">       argument in any position and checks inputs using type hinting.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">numatom</span> <span class="o">=</span> <span class="n">coords1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">dihedrals</span> <span class="o">=</span> <span class="n">_check_result_array</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="p">(</span><span class="n">numatom</span><span class="p">,))</span>
@@ -1612,15 +1674,19 @@
     <span class="k">return</span> <span class="n">dihedrals</span></div>
 
 
-<div class="viewcode-block" id="apply_PBC"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.apply_PBC">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;coords&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">apply_PBC</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
+<span class="c1"># typing: numpy</span>
+<div class="viewcode-block" id="apply_PBC"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.apply_PBC">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;coords&#39;</span><span class="p">,</span> <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">apply_PBC</span><span class="p">(</span><span class="n">coords</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="s1">&#39;AtomGroup&#39;</span><span class="p">],</span>
+              <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+              <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;serial&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Moves coordinates into the primary unit cell.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    coords : numpy.ndarray</span>
+<span class="sd">    coords : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`</span>
 <span class="sd">        Coordinate array of shape ``(3,)`` or ``(n, 3)`` (dtype is arbitrary,</span>
-<span class="sd">        will be converted to ``numpy.float32`` internally).</span>
+<span class="sd">        will be converted to ``numpy.float32`` internally). Also accepts an</span>
+<span class="sd">        :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
 <span class="sd">    box : numpy.ndarray</span>
 <span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
@@ -1642,6 +1708,9 @@
 <span class="sd">    .. versionchanged:: 0.19.0</span>
 <span class="sd">       Internal dtype conversion of input coordinates to ``numpy.float32``.</span>
 <span class="sd">       Now also accepts (and, likewise, returns) single coordinates.</span>
+<span class="sd">    .. versionchanged:: 2.3.0</span>
+<span class="sd">       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an</span>
+<span class="sd">       argument in any position and checks inputs using type hinting.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">coords</span>
@@ -1654,8 +1723,9 @@
     <span class="k">return</span> <span class="n">coords</span></div>
 
 
+<span class="c1"># typing: numpy</span>
 <div class="viewcode-block" id="minimize_vectors"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.minimize_vectors">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;vectors&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">enforce_dtype</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">minimize_vectors</span><span class="p">(</span><span class="n">vectors</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">minimize_vectors</span><span class="p">(</span><span class="n">vectors</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">box</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Apply minimum image convention to an array of vectors</span>
 
 <span class="sd">    This function is required for calculating the correct vectors between two</span>

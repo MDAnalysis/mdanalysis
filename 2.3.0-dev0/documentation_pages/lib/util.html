@@ -1221,12 +1221,16 @@ potentially multiple warnings concerning the uniqueness of groups is shown.</p>
 <a class="reference internal" href="distances.html#module-MDAnalysis.lib.distances" title="MDAnalysis.lib.distances"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a>.
 It takes an arbitrary number of positional arguments which must correspond
 to names of positional arguments of the decorated function.
-It then checks if the corresponding values are valid coordinate arrays.
-If all these arrays are single coordinates (i.e., their shape is <code class="docutils literal notranslate"><span class="pre">(3,)</span></code>),
-the decorated function can optionally return a single coordinate (or angle)
-instead of an array of coordinates (or angles). This can be used to enable
-computations of single observables using functions originally designed to
-accept only 2-d coordinate arrays.</p>
+It then checks if the corresponding values are valid coordinate arrays or
+an <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>.
+If the input is an array and all these arrays are single coordinates
+(i.e., their shape is <code class="docutils literal notranslate"><span class="pre">(3,)</span></code>), the decorated function can optionally
+return a single coordinate (or angle) instead of an array of coordinates
+(or angles). This can be used to enable computations of single observables
+using functions originally designed to accept only 2-d coordinate arrays.</p>
+<p>If the input is an <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> it is
+converted into its corresponding position array via a call to
+<cite>AtomGroup.positions</cite>.</p>
 <p>The checks performed on each individual coordinate array are:</p>
 <ul class="simple">
 <li><p>Check that coordinate arrays are of type <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>.</p></li>
@@ -1262,6 +1266,9 @@ will return <code class="docutils literal notranslate"><span class="pre">func()[
 <li><p><strong>check_lengths_match</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, optional) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, a
 <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValueError</span></code></a> is raised if not all coordinate arrays contain the
 same number of coordinates. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+<li><p><strong>allow_atomgroup</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, optional) – If <code class="docutils literal notranslate"><span class="pre">False</span></code>, a
+<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypeError</span></code></a> is raised if an <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> is supplied
+Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 </ul>
 </p></li>
 </ul>
@@ -1276,7 +1283,8 @@ same number of coordinates. Default: <code class="docutils literal notranslate">
     arguments.
     
     If any of the coordinate arrays has a wrong shape.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If any of the coordinate arrays is not a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>.
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – If any of the coordinate arrays is not a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or an
+    <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>.
     
     If the dtype of any of the coordinate arrays is not convertible to
       <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code>.</p></li>
@@ -1284,7 +1292,7 @@ same number of coordinates. Default: <code class="docutils literal notranslate">
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;coords1&#39;</span><span class="p">,</span> <span class="s1">&#39;coords2&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;coords1&#39;</span><span class="p">,</span> <span class="s1">&#39;coords2&#39;</span><span class="p">,</span> <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">... </span><span class="k">def</span> <span class="nf">coordsum</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">assert</span> <span class="n">coords1</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
 <span class="gp">... </span>    <span class="k">assert</span> <span class="n">coords2</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;C_CONTIGUOUS&#39;</span><span class="p">]</span>
@@ -1298,6 +1306,11 @@ same number of coordinates. Default: <code class="docutils literal notranslate">
 <span class="gp">&gt;&gt;&gt; </span><span class="n">coordsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">6</span><span class="p">)[::</span><span class="mi">2</span><span class="p">])</span>
 <span class="go">array([1., 1., 1.], dtype=float32)</span>
 <span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># automatic handling of AtomGroups</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coordsum</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;index 1 to 10&quot;</span><span class="p">))</span>
+<span class="gp">...</span>
+<span class="go">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># automatic shape checking:</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">coordsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
 <span class="go">ValueError: coordsum(): coords2.shape must be (3,) or (n, 3), got (6,).</span>
@@ -1305,6 +1318,10 @@ same number of coordinates. Default: <code class="docutils literal notranslate">
 </div>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.19.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.3.0: </span>Can now accept an <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> as input, and added option
+allow_atomgroup with default False to retain old behaviour</p>
 </div>
 </dd></dl>
 

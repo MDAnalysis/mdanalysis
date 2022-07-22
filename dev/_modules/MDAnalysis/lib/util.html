@@ -306,6 +306,7 @@
 <span class="kn">from</span> <span class="nn">.picklable_file_io</span> <span class="kn">import</span> <span class="n">pickle_open</span><span class="p">,</span> <span class="n">bz2_pickle_open</span><span class="p">,</span> <span class="n">gzip_pickle_open</span>
 
 <span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">StreamWarning</span><span class="p">,</span> <span class="n">DuplicateWarning</span>
+
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">._cutil</span> <span class="kn">import</span> <span class="n">unique_int_1d</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
@@ -2029,12 +2030,17 @@
 <span class="sd">    :mod:`MDAnalysis.lib.distances`.</span>
 <span class="sd">    It takes an arbitrary number of positional arguments which must correspond</span>
 <span class="sd">    to names of positional arguments of the decorated function.</span>
-<span class="sd">    It then checks if the corresponding values are valid coordinate arrays.</span>
-<span class="sd">    If all these arrays are single coordinates (i.e., their shape is ``(3,)``),</span>
-<span class="sd">    the decorated function can optionally return a single coordinate (or angle)</span>
-<span class="sd">    instead of an array of coordinates (or angles). This can be used to enable</span>
-<span class="sd">    computations of single observables using functions originally designed to</span>
-<span class="sd">    accept only 2-d coordinate arrays.</span>
+<span class="sd">    It then checks if the corresponding values are valid coordinate arrays or</span>
+<span class="sd">    an :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
+<span class="sd">    If the input is an array and all these arrays are single coordinates</span>
+<span class="sd">    (i.e., their shape is ``(3,)``), the decorated function can optionally</span>
+<span class="sd">    return a single coordinate (or angle) instead of an array of coordinates</span>
+<span class="sd">    (or angles). This can be used to enable computations of single observables</span>
+<span class="sd">    using functions originally designed to accept only 2-d coordinate arrays.</span>
+
+<span class="sd">    If the input is an :class:`~MDAnalysis.core.groups.AtomGroup` it is</span>
+<span class="sd">    converted into its corresponding position array via a call to</span>
+<span class="sd">    `AtomGroup.positions`.</span>
 
 <span class="sd">    The checks performed on each individual coordinate array are:</span>
 
@@ -2071,6 +2077,9 @@
 <span class="sd">        * **check_lengths_match** (:class:`bool`, optional) -- If ``True``, a</span>
 <span class="sd">          :class:`ValueError` is raised if not all coordinate arrays contain the</span>
 <span class="sd">          same number of coordinates. Default: ``True``</span>
+<span class="sd">        * **allow_atomgroup** (:class:`bool`, optional) -- If ``False``, a</span>
+<span class="sd">          :class:`TypeError` is raised if an :class:`AtomGroup` is supplied</span>
+<span class="sd">          Default: ``False``</span>
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
@@ -2084,7 +2093,8 @@
 
 <span class="sd">        If any of the coordinate arrays has a wrong shape.</span>
 <span class="sd">    TypeError</span>
-<span class="sd">        If any of the coordinate arrays is not a :class:`numpy.ndarray`.</span>
+<span class="sd">        If any of the coordinate arrays is not a :class:`numpy.ndarray` or an</span>
+<span class="sd">        :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
 
 <span class="sd">        If the dtype of any of the coordinate arrays is not convertible to</span>
 <span class="sd">          ``numpy.float32``.</span>
@@ -2092,7 +2102,7 @@
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
 
-<span class="sd">    &gt;&gt;&gt; @check_coords(&#39;coords1&#39;, &#39;coords2&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; @check_coords(&#39;coords1&#39;, &#39;coords2&#39;, allow_atomgroup=True)</span>
 <span class="sd">    ... def coordsum(coords1, coords2):</span>
 <span class="sd">    ...     assert coords1.dtype == np.float32</span>
 <span class="sd">    ...     assert coords2.flags[&#39;C_CONTIGUOUS&#39;]</span>
@@ -2106,12 +2116,20 @@
 <span class="sd">    &gt;&gt;&gt; coordsum(np.zeros(3), np.ones(6)[::2])</span>
 <span class="sd">    array([1., 1., 1.], dtype=float32)</span>
 <span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; # automatic handling of AtomGroups</span>
+<span class="sd">    &gt;&gt;&gt; u = mda.Universe(PSF, DCD)</span>
+<span class="sd">    &gt;&gt;&gt; coordsum(u.atoms, u.select_atoms(&quot;index 1 to 10&quot;))</span>
+<span class="sd">    ...</span>
+<span class="sd">    &gt;&gt;&gt;</span>
 <span class="sd">    &gt;&gt;&gt; # automatic shape checking:</span>
 <span class="sd">    &gt;&gt;&gt; coordsum(np.zeros(3), np.ones(6))</span>
 <span class="sd">    ValueError: coordsum(): coords2.shape must be (3,) or (n, 3), got (6,).</span>
 
 
 <span class="sd">    .. versionadded:: 0.19.0</span>
+<span class="sd">    .. versionchanged:: 2.3.0</span>
+<span class="sd">       Can now accept an :class:`AtomGroup` as input, and added option</span>
+<span class="sd">       allow_atomgroup with default False to retain old behaviour</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">enforce_copy</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;enforce_copy&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
     <span class="n">enforce_dtype</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;enforce_dtype&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
@@ -2120,6 +2138,7 @@
     <span class="n">reduce_result_if_single</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;reduce_result_if_single&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
     <span class="n">check_lengths_match</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;check_lengths_match&#39;</span><span class="p">,</span>
                                       <span class="nb">len</span><span class="p">(</span><span class="n">coord_names</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">allow_atomgroup</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;allow_atomgroup&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">coord_names</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Decorator check_coords() cannot be used without &quot;</span>
                          <span class="s2">&quot;positional arguments.&quot;</span><span class="p">)</span>
@@ -2143,32 +2162,49 @@
                                  <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
 
         <span class="k">def</span> <span class="nf">_check_coords</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">argname</span><span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">(): Parameter &#39;</span><span class="si">{}</span><span class="s2">&#39; must be a numpy.ndarray, &quot;</span>
-                                <span class="s2">&quot;got </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">argname</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">coords</span><span class="p">)))</span>
             <span class="n">is_single</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="k">if</span> <span class="n">allow_single</span><span class="p">:</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">coords</span><span class="o">.</span><span class="n">ndim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">):</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">(): </span><span class="si">{}</span><span class="s2">.shape must be (3,) or (n, 3), &quot;</span>
-                                     <span class="s2">&quot;got </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">argname</span><span class="p">,</span>
-                                                      <span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
-                <span class="k">if</span> <span class="n">coords</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="n">is_single</span> <span class="o">=</span> <span class="kc">True</span>
-                    <span class="k">if</span> <span class="n">convert_single</span><span class="p">:</span>
-                        <span class="n">coords</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">allow_single</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">coords</span><span class="o">.</span><span class="n">ndim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">):</span>
+                        <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s2">(): </span><span class="si">{</span><span class="n">argname</span><span class="si">}</span><span class="s2">.shape must be (3,) &quot;</span>
+                                  <span class="sa">f</span><span class="s2">&quot;or (n, 3), got </span><span class="si">{</span><span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">coords</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">is_single</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">if</span> <span class="n">convert_single</span><span class="p">:</span>
+                            <span class="n">coords</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">coords</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">):</span>
+                        <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s2">(): </span><span class="si">{</span><span class="n">argname</span><span class="si">}</span><span class="s2">.shape must be (n, 3) &quot;</span>
+                                  <span class="sa">f</span><span class="s2">&quot;got </span><span class="si">{</span><span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">enforce_dtype</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">coords</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+                            <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">enforce_copy</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                        <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s2">(): </span><span class="si">{</span><span class="n">argname</span><span class="si">}</span><span class="s2">.dtype must be&quot;</span>
+                                  <span class="sa">f</span><span class="s2">&quot;convertible to float32, got&quot;</span>
+                                  <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">coords</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+                        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+                <span class="c1"># coordinates should now be the right shape</span>
+                <span class="n">ncoord</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">coords</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">):</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">(): </span><span class="si">{}</span><span class="s2">.shape must be (n, 3), got </span><span class="si">{}</span><span class="s2">.&quot;</span>
-                                     <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">argname</span><span class="p">,</span> <span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
-            <span class="k">if</span> <span class="n">enforce_dtype</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">coords</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
-                        <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">enforce_copy</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                    <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s2">(): </span><span class="si">{</span><span class="n">argname</span><span class="si">}</span><span class="s2">.dtype must be convertible to &quot;</span>
-                              <span class="sa">f</span><span class="s2">&quot;float32, got </span><span class="si">{</span><span class="n">coords</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
-                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
-            <span class="k">return</span> <span class="n">coords</span><span class="p">,</span> <span class="n">is_single</span>
+                    <span class="n">coords</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">positions</span>  <span class="c1"># homogenise to a numpy array</span>
+                    <span class="n">ncoord</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">allow_atomgroup</span><span class="p">:</span>
+                        <span class="n">err</span> <span class="o">=</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;AtomGroup or other class with a&quot;</span>
+                                        <span class="s2">&quot;`.positions` method supplied as an&quot;</span>
+                                        <span class="s2">&quot;argument, but allow_atomgroup is&quot;</span>
+                                        <span class="s2">&quot; False&quot;</span><span class="p">)</span>
+                        <span class="k">raise</span> <span class="n">err</span>
+                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s2">(): Parameter &#39;</span><span class="si">{</span><span class="n">argname</span><span class="si">}</span><span class="s2">&#39; must be&quot;</span>
+                                    <span class="sa">f</span><span class="s2">&quot; a numpy.ndarray or an AtomGroup,&quot;</span>
+                                    <span class="sa">f</span><span class="s2">&quot; got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">coords</span><span class="p">,</span> <span class="n">is_single</span><span class="p">,</span> <span class="n">ncoord</span>
 
         <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -2199,14 +2235,15 @@
             <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">coord_names</span><span class="p">:</span>
                 <span class="n">idx</span> <span class="o">=</span> <span class="n">posargnames</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
-                    <span class="n">args</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">is_single</span> <span class="o">=</span> <span class="n">_check_coords</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">name</span><span class="p">)</span>
+                    <span class="n">args</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">is_single</span><span class="p">,</span> <span class="n">ncoord</span> <span class="o">=</span> <span class="n">_check_coords</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+                                                                 <span class="n">name</span><span class="p">)</span>
                     <span class="n">all_single</span> <span class="o">&amp;=</span> <span class="n">is_single</span>
-                    <span class="n">ncoords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="n">ncoords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ncoord</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">kwargs</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="n">is_single</span> <span class="o">=</span> <span class="n">_check_coords</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="n">name</span><span class="p">],</span>
-                                                            <span class="n">name</span><span class="p">)</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="n">is_single</span><span class="p">,</span> <span class="n">ncoord</span> <span class="o">=</span> <span class="n">_check_coords</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="n">name</span><span class="p">],</span>
+                                                                    <span class="n">name</span><span class="p">)</span>
                     <span class="n">all_single</span> <span class="o">&amp;=</span> <span class="n">is_single</span>
-                    <span class="n">ncoords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="n">ncoords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ncoord</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">check_lengths_match</span> <span class="ow">and</span> <span class="n">ncoords</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">ncoords</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">ncoords</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ncoords</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">(): </span><span class="si">{}</span><span class="s2"> must contain the same number of &quot;</span>
