@@ -70,8 +70,8 @@ class TestOpenMMBasicSimulationReader():
             np.array([20., 20., 20., 90., 90., 90.]),
             rtol=0,
             atol=1e-3,
-            err_msg="OpenMMBasicSimulationReader failed to get unitcell " +
-                    "dimensions from OpenMM Simulation Object",
+            err_msg=("OpenMMBasicSimulationReader failed to get unitcell "
+                     "dimensions from OpenMM Simulation Object"),
         )
 
     def test_coordinates(self, omm_sim_uni):
@@ -102,8 +102,8 @@ class TestOpenMMPDBFileReader(_SingleFrameReader):
             self.ref.trajectory.ts.dimensions,
             rtol=0,
             atol=1e-3,
-            err_msg="OpenMMPDBFileReader failed to get unitcell dimensions " +
-                    "from OpenMMPDBFile",
+            err_msg=("OpenMMPDBFileReader failed to get unitcell dimensions "
+                     "from OpenMMPDBFile"),
         )
 
     def test_coordinates(self):
@@ -128,8 +128,8 @@ class TestOpenMMModellerReader(_SingleFrameReader):
             self.ref.trajectory.ts.dimensions,
             rtol=0,
             atol=1e-3,
-            err_msg="OpenMMModellerReader failed to get unitcell dimensions " +
-                    "from OpenMMModeller",
+            err_msg=("OpenMMModellerReader failed to get unitcell dimensions "
+                     "from OpenMMModeller"),
         )
 
     def test_coordinates(self):
@@ -162,8 +162,8 @@ class TestOpenMMSimulationReader(_SingleFrameReader):
             self.ref.trajectory.ts.dimensions,
             rtol=0,
             atol=1e-3,
-            err_msg="OpenMMSimulationReader failed to get unitcell " +
-                    "dimensions from OpenMMSimulation",
+            err_msg=("OpenMMSimulationReader failed to get unitcell "
+                     "dimensions from OpenMMSimulation"),
         )
 
     def test_coordinates(self):

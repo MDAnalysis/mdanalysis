@@ -56,8 +56,8 @@ class TestParmEdReaderGRO:
             self.ref.trajectory.ts.dimensions,
             rtol=0,
             atol=1e-3,
-            err_msg="ParmEdReader failed to get unitcell dimensions " +
-                    "from ParmEd")
+            err_msg=("ParmEdReader failed to get unitcell dimensions "
+                     "from ParmEd"))
     
     def test_coordinates(self):
         up = self.universe.atoms.positions
@@ -76,8 +76,8 @@ class BaseTestParmEdReader(_SingleFrameReader):
             self.ref.trajectory.ts.dimensions,
             rtol=0,
             atol=1e-3,
-            err_msg="ParmEdReader failed to get unitcell dimensions " +
-                    "from ParmEd")
+            err_msg=("ParmEdReader failed to get unitcell dimensions "
+                     "from ParmEd"))
     
     def test_coordinates(self):
         up = self.universe.atoms.positions
@@ -188,8 +188,8 @@ class BaseTestParmEdConverter:
                 ra = getattr(r, attr)
                 oa = getattr(o, attr)
                 assert_allclose(ra, oa, rtol=0, atol=1e-2,
-                    err_msg=f'atom {attr} not almost equal for atoms '
-                            f'{r} and {o}')
+                    err_msg=(f'atom {attr} not almost equal for atoms '
+                             f'{r} and {o}'))
 
     @pytest.mark.parametrize('attr', ('bonds', 'angles', 'impropers',
                      'cmaps'))
