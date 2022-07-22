@@ -1436,7 +1436,6 @@ class TestInputUnchanged(object):
         res = distances.apply_PBC(crd, box, backend=backend)
         assert_equal(crd.positions, ref)
 
-
 class TestEmptyInputCoordinates(object):
     """Tests ensuring that the following functions in MDAnalysis.lib.distances
     do not choke on empty input coordinate arrays:

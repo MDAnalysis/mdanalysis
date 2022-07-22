@@ -180,6 +180,7 @@ def _check_result_array(result: np.ndarray, shape: tuple) -> np.ndarray:
 #        raise ValueError("{0} is not C-contiguous.".format(desc))
     return result
 
+
 # typing: numpy
 @check_coords('reference', 'configuration', reduce_result_if_single=False,
               check_lengths_match=False, allow_atomgroup=True)
@@ -1709,6 +1710,7 @@ def apply_PBC(coords: Union[np.ndarray, 'AtomGroup'],
         _run("triclinic_pbc", args=(coords, box), backend=backend)
 
     return coords
+
 
 # typing: numpy
 @check_coords('vectors', enforce_copy=False, enforce_dtype=False)
