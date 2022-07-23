@@ -33,7 +33,7 @@ from MDAnalysis import SelectionError, SelectionWarning
 from MDAnalysisTests import executable_not_found
 from MDAnalysisTests.datafiles import (PSF, DCD, CRD, FASTA, ALIGN_BOUND,
                                        ALIGN_UNBOUND, PDB_helix)
-from numpy.testing import (assert_equal, assert_array_equal, assert_allclose)
+from numpy.testing import assert_equal, assert_array_equal, assert_allclose
 
 #Function for Parametrizing conditional raising
 @contextmanager
