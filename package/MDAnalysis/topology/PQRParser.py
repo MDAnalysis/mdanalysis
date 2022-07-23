@@ -49,7 +49,6 @@ Classes
 """
 import numpy as np
 
-from . import guessers
 from ..lib.util import openany
 from ..core.topologyattrs import (
     Atomids,
@@ -57,7 +56,6 @@ from ..core.topologyattrs import (
     Atomtypes,
     Charges,
     ICodes,
-    Masses,
     Radii,
     RecordTypes,
     Resids,
@@ -82,9 +80,6 @@ class PQRParser(TopologyReaderBase):
      - Resnames
      - Segids
 
-    Guesses the following:
-     - atomtypes (if not present, Gromacs generated PQR files have these)
-     - masses
 
     .. versionchanged:: 0.9.0
        Read chainID from a PQR file and use it as segid (before we always used
@@ -191,20 +186,15 @@ class PQRParser(TopologyReaderBase):
 
         n_atoms = len(serials)
 
-        if not elements:
-            atomtypes = guessers.guess_types(names)
-            guessed_types = True
-        else:
+        if elements:
             atomtypes = elements
             guessed_types = False
-        masses = guessers.guess_masses(atomtypes)
 
         attrs = []
         attrs.append(Atomids(np.array(serials, dtype=np.int32)))
         attrs.append(Atomnames(np.array(names, dtype=object)))
         attrs.append(Charges(np.array(charges, dtype=np.float32)))
         attrs.append(Atomtypes(atomtypes, guessed=guessed_types))
-        attrs.append(Masses(masses, guessed=True))
         attrs.append(RecordTypes(np.array(record_types, dtype=object)))
         attrs.append(Radii(np.array(radii, dtype=np.float32)))
 

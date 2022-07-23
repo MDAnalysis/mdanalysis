@@ -81,7 +81,6 @@ import string
 import functools
 import warnings
 
-from . import guessers
 from ..lib.util import openany, conv_float
 from ..lib.mdamath import triclinic_box
 from .base import TopologyReaderBase, squash_by
@@ -519,10 +518,6 @@ class DATAParser(TopologyReaderBase):
             for i, at in enumerate(types):
                 masses[i] = massdict[at]
             attrs.append(Masses(masses))
-        else:
-            # Guess them
-            masses = guessers.guess_masses(types)
-            attrs.append(Masses(masses, guessed=True))
 
         residx, resids = squash_by(resids)[:2]
         n_residues = len(resids)

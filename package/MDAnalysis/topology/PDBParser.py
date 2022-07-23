@@ -39,8 +39,12 @@ numbers up to 99,999.
 
 .. Note::
 
+<<<<<<< Updated upstream
    The parser processes atoms and their names.
    Partial charges are not set. Elements are parsed if they are
+=======
+   The parser processes atoms and their names. Partial charges are not set. Elements are parsed if they are
+>>>>>>> Stashed changes
    valid. If partially missing or incorrect, empty records are assigned.
 
 See Also
@@ -61,7 +65,10 @@ Classes
 import numpy as np
 import warnings
 
+<<<<<<< Updated upstream
 from .guessers import guess_types
+=======
+>>>>>>> Stashed changes
 from .tables import SYMB2Z
 from ..lib import util
 from .base import TopologyReaderBase, change_squash
@@ -166,7 +173,10 @@ class PDBParser(TopologyReaderBase):
      - elements
      - bonds
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 
     See Also
     --------
@@ -307,13 +317,7 @@ class PDBParser(TopologyReaderBase):
         ):
             attrs.append(Attr(np.array(vals, dtype=dtype)))
         # OPT: We do this check twice, maybe could refactor to avoid this
-        if not any(elements):
-            atomtypes = guess_types(names)
-            attrs.append(Atomtypes(atomtypes, guessed=True))
-            warnings.warn("Element information is missing, elements attribute "
-                          "will not be populated. If needed these can be "
-                          "guessed using MDAnalysis.topology.guessers.")
-        else:
+        if any(elements):
             # Feed atomtypes as raw element column, but validate elements
             atomtypes = elements
             attrs.append(Atomtypes(np.array(elements, dtype=object)))
@@ -331,6 +335,10 @@ class PDBParser(TopologyReaderBase):
                     validated_elements.append('')
             attrs.append(Elements(np.array(validated_elements, dtype=object)))
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
         # Residue level stuff from here
         resids = np.array(resids, dtype=np.int32)
         resnames = np.array(resnames, dtype=object)

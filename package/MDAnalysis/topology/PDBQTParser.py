@@ -35,7 +35,7 @@ partial charges (:attr:`Atom.charge`).
 Notes
 -----
 Only reads atoms and their names; connectivity is not
-deduced. Masses are guessed and set to 0 if unknown.
+deduced.
 
 
 See Also
@@ -57,7 +57,6 @@ Classes
 """
 import numpy as np
 
-from . import guessers
 from ..lib import util
 from .base import TopologyReaderBase, change_squash
 from ..core.topology import Topology
@@ -68,7 +67,6 @@ from ..core.topologyattrs import (
     Atomtypes,
     Charges,
     ICodes,
-    Masses,
     Occupancies,
     RecordTypes,
     Resids,
@@ -96,9 +94,6 @@ class PDBQTParser(TopologyReaderBase):
      - tempfactors
      - charges
 
-    Guesses the following:
-     - elements
-     - masses
 
     .. versionchanged:: 0.18.0
        Added parsing of Record types
@@ -145,7 +140,6 @@ class PDBQTParser(TopologyReaderBase):
 
         n_atoms = len(serials)
 
-        masses = guessers.guess_masses(atomtypes)
 
         attrs = []
         for attrlist, Attr, dtype in (
@@ -159,7 +153,6 @@ class PDBQTParser(TopologyReaderBase):
                 (atomtypes, Atomtypes, object),
         ):
             attrs.append(Attr(np.array(attrlist, dtype=dtype)))
-        attrs.append(Masses(masses, guessed=True))
 
         resids = np.array(resids, dtype=np.int32)
         icodes = np.array(icodes, dtype=object)

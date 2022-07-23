@@ -1,14 +1,30 @@
 from .base import GuesserBase
 import numpy as np
 import warnings
+<<<<<<< Updated upstream
+=======
+import re
+
+from ..lib import distances
+>>>>>>> Stashed changes
 from . import tables
 
 
 class DefaultGuesser(GuesserBase):
     context = 'default'
 
+<<<<<<< Updated upstream
     def __init__(self):
         self._guess = {'mass': self.guess_masses}
+=======
+    def __init__(self, atoms):
+        super().__init__(atoms)
+        self._guess = {'mass': self.guess_masses,
+                       'type': self.guess_types}
+        self._rank = {'mass': 1,
+                      'type': 0
+            }
+>>>>>>> Stashed changes
 
     def guess_masses(self):
         """Guess the mass of many atoms based upon their type
@@ -17,7 +33,16 @@ class DefaultGuesser(GuesserBase):
         -------
         atom_masses : np.ndarray dtype float64
         """
+<<<<<<< Updated upstream
         atom_types = self._atoms.types
+=======
+        if hasattr(self._atoms, 'elements'):
+            atom_types = self._atoms.elements   
+        else:
+            atom_types = self._atoms.types 
+        
+       
+>>>>>>> Stashed changes
         self.validate_atom_types(atom_types)
         masses = np.array([self.get_atom_mass(atom_t)
                            for atom_t in atom_types], dtype=np.float64)
@@ -68,6 +93,7 @@ class DefaultGuesser(GuesserBase):
             except KeyError:
                 return 0.0
 
+<<<<<<< Updated upstream
     def guess_atom_mass(self, atomname):
         """Guess a mass based on the atom name.
 
@@ -77,3 +103,66 @@ class DefaultGuesser(GuesserBase):
         if you rely on the masses you might want to double check.
         """
         return self.get_atom_mass(self.guess_atom_element(atomname))
+=======
+    def guess_types(self):
+        """Guess the atom type of many atoms based on atom name
+
+        Parameters
+        ----------
+        atom_names
+          Name of each atom
+
+        Returns
+        -------
+        atom_types : np.ndarray dtype object
+        """
+        names = self._atoms.names
+        return np.array([self.guess_atom_element(n) for n in names], dtype=object)
+
+    NUMBERS = re.compile(r'[0-9]') # match numbers
+    SYMBOLS = re.compile(r'[*+-]')  # match *, +, -
+
+    def guess_atom_element(self, atomname):
+        """Guess the element of the atom from the name.
+
+        Looks in dict to see if element is found, otherwise it uses the first
+        character in the atomname. The table comes from CHARMM and AMBER atom
+        types, where the first character is not sufficient to determine the atom
+        type. Some GROMOS ions have also been added.
+
+        .. Warning: The translation table is incomplete. This will probably result
+                    in some mistakes, but it still better than nothing!
+
+        See Also
+        --------
+        :func:`guess_atom_type`
+        :mod:`MDAnalysis.topology.tables`
+        """
+        if atomname == '':
+            return ''
+        try:
+            return tables.atomelements[atomname.upper()]
+        except KeyError:
+            # strip symbols and numbers
+            no_symbols = re.sub(self.SYMBOLS, '', atomname)
+            name = re.sub(self.NUMBERS, '', no_symbols).upper()
+
+            # just in case
+            if name in tables.atomelements:
+                return tables.atomelements[name]
+
+            while name:
+                if name in tables.elements:
+                    return name
+                if name[:-1] in tables.elements:
+                    return name[:-1]
+                if name[1:] in tables.elements:
+                    return name[1:]
+                if len(name) <= 2:
+                    return name[0]
+                name = name[:-1]  # probably element is on left not right
+
+            # if it's numbers
+            return no_symbols
+
+>>>>>>> Stashed changes

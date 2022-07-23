@@ -159,7 +159,6 @@ __copyright__ = "GNU Public Licence, v2"
 
 import xdrlib
 
-from . import guessers
 from ..lib.util import openany
 from .tpr import utils as tpr_utils
 from .tpr import setting as S

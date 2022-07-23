@@ -44,7 +44,6 @@ Classes
 import os
 import numpy as np
 
-from . import guessers
 from ..lib.util import openany
 from .base import TopologyReaderBase, squash_by
 from ..core.topologyattrs import (
@@ -54,7 +53,6 @@ from ..core.topologyattrs import (
     Bonds,
     Charges,
     Elements,
-    Masses,
     Resids,
     Resnums,
     Resnames,
@@ -79,8 +77,6 @@ class MOL2Parser(TopologyReaderBase):
      - Bonds
      - Elements
 
-    Guesses the following:
-     - masses
 
     Notes
     -----
@@ -176,14 +172,18 @@ class MOL2Parser(TopologyReaderBase):
                           f"atoms: {invalid_elements}. "
                           "These have been given an empty element record.")
 
-        masses = guessers.guess_masses(validated_elements)
 
         attrs = []
         attrs.append(Atomids(np.array(ids, dtype=np.int32)))
         attrs.append(Atomnames(np.array(names, dtype=object)))
         attrs.append(Atomtypes(np.array(types, dtype=object)))
+<<<<<<< Updated upstream
         attrs.append(Charges(np.array(charges, dtype=np.float32)))
         attrs.append(Masses(masses, guessed=True))
+=======
+        if has_charges:
+            attrs.append(Charges(np.array(charges, dtype=np.float32)))
+>>>>>>> Stashed changes
 
         if not np.all(validated_elements == ''):
             attrs.append(Elements(validated_elements))

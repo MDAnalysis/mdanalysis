@@ -40,15 +40,12 @@ Classes
 """
 import numpy as np
 
-from . import guessers
 from ..lib.util import openany
 from .base import TopologyReaderBase
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomnames,
     Atomids,
-    Atomtypes,
-    Masses,
     Resids,
     Resnums,
     Segids,
@@ -62,9 +59,6 @@ class XYZParser(TopologyReaderBase):
     Creates the following attributes:
      - Atomnames
 
-    Guesses the following attributes:
-     - Atomtypes
-     - Masses
 
     .. versionadded:: 0.9.1
 
@@ -91,14 +85,9 @@ class XYZParser(TopologyReaderBase):
                 name = inf.readline().split()[0]
                 names[i] = name
 
-        # Guessing time
-        atomtypes = guessers.guess_types(names)
-        masses = guessers.guess_masses(names)
 
         attrs = [Atomnames(names),
                  Atomids(np.arange(natoms) + 1),
-                 Atomtypes(atomtypes, guessed=True),
-                 Masses(masses, guessed=True),
                  Resids(np.array([1])),
                  Resnums(np.array([1])),
                  Segids(np.array(['SYSTEM'], dtype=object)),

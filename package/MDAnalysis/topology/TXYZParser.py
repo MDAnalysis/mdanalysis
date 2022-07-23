@@ -46,7 +46,6 @@ Classes
 import itertools
 import numpy as np
 
-from . import guessers
 from ..lib.util import openany
 from .base import TopologyReaderBase
 from ..core.topology import Topology
@@ -55,7 +54,6 @@ from ..core.topologyattrs import (
     Atomids,
     Atomtypes,
     Bonds,
-    Masses,
     Resids,
     Resnums,
     Segids,
@@ -114,14 +112,11 @@ class TXYZParser(TopologyReaderBase):
                     if i < other_atom:
                         bonds.append((i, other_atom))
 
-        # Guessing time
-        masses = guessers.guess_masses(names)
 
         attrs = [Atomnames(names),
                  Atomids(atomids),
                  Atomtypes(types),
                  Bonds(tuple(bonds)),
-                 Masses(masses, guessed=True),
                  Resids(np.array([1])),
                  Resnums(np.array([1])),
                  Segids(np.array(['SYSTEM'], dtype=object)),

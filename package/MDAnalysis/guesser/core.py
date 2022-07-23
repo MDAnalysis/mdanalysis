@@ -6,7 +6,11 @@ from .DefaultGuesser import DefaultGuesser
 GUESSERS = {'DEFAULT': DefaultGuesser}
 
 
+<<<<<<< Updated upstream
 def get_guesser(atoms, context):
+=======
+def get_guesser(a, context):
+>>>>>>> Stashed changes
     """get an appropiate guesser to the universe and pass
        the atomGroup of the universe to the guesser
 
@@ -19,11 +23,19 @@ def get_guesser(atoms, context):
     TGuesser class
     """
     if isinstance(context, GuesserBase):
+<<<<<<< Updated upstream
         context.setAtoms(atoms)
         return context
     try:
         guesser = GUESSERS[context.upper()]
         guesser.setAtoms(atoms)
+=======
+        context.setAtoms(a)
+        return context
+    try:
+        guesser = GUESSERS[context.upper()](a)
+
+>>>>>>> Stashed changes
     except KeyError:
         raise TypeError("Unidentified guesser type {0}".format(context))
     return guesser

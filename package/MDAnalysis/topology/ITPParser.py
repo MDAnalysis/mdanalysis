@@ -27,7 +27,7 @@ ITP topology parser
 
 Reads a GROMACS ITP_ or TOP_ file to build the system. The topology will
 contain atom IDs, segids, residue IDs, residue names, atom names, atom types,
-charges, chargegroups, masses (guessed if not found), moltypes, and molnums. 
+charges, chargegroups, moltypes, and molnums. 
 Bonds, angles, dihedrals and impropers are also read from the file.
 
 If an ITP file is passed without a ``[ molecules ]`` directive, passing 
@@ -132,7 +132,6 @@ import logging
 import numpy as np
 
 from ..lib.util import openany
-from . import guessers
 from .base import TopologyReaderBase, change_squash, reduce_singular
 from ..core.topologyattrs import (
     Atomids,
@@ -572,15 +571,10 @@ class ITPParser(TopologyReaderBase):
             if all(vals):
                 attrs.append(Attr(np.array(vals, dtype=dtype)))
 
-        if not all(self.masses):
-            empty = self.masses == ''
-            self.masses[empty] = guessers.guess_masses(
-                guessers.guess_types(self.types)[empty])
-            attrs.append(Masses(np.array(self.masses, dtype=np.float64),
-                                guessed=True))
-        else:
+        if  all(self.masses):
             attrs.append(Masses(np.array(self.masses, dtype=np.float64),
                                 guessed=False))
+
 
         # residue stuff
         resids = np.array(self.resids, dtype=np.int32)

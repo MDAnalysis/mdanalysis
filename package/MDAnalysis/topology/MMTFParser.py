@@ -47,7 +47,6 @@ Atoms:
  - tempfactor
  - bonds
  - charge
- - masses (guessed)
  - name
  - occupancy
  - type
@@ -76,7 +75,6 @@ import numpy as np
 
 
 from . import base
-from . import guessers
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     AltLocs,
@@ -87,7 +85,6 @@ from ..core.topologyattrs import (
     Bonds,
     Charges,
     ICodes,
-    Masses,
     Occupancies,
     Resids,
     Resnames,
@@ -188,8 +185,7 @@ class MMTFParser(base.TopologyReaderBase):
         charges = Charges(list(iter_atoms('formalChargeList')))
         names = Atomnames(list(iter_atoms('atomNameList')))
         types = Atomtypes(list(iter_atoms('elementList')))
-        masses = Masses(guessers.guess_masses(types.values), guessed=True)
-        attrs.extend([charges, names, types, masses])
+        attrs.extend([charges, names, types])
 
         #optional are empty list if empty, sometimes arrays
         if len(mtop.atom_id_list):
