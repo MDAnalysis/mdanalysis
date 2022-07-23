@@ -33,7 +33,8 @@ from MDAnalysisTests.datafiles import (
     DLP_HISTORY,
     DLP_HISTORY_order,
     DLP_HISTORY_minimal,
-    DLP_HISTORY_minimal_cell
+    DLP_HISTORY_minimal_cell,
+    DLP_HISTORY_classic
 )
 
 
@@ -106,6 +107,12 @@ class TestDLPHistoryMinimal(DLPBase):
 class TestDLPHistoryOrder(DLPBase):
     parser = mda.topology.DLPolyParser.HistoryParser
     ref_filename = DLP_HISTORY_order
+    format = 'HISTORY'
+
+
+class TestDLPHistoryClassic(DLPBase):
+    parser = mda.topology.DLPolyParser.HistoryParser
+    ref_filename = DLP_HISTORY_classic
     format = 'HISTORY'
 
 
