@@ -381,7 +381,8 @@ class TestStreamIO(RefAdKSmall):
                         rtol=0, atol=1e-3,
                         err_msg="wrong coordinates for water 2 OW")
         assert_allclose(u.atoms[3].velocity,
-                        10. * np.array([0.2519, 0.3140, -0.1734]), # manually convert nm/ps -> A/ps
+                        # manually convert nm/ps -> A/ps
+                        10. * np.array([0.2519, 0.3140, -0.1734]),
                         rtol=0, atol=1e-3,
                         err_msg="wrong velocity for water 2 OW")
 
