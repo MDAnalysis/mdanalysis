@@ -188,9 +188,9 @@ class PDBParser(TopologyReaderBase):
        are now assigned (Issue #2422).
        Aliased ``bfactors`` topologyattribute to ``tempfactors``.
        ``bfactors`` is deprecated and will be removed in 3.0 (Issue #1901)
-    .. versionadded:: 2.3.0
+    .. versionchanged:: 2.3.0
        Formal charges are now read from PDB files if present. No formalcharge
-       attribute is create if no formal charges are present in the PDB file.
+       attribute is created if no formal charges are present in the PDB file.
        Any formal charges not set are assumed to have a value of 0.
     """
     format = ['PDB', 'ENT']
@@ -363,7 +363,7 @@ class PDBParser(TopologyReaderBase):
                 else:
                     formalcharges[i] = 0
             attrs.append(
-                    FormalCharges(np.array(formalcharges, dtype=np.int32)))
+                    FormalCharges(np.array(formalcharges, dtype=np.int16)))
 
         masses = guess_masses(atomtypes)
         attrs.append(Masses(masses, guessed=True))

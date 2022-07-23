@@ -1046,7 +1046,7 @@ class PDBWriter(base.WriterBase):
             NumPy array of dtype object with strings representing the
             formal charges of the atoms being written.
         """
-        if charges.dtype != int:
+        if not np.issubdtype(charges, np.integer):
             raise ValueError("formal charges array should be of `int` type")
 
         outcharges = charges.astype(object)
