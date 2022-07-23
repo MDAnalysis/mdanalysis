@@ -380,8 +380,6 @@ class Universe(object):
             to_guess.append('mass')
         self.guess_TopologyAttr(context, to_guess)
 
-        self.guess_topoloyAttribute(context, to_guess)
-
     def copy(self):
         """Return an independent copy of this Universe"""
         new = self.__class__(self._topology.copy())
@@ -1445,11 +1443,7 @@ class Universe(object):
 
         return cls(mol, **kwargs)
 
-<<<<<<< Updated upstream
-    def guess_topoloyAttribute(self, context, to_guess):
-=======
     def guess_TopologyAttr(self, context, to_guess):
->>>>>>> Stashed changes
         """guess attributes passed to the universe within specific context
 
         Parameters
@@ -1457,20 +1451,17 @@ class Universe(object):
         context: string or Guesser class
         to_guess: list of atrributes to be guessed then added to the universe
         """
-<<<<<<< Updated upstream
         self._guesser = get_guesser(self.atoms, context)
         if self._guesser.is_guessed(to_guess):
             for attr in to_guess:
                 values = self._guesser.guessTopologyAttribute(attr)
-=======
         
         self._guesser = get_guesser(self.atoms, context)
         if self._guesser.is_guessed(to_guess):
-        #check if the attribute already have been read from topology file
-            l = list(self._topology.read_attributes)
         #sort attributes
             to_guess = self._guesser.rank_attributes(to_guess)
-            
+        #check if the attribute already have been read from topology file
+            l = list(self._topology.read_attributes)
             for attr in to_guess:
                 if any(attr == a.singular for a in l):
                     warnings.warn('The atrribute {} have already been read from'
