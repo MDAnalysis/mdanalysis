@@ -32,7 +32,7 @@ import sys
 import copy
 
 import numpy as np
-from numpy.testing import (assert_equal, assert_array_equal, assert_allclose)
+from numpy.testing import assert_equal, assert_array_equal, assert_allclose
 from itertools import combinations_with_replacement as comb_wr
 
 import MDAnalysis as mda
