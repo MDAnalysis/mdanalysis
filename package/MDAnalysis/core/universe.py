@@ -372,11 +372,13 @@ class Universe(object):
 
         if guess_bonds:
             self.atoms.guess_bonds(vdwradii=vdwradii)
-        #add mass and type to the to_guess list 
-        l = list(self._topology.read_attributes)
-        if not any(att.singular == 'type' for att in l) and 'type' not in to_guess:
+        # add mass and type to the to_guess list
+        toplist = list(self._topology.read_attributes)
+        if not any(att.singular == 'type' for att in toplist) 
+           and 'type' not in to_guess:
             to_guess.append('type')
-        if not any(att.singular == 'mass' for att in l) and 'mass' not in to_guess:
+        if not any(att.singular == 'mass' for att in toplist) 
+           and 'mass' not in to_guess:
             to_guess.append('mass')
         self.guess_TopologyAttr(context, to_guess)
 
@@ -1453,20 +1455,15 @@ class Universe(object):
         """
         self._guesser = get_guesser(self.atoms, context)
         if self._guesser.is_guessed(to_guess):
-            for attr in to_guess:
-                values = self._guesser.guessTopologyAttribute(attr)
-        
-        self._guesser = get_guesser(self.atoms, context)
-        if self._guesser.is_guessed(to_guess):
-        #sort attributes
+        # sort attributes
             to_guess = self._guesser.rank_attributes(to_guess)
-        #check if the attribute already have been read from topology file
-            l = list(self._topology.read_attributes)
+        # check if the attribute already have been read from topology file
+            toplist = list(self._topology.read_attributes)
             for attr in to_guess:
-                if any(attr == a.singular for a in l):
-                    warnings.warn('The atrribute {} have already been read from'
-                                    'the topology file, you are overwriting'
-                                    'it by guessed values'.format(attr))
+                if any(attr == a.singular for a in toplist):
+                    warnings.warn('The atrribute {} have already been read '
+                                  'from the topology file, you are overwriting'
+                                  'it by guessed values'.format(attr))
                 values = self._guesser.guess_topologyAttr(attr)
                 self.add_TopologyAttr(attr, values)
 
