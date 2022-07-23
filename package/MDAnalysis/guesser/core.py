@@ -5,6 +5,7 @@ from .DefaultGuesser import DefaultGuesser
 # guessers dictionary mimic registaration by metaclass
 GUESSERS = {'DEFAULT': DefaultGuesser}
 
+
 def get_guesser(a, context):
     """get an appropiate guesser to the universe and pass
        the atomGroup of the universe to the guesser
