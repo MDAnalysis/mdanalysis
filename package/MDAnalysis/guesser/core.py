@@ -21,7 +21,7 @@ def get_guesser(a, context):
     if isinstance(context, GuesserBase):
         return context
     try:
-        guesser = GUESSERS[context.upper()]
+        guesser = GUESSERS[context.upper()](a)
     except KeyError:
         raise TypeError("Unidentified guesser type {0}".format(context))
     return guesser
