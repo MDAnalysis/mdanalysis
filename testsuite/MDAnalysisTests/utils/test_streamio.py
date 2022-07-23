@@ -376,7 +376,8 @@ class TestStreamIO(RefAdKSmall):
         u = MDAnalysis.Universe(streamData.as_NamedStream('GRO'))
         assert_equal(u.atoms.n_atoms, 6)
         assert_allclose(u.atoms[3].position,
-                        10. * np.array([1.275, 0.053, 0.622]), # manually convert nm -> A
+                        # manually convert nm -> A
+                        10. * np.array([1.275, 0.053, 0.622]),
                         rtol=0, atol=1e-3,
                         err_msg="wrong coordinates for water 2 OW")
         assert_allclose(u.atoms[3].velocity,
