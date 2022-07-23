@@ -1477,7 +1477,6 @@ class Universe(object):
                                     'the topology file, you are overwriting'
                                     'it by guessed values'.format(attr))
                 values = self._guesser.guess_topologyAttr(attr)
->>>>>>> Stashed changes
                 self.add_TopologyAttr(attr, values)
 
 def Merge(*args):
