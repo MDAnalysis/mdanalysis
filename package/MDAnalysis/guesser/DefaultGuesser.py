@@ -10,7 +10,7 @@ from . import tables
 
 class DefaultGuesser(GuesserBase):
     context = 'default'
-    
+  
     def __init__(self, atoms):
         super().__init__(atoms)
         self._guess = {'mass': self.guess_masses,
@@ -90,7 +90,7 @@ class DefaultGuesser(GuesserBase):
         if you rely on the masses you might want to double check.
         """
         return self.get_atom_mass(self.guess_atom_element(atomname))
-        
+      
     def guess_types(self):
         """Guess the atom type of many atoms based on atom name
 
@@ -104,10 +104,10 @@ class DefaultGuesser(GuesserBase):
         atom_types : np.ndarray dtype object
         """
         names = self._atoms.names
-        return 
+        return
         np.array([self.guess_atom_element(n) for n in names], dtype=object)
 
-    NUMBERS = re.compile(r'[0-9]') # match numbers
+    NUMBERS = re.compile(r'[0-9]')  # match numbers
     SYMBOLS = re.compile(r'[*+-]')  # match *, +, -
 
     def guess_atom_element(self, atomname):
@@ -118,7 +118,7 @@ class DefaultGuesser(GuesserBase):
         types, where the first character is not sufficient to determine the
         atom type. Some GROMOS ions have also been added.
 
-        .. Warning: The translation table is incomplete. 
+        .. Warning: The translation table is incomplete.
            This will probably result in some mistakes,
            but it still bbetter than nothing!
 
