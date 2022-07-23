@@ -374,11 +374,11 @@ class Universe(object):
             self.atoms.guess_bonds(vdwradii=vdwradii)
         # add mass and type to the to_guess list
         toplist = list(self._topology.read_attributes)
-        if not any(att.singular == 'type' for att in toplist) 
-           and 'type' not in to_guess:
+        if not any(att.singular == 'type' for att in toplist)
+            and 'type' not in to_guess:
             to_guess.append('type')
-        if not any(att.singular == 'mass' for att in toplist) 
-           and 'mass' not in to_guess:
+        if not any(att.singular == 'mass' for att in toplist)
+            and 'mass' not in to_guess:
             to_guess.append('mass')
         self.guess_TopologyAttr(context, to_guess)
 
@@ -1455,9 +1455,9 @@ class Universe(object):
         """
         self._guesser = get_guesser(self.atoms, context)
         if self._guesser.is_guessed(to_guess):
-        # sort attributes
+            # sort attributes
             to_guess = self._guesser.rank_attributes(to_guess)
-        # check if the attribute already have been read from topology file
+            # check if the attribute already have been read from topology file
             toplist = list(self._topology.read_attributes)
             for attr in to_guess:
                 if any(attr == a.singular for a in toplist):
