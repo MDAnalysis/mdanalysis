@@ -27,8 +27,7 @@ from hypothesis import example, given
 import hypothesis
 import numpy as np
 
-from numpy.testing import (assert_array_almost_equal, assert_equal,
-                           assert_array_equal, assert_almost_equal)
+from numpy.testing import (assert_allclose, assert_equal, assert_array_equal)
 
 from MDAnalysis.lib.formats.libdcd import DCDFile, DCD_IS_CHARMM, DCD_HAS_EXTRA_BLOCK
 
@@ -70,7 +69,7 @@ def test_read_unit_cell(dcdfile, unit_cell):
     # MDAnalysis implementation of DCD file handling
     with DCDFile(dcdfile) as dcd:
         dcd_frame = dcd.read()
-    assert_array_almost_equal(dcd_frame.unitcell, unit_cell)
+    assert_allclose(dcd_frame.unitcell, unit_cell, rtol=0, atol=1.5e-6)
 
 
 def test_seek_over_max():
@@ -93,8 +92,8 @@ def _assert_compare_readers(old_reader, new_reader):
 
     assert old_reader.fname == new_reader.fname
     assert old_reader.tell() == new_reader.tell()
-    assert_almost_equal(frame.xyz, new_frame.xyz)
-    assert_almost_equal(frame.unitcell, new_frame.unitcell)
+    assert_allclose(frame.xyz, new_frame.xyz)
+    assert_allclose(frame.unitcell, new_frame.unitcell)
 
 
 def test_pickle(dcd):
@@ -255,7 +254,7 @@ def test_readframes(dcdfile, legacy_data, frame_idx):
         xyz = frames.xyz
         assert_equal(len(xyz), len(dcd))
         for index, frame_num in enumerate(frame_idx):
-            assert_array_almost_equal(xyz[frame_num], legacy[index])
+            assert_allclose(xyz[frame_num], legacy[index])
 
 
 def test_write_header(tmpdir):
@@ -421,14 +420,14 @@ def test_written_coord_match(written_dcd):
     with DCDFile(written_dcd.testfile) as test, DCDFile(
             written_dcd.orgfile) as ref:
         for frame, o_frame in zip(test, ref):
-            assert_array_almost_equal(frame.xyz, o_frame.xyz)
+            assert_allclose(frame.xyz, o_frame.xyz)
 
 
 def test_written_unit_cell(written_dcd):
     with DCDFile(written_dcd.testfile) as test, DCDFile(
             written_dcd.orgfile) as ref:
         for frame, o_frame in zip(test, ref):
-            assert_array_almost_equal(frame.unitcell, o_frame.unitcell)
+            assert_allclose(frame.unitcell, o_frame.unitcell)
 
 
 @pytest.mark.parametrize("dtype", (np.int32, np.int64, np.float32, np.float64,
@@ -550,7 +549,7 @@ def test_readframes_slices(slice, length, dcd):
     frames = dcd.readframes(start=start, stop=stop, step=step)
     xyz = frames.xyz
     assert len(xyz) == length
-    assert_array_almost_equal(xyz, allframes[start:stop:step])
+    assert_allclose(xyz, allframes[start:stop:step])
 
 
 @pytest.mark.parametrize("order, shape", (
@@ -572,7 +571,7 @@ def test_readframes_atomindices(indices, dcd):
     frames = dcd.readframes(indices=indices, order='afc')
     xyz = frames.xyz
     assert len(xyz) == len(indices)
-    assert_array_almost_equal(xyz, allframes[indices])
+    assert_allclose(xyz, allframes[indices])
 
 
 def test_write_random_unitcell(tmpdir):
@@ -589,4 +588,4 @@ def test_write_random_unitcell(tmpdir):
 
     with DCDFile(testname) as test:
         for index, frame in enumerate(test):
-            assert_array_almost_equal(frame.unitcell, random_unitcells[index])
+            assert_allclose(frame.unitcell, random_unitcells[index])
