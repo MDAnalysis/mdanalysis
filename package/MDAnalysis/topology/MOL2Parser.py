@@ -177,13 +177,10 @@ class MOL2Parser(TopologyReaderBase):
         attrs.append(Atomids(np.array(ids, dtype=np.int32)))
         attrs.append(Atomnames(np.array(names, dtype=object)))
         attrs.append(Atomtypes(np.array(types, dtype=object)))
-<<<<<<< Updated upstream
-        attrs.append(Charges(np.array(charges, dtype=np.float32)))
-        attrs.append(Masses(masses, guessed=True))
-=======
+         
         if has_charges:
             attrs.append(Charges(np.array(charges, dtype=np.float32)))
->>>>>>> Stashed changes
+
 
         if not np.all(validated_elements == ''):
             attrs.append(Elements(validated_elements))
