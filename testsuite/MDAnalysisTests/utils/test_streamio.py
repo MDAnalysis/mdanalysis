@@ -358,7 +358,8 @@ class TestStreamIO(RefAdKSmall):
         approx_total_charge = approx(self.ref_charmm_totalcharge, abs=1e-3)
         errmsg = "Total charge in (CHARMM) does not match expected value."
         assert u.atoms.total_charge() == approx_total_charge, errmsg
-        assert_allclose(u.atoms.select_atoms('name H').charges, self.ref_charmm_Hcharges,
+        assert_allclose(u.atoms.select_atoms('name H').charges,
+                        self.ref_charmm_Hcharges,
                         rtol=0, atol=1e-3,
                         err_msg="Charges for H atoms do not match.")
 
