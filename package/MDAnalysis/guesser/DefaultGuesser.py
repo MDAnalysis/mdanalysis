@@ -1,30 +1,24 @@
 from .base import GuesserBase
 import numpy as np
 import warnings
-<<<<<<< Updated upstream
-=======
+
 import re
 
 from ..lib import distances
->>>>>>> Stashed changes
 from . import tables
 
 
 class DefaultGuesser(GuesserBase):
     context = 'default'
 
-<<<<<<< Updated upstream
-    def __init__(self):
         self._guess = {'mass': self.guess_masses}
-=======
     def __init__(self, atoms):
         super().__init__(atoms)
         self._guess = {'mass': self.guess_masses,
                        'type': self.guess_types}
-        self._rank = {'mass': 1,
-                      'type': 0
+        self._rank = {'mass': 2,
+                      'type': 1
             }
->>>>>>> Stashed changes
 
     def guess_masses(self):
         """Guess the mass of many atoms based upon their type
@@ -33,16 +27,12 @@ class DefaultGuesser(GuesserBase):
         -------
         atom_masses : np.ndarray dtype float64
         """
-<<<<<<< Updated upstream
-        atom_types = self._atoms.types
-=======
         if hasattr(self._atoms, 'elements'):
             atom_types = self._atoms.elements   
         else:
             atom_types = self._atoms.types 
         
        
->>>>>>> Stashed changes
         self.validate_atom_types(atom_types)
         masses = np.array([self.get_atom_mass(atom_t)
                            for atom_t in atom_types], dtype=np.float64)
@@ -93,7 +83,6 @@ class DefaultGuesser(GuesserBase):
             except KeyError:
                 return 0.0
 
-<<<<<<< Updated upstream
     def guess_atom_mass(self, atomname):
         """Guess a mass based on the atom name.
 
@@ -103,7 +92,6 @@ class DefaultGuesser(GuesserBase):
         if you rely on the masses you might want to double check.
         """
         return self.get_atom_mass(self.guess_atom_element(atomname))
-=======
     def guess_types(self):
         """Guess the atom type of many atoms based on atom name
 
@@ -164,5 +152,3 @@ class DefaultGuesser(GuesserBase):
 
             # if it's numbers
             return no_symbols
-
->>>>>>> Stashed changes
