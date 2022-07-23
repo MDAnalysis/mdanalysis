@@ -37,7 +37,8 @@ from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        PDB_cm, PDB_cm_gz, PDB_cm_bz2,
                                        PDB_mc, PDB_mc_gz, PDB_mc_bz2,
                                        PDB_CRYOEM_BOX, MMTF_NOCRYST,
-                                       PDB_HOLE, mol2_molecule, CONECT_ERROR,)
+                                       PDB_HOLE, mol2_molecule, PDB_charges,
+                                       CONECT_ERROR,)
 from numpy.testing import (assert_equal,
                            assert_array_almost_equal,
                            assert_almost_equal)
@@ -1086,7 +1087,7 @@ class TestWriterAlignments(object):
 
     def test_atomtype_alignment(self, writtenstuff):
         result_line = ("ATOM      1  H5T GUA X   1       7.974   6.430   9.561"
-                       "  1.00  0.00      RNAA  \n")
+                       "  1.00  0.00      RNAA    \n")
         assert_equal(writtenstuff[9], result_line)
 
 
@@ -1288,3 +1289,33 @@ def test_cryst_meaningless_select():
     u = mda.Universe(PDB_CRYOEM_BOX)
     cur_sele = u.select_atoms('around 0.1 (resid 4 and name CA and segid A)')
     assert cur_sele.n_atoms == 0
+
+
+def test_charges_roundtrip(tmpdir):
+    """
+    Roundtrip test for PDB formal charges reading/writing.
+    """
+    u = mda.Universe(PDB_charges)
+
+    outfile = os.path.join(str(tmpdir), 'newcharges.pdb')
+    with mda.coordinates.PDB.PDBWriter(outfile) as writer:
+        writer.write(u.atoms)
+
+    u_written = mda.Universe(outfile)
+
+    assert_equal(u.atoms.formalcharges, u_written.atoms.formalcharges)
+
+
+def test_charges_not_int():
+    # np.zeros yields a float64 dtype
+    arr = np.zeros(10)
+    with pytest.raises(ValueError, match="array should be of `int` type"):
+        mda.coordinates.PDB.PDBWriter._format_PDB_charges(arr)
+
+
+@pytest.mark.parametrize('value', [99, -100])
+def test_charges_limit(value):
+    # test for raising error when writing charges > 9
+    arr = np.array([0, 0, 0, value, 1, -1, 0], dtype=int)
+    with pytest.raises(ValueError, match="9 is not supported by PDB standard"):
+        mda.coordinates.PDB.PDBWriter._format_PDB_charges(arr)

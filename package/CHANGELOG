@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli, miss77jun,
+??/??/?? IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli, miss77jun, rzhao271,
          yuxuanzhuang
 
  * 2.3.0
@@ -25,6 +25,10 @@ Fixes
   * Fix writing unusable PDB CONECT records with index>100000. (Issue #988)
 
 Enhancements
+  * Add a new `formalcharge` attribute for storing formal charges (PR #3755)
+  * Add the ability to read & write formal charges from PDB files (PR #3755)
+  * Change functions in `lib.distances` to accept AtomGroups as well as NumPy
+    arrays (CZI Performance track PR #3730)
   * Add `norm` parameter to InterRDF, InterRDF_s to normalize as rdf,
     number density or do not normalize at all. (Issue #3687)
   * Additional logger.info output when per-frame analysis starts (PR #3710)
@@ -32,10 +36,17 @@ Enhancements
     (CZI Performance track, PR #3683)
 
 Changes
+  * To add additional optional packages for different file formats when
+    using `pip` use the new "extra_formats" extras_require target as in
+    `pip install ./package[extra_formats]` (Issue #3701, PR #3711)
+  * Minimum supported NumPy version is now 1.20 (1.21 for macosx-arm64)
+    as per NEP29 (PR #3737)
   * Narrowed variable scope to reduce use of OpenMP `private` clause (PR #3706, PR
     #3728)
 
 Deprecations
+  * The extras_requires target "AMBER" for `pip install ./package[AMBER]`
+    will be removed in 2.4. Use "extra_formats". (Issue #3701, PR #3711)
   * Deprecate `density` parameter in favor of `norm` in InterRDF_s
     (Issue #3687)
 
