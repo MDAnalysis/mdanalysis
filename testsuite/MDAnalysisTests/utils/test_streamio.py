@@ -400,6 +400,7 @@ class TestStreamIO(RefAdKSmall):
         assert_equal(u.trajectory.frame, 1)  # !!!! ???
         u.trajectory.next()  # frame 2
         assert_equal(u.trajectory.frame, 2)
-        assert_allclose(u.atoms[2].position, np.array([0.45600, 18.48700, 16.26500]),
+        assert_allclose(u.atoms[2].position,
+                        np.array([0.45600, 18.48700, 16.26500]),
                         rtol=0, atol=1e-3,
                         err_msg="wrong coordinates for atom CA at frame 2")
