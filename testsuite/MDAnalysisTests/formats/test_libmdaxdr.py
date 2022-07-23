@@ -24,7 +24,7 @@ import pickle
 
 import numpy as np
 
-from numpy.testing import (assert_allclose, assert_array_equal, assert_equal)
+from numpy.testing import assert_allclose, assert_array_equal, assert_equal
 
 from MDAnalysis.lib.formats.libmdaxdr import TRRFile, XTCFile
 
