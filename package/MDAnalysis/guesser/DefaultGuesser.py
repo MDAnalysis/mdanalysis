@@ -10,13 +10,14 @@ from . import tables
 
 class DefaultGuesser(GuesserBase):
     context = 'default'
+    
     def __init__(self, atoms):
         super().__init__(atoms)
         self._guess = {'mass': self.guess_masses,
                        'type': self.guess_types}
         self._rank = {'mass': 2,
                       'type': 1
-            }
+                      }
 
     def guess_masses(self):
         """Guess the mass of many atoms based upon their type
@@ -26,11 +27,10 @@ class DefaultGuesser(GuesserBase):
         atom_masses : np.ndarray dtype float64
         """
         if hasattr(self._atoms, 'elements'):
-            atom_types = self._atoms.elements   
+            atom_types = self._atoms.elements
         else:
-            atom_types = self._atoms.types 
-        
-       
+            atom_types = self._atoms.types
+
         self.validate_atom_types(atom_types)
         masses = np.array([self.get_atom_mass(atom_t)
                            for atom_t in atom_types], dtype=np.float64)
@@ -90,6 +90,7 @@ class DefaultGuesser(GuesserBase):
         if you rely on the masses you might want to double check.
         """
         return self.get_atom_mass(self.guess_atom_element(atomname))
+        
     def guess_types(self):
         """Guess the atom type of many atoms based on atom name
 
@@ -103,7 +104,8 @@ class DefaultGuesser(GuesserBase):
         atom_types : np.ndarray dtype object
         """
         names = self._atoms.names
-        return np.array([self.guess_atom_element(n) for n in names], dtype=object)
+        return 
+        np.array([self.guess_atom_element(n) for n in names], dtype=object)
 
     NUMBERS = re.compile(r'[0-9]') # match numbers
     SYMBOLS = re.compile(r'[*+-]')  # match *, +, -
@@ -113,11 +115,12 @@ class DefaultGuesser(GuesserBase):
 
         Looks in dict to see if element is found, otherwise it uses the first
         character in the atomname. The table comes from CHARMM and AMBER atom
-        types, where the first character is not sufficient to determine the atom
-        type. Some GROMOS ions have also been added.
+        types, where the first character is not sufficient to determine the
+        atom type. Some GROMOS ions have also been added.
 
-        .. Warning: The translation table is incomplete. This will probably result
-                    in some mistakes, but it still better than nothing!
+        .. Warning: The translation table is incomplete. 
+           This will probably result in some mistakes,
+           but it still bbetter than nothing!
 
         See Also
         --------
