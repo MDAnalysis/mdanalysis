@@ -2038,7 +2038,7 @@ class FormalCharges(AtomAttr):
     attrname = 'formalcharges'
     singular = 'formalcharge'
     per_object = 'atom'
-    dtype = np.int16
+    dtype = int
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):

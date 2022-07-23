@@ -363,7 +363,7 @@ class PDBParser(TopologyReaderBase):
                 else:
                     formalcharges[i] = 0
             attrs.append(
-                    FormalCharges(np.array(formalcharges, dtype=np.int16)))
+                    FormalCharges(np.array(formalcharges, dtype=int)))
 
         masses = guess_masses(atomtypes)
         attrs.append(Masses(masses, guessed=True))
