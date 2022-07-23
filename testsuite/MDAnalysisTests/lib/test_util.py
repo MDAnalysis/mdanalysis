@@ -210,7 +210,7 @@ class TestGeometryFunctions(object):
     def test_angle_range(self, x):
         r = 1000.
         v = r * np.array([np.cos(x), np.sin(x), 0])
-        assert_allclose(mdamath.angle(self.e1, v), x, rtol=0, atol=1e-6)
+        assert mdamath.angle(self.e1, v) == approx(x, abs=1e-6)
 
     @pytest.mark.parametrize('vector, value', [
         (e3, 1),
@@ -436,8 +436,9 @@ class TestMatrixOperations(object):
                              comb_wr([-10, 0, 20, 70, 90, 120, 180], 3))
     def test_box_volume(self, lengths, angles):
         box = np.array(lengths + angles, dtype=np.float32)
-        approx_det = approx(np.linalg.det(self.ref_trivecs(box)), abs=1e-5)
-        assert mdamath.box_volume(box) == approx_det
+        assert_allclose(mdamath.box_volume(box),
+                        np.linalg.det(self.ref_trivecs(box)),
+                        rtol=0, atol=1e-5)
 
     def test_sarrus_det(self):
         comb = comb_wr(np.linspace(-133.7, 133.7, num=5), 9)
