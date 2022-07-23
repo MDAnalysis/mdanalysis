@@ -2,10 +2,11 @@ class GuesserBase:
     context = "base"
     _guess = {}
 
-    #give a rank to each atrribute based on its dependency on other attributes
-    #to be guessed, so that the attribute with lesser dependcy will be guessed 
-    #first
+    # give a rank to each atrribute based on its dependency on other attributes
+    # to be guessed, so that the attribute with lesser dependcy will be guessed 
+    # first
     _rank = {}
+
     def __init__(self, atoms):
         self._atoms = atoms
 
@@ -26,7 +27,6 @@ class GuesserBase:
                                  .format(self.context, a))
         return True
 
-
     def guess_topologyAttr(self, guess):
         """map the attribute to be guessed with the apporpiate guessing method
 
@@ -38,23 +38,22 @@ class GuesserBase:
         -------
         values: list of guessed values
         """
-        return  self._guess[guess]()
+        return self._guess[guess]()
 
-    
     def rank_attributes(self, attrs):
-       """give a rank to each atrribute based on 
+       """give a rank to each atrribute based on
           its dependency on other attributes to be guessed,
-          so that the attribute with lesser dependcy will 
+          so that the attribute with lesser dependcy will
           be guessed first
-          
+
        Parameters
        ----------
        attrs: attributes list to be sorted
-       
+ 
        Returns
        -------
        sorted attributes list
-       """ 
+       """
         to_rank = {a: self._rank[a] for a in attrs}
-        ranked_attrs = sorted(to_rank, key= to_rank.get)
+        ranked_attrs = sorted(to_rank, key=to_rank.get)
         return ranked_attrs
