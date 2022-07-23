@@ -267,8 +267,8 @@ class _WriteAtoms(object):
         with mda.Writer(outfile) as W:
             W.write(U)
         u2 = self.universe_from_tmp(outfile)
-        err_msg = "written 4AKE universe does not match original universe "
-                  "in size"
+        err_msg = ("written 4AKE universe does not match original universe "
+                   "in size")
         assert len(u2.atoms) == len(U.atoms), err_msg
         assert_allclose(
             u2.atoms.positions, U.atoms.positions,

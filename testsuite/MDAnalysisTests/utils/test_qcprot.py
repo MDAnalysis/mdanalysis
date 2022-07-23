@@ -142,7 +142,8 @@ def test_CalcRMSDRotationalMatrix():
         [0.72216358, -0.52038257, -0.45572112],
         [0.69118937, 0.51700833, 0.50493528],
         [-0.0271479, -0.67963547, 0.73304748]])
-    errmsg="Rotation matrix for aliging B to A does not have expected values."
+    errmsg = ("Rotation matrix for aliging B to A "
+              "does not have expected values.")
     assert_allclose(rot.reshape((3, 3)), expected_rot, rtol=0, atol=1e-6,
                     err_msg=errmsg)
 
