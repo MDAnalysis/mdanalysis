@@ -27,7 +27,7 @@ from hypothesis import example, given
 import hypothesis
 import numpy as np
 
-from numpy.testing import (assert_allclose, assert_equal, assert_array_equal)
+from numpy.testing import assert_allclose, assert_equal, assert_array_equal
 
 from MDAnalysis.lib.formats.libdcd import DCDFile, DCD_IS_CHARMM, DCD_HAS_EXTRA_BLOCK
 

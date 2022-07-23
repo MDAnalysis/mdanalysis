@@ -242,8 +242,8 @@ class _WriteAtoms(object):
         u2 = self.universe_from_tmp(outfile)
         # check EVERYTHING, otherwise we might get false positives!
         sel2 = u2.atoms
-        assert len(u2.atoms) == len(sel.atoms), ("written selection does not "
-                                                 "match original selection")
+        sel_err_msg = "written selection does not match original selection"
+        assert len(u2.atoms) == len(sel.atoms), sel_err_msg
         assert_allclose(
             sel2.positions, sel.positions, rtol=0, atol=self.precision,
             err_msg="written coordinates do not agree with original")
@@ -255,21 +255,21 @@ class _WriteAtoms(object):
         u2 = self.universe_from_tmp(outfile)
         # check EVERYTHING, otherwise we might get false positives!
         G2 = u2.atoms
-        assert len(u2.atoms) == len(G.atoms), ("written R206 Residue does not "
-                                               "match original ResidueGroup")
+        err_msg = "written R206 Residue does not match original ResidueGroup"
+        assert len(u2.atoms) == len(G.atoms), err_msg
+        err_msg = "written Residue R206 coordinates do not agree with original"
         assert_allclose(
-            G2.positions, G.positions, rtol=0, atol=self.precision,
-            err_msg=("written Residue R206 coordinates do not "
-                     "agree with original"))
+            G2.positions, G.positions, rtol=0,
+            atol=self.precision, err_msg=err_msg)
 
     def test_write_Universe(self, universe, outfile):
         U = universe
         with mda.Writer(outfile) as W:
             W.write(U)
         u2 = self.universe_from_tmp(outfile)
-        assert len(u2.atoms) == len(U.atoms), ("written 4AKE universe does "
-                                               "not match original universe "
-                                               "in size")
+        err_msg = "written 4AKE universe does not match original universe "
+                  "in size"
+        assert len(u2.atoms) == len(U.atoms), err_msg
         assert_allclose(
             u2.atoms.positions, U.atoms.positions,
             rtol=0, atol=self.precision,
@@ -1669,9 +1669,8 @@ class TestAtomGroup(object):
         pos = ag.positions + 3.14
         ag.positions = pos
         # should work
-        assert_allclose(ag.positions, pos,
-                        err_msg=("failed to update atoms 12:42 position "
-                                 "to new position"))
+        err_msg = "failed to update atoms 12:42 position to new position"
+        assert_allclose(ag.positions, pos, err_msg=err_msg)
 
         rg = np.random.RandomState(121989)
         # create wrong size array
