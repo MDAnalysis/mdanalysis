@@ -22,6 +22,8 @@ Fixes
   * add a 0.5 for correct midpoints in hole analysis (Issue #3715)
 
 Enhancements
+  * Add a new `formalcharge` attribute for storing formal charges (PR #3755)
+  * Add the ability to read & write formal charges from PDB files (PR #3755)
   * Change functions in `lib.distances` to accept AtomGroups as well as NumPy
     arrays (CZI Performance track PR #3730)
   * Add `norm` parameter to InterRDF, InterRDF_s to normalize as rdf,

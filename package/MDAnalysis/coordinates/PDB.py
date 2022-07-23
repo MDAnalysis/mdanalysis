@@ -552,12 +552,12 @@ class PDBWriter(base.WriterBase):
             "ATOM  {serial:5d} {name:<4s}{altLoc:<1s}{resName:<4s}"
             "{chainID:1s}{resSeq:4d}{iCode:1s}"
             "   {pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}{occupancy:6.2f}"
-            "{tempFactor:6.2f}      {segID:<4s}{element:>2s}\n"),
+            "{tempFactor:6.2f}      {segID:<4s}{element:>2s}{charge:2s}\n"),
         'HETATM': (
             "HETATM{serial:5d} {name:<4s}{altLoc:<1s}{resName:<4s}"
             "{chainID:1s}{resSeq:4d}{iCode:1s}"
             "   {pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}{occupancy:6.2f}"
-            "{tempFactor:6.2f}      {segID:<4s}{element:>2s}\n"),
+            "{tempFactor:6.2f}      {segID:<4s}{element:>2s}{charge:2s}\n"),
         'REMARK': "REMARK     {0}\n",
         'COMPND': "COMPND    {0}\n",
         'HEADER': "HEADER    {0}\n",
@@ -1023,6 +1023,47 @@ class PDBWriter(base.WriterBase):
             return '{:<4}'.format(atomname)
         return ' {:<3}'.format(atomname)
 
+    @staticmethod
+    def _format_PDB_charges(charges: np.ndarray) -> np.ndarray:
+        """Format formal charges to match PDB requirements.
+
+        Formal charge entry is set to empty if charge is 0, otherwise the
+        charge is set to a two character ```<charge value><charge sign>``
+        entry, e.g. ``1+`` or ``2-``.
+
+        This method also verifies that formal charges can adhere to the PDB
+        format (i.e. charge cannot be > 9 or < -9).
+
+        Parameters
+        ----------
+        charges: np.ndarray
+            NumPy array of integers representing the formal charges of
+            the atoms being written.
+
+        Returns
+        -------
+        np.ndarray
+            NumPy array of dtype object with strings representing the
+            formal charges of the atoms being written.
+        """
+        if not np.issubdtype(charges.dtype, np.integer):
+            raise ValueError("formal charges array should be of `int` type")
+
+        outcharges = charges.astype(object)
+        outcharges[outcharges == 0] = ''  # empty strings for no charge case
+        # using np.where is more efficient than looping in sparse cases
+        for i in np.where(charges < 0)[0]:
+            if charges[i] < -9:
+                errmsg = "formal charge < -9 is not supported by PDB standard"
+                raise ValueError(errmsg)
+            outcharges[i] = f"{abs(charges[i])}-"
+        for i in np.where(charges > 0)[0]:
+            if charges[i] > 9:
+                errmsg = "formal charge > 9 is not supported by PDB standard"
+                raise ValueError(errmsg)
+            outcharges[i] = f"{charges[i]}+"
+        return outcharges
+
     def _write_timestep(self, ts, multiframe=False):
         """Write a new timestep *ts* to file
 
@@ -1093,6 +1134,7 @@ class PDBWriter(base.WriterBase):
         atomnames = get_attr('names', 'X')
         elements = get_attr('elements', ' ')
         record_types = get_attr('record_types', 'ATOM')
+        formal_charges = self._format_PDB_charges(get_attr('formalcharges', 0))
 
         def validate_chainids(chainids, default):
             """Validate each atom's chainID
@@ -1158,6 +1200,7 @@ class PDBWriter(base.WriterBase):
             vals['segID'] = segids[i][:4]
             vals['chainID'] = chainids[i]
             vals['element'] = elements[i][:2].upper()
+            vals['charge'] = formal_charges[i]
 
             # record_type attribute, if exists, can be ATOM or HETATM
             try:
