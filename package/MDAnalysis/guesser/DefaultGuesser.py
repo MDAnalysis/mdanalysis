@@ -10,7 +10,7 @@ from . import tables
 
 class DefaultGuesser(GuesserBase):
     context = 'default'
-  
+ 
     def __init__(self, atoms):
         super().__init__(atoms)
         self._guess = {'mass': self.guess_masses,
@@ -90,7 +90,7 @@ class DefaultGuesser(GuesserBase):
         if you rely on the masses you might want to double check.
         """
         return self.get_atom_mass(self.guess_atom_element(atomname))
-      
+    
     def guess_types(self):
         """Guess the atom type of many atoms based on atom name
 
