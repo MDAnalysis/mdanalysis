@@ -25,7 +25,7 @@ import itertools
 from os import path
 
 import numpy as np
-from numpy.testing import (assert_allclose, assert_equal)
+from numpy.testing import assert_allclose, assert_equal
 
 import MDAnalysis as mda
 from MDAnalysis.exceptions import DuplicateWarning, NoDataError
