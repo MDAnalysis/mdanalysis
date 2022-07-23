@@ -55,7 +55,6 @@ class GuesserBase:
        -------
        sorted attributes list
        """ 
-       to_rank = {a: self._rank[a] for a in attrs}
-       ranked_attrs = sorted(to_rank, key= to_rank.get)
-       return ranked_attrs
-       
+        to_rank = {a: self._rank[a] for a in attrs}
+        ranked_attrs = sorted(to_rank, key= to_rank.get)
+        return ranked_attrs
