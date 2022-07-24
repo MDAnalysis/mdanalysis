@@ -23,9 +23,6 @@
 #
 from libcpp.vector cimport vector
 from libcpp.map cimport map as cmap
-from libcpp.unordered_set cimport unordered_set
-from libcpp.pair cimport pair as cpair
-from libcpp.iterator cimport iterator
 from ..lib._cutil import unique_int_1d
 from ..lib._cutil cimport to_numpy_from_spec
 import numpy as np
@@ -34,160 +31,23 @@ cnp.import_array()
 
 
 cdef class TopologyTable:
-    def __cinit__(self,  int nval,  int npair, int[:,:] val, cnp.intp_t[:] flat_vals,  int[:] typ, int[:] guess, int[:] order,  **kwargs):
+    def __cinit__(self, int[:,:] val, int[:] typ, int[:] guess, int[:] order,  **kwargs):
         """Initialise C++ level parameters of a TopologyTable
 
         Parameters
         ----------
-        order : unsigned int
-          The order of the TopologyTable
 
         .. versionadded:: 2.3.0
            Initialise C++ level parameters
         """
     
-        # c++ level objects
-        self._nval = nval
-        self._npair = npair
-        self._types.reserve(self._nval)
-        self._guessed.reserve(self._nval)
-        self._order.reserve(self._nval)
-
-
-        self._unique = unique_int_1d(flat_vals) # can we cimport this
-        self._nunique = self._unique.shape[0]
-
-        # construct tables
-        self._construct_empty_tables_and_maps()
-        self._copy_types_guessed_order(typ, guess, order)
-        self._parse(val, typ, guess, order)
-        self._canonicalise_all()
+    self._gen_bond_ix(val)
     
-    cdef _construct_empty_tables_and_maps(self):
-        cdef int i
-        cdef vector[int] tmp
-        tmp.reserve(8)
-
-        for i in range(self._nunique):
-            self._values.push_back(tmp)
-            self._types.push_back(tmp)
-            self._order.push_back(tmp)
-            self._guessed.push_back(tmp)
-            self.vmap_fwd[self._unique[i]] = i
-            self.vmap_rev[i] = self._unique[i]
-    
-    # cdef _copy_types_guessed_order(self, int[:] typ, int[:] guess, int[:] order):
-    #     cdef int i 
-    #     for i in range(self._nval):
-    #         self._types.push_back(typ[i])
-    #         self._guessed.push_back(guess[i])
-    #         self._order.push_back(order[i])
-    
-    cdef _parse(self, int[:,:] val,  int[:] typ, int[:] guess, int[:] order):
-        cdef int i
-        for i in range(self._nval):
-            self._values[self.vmap_fwd[val[i,0]]].push_back(val[i,1])
-            self._values[self.vmap_fwd[val[i,1]]].push_back(val[i,0])
-            self._types[self.vmap_fwd[val[i,0]]].push_back(typ[i])
-            self._types[self.vmap_fwd[val[i,1]]].push_back(typ[i])  
-            self._guessed[self.vmap_fwd[val[i,0]]].push_back(guess[i])
-            self._guessed[self.vmap_fwd[val[i,1]]].push_back(guess[i])  
-            self._order[self.vmap_fwd[val[i,0]]].push_back(order[i])
-            self._order[self.vmap_fwd[val[i,1]]].push_back(order[i])  
-
-    cdef  _canonicalise_all(self):
-        cdef int i
-        for i in range(self._nunique):
-            self._canonicalise_vec(self._values[i], self._types[i], self._guessed[i], self._order[i])
-
+    cdef _gen_bond_ix(self, int[:,:] val):
+        cdef cmap vmap
+        for i in range(val.shape[0]):
+            pair = val[i,:]
+            vmap[pair] = i
 
         
-
-    cdef void _canonicalise_vec(self, vector[int]& values, vector[int]& typ, vector[int]& guess, vector[int]& order):
-        cdef unordered_set[int] tmp_set
-        cdef int size = values.size()
-        cdef int i
-        cdef vector[int] non_unique_ix
-        cdef cpair[iterator, bool]  rval
-        for i in range(size):
-            rval = tmp_set.insert(values[i])
-            if not rval.second(): #if insertion failed record index
-                non_unique_ix.push_back(i)
-        values.assign(tmp_set.begin(), tmp_set.end())
-        for i in range(unique_ix.size()):
-            typ.erase(typ.begin() + non_unique_ix[i])
-            guess.erase(guess.begin() + non_unique_ix[i])
-            order.erase(order.begin() + non_unique_ix[i])
-
-    
-    def query_table(self, int atom):
-        cdef int idx
-        idx = self.vmap_fwd[atom]
-        return self._values[idx]
-    
-    def add_bonds(self, int[:,:] val,  int[:] typ, int[:] guess, int[:] ord):
-        cdef int _nvals
-        _nvals = val.shape[0]
-        for v in range(_nvals):
-            if self.vmap_fwd.find(v) == self.vmap_fwd.end():
-                # new entry
-                pass
-            else:
-                #append 
-                pass
-        pass
-
-    def del_bonds(self, int[:,:] val):
-        pass
-
-
-    def unique_bonds(self):
-        a = set()
-        # cdef int i, idx
-        for i in range(self._nunique):
-            for j in range(self._values[i].size()):
-                a.add((self.vmap_rev[i], self._values[i][j]))
-        return list(a)
-
-    def types(self):
-        cdef cnp.npy_intp dims[1]
-        dims[0] = self._nval
-        cdef cnp.ndarray arr
-        arr =  to_numpy_from_spec(self, 1, dims, cnp.NPY_INT32, self._types.data())
-        return arr
-          
-    def guessed(self):
-        cdef cnp.npy_intp dims[1]
-        dims[0] = self._nval
-        cdef cnp.ndarray arr
-        arr = to_numpy_from_spec(self, 1, dims, cnp.NPY_INT32, self._guessed.data())
-        return arr
-
-    def order(self):
-        cdef cnp.npy_intp dims[1]
-        dims[0] = self._nval
-        cdef cnp.ndarray arr
-        arr =  to_numpy_from_spec(self, 1, dims, cnp.NPY_INT32, self._order.data())
-        return arr
-    
-        
-    def print_values(self):
-        for i in range(self._nunique):
-            print(f" {i} {self.vmap_rev[i]} {self._values[i]}")
-
-    def print_types(self):
-        for i in range(self._nval):
-            print(self._types[i])
-
-    def print_guessed(self):
-        for i in range(self._nval):
-            print(self._guessed[i])
-
-    def print_order(self):
-        for i in range(self._nval):
-            print(self._order[i])
-
-
-
-    
-
+            

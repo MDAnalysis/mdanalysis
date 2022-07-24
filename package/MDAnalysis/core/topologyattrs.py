@@ -2495,8 +2495,8 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
             order = [-1] * len(values)
         self.order = order
         vals_arr = np.asarray(self.values,dtype=np.int32)
-        self._toptable = TopologyTable(len(vals_arr), 2, vals_arr, vals_arr.ravel().astype(np.intp), np.asarray(self.types, dtype=np.int32),
-                             np.asarray(self._guessed, dtype=np.int32), np.asarray(self.order, dtype=np.int32))
+        print(vals_arr)
+        self._toptable = TopologyTable(vals_arr)
         self._cache = dict()
 
     def copy(self):
@@ -2546,17 +2546,8 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
         b_idx, types, guessed, order = np.hsplit(unique_bonds, 4)
         b_idx = np.array(b_idx.ravel().tolist(), dtype=np.int32)
         types = types.ravel()
-        print(types)
         guessed = guessed.ravel()
         order = order.ravel()
-        bond = self._toptable.unique_bonds()
-        typ = self._toptable.types()
-        guess = self._toptable.guessed()
-        ordr = self._toptable.order()
-        # np.testing.assert_allclose(order, ordr)
-        # np.testing.assert_allclose(guessed, guess)
-        # np.testing.assert_allclose(types, typ)
-        np.testing.assert_allclose(b_idx, np.asarray(bond))
         return TopologyGroup(b_idx, ag.universe,
                              self.singular[:-1],
                              types,

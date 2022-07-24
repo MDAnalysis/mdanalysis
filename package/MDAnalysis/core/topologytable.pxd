@@ -29,9 +29,6 @@ cimport numpy as cnp
 cnp.import_array()
 
 
-ctypedef cpair[vector[int], vector[int]] int_vec_pair
-
-
 cdef class TopologyTable:
 
 
@@ -39,27 +36,12 @@ cdef class TopologyTable:
     cdef  int _npair
     cdef  int _nunique
 
-    cdef cnp.ndarray _unique
+    cdef vector[int] b_ix
+    cdef vector[int] spans
+    cdef vector[vector[int]] ix_pair_arr
 
-    cdef cmap[int,int] vmap_fwd
-    cdef cmap[int,int] vmap_rev
-    cdef cmap[int,int] _lookup_flat
-
-
-    cdef vector[vector[int]] _values
-    cdef vector[vector[int]] _types
-    cdef vector[vector[int]] _guessed
-    cdef vector[vector[int]] _order
+    cdef _gen_bond_ix(self, int[:,:] val)
 
 
-    cdef _construct_empty_tables_and_maps(self)
-
-    cdef _parse(self, int[:,:] val,  int[:] typ, int[:] guess, int[:] ord)
-
-    cdef _canonicalise_all(self)
-
-
-    cdef void _canonicalise_vec(self, vector[int]& values, vector[int]& typ, vector[int]& guess, vector[int]& order)
-    # cdef _copy_types_guessed_order(self, int[:] typ, int[:] guess, int[:] order)
 
 
