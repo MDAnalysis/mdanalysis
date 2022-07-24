@@ -82,9 +82,15 @@ class EDRStep(base.AuxStep):
         """'Time' is one of the entries in the dict returned by pyedr.
         The base AuxStep Class uses the time_selector 'Time' to return the
         time value of each step."""
+        if key is None:
+            # here so that None is a valid value, needed for tests; just return
+            return
         return self._select_data(key)
 
     def _select_data(self, key):
+        if key is None:
+            # here so that None is a valid value, needed for tests; just return
+            return
         try:
             return self._data[key]
         except KeyError:

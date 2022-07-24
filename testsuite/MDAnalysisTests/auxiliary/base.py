@@ -416,6 +416,12 @@ def assert_auxstep_equal(A, B):
     if A.time != B.time:
         raise AssertionError('A and B have different times: A.time = {}, '
                              'B.time = {}'.format(A.time, B.time))
-    if all(A.data != B.data):
+    if type(A.data) == dict:
+        # e.g. EDRReader
+        if not A.data == B.data:
+            raise AssertionError('A and B have different data: A.data = {}, '
+                                 'B.data = {}'.format(A.data, B.data))
+    elif any(A.data != B.data):
+        # e.g. XVGReader
         raise AssertionError('A and B have different data: A.data = {}, '
                              'B.data = {}'.format(A.data, B.data))
