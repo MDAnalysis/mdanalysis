@@ -122,6 +122,7 @@ __all__ = [
     "DMS_DOMAINS",  # ADK closed with multiple segids
     "DMS_NO_SEGID",  # ADK closed with no segids or chains
     "CONECT",  # HIV Reverse Transcriptase with inhibitor
+    "CONECT_ERROR",  # PDB file with corrupt CONECT
     "TRZ", "TRZ_psf",
     "TRIC",
     "XTC_multi_frame",
@@ -452,6 +453,7 @@ DMS_DOMAINS = resource_filename(__name__, 'data/adk_closed_domains.dms')
 DMS_NO_SEGID = resource_filename(__name__, 'data/adk_closed_no_segid.dms')
 
 CONECT = resource_filename(__name__, 'data/1hvr.pdb')
+CONECT_ERROR = resource_filename(__name__, 'data/conect_error.pdb')
 
 TRZ = resource_filename(__name__, 'data/trzfile.trz')
 TRZ_psf = resource_filename(__name__, 'data/trz_psf.psf')

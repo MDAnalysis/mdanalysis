@@ -13,13 +13,16 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli, miss77jun, rzhao271
+??/??/?? IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli, miss77jun, rzhao271,
+         yuxuanzhuang
 
  * 2.3.0
 
 Fixes
   * Fixes awk call in deploy.yaml tests for macos runners (Issue #3693)
   * add a 0.5 for correct midpoints in hole analysis (Issue #3715)
+  * Fix reading error when PDB CONECT records are corrupt. (Issue #988)
+  * Fix writing unusable PDB CONECT records with index>100000. (Issue #988)
 
 Enhancements
   * Add a new `formalcharge` attribute for storing formal charges (PR #3755)
@@ -51,7 +54,7 @@ Deprecations
 06/01/22 IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy,
          HenokB, umak1106, tamandeeps, Mrqeoqqt, megosato, AnirG, rishu235,
          mtiberti, manishsaini6421, Sukeerti1, robotjellyzone, markvrma, alescoulie,
-         mjtadema, PicoCentauri, Atharva7K, aditi2906, orbeckst,  yuxuanzhuang,
+         mjtadema, PicoCentauri, Atharva7K, aditi2906, orbeckst, yuxuanzhuang,
          rsexton2, rafaelpap, richardjgowers, orioncohen
 
  * 2.2.0

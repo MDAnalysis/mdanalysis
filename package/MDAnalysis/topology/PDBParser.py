@@ -192,6 +192,8 @@ class PDBParser(TopologyReaderBase):
        Formal charges are now read from PDB files if present. No formalcharge
        attribute is created if no formal charges are present in the PDB file.
        Any formal charges not set are assumed to have a value of 0.
+       Raise `UserWarning` instead `RuntimeError`
+       when CONECT records are corrupt.
     """
     format = ['PDB', 'ENT']
 
@@ -208,6 +210,9 @@ class PDBParser(TopologyReaderBase):
             bonds = self._parsebonds(top.ids.values)
         except AttributeError:
             warnings.warn("Invalid atom serials were present, "
+                          "bonds will not be parsed")
+        except RuntimeError:
+            warnings.warn("CONECT records was corrupt, "
                           "bonds will not be parsed")
         else:
             # Issue 2832: don't append Bonds if there are no bonds
