@@ -632,12 +632,15 @@
 <span class="sd">       An indexing issue meant it previously used the first charater (Issue #2224)</span>
 
 <span class="sd">    .. versionchanged:: 2.0.0</span>
-<span class="sd">        Add the `redindex` argument. Setting this keyword to ``True``</span>
-<span class="sd">        (the default) preserves the behavior in earlier versions of MDAnalysis.</span>
-<span class="sd">        The PDB writer checks for a valid chainID entry instead of using the</span>
-<span class="sd">        last character of segid. Should a chainID not be present, or not</span>
-<span class="sd">        conform to the PDB standard, the default value of  &#39;X&#39; is used.</span>
+<span class="sd">       Add the `redindex` argument. Setting this keyword to ``True``</span>
+<span class="sd">       (the default) preserves the behavior in earlier versions of MDAnalysis.</span>
+<span class="sd">       The PDB writer checks for a valid chainID entry instead of using the</span>
+<span class="sd">       last character of segid. Should a chainID not be present, or not</span>
+<span class="sd">       conform to the PDB standard, the default value of  &#39;X&#39; is used.</span>
 
+<span class="sd">    .. versionchanged:: 2.3.0</span>
+<span class="sd">       Do not write unusable conect records when ag index</span>
+<span class="sd">       is larger than 100000.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">fmt</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;ATOM&#39;</span><span class="p">:</span> <span class="p">(</span>
@@ -943,6 +946,10 @@
         <span class="k">for</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span> <span class="ow">in</span> <span class="n">bonds</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">a1</span> <span class="ow">in</span> <span class="n">mapping</span> <span class="ow">and</span> <span class="n">a2</span> <span class="ow">in</span> <span class="n">mapping</span><span class="p">):</span>
                 <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">mapping</span><span class="p">[</span><span class="n">a1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">100000</span> <span class="ow">or</span> <span class="n">mapping</span><span class="p">[</span><span class="n">a2</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">100000</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Atom with index &gt;=100000 cannot write &quot;</span>
+                              <span class="s2">&quot;bonds to PDB CONECT records.&quot;</span><span class="p">)</span>
+                <span class="k">return</span>
             <span class="n">con</span><span class="p">[</span><span class="n">a2</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a1</span><span class="p">)</span>
             <span class="n">con</span><span class="p">[</span><span class="n">a1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a2</span><span class="p">)</span>
 

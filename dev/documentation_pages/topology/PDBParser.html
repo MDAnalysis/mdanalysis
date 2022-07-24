@@ -199,7 +199,9 @@ Aliased <code class="docutils literal notranslate"><span class="pre">bfactors</s
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 2.3.0: </span>Formal charges are now read from PDB files if present. No formalcharge
 attribute is created if no formal charges are present in the PDB file.
-Any formal charges not set are assumed to have a value of 0.</p>
+Any formal charges not set are assumed to have a value of 0.
+Raise <cite>UserWarning</cite> instead <cite>RuntimeError</cite>
+when CONECT records are corrupt.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.PDBParser.PDBParser.close">
