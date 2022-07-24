@@ -96,6 +96,7 @@ jobs:
       tqdm
       threadpoolctl
       fasteners
+      pyedr
     displayName: 'Install dependencies'
   # for wheel install testing, we pin to an
   # older NumPy, the oldest version we support and that
