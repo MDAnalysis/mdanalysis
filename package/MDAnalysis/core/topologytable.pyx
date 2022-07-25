@@ -23,7 +23,7 @@
 #
 from libcpp.vector cimport vector
 from libcpp.map cimport map as cmap
-from ..lib._cutil import unique_int_1d
+from libcpp.pair cimport pair as cpair
 from ..lib._cutil cimport to_numpy_from_spec
 import numpy as np
 cimport numpy as cnp
@@ -31,7 +31,7 @@ cnp.import_array()
 
 
 cdef class TopologyTable:
-    def __cinit__(self, int[:,:] val, int[:] typ, int[:] guess, int[:] order,  **kwargs):
+    def __cinit__(self, int[:,:] val, **kwargs):
         """Initialise C++ level parameters of a TopologyTable
 
         Parameters
@@ -40,14 +40,73 @@ cdef class TopologyTable:
         .. versionadded:: 2.3.0
            Initialise C++ level parameters
         """
+        self.generate_bix(val)
+        
     
-    self._gen_bond_ix(val)
-    
-    cdef _gen_bond_ix(self, int[:,:] val):
-        cdef cmap vmap
+    cdef generate_bix(self, int[:,:] val):
+        # track whether we have seen this bond before
+        
+        # the bond, foraward and reverse
+        cdef cpair[int, int] bond
+        cdef cpair[int, int] rev_bond
+
+        # initialise spans
+        self.spans.push_back(0)
+        cdef int lead_val
+        cdef int prev_val = val[0,0]
+
+        # unique value counter
+        cdef int bix_counter = 0
+
+        cdef int i 
         for i in range(val.shape[0]):
-            pair = val[i,:]
-            vmap[pair] = i
+            bond = cpair[int, int](val[i,0], val[i,1])
+            rev_bond = cpair[int, int](val[i,1], val[i,0])
+            
+            if self.mapping.count(bond):
+                # the value is already in the map, grab forward value
+                # and that we will read second element
+                self.bix.push_back(self.mapping[bond])
+                self.access.push_back(1)
+            
+            elif self.mapping.count(rev_bond):
+                # the reversed value is already in the map, grab reverse value
+                # and that we will read first element
+                self.bix.push_back(self.mapping[rev_bond])
+                self.access.push_back(0)
+
+            else:
+                # new value
+                self.mapping.insert(cpair[cpair[int,int], int](bond, bix_counter))
+                self.bix.push_back(bix_counter)
+                self.access.push_back(1)
+
+                # increment unique values counter
+                bix_counter += 1
+                # save new value to ix_pair array
+                self.ix_pair_array.push_back(bond)
+            
+            # sort out spans
+            lead_val = bond.first
+            
+            if lead_val != prev_val:
+                self.spans.push_back(i)
+            
+            prev_val = lead_val
+        
+        self.spans.push_back(val.shape[0])
+
+
+
+
+
+
+
+
+
+        
+
+    
 
         
             
