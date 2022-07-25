@@ -70,14 +70,7 @@ Where the final pre expoential factor :math:`A_n` is subject to the condition:
 
     :math:`A_n = 1 - \\sum\\limits_{i=1}^{n-1} A_i`
 
-For further details see [Gowers2015]_.
-
-.. rubric:: References
-
-.. [Gowers2015]  Richard J. Gowers and Paola Carbone,
-                 A multiscale approach to model hydrogen bonding: The case of polyamide
-                 The Journal of Chemical Physics, 142, 224907 (2015),
-                 DOI:http://dx.doi.org/10.1063/1.4922445
+For further details see :cite:p:`Gowers2015`.
 
 Input
 -----
