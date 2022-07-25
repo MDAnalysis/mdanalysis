@@ -71,7 +71,7 @@ import sys
 import os
 import uuid
 
-from .. import _TOPOLOGY_ATTRS, _PARSERS, _GUESSERS
+from .. import _TOPOLOGY_ATTRS, _PARSERS
 from ..exceptions import NoDataError
 from ..lib import util
 from ..lib.log import ProgressBar
@@ -259,7 +259,7 @@ class Universe(object):
     dimensions : numpy.ndarray
         system dimensions (simulation unit cell, if set in the
         trajectory) at the *current time step*
-        (see :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`).
+        (see :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`).
         The unit cell can be set for the current time step (but the change is
         not permanent unless written to a file).
     atoms : AtomGroup
@@ -746,7 +746,7 @@ class Universe(object):
         represented as a :class:`numpy.float32` array.
 
         Because :attr:`coord` is a reference to a
-        :class:`~MDAnalysis.coordinates.timestep.Timestep`, it changes its contents
+        :class:`~MDAnalysis.coordinates.base.Timestep`, it changes its contents
         while one is stepping through the trajectory.
 
         .. Note::
@@ -1450,7 +1450,7 @@ class Universe(object):
         ----------
         context: string or Guesser class
         to_guess: list of atrributes to be guessed then added to the universe
-        """
+        """        
         self._guesser = get_guesser(self.atoms, context)
         if self._guesser.is_guessed(to_guess):
             # sort attributes
