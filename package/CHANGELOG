@@ -34,6 +34,8 @@ Enhancements
   * Additional logger.info output when per-frame analysis starts (PR #3710)
   * Timestep has been converted to a Cython Extension type
     (CZI Performance track, PR #3683)
+  * Refactor make_downshift_arrays with vector operation in numpy(PR #3724)
+  * Optimize topology serialization/construction by lazy-building _RA and _SR.
 
 Changes
   * To add additional optional packages for different file formats when
