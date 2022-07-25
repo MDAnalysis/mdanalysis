@@ -113,9 +113,6 @@
 <dt class="field-odd">Copyright</dt>
 <dd class="field-odd"><p>GNU Public License v3</p>
 </dd>
-<dt class="field-even">Citation</dt>
-<dd class="field-even"><p><a class="reference internal" href="#chavent2014" id="id1"><span>[Chavent2014]</span></a></p>
-</dd>
 </dl>
 <p>The <a class="reference internal" href="#MDAnalysis.visualization.streamlines.generate_streamlines" title="MDAnalysis.visualization.streamlines.generate_streamlines"><code class="xref py py-func docutils literal notranslate"><span class="pre">generate_streamlines()</span></code></a> function can generate a 2D flow field from a
 MD trajectory, for instance, lipid molecules in a flat membrane. It can make
@@ -138,7 +135,7 @@ use of multiple cores to perform the analyis in parallel (using
 <li><p><strong>topology_file_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – Absolute path to the topology file</p></li>
 <li><p><strong>trajectory_file_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – Absolute path to the trajectory file. It will normally be desirable
 to filter the trajectory with a tool such as GROMACS
-<strong class="program">g_filter</strong> (see <a class="reference internal" href="#chavent2014" id="id2"><span>[Chavent2014]</span></a>)</p></li>
+<strong class="program">g_filter</strong> (see <span id="id1">[<a class="reference internal" href="#id12" title="Matthieu Chavent, Tyler Reddy, Joseph Goose, Anna Caroline E. Dahl, John E. Stone, Bruno Jobard, and Mark S. P. Sansom. Methodologies for the analysis of instantaneous lipid diffusion in md simulations of large membrane systems. Faraday Discuss., 169:455-475, 2014. doi:10.1039/C3FD00145H.">ᵃChavent2014</a>]</span>)</p></li>
 <li><p><strong>grid_spacing</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – The spacing between grid lines (angstroms)</p></li>
 <li><p><strong>MDA_selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – MDAnalysis selection string</p></li>
 <li><p><strong>start_frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – First frame number to parse</p></li>
@@ -189,14 +186,13 @@ cores)</p></li>
 </div>
 <img alt="../../_images/testing_streamline.png" src="../../_images/testing_streamline.png" />
 <p class="rubric">References</p>
+<div class="docutils container" id="id2">
 <dl class="citation">
-<dt class="label" id="chavent2014"><span class="brackets">Chavent2014</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id2">2</a>)</span></dt>
-<dd><p>Chavent, M.*, Reddy, T.*, Dahl, C.E., Goose, J., Jobard,
-B., and Sansom, M.S.P. Methodologies for the analysis of instantaneous
-lipid diffusion in MD simulations of large membrane systems.  <em>Faraday
-Discussions</em> <strong>169</strong> (2014), 455–475. doi: <a class="reference external" href="https://doi.org/10.1039/c3fd00145h">10.1039/c3fd00145h</a></p>
+<dt class="label" id="id12"><span class="brackets"><a class="fn-backref" href="#id1">ᵃChavent2014</a></span></dt>
+<dd><p>Matthieu Chavent, Tyler Reddy, Joseph Goose, Anna Caroline E. Dahl, John E. Stone, Bruno Jobard, and Mark S. P. Sansom. Methodologies for the analysis of instantaneous lipid diffusion in md simulations of large membrane systems. <em>Faraday Discuss.</em>, 169:455–475, 2014. <a class="reference external" href="https://doi.org/10.1039/C3FD00145H">doi:10.1039/C3FD00145H</a>.</p>
 </dd>
 </dl>
+</div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="streamlines_3D.html#MDAnalysis.visualization.streamlines_3D.generate_streamlines_3d" title="MDAnalysis.visualization.streamlines_3D.generate_streamlines_3d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MDAnalysis.visualization.streamlines_3D.generate_streamlines_3d</span></code></a></p>

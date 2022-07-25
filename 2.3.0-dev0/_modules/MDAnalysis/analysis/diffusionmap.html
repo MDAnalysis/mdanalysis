@@ -133,8 +133,8 @@
 <span class="sd">The :ref:`Diffusion-Map-tutorial` shows how to use diffusion map for dimension</span>
 <span class="sd">reduction.</span>
 
-<span class="sd">More details about diffusion maps are in [deLaPorte1]_, [Lafon1]_ ,</span>
-<span class="sd">[Ferguson1]_, and [Clementi1]_.</span>
+<span class="sd">More details about diffusion maps are in</span>
+<span class="sd">:cite:p:`deLaPorte2008,Coifman-Lafon,Ferguson2011,Clementi2011`.</span>
 
 <span class="sd">.. _Diffusion-Map-tutorial:</span>
 
@@ -163,9 +163,9 @@
 <span class="sd">   u = mda.Universe(PSF,DCD)</span>
 
 <span class="sd">We leave determination of the appropriate scale parameter epsilon to the user,</span>
-<span class="sd">[Clementi1]_ uses a complex method involving the k-nearest-neighbors of a</span>
-<span class="sd">trajectory frame, whereas others simple use a trial-and-error approach with</span>
-<span class="sd">a constant epsilon. Currently, the constant epsilon method is implemented</span>
+<span class="sd">:cite:p:`Clementi2011` uses a complex method involving the k-nearest-neighbors</span>
+<span class="sd">of a trajectory frame, whereas others simple use a trial-and-error approach</span>
+<span class="sd">with a constant epsilon. Currently, the constant epsilon method is implemented</span>
 <span class="sd">by MDAnalysis.</span>
 
 <span class="sd">.. code-block:: python</span>
@@ -216,31 +216,24 @@
 <span class="sd">----------</span>
 
 <span class="sd">If you use this Dimension Reduction method in a publication, please</span>
-<span class="sd">cite [Lafon1]_.</span>
+<span class="sd">cite :cite:p:`Coifman-Lafon`.</span>
 
 <span class="sd">If you choose the default metric, this module uses the fast QCP algorithm</span>
-<span class="sd">[Theobald2005]_ to calculate the root mean square distance (RMSD) between two</span>
-<span class="sd">coordinate sets (as implemented in</span>
+<span class="sd">:cite:p:`Theobald2005` to calculate the root mean square distance (RMSD)</span>
+<span class="sd">between two coordinate sets (as implemented in</span>
 <span class="sd">:func:`MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix`).  When using this</span>
-<span class="sd">module in published work please cite [Theobald2005]_.</span>
+<span class="sd">module in published work please :cite:p:`Theobald2005`.</span>
 
 
-<span class="sd">.. [Lafon1] Coifman, Ronald R., Lafon, Stephane. Diffusion</span>
-<span class="sd">            maps. Appl. Comput. Harmon.  Anal. 21, 5–30 (2006).</span>
+<span class="sd">.. bibliography::</span>
+<span class="sd">    :filter: False</span>
+<span class="sd">    :style: MDA</span>
 
-<span class="sd">.. [deLaPorte1] J. de la Porte, B. M. Herbst, W. Hereman, S. J. van der Walt.</span>
-<span class="sd">             An Introduction to Diffusion Maps. In: The 19th Symposium of the</span>
-<span class="sd">             Pattern Recognition Association of South Africa (2008).</span>
-
-<span class="sd">.. [Clementi1] Rohrdanz, M. A, Zheng, W, Maggioni, M, &amp; Clementi, C.</span>
-<span class="sd">             Determination of reaction coordinates via locally scaled diffusion</span>
-<span class="sd">             map. J. Chem. Phys. 134, 124116 (2011).</span>
-
-<span class="sd">.. [Ferguson1] Ferguson, A. L.; Panagiotopoulos, A. Z.; Kevrekidis, I. G.</span>
-<span class="sd">             Debenedetti, P. G. Nonlinear dimensionality reduction in molecular</span>
-<span class="sd">             simulation: The diffusion map approach Chem. Phys. Lett. 509, 1−11</span>
-<span class="sd">             (2011)</span>
-
+<span class="sd">    Coifman-Lafon</span>
+<span class="sd">    deLaPorte2008</span>
+<span class="sd">    Clementi2011</span>
+<span class="sd">    Ferguson2011</span>
+<span class="sd">    Theobald2005</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
@@ -427,8 +420,8 @@
 <span class="sd">            into a diffusion kernel.</span>
 <span class="sd">        epsilon : Float</span>
 <span class="sd">            Specifies the method used for the choice of scale parameter in the</span>
-<span class="sd">            diffusion map. More information in [Lafon1]_, [Ferguson1]_ and</span>
-<span class="sd">            [Clementi1]_, Default: 1.</span>
+<span class="sd">            diffusion map. More information in</span>
+<span class="sd">            :cite:p:`Coifman-Lafon,Ferguson2011,Clementi2011`, Default: 1.</span>
 <span class="sd">        **kwargs</span>
 <span class="sd">            Parameters to be passed for the initialization of a</span>
 <span class="sd">            :class:`DistanceMatrix`.</span>
@@ -494,7 +487,7 @@
 <span class="sd">        Return</span>
 <span class="sd">        ------</span>
 <span class="sd">        diffusion_space : array (n_frames, n_eigenvectors)</span>
-<span class="sd">            The diffusion map embedding as defined by [Ferguson1]_.</span>
+<span class="sd">            The diffusion map embedding as defined by :cite:p:`Ferguson2011`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eigenvectors</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="n">n_eigenvectors</span><span class="o">+</span><span class="mi">1</span><span class="p">,]</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span>
                 <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eigenvalues</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="n">n_eigenvectors</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="n">time</span><span class="p">))</span></div></div>

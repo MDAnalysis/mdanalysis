@@ -277,8 +277,8 @@ in Table <a class="reference internal" href="#default-atom-names-for-water-bridg
 donor. The algorithm searches for all hydrogens
 (name “H*” or name “[123]H” or type “H”) in the same residue as the donor atom
 within a cut-off distance of 1.2 Å.</p>
-<span id="default-atom-names-for-water-bridge-analysis"></span><table class="docutils align-default" id="id2">
-<caption><span class="caption-text">Default heavy atom names for CHARMM27 force field.</span><a class="headerlink" href="#id2" title="Permalink to this table"></a></caption>
+<span id="default-atom-names-for-water-bridge-analysis"></span><table class="docutils align-default" id="id66">
+<caption><span class="caption-text">Default heavy atom names for CHARMM27 force field.</span><a class="headerlink" href="#id66" title="Permalink to this table"></a></caption>
 <colgroup>
 <col style="width: 15%" />
 <col style="width: 19%" />
@@ -367,7 +367,7 @@ within a cut-off distance of 1.2 Å.</p>
 <tr class="row-even"><td><p>MET</p></td>
 <td></td>
 <td><p>SD</p></td>
-<td><p>see e.g. <a class="reference internal" href="#gregoret1991" id="id1"><span>[Gregoret1991]</span></a></p></td>
+<td><p>see e.g. <span id="id1">[<a class="reference internal" href="#id22" title="Lydia M. Gregoret, Stephen D. Rader, Robert J. Fletterick, and Fred E. Cohen. Hydrogen bonds involving sulfur atoms in proteins. Proteins: Structure, Function, and Bioinformatics, 9(2):99-107, 1991. doi:https://doi.org/10.1002/prot.340090204.">Gregoret1991</a>]</span></p></td>
 </tr>
 <tr class="row-odd"><td><p>SER</p></td>
 <td><p>OG</p></td>
@@ -391,8 +391,8 @@ within a cut-off distance of 1.2 Å.</p>
 </tr>
 </tbody>
 </table>
-<table class="docutils align-default" id="id3">
-<caption><span class="caption-text">Heavy atom types for GLYCAM06 force field.</span><a class="headerlink" href="#id3" title="Permalink to this table"></a></caption>
+<table class="docutils align-default" id="id67">
+<caption><span class="caption-text">Heavy atom types for GLYCAM06 force field.</span><a class="headerlink" href="#id67" title="Permalink to this table"></a></caption>
 <colgroup>
 <col style="width: 28%" />
 <col style="width: 28%" />
@@ -442,13 +442,13 @@ default list oneself:</p>
 <code class="docutils literal notranslate"><span class="pre">`forcefield`</span> <span class="pre">=</span> <span class="pre">&quot;OtherFF&quot;</span></code>. Please also consider contributing the list of
 heavy atom names to MDAnalysis.</p>
 <p class="rubric">References</p>
+<div class="docutils container" id="id2">
 <dl class="citation">
-<dt class="label" id="gregoret1991"><span class="brackets"><a class="fn-backref" href="#id1">Gregoret1991</a></span></dt>
-<dd><p>L.M. Gregoret, S.D. Rader, R.J. Fletterick, and
-F.E. Cohen. Hydrogen bonds involving sulfur atoms in proteins. Proteins,
-9(2):99–107, 1991. <a class="reference external" href="http://dx.doi.org/10.1002/prot.340090204">10.1002/prot.340090204</a>.</p>
+<dt class="label" id="id22"><span class="brackets"><a class="fn-backref" href="#id1">Gregoret1991</a></span></dt>
+<dd><p>Lydia M. Gregoret, Stephen D. Rader, Robert J. Fletterick, and Fred E. Cohen. Hydrogen bonds involving sulfur atoms in proteins. <em>Proteins: Structure, Function, and Bioinformatics</em>, 9(2):99–107, 1991. <a class="reference external" href="https://doi.org/https://doi.org/10.1002/prot.340090204">doi:https://doi.org/10.1002/prot.340090204</a>.</p>
 </dd>
 </dl>
+</div>
 </section>
 <section id="how-to-perform-waterbridgeanalysis">
 <h2><span class="section-number">4.3.3.5. </span>How to perform <code class="docutils literal notranslate"><span class="pre">WaterBridgeAnalysis</span></code><a class="headerlink" href="#how-to-perform-waterbridgeanalysis" title="Permalink to this heading"></a></h2>
@@ -1011,7 +1011,7 @@ and the bridging waters, for each frame.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_ACCEPTORS">
-<span class="sig-name descname"><span class="pre">DEFAULT_ACCEPTORS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'CHARMM27':</span> <span class="pre">('O',</span> <span class="pre">'OG',</span> <span class="pre">'SG',</span> <span class="pre">'OW',</span> <span class="pre">'OE2',</span> <span class="pre">'OD1',</span> <span class="pre">'OD2',</span> <span class="pre">'OH2',</span> <span class="pre">'OC1',</span> <span class="pre">'OC2',</span> <span class="pre">'OE1',</span> <span class="pre">'ND1',</span> <span class="pre">'SD',</span> <span class="pre">'NE2',</span> <span class="pre">'OH',</span> <span class="pre">'OG1'),</span> <span class="pre">'GLYCAM06':</span> <span class="pre">('O',</span> <span class="pre">'NT',</span> <span class="pre">'OS',</span> <span class="pre">'OW',</span> <span class="pre">'OY',</span> <span class="pre">'SM',</span> <span class="pre">'O2',</span> <span class="pre">'N',</span> <span class="pre">'OH'),</span> <span class="pre">'other':</span> <span class="pre">()}</span></em><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">DEFAULT_ACCEPTORS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'CHARMM27':</span> <span class="pre">('OD2',</span> <span class="pre">'O',</span> <span class="pre">'OG1',</span> <span class="pre">'OH2',</span> <span class="pre">'SG',</span> <span class="pre">'OE1',</span> <span class="pre">'OW',</span> <span class="pre">'ND1',</span> <span class="pre">'NE2',</span> <span class="pre">'OG',</span> <span class="pre">'OH',</span> <span class="pre">'OC2',</span> <span class="pre">'OC1',</span> <span class="pre">'OE2',</span> <span class="pre">'OD1',</span> <span class="pre">'SD'),</span> <span class="pre">'GLYCAM06':</span> <span class="pre">('O',</span> <span class="pre">'OS',</span> <span class="pre">'O2',</span> <span class="pre">'N',</span> <span class="pre">'OW',</span> <span class="pre">'SM',</span> <span class="pre">'OY',</span> <span class="pre">'OH',</span> <span class="pre">'NT'),</span> <span class="pre">'other':</span> <span class="pre">()}</span></em><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition"></a></dt>
 <dd><p>default atom names that are treated as hydrogen <em>acceptors</em>
 (see <a class="reference internal" href="#default-atom-names-for-water-bridge-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>acceptors</cite> to add a list of additional acceptor names.</p>
@@ -1019,7 +1019,7 @@ use the keyword <cite>acceptors</cite> to add a list of additional acceptor name
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_DONORS">
-<span class="sig-name descname"><span class="pre">DEFAULT_DONORS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'CHARMM27':</span> <span class="pre">('OG',</span> <span class="pre">'SG',</span> <span class="pre">'OW',</span> <span class="pre">'OH',</span> <span class="pre">'NE',</span> <span class="pre">'NH2',</span> <span class="pre">'OH2',</span> <span class="pre">'NE1',</span> <span class="pre">'NH1',</span> <span class="pre">'ND2',</span> <span class="pre">'N',</span> <span class="pre">'NE2',</span> <span class="pre">'ND1',</span> <span class="pre">'NZ',</span> <span class="pre">'OG1'),</span> <span class="pre">'GLYCAM06':</span> <span class="pre">('NT',</span> <span class="pre">'OW',</span> <span class="pre">'N',</span> <span class="pre">'OH',</span> <span class="pre">'N3'),</span> <span class="pre">'other':</span> <span class="pre">()}</span></em><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_DONORS" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">DEFAULT_DONORS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'CHARMM27':</span> <span class="pre">('ND2',</span> <span class="pre">'OG1',</span> <span class="pre">'N',</span> <span class="pre">'NE1',</span> <span class="pre">'NH1',</span> <span class="pre">'OH2',</span> <span class="pre">'NH2',</span> <span class="pre">'OW',</span> <span class="pre">'SG',</span> <span class="pre">'NE2',</span> <span class="pre">'ND1',</span> <span class="pre">'NZ',</span> <span class="pre">'OG',</span> <span class="pre">'OH',</span> <span class="pre">'NE'),</span> <span class="pre">'GLYCAM06':</span> <span class="pre">('N',</span> <span class="pre">'OW',</span> <span class="pre">'OH',</span> <span class="pre">'N3',</span> <span class="pre">'NT'),</span> <span class="pre">'other':</span> <span class="pre">()}</span></em><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_DONORS" title="Permalink to this definition"></a></dt>
 <dd><p>default heavy atom names whose hydrogens are treated as <em>donors</em>
 (see <a class="reference internal" href="#default-atom-names-for-water-bridge-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>donors</cite> to add a list of additional donor names.</p>

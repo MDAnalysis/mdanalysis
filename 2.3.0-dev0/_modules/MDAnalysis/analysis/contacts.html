@@ -204,7 +204,8 @@
 <span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
 
 <span class="sd">Analyze a single DIMS transition of AdK between its closed and open</span>
-<span class="sd">conformation and plot the trajectory projected on q1-q2 [Franklin2007]_ ::</span>
+<span class="sd">conformation and plot the trajectory projected on q1-q2</span>
+<span class="sd">:cite:p:`Franklin2007` ::</span>
 
 
 <span class="sd">    import MDAnalysis as mda</span>
@@ -225,7 +226,7 @@
 <span class="sd">    f.show()</span>
 
 <span class="sd">Compare the resulting pathway to the `MinActionPath result for AdK`_</span>
-<span class="sd">[Franklin2007]_.</span>
+<span class="sd">:cite:p:`Franklin2007`.</span>
 
 <span class="sd">.. _MinActionPath result for AdK:</span>
 <span class="sd">   http://lorentz.dynstr.pasteur.fr/joel/adenylate.php</span>
@@ -319,7 +320,7 @@
 <div class="viewcode-block" id="soft_cut_q"><a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.soft_cut_q">[docs]</a><span class="k">def</span> <span class="nf">soft_cut_q</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">lambda_constant</span><span class="o">=</span><span class="mf">1.8</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate fraction of native contacts *Q* for a soft cut off</span>
 
-<span class="sd">    The native contact function is defined as [Best2013]_</span>
+<span class="sd">    The native contact function is defined as :cite:p:`Best2013`</span>
 
 <span class="sd">    .. math::</span>
 
@@ -348,11 +349,11 @@
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
-<span class="sd">    .. [Best2013] RB Best, G Hummer, and WA Eaton, &quot;Native contacts determine protein</span>
-<span class="sd">       folding mechanisms in atomistic simulations&quot; _PNAS_ **110** (2013),</span>
-<span class="sd">       17874–17879. doi: `10.1073/pnas.1311599110</span>
-<span class="sd">       &lt;http://doi.org/10.1073/pnas.1311599110&gt;`_.</span>
+<span class="sd">    .. bibliography::</span>
+<span class="sd">        :filter: False</span>
+<span class="sd">        :style: MDA</span>
 
+<span class="sd">        Best2013</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
     <span class="n">r0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">r0</span><span class="p">)</span>
@@ -406,11 +407,11 @@
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
-<span class="sd">    .. [Franklin2007] Franklin, J., Koehl, P., Doniach, S., &amp; Delarue,</span>
-<span class="sd">       M. (2007).  MinActionPath: Maximum likelihood trajectory for large-scale</span>
-<span class="sd">       structural transitions in a coarse-grained locally harmonic energy</span>
-<span class="sd">       landscape.  Nucleic Acids Research, 35(SUPPL.2), 477–482.</span>
-<span class="sd">       doi: `10.1093/nar/gkm342 &lt;http://doi.org/10.1093/nar/gkm342&gt;`_</span>
+<span class="sd">    .. bibliography::</span>
+<span class="sd">        :filter: False</span>
+<span class="sd">        :style: MDA</span>
+
+<span class="sd">        Franklin2007</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">hard_cut_q</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span></div>
@@ -612,7 +613,7 @@
     <span class="sd">&quot;&quot;&quot;Perform a q1-q2 analysis.</span>
 
 <span class="sd">    Compares native contacts between the starting structure and final structure</span>
-<span class="sd">    of a trajectory [Franklin2007]_.</span>
+<span class="sd">    of a trajectory :cite:p:`Franklin2007`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>

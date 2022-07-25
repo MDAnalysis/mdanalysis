@@ -122,12 +122,12 @@
 <span class="sd">.. versionadded:: 2.0.0</span>
 
 <span class="sd">This module contains classes for interconverting between Cartesian and an</span>
-<span class="sd">internal coordinate system, Bond-Angle-Torsion (BAT) coordinates [Chang2003]_,</span>
-<span class="sd">for a given set of atoms or residues. This coordinate system is designed</span>
-<span class="sd">to be complete, non-redundant, and minimize correlations between degrees</span>
-<span class="sd">of freedom. Complete and non-redundant means that for N atoms there will</span>
-<span class="sd">be 3N Cartesian coordinates and 3N BAT coordinates. Correlations are</span>
-<span class="sd">minimized by using improper torsions, as described in [Hikiri2016]_.</span>
+<span class="sd">internal coordinate system, Bond-Angle-Torsion (BAT) coordinates</span>
+<span class="sd">:cite:p:`Chang2003`, for a given set of atoms or residues. This coordinate</span>
+<span class="sd">system is designed to be complete, non-redundant, and minimize correlations</span>
+<span class="sd">between degrees of freedom. Complete and non-redundant means that for N atoms</span>
+<span class="sd">there will be 3N Cartesian coordinates and 3N BAT coordinates. Correlations are</span>
+<span class="sd">minimized by using improper torsions, as described in :cite:p:`Hikiri2016`.</span>
 
 <span class="sd">More specifically, bond refers to the bond length, or distance between</span>
 <span class="sd">a pair of bonded atoms. Angle refers to the bond angle, the angle between</span>
@@ -148,7 +148,7 @@
 <span class="sd">:math:`\phi`, and azimuthal angle, :math:`\theta`. :math:`\omega` is a third angle</span>
 <span class="sd">that describes the rotation of the third atom about the axis.</span>
 
-<span class="sd">This module was adapted from AlGDock [Minh2020]_.</span>
+<span class="sd">This module was adapted from AlGDock :cite:p:`Minh2020`.</span>
 
 
 <span class="sd">See Also</span>
@@ -246,21 +246,13 @@
 <span class="sd">References</span>
 <span class="sd">----------</span>
 
-<span class="sd">.. [Chang2003] Chang, Chia-En, Michael J Potter, and Michael K Gilson (2003).</span>
-<span class="sd">   &quot;Calculation of Molecular Configuration Integrals&quot;. *Journal of Physical</span>
-<span class="sd">   Chemistry B* 107(4): 1048–55. doi:`10.1021/jp027149c</span>
-<span class="sd">   &lt;https://doi.org/10.1021/jp027149c&gt;`_</span>
+<span class="sd">.. bibliography::</span>
+<span class="sd">    :filter: False</span>
+<span class="sd">    :style: MDA</span>
 
-<span class="sd">.. [Hikiri2016] Hikiri, Simon, Takashi Yoshidome, and Mitsunori Ikeguchi (2016).</span>
-<span class="sd">   &quot;Computational Methods for Configurational Entropy Using Internal and</span>
-<span class="sd">   Cartesian Coordinates.&quot; *Journal of Chemical Theory and Computation*</span>
-<span class="sd">   12(12): 5990–6000. doi:`10.1021/acs.jctc.6b00563</span>
-<span class="sd">   &lt;https://doi.org/10.1021/acs.jctc.6b00563&gt;`_</span>
-
-<span class="sd">.. [Minh2020] Minh, David D L (2020). &quot;Alchemical Grid Dock (AlGDock): Binding</span>
-<span class="sd">   Free Energy Calculations between Flexible Ligands and Rigid Receptors.&quot;</span>
-<span class="sd">   *Journal of Computational Chemistry* 41(7): 715–30.</span>
-<span class="sd">   doi:`10.1002/jcc.26036 &lt;https://doi.org/10.1002/jcc.26036&gt;`_</span>
+<span class="sd">    Chang2003</span>
+<span class="sd">    Hikiri2016</span>
+<span class="sd">    Minh2020</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">logging</span>

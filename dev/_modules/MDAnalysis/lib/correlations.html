@@ -136,8 +136,9 @@
 
 <span class="sd">This module is inspired by seemingly disparate analyses that rely on the same</span>
 <span class="sd">underlying calculation, including the survival probability of water around</span>
-<span class="sd">proteins [Araya-Secchi2014]_, hydrogen bond lifetimes [Gowers2015]_, [Araya-Secchi2014]_,</span>
-<span class="sd">and the rate of cholesterol flip-flop in lipid bilayers [Gu2019]_.</span>
+<span class="sd">proteins :cite:p:`ArayaSecchi2014`, hydrogen bond lifetimes</span>
+<span class="sd">:cite:p:`Gowers2015,ArayaSecchi2014`, and the rate of cholesterol</span>
+<span class="sd">flip-flop in lipid bilayers :cite:p:`Gu2019`.</span>
 
 <span class="sd">.. seeAlso::</span>
 
@@ -153,10 +154,13 @@
 
 <span class="sd">.. rubric:: References</span>
 
-<span class="sd">.. [Gu2019] Gu, R.-X.; Baoukina, S.; Tieleman, D. P. (2019)</span>
-<span class="sd">            Cholesterol Flip-Flop in Heterogeneous Membranes.</span>
-<span class="sd">            J. Chem. Theory Comput. 15 (3), 2064–2070.</span>
-<span class="sd">            https://doi.org/10.1021/acs.jctc.8b00933.</span>
+<span class="sd">.. bibliography::</span>
+<span class="sd">    :filter: False</span>
+<span class="sd">    :style: MDA</span>
+
+<span class="sd">    ArayaSecchi2014</span>
+<span class="sd">    Gowers2015</span>
+<span class="sd">    Gu2019</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
@@ -198,7 +202,7 @@
 <span class="sd">    this feature is present at every frame from :math:`t_0` to :math:`N(t0, t_0 + \tau)`.</span>
 <span class="sd">    The angular brackets represent an average over all time origins, :math:`t_0`.</span>
 
-<span class="sd">    See [Araya-Secchi2014]_ for a description survival probability.</span>
+<span class="sd">    See :cite:`ArayaSecchi2014` for a description survival probability.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -286,8 +290,8 @@
 <span class="sd">    The returned data can be used as input to the function :func:`autocorrelation` in order</span>
 <span class="sd">    to calculate the survival probability with a given intermittency.</span>
 
-<span class="sd">    See [Gowers2015]_ for a description of</span>
-<span class="sd">    intermittency in the calculation of hydrogen bond lifetimes.</span>
+<span class="sd">    See :cite:p:`Gowers2015` for a description of intermittency in the</span>
+<span class="sd">    calculation of hydrogen bond lifetimes.</span>
 
 <span class="sd">    # TODO - is intermittency consitent with list of sets of sets? (hydrogen bonds)</span>
 

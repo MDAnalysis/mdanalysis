@@ -124,8 +124,8 @@
 <span class="sd">This module implements the calculation of Mean Squared Displacements (MSDs)</span>
 <span class="sd">by the Einstein relation. MSDs can be used to characterize the speed at</span>
 <span class="sd">which particles move and has its roots in the study of Brownian motion.</span>
-<span class="sd">For a full explanation of the theory behind MSDs and the subsequent</span>
-<span class="sd">calculation of self-diffusivities the reader is directed to [Maginn2019]_.</span>
+<span class="sd">For a full explanation of the theory behind MSDs and the subsequent calculation</span>
+<span class="sd">of self-diffusivities the reader is directed to :cite:p:`Maginn2019`.</span>
 <span class="sd">MSDs can be computed from the following expression, known as the</span>
 <span class="sd">**Einstein formula**:</span>
 
@@ -233,8 +233,8 @@
 <span class="sd">excluded along with poorly averaged data at long time-lags. We can select the</span>
 <span class="sd">&quot;middle&quot; of the MSD by indexing the MSD and the time-lags. Appropriately</span>
 <span class="sd">linear segments of the MSD can be confirmed with a log-log plot as is often</span>
-<span class="sd">reccomended [Maginn2019]_ where the &quot;middle&quot; segment can be identified as</span>
-<span class="sd">having a slope of 1.</span>
+<span class="sd">reccomended :cite:p:`Maginn2019` where the &quot;middle&quot; segment can be identified</span>
+<span class="sd">as having a slope of 1.</span>
 
 <span class="sd">.. code-block:: python</span>
 
@@ -305,35 +305,27 @@
 <span class="sd">These include specific instructions around simulation settings, using</span>
 <span class="sd">unwrapped trajectories and maintaining a relatively small elapsed time between</span>
 <span class="sd">saved frames. Additionally, corrections for finite size effects are sometimes</span>
-<span class="sd">employed along with various means of estimating errors [Yeh2004]_ [Bulow2020]_.</span>
-<span class="sd">The reader is directed to the following review, which describes many of the</span>
-<span class="sd">common pitfalls [Maginn2019]_. There are other ways to compute</span>
-<span class="sd">self-diffusivity, such as from a Green-Kubo integral. At this point in time,</span>
-<span class="sd">these methods are beyond the scope of this module.</span>
+<span class="sd">employed along with various means of estimating errors</span>
+<span class="sd">:cite:p:`Yeh2004,Bulow2020` The reader is directed to the following review,</span>
+<span class="sd">which describes many of the common pitfalls :cite:p:`Maginn2019`. There are</span>
+<span class="sd">other ways to compute self-diffusivity, such as from a Green-Kubo integral. At</span>
+<span class="sd">this point in time, these methods are beyond the scope of this module.</span>
 
 
 <span class="sd">Note also that computation of MSDs is highly memory intensive. If this is</span>
-<span class="sd">proving a problem, judicious use of the ``start``, ``stop``, ``step`` keywords to control which frames are incorporated may be required.</span>
+<span class="sd">proving a problem, judicious use of the ``start``, ``stop``, ``step`` keywords</span>
+<span class="sd">to control which frames are incorporated may be required.</span>
 
 <span class="sd">References</span>
 <span class="sd">----------</span>
 
-<span class="sd">.. [Maginn2019] Maginn, E. J., Messerly, R. A., Carlson, D. J.; Roe, D. R.,</span>
-<span class="sd">                Elliott, J. R. Best Practices for Computing Transport</span>
-<span class="sd">                Properties 1. Self-Diffusivity and Viscosity from Equilibrium</span>
-<span class="sd">                Molecular Dynamics [Article v1.0]. Living J. Comput. Mol. Sci.</span>
-<span class="sd">                2019, 1 (1).</span>
+<span class="sd">.. bibliography::</span>
+<span class="sd">    :filter: False</span>
+<span class="sd">    :style: MDA</span>
 
-<span class="sd">.. [Yeh2004] Yeh, I. C.; Hummer, G. System-Size Dependence of Diffusion</span>
-<span class="sd">                Coefficients and Viscosities from Molecular Dynamics</span>
-<span class="sd">                Simulations with Periodic Boundary Conditions.</span>
-<span class="sd">                J. Phys. Chem. B 2004, 108 (40), 15873–15879.</span>
-
-<span class="sd">.. [Bulow2020] von Bülow, S.; Bullerjahn, J. T.; Hummer, G. Systematic</span>
-<span class="sd">                Errors in Diffusion Coefficients from Long-Time Molecular</span>
-<span class="sd">                Dynamics Simulations at Constant Pressure. 2020.</span>
-<span class="sd">                arXiv:2003.09205 [Cond-Mat, Physics:Physics].</span>
-
+<span class="sd">    Maginn2019</span>
+<span class="sd">    Yeh2004</span>
+<span class="sd">    Bulow2020</span>
 
 
 <span class="sd">Classes</span>

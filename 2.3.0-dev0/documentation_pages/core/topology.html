@@ -299,6 +299,12 @@ the TransTable</p>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">..</span> <span class="pre">versionchanged::</span> <span class="pre">2.3.0</span></span></dt>
+<dd><p>Lazy building RA and SR.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.topology.TransTable.atoms2residues">
 <span class="sig-name descname"><span class="pre">atoms2residues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topology.html#TransTable.atoms2residues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topology.TransTable.atoms2residues" title="Permalink to this definition"></a></dt>
@@ -505,7 +511,7 @@ of each parent.  Length <cite>nparents</cite> + 1</p>
 <p class="rubric">Examples</p>
 <p>To find the residue to atom mappings for a given atom to residue mapping:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">atom2res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">make_downshift_arrays</span><span class="p">(</span><span class="n">atom2res</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">make_downshift_arrays</span><span class="p">(</span><span class="n">atom2res</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 <span class="go">array([array([0, 2, 5]), array([1]), array([3, 4, 6]), None], dtype=object)</span>
 </pre></div>
 </div>

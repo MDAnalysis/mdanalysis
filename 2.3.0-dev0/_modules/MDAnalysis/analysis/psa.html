@@ -125,7 +125,7 @@
 
 <span class="sd">The module contains code to calculate the geometric similarity of trajectories</span>
 <span class="sd">using path metrics such as the Hausdorff or Fréchet distances</span>
-<span class="sd">[Seyler2015]_. The path metrics are functions of two paths and return a</span>
+<span class="sd">:cite:p:`Seyler2015`. The path metrics are functions of two paths and return a</span>
 <span class="sd">nonnegative number, i.e., a distance. Two paths are identical if their distance</span>
 <span class="sd">is zero, and large distances indicate dissimilarity. Each path metric is a</span>
 <span class="sd">function of the individual points (e.g., coordinate snapshots) that comprise</span>
@@ -155,13 +155,12 @@
 
 <span class="sd">.. Rubric:: References</span>
 
+<span class="sd">.. bibliography::</span>
+<span class="sd">    :filter: False</span>
+<span class="sd">    :style: MDA</span>
 
-<span class="sd">.. [Seyler2015] Seyler SL, Kumar A, Thorpe MF, Beckstein O (2015)</span>
-<span class="sd">                Path Similarity Analysis: A Method for Quantifying</span>
-<span class="sd">                Macromolecular Pathways. PLoS Comput Biol 11(10): e1004568.</span>
-<span class="sd">                doi: `10.1371/journal.pcbi.1004568`_</span>
+<span class="sd">    Seyler2015</span>
 
-<span class="sd">.. _`10.1371/journal.pcbi.1004568`: http://dx.doi.org/10.1371/journal.pcbi.1004568</span>
 <span class="sd">.. _`PSAnalysisTutorial`: https://github.com/Becksteinlab/PSAnalysisTutorial</span>
 
 
@@ -510,15 +509,17 @@
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    :func:`scipy.spatial.distance.directed_hausdorff` is an optimized</span>
-<span class="sd">    implementation of the early break algorithm of [Taha2015]_; the</span>
+<span class="sd">    implementation of the early break algorithm of :cite:p:`Taha2015`; the</span>
 <span class="sd">    latter code is used here to calculate the symmetric Hausdorff</span>
 <span class="sd">    distance with an RMSD metric</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
-<span class="sd">    .. [Taha2015] A. A. Taha and A. Hanbury. An efficient algorithm for</span>
-<span class="sd">       calculating the exact Hausdorff distance. IEEE Transactions On Pattern</span>
-<span class="sd">       Analysis And Machine Intelligence, 37:2153-63, 2015.</span>
+<span class="sd">    .. bibliography::</span>
+<span class="sd">        :filter: False</span>
+<span class="sd">        :style: MDA</span>
+
+<span class="sd">        Taha2015</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">N_p</span><span class="p">,</span> <span class="n">axis_p</span> <span class="o">=</span> <span class="n">get_coord_axes</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
@@ -580,7 +581,8 @@
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    The weighted average Hausdorff distance is not a true metric (it does not</span>
-<span class="sd">    obey the triangle inequality); see [Seyler2015]_ for further details.</span>
+<span class="sd">    obey the triangle inequality); see :cite:p:`Seyler2015` for further</span>
+<span class="sd">    details.</span>
 
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -636,7 +638,7 @@
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    The average Hausdorff distance is not a true metric (it does not obey the</span>
-<span class="sd">    triangle inequality); see [Seyler2015]_ for further details.</span>
+<span class="sd">    triangle inequality); see :cite:p:`Seyler2015` for further details.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">N</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="n">get_coord_axes</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
@@ -673,7 +675,8 @@
 <span class="sd">    -----</span>
 <span class="sd">    - Hausdorff neighbors are those points on the two paths that are separated by</span>
 <span class="sd">      the Hausdorff distance. They are the farthest nearest neighbors and are</span>
-<span class="sd">      maximally different in the sense of the Hausdorff distance [Seyler2015]_.</span>
+<span class="sd">      maximally different in the sense of the Hausdorff distance</span>
+<span class="sd">      :cite:p:`Seyler2015`.</span>
 <span class="sd">    - :func:`scipy.spatial.distance.directed_hausdorff` can also provide the</span>
 <span class="sd">      hausdorff neighbors.</span>
 
@@ -733,32 +736,23 @@
 <span class="sd">    -----</span>
 
 <span class="sd">    The discrete Fréchet metric is an approximation to the continuous Fréchet</span>
-<span class="sd">    metric [Frechet1906]_ [Alt1995]_. The calculation of the continuous</span>
+<span class="sd">    metric :cite:p:`Frechet1906,Alt1995`. The calculation of the continuous</span>
 <span class="sd">    Fréchet distance is implemented with the dynamic programming algorithm of</span>
-<span class="sd">    [EiterMannila1994]_ [EiterMannila1997]_.</span>
+<span class="sd">    :cite:p:`EiterMannila1994,EiterMannila1997`.</span>
 
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
 
-<span class="sd">    .. [Frechet1906] M. Fréchet. Sur quelques points du calcul</span>
-<span class="sd">       fonctionnel. Rend. Circ. Mat. Palermo, 22(1):1–72, Dec. 1906.</span>
+<span class="sd">    .. bibliography::</span>
+<span class="sd">        :filter: False</span>
+<span class="sd">        :style: MDA</span>
 
-<span class="sd">    .. [Alt1995] H. Alt and M. Godau. Computing the Fréchet distance between</span>
-<span class="sd">       two polygonal curves. Int J Comput Geometry &amp; Applications,</span>
-<span class="sd">       5(01n02):75–91, 1995. doi: `10.1142/S0218195995000064`_</span>
+<span class="sd">        Frechet1906</span>
+<span class="sd">        Alt1995</span>
+<span class="sd">        EiterMannila1994</span>
+<span class="sd">        EiterMannila1997</span>
 
-<span class="sd">    .. _`10.1142/S0218195995000064`: http://doi.org/10.1142/S0218195995000064</span>
-
-<span class="sd">    .. [EiterMannila1994] T. Eiter and H. Mannila. Computing discrete Fréchet</span>
-<span class="sd">       distance. Technical Report CD-TR 94/64, Christian Doppler Laboratory for</span>
-<span class="sd">       Expert Systems, Technische Universität Wien, Wien, 1994.</span>
-
-<span class="sd">    .. [EiterMannila1997] T. Eiter and H. Mannila. Distance measures for point</span>
-<span class="sd">       sets and their computation. Acta Informatica, 34:109–133, 1997. doi: `10.1007/s002360050075`_.</span>
-
-
-<span class="sd">    .. _10.1007/s002360050075: http://doi.org/10.1007/s002360050075</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 

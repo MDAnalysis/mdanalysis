@@ -164,8 +164,8 @@
 <span class="sd">~~~~~~~~~~~~~~~~~~~~~</span>
 
 <span class="sd">The :class:`~MDAnalysis.analysis.dihedrals.Ramachandran` class allows for the</span>
-<span class="sd">quick calculation of classical Ramachandran plots [Ramachandran1963]_ in the</span>
-<span class="sd">backbone :math:`phi` and :math:`psi` angles. Unlike the</span>
+<span class="sd">quick calculation of classical Ramachandran plots :cite:p:`Ramachandran1963` in</span>
+<span class="sd">the backbone :math:`phi` and :math:`psi` angles. Unlike the</span>
 <span class="sd">:class:`~MDanalysis.analysis.dihedrals.Dihedral` class which takes a list of</span>
 <span class="sd">`atomgroups`, this class only needs a list of residues or atoms from those</span>
 <span class="sd">residues. The previous example can repeated with::</span>
@@ -209,8 +209,8 @@
 <span class="sd">Janin analysis</span>
 <span class="sd">~~~~~~~~~~~~~~</span>
 
-<span class="sd">Janin plots [Janin1978]_ for side chain conformations (:math:`\chi_1` and</span>
-<span class="sd">:math:`chi_2` angles) can be created with the</span>
+<span class="sd">Janin plots :cite:p:`Janin1978` for side chain conformations (:math:`\chi_1`</span>
+<span class="sd">and :math:`chi_2` angles) can be created with the</span>
 <span class="sd">:class:`~MDAnalysis.analysis.dihedrals.Janin` class. It works in the same way,</span>
 <span class="sd">only needing a list of residues; see the :ref:`Janin plot figure</span>
 <span class="sd">&lt;figure-janin&gt;` as an example.</span>
@@ -250,12 +250,12 @@
 <span class="sd">(:data:`~MDAnalysis.analysis.data.filenames.Rama_ref`) and Janin reference data</span>
 <span class="sd">(:data:`~MDAnalysis.analysis.data.filenames.Janin_ref`) were made using data</span>
 <span class="sd">obtained from a large selection of 500 PDB files, and were analyzed using these</span>
-<span class="sd">classes [Mull2018]_. The allowed and marginally allowed regions of the</span>
+<span class="sd">classes :cite:p:`Mull2018`. The allowed and marginally allowed regions of the</span>
 <span class="sd">Ramachandran reference plot have cutoffs set to include 90% and 99% of the data</span>
 <span class="sd">points, and the Janin reference plot has cutoffs for 90% and 98% of the data</span>
 <span class="sd">points. The list of PDB files used for the reference plots was taken from</span>
-<span class="sd">[Lovell2003]_ and information about general Janin regions was taken from</span>
-<span class="sd">[Janin1978]_.</span>
+<span class="sd">:cite:p:`Lovell2003` and information about general Janin regions was taken from</span>
+<span class="sd">:cite:p:`Janin1978`.</span>
 
 
 
@@ -328,29 +328,14 @@
 <span class="sd">References</span>
 <span class="sd">----------</span>
 
-<span class="sd">.. [Ramachandran1963] G. Ramachandran, C. Ramakrishnan, and</span>
-<span class="sd">   V. Sasisekharan. (1963) Stereochemistry of polypeptide chain</span>
-<span class="sd">   configurations. *Journal of Molecular Biology*, 7(1):95 – 99. doi:</span>
-<span class="sd">   `10.1016/S0022-2836(63)80023-6</span>
-<span class="sd">   &lt;https://doi.org/10.1016/S0022-2836(63)80023-6&gt;`_</span>
+<span class="sd">.. bibliography::</span>
+<span class="sd">    :filter: False</span>
+<span class="sd">    :style: MDA</span>
 
-<span class="sd">.. [Janin1978] Joël Janin, Shoshanna Wodak, Michael Levitt, and Bernard</span>
-<span class="sd">   Maigret. (1978). &quot;Conformation of amino acid side-chains in</span>
-<span class="sd">   proteins&quot;. *Journal of Molecular Biology* 125(3): 357-386. doi:</span>
-<span class="sd">   `10.1016/0022-2836(78)90408-4</span>
-<span class="sd">   &lt;https://doi.org/10.1016/0022-2836(78)90408-4&gt;`_</span>
-
-<span class="sd">.. [Lovell2003] Simon C. Lovell, Ian W. Davis, W. Bryan Arendall III,</span>
-<span class="sd">   Paul I. W. de Bakker, J. Michael Word, Michael G. Prisant,</span>
-<span class="sd">   Jane S. Richardson, and David C. Richardson (2003). &quot;Structure validation by</span>
-<span class="sd">   :math:`C_{\alpha}` geometry: :math:`\phi`, :math:`\psi`, and</span>
-<span class="sd">   :math:`C_{\beta}` deviation&quot;. *Proteins* 50(3): 437-450. doi:</span>
-<span class="sd">   `10.1002/prot.10286 &lt;https://doi.org/10.1002/prot.10286&gt;`_</span>
-
-<span class="sd">.. [Mull2018] H. Mull and O. Beckstein. SPIDAL Summer REU 2018 Dihedral</span>
-<span class="sd">   Analysis in MDAnalysis. Technical report, Arizona State University, 8</span>
-<span class="sd">   2018. doi: `10.6084/m9.figshare.6957296</span>
-<span class="sd">   &lt;https://doi.org/10.6084/m9.figshare.6957296&gt;`_</span>
+<span class="sd">    Ramachandran1963</span>
+<span class="sd">    Janin1978</span>
+<span class="sd">    Lovell2003</span>
+<span class="sd">    Mull2018</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>

@@ -131,8 +131,8 @@
 <p>This module implements the calculation of Mean Squared Displacements (MSDs)
 by the Einstein relation. MSDs can be used to characterize the speed at
 which particles move and has its roots in the study of Brownian motion.
-For a full explanation of the theory behind MSDs and the subsequent
-calculation of self-diffusivities the reader is directed to <a class="reference internal" href="#maginn2019" id="id1"><span>[Maginn2019]</span></a>.
+For a full explanation of the theory behind MSDs and the subsequent calculation
+of self-diffusivities the reader is directed to <span id="id1">[<a class="reference internal" href="#id42" title="Edward J. Maginn, Richard A. Messerly, Daniel J. Carlson, Daniel R. Roe, and J. Richard Elliot. Best practices for computing transport properties self-diffusivity and viscosity from equilibrium molecular dynamics. Living Journal of Computational Molecular Science, 1(1):6324, Dec. 2018. URL: https://livecomsjournal.org/index.php/livecoms/article/view/v1i1e6324, doi:10.33011/livecoms.1.1.6324.">Maginn2018</a>]</span>.
 MSDs can be computed from the following expression, known as the
 <strong>Einstein formula</strong>:</p>
 <div class="math notranslate nohighlight">
@@ -224,8 +224,8 @@ determine self-diffusivity. This linear segment represents the so called
 excluded along with poorly averaged data at long time-lags. We can select the
 “middle” of the MSD by indexing the MSD and the time-lags. Appropriately
 linear segments of the MSD can be confirmed with a log-log plot as is often
-reccomended <a class="reference internal" href="#maginn2019" id="id6"><span>[Maginn2019]</span></a> where the “middle” segment can be identified as
-having a slope of 1.</p>
+reccomended <span id="id6">[<a class="reference internal" href="#id42" title="Edward J. Maginn, Richard A. Messerly, Daniel J. Carlson, Daniel R. Roe, and J. Richard Elliot. Best practices for computing transport properties self-diffusivity and viscosity from equilibrium molecular dynamics. Living Journal of Computational Molecular Science, 1(1):6324, Dec. 2018. URL: https://livecomsjournal.org/index.php/livecoms/article/view/v1i1e6324, doi:10.33011/livecoms.1.1.6324.">Maginn2018</a>]</span> where the “middle” segment can be identified
+as having a slope of 1.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">lagtimes</span><span class="p">,</span> <span class="n">msd</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
@@ -284,35 +284,28 @@ processing trajectories for computation of self-diffusivities.
 These include specific instructions around simulation settings, using
 unwrapped trajectories and maintaining a relatively small elapsed time between
 saved frames. Additionally, corrections for finite size effects are sometimes
-employed along with various means of estimating errors <a class="reference internal" href="#yeh2004" id="id7"><span>[Yeh2004]</span></a> <a class="reference internal" href="#bulow2020" id="id8"><span>[Bulow2020]</span></a>.
-The reader is directed to the following review, which describes many of the
-common pitfalls <a class="reference internal" href="#maginn2019" id="id9"><span>[Maginn2019]</span></a>. There are other ways to compute
-self-diffusivity, such as from a Green-Kubo integral. At this point in time,
-these methods are beyond the scope of this module.</p>
+employed along with various means of estimating errors
+<span id="id7">[<a class="reference internal" href="#id57" title="In-Chul Yeh and Gerhard Hummer. System-size dependence of diffusion coefficients and viscosities from molecular dynamics simulations with periodic boundary conditions. The Journal of Physical Chemistry B, 108(40):15873-15879, 2004. doi:10.1021/jp0477147.">Yeh2004</a>, <a class="reference internal" href="#id17" title="Sören von Bülow, Jakob Tómas Bullerjahn, and Gerhard Hummer. Systematic errors in diffusion coefficients from long-time molecular dynamics simulations at constant pressure. The Journal of Chemical Physics, 153(2):021101, 2020. doi:10.1063/5.0008316.">von Bülow2020</a>]</span> The reader is directed to the following review,
+which describes many of the common pitfalls <span id="id8">[<a class="reference internal" href="#id42" title="Edward J. Maginn, Richard A. Messerly, Daniel J. Carlson, Daniel R. Roe, and J. Richard Elliot. Best practices for computing transport properties self-diffusivity and viscosity from equilibrium molecular dynamics. Living Journal of Computational Molecular Science, 1(1):6324, Dec. 2018. URL: https://livecomsjournal.org/index.php/livecoms/article/view/v1i1e6324, doi:10.33011/livecoms.1.1.6324.">Maginn2018</a>]</span>. There are
+other ways to compute self-diffusivity, such as from a Green-Kubo integral. At
+this point in time, these methods are beyond the scope of this module.</p>
 <p>Note also that computation of MSDs is highly memory intensive. If this is
-proving a problem, judicious use of the <code class="docutils literal notranslate"><span class="pre">start</span></code>, <code class="docutils literal notranslate"><span class="pre">stop</span></code>, <code class="docutils literal notranslate"><span class="pre">step</span></code> keywords to control which frames are incorporated may be required.</p>
+proving a problem, judicious use of the <code class="docutils literal notranslate"><span class="pre">start</span></code>, <code class="docutils literal notranslate"><span class="pre">stop</span></code>, <code class="docutils literal notranslate"><span class="pre">step</span></code> keywords
+to control which frames are incorporated may be required.</p>
 <p class="rubric">References</p>
+<div class="docutils container" id="id9">
 <dl class="citation">
-<dt class="label" id="maginn2019"><span class="brackets">Maginn2019</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id6">2</a>,<a href="#id9">3</a>)</span></dt>
-<dd><p>Maginn, E. J., Messerly, R. A., Carlson, D. J.; Roe, D. R.,
-Elliott, J. R. Best Practices for Computing Transport
-Properties 1. Self-Diffusivity and Viscosity from Equilibrium
-Molecular Dynamics [Article v1.0]. Living J. Comput. Mol. Sci.
-2019, 1 (1).</p>
+<dt class="label" id="id42"><span class="brackets">Maginn2018</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id6">2</a>,<a href="#id8">3</a>)</span></dt>
+<dd><p>Edward J. Maginn, Richard A. Messerly, Daniel J. Carlson, Daniel R. Roe, and J. Richard Elliot. Best practices for computing transport properties self-diffusivity and viscosity from equilibrium molecular dynamics. <em>Living Journal of Computational Molecular Science</em>, 1(1):6324, Dec. 2018. URL: <a class="reference external" href="https://livecomsjournal.org/index.php/livecoms/article/view/v1i1e6324">https://livecomsjournal.org/index.php/livecoms/article/view/v1i1e6324</a>, <a class="reference external" href="https://doi.org/10.33011/livecoms.1.1.6324">doi:10.33011/livecoms.1.1.6324</a>.</p>
 </dd>
-<dt class="label" id="yeh2004"><span class="brackets"><a class="fn-backref" href="#id7">Yeh2004</a></span></dt>
-<dd><p>Yeh, I. C.; Hummer, G. System-Size Dependence of Diffusion
-Coefficients and Viscosities from Molecular Dynamics
-Simulations with Periodic Boundary Conditions.
-J. Phys. Chem. B 2004, 108 (40), 15873–15879.</p>
+<dt class="label" id="id57"><span class="brackets"><a class="fn-backref" href="#id7">Yeh2004</a></span></dt>
+<dd><p>In-Chul Yeh and Gerhard Hummer. System-size dependence of diffusion coefficients and viscosities from molecular dynamics simulations with periodic boundary conditions. <em>The Journal of Physical Chemistry B</em>, 108(40):15873–15879, 2004. <a class="reference external" href="https://doi.org/10.1021/jp0477147">doi:10.1021/jp0477147</a>.</p>
 </dd>
-<dt class="label" id="bulow2020"><span class="brackets"><a class="fn-backref" href="#id8">Bulow2020</a></span></dt>
-<dd><p>von Bülow, S.; Bullerjahn, J. T.; Hummer, G. Systematic
-Errors in Diffusion Coefficients from Long-Time Molecular
-Dynamics Simulations at Constant Pressure. 2020.
-arXiv:2003.09205 [Cond-Mat, Physics:Physics].</p>
+<dt class="label" id="id17"><span class="brackets"><a class="fn-backref" href="#id7">von Bülow2020</a></span></dt>
+<dd><p>Sören von Bülow, Jakob Tómas Bullerjahn, and Gerhard Hummer. Systematic errors in diffusion coefficients from long-time molecular dynamics simulations at constant pressure. <em>The Journal of Chemical Physics</em>, 153(2):021101, 2020. <a class="reference external" href="https://doi.org/10.1063/5.0008316">doi:10.1063/5.0008316</a>.</p>
 </dd>
 </dl>
+</div>
 </section>
 <section id="classes">
 <h2><span class="section-number">4.7.2.2.4. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>

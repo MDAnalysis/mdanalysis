@@ -139,10 +139,10 @@ protein structures can be used. The sample should be equilibrated, at least
 locally. The order of the sampled structures in the trajectory is irrelevant.</p>
 <p>The <a class="reference internal" href="#diffusion-map-tutorial"><span class="std std-ref">Diffusion Map tutorial</span></a> shows how to use diffusion map for dimension
 reduction.</p>
-<p>More details about diffusion maps are in <a class="reference internal" href="#delaporte1" id="id1"><span>[deLaPorte1]</span></a>, <a class="reference internal" href="#lafon1" id="id2"><span>[Lafon1]</span></a> ,
-<a class="reference internal" href="#ferguson1" id="id3"><span>[Ferguson1]</span></a>, and <a class="reference internal" href="#clementi1" id="id4"><span>[Clementi1]</span></a>.</p>
+<p>More details about diffusion maps are in
+<span id="id1">[<a class="reference internal" href="#id57" title="J Porte, Ben Herbst, Willy Hereman, and Stéfan van der Walt. An introduction to diffusion maps. In 11 2008.">Porte2008</a>, <a class="reference internal" href="#id35" title="Ronald R. Coifman and Stéphane Lafon. Diffusion maps. Applied and Computational Harmonic Analysis, 21(1):5-30, 2006. Special Issue: Diffusion Maps and Wavelets. URL: https://www.sciencedirect.com/science/article/pii/S1063520306000546, doi:https://doi.org/10.1016/j.acha.2006.04.006.">Coifman2006</a>, <a class="reference internal" href="#id24" title="Andrew L. Ferguson, Athanassios Z. Panagiotopoulos, Ioannis G. Kevrekidis, and Pablo G. Debenedetti. Nonlinear dimensionality reduction in molecular simulation: the diffusion map approach. Chemical Physics Letters, 509(1):1-11, 2011. URL: https://www.sciencedirect.com/science/article/pii/S0009261411004957, doi:https://doi.org/10.1016/j.cplett.2011.04.066.">Ferguson2011</a>, <a class="reference internal" href="#id19" title="Mary A. Rohrdanz, Wenwei Zheng, Mauro Maggioni, and Cecilia Clementi. Determination of reaction coordinates via locally scaled diffusion map. The Journal of Chemical Physics, 134(12):124116, 2011. doi:10.1063/1.3569857.">Rohrdanz2011</a>]</span>.</p>
 <section id="diffusion-map-tutorial">
-<span id="id5"></span><h2><span class="section-number">4.9.1.1. </span>Diffusion Map tutorial<a class="headerlink" href="#diffusion-map-tutorial" title="Permalink to this heading"></a></h2>
+<span id="id2"></span><h2><span class="section-number">4.9.1.1. </span>Diffusion Map tutorial<a class="headerlink" href="#diffusion-map-tutorial" title="Permalink to this heading"></a></h2>
 <p>The example uses files provided as part of the MDAnalysis test suite
 (in the variables <code class="xref py py-data docutils literal notranslate"><span class="pre">PSF</span></code> and
 <code class="xref py py-data docutils literal notranslate"><span class="pre">DCD</span></code>). This tutorial shows how to use the
@@ -160,9 +160,9 @@ the corresponding eigenvalues and eigenvectors.</p>
 </pre></div>
 </div>
 <p>We leave determination of the appropriate scale parameter epsilon to the user,
-<a class="reference internal" href="#clementi1" id="id6"><span>[Clementi1]</span></a> uses a complex method involving the k-nearest-neighbors of a
-trajectory frame, whereas others simple use a trial-and-error approach with
-a constant epsilon. Currently, the constant epsilon method is implemented
+<span id="id3">[<a class="reference internal" href="#id19" title="Mary A. Rohrdanz, Wenwei Zheng, Mauro Maggioni, and Cecilia Clementi. Determination of reaction coordinates via locally scaled diffusion map. The Journal of Chemical Physics, 134(12):124116, 2011. doi:10.1063/1.3569857.">Rohrdanz2011</a>]</span> uses a complex method involving the k-nearest-neighbors
+of a trajectory frame, whereas others simple use a trial-and-error approach
+with a constant epsilon. Currently, the constant epsilon method is implemented
 by MDAnalysis.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dmap</span> <span class="o">=</span> <span class="n">diffusionmap</span><span class="o">.</span><span class="n">DiffusionMap</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;backbone&#39;</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">dmap</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
@@ -241,8 +241,8 @@ initialization of a DistanceMatrix. Otherwise, this can be a
 DistanceMatrix already initialized. Either way, this will be made
 into a diffusion kernel.</p></li>
 <li><p><strong>epsilon</strong> (<em>Float</em>) – Specifies the method used for the choice of scale parameter in the
-diffusion map. More information in <a class="reference internal" href="#lafon1" id="id7"><span>[Lafon1]</span></a>, <a class="reference internal" href="#ferguson1" id="id8"><span>[Ferguson1]</span></a> and
-<a class="reference internal" href="#clementi1" id="id9"><span>[Clementi1]</span></a>, Default: 1.</p></li>
+diffusion map. More information in
+<span id="id4">[<a class="reference internal" href="#id35" title="Ronald R. Coifman and Stéphane Lafon. Diffusion maps. Applied and Computational Harmonic Analysis, 21(1):5-30, 2006. Special Issue: Diffusion Maps and Wavelets. URL: https://www.sciencedirect.com/science/article/pii/S1063520306000546, doi:https://doi.org/10.1016/j.acha.2006.04.006.">Coifman2006</a>, <a class="reference internal" href="#id24" title="Andrew L. Ferguson, Athanassios Z. Panagiotopoulos, Ioannis G. Kevrekidis, and Pablo G. Debenedetti. Nonlinear dimensionality reduction in molecular simulation: the diffusion map approach. Chemical Physics Letters, 509(1):1-11, 2011. URL: https://www.sciencedirect.com/science/article/pii/S0009261411004957, doi:https://doi.org/10.1016/j.cplett.2011.04.066.">Ferguson2011</a>, <a class="reference internal" href="#id19" title="Mary A. Rohrdanz, Wenwei Zheng, Mauro Maggioni, and Cecilia Clementi. Determination of reaction coordinates via locally scaled diffusion map. The Journal of Chemical Physics, 134(12):124116, 2011. doi:10.1063/1.3569857.">Rohrdanz2011</a>]</span>, Default: 1.</p></li>
 <li><p><strong>**kwargs</strong> – Parameters to be passed for the initialization of a
 <a class="reference internal" href="#MDAnalysis.analysis.diffusionmap.DistanceMatrix" title="MDAnalysis.analysis.diffusionmap.DistanceMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">DistanceMatrix</span></code></a>.</p></li>
 </ul>
@@ -358,34 +358,31 @@ dmap.run()</p>
 
 <p class="rubric">References</p>
 <p>If you use this Dimension Reduction method in a publication, please
-cite <a class="reference internal" href="#lafon1" id="id10"><span>[Lafon1]</span></a>.</p>
+cite <span id="id5">[<a class="reference internal" href="#id35" title="Ronald R. Coifman and Stéphane Lafon. Diffusion maps. Applied and Computational Harmonic Analysis, 21(1):5-30, 2006. Special Issue: Diffusion Maps and Wavelets. URL: https://www.sciencedirect.com/science/article/pii/S1063520306000546, doi:https://doi.org/10.1016/j.acha.2006.04.006.">Coifman2006</a>]</span>.</p>
 <p>If you choose the default metric, this module uses the fast QCP algorithm
-<a class="reference internal" href="../lib/qcprot.html#theobald2005" id="id11"><span>[Theobald2005]</span></a> to calculate the root mean square distance (RMSD) between two
-coordinate sets (as implemented in
+<span id="id6">[<a class="reference internal" href="#id52" title="Douglas L. Theobald. Rapid calculation of RMSDs using a quaternion-based characteristic polynomial. Acta Crystallographica Section A, 61(4):478–480, Jul 2005. doi:10.1107/S0108767305015266.">Theobald2005</a>]</span> to calculate the root mean square distance (RMSD)
+between two coordinate sets (as implemented in
 <a class="reference internal" href="../lib/qcprot.html#MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix" title="MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix()</span></code></a>).  When using this
-module in published work please cite <a class="reference internal" href="../lib/qcprot.html#theobald2005" id="id12"><span>[Theobald2005]</span></a>.</p>
+module in published work please <span id="id7">[<a class="reference internal" href="#id52" title="Douglas L. Theobald. Rapid calculation of RMSDs using a quaternion-based characteristic polynomial. Acta Crystallographica Section A, 61(4):478–480, Jul 2005. doi:10.1107/S0108767305015266.">Theobald2005</a>]</span>.</p>
+<div class="docutils container" id="id8">
 <dl class="citation">
-<dt class="label" id="lafon1"><span class="brackets">Lafon1</span><span class="fn-backref">(<a href="#id2">1</a>,<a href="#id7">2</a>,<a href="#id10">3</a>)</span></dt>
-<dd><p>Coifman, Ronald R., Lafon, Stephane. Diffusion
-maps. Appl. Comput. Harmon.  Anal. 21, 5–30 (2006).</p>
+<dt class="label" id="id57"><span class="brackets"><a class="fn-backref" href="#id1">Porte2008</a></span></dt>
+<dd><p>J Porte, Ben Herbst, Willy Hereman, and Stéfan van der Walt. An introduction to diffusion maps. In 11 2008.</p>
 </dd>
-<dt class="label" id="delaporte1"><span class="brackets"><a class="fn-backref" href="#id1">deLaPorte1</a></span></dt>
-<dd><p>J. de la Porte, B. M. Herbst, W. Hereman, S. J. van der Walt.
-An Introduction to Diffusion Maps. In: The 19th Symposium of the
-Pattern Recognition Association of South Africa (2008).</p>
+<dt class="label" id="id35"><span class="brackets">Coifman2006</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id4">2</a>,<a href="#id5">3</a>)</span></dt>
+<dd><p>Ronald R. Coifman and Stéphane Lafon. Diffusion maps. <em>Applied and Computational Harmonic Analysis</em>, 21(1):5–30, 2006. Special Issue: Diffusion Maps and Wavelets. URL: <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/S1063520306000546">https://www.sciencedirect.com/science/article/pii/S1063520306000546</a>, <a class="reference external" href="https://doi.org/https://doi.org/10.1016/j.acha.2006.04.006">doi:https://doi.org/10.1016/j.acha.2006.04.006</a>.</p>
 </dd>
-<dt class="label" id="clementi1"><span class="brackets">Clementi1</span><span class="fn-backref">(<a href="#id4">1</a>,<a href="#id6">2</a>,<a href="#id9">3</a>)</span></dt>
-<dd><p>Rohrdanz, M. A, Zheng, W, Maggioni, M, &amp; Clementi, C.
-Determination of reaction coordinates via locally scaled diffusion
-map. J. Chem. Phys. 134, 124116 (2011).</p>
+<dt class="label" id="id24"><span class="brackets">Ferguson2011</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id4">2</a>)</span></dt>
+<dd><p>Andrew L. Ferguson, Athanassios Z. Panagiotopoulos, Ioannis G. Kevrekidis, and Pablo G. Debenedetti. Nonlinear dimensionality reduction in molecular simulation: the diffusion map approach. <em>Chemical Physics Letters</em>, 509(1):1–11, 2011. URL: <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/S0009261411004957">https://www.sciencedirect.com/science/article/pii/S0009261411004957</a>, <a class="reference external" href="https://doi.org/https://doi.org/10.1016/j.cplett.2011.04.066">doi:https://doi.org/10.1016/j.cplett.2011.04.066</a>.</p>
 </dd>
-<dt class="label" id="ferguson1"><span class="brackets">Ferguson1</span><span class="fn-backref">(<a href="#id3">1</a>,<a href="#id8">2</a>)</span></dt>
-<dd><p>Ferguson, A. L.; Panagiotopoulos, A. Z.; Kevrekidis, I. G.
-Debenedetti, P. G. Nonlinear dimensionality reduction in molecular
-simulation: The diffusion map approach Chem. Phys. Lett. 509, 1−11
-(2011)</p>
+<dt class="label" id="id19"><span class="brackets">Rohrdanz2011</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id3">2</a>,<a href="#id4">3</a>)</span></dt>
+<dd><p>Mary A. Rohrdanz, Wenwei Zheng, Mauro Maggioni, and Cecilia Clementi. Determination of reaction coordinates via locally scaled diffusion map. <em>The Journal of Chemical Physics</em>, 134(12):124116, 2011. <a class="reference external" href="https://doi.org/10.1063/1.3569857">doi:10.1063/1.3569857</a>.</p>
+</dd>
+<dt class="label" id="id52"><span class="brackets">Theobald2005</span><span class="fn-backref">(<a href="#id6">1</a>,<a href="#id7">2</a>)</span></dt>
+<dd><p>Douglas L. Theobald. Rapid calculation of RMSDs using a quaternion-based characteristic polynomial. <em>Acta Crystallographica Section A</em>, 61(4):478–480, Jul 2005. <a class="reference external" href="https://doi.org/10.1107/S0108767305015266">doi:10.1107/S0108767305015266</a>.</p>
 </dd>
 </dl>
+</div>
 </section>
 </section>
 

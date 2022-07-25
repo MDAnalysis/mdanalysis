@@ -131,17 +131,18 @@
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 1.0.0.</span></p>
 </div>
-<p>This module provides an updated interface for the <a class="reference external" href="http://www.holeprogram.org">HOLE</a> suite of tools <a class="reference internal" href="#smart1993" id="id1"><span>[Smart1993]</span></a>
-<a class="reference internal" href="#smart1996" id="id2"><span>[Smart1996]</span></a> to analyse an ion channel pore or transporter pathway <a class="reference internal" href="#stelzl2014" id="id3"><span>[Stelzl2014]</span></a>
-as a function of time or arbitrary order parameters. It replaces <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole</span></code>.</p>
+<p>This module provides an updated interface for the <a class="reference external" href="http://www.holeprogram.org">HOLE</a> suite of tools
+<span id="id1">[<a class="reference internal" href="#id52" title="O.S. Smart, J.M. Goodfellow, and B.A. Wallace. The pore dimensions of gramicidin a. Biophysical Journal, 65(6):2455-2460, 1993. doi:https://doi.org/10.1016/S0006-3495(93)81293-1.">Smart1993</a>, <a class="reference internal" href="#id53" title="Oliver S. Smart, Joseph G. Neduvelil, Xiaonan Wang, B.A. Wallace, and Mark S.P. Sansom. Hole: a program for the analysis of the pore dimensions of ion channel structural models. Journal of Molecular Graphics, 14(6):354-360, 1996. doi:https://doi.org/10.1016/S0263-7855(97)00009-X.">Smart1996</a>]</span> to analyse an ion channel pore or transporter
+pathway <span id="id2">[<a class="reference internal" href="#id54" title="Lukas S. Stelzl, Philip W. Fowler, Mark S.P. Sansom, and Oliver Beckstein. Flexible gates generate occluded intermediates in the transport cycle of lacy. Journal of Molecular Biology, 426(3):735-751, 2014. doi:https://doi.org/10.1016/j.jmb.2013.10.024.">Stelzl2014</a>]</span> as a function of time or arbitrary order
+parameters. It replaces <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole</span></code>.</p>
 <p><a class="reference external" href="http://www.holeprogram.org">HOLE</a> must be installed separately and can be obtained in binary form
 from <a class="reference external" href="http://www.holeprogram.org/">http://www.holeprogram.org/</a> or as source from
 <a class="reference external" href="https://github.com/osmart/hole2">https://github.com/osmart/hole2</a>. (HOLE is open source and available
 under the Apache v2.0 license.)</p>
 <section id="module-MDAnalysis.analysis.hole2">
 <span id="module"></span><h2><span class="section-number">4.4.1.1. </span>Module<a class="headerlink" href="#module-MDAnalysis.analysis.hole2" title="Permalink to this heading"></a></h2>
-<section id="id4">
-<h3><span class="section-number">4.4.1.1.1. </span>HOLE Analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.hole2" title="MDAnalysis.analysis.hole2"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2</span></code></a><a class="headerlink" href="#id4" title="Permalink to this heading"></a></h3>
+<section id="id3">
+<h3><span class="section-number">4.4.1.1.1. </span>HOLE Analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.hole2" title="MDAnalysis.analysis.hole2"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2</span></code></a><a class="headerlink" href="#id3" title="Permalink to this heading"></a></h3>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Lily Wang</p>
@@ -156,8 +157,9 @@ under the Apache v2.0 license.)</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 1.0.0.</span></p>
 </div>
-<p>This module contains the tools to interface with <a class="reference external" href="http://www.holeprogram.org">HOLE</a> <a class="reference internal" href="#smart1993" id="id5"><span>[Smart1993]</span></a>
-<a class="reference internal" href="#smart1996" id="id6"><span>[Smart1996]</span></a> to analyse an ion channel pore or transporter pathway <a class="reference internal" href="#stelzl2014" id="id7"><span>[Stelzl2014]</span></a> .</p>
+<p>This module contains the tools to interface with <a class="reference external" href="http://www.holeprogram.org">HOLE</a>
+<span id="id4">[<a class="reference internal" href="#id52" title="O.S. Smart, J.M. Goodfellow, and B.A. Wallace. The pore dimensions of gramicidin a. Biophysical Journal, 65(6):2455-2460, 1993. doi:https://doi.org/10.1016/S0006-3495(93)81293-1.">Smart1993</a>, <a class="reference internal" href="#id53" title="Oliver S. Smart, Joseph G. Neduvelil, Xiaonan Wang, B.A. Wallace, and Mark S.P. Sansom. Hole: a program for the analysis of the pore dimensions of ion channel structural models. Journal of Molecular Graphics, 14(6):354-360, 1996. doi:https://doi.org/10.1016/S0263-7855(97)00009-X.">Smart1996</a>]</span> to analyse an ion channel pore or transporter
+pathway <span id="id5">[<a class="reference internal" href="#id54" title="Lukas S. Stelzl, Philip W. Fowler, Mark S.P. Sansom, and Oliver Beckstein. Flexible gates generate occluded intermediates in the transport cycle of lacy. Journal of Molecular Biology, 426(3):735-751, 2014. doi:https://doi.org/10.1016/j.jmb.2013.10.024.">Stelzl2014</a>]</span>.</p>
 <section id="using-hole-on-a-pdb-file">
 <h4><span class="section-number">4.4.1.1.1.1. </span>Using HOLE on a PDB file<a class="headerlink" href="#using-hole-on-a-pdb-file" title="Permalink to this heading"></a></h4>
 <p>Use the :func:<code class="docutils literal notranslate"><span class="pre">hole</span></code> function to run <a class="reference external" href="http://www.holeprogram.org">HOLE</a> on a single PDB file. For example,
@@ -236,7 +238,7 @@ files when you are finished with the context manager:</p>
 file for <a class="reference external" href="https://www.ks.uiuc.edu/Research/vmd/">VMD</a> to display a triangulated surface of the pore found by
 <strong class="program">hole</strong>. This functionality is available with the
 <a class="reference internal" href="#MDAnalysis.analysis.hole2.HoleAnalysis.create_vmd_surface" title="MDAnalysis.analysis.hole2.HoleAnalysis.create_vmd_surface"><code class="xref py py-meth docutils literal notranslate"><span class="pre">HoleAnalysis.create_vmd_surface()</span></code></a> method
-<a class="footnote-reference brackets" href="#create-vmd-surface-function" id="id8">1</a>. For an input trajectory MDAnalysis writes a
+<a class="footnote-reference brackets" href="#create-vmd-surface-function" id="id6">1</a>. For an input trajectory MDAnalysis writes a
 <em>trajectory</em> of pore surfaces that can be animated in VMD together with the
 frames from the trajectory.</p>
 <section id="analyzing-a-full-trajectory">
@@ -283,7 +285,7 @@ only show every other frame (step 2) then the HOLE analysis will be</p>
 </div>
 </section>
 <section id="loading-a-trajectory-into-vmd-with-subsampling">
-<span id="id9"></span><h5><span class="section-number">4.4.1.1.1.3.3. </span>Loading a trajectory into VMD with subsampling<a class="headerlink" href="#loading-a-trajectory-into-vmd-with-subsampling" title="Permalink to this heading"></a></h5>
+<span id="id7"></span><h5><span class="section-number">4.4.1.1.1.3.3. </span>Loading a trajectory into VMD with subsampling<a class="headerlink" href="#loading-a-trajectory-into-vmd-with-subsampling" title="Permalink to this heading"></a></h5>
 <p>Load your system into VMD. This can mean to load the topology file with
 <span class="menuselection">File ‣ New Molecule</span> and adding the trajectory with
 <span class="menuselection">File ‣ Load Data into Molecule</span> or just <span class="menuselection">File
@@ -300,7 +302,7 @@ choose one less than the <code class="docutils literal notranslate"><span class=
 <div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>hole_surface_subsampled.vmd
 </pre></div>
 </div>
-<p>You should see a different surface for each frame in the trajectory. <a class="footnote-reference brackets" href="#vmd-extra-frame" id="id10">2</a></p>
+<p>You should see a different surface for each frame in the trajectory. <a class="footnote-reference brackets" href="#vmd-extra-frame" id="id8">2</a></p>
 </section>
 <section id="creating-a-subsampled-trajectory">
 <h5><span class="section-number">4.4.1.1.1.3.4. </span>Creating a subsampled trajectory<a class="headerlink" href="#creating-a-subsampled-trajectory" title="Permalink to this heading"></a></h5>
@@ -327,7 +329,7 @@ method:</p>
 TRR format.</p>
 <p>In VMD we load the topology and the trajectory and then load the surface. In
 our example we have a PDB file (<code class="file docutils literal notranslate"><span class="pre">frame0.pdb</span></code>) as topology so we need to
-remove the first frame <a class="footnote-reference brackets" href="#vmd-extra-frame" id="id11">2</a> (skip the “trim” step below if you
+remove the first frame <a class="footnote-reference brackets" href="#vmd-extra-frame" id="id9">2</a> (skip the “trim” step below if you
 are using a true topology file such as PSF, TPR, or PRMTOP). To keep this
 example compact, we are using the tcl command line interface in <a class="reference external" href="https://www.ks.uiuc.edu/Research/vmd/">VMD</a>
 (<span class="menuselection">Extensions ‣ Tk Console</span>) for loading and trimming the
@@ -475,7 +477,7 @@ symlinks after running the function.</p></li>
 </dl>
 <p class="rubric">Notes</p>
 <ul class="simple">
-<li><p>HOLE is very picky and does not read all DCD-like formats <a class="footnote-reference brackets" href="#holedcd" id="id12">3</a>.
+<li><p>HOLE is very picky and does not read all DCD-like formats <a class="footnote-reference brackets" href="#holedcd" id="id10">3</a>.
 If in doubt, look into the <cite>outfile</cite> for error diagnostics.</p></li>
 </ul>
 <div class="versionadded">
@@ -1059,28 +1061,22 @@ to an integer.</p></li>
 </dd></dl>
 
 <p class="rubric">References</p>
+<div class="docutils container" id="id12">
 <dl class="citation">
-<dt class="label" id="smart1993"><span class="brackets">Smart1993</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id5">2</a>)</span></dt>
-<dd><p>O.S. Smart, J.M. Goodfellow and B.A. Wallace.
-The Pore Dimensions of Gramicidin A. Biophysical Journal 65:2455-2460, 1993.
-DOI: 10.1016/S0006-3495(93)81293-1</p>
+<dt class="label" id="id52"><span class="brackets">Smart1993</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id4">2</a>)</span></dt>
+<dd><p>O.S. Smart, J.M. Goodfellow, and B.A. Wallace. The pore dimensions of gramicidin a. <em>Biophysical Journal</em>, 65(6):2455–2460, 1993. <a class="reference external" href="https://doi.org/https://doi.org/10.1016/S0006-3495(93)81293-1">doi:https://doi.org/10.1016/S0006-3495(93)81293-1</a>.</p>
 </dd>
-<dt class="label" id="smart1996"><span class="brackets">Smart1996</span><span class="fn-backref">(<a href="#id2">1</a>,<a href="#id6">2</a>)</span></dt>
-<dd><p>O.S. Smart, J.G. Neduvelil, X. Wang, B.A. Wallace, and M.S.P. Sansom.
-HOLE: A program for the analysis of the pore dimensions of ion channel
-structural models. J.Mol.Graph., 14:354–360, 1996.
-DOI: 10.1016/S0263-7855(97)00009-X
-URL <a class="reference external" href="http://www.holeprogram.org/">http://www.holeprogram.org/</a></p>
+<dt class="label" id="id53"><span class="brackets">Smart1996</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id4">2</a>)</span></dt>
+<dd><p>Oliver S. Smart, Joseph G. Neduvelil, Xiaonan Wang, B.A. Wallace, and Mark S.P. Sansom. Hole: a program for the analysis of the pore dimensions of ion channel structural models. <em>Journal of Molecular Graphics</em>, 14(6):354–360, 1996. <a class="reference external" href="https://doi.org/https://doi.org/10.1016/S0263-7855(97)00009-X">doi:https://doi.org/10.1016/S0263-7855(97)00009-X</a>.</p>
 </dd>
-<dt class="label" id="stelzl2014"><span class="brackets">Stelzl2014</span><span class="fn-backref">(<a href="#id3">1</a>,<a href="#id7">2</a>)</span></dt>
-<dd><p>L. S. Stelzl, P. W. Fowler, M. S. P. Sansom, and O. Beckstein.
-Flexible gates generate occluded intermediates in the transport cycle
-of LacY. J Mol Biol, 426:735–751, 2014.
-DOI: 10.1016/j.jmb.2013.10.024</p>
+<dt class="label" id="id54"><span class="brackets">Stelzl2014</span><span class="fn-backref">(<a href="#id2">1</a>,<a href="#id5">2</a>)</span></dt>
+<dd><p>Lukas S. Stelzl, Philip W. Fowler, Mark S.P. Sansom, and Oliver Beckstein. Flexible gates generate occluded intermediates in the transport cycle of lacy. <em>Journal of Molecular Biology</em>, 426(3):735–751, 2014. <a class="reference external" href="https://doi.org/https://doi.org/10.1016/j.jmb.2013.10.024">doi:https://doi.org/10.1016/j.jmb.2013.10.024</a>.</p>
 </dd>
 </dl>
+</div>
+<p class="rubric">Footnotes</p>
 <dl class="footnote brackets">
-<dt class="label" id="create-vmd-surface-function"><span class="brackets"><a class="fn-backref" href="#id8">1</a></span></dt>
+<dt class="label" id="create-vmd-surface-function"><span class="brackets"><a class="fn-backref" href="#id6">1</a></span></dt>
 <dd><p>If you use the <a class="reference internal" href="#MDAnalysis.analysis.hole2.hole" title="MDAnalysis.analysis.hole2.hole"><code class="xref py py-class docutils literal notranslate"><span class="pre">hole</span></code></a> class to run
 <strong class="program">hole</strong> on a single PDB file then you can use
 <a class="reference internal" href="#MDAnalysis.analysis.hole2.utils.create_vmd_surface" title="MDAnalysis.analysis.hole2.utils.create_vmd_surface"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2.utils.create_vmd_surface()</span></code></a>
@@ -1088,7 +1084,7 @@ function to manually run <strong class="program">sph_process</strong> and
 <strong class="program">sos_triangle</strong> on the output files andcr eate a surface
 file.</p>
 </dd>
-<dt class="label" id="vmd-extra-frame"><span class="brackets">2</span><span class="fn-backref">(<a href="#id10">1</a>,<a href="#id11">2</a>)</span></dt>
+<dt class="label" id="vmd-extra-frame"><span class="brackets">2</span><span class="fn-backref">(<a href="#id8">1</a>,<a href="#id9">2</a>)</span></dt>
 <dd><p>If you loaded your system in <a class="reference external" href="https://www.ks.uiuc.edu/Research/vmd/">VMD</a> from separate topology
 and trajectory files and the topology file contained coordinates
 (such as a PDB or GRO) file then your trajectory will have an
@@ -1097,7 +1093,7 @@ file. Delete the initial frame with <span class="menuselection">Molecule ‣
 Delete Frames</span> by setting <em>First</em> to 0 and <em>Last</em> to 0 and
 selecting <span class="guilabel">Delete</span>.</p>
 </dd>
-<dt class="label" id="holedcd"><span class="brackets"><a class="fn-backref" href="#id12">3</a></span></dt>
+<dt class="label" id="holedcd"><span class="brackets"><a class="fn-backref" href="#id10">3</a></span></dt>
 <dd><p>PDB files are not the only files that <strong class="program">hole</strong> can
 read. In principle, it is also able to read CHARMM DCD
 trajectories and generate a hole profile for each frame. However,
