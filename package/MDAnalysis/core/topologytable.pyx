@@ -43,7 +43,7 @@ cdef class TopologyTable:
         self.generate_bix(val)
         
     
-    cdef generate_bix(self, int[:,:] val):
+    cdef void _generate_bix(self, int[:,:] val):
         # track whether we have seen this bond before
         
         # the bond, foraward and reverse
@@ -96,6 +96,25 @@ cdef class TopologyTable:
         
         self.spans.push_back(val.shape[0])
 
+    def get_bonds(self, int target):
+        cdef vector[int] bonds
+        bonds = self._get_bonds(target)
+        return bonds
+
+    cdef vector[int] _get_bonds(self, int target):
+        cdef int start = self.spans[target]
+        cdef int end = self.spans[target+1]
+        cdef int i, b_ix, atom
+        cdef vector[int] bonds
+        for i in range(start, end, 1):
+            b_ix = self.bix[i]
+            #NOTE: Can we git rid of this ugly access thing?
+            if self.access[i] == 0:
+                bond = self.ix_pair_array[b_ix].first
+            else:
+                bond = self.ix_pair_array[b_ix].second
+            bonds.push_back(bond)
+        return bonds
 
 
 
