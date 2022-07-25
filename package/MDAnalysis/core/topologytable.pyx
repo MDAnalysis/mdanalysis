@@ -40,7 +40,7 @@ cdef class TopologyTable:
         .. versionadded:: 2.3.0
            Initialise C++ level parameters
         """
-        self.generate_bix(val)
+        self._generate_bix(val)
         
     
     cdef void _generate_bix(self, int[:,:] val):
