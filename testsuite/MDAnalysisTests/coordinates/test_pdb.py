@@ -548,7 +548,7 @@ class TestPDBWriter(object):
         universe.atoms.ids = universe.atoms.ids + 23
         universe.atoms.write(outfile, reindex=False)
         read_universe = mda.Universe(outfile)
-        assert np.all(read_universe.atoms.ids == universe.atoms.ids)
+        assert_equal(read_universe.atoms.ids, universe.atoms.ids)
 
     @pytest.mark.filterwarnings(IGNORE_NO_INFORMATION_WARNING)
     def test_no_reindex_bonds(self, universe, outfile):
@@ -576,7 +576,7 @@ class TestPDBWriter(object):
         universe.atoms.write(outfile, reindex=True)
         read_universe = mda.Universe(outfile)
         # AG.ids is 1-based, while AG.indices is 0-based, hence the +1
-        assert np.all(read_universe.atoms.ids == universe.atoms.indices + 1)
+        assert_equal(read_universe.atoms.ids, universe.atoms.indices + 1)
 
     def test_no_reindex_missing_ids(self, u_no_ids, outfile):
         """

@@ -124,7 +124,7 @@ class HistoryParser(TopologyReaderBase):
             ids = []
 
             line = inf.readline()
-            while not len(line.split()) == 5:
+            while not (len(line.split()) == 4 or len(line.split()) == 5):
                 line = inf.readline()
                 if line == '':
                     raise EOFError("End of file reached when reading HISTORY.")

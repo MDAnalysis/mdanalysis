@@ -40,6 +40,7 @@ __all__ = [
     'lineardensity',
     'msd',
     'nuclinfo',
+    'nucleicacids',
     'polymer',
     'pca',
     'psa',

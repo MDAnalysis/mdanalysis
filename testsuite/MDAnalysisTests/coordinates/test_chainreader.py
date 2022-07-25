@@ -175,6 +175,7 @@ class TestChainReader(object):
         transformed.trajectory.rewind()
         assert_almost_equal(transformed.trajectory.ts.positions, ref, decimal = 6)
 
+
 class TestChainReaderCommonDt(object):
     common_dt = 100.0
     prec = 3

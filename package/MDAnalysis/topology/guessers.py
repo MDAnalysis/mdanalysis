@@ -494,9 +494,7 @@ def guess_aromaticities(atomgroup):
     .. versionadded:: 2.0.0
     """
     mol = atomgroup.convert_to("RDKIT")
-    atoms = sorted(mol.GetAtoms(),
-                   key=lambda a: a.GetIntProp("_MDAnalysis_index"))
-    return np.array([atom.GetIsAromatic() for atom in atoms])
+    return np.array([atom.GetIsAromatic() for atom in mol.GetAtoms()])
 
 
 def guess_gasteiger_charges(atomgroup):
@@ -518,7 +516,6 @@ def guess_gasteiger_charges(atomgroup):
     mol = atomgroup.convert_to("RDKIT")
     from rdkit.Chem.rdPartialCharges import ComputeGasteigerCharges
     ComputeGasteigerCharges(mol, throwOnParamFailure=True)
-    atoms = sorted(mol.GetAtoms(),
-                   key=lambda a: a.GetIntProp("_MDAnalysis_index"))
-    return np.array([atom.GetDoubleProp("_GasteigerCharge") for atom in atoms],
+    return np.array([atom.GetDoubleProp("_GasteigerCharge")
+                     for atom in mol.GetAtoms()],
                     dtype=np.float32)

@@ -21,16 +21,10 @@ jobs:
     MPLBACKEND: agg
   strategy:
     matrix:
-        Win-Python37-32bit-full:
-          PYTHON_VERSION: '3.7'
+        Win-Python38-32bit-full:
+          PYTHON_VERSION: '3.8'
           PYTHON_ARCH: 'x86'
           BUILD_TYPE: 'normal'
-          imageName: 'windows-2019'
-        Win-Python37-64bit-full-wheel:
-          PYTHON_VERSION: '3.7'
-          PYTHON_ARCH: 'x64'
-          BUILD_TYPE: 'wheel'
-          NUMPY_MIN: '1.18.0'
           imageName: 'windows-2019'
         Win-Python38-64bit-full:
           PYTHON_VERSION: '3.8'
@@ -46,25 +40,25 @@ jobs:
           PYTHON_VERSION: '3.9'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
-          NUMPY_MIN: '1.19.3'
+          NUMPY_MIN: '1.20.0'
           imageName: 'windows-2019'
         Win-Python38-64bit-full-wheel:
           PYTHON_VERSION: '3.8'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
-          NUMPY_MIN: '1.18.0'
+          NUMPY_MIN: '1.20.0'
           imageName: 'windows-2019'
         Linux-Python39-64bit-full-wheel:
           PYTHON_VERSION: '3.9'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
-          NUMPY_MIN: '1.19.3'
+          NUMPY_MIN: '1.20.0'
           imageName: 'ubuntu-latest'
-        Linux-Python37-64bit-full-wheel:
-          PYTHON_VERSION: '3.7'
+        Linux-Python38-64bit-full-wheel:
+          PYTHON_VERSION: '3.8'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
-          NUMPY_MIN: '1.19.3'
+          NUMPY_MIN: '1.20.0'
           imageName: 'ubuntu-latest'
   pool:
     vmImage: $(imageName)
@@ -98,9 +92,10 @@ jobs:
       pytest-xdist
       scikit-learn
       scipy
-      h5py
+      h5py>=2.10
       tqdm
       threadpoolctl
+      fasteners
     displayName: 'Install dependencies'
   # for wheel install testing, we pin to an
   # older NumPy, the oldest version we support and that

@@ -355,13 +355,13 @@ class AuxReader(metaclass=_AuxReaderMeta):
 
         Parameters
         ----------
-        ts : :class:`~MDAnalysis.coordinates.base.Timestep` object
+        ts : :class:`~MDAnalysis.coordinates.timestep.Timestep` object
             The trajectory timestep for which corresponding auxiliary data is
             to be read and updated.
 
         Returns
         -------
-        :class:`~MDAnalysis.coordinates.base.Timestep`
+        :class:`~MDAnalysis.coordinates.timestep.Timestep`
             *ts* with the representative auxiliary
             value in ``ts.aux`` be updated appropriately.
 
@@ -395,7 +395,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
 
         Parameters
         ----------
-        ts : :class:`~MDAnalysis.coordinates.base.Timestep` object
+        ts : :class:`~MDAnalysis.coordinates.timestep.Timestep` object
             The trajectory timestep for which corresponding auxiliary data is
             to be read.
 
@@ -449,7 +449,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
         step : int
             Number of the auxiliary step to calculate closest trajectory frame
             for.
-        ts : :class:`~MDAnalysis.coordinates.base.Timestep` object
+        ts : :class:`~MDAnalysis.coordinates.timestep.Timestep` object
             (Any) timestep from the trajectory the calculated frame number is to
             correspond to.
         return_time_diff : bool, optional
@@ -492,7 +492,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
 
         Parameters
         ----------
-        ts : :class:`~MDAnalysis.coordinates.base.Timestep` object
+        ts : :class:`~MDAnalysis.coordinates.timestep.Timestep` object
             The trajectory timestep before which the auxiliary reader is to
             be positioned.
         """
@@ -526,7 +526,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
 
         Parameters
         ----------
-        ts : :class:`~MDAnalysis.coordinates.base.Timestep` object
+        ts : :class:`~MDAnalysis.coordinates.timestep.Timestep` object
             Any timestep from the trajectory for which the next 'non-empty'
             frame is to be found.
 
