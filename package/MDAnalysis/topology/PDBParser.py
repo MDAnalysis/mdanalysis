@@ -65,10 +65,6 @@ Classes
 import numpy as np
 import warnings
 
-<<<<<<< Updated upstream
-from .guessers import guess_types
-=======
->>>>>>> Stashed changes
 from .tables import SYMB2Z
 from ..lib import util
 from .base import TopologyReaderBase, change_squash
@@ -335,10 +331,7 @@ class PDBParser(TopologyReaderBase):
                     validated_elements.append('')
             attrs.append(Elements(np.array(validated_elements, dtype=object)))
 
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes
         # Residue level stuff from here
         resids = np.array(resids, dtype=np.int32)
         resnames = np.array(resnames, dtype=object)
