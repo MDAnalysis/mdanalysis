@@ -9,14 +9,14 @@ dependencies:
   - fasteners
   - griddataformats
   - gsd
-  - h5py
+  - h5py>=2.10
   - hypothesis
   - joblib>=0.12
   - matplotlib==3.2.2
   - mmtf-python
   - mock
   - networkx
-  - numpy>=1.19
+  - numpy>=1.20
   - pytest
   - python==3.8
   - scikit-learn
