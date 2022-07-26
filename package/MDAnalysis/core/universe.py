@@ -373,9 +373,9 @@ class Universe(object):
         # add mass and type to the to_guess list
         toplist = list(self._topology.read_attributes)
         if not any(att.singular == 'type' for att in toplist) and 'types' not in to_guess:
-            to_guess.append('type')
+            to_guess.append('types')
         if not any(att.singular == 'mass' for att in toplist) and 'masses' not in to_guess:
-            to_guess.append('mass')
+            to_guess.append('masses')
         if 'bonds' in to_guess:
             guess_bonds = True
             to_guess.remove('bonds')
@@ -1471,9 +1471,9 @@ class Universe(object):
                 values = self._guesser.guess_Attr(attr)
                 self.add_TopologyAttr(attr, values)
         else:
-            raise ValueError('{0} guesser can not guess one or more'
+            raise ValueError('{0} guesser can not guess one or more '
                              'of the provided attributes'
-                             .format(self.context))
+                             .format(context))
             
 
 def Merge(*args):

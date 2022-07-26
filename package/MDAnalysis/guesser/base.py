@@ -29,12 +29,6 @@ class GuesserMeta(type):
             _GUESSERS[classdict['context'].upper()] = cls
         except KeyError:
             pass
-        
-     
-
-
-
-
 
 class GuesserBase(metaclass=GuesserMeta):
     context = 'base' 

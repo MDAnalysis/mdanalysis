@@ -35,16 +35,16 @@ class DefaultGuesser(GuesserBase):
 
     def __init__(self, atoms, **kwargs):
         super().__init__(atoms, **kwargs)
-        self._guess = {'mass': self.guess_masses,
-                       'type': self.guess_types,
-                       'angle': self.guess_angles,
-                       'dihedral': self.guess_dihedrals,
-                       'bond': self.guess_bonds}
-        self._rank = {'mass': 1,
-                      'type': 0,
-                      'bond': 0,
-                      'angle': 1,
-                      'dihedral': 2
+        self._guess = {'masses': self.guess_masses,
+                       'types': self.guess_types,
+                       'angles': self.guess_angles,
+                       'dihedrals': self.guess_dihedrals,
+                       'bonds': self.guess_bonds}
+        self._rank = {'masses': 1,
+                      'types': 0,
+                      'bonds': 0,
+                      'angles': 1,
+                      'dihedrals': 2
                       }
 
     def guess_masses(self):

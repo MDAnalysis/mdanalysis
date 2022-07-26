@@ -3290,15 +3290,15 @@ class AtomGroup(GroupBase):
         guesser = get_guesser(context, self, vdwradii=vdwradii,
                               box=self.dimensions)
         # indices of bonds
-        b = guesser.guess_Attr('bond') 
+        b = guesser.guess_Attr('bonds') 
         bondattr = get_TopAttr(self.universe, 'bonds', Bonds)
         bondattr._add_bonds(b, guessed=True)
 
-        a = guesser.guess_Attr('angle')
+        a = guesser.guess_Attr('angles')
         angleattr = get_TopAttr(self.universe, 'angles', Angles)
         angleattr._add_bonds(a, guessed=True)
 
-        d = guesser.guess_Attr('dihedral')
+        d = guesser.guess_Attr('dihedrals')
         diheattr = get_TopAttr(self.universe, 'dihedrals', Dihedrals)
         diheattr._add_bonds(d)
 
