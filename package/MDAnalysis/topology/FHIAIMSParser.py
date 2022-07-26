@@ -57,6 +57,7 @@ from ..core.topologyattrs import (
     Resnums,
     Segids,
     Elements,
+    Atomtypes
 )
 
 
@@ -99,7 +100,8 @@ class FHIAIMSParser(TopologyReaderBase):
                 Resids(np.array([1])),
                  Resnums(np.array([1])),
                  Segids(np.array(['SYSTEM'], dtype=object)),
-                 Elements(names)]
+                 Elements(names),
+                 Atomtypes(names)]
 
         top = Topology(natoms, 1, 1,
                        attrs=attrs)

@@ -330,7 +330,12 @@ class PDBParser(TopologyReaderBase):
                     warnings.warn(wmsg)
                     validated_elements.append('')
             attrs.append(Elements(np.array(validated_elements, dtype=object)))
-
+        else:
+            atomtypes = names
+            attrs.append(Atomtypes(atomtypes))
+            warnings.warn("Element information is missing, elements attribute "
+                          "will not be populated. If needed these can be "
+                          "guessed using MDAnalysis.topology.guessers.")
 
         # Residue level stuff from here
         resids = np.array(resids, dtype=np.int32)

@@ -47,7 +47,6 @@ import warnings
 import numpy as np
 
 from ..topology.base import TopologyReaderBase, change_squash
-from ..topology import guessers
 from ..core.topologyattrs import (
     Atomids,
     Atomnames,
@@ -96,9 +95,6 @@ class RDKitParser(TopologyReaderBase):
      - Resnums
      - RSChirality
      - Segids
-
-    Guesses the following:
-     - Atomtypes
 
     Depending on RDKit's input, the following Attributes might be present:
      - Charges
@@ -303,8 +299,8 @@ class RDKitParser(TopologyReaderBase):
         if atomtypes:
             attrs.append(Atomtypes(np.array(atomtypes, dtype=object)))
         else:
-            atomtypes = guessers.guess_types(names)
-            attrs.append(Atomtypes(atomtypes, guessed=True))
+            atomtypes = elements
+            attrs.append(Atomtypes(atomtypes))
 
         # Partial charges
         if charges:

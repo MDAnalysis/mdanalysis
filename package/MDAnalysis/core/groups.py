@@ -3257,16 +3257,16 @@ class AtomGroup(GroupBase):
         return [self[levelindices == index] for index in
                 unique_int_1d(levelindices)]
 
-    def guess_bonds(self, vdwradii=None):
+    def guess_bonds(self, vdwradii=None, context=None):
         """Guess bonds that exist within this :class:`AtomGroup` and add them to
         the underlying :attr:`~AtomGroup.universe`.
 
         Parameters
         ----------
         vdwradii : dict, optional
-            Dict relating atom types: vdw radii
-
-
+        Dict relating atom types: vdw radii
+        context : string
+        context of the universe   
         See Also
         --------
         :func:`MDAnalysis.topology.guessers.guess_bonds`
@@ -3276,7 +3276,7 @@ class AtomGroup(GroupBase):
         .. versionchanged:: 0.20.2
            Now applies periodic boundary conditions when guessing bonds.
         """
-        from ..topology.core import guess_bonds, guess_angles, guess_dihedrals
+        from ..guesser.base import get_guesser
         from .topologyattrs import Bonds, Angles, Dihedrals
 
         def get_TopAttr(u, name, cls):
@@ -3287,18 +3287,18 @@ class AtomGroup(GroupBase):
                 attr = cls([])
                 u.add_TopologyAttr(attr)
                 return attr
-
+        guesser = get_guesser(context, self, vdwradii=vdwradii,
+                              box=self.dimensions)
         # indices of bonds
-        b = guess_bonds(self.atoms, self.atoms.positions,
-                        vdwradii=vdwradii, box=self.dimensions)
+        b = guesser.guess_Attr('bond') 
         bondattr = get_TopAttr(self.universe, 'bonds', Bonds)
         bondattr._add_bonds(b, guessed=True)
 
-        a = guess_angles(self.bonds)
+        a = guesser.guess_Attr('angle')
         angleattr = get_TopAttr(self.universe, 'angles', Angles)
         angleattr._add_bonds(a, guessed=True)
 
-        d = guess_dihedrals(self.angles)
+        d = guesser.guess_Attr('dihedral')
         diheattr = get_TopAttr(self.universe, 'dihedrals', Dihedrals)
         diheattr._add_bonds(d)
 

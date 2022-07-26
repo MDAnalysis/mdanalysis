@@ -85,7 +85,7 @@ from .groups import (ComponentBase, GroupBase,
 from .topology import Topology
 from .topologyattrs import AtomAttr, ResidueAttr, SegmentAttr, BFACTOR_WARNING
 from .topologyobjects import TopologyObject
-from ..guesser.core import get_guesser
+from ..guesser.base import get_guesser
 logger = logging.getLogger("MDAnalysis.core.universe")
 
 
@@ -314,7 +314,7 @@ class Universe(object):
     def __init__(self, topology=None, *coordinates, all_coordinates=False,
                  format=None, topology_format=None, transformations=None,
                  guess_bonds=False, vdwradii=None, context='default',
-                 to_guess=[], in_memory=False,
+                 to_guess=(), in_memory=False,
                  in_memory_step=1, **kwargs):
 
         self._trajectory = None  # managed attribute holding Reader
@@ -369,16 +369,20 @@ class Universe(object):
             if callable(transformations):
                 transformations = [transformations]
             self._trajectory.add_transformations(*transformations)
-
-        if guess_bonds:
-            self.atoms.guess_bonds(vdwradii=vdwradii)
+        to_guess = list(to_guess)
         # add mass and type to the to_guess list
         toplist = list(self._topology.read_attributes)
-        if not any(att.singular == 'type' for att in toplist) and 'type' not in to_guess:
+        if not any(att.singular == 'type' for att in toplist) and 'types' not in to_guess:
             to_guess.append('type')
-        if not any(att.singular == 'mass' for att in toplist) and 'mass' not in to_guess:
+        if not any(att.singular == 'mass' for att in toplist) and 'masses' not in to_guess:
             to_guess.append('mass')
-        self.guess_TopologyAttr(context, to_guess)
+        if 'bonds' in to_guess:
+            guess_bonds = True
+            to_guess.remove('bonds')
+            
+        self.guess_TopologyAttributes(context, to_guess)
+        if guess_bonds:
+            self.atoms.guess_bonds(vdwradii=vdwradii, context=context)
 
     def copy(self):
         """Return an independent copy of this Universe"""
@@ -1443,15 +1447,17 @@ class Universe(object):
 
         return cls(mol, **kwargs)
 
-    def guess_TopologyAttr(self, context, to_guess):
+    def guess_TopologyAttributes(self, context, to_guess):
         """guess attributes passed to the universe within specific context
 
         Parameters
         ----------
         context: string or Guesser class
-        to_guess: list of atrributes to be guessed then added to the universe
+        for calling a matching guesser class for this specific context
+        to_guess: list
+        list of atrributes to be guessed then added to the universe
         """        
-        self._guesser = get_guesser(self.atoms, context)
+        self._guesser = get_guesser(context, self.atoms)
         if self._guesser.is_guessed(to_guess):
             # sort attributes
             to_guess = self._guesser.rank_attributes(to_guess)
@@ -1459,11 +1465,16 @@ class Universe(object):
             toplist = list(self._topology.read_attributes)
             for attr in to_guess:
                 if any(attr == a.singular for a in toplist):
-                    warnings.warn('The atrribute {} have already been read '
+                    warnings.warn('The attribute {} have already been read '
                                   'from the topology file, you are overwriting'
                                   'it by guessed values'.format(attr))
-                values = self._guesser.guess_topologyAttr(attr)
+                values = self._guesser.guess_Attr(attr)
                 self.add_TopologyAttr(attr, values)
+        else:
+            raise ValueError('{0} guesser can not guess one or more'
+                             'of the provided attributes'
+                             .format(self.context))
+            
 
 def Merge(*args):
     """Create a new new :class:`Universe` from one or more
