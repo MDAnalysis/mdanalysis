@@ -343,7 +343,7 @@ class DefaultGuesser(GuesserBase):
 
         .. versionadded 0.9.0
         """
-        angles = self.atoms.angles
+        angles = self._atoms.angles
         dihedrals_found = set()
 
         for b in angles:
@@ -363,7 +363,7 @@ class DefaultGuesser(GuesserBase):
         return tuple(dihedrals_found)
 
 
-    def guess_improper_dihedrals(angles):
+    def guess_improper_dihedrals(self):
         """Given a list of Angles, find all improper dihedrals that exist between
         atoms.
 
@@ -379,6 +379,7 @@ class DefaultGuesser(GuesserBase):
 
         .. versionadded 0.9.0
         """
+        angles = self._atoms.angles
         dihedrals_found = set()
 
         for b in angles:
