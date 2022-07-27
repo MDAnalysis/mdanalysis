@@ -3041,6 +3041,11 @@ class AtomGroup(GroupBase):
                 ``S`` will be possible options but other values will not raise
                 an error.
 
+            formalcharge *formal-charge*
+                select atoms based on their formal charge, e.g.
+                ``name O and formalcharge -1`` to select all oxygens with a
+                negative 1 formal charge.
+
         **Boolean**
 
             not

@@ -155,7 +155,7 @@ jobs:
       with:
         mamba: true
         full-deps: true
-        extra-pip-deps: "sphinx sphinx-sitemap sphinx_rtd_theme msmb_theme==1.2.0"
+        extra-pip-deps: "sphinx sphinx-sitemap sphinx_rtd_theme msmb_theme==1.2.0 sphinxcontrib-bibtex pybtex pybtex-docutils"
 
     - name: build_srcs
       uses: ./.github/actions/build-src
