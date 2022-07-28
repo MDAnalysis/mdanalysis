@@ -175,7 +175,7 @@ __all__ = [
     "RANDOM_WALK_TOPO", # garbage topology to go along with XTC positions above
     "AUX_XVG", "XVG_BAD_NCOL", #for testing .xvg auxiliary reader
     "AUX_XVG_LOWF", "AUX_XVG_HIGHF",
-    "AUX_EDR", # for testing .edr auxiliary reader
+    "AUX_EDR", "AUX_EDR_TPR", "AUX_EDR_XTC", "AUX_EDR_RAW", # for testing .edr auxiliary reader
     "MMTF", "MMTF_gz", 'MMTF_skinny',  # skinny - some optional fields stripped out
     "MMTF_skinny2",
     "ALIGN_BOUND",  # two component bound system

@@ -416,7 +416,7 @@ def assert_auxstep_equal(A, B):
     if A.time != B.time:
         raise AssertionError('A and B have different times: A.time = {}, '
                              'B.time = {}'.format(A.time, B.time))
-    if type(A.data) == dict:
+    if isinstance(A.data, dict):
         # e.g. EDRReader
         if not A.data == B.data:
             raise AssertionError('A and B have different data: A.data = {}, '

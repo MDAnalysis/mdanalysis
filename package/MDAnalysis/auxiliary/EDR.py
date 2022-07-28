@@ -25,16 +25,15 @@
 EDR auxiliary reader --- :mod:`MDAnalysis.auxiliary.EDR`
 ========================================================
 
-EDR files are binary files following the XDR protocol
-(https://datatracker.ietf.org/doc/html/rfc1014). They are written by
+EDR_ files are binary files following the XDR_ protocol. They are written by
 GROMACS during simulations and contain the time-series energy data of the
 system.
 
-pyedr is a Python package ( https://github.com/mdanalysis/panedr ) that reads
-EDR binary files and returns them human-readable form as a dictionary of NumPy
-arrays. It is used by the EDR auxiliary reader to parse EDR files. As such, a
-dictionary with string keys and numpy array values is loaded into the
-EDRReader.
+pyedr_ is a Python package that reads EDR binary files and returns them
+human-readable form as a dictionary of NumPy arrays. It is used by the EDR
+auxiliary reader to parse EDR files. As such, a dictionary with string keys and
+numpy array values is loaded into the :class:`EDRReader`. It is basically a
+Python-based version of the C++ code in GROMACS_.
 
 The EDR auxiliary reader takes the output from pyedr and loads the energy data
 as auxiliary data into :class:`~MDAnalysis.core.universe.Universe`. Standalone
@@ -42,16 +41,18 @@ usage is also possible, where the energy terms are extracted without
 associating them with the trajectory, for example, to allow easy plotting of
 the energy terms.
 
-
-
+.. _EDR: https://manual.gromacs.org/current/reference-manual/file-formats.html#edr
+.. _XDR: https://datatracker.ietf.org/doc/html/rfc1014
+.. _pyedr: https://github.com/mdanalysis/panedr
+.._GROMACS: https://github.com/gromacs/gromacs/blob/main/src/gromacs/fileio/enxio.cpp
 """
-import os
+from pathlib import Path
 from . import base
 import pyedr
 
 
 class EDRStep(base.AuxStep):
-    """ AuxStep class for .edr file format.
+    """:class:`AuxStep` class for .edr file format.
 
     Extends the base AuxStep class to allow selection of time and
     data-of-interest fields (by column index) from the full set of data read
@@ -125,7 +126,7 @@ class EDRReader(base.AuxReader):
     _Auxstep = EDRStep
 
     def __init__(self, filename, **kwargs):
-        self._auxdata = os.path.abspath(filename)
+        self._auxdata = Path(filename).resolve()
         self.auxdata = pyedr.edr_to_dict(filename)
         self._n_steps = len(self.auxdata["Time"])
         # attribute to communicate found energy terms to user
