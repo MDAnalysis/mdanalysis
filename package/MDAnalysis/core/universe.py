@@ -369,6 +369,7 @@ class Universe(object):
             if callable(transformations):
                 transformations = [transformations]
             self._trajectory.add_transformations(*transformations)
+
         to_guess = list(to_guess)
         # add mass and type to the to_guess list
         toplist = list(self._topology.read_attributes)
