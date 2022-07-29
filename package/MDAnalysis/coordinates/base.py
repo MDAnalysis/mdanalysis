@@ -978,7 +978,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             natoms=self.n_atoms
         ))
 
-    def add_auxiliary(self, auxname, auxdata, format=None, **kwargs):
+    def add_auxiliary(self, auxname, auxdata, format=None, auxterm=None, **kwargs):
         """Add auxiliary data to be read alongside trajectory.
 
         Auxiliary data may be any data timeseries from the trajectory additional
@@ -1014,9 +1014,19 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         Auxiliary data is assumed to be time-ordered, with no duplicates. See
         the :ref:`Auxiliary API`.
         """
+        if auxname == "*":
+            # all terms found in file to be added
+            for term in auxdata.terms:
+                self.add_single_aux(auxname, auxdata, auxterm)
+        elif isinstance(auxname, list):
+            self.add_aux_list(auxname, auxdata, auxterm)
+        else:
+            self.add_single_aux(auxname, auxdata)
+
+    def add_single_aux(self, auxname, auxdata, auxterm=None):
         if auxname in self.aux_list:
-            raise ValueError("Auxiliary data with name {name} already "
-                             "exists".format(name=auxname))
+            raise ValueError(f"Auxiliary data with name {auxname} already "
+                             "exists")
         if isinstance(auxdata, AuxReader):
             aux = auxdata
             aux.auxname = auxname
