@@ -140,6 +140,8 @@ from .. import (
 from .. import units
 from ..auxiliary.base import AuxReader
 from ..auxiliary.core import auxreader
+from ..auxiliary.core import get_auxreader_for
+from ..auxiliary import _AUXREADERS
 from ..lib.util import asiterable, Namespace, store_init_arguments
 
 
@@ -696,7 +698,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             self.rewind()
             raise StopIteration from None
         else:
-            for auxname in self.aux_list:
+            for auxname, reader in self._auxs.items():
                 ts = self._auxs[auxname].update_ts(ts)
 
             ts = self._apply_transformations(ts)
@@ -978,7 +980,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             natoms=self.n_atoms
         ))
 
-    def add_auxiliary(self, auxname, auxdata, format=None, auxterm=None, **kwargs):
+    def add_auxiliary(self, auxname, auxdata, auxterm=None, format=None, **kwargs):
         """Add auxiliary data to be read alongside trajectory.
 
         Auxiliary data may be any data timeseries from the trajectory additional
@@ -1014,24 +1016,90 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         Auxiliary data is assumed to be time-ordered, with no duplicates. See
         the :ref:`Auxiliary API`.
         """
-        if auxname == "*":
-            # all terms found in file to be added
-            for term in auxdata.terms:
-                self.add_single_aux(auxname, auxdata, auxterm)
-        elif isinstance(auxname, list):
-            self.add_aux_list(auxname, auxdata, auxterm)
-        else:
-            self.add_single_aux(auxname, auxdata)
+        # auxdata can be an AuxReader or the data itself, try to get AuxReader
+        # from auxdata
+        try:
+            auxreader = get_auxreader_for(auxdata)
+        except AttributeError as e:
+            if str(e) == "'NoneType' object has no attribute 'upper'":
+                # user already gave instance of auxreader
+                auxreader = ""  # assign something so check below works
 
-    def add_single_aux(self, auxname, auxdata, auxterm=None):
+        # Check if XVG format, call appropriate method
+        if isinstance(auxdata, _AUXREADERS["XVG"]) or \
+                auxreader == _AUXREADERS["XVG"]:
+            self._add_aux_xvg(auxname, auxdata, format, **kwargs)
+
+        # Check if EDR format
+        elif isinstance(auxdata, _AUXREADERS["EDR"]) or \
+                auxreader == _AUXREADERS["EDR"]:
+            # Users can specify multiple values to be added, parse selection
+            if auxname == "*":
+                # all terms found in file to be added
+                if not isinstance(auxdata, _AUXREADERS["EDR"]):
+                    # Read file into EDRReader to gain access to auxdata.terms
+                    auxdata = auxreader(auxdata)
+                for term in auxdata.terms:
+                    name = term
+                    self._add_aux_edr(name, auxdata, term, format, **kwargs)
+
+            elif isinstance(auxname, list):
+                # User gave list of terms to be added
+                for entry, name in enumerate(auxname):
+                    if not auxterm:
+                        # auxterm not specified, use auxname as auxterm
+                        term = name
+                        self._add_aux_edr(name, auxdata, term, format, **kwargs)
+                    else:
+                        # auxterms are specified, pull these terms from edr and
+                        # assign to auxname. Lists must be of equal length
+                        # and are assumed to be ordered. 
+                        if len(auxname) != len(auxterm):
+                            raise ValueError("auxname and auxterm must be have "
+                                             f"the same number of terms, but "
+                                             f"have {len(auxname)} and "
+                                             f"{len(auxterm)} instead.")
+                        self._add_aux_edr(name, auxdata, auxterm[entry], format, **kwargs)
+
+            elif isinstance(auxname, str):
+                # User specified single energy term to be added
+                if not auxterm:
+                    auxterm = auxname
+                self._add_aux_edr(auxname, auxdata, auxterm, format, **kwargs)
+
+            else:
+                raise AttributeError("Invalid selection of 'auxname'.")
+
+    def _add_aux_xvg(self, auxname, auxdata, format, **kwargs):
         if auxname in self.aux_list:
-            raise ValueError(f"Auxiliary data with name {auxname} already "
-                             "exists")
+            raise ValueError("Auxiliary data with name {name} already "
+                             "exists".format(name=auxname))
         if isinstance(auxdata, AuxReader):
             aux = auxdata
             aux.auxname = auxname
         else:
             aux = auxreader(auxdata, format=format, auxname=auxname, **kwargs)
+        self._auxs[auxname] = aux
+        self.ts = aux.update_ts(self.ts)
+
+    def _add_aux_edr(self, auxname, auxdata, auxterm, format, **kwargs):
+
+        if auxname in self.aux_list:
+            raise ValueError(f"Auxiliary data with name {auxname} already "
+                             "exists")
+        if isinstance(auxdata, AuxReader):
+            # Create new AuxReader instance for each term to be added
+            # to allow for iteration of all of them.
+            # Needs to be done, otherwise only the last term that is added is
+            # iterated over.
+            description = auxdata.get_description()
+            aux = auxreader(**description)
+            aux.auxname = auxname
+            aux.data_selector = auxterm
+
+        else:
+            aux = auxreader(auxdata, format=format, auxname=auxname, data_selector=auxterm, **kwargs)
+
         self._auxs[auxname] = aux
         self.ts = aux.update_ts(self.ts)
 
