@@ -25,9 +25,7 @@
 TNG Trajectory IO --- :mod:`MDAnalysis.coordinates.TNG`
 =======================================================
 
-:Authors: Hugo MacDermott-Opeskin
-:Year: 2022
-:Copyright: GNU Public License v2
+Some stuff
 """
 
 import numpy as np
@@ -47,6 +45,7 @@ else:
 
 class TNGReader(base.ReaderBase):
     r"""Reader for the TNG format"""
+
     format = 'TNG'
     units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps',
              'force': 'kJ/(mol*nm)'}
@@ -55,8 +54,8 @@ class TNGReader(base.ReaderBase):
     _positions_blockname = "TNG_TRAJ_POSITIONS"
     _velocities_blockname = "TNG_TRAJ_VELOCITIES"
     _forces_blockname = "TNG_TRAJ_FORCES"
-    _special_blocks = [self._box_blockname, self._positions_blockname,
-                       self._velocities_blockname, self._forces_blockname]
+    _special_blocks = [_box_blockname, _positions_blockname,
+                       _velocities_blockname, _forces_blockname]
 
     def __init__(self, filename, **kwargs):
 
@@ -75,7 +74,7 @@ class TNGReader(base.ReaderBase):
         self._block_strides = self._file_iterator.block_strides
         self._data_frames = self._file_iterator.n_data_frames
         self._special_block_present = {
-            k: False for k in self._special_blocks.keys()}
+            k: False for k in self._special_blocks}
 
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
 
@@ -103,7 +102,9 @@ class TNGReader(base.ReaderBase):
     def _check_strides_and_frames(self):
         strides = []
         n_data_frames = []
-        for block in self._special_block_present:
+
+        []
+        for block in self.special_blocks:
             stride = self._block_strides[block]
             strides.append(stride)
             n_data_frame = self._data_frames[block]
@@ -118,10 +119,10 @@ class TNGReader(base.ReaderBase):
                           " blocks not equal, file cannot be read")
 
         self._global_stride = strides[0]
-        self.n_frames = n_data_frames[0]
+        self._n_frames = n_data_frames[0]
 
         self._additional_blocks_to_read = []
-        for block in self.additional_blocks:
+        for block in self._additional_blocks:
             stride_add = self._block_strides[block]
             n_data_frame_add = self._data_frames[block]
             if (stride_add != self._global_stride) or (n_data_frame_add != self.n_frames):
@@ -136,14 +137,19 @@ class TNGReader(base.ReaderBase):
 
     @staticmethod
     def parse_n_atoms(filename, **kwargs):
-        with pytng.TNGFileIterator(filename 'r') as tng:
+        with pytng.TNGFileIterator(filename, 'r') as tng:
             n_atoms = tng.n_atoms
         return n_atoms
 
     @property
     def n_frames(self):
         """number of frames in trajectory"""
-        return self.n_frames
+        return self._n_frames
+
+    @property
+    def special_blocks(self):
+        "list of the special blocks that are in the file"
+        return [k for k,v in self._special_block_present.items() if v]
 
     def _reopen(self):
         """reopen trajectory"""
@@ -157,7 +163,10 @@ class TNGReader(base.ReaderBase):
 
     def _read_frame(self, i):
         """read frame i"""
-        raise NotImplementedError
+        self._frame = i - 1
+        ts = self._read_next_frame()
+        return ts
+
 
     def _read_next_timestep(self, ts=None):
         """Read next frame into a timestep"""
@@ -169,7 +178,7 @@ class TNGReader(base.ReaderBase):
         step = self._frame_to_step(self._frame)
         iterator_step = self._file_iterator.read_step(step)
         self._frame += 1
-        self._frame_to_ts(iterator_step, ts)
+        ts = self._frame_to_ts(iterator_step, ts)
         return ts
 
     def _frame_to_ts(self, curr_step, ts):
