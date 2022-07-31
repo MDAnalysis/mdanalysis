@@ -357,7 +357,6 @@ class BaseAuxReaderTest(object):
     def test_get_description(self, ref, reader):
         description = reader.get_description()
         for attr in ref.description:
-            print(attr, description[attr], ref.description[attr])
             assert description[attr] == ref.description[attr], "'Description' does not match for {}".format(attr)
 
     def test_load_from_description(self, reader):

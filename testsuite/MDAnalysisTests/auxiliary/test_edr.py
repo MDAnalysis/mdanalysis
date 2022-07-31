@@ -106,35 +106,38 @@ class EDRReference(BaseAuxReference):
 
         self.bond_step1_val = 1426.2252197265625
         self.bond_step2_val = 1482.0098876953125
+        self.bond_step1_2_avg = (self.bond_step1_val + self.bond_step2_val) / 2
         # test reading a timestep with lower frequency. Auxiliary steps with
-        # times between [0.02 ps, 0.06 ps) will be assigned to this timestep, 
+        # times between [0.02 ps, 0.06 ps) will be assigned to this timestep,
         # i.e. step 1 (0.02 ps) and step 2 (0.04 ps).
         self.lower_freq_ts = reference_timestep(dt=0.04, offset=0)
         # 'closest' representative value will match step 2
         # Pick value for "Bond" to check against.
         self.lowf_closest_rep = self.bond_step2_val
         # 'average' representative value
-        self.lowf_average_rep = self.format_data([1.5, 3, 3])
+        self.lowf_avg_time = 0.03
+        self.lowf_average_rep = [self.lowf_avg_time, self.bond_step1_2_avg]
 
-        ## test reading a timestep with higher frequency. Auxiliart steps with 
-        ## times between [0.25ps, 0.75ps) will be assigned to this timestep, i.e.
-        ## no auxiliary steps
-        self.higher_freq_ts = reference_timestep(dt=0.5, offset=0)
+        # test reading a timestep with higher frequency. Auxiliart steps with
+        # times between [0.25ps, 0.75ps) will be assigned to this timestep,
+        # i.e. no auxiliary steps
+        self.higher_freq_ts = reference_timestep(dt=0.01, offset=0)
         self.highf_rep = self.format_data(np.nan)
 
-        ## test reading a timestep that is offset. Auxiliary steps with
-        ## times between [0.75ps, 1.75ps) will be assigned to this timestep, i.e.
-        ## step 1 (1 ps)
-        self.offset_ts = reference_timestep(dt=1, offset=0.25)
+        # test reading a timestep that is offset. Auxiliary steps with
+        # times between [0.015ps, 0.035ps) will be assigned to this timestep,
+        # i.e step 1 (0.02 ps)
+        self.offset_ts = reference_timestep(dt=0.02, offset=0.005)
         # 'closest' representative value will match step 1 data
         self.offset_closest_rep = self.bond_step1_val
 
-        ## testing cutoff for representative values
+        # testing cutoff for representative values
         self.cutoff = 0
         # for 'average': use low frequenct timestep, only step 2 within 0ps cutoff
-        self.lowf_cutoff_average_rep = self.format_data([2, 2*2, 2**2])
+        self.lowf_cutoff_average_rep = self.bond_step2_val
         # for 'closest': use offset timestep; no timestep within 0ps cutoff
-        self.offset_cutoff_closest_rep = self.format_data([np.nan, np.nan, np.nan])
+        # changed here to match requirements for EDR data
+        self.offset_cutoff_closest_rep = np.array(np.nan)
 
 
 
@@ -206,5 +209,88 @@ class TestEDRReader(BaseAuxReaderTest):
         # try reading a timestep offset from auxiliary
         ts = ref.offset_ts
         reader.update_ts(ts)
-        assert_almost_equal(ts.aux.test, ref.offset_closest_rep,
+        assert_almost_equal(ts.aux.test["Bond"], ref.offset_closest_rep,
                             err_msg="Representative value in ts.aux does not match")
+
+    def test_represent_as_average(self, ref, reader):
+        # test the 'average' option for 'represent_ts_as'
+        # reset the represent method to 'average'...
+        reader.represent_ts_as = 'average'
+        # read timestep; use the low freq timestep
+        ts = ref.lower_freq_ts
+        reader.update_ts(ts)
+        # check the representative value set in ts is as expected
+        test_value = [ts.aux.test["Time"], ts.aux.test["Bond"]]
+        assert_almost_equal(test_value, ref.lowf_average_rep,
+                            err_msg="Representative value does not match when "
+                                    "using with option 'average'")
+
+    def test_represent_as_average_with_cutoff(self, ref, reader):
+        # test the 'represent_ts_as' 'average' option when we have a cutoff set
+        # set the cutoff...
+        reader.cutoff = ref.cutoff
+        # read timestep; use the low frequency timestep
+        ts = ref.lower_freq_ts
+        reader.update_ts(ts)
+        # check representative value set in ts is as expected
+        assert_almost_equal(ts.aux.test["Bond"], ref.lowf_cutoff_average_rep,
+                            err_msg="Representative value does not match when "
+                                    "applying cutoff")
+
+    def test_add_all_terms_from_file(self):
+        u = mda.Universe(AUX_EDR_TPR, AUX_EDR_XTC)
+        u.trajectory.add_auxiliary("*", AUX_EDR)
+        ref_terms = [key for key in read_auxstep_data(0).keys()]
+        terms = [key for key in u.trajectory._auxs]
+        assert ref_terms == terms
+
+    def test_add_all_terms_from_reader(self):
+        u = mda.Universe(AUX_EDR_TPR, AUX_EDR_XTC)
+        aux = mda.auxiliary.EDR.EDRReader(AUX_EDR)
+        u.trajectory.add_auxiliary("*", aux)
+        ref_terms = [key for key in read_auxstep_data(0).keys()]
+        terms = [key for key in u.trajectory._auxs]
+        assert ref_terms == terms
+
+    def test_add_term_list_custom_names_from_file(self):
+        u = mda.Universe(AUX_EDR_TPR, AUX_EDR_XTC)
+        u.trajectory.add_auxiliary(["bond", "temp"], AUX_EDR,
+                                   ["Bond", "Temperature"])
+        ref_dict = read_auxstep_data(0)
+        assert u.trajectory.ts.aux.bond == ref_dict["Bond"]
+        assert u.trajectory.ts.aux.temp == ref_dict["Temperature"]
+
+    def test_add_term_list_custom_names_from_reader(self):
+        u = mda.Universe(AUX_EDR_TPR, AUX_EDR_XTC)
+        aux = mda.auxiliary.EDR.EDRReader(AUX_EDR)
+        u.trajectory.add_auxiliary(["bond", "temp"], aux,
+                                   ["Bond", "Temperature"])
+        ref_dict = read_auxstep_data(0)
+        assert u.trajectory.ts.aux.bond == ref_dict["Bond"]
+        assert u.trajectory.ts.aux.temp == ref_dict["Temperature"]
+
+    def test_add_single_term_custom_name_from_file(self):
+        u = mda.Universe(AUX_EDR_TPR, AUX_EDR_XTC)
+        u.trajectory.add_auxiliary("temp", AUX_EDR, "Temperature")
+        ref_dict = read_auxstep_data(0)
+        assert u.trajectory.ts.aux.temp == ref_dict["Temperature"]
+
+    def test_add_single_term_custom_name_from_reader(self):
+        u = mda.Universe(AUX_EDR_TPR, AUX_EDR_XTC)
+        aux = mda.auxiliary.EDR.EDRReader(AUX_EDR)
+        u.trajectory.add_auxiliary("temp", aux, "Temperature")
+        ref_dict = read_auxstep_data(0)
+        assert u.trajectory.ts.aux.temp == ref_dict["Temperature"]
+
+    def test_terms_update_on_iter(self):
+        u = mda.Universe(AUX_EDR_TPR, AUX_EDR_XTC)
+        aux = mda.auxiliary.EDR.EDRReader(AUX_EDR)
+        u.trajectory.add_auxiliary(["bond", "temp"], aux,
+                                   ["Bond", "Temperature"])
+        ref_dict = read_auxstep_data(0)
+        assert u.trajectory.ts.aux.bond == ref_dict["Bond"]
+        assert u.trajectory.ts.aux.temp == ref_dict["Temperature"]
+        ref_dict = read_auxstep_data(1)
+        u.trajectory.next()
+        assert u.trajectory.ts.aux.bond == ref_dict["Bond"]
+        assert u.trajectory.ts.aux.temp == ref_dict["Temperature"]

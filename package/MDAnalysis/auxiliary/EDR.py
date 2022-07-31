@@ -190,3 +190,60 @@ class EDRReader(base.AuxReader):
             Time at each step.
         """
         return self.auxdata[self.time_selector]
+
+    def calc_representative(self):
+        """ Calculate representative auxiliary value(s) from the data in
+        *frame_data*.
+        Overloaded here to accommodate the different data type. Now, this works
+        for energy data dictionaries.
+
+
+        Currently implemented options for calculating representative value are:
+
+          * `closest`: default; the value(s) from the step closest to in time
+            to the trajectory timestep
+
+          * `average`: average of the value(s) from steps 'assigned' to the
+            trajectory timestep.
+
+        Additionally, if ``cutoff`` is specified, only steps within this time
+        of the trajectory timestep are considered in calculating the
+        representative.
+
+        If no auxiliary steps were assigned to the timestep, or none fall
+        within the cutoff, representative values are set to ``np.nan``.
+
+        Returns
+        -------
+        ndarray
+            Array of auxiliary value(s) 'representative' for the timestep.
+        """
+        if self.cutoff == -1:
+            cutoff_data = self.frame_data
+        else:
+            cutoff_data = {key: val for key, val in self.frame_data.items()
+                           if abs(key) <= self.cutoff}
+
+        if len(cutoff_data) == 0:
+            # no steps are 'assigned' to this trajectory frame, so return
+            # values of ``np.nan``
+            value = self.auxstep._empty_data()
+        elif self.represent_ts_as == 'closest':
+            min_diff = min([abs(i) for i in cutoff_data])
+            # we don't know the original sign, and might have two
+            # equally-spaced steps; check the earlier time first
+            try:
+                value = cutoff_data[-min_diff]
+            except KeyError:
+                value = cutoff_data[min_diff]
+        elif self.represent_ts_as == 'average':
+            value = {}
+            for dataset in cutoff_data:
+                for term in self.terms:
+                    if term not in value:
+                        value[term] = cutoff_data[dataset][term]
+                    else:
+                        value[term] += cutoff_data[dataset][term]
+            for term in value:
+                value[term] = value[term] / len(cutoff_data)
+        return value

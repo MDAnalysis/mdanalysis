@@ -228,7 +228,7 @@ class AuxStep(object):
         Default behaviour here works when ``data`` is a ndarray of floats. May
         need to overwrite in individual format's AuxSteps.
         """
-        return np.full_like(self.data, np.nan)
+        return np.full_like(self.data, np.nan, dtype=float)
 
 
 class AuxReader(metaclass=_AuxReaderMeta):
