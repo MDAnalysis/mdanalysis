@@ -31,9 +31,10 @@ Some stuff
 import numpy as np
 import MDAnalysis as mda
 import warnings
-from . import base, core
-from ..exceptions import NoDataError
+from . import base
 from ..due import due, Doi
+from ..lib.mdamath import  triclinic_box
+
 
 try:
     import pytng
@@ -189,7 +190,9 @@ class TNGReader(base.ReaderBase):
         ts.data['step'] = curr_step.step
 
         if self._has_box:
-            curr_step.get_box(ts.dimensions)
+            box = self._file_iterator.make_ndarray_for_block_from_name(self._box_blockname)
+            curr_step.get_box(box)
+            ts.dimensions = triclinic_box(box)
             if not curr_step.read_success():
                 raise IOError("Failed to read box from TNG file")
         if self._has_positions:
