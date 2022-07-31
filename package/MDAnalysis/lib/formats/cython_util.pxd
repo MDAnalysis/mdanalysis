@@ -21,4 +21,5 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 cimport numpy as np
+np.import_array()
 cdef np.ndarray ptr_to_ndarray(void* data_ptr, np.int64_t[:] dim, int data_type)

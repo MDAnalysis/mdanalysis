@@ -76,7 +76,7 @@ First load all modules and test data::
 
 
 Given a universe containing trajectory data we can perform Principal Component
-Analyis by using the class :class:`PCA` and retrieving the principal
+Analysis by using the class :class:`PCA` and retrieving the principal
 components.::
 
     u = mda.Universe(PSF, DCD)
@@ -207,14 +207,6 @@ class PCA(AnalysisBase):
         .. deprecated:: 2.0.0
                 Will be removed in MDAnalysis 3.0.0. Please use
                 :attr:`results.cumulated_variance` instead.
-
-
-    Methods
-    -------
-    transform(atomgroup, n_components=None)
-        Take an atomgroup or universe with the same number of atoms as was
-        used for the calculation in :meth:`PCA.run`, and project it onto the
-        principal components.
 
     Notes
     -----
@@ -422,6 +414,174 @@ class PCA(AnalysisBase):
 
         return dot
 
+    def project_single_frame(self, components=None, group=None, anchor=None):
+        r"""Computes a function to project structures onto selected PCs
+
+        Applies Inverse-PCA transform to the PCA atomgroup.
+        Optionally, calculates one displacement vector per residue
+        to extrapolate the transform to atoms not in the PCA atomgroup.
+
+        Parameters
+        ----------
+        components : int, array, optional
+            Components to be projected onto.
+            The default ``None`` maps onto all components.
+
+        group : AtomGroup, optional
+            The AtomGroup containing atoms to be projected.
+            The projection applies to whole residues in ``group``.
+            The atoms in the PCA class are not affected by this argument.
+            The default ``None`` does not extrapolate the projection
+            to non-PCA atoms.
+
+        anchor : string, optional
+            The string to select the PCA atom whose displacement vector
+            is applied to non-PCA atoms in a residue. The ``anchor`` selection
+            is applied to ``group``.The resulting atomselection must have
+            exactly one PCA atom in each residue of ``group``.
+            The default ``None`` does not extrapolate the projection
+            to non-PCA atoms.
+
+        Returns
+        -------
+        function
+            The resulting function f(ts) takes as input a
+            :class:`~MDAnalysis.coordinates.timestep.Timestep` ts,
+            and returns ts with the projected structure
+
+            .. warning::
+               The transformation function takes a :class:``Timestep`` as input
+               because this is required for :ref:``transformations``.
+               However, the inverse-PCA transformation is applied on the atoms
+               of the Universe that was used for the PCA. It is *expected*
+               that the `ts` is from the same Universe but this is
+               currently not checked.
+
+        Notes
+        -----
+        When the PCA class is run for an atomgroup, the principal components
+        are cached. The trajectory can then be projected onto one or more of
+        these principal components. Since the principal components are sorted
+        in the order of decreasing explained variance, the first few components
+        capture the essential molecular motion.
+
+        If N is the number of atoms in the PCA group, each component has the
+        length 3N. A PCA score :math:`w\_i`, along component :math:`u\_i`, is
+        calculated for a set of coordinates :math:`(r(t))` of the same atoms.
+        The PCA scores are then used to transform the structure, :math:`(r(t))`
+        at a timestep, back to the original space.
+
+        .. math::
+
+            w_{i}(t) =  ({\textbf r}(t) - \bar{{\textbf r}}) \cdot
+                        {\textbf u}_i \\
+            {\textbf r'}(t) = (w_{i}(t) \cdot {\textbf u}_i^T) +
+                              \bar{{\textbf r}}
+
+        For each residue, the projection can be extended to atoms that were
+        not part of PCA by applying the displacement vector of a PCA atom to
+        all the atoms in the residue. This could be useful to preserve the bond
+        distance between a PCA atom and other non-PCA atoms in a residue.
+
+        If there are r residues and n non-PCA atoms in total, the displacement
+        vector has the size 3r. This needs to be broadcasted to a size 3n. An
+        extrapolation trick is used to shape the array, since going over each
+        residue for each frame can be expensive. Non-PCA atoms' displacement
+        vector is calculated with fancy indexing on the anchors' displacement
+        vector. `index_extrapolate` saves which atoms belong to which anchors.
+        If there are two non-PCA atoms in the first anchor's residue and three
+        in the second anchor's residue, `index_extrapolate` is [0, 0, 1, 1, 1]
+
+        Examples
+        --------
+        Run PCA class before using this function. For backbone PCA, run::
+
+            pca = PCA(universe, select='backbone').run()
+
+        Obtain a transformation function to project the
+        backbone trajectory onto the first principal component::
+
+            project = pca.project_single_frame(components=0)
+
+        To project onto the first two components, run::
+
+            project = pca.project_single_frame(components=[0,1])
+
+        Alternatively, the transformation can be applied to PCA atoms and
+        extrapolated to other atoms according to the CA atom's translation
+        in each residue::
+
+            all = u.select_atoms('all')
+            project = pca.project_single_frame(components=0,
+                                               group=all, anchor='name CA')
+
+        Finally, apply the transformation function to a timestep::
+
+            project(u.trajectory.ts)
+
+        or apply the projection to the universe::
+
+            u.trajectory.add_transformations(project)
+
+
+        .. versionadded:: 2.2.0
+        """
+        if not self._calculated:
+            raise ValueError('Call run() on the PCA before projecting')
+
+        if group is not None:
+            if anchor is None:
+                raise ValueError("'anchor' cannot be 'None'" +
+                                 " if 'group' is not 'None'")
+
+            anchors = group.select_atoms(anchor)
+            anchors_res_ids = anchors.resindices
+            if np.unique(anchors_res_ids).size != anchors_res_ids.size:
+                raise ValueError("More than one 'anchor' found in residues")
+            if not np.isin(group.resindices, anchors_res_ids).all():
+                raise ValueError("Some residues in 'group'" +
+                                 " do not have an 'anchor'")
+            if not anchors.issubset(self._atoms):
+                raise ValueError("Some 'anchors' are not part of PCA class")
+
+            # non_pca has "all" the atoms in residues of `group`. This makes
+            # sure that extrapolation works on residues, not random atoms.
+            non_pca = group.residues.atoms - self._atoms
+            pca_res_indices, pca_res_counts = np.unique(
+                self._atoms.resindices, return_counts=True)
+
+            non_pca_atoms = np.array([], dtype=int)
+            for res in group.residues:
+                # n_common is the number of pca atoms in a residue
+                n_common = pca_res_counts[np.where(
+                           pca_res_indices == res.resindex)][0]
+                non_pca_atoms = np.append(non_pca_atoms,
+                                          res.atoms.n_atoms - n_common)
+            # index_extrapolate records the anchor number for each non-PCA atom
+            index_extrapolate = np.repeat(np.arange(anchors.atoms.n_atoms),
+                                          non_pca_atoms)
+
+        if components is None:
+            components = np.arange(self.results.p_components.shape[1])
+
+        def wrapped(ts):
+            """Projects a timestep"""
+            if group is not None:
+                anchors_coords_old = anchors.positions
+
+            xyz = self._atoms.positions.ravel() - self._xmean
+            self._atoms.positions = np.reshape(
+                (np.dot(np.dot(xyz, self._p_components[:, components]),
+                        self._p_components[:, components].T)
+                 + self._xmean), (-1, 3)
+            )
+
+            if group is not None:
+                non_pca.positions += (anchors.positions -
+                                      anchors_coords_old)[index_extrapolate]
+            return ts
+        return wrapped
+
     @due.dcite(
         Doi('10.1002/(SICI)1097-0134(19990901)36:4<419::AID-PROT5>3.0.CO;2-U'),
         Doi('10.1529/biophysj.104.052449'),
@@ -537,7 +697,7 @@ def cosine_content(pca_space, i):
     The cosine content of pca projections can be used as an indicator if a
     simulation is converged. Values close to 1 are an indicator that the
     simulation isn't converged. For values below 0.7 no statement can be made.
-    If you use this function please cite [BerkHess1]_.
+    If you use this function please cite :cite:p:`BerkHess2002`.
 
 
     Parameters
@@ -555,8 +715,12 @@ def cosine_content(pca_space, i):
 
     References
     ----------
-    .. [BerkHess1] Berk Hess. Convergence of sampling in protein simulations.
-                   Phys. Rev. E 65, 031910 (2002).
+    .. bibliography::
+        :filter: False
+        :style: MDA
+
+        BerkHess2002
+
     """
 
     t = np.arange(len(pca_space))

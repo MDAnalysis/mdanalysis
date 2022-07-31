@@ -125,6 +125,9 @@ class CRDWriter(base.WriterBase):
 
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
+    .. versionchanged:: 2.2.0
+       CRD extended format can now be explicitly requested with the
+       `extended` keyword
     """
     format = 'CRD'
     units = {'time': None, 'length': 'Angstrom'}
@@ -151,10 +154,22 @@ class CRDWriter(base.WriterBase):
         ----------
         filename : str or :class:`~MDAnalysis.lib.util.NamedStream`
              name of the output file or a stream
+
+        extended : bool (optional)
+             By default, noextended CRD format is used [``False``].
+             However, extended CRD format can be forced by
+             specifying `extended` ``=True``. Note that the extended format
+             is *always* used if the number of atoms exceeds 99,999, regardless
+             of the setting of `extended`.
+
+             .. versionadded:: 2.2.0
         """
 
         self.filename = util.filename(filename, ext='crd')
         self.crd = None
+
+        # account for explicit crd format, if requested
+        self.extended = kwargs.pop("extended", False)
 
     def write(self, selection, frame=None):
         """Write selection at current trajectory frame to file.
@@ -182,6 +197,7 @@ class CRDWriter(base.WriterBase):
             except AttributeError:
                 frame = 0  # should catch cases when we are analyzing a single PDB (?)
 
+
         atoms = selection.atoms  # make sure to use atoms (Issue 46)
         coor = atoms.positions  # can write from selection == Universe (Issue 49)
 
@@ -189,7 +205,7 @@ class CRDWriter(base.WriterBase):
         # Detect which format string we're using to output (EXT or not)
         # *len refers to how to truncate various things,
         # depending on output format!
-        if n_atoms > 99999:
+        if self.extended or n_atoms > 99999:
             at_fmt = self.fmt['ATOM_EXT']
             serial_len = 10
             resid_len = 8
@@ -238,7 +254,7 @@ class CRDWriter(base.WriterBase):
             crd.write("*\n")
 
             # Write NUMATOMS
-            if n_atoms > 99999:
+            if self.extended or n_atoms > 99999:
                 crd.write(self.fmt['NUMATOMS_EXT'].format(n_atoms))
             else:
                 crd.write(self.fmt['NUMATOMS'].format(n_atoms))

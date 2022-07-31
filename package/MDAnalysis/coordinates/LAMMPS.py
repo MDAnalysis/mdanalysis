@@ -129,7 +129,7 @@ import numpy as np
 
 from ..core.groups import requires
 from ..lib import util, mdamath, distances
-from ..lib.util import cached
+from ..lib.util import cached, store_init_arguments
 from . import DCD
 from .. import units
 from ..topology.LAMMPSParser import DATAParser
@@ -178,6 +178,7 @@ class DCDReader(DCD.DCDReader):
     format = 'LAMMPS'
     flavor = 'LAMMPS'
 
+    @store_init_arguments
     def __init__(self, dcdfilename, **kwargs):
         self.units = {'time': 'fs', 'length': 'Angstrom'}  # must be instance level
         self.units['time'] = kwargs.pop('timeunit', self.units['time'])
@@ -201,6 +202,7 @@ class DATAReader(base.SingleFrameReaderBase):
     format = 'DATA'
     units = {'time': None, 'length': 'Angstrom', 'velocity': 'Angstrom/fs'}
 
+    @store_init_arguments
     def __init__(self, filename, **kwargs):
         self.n_atoms = kwargs.pop('n_atoms', None)
         if self.n_atoms is None:  # this should be done by parsing DATA first
@@ -463,7 +465,15 @@ class DumpReader(base.ReaderBase):
     (xsu,ysu,zsu) they will automatically be converted from their
     scaled/fractional representation to their real values.
 
+    Supports both orthogonal and triclinic simulation box dimensions (for more
+    details see https://docs.lammps.org/Howto_triclinic.html). In either case,
+    MDAnalysis will always use ``(*A*, *B*, *C*, *alpha*, *beta*, *gamma*)``
+    to represent the unit cell. Lengths *A*, *B*, *C* are in the MDAnalysis
+    length unit (Å), and angles are in degrees.
 
+    .. versionchanged:: 2.2.0
+       Triclinic simulation boxes are supported.
+       (Issue `#3383 <https://github.com/MDAnalysis/mdanalysis/issues/3383>`__)
     .. versionchanged:: 2.0.0
        Now parses coordinates in multiple lammps conventions (x,xs,xu,xsu)
     .. versionadded:: 0.19.0
@@ -478,6 +488,7 @@ class DumpReader(base.ReaderBase):
         "scaled_unwrapped": ["xsu", "ysu", "zsu"]
     }
 
+    @store_init_arguments
     def __init__(self, filename, lammps_coordinate_convention="auto",
                  **kwargs):
         super(DumpReader, self).__init__(filename, **kwargs)
@@ -560,9 +571,16 @@ class DumpReader(base.ReaderBase):
 
         triclinic = len(f.readline().split()) == 9  # ITEM BOX BOUNDS
         if triclinic:
-            xlo, xhi, xy = map(float, f.readline().split())
-            ylo, yhi, xz = map(float, f.readline().split())
+            xlo_bound, xhi_bound, xy = map(float, f.readline().split())
+            ylo_bound, yhi_bound, xz = map(float, f.readline().split())
             zlo, zhi, yz = map(float, f.readline().split())
+
+            # converts orthogonal bounding box to the conventional format,
+            # see https://docs.lammps.org/Howto_triclinic.html
+            xlo = xlo_bound - min(0.0, xy, xz, xy + xz)
+            xhi = xhi_bound - max(0.0, xy, xz, xy + xz)
+            ylo = ylo_bound - min(0.0, yz)
+            yhi = yhi_bound - max(0.0, yz)
 
             box = np.zeros((3, 3), dtype=np.float64)
             box[0] = xhi - xlo, 0.0, 0.0

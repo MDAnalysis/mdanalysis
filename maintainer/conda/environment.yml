@@ -3,25 +3,26 @@ channels:
   - defaults
   - conda-forge
 dependencies:
-  - chemfiles>=0.9
+  - chemfiles>=0.10
   - codecov
   - cython
+  - fasteners
   - griddataformats
   - gsd
-  - h5py
+  - h5py>=2.10
   - hypothesis
   - joblib>=0.12
   - matplotlib==3.2.2
   - mmtf-python
   - mock
   - networkx
-  - numpy>=1.17.3
+  - numpy>=1.20
   - pytest
-  - python==3.7
+  - python==3.8
   - scikit-learn
   - scipy
   - pip
-  - sphinx==1.8.5
+  - sphinx
   - tidynamics>=1.0.0
   - tqdm>=4.43.0
   - sphinxcontrib-bibtex
@@ -31,3 +32,4 @@ dependencies:
       - parmed
       - msmb_theme==1.2.0
       - sphinx-sitemap==1.0.2
+      - packaging

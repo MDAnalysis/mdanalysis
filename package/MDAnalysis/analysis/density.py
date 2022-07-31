@@ -102,13 +102,6 @@ atomgroup.
    :members:
    :inherited-members: run
 
-   .. attribute:: results.density
-
-      After the analysis (see the :meth:`~DensityAnalysis.run` method), the
-      resulting density is stored in the :attr:`results.density` attribute as
-      a :class:`Density` instance. Note: this replaces the now deprecated
-      :attr:`density` attribute.
-
    .. automethod:: _set_user_grid
 
 
@@ -217,6 +210,11 @@ class DensityAnalysis(AnalysisBase):
             A :class:`Density` instance containing a physical density of units
             :math:`Angstrom^{-3}`.
 
+            After the analysis (see the :meth:`~DensityAnalysis.run` method),
+            the resulting density is stored in the :attr:`results.density`
+            attribute as a :class:`Density` instance. Note: this replaces the
+            now deprecated :attr:`density` attribute.
+
     density : :class:`Density`
             Alias to the :attr:`results.density`.
 
@@ -235,7 +233,8 @@ class DensityAnalysis(AnalysisBase):
 
     See Also
     --------
-    pmda.density.DensityAnalysis for a parallel version
+    pmda.density.DensityAnalysis
+        A parallel version of :class:`DensityAnalysis`
 
     Notes
     -----
@@ -396,6 +395,7 @@ class DensityAnalysis(AnalysisBase):
        :func:`_set_user_grid` is now a method of :class:`DensityAnalysis`.
        :class:`Density` results are now stored in a
        :class:`MDAnalysis.analysis.base.Results` instance.
+
     """
 
     def __init__(self, atomgroup, delta=1.0,
@@ -866,7 +866,7 @@ class Density(Grid):
 
         """
         if not self.parameters['isDensity']:
-            errmsg = 'The grid is not a density so converty_density() makes no sense.'
+            errmsg = 'The grid is not a density so convert_density() makes no sense.'
             logger.fatal(errmsg)
             raise RuntimeError(errmsg)
         if unit == self.units['density']:

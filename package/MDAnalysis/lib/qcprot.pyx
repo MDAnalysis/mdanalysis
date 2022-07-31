@@ -138,6 +138,7 @@ Users will typically use the :func:`CalcRMSDRotationalMatrix` function.
 
 import numpy as np
 cimport numpy as np
+np.import_array()
 
 from ..due import due, BibTeX, Doi
 

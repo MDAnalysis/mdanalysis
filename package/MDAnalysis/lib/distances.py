@@ -26,10 +26,11 @@
 ===================================================================
 
 Fast C-routines to calculate arrays of distances or angles from coordinate
-arrays. Many of the functions also exist in parallel versions, which typically
-provide higher performance than the serial code.
-The boolean attribute `MDAnalysis.lib.distances.USED_OPENMP` can be checked to
-see if OpenMP was used in the compilation of MDAnalysis.
+arrays. Distance functions can accept a NumPy :class:`np.ndarray` or an
+:class:`~MDAnalysis.core.groups.AtomGroup`. Many of the functions also exist
+in parallel versions, which typically provide higher performance than the
+serial code. The boolean attribute `MDAnalysis.lib.distances.USED_OPENMP` can
+be checked to see if OpenMP was used in the compilation of MDAnalysis.
 
 Selection of acceleration ("backend")
 -------------------------------------
@@ -50,6 +51,9 @@ case-insensitive):
    ========== ========================= ======================================
 
 .. versionadded:: 0.13.0
+.. versionchanged:: 2.3.0
+   Distance functions can now accept an
+   :class:`~MDAnalysis.core.groups.AtomGroup` or an :class:`np.ndarray`
 
 Functions
 ---------
@@ -65,14 +69,21 @@ Functions
 .. autofunction:: transform_StoR
 .. autofunction:: augment_coordinates(coordinates, box, r)
 .. autofunction:: undo_augment(results, translation, nreal)
+.. autofunction:: minimize_vectors(vectors, box)
 """
 import numpy as np
 from numpy.lib.utils import deprecate
 
+from typing import Union, Optional, Callable
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:  # pragma: no cover
+    from ..core.groups import AtomGroup
 from .util import check_coords, check_box
 from .mdamath import triclinic_vectors
 from ._augment import augment_coordinates, undo_augment
 from .nsgrid import FastNS
+from .c_distances import _minimize_vectors_ortho, _minimize_vectors_triclinic
+
 
 # hack to select backend with backend=<backend> kwarg. Note that
 # the cython parallel code (prange) in parallel.distances is
@@ -88,7 +99,9 @@ except ImportError:
     pass
 del importlib
 
-def _run(funcname, args=None, kwargs=None, backend="serial"):
+
+def _run(funcname: Callable, args: Optional[tuple] = None,
+         kwargs: Optional[dict] = None, backend: str = "serial") -> Callable:
     """Helper function to select a backend function `funcname`."""
     args = args if args is not None else tuple()
     kwargs = kwargs if kwargs is not None else dict()
@@ -103,7 +116,8 @@ def _run(funcname, args=None, kwargs=None, backend="serial"):
 
 # serial versions are always available (and are typically used within
 # the core and topology modules)
-from .c_distances import (calc_distance_array,
+from .c_distances import (_UINT64_MAX,
+                          calc_distance_array,
                           calc_distance_array_ortho,
                           calc_distance_array_triclinic,
                           calc_self_distance_array,
@@ -125,7 +139,8 @@ from .c_distances import (calc_distance_array,
 from .c_distances_openmp import OPENMP_ENABLED as USED_OPENMP
 
 
-def _check_result_array(result, shape):
+# typing: numpy
+def _check_result_array(result: np.ndarray, shape: tuple) -> np.ndarray:
     """Check if the result array is ok to use.
 
     The `result` array must meet the following requirements:
@@ -166,10 +181,14 @@ def _check_result_array(result, shape):
     return result
 
 
+# typing: numpy
 @check_coords('reference', 'configuration', reduce_result_if_single=False,
-              check_lengths_match=False)
-def distance_array(reference, configuration, box=None, result=None,
-                   backend="serial"):
+              check_lengths_match=False, allow_atomgroup=True)
+def distance_array(reference: Union[np.ndarray, 'AtomGroup'],
+                   configuration: Union[np.ndarray, 'AtomGroup'],
+                   box: Optional[np.ndarray] = None,
+                   result: Optional[np.ndarray] = None,
+                   backend: str = "serial") -> np.ndarray:
     """Calculate all possible distances between a reference set and another
     configuration.
 
@@ -186,16 +205,18 @@ def distance_array(reference, configuration, box=None, result=None,
 
     Parameters
     ----------
-    reference : numpy.ndarray
+    reference :numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Reference coordinate array of shape ``(3,)`` or ``(n, 3)`` (dtype is
-        arbitrary, will be converted to ``numpy.float32`` internally).
-    configuration : numpy.ndarray
+        arbitrary, will be converted to ``numpy.float32`` internally). Also
+        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.
+    configuration : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Configuration coordinate array of shape ``(3,)`` or ``(m, 3)`` (dtype is
-        arbitrary, will be converted to ``numpy.float32`` internally).
+        arbitrary, will be converted to ``numpy.float32`` internally). Also
+        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.
     box : array_like, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     result : numpy.ndarray, optional
         Preallocated result array which must have the shape ``(n, m)`` and dtype
@@ -217,14 +238,21 @@ def distance_array(reference, configuration, box=None, result=None,
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
        Now also accepts single coordinates as input.
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
     confnum = configuration.shape[0]
     refnum = reference.shape[0]
 
+    # check resulting array will not overflow UINT64_MAX
+    if refnum * confnum > _UINT64_MAX:
+        raise ValueError(f"Size of resulting array {refnum * confnum} elements"
+                         " larger than size of maximum integer")
+
     distances = _check_result_array(result, (refnum, confnum))
     if len(distances) == 0:
         return distances
-
     if box is not None:
         boxtype, box = check_box(box)
         if boxtype == 'ortho':
@@ -243,8 +271,12 @@ def distance_array(reference, configuration, box=None, result=None,
     return distances
 
 
-@check_coords('reference', reduce_result_if_single=False)
-def self_distance_array(reference, box=None, result=None, backend="serial"):
+# typing: numpy
+@check_coords('reference', reduce_result_if_single=False, allow_atomgroup=True)
+def self_distance_array(reference: Union[np.ndarray, 'AtomGroup'],
+                        box: Optional[np.ndarray] = None,
+                        result: Optional[np.ndarray] = None,
+                        backend: str = "serial") -> np.ndarray:
     """Calculate all possible distances within a configuration `reference`.
 
     If the optional argument `box` is supplied, the minimum image convention is
@@ -257,13 +289,14 @@ def self_distance_array(reference, box=None, result=None, backend="serial"):
 
     Parameters
     ----------
-    reference : numpy.ndarray
+    reference : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Reference coordinate array of shape ``(3,)`` or ``(n, 3)`` (dtype is
-        arbitrary, will be converted to ``numpy.float32`` internally).
+        arbitrary, will be converted to ``numpy.float32`` internally). Also
+        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.
     box : array_like, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     result : numpy.ndarray, optional
         Preallocated result array which must have the shape ``(n*(n-1)/2,)`` and
@@ -290,14 +323,20 @@ def self_distance_array(reference, box=None, result=None, backend="serial"):
        Added *backend* keyword.
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
     refnum = reference.shape[0]
     distnum = refnum * (refnum - 1) // 2
+    # check resulting array will not overflow UINT64_MAX
+    if distnum > _UINT64_MAX:
+        raise ValueError(f"Size of resulting array {distnum} elements larger"
+                         " than size of maximum integer")
 
     distances = _check_result_array(result, (distnum,))
     if len(distances) == 0:
         return distances
-
     if box is not None:
         boxtype, box = check_box(box)
         if boxtype == 'ortho':
@@ -346,7 +385,7 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None,
     box : array_like, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     method : {'bruteforce', 'nsgrid', 'pkdtree'}, optional
         Keyword to override the automatic guessing of the employed search
@@ -425,7 +464,7 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
     box : numpy.ndarray
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     method : {'bruteforce', 'nsgrid', 'pkdtree'}, optional
         Keyword to override the automatic guessing of the employed search
@@ -510,7 +549,7 @@ def _bruteforce_capped(reference, configuration, max_cutoff, min_cutoff=None,
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     return_distances : bool, optional
         If set to ``True``, distances will also be returned.
@@ -587,7 +626,7 @@ def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None,
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     return_distances : bool, optional
         If set to ``True``, distances will also be returned.
@@ -669,7 +708,7 @@ def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
     box : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``), optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     return_distances : bool, optional
         If set to ``True``, distances will also be returned.
@@ -761,7 +800,7 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None, box=None,
     box : array_like, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     method : {'bruteforce', 'nsgrid', 'pkdtree'}, optional
         Keyword to override the automatic guessing of the employed search
@@ -844,7 +883,7 @@ def _determine_method_self(reference, max_cutoff, min_cutoff=None, box=None,
     box : numpy.ndarray
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     method : {'bruteforce', 'nsgrid', 'pkdtree'}, optional
         Keyword to override the automatic guessing of the employed search
@@ -917,7 +956,7 @@ def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     return_distances : bool, optional
         If set to ``True``, distances will also be returned.
@@ -992,7 +1031,7 @@ def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     return_distances : bool, optional
         If set to ``True``, distances will also be returned.
@@ -1068,7 +1107,7 @@ def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
 
     Returns
@@ -1153,7 +1192,7 @@ def transform_RtoS(coords, box, backend="serial"):
     box : numpy.ndarray
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     backend : {'serial', 'OpenMP'}, optional
         Keyword selecting the type of acceleration.
@@ -1202,7 +1241,7 @@ def transform_StoR(coords, box, backend="serial"):
     box : numpy.ndarray
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     backend : {'serial', 'OpenMP'}, optional
         Keyword selecting the type of acceleration.
@@ -1230,8 +1269,13 @@ def transform_StoR(coords, box, backend="serial"):
     return coords
 
 
-@check_coords('coords1', 'coords2')
-def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
+# typing: numpy
+@check_coords('coords1', 'coords2', allow_atomgroup=True)
+def calc_bonds(coords1: Union[np.ndarray, 'AtomGroup'],
+               coords2: Union[np.ndarray, 'AtomGroup'],
+               box: Optional[np.ndarray] = None,
+               result: Optional[np.ndarray] = None,
+               backend: str = "serial") -> np.ndarray:
     """Calculates the bond lengths between pairs of atom positions from the two
     coordinate arrays `coords1` and `coords2`, which must contain the same
     number of coordinates. ``coords1[i]`` and ``coords2[i]`` represent the
@@ -1255,18 +1299,20 @@ def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
 
     Parameters
     ----------
-    coords1 : numpy.ndarray
+    coords1 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` for one half of a
         single or ``n`` bonds, respectively (dtype is arbitrary, will be
-        converted to ``numpy.float32`` internally).
-    coords2 : numpy.ndarray
+        converted to ``numpy.float32`` internally).  Also accepts an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
+    coords2 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` for the other half of
         a single or ``n`` bonds, respectively (dtype is arbitrary, will be
-        converted to ``numpy.float32`` internally).
+        converted to ``numpy.float32`` internally). Also accepts an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     result : numpy.ndarray, optional
         Preallocated result array of dtype ``numpy.float64`` and shape ``(n,)``
@@ -1289,6 +1335,9 @@ def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
        Now also accepts single coordinates as input.
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
     numatom = coords1.shape[0]
     bondlengths = _check_result_array(result, (numatom,))
@@ -1312,9 +1361,14 @@ def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
     return bondlengths
 
 
-@check_coords('coords1', 'coords2', 'coords3')
-def calc_angles(coords1, coords2, coords3, box=None, result=None,
-                backend="serial"):
+# typing: numpy
+@check_coords('coords1', 'coords2', 'coords3', allow_atomgroup=True)
+def calc_angles(coords1: Union[np.ndarray, 'AtomGroup'],
+                coords2: Union[np.ndarray, 'AtomGroup'],
+                coords3: Union[np.ndarray, 'AtomGroup'],
+                box: Optional[np.ndarray] = None,
+                result: Optional[np.ndarray] = None,
+                backend: str = "serial") -> np.ndarray:
     """Calculates the angles formed between triplets of atom positions from the
     three coordinate arrays `coords1`, `coords2`, and `coords3`. All coordinate
     arrays must contain the same number of coordinates.
@@ -1340,22 +1394,25 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None,
 
     Parameters
     ----------
-    coords1 : numpy.ndarray
+    coords1 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Array of shape ``(3,)`` or ``(n, 3)`` containing the coordinates of one
         side of a single or ``n`` angles, respectively (dtype is arbitrary, will
-        be converted to ``numpy.float32`` internally)
-    coords2 : numpy.ndarray
+        be converted to ``numpy.float32`` internally). Also accepts an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
+    coords2 :  numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Array of shape ``(3,)`` or ``(n, 3)`` containing the coordinates of the
         apices of a single or ``n`` angles, respectively (dtype is arbitrary,
-        will be converted to ``numpy.float32`` internally)
-    coords3 : numpy.ndarray
+        will be converted to ``numpy.float32`` internally). Also accepts an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
+    coords3 :  numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Array of shape ``(3,)`` or ``(n, 3)`` containing the coordinates of the
         other side of a single or ``n`` angles, respectively (dtype is
-        arbitrary, will be converted to ``numpy.float32`` internally)
+        arbitrary, will be converted to ``numpy.float32`` internally).
+        Also accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     result : numpy.ndarray, optional
         Preallocated result array of dtype ``numpy.float64`` and shape ``(n,)``
@@ -1381,6 +1438,9 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None,
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
        Now also accepts single coordinates as input.
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
     numatom = coords1.shape[0]
     angles = _check_result_array(result, (numatom,))
@@ -1404,9 +1464,15 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None,
     return angles
 
 
-@check_coords('coords1', 'coords2', 'coords3', 'coords4')
-def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
-                   backend="serial"):
+# typing: numpy
+@check_coords('coords1', 'coords2', 'coords3', 'coords4', allow_atomgroup=True)
+def calc_dihedrals(coords1: Union[np.ndarray, 'AtomGroup'],
+                   coords2: Union[np.ndarray, 'AtomGroup'],
+                   coords3: Union[np.ndarray, 'AtomGroup'],
+                   coords4: Union[np.ndarray, 'AtomGroup'],
+                   box: Optional[np.ndarray] = None,
+                   result: Optional[np.ndarray] = None,
+                   backend: str = "serial") -> np.ndarray:
     r"""Calculates the dihedral angles formed between quadruplets of positions
     from the four coordinate arrays `coords1`, `coords2`, `coords3`, and
     `coords4`, which must contain the same number of coordinates.
@@ -1438,26 +1504,30 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
 
     Parameters
     ----------
-    coords1 : numpy.ndarray
+    coords1 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 1st
         positions in dihedrals (dtype is arbitrary, will be converted to
-        ``numpy.float32`` internally)
-    coords2 : numpy.ndarray
+        ``numpy.float32`` internally).  Also accepts an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
+    coords2 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 2nd
         positions in dihedrals (dtype is arbitrary, will be converted to
-        ``numpy.float32`` internally)
-    coords3 : numpy.ndarray
+        ``numpy.float32`` internally).  Also accepts an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
+    coords3 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 3rd
         positions in dihedrals (dtype is arbitrary, will be converted to
-        ``numpy.float32`` internally)
-    coords4 : numpy.ndarray
+        ``numpy.float32`` internally).  Also accepts an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
+    coords4 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 4th
         positions in dihedrals (dtype is arbitrary, will be converted to
-        ``numpy.float32`` internally)
+        ``numpy.float32`` internally).  Also accepts an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     result : numpy.ndarray, optional
         Preallocated result array of dtype ``numpy.float64`` and shape ``(n,)``
@@ -1486,6 +1556,9 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
        Now also accepts single coordinates as input.
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
     numatom = coords1.shape[0]
     dihedrals = _check_result_array(result, (numatom,))
@@ -1509,19 +1582,23 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
     return dihedrals
 
 
-@check_coords('coords')
-def apply_PBC(coords, box, backend="serial"):
+# typing: numpy
+@check_coords('coords', allow_atomgroup=True)
+def apply_PBC(coords: Union[np.ndarray, 'AtomGroup'],
+              box: Optional[np.ndarray] = None,
+              backend: str = "serial") -> np.ndarray:
     """Moves coordinates into the primary unit cell.
 
     Parameters
     ----------
-    coords : numpy.ndarray
+    coords : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` (dtype is arbitrary,
-        will be converted to ``numpy.float32`` internally).
+        will be converted to ``numpy.float32`` internally). Also accepts an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
     box : numpy.ndarray
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     backend : {'serial', 'OpenMP'}, optional
         Keyword selecting the type of acceleration.
@@ -1539,6 +1616,9 @@ def apply_PBC(coords, box, backend="serial"):
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
        Now also accepts (and, likewise, returns) single coordinates.
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
     if len(coords) == 0:
         return coords
@@ -1549,3 +1629,47 @@ def apply_PBC(coords, box, backend="serial"):
         _run("triclinic_pbc", args=(coords, box), backend=backend)
 
     return coords
+
+
+# typing: numpy
+@check_coords('vectors', enforce_copy=False, enforce_dtype=False)
+def minimize_vectors(vectors: np.ndarray, box: np.ndarray) -> np.ndarray:
+    """Apply minimum image convention to an array of vectors
+
+    This function is required for calculating the correct vectors between two
+    points.  A naive approach of ``ag1.positions - ag2.positions`` will not
+    provide the minimum vectors between particles, even if all particles are
+    within the primary unit cell (box).
+
+    Parameters
+    ----------
+    vectors : numpy.ndarray
+        Vector array of shape ``(n, 3)``, either float32 or float64.  These
+        represent many vectors (such as between two particles).
+    box : numpy.ndarray
+        The unitcell dimensions of the system, which can be orthogonal or
+        triclinic and must be provided in the same format as returned by
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
+        ``[lx, ly, lz, alpha, beta, gamma]``.
+
+    Returns
+    -------
+    minimized_vectors : numpy.ndarray
+        Same shape and dtype as input.  The vectors from the input, but
+        minimized according to the size of the box.
+
+
+    .. versionadded:: 2.1.0
+    """
+    boxtype, box = check_box(box)
+    output = np.empty_like(vectors)
+
+    # use box which is same precision as input vectors
+    box = box.astype(vectors.dtype)
+
+    if boxtype == 'ortho':
+        _minimize_vectors_ortho(vectors, box, output)
+    else:
+        _minimize_vectors_triclinic(vectors, box.ravel(), output)
+
+    return output

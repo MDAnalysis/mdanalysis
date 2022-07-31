@@ -25,10 +25,17 @@
 Mathematical helper functions --- :mod:`MDAnalysis.lib.mdamath`
 ===============================================================
 
-Helper functions for common mathematical operations
+
+Helper functions for common mathematical operations. Some of these functions
+are written in C/cython for higher performance.
+
+Linear algebra
+--------------
 
 .. autofunction:: normal
 .. autofunction:: norm
+.. autofunction:: pdot
+.. autofunction:: pnorm
 .. autofunction:: angle
 .. autofunction:: dihedral
 .. autofunction:: stp
@@ -36,12 +43,19 @@ Helper functions for common mathematical operations
 .. autofunction:: triclinic_box
 .. autofunction:: triclinic_vectors
 .. autofunction:: box_volume
+
+
+Connectivity
+------------
+
 .. autofunction:: make_whole
 .. autofunction:: find_fragments
+
 
 .. versionadded:: 0.11.0
 .. versionchanged: 1.0.0
    Unused function :func:`_angle()` has now been removed.
+
 """
 import numpy as np
 
@@ -253,7 +267,7 @@ def triclinic_box(x, y, z):
     numpy.ndarray
         A numpy array of shape ``(6,)`` and dtype ``np.float32`` providing the
         unitcell dimensions in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.\n
         Invalid boxes are returned as a zero vector.
 
@@ -305,7 +319,7 @@ def triclinic_vectors(dimensions, dtype=np.float32):
     ----------
     dimensions : array_like
         Unitcell dimensions provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.
     dtype: numpy.dtype
         The data type of the returned box matrix.
@@ -398,7 +412,7 @@ def box_volume(dimensions):
     ----------
     dimensions : array_like
         Unitcell dimensions provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.
 
     Returns

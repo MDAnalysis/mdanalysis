@@ -68,6 +68,7 @@ from ..exceptions import NoDataError
 from . import base, core
 from ..lib.formats.libdcd import DCDFile
 from ..lib.mdamath import triclinic_box
+from ..lib.util import store_init_arguments
 
 
 class DCDReader(base.ReaderBase):
@@ -113,6 +114,7 @@ class DCDReader(base.ReaderBase):
     flavor = 'CHARMM'
     units = {'time': 'AKMA', 'length': 'Angstrom'}
 
+    @store_init_arguments
     def __init__(self, filename, convert_units=True, dt=None, **kwargs):
         """
         Parameters

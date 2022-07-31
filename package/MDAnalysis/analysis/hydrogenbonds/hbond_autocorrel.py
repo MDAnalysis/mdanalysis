@@ -70,14 +70,7 @@ Where the final pre expoential factor :math:`A_n` is subject to the condition:
 
     :math:`A_n = 1 - \\sum\\limits_{i=1}^{n-1} A_i`
 
-For further details see [Gowers2015]_.
-
-.. rubric:: References
-
-.. [Gowers2015]  Richard J. Gowers and Paola Carbone,
-                 A multiscale approach to model hydrogen bonding: The case of polyamide
-                 The Journal of Chemical Physics, 142, 224907 (2015),
-                 DOI:http://dx.doi.org/10.1063/1.4922445
+For further details see :cite:p:`Gowers2015`.
 
 Input
 -----
@@ -211,9 +204,9 @@ Functions and Classes
 """
 import numpy as np
 import scipy.optimize
-
 import warnings
 
+from MDAnalysis.lib._cutil import _in2d
 from MDAnalysis.lib.log import ProgressBar
 from MDAnalysis.lib.distances import capped_distance, calc_angles, calc_bonds
 from MDAnalysis.core.groups import requires
@@ -321,11 +314,15 @@ class HydrogenBondAutoCorrel(object):
             raise ValueError("Donors and Hydrogen groups must be identical "
                              "length.  Try using `find_hydrogen_donors`.")
 
-        self.exclusions = exclusions
-        if self.exclusions:
-            if not len(self.exclusions[0]) == len(self.exclusions[1]):
+        if exclusions is not None:
+            if len(exclusions[0]) != len(exclusions[1]):
                 raise ValueError(
-                    "'exclusion' must be two arrays of identical length")
+                        "'exclusion' must be two arrays of identical length")
+            self.exclusions = np.column_stack((
+                exclusions[0], exclusions[1]
+            )).astype(np.intp)
+        else:
+            self.exclusions = None
 
         self.bond_type = bond_type
         if self.bond_type not in ['continuous', 'intermittent']:
@@ -428,11 +425,11 @@ class HydrogenBondAutoCorrel(object):
         box = self.u.dimensions if self.pbc else None
 
         # 2d array of all distances
-        pair, d = capped_distance(self.h.positions, self.a.positions, max_cutoff=self.d_crit, box=box)
-        if self.exclusions:
-            # set to above dist crit to exclude
-            exclude = np.column_stack((self.exclusions[0], self.exclusions[1]))
-            pair = np.delete(pair, np.where(pair==exclude), 0)
+        pair = capped_distance(self.h.positions, self.a.positions,
+                               max_cutoff=self.d_crit, box=box,
+                               return_distances=False)
+        if self.exclusions is not None:
+            pair = pair[~ _in2d(pair, self.exclusions)]
 
         hidx, aidx = np.transpose(pair)
 

@@ -55,7 +55,7 @@ from MDAnalysis.topology.base import TopologyReaderBase
 from MDAnalysis.transformations import translate
 from MDAnalysisTests import assert_nowarns
 from MDAnalysis.exceptions import NoDataError
-from MDAnalysis.core.topologyattrs import _AtomStringAttr
+from MDAnalysis.core.topologyattrs import AtomStringAttr
 
 
 class IOErrorParser(TopologyReaderBase):
@@ -780,7 +780,7 @@ class TestDelTopologyAttr(object):
             ag.resnames
 
     def test_del_func_from_universe(self, universe):
-        class RootVegetable(_AtomStringAttr):
+        class RootVegetable(AtomStringAttr):
             attrname = "tubers"
             singular = "tuber"
             transplants = defaultdict(list)
@@ -1300,3 +1300,31 @@ def test_deprecate_b_tempfactors():
     with pytest.warns(DeprecationWarning, match="use the tempfactor"):
         u.add_TopologyAttr("bfactors", values)
     assert_array_equal(u.atoms.tempfactors, values)
+
+
+class Thingy:
+    def __init__(self, val):
+        self.v = val
+
+
+class ThingyParser(TopologyReaderBase):
+    format='THINGY'
+
+    @staticmethod
+    def _format_hint(thing):
+        return isinstance(thing, Thingy)
+
+    def parse(self, **kwargs):
+        return mda.core.topology.Topology(n_atoms=10)
+
+
+class TestOnlyTopology:
+    def test_only_top(self):
+        # issue 3443
+        t = Thingy(20)
+
+        with pytest.warns(UserWarning,
+                          match="No coordinate reader found for"):
+            u = mda.Universe(t)
+
+        assert len(u.atoms) == 10
