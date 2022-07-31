@@ -104,7 +104,6 @@ class TNGReader(base.ReaderBase):
         strides = []
         n_data_frames = []
 
-        []
         for block in self.special_blocks:
             stride = self._block_strides[block]
             strides.append(stride)
@@ -192,20 +191,21 @@ class TNGReader(base.ReaderBase):
         if self._has_box:
             box = self._file_iterator.make_ndarray_for_block_from_name(self._box_blockname)
             curr_step.get_box(box)
-            ts.dimensions = triclinic_box(box)
-            if not curr_step.read_success():
+            box = np.zeros((3,3)) # FIXME
+            ts.dimensions = triclinic_box(*box)
+            if not curr_step.read_success:
                 raise IOError("Failed to read box from TNG file")
         if self._has_positions:
             curr_step.get_positions(ts.positions)
-            if not curr_step.read_success():
+            if not curr_step.read_success:
                 raise IOError("Failed to read positions from TNG file")
         if self._has_velocities:
             curr_step.get_velocities(ts.velocities)
-            if not curr_step.read_velocities():
+            if not curr_step.read_success:
                 raise IOError("Failed to read velocities from TNG file")
         if self._has_forces:
             curr_step.get_forces(ts.forces)
-            if not curr_step.read_success():
+            if not curr_step.read_success:
                 raise IOError("Failed to read forces from TNG file")
 
         for block in self._additional_blocks_to_read:
@@ -213,7 +213,7 @@ class TNGReader(base.ReaderBase):
                 block)
             ts.data[block] = curr_step.get_blockid(
                 self._block_dictionary[block], block_data)
-            if not curr_step.read_success():
+            if not curr_step.read_success:
                 raise IOError(
                     f"Failed to read additional block {block} from TNG file")
 
