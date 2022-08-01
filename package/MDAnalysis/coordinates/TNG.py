@@ -25,7 +25,9 @@
 TNG Trajectory IO --- :mod:`MDAnalysis.coordinates.TNG`
 =======================================================
 
-Reading 
+Reading coordinates from TNG files
+
+
 
 """
 
