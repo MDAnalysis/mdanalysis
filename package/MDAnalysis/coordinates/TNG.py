@@ -23,17 +23,17 @@
 
 """
 TNG trajectory files --- :mod:`MDAnalysis.coordinates.TNG`
-=======================================================
+==========================================================
 
 
-The TNG format is a format used in GROMACS for storage of trajectory and
+The TNG format is a format used in `GROMACS`_ for storage of trajectory and
 topology information. The TNG format allows a wide range of compression
 algorithms and unlike the compressed XTC format can also store velocities
-forces in addition to positions. 
+forces in addition to positions.
 
-The classes in this module are based on the pytng package for reading TNG files
-The reader is directed to the documentation for further reading about how pytng
-works under the hood.  
+The classes in this module are based on the `pytng`_ package for reading TNG files
+The reader is directed to the `documentation`_ for further reading about how pytng
+works under the hood.
 
 In addition to particle-dependent trajectory information like positions,
 forces and velocities, the TNG format can store trajectory metadata and 
@@ -41,7 +41,10 @@ other arbitrary time dependent data. Additional information can range from
 the virial and pressure components to the molecular topology of the system.
 This is enabled by a block based system in which binary flags indicate the
 presence or absence of various data blocks. The full list of blocks is provided 
-in the TNG specification, the TNG paper and the pytng documentation
+in the TNG specification, the TNG paper and the pytng documentation. The user
+is encouraged to read the full list of `blocks`_ to understand the full power of
+the TNG format
+
 
 
 Notes
@@ -49,6 +52,27 @@ Notes
 Currently there is only a Reader for TNG files and no writer. This will depend
 on upstream changes in pytng. Additionally, it is not currently possible to
 read the molecular topology from a TNG file.
+
+There are also some limitations to reading TNG files with pytng.
+Currently we do not allow data to be read *off stride*. In essence this
+means that all of the critical trajectory data (positions, box, velocities
+(if present), forces (if present)) must share the same stride in trajectory
+integrator steps. These critical blocks in the TNG file are henceforth called
+*special blocks*. Optional blocks (all blocks that are not special blocks)
+will not be read if they do not share an integrator step with, or are not
+divisible by the shared integrator step of the special blocks.
+
+
+.. Links
+
+.. _GROMACS:
+    https://www.gromacs.org/
+.. _pytng:
+    https://github.com/MDAnalysis/pytng
+.. _documentation:
+    https://www.mdanalysis.org/pytng/
+.. _blocks:
+    https://www.mdanalysis.org/pytng/documentation_pages/Blocks.html
 
 """
 
@@ -72,17 +96,9 @@ else:
 class TNGReader(base.ReaderBase):
     r"""Reader for the TNG format
 
-    Notes
-    -----
-    There are also some limitations to reading TNG files with pytng.
-    Currently we do not allow data to be read *off stride*. In essence this
-    means that all of the critical trajectory data (positions, box, velocities
-    (if present), forces (if present)) must share the same stride in trajectory
-    integrator steps. These critical blocks in the TNG file are henceforth called
-    *special blocks*. Optional blocks (all blocks that are not special blocks)
-    will not be read if they do not share an integrator step,
-    or are not divisible by the shared integrator step of the special blocks.
-
+    The contents of the *special blocks* (positions, box, velocities, forces)
+    are read into the timestep if present. Additional blocks are read into the
+    `ts.data` dictionary if they are available at the current frame.  
 
     .. versionadded:: 2.3.0
     """
@@ -99,7 +115,8 @@ class TNGReader(base.ReaderBase):
                        _velocities_blockname, _forces_blockname]
 
     def __init__(self, filename: str, **kwargs):
-        """
+        """ Initialize a TNG trajectory
+
         Parameters
         ----------
         filename : str
@@ -107,7 +124,8 @@ class TNGReader(base.ReaderBase):
 
         """
         if not HAS_PYTNG:
-            raise RuntimeError("To read TNG files please install pytng")
+            raise RuntimeError("TNGReader: To read TNG files please install"
+                               " pytng")
 
         super(TNGReader, self).__init__(filename, **kwargs)
 
@@ -174,12 +192,11 @@ class TNGReader(base.ReaderBase):
                           " blocks not equal, file cannot be read")
 
         self._global_stride = strides[0]
-        # NOTE frame number is 0 indexed so increment 
-        self._n_frames = n_data_frames[0] + 1 
+        # NOTE frame number is 0 indexed so increment
+        self._n_frames = n_data_frames[0] + 1
         self._additional_blocks_to_read = []
         for block in self._additional_blocks:
             stride_add = self._block_strides[block]
-            n_data_frame_add = self._data_frames[block]
             if (stride_add != self._global_stride):
                 if stride_add % self._global_stride:
                     warnings.warn(f"TNG additional block {block} does not match"
@@ -350,7 +367,7 @@ class TNGReader(base.ReaderBase):
         for block in self._additional_blocks_to_read:
             add_block_stride = self._block_strides[block]
             # check we are on stride for our block
-            if  not (add_block_stride % self._global_stride):
+            if not (add_block_stride % self._global_stride):
                 block_data = self._file_iterator.make_ndarray_for_block_from_name(
                     block)
                 # additional blocks read into ts.data dictionary
