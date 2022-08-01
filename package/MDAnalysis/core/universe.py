@@ -314,7 +314,7 @@ class Universe(object):
     def __init__(self, topology=None, *coordinates, all_coordinates=False,
                  format=None, topology_format=None, transformations=None,
                  guess_bonds=False, vdwradii=None, context='default',
-                 to_guess=(), in_memory=False,
+                 to_guess=('masses',), in_memory=False,
                  in_memory_step=1, **kwargs):
 
         self._trajectory = None  # managed attribute holding Reader
@@ -337,7 +337,6 @@ class Universe(object):
             'all_coordinates': all_coordinates
         }
         self._kwargs.update(kwargs)
-
         format, topology_format = _resolve_formats(*coordinates, format=format,
                                                    topology_format=topology_format)
 
@@ -369,13 +368,11 @@ class Universe(object):
             if callable(transformations):
                 transformations = [transformations]
             self._trajectory.add_transformations(*transformations)
+            
         to_guess = list(to_guess)
-        # add mass and type to the to_guess list
-        toplist = list(self._topology.read_attributes)
-        if not any(att.singular == 'type' for att in toplist) and 'types' not in to_guess:
+        singulars = list(att.singular for att in self._topology.read_attributes)
+        if not any(att == 'type' for att in singulars) and 'types' not in to_guess:
             to_guess.append('types')
-        if not any(att.singular == 'mass' for att in toplist) and 'masses' not in to_guess:
-            to_guess.append('masses')
         if 'bonds' in to_guess:
             guess_bonds = True
             to_guess.remove('bonds')
@@ -1457,18 +1454,17 @@ class Universe(object):
         to_guess: list
         list of atrributes to be guessed then added to the universe
         """        
-        self._guesser = get_guesser(context, self.atoms)
-        if self._guesser.is_guessed(to_guess):
-            # sort attributes
-            to_guess = self._guesser.rank_attributes(to_guess)
+        guesser = get_guesser(context, self)
+        
+        if guesser.is_guessable(to_guess):
             # check if the attribute already have been read from topology file
-            toplist = list(self._topology.read_attributes)
+            toplogy_atrrs = list(att.attrname for att in self._topology.read_attributes)
             for attr in to_guess:
-                if any(attr == a.singular for a in toplist):
+                if any(attr == a for a in toplogy_atrrs):
                     warnings.warn('The attribute {} have already been read '
-                                  'from the topology file, you are overwriting'
-                                  'it by guessed values'.format(attr))
-                values = self._guesser.guess_Attr(attr)
+                                  'from the topology file, you are trying to '
+                                  'overwriting it by guessed values'.format(attr))
+                values = guesser.guess_Attr(attr)
                 self.add_TopologyAttr(attr, values)
         else:
             raise ValueError('{0} guesser can not guess one or more '

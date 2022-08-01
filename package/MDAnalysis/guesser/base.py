@@ -39,11 +39,11 @@ class GuesserBase(metaclass=GuesserMeta):
     # first
     _rank = {}
 
-    def __init__(self, atoms, **kwargs):
-        self._atoms = atoms
+    def __init__(self, universe, **kwargs):
+        self._universe = universe
         self._kwargs = kwargs
 
-    def is_guessed(self, guess):
+    def is_guessable(self, guess):
         """check that the passed atrributes in the to_guess
         list can be guessed by the class
 
@@ -70,29 +70,9 @@ class GuesserBase(metaclass=GuesserMeta):
         values: list of guessed values
         """
         return self._guess[guess]()
-
-    def rank_attributes(self, attrs):
-       """give a rank to each atrribute based on
-          its dependency on other attributes to be guessed,
-          so that the attribute with lesser dependcy will
-          be guessed first
-
-       Parameters
-       ----------
-       attrs: attributes list to be sorted
-
-       Returns
-       -------
-       sorted attributes list
-       """
-       to_rank = {a: self._rank[a] for a in attrs}
-       ranked_attrs = sorted(to_rank, key=to_rank.get)
-       return ranked_attrs
    
     
-   
-    
-def get_guesser(context, atoms, **kwargs):
+def get_guesser(context, u, **kwargs):
     """get an appropiate guesser to the universe and pass
        the atomGroup of the universe to the guesser
 
@@ -109,8 +89,8 @@ def get_guesser(context, atoms, **kwargs):
     if isinstance(context, GuesserBase):
         return context
     try:
-        guesser = _GUESSERS[context.upper()](atoms, **kwargs)
+        guesser = _GUESSERS[context.upper()](u, **kwargs)
     except KeyError:
-        raise TypeError("Unidentified guesser type {0}".format(context))
+        raise KeyError("Unidentified guesser type {0}".format(context))
     return guesser
 

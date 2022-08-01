@@ -40,13 +40,7 @@ class DefaultGuesser(GuesserBase):
                        'angles': self.guess_angles,
                        'dihedrals': self.guess_dihedrals,
                        'bonds': self.guess_bonds}
-        self._rank = {'masses': 1,
-                      'types': 0,
-                      'bonds': 0,
-                      'angles': 1,
-                      'dihedrals': 2
-                      }
-
+ 
     def guess_masses(self):
         """Guess the mass of many atoms based upon their type
 
@@ -54,11 +48,19 @@ class DefaultGuesser(GuesserBase):
         -------
         atom_masses : np.ndarray dtype float64
         """
-        if hasattr(self._atoms, 'elements'):
-            atom_types = self._atoms.elements
-        else:
-            atom_types = self._atoms.types
+        if hasattr(self._universe.atoms, 'elements'):
+            atom_types = self._universe.atoms.elements
+            
+        elif hasattr(self._universe.atoms, 'types'):
+            atom_types = self._universe.atoms.types
 
+        else:
+            try:
+                self._universe.guess_TopologyAttributes(self.context, ['types'])
+            except:
+                pass
+            atom_types = self._universe.atoms.types
+            
         self.validate_atom_types(atom_types)
         masses = np.array([self.get_atom_mass(atom_t)
                            for atom_t in atom_types], dtype=np.float64)
@@ -67,13 +69,7 @@ class DefaultGuesser(GuesserBase):
     def validate_atom_types(self, atom_types):
         """Validates the atom types based on whether they are available
         in our tables
-
-        Parameters
-        ----------
-        atom_types
-          Type of each atom
-
-        Returns
+      Returns
         -------
         None
 
@@ -121,17 +117,11 @@ class DefaultGuesser(GuesserBase):
 
     def guess_types(self):
         """Guess the atom type of many atoms based on atom name
-
-        Parameters
-        ----------
-        atom_names
-          Name of each atom
-
         Returns
         -------
         atom_types : np.ndarray dtype object
         """
-        names = self._atoms.names
+        names = self._universe.atoms.names
         return np.array([self.guess_atom_element(n) for n in names], dtype=object)
 
     NUMBERS = re.compile(r'[0-9]')  # match numbers
@@ -182,8 +172,8 @@ class DefaultGuesser(GuesserBase):
             return no_symbols
 
     def guess_bonds(self):
-        atoms = self._atoms
-        coords = self._atoms.positions
+        atoms = self._universe.atoms
+        coords = self._universe.atoms.positions
         box = self._kwargs['box']
         
         
@@ -313,7 +303,7 @@ class DefaultGuesser(GuesserBase):
 
         .. versionadded 0.9.0
         """
-        bonds = self._atoms.bonds
+        bonds = self._universe.atoms.bonds
         angles_found = set()
 
         for b in bonds:
@@ -343,7 +333,7 @@ class DefaultGuesser(GuesserBase):
 
         .. versionadded 0.9.0
         """
-        angles = self._atoms.angles
+        angles = self._universe.atoms.angles
         dihedrals_found = set()
 
         for b in angles:
@@ -379,7 +369,7 @@ class DefaultGuesser(GuesserBase):
 
         .. versionadded 0.9.0
         """
-        angles = self._atoms.angles
+        angles = self._universe.atoms.angles
         dihedrals_found = set()
 
         for b in angles:
@@ -399,4 +389,26 @@ class DefaultGuesser(GuesserBase):
 
         return tuple(dihedrals_found)
 
+def guess_atom_charge(self):
+    """Guess atom charge from the name.
+
+    .. Warning:: Not implemented; simply returns 0.
+    """
+    # TODO: do something slightly smarter, at least use name/element
+    return 0.0
+
+def guess_aromaticities(self):
+    """Guess aromaticity of atoms using RDKit
+
+    Returns
+    -------
+    aromaticities : numpy.ndarray
+        Array of boolean values for the aromaticity of each atom
+
+
+    .. versionadded:: 2.0.0
+    """
+    atomgroup = self._universe.atoms
+    mol = atomgroup.convert_to("RDKIT")
+    return np.array([atom.GetIsAromatic() for atom in mol.GetAtoms()])
 

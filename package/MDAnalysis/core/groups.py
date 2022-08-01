@@ -3292,7 +3292,7 @@ class AtomGroup(GroupBase):
                 attr = cls([])
                 u.add_TopologyAttr(attr)
                 return attr
-        guesser = get_guesser(context, self, vdwradii=vdwradii,
+        guesser = get_guesser(context, self.universe, vdwradii=vdwradii,
                               box=self.dimensions)
         # indices of bonds
         b = guesser.guess_Attr('bonds') 

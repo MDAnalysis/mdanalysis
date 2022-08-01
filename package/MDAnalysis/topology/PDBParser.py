@@ -335,9 +335,6 @@ class PDBParser(TopologyReaderBase):
                     validated_elements.append('')
             attrs.append(Elements(np.array(validated_elements, dtype=object)))
         else:
-            atomtypes = names
-            attrs.append(Atomtypes(atomtypes))
-            warnings.warn("Element information is missing, elements attribute "
                           "will not be populated. If needed these can be "
                           "guessed using MDAnalysis.topology.guessers.")
 
