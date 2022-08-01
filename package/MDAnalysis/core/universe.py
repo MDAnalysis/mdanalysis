@@ -1,3 +1,4 @@
+
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
@@ -368,7 +369,7 @@ class Universe(object):
             if callable(transformations):
                 transformations = [transformations]
             self._trajectory.add_transformations(*transformations)
-            
+
         to_guess = list(to_guess)
         singulars = list(att.singular for att in self._topology.read_attributes)
         if not any(att == 'type' for att in singulars) and 'types' not in to_guess:
@@ -376,7 +377,7 @@ class Universe(object):
         if 'bonds' in to_guess:
             guess_bonds = True
             to_guess.remove('bonds')
-            
+
         self.guess_TopologyAttributes(context, to_guess)
         if guess_bonds:
             self.atoms.guess_bonds(vdwradii=vdwradii, context=context)
@@ -1453,9 +1454,9 @@ class Universe(object):
         for calling a matching guesser class for this specific context
         to_guess: list
         list of atrributes to be guessed then added to the universe
-        """        
+        """
         guesser = get_guesser(context, self)
-        
+
         if guesser.is_guessable(to_guess):
             # check if the attribute already have been read from topology file
             toplogy_atrrs = list(att.attrname for att in self._topology.read_attributes)
@@ -1470,7 +1471,7 @@ class Universe(object):
             raise ValueError('{0} guesser can not guess one or more '
                              'of the provided attributes'
                              .format(context))
-            
+
 
 def Merge(*args):
     """Create a new new :class:`Universe` from one or more
