@@ -99,6 +99,9 @@ class TNGReader(base.ReaderBase):
             block for block in self._block_names if block not in self._special_blocks]
         self._check_strides_and_frames()
         self._frame = 0
+        self._box_temp = self._file_iterator.make_ndarray_for_block_from_name(self._box_blockname)
+        self._read_next_timestep()
+
 
     def _check_strides_and_frames(self):
         strides = []
@@ -164,7 +167,7 @@ class TNGReader(base.ReaderBase):
     def _read_frame(self, i):
         """read frame i"""
         self._frame = i - 1
-        ts = self._read_next_frame()
+        ts = self._read_next_timestep()
         return ts
 
 
@@ -182,17 +185,15 @@ class TNGReader(base.ReaderBase):
         return ts
 
     def _frame_to_ts(self, curr_step, ts):
-        """convert a TNGIteratorStep to an MDA Timestep"""
+        """convert a TNGCurrentIteratorStep to an MDA Timestep"""
 
         ts.frame = self._frame
         ts.time = curr_step.get_time()
         ts.data['step'] = curr_step.step
 
         if self._has_box:
-            box = self._file_iterator.make_ndarray_for_block_from_name(self._box_blockname)
-            curr_step.get_box(box)
-            box = np.zeros((3,3)) # FIXME
-            ts.dimensions = triclinic_box(*box)
+            curr_step.get_box(self._box_temp)
+            ts.dimensions = triclinic_box(*self._box_temp.reshape(3,3))
             if not curr_step.read_success:
                 raise IOError("Failed to read box from TNG file")
         if self._has_positions:
