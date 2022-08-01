@@ -22,12 +22,33 @@
 #
 
 """
-TNG Trajectory IO --- :mod:`MDAnalysis.coordinates.TNG`
+TNG trajectory files --- :mod:`MDAnalysis.coordinates.TNG`
 =======================================================
 
-Reading coordinates from TNG files
+
+The TNG format is a format used in GROMACS for storage of trajectory and
+topology information. The TNG format allows a wide range of compression
+algorithms and unlike the compressed XTC format can also store velocities
+forces in addition to positions. 
+
+The classes in this module are based on the pytng package for reading TNG files
+The reader is directed to the documentation for further reading about how pytng
+works under the hood.  
+
+In addition to particle-dependent trajectory information like positions,
+forces and velocities, the TNG format can store trajectory metadata and 
+other arbitrary time dependent data. Additional information can range from
+the virial and pressure components to the molecular topology of the system.
+This is enabled by a block based system in which binary flags indicate the
+presence or absence of various data blocks. The full list of blocks is provided 
+in the TNG specification, the TNG paper and the pytng documentation
 
 
+Notes
+-----
+Currently there is only a Reader for TNG files and no writer. This will depend
+on upstream changes in pytng. Additionally, it is not currently possible to
+read the molecular topology from a TNG file.
 
 """
 
@@ -36,7 +57,6 @@ import MDAnalysis as mda
 import warnings
 from typing import Optional
 from . import base
-from ..due import due, Doi
 from ..lib.mdamath import triclinic_box
 from .timestep import Timestep
 
@@ -52,28 +72,19 @@ else:
 class TNGReader(base.ReaderBase):
     r"""Reader for the TNG format
 
-    The TNG format is a format used in GROMACS for storage of trajectory and
-    topology information. The TNG format allows a wide range of compression
-    algorithms and unlike the compressed XTC format can also store velocities
-    forces in addition to positions. 
-
-    This reader is based on the pytng package 
-
-
-    In addition to particle-dependent trajectory information like positions,
-    forces and velocities, the TNG format can store trajectory metadata and 
-    other arbitrary time dependent data. Additional information can range from
-    the virial and pressure components to the molecular topology of the system.
-    This is enabled by a block based system in which binary flags indicate the
-    presence or absence of various data blocks. The full lis
-
-
-
     Notes
     -----
+    There are also some limitations to reading TNG files with pytng.
+    Currently we do not allow data to be read *off stride*. In essence this
+    means that all of the critical trajectory data (positions, box, velocities
+    (if present), forces (if present)) must share the same stride in trajectory
+    integrator steps. These critical blocks in the TNG file are henceforth called
+    *special blocks*. Optional blocks (all blocks that are not special blocks)
+    will not be read if they do not share an integrator step,
+    or are not divisible by the shared integrator step of the special blocks.
 
-    There are some limitations to 
 
+    .. versionadded:: 2.3.0
     """
 
     format = 'TNG'
@@ -163,15 +174,19 @@ class TNGReader(base.ReaderBase):
                           " blocks not equal, file cannot be read")
 
         self._global_stride = strides[0]
-        self._n_frames = n_data_frames[0] + 1  # NOTE frame number is 0 indexed
-
+        # NOTE frame number is 0 indexed so increment 
+        self._n_frames = n_data_frames[0] + 1 
         self._additional_blocks_to_read = []
         for block in self._additional_blocks:
             stride_add = self._block_strides[block]
             n_data_frame_add = self._data_frames[block]
-            if (stride_add != self._global_stride) or (n_data_frame_add != self.n_frames):
-                warnings.warn(f"TNG additional block {block} does not match"
-                              " strides of other blocks and will not be read")
+            if (stride_add != self._global_stride):
+                if stride_add % self._global_stride:
+                    warnings.warn(f"TNG additional block {block} does not match"
+                                  " strides of other blocks and is not divisible by"
+                                  " the global stride_length. It will not be read")
+                else:
+                    self._additional_blocks_to_read.append(block)
             else:
                 self._additional_blocks_to_read.append(block)
 
@@ -264,7 +279,7 @@ class TNGReader(base.ReaderBase):
 
     def _read_next_timestep(self, ts: Optional[Timestep] = None) -> Timestep:
         """Read next frame into a timestep
-        
+
         Parameters
         ----------
         ts : Timestep
@@ -333,14 +348,17 @@ class TNGReader(base.ReaderBase):
                 raise IOError("Failed to read forces from TNG file")
 
         for block in self._additional_blocks_to_read:
-            block_data = self._file_iterator.make_ndarray_for_block_from_name(
-                block)
-            # additional blocks read into ts.data dictionary
-            ts.data[block] = curr_step.get_blockid(
-                self._block_dictionary[block], block_data)
-            if not curr_step.read_success:
-                raise IOError(
-                    f"Failed to read additional block {block} from TNG file")
+            add_block_stride = self._block_strides[block]
+            # check we are on stride for our block
+            if  not (add_block_stride % self._global_stride):
+                block_data = self._file_iterator.make_ndarray_for_block_from_name(
+                    block)
+                # additional blocks read into ts.data dictionary
+                ts.data[block] = curr_step.get_blockid(
+                    self._block_dictionary[block], block_data)
+                if not curr_step.read_success:
+                    raise IOError("Failed to read additional block {block}"
+                                  " from TNG file")
         return ts
 
     def Writer(self):
