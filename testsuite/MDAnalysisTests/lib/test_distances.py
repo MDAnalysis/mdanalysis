@@ -1057,7 +1057,7 @@ class Test_apply_PBC(object):
 
     @pytest.fixture()
     def Triclinic_universe_pos_box(self, Triclinic_Universe):
-        U  = Triclinic_Universe
+        U = Triclinic_Universe
         atoms = U.atoms.positions
         box = U.dimensions
         return atoms, box
