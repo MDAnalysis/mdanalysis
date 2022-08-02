@@ -19,6 +19,7 @@ The rules for this file:
  * 2.3.0
 
 Fixes
+  * Fixes test_distances.py to return just the Universe. (Issue #3759)
   * Fixes awk call in deploy.yaml tests for macos runners (Issue #3693)
   * add a 0.5 for correct midpoints in hole analysis (Issue #3715)
   * Fix reading error when PDB CONECT records are corrupt. (Issue #988)
