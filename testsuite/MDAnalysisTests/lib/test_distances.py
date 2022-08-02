@@ -367,8 +367,7 @@ def test_self_distance_array_overflow_exception():
 @pytest.fixture()
 def DCD_Universe():
     universe = MDAnalysis.Universe(PSF, DCD)
-    trajectory = universe.trajectory
-    return universe, trajectory
+    return universe
 
 
 # second independent universe required for
@@ -376,15 +375,13 @@ def DCD_Universe():
 @pytest.fixture()
 def DCD_Universe2():
     universe = MDAnalysis.Universe(PSF, DCD)
-    trajectory = universe.trajectory
-    return universe, trajectory
+    return universe
 
 
 @pytest.fixture()
 def Triclinic_Universe():
     universe = MDAnalysis.Universe(TRIC)
-    trajectory = universe.trajectory
-    return universe, trajectory
+    return universe
 
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestDistanceArrayDCD_TRIC(object):
@@ -397,7 +394,8 @@ class TestDistanceArrayDCD_TRIC(object):
     prec = 5
 
     def test_simple(self, DCD_Universe, backend):
-        U, trajectory = DCD_Universe
+        U = DCD_Universe
+        trajectory = U.trajectory
         trajectory.rewind()
         x0 = U.atoms.positions
         trajectory[10]
@@ -411,7 +409,8 @@ class TestDistanceArrayDCD_TRIC(object):
                             err_msg="wrong maximum distance value")
 
     def test_outarray(self, DCD_Universe, backend):
-        U, trajectory = DCD_Universe
+        U = DCD_Universe
+        trajectory = DCD_Universe.trajectory
         trajectory.rewind()
         x0 = U.atoms.positions
         trajectory[10]
@@ -428,7 +427,8 @@ class TestDistanceArrayDCD_TRIC(object):
 
     def test_periodic(self, DCD_Universe, backend):
         # boring with the current dcd as that has no PBC
-        U, trajectory = DCD_Universe
+        U = DCD_Universe
+        trajectory = DCD_Universe.trajectory
         trajectory.rewind()
         x0 = U.atoms.positions
         trajectory[10]
@@ -444,8 +444,10 @@ class TestDistanceArrayDCD_TRIC(object):
 
     def test_atomgroup_simple(self, DCD_Universe, DCD_Universe2, backend):
         # need two copies as moving ts updates underlying array on atomgroup
-        U1, trajectory1 = DCD_Universe
-        U2, trajectory2 = DCD_Universe2
+        U1 = DCD_Universe
+        U2 = DCD_Universe2
+        trajectory1 = DCD_Universe.trajectory
+        trajectory2 = DCD_Universe2.trajectory
         trajectory1.rewind()
         trajectory2.rewind()
         x0 = U1.select_atoms("all")
@@ -466,7 +468,7 @@ class TestDistanceArrayDCD_TRIC(object):
                              ("index 9", np.s_[8, :])])
     def test_atomgroup_matches_numpy(self, DCD_Universe, backend, sel,
                                      np_slice, box):
-        U, _ = DCD_Universe
+        U = DCD_Universe
         x0_ag = U.select_atoms(sel)
         x0_arr = U.atoms.positions[np_slice]
         x1_ag = U.select_atoms(sel)
@@ -484,7 +486,7 @@ class TestDistanceArrayDCD_TRIC(object):
                              ("index 9", np.s_[8, :])])
     def test_atomgroup_matches_numpy_tric(self, Triclinic_Universe, backend,
                                           sel, np_slice):
-        U, _ = Triclinic_Universe
+        U = Triclinic_Universe
         x0_ag = U.select_atoms(sel)
         x0_arr = U.atoms.positions[np_slice]
         x1_ag = U.select_atoms(sel)
@@ -503,7 +505,8 @@ class TestSelfDistanceArrayDCD_TRIC(object):
     prec = 5
 
     def test_simple(self, DCD_Universe, backend):
-        U, trajectory = DCD_Universe
+        U = DCD_Universe
+        trajectory = DCD_Universe.trajectory
         trajectory.rewind()
         x0 = U.atoms.positions
         d = distances.self_distance_array(x0, backend=backend)
@@ -515,7 +518,8 @@ class TestSelfDistanceArrayDCD_TRIC(object):
                             err_msg="wrong maximum distance value")
 
     def test_outarray(self, DCD_Universe, backend):
-        U, trajectory = DCD_Universe
+        U = DCD_Universe
+        trajectory = DCD_Universe.trajectory
         trajectory.rewind()
         x0 = U.atoms.positions
         natoms = len(U.atoms)
@@ -530,7 +534,8 @@ class TestSelfDistanceArrayDCD_TRIC(object):
 
     def test_periodic(self, DCD_Universe, backend):
         # boring with the current dcd as that has no PBC
-        U, trajectory = DCD_Universe
+        U = DCD_Universe
+        trajectory = DCD_Universe.trajectory
         trajectory.rewind()
         x0 = U.atoms.positions
         natoms = len(U.atoms)
@@ -544,7 +549,8 @@ class TestSelfDistanceArrayDCD_TRIC(object):
                             err_msg="wrong maximum distance value with PBC")
 
     def test_atomgroup_simple(self, DCD_Universe, backend):
-        U, trajectory = DCD_Universe
+        U = DCD_Universe
+        trajectory = DCD_Universe.trajectory
         trajectory.rewind()
         x0 = U.select_atoms("all")
         d = distances.self_distance_array(x0, backend=backend)
@@ -563,7 +569,7 @@ class TestSelfDistanceArrayDCD_TRIC(object):
                              ("index 9", np.s_[8, :])])
     def test_atomgroup_matches_numpy(self, DCD_Universe, backend,
                                      sel, np_slice, box):
-        U, _ = DCD_Universe
+        U = DCD_Universe
 
         x0_ag = U.select_atoms(sel)
         x0_arr = U.atoms.positions[np_slice]
@@ -580,7 +586,7 @@ class TestSelfDistanceArrayDCD_TRIC(object):
                             ("index 9", np.s_[8, :])])
     def test_atomgroup_matches_numpy_tric(self, Triclinic_Universe, backend,
                                           sel, np_slice):
-        U, _ = Triclinic_Universe
+        U = Triclinic_Universe
         x0_ag = U.select_atoms(sel)
         x0_arr = U.atoms.positions[np_slice]
         d_ag = distances.self_distance_array(x0_ag, box=U.coord.dimensions,
@@ -1042,31 +1048,30 @@ class Test_apply_PBC(object):
 
     @pytest.fixture()
     def DCD_universe_pos(self, DCD_Universe):
-        U, _ = DCD_Universe
+        U = DCD_Universe
         return U.atoms.positions
 
     @pytest.fixture()
     def DCD_universe_ag(self, DCD_Universe):
-        U, _ = DCD_Universe
-        return U.atoms
+        return DCD_Universe.atoms
 
     @pytest.fixture()
     def Triclinic_universe_pos_box(self, Triclinic_Universe):
-        U, _ = Triclinic_Universe
+        U  = Triclinic_Universe
         atoms = U.atoms.positions
         box = U.dimensions
         return atoms, box
 
     @pytest.fixture()
     def Triclinic_universe_pos_box(self, Triclinic_Universe):
-        U, _ = Triclinic_Universe
+        U = Triclinic_Universe
         atoms = U.atoms.positions
         box = U.dimensions
         return atoms, box
 
     @pytest.fixture()
     def Triclinic_universe_ag_box(self, Triclinic_Universe):
-        U, _ = Triclinic_Universe
+        U = Triclinic_Universe
         atoms = U.atoms
         box = U.dimensions
         return atoms, box
