@@ -280,6 +280,25 @@ class TestEDRReader(BaseAuxReaderTest):
         assert ref_universe.trajectory.ts.aux.bond == ref_dict["Bond"]
         assert ref_universe.trajectory.ts.aux.temp == ref_dict["Temperature"]
 
+    def test_add_list_no_auxterm_provided(self, ref_universe, reader):
+        u = ref_universe
+        u.trajectory.add_auxiliary(["Bond", "Temperature"], reader)
+        ref_dict = read_auxstep_data(0)
+        assert u.trajectory.ts.aux.Bond == ref_dict["Bond"]
+        assert u.trajectory.ts.aux.Temperature == ref_dict["Temperature"]
+
+    def test_raise_error_if_auxname_auxterm_different_length(self,
+                                                             ref_universe,
+                                                             reader):
+        with pytest.raises(ValueError, match="auxname and auxterm must have"):
+            ref_universe.trajectory.add_auxiliary(["bond", "temp"],
+                                                  reader, ["Bond"])
+
+    def test_raise_error_if_auxname_already_assigned(self, ref_universe,
+                                                     reader):
+        with pytest.raises(ValueError, match="Auxiliary data with name"):
+            ref_universe.trajectory.add_auxiliary("test", reader, "Bond")
+
     def test_add_single_term_custom_name_from_file(self, ref, ref_universe):
         ref_universe.trajectory.add_auxiliary("temp", ref.testdata,
                                               "Temperature")
