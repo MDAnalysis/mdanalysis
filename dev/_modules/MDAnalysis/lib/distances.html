@@ -447,8 +447,15 @@
     <span class="k">return</span> <span class="n">distances</span></div>
 
 
-<div class="viewcode-block" id="capped_distance"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.capped_distance">[docs]</a><span class="k">def</span> <span class="nf">capped_distance</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_distances</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="capped_distance"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.capped_distance">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="s1">&#39;configuration&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check_lengths_match</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">capped_distance</span><span class="p">(</span><span class="n">reference</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="s1">&#39;AtomGroup&#39;</span><span class="p">],</span>
+                    <span class="n">configuration</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="s1">&#39;AtomGroup&#39;</span><span class="p">],</span>
+                    <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">method</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">return_distances</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculates pairs of indices corresponding to entries in the `reference`</span>
 <span class="sd">    and `configuration` arrays which are separated by a distance lying within</span>
 <span class="sd">    the specified cutoff(s). Optionally, these distances can be returned as</span>
@@ -466,10 +473,12 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    -----------</span>
-<span class="sd">    reference : numpy.ndarray</span>
-<span class="sd">        Reference coordinate array with shape ``(3,)`` or ``(n, 3)``.</span>
-<span class="sd">    configuration : numpy.ndarray</span>
-<span class="sd">        Configuration coordinate array with shape ``(3,)`` or ``(m, 3)``.</span>
+<span class="sd">    reference : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`</span>
+<span class="sd">        Reference coordinate array with shape ``(3,)`` or ``(n, 3)``. Also</span>
+<span class="sd">        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
+<span class="sd">    configuration : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`</span>
+<span class="sd">        Configuration coordinate array with shape ``(3,)`` or ``(m, 3)``. Also</span>
+<span class="sd">        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
 <span class="sd">    max_cutoff : float</span>
 <span class="sd">        Maximum cutoff distance between the reference and configuration.</span>
 <span class="sd">    min_cutoff : float, optional</span>
@@ -523,6 +532,9 @@
 <span class="sd">       #2670, #2930)</span>
 <span class="sd">    .. versionchanged:: 1.0.2</span>
 <span class="sd">       nsgrid enabled again</span>
+<span class="sd">    .. versionchanged:: 2.3.0</span>
+<span class="sd">       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an</span>
+<span class="sd">       argument in any position and checks inputs using type hinting.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">box</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">box</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
@@ -536,8 +548,10 @@
                   <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">return_distances</span><span class="o">=</span><span class="n">return_distances</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">_determine_method</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                      <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_determine_method</span><span class="p">(</span><span class="n">reference</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">configuration</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                      <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                      <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                      <span class="n">method</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Guesses the fastest method for capped distance calculations based on the</span>
 <span class="sd">    size of the coordinate sets and the relative size of the target volume.</span>
 
@@ -608,9 +622,13 @@
 
 
 <span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="s1">&#39;configuration&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-              <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check_lengths_match</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">_bruteforce_capped</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                       <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_distances</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+              <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check_lengths_match</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_bruteforce_capped</span><span class="p">(</span><span class="n">reference</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="s1">&#39;AtomGroup&#39;</span><span class="p">],</span>
+                       <span class="n">configuration</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="s1">&#39;AtomGroup&#39;</span><span class="p">],</span>
+                       <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">return_distances</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Capped distance evaluations using a brute force method.</span>
 
 <span class="sd">    Computes and returns an array containing pairs of indices corresponding to</span>
@@ -626,12 +644,14 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    reference : numpy.ndarray</span>
+<span class="sd">    reference : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`</span>
 <span class="sd">        Reference coordinate array with shape ``(3,)`` or ``(n, 3)`` (dtype will</span>
-<span class="sd">        be converted to ``numpy.float32`` internally).</span>
-<span class="sd">    configuration : array</span>
+<span class="sd">        be converted to ``numpy.float32`` internally). Also</span>
+<span class="sd">        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
+<span class="sd">    configuration : array or :class:`~MDAnalysis.core.groups.AtomGroup`</span>
 <span class="sd">        Configuration coordinate array with shape ``(3,)`` or ``(m, 3)`` (dtype</span>
-<span class="sd">        will be converted to ``numpy.float32`` internally).</span>
+<span class="sd">        will be converted to ``numpy.float32`` internally). Also</span>
+<span class="sd">        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
 <span class="sd">    max_cutoff : float</span>
 <span class="sd">        Maximum cutoff distance between `reference` and `configuration`</span>
 <span class="sd">        coordinates.</span>
@@ -661,6 +681,10 @@
 <span class="sd">        ``k``-th pair returned in `pairs` and gives the distance between the</span>
 <span class="sd">        coordinates ``reference[pairs[k, 0]]`` and</span>
 <span class="sd">        ``configuration[pairs[k, 1]]``.</span>
+
+<span class="sd">    .. versionchanged:: 2.3.0</span>
+<span class="sd">       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an</span>
+<span class="sd">       argument in any position and checks inputs using type hinting.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Default return values (will be overwritten only if pairs are found):</span>
     <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span>
@@ -685,9 +709,13 @@
 
 
 <span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="s1">&#39;configuration&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-              <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check_lengths_match</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">_pkdtree_capped</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_distances</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+              <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check_lengths_match</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_pkdtree_capped</span><span class="p">(</span><span class="n">reference</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="s1">&#39;AtomGroup&#39;</span><span class="p">],</span>
+                    <span class="n">configuration</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="s1">&#39;AtomGroup&#39;</span><span class="p">],</span>
+                    <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">return_distances</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Capped distance evaluations using a KDtree method.</span>
 
 <span class="sd">    Computes and returns an array containing pairs of indices corresponding to</span>
@@ -703,12 +731,14 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    reference : numpy.ndarray</span>
+<span class="sd">    reference : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`</span>
 <span class="sd">        Reference coordinate array with shape ``(3,)`` or ``(n, 3)`` (dtype will</span>
-<span class="sd">        be converted to ``numpy.float32`` internally).</span>
-<span class="sd">    configuration : array</span>
+<span class="sd">        be converted to ``numpy.float32`` internally). Also</span>
+<span class="sd">        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
+<span class="sd">    configuration : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`</span>
 <span class="sd">        Configuration coordinate array with shape ``(3,)`` or ``(m, 3)`` (dtype</span>
-<span class="sd">        will be converted to ``numpy.float32`` internally).</span>
+<span class="sd">        will be converted to ``numpy.float32`` internally). Also</span>
+<span class="sd">        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
 <span class="sd">    max_cutoff : float</span>
 <span class="sd">        Maximum cutoff distance between `reference` and `configuration`</span>
 <span class="sd">        coordinates.</span>
@@ -738,6 +768,10 @@
 <span class="sd">        ``k``-th pair returned in `pairs` and gives the distance between the</span>
 <span class="sd">        coordinates ``reference[pairs[k, 0]]`` and</span>
 <span class="sd">        ``configuration[pairs[k, 1]]``.</span>
+
+<span class="sd">    .. versionchanged:: 2.3.0</span>
+<span class="sd">       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an</span>
+<span class="sd">       argument in any position and checks inputs using type hinting.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">.pkdtree</span> <span class="kn">import</span> <span class="n">PeriodicKDTree</span>  <span class="c1"># must be here to avoid circular import</span>
 
@@ -767,9 +801,13 @@
 
 
 <span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="s1">&#39;configuration&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-              <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check_lengths_match</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">_nsgrid_capped</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                   <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_distances</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+              <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check_lengths_match</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_nsgrid_capped</span><span class="p">(</span><span class="n">reference</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="s1">&#39;AtomGroup&#39;</span><span class="p">],</span>
+                   <span class="n">configuration</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="s1">&#39;AtomGroup&#39;</span><span class="p">],</span>
+                   <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                   <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                   <span class="n">return_distances</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Capped distance evaluations using a grid-based search method.</span>
 
 <span class="sd">    Computes and returns an array containing pairs of indices corresponding to</span>
@@ -785,12 +823,14 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    reference : numpy.ndarray</span>
+<span class="sd">    reference : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`</span>
 <span class="sd">        Reference coordinate array with shape ``(3,)`` or ``(n, 3)`` (dtype will</span>
-<span class="sd">        be converted to ``numpy.float32`` internally).</span>
-<span class="sd">    configuration : array</span>
+<span class="sd">        be converted to ``numpy.float32`` internally). Also</span>
+<span class="sd">        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
+<span class="sd">    configuration : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`</span>
 <span class="sd">        Configuration coordinate array with shape ``(3,)`` or ``(m, 3)`` (dtype</span>
-<span class="sd">        will be converted to ``numpy.float32`` internally).</span>
+<span class="sd">        will be converted to ``numpy.float32`` internally). Also</span>
+<span class="sd">        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
 <span class="sd">    max_cutoff : float</span>
 <span class="sd">        Maximum cutoff distance between `reference` and `configuration`</span>
 <span class="sd">        coordinates.</span>
@@ -820,6 +860,10 @@
 <span class="sd">        ``k``-th pair returned in `pairs` and gives the distance between the</span>
 <span class="sd">        coordinates ``reference[pairs[k, 0]]`` and</span>
 <span class="sd">        ``configuration[pairs[k, 1]]``.</span>
+
+<span class="sd">    .. versionchanged:: 2.3.0</span>
+<span class="sd">       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an</span>
+<span class="sd">       argument in any position and checks inputs using type hinting.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Default return values (will be overwritten only if pairs are found):</span>
     <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span>
@@ -865,8 +909,15 @@
         <span class="k">return</span> <span class="n">pairs</span>
 
 
-<div class="viewcode-block" id="self_capped_distance"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.self_capped_distance">[docs]</a><span class="k">def</span> <span class="nf">self_capped_distance</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                         <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_distances</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="self_capped_distance"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.self_capped_distance">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check_lengths_match</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">self_capped_distance</span><span class="p">(</span><span class="n">reference</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="s1">&#39;AtomGroup&#39;</span><span class="p">],</span>
+                         <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                         <span class="n">min_cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                         <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                         <span class="n">method</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                         <span class="n">return_distances</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculates pairs of indices corresponding to entries in the `reference`</span>
 <span class="sd">    array which are separated by a distance lying within the specified</span>
 <span class="sd">    cutoff(s). Optionally, these distances can be returned as well.</span>
@@ -883,8 +934,9 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    -----------</span>
-<span class="sd">    reference : numpy.ndarray</span>
-<span class="sd">        Reference coordinate array with shape ``(3,)`` or ``(n, 3)``.</span>
+<span class="sd">    reference : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`</span>
+<span class="sd">        Reference coordinate array with shape ``(3,)`` or ``(n, 3)``. Also</span>
+<span class="sd">        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
 <span class="sd">    max_cutoff : float</span>
 <span class="sd">        Maximum cutoff distance between `reference` coordinates.</span>
 <span class="sd">    min_cutoff : float, optional</span>
@@ -944,6 +996,9 @@
 <span class="sd">       #2670, #2930)</span>
 <span class="sd">    .. versionchanged:: 1.0.2</span>
 <span class="sd">       enabled nsgrid again</span>
+<span class="sd">    .. versionchanged:: 2.3.0</span>
+<span class="sd">       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an</span>
+<span class="sd">       argument in any position and checks inputs using type hinting.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">box</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">box</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
@@ -958,8 +1013,10 @@
                   <span class="n">return_distances</span><span class="o">=</span><span class="n">return_distances</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">_determine_method_self</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                           <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_determine_method_self</span><span class="p">(</span><span class="n">reference</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                           <span class="n">min_cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                           <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                           <span class="n">method</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Guesses the fastest method for capped distance calculations based on the</span>
 <span class="sd">    size of the `reference` coordinate set and the relative size of the target</span>
 <span class="sd">    volume.</span>
@@ -1021,9 +1078,13 @@
         <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;nsgrid&#39;</span><span class="p">]</span>
 
 
-<span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">_bruteforce_capped_self</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                            <span class="n">return_distances</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_bruteforce_capped_self</span><span class="p">(</span><span class="n">reference</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="s1">&#39;AtomGroup&#39;</span><span class="p">],</span>
+                            <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                            <span class="n">min_cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                            <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                            <span class="n">return_distances</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Capped distance evaluations using a brute force method.</span>
 
 <span class="sd">    Computes and returns an array containing pairs of indices corresponding to</span>
@@ -1038,9 +1099,10 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    reference : numpy.ndarray</span>
+<span class="sd">    reference : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`</span>
 <span class="sd">        Reference coordinate array with shape ``(3,)`` or ``(n, 3)`` (dtype will</span>
-<span class="sd">        be converted to ``numpy.float32`` internally).</span>
+<span class="sd">        be converted to ``numpy.float32`` internally). Also accepts an</span>
+<span class="sd">        :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
 <span class="sd">    max_cutoff : float</span>
 <span class="sd">        Maximum cutoff distance between `reference` coordinates.</span>
 <span class="sd">    min_cutoff : float, optional</span>
@@ -1070,6 +1132,9 @@
 
 <span class="sd">    .. versionchanged:: 0.20.0</span>
 <span class="sd">       Added `return_distances` keyword.</span>
+<span class="sd">    .. versionchanged:: 2.3.0</span>
+<span class="sd">       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an</span>
+<span class="sd">       argument in any position and checks inputs using type hinting.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Default return values (will be overwritten only if pairs are found):</span>
     <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span>
@@ -1096,9 +1161,13 @@
     <span class="k">return</span> <span class="n">pairs</span>
 
 
-<span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">_pkdtree_capped_self</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                         <span class="n">return_distances</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_pkdtree_capped_self</span><span class="p">(</span><span class="n">reference</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="s1">&#39;AtomGroup&#39;</span><span class="p">],</span>
+                         <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                         <span class="n">min_cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                         <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                         <span class="n">return_distances</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Capped distance evaluations using a KDtree method.</span>
 
 <span class="sd">    Computes and returns an array containing pairs of indices corresponding to</span>
@@ -1113,9 +1182,10 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    reference : numpy.ndarray</span>
+<span class="sd">    reference : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`</span>
 <span class="sd">        Reference coordinate array with shape ``(3,)`` or ``(n, 3)`` (dtype will</span>
-<span class="sd">        be converted to ``numpy.float32`` internally).</span>
+<span class="sd">        be converted to ``numpy.float32`` internally). Also accepts an</span>
+<span class="sd">        :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
 <span class="sd">    max_cutoff : float</span>
 <span class="sd">        Maximum cutoff distance between `reference` coordinates.</span>
 <span class="sd">    min_cutoff : float, optional</span>
@@ -1145,6 +1215,9 @@
 
 <span class="sd">    .. versionchanged:: 0.20.0</span>
 <span class="sd">       Added `return_distances` keyword.</span>
+<span class="sd">    .. versionchanged:: 2.3.0</span>
+<span class="sd">       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an</span>
+<span class="sd">       argument in any position and checks inputs using type hinting.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">.pkdtree</span> <span class="kn">import</span> <span class="n">PeriodicKDTree</span>  <span class="c1"># must be here to avoid circular import</span>
 
@@ -1172,9 +1245,13 @@
     <span class="k">return</span> <span class="n">pairs</span>
 
 
-<span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">_nsgrid_capped_self</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                        <span class="n">return_distances</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_nsgrid_capped_self</span><span class="p">(</span><span class="n">reference</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="s1">&#39;AtomGroup&#39;</span><span class="p">],</span>
+                        <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                        <span class="n">min_cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="n">return_distances</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Capped distance evaluations using a grid-based search method.</span>
 
 <span class="sd">    Computes and returns an array containing pairs of indices corresponding to</span>
@@ -1189,9 +1266,10 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    reference : numpy.ndarray</span>
+<span class="sd">    reference : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`</span>
 <span class="sd">        Reference coordinate array with shape ``(3,)`` or ``(n, 3)`` (dtype will</span>
-<span class="sd">        be converted to ``numpy.float32`` internally).</span>
+<span class="sd">        be converted to ``numpy.float32`` internally).  Also accepts an</span>
+<span class="sd">        :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
 <span class="sd">    max_cutoff : float</span>
 <span class="sd">        Maximum cutoff distance between `reference` coordinates.</span>
 <span class="sd">    min_cutoff : float, optional</span>
@@ -1219,6 +1297,9 @@
 
 <span class="sd">    .. versionchanged:: 0.20.0</span>
 <span class="sd">       Added `return_distances` keyword.</span>
+<span class="sd">    .. versionchanged:: 2.3.0</span>
+<span class="sd">       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an</span>
+<span class="sd">       argument in any position and checks inputs using type hinting.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Default return values (will be overwritten only if pairs are found):</span>
     <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span>
