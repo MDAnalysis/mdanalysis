@@ -33,9 +33,9 @@ jobs:
           install_hole: [true, ]
           codecov: [true, ]
           include:
-            - name: macOS_monterey_py310
+            - name: macOS_monterey_py39
               os: macOS-12
-              python-version: "3.10"
+              python-version: 3.9
               full-deps: true
               install_hole: true
               codecov: true
