@@ -64,7 +64,7 @@ class EDRReference(BaseAuxReference):
         self.dt = 0.02
         self.description = {'dt': self.dt, 'represent_ts_as': 'closest',
                             'initial_time': self.initial_time,
-                            'time_selector': None, 'data_selector': None,
+                            'time_selector': "Time", 'data_selector': None,
                             'constant_dt': True, 'cutoff': -1,
                             'auxname': self.name}
 
@@ -144,7 +144,7 @@ class EDRReference(BaseAuxReference):
 
 class TestEDRReader(BaseAuxReaderTest):
     @staticmethod
-    @pytest.fixture()
+    @pytest.fixture
     def ref():
         return EDRReference()
 
@@ -156,15 +156,23 @@ class TestEDRReader(BaseAuxReaderTest):
         return u
 
     @staticmethod
-    @pytest.fixture()
+    @pytest.fixture
     def reader(ref):
         return ref.reader(
             ref.testdata,
             initial_time=ref.initial_time,
             dt=ref.dt, auxname=ref.name,
-            time_selector=None,
+            time_selector="Time",
             data_selector=None
         )
+
+    def test_time_non_constant_dt(self, reader):
+        reader.constant_dt = False
+        reader.time_selector = None
+        with pytest.raises(ValueError, match="If dt is not constant, "
+                                             "must have a valid time "
+                                             "selector"):
+            reader.time
 
     def test_iterate_through_trajectory(self, ref, ref_universe):
         # check the representative values of aux for each frame are as expected
@@ -244,60 +252,61 @@ class TestEDRReader(BaseAuxReaderTest):
                             err_msg="Representative value does not match when "
                                     "applying cutoff")
 
-    def test_add_all_terms_from_file(self):
-        u = mda.Universe(AUX_EDR_TPR, AUX_EDR_XTC)
-        u.trajectory.add_auxiliary("*", AUX_EDR)
-        ref_terms = [key for key in read_auxstep_data(0).keys()]
-        terms = [key for key in u.trajectory._auxs]
+    def test_add_all_terms_from_file(self, ref, ref_universe):
+        ref_universe.trajectory.add_auxiliary("*", ref.testdata)
+        # adding "test" manually to match above addition of test term
+        ref_terms = ["test"] + [key for key in read_auxstep_data(0).keys()]
+        terms = [key for key in ref_universe.trajectory._auxs]
         assert ref_terms == terms
 
-    def test_add_all_terms_from_reader(self):
-        u = mda.Universe(AUX_EDR_TPR, AUX_EDR_XTC)
-        aux = mda.auxiliary.EDR.EDRReader(AUX_EDR)
-        u.trajectory.add_auxiliary("*", aux)
-        ref_terms = [key for key in read_auxstep_data(0).keys()]
-        terms = [key for key in u.trajectory._auxs]
+    def test_add_all_terms_from_reader(self, ref_universe, reader):
+        ref_universe.trajectory.add_auxiliary("*", reader)
+        ref_terms = ["test"] + [key for key in read_auxstep_data(0).keys()]
+        terms = [key for key in ref_universe.trajectory._auxs]
         assert ref_terms == terms
 
-    def test_add_term_list_custom_names_from_file(self):
-        u = mda.Universe(AUX_EDR_TPR, AUX_EDR_XTC)
-        u.trajectory.add_auxiliary(["bond", "temp"], AUX_EDR,
-                                   ["Bond", "Temperature"])
+    def test_add_term_list_custom_names_from_file(self, ref, ref_universe):
+        ref_universe.trajectory.add_auxiliary(["bond", "temp"], ref.testdata,
+                                              ["Bond", "Temperature"])
         ref_dict = read_auxstep_data(0)
-        assert u.trajectory.ts.aux.bond == ref_dict["Bond"]
-        assert u.trajectory.ts.aux.temp == ref_dict["Temperature"]
+        assert ref_universe.trajectory.ts.aux.bond == ref_dict["Bond"]
+        assert ref_universe.trajectory.ts.aux.temp == ref_dict["Temperature"]
 
-    def test_add_term_list_custom_names_from_reader(self):
-        u = mda.Universe(AUX_EDR_TPR, AUX_EDR_XTC)
-        aux = mda.auxiliary.EDR.EDRReader(AUX_EDR)
-        u.trajectory.add_auxiliary(["bond", "temp"], aux,
-                                   ["Bond", "Temperature"])
+    def test_add_term_list_custom_names_from_reader(self, ref_universe,
+                                                    reader):
+        ref_universe.trajectory.add_auxiliary(["bond", "temp"], reader,
+                                              ["Bond", "Temperature"])
         ref_dict = read_auxstep_data(0)
-        assert u.trajectory.ts.aux.bond == ref_dict["Bond"]
-        assert u.trajectory.ts.aux.temp == ref_dict["Temperature"]
+        assert ref_universe.trajectory.ts.aux.bond == ref_dict["Bond"]
+        assert ref_universe.trajectory.ts.aux.temp == ref_dict["Temperature"]
 
-    def test_add_single_term_custom_name_from_file(self):
-        u = mda.Universe(AUX_EDR_TPR, AUX_EDR_XTC)
-        u.trajectory.add_auxiliary("temp", AUX_EDR, "Temperature")
+    def test_add_single_term_custom_name_from_file(self, ref, ref_universe):
+        ref_universe.trajectory.add_auxiliary("temp", ref.testdata,
+                                              "Temperature")
         ref_dict = read_auxstep_data(0)
-        assert u.trajectory.ts.aux.temp == ref_dict["Temperature"]
+        assert ref_universe.trajectory.ts.aux.temp == ref_dict["Temperature"]
 
-    def test_add_single_term_custom_name_from_reader(self):
-        u = mda.Universe(AUX_EDR_TPR, AUX_EDR_XTC)
-        aux = mda.auxiliary.EDR.EDRReader(AUX_EDR)
-        u.trajectory.add_auxiliary("temp", aux, "Temperature")
+    def test_add_single_term_custom_name_from_reader(self, ref_universe,
+                                                     reader):
+        ref_universe.trajectory.add_auxiliary("temp", reader, "Temperature")
         ref_dict = read_auxstep_data(0)
-        assert u.trajectory.ts.aux.temp == ref_dict["Temperature"]
+        assert ref_universe.trajectory.ts.aux.temp == ref_dict["Temperature"]
 
-    def test_terms_update_on_iter(self):
-        u = mda.Universe(AUX_EDR_TPR, AUX_EDR_XTC)
-        aux = mda.auxiliary.EDR.EDRReader(AUX_EDR)
-        u.trajectory.add_auxiliary(["bond", "temp"], aux,
-                                   ["Bond", "Temperature"])
+    def test_terms_update_on_iter(self, ref_universe, reader):
+        ref_universe.trajectory.add_auxiliary(["bond", "temp"], reader,
+                                              ["Bond", "Temperature"])
         ref_dict = read_auxstep_data(0)
-        assert u.trajectory.ts.aux.bond == ref_dict["Bond"]
-        assert u.trajectory.ts.aux.temp == ref_dict["Temperature"]
+        assert ref_universe.trajectory.ts.aux.bond == ref_dict["Bond"]
+        assert ref_universe.trajectory.ts.aux.temp == ref_dict["Temperature"]
         ref_dict = read_auxstep_data(1)
-        u.trajectory.next()
-        assert u.trajectory.ts.aux.bond == ref_dict["Bond"]
-        assert u.trajectory.ts.aux.temp == ref_dict["Temperature"]
+        ref_universe.trajectory.next()
+        assert ref_universe.trajectory.ts.aux.bond == ref_dict["Bond"]
+        assert ref_universe.trajectory.ts.aux.temp == ref_dict["Temperature"]
+
+    def test_invalid_data_selector(self, ref, ref_universe):
+        with pytest.raises(KeyError, match="'Nonsense' is not a key"):
+            ref_universe.trajectory.add_auxiliary("Nonsense", AUX_EDR)
+
+    def test_read_all_times(self, reader):
+        all_times_expected = np.array([0., 0.02, 0.04, 0.06])
+        assert np.all(all_times_expected == reader.read_all_times())

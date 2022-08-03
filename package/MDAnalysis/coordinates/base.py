@@ -1071,9 +1071,6 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
                     auxterm = auxname
                 self._add_aux_edr(auxname, auxdata, auxterm, format, **kwargs)
 
-            else:
-                raise AttributeError("Invalid selection of 'auxname'.")
-
     def _add_aux_xvg(self, auxname, auxdata, format, **kwargs):
         if auxname in self.aux_list:
             raise ValueError("Auxiliary data with name {name} already "
