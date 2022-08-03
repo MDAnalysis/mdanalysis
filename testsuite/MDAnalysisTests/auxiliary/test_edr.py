@@ -50,7 +50,7 @@ def read_auxstep_data(step):
         aux_dict[" ".join(line.split()[:-1])] = float(line.split()[-1])
     return(aux_dict)
 
-# The EDRReader behaves differently from the XVGReader, creating dummy test data
+# The EDRReader behaves differently from the XVGReader, creating dummy test
 # data similar to what is done for XVG is not possible. The EDRReference and
 # some tests in TestEDRReader had to be changed.
 
@@ -70,8 +70,9 @@ class EDRReference(BaseAuxReference):
 
         def reference_auxstep(i):
             # create a reference AuxStep for step i
+            t_init = self.initial_time
             auxstep = mda.auxiliary.base.AuxStep(dt=self.dt,
-                                                 initial_time=self.initial_time)
+                                                 initial_time=t_init)
             auxstep.step = i
             auxstep._data = read_auxstep_data(i)
             return auxstep
@@ -97,8 +98,8 @@ class EDRReference(BaseAuxReference):
         self.iter_slice_auxsteps = [self.auxsteps[0], self.auxsteps[2]]
 
         def reference_timestep(dt=0.02, offset=0):
-            # return a trajectory timestep with specified dt, offset + move to 
-            # frame 1; for use in auxiliary reading of different timesteps 
+            # return a trajectory timestep with specified dt, offset + move to
+            # frame 1; for use in auxiliary reading of different timesteps
             ts = mda.coordinates.base.Timestep(0, dt=dt,
                                                time_offset=offset)
             ts.frame = 1
@@ -133,12 +134,12 @@ class EDRReference(BaseAuxReference):
 
         # testing cutoff for representative values
         self.cutoff = 0
-        # for 'average': use low frequenct timestep, only step 2 within 0ps cutoff
+        # for 'average': use low frequenct timestep, only step 2 within 0ps
+        # cutoff
         self.lowf_cutoff_average_rep = self.bond_step2_val
         # for 'closest': use offset timestep; no timestep within 0ps cutoff
         # changed here to match requirements for EDR data
         self.offset_cutoff_closest_rep = np.array(np.nan)
-
 
 
 class TestEDRReader(BaseAuxReaderTest):
@@ -164,17 +165,19 @@ class TestEDRReader(BaseAuxReaderTest):
             time_selector=None,
             data_selector=None
         )
+
     def test_iterate_through_trajectory(self, ref, ref_universe):
         # check the representative values of aux for each frame are as expected
-        # trajectory here has same dt, offset; so there's a direct correspondence
-        # between frames and steps
+        # trajectory here has same dt, offset; so there's a direct
+        # correspondence between frames and steps
         for i, ts in enumerate(ref_universe.trajectory):
             assert_almost_equal(ts.aux.test, ref.auxsteps[i].data["Bond"])
 
     def test_iterate_as_auxiliary_from_trajectory(self, ref, ref_universe):
         # check representative values of aux for each frame are as expected
-        # trajectory here has same dt, offset, so there's a direct correspondence
-        # between frames and steps, and iter_as_aux will run through all frames
+        # trajectory here has same dt, offset, so there's a direct
+        # correspondence between frames and steps, and iter_as_aux will run
+        # through all frames
         for i, ts in enumerate(ref_universe.trajectory.iter_as_aux('test')):
             assert_almost_equal(ts.aux.test, ref.auxsteps[i].data["Bond"])
 
@@ -185,7 +188,8 @@ class TestEDRReader(BaseAuxReaderTest):
         # Test all 4 frames
         for idx in range(4):
 
-            frame, time_diff = reader.step_to_frame(idx, ts, return_time_diff=True)
+            frame, time_diff = reader.step_to_frame(idx, ts,
+                                                    return_time_diff=True)
 
             assert frame == idx
             np.testing.assert_almost_equal(time_diff, idx * 0.002)
@@ -196,21 +200,24 @@ class TestEDRReader(BaseAuxReaderTest):
         reader.update_ts(ts)
         # check the value set in ts is as we expect
         assert_almost_equal(ts.aux.test["Bond"], ref.lowf_closest_rep,
-                            err_msg="Representative value in ts.aux does not match")
+                            err_msg="Representative value in ts.aux "
+                                    "does not match")
 
     def test_read_higher_freq_timestep(self, ref, reader):
         # try reading a timestep with higher frequency
         ts = ref.higher_freq_ts
         reader.update_ts(ts)
         assert_almost_equal(ts.aux.test, ref.highf_rep,
-                            err_msg="Representative value in ts.aux does not match")
+                            err_msg="Representative value in ts.aux "
+                                    "does not match")
 
     def test_read_offset_timestep(self, ref, reader):
         # try reading a timestep offset from auxiliary
         ts = ref.offset_ts
         reader.update_ts(ts)
         assert_almost_equal(ts.aux.test["Bond"], ref.offset_closest_rep,
-                            err_msg="Representative value in ts.aux does not match")
+                            err_msg="Representative value in ts.aux "
+                                    "does not match")
 
     def test_represent_as_average(self, ref, reader):
         # test the 'average' option for 'represent_ts_as'

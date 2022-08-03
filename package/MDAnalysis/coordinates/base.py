@@ -980,13 +980,14 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             natoms=self.n_atoms
         ))
 
-    def add_auxiliary(self, auxname, auxdata, auxterm=None, format=None, **kwargs):
+    def add_auxiliary(self, auxname, auxdata, auxterm=None,
+                      format=None, **kwargs):
         """Add auxiliary data to be read alongside trajectory.
 
-        Auxiliary data may be any data timeseries from the trajectory additional
-        to that read in by the trajectory reader. *auxdata* can be an
-        :class:`~MDAnalysis.auxiliary.base.AuxReader` instance, or the data
-        itself as e.g. a filename; in the latter case an appropriate
+        Auxiliary data may be any data timeseries from the trajectory
+        additional to that read in by the trajectory reader. *auxdata* can
+        be an :class:`~MDAnalysis.auxiliary.base.AuxReader` instance, or the
+        data itself as e.g. a filename; in the latter case an appropriate
         :class:`~MDAnalysis.auxiliary.base.AuxReader` is guessed from the
         data/file format. An appropriate `format` may also be directly provided
         as a key word argument.
@@ -998,8 +999,9 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
 
         The representative value(s) of the auxiliary data for each timestep (as
         calculated by the :class:`~MDAnalysis.auxiliary.base.AuxReader`) are
-        stored in the current timestep in the ``ts.aux`` namespace under *auxname*;
-        e.g. to add additional pull force data stored in pull-force.xvg::
+        stored in the current timestep in the ``ts.aux`` namespace under
+        *auxname*; e.g. to add additional pull force data stored in
+        pull-force.xvg::
 
             u = MDAnalysis.Universe(PDB, XTC)
             u.trajectory.add_auxiliary('pull', 'pull-force.xvg')
@@ -1049,17 +1051,19 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
                     if not auxterm:
                         # auxterm not specified, use auxname as auxterm
                         term = name
-                        self._add_aux_edr(name, auxdata, term, format, **kwargs)
+                        self._add_aux_edr(name, auxdata, term,
+                                          format, **kwargs)
                     else:
                         # auxterms are specified, pull these terms from edr and
                         # assign to auxname. Lists must be of equal length
-                        # and are assumed to be ordered. 
+                        # and are assumed to be ordered.
                         if len(auxname) != len(auxterm):
-                            raise ValueError("auxname and auxterm must be have "
+                            raise ValueError("auxname and auxterm must have "
                                              f"the same number of terms, but "
                                              f"have {len(auxname)} and "
                                              f"{len(auxterm)} instead.")
-                        self._add_aux_edr(name, auxdata, auxterm[entry], format, **kwargs)
+                        self._add_aux_edr(name, auxdata, auxterm[entry],
+                                          format, **kwargs)
 
             elif isinstance(auxname, str):
                 # User specified single energy term to be added
@@ -1098,7 +1102,8 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             aux.data_selector = auxterm
 
         else:
-            aux = auxreader(auxdata, format=format, auxname=auxname, data_selector=auxterm, **kwargs)
+            aux = auxreader(auxdata, format=format, auxname=auxname,
+                            data_selector=auxterm, **kwargs)
 
         self._auxs[auxname] = aux
         self.ts = aux.update_ts(self.ts)
