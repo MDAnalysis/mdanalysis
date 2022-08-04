@@ -274,7 +274,7 @@ class EDRReader(base.AuxReader):
             -> Dict[str, np.ndarray]:
         """ Returns the auxiliary data contained in the :class:`EDRReader`.
         Returns either all data or data specified as `data_selector` in form
-        of a str or a list of any of :attribute:`EDRReader.terms`. `Time` is
+        of a str or a list of any of :attr:`EDRReader.terms`. `Time` is
         always returned to allow easy plotting. """
         if not data_selector or data_selector == "*":
             return self.auxdata
