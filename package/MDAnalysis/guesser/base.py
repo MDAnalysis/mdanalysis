@@ -34,11 +34,6 @@ class GuesserBase(metaclass=GuesserMeta):
     context = 'base' 
     _guess = {}
 
-    # give a rank to each atrribute based on its dependency on other attributes
-    # to be guessed, so that the attribute with lesser dependcy will be guessed
-    # first
-    _rank = {}
-
     def __init__(self, universe, **kwargs):
         self._universe = universe
         self._kwargs = kwargs

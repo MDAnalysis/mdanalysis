@@ -378,9 +378,9 @@ class Universe(object):
             to_guess.remove('bonds')
             
         if self._begin_guess:
-            singulars = list(att.singular for att in self._topology.read_attributes)
-            if not any(att == 'type' for att in singulars) and 'types' not in to_guess:
-                to_guess.append('types')
+            # singulars = list(att.singular for att in self._topology.read_attributes)
+            # if not any(att == 'type' for att in singulars) and 'types' not in to_guess:
+            #     to_guess.append('types')
             self.guess_TopologyAttributes(context, to_guess)
 
         if guess_bonds:
