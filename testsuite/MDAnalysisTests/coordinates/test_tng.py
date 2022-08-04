@@ -179,7 +179,7 @@ class TestTNGTraj(object):
             universe.trajectory._frame_to_ts(
                 iterator_step, universe.trajectory.ts)
 
-
+@pytest.mark.skipif(not HAS_PYTNG, reason="pytng not installed")
 def test_writer_raises_notimpl():
     u = mda.Universe(TNG_traj_gro, TNG_traj)
     with pytest.raises(NotImplementedError, match="There is currently no writer for TNG files"):
