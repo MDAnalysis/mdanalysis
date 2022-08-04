@@ -342,7 +342,8 @@ class Universe(object):
                                                    topology_format=topology_format)
         self._begin_guess = False
         if not isinstance(topology, Topology) and not topology is None:
-            self._begin_guess = True
+            if  not isinstance(topology, np.ndarray):
+                self._begin_guess = True
             self.filename = _check_file_like(topology)
             topology = _topology_from_file_like(self.filename,
                                                 topology_format=topology_format,
@@ -378,11 +379,11 @@ class Universe(object):
             to_guess.remove('bonds')
             
         if self._begin_guess:
-            self.guess_TopologyAttributes(context, to_guess)
             singulars = list(att.singular for att in self._topology.read_attributes)
             if not any(att == 'type' for att in singulars) and 'types' not in to_guess:
                 to_guess.append('types')
- 
+            self.guess_TopologyAttributes(context, to_guess)
+
         if guess_bonds:
             self.atoms.guess_bonds(vdwradii=vdwradii, context=context)
 
