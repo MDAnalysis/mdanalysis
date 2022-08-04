@@ -340,16 +340,18 @@ class Universe(object):
         self._kwargs.update(kwargs)
         format, topology_format = _resolve_formats(*coordinates, format=format,
                                                    topology_format=topology_format)
-
+        self._begin_guess = False
         if not isinstance(topology, Topology) and not topology is None:
+            self._begin_guess = True
             self.filename = _check_file_like(topology)
             topology = _topology_from_file_like(self.filename,
                                                 topology_format=topology_format,
                                                 **kwargs)
-
+    
         if topology is not None:
             self._topology = topology
         else:
+            self._begin_guess = False
             # point to Universe.empty instead of making empty universe
             raise TypeError('Topology argument required to make Universe. '
                             'Try Universe.empty(n_atoms, ...) to construct '
@@ -371,14 +373,16 @@ class Universe(object):
             self._trajectory.add_transformations(*transformations)
 
         to_guess = list(to_guess)
-        singulars = list(att.singular for att in self._topology.read_attributes)
-        if not any(att == 'type' for att in singulars) and 'types' not in to_guess:
-            to_guess.append('types')
         if 'bonds' in to_guess:
             guess_bonds = True
             to_guess.remove('bonds')
+            
+        if self._begin_guess:
+            singulars = list(att.singular for att in self._topology.read_attributes)
+            if not any(att == 'type' for att in singulars) and 'types' not in to_guess:
+                to_guess.append('types')
+            self.guess_TopologyAttributes(context, to_guess)
 
-        self.guess_TopologyAttributes(context, to_guess)
         if guess_bonds:
             self.atoms.guess_bonds(vdwradii=vdwradii, context=context)
 
@@ -1455,7 +1459,7 @@ class Universe(object):
         to_guess: list
         list of atrributes to be guessed then added to the universe
         """
-        guesser = get_guesser(context, self)
+        guesser = get_guesser(context, self.universe)
 
         if guesser.is_guessable(to_guess):
             # check if the attribute already have been read from topology file
