@@ -319,7 +319,7 @@ class Universe(object):
     def __init__(self, topology=None, *coordinates, all_coordinates=False,
                  format=None, topology_format=None, transformations=None,
                  guess_bonds=False, vdwradii=None, context='default',
-                 to_guess=('masses',), in_memory=False,
+                 to_guess=(), in_memory=False,
                  in_memory_step=1, **kwargs):
 
         self._trajectory = None  # managed attribute holding Reader
@@ -346,7 +346,7 @@ class Universe(object):
                                                    topology_format=topology_format)
         self._begin_guess = False
         if not isinstance(topology, Topology) and not topology is None:
-            if  not isinstance(topology, np.ndarray):
+            if not isinstance(topology, np.ndarray):
                 self._begin_guess = True
             self.filename = _check_file_like(topology)
             
