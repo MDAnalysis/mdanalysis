@@ -24,6 +24,7 @@
 """
 EDR auxiliary reader --- :mod:`MDAnalysis.auxiliary.EDR`
 ========================================================
+.. versionadded:: 2.3.0
 
 EDR_ files are binary files following the XDR_ protocol. They are written by
 GROMACS during simulations and contain the time-series energy data of the
@@ -36,15 +37,93 @@ numpy array values is loaded into the :class:`EDRReader`. It is basically a
 Python-based version of the C++ code in GROMACS_.
 
 The EDR auxiliary reader takes the output from pyedr and loads the energy data
-as auxiliary data into :class:`~MDAnalysis.core.universe.Universe`. Standalone
+as auxiliary data into :class:`MDAnalysis.core.universe.Universe`. Standalone
 usage is also possible, where the energy terms are extracted without
 associating them with the trajectory, for example, to allow easy plotting of
 the energy terms.
 
+For adding EDR data, 2-3 arguments need to be provided to
+:func:`MDAnalysis.coordinates.base.add_auxiliary`: `auxname`, `auxdata`, and
+(optionally) `auxterm`. `auxterm`s, if provided need to exactly match the names
+of EDR terms to be added. When an auxterm is provided, `auxname` can be freely
+chosen. If an `auxterm` is not provided, `auxname` must instead exactly match
+EDR terms. `auxdata` can be either the path to an EDR file, or an instance of
+:class:`MDAnalysis.auxiliary.EDR.EDRReader`.
+
+Examples::
+
+    import MDAnalysis as mda
+    from MDAnalysisTests.datafiles import AUX_EDR, AUX_EDR_TPR, AUX_EDR_XTC
+    import matplotlib.pyplot as plt
+
+The EDRReader can be used to add auxiliary data from EDR files to
+trajectories::
+
+    # Create a Universe
+    In [1]: u = mda.Universe(AUX_EDR_TPR, AUX_EDR_XTC)
+    # Open the EDR file with an EDRReader
+    In [2]: aux = mda.auxiliary.EDR.EDRReader(AUX_EDR)
+    # See which terms are present in the file
+    In [3]: aux.terms
+    Out[3]: ['Time', 'Bond', 'Angle', ...]
+    # add the Potential data under the name epot
+    In [4]: u.trajectory.add_auxiliary("epot", aux, "Potential")
+    # add the Angle energy without stating an `auxterm`
+    In [5]: u.trajectory.add_auxiliary("Angle", aux)
+    # access the value of Potential and Angle for a timestep
+    In [6]: u.trajectory.ts.aux.epot
+    Out[6]: -525164.0625
+    In [7]: u.trajectory.ts.aux.Angle
+    Out[7]: 3764.52734375
+    # dictionary style accession also works
+    In [8]: u.trajectory.ts.aux["epot"]
+    Out[8]: -525164.0625
+
+
+Note: Some `auxterms` have spaces in their names. Unless an `auxname` without a
+space is provided, these terms will not be accessible via the attribute syntax.
+Only the dictionary syntax will work in that case.
+
+
+Adding multiple or all terms at the same time is possible as such::
+
+    # add list of values
+    u.trajectory.add_auxiliary(["Bond", "Angle"], aux)
+    # add list of values, provide an `auxterm`
+    u.trajectory.add_auxiliary(["epot", "ekin"], aux, ["Potential",
+                                                       "Kinetic En."]
+    # add all values
+    u.trajectory.add_auxiliary("*", aux)
+
+
+
+The EDRReader can also provide the data independently of trajectories. This is
+useful, for example, for plotting. The data for all terms, a list of terms, or
+a single term can be returned in dictionary form. "Time" is always returned in
+this dictionary to make plotting easier::
+
+    # extract temperature data from EDR file
+    temp = aux.return_data("Temperature")
+    plt.plot(temp["Time"], temp["Temperature"])
+
+    # extract list of terms:
+    some_terms = aux.return_data(["Potential", "Kinetic En.", "Box-X"])
+
+    # extract all terms:
+    all_terms = aux.return_data()
+    # alternatively
+    all_terms = aux.return_data("*")
+
 .. _EDR: https://manual.gromacs.org/current/reference-manual/file-formats.html#edr
 .. _XDR: https://datatracker.ietf.org/doc/html/rfc1014
 .. _pyedr: https://github.com/mdanalysis/panedr
-.._GROMACS: https://github.com/gromacs/gromacs/blob/main/src/gromacs/fileio/enxio.cpp
+.. _GROMACS: https://github.com/gromacs/gromacs/blob/main/src/gromacs/fileio/enxio.cpp
+
+
+.. autoclass:: EDRReader
+   :members:
+
+
 """
 from pathlib import Path
 from . import base
@@ -114,6 +193,7 @@ class EDRReader(base.AuxReader):
     See Also
     --------
     :class:`~MDAnalysis.auxiliary.base.AuxReader`
+    :func:`~MDAnalysis.coordinates.base.add_auxiliary`
 
     Note
     ----
@@ -190,7 +270,7 @@ class EDRReader(base.AuxReader):
         """
         return self.auxdata[self.time_selector]
 
-    def return_data(self, data_selector: Optional[str, list] = None) \
+    def return_data(self, data_selector: Union[str, list, None] = None) \
             -> dict[str, np.ndarray]:
         """ Returns the auxiliary data contained in the :class:`EDRReader`.
         Returns either all data or data specified as `data_selector` in form

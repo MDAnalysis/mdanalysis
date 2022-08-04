@@ -983,7 +983,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
 
     def add_auxiliary(self, auxname: Union[str, list[str]],
                       auxdata: Union[str, AuxReader],
-                      auxterm: Optional[str, list],
+                      auxterm: Union[str, list, None] = None,
                       format=None, **kwargs) -> None:
         """Add auxiliary data to be read alongside trajectory.
 
