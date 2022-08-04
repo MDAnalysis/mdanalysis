@@ -25,7 +25,7 @@ import pytest
 
 from numpy.testing import (
     assert_equal,
-    assert_almost_equal
+    assert_allclose
 )
 
 import MDAnalysis as mda
@@ -33,15 +33,27 @@ from MDAnalysisTests.datafiles import (TNG_traj, TNG_traj_gro)
 
 
 class TestTNGTraj(object):
+
+    _n_atoms = 1000
+    _n_frames = 101
+
+    _pos_frame_0_first_3_atoms = np.array([[2.53300e+00,  1.24400e+00,  3.50600e+00],
+                                           [8.30000e-01,  2.54400e+00,  3.44800e+00],
+                                           [1.09100e+00,  1.10000e-01,  3.12900e+00]])
+
+    _pos_frame_100_first_3_atoms = np.array([[4.40000e-01, 3.89000e-01, 1.37400e+00],
+                                             [1.43200e+00, 1.64900e+00, 2.93900e+00],
+                                             [2.01500e+00, 2.10300e+00, 2.65700e+00]])
+
     @pytest.fixture(scope='class')
     def universe(self):
         return mda.Universe(TNG_traj_gro, TNG_traj)
 
     def test_n_atoms(self, universe):
-        assert_equal(universe.trajectory.n_atoms, 1000)
+        assert_equal(universe.trajectory.n_atoms, self._n_atoms)
 
     def test_n_frames(self, universe):
-        assert_equal(universe.trajectory.n_frames, 101,
+        assert_equal(universe.trajectory.n_frames, self._n_frames,
                      "wrong number of frames in xyz")
 
     def test_initial_frame_is_0(self, universe):
@@ -64,7 +76,6 @@ class TestTNGTraj(object):
         assert_equal(trj.ts.frame, 0, "failed to rewind to first frame")
         assert np.any(universe.atoms.positions > 0)
 
-
     def test_full_slice(self, universe):
         trj_iter = universe.trajectory[:]
         frames = [ts.frame for ts in trj_iter]
@@ -83,3 +94,11 @@ class TestTNGTraj(object):
         universe.trajectory[2]
 
         assert_equal(universe.atoms[0].position, pos3)
+
+    def test_positions_first_frame(self, universe):
+        pos = universe.trajectory[0].positions
+        assert_allclose(pos[0:3, :], self._pos_frame_0_first_3_atoms)
+
+    def test_positions_last_frame(self, universe):
+        pos = universe.trajectory[100].positions
+        assert_allclose(pos[0:3, :], self._pos_frame_100_first_3_atoms)
