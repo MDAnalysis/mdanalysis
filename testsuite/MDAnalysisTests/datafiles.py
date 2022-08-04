@@ -127,6 +127,8 @@ __all__ = [
     "TRIC",
     "XTC_multi_frame",
     "TRR_multi_frame",
+    "TNG_traj" # TNG trajectory from GROMACS physical validation testsuite 
+    "TNG_traj_gro"  # topology for argon_npt_compressed_traj
     "merge_protein", "merge_ligand", "merge_water",
     "mol2_molecules", "mol2_molecule", "mol2_broken_molecule",
     "mol2_zinc", "mol2_comments_header", "mol2_ligand", "mol2_sodium_ion",
@@ -328,6 +330,9 @@ XTC_multi_frame = resource_filename(
 TRR_multi_frame = resource_filename(
     __name__, 'data/trr_test_only_10_frame_10_atoms.trr'
 )
+
+TNG_traj = resource_filename(__name__, 'data/argon_npt_compressed.tng')
+TNG_traj_gro = resource_filename(__name__, 'data/argon_npt_compressed.gro')
 
 PDB_xvf = resource_filename(__name__, 'data/cobrotoxin.pdb')
 TPR_xvf = resource_filename(__name__, 'data/cobrotoxin.tpr')
