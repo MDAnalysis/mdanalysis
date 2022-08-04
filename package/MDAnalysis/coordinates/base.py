@@ -127,6 +127,7 @@ import numbers
 import copy
 import warnings
 import weakref
+from typing import Union, Optional
 
 from .timestep import Timestep
 from . import core
@@ -980,8 +981,10 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             natoms=self.n_atoms
         ))
 
-    def add_auxiliary(self, auxname, auxdata, auxterm=None,
-                      format=None, **kwargs):
+    def add_auxiliary(self, auxname: Union[str, list[str]],
+                      auxdata: Union[str, AuxReader],
+                      auxterm: Optional[str, list],
+                      format=None, **kwargs) -> None:
         """Add auxiliary data to be read alongside trajectory.
 
         Auxiliary data may be any data timeseries from the trajectory
@@ -1071,7 +1074,10 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
                     auxterm = auxname
                 self._add_aux_edr(auxname, auxdata, auxterm, format, **kwargs)
 
-    def _add_aux_xvg(self, auxname, auxdata, format, **kwargs):
+    def _add_aux_xvg(self,
+                     auxname: str,
+                     auxdata: Union[str, AuxReader],
+                     format, **kwargs) -> None:
         if auxname in self.aux_list:
             raise ValueError("Auxiliary data with name {name} already "
                              "exists".format(name=auxname))
@@ -1083,7 +1089,11 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         self._auxs[auxname] = aux
         self.ts = aux.update_ts(self.ts)
 
-    def _add_aux_edr(self, auxname, auxdata, auxterm, format, **kwargs):
+    def _add_aux_edr(self,
+                     auxname: Union[str, list[str]],
+                     auxdata: Union[str, AuxReader],
+                     auxterm: Union[str, list[str]],
+                     format, **kwargs) -> None:
 
         if auxname in self.aux_list:
             raise ValueError(f"Auxiliary data with name {auxname} already "

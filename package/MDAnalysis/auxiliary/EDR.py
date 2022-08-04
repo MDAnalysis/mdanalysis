@@ -49,6 +49,8 @@ the energy terms.
 from pathlib import Path
 from . import base
 import pyedr
+import numpy as np
+from typing import Optional, Union
 
 
 class EDRStep(base.AuxStep):
@@ -74,18 +76,19 @@ class EDRStep(base.AuxStep):
     :class:`~MDAnalysis.auxiliary.base.AuxStep`
     """
 
-    def __init__(self, time_selector="Time", data_selector=None, **kwargs):
+    def __init__(self, time_selector: str = "Time",
+                 data_selector: Optional[str] = None, **kwargs):
         super(EDRStep, self).__init__(time_selector=time_selector,
                                       data_selector=data_selector,
                                       **kwargs)
 
-    def _select_time(self, key):
+    def _select_time(self, key: str) -> np.float64:
         """'Time' is one of the entries in the dict returned by pyedr.
         The base AuxStep Class uses the time_selector 'Time' to return the
         time value of each step."""
         return self._select_data(key)
 
-    def _select_data(self, key):
+    def _select_data(self, key: Union[str, None]) -> np.float64:
         if key is None:
             return
         try:
@@ -121,7 +124,7 @@ class EDRReader(base.AuxReader):
     format = "EDR"
     _Auxstep = EDRStep
 
-    def __init__(self, filename, **kwargs):
+    def __init__(self, filename: str, **kwargs):
         self._auxdata = Path(filename).resolve()
         self.auxdata = pyedr.edr_to_dict(filename)
         self._n_steps = len(self.auxdata["Time"])
@@ -129,7 +132,7 @@ class EDRReader(base.AuxReader):
         self.terms = [key for key in self.auxdata.keys()]
         super(EDRReader, self).__init__(**kwargs)
 
-    def _read_next_step(self):
+    def _read_next_step(self) -> EDRStep:
         """Read next auxiliary step and update ``auxstep``.
 
         Returns
@@ -153,7 +156,7 @@ class EDRReader(base.AuxReader):
             self.rewind()
             raise StopIteration
 
-    def _go_to_step(self, i):
+    def _go_to_step(self, i: int) -> EDRStep:
         """ Move to and read i-th auxiliary step.
 
         Parameters
@@ -177,7 +180,7 @@ class EDRReader(base.AuxReader):
         self.next()
         return self.auxstep
 
-    def read_all_times(self):
+    def read_all_times(self) -> np.ndarray:
         """ Get list of time at each step.
 
         Returns
@@ -187,7 +190,8 @@ class EDRReader(base.AuxReader):
         """
         return self.auxdata[self.time_selector]
 
-    def return_data(self, data_selector=None) -> dict:
+    def return_data(self, data_selector: Optional[str, list] = None) \
+            -> dict[str, np.ndarray]:
         """ Returns the auxiliary data contained in the :class:`EDRReader`.
         Returns either all data or data specified as `data_selector` in form
         of a str or a list of any of :attribute:`EDRReader.terms`. `Time` is
@@ -214,8 +218,8 @@ class EDRReader(base.AuxReader):
                              "not supported. Use list or str to indicate valid"
                              " terms. Check the EDRReader's `terms` "
                              "attribute.")
-            
-    def calc_representative(self):
+
+    def calc_representative(self) -> dict[str, np.ndarray]:
         """ Calculate representative auxiliary value(s) from the data in
         *frame_data*.
         Overloaded here to accommodate the different data type. Now, this works
