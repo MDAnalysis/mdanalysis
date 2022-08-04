@@ -57,7 +57,7 @@ class TestTNGTraj(object):
 
     _box_frame_100 = np.array([3.60140e+00, 0.00000e+00, 0.00000e+00, 0.00000e+00,
                                3.60140e+00, 0.00000e+00,  0.00000e+00, 0.00000e+00, 3.60140e+00]).reshape(3, 3)
-    
+
     _box_frame_100 = np.array([3.58965e+00,  0.00000e+00,  0.00000e+00,  0.00000e+00,
                               3.58965e+00,  0.00000e+00,  0.00000e+00,  0.00000e+00,  3.58965e+00]).reshape(3, 3)
 
@@ -162,6 +162,22 @@ class TestTNGTraj(object):
         assert(isinstance(ts.data["TNG_GMX_LAMBDA"], np.ndarray))
         assert_equal(ts.data["TNG_GMX_LAMBDA"],
                      np.asarray([[0]], dtype=np.float32))
+
+    def test_read_box_fail_strange_step(self, universe):
+        stepnum = 123  # step number with no data
+        iterator_step = universe.trajectory._file_iterator.read_step(stepnum)
+        with pytest.raises(IOError, match="Failed to read box from TNG file"):
+            universe.trajectory._frame_to_ts(
+                iterator_step, universe.trajectory.ts)
+
+    def test_read_pos_fail_strange_step(self, universe):
+        stepnum = 123  # step number with no data
+        iterator_step = universe.trajectory._file_iterator.read_step(stepnum)
+        # set _has_box to False to trigger position_reading_error
+        universe.trajectory._has_box = False
+        with pytest.raises(IOError, match="Failed to read positions from TNG file"):
+            universe.trajectory._frame_to_ts(
+                iterator_step, universe.trajectory.ts)
 
 
 def test_writer_raises_notimpl():
