@@ -187,6 +187,34 @@ class EDRReader(base.AuxReader):
         """
         return self.auxdata[self.time_selector]
 
+    def return_data(self, data_selector=None) -> dict:
+        """ Returns the auxiliary data contained in the :class:`EDRReader`.
+        Returns either all data or data specified as `data_selector` in form
+        of a str or a list of any of :attribute:`EDRReader.terms`. `Time` is
+        always returned to allow easy plotting. """
+        if not data_selector or data_selector == "*":
+            return self.auxdata
+        elif isinstance(data_selector, list):
+            data_dict = {"Time": self.auxdata["Time"]}
+            for term in data_selector:
+                if term not in self.terms:
+                    raise KeyError(f"data_selector {term} invalid. Check the "
+                                   "EDRReader's `terms` attribute.")
+                data_dict[term] = self.auxdata[term]
+            return data_dict
+        elif isinstance(data_selector, str):
+            if data_selector not in self.terms:
+                raise KeyError(f"data_selector {data_selector} invalid. Check "
+                               "the EDRReader's `terms` attribute.")
+            data_dict = {"Time": self.auxdata["Time"],
+                         data_selector: self.auxdata[data_selector]}
+            return data_dict
+        else:
+            raise ValueError(f"data_selector of type {type(data_selector)} is "
+                             "not supported. Use list or str to indicate valid"
+                             " terms. Check the EDRReader's `terms` "
+                             "attribute.")
+            
     def calc_representative(self):
         """ Calculate representative auxiliary value(s) from the data in
         *frame_data*.

@@ -141,6 +141,13 @@ class EDRReference(BaseAuxReference):
         # changed here to match requirements for EDR data
         self.offset_cutoff_closest_rep = np.array(np.nan)
 
+        # for testing EDRReader.return_data()
+        self.times = np.array([0., 0.02, 0.04, 0.06])
+        self.bonds = np.array([1374.82324219, 1426.22521973,
+                               1482.0098877, 1470.33752441])
+        self.angles = np.array([3764.52734375, 3752.83032227,
+                                3731.59179688, 3683.40942383])
+
 
 class TestEDRReader(BaseAuxReaderTest):
     @staticmethod
@@ -329,3 +336,32 @@ class TestEDRReader(BaseAuxReaderTest):
     def test_read_all_times(self, reader):
         all_times_expected = np.array([0., 0.02, 0.04, 0.06])
         assert np.all(all_times_expected == reader.read_all_times())
+
+    def test_return_data_from_string(self, ref, reader):
+        returned = reader.return_data("Bond")
+        assert isinstance(returned, dict)
+        assert_almost_equal(ref.times, returned["Time"])
+        assert_almost_equal(ref.bonds, returned["Bond"])
+
+    def test_return_data_from_list(self, ref, reader):
+        returned = reader.return_data(["Bond", "Angle"])
+        assert isinstance(returned, dict)
+        assert_almost_equal(ref.times, returned["Time"])
+        assert_almost_equal(ref.bonds, returned["Bond"])
+        assert_almost_equal(ref.angles, returned["Angle"])
+
+    def test_return_data_everything(self, ref, reader):
+        returned = reader.return_data()
+        returned_asterisk = reader.return_data("*")
+        assert returned.keys() == returned_asterisk.keys()
+        ref_terms = [key for key in read_auxstep_data(0).keys()]
+        assert ref_terms == reader.terms
+        assert_almost_equal(ref.bonds, returned["Bond"])
+
+    def test_return_data_invalid_selections(self, reader):
+        with pytest.raises(ValueError, match="data_selector of type"):
+            reader.return_data(42)
+        with pytest.raises(KeyError, match="data_selector"):
+            reader.return_data("Not a valid term")
+        with pytest.raises(KeyError, match="data_selector"):
+            reader.return_data(["Bond", "Not a valid term"])
