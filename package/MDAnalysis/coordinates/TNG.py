@@ -40,10 +40,10 @@ forces and velocities, the TNG format can store trajectory metadata and
 other arbitrary time dependent data. Additional information can range from
 the virial and pressure components to the molecular topology of the system.
 This is enabled by a block based system in which binary flags indicate the
-presence or absence of various data blocks. The full list of blocks is provided 
-in the TNG specification, the TNG paper and the pytng documentation. The user
-is encouraged to read the full list of `blocks`_ to understand the full power of
-the TNG format
+presence or absence of various data blocks. The structure of a TNG file is 
+provided  in the TNG `specification`_. The TNG `paper`_ and the
+pytng `documentation`_ are also good resources. The user is encouraged to read
+the full list of `blocks`_ to understand the full power of the TNG format.
 
 
 
@@ -73,6 +73,10 @@ divisible by the shared integrator step of the special blocks.
     https://www.mdanalysis.org/pytng/
 .. _blocks:
     https://www.mdanalysis.org/pytng/documentation_pages/Blocks.html
+.. _specification:
+    https://gitlab.com/hugomacdermott/tng/-/blob/master/Trajectoryformatspecification.mk
+.. _paper:
+    https://onlinelibrary.wiley.com/doi/10.1002/jcc.23495
 
 """
 
@@ -80,6 +84,8 @@ import numpy as np
 import MDAnalysis as mda
 import warnings
 from typing import Optional
+from ..due import due, Doi
+
 from . import base
 from ..lib.mdamath import triclinic_box
 from .timestep import Timestep
@@ -114,6 +120,9 @@ class TNGReader(base.ReaderBase):
     _special_blocks = [_box_blockname, _positions_blockname,
                        _velocities_blockname, _forces_blockname]
 
+    @due.dcite(Doi("10.1002/jcc.23495"),
+               description="The TNG paper",
+               path=__name__)
     def __init__(self, filename: str, **kwargs):
         """ Initialize a TNG trajectory
 
@@ -134,15 +143,19 @@ class TNGReader(base.ReaderBase):
         self._file_iterator = pytng.TNGFileIterator(self.filename, 'r')
         self.n_atoms = self._file_iterator.n_atoms
 
+        # names of the blocks
         self._block_names = self._file_iterator.block_ids.keys()
+        # block ids, dict of C long long
         self._block_dictionary = self._file_iterator.block_ids
         self._block_strides = self._file_iterator.block_strides
         self._data_frames = self._file_iterator.n_data_frames
+        # init all special blocks to not present
         self._special_block_present = {
             k: False for k in self._special_blocks}
 
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
 
+        # check for all the special blocks
         self._has_box = self._box_blockname in self._block_names
         if self._has_box:
             self._special_block_present[self._box_blockname] = True
@@ -159,10 +172,13 @@ class TNGReader(base.ReaderBase):
         if self._has_forces:
             self._special_block_present[self._forces_blockname] = True
 
+        # check for any additional blocks that will be read into ts.data
         self._additional_blocks = [
             block for block in self._block_names if block not in self._special_blocks]
         self._check_strides_and_frames()
         self._frame = 0
+        # box needs a temporary place to be stored as ts.dimensions is
+        # wrong shape initially
         self._box_temp = self._file_iterator.make_ndarray_for_block_from_name(
             self._box_blockname)
         self._read_next_timestep()
@@ -200,8 +216,9 @@ class TNGReader(base.ReaderBase):
             if (stride_add != self._global_stride):
                 if stride_add % self._global_stride:
                     warnings.warn(f"TNG additional block {block} does not match"
-                                  " strides of other blocks and is not divisible by"
-                                  " the global stride_length. It will not be read")
+                                  " strides of other blocks and is not"
+                                  " divisible by the global stride_length."
+                                  " It will not be read")
                 else:
                     self._additional_blocks_to_read.append(block)
             else:
