@@ -27,11 +27,15 @@ from numpy.testing import (
     assert_equal,
     assert_allclose
 )
-
 import MDAnalysis as mda
+from MDAnalysis.coordinates.TNG import HAS_PYTNG
+if HAS_PYTNG:
+    import pytng
+
 from MDAnalysisTests.datafiles import (TNG_traj, TNG_traj_gro)
 
 
+@pytest.mark.skipif(not HAS_PYTNG, reason="pytng not installed")
 class TestTNGTraj(object):
 
     _n_atoms = 1000
@@ -135,3 +139,9 @@ class TestTNGTraj(object):
         assert(isinstance(ts.data["TNG_GMX_LAMBDA"], np.ndarray))
         assert_equal(ts.data["TNG_GMX_LAMBDA"],
                      np.asarray([[0]], dtype=np.float32))
+
+
+def test_writer_raises_notimpl():
+    u = mda.Universe(TNG_traj_gro, TNG_traj)
+    with pytest.raises(NotImplementedError, match="There is currently no writer for TNG files"):
+        u.trajectory.Writer()
