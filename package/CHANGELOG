@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli, miss77jun
+??/??/?? IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli, miss77jun, BFedder
 
  * 2.3.0
 
@@ -27,6 +27,8 @@ Enhancements
   * Additional logger.info output when per-frame analysis starts (PR #3710)
   * Timestep has been converted to a Cython Extension type
     (CZI Performance track, PR #3683)
+  * A new AuxReader for the GROMACS EDR file format was implemented. 
+    (Issue # 3629, PR # 3749)
 
 Changes
   * To add additional optional packages for different file formats when
@@ -36,6 +38,10 @@ Changes
     as per NEP29 (PR #3737)
   * Narrowed variable scope to reduce use of OpenMP `private` clause (PR #3706, PR
     #3728)
+  * `MDAnalysis.coordinates.base.add_auxiliary()` now supports adding of
+    multiple auxiliary data points at the same time. To this end, an additional
+    `auxterm` argument is now available. Adding all data found in the auxiliary
+    data source is possible by passing `auxname="*"`. (PR #3749)
 
 Deprecations
   * The extras_requires target "AMBER" for `pip install ./package[AMBER]`
