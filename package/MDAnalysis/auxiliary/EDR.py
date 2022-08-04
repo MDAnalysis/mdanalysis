@@ -136,16 +136,16 @@ class EDRStep(base.AuxStep):
     """:class:`AuxStep` class for .edr file format.
 
     Extends the base AuxStep class to allow selection of time and
-    data-of-interest fields (by column index) from the full set of data read
+    data-of-interest fields (by dictionary key) from the full set of data read
     each step.
 
     Parameters
     ----------
-    time_selector : int | None, optional
-        Index of column in .xvg file storing time, assumed to be in ps. Default
-        value is 0 (i.e. first column).
-    data_selector : list of int | None, optional
-        List of indices of columns in .xvg file containing data of interest to
+    time_selector : str, optional
+        Name of the dictionary key that links to the time values (assumed to
+        be in ps). Default value is "Time"
+    data_selector : str | list of str | None, optional
+        List of dictionary keys linking to data of interest in the EDR file to
         be stored in ``data``. Default value is ``None``.
     **kwargs
         Other AuxStep options.
@@ -323,8 +323,9 @@ class EDRReader(base.AuxReader):
 
         Returns
         -------
-        ndarray
-            Array of auxiliary value(s) 'representative' for the timestep.
+        Dict[str, ndarray]
+            Dictionary with keys of auxterms and array of auxiliary value(s) 
+            'representative' for the timestep.
         """
         if self.cutoff == -1:
             cutoff_data = self.frame_data
