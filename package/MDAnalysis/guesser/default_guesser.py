@@ -48,7 +48,7 @@ class DefaultGuesser(GuesserBase):
         -------
         atom_masses : np.ndarray dtype float64
         """
-        atom_types=None
+        atom_types = None
         if hasattr(self._universe.atoms, 'elements'):
             atom_types = self._universe.atoms.elements
             
@@ -57,10 +57,10 @@ class DefaultGuesser(GuesserBase):
 
         else:
             try:
-                self._universe.guess_TopologyAttributes(self.context, ['types',])
+                self._universe.guess_TopologyAttributes(self.context, ['types'])
                 atom_types = self._universe.atoms.types
             except:
-                pass
+                raise ValueError
             
         self.validate_atom_types(atom_types)
         masses = np.array([self.get_atom_mass(atom_t)
