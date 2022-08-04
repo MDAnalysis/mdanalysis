@@ -127,7 +127,7 @@ import numbers
 import copy
 import warnings
 import weakref
-from typing import Union, Optional
+from typing import Union, Optional, List
 
 from .timestep import Timestep
 from . import core
@@ -981,9 +981,9 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             natoms=self.n_atoms
         ))
 
-    def add_auxiliary(self, auxname: Union[str, list[str]],
+    def add_auxiliary(self, auxname: Union[str, List[str]],
                       auxdata: Union[str, AuxReader],
-                      auxterm: Union[str, list, None] = None,
+                      auxterm: Union[str, List[str], None] = None,
                       format=None, **kwargs) -> None:
         """Add auxiliary data to be read alongside trajectory.
 
@@ -1090,9 +1090,9 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         self.ts = aux.update_ts(self.ts)
 
     def _add_aux_edr(self,
-                     auxname: Union[str, list[str]],
+                     auxname: Union[str, List[str]],
                      auxdata: Union[str, AuxReader],
-                     auxterm: Union[str, list[str]],
+                     auxterm: Union[str, List[str]],
                      format, **kwargs) -> None:
 
         if auxname in self.aux_list:

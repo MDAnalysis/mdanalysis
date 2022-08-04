@@ -129,7 +129,7 @@ from pathlib import Path
 from . import base
 import pyedr
 import numpy as np
-from typing import Optional, Union
+from typing import Optional, Union, Dict, List
 
 
 class EDRStep(base.AuxStep):
@@ -270,8 +270,8 @@ class EDRReader(base.AuxReader):
         """
         return self.auxdata[self.time_selector]
 
-    def return_data(self, data_selector: Union[str, list, None] = None) \
-            -> dict[str, np.ndarray]:
+    def return_data(self, data_selector: Union[str, List[str], None] = None) \
+            -> Dict[str, np.ndarray]:
         """ Returns the auxiliary data contained in the :class:`EDRReader`.
         Returns either all data or data specified as `data_selector` in form
         of a str or a list of any of :attribute:`EDRReader.terms`. `Time` is
@@ -299,7 +299,7 @@ class EDRReader(base.AuxReader):
                              " terms. Check the EDRReader's `terms` "
                              "attribute.")
 
-    def calc_representative(self) -> dict[str, np.ndarray]:
+    def calc_representative(self) -> Dict[str, np.ndarray]:
         """ Calculate representative auxiliary value(s) from the data in
         *frame_data*.
         Overloaded here to accommodate the different data type. Now, this works
