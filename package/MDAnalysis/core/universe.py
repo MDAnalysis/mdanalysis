@@ -1467,6 +1467,7 @@ class Universe(object):
         to_guess: list
         list of atrributes to be guessed then added to the universe
         """
+        box=None
         if hasattr(self.atoms, 'dimensions'):
             box = self.atoms.dimensions
         guesser = get_guesser(context, self.universe, vdwradii=self._kwargs['vdwradii'], 
