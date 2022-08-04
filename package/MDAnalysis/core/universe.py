@@ -393,8 +393,6 @@ class Universe(object):
                 to_guess.append('masses')
             self.guess_TopologyAttributes(context, to_guess)
 
-        if guess_bonds:
-            self.atoms.guess_bonds(vdwradii=vdwradii, context=context)
 
     def copy(self):
         """Return an independent copy of this Universe"""
@@ -1469,8 +1467,8 @@ class Universe(object):
         to_guess: list
         list of atrributes to be guessed then added to the universe
         """
-        guesser = get_guesser(context, self.universe)
-
+        guesser = get_guesser(context, self.universe, vdwradii=self._kwargs['vdwradii'], 
+                              box=self.atoms.dimensions)
         if guesser.is_guessable(to_guess):
             # check if the attribute already have been read from topology file
             toplogy_atrrs = list(att.attrname for att in self._topology.read_attributes)
@@ -1486,6 +1484,8 @@ class Universe(object):
                              'of the provided attributes'
                              .format(context))
 
+        if self.kwargs['guess_bonds']:
+            self.atoms.guess_bonds(guesser)
 
 def Merge(*args):
     """Create a new new :class:`Universe` from one or more

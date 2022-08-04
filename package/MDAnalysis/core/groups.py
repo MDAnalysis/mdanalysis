@@ -3262,7 +3262,7 @@ class AtomGroup(GroupBase):
         return [self[levelindices == index] for index in
                 unique_int_1d(levelindices)]
 
-    def guess_bonds(self, vdwradii=None, context=None):
+    def guess_bonds(self, guesser):
         """Guess bonds that exist within this :class:`AtomGroup` and add them to
         the underlying :attr:`~AtomGroup.universe`.
 
@@ -3281,7 +3281,6 @@ class AtomGroup(GroupBase):
         .. versionchanged:: 0.20.2
            Now applies periodic boundary conditions when guessing bonds.
         """
-        from ..guesser.base import get_guesser
         from .topologyattrs import Bonds, Angles, Dihedrals
 
         def get_TopAttr(u, name, cls):
@@ -3292,9 +3291,7 @@ class AtomGroup(GroupBase):
                 attr = cls([])
                 u.add_TopologyAttr(attr)
                 return attr
-        guesser = get_guesser(context, self.universe, vdwradii=vdwradii,
-                              box=self.dimensions)
-        # indices of bonds
+       # indices of bonds
         b = guesser.guess_Attr('bonds') 
         bondattr = get_TopAttr(self.universe, 'bonds', Bonds)
         bondattr._add_bonds(b, guessed=True)
