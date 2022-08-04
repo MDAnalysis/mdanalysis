@@ -261,6 +261,18 @@ class TNGReader(base.ReaderBase):
         return self._n_frames
 
     @property
+    def blocks(self) -> list[str]:
+        """list of the blocks that are in the file
+
+        Returns
+        -------
+
+        blocks : list
+            The block names present in the TNG trajectory
+        """
+        return self._block_names
+
+    @property
     def special_blocks(self) -> list[str]:
         """list of the special blocks that are in the file
 
@@ -272,6 +284,21 @@ class TNGReader(base.ReaderBase):
             in the TNG trajectory
         """
         return [k for k, v in self._special_block_present.items() if v]
+
+    @property
+    def additional_blocks(self) -> list[str]:
+        """list of the additional (non-special) blocks that are being read from
+        the trajectory. This may be exclude some blocks present in the file if
+        they do not fall on the same trajectory stride as the positions and
+        velocities.
+
+        Returns
+        -------
+
+        additional_blocks : list
+            The additional block names in the TNG trajectory
+        """
+        return self._additional_blocks_to_read
 
     def _reopen(self):
         """reopen the trajectory"""

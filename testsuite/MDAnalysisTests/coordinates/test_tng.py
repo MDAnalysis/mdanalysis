@@ -36,6 +36,7 @@ class TestTNGTraj(object):
 
     _n_atoms = 1000
     _n_frames = 101
+    _stride = 5000
 
     _pos_frame_0_first_3_atoms = np.array([[2.53300e+00,  1.24400e+00,  3.50600e+00],
                                            [8.30000e-01,  2.54400e+00,  3.44800e+00],
@@ -45,7 +46,7 @@ class TestTNGTraj(object):
                                              [1.43200e+00, 1.64900e+00, 2.93900e+00],
                                              [2.01500e+00, 2.10300e+00, 2.65700e+00]])
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def universe(self):
         return mda.Universe(TNG_traj_gro, TNG_traj)
 
@@ -55,6 +56,25 @@ class TestTNGTraj(object):
     def test_n_frames(self, universe):
         assert_equal(universe.trajectory.n_frames, self._n_frames,
                      "wrong number of frames in xyz")
+
+    def test_block_names(self, universe):
+        """Check the block names in the file"""
+        assert("TNG_TRAJ_BOX_SHAPE" in universe.trajectory.blocks)
+        assert("TNG_TRAJ_POSITIONS" in universe.trajectory.blocks)
+        assert("TNG_GMX_LAMBDA" in universe.trajectory.blocks)
+
+    def test_special_blocks(self, universe):
+        """Check the position and box special blocks are present"""
+        assert("TNG_TRAJ_BOX_SHAPE" in universe.trajectory.special_blocks)
+        assert("TNG_TRAJ_POSITIONS" in universe.trajectory.special_blocks)
+
+    def test_additional_blocks(self, universe):
+        """Check the lambda special block is present"""
+        assert("TNG_GMX_LAMBDA" in universe.trajectory.additional_blocks)
+
+    def check_strides(self, universe):
+        """Check the stride of trajectory frames in integrator steps"""
+        assert(universe.trajectory._global_stride == self._stride)
 
     def test_initial_frame_is_0(self, universe):
         assert_equal(universe.trajectory.ts.frame, 0,
@@ -102,3 +122,16 @@ class TestTNGTraj(object):
     def test_positions_last_frame(self, universe):
         pos = universe.trajectory[100].positions
         assert_allclose(pos[0:3, :], self._pos_frame_100_first_3_atoms)
+
+    @pytest.mark.parametrize("frame", [0, 20, 50, 100])
+    def test_step(self, universe, frame):
+        ts = universe.trajectory[frame]
+        step = ts.data["step"]
+        assert(step == ts.frame*universe.trajectory._global_stride)
+
+    def test_lambda_in_ts(self, universe):
+        ts = universe.trajectory[10]
+        assert("TNG_GMX_LAMBDA" in ts.data.keys())
+        assert(isinstance(ts.data["TNG_GMX_LAMBDA"], np.ndarray))
+        assert_equal(ts.data["TNG_GMX_LAMBDA"],
+                     np.asarray([[0]], dtype=np.float32))
