@@ -106,7 +106,7 @@ def _topology_from_file_like(topology_file, topology_format=None,
 
     begin_guess = False
     if hasattr(parser, 'format'):
-        if not parser.format == 'MINIMAL' or not parser.format == 'TPR':
+        if not parser.format == 'MINIMAL' and not parser.format == 'TPR':
             begin_guess = True
 
     try:
