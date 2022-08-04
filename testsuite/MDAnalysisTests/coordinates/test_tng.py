@@ -32,7 +32,7 @@ import MDAnalysis as mda
 from MDAnalysisTests.datafiles import (TNG_traj, TNG_traj_gro)
 
 
-class TestTNGReaderTest(object):
+class TestTNGTraj(object):
     @pytest.fixture(scope='class')
     def universe(self):
         return mda.Universe(TNG_traj_gro, TNG_traj)
@@ -52,8 +52,7 @@ class TestTNGReaderTest(object):
     def test_starts_with_first_frame(self, universe):
         """Test that coordinate arrays are filled as soon as the trajectory
         has been opened."""
-        assert np.any(universe.atoms.positions > 0), "Reader does not " \
-                                                     "populate positions right away."
+        assert np.any(universe.atoms.positions > 0)
 
     def test_rewind(self, universe):
         trj = universe.trajectory
@@ -63,8 +62,8 @@ class TestTNGReaderTest(object):
                      "failed to forward to frame 2 (frameindex 2)")
         trj.rewind()
         assert_equal(trj.ts.frame, 0, "failed to rewind to first frame")
-        assert np.any(universe.atoms.positions > 0), "Reader does not " \
-                                                     "populate positions after rewinding."
+        assert np.any(universe.atoms.positions > 0)
+
 
     def test_full_slice(self, universe):
         trj_iter = universe.trajectory[:]

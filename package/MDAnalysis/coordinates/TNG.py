@@ -181,6 +181,8 @@ class TNGReader(base.ReaderBase):
         # wrong shape initially
         self._box_temp = self._file_iterator.make_ndarray_for_block_from_name(
             self._box_blockname)
+        self._frame = -1
+        print("frame num", self._frame)
         self._read_next_timestep()
 
     def _check_strides_and_frames(self):
