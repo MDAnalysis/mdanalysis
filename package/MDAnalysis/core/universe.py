@@ -352,7 +352,6 @@ class Universe(object):
         if topology is not None:
             self._topology = topology
         else:
-            self._begin_guess = False
             # point to Universe.empty instead of making empty universe
             raise TypeError('Topology argument required to make Universe. '
                             'Try Universe.empty(n_atoms, ...) to construct '
