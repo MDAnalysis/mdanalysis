@@ -103,11 +103,11 @@ def _check_file_like(topology):
 def _topology_from_file_like(topology_file, topology_format=None,
                              **kwargs):
     parser = get_parser_for(topology_file, format=topology_format)
+
+    begin_guess = False
     if hasattr(parser, 'format'):
         if not parser.format == 'MINIMAL' or parser.format == 'TPR':
             begin_guess = True
-    else:
-        begin_guess = False
 
     try:
         with parser(topology_file) as p:
