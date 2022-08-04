@@ -103,6 +103,10 @@ def _check_file_like(topology):
 def _topology_from_file_like(topology_file, topology_format=None,
                              **kwargs):
     parser = get_parser_for(topology_file, format=topology_format)
+    if parser.format == 'MINIMAL' or parser.format == 'TPR':
+        begin_guess = False
+    else:
+        begin_guess = True
 
     try:
         with parser(topology_file) as p:
@@ -125,7 +129,7 @@ def _topology_from_file_like(topology_file, topology_format=None,
             "Failed to construct topology from file {0}"
             " with parser {1}.\n"
             "Error: {2}".format(topology_file, parser, err))
-    return topology
+    return[topology, begin_guess]
 
 
 def _resolve_formats(*coordinates, format=None, topology_format=None):
@@ -345,10 +349,13 @@ class Universe(object):
             if  not isinstance(topology, np.ndarray):
                 self._begin_guess = True
             self.filename = _check_file_like(topology)
-            topology = _topology_from_file_like(self.filename,
+            
+            top = _topology_from_file_like(self.filename,
                                                 topology_format=topology_format,
                                                 **kwargs)
-    
+            topology = top[0]
+            self._begin_guess = top[1]
+
         if topology is not None:
             self._topology = topology
         else:
@@ -381,6 +388,8 @@ class Universe(object):
             singulars = list(att.singular for att in self._topology.read_attributes)
             if not any(att == 'type' for att in singulars) and 'types' not in to_guess:
                 to_guess.append('types')
+            if not any(att == 'mass' for att in singulars) and 'masses' not in to_guess:
+                to_guess.append('masses')
             self.guess_TopologyAttributes(context, to_guess)
 
         if guess_bonds:
