@@ -185,16 +185,15 @@ class PQRParser(TopologyReaderBase):
                 chainIDs.append(chainID)
 
         n_atoms = len(serials)
-
+        
+        attrs = []
         if elements:
             atomtypes = elements
-            guessed_types = False
+            attrs.append(Atomtypes(atomtypes, False))
 
-        attrs = []
         attrs.append(Atomids(np.array(serials, dtype=np.int32)))
         attrs.append(Atomnames(np.array(names, dtype=object)))
         attrs.append(Charges(np.array(charges, dtype=np.float32)))
-        attrs.append(Atomtypes(atomtypes, guessed=guessed_types))
         attrs.append(RecordTypes(np.array(record_types, dtype=object)))
         attrs.append(Radii(np.array(radii, dtype=np.float32)))
 
