@@ -364,7 +364,8 @@ class TNGReader(base.ReaderBase):
         ts = self._frame_to_ts(iterator_step, ts)
         return ts
 
-    def _frame_to_ts(self, curr_step: pytng.TNGCurrentIntegratorStep,
+    
+    def _frame_to_ts(self, curr_step: 'pytng.TNGCurrentIntegratorStep',
                      ts: Timestep) -> Timestep:
         """convert a TNGCurrentIteratorStep to an MDA Timestep
 
