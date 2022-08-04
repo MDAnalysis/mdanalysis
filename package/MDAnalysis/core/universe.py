@@ -1467,8 +1467,10 @@ class Universe(object):
         to_guess: list
         list of atrributes to be guessed then added to the universe
         """
+        if hasattr(self.atoms, 'dimensions'):
+            box = self.atoms.dimensions
         guesser = get_guesser(context, self.universe, vdwradii=self._kwargs['vdwradii'], 
-                              box=self.atoms.dimensions)
+                              box=box)
         if guesser.is_guessable(to_guess):
             # check if the attribute already have been read from topology file
             toplogy_atrrs = list(att.attrname for att in self._topology.read_attributes)
