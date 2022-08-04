@@ -324,7 +324,7 @@ class EDRReader(base.AuxReader):
         Returns
         -------
         Dict[str, ndarray]
-            Dictionary with keys of auxterms and array of auxiliary value(s) 
+            Dictionary with keys of auxterms and array of auxiliary value(s)
             'representative' for the timestep.
         """
         if self.cutoff == -1:
