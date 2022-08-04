@@ -13,21 +13,30 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli, miss77jun, BFedder
+??/??/?? IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli, miss77jun, rzhao271,
+         yuxuanzhuang, hsadia538, BFedder
 
  * 2.3.0
 
 Fixes
   * Fixes awk call in deploy.yaml tests for macos runners (Issue #3693)
   * add a 0.5 for correct midpoints in hole analysis (Issue #3715)
+  * Fix reading error when PDB CONECT records are corrupt. (Issue #988)
+  * Fix writing unusable PDB CONECT records with index>100000. (Issue #988)
 
 Enhancements
+  * Add a new `formalcharge` attribute for storing formal charges (PR #3755)
+  * Add the ability to read & write formal charges from PDB files (PR #3755)
+  * Change functions in `lib.distances` to accept AtomGroups as well as NumPy
+    arrays (CZI Performance track PR #3730)
   * Add `norm` parameter to InterRDF, InterRDF_s to normalize as rdf,
     number density or do not normalize at all. (Issue #3687)
   * Additional logger.info output when per-frame analysis starts (PR #3710)
   * Timestep has been converted to a Cython Extension type
     (CZI Performance track, PR #3683)
-  * A new AuxReader for the GROMACS EDR file format was implemented. 
+  * Refactor make_downshift_arrays with vector operation in numpy(PR #3724)
+  * Optimize topology serialization/construction by lazy-building _RA and _SR.
+  * A new AuxReader for the GROMACS EDR file format was implemented.
     (Issue # 3629, PR # 3749)
 
 Changes
@@ -53,7 +62,7 @@ Deprecations
 06/01/22 IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy,
          HenokB, umak1106, tamandeeps, Mrqeoqqt, megosato, AnirG, rishu235,
          mtiberti, manishsaini6421, Sukeerti1, robotjellyzone, markvrma, alescoulie,
-         mjtadema, PicoCentauri, Atharva7K, aditi2906, orbeckst,  yuxuanzhuang,
+         mjtadema, PicoCentauri, Atharva7K, aditi2906, orbeckst, yuxuanzhuang,
          rsexton2, rafaelpap, richardjgowers, orioncohen
 
  * 2.2.0
@@ -106,7 +115,7 @@ Enhancements
   * Added equations for `center_of_mass` and `center_of_geometry`to
     documentation (PR #3671)
   * Added `center_of_charge` attribute (PR #3671)
-  * Added `frames` argument to AnalysisBase.run to allow analysis to run on 
+  * Added `frames` argument to AnalysisBase.run to allow analysis to run on
     arbitrary list of frames (Issue #1985)
   * LinearDensity now works with updating AtomGroups (Issue #2508, PR #3617)
   * Link PMDA in documentation (PR #3652)

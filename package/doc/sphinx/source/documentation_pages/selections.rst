@@ -186,6 +186,11 @@ chiral *R | S*
     to select only S-chiral carbon atoms.  Only ``R`` and ``S`` will be
     possible options but other values will not raise an error.
 
+formalcharge *formal-charge*
+    select atoms based on their formal charge, e.g.
+    ``name O and formalcharge -1`` to select all oxygens with a
+    negative 1 formal charge.
+
 Pattern matching
 ----------------
 
