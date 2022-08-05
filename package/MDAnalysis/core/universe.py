@@ -113,7 +113,7 @@ def _topology_from_file_like(topology_file, topology_format=None,
             formats = parser.format
         if ('MINIMAL' not in formats and 'TPR' not in formats and
             'THINGY' not in formats and
-            any(fmt in _PARSERS for fmt in formats)):
+                any(fmt in _PARSERS for fmt in formats)):
             begin_guess = True
 
     try:
@@ -125,7 +125,8 @@ def _topology_from_file_like(topology_file, topology_format=None,
         # or the permissions are bad, second when the parser fails
         if (err.errno is not None and
                 errno.errorcode[err.errno] in ['ENOENT', 'EACCES']):
-            # Runs if the error is propagated due to no permission / file not found
+            # Runs if the error is propagated due to no permission / file not
+            # found
             raise sys.exc_info()[1] from err
         else:
             # Runs when the parser fails
@@ -353,10 +354,10 @@ class Universe(object):
             'all_coordinates': all_coordinates
         }
         self._kwargs.update(kwargs)
-        format, topology_format = _resolve_formats(*coordinates, format=format,
-                                                   topology_format=topology_format)
+        format, topology_format = _resolve_formats(
+            *coordinates, format=format, topology_format=topology_format)
         self._begin_guess = False
-        if not isinstance(topology, Topology) and not topology is None:
+        if not isinstance(topology, Topology) and topology is not None:
             self.filename = _check_file_like(topology)
             top = _topology_from_file_like(self.filename,
                                            topology_format=topology_format,
@@ -587,21 +588,24 @@ class Universe(object):
         except ValueError as err:
             raise TypeError(
                 "Cannot find an appropriate coordinate reader for file '{0}'.\n"
-                "           {1}".format(filename, err))
+                "           {1}".format(
+                    filename, err))
 
         # supply number of atoms for readers that cannot do it for themselves
         kwargs['n_atoms'] = self.atoms.n_atoms
 
         self.trajectory = reader(filename, format=format, **kwargs)
         if self.trajectory.n_atoms != len(self.atoms):
-            raise ValueError("The topology and {form} trajectory files don't"
-                             " have the same number of atoms!\n"
-                             "Topology number of atoms {top_n_atoms}\n"
-                             "Trajectory: {fname} Number of atoms {trj_n_atoms}".format(
-                              form=self.trajectory.format,
-                              top_n_atoms=len(self.atoms),
-                              fname=filename,
-                              trj_n_atoms=self.trajectory.n_atoms))
+            raise ValueError(
+                "The topology and {form} trajectory files don't"
+                " have the same number of atoms!\n"
+                "Topology number of atoms {top_n_atoms}\n"
+                "Trajectory: {fname} Number of atoms {trj_n_atoms}".format(
+                    form=self.trajectory.format,
+                    top_n_atoms=len(
+                        self.atoms),
+                    fname=filename,
+                    trj_n_atoms=self.trajectory.n_atoms))
 
         if in_memory:
             self.transfer_to_memory(step=in_memory_step)
@@ -722,7 +726,7 @@ class Universe(object):
     def __repr__(self):
         # return "<Universe with {n_atoms} atoms{bonds}>".format(
         #    n_atoms=len(self.atoms),
-        #    bonds=" and {0} bonds".format(len(self.bonds)) if self.bonds else "")
+        # bonds=" and {0} bonds".format(len(self.bonds)) if self.bonds else "")
 
         return "<Universe with {n_atoms} atoms>".format(
             n_atoms=len(self.atoms))
@@ -931,14 +935,15 @@ class Universe(object):
                   'residue': self._topology.n_residues,
                   'segment': self._topology.n_segments}
         logger.debug("_process_attr: Adding {0} to topology".format(attr))
-        if (attr.per_object is not None and len(attr) != n_dict[attr.per_object]):
+        if (attr.per_object is not None and len(
+                attr) != n_dict[attr.per_object]):
             raise ValueError('Length of {attr} does not'
                              ' match number of {obj}s.\n'
                              'Expect: {n:d} Have: {m:d}'.format(
-                              attr=attr.attrname,
-                              obj=attr.per_object,
-                              n=n_dict[attr.per_object],
-                              m=len(attr)))
+                                 attr=attr.attrname,
+                                 obj=attr.per_object,
+                                 n=n_dict[attr.per_object],
+                                 m=len(attr)))
 
         for cls in attr.target_classes:
             self._class_bases[cls]._add_prop(attr)
@@ -1016,7 +1021,8 @@ class Universe(object):
         # pass this information to the topology
         residx = self._topology.add_Residue(segment, **attrs)
         # resize my residues
-        self.residues = ResidueGroup(np.arange(self._topology.n_residues), self)
+        self.residues = ResidueGroup(
+            np.arange(self._topology.n_residues), self)
 
         # return the new residue
         return self.residues[residx]
@@ -1043,12 +1049,18 @@ class Universe(object):
         # pass this information to the topology
         segidx = self._topology.add_Segment(**attrs)
         # resize my segments
-        self.segments = SegmentGroup(np.arange(self._topology.n_segments), self)
+        self.segments = SegmentGroup(
+            np.arange(self._topology.n_segments), self)
         # return the new segment
         return self.segments[segidx]
 
-    def _add_topology_objects(self, object_type, values, types=None, guessed=False,
-                              order=None):
+    def _add_topology_objects(
+            self,
+            object_type,
+            values,
+            types=None,
+            guessed=False,
+            order=None):
         """Add new TopologyObjects to this Universe
 
         Parameters
@@ -1632,7 +1644,8 @@ def Merge(*args):
             tg = tg.atomgroup_intersection(ag, strict=True)
 
             # Map them so they refer to our new indices
-            new_idx = [tuple([mapping[x] for x in entry]) for entry in tg.indices]
+            new_idx = [tuple([mapping[x] for x in entry])
+                       for entry in tg.indices]
             bondidx.extend(new_idx)
             if hasattr(tg, '_bondtypes'):
                 types.extend(tg._bondtypes)
