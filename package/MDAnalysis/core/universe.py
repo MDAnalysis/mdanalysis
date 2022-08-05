@@ -103,7 +103,7 @@ def _check_file_like(topology):
 def _topology_from_file_like(topology_file, topology_format=None,
                              **kwargs):
     parser = get_parser_for(topology_file, format=topology_format)
-
+    txyz = False
     begin_guess = False
     if hasattr(parser, 'format'):
         formats = []
@@ -115,7 +115,11 @@ def _topology_from_file_like(topology_file, topology_format=None,
             'THINGY' not in formats and
                 any(fmt in _PARSERS for fmt in formats)):
             begin_guess = True
-
+        # check if a file is txyz format to handle its
+        # to preserve its special behavior of guessing
+        # atom masses from names
+        if 'TXYZ' in formats or 'ARC' in formats:
+            txyz = True
     try:
         with parser(topology_file) as p:
             topology = p.parse(**kwargs)
@@ -138,7 +142,7 @@ def _topology_from_file_like(topology_file, topology_format=None,
             "Failed to construct topology from file {0}"
             " with parser {1}.\n"
             "Error: {2}".format(topology_file, parser, err))
-    return [topology, begin_guess]
+    return [topology, begin_guess, txyz]
 
 
 def _resolve_formats(*coordinates, format=None, topology_format=None):
@@ -357,6 +361,7 @@ class Universe(object):
         format, topology_format = _resolve_formats(
             *coordinates, format=format, topology_format=topology_format)
         self._begin_guess = False
+        self.txyx = False
         if not isinstance(topology, Topology) and topology is not None:
             self.filename = _check_file_like(topology)
             top = _topology_from_file_like(self.filename,
@@ -364,7 +369,7 @@ class Universe(object):
                                            **kwargs)
             topology = top[0]
             self._begin_guess = top[1]
-
+            self.txyz = top[2]
         if topology is not None:
             self._topology = topology
         else:
@@ -1487,7 +1492,7 @@ class Universe(object):
         to_guess: list
         list of atrributes to be guessed then added to the universe
         """
-        guesser = get_guesser(context, self.universe)
+        guesser = get_guesser(context, self.universe, txyz=self.txyz)
         if guesser.is_guessable(to_guess):
             # check if the attribute already have been read from topology file
             toplogy_atrrs =\

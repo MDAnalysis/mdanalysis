@@ -49,7 +49,9 @@ class DefaultGuesser(GuesserBase):
         atom_masses : np.ndarray dtype float64
         """
         atom_types = None
-        if hasattr(self._universe.atoms, 'elements'):
+        if self._kwargs['txyz']:
+            atom_types = self._universe.atoms.names
+        elif hasattr(self._universe.atoms, 'elements'):
             atom_types = self._universe.atoms.elements
 
         elif hasattr(self._universe.atoms, 'types'):
@@ -61,7 +63,9 @@ class DefaultGuesser(GuesserBase):
                     self.context, ['types'])
                 atom_types = self._universe.atoms.types
             except BaseException:
-                raise ValueError
+                raise ValueError(
+                    'there is no reference attributes in this universe\
+                                 to guess mass from')
 
         self.validate_atom_types(atom_types)
         masses = np.array([self.get_atom_mass(atom_t)
