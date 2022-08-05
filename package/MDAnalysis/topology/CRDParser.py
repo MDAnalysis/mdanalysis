@@ -28,7 +28,7 @@ CRD topology parser
 Read a list of atoms from a CHARMM CARD coordinate file (CRD_)
 to build a basic topology.  Reads atom ids (ATOMNO), atom names (TYPES),
 resids (RESID), residue numbers (RESNO), residue names (RESNames), segment ids
-(SEGID) and tempfactor (Weighting). 
+(SEGID) and tempfactor (Weighting).
 
 Residues are detected through a change is either resid or resname
 while segments are detected according to changes in segid.
@@ -86,7 +86,8 @@ class CRDParser(TopologyReaderBase):
         ----
         Could use the resnum and temp factor better
         """
-        extformat = FORTRANReader('2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10')
+        extformat = FORTRANReader(
+            '2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10')
         stdformat = FORTRANReader('2I5,1X,A4,1X,A4,3F10.5,1X,A4,1X,A4,F10.5')
 
         atomids = []
@@ -134,7 +135,6 @@ class CRDParser(TopologyReaderBase):
         resnums = np.array(resnums, dtype=np.int32)
         segids = np.array(segids, dtype=object)
 
-
         atom_residx, (res_resids, res_resnames, res_resnums, res_segids) = change_squash(
             (resids, resnames), (resids, resnames, resnums, segids))
         res_segidx, (seg_segids,) = change_squash(
@@ -149,8 +149,8 @@ class CRDParser(TopologyReaderBase):
                            Resnames(res_resnames),
                            Resnums(res_resnums),
                            Segids(seg_segids),
-                       ],
-                       atom_resindex=atom_residx,
-                       residue_segindex=res_segidx)
+        ],
+            atom_resindex=atom_residx,
+            residue_segindex=res_segidx)
 
         return top

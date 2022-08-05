@@ -94,10 +94,9 @@ class FHIAIMSParser(TopologyReaderBase):
             names = np.asarray(names)
             natoms = len(names)
 
-
         attrs = [Atomnames(names),
                  Atomids(np.arange(natoms) + 1),
-                Resids(np.array([1])),
+                 Resids(np.array([1])),
                  Resnums(np.array([1])),
                  Segids(np.array(['SYSTEM'], dtype=object)),
                  Elements(names),

@@ -22,6 +22,7 @@
 #
 from .. import _GUESSERS
 
+
 class GuesserMeta(type):
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
@@ -30,8 +31,9 @@ class GuesserMeta(type):
         except KeyError:
             pass
 
+
 class GuesserBase(metaclass=GuesserMeta):
-    context = 'base' 
+    context = 'base'
     _guess = {}
 
     def __init__(self, universe=None, **kwargs):
@@ -66,8 +68,8 @@ class GuesserBase(metaclass=GuesserMeta):
         """
         self._kwargs.update(kwargs)
         return self._guess[guess]()
-   
-    
+
+
 def get_guesser(context, u=None, **kwargs):
     """get an appropiate guesser to the universe and pass
        the atomGroup of the universe to the guesser
@@ -89,4 +91,3 @@ def get_guesser(context, u=None, **kwargs):
     except KeyError:
         raise KeyError("Unidentified guesser type {0}".format(context))
     return guesser
-

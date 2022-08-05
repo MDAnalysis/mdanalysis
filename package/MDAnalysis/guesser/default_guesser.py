@@ -40,7 +40,7 @@ class DefaultGuesser(GuesserBase):
                        'angles': self.guess_angles,
                        'dihedrals': self.guess_dihedrals,
                        'bonds': self.guess_bonds}
- 
+
     def guess_masses(self):
         """Guess the mass of many atoms based upon their type
 
@@ -51,17 +51,18 @@ class DefaultGuesser(GuesserBase):
         atom_types = None
         if hasattr(self._universe.atoms, 'elements'):
             atom_types = self._universe.atoms.elements
-            
+
         elif hasattr(self._universe.atoms, 'types'):
             atom_types = self._universe.atoms.types
 
         else:
             try:
-                self._universe.guess_TopologyAttributes(self.context, ['types'])
+                self._universe.guess_TopologyAttributes(
+                    self.context, ['types'])
                 atom_types = self._universe.atoms.types
-            except:
+            except BaseException:
                 raise ValueError
-            
+
         self.validate_atom_types(atom_types)
         masses = np.array([self.get_atom_mass(atom_t)
                            for atom_t in atom_types], dtype=np.float64)
@@ -123,7 +124,8 @@ class DefaultGuesser(GuesserBase):
         atom_types : np.ndarray dtype object
         """
         names = self._universe.atoms.names
-        return np.array([self.guess_atom_element(n) for n in names], dtype=object)
+        return np.array([self.guess_atom_element(n)
+                        for n in names], dtype=object)
 
     NUMBERS = re.compile(r'[0-9]')  # match numbers
     SYMBOLS = re.compile(r'[*+-]')  # match *, +, -
@@ -176,8 +178,7 @@ class DefaultGuesser(GuesserBase):
         atoms = self._kwargs['atoms']
         coords = self._kwargs['positions']
         box = self._kwargs['box']
-        
-        
+
         r"""Guess if bonds exist between two atoms based on their distance.
 
         Bond between two atoms is created, if the two atoms are within
@@ -258,7 +259,7 @@ class DefaultGuesser(GuesserBase):
         if not all(val in vdwradii for val in set(atomtypes)):
             raise ValueError(("vdw radii for types: " +
                               ", ".join([t for t in set(atomtypes) if
-                                         not t in vdwradii]) +
+                                         t not in vdwradii]) +
                               ". These can be defined manually using the" +
                               " keyword 'vdwradii'"))
 
@@ -275,11 +276,12 @@ class DefaultGuesser(GuesserBase):
         bonds = []
 
         pairs, dist = distances.self_capped_distance(coords,
-                                                     max_cutoff=2.0*max_vdw,
+                                                     max_cutoff=2.0 * max_vdw,
                                                      min_cutoff=lower_bound,
                                                      box=box)
         for idx, (i, j) in enumerate(pairs):
-            d = (vdwradii[atomtypes[i]] + vdwradii[atomtypes[j]])*fudge_factor
+            d = (vdwradii[atomtypes[i]] +
+                 vdwradii[atomtypes[j]]) * fudge_factor
             if (dist[idx] < d):
                 bonds.append((atoms[i].index, atoms[j].index))
         return tuple(bonds)
@@ -313,7 +315,8 @@ class DefaultGuesser(GuesserBase):
                 for other_b in atom.bonds:
                     if other_b != b:  # if not the same bond I start as
                         third_a = other_b.partner(atom)
-                        desc = tuple([other_a.index, atom.index, third_a.index])
+                        desc = tuple(
+                            [other_a.index, atom.index, third_a.index])
                         if desc[0] > desc[-1]:  # first index always less than last
                             desc = desc[::-1]
                         angles_found.add(desc)
@@ -353,7 +356,6 @@ class DefaultGuesser(GuesserBase):
 
         return tuple(dihedrals_found)
 
-
     def guess_improper_dihedrals(self):
         """Given a list of Angles, find all improper dihedrals that exist between
         atoms.
@@ -382,13 +384,14 @@ class DefaultGuesser(GuesserBase):
             for other_b in atom.bonds:
                 other_atom = other_b.partner(atom)
                 # if this atom isn't in the angle I started with
-                if not other_atom in b:
+                if other_atom not in b:
                     desc = a_tup + (other_atom.index,)
                     if desc[0] > desc[-1]:
                         desc = desc[::-1]
                     dihedrals_found.add(desc)
 
         return tuple(dihedrals_found)
+
 
 def guess_atom_charge(self):
     """Guess atom charge from the name.
@@ -397,6 +400,7 @@ def guess_atom_charge(self):
     """
     # TODO: do something slightly smarter, at least use name/element
     return 0.0
+
 
 def guess_aromaticities(self):
     """Guess aromaticity of atoms using RDKit
@@ -412,4 +416,3 @@ def guess_aromaticities(self):
     atomgroup = self._universe.atoms
     mol = atomgroup.convert_to("RDKIT")
     return np.array([atom.GetIsAromatic() for atom in mol.GetAtoms()])
-

@@ -185,7 +185,7 @@ class PQRParser(TopologyReaderBase):
                 chainIDs.append(chainID)
 
         n_atoms = len(serials)
-        
+
         attrs = []
         if elements:
             atomtypes = elements
