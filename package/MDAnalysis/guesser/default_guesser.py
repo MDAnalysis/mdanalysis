@@ -210,12 +210,12 @@ class DefaultGuesser(GuesserBase):
         lower_bound : float, optional
             The minimum bond length. All bonds found shorter
              than this length will be ignored. This is useful
-             for parsing PDB with altloc records where  atoms with 
+             for parsing PDB with altloc records where  atoms with
              altloc A and B maybe very close together and there should be
             no chemical bond between them. [0.1]
         box : array_like, optional
             Bonds are found using a distance search, if unit cell
-             information is given, periodic boundary conditions 
+             information is given, periodic boundary conditions
             will be considered in the distance search. [``None``]
 
         Returns
@@ -253,7 +253,7 @@ class DefaultGuesser(GuesserBase):
         vdwradii = tables.vdwradii.copy()  # so I don't permanently change it
         user_vdwradii = self._kwargs.get('vdwradii', None)
         if user_vdwradii:
-        # this should make algo use their values over defaults
+            # this should make algo use their values over defaults
             vdwradii.update(user_vdwradii)
 
         # Try using types, then elements
@@ -322,7 +322,7 @@ class DefaultGuesser(GuesserBase):
                         desc = tuple(
                             [other_a.index, atom.index, third_a.index])
                         if desc[0] > desc[-1]:
-                        # first index always less than last
+                            # first index always less than last
                             desc = desc[::-1]
                         angles_found.add(desc)
 
