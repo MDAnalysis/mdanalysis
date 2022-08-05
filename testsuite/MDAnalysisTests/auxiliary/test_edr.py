@@ -79,7 +79,7 @@ class EDRReference(BaseAuxReference):
 
         self.auxsteps = [reference_auxstep(i) for i in range(self.n_steps)]
 
-        # add the auxdata and format for .xvg to the reference description
+        # add the auxdata and format for .edr to the reference description
         self.description['auxdata'] = Path(self.testdata).resolve()
         self.description['format'] = self.reader.format
 
@@ -141,7 +141,7 @@ class EDRReference(BaseAuxReference):
         # changed here to match requirements for EDR data
         self.offset_cutoff_closest_rep = np.array(np.nan)
 
-        # for testing EDRReader.return_data()
+        # for testing EDRReader.get_data()
         self.times = np.array([0., 0.02, 0.04, 0.06])
         self.bonds = np.array([1374.82324219, 1426.22521973,
                                1482.0098877, 1470.33752441])
@@ -337,31 +337,31 @@ class TestEDRReader(BaseAuxReaderTest):
         all_times_expected = np.array([0., 0.02, 0.04, 0.06])
         assert np.all(all_times_expected == reader.read_all_times())
 
-    def test_return_data_from_string(self, ref, reader):
-        returned = reader.return_data("Bond")
+    def test_get_data_from_string(self, ref, reader):
+        returned = reader.get_data("Bond")
         assert isinstance(returned, dict)
         assert_almost_equal(ref.times, returned["Time"])
         assert_almost_equal(ref.bonds, returned["Bond"])
 
-    def test_return_data_from_list(self, ref, reader):
-        returned = reader.return_data(["Bond", "Angle"])
+    def test_get_data_from_list(self, ref, reader):
+        returned = reader.get_data(["Bond", "Angle"])
         assert isinstance(returned, dict)
         assert_almost_equal(ref.times, returned["Time"])
         assert_almost_equal(ref.bonds, returned["Bond"])
         assert_almost_equal(ref.angles, returned["Angle"])
 
-    def test_return_data_everything(self, ref, reader):
-        returned = reader.return_data()
-        returned_asterisk = reader.return_data("*")
+    def test_get_data_everything(self, ref, reader):
+        returned = reader.get_data()
+        returned_asterisk = reader.get_data("*")
         assert returned.keys() == returned_asterisk.keys()
         ref_terms = [key for key in read_auxstep_data(0).keys()]
         assert ref_terms == reader.terms
         assert_almost_equal(ref.bonds, returned["Bond"])
 
-    def test_return_data_invalid_selections(self, reader):
+    def test_get_data_invalid_selections(self, reader):
         with pytest.raises(ValueError, match="data_selector of type"):
-            reader.return_data(42)
+            reader.get_data(42)
         with pytest.raises(KeyError, match="data_selector"):
-            reader.return_data("Not a valid term")
+            reader.get_data("Not a valid term")
         with pytest.raises(KeyError, match="data_selector"):
-            reader.return_data(["Bond", "Not a valid term"])
+            reader.get_data(["Bond", "Not a valid term"])

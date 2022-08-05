@@ -43,11 +43,11 @@ associating them with the trajectory, for example, to allow easy plotting of
 the energy terms.
 
 For adding EDR data, 2-3 arguments need to be provided to
-:func:`MDAnalysis.coordinates.base.add_auxiliary`: `auxname`, `auxdata`, and
+:func:`MDAnalysis.coordinates.base.add_auxiliary`: `auxname`, `data_dict`, and
 (optionally) `auxterm`. `auxterm`s, if provided need to exactly match the names
 of EDR terms to be added. When an auxterm is provided, `auxname` can be freely
 chosen. If an `auxterm` is not provided, `auxname` must instead exactly match
-EDR terms. `auxdata` can be either the path to an EDR file, or an instance of
+EDR terms. `data_dict` can be either the path to an EDR file, or an instance of
 :class:`MDAnalysis.auxiliary.EDR.EDRReader`.
 
 Examples::
@@ -80,9 +80,10 @@ trajectories::
     Out[8]: -525164.0625
 
 
-Note: Some `auxterms` have spaces in their names. Unless an `auxname` without a
-space is provided, these terms will not be accessible via the attribute syntax.
-Only the dictionary syntax will work in that case.
+.. note::
+    Some `auxterms` have spaces in their names. Unless an `auxname` without a
+    space is provided, these terms will not be accessible via the attribute
+    syntax. Only the dictionary syntax will work in that case.
 
 
 Adding multiple or all terms at the same time is possible as such::
@@ -96,23 +97,22 @@ Adding multiple or all terms at the same time is possible as such::
     u.trajectory.add_auxiliary("*", aux)
 
 
-
-The EDRReader can also provide the data independently of trajectories. This is
-useful, for example, for plotting. The data for all terms, a list of terms, or
-a single term can be returned in dictionary form. "Time" is always returned in
-this dictionary to make plotting easier::
+The :class:`EDRReader` can also provide the data independently of trajectories.
+This is useful, for example, for plotting. The data for all terms, a list of
+terms, or a single term can be returned in dictionary form. "Time" is always
+returned in this dictionary to make plotting easier::
 
     # extract temperature data from EDR file
-    temp = aux.return_data("Temperature")
+    temp = aux.get_data("Temperature")
     plt.plot(temp["Time"], temp["Temperature"])
 
     # extract list of terms:
-    some_terms = aux.return_data(["Potential", "Kinetic En.", "Box-X"])
+    some_terms = aux.get_data(["Potential", "Kinetic En.", "Box-X"])
 
     # extract all terms:
-    all_terms = aux.return_data()
+    all_terms = aux.get_data()
     # alternatively
-    all_terms = aux.return_data("*")
+    all_terms = aux.get_data("*")
 
 .. _EDR: https://manual.gromacs.org/current/reference-manual/file-formats.html#edr
 .. _XDR: https://datatracker.ietf.org/doc/html/rfc1014
@@ -124,16 +124,23 @@ this dictionary to make plotting easier::
    :members:
 
 
+The actual data for each step is stored by instances of EDRStep.
+
+.. autoclass:: EDRStep
+   :members:
+
 """
 from pathlib import Path
-from . import base
-import pyedr
-import numpy as np
 from typing import Optional, Union, Dict, List
+
+import numpy as np
+import pyedr
+
+from . import base
 
 
 class EDRStep(base.AuxStep):
-    """:class:`AuxStep` class for .edr file format.
+    """:class:`AuxStep` class for the .edr file format.
 
     Extends the base AuxStep class to allow selection of time and
     data-of-interest fields (by dictionary key) from the full set of data read
@@ -173,8 +180,8 @@ class EDRStep(base.AuxStep):
         try:
             return self._data[key]
         except KeyError:
-            raise KeyError(f"'{key}' is not a key in the auxdata dictionary. "
-                           "Check the EDRReader.terms attribute")
+            raise KeyError(f"'{key}' is not a key in the data_dict dictionary."
+                           " Check the EDRReader.terms attribute")
 
 
 class EDRReader(base.AuxReader):
@@ -206,10 +213,10 @@ class EDRReader(base.AuxReader):
 
     def __init__(self, filename: str, **kwargs):
         self._auxdata = Path(filename).resolve()
-        self.auxdata = pyedr.edr_to_dict(filename)
-        self._n_steps = len(self.auxdata["Time"])
+        self.data_dict = pyedr.edr_to_dict(filename)
+        self._n_steps = len(self.data_dict["Time"])
         # attribute to communicate found energy terms to user
-        self.terms = [key for key in self.auxdata.keys()]
+        self.terms = list(self.data_dict.keys())
         super(EDRReader, self).__init__(**kwargs)
 
     def _read_next_step(self) -> EDRStep:
@@ -228,7 +235,7 @@ class EDRReader(base.AuxReader):
         auxstep = self.auxstep
         new_step = self.step + 1
         if new_step < self.n_steps:
-            auxstep._data = {term: self.auxdata[term][self.step + 1]
+            auxstep._data = {term: self.data_dict[term][self.step + 1]
                              for term in self.terms}
             auxstep.step = new_step
             return auxstep
@@ -268,30 +275,30 @@ class EDRReader(base.AuxReader):
         NumPy array of float
             Time at each step.
         """
-        return self.auxdata[self.time_selector]
+        return self.data_dict[self.time_selector]
 
-    def return_data(self, data_selector: Union[str, List[str], None] = None) \
+    def get_data(self, data_selector: Union[str, List[str], None] = None) \
             -> Dict[str, np.ndarray]:
         """ Returns the auxiliary data contained in the :class:`EDRReader`.
         Returns either all data or data specified as `data_selector` in form
         of a str or a list of any of :attr:`EDRReader.terms`. `Time` is
         always returned to allow easy plotting. """
         if not data_selector or data_selector == "*":
-            return self.auxdata
+            return self.data_dict
         elif isinstance(data_selector, list):
-            data_dict = {"Time": self.auxdata["Time"]}
+            data_dict = {"Time": self.data_dict["Time"]}
             for term in data_selector:
                 if term not in self.terms:
                     raise KeyError(f"data_selector {term} invalid. Check the "
                                    "EDRReader's `terms` attribute.")
-                data_dict[term] = self.auxdata[term]
+                data_dict[term] = self.data_dict[term]
             return data_dict
         elif isinstance(data_selector, str):
             if data_selector not in self.terms:
                 raise KeyError(f"data_selector {data_selector} invalid. Check "
                                "the EDRReader's `terms` attribute.")
-            data_dict = {"Time": self.auxdata["Time"],
-                         data_selector: self.auxdata[data_selector]}
+            data_dict = {"Time": self.data_dict["Time"],
+                         data_selector: self.data_dict[data_selector]}
             return data_dict
         else:
             raise ValueError(f"data_selector of type {type(data_selector)} is "
