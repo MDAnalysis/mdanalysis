@@ -304,7 +304,7 @@ class DefaultGuesser(GuesserBase):
 
         .. versionadded 0.9.0
         """
-        bonds = self._universe.atoms.bonds
+        bonds = self._kwargs['bonds']
         angles_found = set()
 
         for b in bonds:
@@ -334,7 +334,7 @@ class DefaultGuesser(GuesserBase):
 
         .. versionadded 0.9.0
         """
-        angles = self._universe.atoms.angles
+        angles = self.self._kwargs['angles']
         dihedrals_found = set()
 
         for b in angles:
