@@ -34,7 +34,7 @@ class GuesserBase(metaclass=GuesserMeta):
     context = 'base' 
     _guess = {}
 
-    def __init__(self, universe, **kwargs):
+    def __init__(self, universe=None, **kwargs):
         self._universe = universe
         self._kwargs = kwargs
 
@@ -67,7 +67,7 @@ class GuesserBase(metaclass=GuesserMeta):
         return self._guess[guess]()
    
     
-def get_guesser(context, u, **kwargs):
+def get_guesser(context, u=None, **kwargs):
     """get an appropiate guesser to the universe and pass
        the atomGroup of the universe to the guesser
 

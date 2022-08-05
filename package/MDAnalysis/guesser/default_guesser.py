@@ -173,8 +173,8 @@ class DefaultGuesser(GuesserBase):
             return no_symbols
 
     def guess_bonds(self):
-        atoms = self._universe.atoms
-        coords = self._universe.atoms.positions
+        atoms = self._kwargs['atoms']
+        coords = self._kwargs['positions']
         box = self._kwargs['box']
         
         

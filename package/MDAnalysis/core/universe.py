@@ -1467,11 +1467,7 @@ class Universe(object):
         to_guess: list
         list of atrributes to be guessed then added to the universe
         """
-        box=None
-        if hasattr(self.atoms, 'dimensions'):
-            box = self.atoms.dimensions
-        guesser = get_guesser(context, self.universe, vdwradii=self._kwargs['vdwradii'], 
-                              box=box)
+        guesser = get_guesser(context, self.universe)
         if guesser.is_guessable(to_guess):
             # check if the attribute already have been read from topology file
             toplogy_atrrs = list(att.attrname for att in self._topology.read_attributes)
@@ -1488,7 +1484,7 @@ class Universe(object):
                              .format(context))
 
         if self.kwargs['guess_bonds']:
-            self.atoms.guess_bonds(guesser)
+            self.atoms.guess_bonds(self.kwargs['vdwradii'], context)
 
 def Merge(*args):
     """Create a new new :class:`Universe` from one or more
