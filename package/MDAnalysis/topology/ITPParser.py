@@ -96,8 +96,9 @@ whether a keyword flag is given. For example, this modified TIP5P water file:
         #endif
 
 
-Define these preprocessor variables by passing keyword arguments. Any arguments that you
-pass in *override* any variables defined in the file. For example, the universe below
+Define these preprocessor variables by passing keyword arguments.
+Any arguments that you pass in *override* any variables defined in the file.
+For example, the universe below
 will have charges of 3 for the HW1 and HW2 atoms::
 
     import MDAnalysis as mda
@@ -105,8 +106,9 @@ will have charges of 3 for the HW1 and HW2 atoms::
 
     u = mda.Universe(ITP_tip5p, EXTRA_ATOMS=True, HW1_CHARGE=3, HW2_CHARGE=3)
 
-These keyword variables are **case-sensitive**. Note that if you set keywords to
-``False`` or ``None``, they will be treated as if they are not defined in #ifdef conditions.
+These keyword variables are **case-sensitive**.
+Note that if you set keywords to ``False`` or ``None``,
+they will be treated as if they are not defined in #ifdef conditions.
 
 For example, the universe below will only have 5 atoms. ::
 
