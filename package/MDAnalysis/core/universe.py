@@ -113,7 +113,7 @@ def _topology_from_file_like(topology_file, topology_format=None,
             formats = parser.format
         if ('MINIMAL' not in formats and 'TPR' not in formats and
             'THINGY' not in formats and
-             any(fmt in _PARSERS for fmt in formats)):
+            any(fmt in _PARSERS for fmt in formats)):
             begin_guess = True
 
     try:
@@ -396,10 +396,10 @@ class Universe(object):
             singulars =
             list(att.singular for att in self._topology.read_attributes)
             if (not any(att == 'type' for att in singulars) and
-                'types' not in to_guess):
+               'types' not in to_guess):
                 to_guess.append('types')
             if (not any(att == 'mass' for att in singulars) and
-                'masses' not in to_guess):
+               'masses' not in to_guess):
                 to_guess.append('masses')
             self.guess_TopologyAttributes(context, to_guess)
 
