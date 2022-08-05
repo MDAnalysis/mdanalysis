@@ -3271,7 +3271,7 @@ class AtomGroup(GroupBase):
         vdwradii : dict, optional
         Dict relating atom types: vdw radii
         context : string
-        context of the universe   
+        context of the universe  
         See Also
         --------
         :func:`MDAnalysis.topology.guessers.guess_bonds`
@@ -3291,10 +3291,10 @@ class AtomGroup(GroupBase):
                 attr = cls([])
                 u.add_TopologyAttr(attr)
                 return attr
-        guesser = get_guesser(context, atoms=self.atoms, positions=self.atoms.positions,
-                              vdwradii=vdwradii, box=self.dimensions)
-       # indices of bonds
-        b = guesser.guess_Attr('bonds') 
+        guesser = get_guesser(context, atoms=self.atoms,
+                             positions=self.atoms.positions, vdwradii=vdwradii, box=self.dimensions)
+        # indices of bonds
+        b = guesser.guess_Attr('bonds')
         bondattr = get_TopAttr(self.universe, 'bonds', Bonds)
         bondattr._add_bonds(b, guessed=True)
 
