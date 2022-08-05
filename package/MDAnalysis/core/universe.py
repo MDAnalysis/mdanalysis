@@ -107,7 +107,7 @@ def _topology_from_file_like(topology_file, topology_format=None,
     begin_guess = False
     if hasattr(parser, 'format'):
         formats = []
-        if type(parser.format) is not list:
+        if not isinstance(parser.format, list):
             formats.append(parser.format)
         else:
             formats = parser.format
@@ -395,7 +395,7 @@ class Universe(object):
 
         if self._begin_guess:
             singulars =\
-            list(att.singular for att in self._topology.read_attributes)
+                list(att.singular for att in self._topology.read_attributes)
             if (not any(att == 'type' for att in singulars) and
                'types' not in to_guess):
                 to_guess.append('types')
@@ -1470,7 +1470,7 @@ class Universe(object):
                                  "hydrogens with `addHs=True`")
 
             numConfs = rdkit_kwargs.pop("numConfs", numConfs)
-            if not (type(numConfs) is int and numConfs > 0):
+            if not (isinstance(numConfs, int) and numConfs > 0):
                 raise SyntaxError("numConfs must be a non-zero positive "
                                   "integer instead of {0}".format(numConfs))
             AllChem.EmbedMultipleConfs(mol, numConfs, **rdkit_kwargs)
@@ -1491,7 +1491,7 @@ class Universe(object):
         if guesser.is_guessable(to_guess):
             # check if the attribute already have been read from topology file
             toplogy_atrrs =\
-            list(att.attrname for att in self._topology.read_attributes)
+                list(att.attrname for att in self._topology.read_attributes)
 
             for attr in to_guess:
                 if any(attr == a for a in toplogy_atrrs):
@@ -1616,7 +1616,7 @@ def Merge(*args):
                                           " TopologyAttr not subclassed"
                                           " from AtomAttr, ResidueAttr,"
                                           " or SegmentAttr.")
-            if type(attr) != np.ndarray:
+            if not isinstance(attr, np.ndarray):
                 raise TypeError('Encountered unexpected topology '
                                 'attribute of type {}'.format(type(attr)))
             try:
