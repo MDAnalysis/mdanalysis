@@ -352,8 +352,6 @@ class Universe(object):
                                                    topology_format=topology_format)
         self._begin_guess = False
         if not isinstance(topology, Topology) and not topology is None:
-            if not isinstance(topology, np.ndarray):
-                self._begin_guess = True
             self.filename = _check_file_like(topology)
             
             top = _topology_from_file_like(self.filename,
