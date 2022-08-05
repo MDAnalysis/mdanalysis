@@ -105,8 +105,13 @@ def _topology_from_file_like(topology_file, topology_format=None,
     parser = get_parser_for(topology_file, format=topology_format)
 
     begin_guess = False
+    formats=[]
     if hasattr(parser, 'format'):
-        if not parser.format == 'MINIMAL' and not parser.format == 'TPR':
+        if type(parser.format) is not list:
+            formats.append(parser.format)
+        else:
+            formats = parser.format
+        if 'MINIMAL' not in formats and 'TPR' not in formats and any(fmt in _PARSERS for fmt in formats):
             begin_guess = True
 
     try:

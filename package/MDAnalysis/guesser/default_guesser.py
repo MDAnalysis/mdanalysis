@@ -334,7 +334,7 @@ class DefaultGuesser(GuesserBase):
 
         .. versionadded 0.9.0
         """
-        angles = self.self._kwargs['angles']
+        angles = self._kwargs['angles']
         dihedrals_found = set()
 
         for b in angles:
