@@ -111,8 +111,9 @@ def _topology_from_file_like(topology_file, topology_format=None,
             formats.append(parser.format)
         else:
             formats = parser.format
-        if ('MINIMAL' not in formats and 'TPR' not in formats
-             and 'THINGY' not in formats and any(fmt in _PARSERS for fmt in formats)):
+        if ('MINIMAL' not in formats and 'TPR' not in formats and
+            'THINGY' not in formats and
+             any(fmt in _PARSERS for fmt in formats)):
             begin_guess = True
 
     try:
@@ -394,11 +395,11 @@ class Universe(object):
         if self._begin_guess:
             singulars =
             list(att.singular for att in self._topology.read_attributes)
-            if (not any(att == 'type' for att in singulars)
-                and 'types' not in to_guess):
+            if (not any(att == 'type' for att in singulars) and
+                'types' not in to_guess):
                 to_guess.append('types')
-            if (not any(att == 'mass' for att in singulars)
-                and 'masses' not in to_guess):
+            if (not any(att == 'mass' for att in singulars) and
+                'masses' not in to_guess):
                 to_guess.append('masses')
             self.guess_TopologyAttributes(context, to_guess)
 
@@ -597,10 +598,10 @@ class Universe(object):
                              " have the same number of atoms!\n"
                              "Topology number of atoms {top_n_atoms}\n"
                              "Trajectory: {fname} Number of atoms {trj_n_atoms}".format(
-                             form=self.trajectory.format,
-                             top_n_atoms=len(self.atoms),
-                             fname=filename,
-                             trj_n_atoms=self.trajectory.n_atoms))
+                              form=self.trajectory.format,
+                              top_n_atoms=len(self.atoms),
+                              fname=filename,
+                              trj_n_atoms=self.trajectory.n_atoms))
 
         if in_memory:
             self.transfer_to_memory(step=in_memory_step)
@@ -1477,7 +1478,7 @@ class Universe(object):
         guesser = get_guesser(context, self.universe)
         if guesser.is_guessable(to_guess):
             # check if the attribute already have been read from topology file
-            toplogy_atrrs = 
+            toplogy_atrrs =
             list(att.attrname for att in self._topology.read_attributes)
 
             for attr in to_guess:
