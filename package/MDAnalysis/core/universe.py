@@ -105,13 +105,13 @@ def _topology_from_file_like(topology_file, topology_format=None,
     parser = get_parser_for(topology_file, format=topology_format)
 
     begin_guess = False
-    formats=[]
     if hasattr(parser, 'format'):
+        formats=[]
         if type(parser.format) is not list:
             formats.append(parser.format)
         else:
             formats = parser.format
-        if 'MINIMAL' not in formats and 'TPR' not in formats and any(fmt in _PARSERS for fmt in formats):
+        if 'MINIMAL' not in formats and 'TPR' not in formats and all(fmt in _PARSERS for fmt in formats):
             begin_guess = True
 
     try:
@@ -353,7 +353,6 @@ class Universe(object):
         self._begin_guess = False
         if not isinstance(topology, Topology) and not topology is None:
             self.filename = _check_file_like(topology)
-            
             top = _topology_from_file_like(self.filename,
                                                 topology_format=topology_format,
                                                 **kwargs)
