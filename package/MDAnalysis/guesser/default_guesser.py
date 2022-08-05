@@ -199,22 +199,24 @@ class DefaultGuesser(GuesserBase):
              coordinates of the atoms (i.e., `AtomGroup.positions)`)
         fudge_factor : float, optional
             The factor by which atoms must overlap eachother to be considered a
-            bond.  Larger values will increase the number of bonds found. [0.55]
+            bond. Larger values will increase the number of bonds found. [0.55]
         vdwradii : dict, optional
-            To supply custom vdwradii for atoms in the algorithm. Must be a dict
-            of format {type:radii}. The default table of van der Waals radii is
-            hard-coded as :data:`MDAnalysis.topology.tables.vdwradii`.  Any user
-            defined vdwradii passed as an argument will supercede the table
-            values. [``None``]
+            To supply custom vdwradii for atoms in the algorithm.
+            Must be a dict of format {type:radii}. The default table
+            of van der Waals radii is hard-coded as :data:`MDAnalysis.topology.
+            tables.vdwradii`.  Any user defined vdwradii passed as an argument
+            will supercede the table  values. [``None``]
+
         lower_bound : float, optional
-            The minimum bond length. All bonds found shorter than this length will
-            be ignored. This is useful for parsing PDB with altloc records where
-            atoms with altloc A and B maybe very close together and there should be
+            The minimum bond length. All bonds found shorter
+             than this length will be ignored. This is useful
+             for parsing PDB with altloc records where  atoms with 
+             altloc A and B maybe very close together and there should be
             no chemical bond between them. [0.1]
         box : array_like, optional
-            Bonds are found using a distance search, if unit cell information is
-            given, periodic boundary conditions will be considered in the distance
-            search. [``None``]
+            Bonds are found using a distance search, if unit cell
+             information is given, periodic boundary conditions 
+            will be considered in the distance search. [``None``]
 
         Returns
         -------
@@ -228,7 +230,8 @@ class DefaultGuesser(GuesserBase):
 
         Raises
         ------
-        :exc:`ValueError` if inputs are malformed or `vdwradii` data is missing.
+        :exc:`ValueError`
+        if inputs are malformed or `vdwradii` data is missing.
 
 
         .. _`same algorithm that VMD uses`:
@@ -249,7 +252,8 @@ class DefaultGuesser(GuesserBase):
 
         vdwradii = tables.vdwradii.copy()  # so I don't permanently change it
         user_vdwradii = self._kwargs.get('vdwradii', None)
-        if user_vdwradii:  # this should make algo use their values over defaults
+        if user_vdwradii:
+        # this should make algo use their values over defaults
             vdwradii.update(user_vdwradii)
 
         # Try using types, then elements
@@ -317,7 +321,8 @@ class DefaultGuesser(GuesserBase):
                         third_a = other_b.partner(atom)
                         desc = tuple(
                             [other_a.index, atom.index, third_a.index])
-                        if desc[0] > desc[-1]:  # first index always less than last
+                        if desc[0] > desc[-1]:
+                        # first index always less than last
                             desc = desc[::-1]
                         angles_found.add(desc)
 
@@ -357,8 +362,8 @@ class DefaultGuesser(GuesserBase):
         return tuple(dihedrals_found)
 
     def guess_improper_dihedrals(self):
-        """Given a list of Angles, find all improper dihedrals that exist between
-        atoms.
+        """Given a list of Angles, find all improper dihedrals
+        that exist between atoms.
 
         Works by assuming that if (1,2,3) is an angle, and 2 & 4 are bonded,
         then (2, 1, 3, 4) must be an improper dihedral.
