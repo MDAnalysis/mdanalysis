@@ -394,7 +394,7 @@ class Universe(object):
             to_guess.remove('bonds')
 
         if self._begin_guess:
-            singulars =
+            singulars =\
             list(att.singular for att in self._topology.read_attributes)
             if (not any(att == 'type' for att in singulars) and
                'types' not in to_guess):
@@ -1490,7 +1490,7 @@ class Universe(object):
         guesser = get_guesser(context, self.universe)
         if guesser.is_guessable(to_guess):
             # check if the attribute already have been read from topology file
-            toplogy_atrrs =
+            toplogy_atrrs =\
             list(att.attrname for att in self._topology.read_attributes)
 
             for attr in to_guess:
