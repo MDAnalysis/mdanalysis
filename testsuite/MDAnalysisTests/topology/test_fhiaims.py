@@ -29,7 +29,7 @@ from MDAnalysisTests.datafiles import FHIAIMS
 
 class TestFHIAIMS(ParserBase):
     parser = mda.topology.FHIAIMSParser.FHIAIMSParser
-    expected_attrs = ['names', 'elements']
+    expected_attrs = ['names', 'elements', 'types']
     expected_n_residues = 1
     expected_n_segments = 1
     expected_n_atoms = 6

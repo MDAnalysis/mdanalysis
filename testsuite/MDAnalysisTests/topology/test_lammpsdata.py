@@ -242,7 +242,7 @@ def test_interpret_atom_style_missing():
 
 
 class TestDumpParser(ParserBase):
-    expected_attrs = ['types']
+    expected_attrs = ['types', 'masses']
     expected_n_atoms = 24
     expected_n_residues = 1
     expected_n_segments = 1

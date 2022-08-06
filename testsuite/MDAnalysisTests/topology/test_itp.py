@@ -284,7 +284,11 @@ class TestITPKeywords(TestITPNoKeywords):
     """
     Test reading ITP files *with* defined keywords.
     """
-
+    expected_attrs = ['ids', 'names', 'types',
+                      'charges', 'chargegroups',
+                      'resids', 'resnames',
+                      'segids', 'moltypes', 'molnums',
+                      'bonds', 'angles', 'dihedrals', 'impropers']
     expected_n_atoms = 7
     # FLEXIBLE is set -> no SETTLE constraint -> water should have angle
     expected_n_angles = 1

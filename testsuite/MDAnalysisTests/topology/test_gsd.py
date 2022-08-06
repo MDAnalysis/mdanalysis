@@ -33,7 +33,7 @@ import os
 class GSDBase(ParserBase):
     parser = mda.topology.GSDParser.GSDParser
     expected_attrs = ['ids', 'names', 'resids', 'resnames', 'masses',
-                      'charges', 'radii',
+                      'charges', 'radii', 'types',
                       'bonds', 'angles', 'dihedrals', 'impropers']
     expected_n_bonds = 0
     expected_n_angles = 0
