@@ -25,8 +25,8 @@ import pytest
 import MDAnalysis as mda
 from MDAnalysis.core.topology import Topology
 
-mandatory_attrs = ['ids', 'masses', 'types', 
-                   'resids', 'resnums', 'segids']
+mandatory_attrs = ['ids', 'resids', 'resnums', 'segids']
+    
 
 
 class ParserBase(object):
@@ -36,7 +36,6 @@ class ParserBase(object):
     """
 
     expected_attrs = []
-    guessed_attrs = []
 
     @pytest.fixture
     def filename(self):
@@ -62,24 +61,16 @@ class ParserBase(object):
 
     def test_expected_attributes(self, top):
         # Extra attributes as declared in specific implementations
-        for attr in self.expected_attrs+self.guessed_attrs:
+        for attr in self.expected_attrs:
             assert hasattr(top, attr), 'Missing expected attribute: {}'.format(attr)
     
     def test_no_unexpected_attributes(self, top):
         attrs = set(self.expected_attrs
-                    + self.guessed_attrs
                     + mandatory_attrs
                     + ['indices', 'resindices', 'segindices'])
         for attr in top.attrs:
             assert attr.attrname in attrs, 'Unexpected attribute: {}'.format(attr.attrname)
 
-    def test_guessed_attributes(self, top):
-        # guessed attributes must be declared as guessed
-        for attr in top.attrs:
-            val = attr.is_guessed
-            if not val in (True, False):  # only for simple yes/no cases
-                continue
-            assert val == (attr.attrname in self.guessed_attrs), 'Attr "{}" guessed= {}'.format(attr, val)
 
     def test_size(self, top):
         """Check that the Topology is correctly sized"""

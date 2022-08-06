@@ -142,7 +142,6 @@ class TestRDKitParserPDB(RDKitParserBase):
     expected_attrs = RDKitParserBase.expected_attrs + [
         'resnames', 'altLocs', 'chainIDs', 'occupancies', 'icodes',
         'tempfactors']
-    guessed_attrs = ['types']
     
     expected_n_atoms = 137
     expected_n_residues = 13
@@ -166,7 +165,6 @@ class TestRDKitParserPDB(RDKitParserBase):
 class TestRDKitParserSMILES(RDKitParserBase):
     ref_filename = "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"
 
-    guessed_attrs = ['types']
 
     expected_n_atoms = 24
     expected_n_residues = 1
@@ -183,7 +181,6 @@ class TestRDKitParserSMILES(RDKitParserBase):
 class TestRDKitParserSDF(RDKitParserBase):
     ref_filename = SDF_molecule
 
-    guessed_attrs = ['types']
 
     expected_n_atoms = 49
     expected_n_residues = 1
