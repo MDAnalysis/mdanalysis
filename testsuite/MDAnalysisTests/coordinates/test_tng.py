@@ -34,10 +34,10 @@ if HAS_PYTNG:
     import pytng
 
 from MDAnalysisTests.datafiles import (TNG_traj, TNG_traj_gro)
-
+from MDAnalysisTests.coordinates.base import MultiframeReaderTest
 
 @pytest.mark.skipif(not HAS_PYTNG, reason="pytng not installed")
-class TestTNGTraj(object):
+class TestTNGTraj(MultiframeReaderTest):
 
     _n_atoms = 1000
     _n_frames = 101
