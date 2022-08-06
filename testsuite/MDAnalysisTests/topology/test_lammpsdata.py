@@ -243,7 +243,6 @@ def test_interpret_atom_style_missing():
 
 class TestDumpParser(ParserBase):
     expected_attrs = ['types']
-    guessed_attrs = ['masses']
     expected_n_atoms = 24
     expected_n_residues = 1
     expected_n_segments = 1
@@ -257,13 +256,7 @@ class TestDumpParser(ParserBase):
         assert isinstance(u, mda.Universe)
         assert len(u.atoms) == 24
 
-    def test_masses_warning(self):
-        # masses are mandatory, but badly guessed
-        # check that user is alerted
-        with self.parser(self.ref_filename) as p:
-            with pytest.warns(UserWarning, match='Guessed all Masses to 1.0'):
-                p.parse()
-            
+           
     def test_id_ordering(self):
         # ids are nonsequential in file, but should get rearranged
         u = mda.Universe(self.ref_filename, format='LAMMPSDUMP')

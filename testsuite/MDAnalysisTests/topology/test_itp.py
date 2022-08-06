@@ -142,12 +142,11 @@ class TestITP(BaseITP):
 class TestITPNoMass(ParserBase):
     parser = mda.topology.ITPParser.ITPParser
     ref_filename = ITP_nomass
-    expected_attrs = ['ids', 'names', 'types', 'masses',
+    expected_attrs = ['ids', 'names', 'types',
                       'charges', 'chargegroups',
                       'resids', 'resnames',
                       'segids', 'moltypes', 'molnums',
                       'bonds', 'angles', 'dihedrals', 'impropers']
-    guessed_attrs = ['masses']
     expected_n_atoms = 60
     expected_n_residues = 1
     expected_n_segments = 1
@@ -163,12 +162,11 @@ class TestITPNoMass(ParserBase):
 class TestITPAtomtypes(ParserBase):
     parser = mda.topology.ITPParser.ITPParser
     ref_filename = ITP_atomtypes
-    expected_attrs = ['ids', 'names', 'types', 'masses',
+    expected_attrs = ['ids', 'names', 'types',
                       'charges', 'chargegroups',
                       'resids', 'resnames',
                       'segids', 'moltypes', 'molnums',
                       'bonds', 'angles', 'dihedrals', 'impropers']
-    guessed_attrs = ['masses']
     expected_n_atoms = 4
     expected_n_residues = 1
     expected_n_segments = 1
@@ -198,7 +196,6 @@ class TestITPAtomtypes(ParserBase):
                       'resids', 'resnames',
                       'segids', 'moltypes', 'molnums',
                       'bonds', 'angles', 'dihedrals', 'impropers']
-    guessed_attrs = []
     expected_n_atoms = 9
     expected_n_residues = 3
     expected_n_segments = 1
@@ -262,7 +259,6 @@ class TestITPNoKeywords(BaseITP):
     expected_n_residues = 1
     expected_n_segments = 1
 
-    guessed_attrs = ['masses']
 
     expected_n_bonds = 2
     # FLEXIBLE not set -> SETTLE constraint -> water has no angle

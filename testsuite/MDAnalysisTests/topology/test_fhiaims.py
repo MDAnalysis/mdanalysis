@@ -30,7 +30,6 @@ from MDAnalysisTests.datafiles import FHIAIMS
 class TestFHIAIMS(ParserBase):
     parser = mda.topology.FHIAIMSParser.FHIAIMSParser
     expected_attrs = ['names', 'elements']
-    guessed_attrs = ['masses', 'types']
     expected_n_residues = 1
     expected_n_segments = 1
     expected_n_atoms = 6
@@ -40,15 +39,7 @@ class TestFHIAIMS(ParserBase):
         assert_equal(top.names.values,
                      ['O', 'H', 'H', 'O', 'H', 'H'])
 
-    def test_types(self, top):
-        assert_equal(top.types.values,
-                     ['O', 'H', 'H', 'O', 'H', 'H'])
-
     def test_elements(self, top):
         assert_equal(top.elements.values,
                      ['O', 'H', 'H', 'O', 'H', 'H'])
 
-    def test_masses(self, top):
-        assert_almost_equal(top.masses.values,
-                            [15.999,  1.008,  1.008, 15.999,
-                             1.008,  1.008])

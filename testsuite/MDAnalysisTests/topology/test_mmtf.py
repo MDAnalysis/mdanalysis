@@ -20,7 +20,6 @@ class MMTFBase(ParserBase):
 class TestMMTFParser(MMTFBase):
     parser = mda.topology.MMTFParser.MMTFParser
     ref_filename = MMTF
-    guessed_attrs = ['masses']
     expected_n_atoms = 512
     expected_n_residues = 124
     expected_n_segments = 8
@@ -39,7 +38,7 @@ class TestMMTFSkinny(MMTFBase):
     # for all attributes often in MMTF,
     # check that we get expected error on access
     # (sort so pytest gets reliable order)
-    guessed_attrs = ['ids', 'masses', 'segids']
+    guessed_attrs = ['ids', 'segids']
     expected_n_atoms = 660
     expected_n_residues = 134
     expected_n_segments = 2
@@ -48,7 +47,7 @@ class TestMMTFSkinny(MMTFBase):
 class TestMMTFSkinny2(MMTFBase):
     parser = mda.topology.MMTFParser.MMTFParser
     ref_filename = MMTF_skinny2
-    guessed_attrs = ['ids', 'masses', 'segids']
+    guessed_attrs = ['ids', 'segids']
     expected_n_atoms = 169
     expected_n_residues = 44
     expected_n_segments = 2

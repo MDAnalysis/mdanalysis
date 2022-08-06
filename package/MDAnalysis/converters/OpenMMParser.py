@@ -60,7 +60,6 @@ import warnings
 
 from ..topology.base import TopologyReaderBase
 from ..topology.tables import SYMB2Z
-from ..topology.guessers import guess_types, guess_masses
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomids,
@@ -108,11 +107,6 @@ class OpenMMTopologyParser(TopologyReaderBase):
         -------
         top : MDAnalysis.core.topology.Topology
 
-        Note
-        ----
-        When none of the elements are present in the openmm topolgy, their
-        atomtypes are guessed using their names and their masses are
-        then guessed using their atomtypes.
 
         When partial elements are present, values from available elements
         are used whereas the absent elements are assigned an empty string
@@ -192,8 +186,6 @@ class OpenMMTopologyParser(TopologyReaderBase):
                                                dtype=object)))
 
             else:
-                atomtypes = guess_types(atomnames)
-                masses = guess_masses(atomtypes)
                 wmsg = ("Element information is missing for all the atoms. "
                         "Elements attribute will not be populated. "
                         "Atomtype attribute will be guessed using atom "
