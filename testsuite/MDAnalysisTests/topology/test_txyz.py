@@ -29,7 +29,6 @@ from MDAnalysisTests.datafiles import TXYZ, ARC
 
 class TestTXYZParser(ParserBase):
     parser = mda.topology.TXYZParser.TXYZParser
-    guessed_attrs = ['masses']
     expected_attrs = ['ids', 'names', 'bonds', 'types']
     expected_n_residues = 1
     expected_n_atoms = 9

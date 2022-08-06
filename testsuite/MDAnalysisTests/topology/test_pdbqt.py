@@ -35,7 +35,6 @@ class TestPDBQT(ParserBase):
         'ids', 'names', 'charges', 'types', 'altLocs', 'resids', 'resnames',
         'segids', 'record_types', 'icodes', 'occupancies', 'tempfactors'
     ]
-    guessed_attrs = ['masses']
     expected_n_atoms = 1805
     expected_n_residues = 199  # resids go 2-102 then 2-99
     expected_n_segments = 2  # res2-102 are A, 2-99 are B

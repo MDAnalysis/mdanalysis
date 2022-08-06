@@ -178,7 +178,6 @@ class TestMOL2Base(ParserBase):
         'ids', 'names', 'types', 'charges', 'resids', 'resnames', 'bonds',
         'elements',
     ]
-    guessed_attrs = ['masses']
     expected_n_atoms = 49
     expected_n_residues = 1
     expected_n_segments = 1

@@ -76,7 +76,6 @@ class PDBBase(ParserBase):
     expected_attrs = ['ids', 'names', 'record_types', 'resids',
                       'resnames', 'altLocs', 'icodes', 'occupancies',
                       'tempfactors', 'chainIDs']
-    guessed_attrs = ['types', 'masses']
 
 
 class TestPDBParser(PDBBase):
