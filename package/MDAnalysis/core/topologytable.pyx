@@ -31,7 +31,7 @@ cnp.import_array()
 
 
 cdef class TopologyTable:
-    def __cinit__(self, int[:,:] val, **kwargs):
+    def __cinit__(self, int[:,:] val, int n_atoms, **kwargs):
         """Initialise C++ level parameters of a TopologyTable
 
         Parameters
@@ -40,6 +40,7 @@ cdef class TopologyTable:
         .. versionadded:: 2.3.0
            Initialise C++ level parameters
         """
+        self.n_atoms = n_atoms
         self._generate_bix(val)
         
     
@@ -55,6 +56,7 @@ cdef class TopologyTable:
         cdef int lead_val
         cdef int prev_val = val[0,0]
 
+        self.span_map[prev_val] = 0
         # unique value counter
         cdef int bix_counter = 0
 
@@ -62,7 +64,8 @@ cdef class TopologyTable:
         for i in range(val.shape[0]):
             bond = cpair[int, int](val[i,0], val[i,1])
             rev_bond = cpair[int, int](val[i,1], val[i,0])
-            
+            self.atoms_set.insert(val[i,0])
+            self.atoms_set.insert(val[i,1])
             if self.mapping.count(bond):
                 # the value is already in the map, grab forward value
                 # and that we will read second element
@@ -91,10 +94,16 @@ cdef class TopologyTable:
             
             if lead_val != prev_val:
                 self.spans.push_back(i)
+                self.span_map[lead_val] = i
             
             prev_val = lead_val
+
+            self.aidx[]
         
         self.spans.push_back(val.shape[0])
+
+
+            
 
     def get_bonds(self, int target):
         cdef vector[int] bonds
@@ -115,6 +124,28 @@ cdef class TopologyTable:
                 bond = self.ix_pair_array[b_ix].second
             bonds.push_back(bond)
         return bonds
+    
+    @property
+    def span(self):
+        return self.spans
+
+    @property
+    def idx(self):
+        return self.aidx
+    
+    @property
+    def bix(self):
+        return self.bix
+
+    @property
+    def ix_pair_array(self):
+        return self.ix_pair_array
+
+
+    @property
+    def span_mp(self):
+        return self.span_map
+
 
 
 

@@ -24,6 +24,7 @@
 from libcpp.vector cimport vector
 from libcpp.map cimport map as cmap
 from libcpp.pair cimport pair as cpair
+from libcpp.set cimport set as cset
 import numpy as np
 cimport numpy as cnp
 cnp.import_array()
@@ -31,13 +32,15 @@ cnp.import_array()
 
 cdef class TopologyTable:
     pass
-
+    cdef int n_atoms
     cdef vector[int] bix
     cdef vector[int] spans
+    cdef vector[vector[int]] aidx
     cdef vector[int] access
     cdef cmap[cpair[int,int], int] mapping
+    cdef cmap[int,int] span_map
     cdef vector[cpair[int, int]] ix_pair_array
-
+    cdef cset[int] atoms_set
     cdef void _generate_bix(self, int[:,:] val)
 
     cdef  vector[int] _get_bonds(self, int target)
