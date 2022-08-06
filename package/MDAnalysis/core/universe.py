@@ -103,7 +103,7 @@ def _check_file_like(topology):
 def _topology_from_file_like(topology_file, topology_format=None,
                              **kwargs):
     parser = get_parser_for(topology_file, format=topology_format)
-  
+
     try:
         with parser(topology_file) as p:
             topology = p.parse(**kwargs)
@@ -135,7 +135,7 @@ def _topology_from_file_like(topology_file, topology_format=None,
         else:
             formats = parser.format
         if ('MINIMAL' not in formats and 'TPR' not in formats and
-            topology.n_atoms > 0 and
+            'THINGY' not in formats and topology.n_atoms > 0 and
                 any(fmt in _PARSERS for fmt in formats)):
             begin_guess = True
         # check if a file is txyz format to handle its
