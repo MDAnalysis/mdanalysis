@@ -33,11 +33,69 @@ from MDAnalysis.coordinates.TNG import HAS_PYTNG
 if HAS_PYTNG:
     import pytng
 
-from MDAnalysisTests.datafiles import (TNG_traj, TNG_traj_gro)
-from MDAnalysisTests.coordinates.base import MultiframeReaderTest
+from MDAnalysisTests.datafiles import (TNG_traj, TNG_traj_gro, COORDINATES_TNG,
+                                       COORDINATES_TOPOLOGY)
+from MDAnalysisTests.coordinates.base import (MultiframeReaderTest,
+                                              BaseReference)
+
 
 @pytest.mark.skipif(not HAS_PYTNG, reason="pytng not installed")
-class TestTNGTraj(MultiframeReaderTest):
+class TNGReference(BaseReference):
+    """Reference synthetic trajectory that was
+    copied from test_xdr.TRRReference"""
+
+    def __init__(self):
+        super(TNGReference, self).__init__()
+        self.trajectory = COORDINATES_TNG
+        self.topology = COORDINATES_TOPOLOGY
+        self.reader = mda.coordinates.TNG.TNGReader
+        self.writer = mda.coordinates.TNG.TNGReader.Writer
+        self.ext = 'tng'
+        self.changing_dimensions = True
+
+
+        self.first_frame.positions = self.first_frame.positions/10
+
+        self.first_frame.velocities = self.first_frame.positions / 10
+        self.first_frame.forces = self.first_frame.positions / 100
+
+        self.second_frame.velocities = self.second_frame.positions / 10
+        self.second_frame.forces = self.second_frame.positions / 100
+
+        self.last_frame.velocities = self.last_frame.positions / 10
+        self.last_frame.forces = self.last_frame.positions / 100
+
+        self.jump_to_frame.velocities = self.jump_to_frame.positions / 10
+        self.jump_to_frame.forces = self.jump_to_frame.positions / 100
+
+    def iter_ts(self, i):
+        ts = self.first_frame.copy()
+        ts.positions = 2**i * self.first_frame.positions
+        ts.velocities = ts.positions / 10
+        ts.forces = ts.positions / 100
+        ts.time = i
+        ts.frame = i
+        return ts
+
+@pytest.mark.skipif(not HAS_PYTNG, reason="pytng not installed")
+class TestTNGCoordinatesTraj(MultiframeReaderTest):
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return TNGReference()
+
+    def test_get_writer_1(self, reader):
+        with pytest.raises(NotImplementedError, match="There is currently no writer for TNG files"):
+            reader.Writer()
+
+    def test_get_writer_2(self, reader):
+        with pytest.raises(NotImplementedError, match="There is currently no writer for TNG files"):
+            reader.Writer()
+
+
+@pytest.mark.skipif(not HAS_PYTNG, reason="pytng not installed")
+class TestTNGTraj(object):
+
 
     _n_atoms = 1000
     _n_frames = 101

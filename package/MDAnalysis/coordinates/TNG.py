@@ -142,6 +142,7 @@ class TNGReader(base.ReaderBase):
 
         self._file_iterator = pytng.TNGFileIterator(self.filename, 'r')
         self.n_atoms = self._file_iterator.n_atoms
+        self._n_steps = self._file_iterator.n_steps
 
         # names of the blocks
         self._block_names = self._file_iterator.block_ids.keys()
@@ -159,18 +160,25 @@ class TNGReader(base.ReaderBase):
         self._has_box = self._box_blockname in self._block_names
         if self._has_box:
             self._special_block_present[self._box_blockname] = True
+            self.ts.dimensions = np.zeros(6, dtype=np.float32)
 
         self._has_positions = self._positions_blockname in self._block_names
         if self._has_positions:
             self._special_block_present[self._positions_blockname] = True
+            self.ts.positions = self._file_iterator.make_ndarray_for_block_from_name(
+            self._positions_blockname)
 
         self._has_velocities = self._velocities_blockname in self._block_names
         if self._has_velocities:
             self._special_block_present[self._velocities_blockname] = True
+            self.ts.velocities = self._file_iterator.make_ndarray_for_block_from_name(
+            self._velocities_blockname)
 
         self._has_forces = self._forces_blockname in self._block_names
         if self._has_forces:
             self._special_block_present[self._forces_blockname] = True
+            self.ts.forces = self._file_iterator.make_ndarray_for_block_from_name(
+            self._forces_blockname)
 
         # check for any additional blocks that will be read into ts.data
         self._additional_blocks = [
@@ -182,7 +190,6 @@ class TNGReader(base.ReaderBase):
         self._box_temp = self._file_iterator.make_ndarray_for_block_from_name(
             self._box_blockname)
         self._frame = -1
-        print("frame num", self._frame)
         self._read_next_timestep()
 
     def _check_strides_and_frames(self):
@@ -208,10 +215,20 @@ class TNGReader(base.ReaderBase):
         if not all(element == n_data_frames[0] for element in n_data_frames):
             raise IOError("Number of data containing frames for TNG special"
                           " blocks not equal, file cannot be read")
-
-        self._global_stride = strides[0]
-        # NOTE frame number is 0 indexed so increment
-        self._n_frames = n_data_frames[0] + 1
+        
+        if all(element == 0 for element in n_data_frames):
+            warnings.warn("Could not read the number of data frames from the "
+                          "TNG file, this sometimes occurs with trajectories "
+                          "written using gmx trjconv without a TPR. "
+                          "Continuing but setting strides to 1 and n_frames to "
+                          "the number of integrator steps.")
+            self._n_frames = self._n_steps
+            self._global_stride = 1
+        else:
+            self._global_stride = strides[0]
+            # NOTE frame number is 0 indexed so increment
+            self._n_frames = n_data_frames[0] + 1
+        
         self._additional_blocks_to_read = []
         for block in self._additional_blocks:
             stride_add = self._block_strides[block]
