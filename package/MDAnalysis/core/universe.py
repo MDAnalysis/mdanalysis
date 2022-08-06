@@ -103,23 +103,7 @@ def _check_file_like(topology):
 def _topology_from_file_like(topology_file, topology_format=None,
                              **kwargs):
     parser = get_parser_for(topology_file, format=topology_format)
-    txyz = False
-    begin_guess = False
-    if hasattr(parser, 'format'):
-        formats = []
-        if not isinstance(parser.format, list):
-            formats.append(parser.format)
-        else:
-            formats = parser.format
-        if ('MINIMAL' not in formats and 'TPR' not in formats and
-            'THINGY' not in formats and
-                any(fmt in _PARSERS for fmt in formats)):
-            begin_guess = True
-        # check if a file is txyz format to handle its
-        # to preserve its special behavior of guessing
-        # atom masses from names
-        if 'TXYZ' in formats or 'ARC' in formats:
-            txyz = True
+  
     try:
         with parser(topology_file) as p:
             topology = p.parse(**kwargs)
@@ -142,6 +126,23 @@ def _topology_from_file_like(topology_file, topology_format=None,
             "Failed to construct topology from file {0}"
             " with parser {1}.\n"
             "Error: {2}".format(topology_file, parser, err))
+    txyz = False
+    begin_guess = False
+    if hasattr(parser, 'format'):
+        formats = []
+        if not isinstance(parser.format, list):
+            formats.append(parser.format)
+        else:
+            formats = parser.format
+        if ('MINIMAL' not in formats and 'TPR' not in formats and
+            topology.n_atoms > 0 and
+                any(fmt in _PARSERS for fmt in formats)):
+            begin_guess = True
+        # check if a file is txyz format to handle its
+        # to preserve its special behavior of guessing
+        # atom masses from names
+        if 'TXYZ' in formats or 'ARC' in formats:
+            txyz = True
     return [topology, begin_guess, txyz]
 
 
