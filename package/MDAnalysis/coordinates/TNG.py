@@ -49,7 +49,7 @@ the full list of `blocks`_ to understand the full power of the TNG format.
 
 Notes
 -----
-Currently there is only a Reader for TNG files and no writer. This will depend
+Currently there is only a Reader for TNG files and no Writer. This will depend
 on upstream changes in pytng. Additionally, it is not currently possible to
 read the molecular topology from a TNG file.
 
@@ -86,9 +86,9 @@ import warnings
 from typing import Optional, List
 from ..due import due, Doi
 
-from . import base
-from ..lib.mdamath import triclinic_box
-from .timestep import Timestep
+from MDAnalysis.coordinates import base
+from MDAnalysis.lib.mdamath import triclinic_box
+from MDAnalysis.coordinates.timestep import Timestep
 
 
 try:
