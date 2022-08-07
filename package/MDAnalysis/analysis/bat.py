@@ -179,7 +179,7 @@ import copy
 
 import MDAnalysis as mda
 from .base import AnalysisBase
-from MDAnalysis.core.groups import AtomGroup
+from MDAnalysis.core.groups import AtomGroup, Atom
 from MDAnalysis.core.universe import Universe
 
 from MDAnalysis.lib.distances import calc_bonds, calc_angles, calc_dihedrals
@@ -191,7 +191,7 @@ from ..due import due, Doi
 logger = logging.getLogger(__name__)
 
 
-def _sort_atoms_by_mass(atoms: AtomGroup, reverse: bool = False) -> List[AtomGroup]:
+def _sort_atoms_by_mass(atoms: AtomGroup, reverse: bool = False) -> List[Atom]:
     r"""Sorts a list of atoms by name and then by index
 
     The atom index is used as a tiebreaker so that the ordering is reproducible.
@@ -274,7 +274,8 @@ class BAT(AnalysisBase):
     @due.dcite(Doi("10.1002/jcc.26036"),
                description="Bond-Angle-Torsions Coordinate Transformation",
                path="MDAnalysis.analysis.bat.BAT")
-    def __init__(self, ag: Union[AtomGroup, Universe], initial_atom: Optional[AtomGroup] = None,
+    def __init__(self, ag: Union[AtomGroup, Universe],
+                 initial_atom: Optional[AtomGroup] = None,
                  filename: Optional[str] = None, **kwargs: int) -> None:
         r"""Parameters
         ----------
@@ -430,7 +431,8 @@ class BAT(AnalysisBase):
         self.results.bat[self._frame_index, :] = np.concatenate(
                 (root_based, bonds, angles, torsions))
 
-    def load(self, filename: str, start: Optional[int] = None, stop: Optional[int] = None, step: Optional[int] = None):
+    def load(self, filename: str, start: Optional[int] = None,
+             stop: Optional[int] = None, step: Optional[int] = None):
         """Loads the bat trajectory from a file in numpy binary format
 
         Parameters
