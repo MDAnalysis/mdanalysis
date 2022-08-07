@@ -211,8 +211,11 @@ from .base import AnalysisBase
 logger = logging.getLogger('MDAnalysis.analysis.align')
 
 
-def rotation_matrix(a: npt.ArrayLike, b: npt.ArrayLike,
-                    weights: Optional[npt.ArrayLike] = None) -> Tuple[np.ndarray, float]:
+# typing: numpy
+def rotation_matrix(
+        a: npt.ArrayLike, b: npt.ArrayLike,
+        weights: Optional[npt.ArrayLike] = None
+) -> Tuple[np.ndarray, float]:
     r"""Returns the 3x3 rotation matrix `R` for RMSD fitting coordinate
     sets `a` and `b`.
 
@@ -292,9 +295,14 @@ def rotation_matrix(a: npt.ArrayLike, b: npt.ArrayLike,
     return rot.reshape(3, 3), rmsd
 
 
-def _fit_to(mobile_coordinates: np.ndarray, ref_coordinates: np.ndarray, mobile_atoms: Type[AtomGroup],
-            mobile_com: np.ndarray, ref_com: np.ndarray,
-            weights: Optional[npt.ArrayLike] = None) -> Tuple[Type[AtomGroup], float]:
+# typing: numpy
+def _fit_to(
+        mobile_coordinates: np.ndarray,
+        ref_coordinates: np.ndarray,
+        mobile_atoms: AtomGroup,
+        mobile_com: np.ndarray, ref_com: np.ndarray,
+        weights: Optional[npt.ArrayLike] = None
+) -> Tuple[AtomGroup, float]:
     r"""Perform an rmsd-fitting to determine rotation matrix and align atoms
 
     Parameters
@@ -352,10 +360,15 @@ def _fit_to(mobile_coordinates: np.ndarray, ref_coordinates: np.ndarray, mobile_
     return mobile_atoms, min_rmsd
 
 
-def alignto(mobile: Union[Type[Universe], Type[AtomGroup]], reference: Union[Type[Universe], Type[AtomGroup]],
-            select: Optional[Union[str, dict, Tuple]] = None, weights: Optional[npt.ArrayLike] = None,
-            subselection: Optional[Union[str, Type[AtomGroup]]] = None, tol_mass: float = 0.1, strict: bool = False,
-            match_atoms: bool = True) -> Tuple[float, float]:
+def alignto(
+        mobile: Union[Universe, AtomGroup],
+        reference: Union[Universe, AtomGroup],
+        select: Union[str, dict, Tuple, None] = None,
+        weights: Optional[npt.ArrayLike] = None,
+        subselection: Optional[Union[str, AtomGroup]] = None,
+        tol_mass: float = 0.1, strict: bool = False,
+        match_atoms: bool = True
+) -> Tuple[float, float]:
     """Perform a spatial superposition by minimizing the RMSD.
 
     Spatially align the group of atoms `mobile` to `reference` by
@@ -492,11 +505,10 @@ def alignto(mobile: Union[Type[Universe], Type[AtomGroup]], reference: Union[Typ
         mobile_atoms = mobile.select_atoms(*select['mobile'])
         ref_atoms = reference.select_atoms(*select['reference'])
 
-
     ref_atoms, mobile_atoms = get_matching_atoms(ref_atoms, mobile_atoms,
-                                                tol_mass=tol_mass,
-                                                strict=strict,
-                                                match_atoms=match_atoms)
+                                                 tol_mass=tol_mass,
+                                                 strict=strict,
+                                                 match_atoms=match_atoms)
 
     weights = get_weights(ref_atoms, weights)
 
@@ -546,10 +558,14 @@ class AlignTraj(AnalysisBase):
 
     """
 
-    def __init__(self, mobile: Type[Universe], reference: Type[Universe], select: str = 'all',
-                 filename: Optional[str] = None, prefix: Optional[str] = 'rmsfit_',
-                 weights: Optional[npt.ArrayLike] = None, tol_mass: float = 0.1, match_atoms: bool = True,
-                 strict: bool = False, force: bool = True, in_memory: bool = False,
+    def __init__(self, mobile: Universe,
+                 reference: Universe, select: str = 'all',
+                 filename: Optional[str] = None,
+                 prefix: Optional[str] = 'rmsfit_',
+                 weights: Optional[npt.ArrayLike] = None,
+                 tol_mass: float = 0.1, match_atoms: bool = True,
+                 strict: bool = False, force: bool = True,
+                 in_memory: bool = False,
                  **kwargs) -> None:
         """Parameters
         ----------
@@ -757,10 +773,14 @@ class AverageStructure(AnalysisBase):
 
     """
 
-    def __init__(self, mobile: Type[Universe], reference: Optional[Universe] = None, select: str = 'all',
-                 filename: Optional[str] = None, weights: Optional[npt.ArrayLike] = None,
-                 tol_mass: float = 0.1, match_atoms: bool = True, strict: bool = False, force: bool = True,
-                 in_memory: bool = False, ref_frame: int =0, **kwargs: int) -> None:
+    def __init__(self, mobile: Universe, reference: Optional[Universe] = None,
+                 select: str = 'all',
+                 filename: Optional[str] = None,
+                 weights: Optional[npt.ArrayLike] = None,
+                 tol_mass: float = 0.1, match_atoms: bool = True,
+                 strict: bool = False, force: bool = True,
+                 in_memory: bool = False, ref_frame: int = 0,
+                 **kwargs: int) -> None:
         """Parameters
         ----------
         mobile : Universe
@@ -951,13 +971,14 @@ class AverageStructure(AnalysisBase):
             logging.disable(logging.NOTSET)
 
     @property
-    def universe(self) -> Type[Universe]:
+    def universe(self) -> Universe:
         wmsg = ("The `universe` attribute was deprecated in MDAnalysis 2.0.0 "
                 "and will be removed in MDAnalysis 3.0.0. Please use "
                 "`results.universe` instead.")
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.universe
 
+    # typing: numpy
     @property
     def positions(self) -> np.ndarray:
         wmsg = ("The `positions` attribute was deprecated in MDAnalysis 2.0.0 "
@@ -975,7 +996,8 @@ class AverageStructure(AnalysisBase):
         return self.results.rmsd
 
 
-def sequence_alignment(mobile: Type[AtomGroup], reference: Type[AtomGroup], match_score: float = 2,
+def sequence_alignment(mobile: AtomGroup,
+                       reference: AtomGroup, match_score: float = 2,
                        mismatch_penalty: float = -1, gap_penalty: float = -2,
                        gapextension_penalty: float = -0.1) -> Tuple:
     """Generate a global sequence alignment between two residue groups.
@@ -1031,9 +1053,11 @@ def sequence_alignment(mobile: Type[AtomGroup], reference: Type[AtomGroup], matc
 
 
 def fasta2select(fastafilename: str, is_aligned: bool = False,
-                 ref_resids: Optional[str] = None, target_resids: Optional[str] = None,
+                 ref_resids: Optional[str] = None,
+                 target_resids: Optional[str] = None,
                  ref_offset: int = 0, target_offset: int = 0, verbosity=3,
-                 alnfilename: Optional[str] = None, treefilename: Optional[str] = None,
+                 alnfilename: Optional[str] = None,
+                 treefilename: Optional[str] = None,
                  clustalw: Optional[str] = "clustalw2") -> Dict:
     """Return selection strings that will select equivalent residues.
 
@@ -1248,8 +1272,10 @@ def fasta2select(fastafilename: str, is_aligned: bool = False,
     return {'reference': ref_selection, 'mobile': target_selection}
 
 
-def get_matching_atoms(ag1: Type[AtomGroup], ag2: Type[AtomGroup], tol_mass: float = 0.1, strict: bool = False,
-                       match_atoms: bool = True) -> Tuple[Type[AtomGroup], Type[AtomGroup]]:
+def get_matching_atoms(ag1: AtomGroup, ag2: AtomGroup, tol_mass: float = 0.1,
+                       strict: bool = False,
+                       match_atoms: bool = True
+                       ) -> Tuple[AtomGroup, AtomGroup]:
     """Return two atom groups with one-to-one matched atoms.
 
     The function takes two :class:`~MDAnalysis.core.groups.AtomGroup`
