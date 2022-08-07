@@ -33,14 +33,12 @@ cnp.import_array()
 cdef class TopologyTable:
     pass
     cdef int n_atoms
-    cdef vector[int] bix
-    cdef vector[int] spans
-    cdef vector[vector[int]] aidx
-    cdef vector[int] access
-    cdef cmap[cpair[int,int], int] mapping
-    cdef cmap[int,int] span_map
-    cdef vector[cpair[int, int]] ix_pair_array
-    cdef cset[int] atoms_set
+    cdef vector[int] _bix
+    cdef vector[int] _spans
+    cdef vector[int] _access
+    cdef cmap[cpair[int,int], int] _mapping
+    cdef vector[cpair[int, int]] _values
+    cdef vector[cpair[int, int]] _ix_pair_array
     cdef void _generate_bix(self, int[:,:] val)
 
     cdef  vector[int] _get_bonds(self, int target)
