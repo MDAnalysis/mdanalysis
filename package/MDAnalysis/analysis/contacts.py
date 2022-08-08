@@ -227,7 +227,8 @@ import numpy.typing as npt
 logger = logging.getLogger("MDAnalysis.analysis.contacts")
 
 
-def soft_cut_q(r: npt.ArrayLike, r0: npt.ArrayLike, beta: float = 5.0, lambda_constant: float = 1.8) -> float:
+def soft_cut_q(r: npt.ArrayLike, r0: npt.ArrayLike, beta: float = 5.0,
+               lambda_constant: float = 1.8) -> float:
     r"""Calculate fraction of native contacts *Q* for a soft cut off
 
     The native contact function is defined as [Best2013]_
@@ -272,6 +273,7 @@ def soft_cut_q(r: npt.ArrayLike, r0: npt.ArrayLike, beta: float = 5.0, lambda_co
     return result.sum() / len(r0)
 
 
+# typing: numpy
 def hard_cut_q(r: np.ndarray, cutoff: Union[np.ndarray, float]) -> float:
     """Calculate fraction of native contacts *Q* for a hard cut off.
 
@@ -298,6 +300,7 @@ def hard_cut_q(r: np.ndarray, cutoff: Union[np.ndarray, float]) -> float:
     return y.sum() / r.size
 
 
+# typing: numpy
 def radius_cut_q(r: np.ndarray, r0: np.ndarray, radius: float) -> float:
     """calculate native contacts *Q* based on the single distance radius.
 
@@ -327,7 +330,9 @@ def radius_cut_q(r: np.ndarray, r0: np.ndarray, radius: float) -> float:
     return hard_cut_q(r, radius)
 
 
-def contact_matrix(d: npt.ArrayLike, radius: float, out: Optional[Sequence] = None) -> np.ndarray:
+# typing: numpy
+def contact_matrix(d: npt.ArrayLike, radius: float,
+                   out: Optional[Sequence] = None) -> np.ndarray:
     """calculate contacts from distance matrix
 
     Parameters
@@ -393,10 +398,13 @@ class Contacts(AnalysisBase):
        :class:`Contacts` accepts both AtomGroup and string for `select`
     """
 
-    def __init__(self, u: Type[Universe], select: Union[Tuple[Type[AtomGroup], Type[AtomGroup]], Tuple[str, str]],
-                 refgroup: Tuple[Type[AtomGroup], Tuple[AtomGroup]],
-                 method: Union[str, Callable[[np.ndarray, np.ndarray], int]] = "hard_cut", radius: float = 4.5,
-                 pbc: bool = True, kwargs: Optional[dict] = None, **basekwargs) -> None:
+    def __init__(self, u: Universe,
+                 select: Union[Tuple[AtomGroup, AtomGroup], Tuple[str, str]],
+                 refgroup: Tuple[AtomGroup, AtomGroup],
+                 method: Union[str, Callable[..., int]] = "hard_cut",
+                 radius: float = 4.5,
+                 pbc: bool = True,
+                 kwargs: Optional[dict] = None, **basekwargs) -> None:
         """
         Parameters
         ----------
@@ -505,6 +513,7 @@ class Contacts(AnalysisBase):
             q = self.fraction_contacts(r, r0, **self.fraction_kwargs)
             self.results.timeseries[self._frame_index][i] = q
 
+    # typing: numpy
     @property
     def timeseries(self) -> np.ndarray:
         wmsg = ("The `timeseries` attribute was deprecated in MDAnalysis "
@@ -521,7 +530,8 @@ def _new_selections(u_orig, selections, frame):
     return [u.select_atoms(s) for s in selections]
 
 
-def q1q2(u: Type[Universe], select: str = 'all', radius: float = 4.5) -> Type[Contacts]:
+def q1q2(u: Universe, select: str = 'all',
+         radius: float = 4.5) -> Contacts:
     """Perform a q1-q2 analysis.
 
     Compares native contacts between the starting structure and final structure
