@@ -403,9 +403,11 @@ class DensityAnalysis(AnalysisBase):
 
     # typing : numpy
     def __init__(self, atomgroup: AtomGroup, delta: float = 1.0,
-                 metadata=None, padding: float = 2.0,
+                 metadata: Optional[Dict] = None, padding: float = 2.0,
                  gridcenter: Optional[np.ndarray] = None,
-                 xdim: Optional[float] = None, ydim: Optional[float] = None, zdim: Optional[float] = None) -> None:
+                 xdim: Optional[float] = None,
+                 ydim: Optional[float] = None,
+                 zdim: Optional[float] = None) -> None:
         u = atomgroup.universe
         super(DensityAnalysis, self).__init__(u.trajectory)
         self._atomgroup = atomgroup
@@ -503,8 +505,10 @@ class DensityAnalysis(AnalysisBase):
 
     # typing : numpy
     @staticmethod
-    def _set_user_grid(gridcenter: np.ndarray, xdim: float, ydim: float, zdim: float,
-                       smin: np.ndarray, smax: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+    def _set_user_grid(gridcenter: np.ndarray, xdim: float,
+                       ydim: float, zdim: float,
+                       smin: np.ndarray,
+                       smax: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
         """Helper function to set the grid dimensions to user defined values
 
         Parameters
