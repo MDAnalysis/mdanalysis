@@ -118,7 +118,8 @@ class DielectricConstant(AnalysisBase):
 
     .. versionadded:: 2.1.0
     """
-    def __init__(self, atomgroup: AtomGroup, temperature: float = 300, make_whole: bool = True, **kwargs: int) -> None:
+    def __init__(self, atomgroup: AtomGroup, temperature: float = 300,
+                 make_whole: bool = True, **kwargs) -> None:
         super(DielectricConstant, self).__init__(atomgroup.universe.trajectory,
                                                  **kwargs)
         self.atomgroup = atomgroup
