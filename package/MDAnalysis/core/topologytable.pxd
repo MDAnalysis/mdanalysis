@@ -39,6 +39,7 @@ cdef class TopologyTable:
     cdef cmap[cpair[int,int], int] _mapping
     cdef vector[cpair[int, int]] _values
     cdef vector[cpair[int, int]] _ix_pair_array
+    cdef cmap[int,int] _span_map
     cdef void _generate_bix(self, int[:,:] val)
 
     cdef  vector[int] _get_bonds(self, int target)
