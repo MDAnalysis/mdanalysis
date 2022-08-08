@@ -160,7 +160,8 @@ from MDAnalysis.core.universe import Universe
 from MDAnalysis.core.groups import AtomGroup, UpdatingAtomGroup
 from .rms import rmsd
 from .base import AnalysisBase
-from typing import Optional, Union, Sequence
+from typing import Optional, Union, Sequence, Callable
+import numpy.typing as npt
 
 logger = logging.getLogger("MDAnalysis.analysis.diffusionmap")
 
@@ -249,8 +250,10 @@ class DistanceMatrix(AnalysisBase):
     .. versionchanged:: 2.2.0
          :class:`DistanceMatrix` now also accepts `AtomGroup`.
     """
-    def __init__(self, universe: Union[Universe, AtomGroup], select: str = 'all', metric=rmsd, cutoff: float = 1E0-5,
-                 weights: Optional[Sequence] = None, **kwargs: int) -> None:
+    def __init__(self, universe: Union[Universe, AtomGroup],
+                 select: str = 'all',
+                 metric: Callable[..., float] = rmsd, cutoff: float = 1E0-5,
+                 weights: Optional[npt.ArrayLike] = None, **kwargs) -> None:
         # remember that this must be called before referencing self.n_frames
         super(DistanceMatrix, self).__init__(universe.universe.trajectory,
                                              **kwargs)
@@ -327,7 +330,8 @@ class DiffusionMap(object):
          :class:`DiffusionMap` now also accepts `AtomGroup`.
     """
 
-    def __init__(self, u: Union[Universe, AtomGroup, DistanceMatrix], epsilon: float = 1, **kwargs) -> None:
+    def __init__(self, u: Union[Universe, AtomGroup, DistanceMatrix],
+                 epsilon: float = 1, **kwargs) -> None:
         """
         Parameters
         -------------
@@ -353,7 +357,9 @@ class DiffusionMap(object):
                              " so the DiffusionMap has no data to work with.")
         self._epsilon = epsilon
 
-    def run(self, start: Optional[int] = None, stop: Optional[int] = None, step: Optional[int] = None) -> DiffusionMap:
+    def run(self, start: Optional[int] = None,
+            stop: Optional[int] = None,
+            step: Optional[int] = None) -> DiffusionMap:
         """ Create and decompose the diffusion matrix in preparation
         for a diffusion map.
 
@@ -391,7 +397,8 @@ class DiffusionMap(object):
         self._calculated = True
         return self
 
-    def transform(self, n_eigenvectors: int, time: float) -> Sequence:
+    # typing : numpy
+    def transform(self, n_eigenvectors: int, time: float) -> np.ndarray:
         """ Embeds a trajectory via the diffusion map
 
         Parameters
