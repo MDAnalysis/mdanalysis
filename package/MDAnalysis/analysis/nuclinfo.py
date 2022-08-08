@@ -111,7 +111,8 @@ from typing import List
 from MDAnalysis.lib import mdamath
 
 
-def wc_pair(universe: Universe, i: int, bp: int, seg1: str = "SYSTEM", seg2: str = "SYSTEM") -> float:
+def wc_pair(universe: Universe, i: int, bp: int,
+            seg1: str = "SYSTEM", seg2: str = "SYSTEM") -> float:
     """Watson-Crick basepair distance for residue `i` with residue `bp`.
 
     The distance of the nitrogen atoms in a Watson-Crick hydrogen bond is
@@ -154,7 +155,9 @@ def wc_pair(universe: Universe, i: int, bp: int, seg1: str = "SYSTEM", seg2: str
     return wc
 
 
-def minor_pair(universe: Universe, i: int, bp: int, seg1: str = "SYSTEM", seg2: str = "SYSTEM") -> float:
+def minor_pair(universe: Universe,
+               i: int, bp: int, seg1: str = "SYSTEM",
+               seg2: str = "SYSTEM") -> float:
     """Minor-Groove basepair distance for residue `i` with residue `bp`.
 
     The distance of the nitrogen and oxygen atoms in a Minor-groove hydrogen
@@ -196,7 +199,9 @@ def minor_pair(universe: Universe, i: int, bp: int, seg1: str = "SYSTEM", seg2: 
     return c2o2
 
 
-def major_pair(universe: Universe, i: int, bp: int, seg1: str = "SYSTEM", seg2: str = "SYSTEM") -> float:
+def major_pair(universe: Universe,
+               i: int, bp: int,
+               seg1: str = "SYSTEM", seg2: str = "SYSTEM") -> float:
     """Major-Groove basepair distance for residue `i` with residue `bp`.
 
     The distance of the nitrogen and oxygen atoms in a Major-groove hydrogen
@@ -719,7 +724,8 @@ def hydroxyl(universe: Universe, seg: str, i: int) -> float:
 
 
 def pseudo_dihe_baseflip(universe: Universe, bp1: int, bp2: int, i: int,
-                         seg1: str = "SYSTEM", seg2: str = "SYSTEM", seg3: str = "SYSTEM") -> float:
+                         seg1: str = "SYSTEM",
+                         seg2: str = "SYSTEM", seg3: str = "SYSTEM") -> float:
     """pseudo dihedral for flipped bases. Useful only for nucleic acid base flipping
 
     The dihedral is computed based on position atoms for resid `i`
