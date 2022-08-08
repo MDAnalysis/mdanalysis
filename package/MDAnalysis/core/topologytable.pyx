@@ -35,7 +35,7 @@ cnp.import_array()
 
 
 cdef class TopologyTable:
-    def __cinit__(self, int[:,:] val, int n_atoms, typ,  guess, ord, **kwargs):
+    def __cinit__(self, int[:,:] val, int n_atoms, list typ,  list guess, list order, **kwargs):
         """Initialise C++ level parameters of a TopologyTable
 
         Parameters
@@ -46,13 +46,13 @@ cdef class TopologyTable:
         """
         self.n_atoms = n_atoms
         
-        typ_ = ["-1" if i is None else i for i in typ]
-        guess_ = [int(i) for i in guess]
-        ord_ = [-1 if i is None else i for i in ord]
-        self._generate_bix(val)
+        #typ_ = np.asarray(["-1" if i is None else i for i in typ], dtype=string)
+        guess_ = np.asarray([int(i) for i in guess], dtype=np.int32)
+        order_ = np.asarray([-1 if i is None else i for i in order], dtype=np.int32)
+        self._generate_bix(val, guess_, order_)
         
     
-    cdef void _generate_bix(self, int[:,:] val):
+    cdef void _generate_bix(self, int[:,:] val, int[:] guess, int[:] order):
         """Generate bond indicies, spans and value arrays for the TopologyTable
         
         """
@@ -70,11 +70,11 @@ cdef class TopologyTable:
             _values.push_back(bond)
             _values.push_back(rev_bond)
             # self._type[bond] = typ[i]
-            # self._order[bond] = ord[i]
-            # self._guess[bond] = guess[i]
             # self._type[rev_bond] = typ[i]
-            # self._order[rev_bond] = bond[i]
-            # self._guess[rev_bond] = guess[i]
+            self._order[bond] = order[i]
+            self._order[rev_bond] = order[i]
+            self._guessed[bond] = guess[i]
+            self._guessed[rev_bond] = guess[i]
 
 
         # remove duplicates with a sort, can do these together for speed
@@ -153,13 +153,27 @@ cdef class TopologyTable:
         self._span_map.erase(max_key +1)
 
 
-    def get_bonds(self, int target):
+    def get_bond(self, int target):
         cdef vector[int] bonds
         bonds = self._get_bonds(target)
         return bonds
+    
 
-    def get_b_t_g_o(self, int target):
-        pass
+    
+    def get_bonds_slice(self, cnp.int64_t[:] targets):
+        cdef vector[vector[int]] bonds
+        cdef vector[int] row 
+        cdef int i, j
+        for i in range(targets.shape[0]):
+            row = self._get_bond(targets[i])
+            for j in range(row.size()):
+                bonds[i].push_back(row[j])
+        return bonds
+
+    @property
+    def bonds(self):
+        return self._ix_pair_array
+
 
     @property
     def types(self):
@@ -170,7 +184,51 @@ cdef class TopologyTable:
             types.push_back(self._type[self._ix_pair_array[i]])
         return types
 
-    cdef vector[int] _get_bonds(self, int target):
+
+    @property
+    def orders(self):
+        cdef int i
+        cdef vector[int] orders
+        orders.reserve(self._ix_pair_array.size())
+        for i in range(self._ix_pair_array.size()):
+            orders.push_back(self._order[self._ix_pair_array[i]])
+        cdef cnp.npy_intp size[1]
+        size[0] = orders.size()
+        cdef cnp.ndarray arr
+        arr =  to_numpy_from_spec(self, 1, size, cnp.NPY_INT32, &orders[0])
+        return arr
+
+    # @property
+    # def order_slice(self, int[:] targets):
+    #     cdef int i
+    #     cdef vector[int] orders
+    #     cdef vector[int] bond 
+    #     for i in range(targets.shape[0]):
+    #         bonds = self._get_bond(targets[i])
+            
+    #     cdef cnp.npy_intp size[1]
+    #     size[0] = orders.size()
+    #     cdef cnp.ndarray arr
+    #     arr =  to_numpy_from_spec(self, 1, size, cnp.NPY_INT32, &orders[0])
+    #     return arr
+
+    @property
+    def guessed(self):
+        cdef int i
+        cdef vector[int] guesses
+        guesses.reserve(self._ix_pair_array.size())
+        for i in range(self._ix_pair_array.size()):
+            guesses.push_back(self._guessed[self._ix_pair_array[i]])
+
+        cdef cnp.npy_intp size[1]
+        size[0] = guesses.size()
+        cdef cnp.ndarray arr
+        arr =  to_numpy_from_spec(self, 1, size, cnp.NPY_INT32, &guesses[0])
+        return arr.astype(bool)
+
+
+
+    cdef vector[int] _get_bond(self, int target):
         cdef int start = self._spans[target]
         cdef int end = self._spans[target+1]
         cdef int i, b_ix, atom

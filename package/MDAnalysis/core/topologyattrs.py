@@ -2617,13 +2617,14 @@ class Bonds(_Connection):
     transplants = defaultdict(list)
     _n_atoms = 2
 
-    @_check_connection_values
+
     def __init__(self, values, types=None, guessed=False, order=None):
         super().__init__(values, types, guessed, order)
-        vals_arr = np.asarray(self.values,dtype=np.int32)
-        self._toptable = TopologyTable(vals_arr, vals_arr.shape[0], self.types, self.guessed, self.order)
+        vals_arr = np.asarray(self.values, dtype=np.int32)
+        self._toptable = TopologyTable(vals_arr, len(vals_arr), self.types, self._guessed, self.order)
 
-    def get_atoms(self, ag):
+
+    def get_atoms2(self, ag):
         """
         Get connection values where the atom indices are in
         the given atomgroup.
@@ -2633,10 +2634,11 @@ class Bonds(_Connection):
         ag : AtomGroup
 
         """
-        b_idx  = self._toptable.ix_pair_array
-        types  = self._toptable.types
+        b_idx  = self._toptable.bonds
+        #types  = self._toptable.types
         guessed = self._toptable.guessed
-        order = self._toptable.order
+        order = self._toptable.orders
+        types = np.zeros_like(order)
         return TopologyGroup(b_idx, ag.universe,
                              self.singular[:-1],
                              types,
