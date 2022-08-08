@@ -134,7 +134,7 @@ def _topology_from_file_like(topology_file, topology_format=None,
             formats.append(parser.format)
         else:
             formats = parser.format
-        if ('MINIMAL' not in formats and 'TPR' not in formats and
+        if ('MINIMAL' not in formats and
             'THINGY' not in formats and topology.n_atoms > 0 and
                 any(fmt in _PARSERS for fmt in formats)):
             begin_guess = True

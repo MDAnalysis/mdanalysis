@@ -241,6 +241,12 @@ class TestDifferentDirectivesITP(BaseITP):
 
 
 class TestITPNoKeywords(BaseITP):
+    expected_attrs = ['ids', 'names', 'types',
+                      'charges', 'chargegroups',
+                      'resids', 'resnames',
+                      'segids', 'moltypes', 'molnums',
+                      'bonds', 'angles', 'dihedrals', 'impropers']
+   
     """
     Test reading ITP files *without* defined keywords.
 
