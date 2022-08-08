@@ -26,6 +26,7 @@ from libcpp.map cimport map as cmap
 from libcpp.pair cimport pair as cpair
 from libcpp.algorithm cimport sort as csort
 from libcpp.algorithm cimport unique as cunique
+from libcpp.string cimport string as cstring
 from ..lib._cutil cimport to_numpy_from_spec
 from cython.operator cimport dereference as deref
 import numpy as np
@@ -34,23 +35,30 @@ cnp.import_array()
 
 
 cdef class TopologyTable:
-    def __cinit__(self, int[:,:] val, int n_atoms, **kwargs):
+    def __cinit__(self, int[:,:] val, int n_atoms, typ,  guess, ord, **kwargs):
         """Initialise C++ level parameters of a TopologyTable
 
         Parameters
         ----------
 
         .. versionadded:: 2.3.0
-           Initialise C++ level parameters
+           Initialise C++ level parameters of a TopologyTable
         """
         self.n_atoms = n_atoms
+        
+        typ_ = ["-1" if i is None else i for i in typ]
+        guess_ = [int(i) for i in guess]
+        ord_ = [-1 if i is None else i for i in ord]
         self._generate_bix(val)
         
     
     cdef void _generate_bix(self, int[:,:] val):
-        # track whether we have seen this bond before
+        """Generate bond indicies, spans and value arrays for the TopologyTable
         
-        # the bond, foraward and reverse
+        """
+        cdef vector[cpair[int, int]] _values
+        
+        # the bond, forward and reverse
         cdef cpair[int, int] bond
         cdef cpair[int, int] rev_bond
 
@@ -59,12 +67,19 @@ cdef class TopologyTable:
         for i in range(val.shape[0]):
             bond = cpair[int, int](val[i,0], val[i,1])
             rev_bond = cpair[int, int](val[i,1], val[i,0])
-            self._values.push_back(bond)
-            self._values.push_back(rev_bond)
+            _values.push_back(bond)
+            _values.push_back(rev_bond)
+            # self._type[bond] = typ[i]
+            # self._order[bond] = ord[i]
+            # self._guess[bond] = guess[i]
+            # self._type[rev_bond] = typ[i]
+            # self._order[rev_bond] = bond[i]
+            # self._guess[rev_bond] = guess[i]
+
 
         # remove duplicates with a sort, can do these together for speed
-        csort(self._values.begin(), self._values.end())
-        self._values.erase( cunique( self._values.begin(), self._values.end() ), self._values.end() )
+        csort(_values.begin(), _values.end())
+        _values.erase( cunique( _values.begin(), _values.end() ), _values.end() )
 
 
         # initialise spans
@@ -75,9 +90,11 @@ cdef class TopologyTable:
         # unique value counter
         cdef int bix_counter = 0
 
+        #NOTE: Can possibly get rid of indirection through "access" if we treat
+        # the forward and reverse indices as independent with cost of 2X storage
 
-        for i in range(self._values.size()):
-            bond = self._values[i]
+        for i in range(_values.size()):
+            bond = _values[i]
             rev_bond = cpair[int, int](bond.second, bond.first)
             if self._mapping.count(bond):
                 # the value is already in the map, grab forward value
@@ -94,6 +111,7 @@ cdef class TopologyTable:
             else:
                 # new value
                 self._mapping.insert(cpair[cpair[int,int], int](bond, bix_counter))
+                
                 self._bix.push_back(bix_counter)
                 self._access.push_back(1)
 
@@ -122,7 +140,7 @@ cdef class TopologyTable:
         # pop fake element into map to correctly cap the span
         self._span_map[max_key +1] = max_val +1  
 
-       # sort out the spans so that each atoms has a span
+        # sort out the spans so that each atoms has a span
         prev_val = 0
         for i in range(self.n_atoms):
             if self._span_map.count(i):
@@ -140,6 +158,18 @@ cdef class TopologyTable:
         bonds = self._get_bonds(target)
         return bonds
 
+    def get_b_t_g_o(self, int target):
+        pass
+
+    @property
+    def types(self):
+        cdef int i
+        cdef vector[cstring] types
+        types.reserve(self._ix_pair_array.size())
+        for i in range(self._ix_pair_array.size()):
+            types.push_back(self._type[self._ix_pair_array[i]])
+        return types
+
     cdef vector[int] _get_bonds(self, int target):
         cdef int start = self._spans[target]
         cdef int end = self._spans[target+1]
@@ -151,7 +181,6 @@ cdef class TopologyTable:
         else:
             for i in range(start, end, 1):
                 b_ix = self._bix[i]
-                #NOTE: Can we get rid of this ugly access thing?
                 if self._access[i] == 0:
                     bond = self._ix_pair_array[b_ix].first
                 else:
@@ -174,22 +203,3 @@ cdef class TopologyTable:
     @property
     def span_map(self):
         return self._span_map    
-
-    @property
-    def values(self):
-        return self._values
-
-
-
-
-
-
-
-
-
-        
-
-    
-
-        
-            

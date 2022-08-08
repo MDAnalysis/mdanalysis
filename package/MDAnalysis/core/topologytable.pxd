@@ -25,6 +25,7 @@ from libcpp.vector cimport vector
 from libcpp.map cimport map as cmap
 from libcpp.pair cimport pair as cpair
 from libcpp.set cimport set as cset
+from libcpp.string cimport string as cstring
 import numpy as np
 cimport numpy as cnp
 cnp.import_array()
@@ -37,7 +38,9 @@ cdef class TopologyTable:
     cdef vector[int] _spans
     cdef vector[int] _access
     cdef cmap[cpair[int,int], int] _mapping
-    cdef vector[cpair[int, int]] _values
+    cdef cmap[cpair[int,int], cstring] _type
+    cdef cmap[cpair[int,int], int] _order
+    cdef cmap[cpair[int,int], int] _guessed
     cdef vector[cpair[int, int]] _ix_pair_array
     cdef cmap[int,int] _span_map
     cdef void _generate_bix(self, int[:,:] val)

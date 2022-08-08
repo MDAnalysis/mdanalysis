@@ -2484,7 +2484,7 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
     def __init__(self, values, types=None, guessed=False, order=None):
         self.values = values
         if types is None:
-            types = [-1] * len(values)
+            types = [None] * len(values)
         self.types = types
         if guessed in (True, False):
             # if single value passed, multiply this across
@@ -2492,11 +2492,8 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
             guessed = [guessed] * len(values)
         self._guessed = guessed
         if order is None:
-            order = [-1] * len(values)
+            order = [None] * len(values)
         self.order = order
-        vals_arr = np.asarray(self.values,dtype=np.int32)
-        print(vals_arr)
-        self._toptable = TopologyTable(vals_arr)
         self._cache = dict()
 
     def copy(self):
@@ -2533,15 +2530,12 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
         ag : AtomGroup
 
         """
-        print("get_atoms called")
-        # print(self._bondDict)
         try:
             unique_bonds = set(itertools.chain(
                 *[self._bondDict[a] for a in ag.ix]))
         except TypeError:
             # maybe we got passed an Atom
             unique_bonds = self._bondDict[ag.ix]
-        # print(unique_bonds)
         unique_bonds = np.array(sorted(unique_bonds), dtype=object)
         b_idx, types, guessed, order = np.hsplit(unique_bonds, 4)
         b_idx = np.array(b_idx.ravel().tolist(), dtype=np.int32)
@@ -2622,6 +2616,32 @@ class Bonds(_Connection):
     singular = 'bonds'
     transplants = defaultdict(list)
     _n_atoms = 2
+
+    @_check_connection_values
+    def __init__(self, values, types=None, guessed=False, order=None):
+        super().__init__(values, types, guessed, order)
+        vals_arr = np.asarray(self.values,dtype=np.int32)
+        self._toptable = TopologyTable(vals_arr, vals_arr.shape[0], self.types, self.guessed, self.order)
+
+    def get_atoms(self, ag):
+        """
+        Get connection values where the atom indices are in
+        the given atomgroup.
+
+        Parameters
+        ----------
+        ag : AtomGroup
+
+        """
+        b_idx  = self._toptable.ix_pair_array
+        types  = self._toptable.types
+        guessed = self._toptable.guessed
+        order = self._toptable.order
+        return TopologyGroup(b_idx, ag.universe,
+                             self.singular[:-1],
+                             types,
+                             guessed,
+                             order)
 
     def bonded_atoms(self):
         """An :class:`~MDAnalysis.core.groups.AtomGroup` of all
