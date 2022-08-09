@@ -407,8 +407,10 @@ class Ramachandran(AnalysisBase):
 
     """
 
-    def __init__(self, atomgroup: Union[AtomGroup, ResidueGroup], c_name: str = 'C', n_name: str = 'N',
-                 ca_name: str = 'CA', check_protein: bool = True, **kwargs: int) -> None:
+    def __init__(self, atomgroup: Union[AtomGroup, ResidueGroup],
+                 c_name: str = 'C', n_name: str = 'N',
+                 ca_name: str = 'CA', check_protein: bool = True,
+                 **kwargs) -> None:
         super(Ramachandran, self).__init__(
             atomgroup.universe.trajectory, **kwargs)
         self.atomgroup = atomgroup
@@ -475,7 +477,8 @@ class Ramachandran(AnalysisBase):
     def _conclude(self) -> None:
         self.results.angles = np.rad2deg(np.array(self.results.angles))
 
-    def plot(self, ax: Optional[Axes] = None, ref: Optional[bool] = False, **kwargs: Optional[int]) -> Axes:
+    def plot(self, ax: Optional[Axes] = None,
+             ref: Optional[bool] = False, **kwargs) -> Axes:
         """Plots data into standard Ramachandran plot.
 
         Each time step in :attr:`Ramachandran.results.angles` is plotted onto
@@ -523,6 +526,7 @@ class Ramachandran(AnalysisBase):
         ax.scatter(a[:, 0], a[:, 1], **kwargs)
         return ax
 
+    # typing : numpy
     @property
     def angles(self) -> np.ndarray:
         wmsg = ("The `angle` attribute was deprecated in MDAnalysis 2.0.0 "
@@ -626,7 +630,8 @@ class Janin(Ramachandran):
         self.results.angles = (np.rad2deg(np.array(
             self.results.angles)) + 360) % 360
 
-    def plot(self, ax: Optional[Axes] = None, ref: Optional[bool] = False, **kwargs) -> Axes:
+    def plot(self, ax: Optional[Axes] = None,
+             ref: Optional[bool] = False, **kwargs) -> Axes:
         """Plots data into standard Janin plot.
 
         Each time step in :attr:`Janin.results.angles` is plotted onto the
