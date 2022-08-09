@@ -218,63 +218,37 @@ cdef class TopologyTable:
         return self._ix_pair_array
 
 
-    # @property
-    # def types(self):
-    #     cdef int i
-    #     cdef vector[cstring] types
-    #     types.reserve(self._ix_pair_array.size())
-    #     for i in range(self._ix_pair_array.size()):
-    #         types.push_back(self._type[self._ix_pair_array[i]])
-    #     return types
+    @property
+    def types(self):
+        cdef cnp.npy_intp size[1]
+        size[0] = self._type.size()
+        cdef cnp.ndarray arr
+        arr =  to_numpy_from_spec(self, 1, size, cnp.NPY_INT32, &self._type[0])
+        return arr
 
 
-    # @property
-    # def orders(self):
-    #     cdef int i
-    #     cdef vector[int] orders
-    #     orders.reserve(self._ix_pair_array.size())
-    #     for i in range(self._ix_pair_array.size()):
-    #         orders.push_back(self._order[self._ix_pair_array[i]])
-    #     cdef cnp.npy_intp size[1]
-    #     size[0] = orders.size()
-    #     cdef cnp.ndarray arr
-    #     arr =  to_numpy_from_spec(self, 1, size, cnp.NPY_INT32, &orders[0])
-    #     return arr
+    @property
+    def orders(self):
+        cdef cnp.npy_intp size[1]
+        size[0] = self._order.size()
+        cdef cnp.ndarray arr
+        arr =  to_numpy_from_spec(self, 1, size, cnp.NPY_INT32, &self._order[0])
+        return arr
 
-    # @property
-    # def order_slice(self, int[:] targets):
-    #     cdef int i
-    #     cdef vector[int] orders
-    #     cdef vector[int] bond 
-    #     for i in range(targets.shape[0]):
-    #         bonds = self._get_bond(targets[i])
-            
-    #     cdef cnp.npy_intp size[1]
-    #     size[0] = orders.size()
-    #     cdef cnp.ndarray arr
-    #     arr =  to_numpy_from_spec(self, 1, size, cnp.NPY_INT32, &orders[0])
-    #     return arr
-
-    # @property
-    # def guessed(self):
-    #     cdef int i
-    #     cdef vector[int] guesses
-    #     guesses.reserve(self._ix_pair_array.size())
-    #     for i in range(self._ix_pair_array.size()):
-    #         guesses.push_back(self._guessed[self._ix_pair_array[i]])
-
-    #     cdef cnp.npy_intp size[1]
-    #     size[0] = guesses.size()
-    #     cdef cnp.ndarray arr
-    #     arr =  to_numpy_from_spec(self, 1, size, cnp.NPY_INT32, &guesses[0])
-    #     return arr.astype(bool)
+    @property
+    def guessed(self):
+        cdef cnp.npy_intp size[1]
+        size[0] = self._guessed.size()
+        cdef cnp.ndarray arr
+        arr =  to_numpy_from_spec(self, 1, size, cnp.NPY_INT32, &self._guessed[0])
+        return arr.astype(bool)
 
 
 
     cdef vector[int] _get_bond(self, int target):
         cdef int start = self._spans[target]
         cdef int end = self._spans[target+1]
-        cdef int i, b_ix, atom
+        cdef int i, b_ix, first, second
         cdef vector[int] bonds
         if start == end:
             return bonds
@@ -282,11 +256,12 @@ cdef class TopologyTable:
         else:
             for i in range(start, end, 1):
                 b_ix = self._bix[i]
-                if self._access[i] == 0:
-                    bond = self._ix_pair_array[b_ix].first
+                first = self._ix_pair_array[b_ix].first
+                second = self._ix_pair_array[b_ix].second
+                if first != target:
+                    bonds.push_back(first)
                 else:
-                    bond = self._ix_pair_array[b_ix].second
-                bonds.push_back(bond)
+                    bonds.push_back(second)
             return bonds
 
     @property

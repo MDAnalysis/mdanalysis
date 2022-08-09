@@ -39,7 +39,6 @@ cdef class TopologyTable:
     # span of each atom in _bix
     cdef vector[int] _spans
     # which element of each bond do we need first or second
-    cdef vector[int] _access
     cdef cmap[cpair[int,int], int] _mapping
     cdef vector[int] _type
     cdef vector[int] _order
