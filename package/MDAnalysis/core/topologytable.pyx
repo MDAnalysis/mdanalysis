@@ -23,10 +23,13 @@
 #
 from libcpp.vector cimport vector
 from libcpp.map cimport map as cmap
+from libcpp.set cimport set as cset
 from libcpp.pair cimport pair as cpair
 from libcpp.algorithm cimport sort as csort
 from libcpp.algorithm cimport unique as cunique
 from libcpp.string cimport string as cstring
+from libcpp.iterator cimport iterator
+from libcpp cimport bool as cbool
 from ..lib._cutil cimport to_numpy_from_spec
 from cython.operator cimport dereference as deref
 import numpy as np
@@ -49,38 +52,80 @@ cdef class TopologyTable:
         #typ_ = np.asarray(["-1" if i is None else i for i in typ], dtype=string)
         guess_ = np.asarray([int(i) for i in guess], dtype=np.int32)
         order_ = np.asarray([-1 if i is None else i for i in order], dtype=np.int32)
-        self._generate_bix(val, guess_, order_)
-        
-    
-    cdef void _generate_bix(self, int[:,:] val, int[:] guess, int[:] order):
+        typ_ = np.arange(order_.shape[0], dtype=np.int32)
+        self._generate_bix(val, typ_,  guess_, order_)
+
+
+
+    cdef void _pairsort(self, vector[cpair[int,int]] &a, vector[int] &b):
+        cdef vector[cpair[cpair[int,int], int]] pair_arr
+        cdef cpair[cpair[int,int], int] pair
+        cdef cpair[int,int] ptmp
+        cdef int itmp
+        for i in range(a.size()):
+            ptmp = a[i]
+            itmp = b[i]
+            pair = cpair[cpair[int,int], int](ptmp, itmp)
+            pair_arr.push_back(pair)
+
+        csort(pair_arr.begin(), pair_arr.end())
+
+        for i in range(a.size()):
+            a[i] = pair_arr[i].first
+            b[i] = pair_arr[i].second
+   
+    cdef void _generate_bix(self, int[:,:] val, int[:] typ, int[:] guess, int[:] order):
         """Generate bond indicies, spans and value arrays for the TopologyTable
         
         """
         cdef vector[cpair[int, int]] _values
+        cdef vector[cpair[int, int]] _values_copy
+
+        cdef vector[int]  _type
+        cdef vector[int]  _order
+        cdef vector[int]  _guessed
+
         
         # the bond, forward and reverse
         cdef cpair[int, int] bond
         cdef cpair[int, int] rev_bond
 
-        # make sure each bond is in the table both forwards and backwards
         cdef int i 
+        cdef cset[cpair[int, int]] _tmp_set
+        for i in range(val.shape[0]):
+            bond = cpair[int, int](val[i,0], val[i,1])
+            _tmp_set.insert(bond)
+
+
+
+        # make sure each bond is in the table both forwards and backwards IF IT
+        # ISNT ALREADY
         for i in range(val.shape[0]):
             bond = cpair[int, int](val[i,0], val[i,1])
             rev_bond = cpair[int, int](val[i,1], val[i,0])
             _values.push_back(bond)
-            _values.push_back(rev_bond)
-            # self._type[bond] = typ[i]
-            # self._type[rev_bond] = typ[i]
-            self._order[bond] = order[i]
-            self._order[rev_bond] = order[i]
-            self._guessed[bond] = guess[i]
-            self._guessed[rev_bond] = guess[i]
+            _type.push_back(typ[i])
+            _guessed.push_back(guess[i])
+            _order.push_back(order[i])
+
+            if _tmp_set.count(rev_bond):
+                pass # the reverse bond is already present, do not add
+            else:
+                _values.push_back(rev_bond)
+                _type.push_back(typ[i])
+                _order.push_back(order[i])
+                _guessed.push_back(guess[i])
 
 
-        # remove duplicates with a sort, can do these together for speed
-        csort(_values.begin(), _values.end())
-        _values.erase( cunique( _values.begin(), _values.end() ), _values.end() )
-
+        # pairwise sort each array can these be done together all at once ?
+        _values_copy = _values
+        self._pairsort(_values, _type)
+        _values = _values_copy
+        self._pairsort(_values, _order)
+        _values = _values_copy
+        self._pairsort(_values, _guessed)
+  
+        # deduplicate??
 
         # initialise spans
         cdef int lead_val
@@ -90,9 +135,6 @@ cdef class TopologyTable:
         # unique value counter
         cdef int bix_counter = 0
 
-        #NOTE: Can possibly get rid of indirection through "access" if we treat
-        # the forward and reverse indices as independent with cost of 2X storage
-
         for i in range(_values.size()):
             bond = _values[i]
             rev_bond = cpair[int, int](bond.second, bond.first)
@@ -100,25 +142,25 @@ cdef class TopologyTable:
                 # the value is already in the map, grab forward value
                 # and that we will read second element
                 self._bix.push_back(self._mapping[bond])
-                self._access.push_back(1)
             
             elif self._mapping.count(rev_bond):
                 # the reversed value is already in the map, grab reverse value
                 # and that we will read first element
                 self._bix.push_back(self._mapping[rev_bond])
-                self._access.push_back(0)
 
             else:
                 # new value
                 self._mapping.insert(cpair[cpair[int,int], int](bond, bix_counter))
                 
                 self._bix.push_back(bix_counter)
-                self._access.push_back(1)
 
                 # increment unique values counter
                 bix_counter += 1
                 # save new value to ix_pair array
                 self._ix_pair_array.push_back(bond)
+                self._type.push_back(_type[i])
+                self._order.push_back(_order[i])
+                self._guessed.push_back(_order[i])
             
             lead_val = bond.first
             
@@ -153,9 +195,9 @@ cdef class TopologyTable:
         self._span_map.erase(max_key +1)
 
 
-    def get_bond(self, int target):
+    def get_bonds(self, int target):
         cdef vector[int] bonds
-        bonds = self._get_bonds(target)
+        bonds = self._get_bond(target)
         return bonds
     
 
@@ -167,6 +209,7 @@ cdef class TopologyTable:
         for i in range(targets.shape[0]):
             row = self._get_bond(targets[i])
             for j in range(row.size()):
+                
                 bonds[i].push_back(row[j])
         return bonds
 
@@ -175,28 +218,28 @@ cdef class TopologyTable:
         return self._ix_pair_array
 
 
-    @property
-    def types(self):
-        cdef int i
-        cdef vector[cstring] types
-        types.reserve(self._ix_pair_array.size())
-        for i in range(self._ix_pair_array.size()):
-            types.push_back(self._type[self._ix_pair_array[i]])
-        return types
+    # @property
+    # def types(self):
+    #     cdef int i
+    #     cdef vector[cstring] types
+    #     types.reserve(self._ix_pair_array.size())
+    #     for i in range(self._ix_pair_array.size()):
+    #         types.push_back(self._type[self._ix_pair_array[i]])
+    #     return types
 
 
-    @property
-    def orders(self):
-        cdef int i
-        cdef vector[int] orders
-        orders.reserve(self._ix_pair_array.size())
-        for i in range(self._ix_pair_array.size()):
-            orders.push_back(self._order[self._ix_pair_array[i]])
-        cdef cnp.npy_intp size[1]
-        size[0] = orders.size()
-        cdef cnp.ndarray arr
-        arr =  to_numpy_from_spec(self, 1, size, cnp.NPY_INT32, &orders[0])
-        return arr
+    # @property
+    # def orders(self):
+    #     cdef int i
+    #     cdef vector[int] orders
+    #     orders.reserve(self._ix_pair_array.size())
+    #     for i in range(self._ix_pair_array.size()):
+    #         orders.push_back(self._order[self._ix_pair_array[i]])
+    #     cdef cnp.npy_intp size[1]
+    #     size[0] = orders.size()
+    #     cdef cnp.ndarray arr
+    #     arr =  to_numpy_from_spec(self, 1, size, cnp.NPY_INT32, &orders[0])
+    #     return arr
 
     # @property
     # def order_slice(self, int[:] targets):
@@ -212,19 +255,19 @@ cdef class TopologyTable:
     #     arr =  to_numpy_from_spec(self, 1, size, cnp.NPY_INT32, &orders[0])
     #     return arr
 
-    @property
-    def guessed(self):
-        cdef int i
-        cdef vector[int] guesses
-        guesses.reserve(self._ix_pair_array.size())
-        for i in range(self._ix_pair_array.size()):
-            guesses.push_back(self._guessed[self._ix_pair_array[i]])
+    # @property
+    # def guessed(self):
+    #     cdef int i
+    #     cdef vector[int] guesses
+    #     guesses.reserve(self._ix_pair_array.size())
+    #     for i in range(self._ix_pair_array.size()):
+    #         guesses.push_back(self._guessed[self._ix_pair_array[i]])
 
-        cdef cnp.npy_intp size[1]
-        size[0] = guesses.size()
-        cdef cnp.ndarray arr
-        arr =  to_numpy_from_spec(self, 1, size, cnp.NPY_INT32, &guesses[0])
-        return arr.astype(bool)
+    #     cdef cnp.npy_intp size[1]
+    #     size[0] = guesses.size()
+    #     cdef cnp.ndarray arr
+    #     arr =  to_numpy_from_spec(self, 1, size, cnp.NPY_INT32, &guesses[0])
+    #     return arr.astype(bool)
 
 
 

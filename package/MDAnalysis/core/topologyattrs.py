@@ -2634,7 +2634,7 @@ class Bonds(_Connection):
         ag : AtomGroup
 
         """
-        b_idx  = self._toptable.bonds
+        b_idx  = self._toptable.bonds()
         #types  = self._toptable.types
         guessed = self._toptable.guessed
         order = self._toptable.orders
