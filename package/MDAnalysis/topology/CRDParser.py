@@ -82,7 +82,7 @@ class CRDParser(TopologyReaderBase):
     """
     format = 'CRD'
 
-    def parse(self, **kwargs):
+    def parse(self, **kwargs) -> Topology:
         """Create the Topology object
 
         Returns
