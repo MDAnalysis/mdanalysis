@@ -73,7 +73,7 @@ class XYZParser(TopologyReaderBase):
     """
     format = 'XYZ'
 
-    def parse(self, **kwargs):
+    def parse(self, **kwargs) -> Topology:
         """Read the file and return the structure.
 
         Returns
