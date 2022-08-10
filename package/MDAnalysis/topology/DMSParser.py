@@ -61,6 +61,7 @@ from ..core.topologyattrs import (
     Segids,
     AtomAttr,  # for custom Attributes
 )
+from typing import Dict
 
 
 class Atomnums(AtomAttr):
@@ -96,14 +97,14 @@ class DMSParser(TopologyReaderBase):
     """
     format = 'DMS'
 
-    def parse(self, **kwargs):
+    def parse(self, **kwargs) -> Topology:
         """Parse DMS file *filename* and return the Topology object"""
         # Fix by SB: Needed because sqlite3.connect does not raise anything
         # if file is not there
         if not os.path.isfile(self.filename):
             raise IOError("No such file: {0}".format(self.filename))
 
-        def dict_factory(cursor, row):
+        def dict_factory(cursor, row) -> Dict:
             """
             Fetch SQL records as dictionaries, rather than the default tuples.
             """
@@ -218,3 +219,4 @@ class DMSParser(TopologyReaderBase):
                        residue_segindex=res_segidx)
 
         return top
+        
