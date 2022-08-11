@@ -189,9 +189,24 @@ cdef class TopologyTable:
         self.max_index -= 2
 
     def get_bonds(self, int target):
+        if target > self.max_index:
+            raise IndexError("requested bond is larger than the table size")
         cdef vector[int] bonds
         bonds = self._get_bond(target)
         return bonds
+    
+    def get_pairs(self, int target):
+        if target > self.max_index:
+            raise IndexError("requested bond is larger than the table size")
+        cdef vector[cpair[int, int]] bonds
+        cdef cpair[vector[cpair[int, int]], cbool] ret_struct
+
+        ret_struct = self._get_pair(target)
+        if ret_struct.second:
+            bonds = ret_struct.first
+            return bonds
+        else:
+            return []
 
     def get_bonds_slice(self, cnp.int64_t[:] targets):
         cdef vector[vector[int]] bonds
@@ -211,6 +226,75 @@ cdef class TopologyTable:
                     bonds.push_back(tmp)
         return bonds
 
+    def get_pairs_slice(self, cnp.int64_t[:] targets):
+        cdef vector[cpair[int, int]] bonds
+        cdef vector[cpair[int, int]] pair_arr
+        cdef cpair[vector[cpair[int, int]], cbool] ret_struct
+        cdef cbool has_bonds
+        cdef int i, j
+        for i in range(targets.shape[0]):
+            ret_struct = self._get_pair(targets[i])
+            pair_arr = ret_struct.first
+            has_bonds = ret_struct.second
+            if has_bonds:
+                for j in range(pair_arr.size()):
+                    bonds.push_back(pair_arr[j])
+        
+        return np.asarray(bonds)
+
+    def get_types_slice(self, cnp.int64_t[:] targets):
+        cdef vector[int] types
+        cdef vector[int] typ_arr
+        cdef cpair[vector[int], cbool] ret_struct
+        cdef cbool has_typ
+        cdef int i, j
+        cdef cnp.ndarray arr 
+        for i in range(targets.shape[0]):
+            ret_struct = self._get_typ(targets[i])
+            typ_arr = ret_struct.first
+            has_typ = ret_struct.second
+            if has_typ:
+                for j in range(typ_arr.size()):
+                    types.push_back(typ_arr[j])
+        
+        arr =  np.asarray(types).astype(object)
+        arr = np.where(arr == -1, None, arr)
+        return arr
+
+    def get_guess_slice(self, cnp.int64_t[:] targets):
+        cdef vector[int] guesses
+        cdef vector[int] guess_arr
+        cdef cpair[vector[int], cbool] ret_struct
+        cdef cbool has_guess
+        cdef int i, j
+        for i in range(targets.shape[0]):
+            ret_struct = self._get_guess(targets[i])
+            guess_arr = ret_struct.first
+            has_guess = ret_struct.second
+            if has_guess:
+                for j in range(guess_arr.size()):
+                    guesses.push_back(guess_arr[j])
+        
+        return np.asarray(guesses).astype(bool)
+
+    def get_order_slice(self, cnp.int64_t[:] targets):
+        cdef vector[int] orders
+        cdef vector[int] orders_arr
+        cdef cpair[vector[int], cbool] ret_struct
+        cdef cbool has_order
+        cdef int i, j
+        cdef cnp.ndarray arr 
+        for i in range(targets.shape[0]):
+            ret_struct = self._get_ord(targets[i])
+            orders_arr = ret_struct.first
+            has_order = ret_struct.second
+            if has_order:
+                for j in range(orders_arr.size()):
+                    orders.push_back(orders_arr[j])
+        
+        arr  = np.asarray(orders).astype(object)
+        return np.where(arr == -1, None, arr)
+    
     @property
     def bonds(self):
         return self._ix_pair_array
@@ -244,6 +328,7 @@ cdef class TopologyTable:
         return arr.astype(bool)
 
     cdef vector[int] _get_bond(self, int target):
+        # private, does not check for target < self.max_index
         cdef int start = self._spans[target]
         cdef int end = self._spans[target+1]
         cdef int i, b_ix, first, second
@@ -261,6 +346,72 @@ cdef class TopologyTable:
                 else:
                     bonds.push_back(second)
             return bonds
+    
+    cdef cpair[vector[cpair[int, int]], cbool] _get_pair(self, int target):
+        # private, does not check for target < self.max_index
+        cdef int start = self._spans[target]
+        cdef int end = self._spans[target+1]
+        cdef int i, b_ix, first, second
+        cdef vector[cpair[int, int]] bonds
+        if start == end:
+            return cpair[vector[cpair[int, int]], cbool](bonds, False)
+        else:
+            for i in range(start, end, 1):
+                b_ix = self._bix[i]
+                pair = self._ix_pair_array[b_ix]
+                bonds.push_back(pair)
+      
+            return cpair[vector[cpair[int, int]], cbool](bonds, True)
+
+    cdef cpair[vector[int], cbool] _get_typ(self, int target):
+        # private, does not check for target < self.max_index
+        cdef int start = self._spans[target]
+        cdef int end = self._spans[target+1]
+        cdef int i, b_ix, typ
+        cdef vector[int] types
+        if start == end:
+            return cpair[vector[int], cbool](types, False)
+        else:
+            for i in range(start, end, 1):
+                b_ix = self._bix[i]
+                typ = self._type[b_ix]
+                types.push_back(typ)
+      
+            return cpair[vector[int], cbool](types, True)
+
+    cdef cpair[vector[int], cbool] _get_ord(self, int target):
+        # private, does not check for target < self.max_index
+        cdef int start = self._spans[target]
+        cdef int end = self._spans[target+1]
+        cdef int i, b_ix, ord
+        cdef vector[int] orders
+        if start == end:
+            return cpair[vector[int], cbool](orders, False)
+        else:
+            for i in range(start, end, 1):
+                b_ix = self._bix[i]
+                ord = self._order[b_ix]
+                orders.push_back(ord)
+      
+            return cpair[vector[int], cbool](orders, True)
+
+
+    cdef cpair[vector[int], cbool] _get_guess(self, int target):
+        # private, does not check for target < self.max_index
+        cdef int start = self._spans[target]
+        cdef int end = self._spans[target+1]
+        cdef int i, b_ix, guess
+        cdef vector[int] guesses
+        if start == end:
+            return cpair[vector[int], cbool](guesses, False)
+        else:
+            for i in range(start, end, 1):
+                b_ix = self._bix[i]
+                guess = self._guessed[b_ix]
+                guesses.push_back(guess)
+      
+            return cpair[vector[int], cbool](guesses, True)
+
 
     @property
     def bix(self):

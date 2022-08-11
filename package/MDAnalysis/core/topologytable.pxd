@@ -26,6 +26,7 @@ from libcpp.map cimport map as cmap
 from libcpp.pair cimport pair as cpair
 from libcpp.set cimport set as cset
 from libcpp.string cimport string as cstring
+from libcpp cimport bool as cbool
 import numpy as np
 cimport numpy as cnp
 cnp.import_array()
@@ -48,6 +49,10 @@ cdef class TopologyTable:
     cdef void _generate_bix(self, int[:, :] val, int[:] typ, int[:] guess,
                             int[:] order)
 
-    cdef  vector[int] _get_bond(self, int target)
+    cdef vector[int] _get_bond(self, int target)
+    cdef cpair[vector[cpair[int, int]], cbool] _get_pair(self, int target)
+    cdef cpair[vector[int], cbool] _get_typ(self, int target)
+    cdef cpair[vector[int], cbool] _get_ord(self, int target)
+    cdef cpair[vector[int], cbool] _get_guess(self, int target)
 
     cdef void _pairsort(self, vector[cpair[int, int]] & a, vector[int] & b)

@@ -2634,10 +2634,10 @@ class Bonds(_Connection):
         ag : AtomGroup
 
         """
-        b_idx  = self._toptable.bonds
-        types  = self._toptable.types
-        guessed = self._toptable.guessed
-        order = self._toptable.orders
+        b_idx  = self._toptable.get_pairs_slice(ag.ix)
+        types  = self._toptable.get_types_slice(ag.ix)
+        guessed = self._toptable.get_guess_slice(ag.ix)
+        order = self._toptable.get_order_slice(ag.ix)
         return TopologyGroup(b_idx, ag.universe,
                              self.singular[:-1],
                              types,
