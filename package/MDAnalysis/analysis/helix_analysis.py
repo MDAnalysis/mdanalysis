@@ -33,22 +33,18 @@ HELANAL --- analysis of protein helices
 
 This module contains code to analyse protein helices using the
 HELANAL_ algorithm
-([Bansal2000]_ , [Sugeta1967]_ ).
+:cite:p:`Bansal2000` ([Sugeta1967]_ ).
 
 HELANAL_ quantifies the geometry of helices in proteins on the basis of their
 Cα atoms. It can determine local structural features such as the local
 helical twist and rise, virtual torsion angle, local helix origins and
 bending angles between successive local helix axes.
 
-.. _HELANAL: https://pubmed.ncbi.nlm.nih.gov/10798526/
+.. _HELANAL: http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html
 
 .. [Sugeta1967] Sugeta, H. and Miyazawa, T. 1967. General method for
    calculating helical parameters of polymer chains from bond lengths, bond
    angles and internal rotation angles. *Biopolymers* 5 673 - 679
-
-.. [Bansal2000] Bansal M, Kumar S, Velavan R. 2000.
-   HELANAL - A program to characterise helix geometry in proteins.
-   *J Biomol Struct Dyn.*  17(5):811-819.
 
 
 Example use
@@ -78,6 +74,12 @@ atom positions, treating each row of coordinates as an alpha-carbon
 equivalent::
 
     hel_xyz = hel.helix_analysis(u.atoms.positions, ref_axis=[0, 0, 1])
+
+.. bibliography::
+   :filter: False
+   :style: MDA
+
+   Bansal2000
 
 """
 

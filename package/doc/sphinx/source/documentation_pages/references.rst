@@ -65,50 +65,67 @@ Citations for included algorithms and modules
 
 If you use the RMSD calculation (:mod:`MDAnalysis.analysis.rms`) or alignment
 code (:mod:`MDAnalysis.analysis.align`) that uses the
-:mod:`~MDAnalysis.core.qcprot` module please also cite [Theobald2005b]_ and
-[Liu2010b]_.
+:mod:`~MDAnalysis.core.qcprot` module please also cite [Theobald2005b]_
+and :cite:p:`a-Liu2010`.
+
+.. bibliography::
+   :filter: False
+   :style: MDA
+   :keyprefix: a-
+   :labelprefix: ᵃ
+
+   Liu2010
 
 .. [Theobald2005b] Douglas L. Theobald. Rapid calculation of RMSD using a
    quaternion-based characteristic polynomial. *Acta Crystallographica A*
    **61** (2005), 478-480.
 
-.. [Liu2010b] Pu Liu, Dmitris K. Agrafiotis, and Douglas L. Theobald. Fast
-   determination of the optimal rotational matrix for macromolecular
-   superpositions. *J. Comput. Chem.* **31** (2010), 1561–1563.
-
 If you use the helix analysis algorithm HELANAL_ in
-:mod:`MDAnalysis.analysis.helanal` please cite [Bansal2000b]_.
+:mod:`MDAnalysis.analysis.helix_analysis` please cite :cite:p:`a-Bansal2000`.
 
-.. [Bansal2000b] Bansal M, Kumar S, Velavan R. HELANAL — A program to
-   characterise helix geometry in proteins. *J. Biomol. Struct. Dyn.* **17**
-   (2000), 811–819
+.. bibliography::
+   :filter: False
+   :style: MDA
+   :keyprefix: a-
+   :labelprefix: ᵃ
+
+   Bansal2000
 
 .. _HELANAL: http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html
 
 If you use the GNM trajectory analysis code in
-:mod:`MDAnalysis.analysis.gnm` please cite [Hall2007b]_.
+:mod:`MDAnalysis.analysis.gnm` please cite :cite:p:`a-Hall2007`.
 
-.. [Hall2007b] Benjamin A. Hall, Samantha L. Kaye, Andy Pang, Rafael Perera, and
-   Philip C. Biggin. Characterization of Protein Conformational States by
-   Normal-Mode Frequencies. *JACS* **129** (2007), 11394–11401.
+.. bibliography::
+   :filter: False
+   :style: MDA
+   :keyprefix: a-
+   :labelprefix: ᵃ
+
+   Hall2007
 
 If you use the water analysis code in
-:mod:`MDAnalysis.analysis.waterdynamics` please cite [Araya-Secchi2014b]_.
+:mod:`MDAnalysis.analysis.waterdynamics` please cite :cite:p:`a-ArayaSecchi2014`.
 
-.. [Araya-Secchi2014b] R. Araya-Secchi., Tomas Perez-Acle, Seung-gu Kang, Tien
-   Huynh, Alejandro Bernardin, Yerko Escalona, Jose-Antonio Garate,
-   Agustin D. Martinez, Isaac E. Garcia, Juan C. Saez, Ruhong
-   Zhou. Characterization of a novel water pocket inside the human Cx26
-   hemichannel structure. *Biophysical Journal*, **107** (2014), 599-612.
+.. bibliography::
+   :filter: False
+   :style: MDA
+   :keyprefix: a-
+   :labelprefix: ᵃ
+
+   ArayaSecchi2014
+
 
 If you use the Path Similarity Analysis (PSA) code in
-:mod:`MDAnalysis.analysis.psa` please cite [Seyler2015b]_.
+:mod:`MDAnalysis.analysis.psa` please :cite:p:`a-Seyler2015`.
 
-.. [Seyler2015b] Seyler SL, Kumar A, Thorpe MF, Beckstein O. Path Similarity
-  Analysis: A Method for Quantifying Macromolecular Pathways. *PLoS
-  Comput Biol* **11** (2015), e1004568. doi: `10.1371/journal.pcbi.1004568`_
+.. bibliography::
+   :filter: False
+   :style: MDA
+   :keyprefix: a-
+   :labelprefix: ᵃ
 
-.. _`10.1371/journal.pcbi.1004568`: http://doi.org/10.1371/journal.pcbi.1004568
+   Seyler2015
 
 If you use the implementation of the ENCORE ensemble analysis in
 :mod:`MDAnalysis.analysis.encore` please cite [Tiberti2015b]_.
@@ -132,30 +149,28 @@ If you use the streamline visualization in
 .. _`10.1039/c3fd00145h`: https://doi.org/10.1039/c3fd00145h
 
 If you use the hydrogen bond analysis code in
-:mod:`MDAnalysis.analysis.hydrogenbonds.hbond_analysis` please cite [Smith2019]_.
+:mod:`MDAnalysis.analysis.hydrogenbonds.hbond_analysis` please cite :cite:p:`a-Smith2019`.
 
-.. [Smith2019] P. Smith, R. M. Ziolek, E. Gazzarrini, D. M. Owen, and C. D. Lorenz.
-   On the interaction of hyaluronic acid with synovial fluid lipid membranes. *PCCP*
-   **21** (2019), 9845-9857. doi:  `10.1039/C9CP01532A`_
+.. bibliography::
+   :filter: False
+   :style: MDA
+   :keyprefix: a-
+   :labelprefix: ᵃ
 
-.. _`10.1039/C9CP01532A`: http://dx.doi.org/10.1039/C9CP01532A
+   Smith2019
 
 If you use :meth:`~MDAnalysis.analysis.pca.PCA.rmsip` or
-:func:`~MDAnalysis.analysis.pca.rmsip` please cite [Amadei1999]_ and
-[Leo-Macias2004]_ .
+:func:`~MDAnalysis.analysis.pca.rmsip` please cite :cite:p:`a-Amadei1999` and
+:cite:p:`a-Leo-Macias2005`.
 
-.. [Amadei1999] Amadei, A., Ceruso, M. A. & Nola, A. D.
-   On the convergence of the conformational coordinates basis set obtained by the essential dynamics analysis of proteins’ molecular dynamics simulations.
-   *Proteins: Structure, Function, and Bioinformatics* **36**, 419–424 (1999).
-   doi: `10.1002/(SICI)1097-0134(19990901)36:4<419::AID-PROT5>3.0.CO;2-U`_
+.. bibliography::
+   :filter: False
+   :style: MDA
+   :keyprefix: a-
+   :labelprefix: ᵃ
 
-.. _`10.1002/(SICI)1097-0134(19990901)36:4<419::AID-PROT5>3.0.CO;2-U`: https://doi.org/10.1002/(SICI)1097-0134(19990901)36:4%3C419::AID-PROT5%3E3.0.CO;2-U
-
-.. [Leo-Macias2004] Leo-Macias, A., Lopez-Romero, P., Lupyan, D., Zerbino, D. & Ortiz, A. R.
-   An Analysis of Core Deformations in Protein Superfamilies.
-   *Biophys J* **88**, 1291–1299 (2005). doi: `10.1529/biophysj.104.052449`_
-
-.. _`10.1529/biophysj.104.052449`: https://dx.doi.org/10.1529%2Fbiophysj.104.052449
+   Amadei1999
+   Leo-Macias2005
 
 If you use :meth:`~MDAnalysis.analysis.pca.PCA.cumulative_overlap` or
 :func:`~MDAnalysis.analysis.pca.cumulative_overlap` please cite [Yang2008]_ .

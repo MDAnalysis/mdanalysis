@@ -595,7 +595,8 @@ class PCA(AnalysisBase):
         both instances. The RMSIP effectively measures how
         correlated the vectors of this instance are to those of ``other``.
 
-        Please cite [Amadei1999]_ and [Leo-Macias2004]_ if you use this function.
+        Please cite :cite:p:`Amadei1999` and :cite:p:`Leo-Macias2005` if you
+        use this function.
 
         Parameters
         ----------
@@ -768,7 +769,8 @@ def rmsip(a, b, n_components=None):
     ``a`` and ``b``. The RMSIP effectively measures how
     correlated the vectors of ``a`` are to those of ``b``.
 
-    Please cite [Amadei1999]_ and [Leo-Macias2004]_ if you use this function.
+    Please cite :cite:p:`Amadei1999` and :cite:p:`Leo-Macias2005`
+    if you use this function.
 
     Parameters
     ----------
@@ -822,6 +824,13 @@ def rmsip(a, b, n_components=None):
 
 
     .. versionadded:: 1.0.0
+
+    .. bibliography::
+        :filter: False
+        :style: MDA
+
+        Amadei1999
+        Leo-Macias2005
     """
     n_components = util.asiterable(n_components)
     if len(n_components) == 1:
