@@ -2638,7 +2638,6 @@ class Bonds(_Connection):
         types  = self._toptable.types
         guessed = self._toptable.guessed
         order = self._toptable.orders
-        types = np.zeros_like(order)
         return TopologyGroup(b_idx, ag.universe,
                              self.singular[:-1],
                              types,

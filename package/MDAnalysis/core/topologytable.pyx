@@ -51,7 +51,7 @@ cdef class TopologyTable:
         guess_ = np.asarray([int(i) for i in guess], dtype=np.int32)
         order_ = np.asarray(
             [-1 if i is None else i for i in order], dtype=np.int32)
-        typ_ = np.arange(order_.shape[0], dtype=np.int32)
+        typ_ = np.asarray([-1 if i is None else i for i in typ], dtype=np.int32)
         self._generate_bix(val, typ_,  guess_, order_)
 
     cdef void _pairsort(self, vector[cpair[int, int]] & a, vector[int] & b):
@@ -221,7 +221,9 @@ cdef class TopologyTable:
         size[0] = self._type.size()
         cdef cnp.ndarray arr
         arr = to_numpy_from_spec(self, 1, size, cnp.NPY_INT32, & self._type[0])
-        return arr.astype(str)
+        arr = arr.astype(object)
+        arr = np.where(arr == -1, None, arr)
+        return arr
 
     @property
     def orders(self):
