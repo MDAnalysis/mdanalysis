@@ -162,7 +162,7 @@ Citation
 ========
 
 When using MDAnalysis in published work, please cite
-[Michaud-Agrawal2011]_ and [Gowers2016]_.
+:cite:p:`Michaud-Agrawal2011` and :cite:p:`Gowers2016`.
 
 MDAnalysis also contains specific algorithms and whole analysis
 modules whose algorithms have also been published in the scientific

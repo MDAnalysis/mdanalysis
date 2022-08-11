@@ -27,7 +27,7 @@ Leaflet identification --- :mod:`MDAnalysis.analysis.leaflet`
 ==============================================================
 
 This module implements the *LeafletFinder* algorithm, described in
-[Michaud-Agrawal2011]_. It can identify the lipids in a bilayer of
+:cite:p:`a-Michaud-Agrawal2011`. It can identify the lipids in a bilayer of
 arbitrary shape and topology, including planar and undulating bilayers
 under periodic boundary conditions or vesicles.
 
@@ -56,7 +56,7 @@ Algorithm
 2. identify the largest connected subgraphs
 3. analyse first and second largest graph, which correspond to the leaflets
 
-For further details see [Michaud-Agrawal2011]_.
+For further details see :cite:p:`a-Michaud-Agrawal2011`.
 
 
 Classes and Functions
@@ -89,7 +89,8 @@ del Doi
 class LeafletFinder(object):
     """Identify atoms in the same leaflet of a lipid bilayer.
 
-    This class implements the *LeafletFinder* algorithm [Michaud-Agrawal2011]_.
+    This class implements the *LeafletFinder* algorithm
+    :cite:p:`Michaud-Agrawal2011`.
 
     Parameters
     ----------
@@ -138,6 +139,14 @@ class LeafletFinder(object):
     .. versionchanged:: 2.0.0
        The universe keyword no longer accepts non-Universe arguments. Please
        create a :class:`~MDAnalysis.core.universe.Universe` first.
+
+    .. bibliography::
+        :filter: False
+        :style: MDA
+        :keyprefix: a-
+        :labelprefix: ᵃ
+
+        Michaud-Agrawal2011
     """
 
     def __init__(self, universe, select, cutoff=15.0, pbc=False, sparse=None):

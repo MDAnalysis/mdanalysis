@@ -27,7 +27,7 @@ Citations for the whole MDAnalysis library
 ==========================================
 
 When using MDAnalysis in published work, please cite
-[Michaud-Agrawal2011]_ and [Gowers2016]_.
+:cite:p:`Michaud-Agrawal2011` and :cite:p:`Gowers2016`.
 
 (We are currently asking you to cite *both* papers if at all possible
 because the 2016 paper describes many updates to the original 2011
@@ -36,26 +36,12 @@ description of the library. We will publish a complete self-contained
 paper with the upcoming 1.0 release of MDAnalysis, which will then
 supersede these two citations.)
 
+.. bibliography::
+   :filter: False
+   :style: MDA
 
-.. [Michaud-Agrawal2011] N. Michaud-Agrawal, E. J. Denning, T. B. Woolf,
-   and O. Beckstein. MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics
-   Simulations. *J. Comput. Chem.* **32** (2011),
-   2319–2327. doi:`10.1002/jcc.21787`_
-
-.. [Gowers2016] R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N.
-   Melo, S. L. Seyler, D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney,
-   and O. Beckstein. `MDAnalysis: A Python package for the rapid analysis of
-   molecular dynamics simulations`_. In S. Benthall and S. Rostrup, editors,
-   *Proceedings of the 15th Python in Science Conference*, pages 98-105,
-   Austin, TX, 2016. SciPy. doi:`10.25080/Majora-629e541a-00e`_
-
-.. _`10.1002/jcc.21787`: http://dx.doi.org/10.1002/jcc.21787
-.. _`10.25080/Majora-629e541a-00e`:
-   https://doi.org/10.25080/Majora-629e541a-00e
-
-.. _`MDAnalysis: A Python package for the rapid analysis of molecular
-   dynamics simulations`:
-   http://conference.scipy.org/proceedings/scipy2016/oliver_beckstein.html
+   Michaud-Agrawal2011
+   Gowers2016
 
 
 .. _references-components:
