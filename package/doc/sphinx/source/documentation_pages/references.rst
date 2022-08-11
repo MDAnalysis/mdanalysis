@@ -114,14 +114,15 @@ If you use the Path Similarity Analysis (PSA) code in
    Seyler2015
 
 If you use the implementation of the ENCORE ensemble analysis in
-:mod:`MDAnalysis.analysis.encore` please cite [Tiberti2015b]_.
+:mod:`MDAnalysis.analysis.encore` please cite :cite:p:`a-Tiberti2015`.
 
-.. [Tiberti2015b] M. Tiberti, E. Papaleo, T. Bengtsen, W. Boomsma,
-   and K. Lindorff-Larsen. ENCORE: Software for quantitative ensemble
-   comparison. *PLoS Comput Biol*, **11** (2015), e1004415.  doi:
-   `10.1371/journal.pcbi.1004415`_
+.. bibliography::
+   :filter: False
+   :style: MDA
+   :keyprefix: a-
+   :labelprefix: ᵃ
 
-.. _`10.1371/journal.pcbi.1004415`: http://doi.org/10.1371/journal.pcbi.1004415
+   Tiberti2015
 
 If you use the streamline visualization in
 :mod:`MDAnalysis.visualization.streamlines` and

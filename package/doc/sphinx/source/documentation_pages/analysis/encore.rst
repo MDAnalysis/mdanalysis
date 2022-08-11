@@ -10,8 +10,8 @@
 .. versionadded:: 0.16.0
 
 The module contains implementations of similarity measures between protein
-ensembles described in :cite:p:`a-LindorffLarsen2009`. The implementation and examples
-are described in :cite:p:`a-Tiberti2015`.
+ensembles described in :cite:p:`b-LindorffLarsen2009`. The implementation and examples
+are described in :cite:p:`b-Tiberti2015`.
 
 The module includes facilities for handling ensembles and trajectories through
 the :class:`Universe` class, performing clustering or dimensionality reduction
@@ -34,7 +34,7 @@ as well as two methods to evaluate the convergence of trajectories:
 + **Dimensionality-reduction based convergence evaluation** : :func:`~MDAnalysis.analysis.encore.similarity.dres_convergence`
 
 
-When using this module in published work please cite :cite:p:`a-Tiberti2015`.
+When using this module in published work please cite :cite:p:`b-Tiberti2015`.
 
 
 Modules
@@ -58,8 +58,8 @@ References
 .. bibliography::
    :filter: False
    :style: MDA
-   :keyprefix: a-
-   :labelprefix: ᵃ
+   :keyprefix: b-
+   :labelprefix: ᵇ
 
    LindorffLarsen2009
    Tiberti2015
