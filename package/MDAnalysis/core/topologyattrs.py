@@ -1714,14 +1714,13 @@ class Masses(AtomAttr):
     def shape_parameter(group, wrap=False):
         """Shape parameter.
 
-        See [Dima2004a]_ for background information.
+        See :cite:p:`a-Dima2004` for background information.
 
         Parameters
         ----------
         wrap : bool, optional
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
-
 
         .. versionadded:: 0.7.7
         .. versionchanged:: 0.8
@@ -1761,7 +1760,7 @@ class Masses(AtomAttr):
     def asphericity(group, wrap=False, unwrap=None, compound='group'):
         """Asphericity.
 
-        See [Dima2004b]_ for background information.
+        See :cite:p:`a-Dima2004` for background information.
 
         Parameters
         ----------
