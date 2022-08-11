@@ -105,7 +105,7 @@ class PDBQTParser(TopologyReaderBase):
     """
     format = 'PDBQT'
 
-    def parse(self, **kwargs):
+    def parse(self, **kwargs) -> Topology:
         """Parse atom information from PDBQT file *filename*.
 
         Returns
@@ -147,7 +147,7 @@ class PDBQTParser(TopologyReaderBase):
 
         masses = guessers.guess_masses(atomtypes)
 
-        attrs = []
+        attrs: list = []
         for attrlist, Attr, dtype in (
                 (record_types, RecordTypes, object),
                 (serials, Atomids, np.int32),
