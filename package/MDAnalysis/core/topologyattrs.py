@@ -2621,10 +2621,12 @@ class Bonds(_Connection):
     def __init__(self, values, types=None, guessed=False, order=None):
         super().__init__(values, types, guessed, order)
         vals_arr = np.asarray(self.values, dtype=np.int32)
+        if vals_arr.shape == (0,):
+            vals_arr = np.empty((0,0), dtype=np.int32)
         self._toptable = TopologyTable(vals_arr, self.types, self._guessed, self.order)
 
 
-    def get_atoms2(self, ag):
+    def get_atoms(self, ag):
         """
         Get connection values where the atom indices are in
         the given atomgroup.
@@ -2643,6 +2645,7 @@ class Bonds(_Connection):
                              types,
                              guessed,
                              order)
+
 
     def bonded_atoms(self):
         """An :class:`~MDAnalysis.core.groups.AtomGroup` of all

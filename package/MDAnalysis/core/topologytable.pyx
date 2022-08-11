@@ -20,7 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-#
+# cython: linetrace=True
 from libcpp.vector cimport vector
 from libcpp.map cimport map as cmap
 from libcpp.set cimport set as cset
@@ -50,7 +50,7 @@ cdef extern from *:
 
 
 cdef class TopologyTable:
-    def __cinit__(self, int[:, :] val, list typ,  list guess, list order, **kwargs):
+    def __cinit__(self, int[:, :] val, typ,  guess, order, **kwargs):
         """Initialise C++ level parameters of a TopologyTable
 
         Parameters
@@ -63,8 +63,9 @@ cdef class TopologyTable:
         guess_ = np.asarray([int(i) for i in guess], dtype=np.int32)
         order_ = np.asarray(
             [-1 if i is None else i for i in order], dtype=np.int32)
+        typ_ = list(typ)
         self._type = []
-        self._generate_bix(val, typ,  guess_, order_)
+        self._generate_bix(val, typ_,  guess_, order_)
 
     cdef void _pairsort(self, vector[cpair[int, int]] & a, vector[int] & b):
         cdef vector[cpair[cpair[int, int], int]] pair_arr
@@ -256,7 +257,9 @@ cdef class TopologyTable:
                     bonds.push_back(tmp)
         return bonds
 
-    def get_pairs_slice(self, cnp.int64_t[:] targets):
+    def get_pairs_slice(self,  targets):
+        if np.isscalar(targets):
+            targets = np.asarray([targets])
         cdef vector[cpair[int, int]] bonds
         cdef vector[cpair[int, int]] pair_arr
         cdef cpair[vector[cpair[int, int]], cbool] ret_struct
@@ -270,9 +273,11 @@ cdef class TopologyTable:
                 for j in range(pair_arr.size()):
                     bonds.push_back(pair_arr[j])
         
-        return np.asarray(bonds)
+        return np.asarray(bonds, dtype=np.int32)
 
-    def get_types_slice(self, cnp.int64_t[:] targets):
+    def get_types_slice(self, targets):
+        if np.isscalar(targets):
+            targets = np.asarray([targets])
         cdef list types = []
         cdef list typ_arr
         cdef cpair[vector[int], cbool] ret_struct
@@ -288,7 +293,9 @@ cdef class TopologyTable:
         arr =  np.asarray(types).astype(object)
         return arr
 
-    def get_guess_slice(self, cnp.int64_t[:] targets):
+    def get_guess_slice(self, targets):
+        if np.isscalar(targets):
+            targets = np.asarray([targets])
         cdef vector[int] guesses
         cdef vector[int] guess_arr
         cdef cpair[vector[int], cbool] ret_struct
@@ -304,7 +311,9 @@ cdef class TopologyTable:
         
         return np.asarray(guesses).astype(bool)
 
-    def get_order_slice(self, cnp.int64_t[:] targets):
+    def get_order_slice(self, targets):
+        if np.isscalar(targets):
+            targets = np.asarray([targets])
         cdef vector[int] orders
         cdef vector[int] orders_arr
         cdef cpair[vector[int], cbool] ret_struct
