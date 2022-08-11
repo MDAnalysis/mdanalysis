@@ -38,7 +38,7 @@ from .util import unique_rows
 
 from MDAnalysis.lib.distances import apply_PBC
 import numpy.typing as npt
-from typing import Optional
+from typing import Optional, ClassVar
 
 __all__ = [
     'PeriodicKDTree'
@@ -130,22 +130,22 @@ class PeriodicKDTree(object):
 
         """
         # If no cutoff distance is provided but PBC aware
-        if self.pbc and (cutoff is None):
-            raise RuntimeError('Provide a cutoff distance'
-                               ' with tree.set_coords(...)')
 
         # set coords dtype to float32
         # augment coordinates will work only with float32
         coords = np.asarray(coords, dtype=np.float32)
 
         if self.pbc:
-            self.cutoff = cutoff
+            if self.cutoff is None:
+                raise ValueError("Cutoff needs to be provided "
+                                 "when working with PBC.")
+
             # Bring the coordinates in the central cell
             self.coords = apply_PBC(coords, self.box)
             # generate duplicate images
             self.aug, self.mapping = augment_coordinates(self.coords,
                                                          self.box,
-                                                         self.cutoff)
+                                                         cutoff)
             # Images + coords
             self.all_coords = np.concatenate([self.coords, self.aug])
             self.ckdt = cKDTree(self.all_coords, leafsize=self.leafsize)
@@ -180,10 +180,12 @@ class PeriodicKDTree(object):
         centers = np.asarray(centers)
         if centers.shape == (self.dim, ):
             centers = centers.reshape((1, self.dim))
-        if self.pbc and (self.cutoff is not None):
-            raise ValueError("Provide cutoff distance")
+
         # Sanity check
         if self.pbc:
+            if self.cutoff is None:
+                raise ValueError(
+                    "Cutoff needs to be provided when working with PBC.")
             if self.cutoff < radius:
                 raise RuntimeError('Set cutoff greater or equal to the radius.')
             # Bring all query points to the central cell
@@ -234,9 +236,11 @@ class PeriodicKDTree(object):
         """
         if not self._built:
             raise RuntimeError(' Unbuilt Tree. Run tree.set_coords(...)')
-        if self.pbc and (self.cutoff is None):
-            raise ValueError("Provide a cutoff distance")
+
         if self.pbc:
+            if self.cutoff is None:
+                raise ValueError(
+                    "Cutoff needs to be provided when working with PBC.")
             if self.cutoff < radius:
                 raise RuntimeError('Set cutoff greater or equal to the radius.')
 
@@ -290,11 +294,12 @@ class PeriodicKDTree(object):
         centers = np.asarray(centers)
         if centers.shape == (self.dim, ):
             centers = centers.reshape((1, self.dim))
-        if self.pbc and (self.cutoff is None):
-            raise ValueError("Provide cutoff distance")
 
         # Sanity check
         if self.pbc:
+            if self.cutoff is None:
+                raise ValueError(
+                    "Cutoff needs to be provided when working with PBC.")
             if self.cutoff < radius:
                 raise RuntimeError('Set cutoff greater or equal to the radius.')
             # Bring all query points to the central cell
