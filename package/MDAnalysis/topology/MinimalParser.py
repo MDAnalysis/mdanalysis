@@ -58,7 +58,7 @@ class MinimalParser(TopologyReaderBase):
     """
     format = 'MINIMAL'
 
-    def parse(self, **kwargs):
+    def parse(self, **kwargs) -> Topology:
         """Return the minimal *Topology* object"""
         try:
             n_atoms = kwargs['n_atoms']
