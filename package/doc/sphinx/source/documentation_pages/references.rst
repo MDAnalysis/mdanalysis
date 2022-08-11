@@ -126,14 +126,15 @@ If you use the implementation of the ENCORE ensemble analysis in
 
 If you use the streamline visualization in
 :mod:`MDAnalysis.visualization.streamlines` and
-:mod:`MDAnalysis.visualization.streamlines_3D` please cite [Chavent2014b]_.
+:mod:`MDAnalysis.visualization.streamlines_3D` please cite :cite:p:`a-Chavent2014`.
 
-.. [Chavent2014b] Chavent, M., Reddy, T., Dahl, C.E., Goose, J., Jobard, B.,
-   and Sansom, M.S.P. Methodologies for the analysis of instantaneous lipid
-   diffusion in MD simulations of large membrane systems.  *Faraday
-   Discussions* **169** (2014), 455–475. doi: `10.1039/c3fd00145h`_
+.. bibliography::
+   :filter: False
+   :style: MDA
+   :keyprefix: a-
+   :labelprefix: ᵃ
 
-.. _`10.1039/c3fd00145h`: https://doi.org/10.1039/c3fd00145h
+   Chavent2014
 
 If you use the hydrogen bond analysis code in
 :mod:`MDAnalysis.analysis.hydrogenbonds.hbond_analysis` please cite :cite:p:`a-Smith2019`.

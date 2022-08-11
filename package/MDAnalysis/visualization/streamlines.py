@@ -237,7 +237,7 @@ def generate_streamlines(topology_file_path, trajectory_file_path, grid_spacing,
     trajectory_file_path : str
             Absolute path to the trajectory file. It will normally be desirable
             to filter the trajectory with a tool such as GROMACS
-            :program:`g_filter` (see :cite:p:`a-Chavent2014`)
+            :program:`g_filter` (see :cite:p:`c-Chavent2014`)
     grid_spacing : float
             The spacing between grid lines (angstroms)
     MDA_selection : str
@@ -305,8 +305,8 @@ def generate_streamlines(topology_file_path, trajectory_file_path, grid_spacing,
     .. bibliography::
         :filter: False
         :style: MDA
-        :keyprefix: a-
-        :labelprefix: ᵃ
+        :keyprefix: c-
+        :labelprefix: ᶜ
 
         Chavent2014
 
