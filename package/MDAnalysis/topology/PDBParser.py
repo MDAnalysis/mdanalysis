@@ -85,6 +85,7 @@ from ..core.topologyattrs import (
     Tempfactors,
     FormalCharges,
 )
+from typing import Dict, Tuple
 
 
 def float_or_default(val, default):
@@ -100,7 +101,7 @@ DIGITS_UPPER_VALUES = dict([pair for pair in zip(DIGITS_UPPER, range(36))])
 DIGITS_LOWER_VALUES = dict([pair for pair in zip(DIGITS_LOWER, range(36))])
 
 
-def decode_pure(digits_values, s):
+def decode_pure(digits_values: Dict, s: str) -> int:
     """Decodes the string s using the digit, value associations for each
     character.
 
@@ -124,7 +125,7 @@ def decode_pure(digits_values, s):
     return result
 
 
-def hy36decode(width, s):
+def hy36decode(width: int, s: str) -> int:
     """
     Decodes base-10/upper-case base-36/lower-case base-36 hybrid.
 
@@ -197,7 +198,7 @@ class PDBParser(TopologyReaderBase):
     """
     format = ['PDB', 'ENT']
 
-    def parse(self, **kwargs):
+    def parse(self, **kwargs) -> Topology:
         """Parse atom information from PDB file
 
         Returns
@@ -221,7 +222,7 @@ class PDBParser(TopologyReaderBase):
 
         return top
 
-    def _parseatoms(self):
+    def _parseatoms(self) -> Topology:
         """Create the initial Topology object"""
         resid_prev = 0  # resid looping hack
 
@@ -307,7 +308,7 @@ class PDBParser(TopologyReaderBase):
 
         n_atoms = len(serials)
 
-        attrs = []
+        attrs: list = []
         # Make Atom TopologyAttrs
         for vals, Attr, dtype in (
                 (names, Atomnames, object),
@@ -407,7 +408,7 @@ class PDBParser(TopologyReaderBase):
 
         return top
 
-    def _parsebonds(self, serials):
+    def _parsebonds(self, serials) -> Bonds:
         # Could optimise this by saving lines in the main loop
         # then doing post processing after all Atoms have been read
         # ie do one pass through the file only
@@ -446,7 +447,7 @@ class PDBParser(TopologyReaderBase):
         return Bonds(bonds)
 
 
-def _parse_conect(conect):
+def _parse_conect(conect: str) -> Tuple[int, set]:
     """parse a CONECT record from pdbs
 
     Parameters
