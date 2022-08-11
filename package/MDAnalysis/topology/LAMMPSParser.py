@@ -99,6 +99,8 @@ from ..core.topologyattrs import (
     Resnums,
     Segids,
 )
+from typing import Dict, Tuple, List, Optional
+import numpy.typing as npt
 
 logger = logging.getLogger("MDAnalysis.topology.LAMMPS")
 
@@ -191,7 +193,7 @@ class DATAParser(TopologyReaderBase):
                 if line:
                     yield line
 
-    def grab_datafile(self):
+    def grab_datafile(self) -> Tuple[Dict, Dict]:
         """Split a data file into dict of header and sections
 
         Returns
@@ -218,7 +220,7 @@ class DATAParser(TopologyReaderBase):
         return header, sects
 
     @staticmethod
-    def _interpret_atom_style(atom_style):
+    def _interpret_atom_style(atom_style) -> Dict:
         """Transform a string description of atom style into a dict
 
         Required fields: id, type, x, y, z
@@ -254,7 +256,7 @@ class DATAParser(TopologyReaderBase):
                 
         return style_dict
     
-    def parse(self, **kwargs):
+    def parse(self, **kwargs) -> Topology:
         """Parses a LAMMPS_ DATA file.
 
         Returns
@@ -345,7 +347,7 @@ class DATAParser(TopologyReaderBase):
 
         return ts
 
-    def _parse_pos(self, datalines):
+    def _parse_pos(self, datalines: list):
         """Strip coordinate info into np array"""
         pos = np.zeros((len(datalines), 3), dtype=np.float32)
         # TODO: could maybe store this from topology parsing?
@@ -376,7 +378,8 @@ class DATAParser(TopologyReaderBase):
         # return order for velocities
         return pos, order
 
-    def _parse_vel(self, datalines, order):
+    def _parse_vel(self, datalines: list,
+                   order: npt.ArrayLike) -> np.ndarray:
         """Strip velocity info into np array
 
         Parameters
@@ -401,7 +404,8 @@ class DATAParser(TopologyReaderBase):
 
         return vel
 
-    def _parse_bond_section(self, datalines, nentries, mapping):
+    def _parse_bond_section(self, datalines: List,
+                            nentries: int, mapping: Dict):
         """Read lines and strip information
 
         Arguments
@@ -429,7 +433,8 @@ class DATAParser(TopologyReaderBase):
             type.append(line[1])
         return tuple(type), tuple(section)
 
-    def _parse_atoms(self, datalines, massdict=None):
+    def _parse_atoms(self, datalines: List,
+                     massdict: Optional[Dict] = None) -> Topology:
         """Creates a Topology object
 
         Adds the following attributes
@@ -510,7 +515,7 @@ class DATAParser(TopologyReaderBase):
         if has_charge:
             charges = charges[order]
 
-        attrs = []
+        attrs: list = []
         attrs.append(Atomtypes(types))
         if has_charge:
             attrs.append(Charges(charges))
@@ -538,7 +543,7 @@ class DATAParser(TopologyReaderBase):
 
         return top
 
-    def _parse_masses(self, datalines):
+    def _parse_masses(self, datalines) -> Dict:
         """Lammps defines mass on a per atom type basis.
 
         This reads mass for each type and stores in dict
@@ -552,12 +557,18 @@ class DATAParser(TopologyReaderBase):
 
         return masses
 
-    def _parse_box(self, header):
+    def _parse_box(self, header) -> np.ndarray:
         x1, x2 = np.float32(header['xlo xhi'].split())
+        x1: float
+        x2: float
         x = x2 - x1
         y1, y2 = np.float32(header['ylo yhi'].split())
+        y1: float
+        y2: float
         y = y2 - y1
         z1, z2 = np.float32(header['zlo zhi'].split())
+        z1: float
+        z2: float
         z = z2 - z1
 
         if 'xy xz yz' in header:
@@ -565,6 +576,9 @@ class DATAParser(TopologyReaderBase):
             unitcell = np.zeros((3, 3), dtype=np.float32)
 
             xy, xz, yz = np.float32(header['xy xz yz'].split())
+            xy: float
+            yz: float
+            xz: float
 
             unitcell[0][0] = x
             unitcell[1][0] = xy
@@ -594,7 +608,7 @@ class LammpsDumpParser(TopologyReaderBase):
     """
     format = 'LAMMPSDUMP'
 
-    def parse(self, **kwargs):
+    def parse(self, **kwargs) -> Topology:
         with openany(self.filename) as fin:
             fin.readline()  # ITEM TIMESTEP
             fin.readline()  # 0
