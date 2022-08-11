@@ -161,13 +161,15 @@ If you use :meth:`~MDAnalysis.analysis.pca.PCA.rmsip` or
    Leo-Macias2005
 
 If you use :meth:`~MDAnalysis.analysis.pca.PCA.cumulative_overlap` or
-:func:`~MDAnalysis.analysis.pca.cumulative_overlap` please cite [Yang2008]_ .
+:func:`~MDAnalysis.analysis.pca.cumulative_overlap` please cite cite:p:`a-Yang2008`.
 
-.. [Yang2008] Yang, L., Song, G., Carriquiry, A. & Jernigan, R. L.
-   Close Correspondence between the Motions from Principal Component Analysis of Multiple HIV-1 Protease Structures and Elastic Network Modes.
-   *Structure* **16**, 321–330 (2008). doi: `10.1016/j.str.2007.12.011`_
+.. bibliography::
+   :filter: False
+   :style: MDA
+   :keyprefix: a-
+   :labelprefix: ᵃ
 
-.. _`10.1016/j.str.2007.12.011`: https://dx.doi.org/10.1016/j.str.2007.12.011
+   Yang2008
 
 If you use the Mean Squared Displacement analysis code in
 :mod:`MDAnalysis.analysis.msd` please cite [Calandri2011]_ and [Buyl2018]_.

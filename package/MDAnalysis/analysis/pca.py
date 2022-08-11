@@ -672,7 +672,7 @@ class PCA(AnalysisBase):
         This is not symmetric. The cumulative overlap measures the overlap of
         the chosen vector in this instance, in the ``other`` subspace.
 
-        Please cite [Yang2008]_ if you use this function.
+        Please cite :cite:p:`b-Yang2008` if you use this function.
 
         Parameters
         ----------
@@ -861,7 +861,7 @@ def cumulative_overlap(a, b, i=0, n_components=None):
     This is not symmetric. The cumulative overlap measures the overlap of
     the chosen vector in ``a``, in the ``b`` subspace.
 
-    Please cite [Yang2008]_ if you use this function.
+    Please cite :cite:p:`b-Yang2008` if you use this function.
 
     Parameters
     ----------
@@ -885,6 +885,14 @@ def cumulative_overlap(a, b, i=0, n_components=None):
 
 
     .. versionadded:: 1.0.0
+
+    .. bibliography::
+        :filter: False
+        :style: MDA
+        :keyprefix: b-
+        :labelprefix: ᵇ
+
+        Yang2008
     """
 
     if len(a.shape) < len(b.shape):
