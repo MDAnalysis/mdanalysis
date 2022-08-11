@@ -41,17 +41,16 @@ cdef class TopologyTable:
     cdef vector[int] _spans
     # which element of each bond do we need first or second
     cdef cmap[cpair[int, int], int] _mapping
-    cdef vector[int] _type
+    cdef list _type
     cdef vector[int] _order
     cdef vector[int] _guessed
     cdef vector[cpair[int, int]] _ix_pair_array
     cdef cmap[int, int] _span_map
-    cdef void _generate_bix(self, int[:, :] val, int[:] typ, int[:] guess,
+    cdef void _generate_bix(self, int[:, :] val, list typ, int[:] guess,
                             int[:] order)
 
     cdef vector[int] _get_bond(self, int target)
     cdef cpair[vector[cpair[int, int]], cbool] _get_pair(self, int target)
-    cdef cpair[vector[int], cbool] _get_typ(self, int target)
     cdef cpair[vector[int], cbool] _get_ord(self, int target)
     cdef cpair[vector[int], cbool] _get_guess(self, int target)
 

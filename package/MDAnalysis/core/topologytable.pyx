@@ -36,6 +36,18 @@ import numpy as np
 cimport numpy as cnp
 cnp.import_array()
 
+cdef extern from *:
+    """
+    #include <algorithm>
+    #include <vector>
+    void sort_via_score(std::vector<size_t>& indices, const std::vector<std::pair<int,int>>& scores){
+        std::sort(indices.begin(), indices.end(),
+                  [&scores](int i, int j){return scores.at(i)<scores.at(j);}
+                 );
+    }
+    """
+    void sort_via_score(vector[size_t]& indices, vector[cpair[int,int]]& scores)
+
 
 cdef class TopologyTable:
     def __cinit__(self, int[:, :] val, list typ,  list guess, list order, **kwargs):
@@ -51,8 +63,8 @@ cdef class TopologyTable:
         guess_ = np.asarray([int(i) for i in guess], dtype=np.int32)
         order_ = np.asarray(
             [-1 if i is None else i for i in order], dtype=np.int32)
-        typ_ = np.asarray([-1 if i is None else i for i in typ], dtype=np.int32)
-        self._generate_bix(val, typ_,  guess_, order_)
+        self._type = []
+        self._generate_bix(val, typ,  guess_, order_)
 
     cdef void _pairsort(self, vector[cpair[int, int]] & a, vector[int] & b):
         cdef vector[cpair[cpair[int, int], int]] pair_arr
@@ -71,14 +83,32 @@ cdef class TopologyTable:
             a[i] = pair_arr[i].first
             b[i] = pair_arr[i].second
 
-    cdef void _generate_bix(self, int[:, :] val, int[:] typ, int[:] guess, int[:] order):
+    def _pairsort_list(self, vector[cpair[int, int]] a, list b):
+        cdef int size = a.size()
+        cdef size_t index
+        cdef vector[size_t] indices
+        indices.reserve(size)
+
+        for i in range(size):
+            indices[i] = i
+        sort_via_score(indices, a)
+         
+        cdef list b_ = []
+        for i in range(size):
+            index = indices[i]
+            b_.append(b[index])
+        
+        return b_ 
+
+    cdef void _generate_bix(self, int[:, :] val, list typ, int[:] guess, int[:] order):
         """Generate bond indicies, spans and value arrays for the TopologyTable
 
         """
         cdef vector[cpair[int, int]] _values
         cdef vector[cpair[int, int]] _values_copy
 
-        cdef vector[int]  _type
+        # types must be a list as we allow flexibility in what it can be 
+        cdef list  _type = []
         cdef vector[int]  _order
         cdef vector[int]  _guessed
 
@@ -98,7 +128,7 @@ cdef class TopologyTable:
             bond = cpair[int, int](val[i, 0], val[i, 1])
             rev_bond = cpair[int, int](val[i, 1], val[i, 0])
             _values.push_back(bond)
-            _type.push_back(typ[i])
+            _type.append(typ[i])
             _guessed.push_back(guess[i])
             _order.push_back(order[i])
 
@@ -106,15 +136,15 @@ cdef class TopologyTable:
                 pass  # the reverse bond is already present, do not add
             else:
                 _values.push_back(rev_bond)
-                _type.push_back(typ[i])
+                _type.append(typ[i])
                 _order.push_back(order[i])
                 _guessed.push_back(guess[i])
 
         # pairwise sort each array can these be done together all at once ?
         _values_copy = _values
-        self._pairsort(_values, _type)
-        _values = _values_copy
+        _type = self._pairsort_list(_values, _type)
         self._pairsort(_values, _order)
+
         _values = _values_copy
         self._pairsort(_values, _guessed)
 
@@ -152,7 +182,7 @@ cdef class TopologyTable:
                 bix_counter += 1
                 # save new value to ix_pair array
                 self._ix_pair_array.push_back(bond)
-                self._type.push_back(_type[i])
+                self._type.append(_type[i])
                 self._order.push_back(_order[i])
                 self._guessed.push_back(_guessed[i])
 
@@ -243,22 +273,19 @@ cdef class TopologyTable:
         return np.asarray(bonds)
 
     def get_types_slice(self, cnp.int64_t[:] targets):
-        cdef vector[int] types
-        cdef vector[int] typ_arr
+        cdef list types = []
+        cdef list typ_arr
         cdef cpair[vector[int], cbool] ret_struct
         cdef cbool has_typ
         cdef int i, j
         cdef cnp.ndarray arr 
         for i in range(targets.shape[0]):
-            ret_struct = self._get_typ(targets[i])
-            typ_arr = ret_struct.first
-            has_typ = ret_struct.second
+            typ_arr, has_typ = self._get_typ(targets[i])
             if has_typ:
-                for j in range(typ_arr.size()):
-                    types.push_back(typ_arr[j])
+                for j in range(len(typ_arr)):
+                    types.append(typ_arr[j])
         
         arr =  np.asarray(types).astype(object)
-        arr = np.where(arr == -1, None, arr)
         return arr
 
     def get_guess_slice(self, cnp.int64_t[:] targets):
@@ -301,13 +328,8 @@ cdef class TopologyTable:
 
     @property
     def types(self):
-        cdef cnp.npy_intp size[1]
-        size[0] = self._type.size()
-        cdef cnp.ndarray arr
-        arr = to_numpy_from_spec(self, 1, size, cnp.NPY_INT32, & self._type[0])
-        arr = arr.astype(object)
-        arr = np.where(arr == -1, None, arr)
-        return arr
+
+        return np.asarray(self._type)
 
     @property
     def orders(self):
@@ -363,21 +385,21 @@ cdef class TopologyTable:
       
             return cpair[vector[cpair[int, int]], cbool](bonds, True)
 
-    cdef cpair[vector[int], cbool] _get_typ(self, int target):
+    def  _get_typ(self, int target):
         # private, does not check for target < self.max_index
         cdef int start = self._spans[target]
         cdef int end = self._spans[target+1]
-        cdef int i, b_ix, typ
-        cdef vector[int] types
+        cdef int i, b_ix
+        cdef list types = []
         if start == end:
-            return cpair[vector[int], cbool](types, False)
+            return types, False
         else:
             for i in range(start, end, 1):
                 b_ix = self._bix[i]
                 typ = self._type[b_ix]
-                types.push_back(typ)
+                types.append(typ)
       
-            return cpair[vector[int], cbool](types, True)
+            return types, True
 
     cdef cpair[vector[int], cbool] _get_ord(self, int target):
         # private, does not check for target < self.max_index
