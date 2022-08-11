@@ -99,7 +99,7 @@ class PQRParser(TopologyReaderBase):
     format = 'PQR'
 
     @staticmethod
-    def guess_flavour(line):
+    def guess_flavour(line: str) -> str:
         """Guess which variant of PQR format this line is
 
         Parameters
@@ -126,7 +126,7 @@ class PQRParser(TopologyReaderBase):
             flavour = 'NO_CHAINID'
         return flavour
 
-    def parse(self, **kwargs):
+    def parse(self, **kwargs) -> Topology:
         """Parse atom information from PQR file *filename*.
 
         Returns
@@ -199,7 +199,7 @@ class PQRParser(TopologyReaderBase):
             guessed_types = False
         masses = guessers.guess_masses(atomtypes)
 
-        attrs = []
+        attrs: list = []
         attrs.append(Atomids(np.array(serials, dtype=np.int32)))
         attrs.append(Atomnames(np.array(names, dtype=object)))
         attrs.append(Charges(np.array(charges, dtype=np.float32)))
