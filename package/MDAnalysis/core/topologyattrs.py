@@ -2621,7 +2621,7 @@ class Bonds(_Connection):
     def __init__(self, values, types=None, guessed=False, order=None):
         super().__init__(values, types, guessed, order)
         vals_arr = np.asarray(self.values, dtype=np.int32)
-        self._toptable = TopologyTable(vals_arr, len(vals_arr), self.types, self._guessed, self.order)
+        self._toptable = TopologyTable(vals_arr, self.types, self._guessed, self.order)
 
 
     def get_atoms2(self, ag):
@@ -2634,8 +2634,8 @@ class Bonds(_Connection):
         ag : AtomGroup
 
         """
-        b_idx  = self._toptable.bonds()
-        #types  = self._toptable.types
+        b_idx  = self._toptable.bonds
+        types  = self._toptable.types
         guessed = self._toptable.guessed
         order = self._toptable.orders
         types = np.zeros_like(order)

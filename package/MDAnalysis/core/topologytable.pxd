@@ -32,22 +32,22 @@ cnp.import_array()
 
 
 cdef class TopologyTable:
-    # number of atoms in the table 
-    cdef int n_atoms
+    # number of atoms in the table
+    cdef int max_index
     # which bond index entry in _ix_pair_array is value in input
     cdef vector[int] _bix
     # span of each atom in _bix
     cdef vector[int] _spans
     # which element of each bond do we need first or second
-    cdef cmap[cpair[int,int], int] _mapping
+    cdef cmap[cpair[int, int], int] _mapping
     cdef vector[int] _type
     cdef vector[int] _order
     cdef vector[int] _guessed
     cdef vector[cpair[int, int]] _ix_pair_array
-    cdef cmap[int,int] _span_map
-    cdef void _generate_bix(self, int[:,:] val, int[:] typ, int[:] guess, int[:] order)
+    cdef cmap[int, int] _span_map
+    cdef void _generate_bix(self, int[:, :] val, int[:] typ, int[:] guess,
+                            int[:] order)
 
     cdef  vector[int] _get_bond(self, int target)
 
-    cdef void _pairsort(self, vector[cpair[int,int]]& a, vector[int]& b)
-
+    cdef void _pairsort(self, vector[cpair[int, int]] & a, vector[int] & b)

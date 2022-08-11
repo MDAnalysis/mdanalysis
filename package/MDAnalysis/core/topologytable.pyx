@@ -38,7 +38,7 @@ cnp.import_array()
 
 
 cdef class TopologyTable:
-    def __cinit__(self, int[:,:] val, int n_atoms, list typ,  list guess, list order, **kwargs):
+    def __cinit__(self, int[:, :] val, list typ,  list guess, list order, **kwargs):
         """Initialise C++ level parameters of a TopologyTable
 
         Parameters
@@ -47,25 +47,22 @@ cdef class TopologyTable:
         .. versionadded:: 2.3.0
            Initialise C++ level parameters of a TopologyTable
         """
-        self.n_atoms = n_atoms
-        
-        #typ_ = np.asarray(["-1" if i is None else i for i in typ], dtype=string)
+
         guess_ = np.asarray([int(i) for i in guess], dtype=np.int32)
-        order_ = np.asarray([-1 if i is None else i for i in order], dtype=np.int32)
+        order_ = np.asarray(
+            [-1 if i is None else i for i in order], dtype=np.int32)
         typ_ = np.arange(order_.shape[0], dtype=np.int32)
         self._generate_bix(val, typ_,  guess_, order_)
 
-
-
-    cdef void _pairsort(self, vector[cpair[int,int]] &a, vector[int] &b):
-        cdef vector[cpair[cpair[int,int], int]] pair_arr
-        cdef cpair[cpair[int,int], int] pair
-        cdef cpair[int,int] ptmp
+    cdef void _pairsort(self, vector[cpair[int, int]] & a, vector[int] & b):
+        cdef vector[cpair[cpair[int, int], int]] pair_arr
+        cdef cpair[cpair[int, int], int] pair
+        cdef cpair[int, int] ptmp
         cdef int itmp
         for i in range(a.size()):
             ptmp = a[i]
             itmp = b[i]
-            pair = cpair[cpair[int,int], int](ptmp, itmp)
+            pair = cpair[cpair[int, int], int](ptmp, itmp)
             pair_arr.push_back(pair)
 
         csort(pair_arr.begin(), pair_arr.end())
@@ -73,10 +70,10 @@ cdef class TopologyTable:
         for i in range(a.size()):
             a[i] = pair_arr[i].first
             b[i] = pair_arr[i].second
-   
-    cdef void _generate_bix(self, int[:,:] val, int[:] typ, int[:] guess, int[:] order):
+
+    cdef void _generate_bix(self, int[:, :] val, int[:] typ, int[:] guess, int[:] order):
         """Generate bond indicies, spans and value arrays for the TopologyTable
-        
+
         """
         cdef vector[cpair[int, int]] _values
         cdef vector[cpair[int, int]] _values_copy
@@ -85,37 +82,33 @@ cdef class TopologyTable:
         cdef vector[int]  _order
         cdef vector[int]  _guessed
 
-        
         # the bond, forward and reverse
         cdef cpair[int, int] bond
         cdef cpair[int, int] rev_bond
 
-        cdef int i 
+        cdef int i
         cdef cset[cpair[int, int]] _tmp_set
         for i in range(val.shape[0]):
-            bond = cpair[int, int](val[i,0], val[i,1])
+            bond = cpair[int, int](val[i, 0], val[i, 1])
             _tmp_set.insert(bond)
-
-
 
         # make sure each bond is in the table both forwards and backwards IF IT
         # ISNT ALREADY
         for i in range(val.shape[0]):
-            bond = cpair[int, int](val[i,0], val[i,1])
-            rev_bond = cpair[int, int](val[i,1], val[i,0])
+            bond = cpair[int, int](val[i, 0], val[i, 1])
+            rev_bond = cpair[int, int](val[i, 1], val[i, 0])
             _values.push_back(bond)
             _type.push_back(typ[i])
             _guessed.push_back(guess[i])
             _order.push_back(order[i])
 
             if _tmp_set.count(rev_bond):
-                pass # the reverse bond is already present, do not add
+                pass  # the reverse bond is already present, do not add
             else:
                 _values.push_back(rev_bond)
                 _type.push_back(typ[i])
                 _order.push_back(order[i])
                 _guessed.push_back(guess[i])
-
 
         # pairwise sort each array can these be done together all at once ?
         _values_copy = _values
@@ -124,12 +117,12 @@ cdef class TopologyTable:
         self._pairsort(_values, _order)
         _values = _values_copy
         self._pairsort(_values, _guessed)
-  
+
         # deduplicate??
 
         # initialise spans
         cdef int lead_val
-        cdef int prev_val = val[0,0]
+        cdef int prev_val = val[0, 0]
         self._span_map[prev_val] = 0
 
         # unique value counter
@@ -142,7 +135,7 @@ cdef class TopologyTable:
                 # the value is already in the map, grab forward value
                 # and that we will read second element
                 self._bix.push_back(self._mapping[bond])
-            
+
             elif self._mapping.count(rev_bond):
                 # the reversed value is already in the map, grab reverse value
                 # and that we will read first element
@@ -150,8 +143,9 @@ cdef class TopologyTable:
 
             else:
                 # new value
-                self._mapping.insert(cpair[cpair[int,int], int](bond, bix_counter))
-                
+                self._mapping.insert(
+                    cpair[cpair[int, int], int](bond, bix_counter))
+
                 self._bix.push_back(bix_counter)
 
                 # increment unique values counter
@@ -160,18 +154,16 @@ cdef class TopologyTable:
                 self._ix_pair_array.push_back(bond)
                 self._type.push_back(_type[i])
                 self._order.push_back(_order[i])
-                self._guessed.push_back(_order[i])
-            
+                self._guessed.push_back(_guessed[i])
+
             lead_val = bond.first
-            
+
             if lead_val != prev_val:
                 self._span_map[lead_val] = i
-            
+
             prev_val = lead_val
 
         self._span_map[prev_val] = i
-
-
 
        # need to find the maximum key and value to correctly cap span array
         cdef int max_val, max_key
@@ -179,60 +171,66 @@ cdef class TopologyTable:
         max_key = deref(self._span_map.rbegin()).first
         max_val = deref(self._span_map.rbegin()).second
 
+        self.max_index = max_key + 2  # +2 so that the fake key made below is used
         # pop fake element into map to correctly cap the span
-        self._span_map[max_key +1] = max_val +1  
+        self._span_map[max_key + 1] = max_val + 1
 
         # sort out the spans so that each atoms has a span
         prev_val = 0
-        for i in range(self.n_atoms):
+        for i in range(self.max_index):
             if self._span_map.count(i):
-                    self._spans.push_back(self._span_map[i])
-                    prev_val = self._span_map[i]
+                self._spans.push_back(self._span_map[i])
+                prev_val = self._span_map[i]
             else:
-                self._spans.push_back(prev_val) 
+                self._spans.push_back(prev_val)
 
-        # remove fake element 
-        self._span_map.erase(max_key +1)
-
+        # remove fake element and decrement maximum index
+        self._span_map.erase(max_key + 1)
+        self.max_index -= 2
 
     def get_bonds(self, int target):
         cdef vector[int] bonds
         bonds = self._get_bond(target)
         return bonds
-    
 
-    
     def get_bonds_slice(self, cnp.int64_t[:] targets):
         cdef vector[vector[int]] bonds
-        cdef vector[int] row 
-        cdef int i, j
+        cdef vector[int] row, tmp
+        cdef int i, j, size_j
         for i in range(targets.shape[0]):
-            row = self._get_bond(targets[i])
-            for j in range(row.size()):
-                
-                bonds[i].push_back(row[j])
+            index = targets[i]
+            if index > self.max_index:
+                pass
+            else:
+                row = self._get_bond(index)
+                for j in range(row.size()):
+                    size_j += 1
+                    tmp = vector[int](2)
+                    tmp[0] = targets[i]
+                    tmp[1] = row[j]
+                    bonds.push_back(tmp)
         return bonds
 
     @property
     def bonds(self):
         return self._ix_pair_array
 
-
     @property
     def types(self):
         cdef cnp.npy_intp size[1]
         size[0] = self._type.size()
         cdef cnp.ndarray arr
-        arr =  to_numpy_from_spec(self, 1, size, cnp.NPY_INT32, &self._type[0])
-        return arr
-
+        arr = to_numpy_from_spec(self, 1, size, cnp.NPY_INT32, & self._type[0])
+        return arr.astype(str)
 
     @property
     def orders(self):
         cdef cnp.npy_intp size[1]
         size[0] = self._order.size()
         cdef cnp.ndarray arr
-        arr =  to_numpy_from_spec(self, 1, size, cnp.NPY_INT32, &self._order[0])
+        arr = to_numpy_from_spec(self, 1, size, cnp.NPY_INT32, & self._order[0])
+        arr = arr.astype(object)
+        arr = np.where(arr == -1, None, arr)
         return arr
 
     @property
@@ -240,10 +238,8 @@ cdef class TopologyTable:
         cdef cnp.npy_intp size[1]
         size[0] = self._guessed.size()
         cdef cnp.ndarray arr
-        arr =  to_numpy_from_spec(self, 1, size, cnp.NPY_INT32, &self._guessed[0])
+        arr = to_numpy_from_spec(self, 1, size, cnp.NPY_INT32, & self._guessed[0])
         return arr.astype(bool)
-
-
 
     cdef vector[int] _get_bond(self, int target):
         cdef int start = self._spans[target]
@@ -252,7 +248,7 @@ cdef class TopologyTable:
         cdef vector[int] bonds
         if start == end:
             return bonds
-        
+
         else:
             for i in range(start, end, 1):
                 b_ix = self._bix[i]
@@ -271,11 +267,15 @@ cdef class TopologyTable:
     @property
     def ix_pair_array(self):
         return self._ix_pair_array
-  
+
     @property
     def spans(self):
         return self._spans
 
     @property
     def span_map(self):
-        return self._span_map    
+        return self._span_map
+
+    @property
+    def max_idx(self):
+        return self.max_index
