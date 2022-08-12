@@ -161,7 +161,8 @@ If you use :meth:`~MDAnalysis.analysis.pca.PCA.rmsip` or
    Leo-Macias2005
 
 If you use :meth:`~MDAnalysis.analysis.pca.PCA.cumulative_overlap` or
-:func:`~MDAnalysis.analysis.pca.cumulative_overlap` please cite cite:p:`a-Yang2008`.
+:func:`~MDAnalysis.analysis.pca.cumulative_overlap` please cite
+:cite:p:`a-Yang2008`.
 
 .. bibliography::
    :filter: False
@@ -214,22 +215,18 @@ If you use use the dielectric analysis code in
 
    Neumann1983
 
-If you use H5MD files using
-:mod:`MDAnalysis.coordinates.H5MD.py`, please cite [Buyl2013]_ and
-[Jakupovic2021]_.
+If you use H5MD files with
+:mod:`MDAnalysis.coordinates.H5MD`, please cite :cite:p:`a-deBuyl2014` and
+:cite:p:`a-Jakupovic2021`.
 
-.. [Buyl2013] Buyl P., Colberg P., and Höfling F.(2013).
-   H5MD: A structured, efficient, and portable file format for molecular data.
-   *Computer Physics Communications*, 185. doi:`10.1016/j.cpc.2014.01.018.
-   <https://doi.org/10.1016/j.cpc.2014.01.018>`_
+.. bibliography::
+   :filter: False
+   :style: MDA
+   :keyprefix: a-
+   :labelprefix: ᵃ
 
-.. [Jakupovic2021] Jakupovic E. and Beckstein O., MPI-parallel Molecular
-   Dynamics Trajectory Analysis with the H5MD Format in the MDAnalysis
-   Python Package, in *Proceedings of the 20th Python in Science Conference*,
-   (Meghann Agarwal, Chris Calloway, Dillon Niederhut, and David Shupe, eds.),
-   pp. 18 – 26, 2021. doi:`10.25080/majora-1b6fd038-005.
-   <https://www.doi.org/10.25080/majora-1b6fd038-005>`_
-
+   deBuyl2014
+   Jakupovic2021
 
 .. _citations-using-duecredit:
 
