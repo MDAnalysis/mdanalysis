@@ -2626,7 +2626,7 @@ class Bonds(_Connection):
         self._toptable = TopologyTable(vals_arr, self.types, self._guessed, self.order)
 
 
-    def get_atoms(self, ag):
+    def get_atoms2(self, ag):
         """
         Get connection values where the atom indices are in
         the given atomgroup.

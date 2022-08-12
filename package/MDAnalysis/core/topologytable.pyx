@@ -61,10 +61,10 @@ cdef class TopologyTable:
         """
 
         guess_ = np.asarray([int(i) for i in guess], dtype=np.int32)
-        order_ = np.asarray(
-            [-1 if i is None else i for i in order], dtype=np.int32)
+        order_ = list(order)
         typ_ = list(typ)
         self._type = []
+        self._order = []
         self._generate_bix(val, typ_,  guess_, order_)
 
     cdef void _pairsort(self, vector[cpair[int, int]] & a, vector[int] & b):
@@ -101,7 +101,7 @@ cdef class TopologyTable:
         
         return b_ 
 
-    cdef void _generate_bix(self, int[:, :] val, list typ, int[:] guess, int[:] order):
+    cdef void _generate_bix(self, int[:, :] val, list typ, int[:] guess, list order):
         """Generate bond indicies, spans and value arrays for the TopologyTable
 
         """
@@ -110,7 +110,7 @@ cdef class TopologyTable:
 
         # types must be a list as we allow flexibility in what it can be 
         cdef list  _type = []
-        cdef vector[int]  _order
+        cdef list  _order = []
         cdef vector[int]  _guessed
 
         # the bond, forward and reverse
@@ -131,22 +131,19 @@ cdef class TopologyTable:
             _values.push_back(bond)
             _type.append(typ[i])
             _guessed.push_back(guess[i])
-            _order.push_back(order[i])
+            _order.append(order[i])
 
             if _tmp_set.count(rev_bond):
                 pass  # the reverse bond is already present, do not add
             else:
                 _values.push_back(rev_bond)
                 _type.append(typ[i])
-                _order.push_back(order[i])
+                _order.append(order[i])
                 _guessed.push_back(guess[i])
 
         # pairwise sort each array can these be done together all at once ?
-        _values_copy = _values
         _type = self._pairsort_list(_values, _type)
-        self._pairsort(_values, _order)
-
-        _values = _values_copy
+        _order = self._pairsort_list(_values, _order)
         self._pairsort(_values, _guessed)
 
         # deduplicate??
@@ -184,7 +181,7 @@ cdef class TopologyTable:
                 # save new value to ix_pair array
                 self._ix_pair_array.push_back(bond)
                 self._type.append(_type[i])
-                self._order.push_back(_order[i])
+                self._order.append(_order[i])
                 self._guessed.push_back(_guessed[i])
 
             lead_val = bond.first
@@ -285,6 +282,8 @@ cdef class TopologyTable:
         cdef int i, j
         cdef cnp.ndarray arr 
         for i in range(targets.shape[0]):
+            if targets[i] > self.max_index:
+                raise IndexError("requested bond is larger than the table size")
             typ_arr, has_typ = self._get_typ(targets[i])
             if has_typ:
                 for j in range(len(typ_arr)):
@@ -302,6 +301,8 @@ cdef class TopologyTable:
         cdef cbool has_guess
         cdef int i, j
         for i in range(targets.shape[0]):
+            if targets[i] > self.max_index:
+                raise IndexError("requested bond is larger than the table size")
             ret_struct = self._get_guess(targets[i])
             guess_arr = ret_struct.first
             has_guess = ret_struct.second
@@ -314,22 +315,59 @@ cdef class TopologyTable:
     def get_order_slice(self, targets):
         if np.isscalar(targets):
             targets = np.asarray([targets])
-        cdef vector[int] orders
-        cdef vector[int] orders_arr
+        cdef list orders = []
+        cdef list orders_arr
         cdef cpair[vector[int], cbool] ret_struct
         cdef cbool has_order
         cdef int i, j
         cdef cnp.ndarray arr 
         for i in range(targets.shape[0]):
-            ret_struct = self._get_ord(targets[i])
-            orders_arr = ret_struct.first
-            has_order = ret_struct.second
+            if targets[i] > self.max_index:
+                raise IndexError("requested bond is larger than the table size")
+            orders_arr, has_order = self._get_ord(targets[i])
             if has_order:
-                for j in range(orders_arr.size()):
-                    orders.push_back(orders_arr[j])
+                for j in range(len(orders_arr)):
+                    orders.append(orders_arr[j])
         
         arr  = np.asarray(orders).astype(object)
-        return np.where(arr == -1, None, arr)
+        return arr
+
+    def get_b_t_g_o_slice(self, targets):
+        if np.isscalar(targets):
+            targets = np.asarray([targets])
+        cdef vector[cpair[int, int]] bonds
+        cdef vector[cpair[int, int]] pair_arr
+        cdef cpair[vector[cpair[int, int]], cbool] ret_struct_bond
+        cdef list types = []
+        cdef list typ_arr
+        cdef vector[int] guesses
+        cdef vector[int] guess_arr
+        cdef list orders = []
+        cdef list orders_arr
+        cdef cpair[vector[int], cbool] ret_struct_guess
+        cdef cbool has_bonds, has_typ, has_guess, has_order
+        for i in range(targets.shape[0]):
+            ret_struct_bond = self._get_pair(targets[i])
+            pair_arr = ret_struct_bond.first
+            has_bonds = ret_struct_bond.second
+            if has_bonds:
+                for j in range(pair_arr.size()):
+                    bonds.push_back(pair_arr[j])
+            typ_arr, has_typ = self._get_typ(targets[i])
+            if has_typ:
+                for j in range(len(typ_arr)):
+                    types.append(typ_arr[j])
+            ret_struct_guess = self._get_guess(targets[i])
+            guess_arr = ret_struct_guess.first
+            has_guess = ret_struct_guess.second
+            if has_guess:
+                for j in range(guess_arr.size()):
+                    guesses.push_back(guess_arr[j])
+            orders_arr, has_order = self._get_ord(targets[i])
+            if has_order:
+                for j in range(len(orders_arr)):
+                    orders.append(orders_arr[j])
+        return bonds, types, guesses, orders
     
     @property
     def bonds(self):
@@ -342,13 +380,7 @@ cdef class TopologyTable:
 
     @property
     def orders(self):
-        cdef cnp.npy_intp size[1]
-        size[0] = self._order.size()
-        cdef cnp.ndarray arr
-        arr = to_numpy_from_spec(self, 1, size, cnp.NPY_INT32, & self._order[0])
-        arr = arr.astype(object)
-        arr = np.where(arr == -1, None, arr)
-        return arr
+        return np.asarray(self._order)
 
     @property
     def guessed(self):
@@ -410,21 +442,21 @@ cdef class TopologyTable:
       
             return types, True
 
-    cdef cpair[vector[int], cbool] _get_ord(self, int target):
+    def  _get_ord(self, int target):
         # private, does not check for target < self.max_index
         cdef int start = self._spans[target]
         cdef int end = self._spans[target+1]
-        cdef int i, b_ix, ord
-        cdef vector[int] orders
+        cdef int i, b_ix
+        cdef list orders = []
         if start == end:
-            return cpair[vector[int], cbool](orders, False)
+            return orders, False
         else:
             for i in range(start, end, 1):
                 b_ix = self._bix[i]
                 ord = self._order[b_ix]
-                orders.push_back(ord)
+                orders.append(ord)
       
-            return cpair[vector[int], cbool](orders, True)
+            return orders, True
 
 
     cdef cpair[vector[int], cbool] _get_guess(self, int target):
