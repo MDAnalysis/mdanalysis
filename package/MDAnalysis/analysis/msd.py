@@ -59,8 +59,8 @@ Transform is known and can be accessed by setting ``fft=True``
 `tidynamics <https://github.com/pdebuyl-lab/tidynamics>`_ package is
 installed; otherwise the code will raise an :exc:`ImportError`.
 
-Please cite :cite:p:`b-Calandrini2011,b-Buyl2018` if you use this module in addition to
-the normal MDAnalysis citations.
+Please cite :cite:p:`b-Calandrini2011,b-Buyl2018` if you use this module in
+addition to the normal MDAnalysis citations.
 
 .. bibliography::
    :filter: False

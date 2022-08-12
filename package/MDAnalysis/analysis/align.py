@@ -30,9 +30,9 @@
 
 The module contains functions to fit a target structure to a reference
 structure. They use the fast QCP algorithm to calculate the root mean
-square distance (RMSD) between two coordinate sets [Theobald2005]_ and
-the rotation matrix *R* that minimizes the RMSD :cite:p:`b-Liu2010`. (Please
-cite these references when using this module.).
+square distance (RMSD) between two coordinate sets :cite:p:`a-Theobald2005`
+and the rotation matrix *R* that minimizes the RMSD :cite:p:`b-Liu2010`.
+(Please cite these references when using this module.).
 
 Typically, one selects a group of atoms (such as the C-alphas),
 calculates the RMSD and transformation matrix, and applys the

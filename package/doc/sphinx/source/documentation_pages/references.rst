@@ -51,7 +51,7 @@ Citations for included algorithms and modules
 
 If you use the RMSD calculation (:mod:`MDAnalysis.analysis.rms`) or alignment
 code (:mod:`MDAnalysis.analysis.align`) that uses the
-:mod:`~MDAnalysis.core.qcprot` module please also cite [Theobald2005b]_
+:mod:`~MDAnalysis.core.qcprot` module please also cite :cite:p:`a-Theobald2005`.
 and :cite:p:`a-Liu2010`.
 
 .. bibliography::
@@ -61,10 +61,7 @@ and :cite:p:`a-Liu2010`.
    :labelprefix: ᵃ
 
    Liu2010
-
-.. [Theobald2005b] Douglas L. Theobald. Rapid calculation of RMSD using a
-   quaternion-based characteristic polynomial. *Acta Crystallographica A*
-   **61** (2005), 478-480.
+   Theobald2005
 
 If you use the helix analysis algorithm HELANAL_ in
 :mod:`MDAnalysis.analysis.helix_analysis` please cite :cite:p:`a-Bansal2000`.

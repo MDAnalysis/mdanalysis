@@ -127,10 +127,10 @@ If you use this Dimension Reduction method in a publication, please
 cite :cite:p:`Coifman-Lafon`.
 
 If you choose the default metric, this module uses the fast QCP algorithm
-:cite:p:`Theobald2005` to calculate the root mean square distance (RMSD)
+:cite:p:`a-Theobald2005` to calculate the root mean square distance (RMSD)
 between two coordinate sets (as implemented in
 :func:`MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix`).  When using this
-module in published work please :cite:p:`Theobald2005`.
+module in published work please :cite:p:`a-Theobald2005`.
 
 
 .. bibliography::
@@ -141,7 +141,7 @@ module in published work please :cite:p:`Theobald2005`.
     deLaPorte2008
     Clementi2011
     Ferguson2011
-    Theobald2005
+
 """
 import logging
 import warnings
