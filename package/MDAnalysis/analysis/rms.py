@@ -45,6 +45,13 @@ implemented in
 
 When using this module in published work please cite :cite:p:`a-Theobald2005`.
 
+.. bibliography::
+   :filter: False
+   :style: MDA
+   :keyprefix: a-
+   :labelprefix: ᵃ
+
+   Theobald2005
 
 See Also
 --------
