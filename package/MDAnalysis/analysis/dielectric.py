@@ -63,7 +63,7 @@ class DielectricConstant(AnalysisBase):
 
     is calculated for a system in tin foil boundary conditions, which is
     the usual case if electrostatics are handled with a Ewald summation
-    technique. See [Neumann1983]_ for details on the derivation.
+    technique. See :cite:`Neumann1983` for details on the derivation.
 
     Parameters
     ----------
@@ -114,6 +114,11 @@ class DielectricConstant(AnalysisBase):
     The static dielectric constant of the provided atomgroup is saved
     within the :class:`~MDAnalysis.analysis.base.Results` attribute.
 
+    .. bibliography::
+      :filter: False
+      :style: MDA
+
+      Neumann1983
 
     .. versionadded:: 2.1.0
     """

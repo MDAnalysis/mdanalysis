@@ -203,13 +203,16 @@ please cite :cite:p:`a-Dima2004`.
    Dima2004
 
 If you use use the dielectric analysis code in
-:class:`~MDAnalysis.analysis.dielectric.DielectricConstant` please cite [Neumann1983]_.
+:class:`~MDAnalysis.analysis.dielectric.DielectricConstant` please cite
+:cite:p:`a-Neumann1983`.
 
-.. [Neumann1983] Neumann, M. (1983). Dipole
-   Moment Fluctuation Formulas in Computer Simulations of Polar Systems.
-   *Molecular Physics* **50**, no. 4, 841–858. doi: `10.1080/00268978300102721`_
+.. bibliography::
+   :filter: False
+   :style: MDA
+   :keyprefix: a-
+   :labelprefix: ᵃ
 
-.. _`10.1080/00268978300102721`: http://doi.org/10.1080/00268978300102721
+   Neumann1983
 
 If you use H5MD files using
 :mod:`MDAnalysis.coordinates.H5MD.py`, please cite [Buyl2013]_ and
