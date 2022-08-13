@@ -43,13 +43,14 @@ import os
 import numbers
 import math
 import warnings
+from typing import Union, Optional, Dict
 
 import numpy as np
 
 from ..lib.util import asiterable, anyopen
 
 from . import _AUXREADERS
-
+from .core import auxreader
 
 class _AuxReaderMeta(type):
     # auto register on class creation
@@ -431,6 +432,31 @@ class AuxReader(metaclass=_AuxReaderMeta):
             self._add_step_to_frame_data(ts.time)
         self.frame_rep = self.calc_representative()
 
+    def attach_auxiliary(self,
+                         coord_parent,
+                         aux_spec: Union[str, Dict[str, str]],
+                         format: Optional[str] = None,
+                         **kwargs) -> None:
+        """ TODO: Add documentation"""
+        if not aux_spec or aux_spec == "*":
+            # Add all terms if None or * 
+            aux_spec = {term: term for term in self.terms}
+        elif isinstance(aux_spec, str):
+            # This is to keep XVGReader functioning as-is
+            # setting the data selector to None, the default for XVGReader
+            aux_spec = {aux_spec: None}
+        for auxname in aux_spec:
+            if auxname in coord_parent.aux_list:
+                raise ValueError(f"Auxiliary data with name {auxname} already "
+                                 "exists")
+            description = self.get_description()
+            # Make a copy of the auxreader for every attribute to add
+            # This is necessary so all attributes can be iterated over
+            aux = auxreader(**description)
+            aux.auxname = auxname
+            aux.data_selector = aux_spec[auxname]
+            coord_parent._auxs[auxname] = aux
+            coord_parent.ts = aux.update_ts(coord_parent.ts)
 
     def step_to_frame(self, step, ts, return_time_diff=False):
         """ Calculate closest trajectory frame for auxiliary step *step*.

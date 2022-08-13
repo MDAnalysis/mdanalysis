@@ -981,10 +981,19 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             natoms=self.n_atoms
         ))
 
-    def add_auxiliary(self, auxname: Union[str, List[str]],
-                      auxdata: Union[str, AuxReader],
-                      auxterm: Union[str, List[str], None] = None,
-                      format=None, **kwargs) -> None:
+    def add_auxiliary(self, aux_spec, auxdata, format=None, **kwargs):
+        if type(auxdata) not in list(_AUXREADERS.values()):
+            # i.e. if auxdata is a file, not an instance of an AuxReader
+            reader_type = get_auxreader_for(auxdata)
+            auxreader = reader_type(auxdata)
+        else:
+            auxreader = auxdata
+        auxreader.attach_auxiliary(self, aux_spec, format, **kwargs)
+
+    def add_auxiliary_old(self, auxname: Union[str, List[str]],
+                          auxdata: Union[str, AuxReader],
+                          auxterm: Union[str, List[str], None] = None,
+                          format=None, **kwargs) -> None:
         """Add auxiliary data to be read alongside trajectory.
 
         Auxiliary data may be any data timeseries from the trajectory
@@ -1026,7 +1035,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         try:
             auxreader = get_auxreader_for(auxdata)
         except AttributeError as e:
-            if str(e) == "'NoneType' object has no attribute 'upper'":
+            if str(e) == "auxdata is already an AuxReader instance":
                 # user already gave instance of auxreader
                 auxreader = ""  # assign something so check below works
 

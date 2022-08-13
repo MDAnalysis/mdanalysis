@@ -159,7 +159,7 @@ class TestEDRReader(BaseAuxReaderTest):
     @pytest.fixture
     def ref_universe(ref):
         u = mda.Universe(AUX_EDR_TPR, AUX_EDR_XTC)
-        u.trajectory.add_auxiliary('test', ref.testdata, "Bond")
+        u.trajectory.add_auxiliary({"test": "Bond"}, ref.testdata)
         return u
 
     @staticmethod
@@ -273,33 +273,21 @@ class TestEDRReader(BaseAuxReaderTest):
         assert ref_terms == terms
 
     def test_add_term_list_custom_names_from_file(self, ref, ref_universe):
-        ref_universe.trajectory.add_auxiliary(["bond", "temp"], ref.testdata,
-                                              ["Bond", "Temperature"])
+        ref_universe.trajectory.add_auxiliary({"bond": "Bond",
+                                               "temp": "Temperature"},
+                                              ref.testdata)
         ref_dict = read_auxstep_data(0)
         assert ref_universe.trajectory.ts.aux.bond == ref_dict["Bond"]
         assert ref_universe.trajectory.ts.aux.temp == ref_dict["Temperature"]
 
     def test_add_term_list_custom_names_from_reader(self, ref_universe,
                                                     reader):
-        ref_universe.trajectory.add_auxiliary(["bond", "temp"], reader,
-                                              ["Bond", "Temperature"])
+        ref_universe.trajectory.add_auxiliary({"bond": "Bond",
+                                               "temp": "Temperature"},
+                                              reader)
         ref_dict = read_auxstep_data(0)
         assert ref_universe.trajectory.ts.aux.bond == ref_dict["Bond"]
         assert ref_universe.trajectory.ts.aux.temp == ref_dict["Temperature"]
-
-    def test_add_list_no_auxterm_provided(self, ref_universe, reader):
-        u = ref_universe
-        u.trajectory.add_auxiliary(["Bond", "Temperature"], reader)
-        ref_dict = read_auxstep_data(0)
-        assert u.trajectory.ts.aux.Bond == ref_dict["Bond"]
-        assert u.trajectory.ts.aux.Temperature == ref_dict["Temperature"]
-
-    def test_raise_error_if_auxname_auxterm_different_length(self,
-                                                             ref_universe,
-                                                             reader):
-        with pytest.raises(ValueError, match="auxname and auxterm must have"):
-            ref_universe.trajectory.add_auxiliary(["bond", "temp"],
-                                                  reader, ["Bond"])
 
     def test_raise_error_if_auxname_already_assigned(self, ref_universe,
                                                      reader):
@@ -307,20 +295,21 @@ class TestEDRReader(BaseAuxReaderTest):
             ref_universe.trajectory.add_auxiliary("test", reader, "Bond")
 
     def test_add_single_term_custom_name_from_file(self, ref, ref_universe):
-        ref_universe.trajectory.add_auxiliary("temp", ref.testdata,
-                                              "Temperature")
+        ref_universe.trajectory.add_auxiliary({"temp": "Temperature"},
+                                              ref.testdata)
         ref_dict = read_auxstep_data(0)
         assert ref_universe.trajectory.ts.aux.temp == ref_dict["Temperature"]
 
     def test_add_single_term_custom_name_from_reader(self, ref_universe,
                                                      reader):
-        ref_universe.trajectory.add_auxiliary("temp", reader, "Temperature")
+        ref_universe.trajectory.add_auxiliary({"temp": "Temperature"}, reader)
         ref_dict = read_auxstep_data(0)
         assert ref_universe.trajectory.ts.aux.temp == ref_dict["Temperature"]
 
     def test_terms_update_on_iter(self, ref_universe, reader):
-        ref_universe.trajectory.add_auxiliary(["bond", "temp"], reader,
-                                              ["Bond", "Temperature"])
+        ref_universe.trajectory.add_auxiliary({"bond": "Bond",
+                                               "temp": "Temperature"},
+                                              reader)
         ref_dict = read_auxstep_data(0)
         assert ref_universe.trajectory.ts.aux.bond == ref_dict["Bond"]
         assert ref_universe.trajectory.ts.aux.temp == ref_dict["Temperature"]
@@ -331,7 +320,8 @@ class TestEDRReader(BaseAuxReaderTest):
 
     def test_invalid_data_selector(self, ref, ref_universe):
         with pytest.raises(KeyError, match="'Nonsense' is not a key"):
-            ref_universe.trajectory.add_auxiliary("Nonsense", AUX_EDR)
+            ref_universe.trajectory.add_auxiliary({"something": "Nonsense"},
+                                                  AUX_EDR)
 
     def test_read_all_times(self, reader):
         all_times_expected = np.array([0., 0.02, 0.04, 0.06])
