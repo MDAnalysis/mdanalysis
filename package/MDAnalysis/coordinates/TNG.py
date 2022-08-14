@@ -135,7 +135,7 @@ class TNGReader(base.ReaderBase):
 
         """
         if not HAS_PYTNG:
-            raise RuntimeError("TNGReader: To read TNG files please install"
+            raise ImportError("TNGReader: To read TNG files please install"
                                " pytng")
 
         super(TNGReader, self).__init__(filename, **kwargs)
