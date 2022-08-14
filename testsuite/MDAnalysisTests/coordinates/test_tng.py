@@ -96,23 +96,25 @@ class TestTNGTraj(object):
     _n_frames = 101
     _stride = 5000
 
-    # these values all taken from GMX dump
+    prec = 5
+
+    # these values all taken from GMX dump / 10 to get MDA units
     _pos_frame_0_first_3_atoms = np.array([[2.53300e+00,  1.24400e+00,  3.50600e+00],
                                            [8.30000e-01,  2.54400e+00,  3.44800e+00],
-                                           [1.09100e+00,  1.10000e-01,  3.12900e+00]])
+                                           [1.09100e+00,  1.10000e-01,  3.12900e+00]]) * 10
 
     _pos_frame_100_first_3_atoms = np.array([[4.40000e-01, 3.89000e-01, 1.37400e+00],
                                              [1.43200e+00, 1.64900e+00, 2.93900e+00],
-                                             [2.01500e+00, 2.10300e+00, 2.65700e+00]])
-
+                                             [2.01500e+00, 2.10300e+00, 2.65700e+00]]) * 10
+    
     _box_frame_0 = np.array([3.60140e+00, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-                            3.60140e+00, 0.00000e+00,  0.00000e+00, 0.00000e+00, 3.60140e+00]).reshape(3, 3)
+                            3.60140e+00, 0.00000e+00,  0.00000e+00, 0.00000e+00, 3.60140e+00]).reshape(3, 3) * 10
 
     _box_frame_100 = np.array([3.60140e+00, 0.00000e+00, 0.00000e+00, 0.00000e+00,
-                               3.60140e+00, 0.00000e+00,  0.00000e+00, 0.00000e+00, 3.60140e+00]).reshape(3, 3)
+                               3.60140e+00, 0.00000e+00,  0.00000e+00, 0.00000e+00, 3.60140e+00]).reshape(3, 3) * 10
 
     _box_frame_100 = np.array([3.58965e+00,  0.00000e+00,  0.00000e+00,  0.00000e+00,
-                              3.58965e+00,  0.00000e+00,  0.00000e+00,  0.00000e+00,  3.58965e+00]).reshape(3, 3)
+                              3.58965e+00,  0.00000e+00,  0.00000e+00,  0.00000e+00,  3.58965e+00]).reshape(3, 3) * 10
 
     @pytest.fixture(scope="class")
     def universe(self):
@@ -189,19 +191,19 @@ class TestTNGTraj(object):
 
     def test_positions_first_frame(self, universe):
         pos = universe.trajectory[0].positions
-        assert_allclose(pos[0:3, :], self._pos_frame_0_first_3_atoms)
+        assert_allclose(pos[0:3, :], self._pos_frame_0_first_3_atoms, rtol=10**-self.prec)
 
     def test_box_first_frame(self, universe):
         dims = universe.trajectory[0].dimensions
-        assert_allclose(dims, triclinic_box(*self._box_frame_0))
+        assert_allclose(dims, triclinic_box(*self._box_frame_0), rtol=10**-self.prec)
 
     def test_positions_last_frame(self, universe):
         pos = universe.trajectory[100].positions
-        assert_allclose(pos[0:3, :], self._pos_frame_100_first_3_atoms)
+        assert_allclose(pos[0:3, :], self._pos_frame_100_first_3_atoms, rtol=10**-self.prec)
 
     def test_box_last_frame(self, universe):
         dims = universe.trajectory[100].dimensions
-        assert_allclose(dims, triclinic_box(*self._box_frame_100))
+        assert_allclose(dims, triclinic_box(*self._box_frame_100), rtol=10**-self.prec)
 
     @pytest.mark.parametrize("frame", [0, 20, 50, 100])
     def test_step(self, universe, frame):
