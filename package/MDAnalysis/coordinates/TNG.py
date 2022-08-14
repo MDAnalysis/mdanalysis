@@ -123,13 +123,15 @@ class TNGReader(base.ReaderBase):
     @due.dcite(Doi("10.1002/jcc.23495"),
                description="The TNG paper",
                path=__name__)
-    def __init__(self, filename: str, **kwargs):
+    def __init__(self, filename: str, convert_units: bool=True, **kwargs):
         """ Initialize a TNG trajectory
 
         Parameters
         ----------
         filename : str
             filename of the trajectory
+        convert_units : bool (optional)
+            convert into MDAnalysis units
 
         """
         if not HAS_PYTNG:
@@ -139,6 +141,7 @@ class TNGReader(base.ReaderBase):
         super(TNGReader, self).__init__(filename, **kwargs)
 
         self.filename = filename
+        self.convert_units = convert_units
 
         self._file_iterator = pytng.TNGFileIterator(self.filename, 'r')
         self.n_atoms = self._file_iterator.n_atoms
@@ -415,18 +418,27 @@ class TNGReader(base.ReaderBase):
             ts.dimensions = triclinic_box(*self._box_temp.reshape(3, 3))
             if not curr_step.read_success:
                 raise IOError("Failed to read box from TNG file")
+            if self.convert_units:
+                self.convert_pos_from_native(ts.dimensions[:3])
         if self._has_positions:
             curr_step.get_positions(ts.positions)
             if not curr_step.read_success:
                 raise IOError("Failed to read positions from TNG file")
+            if self.convert_units:
+                self.convert_pos_from_native(ts.positions)
         if self._has_velocities:
             curr_step.get_velocities(ts.velocities)
             if not curr_step.read_success:
                 raise IOError("Failed to read velocities from TNG file")
+            if self.convert_units:
+                self.convert_velocities_from_native(ts.velocities)
         if self._has_forces:
             curr_step.get_forces(ts.forces)
             if not curr_step.read_success:
                 raise IOError("Failed to read forces from TNG file")
+            if self.convert_units:
+                self.convert_forces_from_native(self.ts.forces)
+
 
         for block in self._additional_blocks_to_read:
             add_block_stride = self._block_strides[block]

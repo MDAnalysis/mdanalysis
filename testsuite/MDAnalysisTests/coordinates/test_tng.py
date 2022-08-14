@@ -52,9 +52,8 @@ class TNGReference(BaseReference):
         self.writer = mda.coordinates.TNG.TNGReader.Writer
         self.ext = 'tng'
         self.changing_dimensions = True
+        self.prec = 5
 
-
-        self.first_frame.positions = self.first_frame.positions/10
 
         self.first_frame.velocities = self.first_frame.positions / 10
         self.first_frame.forces = self.first_frame.positions / 100
