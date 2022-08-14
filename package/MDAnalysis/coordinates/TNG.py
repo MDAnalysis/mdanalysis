@@ -80,16 +80,16 @@ divisible by the shared integrator step of the special blocks.
 
 """
 
-import numpy as np
-import MDAnalysis as mda
 import warnings
-from typing import Optional, List
-from ..due import due, Doi
+from typing import List, Optional
 
+import MDAnalysis as mda
+import numpy as np
 from MDAnalysis.coordinates import base
-from MDAnalysis.lib.mdamath import triclinic_box
 from MDAnalysis.coordinates.timestep import Timestep
+from MDAnalysis.lib.mdamath import triclinic_box
 
+from ..due import Doi, due
 
 try:
     import pytng

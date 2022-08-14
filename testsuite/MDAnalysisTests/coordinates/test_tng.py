@@ -20,23 +20,20 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+import MDAnalysis as mda
 import numpy as np
 import pytest
-
-from numpy.testing import (
-    assert_equal,
-    assert_allclose
-)
-import MDAnalysis as mda
-from MDAnalysis.lib.mdamath import triclinic_box
 from MDAnalysis.coordinates.TNG import HAS_PYTNG
+from MDAnalysis.lib.mdamath import triclinic_box
+from numpy.testing import assert_allclose, assert_equal
+
 if HAS_PYTNG:
     import pytng
 
-from MDAnalysisTests.datafiles import (TNG_traj, TNG_traj_gro, COORDINATES_TNG,
-                                       COORDINATES_TOPOLOGY)
-from MDAnalysisTests.coordinates.base import (MultiframeReaderTest,
-                                              BaseReference)
+from MDAnalysisTests.coordinates.base import (BaseReference,
+                                              MultiframeReaderTest)
+from MDAnalysisTests.datafiles import (COORDINATES_TNG, COORDINATES_TOPOLOGY,
+                                       TNG_traj, TNG_traj_gro)
 
 
 @pytest.mark.skipif(not HAS_PYTNG, reason="pytng not installed")
@@ -53,7 +50,6 @@ class TNGReference(BaseReference):
         self.ext = 'tng'
         self.changing_dimensions = True
         self.prec = 5
-
 
         self.first_frame.velocities = self.first_frame.positions / 10
         self.first_frame.forces = self.first_frame.positions / 100
@@ -76,6 +72,7 @@ class TNGReference(BaseReference):
         ts.frame = i
         return ts
 
+
 @pytest.mark.skipif(not HAS_PYTNG, reason="pytng not installed")
 class TestTNGCoordinatesTraj(MultiframeReaderTest):
     @staticmethod
@@ -94,7 +91,6 @@ class TestTNGCoordinatesTraj(MultiframeReaderTest):
 
 @pytest.mark.skipif(not HAS_PYTNG, reason="pytng not installed")
 class TestTNGTraj(object):
-
 
     _n_atoms = 1000
     _n_frames = 101
@@ -235,6 +231,7 @@ class TestTNGTraj(object):
         with pytest.raises(IOError, match="Failed to read positions from TNG file"):
             universe.trajectory._frame_to_ts(
                 iterator_step, universe.trajectory.ts)
+
 
 @pytest.mark.skipif(not HAS_PYTNG, reason="pytng not installed")
 def test_writer_raises_notimpl():
