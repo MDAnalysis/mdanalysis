@@ -260,14 +260,14 @@ class TestEDRReader(BaseAuxReaderTest):
                                     "applying cutoff")
 
     def test_add_all_terms_from_file(self, ref, ref_universe):
-        ref_universe.trajectory.add_auxiliary("*", ref.testdata)
+        ref_universe.trajectory.add_auxiliary(auxdata=ref.testdata)
         # adding "test" manually to match above addition of test term
         ref_terms = ["test"] + [key for key in read_auxstep_data(0).keys()]
         terms = [key for key in ref_universe.trajectory._auxs]
         assert ref_terms == terms
 
     def test_add_all_terms_from_reader(self, ref_universe, reader):
-        ref_universe.trajectory.add_auxiliary("*", reader)
+        ref_universe.trajectory.add_auxiliary(auxdata=reader)
         ref_terms = ["test"] + [key for key in read_auxstep_data(0).keys()]
         terms = [key for key in ref_universe.trajectory._auxs]
         assert ref_terms == terms
@@ -342,7 +342,7 @@ class TestEDRReader(BaseAuxReaderTest):
 
     def test_get_data_everything(self, ref, reader):
         returned = reader.get_data()
-        returned_asterisk = reader.get_data("*")
+        returned_asterisk = reader.get_data()
         assert returned.keys() == returned_asterisk.keys()
         ref_terms = [key for key in read_auxstep_data(0).keys()]
         assert ref_terms == reader.terms

@@ -283,7 +283,7 @@ class EDRReader(base.AuxReader):
         Returns either all data or data specified as `data_selector` in form
         of a str or a list of any of :attr:`EDRReader.terms`. `Time` is
         always returned to allow easy plotting. """
-        if not data_selector or data_selector == "*":
+        if data_selector is None:
             return self.data_dict
         elif isinstance(data_selector, list):
             data_dict = {"Time": self.data_dict["Time"]}

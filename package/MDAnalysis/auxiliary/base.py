@@ -437,22 +437,39 @@ class AuxReader(metaclass=_AuxReaderMeta):
                          aux_spec: Union[str, Dict[str, str]],
                          format: Optional[str] = None,
                          **kwargs) -> None:
-        """ TODO: Add documentation"""
-        if not aux_spec or aux_spec == "*":
-            # Add all terms if None or * 
+        """ This method is called from within
+            :func:`MDAnalysis.coordinates.base.add_auxiliary()`.
+            `add_auxiliary` should be agnostic to the type of AuxReader, so the
+            method call leads here instead. First, some checks are done on
+            the arguments to make sure the input is treated properly. Then, 
+            the AuxReader(s) with appropriate :attr:`data_selector` are
+            associated with the `coord_parent` from which `add_auxiliary` was
+            called. """
+        if "auxname" in kwargs:
+            # This check is necessary for the tests in coordinates/base
+            # `test_reload_auxiliaries_from_description`
+            # because there, auxreaders are created from descriptions without
+            # giving explicit `aux_spec`s
+            aux_spec = {kwargs["auxname"]: None}
+        elif aux_spec is None or aux_spec == "*":
+            # Add all terms found in the file if aux_spec is None
             aux_spec = {term: term for term in self.terms}
         elif isinstance(aux_spec, str):
-            # This is to keep XVGReader functioning as-is
-            # setting the data selector to None, the default for XVGReader
+            # This is to keep XVGReader functioning as-is, working with strings
+            # for what used to be `auxname`. Often, no `auxterms` are specified
+            # for XVG files. The below sets the data selector to None,
+            # the default for XVGReader
             aux_spec = {aux_spec: None}
         for auxname in aux_spec:
             if auxname in coord_parent.aux_list:
                 raise ValueError(f"Auxiliary data with name {auxname} already "
                                  "exists")
             description = self.get_description()
+            # make sure kwargs are also used
+            description_kwargs = {**description, **kwargs}
             # Make a copy of the auxreader for every attribute to add
             # This is necessary so all attributes can be iterated over
-            aux = auxreader(**description)
+            aux = auxreader(**description_kwargs)
             aux.auxname = auxname
             aux.data_selector = aux_spec[auxname]
             coord_parent._auxs[auxname] = aux

@@ -127,7 +127,7 @@ import numbers
 import copy
 import warnings
 import weakref
-from typing import Union, Optional, List
+from typing import Union, Optional, List, Dict
 
 from .timestep import Timestep
 from . import core
@@ -981,19 +981,11 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             natoms=self.n_atoms
         ))
 
-    def add_auxiliary(self, aux_spec, auxdata, format=None, **kwargs):
-        if type(auxdata) not in list(_AUXREADERS.values()):
-            # i.e. if auxdata is a file, not an instance of an AuxReader
-            reader_type = get_auxreader_for(auxdata)
-            auxreader = reader_type(auxdata)
-        else:
-            auxreader = auxdata
-        auxreader.attach_auxiliary(self, aux_spec, format, **kwargs)
-
-    def add_auxiliary_old(self, auxname: Union[str, List[str]],
-                          auxdata: Union[str, AuxReader],
-                          auxterm: Union[str, List[str], None] = None,
-                          format=None, **kwargs) -> None:
+    def add_auxiliary(self,
+                      aux_spec: Union[str, Dict[str, str]] = None,
+                      auxdata: Union[str, AuxReader] = None,
+                      format: str = None,
+                      **kwargs) -> None:
         """Add auxiliary data to be read alongside trajectory.
 
         Auxiliary data may be any data timeseries from the trajectory
@@ -1012,11 +1004,28 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         The representative value(s) of the auxiliary data for each timestep (as
         calculated by the :class:`~MDAnalysis.auxiliary.base.AuxReader`) are
         stored in the current timestep in the ``ts.aux`` namespace under
-        *auxname*; e.g. to add additional pull force data stored in
+        *aux_spec*; e.g. to add additional pull force data stored in
         pull-force.xvg::
 
             u = MDAnalysis.Universe(PDB, XTC)
             u.trajectory.add_auxiliary('pull', 'pull-force.xvg')
+
+
+        In the more general case (for example for energy readers),
+        *aux_spec* is expected to be a dictionary that maps the desired
+        attribute name in the ``ts.aux`` namespace to the precise data to be
+        added as identified by a :attr:`data_selector`::
+
+            term_dict = {"temp": "Temperature", "epot": "Potential"}
+            u.trajectory.add_auxiliary(term_dict, "ener.edr")
+
+
+        All data that is present in the (energy) file can be added when the
+        `aux_spec` is omitted. `auxdata` then needs to be passed explicitly
+        like so::
+
+            u.trajectory.add_auxiliary(auxdata="ener.edr")
+
 
         The representative value for the current timestep may then be accessed
         as ``u.trajectory.ts.aux.pull`` or ``u.trajectory.ts.aux['pull']``.
@@ -1030,99 +1039,16 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         Auxiliary data is assumed to be time-ordered, with no duplicates. See
         the :ref:`Auxiliary API`.
         """
-        # auxdata can be an AuxReader or the data itself, try to get AuxReader
-        # from auxdata
-        try:
-            auxreader = get_auxreader_for(auxdata)
-        except AttributeError as e:
-            if str(e) == "auxdata is already an AuxReader instance":
-                # user already gave instance of auxreader
-                auxreader = ""  # assign something so check below works
-
-        # Check if XVG format, call appropriate method
-        if isinstance(auxdata, _AUXREADERS["XVG"]) or \
-                auxreader == _AUXREADERS["XVG"]:
-            self._add_aux_xvg(auxname, auxdata, format, **kwargs)
-
-        # Check if EDR format
-        elif isinstance(auxdata, _AUXREADERS["EDR"]) or \
-                auxreader == _AUXREADERS["EDR"]:
-            # Users can specify multiple values to be added, parse selection
-            if auxname == "*":
-                # all terms found in file to be added
-                if not isinstance(auxdata, _AUXREADERS["EDR"]):
-                    # Read file into EDRReader to gain access to auxdata.terms
-                    auxdata = auxreader(auxdata)
-                for term in auxdata.terms:
-                    name = term
-                    self._add_aux_edr(name, auxdata, term, format, **kwargs)
-
-            elif isinstance(auxname, list):
-                # User gave list of terms to be added
-                for entry, name in enumerate(auxname):
-                    if not auxterm:
-                        # auxterm not specified, use auxname as auxterm
-                        term = name
-                        self._add_aux_edr(name, auxdata, term,
-                                          format, **kwargs)
-                    else:
-                        # auxterms are specified, pull these terms from edr and
-                        # assign to auxname. Lists must be of equal length
-                        # and are assumed to be ordered.
-                        if len(auxname) != len(auxterm):
-                            raise ValueError("auxname and auxterm must have "
-                                             f"the same number of terms, but "
-                                             f"have {len(auxname)} and "
-                                             f"{len(auxterm)} instead.")
-                        self._add_aux_edr(name, auxdata, auxterm[entry],
-                                          format, **kwargs)
-
-            elif isinstance(auxname, str):
-                # User specified single energy term to be added
-                if not auxterm:
-                    auxterm = auxname
-                self._add_aux_edr(auxname, auxdata, auxterm, format, **kwargs)
-
-    def _add_aux_xvg(self,
-                     auxname: str,
-                     auxdata: Union[str, AuxReader],
-                     format, **kwargs) -> None:
-        if auxname in self.aux_list:
-            raise ValueError("Auxiliary data with name {name} already "
-                             "exists".format(name=auxname))
-        if isinstance(auxdata, AuxReader):
-            aux = auxdata
-            aux.auxname = auxname
+        if auxdata is None:
+            raise AttributeError("No input `auxdata` specified, but it needs "
+                                 "to be provided.")
+        if type(auxdata) not in list(_AUXREADERS.values()):
+            # i.e. if auxdata is a file, not an instance of an AuxReader
+            reader_type = get_auxreader_for(auxdata)
+            auxreader = reader_type(auxdata)
         else:
-            aux = auxreader(auxdata, format=format, auxname=auxname, **kwargs)
-        self._auxs[auxname] = aux
-        self.ts = aux.update_ts(self.ts)
-
-    def _add_aux_edr(self,
-                     auxname: Union[str, List[str]],
-                     auxdata: Union[str, AuxReader],
-                     auxterm: Union[str, List[str]],
-                     format, **kwargs) -> None:
-
-        if auxname in self.aux_list:
-            raise ValueError(f"Auxiliary data with name {auxname} already "
-                             "exists")
-        if isinstance(auxdata, AuxReader):
-            # Create new AuxReader instance for each term to be added
-            # to allow for iteration of all of them.
-            # Needs to be done, otherwise only the last term that is added is
-            # iterated over.
-            description = auxdata.get_description()
-            aux = auxreader(**description)
-            aux.auxname = auxname
-            aux.data_selector = auxterm
-
-        else:
-            aux = auxreader(auxdata, format=format, auxname=auxname,
-                            data_selector=auxterm, **kwargs)
-
-        self._auxs[auxname] = aux
-        self.ts = aux.update_ts(self.ts)
+            auxreader = auxdata
+        auxreader.attach_auxiliary(self, aux_spec, format, **kwargs)
 
     def remove_auxiliary(self, auxname):
         """Clear data and close the :class:`~MDAnalysis.auxiliary.base.AuxReader`

@@ -127,6 +127,10 @@ class BaseAuxReference(object):
 
 class BaseAuxReaderTest(object):
 
+    def test_raise_error_no_auxdata_provided(self, ref, ref_universe):
+        with pytest.raises(AttributeError, match="No input `auxdata`"):
+            ref_universe.trajectory.add_auxiliary()
+
     def test_n_steps(self, ref, reader):
         assert len(reader) == ref.n_steps, "number of steps does not match"
 
