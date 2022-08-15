@@ -22,6 +22,18 @@
 #
 # cython: linetrace=True
 
+"""\
+BondTable --- :mod:`MDAnalysis.core.bondtable`
+========================================================
+
+.. versionadded:: 2.3.0
+
+:class:`BondTable` is a table-like representation of bonds and bond
+attributes that allows fast lookup. 
+
+TODO: Add in-depth discussion.
+"""
+
 from libcpp.vector cimport vector
 from libcpp.map cimport map as cmap
 from libcpp.set cimport set as cset
