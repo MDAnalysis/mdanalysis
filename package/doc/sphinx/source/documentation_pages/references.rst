@@ -61,8 +61,10 @@ code (:mod:`MDAnalysis.analysis.align`) that uses the
 
    Liu2010
 
-If you use the helix analysis in
+If you use the HELANAL_ algorithm in
 :mod:`MDAnalysis.analysis.helix_analysis` please cite :cite:p:`a-Bansal2000,a-Sugeta1967`.
+
+.. _HELANAL: https://web.archive.org/web/20100818185943/http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html
 
 .. bibliography::
    :filter: False

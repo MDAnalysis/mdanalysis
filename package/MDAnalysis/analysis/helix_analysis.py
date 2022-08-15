@@ -32,12 +32,14 @@ HELANAL --- analysis of protein helices
 .. versionadded:: 2.0.0
 
 This module contains code to analyse protein helices using the
-HELANAL algorithm :cite:p:`Bansal2000,Sugeta1967`.
+HELANAL_ algorithm :cite:p:`Bansal2000,Sugeta1967`.
 
-The HELANAL algorithm quantifies the geometry of helices in proteins on the
+The HELANAL_ algorithm quantifies the geometry of helices in proteins on the
 basis of their Cα atoms. It can determine local structural features such as the
 local helical twist and rise, virtual torsion angle, local helix origins and
 bending angles between successive local helix axes.
+
+.. _HELANAL: https://web.archive.org/web/20100818185943/http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html
 
 
 Example use
