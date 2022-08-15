@@ -32,7 +32,7 @@ cimport numpy as cnp
 cnp.import_array()
 
 
-cdef class TopologyTable:
+cdef class BondTable:
     # number of atoms in the table
     cdef int max_index
     # which bond index entry in _ix_pair_array is value in input

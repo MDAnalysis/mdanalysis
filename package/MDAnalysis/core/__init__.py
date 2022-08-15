@@ -50,8 +50,8 @@ the coordinates as a numpy array ::
 and write your own Python code.
 """
 
-__all__ = ['AtomGroup', 'Selection', 'TopologyTable']
+__all__ = ['AtomGroup', 'Selection', 'BondTable']
 
 from .groups import AtomGroup
 from .selection import Selection
-from .topologytable import TopologyTable
+from .bondtable import BondTable

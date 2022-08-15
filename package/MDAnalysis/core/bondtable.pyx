@@ -50,9 +50,20 @@ cdef extern from *:
     void sort_via_score(vector[size_t] & indices, vector[cpair[int, int]] & scores)
 
 
-cdef class TopologyTable:
-    def __cinit__(self, int[:, :] val, typ,  guess, order, **kwargs):
-        """Initialise C++ level parameters of a TopologyTable
+cdef class BondTable:
+    """
+    A table-like structure used to look up bonds with better scaling than a
+    dictionary or map. This is acheived by mapping the input array of indices
+    to a unique array of indices which are then accessed using a span, bypassing
+    the need to look up the bonds in a key:value paired datastructure. 
+
+    Notes
+    -----
+
+    Using `__cinit__` is avoided here to enable pickling of the reader.
+    """
+    def __init__(self, int[:, :] val, typ,  guess, order, **kwargs):
+        """Initialise a BondTable
 
         Parameters
         ----------

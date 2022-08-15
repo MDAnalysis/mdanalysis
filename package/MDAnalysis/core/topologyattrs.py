@@ -56,7 +56,7 @@ from .groups import (ComponentBase, GroupBase,
                      Atom, Residue, Segment,
                      AtomGroup, ResidueGroup, SegmentGroup,
                      check_wrap_and_unwrap, _pbc_to_wrap)
-from .topologytable import TopologyTable
+from .bondtable import BondTable
 from .. import _TOPOLOGY_ATTRS, _TOPOLOGY_TRANSPLANTS, _TOPOLOGY_ATTRNAMES
 
 
@@ -2623,7 +2623,7 @@ class Bonds(_Connection):
         vals_arr = np.asarray(self.values, dtype=np.int32)
         if vals_arr.shape == (0,):
             vals_arr = np.empty((0,0), dtype=np.int32)
-        self._toptable = TopologyTable(vals_arr, self.types, self._guessed, self.order)
+        self._bondtable = BondTable(vals_arr, self.types, self._guessed, self.order)
 
 
     def get_atoms(self, ag):
@@ -2636,7 +2636,7 @@ class Bonds(_Connection):
         ag : AtomGroup
 
         """
-        b_idx,types, guessed, order  = self._toptable.get_b_t_g_o_slice(ag.ix)
+        b_idx,types, guessed, order  = self._bondtable.get_b_t_g_o_slice(ag.ix)
         return TopologyGroup(b_idx, ag.universe,
                              self.singular[:-1],
                              types,
