@@ -39,8 +39,8 @@ HBONDS plugin`_.
 
 .. _`VMD HBONDS plugin`: http://www.ks.uiuc.edu/Research/vmd/plugins/hbonds/
 
-Please cite :cite:p:`Smith2019` if you use this module in addition to the normal
-MDAnalysis citations.
+Please cite :cite:p:`Smith2019` if you use this module in addition to the
+normal MDAnalysis citations.
 
 Input
 ------
