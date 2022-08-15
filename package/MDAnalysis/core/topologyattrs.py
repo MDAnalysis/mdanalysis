@@ -2537,12 +2537,12 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
             # maybe we got passed an Atom
             unique_bonds = self._bondDict[ag.ix]
         unique_bonds = np.array(sorted(unique_bonds), dtype=object)
-        b_idx, types, guessed, order = np.hsplit(unique_bonds, 4)
-        b_idx = np.array(b_idx.ravel().tolist(), dtype=np.int32)
+        bond_idx, types, guessed, order = np.hsplit(unique_bonds, 4)
+        bond_idx = np.array(bond_idx.ravel().tolist(), dtype=np.int32)
         types = types.ravel()
         guessed = guessed.ravel()
         order = order.ravel()
-        return TopologyGroup(b_idx, ag.universe,
+        return TopologyGroup(bond_idx, ag.universe,
                              self.singular[:-1],
                              types,
                              guessed,
