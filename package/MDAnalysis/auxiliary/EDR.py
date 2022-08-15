@@ -27,8 +27,8 @@ EDR auxiliary reader --- :mod:`MDAnalysis.auxiliary.EDR`
 .. versionadded:: 2.3.0
 
 EDR_ files are binary files following the XDR_ protocol. They are written by
-GROMACS during simulations and contain the time-series energy data of the
-system.
+GROMACS during simulations and contain time-series non-trajectory data on the
+system, such as energies, temperature, or pressure.
 
 pyedr_ is a Python package that reads EDR binary files and returns them
 human-readable form as a dictionary of NumPy arrays. It is used by the EDR
@@ -66,22 +66,21 @@ trajectories::
     # See which terms are present in the file
     In [3]: aux.terms
     Out[3]: ['Time', 'Bond', 'Angle', ...]
-    # add the Potential data under the name epot
-    In [4]: u.trajectory.add_auxiliary("epot", aux, "Potential")
-    # add the Angle energy without stating an `auxterm`
-    In [5]: u.trajectory.add_auxiliary("Angle", aux)
+    # add data on potential and angles under the names epot and angle
+    In [4]: u.trajectory.add_auxiliary({"epot": "Potential",
+                                        "angle": "Angle"}, aux)
     # access the value of Potential and Angle for a timestep
-    In [6]: u.trajectory.ts.aux.epot
-    Out[6]: -525164.0625
-    In [7]: u.trajectory.ts.aux.Angle
-    Out[7]: 3764.52734375
+    In [5]: u.trajectory.ts.aux.epot
+    Out[5]: -525164.0625
+    In [6]: u.trajectory.ts.aux.Angle
+    Out[6]: 3764.52734375
     # dictionary style accession also works
-    In [8]: u.trajectory.ts.aux["epot"]
-    Out[8]: -525164.0625
+    In [7]: u.trajectory.ts.aux["epot"]
+    Out[7]: -525164.0625
 
 
 .. note::
-    Some `auxterms` have spaces in their names. Unless an `auxname` without a
+    Some auxiliary data names have spaces. Unless an attribute name without a
     space is provided, these terms will not be accessible via the attribute
     syntax. Only the dictionary syntax will work in that case.
 
@@ -111,8 +110,7 @@ returned in this dictionary to make plotting easier::
 
     # extract all terms:
     all_terms = aux.get_data()
-    # alternatively
-    all_terms = aux.get_data("*")
+
 
 .. _EDR: https://manual.gromacs.org/current/reference-manual/file-formats.html#edr
 .. _XDR: https://datatracker.ietf.org/doc/html/rfc1014
@@ -185,7 +183,7 @@ class EDRStep(base.AuxStep):
 
 
 class EDRReader(base.AuxReader):
-    """ Auxiliary reader to read data from a .edr file.
+    """ Auxiliary reader to read data from an .edr file.
 
     Default reader for .edr files. All data from the file will be read and
     stored on initialisation.
@@ -285,81 +283,23 @@ class EDRReader(base.AuxReader):
         always returned to allow easy plotting. """
         if data_selector is None:
             return self.data_dict
+
         elif isinstance(data_selector, list):
             data_dict = {"Time": self.data_dict["Time"]}
             for term in data_selector:
-                if term not in self.terms:
-                    raise KeyError(f"data_selector {term} invalid. Check the "
-                                   "EDRReader's `terms` attribute.")
-                data_dict[term] = self.data_dict[term]
+                try:
+                    data_dict[term] = self.data_dict[term]
+                except KeyError:
+                    raise KeyError(f"data_selector {term} invalid. Check "
+                                   "the EDRReader's `terms` attribute.")
             return data_dict
-        elif isinstance(data_selector, str):
-            if data_selector not in self.terms:
-                raise KeyError(f"data_selector {data_selector} invalid. Check "
-                               "the EDRReader's `terms` attribute.")
-            data_dict = {"Time": self.data_dict["Time"],
-                         data_selector: self.data_dict[data_selector]}
-            return data_dict
+
         else:
-            raise ValueError(f"data_selector of type {type(data_selector)} is "
-                             "not supported. Use list or str to indicate valid"
-                             " terms. Check the EDRReader's `terms` "
-                             "attribute.")
-
-    def calc_representative(self) -> Dict[str, np.ndarray]:
-        """ Calculate representative auxiliary value(s) from the data in
-        *frame_data*.
-        Overloaded here to accommodate the different data type. Now, this works
-        for energy data dictionaries.
-
-
-        Currently implemented options for calculating representative value are:
-
-          * `closest`: default; the value(s) from the step closest to in time
-            to the trajectory timestep
-
-          * `average`: average of the value(s) from steps 'assigned' to the
-            trajectory timestep.
-
-        Additionally, if ``cutoff`` is specified, only steps within this time
-        of the trajectory timestep are considered in calculating the
-        representative.
-
-        If no auxiliary steps were assigned to the timestep, or none fall
-        within the cutoff, representative values are set to ``np.nan``.
-
-        Returns
-        -------
-        Dict[str, ndarray]
-            Dictionary with keys of auxterms and array of auxiliary value(s)
-            'representative' for the timestep.
-        """
-        if self.cutoff == -1:
-            cutoff_data = self.frame_data
-        else:
-            cutoff_data = {key: val for key, val in self.frame_data.items()
-                           if abs(key) <= self.cutoff}
-
-        if len(cutoff_data) == 0:
-            # no steps are 'assigned' to this trajectory frame, so return
-            # values of ``np.nan``
-            value = self.auxstep._empty_data()
-        elif self.represent_ts_as == 'closest':
-            min_diff = min([abs(i) for i in cutoff_data])
-            # we don't know the original sign, and might have two
-            # equally-spaced steps; check the earlier time first
+            term = data_selector
+            data_dict = {"Time": self.data_dict["Time"]}
             try:
-                value = cutoff_data[-min_diff]
+                data_dict[term] = self.data_dict[term]
             except KeyError:
-                value = cutoff_data[min_diff]
-        elif self.represent_ts_as == 'average':
-            value = {}
-            for dataset in cutoff_data:
-                for term in self.terms:
-                    if term not in value:
-                        value[term] = cutoff_data[dataset][term]
-                    else:
-                        value[term] += cutoff_data[dataset][term]
-            for term in value:
-                value[term] = value[term] / len(cutoff_data)
-        return value
+                raise KeyError(f"data_selector {term} invalid. Check the "
+                               "EDRReader's `terms` attribute.")
+            return data_dict

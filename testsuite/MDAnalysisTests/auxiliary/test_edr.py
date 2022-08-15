@@ -65,7 +65,7 @@ class EDRReference(BaseAuxReference):
         self.description = {'dt': self.dt, 'represent_ts_as': 'closest',
                             'initial_time': self.initial_time,
                             'time_selector': "Time", 'data_selector': None,
-                            'constant_dt': True, 'cutoff': -1,
+                            'constant_dt': True, 'cutoff': None,
                             'auxname': self.name}
 
         def reference_auxstep(i):
@@ -349,9 +349,14 @@ class TestEDRReader(BaseAuxReaderTest):
         assert_almost_equal(ref.bonds, returned["Bond"])
 
     def test_get_data_invalid_selections(self, reader):
-        with pytest.raises(ValueError, match="data_selector of type"):
+        with pytest.raises(KeyError, match="data_selector"):
             reader.get_data(42)
         with pytest.raises(KeyError, match="data_selector"):
             reader.get_data("Not a valid term")
         with pytest.raises(KeyError, match="data_selector"):
             reader.get_data(["Bond", "Not a valid term"])
+
+    def test_warning_when_space_in_aux_spec(self, ref_universe, reader):
+        with pytest.warns(UserWarning, match="Auxiliary name"):
+            ref_universe.trajectory.add_auxiliary({"Pres. DC": "Pres. DC"},
+                                                  reader)

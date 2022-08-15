@@ -229,7 +229,7 @@ class AuxStep(object):
         Default behaviour here works when ``data`` is a ndarray of floats. May
         need to overwrite in individual format's AuxSteps.
         """
-        return np.full_like(self.data, np.nan, dtype=float)
+        return np.full_like(self.data, np.nan, dtype=np.float64)
 
 
 class AuxReader(metaclass=_AuxReaderMeta):
@@ -284,7 +284,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
                       'time_selector', 'data_selector', 'constant_dt', 'auxname',
                       'format', '_auxdata']
 
-    def __init__(self, represent_ts_as='closest', auxname=None, cutoff=-1,
+    def __init__(self, represent_ts_as='closest', auxname=None, cutoff=None,
                  **kwargs):
         # allow auxname to be optional for when using reader separate from
         # trajectory.
@@ -451,19 +451,26 @@ class AuxReader(metaclass=_AuxReaderMeta):
             # because there, auxreaders are created from descriptions without
             # giving explicit `aux_spec`s
             aux_spec = {kwargs["auxname"]: None}
+
         elif aux_spec is None or aux_spec == "*":
             # Add all terms found in the file if aux_spec is None
             aux_spec = {term: term for term in self.terms}
+
         elif isinstance(aux_spec, str):
             # This is to keep XVGReader functioning as-is, working with strings
             # for what used to be `auxname`. Often, no `auxterms` are specified
             # for XVG files. The below sets the data selector to None,
             # the default for XVGReader
             aux_spec = {aux_spec: None}
+
         for auxname in aux_spec:
             if auxname in coord_parent.aux_list:
                 raise ValueError(f"Auxiliary data with name {auxname} already "
                                  "exists")
+            if " " in auxname:
+                warnings.warn(f"Auxiliary name '{auxname}' contains a space. "
+                              "Only dictionary style accession, not attribute "
+                              f"style accession of '{auxname}' will work.")
             description = self.get_description()
             # make sure kwargs are also used
             description_kwargs = {**description, **kwargs}
@@ -586,7 +593,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
         while step < self.n_steps-1:
             next_frame, time_diff = self.step_to_frame(self.step+1, ts,
                                                        return_time_diff=True)
-            if self.cutoff != -1 and time_diff > self.cutoff:
+            if self.cutoff is not None and time_diff > self.cutoff:
                 # 'representative values' will be NaN; check next step
                 step = step + 1
             else:
@@ -702,12 +709,11 @@ class AuxReader(metaclass=_AuxReaderMeta):
         ndarray
             Array of auxiliary value(s) 'representative' for the timestep.
         """
-        if self.cutoff == -1:
+        if self.cutoff is None:
             cutoff_data = self.frame_data
         else:
             cutoff_data = {key: val for key, val in self.frame_data.items()
                            if abs(key) <= self.cutoff}
-
         if len(cutoff_data) == 0:
             # no steps are 'assigned' to this trajectory frame, so return
             # values of ``np.nan``
@@ -721,8 +727,22 @@ class AuxReader(metaclass=_AuxReaderMeta):
             except KeyError:
                 value = cutoff_data[min_diff]
         elif self.represent_ts_as == 'average':
-            value = np.mean(np.array([val for val in cutoff_data.values()]),
-                            axis=0)
+            try:
+                value = np.mean(np.array([val for val in cutoff_data.values()]),
+                                axis=0)
+            except TypeError:
+                # for readers like EDRReader, the above does not work
+                # because each step contains a dictionary of numpy arrays
+                # as data
+                value = {}
+                for dataset in cutoff_data:
+                    for term in self.terms:
+                        if term not in value:
+                            value[term] = cutoff_data[dataset][term]
+                        else:
+                            value[term] += cutoff_data[dataset][term]
+                for term in value:
+                    value[term] = value[term] / len(cutoff_data)
         return value
 
     def __enter__(self):

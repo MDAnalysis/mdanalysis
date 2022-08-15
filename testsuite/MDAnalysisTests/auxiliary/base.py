@@ -52,7 +52,7 @@ class BaseAuxReference(object):
         self.description= {'dt':self.dt, 'represent_ts_as':'closest', 
                            'initial_time':self.initial_time, 'time_selector':None,
                            'data_selector':None, 'constant_dt':True, 
-                           'cutoff':-1, 'auxname':self.name}
+                           'cutoff': None, 'auxname': self.name}
 
         def reference_auxstep(i):
             # create a reference AuxStep for step i
@@ -420,12 +420,12 @@ def assert_auxstep_equal(A, B):
     if A.time != B.time:
         raise AssertionError('A and B have different times: A.time = {}, '
                              'B.time = {}'.format(A.time, B.time))
-    if isinstance(A.data, dict):
-        # e.g. EDRReader
-        if not A.data == B.data:
+    try:
+        if A.data != B.data:
             raise AssertionError('A and B have different data: A.data = {}, '
                                  'B.data = {}'.format(A.data, B.data))
-    elif any(A.data != B.data):
-        # e.g. XVGReader
-        raise AssertionError('A and B have different data: A.data = {}, '
-                             'B.data = {}'.format(A.data, B.data))
+    except ValueError:
+        if any(A.data != B.data):
+            # e.g. XVGReader
+            raise AssertionError('A and B have different data: A.data = {}, '
+                                 'B.data = {}'.format(A.data, B.data))
