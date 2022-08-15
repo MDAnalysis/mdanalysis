@@ -33,24 +33,39 @@ cnp.import_array()
 
 
 cdef class BondTable:
-    # number of atoms in the table
+    # maximum index in the table 
     cdef int max_index
+    # whether the table has any values in it 
+    cdef cbool _is_empty
     # which bond index entry in _ix_pair_array is value in input
     cdef vector[int] _bix
     # span of each atom in _bix
     cdef vector[int] _spans
-    # which element of each bond do we need first or second
+    # mapping of bonds:bix
     cdef cmap[cpair[int, int], int] _mapping
-    cdef list _type
-    cdef list _order
-    cdef vector[int] _guessed
+    # unique list of bonds
     cdef vector[cpair[int, int]] _ix_pair_array
+    # unique list of types
+    cdef list _type
+    # unique list of orders
+    cdef list _order
+    # unique list of guesses
+    cdef vector[int] _guessed
+    # map of unique spans
     cdef cmap[int, int] _span_map
+    # convert inputs to table representation 
     cdef void _generate_bix(self, int[:, :] val, list typ, int[:] guess,
                             list order)
 
+    # low level method to get bonded atoms for a single index
     cdef vector[int] _get_bond(self, int target)
+    # low level method to get a bond pairs for a single index
     cdef cpair[vector[cpair[int, int]], cbool] _get_pair(self, int target)
+    # low level method to get whether bonds are guessed for a single index 
     cdef cpair[vector[int], cbool] _get_guess(self, int target)
-
+    # low level method to get bond type objects for a single index
+    cdef _get_typ(self, int target)
+    # low level method to get bond order objects for a single index
+    cdef _get_ord(self, int target)
+    # utility method to sort vector a and the vector b by the same index.
     cdef void _pairsort(self, vector[cpair[int, int]] & a, vector[int] & b)

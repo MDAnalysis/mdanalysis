@@ -21,6 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 # cython: linetrace=True
+
 from libcpp.vector cimport vector
 from libcpp.map cimport map as cmap
 from libcpp.set cimport set as cset
@@ -60,9 +61,9 @@ cdef class BondTable:
     Notes
     -----
 
-    Using `__cinit__` is avoided here to enable pickling of the reader.
+    Using `__cinit__` is avoided here to enable pickling of the table.
     """
-    def __init__(self, int[:, :] val, typ,  guess, order, **kwargs):
+    def __init__(self, val, typ,  guess, order, **kwargs):
         """Initialise a BondTable
 
         Parameters
@@ -79,15 +80,18 @@ cdef class BondTable:
             A list of corresponding bond order objects of length (nbonds).
 
         .. versionadded:: 2.3.0
-           Initialise C++ level parameters of a TopologyTable
         """
 
-        guess_ = np.asarray([int(i) for i in guess], dtype=np.int32)
-        order_ = list(order)
-        typ_ = list(typ)
-        self._type = []
-        self._order = []
-        self._generate_bix(val, typ_,  guess_, order_)
+        self._is_empty = False
+        if len(val) == 0:
+            self._is_empty = True
+        if not self._is_empty:
+            guess_ = np.asarray([int(i) for i in guess], dtype=np.int32)
+            order_ = list(order)
+            typ_ = list(typ)
+            self._type = []
+            self._order = []
+            self._generate_bix(val, typ_,  guess_, order_)
 
     cdef void _pairsort(self, vector[cpair[int, int]] & a, vector[int] & b):
         """
@@ -261,6 +265,8 @@ cdef class BondTable:
             A list of indices of atoms bonded to the target index.
         """
         cdef vector[int] bonds
+        if self._is_empty:
+            return bonds
         if target <= self.max_index:
             bonds = self._get_bond(target)
         else:
@@ -283,6 +289,8 @@ cdef class BondTable:
         """
         cdef vector[cpair[int, int]] pairs
         cdef cpair[vector[cpair[int, int]], cbool] ret_struct
+        if self._is_empty:
+            return []
         if target <= self.max_index:
             ret_struct = self._get_pair(target)
             if ret_struct.second:
@@ -307,6 +315,8 @@ cdef class BondTable:
         bonds: list
             The bonded atoms for the indices in targets
         """
+        if self._is_empty:
+            return np.empty((0), dtype=np.int32)
         if np.isscalar(targets):
             targets = np.asarray([targets])
         cdef vector[vector[int]] bonds
@@ -340,6 +350,8 @@ cdef class BondTable:
         pairs: np.ndarray
             An array of bonds that contain the target index 
         """
+        if self._is_empty:
+            return np.empty((0), dtype=np.int32)
         if np.isscalar(targets):
             targets = np.asarray([targets])
         cdef vector[cpair[int, int]] bonds
@@ -370,9 +382,11 @@ cdef class BondTable:
 
         Returns
         -------
-        pairs: np.ndarray
+        types: np.ndarray
             An array of bond type objects that contain the target index
         """
+        if self._is_empty:
+            return np.empty((0), dtype=object)
         if np.isscalar(targets):
             targets = np.asarray([targets])
         types = []
@@ -403,9 +417,11 @@ cdef class BondTable:
 
         Returns
         -------
-        pairs: np.ndarray
+        guesses: np.ndarray
             An array booleans for bonds that contain the target index
         """
+        if self._is_empty:
+            return np.empty((0), dtype=bool)
         if np.isscalar(targets):
             targets = np.asarray([targets])
         cdef vector[int] guesses
@@ -437,9 +453,11 @@ cdef class BondTable:
 
         Returns
         -------
-        pairs: np.ndarray
+        orders: np.ndarray
             An array of bond order objects that contain the target index
         """
+        if self._is_empty:
+            return np.empty((0), dtype=object)
         if np.isscalar(targets):
             targets = np.asarray([targets])
         orders = []
@@ -461,17 +479,40 @@ cdef class BondTable:
         return arr
 
     def get_b_t_g_o_slice(self, targets):
+        """
+        Get a slice of all four properties (bonds, types, guesses, orders)
+        for an array of indices
+
+        Parameters
+        ----------
+        targets: np.ndarray or scalar index
+            the atoms to get properties for
+
+        Returns
+        -------
+        pairs: np.ndarray
+            An array of bonds that contain the target index 
+        types: np.ndarray
+            An array of bond type objects that contain the target index
+        guesses: np.ndarray
+            An array booleans for bonds that contain the target index
+        orders: np.ndarray
+            An array of bond order objects that contain the target index
+        """
+        if self._is_empty:
+            return np.empty((0), dtype=np.int32), np.empty((0), dtype=object), np.empty((0),dtype=bool), np.empty((0), dtype=object)
         if np.isscalar(targets):
             targets = np.asarray([targets])
         cdef vector[cpair[int, int]] bonds
         cdef vector[cpair[int, int]] pair_arr
         cdef cpair[vector[cpair[int, int]], cbool] ret_struct_bond
-        types = []
-        typ_arr = []
+        cdef int i, j
+        cdef list types = []
+        cdef list typ_arr = []
         cdef vector[int] guesses
         cdef vector[int] guess_arr
-        orders = []
-        orders_arr = []
+        cdef list orders = []
+        cdef list orders_arr = []
         cdef cpair[vector[int], cbool] ret_struct_guess
         cdef cbool has_bonds, has_typ, has_guess, has_order
         for i in range(targets.shape[0]):
@@ -612,7 +653,7 @@ cdef class BondTable:
 
             return cpair[vector[cpair[int, int]], cbool](bonds, True)
 
-    def _get_typ(self, int target):
+    cdef _get_typ(self, int target):
         """
         Low level utility to get the types of the bonds for a single index
 
@@ -643,7 +684,7 @@ cdef class BondTable:
 
             return types, True
 
-    def _get_ord(self, int target):
+    cdef _get_ord(self, int target):
         """
         Low level utility to get the orders of the bonds for a single index
 
@@ -705,23 +746,3 @@ cdef class BondTable:
                 guesses.push_back(guess)
 
             return cpair[vector[int], cbool](guesses, True)
-
-    @property
-    def bix(self):
-        return self._bix
-
-    @property
-    def ix_pair_array(self):
-        return self._ix_pair_array
-
-    @property
-    def spans(self):
-        return self._spans
-
-    @property
-    def span_map(self):
-        return self._span_map
-
-    @property
-    def max_idx(self):
-        return self.max_index

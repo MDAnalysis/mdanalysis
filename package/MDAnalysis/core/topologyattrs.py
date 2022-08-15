@@ -2619,22 +2619,26 @@ class Bonds(_Connection):
 
 
     def __init__(self, values, types=None, guessed=False, order=None):
+        """
+        Initialise a Bond Attribute including a BondTable
+
+        .. versionadded:: 2.3.0 
+        """
         super().__init__(values, types, guessed, order)
         vals_arr = np.asarray(self.values, dtype=np.int32)
-        if vals_arr.shape == (0,):
-            vals_arr = np.empty((0,0), dtype=np.int32)
         self._bondtable = BondTable(vals_arr, self.types, self._guessed, self.order)
 
 
     def get_atoms(self, ag):
         """
-        Get connection values where the atom indices are in
-        the given atomgroup.
+        Get Bond values where the atom indices are in the given atomgroup by
+        querying the BondTable
 
         Parameters
         ----------
         ag : AtomGroup
 
+        .. versionadded:: 2.3.0
         """
         b_idx,types, guessed, order  = self._bondtable.get_b_t_g_o_slice(ag.ix)
         return TopologyGroup(b_idx, ag.universe,
