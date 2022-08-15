@@ -36,6 +36,7 @@ import numpy as np
 cimport numpy as cnp
 cnp.import_array()
 
+# index sort used for sorting lists in _pairsort_list
 cdef extern from *:
     """
     #include <algorithm>
@@ -46,7 +47,7 @@ cdef extern from *:
                  );
     }
     """
-    void sort_via_score(vector[size_t]& indices, vector[cpair[int,int]]& scores)
+    void sort_via_score(vector[size_t] & indices, vector[cpair[int, int]] & scores)
 
 
 cdef class TopologyTable:
@@ -55,6 +56,16 @@ cdef class TopologyTable:
 
         Parameters
         ----------
+        val: 2D memoryview of integers
+            2D array of integers of size (nbonds, 2) that define the input
+            bonds for the topologytable
+        typ: list
+            A list of corresponding bond type objects of length (nbonds)
+        guess: list[bool]
+            A list of bools of whether the bonds were guessed or not of length
+            (nbonds).
+        order: list
+            A list of corresponding bond order objects of length (nbonds).
 
         .. versionadded:: 2.3.0
            Initialise C++ level parameters of a TopologyTable
@@ -68,6 +79,11 @@ cdef class TopologyTable:
         self._generate_bix(val, typ_,  guess_, order_)
 
     cdef void _pairsort(self, vector[cpair[int, int]] & a, vector[int] & b):
+        """
+        Sort a vector of integer pairs ** a ** and sort a vector of integers
+        ** b ** by the corresponding index in **a**. Uses sort from the
+        <algorithm> header and operates inplace on both input arguments.
+        """
         cdef vector[cpair[cpair[int, int], int]] pair_arr
         cdef cpair[cpair[int, int], int] pair
         cdef cpair[int, int] ptmp
@@ -85,6 +101,12 @@ cdef class TopologyTable:
             b[i] = pair_arr[i].second
 
     def _pairsort_list(self, vector[cpair[int, int]] a, list b):
+        """
+        Sort a vector of integer pairs ** a ** and a list of Python objects
+        (PyObject*) by the corresponding index in **a**. Uses an index sort and
+        only returns the sorted list input of **b**, leaving the input
+        arguments unchanged.
+        """
         cdef int size = a.size()
         cdef size_t index
         cdef vector[size_t] indices
@@ -93,27 +115,26 @@ cdef class TopologyTable:
         for i in range(size):
             indices[i] = i
         sort_via_score(indices, a)
-         
+
         cdef list b_ = []
         for i in range(size):
             index = indices[i]
             b_.append(b[index])
-        
-        return b_ 
+
+        return b_
 
     cdef void _generate_bix(self, int[:, :] val, list typ, int[:] guess, list order):
-        """Generate bond indicies, spans and value arrays for the TopologyTable
-
+        """
+        Generate bond indicies, spans and value arrays for the BondTable
         """
         cdef vector[cpair[int, int]] _values
-        cdef vector[cpair[int, int]] _values_copy
 
-        # types must be a list as we allow flexibility in what it can be 
+        # types must be a list as we allow flexibility in what it can be
         cdef list  _type = []
         cdef list  _order = []
         cdef vector[int]  _guessed
 
-        # the bond, forward and reverse
+        # a bond, forward and reverse
         cdef cpair[int, int] bond
         cdef cpair[int, int] rev_bond
 
@@ -141,12 +162,10 @@ cdef class TopologyTable:
                 _order.append(order[i])
                 _guessed.push_back(guess[i])
 
-        # pairwise sort each array can these be done together all at once ?
+        # pairwise sort each array
         _type = self._pairsort_list(_values, _type)
         _order = self._pairsort_list(_values, _order)
         self._pairsort(_values, _guessed)
-
-        # deduplicate??
 
         # initialise spans
         cdef int lead_val
@@ -217,34 +236,74 @@ cdef class TopologyTable:
         self.max_index -= 2
 
     def get_bonds(self, int target):
-        if target > self.max_index:
-            raise IndexError("requested bond is larger than the table size")
-        cdef vector[int] bonds
-        bonds = self._get_bond(target)
-        return bonds
-    
-    def get_pairs(self, int target):
-        if target > self.max_index:
-            raise IndexError("requested bond is larger than the table size")
-        cdef vector[cpair[int, int]] bonds
-        cdef cpair[vector[cpair[int, int]], cbool] ret_struct
+        """
+        Get the bonded atoms for an atom in the BondTable
 
-        ret_struct = self._get_pair(target)
-        if ret_struct.second:
-            bonds = ret_struct.first
-            return bonds
+        Parameters
+        ----------
+        target: int
+            The index of the atom to get bonds for.
+        
+        Returns
+        -------
+        bonds: list[int]
+            A list of indices of atoms bonded to the target index.
+        """
+        cdef vector[int] bonds
+        if target <= self.max_index:
+            bonds = self._get_bond(target)
+        else:
+            pass
+        return bonds
+
+    def get_pairs(self, int target):
+        """
+        Get the bond pairs for an atom in the BondTable
+
+        Parameters
+        ----------
+        target: int
+            The index of the atom to get bonds for.
+        
+        Returns
+        -------
+        pairs: list
+            A list of bonds that contain the target index 
+        """
+        cdef vector[cpair[int, int]] pairs
+        cdef cpair[vector[cpair[int, int]], cbool] ret_struct
+        if target <= self.max_index:
+            ret_struct = self._get_pair(target)
+            if ret_struct.second:
+                pairs = ret_struct.first
+                return pairs
+            else:
+                return []
         else:
             return []
 
-    def get_bonds_slice(self, cnp.int64_t[:] targets):
+    def get_bonds_slice(self, targets):
+        """
+        Get bonded atoms for an array of indices.
+
+        Parameters
+        ----------
+        targets: np.ndarray or scalar index
+            the atoms to get bonded atoms for 
+
+        Returns
+        -------
+        bonds: list
+            The bonded atoms for the indices in targets
+        """
+        if np.isscalar(targets):
+            targets = np.asarray([targets])
         cdef vector[vector[int]] bonds
         cdef vector[int] row, tmp
         cdef int i, j, size_j
         for i in range(targets.shape[0]):
             index = targets[i]
-            if index > self.max_index:
-                pass
-            else:
+            if index <= self.max_index:
                 row = self._get_bond(index)
                 for j in range(row.size()):
                     size_j += 1
@@ -252,9 +311,15 @@ cdef class TopologyTable:
                     tmp[0] = targets[i]
                     tmp[1] = row[j]
                     bonds.push_back(tmp)
-        return bonds
+            else:
+                pass
+        return np.asarray(bonds, dtype=np.int32)
 
     def get_pairs_slice(self,  targets):
+        """
+        get the pairs 
+        
+        """
         if np.isscalar(targets):
             targets = np.asarray([targets])
         cdef vector[cpair[int, int]] bonds
@@ -263,33 +328,35 @@ cdef class TopologyTable:
         cdef cbool has_bonds
         cdef int i, j
         for i in range(targets.shape[0]):
-            ret_struct = self._get_pair(targets[i])
-            pair_arr = ret_struct.first
-            has_bonds = ret_struct.second
-            if has_bonds:
-                for j in range(pair_arr.size()):
-                    bonds.push_back(pair_arr[j])
-        
+            if targets[i] <= self.max_index:
+                ret_struct = self._get_pair(targets[i])
+                pair_arr = ret_struct.first
+                has_bonds = ret_struct.second
+                if has_bonds:
+                    for j in range(pair_arr.size()):
+                        bonds.push_back(pair_arr[j])
+            else:
+                pass
         return np.asarray(bonds, dtype=np.int32)
 
     def get_types_slice(self, targets):
         if np.isscalar(targets):
             targets = np.asarray([targets])
-        cdef list types = []
-        cdef list typ_arr
+        types = []
+        typ_arr = []
         cdef cpair[vector[int], cbool] ret_struct
         cdef cbool has_typ
         cdef int i, j
-        cdef cnp.ndarray arr 
+        cdef cnp.ndarray arr
         for i in range(targets.shape[0]):
-            if targets[i] > self.max_index:
-                raise IndexError("requested bond is larger than the table size")
-            typ_arr, has_typ = self._get_typ(targets[i])
-            if has_typ:
-                for j in range(len(typ_arr)):
-                    types.append(typ_arr[j])
-        
-        arr =  np.asarray(types).astype(object)
+            if targets[i] <= self.max_index:
+                typ_arr, has_typ = self._get_typ(targets[i])
+                if has_typ:
+                    for j in range(len(typ_arr)):
+                        types.append(typ_arr[j])
+            else:
+                pass
+        arr = np.asarray(types).astype(object)
         return arr
 
     def get_guess_slice(self, targets):
@@ -301,35 +368,37 @@ cdef class TopologyTable:
         cdef cbool has_guess
         cdef int i, j
         for i in range(targets.shape[0]):
-            if targets[i] > self.max_index:
-                raise IndexError("requested bond is larger than the table size")
-            ret_struct = self._get_guess(targets[i])
-            guess_arr = ret_struct.first
-            has_guess = ret_struct.second
-            if has_guess:
-                for j in range(guess_arr.size()):
-                    guesses.push_back(guess_arr[j])
-        
+            if targets[i] <= self.max_index:
+                ret_struct = self._get_guess(targets[i])
+                guess_arr = ret_struct.first
+                has_guess = ret_struct.second
+                if has_guess:
+                    for j in range(guess_arr.size()):
+                        guesses.push_back(guess_arr[j])
+            else:
+                pass
+
         return np.asarray(guesses).astype(bool)
 
     def get_order_slice(self, targets):
         if np.isscalar(targets):
             targets = np.asarray([targets])
-        cdef list orders = []
-        cdef list orders_arr
+        orders = []
+        orders_arr = []
         cdef cpair[vector[int], cbool] ret_struct
         cdef cbool has_order
         cdef int i, j
-        cdef cnp.ndarray arr 
+        cdef cnp.ndarray arr
         for i in range(targets.shape[0]):
-            if targets[i] > self.max_index:
-                raise IndexError("requested bond is larger than the table size")
-            orders_arr, has_order = self._get_ord(targets[i])
-            if has_order:
-                for j in range(len(orders_arr)):
-                    orders.append(orders_arr[j])
-        
-        arr  = np.asarray(orders).astype(object)
+            if targets[i] <= self.max_index:
+                orders_arr, has_order = self._get_ord(targets[i])
+                if has_order:
+                    for j in range(len(orders_arr)):
+                        orders.append(orders_arr[j])
+            else:
+                pass
+
+        arr = np.asarray(orders).astype(object)
         return arr
 
     def get_b_t_g_o_slice(self, targets):
@@ -338,52 +407,82 @@ cdef class TopologyTable:
         cdef vector[cpair[int, int]] bonds
         cdef vector[cpair[int, int]] pair_arr
         cdef cpair[vector[cpair[int, int]], cbool] ret_struct_bond
-        cdef list types = []
-        cdef list typ_arr
+        types = []
+        typ_arr = []
         cdef vector[int] guesses
         cdef vector[int] guess_arr
-        cdef list orders = []
-        cdef list orders_arr
+        orders = []
+        orders_arr = []
         cdef cpair[vector[int], cbool] ret_struct_guess
         cdef cbool has_bonds, has_typ, has_guess, has_order
         for i in range(targets.shape[0]):
-            ret_struct_bond = self._get_pair(targets[i])
-            pair_arr = ret_struct_bond.first
-            has_bonds = ret_struct_bond.second
-            if has_bonds:
-                for j in range(pair_arr.size()):
-                    bonds.push_back(pair_arr[j])
-            typ_arr, has_typ = self._get_typ(targets[i])
-            if has_typ:
-                for j in range(len(typ_arr)):
-                    types.append(typ_arr[j])
-            ret_struct_guess = self._get_guess(targets[i])
-            guess_arr = ret_struct_guess.first
-            has_guess = ret_struct_guess.second
-            if has_guess:
-                for j in range(guess_arr.size()):
-                    guesses.push_back(guess_arr[j])
-            orders_arr, has_order = self._get_ord(targets[i])
-            if has_order:
-                for j in range(len(orders_arr)):
-                    orders.append(orders_arr[j])
-        return bonds, types, guesses, orders
-    
+            if targets[i] <= self.max_index:
+                
+                ret_struct_bond = self._get_pair(targets[i])
+                pair_arr = ret_struct_bond.first
+                has_bonds = ret_struct_bond.second
+                if has_bonds:
+                    for j in range(pair_arr.size()):
+                        bonds.push_back(pair_arr[j])
+                typ_arr, has_typ = self._get_typ(targets[i])
+                if has_typ:
+                    for j in range(len(typ_arr)):
+                        types.append(typ_arr[j])
+                ret_struct_guess = self._get_guess(targets[i])
+                guess_arr = ret_struct_guess.first
+                has_guess = ret_struct_guess.second
+                if has_guess:
+                    for j in range(guess_arr.size()):
+                        guesses.push_back(guess_arr[j])
+                orders_arr, has_order = self._get_ord(targets[i])
+                if has_order:
+                    for j in range(len(orders_arr)):
+                        orders.append(orders_arr[j])
+            else:
+                pass
+        return np.asarray(bonds, dtype=np.int32), np.asarray(types, dtype=object), np.asarray(guesses, dtype=bool), np.asarray(orders, dtype=object)
+
     @property
     def bonds(self):
-        return self._ix_pair_array
+        """
+        The unique bonds in the BondTable
+        
+        Returns
+        -------
+        bonds: np.ndarray
+            Unique bond pairs in the BondTable
+        """
+        return np.asarray(self._ix_pair_array, dtype=np.int32)
 
     @property
     def types(self):
+        """
+        The types of the unique bonds in the BondTable 
 
-        return np.asarray(self._type)
+        Returns
+        -------
+        types: np.ndarray
+            The types of the unique bonds
+        """
+        return np.asarray(self._type, dtype=object)
 
     @property
     def orders(self):
-        return np.asarray(self._order)
+        """
+        The orders of the unique bonds in the BondTable
+
+        Returns
+        -------
+        orders: np.ndarray
+            The orders of the unique bonds
+        """
+        return np.asarray(self._order, dtype=object)
 
     @property
     def guessed(self):
+        """
+        Whether the 
+        """
         cdef cnp.npy_intp size[1]
         size[0] = self._guessed.size()
         cdef cnp.ndarray arr
@@ -391,6 +490,19 @@ cdef class TopologyTable:
         return arr.astype(bool)
 
     cdef vector[int] _get_bond(self, int target):
+        """
+        Low level utility to get the bonds for a single index
+
+        Parameters
+        ----------
+        target: int
+            The target atom to get bonds for
+        
+        Returns
+        -------
+        bonds: vector[int]
+            The bonded atoms for the target index
+        """
         # private, does not check for target < self.max_index
         cdef int start = self._spans[target]
         cdef int end = self._spans[target+1]
@@ -409,8 +521,22 @@ cdef class TopologyTable:
                 else:
                     bonds.push_back(second)
             return bonds
-    
+
     cdef cpair[vector[cpair[int, int]], cbool] _get_pair(self, int target):
+        """
+        Low level utility to get the bond pairs for a single index
+
+        Parameters
+        ----------
+        target: int
+            The target atom to get bonds for
+        
+        Returns
+        -------
+        struct: pair[vector[pair[int,int]], bool]
+            Pair containing the vector of pairs, and whether the target index
+            had any bonded atoms. 
+        """
         # private, does not check for target < self.max_index
         cdef int start = self._spans[target]
         cdef int end = self._spans[target+1]
@@ -423,10 +549,25 @@ cdef class TopologyTable:
                 b_ix = self._bix[i]
                 pair = self._ix_pair_array[b_ix]
                 bonds.push_back(pair)
-      
+
             return cpair[vector[cpair[int, int]], cbool](bonds, True)
 
-    def  _get_typ(self, int target):
+    def _get_typ(self, int target):
+        """
+        Low level utility to get the types of the bonds for a single index
+
+        Parameters
+        ----------
+        target: int
+            The target atom to get bonds for
+        
+        Returns
+        -------
+        types: list
+            The type objects of the bonds
+        has_bonds: bool
+            If there are any bonded atoms for the target index
+        """
         # private, does not check for target < self.max_index
         cdef int start = self._spans[target]
         cdef int end = self._spans[target+1]
@@ -439,10 +580,25 @@ cdef class TopologyTable:
                 b_ix = self._bix[i]
                 typ = self._type[b_ix]
                 types.append(typ)
-      
+
             return types, True
 
-    def  _get_ord(self, int target):
+    def _get_ord(self, int target):
+        """
+        Low level utility to get the orders of the bonds for a single index
+
+        Parameters
+        ----------
+        target: int
+            The target atom to get bonds for
+        
+        Returns
+        -------
+        orders: list
+            The order objects of the bonds
+        has_bonds: bool
+            If there are any bonded atoms for the target index
+        """
         # private, does not check for target < self.max_index
         cdef int start = self._spans[target]
         cdef int end = self._spans[target+1]
@@ -455,11 +611,26 @@ cdef class TopologyTable:
                 b_ix = self._bix[i]
                 ord = self._order[b_ix]
                 orders.append(ord)
-      
+
             return orders, True
 
-
     cdef cpair[vector[int], cbool] _get_guess(self, int target):
+        """
+        Low level utility to get the guesses of the bonds for a single index
+
+        Parameters
+        ----------
+        target: int
+            The target atom to get bonds for
+        
+        Returns
+        -------
+        guesses: list[bool]
+            If the bond for this index was guessed
+        struct: pair[vector[int], bool]
+            Pair containing the vector of guesses (cast to int), and whether the
+            target index had any bonded atoms. 
+        """
         # private, does not check for target < self.max_index
         cdef int start = self._spans[target]
         cdef int end = self._spans[target+1]
@@ -472,9 +643,8 @@ cdef class TopologyTable:
                 b_ix = self._bix[i]
                 guess = self._guessed[b_ix]
                 guesses.push_back(guess)
-      
-            return cpair[vector[int], cbool](guesses, True)
 
+            return cpair[vector[int], cbool](guesses, True)
 
     @property
     def bix(self):
