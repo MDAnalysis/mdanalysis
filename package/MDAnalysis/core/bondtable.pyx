@@ -328,8 +328,17 @@ cdef class BondTable:
 
     def get_pairs_slice(self,  targets):
         """
-        get the pairs 
+        Get the bond pairs for an array of indices
         
+        Parameters
+        ----------
+        targets: np.ndarray or scalar index
+            the atoms to get bond pairs for
+
+        Returns
+        -------
+        pairs: np.ndarray
+            An array of bonds that contain the target index 
         """
         if np.isscalar(targets):
             targets = np.asarray([targets])
@@ -351,6 +360,19 @@ cdef class BondTable:
         return np.asarray(bonds, dtype=np.int32)
 
     def get_types_slice(self, targets):
+        """
+        Get bond types for an array of indices
+        
+        Parameters
+        ----------
+        targets: np.ndarray or scalar index
+            the atoms to get types for
+
+        Returns
+        -------
+        pairs: np.ndarray
+            An array of bond type objects that contain the target index
+        """
         if np.isscalar(targets):
             targets = np.asarray([targets])
         types = []
@@ -367,10 +389,23 @@ cdef class BondTable:
                         types.append(typ_arr[j])
             else:
                 pass
-        arr = np.asarray(types).astype(object)
+        arr = np.asarray(types, dtype=object)
         return arr
 
     def get_guess_slice(self, targets):
+        """
+        Get whether bonds have been guessed for an array of indices
+        
+        Parameters
+        ----------
+        targets: np.ndarray or scalar index
+            the atoms to get guesses for
+
+        Returns
+        -------
+        pairs: np.ndarray
+            An array booleans for bonds that contain the target index
+        """
         if np.isscalar(targets):
             targets = np.asarray([targets])
         cdef vector[int] guesses
@@ -389,9 +424,22 @@ cdef class BondTable:
             else:
                 pass
 
-        return np.asarray(guesses).astype(bool)
+        return np.asarray(guesses, dtype=bool)
 
     def get_order_slice(self, targets):
+        """
+        Get bond orders for an array of indices
+        
+        Parameters
+        ----------
+        targets: np.ndarray or scalar index
+            the atoms to get orders for
+
+        Returns
+        -------
+        pairs: np.ndarray
+            An array of bond order objects that contain the target index
+        """
         if np.isscalar(targets):
             targets = np.asarray([targets])
         orders = []
@@ -492,13 +540,14 @@ cdef class BondTable:
     @property
     def guessed(self):
         """
-        Whether the 
+        Whether the bond has been guessed for the unique bonds in the BondTable
+
+        Returns
+        -------
+        guesses: np.ndarray
+            Whether each unique bond has been guessed
         """
-        cdef cnp.npy_intp size[1]
-        size[0] = self._guessed.size()
-        cdef cnp.ndarray arr
-        arr = to_numpy_from_spec(self, 1, size, cnp.NPY_INT32, & self._guessed[0])
-        return arr.astype(bool)
+        return np.asarray(self._guessed, dtype=bool)
 
     cdef vector[int] _get_bond(self, int target):
         """
