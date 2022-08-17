@@ -126,8 +126,8 @@ def _topology_from_file_like(topology_file, topology_format=None,
             "Failed to construct topology from file {0}"
             " with parser {1}.\n"
             "Error: {2}".format(topology_file, parser, err))
+    formats = []
     if hasattr(parser, 'format'):
-        formats = []
         if not isinstance(parser.format, list):
             formats.append(parser.format)
         else:
