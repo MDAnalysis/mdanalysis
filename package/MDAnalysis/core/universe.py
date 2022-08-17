@@ -348,6 +348,7 @@ class Universe(object):
             'all_coordinates': all_coordinates
         }
         self._kwargs.update(kwargs)
+        self._parser = []
         format, topology_format = _resolve_formats(
             *coordinates, format=format, topology_format=topology_format)
         if not isinstance(topology, Topology) and topology is not None:
@@ -1479,7 +1480,9 @@ class Universe(object):
         to_guess: list
         list of atrributes to be guessed then added to the universe
         """
+        begin_guess=False
         parser = self._parser
+            
         if ('MINIMAL' not in  parser and
             'THINGY' not in parser and self._topology.n_atoms > 0 and
                 any(fmt in _PARSERS for fmt in parser)):
@@ -1487,9 +1490,10 @@ class Universe(object):
         # check if a file is txyz format to handle its
         # to preserve its special behavior of guessing
         # atom masses from names
-        txyz=False
-        if 'TXYZ' in parser or 'ARC' in parser:
-            txyz = True
+            txyz=False
+            if 'TXYZ' in parser or 'ARC' in parser:
+                txyz = True
+            
         if begin_guess:
             guesser = get_guesser(context, self.universe, txyz=txyz)
             if guesser.is_guessable(to_guess):

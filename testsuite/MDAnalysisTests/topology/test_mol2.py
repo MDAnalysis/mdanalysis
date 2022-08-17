@@ -235,7 +235,7 @@ def test_wrong_elements_warnings():
         u = mda.Universe(StringIO(mol2_wrong_element), format='MOL2')
 
     # One warning from invalid elements, one from invalid masses
-    assert len(record) == 2
+    assert len(record) == 1
 
     expected = np.array(['N', '', ''], dtype=object)
     assert_equal(u.atoms.elements, expected)
