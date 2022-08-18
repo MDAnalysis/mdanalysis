@@ -382,20 +382,23 @@ class Universe(object):
             self._trajectory.add_transformations(*transformations)
 
         to_guess = list(to_guess)
-        if 'bonds' in to_guess:
-            guess_bonds = True
-            to_guess.remove('bonds')
 
-        
-        singulars =\
-            list(att.singular for att in self._topology.read_attributes)
-        if (not any(att == 'type' for att in singulars) and
-            'types' not in to_guess):
-            to_guess.append('types')
-        if (not any(att == 'mass' for att in singulars) and
-            'masses' not in to_guess):
-            to_guess.append('masses')
-        self.guess_TopologyAttributes(context, to_guess)
+        if ('MINIMAL' not in self._parser and
+            'THINGY' not in self._parser and self._topology.n_atoms > 0 and
+                any(fmt in _PARSERS for fmt in self._parser)):
+            singulars =\
+                list(att.singular for att in self._topology.read_attributes)
+            if (not any(att == 'type' for att in singulars) and
+                    'types' not in to_guess):
+                to_guess.append('types')
+            if (not any(att == 'mass' for att in singulars) and
+                    'masses' not in to_guess):
+                to_guess.append('masses')
+        if guess_bonds and 'bonds' not in to_guess:
+            to_guess.append('bonds')
+            
+        if to_guess:
+            self.guess_TopologyAttributes(context, to_guess)
 
     def copy(self):
         """Return an independent copy of this Universe"""
@@ -1480,44 +1483,46 @@ class Universe(object):
         to_guess: list
         list of atrributes to be guessed then added to the universe
         """
-        begin_guess=False
-        parser = self._parser
-            
-        if ('MINIMAL' not in  parser and
-            'THINGY' not in parser and self._topology.n_atoms > 0 and
-                any(fmt in _PARSERS for fmt in parser)):
-            begin_guess = True
+   
         # check if a file is txyz format to handle its
         # to preserve its special behavior of guessing
         # atom masses from names
-            txyz=False
-            if 'TXYZ' in parser or 'ARC' in parser:
-                txyz = True
+        txyz=False
+        if 'TXYZ' in self._parser or 'ARC' in self._parser:
+            txyz = True
             
-        if begin_guess:
-            guesser = get_guesser(context, self.universe, txyz=txyz)
-            if guesser.is_guessable(to_guess):
-                # check if the attribute already have been read from topology file
-                toplogy_atrrs =\
-                    list(att.attrname for att in self._topology.read_attributes)
+        guesser = get_guesser(context, self.universe, txyz=txyz)
+        toplogy_atrrs =\
+            list(att.attrname for att in self._topology.read_attributes)
+        
+        if guesser.is_guessable(to_guess):                
+            if 'bonds' in to_guess:
+                self.guess_bonds = True
+                to_guess.remove('bonds')
 
-                for attr in to_guess:
-                    if any(attr == a for a in toplogy_atrrs):
-                        warnings.warn('The attribute {} have already been read '
-                                      'from the topology file, you are trying to '
-                                      'overwriting it by guessed values'
-                                      .format(attr))
-                    values = guesser.guess_Attr(attr)
-                    self.add_TopologyAttr(attr, values)
-            else:
-                raise ValueError('{0} guesser can not guess one or more '
-                                 'of the provided attributes'
-                                 .format(context))      
-
+            for attr in to_guess:
+                if any(attr == a for a in toplogy_atrrs):
+                    warnings.warn('The attribute {} have already been read '
+                                  'from the topology file, you are trying to '
+                                  'overwriting it by guessed values'
+                                  .format(attr))
+                values = guesser.guess_Attr(attr)
+                self.add_TopologyAttr(attr, values)
+                
             if self.kwargs['guess_bonds']:
-                self.atoms.guess_bonds(self.kwargs['vdwradii'], context)
+                if 'bonds' in toplogy_atrrs:
+                    warnings.warn('The attribute bonds have already been read '
+                                  'from the topology file, you are trying to '
+                                  'overwriting it by guessed values'
+                                  )
+                else: 
+                    self.atoms.guess_bonds(self.kwargs['vdwradii'], context)
+
+                    
         else:
-            return
+            raise ValueError('{0} guesser can not guess one or more '
+                             'of the provided attributes'
+                              .format(context))      
 
 def Merge(*args):
     """Create a new new :class:`Universe` from one or more
