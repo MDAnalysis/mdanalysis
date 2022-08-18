@@ -219,18 +219,10 @@ class TNGReader(base.ReaderBase):
             raise IOError("Number of data containing frames for TNG special"
                           " blocks not equal, file cannot be read")
         
-        if all(element == 0 for element in n_data_frames):
-            warnings.warn("Could not read the number of data frames from the "
-                          "TNG file, this sometimes occurs with trajectories "
-                          "written using gmx trjconv without a TPR. "
-                          "Continuing but setting strides to 1 and n_frames to "
-                          "the number of integrator steps.")
-            self._n_frames = self._n_steps
-            self._global_stride = 1
-        else:
-            self._global_stride = strides[0]
-            # NOTE frame number is 0 indexed so increment
-            self._n_frames = n_data_frames[0] + 1
+
+        self._global_stride = strides[0]
+        # NOTE frame number is 0 indexed so increment
+        self._n_frames = n_data_frames[0] + 1
         
         self._additional_blocks_to_read = []
         for block in self._additional_blocks:
