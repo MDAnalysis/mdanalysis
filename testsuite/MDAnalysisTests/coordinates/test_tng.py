@@ -35,11 +35,16 @@ from MDAnalysisTests.coordinates.base import (BaseReference,
 from MDAnalysisTests.datafiles import (COORDINATES_TNG, COORDINATES_TOPOLOGY,
                                        TNG_traj, TNG_traj_gro)
 
+@pytest.mark.skipif(HAS_PYTNG, reason="pytng present")
+def test_pytng_not_present_raises():
+    with pytest.raises(ImportError, match="please install pytng"):
+        u = mda.Universe(TNG_traj_gro, TNG_traj)
+
 
 @pytest.mark.skipif(not HAS_PYTNG, reason="pytng not installed")
 class TNGReference(BaseReference):
     """Reference synthetic trajectory that was
-    copied from test_xdr.TRRReference"""
+    copied from test_xdr.TRReference"""
 
     def __init__(self):
         super(TNGReference, self).__init__()
