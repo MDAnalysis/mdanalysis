@@ -150,7 +150,7 @@ class TNGReader(base.ReaderBase):
         self._n_steps = self._file_iterator.n_steps
 
         # names of the blocks
-        self._block_names = self._file_iterator.block_ids.keys()
+        self._block_names = list(self._file_iterator.block_ids.keys())
         # block ids, dict of C long long
         self._block_dictionary = self._file_iterator.block_ids
         self._block_strides = self._file_iterator.block_strides
@@ -450,6 +450,29 @@ class TNGReader(base.ReaderBase):
                     raise IOError("Failed to read additional block {block}"
                                   " from TNG file")
         return ts
+
+
+    def __getstate__(self):
+        """Make a dictionary of the class state to pickle Reader instance.
+
+           Must be done manually as pytng uses a non-trivial`__cinit__`.
+        """
+        state = self.__dict__.copy()
+        # cant have PyTNG file iterator in as it is non-pickable
+        del state['_file_iterator']
+        return state
+
+    def __setstate__(self, state):
+        """Restore class from `state` dictionary in unpickling of Reader
+           instance
+        """
+        self.__dict__ = state
+        # reconstruct file iterator
+        self._file_iterator = pytng.TNGFileIterator(self.filename, 'r')
+        # make sure we re-read the current frame to update C level objects in
+        # the file iterator
+        self._read_frame(self._frame)
+
 
     def Writer(self):
         """Writer for TNG files
