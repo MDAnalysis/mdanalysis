@@ -402,7 +402,8 @@ class TestGuessTopologyAttr(object):
         
     def test_guessing_read_attributes(self):
         u = mda.Universe(PDB_small)
-        with pytest.warns(UserWarning):
+        with pytest.warns(UserWarning, match='You are trying to '
+        'overwrite it by guessed values'):
             u.guess_TopologyAttributes(to_guess=['types'])
 
         

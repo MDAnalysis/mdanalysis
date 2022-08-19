@@ -1505,7 +1505,7 @@ class Universe(object):
                 if any(attr == a for a in toplogy_atrrs):
                     warnings.warn('The attribute {} have already been read '
                                   'from the topology file. You are trying to '
-                                  'overwriting it by guessed values'
+                                  'overwrite it by guessed values'
                                   .format(attr))
                 values = guesser.guess_Attr(attr)
                 self.add_TopologyAttr(attr, values)
