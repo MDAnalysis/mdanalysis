@@ -42,6 +42,8 @@ inputs:
     default: 'pip'
   pytest:
     default: 'pytest'
+  pytng:
+    default: 'pytng>=0.2.2'
   scipy:
     default: 'scipy'
   threadpoolctl:
