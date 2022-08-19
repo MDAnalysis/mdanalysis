@@ -39,7 +39,9 @@ class DefaultGuesser(GuesserBase):
                        'types': self.guess_types,
                        'angles': self.guess_angles,
                        'dihedrals': self.guess_dihedrals,
-                       'bonds': self.guess_bonds}
+                       'bonds': self.guess_bonds,
+                       'improper dihedrals': self.guess_improper_dihedrals,
+                       'aromaticites': self.guess_aromaticities}
 
     def guess_masses(self):
         """Guess the mass of many atoms based upon their type
@@ -402,26 +404,26 @@ class DefaultGuesser(GuesserBase):
         return tuple(dihedrals_found)
 
 
-def guess_atom_charge(self):
-    """Guess atom charge from the name.
+    def guess_atom_charge(self):
+        """Guess atom charge from the name.
 
-    .. Warning:: Not implemented; simply returns 0.
-    """
-    # TODO: do something slightly smarter, at least use name/element
-    return 0.0
-
-
-def guess_aromaticities(self):
-    """Guess aromaticity of atoms using RDKit
-
-    Returns
-    -------
-    aromaticities : numpy.ndarray
-        Array of boolean values for the aromaticity of each atom
+        .. Warning:: Not implemented; simply returns 0.
+        """
+        # TODO: do something slightly smarter, at least use name/element
+        return 0.0
 
 
-    .. versionadded:: 2.0.0
-    """
-    atomgroup = self._universe.atoms
-    mol = atomgroup.convert_to("RDKIT")
-    return np.array([atom.GetIsAromatic() for atom in mol.GetAtoms()])
+    def guess_aromaticities(self):
+        """Guess aromaticity of atoms using RDKit
+
+        Returns
+        -------
+        aromaticities : numpy.ndarray
+            Array of boolean values for the aromaticity of each atom
+
+
+        .. versionadded:: 2.0.0
+        """
+        atomgroup = self._universe.atoms
+        mol = atomgroup.convert_to("RDKIT")
+        return np.array([atom.GetIsAromatic() for atom in mol.GetAtoms()])

@@ -334,7 +334,6 @@ class Universe(object):
         self.residues = None
         self.segments = None
         self.filename = None
-
         self._kwargs = {
             'transformations': transformations,
             'context': context,
@@ -1473,7 +1472,7 @@ class Universe(object):
 
         return cls(mol, **kwargs)
 
-    def guess_TopologyAttributes(self, context, to_guess):
+    def guess_TopologyAttributes(self, context=None, to_guess=None):
         """guess attributes passed to the universe within specific context
 
         Parameters
@@ -1490,7 +1489,9 @@ class Universe(object):
         txyz=False
         if 'TXYZ' in self._parser or 'ARC' in self._parser:
             txyz = True
-            
+        if not context:
+            context = self._kwargs['context']
+
         guesser = get_guesser(context, self.universe, txyz=txyz)
         toplogy_atrrs =\
             list(att.attrname for att in self._topology.read_attributes)
@@ -1503,7 +1504,7 @@ class Universe(object):
             for attr in to_guess:
                 if any(attr == a for a in toplogy_atrrs):
                     warnings.warn('The attribute {} have already been read '
-                                  'from the topology file, you are trying to '
+                                  'from the topology file. You are trying to '
                                   'overwriting it by guessed values'
                                   .format(attr))
                 values = guesser.guess_Attr(attr)
@@ -1513,7 +1514,7 @@ class Universe(object):
                 if 'bonds' in toplogy_atrrs:
                     warnings.warn('The attribute bonds have already been read '
                                   'from the topology file, you are trying to '
-                                  'overwriting it by guessed values'
+                                  'overwrite it by guessed values'
                                   )
                 else: 
                     self.atoms.guess_bonds(self.kwargs['vdwradii'], context)

@@ -380,6 +380,32 @@ class TestTransformations(object):
         ref = translate([10,10,10])(uref.trajectory.ts)
         assert_almost_equal(u.trajectory.ts.positions, ref, decimal=6)
 
+class TestGuessTopologyAttr(object):
+    def test_automatic_type_and_mass_guessing(self):
+        u = mda.Universe(PDB_small)
+        assert_equal(len(u.atoms.masses), 3341)
+        assert_equal(len(u.atoms.types), 3341)
+
+    def test_invalid_context(self):
+        with pytest.raises(KeyError):
+            u = mda.Universe(PDB_small)
+            u.guess_TopologyAttributes(context='trash', to_guess='masses')
+            
+    def test_invalid_attributes(self):
+        with pytest.raises(ValueError):
+            u = mda.Universe(PDB_small)
+            u.guess_TopologyAttributes(to_guess='trash')
+    def test_guess_masses_before_types(self):
+            u = mda.Universe(PDB_small, to_guess=('masses', 'types'))
+            assert_equal(len(u.atoms.masses), 3341)
+            assert_equal(len(u.atoms.types), 3341)
+        
+    def test_guessing_read_attributes(self):
+        u = mda.Universe(PDB_small)
+        with pytest.warns(UserWarning):
+            u.guess_TopologyAttributes(to_guess=['types'])
+
+        
 class TestGuessMasses(object):
     """Tests the Mass Guesser in topology.guessers
     """
