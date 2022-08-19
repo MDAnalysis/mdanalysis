@@ -62,7 +62,7 @@ inputs:
   openmm:
     default: 'openmm'
   pytng:
-    default: 'pytng>=0.2.2'
+    default: 'pytng>=0.2.3'
   rdkit:
     default: 'rdkit>=2020.03.1'
   scikit-learn:

@@ -653,7 +653,7 @@ if __name__ == '__main__':
               'extra_formats': [   # additional file formats
                   'netCDF4>=1.0',  # for fast AMBER writing, also needs HDF5
                   'h5py>=2.10',    # H5MD
-                  'pytng>=0.2.2',  # TNG 
+                  'pytng>=0.2.3',  # TNG 
                   'chemfiles>=0.10',  # multiple formats supported by chemfiles
                   ],
               'analysis': [

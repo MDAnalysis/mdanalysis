@@ -117,7 +117,7 @@ jobs:
       mmtf-python
       networkx
       parmed
-      pytng>=0.2.2
+      pytng>=0.2.3
       tidynamics>=1.0.0
     displayName: 'Install additional dependencies for 64-bit tests'
     condition: and(succeeded(), eq(variables['PYTHON_ARCH'], 'x64'))
