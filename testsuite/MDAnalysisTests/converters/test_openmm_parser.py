@@ -53,6 +53,7 @@ class OpenMMTopologyBase(ParserBase):
         "bonds",
         "chainIDs",
         "elements",
+        "types"
     ]
     expected_n_bonds = 0
 
