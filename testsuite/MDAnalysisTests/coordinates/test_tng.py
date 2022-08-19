@@ -252,14 +252,14 @@ class TestTNGTraj(object):
                            "TNG file"):
             universe.trajectory._frame_to_ts(
                 iterator_step, universe.trajectory.ts)
-    
+
     def test_additional_block_read_fails(self, universe):
         stepnum = 123  # step number with no data
         iterator_step = universe.trajectory._file_iterator.read_step(stepnum)
         # set has_box, has_pos, to false to trigger GMX_LAMBDA reading error
         universe.trajectory._has_box = False
         universe.trajectory._has_positions = False
-        # doesn't have positions or forces
+        # doesn't have velocities or forces
         with pytest.raises(IOError, match="Failed to read additional block "
                            "TNG_GMX_LAMBDA"):
             universe.trajectory._frame_to_ts(
