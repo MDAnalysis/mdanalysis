@@ -31,16 +31,16 @@ topology information. The TNG format allows a wide range of compression
 algorithms and unlike the compressed XTC format can also store velocities
 forces in addition to positions.
 
-The classes in this module are based on the `pytng`_ package for reading TNG files
-The reader is directed to the `documentation`_ for further reading about how pytng
-works under the hood.
+The classes in this module are based on the `pytng`_ package for reading TNG
+files. The reader is directed to the `documentation`_ for further reading about
+how pytng works under the hood.
 
 In addition to particle-dependent trajectory information like positions,
-forces and velocities, the TNG format can store trajectory metadata and 
+forces and velocities, the TNG format can store trajectory metadata and
 other arbitrary time dependent data. Additional information can range from
 the virial and pressure components to the molecular topology of the system.
 This is enabled by a block based system in which binary flags indicate the
-presence or absence of various data blocks. The structure of a TNG file is 
+presence or absence of various data blocks. The structure of a TNG file is
 provided  in the TNG `specification`_. The TNG `paper`_ and the
 pytng `documentation`_ are also good resources. The user is encouraged to read
 the full list of `blocks`_ to understand the full power of the TNG format.
@@ -104,14 +104,13 @@ class TNGReader(base.ReaderBase):
 
     The contents of the *special blocks* (positions, box, velocities, forces)
     are read into the timestep if present. Additional blocks are read into the
-    `ts.data` dictionary if they are available at the current frame.  
+    `ts.data` dictionary if they are available at the current frame.
 
     .. versionadded:: 2.3.0
     """
 
     format = 'TNG'
-    # NOTE: Time units are in seconds unlike other GROMACS formats, see TNG
-    # manual
+    #NOTE: Time units are in seconds unlike other GROMACS formats
     units = {'time': 'second', 'length': 'nm', 'velocity': 'nm/ps',
              'force': 'kJ/(mol*nm)'}
 
@@ -123,8 +122,8 @@ class TNGReader(base.ReaderBase):
                        _velocities_blockname, _forces_blockname]
 
     @due.dcite(Doi("10.1002/jcc.23495"),
-               description="The TNG paper",
-               path=__name__)
+               description = "The TNG paper",
+               path = __name__)
     def __init__(self, filename: str, convert_units: bool = True, **kwargs):
         """ Initialize a TNG trajectory
 
@@ -349,7 +348,7 @@ class TNGReader(base.ReaderBase):
         Returns
         -------
         ts : Timestep
-            Data from frame i encapsulated in an MDA `:class:Timestep` 
+            Data from frame i encapsulated in an MDA `:class:Timestep`
         """
         self._frame = i - 1
         ts = self._read_next_timestep()
@@ -366,7 +365,7 @@ class TNGReader(base.ReaderBase):
         Returns
         -------
         ts :  Timestep
-            The timestep filled with data from the next step        
+            The timestep filled with data from the next step
         """
         if self._frame == self.n_frames - 1:
             raise IOError('trying to go over trajectory limit')
@@ -478,6 +477,6 @@ class TNGReader(base.ReaderBase):
         ------
         NotImplementedError
             Currently there is not writer for TNG files pending implementation
-            upstream in pytng. 
+            upstream in pytng.
         """
         raise NotImplementedError("There is currently no writer for TNG files")
