@@ -115,6 +115,7 @@ runs:
           ${{ inputs.joblib }}
           ${{ inputs.netcdf4 }}
           ${{ inputs.openmm }}
+          ${{ inputs.pytng }}
           ${{ inputs.rdkit }}
           ${{ inputs.scikit-learn }}
           ${{ inputs.seaborn }}
