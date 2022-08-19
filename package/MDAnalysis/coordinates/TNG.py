@@ -110,7 +110,7 @@ class TNGReader(base.ReaderBase):
     """
 
     format = 'TNG'
-    #NOTE: Time units are in seconds unlike other GROMACS formats
+    # NOTE: Time units are in seconds unlike other GROMACS formats
     units = {'time': 'second', 'length': 'nm', 'velocity': 'nm/ps',
              'force': 'kJ/(mol*nm)'}
 
@@ -122,8 +122,8 @@ class TNGReader(base.ReaderBase):
                        _velocities_blockname, _forces_blockname]
 
     @due.dcite(Doi("10.1002/jcc.23495"),
-               description = "The TNG paper",
-               path = __name__)
+               description="The TNG paper",
+               path=__name__)
     def __init__(self, filename: str, convert_units: bool = True, **kwargs):
         """ Initialize a TNG trajectory
 
