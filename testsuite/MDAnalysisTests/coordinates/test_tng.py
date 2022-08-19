@@ -269,7 +269,6 @@ class TestTNGTraj(object):
         assert(universe.trajectory.parse_n_atoms(TNG_traj) == self._n_atoms)
 
 
-
 @pytest.mark.skipif(not HAS_PYTNG, reason="pytng not installed")
 def test_writer_raises_notimpl():
     u = mda.Universe(TNG_traj_gro, TNG_traj)
