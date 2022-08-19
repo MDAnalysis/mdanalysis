@@ -87,12 +87,12 @@ class TestTNGCoordinatesTraj(MultiframeReaderTest):
         return TNGReference()
 
     def test_get_writer_1(self, reader):
-        with pytest.raises(NotImplementedError, match="There is currently no"
-                           " writer for TNG files"):
+        with pytest.raises(NotImplementedError, match="There is currently no "
+                           "writer for TNG files"):
             reader.Writer()
 
     def test_get_writer_2(self, reader):
-        with pytest.raises(NotImplementedError, match="There is currently no"
+        with pytest.raises(NotImplementedError, match="There is currently no "
                            "writer for TNG files"):
             reader.Writer()
 
@@ -246,17 +246,57 @@ class TestTNGTraj(object):
     def test_read_pos_fail_strange_step(self, universe):
         stepnum = 123  # step number with no data
         iterator_step = universe.trajectory._file_iterator.read_step(stepnum)
-        # set _has_box to False to trigger position_reading_error
+        # set _has_box to False to trigger position reading error
         universe.trajectory._has_box = False
-        with pytest.raises(IOError, match="Failed to read positions from"
+        with pytest.raises(IOError, match="Failed to read positions from "
                            "TNG file"):
             universe.trajectory._frame_to_ts(
                 iterator_step, universe.trajectory.ts)
+    
+    def test_additional_block_read_fails(self, universe):
+        stepnum = 123  # step number with no data
+        iterator_step = universe.trajectory._file_iterator.read_step(stepnum)
+        # set has_box, has_pos, to false to trigger GMX_LAMBDA reading error
+        universe.trajectory._has_box = False
+        universe.trajectory._has_positions = False
+        # doesn't have positions or forces
+        with pytest.raises(IOError, match="Failed to read additional block "
+                           "TNG_GMX_LAMBDA"):
+            universe.trajectory._frame_to_ts(
+                iterator_step, universe.trajectory.ts)
+
+    def test_parse_n_atoms(self, universe):
+        assert(universe.trajectory.parse_n_atoms(TNG_traj) == self._n_atoms)
+
 
 
 @pytest.mark.skipif(not HAS_PYTNG, reason="pytng not installed")
 def test_writer_raises_notimpl():
     u = mda.Universe(TNG_traj_gro, TNG_traj)
-    with pytest.raises(NotImplementedError, match="There is currently no"
+    with pytest.raises(NotImplementedError, match="There is currently no "
                        "writer for TNG files"):
         u.trajectory.Writer()
+
+
+    # def test_read_vel_fail_strange_step(self, universe):
+    #     stepnum = 123  # step number with no data
+    #     iterator_step = universe.trajectory._file_iterator.read_step(stepnum)
+    #     # set has_box and has_pos to false to trigger velocity reading error
+    #     universe.trajectory._has_box = False
+    #     universe.trajectory._has_positions = False
+    #     with pytest.raises(IOError, match="Failed to read velocities from "
+    #                        "TNG file"):
+    #         universe.trajectory._frame_to_ts(
+    #             iterator_step, universe.trajectory.ts)
+
+    # def test_read_force_fail_strange_step(self, universe):
+    #     stepnum = 123  # step number with no data
+    #     iterator_step = universe.trajectory._file_iterator.read_step(stepnum)
+    #     # set has_box, has_pos, has_vel to false to trigger force reading error
+    #     universe.trajectory._has_box = False
+    #     universe.trajectory._has_positions = False
+    #     universe.trajectory._has_velocities = False
+    #     with pytest.raises(IOError, match="Failed to read forces from "
+    #                        "TNG file"):
+    #         universe.trajectory._frame_to_ts(
+    #             iterator_step, universe.trajectory.ts)

@@ -445,7 +445,7 @@ class TNGReader(base.ReaderBase):
                 ts.data[block] = curr_step.get_blockid(
                     self._block_dictionary[block], block_data)
                 if not curr_step.read_success:
-                    raise IOError("Failed to read additional block {block}"
+                    raise IOError(f"Failed to read additional block {block}"
                                   " from TNG file")
         return ts
 
