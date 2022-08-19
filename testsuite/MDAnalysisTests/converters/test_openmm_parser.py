@@ -143,6 +143,7 @@ class OpenMMAppTopologyBase(OpenMMTopologyBase):
         "bonds",
         "chainIDs",
         "elements",
+        "types"
     ]
     expected_n_bonds = 0
 
