@@ -276,27 +276,3 @@ def test_writer_raises_notimpl():
     with pytest.raises(NotImplementedError, match="There is currently no "
                        "writer for TNG files"):
         u.trajectory.Writer()
-
-
-    # def test_read_vel_fail_strange_step(self, universe):
-    #     stepnum = 123  # step number with no data
-    #     iterator_step = universe.trajectory._file_iterator.read_step(stepnum)
-    #     # set has_box and has_pos to false to trigger velocity reading error
-    #     universe.trajectory._has_box = False
-    #     universe.trajectory._has_positions = False
-    #     with pytest.raises(IOError, match="Failed to read velocities from "
-    #                        "TNG file"):
-    #         universe.trajectory._frame_to_ts(
-    #             iterator_step, universe.trajectory.ts)
-
-    # def test_read_force_fail_strange_step(self, universe):
-    #     stepnum = 123  # step number with no data
-    #     iterator_step = universe.trajectory._file_iterator.read_step(stepnum)
-    #     # set has_box, has_pos, has_vel to false to trigger force reading error
-    #     universe.trajectory._has_box = False
-    #     universe.trajectory._has_positions = False
-    #     universe.trajectory._has_velocities = False
-    #     with pytest.raises(IOError, match="Failed to read forces from "
-    #                        "TNG file"):
-    #         universe.trajectory._frame_to_ts(
-    #             iterator_step, universe.trajectory.ts)
