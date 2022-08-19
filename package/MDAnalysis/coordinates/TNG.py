@@ -110,7 +110,9 @@ class TNGReader(base.ReaderBase):
     """
 
     format = 'TNG'
-    units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps',
+    #NOTE: Time units are in seconds unlike other GROMACS formats, see TNG
+    # manual
+    units = {'time': 'second', 'length': 'nm', 'velocity': 'nm/ps',
              'force': 'kJ/(mol*nm)'}
 
     _box_blockname = "TNG_TRAJ_BOX_SHAPE"
@@ -402,7 +404,10 @@ class TNGReader(base.ReaderBase):
         """
 
         ts.frame = self._frame
-        ts.time = curr_step.get_time()
+        time = curr_step.get_time()
+        if self.convert_units:
+            time = self.convert_time_from_native(time)
+        ts.time = time
         ts.data['step'] = curr_step.step
 
         if self._has_box:
