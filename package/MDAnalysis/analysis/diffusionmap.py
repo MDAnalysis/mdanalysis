@@ -41,8 +41,8 @@ locally. The order of the sampled structures in the trajectory is irrelevant.
 The :ref:`Diffusion-Map-tutorial` shows how to use diffusion map for dimension
 reduction.
 
-More details about diffusion maps are in [deLaPorte1]_, [Lafon1]_ ,
-[Ferguson1]_, and [Clementi1]_.
+More details about diffusion maps are in
+:cite:p:`deLaPorte2008,Coifman-Lafon,Ferguson2011,Clementi2011`.
 
 .. _Diffusion-Map-tutorial:
 
@@ -71,9 +71,9 @@ the corresponding eigenvalues and eigenvectors.
    u = mda.Universe(PSF,DCD)
 
 We leave determination of the appropriate scale parameter epsilon to the user,
-[Clementi1]_ uses a complex method involving the k-nearest-neighbors of a
-trajectory frame, whereas others simple use a trial-and-error approach with
-a constant epsilon. Currently, the constant epsilon method is implemented
+:cite:p:`Clementi2011` uses a complex method involving the k-nearest-neighbors
+of a trajectory frame, whereas others simple use a trial-and-error approach
+with a constant epsilon. Currently, the constant epsilon method is implemented
 by MDAnalysis.
 
 .. code-block:: python
@@ -124,31 +124,24 @@ References
 ----------
 
 If you use this Dimension Reduction method in a publication, please
-cite [Lafon1]_.
+cite :cite:p:`Coifman-Lafon`.
 
 If you choose the default metric, this module uses the fast QCP algorithm
-[Theobald2005]_ to calculate the root mean square distance (RMSD) between two
-coordinate sets (as implemented in
+:cite:p:`Theobald2005` to calculate the root mean square distance (RMSD)
+between two coordinate sets (as implemented in
 :func:`MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix`).  When using this
-module in published work please cite [Theobald2005]_.
+module in published work please :cite:p:`Theobald2005`.
 
 
-.. [Lafon1] Coifman, Ronald R., Lafon, Stephane. Diffusion
-            maps. Appl. Comput. Harmon.  Anal. 21, 5–30 (2006).
+.. bibliography::
+    :filter: False
+    :style: MDA
 
-.. [deLaPorte1] J. de la Porte, B. M. Herbst, W. Hereman, S. J. van der Walt.
-             An Introduction to Diffusion Maps. In: The 19th Symposium of the
-             Pattern Recognition Association of South Africa (2008).
-
-.. [Clementi1] Rohrdanz, M. A, Zheng, W, Maggioni, M, & Clementi, C.
-             Determination of reaction coordinates via locally scaled diffusion
-             map. J. Chem. Phys. 134, 124116 (2011).
-
-.. [Ferguson1] Ferguson, A. L.; Panagiotopoulos, A. Z.; Kevrekidis, I. G.
-             Debenedetti, P. G. Nonlinear dimensionality reduction in molecular
-             simulation: The diffusion map approach Chem. Phys. Lett. 509, 1−11
-             (2011)
-
+    Coifman-Lafon
+    deLaPorte2008
+    Clementi2011
+    Ferguson2011
+    Theobald2005
 """
 from __future__ import annotations
 import logging
@@ -342,8 +335,8 @@ class DiffusionMap(object):
             into a diffusion kernel.
         epsilon : Float
             Specifies the method used for the choice of scale parameter in the
-            diffusion map. More information in [Lafon1]_, [Ferguson1]_ and
-            [Clementi1]_, Default: 1.
+            diffusion map. More information in
+            :cite:p:`Coifman-Lafon,Ferguson2011,Clementi2011`, Default: 1.
         **kwargs
             Parameters to be passed for the initialization of a
             :class:`DistanceMatrix`.
@@ -412,7 +405,7 @@ class DiffusionMap(object):
         Return
         ------
         diffusion_space : array (n_frames, n_eigenvectors)
-            The diffusion map embedding as defined by [Ferguson1]_.
+            The diffusion map embedding as defined by :cite:p:`Ferguson2011`.
         """
         return (self._eigenvectors[1:n_eigenvectors+1,].T *
                 (self.eigenvalues[1:n_eigenvectors+1]**time))

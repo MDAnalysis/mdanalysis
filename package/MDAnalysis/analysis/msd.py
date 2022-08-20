@@ -32,8 +32,8 @@ Mean Squared Displacement --- :mod:`MDAnalysis.analysis.msd`
 This module implements the calculation of Mean Squared Displacements (MSDs)
 by the Einstein relation. MSDs can be used to characterize the speed at
 which particles move and has its roots in the study of Brownian motion.
-For a full explanation of the theory behind MSDs and the subsequent
-calculation of self-diffusivities the reader is directed to [Maginn2019]_.
+For a full explanation of the theory behind MSDs and the subsequent calculation
+of self-diffusivities the reader is directed to :cite:p:`Maginn2019`.
 MSDs can be computed from the following expression, known as the
 **Einstein formula**:
 
@@ -141,8 +141,8 @@ determine self-diffusivity. This linear segment represents the so called
 excluded along with poorly averaged data at long time-lags. We can select the
 "middle" of the MSD by indexing the MSD and the time-lags. Appropriately
 linear segments of the MSD can be confirmed with a log-log plot as is often
-reccomended [Maginn2019]_ where the "middle" segment can be identified as
-having a slope of 1.
+reccomended :cite:p:`Maginn2019` where the "middle" segment can be identified
+as having a slope of 1.
 
 .. code-block:: python
 
@@ -213,35 +213,27 @@ processing trajectories for computation of self-diffusivities.
 These include specific instructions around simulation settings, using
 unwrapped trajectories and maintaining a relatively small elapsed time between
 saved frames. Additionally, corrections for finite size effects are sometimes
-employed along with various means of estimating errors [Yeh2004]_ [Bulow2020]_.
-The reader is directed to the following review, which describes many of the
-common pitfalls [Maginn2019]_. There are other ways to compute
-self-diffusivity, such as from a Green-Kubo integral. At this point in time,
-these methods are beyond the scope of this module.
+employed along with various means of estimating errors
+:cite:p:`Yeh2004,Bulow2020` The reader is directed to the following review,
+which describes many of the common pitfalls :cite:p:`Maginn2019`. There are
+other ways to compute self-diffusivity, such as from a Green-Kubo integral. At
+this point in time, these methods are beyond the scope of this module.
 
 
 Note also that computation of MSDs is highly memory intensive. If this is
-proving a problem, judicious use of the ``start``, ``stop``, ``step`` keywords to control which frames are incorporated may be required.
+proving a problem, judicious use of the ``start``, ``stop``, ``step`` keywords
+to control which frames are incorporated may be required.
 
 References
 ----------
 
-.. [Maginn2019] Maginn, E. J., Messerly, R. A., Carlson, D. J.; Roe, D. R.,
-                Elliott, J. R. Best Practices for Computing Transport
-                Properties 1. Self-Diffusivity and Viscosity from Equilibrium
-                Molecular Dynamics [Article v1.0]. Living J. Comput. Mol. Sci.
-                2019, 1 (1).
+.. bibliography::
+    :filter: False
+    :style: MDA
 
-.. [Yeh2004] Yeh, I. C.; Hummer, G. System-Size Dependence of Diffusion
-                Coefficients and Viscosities from Molecular Dynamics
-                Simulations with Periodic Boundary Conditions.
-                J. Phys. Chem. B 2004, 108 (40), 15873–15879.
-
-.. [Bulow2020] von Bülow, S.; Bullerjahn, J. T.; Hummer, G. Systematic
-                Errors in Diffusion Coefficients from Long-Time Molecular
-                Dynamics Simulations at Constant Pressure. 2020.
-                arXiv:2003.09205 [Cond-Mat, Physics:Physics].
-
+    Maginn2019
+    Yeh2004
+    Bulow2020
 
 
 Classes

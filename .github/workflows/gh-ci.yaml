@@ -33,14 +33,14 @@ jobs:
           install_hole: [true, ]
           codecov: [true, ]
           include:
-            - name: macOS_bigsur_py39
-              os: macOS-11
+            - name: macOS_monterey_py39
+              os: macOS-12
               python-version: 3.9
               full-deps: true
               install_hole: true
               codecov: true
-            - name: macOS_catalina_py38
-              os: macOS-10.15
+            - name: macOS_bigsur_py38
+              os: macOS-11
               python-version: 3.8
               full-deps: true
               install_hole: true
@@ -155,7 +155,7 @@ jobs:
       with:
         mamba: true
         full-deps: true
-        extra-pip-deps: "sphinx sphinx-sitemap sphinx_rtd_theme msmb_theme==1.2.0"
+        extra-pip-deps: "sphinx sphinx-sitemap sphinx_rtd_theme msmb_theme==1.2.0 sphinxcontrib-bibtex pybtex pybtex-docutils"
 
     - name: build_srcs
       uses: ./.github/actions/build-src
