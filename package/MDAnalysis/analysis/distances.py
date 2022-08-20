@@ -53,7 +53,7 @@ from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 from MDAnalysis.core.groups import AtomGroup
 from MDAnalysis.lib.distances import calc_bonds
 import numpy.typing as npt
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Iterable
 
 
 import warnings
@@ -61,8 +61,10 @@ import logging
 logger = logging.getLogger("MDAnalysis.analysis.distances")
 
 
-def contact_matrix(coord: npt.ArrayLike, cutoff: float = 15.0, returntype: str = "numpy",
-                   box: Optional[npt.ArrayLike] = None) -> npt.ArrayLike:
+def contact_matrix(coord: npt.ArrayLike, cutoff: float = 15.0,
+                   returntype: str = "numpy",
+                   box: Optional[npt.ArrayLike] = None
+                   ) -> Union[np.ndarray, scipy.sparse.base.spmatrix]:
     '''Calculates a matrix of contacts.
 
     There is a fast, high-memory-usage version for small systems
@@ -124,7 +126,8 @@ def contact_matrix(coord: npt.ArrayLike, cutoff: float = 15.0, returntype: str =
         return sparse_contacts
 
 
-def dist(A: AtomGroup, B: AtomGroup, offset: Union[int, Tuple] = 0, box=None) -> np.ndarray:
+def dist(A: AtomGroup, B: AtomGroup, offset: Union[int, Tuple] = 0,
+         box=None) -> np.ndarray:
     """Return distance between atoms in two atom groups.
 
     The distance is calculated atom-wise. The residue ids are also
@@ -160,7 +163,7 @@ def dist(A: AtomGroup, B: AtomGroup, offset: Union[int, Tuple] = 0, box=None) ->
     if A.atoms.n_atoms != B.atoms.n_atoms:
         raise ValueError("AtomGroups A and B do not have the same number of atoms")
     try:
-        off_A, off_B = offset
+        off_A, off_B = int(offset)
     except (TypeError, ValueError):
         off_A = off_B = int(offset)
     residues_A = np.array(A.resids) + off_A
@@ -170,7 +173,8 @@ def dist(A: AtomGroup, B: AtomGroup, offset: Union[int, Tuple] = 0, box=None) ->
     return np.array([residues_A, residues_B, d])
 
 
-def between(group: AtomGroup, A: AtomGroup, B: AtomGroup, distance: float) -> AtomGroup:
+def between(group: AtomGroup, A: AtomGroup,
+            B: AtomGroup, distance: float) -> AtomGroup:
     """Return sub group of `group` that is within `distance` of both `A` and `B`
 
     This function is not aware of periodic boundary conditions.
