@@ -763,7 +763,7 @@ class RMSF(AnalysisBase):
         No mass weighting is performed.
 
         This method implements an algorithm for computing sums of squares while
-        avoiding overflows and underflows [Welford1962]_.
+        avoiding overflows and underflows :cite:p:`Welford1962`.
 
 
         Examples
@@ -840,9 +840,11 @@ class RMSF(AnalysisBase):
 
         References
         ----------
-        .. [Welford1962] B. P. Welford (1962). "Note on a Method for
-           Calculating Corrected Sums of Squares and Products." Technometrics
-           4(3):419-420.
+        .. bibliography::
+            :filter: False
+            :style: MDA
+
+            Welford1962
 
 
         .. versionadded:: 0.11.0

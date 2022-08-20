@@ -215,7 +215,7 @@ within a cut-off distance of 1.2 Å.
    HSE         NE2             ND1
    HSP         ND1, NE2
    LYS         NZ
-   MET                         SD          see e.g. [Gregoret1991]_
+   MET                         SD          see e.g. :cite:p:`Gregoret1991`
    SER         OG              OG
    THR         OG1             OG1
    TRP         NE1
@@ -263,11 +263,11 @@ heavy atom names to MDAnalysis.
 
 .. rubric:: References
 
-.. [Gregoret1991] L.M. Gregoret, S.D. Rader, R.J. Fletterick, and
-   F.E. Cohen. Hydrogen bonds involving sulfur atoms in proteins. Proteins,
-   9(2):99–107, 1991. `10.1002/prot.340090204`_.
+.. bibliography::
+    :filter: False
+    :style: MDA
 
-.. _`10.1002/prot.340090204`: http://dx.doi.org/10.1002/prot.340090204
+    Gregoret1991
 
 
 How to perform ``WaterBridgeAnalysis``
