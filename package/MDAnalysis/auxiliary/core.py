@@ -30,9 +30,12 @@ Common functions for auxiliary reading --- :mod:`MDAnalysis.auxiliary.core`
 """
 from . import _AUXREADERS
 from ..lib import util
+from MDAnalysis.auxiliary.base import AuxReader
+from typing import Optional
 
 
-def get_auxreader_for(auxdata=None, format=None):
+def get_auxreader_for(auxdata: Optional[str] = None,
+                      format: Optional = None) -> AuxReader:
     """Return the appropriate auxiliary reader class for *auxdata*/*format*.
 
     If *format* is provided, will attempt to find an AuxReader corresponding
@@ -81,7 +84,8 @@ def get_auxreader_for(auxdata=None, format=None):
             errmsg = f"Unknown auxiliary data format {format}"
             raise ValueError(errmsg) from None
 
-def auxreader(auxdata, format=None, **kwargs):
+
+def auxreader(auxdata: str, format: Optional = None, **kwargs) -> AuxReader:
     """ Return an auxiliary reader instance for *auxdata*.
 
     An appropriate reader class is first obtained using 
