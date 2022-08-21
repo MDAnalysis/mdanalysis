@@ -41,23 +41,30 @@ class DefaultGuesser(GuesserBase):
                        'dihedrals': self.guess_dihedrals,
                        'bonds': self.guess_bonds,
                        'improper dihedrals': self.guess_improper_dihedrals,
-                       'aromaticites': self.guess_aromaticities}
+                       'aromaticites': self.guess_aromaticities,
+                       'gasteiger charges': self.guess_gasteiger_charges}
 
-    def guess_masses(self):
+    def guess_masses(self, atoms=None):
         """Guess the mass of many atoms based upon their type
 
         Returns
         -------
         atom_masses : np.ndarray dtype float64
         """
+        
         atom_types = None
-        if self._kwargs['txyz']:
-            atom_types = self._universe.atoms.names
+        parser = self._kwargs.get('parser', None)
+        if atoms:
+            atom_types = atoms
+
         elif hasattr(self._universe.atoms, 'elements'):
             atom_types = self._universe.atoms.elements
 
         elif hasattr(self._universe.atoms, 'types'):
             atom_types = self._universe.atoms.types
+            
+        elif 'TXYZ' in parser or 'ARC' in parser:
+            atom_types = self._universe.atoms.names
 
         else:
             try:
@@ -68,7 +75,7 @@ class DefaultGuesser(GuesserBase):
                 raise ValueError(
                     'there is no reference attributes in this universe\
                                  to guess mass from')
-
+        
         self.validate_atom_types(atom_types)
         masses = np.array([self.get_atom_mass(atom_t)
                            for atom_t in atom_types], dtype=np.float64)
@@ -91,9 +98,7 @@ class DefaultGuesser(GuesserBase):
                 try:
                     tables.masses[atom_type.upper()]
                 except KeyError:
-                    warnings.warn
-                    ("Failed to guess the mass for the following atoms: {}"
-                     .format(atom_type))
+                    warnings.warn("Failed to guess the mass for the following atom types: {}".format(atom_type))
 
     def get_atom_mass(self, element):
         """Return the atomic mass in u for *element*.
@@ -123,13 +128,17 @@ class DefaultGuesser(GuesserBase):
         """
         return self.get_atom_mass(self.guess_atom_element(atomname))
 
-    def guess_types(self):
+    def guess_types(self, atoms=None):
         """Guess the atom type of many atoms based on atom name
         Returns
         -------
         atom_types : np.ndarray dtype object
         """
-        names = self._universe.atoms.names
+        names=''
+        if atoms:
+            names = atoms
+        else:     
+            names = self._universe.atoms.names
         return np.array([self.guess_atom_element(n)
                         for n in names], dtype=object)
 
@@ -180,11 +189,7 @@ class DefaultGuesser(GuesserBase):
             # if it's numbers
             return no_symbols
 
-    def guess_bonds(self):
-        atoms = self._kwargs['atoms']
-        coords = self._kwargs['positions']
-        box = self._kwargs['box']
-
+    def guess_bonds(self, atoms, coords, box=None, **kwargs):
         r"""Guess if bonds exist between two atoms based on their distance.
 
         Bond between two atoms is created, if the two atoms are within
@@ -205,24 +210,22 @@ class DefaultGuesser(GuesserBase):
              coordinates of the atoms (i.e., `AtomGroup.positions)`)
         fudge_factor : float, optional
             The factor by which atoms must overlap eachother to be considered a
-            bond. Larger values will increase the number of bonds found. [0.55]
+            bond.  Larger values will increase the number of bonds found. [0.55]
         vdwradii : dict, optional
-            To supply custom vdwradii for atoms in the algorithm.
-            Must be a dict of format {type:radii}. The default table
-            of van der Waals radii is hard-coded as :data:`MDAnalysis.topology.
-            tables.vdwradii`.  Any user defined vdwradii passed as an argument
-            will supercede the table  values. [``None``]
-
+            To supply custom vdwradii for atoms in the algorithm. Must be a dict
+            of format {type:radii}. The default table of van der Waals radii is
+            hard-coded as :data:`MDAnalysis.topology.tables.vdwradii`.  Any user
+            defined vdwradii passed as an argument will supercede the table
+            values. [``None``]
         lower_bound : float, optional
-            The minimum bond length. All bonds found shorter
-             than this length will be ignored. This is useful
-             for parsing PDB with altloc records where  atoms with
-             altloc A and B maybe very close together and there should be
+            The minimum bond length. All bonds found shorter than this length will
+            be ignored. This is useful for parsing PDB with altloc records where
+            atoms with altloc A and B maybe very close together and there should be
             no chemical bond between them. [0.1]
         box : array_like, optional
-            Bonds are found using a distance search, if unit cell
-             information is given, periodic boundary conditions
-            will be considered in the distance search. [``None``]
+            Bonds are found using a distance search, if unit cell information is
+            given, periodic boundary conditions will be considered in the distance
+            search. [``None``]
 
         Returns
         -------
@@ -236,8 +239,7 @@ class DefaultGuesser(GuesserBase):
 
         Raises
         ------
-        :exc:`ValueError`
-        if inputs are malformed or `vdwradii` data is missing.
+        :exc:`ValueError` if inputs are malformed or `vdwradii` data is missing.
 
 
         .. _`same algorithm that VMD uses`:
@@ -254,12 +256,11 @@ class DefaultGuesser(GuesserBase):
         if len(atoms) != len(coords):
             raise ValueError("'atoms' and 'coord' must be the same length")
 
-        fudge_factor = self._kwargs.get('fudge_factor', 0.55)
+        fudge_factor = kwargs.get('fudge_factor', 0.55)
 
         vdwradii = tables.vdwradii.copy()  # so I don't permanently change it
-        user_vdwradii = self._kwargs.get('vdwradii', None)
-        if user_vdwradii:
-            # this should make algo use their values over defaults
+        user_vdwradii = kwargs.get('vdwradii', None)
+        if user_vdwradii:  # this should make algo use their values over defaults
             vdwradii.update(user_vdwradii)
 
         # Try using types, then elements
@@ -269,11 +270,11 @@ class DefaultGuesser(GuesserBase):
         if not all(val in vdwradii for val in set(atomtypes)):
             raise ValueError(("vdw radii for types: " +
                               ", ".join([t for t in set(atomtypes) if
-                                         t not in vdwradii]) +
+                                         not t in vdwradii]) +
                               ". These can be defined manually using the" +
                               " keyword 'vdwradii'"))
 
-        lower_bound = self._kwargs.get('lower_bound', 0.1)
+        lower_bound = kwargs.get('lower_bound', 0.1)
 
         if box is not None:
             box = np.asarray(box)
@@ -286,17 +287,17 @@ class DefaultGuesser(GuesserBase):
         bonds = []
 
         pairs, dist = distances.self_capped_distance(coords,
-                                                     max_cutoff=2.0 * max_vdw,
+                                                     max_cutoff=2.0*max_vdw,
                                                      min_cutoff=lower_bound,
                                                      box=box)
         for idx, (i, j) in enumerate(pairs):
-            d = (vdwradii[atomtypes[i]] +
-                 vdwradii[atomtypes[j]]) * fudge_factor
+            d = (vdwradii[atomtypes[i]] + vdwradii[atomtypes[j]])*fudge_factor
             if (dist[idx] < d):
                 bonds.append((atoms[i].index, atoms[j].index))
         return tuple(bonds)
 
-    def guess_angles(self):
+
+    def guess_angles(self, bonds):
         """Given a list of Bonds, find all angles that exist between atoms.
 
         Works by assuming that if atoms 1 & 2 are bonded, and 2 & 3 are bonded,
@@ -316,7 +317,6 @@ class DefaultGuesser(GuesserBase):
 
         .. versionadded 0.9.0
         """
-        bonds = self._kwargs['bonds']
         angles_found = set()
 
         for b in bonds:
@@ -325,16 +325,14 @@ class DefaultGuesser(GuesserBase):
                 for other_b in atom.bonds:
                     if other_b != b:  # if not the same bond I start as
                         third_a = other_b.partner(atom)
-                        desc = tuple(
-                            [other_a.index, atom.index, third_a.index])
-                        if desc[0] > desc[-1]:
-                            # first index always less than last
+                        desc = tuple([other_a.index, atom.index, third_a.index])
+                        if desc[0] > desc[-1]:  # first index always less than last
                             desc = desc[::-1]
                         angles_found.add(desc)
 
         return tuple(angles_found)
 
-    def guess_dihedrals(self):
+    def guess_dihedrals(self, angles):
         """Given a list of Angles, find all dihedrals that exist between atoms.
 
         Works by assuming that if (1,2,3) is an angle, and 3 & 4 are bonded,
@@ -348,7 +346,6 @@ class DefaultGuesser(GuesserBase):
 
         .. versionadded 0.9.0
         """
-        angles = self._kwargs['angles']
         dihedrals_found = set()
 
         for b in angles:
@@ -367,9 +364,10 @@ class DefaultGuesser(GuesserBase):
 
         return tuple(dihedrals_found)
 
-    def guess_improper_dihedrals(self):
-        """Given a list of Angles, find all improper dihedrals
-        that exist between atoms.
+
+    def guess_improper_dihedrals(self, angles):
+        """Given a list of Angles, find all improper dihedrals that exist between
+        atoms.
 
         Works by assuming that if (1,2,3) is an angle, and 2 & 4 are bonded,
         then (2, 1, 3, 4) must be an improper dihedral.
@@ -383,7 +381,6 @@ class DefaultGuesser(GuesserBase):
 
         .. versionadded 0.9.0
         """
-        angles = self._universe.atoms.angles
         dihedrals_found = set()
 
         for b in angles:
@@ -395,7 +392,7 @@ class DefaultGuesser(GuesserBase):
             for other_b in atom.bonds:
                 other_atom = other_b.partner(atom)
                 # if this atom isn't in the angle I started with
-                if other_atom not in b:
+                if not other_atom in b:
                     desc = a_tup + (other_atom.index,)
                     if desc[0] > desc[-1]:
                         desc = desc[::-1]
@@ -404,7 +401,7 @@ class DefaultGuesser(GuesserBase):
         return tuple(dihedrals_found)
 
 
-    def guess_atom_charge(self):
+    def guess_atom_charge(self, atoms):
         """Guess atom charge from the name.
 
         .. Warning:: Not implemented; simply returns 0.
@@ -413,7 +410,7 @@ class DefaultGuesser(GuesserBase):
         return 0.0
 
 
-    def guess_aromaticities(self):
+    def guess_aromaticities(self, atoms=None):
         """Guess aromaticity of atoms using RDKit
 
         Returns
@@ -424,6 +421,39 @@ class DefaultGuesser(GuesserBase):
 
         .. versionadded:: 2.0.0
         """
-        atomgroup = self._universe.atoms
+        atomgroup = ''
+        if atoms:
+            atomgroup = atoms
+        else:
+            atomgroup = self._universe.atoms
         mol = atomgroup.convert_to("RDKIT")
         return np.array([atom.GetIsAromatic() for atom in mol.GetAtoms()])
+
+    def guess_gasteiger_charges(self, atoms=None):
+        """Guess Gasteiger partial charges using RDKit
+
+        Parameters
+        ----------
+        atomgroup : mda.core.groups.AtomGroup
+            Atoms for which the charges will be guessed
+
+        Returns
+        -------
+        charges : numpy.ndarray
+            Array of float values representing the charge of each atom
+
+
+        .. versionadded:: 2.0.0
+        """
+        atomgroup = ''
+        if atoms:
+            atomgroup = atoms
+        else:
+            atomgroup = self._universe.atoms
+  
+        mol = atomgroup.convert_to("RDKIT")
+        from rdkit.Chem.rdPartialCharges import ComputeGasteigerCharges
+        ComputeGasteigerCharges(mol, throwOnParamFailure=True)
+        return np.array([atom.GetDoubleProp("_GasteigerCharge")
+                         for atom in mol.GetAtoms()],
+                        dtype=np.float32)

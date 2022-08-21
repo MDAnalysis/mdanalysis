@@ -3291,19 +3291,19 @@ class AtomGroup(GroupBase):
                 attr = cls([])
                 u.add_TopologyAttr(attr)
                 return attr
-        guesser = get_guesser(context, atoms=self.atoms,
-                              positions=self.atoms.positions,
-                              vdwradii=vdwradii, box=self.dimensions)
+        guesser = get_guesser(context)
         # indices of bonds
-        b = guesser.guess_Attr('bonds')
+        b = guesser.guess_bonds(self.atoms, self.atoms.positions,
+                        vdwradii=vdwradii, box=self.dimensions)
+               
         bondattr = get_TopAttr(self.universe, 'bonds', Bonds)
         bondattr._add_bonds(b, guessed=True)
 
-        a = guesser.guess_Attr('angles', bonds=self.bonds)
+        a = guesser.guess_angles(self.bonds)
         angleattr = get_TopAttr(self.universe, 'angles', Angles)
         angleattr._add_bonds(a, guessed=True)
 
-        d = guesser.guess_Attr('dihedrals', angles=self.angles)
+        d = guesser.guess_dihedrals(self.angles)
         diheattr = get_TopAttr(self.universe, 'dihedrals', Dihedrals)
         diheattr._add_bonds(d)
 

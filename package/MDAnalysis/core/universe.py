@@ -382,11 +382,11 @@ class Universe(object):
 
         to_guess = list(to_guess)
 
-        if ('MINIMAL' not in self._parser and
-            'THINGY' not in self._parser and self._topology.n_atoms > 0 and
-                any(fmt in _PARSERS for fmt in self._parser)):
-            singulars =\
-                list(att.singular for att in self._topology.read_attributes)
+        if ('MINIMAL' not in self._parser and 'THINGY' not in self._parser and
+            self._topology.n_atoms > 0 and any(fmt in _PARSERS for fmt in self._parser)):
+            singulars = list(
+                att.singular for att in self._topology.read_attributes)
+            
             if (not any(att == 'type' for att in singulars) and
                     'types' not in to_guess):
                 to_guess.append('types')
@@ -395,7 +395,7 @@ class Universe(object):
                 to_guess.append('masses')
         if guess_bonds and 'bonds' not in to_guess:
             to_guess.append('bonds')
-            
+
         if to_guess:
             self.guess_TopologyAttributes(context, to_guess)
 
@@ -1472,7 +1472,7 @@ class Universe(object):
 
         return cls(mol, **kwargs)
 
-    def guess_TopologyAttributes(self, context=None, to_guess=None):
+    def guess_TopologyAttributes(self, context=None, to_guess=None, **kwargs):
         """guess attributes passed to the universe within specific context
 
         Parameters
@@ -1483,22 +1483,15 @@ class Universe(object):
         list of atrributes to be guessed then added to the universe
         """
    
-        # check if a file is txyz format to handle its
-        # to preserve its special behavior of guessing
-        # atom masses from names
-        txyz=False
-        if 'TXYZ' in self._parser or 'ARC' in self._parser:
-            txyz = True
         if not context:
             context = self._kwargs['context']
-
-        guesser = get_guesser(context, self.universe, txyz=txyz)
+        guesser = get_guesser(context, self.universe, parser=self._parser, **kwargs)
         toplogy_atrrs =\
             list(att.attrname for att in self._topology.read_attributes)
         
-        if guesser.is_guessable(to_guess):                
+        if guesser.is_guessable(to_guess):           
             if 'bonds' in to_guess:
-                self.guess_bonds = True
+                self._kwargs['guess_bonds'] = True
                 to_guess.remove('bonds')
 
             for attr in to_guess:
@@ -1509,15 +1502,15 @@ class Universe(object):
                                   .format(attr))
                 values = guesser.guess_Attr(attr)
                 self.add_TopologyAttr(attr, values)
-                
-            if self.kwargs['guess_bonds']:
+            
+            if self._kwargs['guess_bonds']:
                 if 'bonds' in toplogy_atrrs:
                     warnings.warn('The attribute bonds have already been read '
-                                  'from the topology file, you are trying to '
+                                  'from the topology file. You are trying to '
                                   'overwrite it by guessed values'
                                   )
-                else: 
-                    self.atoms.guess_bonds(self.kwargs['vdwradii'], context)
+                
+                self.atoms.guess_bonds(self._kwargs['vdwradii'], context)
 
                     
         else:

@@ -46,7 +46,7 @@ from MDAnalysisTests.datafiles import (
     GRO, TRR,
     two_water_gro, two_water_gro_nonames,
     TRZ, TRZ_psf,
-    PDB, MMTF,
+    PDB, MMTF, CONECT
 )
 
 import MDAnalysis as mda
@@ -387,24 +387,24 @@ class TestGuessTopologyAttr(object):
         assert_equal(len(u.atoms.types), 3341)
 
     def test_invalid_context(self):
+        u = mda.Universe(PDB_small)
         with pytest.raises(KeyError):
-            u = mda.Universe(PDB_small)
-            u.guess_TopologyAttributes(context='trash', to_guess='masses')
+            u.guess_TopologyAttributes(context='trash', to_guess=['masses'])
             
     def test_invalid_attributes(self):
+        u = mda.Universe(PDB_small)
         with pytest.raises(ValueError):
-            u = mda.Universe(PDB_small)
-            u.guess_TopologyAttributes(to_guess='trash')
+            u.guess_TopologyAttributes(to_guess=['trash'])
     def test_guess_masses_before_types(self):
             u = mda.Universe(PDB_small, to_guess=('masses', 'types'))
             assert_equal(len(u.atoms.masses), 3341)
             assert_equal(len(u.atoms.types), 3341)
         
     def test_guessing_read_attributes(self):
-        u = mda.Universe(PDB_small)
+        u = mda.Universe(PSF)
         with pytest.warns(UserWarning, match='You are trying to '
         'overwrite it by guessed values'):
-            u.guess_TopologyAttributes(to_guess=['types'])
+            u.guess_TopologyAttributes(to_guess=['masses'])
 
         
 class TestGuessMasses(object):
@@ -514,7 +514,14 @@ class TestGuessBonds(object):
         ag.guess_bonds()
 
         self._check_atomgroup(ag, u)
+    def guess_bonds_with_to_guess(self):
+        u = mda.Universe(two_water_gro, to_guess=['bonds'])
+        assert u.atoms.bonds
 
+    def test_guess_read_bonds(self):
+        u = mda.Universe(CONECT)
+        with pytest.warns(UserWarning, match='The attribute bonds have already been read'):
+            u.guess_TopologyAttributes(to_guess=['bonds'])
 
 class TestInMemoryUniverse(object):
     def test_reader_w_timeseries(self):
