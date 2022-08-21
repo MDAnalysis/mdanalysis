@@ -201,6 +201,9 @@ class XVGReader(base.AuxReader):
         self._n_steps = len(self._auxdata_values)
         super(XVGReader, self).__init__(**kwargs)
 
+    def _memory_usage(self):
+        return(self._auxdata_values.nbytes)
+
     def _read_next_step(self):
         """ Read next auxiliary step and update ``auxstep``.
 

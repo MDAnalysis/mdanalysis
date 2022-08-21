@@ -360,3 +360,9 @@ class TestEDRReader(BaseAuxReaderTest):
         with pytest.warns(UserWarning, match="Auxiliary name"):
             ref_universe.trajectory.add_auxiliary({"Pres. DC": "Pres. DC"},
                                                   reader)
+
+    def test_warn_too_much_memory_usage(self, ref_universe, reader):
+        with pytest.warns(UserWarning, match="AuxReader: memory usage"):
+            ref_universe.trajectory.add_auxiliary({"temp": "Temperature"},
+                                                  reader,
+                                                  memory_limit=10)

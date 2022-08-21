@@ -105,7 +105,7 @@ class AuxStep(object):
 
     """
     def __init__(self, dt=1, initial_time=0, time_selector=None,
-                 data_selector=None, constant_dt=True):
+                 data_selector=None, constant_dt=True, memory_limit=None):
         self.step = -1
         self._initial_time = initial_time
         self._dt = dt
@@ -115,6 +115,8 @@ class AuxStep(object):
         # if invalid, will catch later
         self._time_selector_ = time_selector
         self._data_selector_ = data_selector
+
+
 
 
     @property
@@ -481,6 +483,21 @@ class AuxReader(metaclass=_AuxReaderMeta):
             aux.data_selector = aux_spec[auxname]
             coord_parent._auxs[auxname] = aux
             coord_parent.ts = aux.update_ts(coord_parent.ts)
+
+        aux_memory_usage = 0
+        # Check if testing, which needs lower memory limit
+        if "memory_limit" in kwargs:
+            memory_limit = kwargs["memory_limit"]
+        else:
+            memory_limit = 1e+09
+        for reader in coord_parent._auxs.values():
+            aux_memory_usage += reader._memory_usage()
+        if aux_memory_usage > memory_limit:
+            warnings.warn("AuxReader: memory usage warning!")
+
+    def _memory_usage(self):
+        raise NotImplementedError("BUG: Override _memory_usage() "
+                                  "in auxiliary reader!")
 
     def step_to_frame(self, step, ts, return_time_diff=False):
         """ Calculate closest trajectory frame for auxiliary step *step*.

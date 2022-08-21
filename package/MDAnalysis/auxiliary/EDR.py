@@ -229,6 +229,12 @@ class EDRReader(base.AuxReader):
         self.terms = list(self.data_dict.keys())
         super(EDRReader, self).__init__(**kwargs)
 
+    def _memory_usage(self):
+        size = 0
+        for array in self.data_dict.values():
+            size += array.nbytes
+        return size
+
     def _read_next_step(self) -> EDRStep:
         """Read next auxiliary step and update ``auxstep``.
 
