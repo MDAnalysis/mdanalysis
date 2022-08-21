@@ -349,11 +349,11 @@ class TestEDRReader(BaseAuxReaderTest):
         assert_almost_equal(ref.bonds, returned["Bond"])
 
     def test_get_data_invalid_selections(self, reader):
-        with pytest.raises(KeyError, match="data_selector"):
+        with pytest.raises(KeyError, match="data selector"):
             reader.get_data(42)
-        with pytest.raises(KeyError, match="data_selector"):
+        with pytest.raises(KeyError, match="data selector"):
             reader.get_data("Not a valid term")
-        with pytest.raises(KeyError, match="data_selector"):
+        with pytest.raises(KeyError, match="data selector"):
             reader.get_data(["Bond", "Not a valid term"])
 
     def test_warning_when_space_in_aux_spec(self, ref_universe, reader):

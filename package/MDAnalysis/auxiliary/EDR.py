@@ -289,7 +289,7 @@ class EDRReader(base.AuxReader):
                 return datadict[term]
             except KeyError:
                 raise KeyError(f"data selector {term} is invalid. Check the "
-                                       "EDRReader's `terms` attribute.)
+                               "EDRReader's `terms` attribute.")
 
         data_dict = {"Time": self.data_dict["Time"]}
         
