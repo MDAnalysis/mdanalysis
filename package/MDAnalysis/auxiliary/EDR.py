@@ -275,12 +275,28 @@ class EDRReader(base.AuxReader):
         """
         return self.data_dict[self.time_selector]
 
-    def get_data(self, data_selector: Union[str, List[str], None] = None) \
-            -> Dict[str, np.ndarray]:
+    def get_data(self, data_selector: Union[str, List[str], None] = None
+                 ) -> Dict[str, np.ndarray]:
         """ Returns the auxiliary data contained in the :class:`EDRReader`.
         Returns either all data or data specified as `data_selector` in form
         of a str or a list of any of :attr:`EDRReader.terms`. `Time` is
-        always returned to allow easy plotting. """
+        always returned to allow easy plotting.
+
+        Parameters
+        ----------
+        data_selector: str, List[str]
+            Keys to be extracted from the auxiliary reader's data dictionary.
+
+        Returns
+        -------
+        Dictionary mapping `data_selector` keys to NumPy arrays of the
+        auxiliary data.
+
+        Raises
+        ------
+        KeyError
+            if an invalid data_selector key is passed.
+        """
         if data_selector is None:
             return self.data_dict
 
@@ -292,7 +308,7 @@ class EDRReader(base.AuxReader):
                                "EDRReader's `terms` attribute.")
 
         data_dict = {"Time": self.data_dict["Time"]}
-        
+
         if isinstance(data_selector, list):
             for term in data_selector:
                 data_dict[term] = _get_data_term(term, self.data_dict)
