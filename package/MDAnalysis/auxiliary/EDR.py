@@ -195,6 +195,18 @@ class EDRReader(base.AuxReader):
     **kwargs
        Other AuxReader options.
 
+    Attributes
+    ----------
+    _auxdata : pathlib.PosixPath
+        path at which the auxiliary data file is located
+    data_dict : dict
+        dictionary that contains the auxiliary data, mapping the name of the
+        data point to a NumPy array
+    _n_steps : int
+        Number of steps for which auxdata is available
+    terms : list
+        Names of the auxiliary data entries available in `data_dict`
+
     See Also
     --------
     :class:`~MDAnalysis.auxiliary.base.AuxReader`
