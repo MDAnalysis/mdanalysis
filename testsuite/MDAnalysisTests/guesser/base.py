@@ -24,8 +24,7 @@ import pytest
 
 import MDAnalysis as mda
 from MDAnalysis.guesser.base import GuesserBase
-from MDAnalysis.core.topology import Topology
-
+from MDAnalysisTests.datafiles import PDB
 class TesttBaseGuesser():
     
     def test_pass_guesser_object_to_universe(self):
@@ -33,7 +32,6 @@ class TesttBaseGuesser():
             context = 'test'
 
         test = TestGuesser()
-        topology = Topology()
 
-        u = mda.Universe(topology, context=test)
+        u = mda.Universe(PDB, context=test)
         assert isinstance(u._kwargs['context'], TestGuesser)
