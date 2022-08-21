@@ -284,22 +284,20 @@ class EDRReader(base.AuxReader):
         if data_selector is None:
             return self.data_dict
 
-        elif isinstance(data_selector, list):
-            data_dict = {"Time": self.data_dict["Time"]}
-            for term in data_selector:
-                try:
-                    data_dict[term] = self.data_dict[term]
-                except KeyError:
-                    raise KeyError(f"data_selector {term} invalid. Check "
-                                   "the EDRReader's `terms` attribute.")
-            return data_dict
+        def _get_data_term(term, datadict):
+            try:
+                return datadict[term]
+            except KeyError:
+                raise KeyError(f"data selector {term} is invalid. Check the "
+                                       "EDRReader's `terms` attribute.)
 
+        data_dict = {"Time": self.data_dict["Time"]}
+        
+        if isinstance(data_selector, list):
+            for term in data_selector:
+                data_dict[term] = _get_data_term(term, self.data_dict)
         else:
             term = data_selector
-            data_dict = {"Time": self.data_dict["Time"]}
-            try:
-                data_dict[term] = self.data_dict[term]
-            except KeyError:
-                raise KeyError(f"data_selector {term} invalid. Check the "
-                               "EDRReader's `terms` attribute.")
-            return data_dict
+            data_dict[term] = _get_data_term(term, self.data_dict)
+
+        return data_dict

@@ -39,7 +39,6 @@ Enhancements
   * Refactor make_downshift_arrays with vector operation in numpy(PR #3724)
   * Optimize topology serialization/construction by lazy-building _RA and _SR.
 
-
 Changes
   * `MDAnalysis.coordinates.base.add_auxiliary()` now supports adding of
     multiple auxiliary data points at the same time. To this end, an additional
@@ -52,7 +51,6 @@ Changes
     as per NEP29 (PR #3737)
   * Narrowed variable scope to reduce use of OpenMP `private` clause (PR #3706, PR
     #3728)
-
 
 Deprecations
   * The extras_requires target "AMBER" for `pip install ./package[AMBER]`
