@@ -46,6 +46,7 @@ import multiprocessing
 
 import numpy as np
 import scipy
+from typing import Tuple, List, Sequence, Union, Optional, Iterable
 
 try:
     import matplotlib
@@ -61,8 +62,11 @@ except ImportError:
 import MDAnalysis
 
 
-
-def produce_grid(tuple_of_limits, grid_spacing):
+# typing: numpy
+def produce_grid(
+    tuple_of_limits: Sequence[float],
+    grid_spacing: float
+) -> np.ndarray:
     """Produce a 2D grid for the simulation system.
 
     The grid is based on the tuple of Cartesian Coordinate limits calculated in
@@ -85,7 +89,11 @@ def produce_grid(tuple_of_limits, grid_spacing):
     return grid
 
 
-def split_grid(grid, num_cores):
+# typing: numpy
+def split_grid(
+        grid: np.ndarray,
+        num_cores: int
+) -> Tuple[List[np.ndarray], List[np.ndarray], int, int]:
     """Split the grid into blocks of vertices.
 
     Take the overall `grid` for the system and split it into lists of
@@ -149,22 +157,28 @@ def split_grid(grid, num_cores):
     # be distributed over the available cores on the system:
     list_square_vertex_arrays_per_core = np.array_split(list_all_squares_in_grid, num_cores)
     list_parent_index_values = np.array_split(list_parent_index_values, num_cores)
-    return [list_square_vertex_arrays_per_core, list_parent_index_values, current_row, current_column]
+    return (list_square_vertex_arrays_per_core, list_parent_index_values, current_row, current_column)
 
 
-def per_core_work(topology_file_path, trajectory_file_path, list_square_vertex_arrays_this_core, MDA_selection,
-                  start_frame, end_frame, reconstruction_index_list, maximum_delta_magnitude):
+def per_core_work(
+        topology_file_path: str, trajectory_file_path: str,
+        list_square_vertex_arrays_this_core: List[List[float]],
+        MDA_selection: str, start_frame: int, end_frame: int,
+        reconstruction_index_list: Sequence[int],
+        maximum_delta_magnitude: float,
+) -> List[Tuple[int, List[float]]]:
     """Run the analysis on one core.
 
     The code to perform on a given core given the list of square vertices assigned to it.
     """
     # obtain the relevant coordinates for particles of interest
     universe_object = MDAnalysis.Universe(topology_file_path, trajectory_file_path)
-    list_previous_frame_centroids = []
-    list_previous_frame_indices = []
+    list_previous_frame_centroids: List[int] = []
+    list_previous_frame_indices: List[int] = []
     #define some utility functions for trajectory iteration:
 
-    def produce_list_indices_point_in_polygon_this_frame(vertex_coord_list):
+    def produce_list_indices_point_in_polygon_this_frame(
+            vertex_coord_list: Iterable[int]) -> Iterable[int]:
         list_indices_point_in_polygon = []
         for square_vertices in vertex_coord_list:
             path_object = matplotlib.path.Path(square_vertices)
@@ -172,7 +186,10 @@ def per_core_work(topology_file_path, trajectory_file_path, list_square_vertex_a
             list_indices_point_in_polygon.append(index_list_in_polygon)
         return list_indices_point_in_polygon
 
-    def produce_list_centroids_this_frame(list_indices_in_polygon):
+    # typing: numpy
+    def produce_list_centroids_this_frame(
+            list_indices_in_polygon: Iterable[int]
+    ) -> Union[List[np.ndarray], List[str]]:
         list_centroids_this_frame = []
         for indices in list_indices_in_polygon:
             if not indices[0].size > 0:  # if there are no particles of interest in this particular square
@@ -226,8 +243,14 @@ def per_core_work(topology_file_path, trajectory_file_path, list_square_vertex_a
     return list(zip(reconstruction_index_list, xy_deltas_to_write.tolist()))
 
 
-def generate_streamlines(topology_file_path, trajectory_file_path, grid_spacing, MDA_selection, start_frame,
-                         end_frame, xmin, xmax, ymin, ymax, maximum_delta_magnitude, num_cores='maximum'):
+def generate_streamlines(
+        topology_file_path: str, trajectory_file_path: str,
+        grid_spacing: float, MDA_selection: str,
+        start_frame: int, end_frame: int,
+        xmin: float, xmax: float, ymin: float, ymax: float,
+        maximum_delta_magnitude: float,
+        num_cores: int = 'maximum'
+) -> Tuple[np.ndarray, np.ndarray, float, float]:
     r"""Produce the x and y components of a 2D streamplot data set.
 
     Parameters
@@ -301,13 +324,12 @@ def generate_streamlines(topology_file_path, trajectory_file_path, grid_spacing,
 
 
     References
-    ----------
     .. bibliography::
         :filter: False
         :style: MDA
         :keyprefix: a-
         :labelprefix: ᵃ
-
+        
         Chavent2014
 
 
