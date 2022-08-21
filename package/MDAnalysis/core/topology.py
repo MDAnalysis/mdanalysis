@@ -520,14 +520,14 @@ class Topology(object):
         """A list of the guessed attributes in this topology"""
         return filter(lambda x: x.is_guessed
                       if(not isinstance(x.is_guessed, list))
-                      else x.is_guessed[0], self.attrs)
+                      else True in x.is_guessed, self.attrs)
 
     @property
     def read_attributes(self):
         """A list of the attributes read from the topology"""
         return filter(lambda x: not x.is_guessed
                       if(not isinstance(x.is_guessed, list))
-                      else not x.is_guessed[0], self.attrs)
+                      else False in x.is_guessed, self.attrs)
 
     def add_Residue(self, segment, **new_attrs):
         """
