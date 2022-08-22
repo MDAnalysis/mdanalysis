@@ -121,7 +121,7 @@ from ..core.topologyattrs import (
     CMaps
 )
 from ..core.topology import Topology
-from typing import Tuple, Iterable
+from typing import Tuple, Iterable, List, Dict
 
 logger = logging.getLogger("MDAnalysis.converters.ParmEdParser")
 
@@ -219,7 +219,7 @@ class ParmEdParser(TopologyReaderBase):
             rmin14s.append(atom.rmin_14)
             epsilon14s.append(atom.epsilon_14)
 
-        attrs = []
+        attrs: list = []
 
         n_atoms = len(names)
 
@@ -275,24 +275,24 @@ class ParmEdParser(TopologyReaderBase):
         attrs.append(Segids(segids))
 
         #### === OTHERS === ####
-        bond_values = {}
-        bond_types = []
-        bond_orders = []
+        bond_values: Dict = {}
+        bond_types: List = []
+        bond_orders: List = []
 
-        ub_values = {}
-        ub_types = []
+        ub_values: Dict = {}
+        ub_types: List = []
 
-        angle_values = {}
-        angle_types = []
+        angle_values: Dict = {}
+        angle_types: List = []
 
-        dihedral_values = {}
-        dihedral_types = []
+        dihedral_values: Dict = {}
+        dihedral_types: List = []
 
-        improper_values = {}
-        improper_types = []
+        improper_values: Dict = {}
+        improper_types: List = []
 
-        cmap_values = {}
-        cmap_types = []
+        cmap_values: Dict = {}
+        cmap_types: List = []
 
         for bond in structure.bonds:
             idx = (bond.atom1.idx, bond.atom2.idx)
