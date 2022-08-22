@@ -146,6 +146,10 @@ def test_guess_bonds_Error():
     with pytest.raises(ValueError):
         u.guess_TopologyAttributes(to_guess=['bonds'])
 
+def test_guess_bond_coord_error():
+    u = mda.Universe(datafiles.PDB)  
+    with pytest.raises(ValueError):                              
+        DefaultGuesser(None).guess_bonds(u.atoms, [[1,2,2]])
 
 def test_guess_impropers():
     u = make_starshape()

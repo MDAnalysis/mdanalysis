@@ -610,6 +610,19 @@ class TestEncoreClustering(object):
         assert_equal(cc.clusters[1].centroid, 3, err_msg)
         assert_equal(cc.clusters[2].centroid, 5, err_msg)
 
+    def test_empty_ClusterCollection(self):
+        c = encore.ClusterCollection()
+        assert c.clusters is None
+
+    def test_ClusterCollection_element_diff_types(self):
+        with pytest.raises(TypeError, match=("all the elements must have the same type")):
+            c = encore.ClusterCollection(['foo', 1, 2, False])
+
+    def test_ClusterCollection_repr(self, cc):
+        empty = encore.ClusterCollection()
+        assert_equal(repr(cc), "<ClusterCollection with 3 clusters>")
+        assert_equal(repr(empty), "<ClusterCollection with no clusters>")
+    
     def test_Cluster_init(self, cluster):
         err_msg = "Cluster was not constructed correctly"
         assert_equal(cluster.elements, [0, 1, 2], err_msg)

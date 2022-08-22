@@ -29,7 +29,6 @@ import re
 from ..lib import distances
 from . import tables
 
-
 class DefaultGuesser(GuesserBase):
     context = 'default'
 
