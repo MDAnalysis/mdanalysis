@@ -23,16 +23,17 @@
 import pytest
 
 import MDAnalysis as mda
-from MDAnalysis.guesser.base import GuesserBase
+from MDAnalysis.guesser.base import GuesserBase, get_guesser
 from MDAnalysis.core.topology import Topology
 
 class TesttBaseGuesser():
     
-    def test_pass_guesser_object_to_universe(self):
+    def test_get_guesser(self):
         class TestGuesser(GuesserBase):
             context = 'test'
 
-        test = TestGuesser()
-        topology = Topology()
-        u = mda.Universe(topology, context=test)
-        assert isinstance(u._kwargs['context'], TestGuesser)
+        test = TestGuesser()        
+        assert isinstance(get_guesser(test), TestGuesser)
+
+       
+
