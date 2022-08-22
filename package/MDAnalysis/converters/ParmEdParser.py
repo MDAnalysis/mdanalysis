@@ -121,6 +121,7 @@ from ..core.topologyattrs import (
     CMaps
 )
 from ..core.topology import Topology
+from typing import Tuple, Iterable
 
 logger = logging.getLogger("MDAnalysis.converters.ParmEdParser")
 
@@ -151,7 +152,7 @@ class ParmEdParser(TopologyReaderBase):
         else:
             return isinstance(thing, pmd.Structure)
 
-    def parse(self, **kwargs):
+    def parse(self, **kwargs) -> Topology:
         """Parse PARMED into Topology
 
         Returns
