@@ -26,11 +26,9 @@ from .. import _GUESSERS
 class GuesserMeta(type):
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
-        try:
-            _GUESSERS[classdict['context'].upper()] = cls
-        except KeyError:
-            pass
-
+       
+        _GUESSERS[classdict['context'].upper()] = cls
+     
 
 class GuesserBase(metaclass=GuesserMeta):
     context = 'base'
