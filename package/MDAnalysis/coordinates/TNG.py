@@ -216,7 +216,7 @@ class TNGReader(base.ReaderBase):
         strides_eq = all(v == strides[0] for v in strides)
         frames_eq = all(v == n_data_frames[0] for v in n_data_frames)
 
-        if (not strides_eq) or (not frames_eq) :
+        if (not strides_eq) or (not frames_eq):
             raise IOError("Strides of TNG special blocks not equal,"
                           " file cannot be read")
 
