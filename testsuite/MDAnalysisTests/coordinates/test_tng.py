@@ -33,7 +33,8 @@ if HAS_PYTNG:
 from MDAnalysisTests.coordinates.base import (BaseReference,
                                               MultiframeReaderTest)
 from MDAnalysisTests.datafiles import (COORDINATES_TNG, COORDINATES_TOPOLOGY,
-                                       TNG_traj, TNG_traj_gro)
+                                       TNG_traj, TNG_traj_gro,
+                                       TNG_traj_uneven_blocks)
 
 
 @pytest.mark.skipif(HAS_PYTNG, reason="pytng present")
@@ -96,6 +97,11 @@ class TestTNGCoordinatesTraj(MultiframeReaderTest):
                            "writer for TNG files"):
             reader.Writer()
 
+
+@pytest.mark.skipif(not HAS_PYTNG, reason="pytng not installed")
+def test_tng_traj_uneven_blocks():
+    with pytest.raises(IOError, match="Strides of TNG special blocks"):
+        u = mda.Universe(TNG_traj_gro, TNG_traj_uneven_blocks)
 
 @pytest.mark.skipif(not HAS_PYTNG, reason="pytng not installed")
 class TestTNGTraj(object):

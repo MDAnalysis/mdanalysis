@@ -213,13 +213,12 @@ class TNGReader(base.ReaderBase):
             n_data_frame = self._data_frames[block]
             n_data_frames.append(n_data_frame)
 
-        if not all(element == strides[0] for element in strides):
+        strides_eq = all(v == strides[0] for v in strides)
+        frames_eq = all(v == n_data_frames[0] for v in n_data_frames)
+
+        if (not strides_eq) or (not frames_eq) :
             raise IOError("Strides of TNG special blocks not equal,"
                           " file cannot be read")
-
-        if not all(element == n_data_frames[0] for element in n_data_frames):
-            raise IOError("Number of data containing frames for TNG special"
-                          " blocks not equal, file cannot be read")
 
         self._global_stride = strides[0]
         # NOTE frame number is 0 indexed so increment
