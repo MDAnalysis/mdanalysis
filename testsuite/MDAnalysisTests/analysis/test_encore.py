@@ -616,8 +616,12 @@ class TestEncoreClustering(object):
 
     def test_ClusterCollection_element_diff_types(self):
         with pytest.raises(TypeError, match=("all the elements must have the same type")):
-            c = encore.ClusterCollection(['foo', 1, 2, False])
+            encore.ClusterCollection(['foo', 1, 2, False])
 
+    def test_ClusterCollection_centroid_error(self):
+        with pytest.raises(ValueError, match=("which is a centroid, doesn't belong to its own cluster")):
+            encore.ClusterCollection([2, 1, 3, 3, 3])
+        
     def test_ClusterCollection_repr(self, cc):
         empty = encore.ClusterCollection()
         assert_equal(repr(cc), "<ClusterCollection with 3 clusters>")
