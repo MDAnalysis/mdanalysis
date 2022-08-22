@@ -63,7 +63,7 @@ Classes
 import numpy as np
 import warnings
 
-from .tables import SYMB2Z
+from ..guesser.tables import SYMB2Z
 from ..lib import util
 from .base import TopologyReaderBase, change_squash
 from ..core.topology import Topology

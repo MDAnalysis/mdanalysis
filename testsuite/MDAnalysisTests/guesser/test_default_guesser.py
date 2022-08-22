@@ -46,13 +46,20 @@ requires_rdkit = pytest.mark.skipif(import_not_available("rdkit"),
 
 
 class TestGuessMasses(object):
-    def test_guess_masses(self):
+    def test_guess_masses_from_universe(self):
         topology = Topology(3, attrs=[Atomtypes(['C', 'C', 'H'])])
         u = mda.Universe(topology)
         u.guess_TopologyAttributes(to_guess=['masses'])
 
         assert isinstance(u.atoms.masses, np.ndarray)
         assert_equal(u.atoms.masses, np.array([12.011, 12.011, 1.008]))
+        
+        
+    def test_guess_masses_from_guesser_object(self):
+        default_guesser = DefaultGuesser(None)
+        elements = ['H', 'Ca', 'Am']
+        values = np.array([1.008, 40.08000, 243.0])
+        assert_equal( default_guesser.guess_masses(elements), values)
 
     def test_guess_masses_warn(self):
         topology = Topology(1, attrs=[Atomtypes(['X'])])

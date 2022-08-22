@@ -59,7 +59,7 @@ import numpy as np
 import warnings
 
 from ..topology.base import TopologyReaderBase
-from ..topology.tables import SYMB2Z
+from ..guesser.tables import SYMB2Z
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomids,

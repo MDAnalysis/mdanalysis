@@ -35,7 +35,6 @@ import numpy as np
 from collections import defaultdict
 
 # Local imports
-from . import tables
 from ..core._get_readers import get_parser_for
 from ..lib.util import cached
 

@@ -59,7 +59,7 @@ from ..core.topologyattrs import (
     Segids,
 )
 from ..core.topology import Topology
-from .tables import SYBYL2SYMB
+from ..guesser.tables import SYBYL2SYMB
 
 import warnings
 

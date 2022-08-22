@@ -91,7 +91,7 @@ Classes
 import numpy as np
 import itertools
 
-from .tables import Z2SYMB
+from ..guesser.tables import Z2SYMB
 from ..lib.util import openany, FORTRANReader
 from .base import TopologyReaderBase
 from ..core.topology import Topology

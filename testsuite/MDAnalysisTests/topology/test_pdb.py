@@ -251,7 +251,7 @@ def test_PDB_hex():
 
 @pytest.mark.filterwarnings("error:Failed to guess the mass")
 def test_PDB_metals():
-    from MDAnalysis.topology import tables
+    from MDAnalysis.guesser import tables
 
     u = mda.Universe(StringIO(PDB_metals), format='PDB')
 

@@ -25,7 +25,7 @@ import copy
 from io import StringIO
 import pytest
 import MDAnalysis as mda
-from MDAnalysis.topology.guessers import guess_atom_element
+from MDAnalysis.guesser.default_guesser import DefaultGuesser
 import numpy as np
 from numpy.testing import (assert_allclose, assert_equal)
 
@@ -144,7 +144,8 @@ class TestRDKitConverter(object):
     def mol2(self):
         u = mda.Universe(mol2_molecule)
         # add elements
-        elements = np.array([guess_atom_element(x) for x in u.atoms.types],
+        guesser = DefaultGuesser(None)
+        elements = np.array([guesser.guess_atom_element(x) for x in u.atoms.types],
                             dtype=object)
         u.add_TopologyAttr('elements', elements)
         return u
@@ -223,10 +224,10 @@ class TestRDKitConverter(object):
 
     def test_raise_requires_elements(self):
         u = mda.Universe(mol2_molecule)
-        
+
         # Delete topology attribute (PR #3069)
         u.del_TopologyAttr('elements')
-        
+
         with pytest.raises(
             AttributeError,
             match="`elements` attribute is required for the RDKitConverter"
@@ -493,9 +494,9 @@ class TestRDKitFunctions(object):
         ("C-[N](-[O])-[O].C-[N](-[O])-[O]", "C[N+](=O)[O-].C[N+](=O)[O-]"),
         ("[C-](=O)-C", "[C](=O)-C"),
         ("[H]-[N-]-C", "[H]-[N]-C"),
-        ("[O]-[C]1-[C](-[H])-[C](-[H])-[C](-[H])-[C](-[H])-[C](-[H])1", 
+        ("[O]-[C]1-[C](-[H])-[C](-[H])-[C](-[H])-[C](-[H])-[C](-[H])1",
          "[O-]c1ccccc1"),
-        ("[O]-[C]1-[C](-[H])-[C](-[H])-[C](-[H])-[C]1-[O]", 
+        ("[O]-[C]1-[C](-[H])-[C](-[H])-[C](-[H])-[C]1-[O]",
          "[O-]C1=CC=CC1=O"),
         ("[H]-[C]-[C]-[C](-[H])-[C](-[H])-[H]", "C#CC=C"),
         ("[H]-[C]-[C]-[C]-[C]-[H]", "C#CC#C"),
