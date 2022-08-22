@@ -362,7 +362,9 @@ class TestEDRReader(BaseAuxReaderTest):
                                                   reader)
 
     def test_warn_too_much_memory_usage(self, ref_universe, reader):
-        with pytest.warns(UserWarning, match="AuxReader: memory usage"):
+        with pytest.warns(UserWarning, match="AuxReader: memory usage warning!"
+                          " Auxiliary data takes up 3.328 KB of memory "
+                          "\(Warning limit: 0.01 KB\)"):
             ref_universe.trajectory.add_auxiliary({"temp": "Temperature"},
                                                   reader,
                                                   memory_limit=10)
