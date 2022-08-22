@@ -493,10 +493,11 @@ class AuxReader(metaclass=_AuxReaderMeta):
         for reader in coord_parent._auxs.values():
             aux_memory_usage += reader._memory_usage()
         if aux_memory_usage > memory_limit:
+            conv = 1000000000  # convert to GB
             warnings.warn("AuxReader: memory usage warning! "
-                          f"Auxiliary data takes up {aux_memory_usage/1000} "
-                          f"KB of memory (Warning limit: {memory_limit/1000} "
-                          "KB).")
+                          f"Auxiliary data takes up {aux_memory_usage/conv} "
+                          f"GB of memory (Warning limit: {memory_limit/conv} "
+                          "GB).")
 
     def _memory_usage(self):
         raise NotImplementedError("BUG: Override _memory_usage() "
