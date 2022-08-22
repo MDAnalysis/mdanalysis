@@ -41,8 +41,8 @@ class DefaultGuesser(GuesserBase):
                        'dihedrals': self.guess_dihedrals,
                        'bonds': self.guess_bonds,
                        'improper dihedrals': self.guess_improper_dihedrals,
-                       'aromaticites': self.guess_aromaticities,
-                       'gasteiger charges': self.guess_gasteiger_charges}
+                       'aromaticities': self.guess_aromaticities,
+                       }
 
     def guess_masses(self, atoms=None):
         """Guess the mass of many atoms based upon their type
@@ -53,7 +53,7 @@ class DefaultGuesser(GuesserBase):
         """
         atom_types = None
         parser = self._kwargs.get('parser', [])
-        if atoms:
+        if atoms is not None:
             atom_types = atoms
             
         elif 'TXYZ' in parser or 'ARC' in parser:
@@ -133,7 +133,7 @@ class DefaultGuesser(GuesserBase):
         atom_types : np.ndarray dtype object
         """
         names=''
-        if atoms:
+        if atoms is not None:
             names = atoms
         else:     
             names = self._universe.atoms.names
@@ -420,14 +420,14 @@ class DefaultGuesser(GuesserBase):
         .. versionadded:: 2.0.0
         """
         atomgroup = ''
-        if atoms:
+        if atoms is not None:
             atomgroup = atoms
         else:
             atomgroup = self._universe.atoms
         mol = atomgroup.convert_to("RDKIT")
         return np.array([atom.GetIsAromatic() for atom in mol.GetAtoms()])
 
-    def guess_gasteiger_charges(self, atoms=None):
+    def guess_gasteiger_charges(self, atomgroup):
         """Guess Gasteiger partial charges using RDKit
 
         Parameters
@@ -443,11 +443,6 @@ class DefaultGuesser(GuesserBase):
 
         .. versionadded:: 2.0.0
         """
-        atomgroup = ''
-        if atoms:
-            atomgroup = atoms
-        else:
-            atomgroup = self._universe.atoms
   
         mol = atomgroup.convert_to("RDKIT")
         from rdkit.Chem.rdPartialCharges import ComputeGasteigerCharges

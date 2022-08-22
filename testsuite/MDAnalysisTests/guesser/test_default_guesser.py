@@ -82,6 +82,10 @@ class TestGuessMasses(object):
     def test_guess_atom_mass(self):
         default_guesser = DefaultGuesser(universe=None)
         assert default_guesser.guess_atom_mass('1H') == 1.008
+    def test_guess_masses_with_no_reference_elements(self):
+        u = mda.Universe.empty(3)
+        with pytest.raises(ValueError, match=('there is no reference attributes ')):
+            u.guess_TopologyAttributes('default', ['masses'])
 
 class TestGuessTypes(object):
     # guess_types
@@ -91,8 +95,10 @@ class TestGuessTypes(object):
         topology = Topology(2, attrs=[Atomnames(['MG2+', 'C12'])])
         u = mda.Universe(topology)
         u.guess_TopologyAttributes(to_guess=['types'])
+        values = DefaultGuesser(None).guess_types(u.atoms.names)
         assert isinstance(u.atoms.types, np.ndarray)
         assert_equal(u.atoms.types, np.array(['MG', 'C'], dtype=object))
+        assert_equal(values, np.array(['MG', 'C'], dtype=object))
 
     def test_guess_atom_element(self):
         default_guesser = DefaultGuesser(universe=None)
@@ -204,7 +210,10 @@ def test_guess_aromaticities(smi):
     u = mda.Universe(mol)
     guesser = DefaultGuesser(None)
     values = guesser.guess_aromaticities(u.atoms)
+    u.guess_TopologyAttributes(to_guess=['aromaticities'])
     assert_equal(values, expected)
+    assert_equal(u.atoms.aromaticities, expected)
+  
 
 @pytest.mark.parametrize("smi", [
     "c1ccccc1",
