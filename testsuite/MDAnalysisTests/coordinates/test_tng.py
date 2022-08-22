@@ -276,6 +276,7 @@ class TestTNGTraj(object):
     def test_parse_n_atoms(self, universe):
         assert(universe.trajectory.parse_n_atoms(TNG_traj) == self._n_atoms)
 
+
 @pytest.mark.skipif(not HAS_PYTNG, reason="pytng not installed")
 class TestTNGTraj_vels_forces(object):
 
@@ -284,7 +285,6 @@ class TestTNGTraj_vels_forces(object):
     _stride = 10
 
     prec = 5
-
 
     @pytest.fixture(scope="class")
     def universe(self):
@@ -338,6 +338,7 @@ class TestTNGTraj_vels_forces(object):
                            " file"):
             universe.trajectory._frame_to_ts(
                 iterator_step, universe.trajectory.ts)
+
 
 @pytest.mark.skipif(not HAS_PYTNG, reason="pytng not installed")
 def test_writer_raises_notimpl():
