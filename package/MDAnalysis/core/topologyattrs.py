@@ -2647,6 +2647,55 @@ class Bonds(_Connection):
                              guessed,
                              order)
 
+    @_check_connection_values
+    def _add_bonds(self, values, types=None, guessed=True, order=None):
+        """ Override base class method to use the BondTable
+
+        .. versionadded 2.3.0
+        """
+        if types is None:
+            types = itertools.cycle((None,))
+        if guessed in (True, False):
+            guessed = itertools.cycle((guessed,))
+        if order is None:
+            order = itertools.cycle((None,))
+
+        existing = set(self.values)
+        for v, t, g, o in zip(values, types, guessed, order):
+            if v not in existing:
+                self.values.append(v)
+                self.types.append(t)
+                self._guessed.append(g)
+                self.order.append(o)
+       # redo the bond table
+        self._bondtable = BondTable(np.asarray(self.values, dtype=np.int32), self.types, self._guessed, self.order)
+
+    @_check_connection_values
+    def _delete_bonds(self, values):
+        """ Override base class method to use the BondTable
+
+        .. versionadded 2.3.0
+        """
+
+        to_check = set(values)
+        self_values = set(self.values)
+        if not to_check.issubset(self_values):
+            missing = to_check-self_values
+            indices = ', '.join(map(str, missing))
+            raise ValueError(('Cannot delete nonexistent '
+                              '{attrname} with atom indices:'
+                              '{indices}').format(attrname=self.attrname,
+                                                  indices=indices))
+        idx = [self.values.index(v) for v in to_check]
+        for i in sorted(idx, reverse=True):
+            del self.values[i]
+
+        for attr in ('types', '_guessed', 'order'):
+            arr = np.array(getattr(self, attr), dtype='object')
+            new = np.delete(arr, idx)
+            setattr(self, attr, list(new))
+       # redo the bond table
+        self._bondtable = BondTable(np.asarray(self.values, dtype=np.int32), self.types, self._guessed, self.order)
 
     def bonded_atoms(self):
         """An :class:`~MDAnalysis.core.groups.AtomGroup` of all
