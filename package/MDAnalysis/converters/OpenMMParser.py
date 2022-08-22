@@ -95,7 +95,7 @@ class OpenMMTopologyParser(TopologyReaderBase):
         else:
             return isinstance(thing, app.Topology)
 
-    def _mda_topology_from_omm_topology(self, omm_topology):
+    def _mda_topology_from_omm_topology(self, omm_topology) -> Topology:
         """ Construct mda topology from omm topology
 
         Can be used for any openmm object that contains a topology object
@@ -219,7 +219,7 @@ class OpenMMTopologyParser(TopologyReaderBase):
 
         return top
 
-    def parse(self, **kwargs):
+    def parse(self, **kwargs) -> Topology:
         omm_topology = self.filename
         top = self._mda_topology_from_omm_topology(omm_topology)
 
@@ -250,7 +250,7 @@ class OpenMMAppTopologyParser(OpenMMTopologyParser):
                 )
             )
 
-    def parse(self, **kwargs):
+    def parse(self, **kwargs) -> Topology:
         try:
             omm_topology = self.filename.getTopology()
         except AttributeError:
