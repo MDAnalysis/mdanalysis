@@ -69,11 +69,12 @@ from ..core.topologyattrs import (
     Tempfactors,
 )
 from ..core.topology import Topology
+from typing import Any, Optional
 
 logger = logging.getLogger("MDAnalysis.converters.RDKitParser")
 
 
-def _rdkit_atom_to_RS(atom):
+def _rdkit_atom_to_RS(atom) -> Any:
     """Fetches RDKit chiral tags"""
     try:
         return atom.GetProp("_CIPCode")
@@ -169,7 +170,7 @@ class RDKitParser(TopologyReaderBase):
         else:
             return isinstance(thing, Chem.Mol)
 
-    def parse(self, **kwargs):
+    def parse(self, **kwargs) -> Topology:
         """Parse RDKit into Topology
 
         Returns
@@ -182,8 +183,8 @@ class RDKitParser(TopologyReaderBase):
         # Atoms
         names = []
         chiralities = []
-        resnums = []
-        resnames = []
+        resnums: list = []
+        resnames: list = []
         elements = []
         masses = []
         charges = []
@@ -255,7 +256,7 @@ class RDKitParser(TopologyReaderBase):
                         pass
 
         # make Topology attributes
-        attrs = []
+        attrs: list = []
         n_atoms = len(ids)
 
         if resnums and (len(resnums) != n_atoms):
@@ -324,10 +325,11 @@ class RDKitParser(TopologyReaderBase):
 
         # Residue
         if any(resnums) and not any(val is None for val in resnums):
-            resnums = np.array(resnums, dtype=np.int32)
-            resnames = np.array(resnames, dtype=object)
-            segids = np.array(segids, dtype=object)
-            icodes = np.array(icodes, dtype=object)
+            resnums: np.ndarray = np.array(resnums, dtype=np.int32)
+            resnames: np.ndarray = np.array(resnames, dtype=object)
+            segids: np.ndarray = np.array(segids, dtype=object)
+            icodes: np.ndarray = np.array(icodes, dtype=object)
+            residx: Optional[np.ndarray]
             residx, (resnums, resnames, icodes, segids) = change_squash(
                 (resnums, resnames, icodes, segids),
                 (resnums, resnames, icodes, segids))
