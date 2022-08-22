@@ -745,11 +745,14 @@ class TestAddTopologyAttr(object):
             ('impropers', [(1, 2, 3)]),
         )
     )
-    def add_connection_error(self, universe, attr, values):
+    def test_add_connection_error(self, universe, attr, values):
         with pytest.raises(ValueError):
             universe.add_TopologyAttr(attr, values)
 
-
+    def test_add_attr_length_error(self, universe):
+        with pytest.raises(ValueError):
+            universe.add_TopologyAttr('masses', np.array([1, 2, 3], dtype=np.float64))
+            
 class TestDelTopologyAttr(object):
     @pytest.fixture()
     def universe(self):
