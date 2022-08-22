@@ -51,21 +51,19 @@ class DefaultGuesser(GuesserBase):
         -------
         atom_masses : np.ndarray dtype float64
         """
-        
         atom_types = None
         parser = self._kwargs.get('parser', None)
         if atoms:
             atom_types = atoms
-
+            
+        elif 'TXYZ' in self._kwargs['parser'] or 'ARC' in self._kwargs['parser']:
+            atom_types = self._universe.atoms.names
+ 
         elif hasattr(self._universe.atoms, 'elements'):
             atom_types = self._universe.atoms.elements
-
         elif hasattr(self._universe.atoms, 'types'):
             atom_types = self._universe.atoms.types
-            
-        elif 'TXYZ' in parser or 'ARC' in parser:
-            atom_types = self._universe.atoms.names
-
+           
         else:
             try:
                 self._universe.guess_TopologyAttributes(

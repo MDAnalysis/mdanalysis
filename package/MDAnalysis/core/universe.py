@@ -397,8 +397,7 @@ class Universe(object):
             to_guess.append('bonds')
 
         if to_guess:
-            self.guess_TopologyAttributes(context, to_guess)
-
+            self.guess_TopologyAttributes(context, to_guess, parser=self._parser)
     def copy(self):
         """Return an independent copy of this Universe"""
         new = self.__class__(self._topology.copy())
@@ -1482,13 +1481,12 @@ class Universe(object):
         to_guess: list
         list of atrributes to be guessed then added to the universe
         """
-   
         if not context:
             context = self._kwargs['context']
-        guesser = get_guesser(context, self.universe, parser=self._parser, **kwargs)
+        guesser = get_guesser(context, self.universe, **kwargs)
         toplogy_atrrs =\
             list(att.attrname for att in self._topology.read_attributes)
-        
+
         if guesser.is_guessable(to_guess):           
             if 'bonds' in to_guess:
                 self._kwargs['guess_bonds'] = True
