@@ -36,6 +36,7 @@ Enhancements
     (CZI Performance track, PR #3683)
   * Refactor make_downshift_arrays with vector operation in numpy(PR #3724)
   * Optimize topology serialization/construction by lazy-building _RA and _SR.
+  * Added a reader for GROMACS TNG files based on PyTNG (PR #3765) 
 
 Changes
   * To add additional optional packages for different file formats when
