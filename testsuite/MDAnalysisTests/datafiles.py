@@ -129,8 +129,8 @@ __all__ = [
     "TRR_multi_frame",
     "TNG_traj",  # TNG trajectory from GROMACS physical validation testsuite, longish trajectory
     "TNG_traj_gro",  # topology for argon_npt_compressed_traj
-    "TNG_traj_uneven_blocks" # TNG trajectory with pos and vel deposited on different strides 
-    "TNG_traj_vels_forces" # similar to above but with velocities and forces
+    "TNG_traj_uneven_blocks", # TNG trajectory with pos and vel deposited on different strides 
+    "TNG_traj_vels_forces", # similar to above but with velocities and forces
     "merge_protein", "merge_ligand", "merge_water",
     "mol2_molecules", "mol2_molecule", "mol2_broken_molecule",
     "mol2_zinc", "mol2_comments_header", "mol2_ligand", "mol2_sodium_ion",
