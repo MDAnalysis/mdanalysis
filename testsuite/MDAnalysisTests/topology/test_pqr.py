@@ -87,7 +87,6 @@ def test_gromacs_flavour():
     # topology things
     assert u.atoms[0].type == 'O'
     assert u.atoms[0].segid == 'SYSTEM'
-    assert not u._topology.types.is_guessed
     assert_almost_equal(u.atoms[0].radius, 1.48, decimal=5)
     assert_almost_equal(u.atoms[0].charge, -0.67, decimal=5)
     # coordinatey things

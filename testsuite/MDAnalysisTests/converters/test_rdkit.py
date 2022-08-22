@@ -153,7 +153,7 @@ class TestRDKitConverter(object):
     @pytest.fixture
     def peptide(self):
         u = mda.Universe(GRO)
-        elements = mda.topology.guessers.guess_types(u.atoms.names)
+        elements = mda.guesser.DefaultGuesser(None).guess_types(u.atoms.names)
         u.add_TopologyAttr('elements', elements)
         return u.select_atoms("resid 2-12")
 

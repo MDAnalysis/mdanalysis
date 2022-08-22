@@ -35,7 +35,6 @@ from MDAnalysisTests.datafiles import (
 class GMSBase(ParserBase):
     parser = mda.topology.GMSParser.GMSParser
     expected_attrs = ['names', 'atomiccharges']
-    guessed_attrs = ['masses', 'types']
     expected_n_residues = 1
     expected_n_segments = 1
 
