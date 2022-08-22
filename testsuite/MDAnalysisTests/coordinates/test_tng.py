@@ -34,7 +34,8 @@ from MDAnalysisTests.coordinates.base import (BaseReference,
                                               MultiframeReaderTest)
 from MDAnalysisTests.datafiles import (COORDINATES_TNG, COORDINATES_TOPOLOGY,
                                        TNG_traj, TNG_traj_gro,
-                                       TNG_traj_uneven_blocks)
+                                       TNG_traj_uneven_blocks,
+                                       TNG_traj_vels_forces)
 
 
 @pytest.mark.skipif(HAS_PYTNG, reason="pytng present")
@@ -144,7 +145,7 @@ class TestTNGTraj(object):
 
     def test_n_frames(self, universe):
         assert_equal(universe.trajectory.n_frames, self._n_frames,
-                     "wrong number of frames in xyz")
+                     "wrong number of frames in TNG file")
 
     def test_block_names(self, universe):
         """Check the block names in the file"""
@@ -273,6 +274,71 @@ class TestTNGTraj(object):
 
     def test_parse_n_atoms(self, universe):
         assert(universe.trajectory.parse_n_atoms(TNG_traj) == self._n_atoms)
+
+
+
+@pytest.mark.skipif(not HAS_PYTNG, reason="pytng not installed")
+class TestTNGTraj_vels_forces(object):
+
+    _n_atoms = 1000
+    _n_frames = 51
+    _stride = 10
+
+    prec = 5
+
+
+    @pytest.fixture(scope="class")
+    def universe(self):
+        return mda.Universe(TNG_traj_gro, TNG_traj_vels_forces)
+
+    def test_n_atoms(self, universe):
+        assert_equal(universe.trajectory.n_atoms, self._n_atoms)
+
+    def test_n_frames(self, universe):
+        assert_equal(universe.trajectory.n_frames, self._n_frames,
+                     "wrong number of frames in TNG file")
+
+    def test_block_names(self, universe):
+        """Check the block names in the file"""
+        assert("TNG_TRAJ_BOX_SHAPE" in universe.trajectory.blocks)
+        assert("TNG_TRAJ_POSITIONS" in universe.trajectory.blocks)
+        assert("TNG_TRAJ_VELOCITIES" in universe.trajectory.blocks)
+        assert("TNG_TRAJ_FORCES" in universe.trajectory.blocks)
+        assert("TNG_GMX_LAMBDA" in universe.trajectory.blocks)
+
+    def test_special_blocks(self, universe):
+        """Check the position and box special blocks are present"""
+        assert("TNG_TRAJ_BOX_SHAPE" in universe.trajectory.special_blocks)
+        assert("TNG_TRAJ_POSITIONS" in universe.trajectory.special_blocks)
+        assert("TNG_TRAJ_VELOCITIES" in universe.trajectory.special_blocks)
+        assert("TNG_TRAJ_FORCES" in universe.trajectory.special_blocks)
+
+    def check_strides(self, universe):
+        """Check the stride of trajectory frames in integrator steps"""
+        assert(universe.trajectory._global_stride == self._stride)
+
+    def test_read_vels_fail_strange_step(self, universe):
+        stepnum = 123  # step number with no data
+        iterator_step = universe.trajectory._file_iterator.read_step(stepnum)
+        # set _has_* attrs to False to trigger velocities reading error
+        universe.trajectory._has_box = False
+        universe.trajectory._has_positions = False
+        with pytest.raises(IOError, match="Failed to read velocities from TNG"
+                           " file"):
+            universe.trajectory._frame_to_ts(
+                iterator_step, universe.trajectory.ts)
+
+    def test_read_force_fail_strange_step(self, universe):
+        stepnum = 123  # step number with no data
+        iterator_step = universe.trajectory._file_iterator.read_step(stepnum)
+        # set _has_* attrs to False to trigger forces reading error
+        universe.trajectory._has_box = False
+        universe.trajectory._has_positions = False
+        universe.trajectory._has_velocities = False
+        with pytest.raises(IOError, match="Failed to read forces from TNG"
+                           " file"):
+            universe.trajectory._frame_to_ts(
+                iterator_step, universe.trajectory.ts)
 
 
 @pytest.mark.skipif(not HAS_PYTNG, reason="pytng not installed")
