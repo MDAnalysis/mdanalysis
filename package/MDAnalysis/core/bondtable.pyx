@@ -137,10 +137,10 @@ cdef class BondTable:
         cdef int size = a.size()
         cdef size_t index
         cdef vector[size_t] indices
-        indices.reserve(size)
 
         for i in range(size):
-            indices[i] = i
+            indices.push_back(i)
+        
         sort_via_score(indices, a)
 
         cdef list b_ = []
