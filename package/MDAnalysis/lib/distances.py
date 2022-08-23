@@ -100,7 +100,7 @@ except ImportError:
 del importlib
 
 
-def _run(funcname: Callable, args: Optional[tuple] = None,
+def _run(funcname: str, args: Optional[tuple] = None,
          kwargs: Optional[dict] = None, backend: str = "serial") -> Callable:
     """Helper function to select a backend function `funcname`."""
     args = args if args is not None else tuple()
@@ -140,7 +140,7 @@ from .c_distances_openmp import OPENMP_ENABLED as USED_OPENMP
 
 
 # typing: numpy
-def _check_result_array(result: np.ndarray, shape: tuple) -> np.ndarray:
+def _check_result_array(result: Optional[np.ndarray], shape: tuple) -> np.ndarray:
     """Check if the result array is ok to use.
 
     The `result` array must meet the following requirements:
@@ -450,16 +450,23 @@ def capped_distance(reference: Union[np.ndarray, 'AtomGroup'],
             raise ValueError("Box Argument is of incompatible type. The "
                              "dimension should be either None or of the form "
                              "[lx, ly, lz, alpha, beta, gamma]")
-    method = _determine_method(reference, configuration, max_cutoff,
-                               min_cutoff=min_cutoff, box=box, method=method)
-    return method(reference, configuration, max_cutoff, min_cutoff=min_cutoff,
-                  box=box, return_distances=return_distances)
+
+    # The check_coords decorator made sure that reference and configuration
+    # are arrays of positions. Mypy does not know about that so we have to
+    # tell it.
+    reference_positions: np.ndarray = reference  # type: ignore
+    configuration_positions: np.ndarray = configuration  # type: ignore
+    function = _determine_method(reference_positions, configuration_positions,
+                                 max_cutoff, min_cutoff=min_cutoff,
+                                 box=box, method=method)
+    return function(reference, configuration, max_cutoff, min_cutoff=min_cutoff,
+                    box=box, return_distances=return_distances)
 
 
 def _determine_method(reference: np.ndarray, configuration: np.ndarray,
                       max_cutoff: float, min_cutoff: Optional[float] = None,
                       box: Optional[np.ndarray] = None,
-                      method: Optional[str] = None):
+                      method: Optional[str] = None) -> Callable:
     """Guesses the fastest method for capped distance calculations based on the
     size of the coordinate sets and the relative size of the target volume.
 
@@ -914,11 +921,15 @@ def self_capped_distance(reference: Union[np.ndarray, 'AtomGroup'],
             raise ValueError("Box Argument is of incompatible type. The "
                              "dimension should be either None or of the form "
                              "[lx, ly, lz, alpha, beta, gamma]")
-    method = _determine_method_self(reference, max_cutoff,
-                                    min_cutoff=min_cutoff,
-                                    box=box, method=method)
-    return method(reference,  max_cutoff, min_cutoff=min_cutoff, box=box,
-                  return_distances=return_distances)
+    # The check_coords decorator made sure that reference is an
+    # array of positions. Mypy does not know about that so we have to
+    # tell it.
+    reference_positions: np.ndarray = reference  # type: ignore
+    function = _determine_method_self(reference_positions,
+                                      max_cutoff, min_cutoff=min_cutoff,
+                                      box=box, method=method)
+    return function(reference,  max_cutoff, min_cutoff=min_cutoff, box=box,
+                    return_distances=return_distances)
 
 
 def _determine_method_self(reference: np.ndarray, max_cutoff: float,
@@ -1701,15 +1712,19 @@ def apply_PBC(coords: Union[np.ndarray, 'AtomGroup'],
        Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
        argument in any position and checks inputs using type hinting.
     """
-    if len(coords) == 0:
-        return coords
+    # coords is an array, the check_coords decorator made sure of that.
+    # Mypy, however, is not aware of that so we have to tell it explicitly.
+    coords_array: np.ndarray = coords  # type: ignore
+
+    if len(coords_array) == 0:
+        return coords_array
     boxtype, box = check_box(box)
     if boxtype == 'ortho':
-        _run("ortho_pbc", args=(coords, box), backend=backend)
+        _run("ortho_pbc", args=(coords_array, box), backend=backend)
     else:
-        _run("triclinic_pbc", args=(coords, box), backend=backend)
+        _run("triclinic_pbc", args=(coords_array, box), backend=backend)
 
-    return coords
+    return coords_array
 
 
 # typing: numpy
