@@ -192,7 +192,7 @@
 <span class="k">del</span> <span class="n">importlib</span>
 
 
-<span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="n">funcname</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="n">funcname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
          <span class="n">kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;serial&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Helper function to select a backend function `funcname`.&quot;&quot;&quot;</span>
     <span class="n">args</span> <span class="o">=</span> <span class="n">args</span> <span class="k">if</span> <span class="n">args</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">tuple</span><span class="p">()</span>
@@ -232,7 +232,8 @@
 
 
 <span class="c1"># typing: numpy</span>
-<span class="k">def</span> <span class="nf">_check_result_array</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">shape</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_check_result_array</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+                        <span class="n">shape</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Check if the result array is ok to use.</span>
 
 <span class="sd">    The `result` array must meet the following requirements:</span>
@@ -542,16 +543,24 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Box Argument is of incompatible type. The &quot;</span>
                              <span class="s2">&quot;dimension should be either None or of the form &quot;</span>
                              <span class="s2">&quot;[lx, ly, lz, alpha, beta, gamma]&quot;</span><span class="p">)</span>
-    <span class="n">method</span> <span class="o">=</span> <span class="n">_determine_method</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span>
-                               <span class="n">min_cutoff</span><span class="o">=</span><span class="n">min_cutoff</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">method</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="n">min_cutoff</span><span class="p">,</span>
-                  <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">return_distances</span><span class="o">=</span><span class="n">return_distances</span><span class="p">)</span></div>
+
+    <span class="c1"># The check_coords decorator made sure that reference and configuration</span>
+    <span class="c1"># are arrays of positions. Mypy does not know about that so we have to</span>
+    <span class="c1"># tell it.</span>
+    <span class="n">reference_positions</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">reference</span>  <span class="c1"># type: ignore</span>
+    <span class="n">configuration_positions</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">configuration</span>  <span class="c1"># type: ignore</span>
+    <span class="n">function</span> <span class="o">=</span> <span class="n">_determine_method</span><span class="p">(</span><span class="n">reference_positions</span><span class="p">,</span> <span class="n">configuration_positions</span><span class="p">,</span>
+                                 <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="n">min_cutoff</span><span class="p">,</span>
+                                 <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">function</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span>
+                    <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="n">min_cutoff</span><span class="p">,</span>
+                    <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">return_distances</span><span class="o">=</span><span class="n">return_distances</span><span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">_determine_method</span><span class="p">(</span><span class="n">reference</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">configuration</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
                       <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                       <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                      <span class="n">method</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+                      <span class="n">method</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Guesses the fastest method for capped distance calculations based on the</span>
 <span class="sd">    size of the coordinate sets and the relative size of the target volume.</span>
 
@@ -1006,11 +1015,15 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Box Argument is of incompatible type. The &quot;</span>
                              <span class="s2">&quot;dimension should be either None or of the form &quot;</span>
                              <span class="s2">&quot;[lx, ly, lz, alpha, beta, gamma]&quot;</span><span class="p">)</span>
-    <span class="n">method</span> <span class="o">=</span> <span class="n">_determine_method_self</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span>
-                                    <span class="n">min_cutoff</span><span class="o">=</span><span class="n">min_cutoff</span><span class="p">,</span>
-                                    <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">method</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span>  <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="n">min_cutoff</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
-                  <span class="n">return_distances</span><span class="o">=</span><span class="n">return_distances</span><span class="p">)</span></div>
+    <span class="c1"># The check_coords decorator made sure that reference is an</span>
+    <span class="c1"># array of positions. Mypy does not know about that so we have to</span>
+    <span class="c1"># tell it.</span>
+    <span class="n">reference_positions</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">reference</span>  <span class="c1"># type: ignore</span>
+    <span class="n">function</span> <span class="o">=</span> <span class="n">_determine_method_self</span><span class="p">(</span><span class="n">reference_positions</span><span class="p">,</span>
+                                      <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="n">min_cutoff</span><span class="p">,</span>
+                                      <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">function</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span>  <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="n">min_cutoff</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
+                    <span class="n">return_distances</span><span class="o">=</span><span class="n">return_distances</span><span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">_determine_method_self</span><span class="p">(</span><span class="n">reference</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -1793,15 +1806,19 @@
 <span class="sd">       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an</span>
 <span class="sd">       argument in any position and checks inputs using type hinting.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">coords</span>
+    <span class="c1"># coords is an array, the check_coords decorator made sure of that.</span>
+    <span class="c1"># Mypy, however, is not aware of that so we have to tell it explicitly.</span>
+    <span class="n">coords_array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">coords</span>  <span class="c1"># type: ignore</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords_array</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">coords_array</span>
     <span class="n">boxtype</span><span class="p">,</span> <span class="n">box</span> <span class="o">=</span> <span class="n">check_box</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">boxtype</span> <span class="o">==</span> <span class="s1">&#39;ortho&#39;</span><span class="p">:</span>
-        <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;ortho_pbc&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">box</span><span class="p">),</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+        <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;ortho_pbc&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords_array</span><span class="p">,</span> <span class="n">box</span><span class="p">),</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;triclinic_pbc&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">box</span><span class="p">),</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+        <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;triclinic_pbc&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords_array</span><span class="p">,</span> <span class="n">box</span><span class="p">),</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">coords</span></div>
+    <span class="k">return</span> <span class="n">coords_array</span></div>
 
 
 <span class="c1"># typing: numpy</span>
