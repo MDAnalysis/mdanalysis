@@ -898,6 +898,12 @@ class TestEncoreDimensionalityReduction(object):
                         encore.PrincipalComponentAnalysis(dims[1])])
         assert_equal(coordinates[1].shape[0], dims[1])
 
+    def test_dimensionality_reduction_distance_matrix_error(self, ens1, ens2):
+        dm = confdistmatrix.get_distance_matrix(ens1)
+        l = [dm] * 2
+        with pytest.raises(ValueError, match=("Dimensions of provided list of distance matrices "
+                                              "does not match that of provided list of ")):
+            encore.reduce_dimensionality([ens1, ens2], distance_matrix=l)
 
 class TestEncoreConfDistMatrix(object):
     def test_get_distance_matrix(self):
