@@ -140,7 +140,8 @@ from .c_distances_openmp import OPENMP_ENABLED as USED_OPENMP
 
 
 # typing: numpy
-def _check_result_array(result: Optional[np.ndarray], shape: tuple) -> np.ndarray:
+def _check_result_array(result: Optional[np.ndarray],
+                        shape: tuple) -> np.ndarray:
     """Check if the result array is ok to use.
 
     The `result` array must meet the following requirements:
@@ -459,7 +460,8 @@ def capped_distance(reference: Union[np.ndarray, 'AtomGroup'],
     function = _determine_method(reference_positions, configuration_positions,
                                  max_cutoff, min_cutoff=min_cutoff,
                                  box=box, method=method)
-    return function(reference, configuration, max_cutoff, min_cutoff=min_cutoff,
+    return function(reference, configuration,
+                    max_cutoff, min_cutoff=min_cutoff,
                     box=box, return_distances=return_distances)
 
 
