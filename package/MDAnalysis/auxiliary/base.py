@@ -346,7 +346,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
         """
         # Define in each auxiliary reader
         raise NotImplementedError(
-            "BUG: Override _read_next_timestep() in auxiliary reader!")
+            "BUG: Override _read_next_step() in auxiliary reader!")
 
     def update_ts(self, ts):
         """ Read auxiliary steps corresponding to and update the trajectory
@@ -493,7 +493,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
         for reader in coord_parent._auxs.values():
             aux_memory_usage += reader._memory_usage()
         if aux_memory_usage > memory_limit:
-            conv = 1000000000  # convert to GB
+            conv = 1e+09  # convert to GB
             warnings.warn("AuxReader: memory usage warning! "
                           f"Auxiliary data takes up {aux_memory_usage/conv} "
                           f"GB of memory (Warning limit: {memory_limit/conv} "

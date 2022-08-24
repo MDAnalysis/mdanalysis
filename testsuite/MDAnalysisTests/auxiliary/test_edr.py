@@ -24,6 +24,7 @@
 import pytest
 import numpy as np
 from numpy.testing import assert_almost_equal
+import pickle
 
 from pathlib import Path
 
@@ -34,7 +35,8 @@ from MDAnalysisTests.datafiles import (AUX_EDR,
                                        AUX_EDR_XTC,
                                        AUX_EDR_RAW)
 from MDAnalysisTests.auxiliary.base import (BaseAuxReaderTest,
-                                            BaseAuxReference)
+                                            BaseAuxReference,
+                                            assert_auxstep_equal)
 
 
 def read_auxstep_data(step):
@@ -368,3 +370,11 @@ class TestEDRReader(BaseAuxReaderTest):
             ref_universe.trajectory.add_auxiliary({"temp": "Temperature"},
                                                   reader,
                                                   memory_limit=10)
+
+    def test_auxreader_picklable(self, reader):
+        new_reader = pickle.loads(pickle.dumps(reader))
+        for step_index, auxstep in enumerate(reader):
+            assert_auxstep_equal(new_reader[step_index], auxstep)
+
+
+    

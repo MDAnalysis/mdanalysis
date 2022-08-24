@@ -41,9 +41,11 @@ Enhancements
 
 Changes
   * `MDAnalysis.coordinates.base.add_auxiliary()` now supports adding of
-    multiple auxiliary data points at the same time. To this end, an additional
-    `auxterm` argument is now available. Adding all data found in the auxiliary
-    data source is possible by passing `auxname="*"`. (PR #3749)
+    multiple auxiliary data points at the same time. To this end, the API was
+    rewritten and now expects dictionaries of `desired attribute name`:
+    `name in auxiliary data file` as input. Adding all data found in the
+    auxiliary data source is possible by omitting the dictionary and explicitly
+    passing the AuxReader instance as `auxdata`. (PR #3749)
   * To add additional optional packages for different file formats when
     using `pip` use the new "extra_formats" extras_require target as in
     `pip install ./package[extra_formats]` (Issue #3701, PR #3711)
