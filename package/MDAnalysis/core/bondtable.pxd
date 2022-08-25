@@ -34,25 +34,25 @@ cnp.import_array()
 
 cdef class BondTable:
     # maximum index in the table 
-    cdef int max_index
+    cdef public int max_index
     # whether the table has any values in it 
     cdef cbool _is_empty
     # which bond index entry in _ix_pair_array is value in input
-    cdef vector[int] _bix
+    cdef public vector[int] _bix
     # span of each atom in _bix
-    cdef vector[int] _spans
+    cdef public vector[int] _spans
     # mapping of bonds:bix
-    cdef cmap[cpair[int, int], int] _mapping
+    cdef public cmap[cpair[int, int], int] _mapping
     # unique list of bonds
-    cdef vector[cpair[int, int]] _ix_pair_array
+    cdef public vector[cpair[int, int]] _ix_pair_array
     # unique list of types
-    cdef list _type
+    cdef public list _type
     # unique list of orders
-    cdef list _order
+    cdef public list _order
     # unique list of guesses
-    cdef vector[int] _guessed
+    cdef public vector[int] _guessed
     # map of unique spans
-    cdef cmap[int, int] _span_map
+    cdef public cmap[int, int] _span_map
     # convert inputs to table representation 
     cdef void _generate_bix(self, int[:, :] val, list typ, int[:] guess,
                             list order)
