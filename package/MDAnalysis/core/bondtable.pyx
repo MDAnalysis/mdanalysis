@@ -235,12 +235,17 @@ cdef class BondTable:
 
             if lead_val != prev_val:
                 self._span_map[lead_val] = i
+                self._span_map_end[prev_val] = i
 
             prev_val = lead_val
-        #     print(self._span_map)
-        # print(prev_val)
+        
+        print(self._span_map)
+        print(prev_val)
 
         #self._span_map[prev_val] = i
+        # WORKS?
+        self._span_map_end[lead_val] = i +1
+
 
        # need to find the maximum key and value to correctly cap span array
         cdef int max_val, max_key
@@ -249,26 +254,28 @@ cdef class BondTable:
         max_val = deref(self._span_map.rbegin()).second
         # print("span_map")
         # print(self._span_map)
-        self.max_index = max_key + 2  # +2 so that the fake key made below is used
+        self.max_index = max_key #+ 2  # +2 so that the fake key made below is used
         # pop fake element into map to correctly cap the span
-        self._span_map[max_key + 1] = max_val + 1
+        # self._span_map[max_key + 1] = max_val + 1
 
         # print("span_map")
         # print(self._span_map)
         # print("max_index")
         # print(self.max_index)
         # sort out the spans so that each atoms has a span
-        prev_val = 0
-        for i in range(self.max_index):
+        prev_val = -1
+        for i in range(self.max_index +1 ):
             if self._span_map.count(i):
                 self._spans.push_back(self._span_map[i])
-                prev_val = self._span_map[i]
+                self._spans_end.push_back(self._span_map_end[i])
             else:
-                self._spans.push_back(prev_val)
+                self._spans.push_back(-1)
+                self._spans_end.push_back(-1)
+
 
         # remove fake element and decrement maximum index
-        self._span_map.erase(max_key + 1)
-        self.max_index -= 2
+        # self._span_map.erase(max_key + 1)
+        # self.max_index -= 2
         # print("span_map")
         # print(self._span_map)
         # print("max_index")
@@ -630,7 +637,7 @@ cdef class BondTable:
         """
         # private, does not check for target < self.max_index
         cdef int start = self._spans[target]
-        cdef int end = self._spans[target+1]
+        cdef int end = self._spans_end[target]
         cdef int i, b_ix, first, second
         cdef vector[int] bonds
         if start == end:
@@ -664,7 +671,7 @@ cdef class BondTable:
         """
         # private, does not check for target < self.max_index
         cdef int start = self._spans[target]
-        cdef int end = self._spans[target+1]
+        cdef int end = self._spans_end[target]
         cdef int i, b_ix, first, second
         cdef vector[cpair[int, int]] bonds
         if start == end:
@@ -695,7 +702,7 @@ cdef class BondTable:
         """
         # private, does not check for target < self.max_index
         cdef int start = self._spans[target]
-        cdef int end = self._spans[target+1]
+        cdef int end = self._spans_end[target]
         cdef int i, b_ix
         cdef list types = []
         if start == end:
@@ -726,7 +733,7 @@ cdef class BondTable:
         """
         # private, does not check for target < self.max_index
         cdef int start = self._spans[target]
-        cdef int end = self._spans[target+1]
+        cdef int end = self._spans_end[target]
         cdef int i, b_ix
         cdef list orders = []
         if start == end:
@@ -758,7 +765,7 @@ cdef class BondTable:
         """
         # private, does not check for target < self.max_index
         cdef int start = self._spans[target]
-        cdef int end = self._spans[target+1]
+        cdef int end = self._spans_end[target]
         cdef int i, b_ix, guess
         cdef vector[int] guesses
         if start == end:

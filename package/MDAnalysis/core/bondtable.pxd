@@ -41,6 +41,8 @@ cdef class BondTable:
     cdef public vector[int] _bix
     # span of each atom in _bix
     cdef public vector[int] _spans
+    cdef public vector[int] _spans_end
+
     # mapping of bonds:bix
     cdef public cmap[cpair[int, int], int] _mapping
     # unique list of bonds
@@ -53,6 +55,8 @@ cdef class BondTable:
     cdef public vector[int] _guessed
     # map of unique spans
     cdef public cmap[int, int] _span_map
+    cdef public cmap[int, int] _span_map_end
+
     # convert inputs to table representation 
     cdef void _generate_bix(self, int[:, :] val, list typ, int[:] guess,
                             list order)
