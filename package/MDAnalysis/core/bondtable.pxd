@@ -38,24 +38,24 @@ cdef class BondTable:
     # whether the table has any values in it 
     cdef cbool _is_empty
     # which bond index entry in _ix_pair_array is value in input
-    cdef public vector[int] _bix
+    cdef  vector[int] _bix
     # span of each atom in _bix
-    cdef public vector[int] _spans
-    cdef public vector[int] _spans_end
+    cdef vector[int] _spans
+    cdef vector[int] _spans_end
 
     # mapping of bonds:bix
-    cdef public cmap[cpair[int, int], int] _mapping
+    cdef cmap[cpair[int, int], int] _mapping
     # unique list of bonds
-    cdef public vector[cpair[int, int]] _ix_pair_array
+    cdef vector[cpair[int, int]] _ix_pair_array
     # unique list of types
-    cdef public list _type
+    cdef list _type
     # unique list of orders
-    cdef public list _order
+    cdef list _order
     # unique list of guesses
-    cdef public vector[int] _guessed
+    cdef vector[int] _guessed
     # map of unique spans
-    cdef public cmap[int, int] _span_map
-    cdef public cmap[int, int] _span_map_end
+    cdef cmap[int, int] _span_map
+    cdef cmap[int, int] _span_map_end
 
     # convert inputs to table representation 
     cdef void _generate_bix(self, int[:, :] val, list typ, int[:] guess,

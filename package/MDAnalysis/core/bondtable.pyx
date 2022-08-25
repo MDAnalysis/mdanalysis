@@ -194,7 +194,6 @@ cdef class BondTable:
         _order = self._pairsort_list(_values, _order)
         self._pairsort(_values, _guessed)
 
-        # print(_values)
         # initialise spans
         cdef int lead_val
         cdef int prev_val = val[0, 0]
@@ -206,7 +205,6 @@ cdef class BondTable:
         for i in range(_values.size()):
             bond = _values[i]
             rev_bond = cpair[int, int](bond.second, bond.first)
-            # print(bond)
             if self._mapping.count(bond):
                 # the value is already in the map, grab forward value
                 # and that we will read second element
@@ -239,29 +237,16 @@ cdef class BondTable:
 
             prev_val = lead_val
         
-        print(self._span_map)
-        print(prev_val)
-
-        #self._span_map[prev_val] = i
-        # WORKS?
         self._span_map_end[lead_val] = i +1
 
 
-       # need to find the maximum key and value to correctly cap span array
+       # need to find the maximum key and value to make sure no overrun
         cdef int max_val, max_key
 
         max_key = deref(self._span_map.rbegin()).first
         max_val = deref(self._span_map.rbegin()).second
-        # print("span_map")
-        # print(self._span_map)
-        self.max_index = max_key #+ 2  # +2 so that the fake key made below is used
-        # pop fake element into map to correctly cap the span
-        # self._span_map[max_key + 1] = max_val + 1
 
-        # print("span_map")
-        # print(self._span_map)
-        # print("max_index")
-        # print(self.max_index)
+        self.max_index = max_key 
         # sort out the spans so that each atoms has a span
         prev_val = -1
         for i in range(self.max_index +1 ):
@@ -271,15 +256,6 @@ cdef class BondTable:
             else:
                 self._spans.push_back(-1)
                 self._spans_end.push_back(-1)
-
-
-        # remove fake element and decrement maximum index
-        # self._span_map.erase(max_key + 1)
-        # self.max_index -= 2
-        # print("span_map")
-        # print(self._span_map)
-        # print("max_index")
-        # print(self.max_index)
 
     def get_bonds(self, int target):
         """
