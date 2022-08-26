@@ -174,9 +174,11 @@ class TestOpenMMTopologyParserWithPartialElements(OpenMMTopologyBase):
                  "These have been given an empty element record ")
 
         wmsg2 = ("For absent elements, atomtype has been  "
-                 "set to 'X' and mass has been set to 0.0. "
-                 "If needed these can be guessed using "
-                 "MDAnalysis.topology.guessers.")
+                      "set to 'X' and mass has been set to 0.0. "
+                      "If needed these can be guessed using "
+                      "universe.guess_TopologyAttributes(to_guess=['masses', types]). "
+                      "(for MDAnalysis version 2.1 this is done automatically, but it will be removed in "
+                      "futuer vesrions).")
 
         with pytest.warns(UserWarning) as warnings:
             mda_top = self.parser(self.ref_filename).parse()
@@ -200,7 +202,11 @@ def test_no_elements_warn():
             "Elements attribute will not be populated. "
             "Atomtype attribute will be guessed using atom "
             "name and mass will be guessed using atomtype."
-            "See MDAnalysis.topology.guessers.")
+            "(for MDAnalysis version 2.1 this is done automatically, but it will be removed in "
+            "futuer vesrions). "
+             "These can be guessed using "
+             "universe.guess_TopologyAttributes(to_guess=['masses', types]). "
+             "See MDAnalysis.guesser.")
 
     with pytest.warns(UserWarning, match=wmsg):
         mda_top = parser(omm_top).parse()
