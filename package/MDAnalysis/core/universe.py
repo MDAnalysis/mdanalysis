@@ -334,6 +334,7 @@ class Universe(object):
         self.residues = None
         self.segments = None
         self.filename = None
+        self._context = context
         self._kwargs = {
             'transformations': transformations,
             'context': context,
@@ -381,16 +382,17 @@ class Universe(object):
             self._trajectory.add_transformations(*transformations)
 
         to_guess = list(to_guess)
+        self._topology_atrrs = list(
+            att.attrname for att in self._topology.read_attributes)
 
         if ('MINIMAL' not in self._parser and 'THINGY' not in self._parser and
             self._topology.n_atoms > 0 and any(fmt in _PARSERS for fmt in self._parser)):
-            singulars = list(
-                att.singular for att in self._topology.read_attributes)
+
             
-            if (not any(att == 'type' for att in singulars) and
+            if (not any(att == 'types' for att in self._topology_atrrs) and
                     'types' not in to_guess):
                 to_guess.append('types')
-            if (not any(att == 'mass' for att in singulars) and
+            if (not any(att == 'masses' for att in self._topology_atrrs) and
                     'masses' not in to_guess):
                 to_guess.append('masses')
         if guess_bonds and 'bonds' not in to_guess:
@@ -1482,10 +1484,10 @@ class Universe(object):
         list of atrributes to be guessed then added to the universe
         """
         if not context:
-            context = self._kwargs['context']
+            context =  self._context
+                
         guesser = get_guesser(context, self.universe, **kwargs)
-        toplogy_atrrs =\
-            list(att.attrname for att in self._topology.read_attributes)
+        self._context = guesser
 
         if guesser.is_guessable(to_guess):           
             if 'bonds' in to_guess:
@@ -1493,22 +1495,25 @@ class Universe(object):
                 to_guess.remove('bonds')
 
             for attr in to_guess:
-                if any(attr == a for a in toplogy_atrrs):
+                if any(attr == a for a in self._topology_atrrs):
                     warnings.warn('The attribute {} have already been read '
                                   'from the topology file. You are trying to '
                                   'overwrite it by guessed values'
                                   .format(attr))
+
                 values = guesser.guess_Attr(attr)
-                self.add_TopologyAttr(attr, values)
-            
+                tcls = _TOPOLOGY_ATTRS[attr](values, True)
+                self.add_TopologyAttr(tcls)
+                logger.info('attribute {} has been guessed successfully.'.format(attr))
+
             if self._kwargs['guess_bonds']:
-                if 'bonds' in toplogy_atrrs:
+                if 'bonds' in self._topology_atrrs:
                     warnings.warn('The attribute bonds have already been read '
                                   'from the topology file. You are trying to '
                                   'overwrite it by guessed values'
                                   )
                 
-                self.atoms.guess_bonds(self._kwargs['vdwradii'], context)
+                self.atoms.guess_bonds(self._kwargs['vdwradii'], guesser)
 
                     
         else:

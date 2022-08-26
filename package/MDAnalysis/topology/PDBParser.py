@@ -331,14 +331,14 @@ class PDBParser(TopologyReaderBase):
                     wmsg = (f"Unknown element {elem} found for some atoms. "
                             f"These have been given an empty element record. "
                             f"If needed they can be guessed using "
-                            f"MDAnalysis.topology.guessers.")
+                            f"universe.guess_TopologyAttributes(context='PDB', to_guess['elements']).")
                     warnings.warn(wmsg)
                     validated_elements.append('')
             attrs.append(Elements(np.array(validated_elements, dtype=object)))
         else:
             warnings.warn("Element information is missing, elements attribute "
                           "will not be populated. If needed these can be "
-                          "guessed using MDAnalysis.topology.guessers.")
+                          "guessed universe.guess_TopologyAttributes(context='PDB', to_guess['elements']).")
 
         if any(formalcharges):
             for i, entry in enumerate(formalcharges):

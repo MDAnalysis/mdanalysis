@@ -45,6 +45,10 @@ requires_rdkit = pytest.mark.skipif(import_not_available("rdkit"),
                                     reason="requires RDKit")
 
 
+@pytest.fixture
+def default_guesser():
+    return DefaultGuesser(None)
+
 class TestGuessMasses(object):
     def test_guess_masses_from_universe(self):
         topology = Topology(3, attrs=[Atomtypes(['C', 'C', 'H'])])
@@ -55,8 +59,7 @@ class TestGuessMasses(object):
         assert_equal(u.atoms.masses, np.array([12.011, 12.011, 1.008]))
         
         
-    def test_guess_masses_from_guesser_object(self):
-        default_guesser = DefaultGuesser(None)
+    def test_guess_masses_from_guesser_object(self, default_guesser):
         elements = ['H', 'Ca', 'Am']
         values = np.array([1.008, 40.08000, 243.0])
         assert_equal( default_guesser.guess_masses(elements), values)
@@ -75,12 +78,10 @@ class TestGuessMasses(object):
         assert_equal(u.atoms.masses, np.array([0.0, 0.0]))
 
     @pytest.mark.parametrize('element, value', (('H', 1.008), ('XYZ', 0.0), ))
-    def test_get_atom_mass(self, element, value):
-        default_guesser = DefaultGuesser(universe=None)
+    def test_get_atom_mass(self, element, value, default_guesser):
         assert default_guesser.get_atom_mass(element) == value
 
-    def test_guess_atom_mass(self):
-        default_guesser = DefaultGuesser(universe=None)
+    def test_guess_atom_mass(self, default_guesser):
         assert default_guesser.guess_atom_mass('1H') == 1.008
     def test_guess_masses_with_no_reference_elements(self):
         u = mda.Universe.empty(3)
@@ -100,20 +101,16 @@ class TestGuessTypes(object):
         assert_equal(u.atoms.types, np.array(['MG', 'C'], dtype=object))
         assert_equal(values, np.array(['MG', 'C'], dtype=object))
 
-    def test_guess_atom_element(self):
-        default_guesser = DefaultGuesser(universe=None)
+    def test_guess_atom_element(self, default_guesser):
         assert default_guesser.guess_atom_element('MG2+') == 'MG'
 
-    def test_guess_atom_element_empty(self):
-        default_guesser = DefaultGuesser(universe=None)
+    def test_guess_atom_element_empty(self, default_guesser):
         assert default_guesser.guess_atom_element('') == ''
 
-    def test_guess_atom_element_singledigit(self):
-        default_guesser = DefaultGuesser(universe=None)
+    def test_guess_atom_element_singledigit(self, default_guesser):
         assert default_guesser.guess_atom_element('1') == '1'
 
-    def test_guess_atom_element_1H(self):
-        default_guesser = DefaultGuesser(universe=None)
+    def test_guess_atom_element_1H(self, default_guesser):
         assert default_guesser.guess_atom_element('1H') == 'H'
         assert default_guesser.guess_atom_element('2H') == 'H'
     
@@ -131,12 +128,10 @@ class TestGuessTypes(object):
         ('Ca2+', 'CA'),
         ('CA', 'C'),
     ))
-    def test_guess_element_from_name(self, name, element):
-        default_guesser = DefaultGuesser(universe=None)
+    def test_guess_element_from_name(self, name, element, default_guesser):
         assert default_guesser.guess_atom_element(name) == element
 
-def test_guess_charge():
-    default_guesser = DefaultGuesser(universe=None)
+def test_guess_charge(default_guesser):
     # this always returns 0.0
     assert default_guesser.guess_atom_charge('this') == 0.0
 
@@ -151,15 +146,14 @@ def test_guess_bond_coord_error():
     with pytest.raises(ValueError):                              
         DefaultGuesser(None).guess_bonds(u.atoms, [[1,2,2]])
 
-def test_guess_impropers():
+def test_guess_impropers(default_guesser):
     u = make_starshape()
 
     ag = u.atoms[:5]
-    defualt_guesser = DefaultGuesser(None)
-    defualt_guesser.guess_angles(ag.bonds)
-    u.add_TopologyAttr(Angles(defualt_guesser.guess_angles(ag.bonds)))
+    default_guesser.guess_angles(ag.bonds)
+    u.add_TopologyAttr(Angles(default_guesser.guess_angles(ag.bonds)))
 
-    vals = defualt_guesser.guess_improper_dihedrals(ag.angles)
+    vals = default_guesser.guess_improper_dihedrals(ag.angles)
     assert_equal(len(vals), 12)
 
 
@@ -173,10 +167,9 @@ def bond_sort(arr):
         out.append((i, j))
     return sorted(out)
 
-def test_guess_bonds_water():
+def test_guess_bonds_water(default_guesser):
     u = mda.Universe(datafiles.two_water_gro)
-    defualt_guesser = DefaultGuesser(None)
-    bonds = bond_sort(defualt_guesser.guess_bonds(u.atoms, u.atoms.positions, u.dimensions))
+    bonds = bond_sort(default_guesser.guess_bonds(u.atoms, u.atoms.positions, u.dimensions))
     assert_equal(bonds, ((0, 1),
                           (0, 2),
                           (3, 4),

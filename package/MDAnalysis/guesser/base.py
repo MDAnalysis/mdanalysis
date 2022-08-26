@@ -38,6 +38,17 @@ class GuesserBase(metaclass=GuesserMeta):
         self._universe = universe
         self._kwargs = kwargs
 
+    @property
+    def universe(self):
+        return self._universe
+    
+    @universe.setter
+    def set_universe(self, u):
+        self._universe = u
+
+    def update_kwargs(self, **kwargs):
+        self._kwargs.update(kwargs)
+
     def is_guessable(self, guess):
         """check that the passed atrributes in the to_guess
         list can be guessed by the class
@@ -83,6 +94,8 @@ def get_guesser(context, u=None, **kwargs):
     Guesser class
     """
     if isinstance(context, GuesserBase):
+        context.set_universe = u
+        context.update_kwargs(**kwargs)
         return context
     try:
         guesser = _GUESSERS[context.upper()](u, **kwargs)

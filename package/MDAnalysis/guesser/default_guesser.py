@@ -36,6 +36,7 @@ class DefaultGuesser(GuesserBase):
         super().__init__(universe, **kwargs)
         self._guess = {'masses': self.guess_masses,
                        'types': self.guess_types,
+                       'elements' : self.guess_types,
                        'angles': self.guess_angles,
                        'dihedrals': self.guess_dihedrals,
                        'bonds': self.guess_bonds,
@@ -294,7 +295,8 @@ class DefaultGuesser(GuesserBase):
         return tuple(bonds)
 
 
-    def guess_angles(self, bonds):
+
+    def guess_angles(self, bonds=None):
         """Given a list of Bonds, find all angles that exist between atoms.
 
         Works by assuming that if atoms 1 & 2 are bonded, and 2 & 3 are bonded,
@@ -314,6 +316,9 @@ class DefaultGuesser(GuesserBase):
 
         .. versionadded 0.9.0
         """
+        if bonds is None:
+            bonds = self._universe.atoms.bonds
+
         angles_found = set()
 
         for b in bonds:
@@ -329,7 +334,7 @@ class DefaultGuesser(GuesserBase):
 
         return tuple(angles_found)
 
-    def guess_dihedrals(self, angles):
+    def guess_dihedrals(self, angles=None):
         """Given a list of Angles, find all dihedrals that exist between atoms.
 
         Works by assuming that if (1,2,3) is an angle, and 3 & 4 are bonded,
@@ -343,6 +348,9 @@ class DefaultGuesser(GuesserBase):
 
         .. versionadded 0.9.0
         """
+        if angles is None:
+            angles = self._universe.atoms.angles
+
         dihedrals_found = set()
 
         for b in angles:
@@ -362,7 +370,7 @@ class DefaultGuesser(GuesserBase):
         return tuple(dihedrals_found)
 
 
-    def guess_improper_dihedrals(self, angles):
+    def guess_improper_dihedrals(self, angles=None):
         """Given a list of Angles, find all improper dihedrals that exist between
         atoms.
 
@@ -378,6 +386,9 @@ class DefaultGuesser(GuesserBase):
 
         .. versionadded 0.9.0
         """
+        if angles is None:
+            angles = self._universe.atoms.angles
+
         dihedrals_found = set()
 
         for b in angles:
@@ -407,7 +418,7 @@ class DefaultGuesser(GuesserBase):
         return 0.0
 
 
-    def guess_aromaticities(self, atoms=None):
+    def guess_aromaticities(self, atomgroup=None):
         """Guess aromaticity of atoms using RDKit
 
         Returns
@@ -418,11 +429,9 @@ class DefaultGuesser(GuesserBase):
 
         .. versionadded:: 2.0.0
         """
-        atomgroup = ''
-        if atoms is not None:
-            atomgroup = atoms
-        else:
+        if atomgroup is None:
             atomgroup = self._universe.atoms
+
         mol = atomgroup.convert_to("RDKIT")
         return np.array([atom.GetIsAromatic() for atom in mol.GetAtoms()])
 
