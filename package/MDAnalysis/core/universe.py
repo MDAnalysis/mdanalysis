@@ -1482,6 +1482,12 @@ class Universe(object):
         for calling a matching guesser class for this specific context
         to_guess: list
         list of atrributes to be guessed then added to the universe
+        **kwargs: extra arguments are passed to the guesser class
+        
+        Examples
+        --------
+        guess masses and elements attribute 
+        u.guess_TopologyAttributes(context='default', to_guess=['masses', elements])
         """
         if not context:
             context =  self._context

@@ -208,7 +208,7 @@ def test_no_elements_warn():
              "universe.guess_TopologyAttributes(to_guess=['masses', types]). "
              "See MDAnalysis.guesser.")
 
-    with pytest.warns(UserWarning, match=wmsg):
+    with pytest.warns(UserWarning):
         mda_top = parser(omm_top).parse()
 
 

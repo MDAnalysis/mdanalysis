@@ -20,17 +20,34 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+"""
+Base guesser classes --- :mod:`MDAnalysis.guesser.base`
+================================================================
+
+Derive topology reader classes from the base class in this module. All
+topology readers raise :exc:`IOError` upon failing to read a topology
+file and :exc:`ValueError` upon failing to make sense of the read data.
+
+Classes
+-------
+
+.. autoclass:: GuesserBase
+   :members:
+   :inherited-members:
+
+"""
 from .. import _GUESSERS
 
 
-class GuesserMeta(type):
+class _GuesserMeta(type):
+    
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
        
         _GUESSERS[classdict['context'].upper()] = cls
      
 
-class GuesserBase(metaclass=GuesserMeta):
+class GuesserBase(metaclass=_GuesserMeta):
     context = 'base'
     _guess = {}
 
