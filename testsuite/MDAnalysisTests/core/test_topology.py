@@ -670,28 +670,32 @@ class TestTopologyGuessed(object):
     def resnames(self):
         return ta.Resnames(np.array(['ABC'], dtype=object),
                            guessed=True)
+    @pytest.fixture()
+    def bonds(self):
+        return ta.Bonds([(1, 2), (2, 3)], guessed=False)
 
     @pytest.fixture()
-    def top(self, names, types, resids, resnames):
+    def top(self, names, types, resids, resnames, bonds):
         return Topology(n_atoms=3, n_res=1,
-                        attrs=[names, types, resids, resnames])
-
-    def test_guessed(self, names, types, resids, resnames, top):
+                        attrs=[names, types, resids, resnames, bonds])
+    
+    def test_guessed(self, names, types, resids, resnames, bonds, top):
         guessed = top.guessed_attributes
 
         assert types in guessed
         assert resnames in guessed
         assert not names in guessed
         assert not resids in guessed
-
-    def test_read(self, names, types, resids, resnames, top):
+        assert not bonds in guessed
+        
+        
+    def test_read(self, names, types, resids, resnames, bonds, top):
         read = top.read_attributes
-
         assert names in read
         assert resids in read
+        assert bonds in read
         assert not types in read
         assert not resnames in read
-
 
 class TestTopologyCreation(object):
     def test_make_topology_no_attrs(self):
