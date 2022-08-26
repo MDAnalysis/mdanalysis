@@ -204,11 +204,9 @@ def test_no_elements_warn():
             "name and mass will be guessed using atomtype."
             "(for MDAnalysis version 2.1 this is done automatically, but it will be removed in "
             "futuer vesrions). "
-             "These can be guessed using "
-             "universe.guess_TopologyAttributes(to_guess=['masses', types]). "
-             "See MDAnalysis.guesser.")
+             "These can be guessed using ")
 
-    with pytest.warns(UserWarning):
+    with pytest.warns(UserWarning, match=wmsg):
         mda_top = parser(omm_top).parse()
 
 
