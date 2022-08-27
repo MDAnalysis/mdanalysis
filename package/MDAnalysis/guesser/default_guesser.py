@@ -296,7 +296,7 @@ class DefaultGuesser(GuesserBase):
 
 
 
-    def guess_angles(self, bonds=None):
+    def guess_angles(self, bonds):
         """Given a list of Bonds, find all angles that exist between atoms.
 
         Works by assuming that if atoms 1 & 2 are bonded, and 2 & 3 are bonded,
@@ -316,8 +316,6 @@ class DefaultGuesser(GuesserBase):
 
         .. versionadded 0.9.0
         """
-        if bonds is None:
-            bonds = self._universe.atoms.bonds
 
         angles_found = set()
 
@@ -334,7 +332,7 @@ class DefaultGuesser(GuesserBase):
 
         return tuple(angles_found)
 
-    def guess_dihedrals(self, angles=None):
+    def guess_dihedrals(self, angles):
         """Given a list of Angles, find all dihedrals that exist between atoms.
 
         Works by assuming that if (1,2,3) is an angle, and 3 & 4 are bonded,
@@ -348,8 +346,6 @@ class DefaultGuesser(GuesserBase):
 
         .. versionadded 0.9.0
         """
-        if angles is None:
-            angles = self._universe.atoms.angles
 
         dihedrals_found = set()
 
@@ -370,7 +366,7 @@ class DefaultGuesser(GuesserBase):
         return tuple(dihedrals_found)
 
 
-    def guess_improper_dihedrals(self, angles=None):
+    def guess_improper_dihedrals(self, angles):
         """Given a list of Angles, find all improper dihedrals that exist between
         atoms.
 
@@ -386,8 +382,6 @@ class DefaultGuesser(GuesserBase):
 
         .. versionadded 0.9.0
         """
-        if angles is None:
-            angles = self._universe.atoms.angles
 
         dihedrals_found = set()
 
