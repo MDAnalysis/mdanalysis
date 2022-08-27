@@ -2445,7 +2445,7 @@ def check_box(box,dtype=np.float32):
          dtype ``numpy.float32``.
        * Now also returns the box in the format expected by low-level functions
          in :mod:`~MDAnalysis.lib.c_distances`.
-        * Removed obsolete box types ``tri_box`` and ``tri_vecs_bad``.
+       * Removed obsolete box types ``tri_box`` and ``tri_vecs_bad``.
         
     """
     if box is None:
