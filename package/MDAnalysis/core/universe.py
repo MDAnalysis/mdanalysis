@@ -400,6 +400,7 @@ class Universe(object):
 
         if to_guess:
             self.guess_TopologyAttributes(context, to_guess, parser=self._parser)
+
     def copy(self):
         """Return an independent copy of this Universe"""
         new = self.__class__(self._topology.copy())

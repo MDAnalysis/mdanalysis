@@ -31,8 +31,30 @@ from . import tables
 
 class DefaultGuesser(GuesserBase):
     """
-    default guesser that hold the behavior of the generic old guesser methods of Topology.guesser.py
-    
+    this guesser hold generic methods (not directed to specific context) for guessing different topology attribute. 
+    it has the same methods that was originally found in Topology.guesser.py. The attributes that can be
+    guessed by this class are:
+       masses 
+       types
+       elements
+       angles
+       dihedrals
+       bonds
+       improper dihedrals
+       aromaticities
+     
+     you can use this guesser either directly by initiating an object of it or through
+     universe.guess_TopologyAttributes API.
+
+     Examples
+     --------
+      to guess bonds for a universe:
+      
+      import MDAnalysis as mda
+      from MDAnalysisTests.datafiles import two_water_gro
+
+      u = mda.Universe(two_water_gro, to_guess=['bonds'])
+      
     """
     context = 'default'
 
