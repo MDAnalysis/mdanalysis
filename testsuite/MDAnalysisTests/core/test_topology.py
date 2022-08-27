@@ -670,6 +670,7 @@ class TestTopologyGuessed(object):
     def resnames(self):
         return ta.Resnames(np.array(['ABC'], dtype=object),
                            guessed=True)
+
     @pytest.fixture()
     def bonds(self):
         return ta.Bonds([(1, 2), (2, 3)], guessed=False)
@@ -678,7 +679,7 @@ class TestTopologyGuessed(object):
     def top(self, names, types, resids, resnames, bonds):
         return Topology(n_atoms=3, n_res=1,
                         attrs=[names, types, resids, resnames, bonds])
-    
+
     def test_guessed(self, names, types, resids, resnames, bonds, top):
         guessed = top.guessed_attributes
 
