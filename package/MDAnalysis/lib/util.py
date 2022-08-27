@@ -2401,7 +2401,7 @@ def dedent_docstring(text):
     return lines[0].lstrip() + "\n" + textwrap.dedent("\n".join(lines[1:]))
 
 
-def check_box(box,dtype=np.float32):
+def check_box(box, dtype=np.float32):
     """Take a box input and deduce what type of system it represents based on
     the shape of the array and whether all angles are 90 degrees.
 
@@ -2446,7 +2446,7 @@ def check_box(box,dtype=np.float32):
        * Now also returns the box in the format expected by low-level functions
          in :mod:`~MDAnalysis.lib.c_distances`.
        * Removed obsolete box types ``tri_box`` and ``tri_vecs_bad``.
-        
+
     """
     if box is None:
         raise ValueError("Box is None")
@@ -2457,7 +2457,7 @@ def check_box(box,dtype=np.float32):
                          "[lx, ly, lz, alpha, beta, gamma].")
     if np.all(box[3:] == 90.):
         return 'ortho', box[:3]
-    return 'tri_vecs', triclinic_vectors(box,dtype=dtype)
+    return 'tri_vecs', triclinic_vectors(box, dtype=dtype)
 
 
 def store_init_arguments(func):
