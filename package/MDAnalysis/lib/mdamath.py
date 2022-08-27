@@ -358,7 +358,7 @@ def triclinic_vectors(dimensions, dtype=np.float32):
     # detect orthogonal boxes:
     elif alpha == beta == gamma == 90.0:
         # box is orthogonal, return a diagonal matrix:
-        box_matrix = np.diag(dim[:3].astype(dtype, copy=False))
+        box_matrix = np.diag(dim[:3].astype(dtype=dtype, copy=False))
     # we have a triclinic box:
     else:
         box_matrix = np.zeros((3, 3), dtype=np.float64)
@@ -392,7 +392,7 @@ def triclinic_vectors(dimensions, dtype=np.float32):
         # positive value already covers that.
         if box_matrix[2, 2] > 0.0:
             # all good, convert to correct dtype:
-            box_matrix = box_matrix.astype(dtype, copy=False)
+            box_matrix = box_matrix.astype(dtype=dtype, copy=False)
         else:
             # invalid box, return zero vectors:
             box_matrix = np.zeros((3, 3), dtype=dtype)

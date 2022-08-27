@@ -2401,7 +2401,7 @@ def dedent_docstring(text):
     return lines[0].lstrip() + "\n" + textwrap.dedent("\n".join(lines[1:]))
 
 
-def check_box(box):
+def check_box(box,dtype=np.float32):
     """Take a box input and deduce what type of system it represents based on
     the shape of the array and whether all angles are 90 degrees.
 
@@ -2418,7 +2418,7 @@ def check_box(box):
     boxtype : {``'ortho'``, ``'tri_vecs'``}
         String indicating the box type (orthogonal or triclinic).
     checked_box : numpy.ndarray
-        Array of dtype ``numpy.float32`` containing box information:
+        Array of dtype ``dtype`` containing box information:
           * If `boxtype` is ``'ortho'``, `cecked_box` will have the shape ``(3,)``
             containing the x-, y-, and z-dimensions of the orthogonal box.
           * If  `boxtype` is ``'tri_vecs'``, `cecked_box` will have the shape
@@ -2443,18 +2443,21 @@ def check_box(box):
          dtype ``numpy.float32``.
        * Now also returns the box in the format expected by low-level functions
          in :mod:`~MDAnalysis.lib.c_distances`.
-       * Removed obsolete box types ``tri_box`` and ``tri_vecs_bad``.
+        * Removed obsolete box types ``tri_box`` and ``tri_vecs_bad``.
+        
+    Fixes
+  * Add optional dtype argument to avoid forced reduction to np.float32
     """
     if box is None:
         raise ValueError("Box is None")
     from .mdamath import triclinic_vectors  # avoid circular import
-    box = np.asarray(box, dtype=np.float32, order='C')
+    box = np.asarray(box, dtype=dtype, order='C')
     if box.shape != (6,):
         raise ValueError("Invalid box information. Must be of the form "
                          "[lx, ly, lz, alpha, beta, gamma].")
     if np.all(box[3:] == 90.):
         return 'ortho', box[:3]
-    return 'tri_vecs', triclinic_vectors(box)
+    return 'tri_vecs', triclinic_vectors(box,dtype=dtype)
 
 
 def store_init_arguments(func):
