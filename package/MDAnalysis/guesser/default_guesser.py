@@ -30,6 +30,10 @@ from ..lib import distances
 from . import tables
 
 class DefaultGuesser(GuesserBase):
+    """
+    default guesser that hold the behavior of the generic old guesser methods of Topology.guesser.py
+    
+    """
     context = 'default'
 
     def __init__(self, universe, **kwargs):

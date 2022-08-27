@@ -40,7 +40,20 @@ from .. import _GUESSERS
 
 
 class _GuesserMeta(type):
-    
+    """Internal: guesser classes registration
+
+    When classes which inherit from GuesserBase are *defined*
+    this metaclass makes it known to MDAnalysis.  'context'
+    attribute  are read:
+     - `context` defines the context of the guesser class for example: forcefield specific context
+     as MartiniGuesser and file specific context as PDBGuesser.
+
+    Eg::
+
+      class FooGuesser(GuesserBase):
+          format = 'foo'
+
+  """
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
        
@@ -48,6 +61,17 @@ class _GuesserMeta(type):
      
 
 class GuesserBase(metaclass=_GuesserMeta):
+    """Base class for context-aware guessers
+
+    Parameters
+    ----------
+    universe : Universe, optional
+        Supply a Universe to the guesser.  This then become the source of atom attributes
+        to be used in guessing processes (more relevant with the universe guess_topologyAttributes API).
+    **kwargs: to pass additional data to the guesser that can be used with different methos. 
+    Eg van der Waals radii that is used with bond guessing methods
+ 
+   """
     context = 'base'
     _guess = {}
 
@@ -72,10 +96,10 @@ class GuesserBase(metaclass=_GuesserMeta):
 
         Parameters
         ----------
-        to_guess: list of atrributes sto be guessed then added to the universe
+        guess: list of atrributes sto be guessed then added to the universe
         Returns
         -------
-        True or ValueError
+        Boolean value
         """
         for a in guess:
             if a.lower() not in self._guess:
@@ -87,7 +111,8 @@ class GuesserBase(metaclass=_GuesserMeta):
 
         Parameters
         ----------
-        guess: an atrribute to be guessed then added to the universe
+        guess: an atrribute to be guessed then to be added to the universe
+        
         Returns
         -------
         values: list of guessed values
@@ -102,13 +127,20 @@ def get_guesser(context, u=None, **kwargs):
 
     Parameters
     ----------
-    atoms: AtomGroup of the universe
+    u: Universe
+    to be passed to the guesser 
+
     context: string or Guesser class
     **kwargs: extra arguments are passed to the guesser.
 
     Returns
     -------
     Guesser class
+    
+    Raises
+    ------
+    * :exc:`KeyError` upon failing to return a guesser class
+
     """
     if isinstance(context, GuesserBase):
         context.set_universe = u
