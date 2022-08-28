@@ -329,8 +329,8 @@ class TestMatrixOperations(object):
     @pytest.mark.parametrize('lengths', comb_wr([-1, 0, 1, 2], 3))
     @pytest.mark.parametrize('angles',
                              comb_wr([-10, 0, 20, 70, 90, 120, 180], 3))
-    def test_triclinic_vectors(self, lengths, angles,dtype=np.float32):
-        box = np.array(lengths + angles,dtype)
+    def test_triclinic_vectors(self, lengths, angles, dtype=np.float32):
+        box = np.array(lengths + angles, dtype)
         ref = self.ref_trivecs(box)
         res = mdamath.triclinic_vectors(box)
         assert_array_equal(res, ref)
@@ -342,9 +342,9 @@ class TestMatrixOperations(object):
     @pytest.mark.parametrize('alpha', (60, 90))
     @pytest.mark.parametrize('beta', (60, 90))
     @pytest.mark.parametrize('gamma', (60, 90))
-    def test_triclinic_vectors_right_angle_zeros(self, alpha, beta, gamma,dtype=np.float32):
+    def test_triclinic_vectors_right_angle_zeros(self, alpha, beta, gamma, dtype=np.float32):
         angles = [alpha, beta, gamma]
-        box = np.array([10, 20, 30] + angles,dtype)
+        box = np.array([10, 20, 30] + angles, dtype)
         mat = mdamath.triclinic_vectors(box)
         if 90 in angles:
             if gamma == 90:
@@ -416,7 +416,7 @@ class TestMatrixOperations(object):
                                         [70, 90, 90],
                                         [90, 70, 90],
                                         [90, 90, 70]))
-    def test_triclinic_vectors_box_cycle_exact(self, angles,dtype=np.float32):
+    def test_triclinic_vectors_box_cycle_exact(self, angles, dtype=np.float32):
         # These cycles were inexact prior to PR #2201
         ref = np.array([10.1, 10.1, 10.1] + angles, dtype=dtype)
         res = mdamath.triclinic_box(*mdamath.triclinic_vectors(ref))
@@ -2132,8 +2132,8 @@ class TestCheckBox(object):
                                  np.array([1, 1, 1, 1, 1, 1,
                                            90, 90, 90, 90, 90, 90],
                                           dtype=np.float32)[::2]))
-    def test_check_box_ortho(self, box,dtype=np.float32):
-        boxtype, checked_box = util.check_box(box,dtype)
+    def test_check_box_ortho(self, box, dtype=np.float32):
+        boxtype, checked_box = util.check_box(box, dtype)
         assert boxtype == 'ortho'
         assert_allclose(checked_box, self.ref_ortho)
         assert checked_box.dtype == dtype
@@ -2156,8 +2156,8 @@ class TestCheckBox(object):
                                  np.array([1, 1, 1, 1, 2, 2,
                                            45, 45, 90, 90, 90, 90],
                                           dtype=np.float32)[::2]))
-    def test_check_box_tri_vecs(self, box,dtype=np.float32):
-        boxtype, checked_box = util.check_box(box,dtype)
+    def test_check_box_tri_vecs(self, box, dtype=np.float32):
+        boxtype, checked_box = util.check_box(box, dtype)
         assert boxtype == 'tri_vecs'
         assert_almost_equal(checked_box, self.ref_tri_vecs, self.prec)
         assert checked_box.dtype == dtype
