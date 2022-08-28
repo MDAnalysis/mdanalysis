@@ -29,24 +29,26 @@ BondTable --- :mod:`MDAnalysis.core.bondtable`
 .. versionadded:: 2.3.0
 
 :class:`BondTable` is a table-like representation of bonds and bond
-attributes that allows fast lookup. 
+attributes that allows fast lookup.  This is done by mapping the bonds to a
+linear representation that can be looked up using a span. This gives better
+scaling than using a key:value paired datastructure. 
 
-TODO: Add in-depth discussion.
 """
 
-from libcpp.vector cimport vector
-from libcpp.map cimport map as cmap
-from libcpp.set cimport set as cset
-from libcpp.pair cimport pair as cpair
-from libcpp.algorithm cimport sort as csort
-from libcpp.algorithm cimport unique as cunique
-from libcpp.string cimport string as cstring
-from libcpp.iterator cimport iterator
-from libcpp cimport bool as cbool
-from ..lib._cutil cimport to_numpy_from_spec
 from cython.operator cimport dereference as deref
+from libcpp cimport bool as cbool
+from libcpp.algorithm cimport sort as csort
+from libcpp.map cimport map as cmap
+from libcpp.pair cimport pair as cpair
+from libcpp.set cimport set as cset
+from libcpp.vector cimport vector
+
+from ..lib._cutil cimport to_numpy_from_spec
+
 import numpy as np
+
 cimport numpy as cnp
+
 cnp.import_array()
 
 # index sort used for sorting lists in _pairsort_list
@@ -67,14 +69,16 @@ cdef class BondTable:
     """
     A table-like structure used to look up bonds with better scaling than a
     dictionary or map. This is acheived by mapping the input array of indices
-    to a unique array of indices which are then accessed using a span, bypassing
-    the need to look up the bonds in a key:value paired datastructure. 
+    to a unique array of indices which are then accessed using two spans,
+    bypassing the need to look up the bonds in a key:value paired
+    datastructure. 
 
     Notes
     -----
 
     Using `__cinit__` is avoided here to enable pickling of the table.
     """
+
     def __init__(self, val, typ,  guess, order, **kwargs):
         """Initialise a BondTable
 
@@ -98,59 +102,18 @@ cdef class BondTable:
         if len(val) == 0:
             self._is_empty = True
         if not self._is_empty:
+            # make sure the inputs are sane
             guess_ = np.asarray([int(i) for i in guess], dtype=np.int32)
             order_ = list(order)
             typ_ = list(typ)
+
+            # make table
             self._type = []
             self._order = []
             self._generate_bix(val, typ_,  guess_, order_)
 
-    cdef void _pairsort(self, vector[cpair[int, int]] & a, vector[int] & b):
-        """
-        Sort a vector of integer pairs ** a ** and sort a vector of integers
-        ** b ** by the corresponding index in **a**. Uses sort from the
-        <algorithm> header and operates inplace on both input arguments.
-        """
-        cdef vector[cpair[cpair[int, int], int]] pair_arr
-        cdef cpair[cpair[int, int], int] pair
-        cdef cpair[int, int] ptmp
-        cdef int itmp
-        for i in range(a.size()):
-            ptmp = a[i]
-            itmp = b[i]
-            pair = cpair[cpair[int, int], int](ptmp, itmp)
-            pair_arr.push_back(pair)
-
-        csort(pair_arr.begin(), pair_arr.end())
-
-        for i in range(a.size()):
-            a[i] = pair_arr[i].first
-            b[i] = pair_arr[i].second
-
-    def _pairsort_list(self, vector[cpair[int, int]] a, list b):
-        """
-        Sort a vector of integer pairs ** a ** and a list of Python objects
-        (PyObject*) by the corresponding index in **a**. Uses an index sort and
-        only returns the sorted list input of **b**, leaving the input
-        arguments unchanged.
-        """
-        cdef int size = a.size()
-        cdef size_t index
-        cdef vector[size_t] indices
-
-        for i in range(size):
-            indices.push_back(i)
-        
-        sort_via_score(indices, a)
-
-        cdef list b_ = []
-        for i in range(size):
-            index = indices[i]
-            b_.append(b[index])
-
-        return b_
-
-    cdef void _generate_bix(self, int[:, :] val, list typ, int[:] guess, list order):
+    cdef void _generate_bix(self, int[:, :] val, list typ, int[:] guess,
+                            list order):
         """
         Generate bond indicies, spans and value arrays for the BondTable
         """
@@ -167,12 +130,14 @@ cdef class BondTable:
 
         cdef int i
         cdef cset[cpair[int, int]] _tmp_set
+
+        # set used to check if reverse bonds already present
         for i in range(val.shape[0]):
             bond = cpair[int, int](val[i, 0], val[i, 1])
             _tmp_set.insert(bond)
 
-        # make sure each bond is in the table both forwards and backwards IF IT
-        # ISNT ALREADY
+        # make sure each bond is in the table both forwards and backwards if
+        # it isn't already
         for i in range(val.shape[0]):
             bond = cpair[int, int](val[i, 0], val[i, 1])
             rev_bond = cpair[int, int](val[i, 1], val[i, 0])
@@ -189,7 +154,7 @@ cdef class BondTable:
                 _order.append(order[i])
                 _guessed.push_back(guess[i])
 
-        # pairwise sort each array
+        # pairwise sort each array by the array of values
         _type = self._pairsort_list(_values, _type)
         _order = self._pairsort_list(_values, _order)
         self._pairsort(_values, _guessed)
@@ -207,7 +172,6 @@ cdef class BondTable:
             rev_bond = cpair[int, int](bond.second, bond.first)
             if self._mapping.count(bond):
                 # the value is already in the map, grab forward value
-                # and that we will read second element
                 self._bix.push_back(self._mapping[bond])
 
             elif self._mapping.count(rev_bond):
@@ -236,9 +200,8 @@ cdef class BondTable:
                 self._span_map_end[prev_val] = i
 
             prev_val = lead_val
-        
-        self._span_map_end[lead_val] = i +1
 
+        self._span_map_end[lead_val] = i + 1
 
        # need to find the maximum key and value to make sure no overrun
         cdef int max_val, max_key
@@ -246,10 +209,10 @@ cdef class BondTable:
         max_key = deref(self._span_map.rbegin()).first
         max_val = deref(self._span_map.rbegin()).second
 
-        self.max_index = max_key 
+        self.max_index = max_key
         # sort out the spans so that each atoms has a span
         prev_val = -1
-        for i in range(self.max_index +1 ):
+        for i in range(self.max_index + 1):
             if self._span_map.count(i):
                 self._spans.push_back(self._span_map[i])
                 self._spans_end.push_back(self._span_map_end[i])
@@ -265,7 +228,7 @@ cdef class BondTable:
         ----------
         target: int
             The index of the atom to get bonds for.
-        
+
         Returns
         -------
         bonds: list[int]
@@ -288,7 +251,7 @@ cdef class BondTable:
         ----------
         target: int
             The index of the atom to get bonds for.
-        
+
         Returns
         -------
         pairs: list
@@ -346,7 +309,7 @@ cdef class BondTable:
     def get_pairs_slice(self,  targets):
         """
         Get the bond pairs for an array of indices
-        
+
         Parameters
         ----------
         targets: np.ndarray or scalar index
@@ -381,7 +344,7 @@ cdef class BondTable:
     def get_types_slice(self, targets):
         """
         Get bond types for an array of indices
-        
+
         Parameters
         ----------
         targets: np.ndarray or scalar index
@@ -416,7 +379,7 @@ cdef class BondTable:
     def get_guess_slice(self, targets):
         """
         Get whether bonds have been guessed for an array of indices
-        
+
         Parameters
         ----------
         targets: np.ndarray or scalar index
@@ -452,7 +415,7 @@ cdef class BondTable:
     def get_order_slice(self, targets):
         """
         Get bond orders for an array of indices
-        
+
         Parameters
         ----------
         targets: np.ndarray or scalar index
@@ -507,7 +470,8 @@ cdef class BondTable:
             An array of bond order objects that contain the target index
         """
         if self._is_empty:
-            return np.empty((0), dtype=np.int32), np.empty((0), dtype=object), np.empty((0),dtype=bool), np.empty((0), dtype=object)
+            return np.empty((0), dtype=np.int32), np.empty((0), dtype=object),\
+                np.empty((0), dtype=bool), np.empty((0), dtype=object)
         if np.isscalar(targets):
             targets = np.asarray([targets])
         cdef vector[cpair[int, int]] bonds
@@ -524,7 +488,7 @@ cdef class BondTable:
         cdef cbool has_bonds, has_typ, has_guess, has_order
         for i in range(targets.shape[0]):
             if targets[i] <= self.max_index:
-                
+
                 ret_struct_bond = self._get_pair(targets[i])
                 pair_arr = ret_struct_bond.first
                 has_bonds = ret_struct_bond.second
@@ -547,13 +511,16 @@ cdef class BondTable:
                         orders.append(orders_arr[j])
             else:
                 pass
-        return np.asarray(bonds, dtype=np.int32), np.asarray(types, dtype=object), np.asarray(guesses, dtype=bool), np.asarray(orders, dtype=object)
+        return np.asarray(bonds, dtype=np.int32), \
+            np.asarray(types, dtype=object), \
+            np.asarray(guesses, dtype=bool), \
+            np.asarray(orders, dtype=object)
 
     @property
     def bonds(self):
         """
         The unique bonds in the BondTable
-        
+
         Returns
         -------
         bonds: np.ndarray
@@ -605,7 +572,7 @@ cdef class BondTable:
         ----------
         target: int
             The target atom to get bonds for
-        
+
         Returns
         -------
         bonds: vector[int]
@@ -638,7 +605,7 @@ cdef class BondTable:
         ----------
         target: int
             The target atom to get bonds for
-        
+
         Returns
         -------
         struct: pair[vector[pair[int,int]], bool]
@@ -668,7 +635,7 @@ cdef class BondTable:
         ----------
         target: int
             The target atom to get bonds for
-        
+
         Returns
         -------
         types: list
@@ -699,7 +666,7 @@ cdef class BondTable:
         ----------
         target: int
             The target atom to get bonds for
-        
+
         Returns
         -------
         orders: list
@@ -730,7 +697,7 @@ cdef class BondTable:
         ----------
         target: int
             The target atom to get bonds for
-        
+
         Returns
         -------
         guesses: list[bool]
@@ -753,3 +720,44 @@ cdef class BondTable:
                 guesses.push_back(guess)
 
             return cpair[vector[int], cbool](guesses, True)
+
+    cdef void _pairsort(self, vector[cpair[int, int]] & a, vector[int] & b):
+        """
+        Sort a vector of integer pairs **a** and sort a vector of integers
+        **b** by the corresponding index in **a**. Uses sort from the
+        <algorithm> header and operates inplace on both input arguments.
+        """
+        cdef vector[cpair[cpair[int, int], int]] pair_arr
+        cdef cpair[cpair[int, int], int] pair
+        for i in range(a.size()):
+            pair = cpair[cpair[int, int], int](a[i], b[i])
+            pair_arr.push_back(pair)
+
+        csort(pair_arr.begin(), pair_arr.end())
+
+        for i in range(a.size()):
+            a[i] = pair_arr[i].first
+            b[i] = pair_arr[i].second
+
+    def _pairsort_list(self, vector[cpair[int, int]] a, list b):
+        """
+        Sort a vector of integer pairs **a** and a list of Python objects
+        (PyObject*) by the corresponding index in **a**. Uses an index sort and
+        only returns the sorted list input of **b**, leaving the input
+        arguments unchanged.
+        """
+        cdef int size = a.size()
+        cdef size_t index
+        cdef vector[size_t] indices
+
+        for i in range(size):
+            indices.push_back(i)
+
+        sort_via_score(indices, a)
+
+        cdef list b_ = []
+        for i in range(size):
+            index = indices[i]
+            b_.append(b[index])
+
+        return b_

@@ -21,14 +21,16 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 
 
-from libcpp.vector cimport vector
+from libcpp cimport bool as cbool
 from libcpp.map cimport map as cmap
 from libcpp.pair cimport pair as cpair
 from libcpp.set cimport set as cset
-from libcpp.string cimport string as cstring
-from libcpp cimport bool as cbool
+from libcpp.vector cimport vector
+
 import numpy as np
+
 cimport numpy as cnp
+
 cnp.import_array()
 
 
@@ -38,7 +40,7 @@ cdef class BondTable:
     # whether the table has any values in it 
     cdef cbool _is_empty
     # which bond index entry in _ix_pair_array is value in input
-    cdef  vector[int] _bix
+    cdef vector[int] _bix
     # span of each atom in _bix
     cdef vector[int] _spans
     cdef vector[int] _spans_end
