@@ -453,54 +453,6 @@ cdef class BondTable:
             np.asarray(guesses, dtype=bool), \
             np.asarray(orders, dtype=object)
 
-    @property
-    def bonds(self):
-        """
-        The unique bonds in the BondTable
-
-        Returns
-        -------
-        bonds: np.ndarray
-            Unique bond pairs in the BondTable
-        """
-        return np.asarray(self._ix_pair_array, dtype=np.int32)
-
-    @property
-    def types(self):
-        """
-        The types of the unique bonds in the BondTable 
-
-        Returns
-        -------
-        types: np.ndarray
-            The types of the unique bonds
-        """
-        return np.asarray(self._type, dtype=object)
-
-    @property
-    def orders(self):
-        """
-        The orders of the unique bonds in the BondTable
-
-        Returns
-        -------
-        orders: np.ndarray
-            The orders of the unique bonds
-        """
-        return np.asarray(self._order, dtype=object)
-
-    @property
-    def guessed(self):
-        """
-        Whether the bond has been guessed for the unique bonds in the BondTable
-
-        Returns
-        -------
-        guesses: np.ndarray
-            Whether each unique bond has been guessed
-        """
-        return np.asarray(self._guessed, dtype=bool)
-
     cdef vector[int] _get_bond(self, int target):
         """
         Low level utility to get the bonds for a single index
