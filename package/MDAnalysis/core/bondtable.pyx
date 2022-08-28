@@ -45,8 +45,8 @@ from libcpp.vector cimport vector
 
 from ..lib._cutil cimport to_numpy_from_spec
 
-import numpy as np
 import cython 
+import numpy as np
 
 cimport numpy as cnp
 
@@ -103,18 +103,40 @@ cdef class BondTable:
         """
 
         self._is_empty = False
-        if len(val) == 0:
-            self._is_empty = True
+
+        if not isinstance(val, np.ndarray):
+            val = np.asarray(val)
+        if ((val.shape[0] != len(typ)) or (len(typ) != len(guess)) or (len(guess) != len(order))):
+            raise ValueError("BondTable must be made from inputs of"
+                             " matching length")
+
+        if val.shape[0] == 0:
+            self._is_empty = True    
         if not self._is_empty:
             # make sure the inputs are sane
-            guess_ = np.asarray([int(i) for i in guess], dtype=np.int32)
+            if val.ndim != 2:
+                raise ValueError(f"values argument for a BondTable must be two"
+                                 f" dimensional, you provided {val.ndim}")
+            if val.shape[1] != 2:
+                raise ValueError(f"values argument for a BondTable must have a"
+                                 f" second dimension of length 2, you provided"
+                                 f" {val.shape[1]}")
+
+            if not np.can_cast(val.dtype, np.int32, casting='same_kind'):
+                raise TypeError(f"values argument cannot be cast to np.int32")
+            
+            try:
+                guess_ = np.asarray(guess, dtype=np.int32)
+            except (TypeError, ValueError):
+                    raise TypeError("guesses argument cannot be cast to np.int32")
+                    
             order_ = list(order)
             typ_ = list(typ)
-
+            
             # make table
             self._type = []
             self._order = []
-            self._generate_bix(val, typ_,  guess_, order_)
+            self._generate_bix(val.astype(np.int32), typ_,  guess_.astype(np.int32), order_)
 
     cdef void _generate_bix(self, int[:, :] val, list typ, int[:] guess,
                             list order):
@@ -142,6 +164,7 @@ cdef class BondTable:
         # mapping of bonds:bix
         cdef cmap[cpair[int, int], int] _mapping
 
+        # make a set so we can check if bond is present or not
         cdef int i
         for i in range(val.shape[0]):
             bond = cpair[int, int](val[i, 0], val[i, 1])

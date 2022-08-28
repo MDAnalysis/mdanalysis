@@ -2625,8 +2625,7 @@ class Bonds(_Connection):
         .. versionadded:: 2.3.0 
         """
         super().__init__(values, types, guessed, order)
-        vals_arr = np.asarray(self.values, dtype=np.int32)
-        self._bondtable = BondTable(vals_arr, self.types, self._guessed, self.order)
+        self._bondtable = BondTable(values, self.types, self._guessed, self.order)
 
 
     def get_atoms(self, ag):
