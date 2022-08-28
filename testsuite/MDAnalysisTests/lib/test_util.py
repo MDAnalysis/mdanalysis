@@ -342,7 +342,8 @@ class TestMatrixOperations(object):
     @pytest.mark.parametrize('alpha', (60, 90))
     @pytest.mark.parametrize('beta', (60, 90))
     @pytest.mark.parametrize('gamma', (60, 90))
-    def test_triclinic_vectors_right_angle_zeros(self, alpha, beta, gamma, dtype=np.float32):
+    def test_triclinic_vectors_right_angle_zeros(self, alpha, beta, 
+    gamma, dtype=np.float32):
         angles = [alpha, beta, gamma]
         box = np.array([10, 20, 30] + angles, dtype)
         mat = mdamath.triclinic_vectors(box)
