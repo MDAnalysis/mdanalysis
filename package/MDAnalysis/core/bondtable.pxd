@@ -58,16 +58,6 @@ cdef class BondTable:
     cdef void _generate_bix(self, int[:, :] val, list typ, int[:] guess,
                             list order)
 
-    # low level method to get bonded atoms for a single index
-    cdef vector[int] _get_bond(self, int target)
-    # low level method to get a bond pairs for a single index
-    cdef cpair[vector[cpair[int, int]], cbool] _get_pair(self, int target)
-    # low level method to get whether bonds are guessed for a single index 
-    cdef cpair[vector[int], cbool] _get_guess(self, int target)
-    # low level method to get bond type objects for a single index
-    cdef _get_typ(self, int target)
-    # low level method to get bond order objects for a single index
-    cdef _get_ord(self, int target)
     # utility method to sort vector a and the vector b by the same index.
     cdef void _pairsort(self, vector[cpair[int, int]] & a, vector[int] & b)
     # utility method to sort vector a and the list b by the same index.

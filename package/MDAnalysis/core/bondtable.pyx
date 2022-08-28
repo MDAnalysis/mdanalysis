@@ -35,6 +35,7 @@ scaling than using a key:value paired datastructure.
 """
 
 from cython.operator cimport dereference as deref
+from cpython.ref cimport PyObject
 from libcpp cimport bool as cbool
 from libcpp.algorithm cimport sort as csort
 from libcpp.map cimport map as cmap
@@ -45,6 +46,7 @@ from libcpp.vector cimport vector
 from ..lib._cutil cimport to_numpy_from_spec
 
 import numpy as np
+import cython 
 
 cimport numpy as cnp
 
@@ -228,76 +230,8 @@ cdef class BondTable:
                 self._spans_start.push_back(-1)
                 self._spans_end.push_back(-1)
 
-    def get_bonds_slice(self, targets):
-        """
-        Get bonded atoms for an array of indices.
-
-        Parameters
-        ----------
-        targets: np.ndarray or scalar index
-            the atoms to get bonded atoms for 
-
-        Returns
-        -------
-        bonds: list
-            The bonded atoms for the indices in targets
-        """
-        # if empty return empty arrays
-        if self._is_empty:
-            return np.empty((0), dtype=np.int32)
-        # if scalar, make it an array
-        if np.isscalar(targets):
-            targets = np.asarray([targets])
-        # objects for bonds
-        cdef vector[vector[int]] bonds
-        cdef vector[int] row
-        # iteration
-        cdef int i
-        for i in range(targets.shape[0]):
-            index = targets[i]
-            if index <= self.max_index:
-                row = self._get_bond(index)
-                bonds.push_back(row)
-        return np.asarray(bonds, dtype=np.int32)
-
-    def get_pairs_slice(self,  targets):
-        """
-        Get the bond pairs for an array of indices
-
-        Parameters
-        ----------
-        targets: np.ndarray or scalar index
-            the atoms to get bond pairs for
-
-        Returns
-        -------
-        pairs: np.ndarray
-            An array of bonds that contain the target index 
-        """
-        # if empty return empty arrays
-        if self._is_empty:
-            return np.empty((0), dtype=np.int32)
-        # if scalar, make it an array
-        if np.isscalar(targets):
-            targets = np.asarray([targets])
-        # objects for pairs
-        cdef vector[cpair[int, int]] bonds
-        cdef vector[cpair[int, int]] pair_arr
-        cdef cpair[vector[cpair[int, int]], cbool] ret_struct
-        cdef cbool has_bonds
-        # iteration
-        cdef int i, j
-        for i in range(targets.shape[0]):
-            if targets[i] <= self.max_index:
-                ret_struct = self._get_pair(targets[i])
-                pair_arr = ret_struct.first
-                has_bonds = ret_struct.second
-                if has_bonds:
-                    for j in range(pair_arr.size()):
-                        bonds.push_back(pair_arr[j])
-        return np.asarray(bonds, dtype=np.int32)
-
-
+    @cython.boundscheck(False)
+    @cython.wraparound(False) 
     def get_b_t_g_o_slice(self, targets):
         """
         Get a slice of all four properties (bonds, types, guesses, orders)
@@ -305,8 +239,8 @@ cdef class BondTable:
 
         Parameters
         ----------
-        targets: np.ndarray or scalar index
-            the atoms to get properties for
+        targets: np.ndarray 
+            the atom indices to get properties for
 
         Returns
         -------
@@ -328,204 +262,31 @@ cdef class BondTable:
             targets = np.asarray([targets])
         # objects for pairs
         cdef vector[cpair[int, int]] bonds
-        cdef vector[cpair[int, int]] pair_arr
-        cdef cpair[vector[cpair[int, int]], cbool] ret_struct_bond
         # objects for types
         cdef list types = []
-        cdef list typ_arr = []
         # objects for guesses
         cdef vector[int] guesses
-        cdef vector[int] guess_arr
-        cdef cpair[vector[int], cbool] ret_struct_guess
         # objects for orders
         cdef list orders = []
-        cdef list orders_arr = []
-        cdef cbool has_bonds, has_typ, has_guess, has_order
         # iteration
-        cdef int i, j, rowsize 
+        cdef int i, j, idx, start, end, b_ix, guess
         for i in range(targets.shape[0]):
-            if targets[i] <= self.max_index:
-                ret_struct_bond = self._get_pair(targets[i])
-                pair_arr = ret_struct_bond.first
-                rowsize = pair_arr.size()
-                has_bonds = ret_struct_bond.second
-                if has_bonds:
-                    for j in range(rowsize):
-                        bonds.push_back(pair_arr[j])
-                typ_arr, has_typ = self._get_typ(targets[i])
-                if has_typ:
-                    for j in range(rowsize):
-                        types.append(typ_arr[j])
-                ret_struct_guess = self._get_guess(targets[i])
-                guess_arr = ret_struct_guess.first
-                has_guess = ret_struct_guess.second
-                if has_guess:
-                    for j in range(rowsize):
-                        guesses.push_back(guess_arr[j])
-                orders_arr, has_order = self._get_ord(targets[i])
-                if has_order:
-                    for j in range(rowsize):
-                        orders.append(orders_arr[j])
+            idx = targets[i]
+            if idx <= self.max_index:
+                start = self._spans_start[idx]
+                end = self._spans_end[idx]
+                if start != end:
+                    for j in range(start, end, 1):
+                        b_ix = self._bix[j]
+                        bonds.push_back(self._ix_pair_array[b_ix])
+                        types.append(self._type[b_ix])
+                        orders.append(self._order[b_ix])
+                        guesses.push_back(self._guessed[b_ix]) 
+
         return np.asarray(bonds, dtype=np.int32), \
             np.asarray(types, dtype=object), \
             np.asarray(guesses, dtype=bool), \
             np.asarray(orders, dtype=object)
-
-    cdef vector[int] _get_bond(self, int target):
-        """
-        Low level utility to get the bonds for a single index
-
-        Parameters
-        ----------
-        target: int
-            The target atom to get bonds for
-
-        Returns
-        -------
-        bonds: vector[int]
-            The bonded atoms for the target index
-        """
-        # private, does not check for target < self.max_index
-        cdef int start = self._spans_start[target]
-        cdef int end = self._spans_end[target]
-        cdef int i, b_ix, first, second
-        cdef vector[int] bonds
-        if start == end:
-            return bonds
-        else:
-            for i in range(start, end, 1):
-                b_ix = self._bix[i]
-                first = self._ix_pair_array[b_ix].first
-                second = self._ix_pair_array[b_ix].second
-                if first != target:
-                    bonds.push_back(first)
-                else:
-                    bonds.push_back(second)
-            return bonds
-
-    cdef cpair[vector[cpair[int, int]], cbool] _get_pair(self, int target):
-        """
-        Low level utility to get the bond pairs for a single index
-
-        Parameters
-        ----------
-        target: int
-            The target atom to get bonds for
-
-        Returns
-        -------
-        struct: pair[vector[pair[int,int]], bool]
-            Pair containing the vector of pairs, and whether the target index
-            had any bonded atoms. 
-        """
-        # private, does not check for target < self.max_index
-        cdef int start = self._spans_start[target]
-        cdef int end = self._spans_end[target]
-        cdef int i, b_ix, first, second
-        cdef vector[cpair[int, int]] bonds
-        if start == end:
-            return cpair[vector[cpair[int, int]], cbool](bonds, False)
-        else:
-            for i in range(start, end, 1):
-                b_ix = self._bix[i]
-                pair = self._ix_pair_array[b_ix]
-                bonds.push_back(pair)
-
-            return cpair[vector[cpair[int, int]], cbool](bonds, True)
-
-    cdef _get_typ(self, int target):
-        """
-        Low level utility to get the types of the bonds for a single index
-
-        Parameters
-        ----------
-        target: int
-            The target atom to get bonds for
-
-        Returns
-        -------
-        types: list
-            The type objects of the bonds
-        has_bonds: bool
-            If there are any bonded atoms for the target index
-        """
-        # private, does not check for target < self.max_index
-        cdef int start = self._spans_start[target]
-        cdef int end = self._spans_end[target]
-        cdef int i, b_ix
-        cdef list types = []
-        if start == end:
-            return types, False
-        else:
-            for i in range(start, end, 1):
-                b_ix = self._bix[i]
-                typ = self._type[b_ix]
-                types.append(typ)
-
-            return types, True
-
-    cdef _get_ord(self, int target):
-        """
-        Low level utility to get the orders of the bonds for a single index
-
-        Parameters
-        ----------
-        target: int
-            The target atom to get bonds for
-
-        Returns
-        -------
-        orders: list
-            The order objects of the bonds
-        has_bonds: bool
-            If there are any bonded atoms for the target index
-        """
-        # private, does not check for target < self.max_index
-        cdef int start = self._spans_start[target]
-        cdef int end = self._spans_end[target]
-        cdef int i, b_ix
-        cdef list orders = []
-        if start == end:
-            return orders, False
-        else:
-            for i in range(start, end, 1):
-                b_ix = self._bix[i]
-                ord = self._order[b_ix]
-                orders.append(ord)
-
-            return orders, True
-
-    cdef cpair[vector[int], cbool] _get_guess(self, int target):
-        """
-        Low level utility to get the guesses of the bonds for a single index
-
-        Parameters
-        ----------
-        target: int
-            The target atom to get bonds for
-
-        Returns
-        -------
-        guesses: list[bool]
-            If the bond for this index was guessed
-        struct: pair[vector[int], bool]
-            Pair containing the vector of guesses (cast to int), and whether the
-            target index had any bonded atoms. 
-        """
-        # private, does not check for target < self.max_index
-        cdef int start = self._spans_start[target]
-        cdef int end = self._spans_end[target]
-        cdef int i, b_ix, guess
-        cdef vector[int] guesses
-        if start == end:
-            return cpair[vector[int], cbool](guesses, False)
-        else:
-            for i in range(start, end, 1):
-                b_ix = self._bix[i]
-                guess = self._guessed[b_ix]
-                guesses.push_back(guess)
-
-            return cpair[vector[int], cbool](guesses, True)
 
     cdef void _pairsort(self, vector[cpair[int, int]] & a, vector[int] & b):
         """

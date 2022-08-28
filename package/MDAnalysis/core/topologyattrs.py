@@ -2640,7 +2640,7 @@ class Bonds(_Connection):
 
         .. versionadded:: 2.3.0
         """
-        b_idx,types, guessed, order  = self._bondtable.get_b_t_g_o_slice(ag.ix)
+        b_idx, types, guessed, order  = self._bondtable.get_b_t_g_o_slice(ag.ix)
         return TopologyGroup(b_idx, ag.universe,
                              self.singular[:-1],
                              types,
