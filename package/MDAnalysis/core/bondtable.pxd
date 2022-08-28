@@ -36,6 +36,7 @@ cnp.import_array()
 
 cdef class BondTable:
     # attributes are public for testing but are not intended to be accessed
+    
     # maximum index in the table 
     cdef public int max_index
     # whether the table has any values in it 

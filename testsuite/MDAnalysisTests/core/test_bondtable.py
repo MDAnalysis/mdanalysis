@@ -83,4 +83,34 @@ class TestBondTableInputs:
 
 
 class TestSimpleBonds(object):
-    pass
+    # all values unique so is a direct copy
+    _bonds = [[0,1], [0,2], [1,2], [2,3]]
+    _types = ['0', '1', '2', '3']
+    _guesses = [True, False, True, False]
+    _orders = ['zero', 'parsnip', 'two', 'three']
+
+    @pytest.fixture(scope='class')
+    def bonds(self):
+        return Bonds(self._bonds, self._types, self._guesses, self._orders)
+
+    def test_bonds(self, bonds):
+        assert_equal(np.asarray(bonds._bondtable._ix_pair_array), np.asarray(self._bonds))
+    
+    def test_type(self, bonds):
+        assert(bonds._bondtable._type == self._types)
+
+    def test_order(self, bonds):
+        assert(bonds._bondtable._order == self._orders)
+    
+    def test_max_index(self, bonds):
+        assert(bonds._bondtable.max_index == 3)
+
+    @pytest.mark.parametrize('input, expected', [(0, [[0,1],[0,2]]), (1, [[0,1],[1,2]]), (2, [1]), (3, [1])])
+    def test_b_t_g_o_scalar(self, bonds, input, expected):
+        b, t, g, o = bonds._bondtable.get_b_t_g_o_slice(input)
+        print(b)
+        assert_equal(b, np.asarray(expected[0]))
+        assert(t == expected[0])
+        assert(g == expected[0])
+        assert(o == expected[0])
+
