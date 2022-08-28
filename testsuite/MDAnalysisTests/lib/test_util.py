@@ -330,9 +330,9 @@ class TestMatrixOperations(object):
     @pytest.mark.parametrize('angles',
                              comb_wr([-10, 0, 20, 70, 90, 120, 180], 3))
     def test_triclinic_vectors(self, lengths, angles, dtype=np.float32):
-        box = np.array(lengths + angles, dtype)
+        box = lengths + angles
         ref = self.ref_trivecs(box)
-        res = mdamath.triclinic_vectors(box)
+        res = mdamath.triclinic_vectors(box,dtype=dtype)
         assert_array_equal(res, ref)
         # check for dtype pass-through:
         assert res.dtype == dtype
@@ -2134,7 +2134,7 @@ class TestCheckBox(object):
                                            90, 90, 90, 90, 90, 90],
                                           dtype=np.float32)[::2]))
     def test_check_box_ortho(self, box, dtype=np.float32):
-        boxtype, checked_box = util.check_box(box, dtype)
+        boxtype, checked_box = util.check_box(box, dtype=dtype)
         assert boxtype == 'ortho'
         assert_allclose(checked_box, self.ref_ortho)
         assert checked_box.dtype == dtype
@@ -2158,7 +2158,7 @@ class TestCheckBox(object):
                                            45, 45, 90, 90, 90, 90],
                                           dtype=np.float32)[::2]))
     def test_check_box_tri_vecs(self, box, dtype=np.float32):
-        boxtype, checked_box = util.check_box(box, dtype)
+        boxtype, checked_box = util.check_box(box, dtype=dtype)
         assert boxtype == 'tri_vecs'
         assert_almost_equal(checked_box, self.ref_tri_vecs, self.prec)
         assert checked_box.dtype == dtype
