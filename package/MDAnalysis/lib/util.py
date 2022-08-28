@@ -2413,7 +2413,7 @@ def check_box(box, dtype=np.float32):
         :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     dtype: numpy.dtype
-        The data type of the inputted and returned box matrix.
+        The data type of the returned box matrix.
 
     Returns
     -------
