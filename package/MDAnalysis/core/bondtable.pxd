@@ -71,5 +71,5 @@ cdef class BondTable:
     # utility method to sort vector a and the vector b by the same index.
     cdef void _pairsort(self, vector[cpair[int, int]] & a, vector[int] & b)
     # utility method to sort vector a and the list b by the same index.
-    cdef _pairsort_list(self, vector[cpair[int, int]] a, list b)
+    cdef list _pairsort_list(self, vector[cpair[int, int]] a, list b)
 
