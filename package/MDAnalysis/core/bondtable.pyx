@@ -239,7 +239,7 @@ cdef class BondTable:
 
         Parameters
         ----------
-        targets: np.ndarray 
+        targets: np.ndarray or scalar index
             the atom indices to get properties for
 
         Returns
