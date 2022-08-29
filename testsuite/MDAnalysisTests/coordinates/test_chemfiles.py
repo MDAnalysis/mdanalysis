@@ -236,6 +236,7 @@ class TestChemfiles(object):
             check = mda.Universe(outfile)
             assert check.trajectory.ts.n_atoms == group.n_atoms
 
+    @pytest.mark.xfail  # Issue #3798 - float writing not consisten
     def test_write_velocities(self, tmpdir):
         u = mda.Universe.empty(4, trajectory=True)
         u.add_TopologyAttr("type", values=["H", "H", "H", "H"])
