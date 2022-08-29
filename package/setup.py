@@ -425,7 +425,7 @@ def extensions(config):
                              include_dirs=include_dirs,
                              define_macros=define_macros,
                              extra_compile_args=cpp_extra_compile_args,
-                             extra_link_args= cpp_extra_link_args)
+                             extra_link_args=cpp_extra_link_args)
 
 
     encore_utils = MDAExtension('MDAnalysis.analysis.encore.cutils',

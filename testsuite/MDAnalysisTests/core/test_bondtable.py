@@ -139,7 +139,7 @@ class TestSimpleBonds(object):
      (1, [np.asarray([[0, 1], [1, 2]]), ['0', '2'], [True, True],
       ['zero', 'two']]),
      (2, [np.asarray([[0, 2], [1, 2], [2, 3]]), ['1', '2', '3'],
-      [False, True, False],['parsnip', 'two', 'three']])])
+      [False, True, False], ['parsnip', 'two', 'three']])])
     def test_b_t_g_o_scalar(self, bonds, input, expected):
         b, t, g, o = bonds._bondtable.get_b_t_g_o_slice(input)
         assert_equal(b, expected[0])
