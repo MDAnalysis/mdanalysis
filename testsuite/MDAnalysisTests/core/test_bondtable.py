@@ -71,10 +71,8 @@ class TestBondTableInputs:
 
     @pytest.mark.parametrize("val", [((0, 1, 3),), [[0, 1, 2, 3, 4]]])
     def test_val_second_dim_not_2(self, val):
-        with pytest.raises(
-            ValueError,
-            match="values argument for a BondTable must have a second dimension",
-        ):
+        with pytest.raises(ValueError, match="values argument for a BondTable"
+                           " must have a second"):
             bonds = BondTable(val, [1], [2], [3])
 
     @pytest.mark.parametrize(
@@ -135,10 +133,13 @@ class TestSimpleBonds(object):
     def test_max_index(self, bonds):
         assert bonds._bondtable.max_index == 3
 
-    @pytest.mark.parametrize('input, expected', [(0, [np.asarray([[0, 1], [0, 2]]), ['0', '1'], [True, False], ['zero', 'parsnip']]),
-                             (1, [np.asarray([[0, 1], [1, 2]]), [
-                              '0', '2'], [True, True], ['zero', 'two']]),
-                             (2, [np.asarray([[0, 2], [1, 2], [2, 3]]), ['1', '2', '3'], [False, True, False], ['parsnip', 'two', 'three']])])
+    @pytest.mark.parametrize('input, expected',
+    [(0, [np.asarray([[0, 1], [0, 2]]), ['0', '1'], [True, False],
+     ['zero', 'parsnip']]),
+     (1, [np.asarray([[0, 1], [1, 2]]), ['0', '2'], [True, True],
+      ['zero', 'two']]),
+     (2, [np.asarray([[0, 2], [1, 2], [2, 3]]), ['1', '2', '3'],
+      [False, True, False],['parsnip', 'two', 'three']])])
     def test_b_t_g_o_scalar(self, bonds, input, expected):
         b, t, g, o = bonds._bondtable.get_b_t_g_o_slice(input)
         assert_equal(b, expected[0])
