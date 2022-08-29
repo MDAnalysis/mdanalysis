@@ -105,12 +105,13 @@ class TestSimpleBonds(object):
     def test_max_index(self, bonds):
         assert(bonds._bondtable.max_index == 3)
 
-    @pytest.mark.parametrize('input, expected', [(0, [[0,1],[0,2]]), (1, [[0,1],[1,2]]), (2, [1]), (3, [1])])
+    @pytest.mark.parametrize('input, expected', [(0, [np.asarray([[0,1],[0,2]]), ['0', '1'], [True, False], ['zero', 'parsnip']]),
+                             (1, [np.asarray([[0,1],[1,2]]), ['0', '2'], [True, True], ['zero', 'two']]),
+                             (2, [np.asarray([[0,2],[1,2],[2,3]]), ['1', '2', '3'], [False, True, False], ['parsnip', 'two', 'three']])])
     def test_b_t_g_o_scalar(self, bonds, input, expected):
         b, t, g, o = bonds._bondtable.get_b_t_g_o_slice(input)
-        print(b)
-        assert_equal(b, np.asarray(expected[0]))
-        assert(t == expected[0])
-        assert(g == expected[0])
-        assert(o == expected[0])
+        assert_equal(b, expected[0])
+        assert_equal(t, expected[1])
+        assert_equal(g, expected[2])
+        assert_equal(o, expected[3])
 
