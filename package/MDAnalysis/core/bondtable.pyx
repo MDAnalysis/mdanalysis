@@ -77,9 +77,10 @@ cdef class BondTable:
     Notes
     -----
 
-    If a duplicate entry is added to the table, the second entry will be
-    recorded in the table. This is only of concern if the entries differ in 
-    `type`, `guessed` or `order`
+    If a duplicate entry of the same atom ordering is added to the table,
+    only the properties of the first entry will be recorded in the table.
+    If an entry of the reverse atom ordering is added to the table, the entry
+    that appears first upon sorting is recorded.
 
     The `types` and `order` attributes allow arbitrary python objects
     (e.g sometimes they can be RDKit objects etc. etc.) so are handled with
@@ -112,8 +113,12 @@ cdef class BondTable:
 
         self._is_empty = False
 
+        if isinstance(val, set):
+            val = np.asarray(list(val))
+            
         if not isinstance(val, np.ndarray):
             val = np.asarray(val)
+
         if ((val.shape[0] != len(typ)) or (len(typ) != len(guess)) or (len(guess) != len(order))):
             raise ValueError("BondTable must be made from inputs of"
                              " matching length")
