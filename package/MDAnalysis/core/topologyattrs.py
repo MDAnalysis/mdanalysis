@@ -2515,7 +2515,7 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
                               self._guessed, self.order):
             for a in b:
                 bd[a].append((b, t, g, o))
-        return bd 
+        return bd
 
     def set_atoms(self, ag):
         return NotImplementedError("Cannot set bond information")
@@ -2617,16 +2617,15 @@ class Bonds(_Connection):
     transplants = defaultdict(list)
     _n_atoms = 2
 
-
     def __init__(self, values, types=None, guessed=False, order=None):
         """
         Initialise a Bond Attribute including a BondTable
 
-        .. versionadded:: 2.3.0 
+        .. versionadded:: 2.3.0
         """
         super().__init__(values, types, guessed, order)
-        self._bondtable = BondTable(values, self.types, self._guessed, self.order)
-
+        self._bondtable = BondTable(values, self.types, self._guessed,
+                                    self.order)
 
     def get_atoms(self, ag):
         """
@@ -2639,7 +2638,7 @@ class Bonds(_Connection):
 
         .. versionadded:: 2.3.0
         """
-        b_idx, types, guessed, order  = self._bondtable.get_b_t_g_o_slice(ag.ix)
+        b_idx, types, guessed, order = self._bondtable.get_b_t_g_o_slice(ag.ix)
         return TopologyGroup(b_idx, ag.universe,
                              self.singular[:-1],
                              types,
@@ -2666,8 +2665,9 @@ class Bonds(_Connection):
                 self.types.append(t)
                 self._guessed.append(g)
                 self.order.append(o)
-       # redo the bond table
-        self._bondtable = BondTable(np.asarray(self.values, dtype=np.int32), self.types, self._guessed, self.order)
+        # redo the bond table
+        self._bondtable = BondTable(np.asarray(self.values, dtype=np.int32),
+                                    self.types, self._guessed, self.order)
 
     @_check_connection_values
     def _delete_bonds(self, values):
@@ -2693,8 +2693,9 @@ class Bonds(_Connection):
             arr = np.array(getattr(self, attr), dtype='object')
             new = np.delete(arr, idx)
             setattr(self, attr, list(new))
-       # redo the bond table
-        self._bondtable = BondTable(np.asarray(self.values, dtype=np.int32), self.types, self._guessed, self.order)
+        # redo the bond table
+        self._bondtable = BondTable(np.asarray(self.values, dtype=np.int32),
+                                    self.types, self._guessed, self.order)
 
     def bonded_atoms(self):
         """An :class:`~MDAnalysis.core.groups.AtomGroup` of all
