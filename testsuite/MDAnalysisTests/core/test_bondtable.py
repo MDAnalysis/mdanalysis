@@ -84,7 +84,7 @@ class TestBondTableInputs:
 
 class TestSimpleBonds(object):
     # all values unique so is a direct copy
-    _bonds = [[0,1], [0,2], [1,2], [2,3]]
+    _bonds = [[0, 1], [0, 2], [1, 2], [2, 3]]
     _types = ['0', '1', '2', '3']
     _guesses = [True, False, True, False]
     _orders = ['zero', 'parsnip', 'two', 'three']
@@ -94,20 +94,25 @@ class TestSimpleBonds(object):
         return Bonds(self._bonds, self._types, self._guesses, self._orders)
 
     def test_bonds(self, bonds):
-        assert_equal(np.asarray(bonds._bondtable._ix_pair_array), np.asarray(self._bonds))
-    
+        assert_equal(np.asarray(bonds._bondtable._ix_pair_array),
+                     np.asarray(self._bonds))
+
     def test_type(self, bonds):
         assert(bonds._bondtable._type == self._types)
 
+    def test_guesses(self, bonds):
+        assert(bonds._bondtable._guessed == self._guesses)
+
     def test_order(self, bonds):
         assert(bonds._bondtable._order == self._orders)
-    
+
     def test_max_index(self, bonds):
         assert(bonds._bondtable.max_index == 3)
 
-    @pytest.mark.parametrize('input, expected', [(0, [np.asarray([[0,1],[0,2]]), ['0', '1'], [True, False], ['zero', 'parsnip']]),
-                             (1, [np.asarray([[0,1],[1,2]]), ['0', '2'], [True, True], ['zero', 'two']]),
-                             (2, [np.asarray([[0,2],[1,2],[2,3]]), ['1', '2', '3'], [False, True, False], ['parsnip', 'two', 'three']])])
+    @pytest.mark.parametrize('input, expected', [(0, [np.asarray([[0, 1], [0, 2]]), ['0', '1'], [True, False], ['zero', 'parsnip']]),
+                             (1, [np.asarray([[0, 1], [1, 2]]), [
+                              '0', '2'], [True, True], ['zero', 'two']]),
+                             (2, [np.asarray([[0, 2], [1, 2], [2, 3]]), ['1', '2', '3'], [False, True, False], ['parsnip', 'two', 'three']])])
     def test_b_t_g_o_scalar(self, bonds, input, expected):
         b, t, g, o = bonds._bondtable.get_b_t_g_o_slice(input)
         assert_equal(b, expected[0])
@@ -115,3 +120,97 @@ class TestSimpleBonds(object):
         assert_equal(g, expected[2])
         assert_equal(o, expected[3])
 
+    def test_b_t_g_o_slice(self, bonds):
+        b, t, g, o = bonds._bondtable.get_b_t_g_o_slice([0, 2])
+        assert_equal(b, np.asarray([[0, 1], [0, 2], [0, 2], [1, 2], [2, 3]]))
+        assert_equal(t, ['0', '1', '1', '2', '3'])
+        assert_equal(g, [True, False, False, True, False])
+        assert_equal(o, ['zero', 'parsnip', 'parsnip', 'two', 'three'])
+
+    def test_get_bonds_scalar(self, bonds):
+        b = bonds._bondtable.get_bonds([0])
+        assert_equal(b, np.asarray([[1, 2]]))
+
+    def test_get_bonds_slice(self, bonds):
+        b = bonds._bondtable.get_bonds([0, 1])
+        assert_equal(b, np.asarray([[1, 2], [0, 2]]))
+
+
+class TestBondsGaps(object):
+    # all values unique so is a direct copy
+    _bonds = [[100, 2], [99, 6], [400, 405], [400, 405], [450, 451]]
+    _types = ['0', '1', '2', '3', '4']
+    _guesses = [True, False, True, False, True]
+    _orders = ['zero', 'parsnip', 'two', 'three', 'four']
+
+    @pytest.fixture(scope='class')
+    def bonds(self):
+        return Bonds(self._bonds, self._types, self._guesses, self._orders)
+
+    def test_bonds(self, bonds):
+        assert_equal(np.asarray(bonds._bondtable._ix_pair_array),
+                     np.asarray([[2, 100], [6, 99], [400, 405], [450, 451]]))
+
+    def test_type(self, bonds):
+        assert(bonds._bondtable._type == ['0', '1', '2', '4'])
+
+    def test_order(self, bonds):
+        assert(bonds._bondtable._order == ['zero', 'parsnip', 'two', 'four'])
+
+    def test_guesses(self, bonds):
+        assert_equal(np.asarray(bonds._bondtable._guessed,
+                     dtype=bool), [True, False, False, True])
+
+    def test_max_index(self, bonds):
+        assert(bonds._bondtable.max_index == 451)
+
+    # bonds on either side of existing ones
+    @pytest.mark.parametrize('slice', (0, 1, 5, 7, 98, 399, 401, 404, 406, 449, 452, 1000, 2000))
+    def test_b_t_g_o_not_present_empty(self, bonds, slice):
+        b, t, g, o = bonds._bondtable.get_b_t_g_o_slice(slice)
+        assert_equal(b, np.empty(0))
+        assert_equal(t, np.empty(0))
+        assert_equal(g, np.empty(0))
+        assert_equal(o, np.empty(0))
+
+    # bonds on either side of existing ones
+    @pytest.mark.parametrize('slice', (0, 1, 5, 7, 98, 399, 401, 404, 406, 449, 452, 1000, 2000))
+    def test_bonds_not_present_empty(self, bonds, slice):
+        b = bonds._bondtable.get_bonds(slice)
+        assert_equal(b, np.empty(0))
+
+
+    @pytest.mark.parametrize('input, expected', [(100, [np.asarray([[2,100]]), ['0'], [True], ['zero']]), (99, [np.asarray([[6,99]]), ['1'], [False], ['parsnip']])])
+    def test_b_t_g_o_scalar(self, bonds, input, expected):
+        b, t, g, o = bonds._bondtable.get_b_t_g_o_slice(input)
+        assert_equal(b, expected[0])
+        assert_equal(t, expected[1])
+        assert_equal(g, expected[2])
+        assert_equal(o, expected[3])
+
+
+    @pytest.mark.parametrize('input, expected', [(100, [np.asarray([[2,100]]), ['0'], [True], ['zero']]), (99, [np.asarray([[6,99]]), ['1'], [False], ['parsnip']])])
+    def test_b_t_g_o_slice(self, bonds, input, expected):
+        b, t, g, o = bonds._bondtable.get_b_t_g_o_slice(input)
+        assert_equal(b, expected[0])
+        assert_equal(t, expected[1])
+        assert_equal(g, expected[2])
+        assert_equal(o, expected[3])
+
+
+    @pytest.mark.parametrize('input, expected', [(100, [np.asarray([[2,100]]), ['0'], [True], ['zero']]), (99, [np.asarray([[6,99]]), ['1'], [False], ['parsnip']])])
+    def test_bonds_scalar(self, bonds, input, expected):
+        b, t, g, o = bonds._bondtable.get_b_t_g_o_slice(input)
+        assert_equal(b, expected[0])
+        assert_equal(t, expected[1])
+        assert_equal(g, expected[2])
+        assert_equal(o, expected[3])
+
+
+    @pytest.mark.parametrize('input, expected', [(100, [np.asarray([[2,100]]), ['0'], [True], ['zero']]), (99, [np.asarray([[6,99]]), ['1'], [False], ['parsnip']])])
+    def test_b_t_g_o_slice(self, bonds, input, expected):
+        b, t, g, o = bonds._bondtable.get_b_t_g_o_slice(input)
+        assert_equal(b, expected[0])
+        assert_equal(t, expected[1])
+        assert_equal(g, expected[2])
+        assert_equal(o, expected[3])

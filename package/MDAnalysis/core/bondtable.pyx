@@ -77,6 +77,14 @@ cdef class BondTable:
     Notes
     -----
 
+    If a duplicate entry is added to the table, the second entry will be
+    recorded in the table. This is only of concern if the entries differ in 
+    `type`, `guessed` or `order`
+
+    The `types` and `order` attributes allow arbitrary python objects
+    (e.g sometimes they can be RDKit objects etc. etc.) so are handled with
+    lists rather than vectors as they are not castable to a C++ type.
+
     Using `__cinit__` is avoided here to enable pickling of the table.
 
     .. versionadded:: 2.3.0
@@ -138,6 +146,8 @@ cdef class BondTable:
             self._order = []
             self._generate_bix(val.astype(np.int32), typ_,  guess_.astype(np.int32), order_)
 
+    @cython.boundscheck(False)
+    @cython.wraparound(False) 
     cdef void _generate_bix(self, int[:, :] val, list typ, int[:] guess,
                             list order):
         """
@@ -258,7 +268,8 @@ cdef class BondTable:
     def get_b_t_g_o_slice(self, targets):
         """
         Get a slice of all four properties (bonds, types, guesses, orders)
-        for an array of indices
+        for an array of indices. Returns a union of attributes for each index
+        so may contain duplicate entries. 
 
         Parameters
         ----------
@@ -283,6 +294,8 @@ cdef class BondTable:
         # if scalar, make it an array
         if np.isscalar(targets):
             targets = np.asarray([targets])
+        if not isinstance(targets, np.ndarray):
+            targets =  np.asarray(targets)
         # objects for pairs
         cdef vector[cpair[int, int]] bonds
         # objects for types
@@ -310,6 +323,54 @@ cdef class BondTable:
             np.asarray(types, dtype=object), \
             np.asarray(guesses, dtype=bool), \
             np.asarray(orders, dtype=object)
+
+    @cython.boundscheck(False)
+    @cython.wraparound(False) 
+    def get_bonds(self, targets):
+        """
+        Get bonded atoms for an array of indices.
+        Parameters
+        ----------
+        targets: np.ndarray or scalar index
+            the atoms to get bonded atoms for 
+        Returns
+        -------
+        bonds: np.ndarray
+            The bonded atoms for the indices in targets, each row in bonds
+            contains the bonds for the corresponding index in targets
+        """
+        # if empty return empty arrays
+        if self._is_empty:
+            return np.empty((0), dtype=np.int32)
+        # if scalar, make it an array
+        if np.isscalar(targets):
+            targets = np.asarray([targets])
+        if not isinstance(targets, np.ndarray):
+            targets =  np.asarray(targets)
+        # objects for bonds
+        cdef vector[vector[int]] bonds
+        cdef vector[int] row
+        # iteration
+        cdef int i, j, idx, start, end, b_ix, first, second
+        for i in range(targets.shape[0]):
+            idx = targets[i]
+            if idx <= self.max_index:
+                start = self._spans_start[idx]
+                end = self._spans_end[idx]
+                if start != end:
+                    row.clear()
+                    for j in range(start, end, 1):
+                        b_ix = self._bix[j]
+                        first = self._ix_pair_array[b_ix].first
+                        second = self._ix_pair_array[b_ix].second
+                        if first != idx:
+                            row.push_back(first)
+                        else:
+                            row.push_back(second)
+                    bonds.push_back(row)
+
+        return np.asarray(bonds, dtype=np.int32)
+
 
     cdef void _pairsort(self, vector[cpair[int, int]] & a, vector[int] & b):
         """
