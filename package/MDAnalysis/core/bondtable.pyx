@@ -115,7 +115,7 @@ cdef class BondTable:
 
         if isinstance(val, set):
             val = np.asarray(list(val))
-            
+
         if not isinstance(val, np.ndarray):
             val = np.asarray(val)
 
@@ -341,8 +341,7 @@ cdef class BondTable:
         Returns
         -------
         bonds: np.ndarray
-            The bonded atoms for the indices in targets, each row in bonds
-            contains the bonds for the corresponding index in targets
+            The unique sorted bonded atoms for the indices in targets
         """
         # if empty return empty arrays
         if self._is_empty:
@@ -353,8 +352,7 @@ cdef class BondTable:
         if not isinstance(targets, np.ndarray):
             targets =  np.asarray(targets)
         # objects for bonds
-        cdef vector[vector[int]] bonds
-        cdef vector[int] row
+        cdef vector[int] bonds
         # iteration
         cdef int i, j, idx, start, end, b_ix, first, second
         for i in range(targets.shape[0]):
@@ -363,18 +361,16 @@ cdef class BondTable:
                 start = self._spans_start[idx]
                 end = self._spans_end[idx]
                 if start != end:
-                    row.clear()
                     for j in range(start, end, 1):
                         b_ix = self._bix[j]
                         first = self._ix_pair_array[b_ix].first
                         second = self._ix_pair_array[b_ix].second
                         if first != idx:
-                            row.push_back(first)
+                            bonds.push_back(first)
                         else:
-                            row.push_back(second)
-                    bonds.push_back(row)
+                            bonds.push_back(second)
 
-        return np.asarray(bonds, dtype=np.int32)
+        return np.unique(np.asarray(bonds, dtype=np.int32))
 
 
     cdef void _pairsort(self, vector[cpair[int, int]] & a, vector[int] & b):
