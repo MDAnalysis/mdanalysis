@@ -1,0 +1,2 @@
+.. automodule:: MDAnalysis.analysis.density
+
