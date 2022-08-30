@@ -101,7 +101,8 @@ def determine_container_limits(
 
 # typing: numpy
 def produce_grid(
-        tuple_of_limits: Tuple[float, ...], grid_spacing: float
+        tuple_of_limits: Tuple[int, int, int, int, int, int],
+        grid_spacing: float
 ) -> np.ndarray:
     """Produce a 3D grid for the simulation system.
 
@@ -374,7 +375,7 @@ def generate_streamlines_3d(
         ymin: float, ymax: float,
         zmin: float, zmax: float,
         maximum_delta_magnitude: float = 2.0,
-        num_cores: int = 'maximum'
+        num_cores: Union[int, str] = 'maximum'
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     r"""Produce the x, y and z components of a 3D streamplot data set.
 
