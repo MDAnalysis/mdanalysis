@@ -14,12 +14,11 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 08/29/22 IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli, miss77jun, rzhao271,
-         yuxuanzhuang, hsadia538, lilyminium, rafaelpap
+         yuxuanzhuang, hsadia538, lilyminium
 
  * 2.3.0
 
 Fixes
-  * Fixes distances.between not returning AtomGroup (Issue #3794)
   * Fixes awk call in deploy.yaml tests for macos runners (Issue #3693)
   * add a 0.5 for correct midpoints in hole analysis (Issue #3715)
   * Fix reading error when PDB CONECT records are corrupt. (Issue #988)
