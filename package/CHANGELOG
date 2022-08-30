@@ -13,6 +13,9 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+08/30/22 rafaelpap
+ * Fixes distances.between not returning AtomGroup (Issue #3794)
+
 08/29/22 IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli, miss77jun, rzhao271,
          yuxuanzhuang, hsadia538, lilyminium
 
