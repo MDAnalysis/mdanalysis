@@ -213,13 +213,39 @@ class TestBetween(object):
 
     def test_between_simple_case_indices_only(self, group, ag, ag2, expected):
         '''Test MDAnalysis.analysis.distances.between() for
-        a simple input case. Checks the sorted atom indices
+        a simple input case. Checks atom indices
         of returned AtomGroup against sorted expected index
         values.'''
-        actual = sorted(MDAnalysis.analysis.distances.between(
+        actual = MDAnalysis.analysis.distances.between(
             group,
             ag,
             ag2,
             self.distance
-        ).indices)
+        ).indices
         assert_equal(actual, expected)
+
+    distance = 5.9
+
+    def test_between_return_type_not_empty(self, group, ag, ag2):
+        '''Test MDAnalysis.analysis.distances.between() for
+        returned type when returned group is not empty.'''
+        actual = MDAnalysis.analysis.distances.between(
+            group,
+            ag,
+            ag2,
+            self.distance
+        )
+        assert(isinstance(actual, MDAnalysis.core.groups.AtomGroup))
+
+    distance = 1.0
+
+    def test_between_return_type_empty(self, group, ag, ag2):
+        '''Test MDAnalysis.analysis.distances.between() for
+        returned type when returned group is empty.'''
+        actual = MDAnalysis.analysis.distances.between(
+            group,
+            ag,
+            ag2,
+            self.distance
+        )
+        assert(isinstance(actual, MDAnalysis.core.groups.AtomGroup))
