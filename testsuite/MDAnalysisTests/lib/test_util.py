@@ -333,13 +333,13 @@ class TestMatrixOperations(object):
     def test_triclinic_vectors(self, lengths, angles, dtype):
         box = lengths + angles
         ref = self.ref_trivecs(box)
-        res = mdamath.triclinic_vectors(box,dtype=dtype)
+        res = mdamath.triclinic_vectors(box, dtype=dtype)
         assert_array_equal(res, ref)
         # check for dtype pass-through:
         assert res.dtype == dtype
         # belts and braces, make sure upper triangle is always zero:
         assert not(res[0, 1] or res[0, 2] or res[1, 2])
-    
+
     @pytest.mark.parametrize('dtype', [np.float32])
     @pytest.mark.parametrize('alpha', (60, 90))
     @pytest.mark.parametrize('beta', (60, 90))
@@ -411,7 +411,7 @@ class TestMatrixOperations(object):
                         *mdamath.triclinic_vectors(ref))
                     if not np.all(res == 0.0):
                         assert_almost_equal(res, ref, 5)
-    
+
     @pytest.mark.parametrize('dtype', [np.float32])
     @pytest.mark.parametrize('angles', ([70, 70, 70],
                                         [70, 70, 90],
