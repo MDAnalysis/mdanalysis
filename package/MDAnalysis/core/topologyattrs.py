@@ -2034,6 +2034,18 @@ class Charges(AtomAttr):
         ('total_charge', total_charge))
 
 
+class FormalCharges(AtomAttr):
+    """Formal charge on each atom"""
+    attrname = 'formalcharges'
+    singular = 'formalcharge'
+    per_object = 'atom'
+    dtype = int
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
+
+
 # TODO: update docs to property doc
 class Occupancies(AtomAttr):
     attrname = 'occupancies'

@@ -63,18 +63,11 @@ if sys.version_info[:2] < (3, 8):
     print('Please upgrade your version of Python.')
     sys.exit(-1)
 
-if sys.version_info[0] < 3:
-    import ConfigParser as configparser
-else:
-    import configparser
-
-if sys.version_info[0] >= 3:
-    from subprocess import getoutput
-else:
-    from commands import getoutput
+import configparser
+from subprocess import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "2.3.0-dev0"
+RELEASE = "2.3.0"
 
 is_release = 'dev' not in RELEASE
 
@@ -190,7 +183,7 @@ def get_numpy_include():
         import numpy as np
     except ImportError:
         print('*** package "numpy" not found ***')
-        print('MDAnalysis requires a version of NumPy (>=1.19.0), even for setup.')
+        print('MDAnalysis requires a version of NumPy (>=1.20.0), even for setup.')
         print('Please get it from http://numpy.scipy.org/ or install it through '
               'your package manager.')
         sys.exit(-1)
@@ -606,7 +599,7 @@ if __name__ == '__main__':
     exts, cythonfiles = extensions(config)
 
     install_requires = [
-          'numpy>=1.19.0',
+          'numpy>=1.20.0',
           'biopython>=1.71',
           'networkx>=2.0',
           'GridDataFormats>=0.4.0',
@@ -655,7 +648,7 @@ if __name__ == '__main__':
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           setup_requires=[
-              'numpy>=1.19.0',
+              'numpy>=1.20.0',
               'packaging',
           ],
           install_requires=install_requires,
@@ -663,14 +656,19 @@ if __name__ == '__main__':
           # you might prefer to use the version available through your
           # packaging system
           extras_require={
-              'AMBER': [
+              'AMBER': [           # REMOVE for 2.4.0, use 'extra_formats'
                   'netCDF4>=1.0',  # for fast AMBER writing, also needs HDF5
               ],
+              'extra_formats': [   # additional file formats
+                  'netCDF4>=1.0',  # for fast AMBER writing, also needs HDF5
+                  'h5py>=2.10',    # H5MD
+                  'chemfiles>=0.10',  # multiple formats supported by chemfiles
+                  ],
               'analysis': [
                   'seaborn',  # for annotated heat map and nearest neighbor
                               # plotting in PSA
-                  'sklearn',  # For clustering and dimensionality reduction
-                              # functionality in encore
+                  'scikit-learn',  # For clustering and dimensionality
+                                   # reduction functionality in encore
                   'tidynamics>=1.0.0', # For MSD analysis method
               ],
           },
