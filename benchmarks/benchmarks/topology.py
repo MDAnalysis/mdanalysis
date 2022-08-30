@@ -33,7 +33,7 @@ class TopologyGuessBench(object):
 
 class BondsBench(object):
     """
-    Benchmarks for calculating bonds 
+    Benchmarks for getting bonds
     """
 
     params = (1000, 10000, 100000, 1000000)
@@ -47,4 +47,3 @@ class BondsBench(object):
     def time_bonds(self, num_bonds):
         """Benchmark for calculating bonds"""
         self.u.bonds
-
