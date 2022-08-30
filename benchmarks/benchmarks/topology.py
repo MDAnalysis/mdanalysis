@@ -40,7 +40,7 @@ class BondsBench(object):
     param_names = ['num_bonds']
 
     def setup(self, num_bonds):
-        self.u = MDAnalysis.universe.empty(2*num_bonds)
+        self.u = MDAnalysis.Universe.empty(2*num_bonds)
         bonds = np.arange(2*num_bonds).reshape(num_bonds, 2)
         self.u.add_bonds(bonds)
 
