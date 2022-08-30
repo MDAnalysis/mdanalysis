@@ -64,7 +64,7 @@ import MDAnalysis
 
 # typing: numpy
 def produce_grid(
-    tuple_of_limits: Sequence[float],
+    tuple_of_limits: Tuple[int, int, int, int],
     grid_spacing: float
 ) -> np.ndarray:
     """Produce a 2D grid for the simulation system.
@@ -93,7 +93,7 @@ def produce_grid(
 def split_grid(
         grid: np.ndarray,
         num_cores: int
-) -> Tuple[List[np.ndarray], List[np.ndarray], int, int]:
+) -> Tuple[List[List[int]], List[List[int]], int, int]:
     """Split the grid into blocks of vertices.
 
     Take the overall `grid` for the system and split it into lists of
@@ -162,7 +162,7 @@ def split_grid(
 
 def per_core_work(
         topology_file_path: str, trajectory_file_path: str,
-        list_square_vertex_arrays_this_core: List[List[float]],
+        list_square_vertex_arrays_this_core: List[List[int]],
         MDA_selection: str, start_frame: int, end_frame: int,
         reconstruction_index_list: Sequence[int],
         maximum_delta_magnitude: float,
@@ -188,9 +188,9 @@ def per_core_work(
 
     # typing: numpy
     def produce_list_centroids_this_frame(
-            list_indices_in_polygon: Iterable[int]
-    ) -> Union[List[np.ndarray], List[str]]:
-        list_centroids_this_frame = []
+            list_indices_in_polygon: Iterable[Sequence[int]]
+    ) -> List[Union[np.ndarray, str]]:
+        list_centroids_this_frame: List[str, np.ndarray] = []
         for indices in list_indices_in_polygon:
             if not indices[0].size > 0:  # if there are no particles of interest in this particular square
                 list_centroids_this_frame.append('empty')
@@ -249,7 +249,7 @@ def generate_streamlines(
         start_frame: int, end_frame: int,
         xmin: float, xmax: float, ymin: float, ymax: float,
         maximum_delta_magnitude: float,
-        num_cores: int = 'maximum'
+        num_cores: Union[int, str] = 'maximum'
 ) -> Tuple[np.ndarray, np.ndarray, float, float]:
     r"""Produce the x and y components of a 2D streamplot data set.
 
@@ -329,7 +329,7 @@ def generate_streamlines(
         :style: MDA
         :keyprefix: a-
         :labelprefix: ᵃ
-        
+
         Chavent2014
 
 
