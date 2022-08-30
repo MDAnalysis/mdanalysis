@@ -109,7 +109,10 @@ class AtomNeighborSearch(object):
             unique_idx = unique_int_1d(np.asarray(pairs[:, 1], dtype=np.intp))
         return self._index2level(unique_idx, level)
 
-    def _index2level(self, indices: List[int], level: str) -> None:
+    def _index2level(self,
+                     indices: List[int],
+                     level: str
+                     ) -> Union[AtomGroup, ResidueGroup, SegmentGroup]:
         """Convert list of atom_indices in a AtomGroup to either the
         Atoms or segments/residues containing these atoms.
 
