@@ -13,14 +13,15 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay
+??/??/?? IAlibay, hmacdope
 
  * 2.4.0
 
 Fixes
 
 Enhancements
-
+  * Add optional dtype argument to box checking routines to avoid forced
+    conversion to np.float32.
 Changes
 
 Deprecations
@@ -172,8 +173,6 @@ Deprecations
  * 2.1.0
 
 Fixes
-  * Add optional dtype argument to box checking routines to avoid forced
-    conversion to np.float32.
   * Use uint64_t loop counters in C level distance functions to avoid overflow
     for large arrays (Issue #3512, PR #3513).
   * Prevents attempts to close an already closed NamedStream (Issue #3386)

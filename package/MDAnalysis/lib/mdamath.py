@@ -279,7 +279,7 @@ def triclinic_box(x, y, z, dtype=np.float32):
     --------
     :func:`~MDAnalysis.lib.mdamath.triclinic_vectors`
 
-    .. versionchanged:: 2.1.0
+    .. versionchanged:: 2.4.0
        * Squash to np.float32 removed in favour of optional dtype argument
     .. versionchanged:: 0.20.0
        Calculations are performed in double precision and invalid box vectors

@@ -2436,7 +2436,7 @@ def check_box(box, dtype=np.float32):
     --------
     MDAnalysis.lib.mdamath.triclinic_vectors
 
-    .. versionchanged:: 2.1.0
+    .. versionchanged:: 2.4.0
        * Squash to np.float32 removed in favour of optional dtype argument
     .. versionchanged: 0.19.0
        * Enforced correspondence of `box` with specified format.
