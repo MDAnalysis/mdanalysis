@@ -29,6 +29,7 @@ import textwrap
 from unittest.mock import Mock, patch
 import sys
 import copy
+import operator
 
 import numpy as np
 from numpy.testing import (assert_equal, assert_almost_equal,
@@ -2119,6 +2120,12 @@ class TestCheckBox(object):
     ref_tri_vecs = np.array([[1, 0, 0], [0, 1, 0], [0, 2 ** 0.5, 2 ** 0.5]],
                             dtype=np.float32)
 
+    @pytest.fixture(scope='class')
+    def simple_universe(self):
+        u = mda.Universe.empty(100, trajectory=True)
+        u.positions = np.arange(3*100, dtype=np.float32).reshape(100,3)
+        return u
+
     @pytest.mark.parametrize('dtype', (np.float32, np.float64))
     @pytest.mark.parametrize('box',
                              ([1, 1, 1, 90, 90, 90],
@@ -2174,6 +2181,33 @@ class TestCheckBox(object):
         with pytest.raises(ValueError):
             wrongbox = np.ones((3, 3), dtype=np.float32)
             boxtype, checked_box = util.check_box(wrongbox)
+    
+    @pytest.mark.parametrize('dtype', (np.float32, np.float64))
+    @pytest.mark.parametrize('op', [operator.add, operator.sub, operator.mul,
+                             operator.truediv])
+    @pytest.mark.parametrize('box',
+                             ([1, 1, 2, 45, 90, 90],
+                              (1, 1, 2, 45, 90, 90),
+                                 ['1', '1', 2, 45, '90', '90'],
+                                 ('1', '1', 2, 45, '90', '90'),
+                                 np.array(['1', '1', 2, 45, '90', '90']),
+                                 np.array([1, 1, 2, 45, 90, 90],
+                                          dtype=np.float32),
+                                 np.array([1, 1, 2, 45, 90, 90],
+                                          dtype=np.float64),
+                                 np.array([1, 1, 1, 1, 2, 2,
+                                           45, 45, 90, 90, 90, 90],
+                                          dtype=np.float32)[::2]))
+    def check_box_coords_op_no_promotion(self, op, box, dtype, simple_universe):
+        boxtype, checked_box = util.check_box(box, dtype=dtype)
+        # mock operation with the box x coord
+        res = op(simple_universe.positions, checked_box[0])
+        # by numpy casting rules should be float32
+        assert(res.dtype == np.float32)
+        # make sure we also follow that when assigning to positions
+        simple_universe.positions = simple_universe.positions*checked_box[0]
+        assert (simple_universe.positions.dtype == np.float32)
+
 
 
 class StoredClass:
