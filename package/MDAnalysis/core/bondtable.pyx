@@ -114,10 +114,10 @@ cdef class BondTable:
         self._is_empty = False
 
         if isinstance(val, set):
-            val = np.asarray(list(val))
+            val = np.asarray(list(val), dtype=np.int32)
 
         if not isinstance(val, np.ndarray):
-            val = np.asarray(val)
+            val = np.asarray(val, dtype=np.int32)
 
         if ((val.shape[0] != len(typ)) or (len(typ) != len(guess)) or (len(guess) != len(order))):
             raise ValueError("BondTable must be made from inputs of"
@@ -298,9 +298,9 @@ cdef class BondTable:
                 np.empty((0), dtype=bool), np.empty((0), dtype=object)
         # if scalar, make it an array
         if np.isscalar(targets):
-            targets = np.asarray([targets])
+            targets = np.asarray([targets], dtype=np.int32)
         if not isinstance(targets, np.ndarray):
-            targets =  np.asarray(targets)
+            targets =  np.asarray(targets, dtype=np.int32)
         # objects for pairs
         cdef vector[cpair[int, int]] bonds
         # objects for types
@@ -348,9 +348,9 @@ cdef class BondTable:
             return np.empty((0), dtype=np.int32)
         # if scalar, make it an array
         if np.isscalar(targets):
-            targets = np.asarray([targets])
+            targets = np.asarray([targets], dtype=np.int32)
         if not isinstance(targets, np.ndarray):
-            targets =  np.asarray(targets)
+            targets =  np.asarray(targets, dtype=np.int32)
         # objects for bonds
         cdef vector[int] bonds
         # iteration
