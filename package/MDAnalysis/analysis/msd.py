@@ -250,6 +250,9 @@ import logging
 from ..due import due, Doi
 from .base import AnalysisBase
 from ..core import groups
+from MDAnalysis.core.groups import AtomGroup
+from MDAnalysis.core.universe import Universe
+from typing import Union, Optional
 
 logger = logging.getLogger('MDAnalysis.analysis.msd')
 
@@ -302,7 +305,8 @@ class EinsteinMSD(AnalysisBase):
     .. versionadded:: 2.0.0
     """
 
-    def __init__(self, u, select='all', msd_type='xyz', fft=True, **kwargs):
+    def __init__(self, u: Union[Universe, AtomGroup], select: str = 'all',
+                 msd_type: str = 'xyz', fft: bool = True, **kwargs) -> None:
         r"""
         Parameters
         ----------
@@ -333,13 +337,13 @@ class EinsteinMSD(AnalysisBase):
         # local
         self.ag = u.select_atoms(self.select)
         self.n_particles = len(self.ag)
-        self._position_array = None
+        self._position_array: Optional[np.ndarray] = None
 
         # result
         self.results.msds_by_particle = None
         self.results.timeseries = None
 
-    def _prepare(self):
+    def _prepare(self) -> None:
         # self.n_frames only available here
         # these need to be zeroed prior to each run() call
         self.results.msds_by_particle = np.zeros((self.n_frames,
@@ -348,7 +352,7 @@ class EinsteinMSD(AnalysisBase):
             (self.n_frames, self.n_particles, self.dim_fac))
         # self.results.timeseries not set here
 
-    def _parse_msd_type(self):
+    def _parse_msd_type(self) -> None:
         r""" Sets up the desired dimensionality of the MSD.
 
         """
@@ -375,13 +379,13 @@ class EinsteinMSD(AnalysisBase):
         self._position_array[self._frame_index] = (
             self.ag.positions[:, self._dim])
 
-    def _conclude(self):
+    def _conclude(self) -> None:
         if self.fft:
             self._conclude_fft()
         else:
             self._conclude_simple()
 
-    def _conclude_simple(self):
+    def _conclude_simple(self) -> None:
         r""" Calculates the MSD via the simple "windowed" algorithm.
 
         """

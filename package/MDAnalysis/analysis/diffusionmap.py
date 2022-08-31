@@ -143,6 +143,7 @@ module in published work please :cite:p:`Theobald2005`.
     Ferguson2011
     Theobald2005
 """
+from __future__ import annotations
 import logging
 import warnings
 
@@ -152,6 +153,8 @@ from MDAnalysis.core.universe import Universe
 from MDAnalysis.core.groups import AtomGroup, UpdatingAtomGroup
 from .rms import rmsd
 from .base import AnalysisBase
+from typing import Optional, Union, Sequence, Callable
+import numpy.typing as npt
 
 logger = logging.getLogger("MDAnalysis.analysis.diffusionmap")
 
@@ -240,8 +243,10 @@ class DistanceMatrix(AnalysisBase):
     .. versionchanged:: 2.2.0
          :class:`DistanceMatrix` now also accepts `AtomGroup`.
     """
-    def __init__(self, universe, select='all', metric=rmsd, cutoff=1E0-5,
-                 weights=None, **kwargs):
+    def __init__(self, universe: Union[Universe, AtomGroup],
+                 select: str = 'all',
+                 metric: Callable[..., float] = rmsd, cutoff: float = 1E0-5,
+                 weights: Optional[npt.ArrayLike] = None, **kwargs) -> None:
         # remember that this must be called before referencing self.n_frames
         super(DistanceMatrix, self).__init__(universe.universe.trajectory,
                                              **kwargs)
@@ -258,10 +263,10 @@ class DistanceMatrix(AnalysisBase):
         self._weights = weights
         self._calculated = False
 
-    def _prepare(self):
+    def _prepare(self) -> None:
         self.results.dist_matrix = np.zeros((self.n_frames, self.n_frames))
 
-    def _single_frame(self):
+    def _single_frame(self) -> None:
         iframe = self._ts.frame
         i_ref = self.atoms.positions
         # diagonal entries need not be calculated due to metric(x,x) == 0 in
@@ -280,15 +285,16 @@ class DistanceMatrix(AnalysisBase):
                                                          j+self._frame_index])
         self._ts = self._trajectory[iframe]
 
+    # typing : numpy
     @property
-    def dist_matrix(self):
+    def dist_matrix(self) -> np.ndarray:
         wmsg = ("The `dist_matrix` attribute was deprecated in "
                 "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
                 "Please use `results.dist_matrix` instead.")
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.dist_matrix
 
-    def _conclude(self):
+    def _conclude(self) -> None:
         self._calculated = True
 
 
@@ -317,7 +323,8 @@ class DiffusionMap(object):
          :class:`DiffusionMap` now also accepts `AtomGroup`.
     """
 
-    def __init__(self, u, epsilon=1, **kwargs):
+    def __init__(self, u: Union[Universe, AtomGroup, DistanceMatrix],
+                 epsilon: float = 1, **kwargs) -> None:
         """
         Parameters
         -------------
@@ -343,7 +350,9 @@ class DiffusionMap(object):
                              " so the DiffusionMap has no data to work with.")
         self._epsilon = epsilon
 
-    def run(self, start=None, stop=None, step=None):
+    def run(self, start: Optional[int] = None,
+            stop: Optional[int] = None,
+            step: Optional[int] = None) -> DiffusionMap:
         """ Create and decompose the diffusion matrix in preparation
         for a diffusion map.
 
@@ -381,7 +390,8 @@ class DiffusionMap(object):
         self._calculated = True
         return self
 
-    def transform(self, n_eigenvectors, time):
+    # typing : numpy
+    def transform(self, n_eigenvectors: int, time: float) -> np.ndarray:
         """ Embeds a trajectory via the diffusion map
 
         Parameters

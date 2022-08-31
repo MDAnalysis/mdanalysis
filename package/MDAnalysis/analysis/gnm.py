@@ -95,8 +95,11 @@ import logging
 import warnings
 
 import numpy as np
+from typing import Tuple, Optional
 
 from .base import AnalysisBase
+from MDAnalysis.core.groups import AtomGroup
+from MDAnalysis.core.universe import Universe
 
 
 from MDAnalysis.analysis.base import Results
@@ -109,7 +112,7 @@ def _dsq(a, b):
     return np.dot(diff, diff)
 
 
-def generate_grid(positions, cutoff):
+def generate_grid(positions: np.ndarray, cutoff: float) -> np.ndarray:
     """Simple grid search.
 
     An alternative to searching the entire list of each atom; divide the
@@ -149,7 +152,7 @@ def generate_grid(positions, cutoff):
     return grid
 
 
-def neighbour_generator(positions, cutoff):
+def neighbour_generator(positions: np.ndarray, cutoff: float) -> Tuple[int, int]:
     """
     return atom pairs that are in neighboring regions of space from a verlet-grid
 
@@ -252,11 +255,11 @@ class GNMAnalysis(AnalysisBase):
     """
 
     def __init__(self,
-                 universe,
-                 select='protein and name CA',
-                 cutoff=7.0,
-                 ReportVector=None,
-                 Bonus_groups=None):
+                 universe: Universe,
+                 select: str = 'protein and name CA',
+                 cutoff: float =7.0,
+                 ReportVector: Optional[str] = None,
+                 Bonus_groups: Optional[Tuple] = None) -> None:
         super(GNMAnalysis, self).__init__(universe.trajectory)
         self.u = universe
         self.select = select
@@ -329,7 +332,7 @@ class GNMAnalysis(AnalysisBase):
 
         return matrix
 
-    def _single_frame(self):
+    def _single_frame(self) -> None:
         matrix = self.generate_kirchoff()
         try:
             _, w, v = np.linalg.svd(matrix)
@@ -347,7 +350,7 @@ class GNMAnalysis(AnalysisBase):
             ReportVector=self.ReportVector,
             counter=self._ts.frame)
 
-    def _conclude(self):
+    def _conclude(self) -> None:
         self.results.times = self.times
         self.results.eigenvalues = np.asarray(self.results.eigenvalues)
         self.results.eigenvectors = np.asarray(self.results.eigenvectors)
@@ -412,18 +415,18 @@ class closeContactGNMAnalysis(GNMAnalysis):
     """
 
     def __init__(self,
-                 universe,
-                 select='protein',
-                 cutoff=4.5,
-                 ReportVector=None,
-                 weights="size"):
+                 universe: Universe,
+                 select: str = 'protein',
+                 cutoff: float = 4.5,
+                 ReportVector: Optional[float] = None,
+                 weights: Optional[None] = "size") -> None:
         super(closeContactGNMAnalysis, self).__init__(universe,
                                                       select,
                                                       cutoff,
                                                       ReportVector)
         self.weights = weights
 
-    def generate_kirchoff(self):
+    def generate_kirchoff(self) -> np.ndarray:
         nresidues = self.ca.n_residues
         positions = self.ca.positions
         residue_index_map = [
