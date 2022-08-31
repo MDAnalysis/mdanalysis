@@ -20,6 +20,8 @@ The rules for this file:
 Fixes
 
 Enhancements
+  * Added benchmarks for bonds topology attribute (Issue #3785, PR #3806)
+
 
 Changes
 
@@ -38,7 +40,6 @@ Fixes
   * Fix writing unusable PDB CONECT records with index>100000. (Issue #988)
 
 Enhancements
-  * Added benchmarks for bonds topology attribute (Issue #3785, PR #3806)
   * Add a new `formalcharge` attribute for storing formal charges (PR #3755)
   * Add the ability to read & write formal charges from PDB files (PR #3755)
   * Change functions in `lib.distances` to accept AtomGroups as well as NumPy
