@@ -67,7 +67,7 @@ import configparser
 from subprocess import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "2.3.0"
+RELEASE = "2.4.0-dev0"
 
 is_release = 'dev' not in RELEASE
 
