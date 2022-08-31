@@ -407,7 +407,8 @@ class TestMatrixOperations(object):
                 for g in range(10, 91, 10):
                     ref = np.array([1, 1, 1, a, b, g], dtype=dtype)
                     res = mdamath.triclinic_box(
-                        *mdamath.triclinic_vectors(ref, dtype=dtype), dtype=dtype)
+                        *mdamath.triclinic_vectors(ref, dtype=dtype),
+                        dtype=dtype)
                     if not np.all(res == 0.0):
                         assert_almost_equal(res, ref, 5)
                         assert(res.dtype == ref.dtype)
@@ -423,7 +424,8 @@ class TestMatrixOperations(object):
     def test_triclinic_vectors_box_cycle_exact(self, dtype, angles):
         # These cycles were inexact prior to PR #2201
         ref = np.array([10.1, 10.1, 10.1] + angles, dtype=dtype)
-        res = mdamath.triclinic_box(*mdamath.triclinic_vectors(ref, dtype=dtype), dtype=dtype)
+        res = mdamath.triclinic_box(
+            *mdamath.triclinic_vectors(ref, dtype=dtype), dtype=dtype)
         assert_allclose(res, ref)
         assert(res.dtype == dtype)
 
@@ -2126,12 +2128,6 @@ class TestCheckBox(object):
     ref_tri_vecs = np.array([[1, 0, 0], [0, 1, 0], [0, 2 ** 0.5, 2 ** 0.5]],
                             dtype=np.float32)
 
-    @pytest.fixture(scope='class')
-    def simple_universe(self):
-        u = mda.Universe.empty(100, trajectory=True)
-        u.positions = np.arange(3*100, dtype=np.float32).reshape(100,3)
-        return u
-
     @pytest.mark.parametrize('dtype', (np.float32, np.float64))
     @pytest.mark.parametrize('box',
                              ([1, 1, 1, 90, 90, 90],
@@ -2187,6 +2183,14 @@ class TestCheckBox(object):
         with pytest.raises(ValueError):
             wrongbox = np.ones((3, 3), dtype=np.float32)
             boxtype, checked_box = util.check_box(wrongbox)
+
+class TestNoDtypePromotion(object):
+
+    @pytest.fixture(scope='class')
+    def simple_universe(self):
+        u = mda.Universe.empty(100, trajectory=True)
+        u.positions = np.arange(3*100, dtype=np.float32).reshape(100, 3)
+        return u
     
     @pytest.mark.parametrize('dtype', (np.float32, np.float64))
     @pytest.mark.parametrize('op', [operator.add, operator.sub, operator.mul,
@@ -2204,14 +2208,16 @@ class TestCheckBox(object):
                                  np.array([1, 1, 1, 1, 2, 2,
                                            45, 45, 90, 90, 90, 90],
                                           dtype=np.float32)[::2]))
-    def check_box_coords_op_no_promotion(self, op, box, dtype, simple_universe):
+    def test_check_box_no_promotion(self, op, box, dtype, simple_universe):
         boxtype, checked_box = util.check_box(box, dtype=dtype)
+        assert(checked_box.dtype == dtype)
         # mock operation with the box x coord
         res = op(simple_universe.positions, checked_box[0])
-        # by numpy casting rules should be float32
-        assert(res.dtype == np.float32)
-        # make sure we also follow that when assigning to positions
-        simple_universe.positions = simple_universe.positions*checked_box[0]
+        # by numpy casting rules should be dtype
+        assert(res.dtype == dtype)
+        # make sure we are downcasting to float32
+        simple_universe.positions = op(simple_universe.positions,
+                                       checked_box[0])
         assert (simple_universe.positions.dtype == np.float32)
 
 
