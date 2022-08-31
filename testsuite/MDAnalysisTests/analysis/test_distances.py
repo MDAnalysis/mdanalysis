@@ -235,4 +235,3 @@ class TestBetween(object):
             dists
         )
         assert(isinstance(actual, MDAnalysis.core.groups.AtomGroup))
-
