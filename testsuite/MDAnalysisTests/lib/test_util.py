@@ -427,15 +427,16 @@ class TestMatrixOperations(object):
         assert_allclose(res, ref)
         assert(res.dtype == dtype)
 
-    # @pytest.mark.parametrize('dtype', (np.float32, np.float64))
+    @pytest.mark.parametrize('dtype', (np.float32, np.float64))
     @pytest.mark.parametrize('lengths', comb_wr([-1, 0, 1, 2], 3))
     @pytest.mark.parametrize('angles',
                              comb_wr([-10, 0, 20, 70, 90, 120, 180], 3))
-    def test_triclinic_box(self, lengths, angles):
-        tri_vecs = self.ref_trivecs_unsafe(lengths + angles)
-        ref = self.ref_tribox(tri_vecs)
-        res = mdamath.triclinic_box(*tri_vecs)
-        assert_array_equal(res, ref)
+    def test_triclinic_box(self, dtype, lengths, angles):
+        tri_vecs = self.ref_trivecs_unsafe(lengths + angles).astype(dtype)
+        ref = self.ref_tribox(tri_vecs).astype(dtype)
+        res = mdamath.triclinic_box(*tri_vecs, dtype=dtype)
+        # slightly relaxed from assert_array_equal, diff on order of ~ 1e-8
+        assert_allclose(res, ref)
         assert res.dtype == ref.dtype
 
     @pytest.mark.parametrize('lengths', comb_wr([-1, 0, 1, 2], 3))
