@@ -71,9 +71,12 @@ import os
 import numpy as np
 from . import base
 from ..lib.util import anyopen
+from typing import List
+from typing import List, Optional
+from MDAnalysis.auxiliary.base import AuxStep
 
 
-def uncomment(lines):
+def uncomment(lines: List[str]) -> str:
     """ Remove comments from lines in an .xvg file
 
     Parameters
@@ -124,7 +127,9 @@ class XVGStep(base.AuxStep):
     --------
     :class:`~MDAnalysis.auxiliary.base.AuxStep`
     """
-    def __init__(self, time_selector=0, data_selector=None, **kwargs):
+    def __init__(self, time_selector: Optional[int] = 0,
+                 data_selector: Optional[List[int]] = None,
+                 **kwargs) -> None:
         super(XVGStep, self).__init__(time_selector=time_selector,
                                       data_selector=data_selector,
                                       **kwargs)
@@ -179,7 +184,7 @@ class XVGReader(base.AuxReader):
     format = "XVG"
     _Auxstep = XVGStep
 
-    def __init__(self, filename, **kwargs):
+    def __init__(self, filename: str, **kwargs) -> None:
         self._auxdata = os.path.abspath(filename)
         with anyopen(filename) as xvg_file:
             lines = xvg_file.readlines()
@@ -199,7 +204,7 @@ class XVGReader(base.AuxReader):
         self._n_steps = len(self._auxdata_values)
         super(XVGReader, self).__init__(**kwargs)
 
-    def _read_next_step(self):
+    def _read_next_step(self) -> Optional[AuxStep]:
         """ Read next auxiliary step and update ``auxstep``.
 
         Returns
@@ -222,7 +227,7 @@ class XVGReader(base.AuxReader):
             self.rewind()
             raise StopIteration
 
-    def _go_to_step(self, i):
+    def _go_to_step(self, i: int) -> XVGStep:
         """ Move to and read i-th auxiliary step.
 
         Parameters
@@ -246,7 +251,7 @@ class XVGReader(base.AuxReader):
         self.next()
         return self.auxstep
 
-    def read_all_times(self):
+    def read_all_times(self) -> List[float]:
         """ Get list of time at each step.
 
         Returns
@@ -287,7 +292,7 @@ class XVGFileReader(base.AuxFileReader):
     def __init__(self, filename, **kwargs):
         super(XVGFileReader, self).__init__(filename, **kwargs)
 
-    def _read_next_step(self):
+    def _read_next_step(self) -> AuxStep:
         """ Read next recorded step in xvg file and update ``austep``.
 
         Returns
@@ -327,7 +332,7 @@ class XVGFileReader(base.AuxFileReader):
             # line is comment only - move to next
             line = next(self.auxfile)
 
-    def _count_n_steps(self):
+    def _count_n_steps(self) -> int:
         """ Iterate through all steps to count total number.
 
         Returns
@@ -352,7 +357,7 @@ class XVGFileReader(base.AuxFileReader):
                 count = count + 1
             return count
 
-    def read_all_times(self):
+    def read_all_times(self) -> np.ndarray:
         """ Iterate through all steps to build times list.
 
         Returns
