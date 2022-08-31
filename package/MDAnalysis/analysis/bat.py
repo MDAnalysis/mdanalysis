@@ -30,12 +30,12 @@ r"""Bond-Angle-Torsion coordinates analysis --- :mod:`MDAnalysis.analysis.bat`
 .. versionadded:: 2.0.0
 
 This module contains classes for interconverting between Cartesian and an
-internal coordinate system, Bond-Angle-Torsion (BAT) coordinates [Chang2003]_,
-for a given set of atoms or residues. This coordinate system is designed
-to be complete, non-redundant, and minimize correlations between degrees
-of freedom. Complete and non-redundant means that for N atoms there will
-be 3N Cartesian coordinates and 3N BAT coordinates. Correlations are
-minimized by using improper torsions, as described in [Hikiri2016]_.
+internal coordinate system, Bond-Angle-Torsion (BAT) coordinates
+:cite:p:`Chang2003`, for a given set of atoms or residues. This coordinate
+system is designed to be complete, non-redundant, and minimize correlations
+between degrees of freedom. Complete and non-redundant means that for N atoms
+there will be 3N Cartesian coordinates and 3N BAT coordinates. Correlations are
+minimized by using improper torsions, as described in :cite:p:`Hikiri2016`.
 
 More specifically, bond refers to the bond length, or distance between
 a pair of bonded atoms. Angle refers to the bond angle, the angle between
@@ -56,7 +56,7 @@ pointing from the first to second atom. It is described by the polar angle,
 :math:`\phi`, and azimuthal angle, :math:`\theta`. :math:`\omega` is a third angle
 that describes the rotation of the third atom about the axis.
 
-This module was adapted from AlGDock [Minh2020]_.
+This module was adapted from AlGDock :cite:p:`Minh2020`.
 
 
 See Also
@@ -154,27 +154,20 @@ Analysis classes
 References
 ----------
 
-.. [Chang2003] Chang, Chia-En, Michael J Potter, and Michael K Gilson (2003).
-   "Calculation of Molecular Configuration Integrals". *Journal of Physical
-   Chemistry B* 107(4): 1048–55. doi:`10.1021/jp027149c
-   <https://doi.org/10.1021/jp027149c>`_
+.. bibliography::
+    :filter: False
+    :style: MDA
 
-.. [Hikiri2016] Hikiri, Simon, Takashi Yoshidome, and Mitsunori Ikeguchi (2016).
-   "Computational Methods for Configurational Entropy Using Internal and
-   Cartesian Coordinates." *Journal of Chemical Theory and Computation*
-   12(12): 5990–6000. doi:`10.1021/acs.jctc.6b00563
-   <https://doi.org/10.1021/acs.jctc.6b00563>`_
-
-.. [Minh2020] Minh, David D L (2020). "Alchemical Grid Dock (AlGDock): Binding
-   Free Energy Calculations between Flexible Ligands and Rigid Receptors."
-   *Journal of Computational Chemistry* 41(7): 715–30.
-   doi:`10.1002/jcc.26036 <https://doi.org/10.1002/jcc.26036>`_
+    Chang2003
+    Hikiri2016
+    Minh2020
 
 """
 import logging
 import warnings
 
 import numpy as np
+import copy
 
 import MDAnalysis as mda
 from .base import AnalysisBase
@@ -499,7 +492,7 @@ class BAT(AnalysisBase):
         n_torsions = (self._ag.n_atoms - 3)
         bonds = bat_frame[9:n_torsions + 9]
         angles = bat_frame[n_torsions + 9:2 * n_torsions + 9]
-        torsions = bat_frame[2 * n_torsions + 9:]
+        torsions = copy.deepcopy(bat_frame[2 * n_torsions + 9:])
         # When appropriate, convert improper to proper torsions
         shift = torsions[self._primary_torsion_indices]
         shift[self._unique_primary_torsion_indices] = 0.

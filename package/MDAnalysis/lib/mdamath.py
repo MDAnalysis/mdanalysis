@@ -267,7 +267,7 @@ def triclinic_box(x, y, z, dtype=np.float32):
     numpy.ndarray
         A numpy array of shape ``(6,)`` and dtype `dtype` providing the
         unitcell dimensions in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.\n
         Invalid boxes are returned as a zero vector.
 
@@ -320,7 +320,7 @@ def triclinic_vectors(dimensions, dtype=np.float32):
     ----------
     dimensions : array_like
         Unitcell dimensions provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.
     dtype: numpy.dtype
         The data type of the returned box matrix.
@@ -413,7 +413,7 @@ def box_volume(dimensions):
     ----------
     dimensions : array_like
         Unitcell dimensions provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.
 
     Returns

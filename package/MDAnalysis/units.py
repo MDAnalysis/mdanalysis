@@ -56,7 +56,7 @@ All conversions with :func:`convert` are carried out in a simple fashion: the
 conversion factor :math:`f_{b,b'}` from the base unit :math:`b` to another unit
 :math:`b'` is precomputed and stored (see :ref:`Data`). The numerical value of
 a quantity in unit :math:`b` is :math:`X/b` (e.g. for :math:`X =
-1.23\,\mathrm{ps}` the numerical value is :math:`X/\mathrm{ps} =
+1.23\,\mathrm{ps}`, the numerical value is :math:`X/\mathrm{ps} =
 1.23`). [#funits]_
 
 The new numerical value :math:`X'/b'` of the quantity (in units of :math:`b'`)
@@ -89,7 +89,7 @@ density:
      n/x = n/A**3 * densityUnit_factor[x]
 
   Example for how to calculate the conversion factor
-  :math:`f_{\mathrm{Å}^{-3},\mathrm{nm}^{-3}}` from :math:`\mathrm{Å^-3}` to
+  :math:`f_{\mathrm{Å}^{-3},\mathrm{nm}^{-3}}` from :math:`\mathrm{Å}^{-3}` to
   :math:`\mathrm{nm}^{-3}`:
 
   .. math::
@@ -104,18 +104,20 @@ concentration:
 
      factor = 1 A**-3 / (N_Avogadro * (10**-9 dm)**-3)
 
-  relative to a density rho0 in g/cm^3::
+  relative to a density rho0 in :math:`g/cm^3`::
 
     M(H2O) = 18 g/mol   Molar mass of water
 
     factor = 1/(1e-24 * N_Avogadro / M(H2O))
 
-  from `rho/rho0 = n/(N_A * M**-1) / rho0`  where `[n] = 1/Volume`, `[rho] = mass/Volume`
+  from :math:`\rho/\rho_0 = n/(N_A * M^{-1}) / \rho_0`
+
+  where :math:`[n] = 1/Volume`, :math:`[\rho] = mass/Volume`
 
 
 Note
 ----
-In the future me might move towards using the Quantities_ package or
+In the future we might move towards using the Quantities_ package or
 :mod:`scipy.constants`.
 
 
@@ -147,7 +149,11 @@ Data
 References and footnotes
 ------------------------
 
-.. [Jorgensen1998]  W. Jorgensen, C. Jenson, J Comp Chem 19 (1998), 1179-1186
+.. bibliography::
+   :filter: False
+   :style: MDA
+
+   Jorgensen1998
 
 .. _AKMA: http://www.charmm.org/documentation/c37b1/usage.html#%20AKMA
 .. _electron charge: http://physics.nist.gov/cgi-bin/cuu/Value?e
@@ -203,7 +209,7 @@ lengthUnit_factor = {
 }
 
 
-#: water density values at T=298K, P=1atm [Jorgensen1998]_
+#: water density values at T=298K, P=1atm :cite:p:`Jorgensen1998`.
 #:  ======== =========
 #:  model    g cm**-3
 #:  ======== =========
@@ -219,7 +225,7 @@ water = {
     'MolarMass': 18.016,  # in g mol**-1
 }
 
-#: The basic unit for *densities* is Angstroem**(-3), i.e.
+#: The basic unit for *densities* is Angstrom**(-3), i.e.
 #: the volume per molecule in A**3. Especially for water
 #: it can be convenient to measure the density relative to bulk, and
 #: hence a number of values are pre-stored in :data:`water`.
@@ -314,8 +320,8 @@ chargeUnit_factor = {
     'C': constants['elementary_charge'], 'As': constants['elementary_charge'],
 }
 
-#: :data:`conversion_factor` is used by :func:`get_conversion_factor`:
-#: Note: any observable with a unit (i.e. one with an entry in
+#: :data:`conversion_factor` is used by :func:`get_conversion_factor`
+#: NOTE: any observable with a unit (i.e. one with an entry in
 #: the :attr:`unit` attribute) needs an entry in :data:`conversion_factor`
 conversion_factor = {
     'length': lengthUnit_factor,
@@ -342,9 +348,9 @@ def get_conversion_factor(unit_type, u1, u2):
 
     f[u1 -> u2] = factor[u2]/factor[u1]
 
-    Conversion of X (in u1) to X' (in u2):
+    Conversion of :math:`X` (in u1) to :math:`X'` (in u2):
 
-        X' = conversion_factor * X
+       :math:`X'` = conversion_factor * :math:`X`
     """
     # x is in u1: from u1 to b:  x'  = x  / factor[u1]
     #             from b  to u2: x'' = x' * factor[u2]

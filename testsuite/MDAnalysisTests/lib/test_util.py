@@ -28,6 +28,7 @@ import re
 import textwrap
 from unittest.mock import Mock, patch
 import sys
+import copy
 
 import numpy as np
 from numpy.testing import (assert_equal, assert_almost_equal,
@@ -39,12 +40,11 @@ import MDAnalysis as mda
 import MDAnalysis.lib.util as util
 import MDAnalysis.lib.mdamath as mdamath
 from MDAnalysis.lib.util import (cached, static_variables, warn_if_not_unique,
-                                 check_coords)
+                                 check_coords, store_init_arguments,)
 from MDAnalysis.core.topologyattrs import Bonds
 from MDAnalysis.exceptions import NoDataError, DuplicateWarning
-
-
-from MDAnalysisTests.datafiles import (
+from MDAnalysis.core.groups import AtomGroup
+from MDAnalysisTests.datafiles import (PSF, DCD,
     Make_Whole, TPR, GRO, fullerene, two_water_gro,
 )
 
@@ -1737,6 +1737,59 @@ class TestCheckCoords(object):
         with pytest.raises(ValueError):
             res = func(a_in, b_in2)
 
+    @pytest.fixture()
+    def atomgroup(self):
+        u = mda.Universe(PSF, DCD)
+        return u.atoms
+
+    # check atomgroup handling with every option except allow_atomgroup
+    @pytest.mark.parametrize('enforce_copy', [True, False])
+    @pytest.mark.parametrize('enforce_dtype', [True, False])
+    @pytest.mark.parametrize('allow_single', [True, False])
+    @pytest.mark.parametrize('convert_single', [True, False])
+    @pytest.mark.parametrize('reduce_result_if_single', [True, False])
+    @pytest.mark.parametrize('check_lengths_match', [True, False])
+    def test_atomgroup(self, atomgroup, enforce_copy, enforce_dtype,
+                       allow_single, convert_single, reduce_result_if_single,
+                       check_lengths_match):
+        ag1 = atomgroup
+        ag2 = atomgroup
+
+        @check_coords('ag1', 'ag2', enforce_copy=enforce_copy,
+                      enforce_dtype=enforce_dtype, allow_single=allow_single,
+                      convert_single=convert_single,
+                      reduce_result_if_single=reduce_result_if_single,
+                      check_lengths_match=check_lengths_match,
+                      allow_atomgroup=True)
+        def func(ag1, ag2):
+            assert_allclose(ag1, ag2)
+            assert isinstance(ag1, np.ndarray)
+            assert isinstance(ag2, np.ndarray)
+            assert ag1.dtype == ag2.dtype == np.float32
+            return ag1 + ag2
+
+        res = func(ag1, ag2)
+
+        assert_allclose(res, atomgroup.positions*2)
+
+    def test_atomgroup_not_allowed(self, atomgroup):
+
+        @check_coords('ag1', allow_atomgroup=False)
+        def func(ag1):
+            return ag1
+
+        with pytest.raises(TypeError, match="allow_atomgroup is False"):
+            _ = func(atomgroup)
+
+    def test_atomgroup_not_allowed_default(self, atomgroup):
+
+        @check_coords('ag1')
+        def func_default(ag1):
+            return ag1
+
+        with pytest.raises(TypeError, match="allow_atomgroup is False"):
+            _ = func_default(atomgroup)
+
     def test_enforce_copy(self):
 
         a_2d = np.ones((1, 3), dtype=np.float32)
@@ -1834,6 +1887,21 @@ class TestCheckCoords(object):
         # Assert arrays are just passed through:
         assert res_a is a_2d
         assert res_b is b_2d
+
+    def test_atomgroup_mismatched_lengths(self):
+        u = mda.Universe(PSF, DCD)
+        ag1 = u.select_atoms("index 0 to 10")
+        ag2 = u.atoms
+
+        @check_coords('ag1', 'ag2', check_lengths_match=True,
+                      allow_atomgroup=True)
+        def func(ag1, ag2):
+
+            return ag1, ag2
+
+        with pytest.raises(ValueError, match="must contain the same number of "
+                           "coordinates"):
+            _, _ = func(ag1, ag2)
 
     def test_invalid_input(self):
 
@@ -2106,3 +2174,58 @@ class TestCheckBox(object):
         with pytest.raises(ValueError):
             wrongbox = np.ones((3, 3), dtype=np.float32)
             boxtype, checked_box = util.check_box(wrongbox)
+
+
+class StoredClass:
+    """
+    A simple class that takes positional and keyword arguments of various types
+    """
+    @store_init_arguments
+    def __init__(self, a, b, /, *args, c="foo", d="bar", e="foobar", **kwargs):
+        self.a = a
+        self.b = b
+        self.c = c
+        self.d = d
+        self.e = e
+        self.args = args
+        self.kwargs = kwargs
+
+    def copy(self):
+        kwargs = copy.deepcopy(self._kwargs)
+        args = kwargs.pop('args', tuple())
+        new = self.__class__(kwargs.pop('a'), kwargs.pop('b'),
+                             *args, **kwargs)
+        return new
+
+
+class TestStoreInitArguments:
+    def test_store_arguments_default(self):
+        store = StoredClass('parsnips', ['roast'])
+        assert store.a == store._kwargs['a'] == 'parsnips'
+        assert store.b is store._kwargs['b'] == ['roast']
+        assert store._kwargs['c'] == 'foo'
+        assert store._kwargs['d'] == 'bar'
+        assert store._kwargs['e'] == 'foobar'
+        assert 'args' not in store._kwargs.keys()
+        assert 'kwargs' not in store._kwargs.keys()
+        assert store.args is ()
+
+        store2 = store.copy()
+        assert store2.__dict__ == store.__dict__
+        assert store2.__dict__["b"] is not store.__dict__["b"]
+
+    def test_store_arguments_withkwargs(self):
+        store = StoredClass('parsnips', 'roast', 'honey', 'glaze', c='richard',
+                            d='has', e='a', f='recipe', g='allegedly')
+        assert store.a == store._kwargs['a'] == "parsnips"
+        assert store.b == store._kwargs['b'] == "roast"
+        assert store.c == store._kwargs['c'] == "richard"
+        assert store.d == store._kwargs['d'] == "has"
+        assert store.e == store._kwargs['e'] == "a"
+        assert store.kwargs['f'] == store._kwargs['f'] == "recipe"
+        assert store.kwargs['g'] == store._kwargs['g'] == "allegedly"
+        assert store.args[0] == store._kwargs['args'][0] == "honey"
+        assert store.args[1] == store._kwargs['args'][1] == "glaze"
+
+        store2 = store.copy()
+        assert store2.__dict__ == store.__dict__
