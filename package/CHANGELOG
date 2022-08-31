@@ -18,7 +18,6 @@ The rules for this file:
  * 2.4.0
 
 Fixes
-
   * Upgrade to chemfiles 0.10.3 (Issue #3798)
 
 Enhancements
