@@ -32,7 +32,7 @@ of a protein and the radius of gyration of the backbone atoms are calculated::
     cterm = u.select_atoms('segid 4AKE and name C')[-1]  # ... takes the last atom named 'C'
     bb = u.select_atoms('protein and backbone')  # a selection (a AtomGroup)
     for ts in u.trajectory:  # iterate through all frames
-        r = cterm.pos - nterm.pos  # end-to-end vector from atom positions
+        r = cterm.position - nterm.position  # end-to-end vector from atom positions
         d = numpy.linalg.norm(r)   # end-to-end distance
         rgyr = bb.radius_of_gyration()  # method of a AtomGroup; updates with each frame
         print(f"frame = {ts.frame}: d = {d} Angstroem, Rgyr = {rgyr} Angstroem")
