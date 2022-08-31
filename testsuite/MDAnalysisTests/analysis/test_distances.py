@@ -224,28 +224,15 @@ class TestBetween(object):
         ).indices
         assert_equal(actual, expected)
 
-    distance = 5.9
-
-    def test_between_return_type_not_empty(self, group, ag, ag2):
+    @pytest.mark.parametrize('dists', [5.9, 0.0])
+    def test_between_return_type(self, dists, group, ag, ag2):
         '''Test MDAnalysis.analysis.distances.between() for
         returned type when returned group is not empty.'''
         actual = MDAnalysis.analysis.distances.between(
             group,
             ag,
             ag2,
-            self.distance
+            dists
         )
         assert(isinstance(actual, MDAnalysis.core.groups.AtomGroup))
 
-    distance = 1.0
-
-    def test_between_return_type_empty(self, group, ag, ag2):
-        '''Test MDAnalysis.analysis.distances.between() for
-        returned type when returned group is empty.'''
-        actual = MDAnalysis.analysis.distances.between(
-            group,
-            ag,
-            ag2,
-            self.distance
-        )
-        assert(isinstance(actual, MDAnalysis.core.groups.AtomGroup))
