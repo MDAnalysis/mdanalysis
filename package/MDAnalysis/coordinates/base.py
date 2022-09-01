@@ -981,6 +981,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             natoms=self.n_atoms
         ))
 
+# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def add_auxiliary(self,
                       aux_spec: Union[str, Dict[str, str]] = None,
                       auxdata: Union[str, AuxReader] = None,
