@@ -420,11 +420,10 @@ def assert_auxstep_equal(A, B):
     if A.time != B.time:
         raise AssertionError('A and B have different times: A.time = {}, '
                              'B.time = {}'.format(A.time, B.time))
-    try:
-        if A.data != B.data:
-            raise AssertionError('A and B have different data: A.data = {}, '
-                                 'B.data = {}'.format(A.data, B.data))
-    except ValueError:
+    if isinstance(A.data, dict):
+        for term in A.data:
+            assert_almost_equal(A.data[term], B.data[term])
+    else:
         if any(A.data != B.data):
             # e.g. XVGReader
             raise AssertionError('A and B have different data: A.data = {}, '

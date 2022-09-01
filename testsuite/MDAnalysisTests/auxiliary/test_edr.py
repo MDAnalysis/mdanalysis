@@ -29,6 +29,7 @@ import pickle
 from pathlib import Path
 
 import MDAnalysis as mda
+from MDAnalysis import units
 
 from MDAnalysisTests.datafiles import (AUX_EDR,
                                        AUX_EDR_TPR,
@@ -39,7 +40,7 @@ from MDAnalysisTests.auxiliary.base import (BaseAuxReaderTest,
                                             assert_auxstep_equal)
 
 
-def read_auxstep_data(step):
+def read_raw_data_file(step):
     """parses raw edr data (plain text) and returns dictionary with auxdata for
     step"""
     with open(AUX_EDR_RAW) as f:
@@ -47,10 +48,20 @@ def read_auxstep_data(step):
     n_entries = 52  # number of aux terms per step
     stepdata = rawdata[step * n_entries: (step + 1) * n_entries]
     aux_dict = {}
+    edr_units = {}
     for line in stepdata:
-        # .join() necessary for entries with multi-word keys
-        aux_dict[" ".join(line.split()[:-1])] = float(line.split()[-1])
-    return(aux_dict)
+        aux_dict[line.split(",")[0]] = float(line.split(",")[1])
+        edr_units[line.split(",")[0]] = line.split(",")[2].strip()
+    return aux_dict, edr_units
+
+
+def get_auxstep_data(step):
+    return read_raw_data_file(step)[0]
+
+
+def get_edr_unit_dict(step):
+    return read_raw_data_file(step)[1]
+
 
 # The EDRReader behaves differently from the XVGReader, creating dummy test
 # data similar to what is done for XVG is not possible. The EDRReference and
@@ -76,7 +87,7 @@ class EDRReference(BaseAuxReference):
             auxstep = mda.auxiliary.base.AuxStep(dt=self.dt,
                                                  initial_time=t_init)
             auxstep.step = i
-            auxstep._data = read_auxstep_data(i)
+            auxstep._data = get_auxstep_data(i)
             return auxstep
 
         self.auxsteps = [reference_auxstep(i) for i in range(self.n_steps)]
@@ -89,8 +100,8 @@ class EDRReference(BaseAuxReference):
         self.time_selector = "Time"
         self.select_time_ref = [step._data[self.time_selector]
                                 for step in self.auxsteps]
-        self.data_selector = None  # selects all data
-        self.select_data_ref = [step._data for step in self.auxsteps]
+        self.data_selector = "Bond"  # selects all data
+        self.select_data_ref = [step._data["Bond"] for step in self.auxsteps]
 
         # testing __getitem__ with slice and list. Should allow us to iterate
         # through the specified auxiliary steps...
@@ -151,6 +162,10 @@ class EDRReference(BaseAuxReference):
                                 3731.59179688, 3683.40942383])
 
 
+def same_units_as_reference(reader):
+    return reader.unit_dict == get_edr_unit_dict(0)
+
+
 class TestEDRReader(BaseAuxReaderTest):
     @staticmethod
     @pytest.fixture
@@ -167,13 +182,26 @@ class TestEDRReader(BaseAuxReaderTest):
     @staticmethod
     @pytest.fixture
     def reader(ref):
-        return ref.reader(
+        reader = ref.reader(
             ref.testdata,
             initial_time=ref.initial_time,
             dt=ref.dt, auxname=ref.name,
             time_selector="Time",
             data_selector=None
         )
+        ref_units = get_edr_unit_dict(0)
+        if reader.unit_dict != ref_units:
+            for term, ref_unit in ref_units.items():
+                data = reader.data_dict[term]
+                reader_unit = reader.unit_dict[term]
+                try:
+                    reader.data_dict[term] = units.convert(data,
+                                                           reader_unit,
+                                                           ref_unit)
+                except ValueError:
+                    continue  # some units not supported yet
+        reader.rewind()
+        return reader
 
     def test_time_non_constant_dt(self, reader):
         reader.constant_dt = False
@@ -264,13 +292,13 @@ class TestEDRReader(BaseAuxReaderTest):
     def test_add_all_terms_from_file(self, ref, ref_universe):
         ref_universe.trajectory.add_auxiliary(auxdata=ref.testdata)
         # adding "test" manually to match above addition of test term
-        ref_terms = ["test"] + [key for key in read_auxstep_data(0).keys()]
+        ref_terms = ["test"] + [key for key in get_auxstep_data(0).keys()]
         terms = [key for key in ref_universe.trajectory._auxs]
         assert ref_terms == terms
 
     def test_add_all_terms_from_reader(self, ref_universe, reader):
         ref_universe.trajectory.add_auxiliary(auxdata=reader)
-        ref_terms = ["test"] + [key for key in read_auxstep_data(0).keys()]
+        ref_terms = ["test"] + [key for key in get_auxstep_data(0).keys()]
         terms = [key for key in ref_universe.trajectory._auxs]
         assert ref_terms == terms
 
@@ -278,7 +306,7 @@ class TestEDRReader(BaseAuxReaderTest):
         ref_universe.trajectory.add_auxiliary({"bond": "Bond",
                                                "temp": "Temperature"},
                                               ref.testdata)
-        ref_dict = read_auxstep_data(0)
+        ref_dict = get_auxstep_data(0)
         assert ref_universe.trajectory.ts.aux.bond == ref_dict["Bond"]
         assert ref_universe.trajectory.ts.aux.temp == ref_dict["Temperature"]
 
@@ -287,7 +315,7 @@ class TestEDRReader(BaseAuxReaderTest):
         ref_universe.trajectory.add_auxiliary({"bond": "Bond",
                                                "temp": "Temperature"},
                                               reader)
-        ref_dict = read_auxstep_data(0)
+        ref_dict = get_auxstep_data(0)
         assert ref_universe.trajectory.ts.aux.bond == ref_dict["Bond"]
         assert ref_universe.trajectory.ts.aux.temp == ref_dict["Temperature"]
 
@@ -299,23 +327,23 @@ class TestEDRReader(BaseAuxReaderTest):
     def test_add_single_term_custom_name_from_file(self, ref, ref_universe):
         ref_universe.trajectory.add_auxiliary({"temp": "Temperature"},
                                               ref.testdata)
-        ref_dict = read_auxstep_data(0)
+        ref_dict = get_auxstep_data(0)
         assert ref_universe.trajectory.ts.aux.temp == ref_dict["Temperature"]
 
     def test_add_single_term_custom_name_from_reader(self, ref_universe,
                                                      reader):
         ref_universe.trajectory.add_auxiliary({"temp": "Temperature"}, reader)
-        ref_dict = read_auxstep_data(0)
+        ref_dict = get_auxstep_data(0)
         assert ref_universe.trajectory.ts.aux.temp == ref_dict["Temperature"]
 
     def test_terms_update_on_iter(self, ref_universe, reader):
         ref_universe.trajectory.add_auxiliary({"bond": "Bond",
                                                "temp": "Temperature"},
                                               reader)
-        ref_dict = read_auxstep_data(0)
+        ref_dict = get_auxstep_data(0)
         assert ref_universe.trajectory.ts.aux.bond == ref_dict["Bond"]
         assert ref_universe.trajectory.ts.aux.temp == ref_dict["Temperature"]
-        ref_dict = read_auxstep_data(1)
+        ref_dict = get_auxstep_data(1)
         ref_universe.trajectory.next()
         assert ref_universe.trajectory.ts.aux.bond == ref_dict["Bond"]
         assert ref_universe.trajectory.ts.aux.temp == ref_dict["Temperature"]
@@ -346,7 +374,7 @@ class TestEDRReader(BaseAuxReaderTest):
         returned = reader.get_data()
         returned_asterisk = reader.get_data()
         assert returned.keys() == returned_asterisk.keys()
-        ref_terms = [key for key in read_auxstep_data(0).keys()]
+        ref_terms = [key for key in get_auxstep_data(0).keys()]
         assert ref_terms == reader.terms
         assert_almost_equal(ref.bonds, returned["Bond"])
 
@@ -376,5 +404,14 @@ class TestEDRReader(BaseAuxReaderTest):
         for step_index, auxstep in enumerate(reader):
             assert_auxstep_equal(new_reader[step_index], auxstep)
 
+    def test_units_are_converted_by_EDRReader(self, reader):
+        original_units = get_edr_unit_dict(0)
+        reader_units = reader.unit_dict
+        # so far, lengths and speeds are converted
+        for term in ["Box-X", "Box-Vel-XX"]:
+            assert original_units[term] != reader_units[term]
 
-    
+    def test_warning_when_unknown_unit(self, ref_universe, reader):
+        with pytest.warns(UserWarning, match="Could not find"):
+            ref_universe.trajectory.add_auxiliary({"temp": "Temperature"},
+                                                  reader)

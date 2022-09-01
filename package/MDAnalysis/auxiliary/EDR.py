@@ -129,12 +129,14 @@ The actual data for each step is stored by instances of EDRStep.
 
 """
 from pathlib import Path
+import warnings
 from typing import Optional, Union, Dict, List
 
 import numpy as np
 import pyedr
 
 from . import base
+from .. import units
 
 
 class EDRStep(base.AuxStep):
@@ -202,6 +204,10 @@ class EDRReader(base.AuxReader):
     data_dict : dict
         dictionary that contains the auxiliary data, mapping the name of the
         data point to a NumPy array
+    unit_dict : dict
+        dictionary that contains the units of the auxiliary data, mapping the
+        :attr:`data_selector` of the Reader (i.e. the name of the dataset in
+        the EDR file) to its unit.
     _n_steps : int
         Number of steps for which auxdata is available
     terms : list
@@ -224,10 +230,34 @@ class EDRReader(base.AuxReader):
     def __init__(self, filename: str, **kwargs):
         self._auxdata = Path(filename).resolve()
         self.data_dict = pyedr.edr_to_dict(filename)
+        self.unit_dict = pyedr.get_unit_dictionary(filename)
+        self._convert_units()
         self._n_steps = len(self.data_dict["Time"])
         # attribute to communicate found energy terms to user
         self.terms = list(self.data_dict.keys())
         super(EDRReader, self).__init__(**kwargs)
+
+    def _convert_units(self):
+        """Called during :func:`__init__` to convert the units found in the EDR
+        file to MDAnalysis base units"""
+        for term, unit in self.unit_dict.items():
+            try:
+                unit_type = units.unit_types[unit]
+            except KeyError:
+                warnings.warn(f"Could not find unit type for unit '{unit}'.")
+                continue  # skip conversion if unit not defined yet
+
+            # add more base units as defined later
+            mda_base_units = {"length": "A",
+                              "time": "ps",
+                              "energy": "kJ/mol",
+                              "charge": "e",
+                              "force": "kJ/(mol*A)",
+                              "speed": "A/ps"}
+            target_unit = mda_base_units[unit_type]
+            data = self.data_dict[term]
+            self.data_dict[term] = units.convert(data, unit, target_unit)
+            self.unit_dict[term] = mda_base_units[unit_type]
 
     def _memory_usage(self):
         size = 0
