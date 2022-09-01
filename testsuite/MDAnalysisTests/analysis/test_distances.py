@@ -234,4 +234,4 @@ class TestBetween(object):
             ag2,
             dists
         )
-        assert(isinstance(actual, MDAnalysis.core.groups.AtomGroup))
+        assert isinstance(actual, MDAnalysis.core.groups.AtomGroup)
