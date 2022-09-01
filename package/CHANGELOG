@@ -13,9 +13,31 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli, miss77jun, rzhao271,
-         yuxuanzhuang, hsadia538, BFedder
 
+??/??/?? IAlibay, Luthaf, BFedder
+
+ * 2.4.0
+
+Fixes
+  * Upgrade to chemfiles 0.10.3 (Issue #3798)
+
+Enhancements
+  * A new AuxReader for the GROMACS EDR file format was implemented.
+    (Issue # 3629, PR # 3749)
+
+Changes
+ * `MDAnalysis.coordinates.base.add_auxiliary()` now supports adding of
+    multiple auxiliary data points at the same time. To this end, the API was
+    rewritten and now expects dictionaries of `desired attribute name`:
+    `name in auxiliary data file` as input. Adding all data found in the
+    auxiliary data source is possible by omitting the dictionary and explicitly
+    passing the AuxReader instance as `auxdata`. (PR #3749)
+
+Deprecations
+
+
+08/29/22 IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli, miss77jun, rzhao271,
+         yuxuanzhuang, hsadia538, lilyminium
  * 2.3.0
 
 Fixes
@@ -25,8 +47,6 @@ Fixes
   * Fix writing unusable PDB CONECT records with index>100000. (Issue #988)
 
 Enhancements
-  * A new AuxReader for the GROMACS EDR file format was implemented.
-    (Issue # 3629, PR # 3749)
   * Add a new `formalcharge` attribute for storing formal charges (PR #3755)
   * Add the ability to read & write formal charges from PDB files (PR #3755)
   * Change functions in `lib.distances` to accept AtomGroups as well as NumPy
@@ -40,12 +60,6 @@ Enhancements
   * Optimize topology serialization/construction by lazy-building _RA and _SR.
 
 Changes
-  * `MDAnalysis.coordinates.base.add_auxiliary()` now supports adding of
-    multiple auxiliary data points at the same time. To this end, the API was
-    rewritten and now expects dictionaries of `desired attribute name`:
-    `name in auxiliary data file` as input. Adding all data found in the
-    auxiliary data source is possible by omitting the dictionary and explicitly
-    passing the AuxReader instance as `auxdata`. (PR #3749)
   * To add additional optional packages for different file formats when
     using `pip` use the new "extra_formats" extras_require target as in
     `pip install ./package[extra_formats]` (Issue #3701, PR #3711)
