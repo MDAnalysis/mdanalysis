@@ -454,7 +454,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
             # giving explicit `aux_spec`s
             aux_spec = {kwargs["auxname"]: None}
 
-        elif aux_spec is None or aux_spec == "*":
+        elif aux_spec is None:
             # Add all terms found in the file if aux_spec is None
             aux_spec = {term: term for term in self.terms}
 
