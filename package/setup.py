@@ -603,6 +603,7 @@ if __name__ == '__main__':
           'packaging',
           'fasteners',
           'gsd>=1.9.3',
+          'pyedr'
     ]
 
     setup(name='MDAnalysis',
