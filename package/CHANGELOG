@@ -13,8 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-
-??/??/?? IAlibay, Luthaf, BFedder
+??/??/?? IAlibay, Luthaf, hmacdope, BFedder
 
  * 2.4.0
 
@@ -24,6 +23,8 @@ Fixes
 Enhancements
   * A new AuxReader for the GROMACS EDR file format was implemented.
     (Issue # 3629, PR # 3749)
+  * Added benchmarks for bonds topology attribute (Issue #3785, PR #3806)
+
 
 Changes
  * `MDAnalysis.coordinates.base.add_auxiliary()` now supports adding of
@@ -32,6 +33,8 @@ Changes
     `name in auxiliary data file` as input. Adding all data found in the
     auxiliary data source is possible by omitting the dictionary and explicitly
     passing the AuxReader instance as `auxdata`. (PR #3749)
+  * The "AMBER" entry in setup.py's extra_requires has now been removed. Please
+    use `pip install ./package[extra_formats]` instead (PR #3810)
 
 Deprecations
 
