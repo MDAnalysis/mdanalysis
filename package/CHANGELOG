@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, Luthaf
+??/??/?? IAlibay, Luthaf, hmacdope
 
  * 2.4.0
 
@@ -21,6 +21,8 @@ Fixes
   * Upgrade to chemfiles 0.10.3 (Issue #3798)
 
 Enhancements
+  * Added benchmarks for bonds topology attribute (Issue #3785, PR #3806)
+
 
 Changes
   * The "AMBER" entry in setup.py's extra_requires has now been removed. Please
