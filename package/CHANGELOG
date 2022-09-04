@@ -23,6 +23,8 @@ Fixes
 Enhancements
 
 Changes
+  * The "AMBER" entry in setup.py's extra_requires has now been removed. Please
+    use `pip install ./package[extra_formats]` instead (PR #3810)
 
 Deprecations
 
