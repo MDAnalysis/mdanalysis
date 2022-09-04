@@ -13,11 +13,12 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, hmacdope
+??/??/?? IAlibay, Luthaf, hmacdope
 
  * 2.4.0
 
 Fixes
+  * Upgrade to chemfiles 0.10.3 (Issue #3798)
 
 Enhancements
   * Added benchmarks for bonds topology attribute (Issue #3785, PR #3806)
@@ -124,7 +125,7 @@ Enhancements
   * Added equations for `center_of_mass` and `center_of_geometry`to
     documentation (PR #3671)
   * Added `center_of_charge` attribute (PR #3671)
-  * Added `frames` argument to AnalysisBase.run to allow analysis to run on 
+  * Added `frames` argument to AnalysisBase.run to allow analysis to run on
     arbitrary list of frames (Issue #1985)
   * LinearDensity now works with updating AtomGroups (Issue #2508, PR #3617)
   * Link PMDA in documentation (PR #3652)
