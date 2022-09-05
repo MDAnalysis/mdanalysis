@@ -226,8 +226,8 @@ class TestBetween(object):
 
     @pytest.mark.parametrize('dists', [5.9, 0.0])
     def test_between_return_type(self, dists, group, ag, ag2):
-        '''Test MDAnalysis.analysis.distances.between() for
-        returned type when returned group is not empty.'''
+        '''Test that MDAnalysis.analysis.distances.between() 
+        returns an AtomGroup even when the returned group is empty.'''
         actual = MDAnalysis.analysis.distances.between(
             group,
             ag,
