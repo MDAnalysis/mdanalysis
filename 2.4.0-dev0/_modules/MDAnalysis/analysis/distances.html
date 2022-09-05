@@ -291,9 +291,9 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ns_group</span> <span class="o">=</span> <span class="n">AtomNeighborSearch</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
-    <span class="n">resA</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ns_group</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">distance</span><span class="p">))</span>
-    <span class="n">resB</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ns_group</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">distance</span><span class="p">))</span>
-    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">resB</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">resA</span><span class="p">)))</span></div>
+    <span class="n">resA</span> <span class="o">=</span> <span class="n">ns_group</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">distance</span><span class="p">)</span>
+    <span class="n">resB</span> <span class="o">=</span> <span class="n">ns_group</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">distance</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">resB</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">resA</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
