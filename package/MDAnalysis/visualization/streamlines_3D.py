@@ -60,8 +60,14 @@ import scipy
 import scipy.spatial.distance
 
 import MDAnalysis
+from typing import Tuple, List, Dict, Sequence, Union, Type
 
-def determine_container_limits(topology_file_path, trajectory_file_path, buffer_value):
+
+def determine_container_limits(
+    topology_file_path: str,
+    trajectory_file_path: str,
+    buffer_value: float,
+) -> Tuple[float, ...]:
     """Calculate the extent of the atom coordinates + buffer.
 
     A function for the parent process which should take the input trajectory
@@ -93,7 +99,11 @@ def determine_container_limits(topology_file_path, trajectory_file_path, buffer_
     return tuple_of_limits
 
 
-def produce_grid(tuple_of_limits, grid_spacing):
+# typing: numpy
+def produce_grid(
+        tuple_of_limits: Tuple[int, int, int, int, int, int],
+        grid_spacing: float
+) -> np.ndarray:
     """Produce a 3D grid for the simulation system.
 
     The partitioning is based on the tuple of Cartesian Coordinate limits
@@ -117,7 +127,10 @@ def produce_grid(tuple_of_limits, grid_spacing):
     return grid
 
 
-def split_grid(grid, num_cores):
+# typing: numpy
+def split_grid(
+        grid: np.ndarray, num_cores: int
+) -> Tuple[List[Dict], int, int, Tuple]:
     """Split the grid into blocks of vertices.
 
     Take the overall `grid` for the system and split it into lists of cube
@@ -231,17 +244,28 @@ def split_grid(grid, num_cores):
     return list_dictionaries_for_cores, total_cubes, num_sheets, delta_array_shape
 
 
-def per_core_work(start_frame_coord_array, end_frame_coord_array, dictionary_cube_data_this_core, MDA_selection,
-                  start_frame, end_frame):
+def per_core_work(
+        start_frame_coord_array: Sequence[int],
+        end_frame_coord_array: Sequence[int],
+        dictionary_cube_data_this_core: Dict,
+        MDA_selection: str,
+        start_frame: int,
+        end_frame: int
+) -> Dict:
     """Run the analysis on one core.
 
     The code to perform on a given core given the dictionary of cube data.
     """
-    list_previous_frame_centroids = []
-    list_previous_frame_indices = []
+    list_previous_frame_centroids: List[int] = []
+    list_previous_frame_indices: List[int] = []
     # define some utility functions for trajectory iteration:
 
-    def point_in_cube(array_point_coordinates, list_cube_vertices, cube_centroid):
+    # typing: numpy
+    def point_in_cube(
+        array_point_coordinates: Sequence[float],
+        list_cube_vertices: Sequence[float],
+        cube_centroid: np.ndarray,
+    ) -> np.ndarray:
         """Determine if an array of coordinates are within a cube."""
         #the simulation particle point can't be more than half the cube side length away from the cube centroid in
         # any given dimension:
@@ -315,8 +339,11 @@ def per_core_work(start_frame_coord_array, end_frame_coord_array, dictionary_cub
     return dictionary_cube_data_this_core
 
 
-def produce_coordinate_arrays_single_process(topology_file_path, trajectory_file_path, MDA_selection, start_frame,
-                                             end_frame):
+def produce_coordinate_arrays_single_process(
+        topology_file_path: str, trajectory_file_path: str,
+        MDA_selection: str,
+        start_frame: int, end_frame: int,
+) -> Tuple[np.ndarray, np.ndarray]:
     """Generate coordinate arrays.
 
     To reduce memory footprint produce only a single MDA selection and get
@@ -340,9 +367,16 @@ def produce_coordinate_arrays_single_process(topology_file_path, trajectory_file
     return (start_frame_relevant_particle_coordinate_array_xyz, end_frame_relevant_particle_coordinate_array_xyz)
 
 
-def generate_streamlines_3d(topology_file_path, trajectory_file_path, grid_spacing, MDA_selection, start_frame,
-                            end_frame, xmin, xmax, ymin, ymax, zmin, zmax, maximum_delta_magnitude=2.0,
-                            num_cores='maximum'):
+def generate_streamlines_3d(
+        topology_file_path: str, trajectory_file_path: str,
+        grid_spacing: float, MDA_selection: str,
+        start_frame: int, end_frame: int,
+        xmin: float, xmax: float,
+        ymin: float, ymax: float,
+        zmin: float, zmax: float,
+        maximum_delta_magnitude: float = 2.0,
+        num_cores: Union[int, str] = 'maximum'
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     r"""Produce the x, y and z components of a 3D streamplot data set.
 
     Parameters
