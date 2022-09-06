@@ -537,13 +537,13 @@
             <span class="n">n_residues</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">n_segments</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="k">if</span> <span class="n">atom_resindex</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">atom_resindex</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">n_residues</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                 <span class="s1">&#39;Residues specified but no atom_resindex given.  &#39;</span>
                 <span class="s1">&#39;All atoms will be placed in first Residue.&#39;</span><span class="p">,</span>
                 <span class="ne">UserWarning</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">residue_segindex</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">residue_segindex</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">n_segments</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                 <span class="s1">&#39;Segments specified but no segment_resindex given.  &#39;</span>
                 <span class="s1">&#39;All residues will be placed in first Segment&#39;</span><span class="p">,</span>
