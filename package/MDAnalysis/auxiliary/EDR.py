@@ -24,7 +24,10 @@
 """
 EDR auxiliary reader --- :mod:`MDAnalysis.auxiliary.EDR`
 ========================================================
-.. versionadded:: 2.3.0
+.. versionadded:: 2.4.0
+
+Background
+----------
 
 EDR_ files are binary files following the XDR_ protocol. They are written by
 GROMACS during simulations and contain time-series non-trajectory data on the
@@ -36,19 +39,84 @@ auxiliary reader to parse EDR files. As such, a dictionary with string keys and
 numpy array values is loaded into the :class:`EDRReader`. It is basically a
 Python-based version of the C++ code in GROMACS_.
 
-The EDR auxiliary reader takes the output from pyedr and loads the energy data
-as auxiliary data into :class:`MDAnalysis.core.universe.Universe`. Standalone
-usage is also possible, where the energy terms are extracted without
-associating them with the trajectory, for example, to allow easy plotting of
-the energy terms.
+The EDR auxiliary reader takes the output from pyedr and makes this data
+available within MDAnalysis. The usual workflow starts with creating an
+EDRReader and passing it the file to read as such::
 
-For adding EDR data, 2-3 arguments need to be provided to
-:func:`MDAnalysis.coordinates.base.add_auxiliary`: `auxname`, `data_dict`, and
-(optionally) `auxterm`. `auxterm`s, if provided need to exactly match the names
-of EDR terms to be added. When an auxterm is provided, `auxname` can be freely
-chosen. If an `auxterm` is not provided, `auxname` must instead exactly match
-EDR terms. `data_dict` can be either the path to an EDR file, or an instance of
-:class:`MDAnalysis.auxiliary.EDR.EDRReader`.
+    import MDAnalysis as mda
+    aux = mda.auxiliary.EDR.EDRReader(some_edr_file)
+
+The newly created `aux` object contains all the data found in the EDR file. It
+is stored in the :attr:`.data_dict` dictionary, which maps the names GROMACS
+gave each data entry to a NumPy array that holds the relevant data. These
+GROMACS-given names are stored in and available through the :attr:`.terms`
+attribute. In addition to the numeric data, the new `EDRReader` also stores the
+units of each entry in the :attr:`.data_dict` dictionary in its
+:attr:`.unit_dict` dictionary.
+
+.. warning::
+    Units are converted to `MDAnalysis base units`_ automatically unless
+    otherwise specified. However, not all unit types have a defined base unit
+    in MDAnalysis. (cf. :data:`MDAnalysis.units.MDANALYSIS_BASE_UNITS`).
+    Pressure units, for example, are not currently defined, and
+    will not be converted. This might cause inconsistencies between units!
+    Conversion can be switched off by passing `convert_units=False` when the
+    EDRReader is created::
+
+        aux = mda.auxiliary.EDR.EDRReader(some_edr_file, convert_units=False)
+
+
+Standalone Usage of the EDRReader
+---------------------------------
+
+The :class:`.EDRReader` can be used to access the data stored in EDR files on
+its own, without association of data to trajectory frames.
+This is useful, for example, for plotting. The data for a single term, a list
+of terms, or for all terms can be returned in dictionary form. "Time" is always
+returned in this dictionary to make plotting easier::
+
+
+    temp = aux.get_data("Temperature")
+    plt.plot(temp["Time"], temp["Temperature"])
+
+    some_terms = aux.get_data(["Potential", "Kinetic En.", "Box-X"])
+    plt.plot(some_terms["Time"], some_terms["Potential"])
+
+    all_terms = aux.get_data()
+    plt.plot(all_terms["Time"], all_terms["Pressure"])
+
+Adding EDR data to trajectories
+-------------------------------
+
+Like other AuxReaders, the :class:`.EDRReader` can attach its data to a
+trajectory by associating it to the appropriate time steps.
+In general, to add EDR data to a trajectory, one needs to provide two
+arguments.
+
+.. note::
+    The following will change with the release of MDAnalysis 3.0, which is
+    scheduled for September 2023. From then on, the order of these two
+    arguments will be reversed.
+
+The first argument is the `aux_spec` dictionary. With it, users specify which
+entries from the EDR file they want to add, and they give it a more convenient
+name to be used in MDAnalysis (because GROMACS creates names like
+"#Surf*SurfTen" or "'Constr. rmsd'" which may be inconvenient to use.)
+This dictionary might look like this::
+
+    aux_spec = {"epot": "Potential",
+                "surf_tension": "#Surf*SurfTen"}
+
+When provided as shown below, this would direct the :class:`.EDRReader` to take
+the data it finds under the "Potential" key in its :attr:`.data_dict`
+dictionary and attach it to the trajectory time steps under
+`u.trajectory.ts.aux.epot` (and the same for the surface tension).
+
+
+The second argument needed is the source of the EDR data itself. Here, either
+the path to the EDR file or a previously created :class:`.EDRReader` object
+can be provided.
+
 
 Examples::
 
@@ -56,60 +124,43 @@ Examples::
     from MDAnalysisTests.datafiles import AUX_EDR, AUX_EDR_TPR, AUX_EDR_XTC
     import matplotlib.pyplot as plt
 
-The EDRReader can be used to add auxiliary data from EDR files to
-trajectories::
+A :class:`Universe` and an :class:`.EDRReader` object are created and the data
+available in the EDR file is printed::
 
-    # Create a Universe
     In [1]: u = mda.Universe(AUX_EDR_TPR, AUX_EDR_XTC)
-    # Open the EDR file with an EDRReader
     In [2]: aux = mda.auxiliary.EDR.EDRReader(AUX_EDR)
-    # See which terms are present in the file
     In [3]: aux.terms
     Out[3]: ['Time', 'Bond', 'Angle', ...]
-    # add data on potential and angles under the names epot and angle
+
+Data is associated with the trajectory, using an `aux_spec` dictionary to
+specify which data to add under which name. Any number of terms can be added
+using this method. The data is then accessible in the `ts.aux` namespace via
+both attribute and dictionary syntax::
+
     In [4]: u.trajectory.add_auxiliary({"epot": "Potential",
                                         "angle": "Angle"}, aux)
-    # access the value of Potential and Angle for a timestep
     In [5]: u.trajectory.ts.aux.epot
     Out[5]: -525164.0625
     In [6]: u.trajectory.ts.aux.Angle
     Out[6]: 3764.52734375
-    # dictionary style accession also works
     In [7]: u.trajectory.ts.aux["epot"]
     Out[7]: -525164.0625
 
 
 .. note::
-    Some auxiliary data names have spaces. Unless an attribute name without a
-    space is provided, these terms will not be accessible via the attribute
-    syntax. Only the dictionary syntax will work in that case.
+    Some GROMACS-provided :attr:`terms` have spaces. Unless an attribute name
+    without a space is provided, these terms will not be accessible via the
+    attribute syntax. Only the dictionary syntax will work in that case.
 
 
-Adding multiple or all terms at the same time is possible as such::
+Further, it is possible to add all data from the EDR file to the trajectory. To
+do this, the `aux_spec` dictionary is omitted, and the data source (the second
+argument as explained above) is provided explicitly as `auxdata`. When adding
+data this way, the terms in :attr:`.terms` become the names used in `ts.aux`::
 
-    # add list of values
-    u.trajectory.add_auxiliary(["Bond", "Angle"], aux)
-    # add list of values, provide an `auxterm`
-    u.trajectory.add_auxiliary(["epot", "ekin"], aux, ["Potential",
-                                                       "Kinetic En."]
-    # add all values
-    u.trajectory.add_auxiliary("*", aux)
-
-
-The :class:`EDRReader` can also provide the data independently of trajectories.
-This is useful, for example, for plotting. The data for all terms, a list of
-terms, or a single term can be returned in dictionary form. "Time" is always
-returned in this dictionary to make plotting easier::
-
-    # extract temperature data from EDR file
-    temp = aux.get_data("Temperature")
-    plt.plot(temp["Time"], temp["Temperature"])
-
-    # extract list of terms:
-    some_terms = aux.get_data(["Potential", "Kinetic En.", "Box-X"])
-
-    # extract all terms:
-    all_terms = aux.get_data()
+    In [7]: u.trajectory.add_auxiliary(auxdata=aux)
+    In [8]: u.trajectory.ts.aux["#Surf*SurfTen"]
+    Out[8]: -1857.519287109375
 
 
 .. _EDR: https://manual.gromacs.org/current/reference-manual/file-formats.html#edr
@@ -118,6 +169,9 @@ returned in this dictionary to make plotting easier::
 .. _GROMACS: https://github.com/gromacs/gromacs/blob/main/src/gromacs/fileio/enxio.cpp
 .. _MDAnalysis base units: https://docs.mdanalysis.org/2.3.0/documentation_pages/units.html
 
+
+Classes
+-------
 
 .. autoclass:: EDRReader
    :members:
@@ -161,7 +215,7 @@ class EDRStep(base.AuxStep):
 
     See Also
     --------
-    :class:`~MDAnalysis.auxiliary.base.AuxStep`
+    :class:`MDAnalysis.auxiliary.base.AuxStep`
     """
 
     def __init__(self, time_selector: str = "Time",
@@ -189,6 +243,10 @@ class EDRStep(base.AuxStep):
 class EDRReader(base.AuxReader):
     """ Auxiliary reader to read data from an .edr file.
 
+    EDR files (https://manual.gromacs.org/current/reference-manual/file-formats.html#edr)
+    are created by GROMACS during a simulation. They are binary files which
+    contain time-series energy data and other data related to the simulation.
+
     Default reader for .edr files. All data from the file will be read and
     stored on initialisation.
 
@@ -200,7 +258,8 @@ class EDRReader(base.AuxReader):
         If True (default), units from the EDR file are automatically converted
         to MDAnalysis base units. If False, units are taken from the file
         as-is. Where no base unit is defined in MDAnalysis, no conversion takes
-        place.
+        place. Unit types in :data:`MDAnalysis.units.MDANALYSIS_BASE_UNITS`
+        will be converted automatically by default.
     **kwargs
        Other AuxReader options.
 
@@ -209,8 +268,8 @@ class EDRReader(base.AuxReader):
     _auxdata : pathlib.PosixPath
         path at which the auxiliary data file is located
     data_dict : dict
-        dictionary that contains the auxiliary data, mapping the name of the
-        data point to a NumPy array
+        dictionary that contains the auxiliary data, mapping the names GROMACS
+        gave the entries in the EDR file to a NumPy array containing this data
     unit_dict : dict
         dictionary that contains the units of the auxiliary data, mapping the
         :attr:`data_selector` of the Reader (i.e. the name of the dataset in
@@ -218,12 +277,13 @@ class EDRReader(base.AuxReader):
     _n_steps : int
         Number of steps for which auxdata is available
     terms : list
-        Names of the auxiliary data entries available in `data_dict`
+        Names of the auxiliary data entries available in `data_dict`. These are
+        the names GROMACS set in the EDR file.
 
     See Also
     --------
-    :class:`~MDAnalysis.auxiliary.base.AuxReader`
-    :func:`~MDAnalysis.coordinates.base.add_auxiliary`
+    :class:`MDAnalysis.auxiliary.base.AuxReader`
+    :meth:`MDAnalysis.coordinates.base.ReaderBase.add_auxiliary`
 
     Note
     ----
@@ -256,17 +316,10 @@ class EDRReader(base.AuxReader):
                 warnings.warn(f"Could not find unit type for unit '{unit}'.")
                 continue  # skip conversion if unit not defined yet
 
-            # add more base units as defined later
-            mda_base_units = {"length": "A",
-                              "time": "ps",
-                              "energy": "kJ/mol",
-                              "charge": "e",
-                              "force": "kJ/(mol*A)",
-                              "speed": "A/ps"}
-            target_unit = mda_base_units[unit_type]
+            target_unit = units.MDANALYSIS_BASE_UNITS[unit_type]
             data = self.data_dict[term]
             self.data_dict[term] = units.convert(data, unit, target_unit)
-            self.unit_dict[term] = mda_base_units[unit_type]
+            self.unit_dict[term] = units.MDANALYSIS_BASE_UNITS[unit_type]
 
     def _memory_usage(self):
         size = 0
@@ -341,13 +394,14 @@ class EDRReader(base.AuxReader):
 
         Parameters
         ----------
-        data_selector: str, List[str]
+        data_selector: str, List[str], None
             Keys to be extracted from the auxiliary reader's data dictionary.
-
+            If None, returns all data found in :attr:`.data_dict`.
         Returns
         -------
-        Dictionary mapping `data_selector` keys to NumPy arrays of the
-        auxiliary data.
+        data_dict : dict
+            Dictionary mapping `data_selector` keys to NumPy arrays of the
+            auxiliary data.
 
         Raises
         ------

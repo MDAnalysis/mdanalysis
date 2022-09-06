@@ -144,6 +144,7 @@ Data
 .. autodata:: chargeUnit_factor
 .. autodata:: conversion_factor
 .. autodata:: unit_types
+.. autodata:: MDANALYSIS_BASE_UNITS
 
 
 References and footnotes
@@ -341,6 +342,14 @@ for utype, ufactor in conversion_factor.items():
     for unit in ufactor.keys():
         assert not unit in unit_types  # see comment!
         unit_types[unit] = utype
+
+#: Lookup table for base units in MDAnalysis by unit type.
+MDANALYSIS_BASE_UNITS = {"length": "A",
+                         "time": "ps",
+                         "energy": "kJ/mol",
+                         "charge": "e",
+                         "force": "kJ/(mol*A)",
+                         "speed": "A/ps"}
 
 
 def get_conversion_factor(unit_type, u1, u2):

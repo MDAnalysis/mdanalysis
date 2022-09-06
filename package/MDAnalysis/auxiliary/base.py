@@ -437,17 +437,43 @@ class AuxReader(metaclass=_AuxReaderMeta):
 
     def attach_auxiliary(self,
                          coord_parent,
-                         aux_spec: Union[str, Dict[str, str]],
+                         aux_spec: Optional[Union[str, Dict[str, str]]] = None,
                          format: Optional[str] = None,
                          **kwargs) -> None:
-        """ This method is called from within
-            :func:`MDAnalysis.coordinates.base.add_auxiliary()`.
-            `add_auxiliary` should be agnostic to the type of AuxReader, so the
-            method call leads here instead. First, some checks are done on
-            the arguments to make sure the input is treated properly. Then, 
-            the AuxReader(s) with appropriate :attr:`data_selector` are
-            associated with the `coord_parent` from which `add_auxiliary` was
-            called. """
+        """Attaches the data specified in `aux_spec` to the `coord_parent`
+
+        This method is called from within
+        :meth:`MDAnalysis.coordinates.base.ReaderBase.add_auxiliary()`.
+        `add_auxiliary` should be agnostic to the type of AuxReader, so the
+        method call leads here instead. First, some checks are done on
+        the arguments to make sure the input is treated properly. Then,
+        the AuxReader(s) with appropriate :attr:`data_selector` are
+        associated with the `coord_parent` from which `add_auxiliary` was
+        called.
+
+        Parameters
+        ----------
+        coord_parent : MDAnalysis.coordinates.base.ReaderBase
+            Reader object to which to attach the auxiliary data.
+
+        aux_spec : str, Dict[str, str], None
+            Specifies which data to add to `coord_parent`. String types are
+            for :class:`MDAnalysis.auxiliary.XVG.XVGReader` only. Dictionaries
+            are the standard way of providing `aux_spec` information (see also:
+            :mod:`MDAnalysis.auxiliary.EDR`).
+            Passing `None` causes all data to be added.
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        ValueError
+            If trying to add data under an `aux_spec` key that is already
+            assigned.
+
+        """
         if "auxname" in kwargs:
             # This check is necessary for the tests in coordinates/base
             # `test_reload_auxiliaries_from_description`
@@ -487,10 +513,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
 
         aux_memory_usage = 0
         # Check if testing, which needs lower memory limit
-        if "memory_limit" in kwargs:
-            memory_limit = kwargs["memory_limit"]
-        else:
-            memory_limit = 1e+09
+        memory_limit = kwargs.get("memory_limit", 1e+09)
         for reader in coord_parent._auxs.values():
             aux_memory_usage += reader._memory_usage()
         if aux_memory_usage > memory_limit:
@@ -498,7 +521,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
             warnings.warn("AuxReader: memory usage warning! "
                           f"Auxiliary data takes up {aux_memory_usage/conv} "
                           f"GB of memory (Warning limit: {memory_limit/conv} "
-                          "GB).")
+                          "GB).", ResourceWarning)
 
     def _memory_usage(self):
         raise NotImplementedError("BUG: Override _memory_usage() "

@@ -1011,8 +1011,18 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             u = MDAnalysis.Universe(PDB, XTC)
             u.trajectory.add_auxiliary('pull', 'pull-force.xvg')
 
+        The representative value for the current timestep may then be accessed
+        as ``u.trajectory.ts.aux.pull`` or ``u.trajectory.ts.aux['pull']``.
 
-        In the more general case (for example for energy readers),
+
+        The following applies to energy readers like the
+        :class:`~MDAnalysis.auxiliary.EDR.EDRReader`.
+
+        All data that is present in the (energy) file can be added by omitting
+        `aux_spec` like so::
+
+            u.trajectory.add_auxiliary(auxdata="ener.edr")
+
         *aux_spec* is expected to be a dictionary that maps the desired
         attribute name in the ``ts.aux`` namespace to the precise data to be
         added as identified by a :attr:`data_selector`::
@@ -1020,16 +1030,13 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             term_dict = {"temp": "Temperature", "epot": "Potential"}
             u.trajectory.add_auxiliary(term_dict, "ener.edr")
 
+        Adding this data can be useful, for example, to filter trajectory
+        frames based on non-coordinate data like the potential energy of each
+        time step. Trajectory slicing allows working on a subset of frames::
 
-        All data that is present in the (energy) file can be added when the
-        `aux_spec` is omitted. `auxdata` then needs to be passed explicitly
-        like so::
+            selected_frames = np.array([ts.frame for ts in u.trajectory if ts.aux.epot < some_threshold])
+            subset = u.trajectory[selected_frames]
 
-            u.trajectory.add_auxiliary(auxdata="ener.edr")
-
-
-        The representative value for the current timestep may then be accessed
-        as ``u.trajectory.ts.aux.pull`` or ``u.trajectory.ts.aux['pull']``.
 
         See Also
         --------
@@ -1041,7 +1048,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         the :ref:`Auxiliary API`.
         """
         if auxdata is None:
-            raise AttributeError("No input `auxdata` specified, but it needs "
+            raise ValueError("No input `auxdata` specified, but it needs "
                                  "to be provided.")
         if type(auxdata) not in list(_AUXREADERS.values()):
             # i.e. if auxdata is a file, not an instance of an AuxReader

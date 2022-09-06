@@ -53,7 +53,9 @@ Currently supported formats:
    |                         |        |           | :class:`.XVGReader` is the default    |
    |                         |        |           | reader for .xvg files.                |
    +-------------------------+--------+-----------+---------------------------------------+
-
+   | :class:`.EDRReader`     | EDR    | edr       | Produced by Gromacs during simulation.|
+   |                         |        |           | Reads full file on initialisation     |
+   +-------------------------+--------+-----------+---------------------------------------+
 
 .. _Auxiliary API:
 

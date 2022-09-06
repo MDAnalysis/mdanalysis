@@ -400,9 +400,9 @@ class TestEDRReader(BaseAuxReaderTest):
 
 # TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def test_warn_too_much_memory_usage(self, ref_universe, reader):
-        with pytest.warns(UserWarning, match="AuxReader: memory usage warning!"
-                          " Auxiliary data takes up 3.328e-06 GB of memory "
-                          r"\(Warning limit: 1e-08 GB\)"):
+        with pytest.warns(ResourceWarning, match="AuxReader: memory usage "
+                          "warning! Auxiliary data takes up 3.328e-06 GB of "
+                          r"memory \(Warning limit: 1e-08 GB\)"):
             ref_universe.trajectory.add_auxiliary({"temp": "Temperature"},
                                                   reader,
                                                   memory_limit=10)
