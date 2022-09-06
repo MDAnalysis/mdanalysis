@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap
+??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud
 
  * 2.4.0
 
@@ -28,6 +28,7 @@ Enhancements
 Changes
   * The "AMBER" entry in setup.py's extra_requires has now been removed. Please
     use `pip install ./package[extra_formats]` instead (PR #3810)
+  * `Universe.empty` emmits less warnings (PR #3814)
 
 Deprecations
 
