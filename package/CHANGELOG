@@ -13,11 +13,13 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, Luthaf, hmacdope, BFedder
+
+??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, BFedder
 
  * 2.4.0
 
 Fixes
+  * Fixes distances.between not always returning AtomGroup (Issue #3794)
   * Upgrade to chemfiles 0.10.3 (Issue #3798)
 
 Enhancements
@@ -35,6 +37,7 @@ Changes
     passing the AuxReader instance as `auxdata`. (PR #3749)
   * The "AMBER" entry in setup.py's extra_requires has now been removed. Please
     use `pip install ./package[extra_formats]` instead (PR #3810)
+  * `Universe.empty` emmits less warnings (PR #3814)
 
 Deprecations
 
