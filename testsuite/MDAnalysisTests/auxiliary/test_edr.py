@@ -84,7 +84,7 @@ class EDRReference(BaseAuxReference):
         def reference_auxstep(i):
             # create a reference AuxStep for step i
             t_init = self.initial_time
-            auxstep = mda.auxiliary.base.AuxStep(dt=self.dt,
+            auxstep = mda.auxiliary.EDR.EDRStep(dt=self.dt,
                                                  initial_time=t_init)
             auxstep.step = i
             auxstep._data = get_auxstep_data(i)

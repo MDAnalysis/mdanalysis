@@ -309,17 +309,22 @@ class EDRReader(base.AuxReader):
     def _convert_units(self):
         """Called during :func:`__init__` to convert the units found in the EDR
         file to MDAnalysis base units"""
+        unknown_units = []
         for term, unit in self.unit_dict.items():
             try:
                 unit_type = units.unit_types[unit]
             except KeyError:
-                warnings.warn(f"Could not find unit type for unit '{unit}'.")
+                if unit not in unknown_units:
+                    unknown_units.append(unit)
                 continue  # skip conversion if unit not defined yet
 
             target_unit = units.MDANALYSIS_BASE_UNITS[unit_type]
             data = self.data_dict[term]
             self.data_dict[term] = units.convert(data, unit, target_unit)
             self.unit_dict[term] = units.MDANALYSIS_BASE_UNITS[unit_type]
+        if unknown_units:
+            warnings.warn("Could not find unit type for the following "
+                          f"units: {unknown_units}")
 
     def _memory_usage(self):
         size = 0
