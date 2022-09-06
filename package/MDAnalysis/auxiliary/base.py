@@ -521,7 +521,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
             warnings.warn("AuxReader: memory usage warning! "
                           f"Auxiliary data takes up {aux_memory_usage/conv} "
                           f"GB of memory (Warning limit: {memory_limit/conv} "
-                          "GB).", ResourceWarning)
+                          "GB).")
 
     def _memory_usage(self):
         raise NotImplementedError("BUG: Override _memory_usage() "
