@@ -116,6 +116,7 @@ returned in this dictionary to make plotting easier::
 .. _XDR: https://datatracker.ietf.org/doc/html/rfc1014
 .. _pyedr: https://github.com/mdanalysis/panedr
 .. _GROMACS: https://github.com/gromacs/gromacs/blob/main/src/gromacs/fileio/enxio.cpp
+.. _MDAnalysis base units: https://docs.mdanalysis.org/2.3.0/documentation_pages/units.html
 
 
 .. autoclass:: EDRReader
@@ -195,6 +196,11 @@ class EDRReader(base.AuxReader):
     ----------
     filename : str
         Location of the file containing the auxiliary data.
+    convert_units : bool, optional
+        If True (default), units from the EDR file are automatically converted
+        to MDAnalysis base units. If False, units are taken from the file
+        as-is. Where no base unit is defined in MDAnalysis, no conversion takes
+        place.
     **kwargs
        Other AuxReader options.
 
@@ -228,11 +234,13 @@ class EDRReader(base.AuxReader):
     format = "EDR"
     _Auxstep = EDRStep
 
-    def __init__(self, filename: str, **kwargs):
+    def __init__(self, filename: str, convert_units: bool = True, **kwargs):
         self._auxdata = Path(filename).resolve()
         self.data_dict = pyedr.edr_to_dict(filename)
         self.unit_dict = pyedr.get_unit_dictionary(filename)
-        self._convert_units()
+        self.convert_units = convert_units
+        if self.convert_units:
+            self._convert_units()
         self._n_steps = len(self.data_dict["Time"])
         # attribute to communicate found energy terms to user
         self.terms = list(self.data_dict.keys())

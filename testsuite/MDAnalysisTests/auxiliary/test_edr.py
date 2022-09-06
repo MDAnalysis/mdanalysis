@@ -162,10 +162,6 @@ class EDRReference(BaseAuxReference):
                                 3731.59179688, 3683.40942383])
 
 
-def same_units_as_reference(reader):
-    return reader.unit_dict == get_edr_unit_dict(0)
-
-
 class TestEDRReader(BaseAuxReaderTest):
     @staticmethod
     @pytest.fixture
@@ -428,3 +424,18 @@ class TestEDRReader(BaseAuxReaderTest):
         with pytest.warns(UserWarning, match="Could not find"):
             ref_universe.trajectory.add_auxiliary({"temp": "Temperature"},
                                                   reader)
+
+    def test_unit_conversion_is_optional(self, ref):
+        reader = ref.reader(
+            ref.testdata,
+            initial_time=ref.initial_time,
+            dt=ref.dt, auxname=ref.name,
+            time_selector="Time",
+            data_selector=None,
+            convert_units=False
+        )
+        ref_units = get_edr_unit_dict(0)
+        # The units from AUX_EDR match the ones from the reference
+        # data file AUX_EDR_RAW. If the EDRReader does not convert the units on
+        # reading the file, then the two unit dictionaries should be identical.
+        assert reader.unit_dict == ref_units
