@@ -243,7 +243,7 @@ class EDRStep(base.AuxStep):
 class EDRReader(base.AuxReader):
     """ Auxiliary reader to read data from an .edr file.
 
-    EDR files (https://manual.gromacs.org/current/reference-manual/file-formats.html#edr)
+    `EDR files`_
     are created by GROMACS during a simulation. They are binary files which
     contain time-series energy data and other data related to the simulation.
 
@@ -289,6 +289,9 @@ class EDRReader(base.AuxReader):
     ----
     The file is assumed to be of a size such that reading and storing the full
     contents is practical.
+
+
+    .. _EDR files: https://manual.gromacs.org/current/reference-manual/file-formats.html#edr
     """
 
     format = "EDR"
@@ -401,7 +404,7 @@ class EDRReader(base.AuxReader):
         ----------
         data_selector: str, List[str], None
             Keys to be extracted from the auxiliary reader's data dictionary.
-            If None, returns all data found in :attr:`.data_dict`.
+            If ``None``, returns all data found in :attr:`.data_dict`.
         Returns
         -------
         data_dict : dict

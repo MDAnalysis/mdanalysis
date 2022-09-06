@@ -23,6 +23,9 @@ Fixes
   * Upgrade to chemfiles 0.10.3 (Issue #3798)
 
 Enhancements
+  * MDAnalysis.units now has a lookup dictionary called MDANALYSIS_BASE_UNITS
+    where unit types like length or speed are mapped to their base units in
+    MDAnalysis (i.e. "A" or "A/ps")
   * A new AuxReader for the GROMACS EDR file format was implemented.
     (Issue # 3629, PR # 3749)
   * Added benchmarks for bonds topology attribute (Issue #3785, PR #3806)

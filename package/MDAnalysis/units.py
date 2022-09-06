@@ -36,7 +36,7 @@ table on :ref:`table-baseunits`.
 
 .. _table-baseunits:
 
-.. Table:: Base units in MDAnalysis
+.. Table:: Base units in MDAnalysis as encoded in :data:`MDANALYSIS_BASE_UNITS`
 
    =========== ============== ===============================================
    quantity    unit            SI units
@@ -134,6 +134,7 @@ Functions
 Data
 ----
 
+.. autodata:: MDANALYSIS_BASE_UNITS
 .. autodata:: constants
 .. autodata:: lengthUnit_factor
 .. autodata:: water
@@ -144,7 +145,6 @@ Data
 .. autodata:: chargeUnit_factor
 .. autodata:: conversion_factor
 .. autodata:: unit_types
-.. autodata:: MDANALYSIS_BASE_UNITS
 
 
 References and footnotes

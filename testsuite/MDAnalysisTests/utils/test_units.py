@@ -125,3 +125,12 @@ class TestConversion(object):
         A = nm * 10.
         with pytest.raises(ValueError):
             units.convert(A, 'A', 'ps')
+
+    def test_MDANALYSIS_BASE_UNITS_correct(self):
+        ref = {"length": "A",
+               "time": "ps",
+               "energy": "kJ/mol",
+               "charge": "e",
+               "force": "kJ/(mol*A)",
+               "speed": "A/ps"}
+        assert ref == units.MDANALYSIS_BASE_UNITS
