@@ -29,7 +29,7 @@ EDR auxiliary reader --- :mod:`MDAnalysis.auxiliary.EDR`
 Background
 ----------
 
-EDR_ files are binary files following the XDR_ protocol. They are written by
+`EDR files`_ are binary files following the XDR_ protocol. They are written by
 GROMACS during simulations and contain time-series non-trajectory data on the
 system, such as energies, temperature, or pressure.
 
@@ -163,7 +163,7 @@ data this way, the terms in :attr:`.terms` become the names used in `ts.aux`::
     Out[8]: -1857.519287109375
 
 
-.. _EDR: https://manual.gromacs.org/current/reference-manual/file-formats.html#edr
+.. _EDR files: https://manual.gromacs.org/current/reference-manual/file-formats.html#edr
 .. _XDR: https://datatracker.ietf.org/doc/html/rfc1014
 .. _pyedr: https://github.com/mdanalysis/panedr
 .. _GROMACS: https://github.com/gromacs/gromacs/blob/main/src/gromacs/fileio/enxio.cpp
@@ -289,9 +289,6 @@ class EDRReader(base.AuxReader):
     ----
     The file is assumed to be of a size such that reading and storing the full
     contents is practical.
-
-
-    .. _EDR files: https://manual.gromacs.org/current/reference-manual/file-formats.html#edr
     """
 
     format = "EDR"

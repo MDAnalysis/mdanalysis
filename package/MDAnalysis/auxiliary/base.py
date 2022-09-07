@@ -773,8 +773,9 @@ class AuxReader(metaclass=_AuxReaderMeta):
                 value = cutoff_data[min_diff]
         elif self.represent_ts_as == 'average':
             try:
-                value = np.mean(np.array([val for val in cutoff_data.values()]),
-                                axis=0)
+                value = np.mean(np.array(
+                                [val for val in cutoff_data.values()]
+                                ), axis=0)
             except TypeError:
                 # for readers like EDRReader, the above does not work
                 # because each step contains a dictionary of numpy arrays

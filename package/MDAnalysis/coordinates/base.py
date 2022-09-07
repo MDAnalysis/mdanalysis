@@ -1034,7 +1034,8 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         frames based on non-coordinate data like the potential energy of each
         time step. Trajectory slicing allows working on a subset of frames::
 
-            selected_frames = np.array([ts.frame for ts in u.trajectory if ts.aux.epot < some_threshold])
+            selected_frames = np.array([ts.frame for ts in u.trajectory
+                                        if ts.aux.epot < some_threshold])
             subset = u.trajectory[selected_frames]
 
 
@@ -1049,7 +1050,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         """
         if auxdata is None:
             raise ValueError("No input `auxdata` specified, but it needs "
-                                 "to be provided.")
+                             "to be provided.")
         if type(auxdata) not in list(_AUXREADERS.values()):
             # i.e. if auxdata is a file, not an instance of an AuxReader
             reader_type = get_auxreader_for(auxdata)
