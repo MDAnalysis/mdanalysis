@@ -42,7 +42,7 @@ matrix:
       dist: focal
       virt: vm
       group: edge
-      if: type = cron
+      #if: type = cron
       before_install:
         - python -m pip install cython "numpy>=1.20.0" scipy
         - python -m pip install --no-build-isolation hypothesis matplotlib packaging pytest pytest-cov pytest-xdist tqdm threadpoolctl fasteners
