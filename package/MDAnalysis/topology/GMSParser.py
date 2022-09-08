@@ -83,7 +83,7 @@ class GMSParser(TopologyReaderBase):
     """
     format = 'GMS'
 
-    def parse(self, **kwargs):
+    def parse(self, **kwargs) -> Topology:
         """Read list of atoms from a GAMESS file."""
         names = []
         at_charges = []

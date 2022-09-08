@@ -45,6 +45,8 @@ import warnings
 from .. import _PARSERS, _PARSER_HINTS
 from ..coordinates.base import IOBase
 from ..lib import util
+import numpy.typing as npt
+from typing import Tuple, List, Union
 
 
 class _Topologymeta(type):
@@ -114,14 +116,15 @@ class TopologyReaderBase(IOBase, metaclass=_Topologymeta):
     .. versionchanged:: 0.9.2
        Added keyword 'universe' to pass to Atom creation.
     """
-    def __init__(self, filename):
+    def __init__(self, filename: str) -> None:
         self.filename = filename
 
     def parse(self, **kwargs):  # pragma: no cover
         raise NotImplementedError("Override this in each subclass")
 
 
-def squash_by(child_parent_ids, *attributes):
+def squash_by(child_parent_ids: npt.ArrayLike,
+              *attributes: npt.ArrayLike):
     """Squash a child-parent relationship
 
     Arguments
@@ -142,7 +145,10 @@ def squash_by(child_parent_ids, *attributes):
     return atom_idx, unique_resids, [attr[sort_mask] for attr in attributes]
 
 
-def change_squash(criteria, to_squash):
+# typing: numpy
+def change_squash(criteria: np.ndarray,
+                  to_squash: np.ndarray
+                  ) -> Tuple[np.ndarray, List[np.ndarray]]:
     """Squash per atom data to per residue according to changes in resid
 
     Parameters
@@ -210,7 +216,7 @@ def change_squash(criteria, to_squash):
     return residx, new_others
 
 
-def reduce_singular(values):
+def reduce_singular(values: npt.ArrayLike) -> Union[Tuple, float]:
     """Returns the value in an array of length 1, or
     the tuple of an array with a longer lengh.
 

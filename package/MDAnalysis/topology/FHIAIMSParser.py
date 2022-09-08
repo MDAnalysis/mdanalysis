@@ -76,7 +76,7 @@ class FHIAIMSParser(TopologyReaderBase):
     """
     format = ['IN', 'FHIAIMS']
 
-    def parse(self, **kwargs):
+    def parse(self, **kwargs) -> Topology:
         """Read the file and return the structure.
 
         Returns
@@ -84,7 +84,7 @@ class FHIAIMSParser(TopologyReaderBase):
         MDAnalysis Topology object
         """
         # FHIAIMS geometry files are only single frames
-        names = []
+        names: list = []
         skip_tags = ["#", "lattice_vector", "initial_moment", "velocity"]
         with openany(self.filename) as inf:
             for line in inf:
@@ -97,7 +97,7 @@ class FHIAIMSParser(TopologyReaderBase):
                 # we are now seeing something that's neither atom nor lattice
                 raise ValueError(
                     'Non-conforming line: ({0})in FHI-AIMS input file {0}'.format(line, self.filename))
-            names = np.asarray(names)
+            names: np.ndarray = np.asarray(names)  # typing : numpy
             natoms = len(names)
 
         # Guessing time

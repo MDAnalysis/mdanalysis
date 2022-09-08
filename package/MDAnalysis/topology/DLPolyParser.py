@@ -50,6 +50,7 @@ from ..core.topologyattrs import (
     Segids,
 )
 from ..lib.util import openany
+from typing import Union, List
 
 
 class ConfigParser(TopologyReaderBase):
@@ -59,7 +60,7 @@ class ConfigParser(TopologyReaderBase):
     """
     format = 'CONFIG'
 
-    def parse(self, **kwargs):
+    def parse(self, **kwargs) -> None:
         with openany(self.filename) as inf:
             inf.readline()
             levcfg, imcon, megatm = np.int64(inf.readline().split()[:3])
@@ -68,8 +69,8 @@ class ConfigParser(TopologyReaderBase):
                 inf.readline()
                 inf.readline()
 
-            names = []
-            ids = []
+            names: list = []
+            ids: list = []
 
             line = inf.readline().strip()
             while line:
@@ -92,10 +93,10 @@ class ConfigParser(TopologyReaderBase):
 
         n_atoms = len(names)
         if ids:
-            ids = np.array(ids)
-            names = np.array(names, dtype=object)
+            ids: np.ndarray = np.array(ids)
+            names: np.ndarray = np.array(names, dtype=object)
             order = np.argsort(ids)
-            ids = ids[order]
+            ids: int = ids[order]
             names = names[order]
         else:
             ids = np.arange(n_atoms)
@@ -125,13 +126,13 @@ class HistoryParser(TopologyReaderBase):
     """
     format = 'HISTORY'
 
-    def parse(self, **kwargs):
+    def parse(self, **kwargs) -> Topology:
         with openany(self.filename) as inf:
             inf.readline()
             levcfg, imcon, megatm = np.int64(inf.readline().split()[:3])
 
-            names = []
-            ids = []
+            names: Union[list, np.ndarray] = []
+            ids: Union[list, np.ndarray] = []
 
             line = inf.readline()
             while not (len(line.split()) == 4 or len(line.split()) == 5):
@@ -162,7 +163,7 @@ class HistoryParser(TopologyReaderBase):
             ids = np.array(ids)
             names = np.array(names, dtype=object)
             order = np.argsort(ids)
-            ids = ids[order]
+            ids: int = ids[order]
             names = names[order]
         else:
             ids = np.arange(n_atoms)

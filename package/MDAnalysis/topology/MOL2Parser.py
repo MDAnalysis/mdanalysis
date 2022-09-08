@@ -132,7 +132,7 @@ class MOL2Parser(TopologyReaderBase):
     """
     format = 'MOL2'
 
-    def parse(self, **kwargs):
+    def parse(self, **kwargs) -> Topology:
         """Parse MOL2 file *filename* and return the dict `structure`.
 
         Returns
@@ -237,7 +237,7 @@ class MOL2Parser(TopologyReaderBase):
 
         masses = guessers.guess_masses(validated_elements)
 
-        attrs = []
+        attrs: list = []
         attrs.append(Atomids(np.array(ids, dtype=np.int32)))
         attrs.append(Atomnames(np.array(names, dtype=object)))
         attrs.append(Atomtypes(np.array(types, dtype=object)))

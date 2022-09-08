@@ -178,7 +178,7 @@ class TPRParser(TopologyReaderBase):
     """
     format = 'TPR'
 
-    def parse(self, tpr_resid_from_one=True, **kwargs):
+    def parse(self, tpr_resid_from_one: bool = True, **kwargs) -> dict:
         """Parse a Gromacs TPR file into a MDAnalysis internal topology structure.
 
         Parameters

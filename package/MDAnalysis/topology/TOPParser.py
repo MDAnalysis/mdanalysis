@@ -115,6 +115,7 @@ from ..core.topologyattrs import (
 
 import warnings
 import logging
+from typing import List, Tuple
 
 logger = logging.getLogger('MDAnalysis.topology.TOPParser')
 
@@ -165,7 +166,7 @@ class TOPParser(TopologyReaderBase):
     """
     format = ['TOP', 'PRMTOP', 'PARM7']
 
-    def parse(self, **kwargs):
+    def parse(self, **kwargs) -> Topology:
         """Parse Amber PRMTOP topology file *filename*.
 
         Returns
@@ -302,12 +303,12 @@ class TOPParser(TopologyReaderBase):
 
         top = Topology(n_atoms, n_res, 1,
                        attrs=list(attrs.values()),
-                       atom_resindex=residx,
+                       atom_resindex= residx,
                        residue_segindex=None)
 
         return top
 
-    def skipper(self):
+    def skipper(self) -> str:
         """TOPParser :class: helper function, skips lines of input parm7 file
         until we find the next %FLAG entry and return that
 
@@ -321,7 +322,7 @@ class TOPParser(TopologyReaderBase):
             line = next(self.topfile)
         return line
 
-    def parse_names(self, num_per_record, numlines):
+    def parse_names(self, num_per_record: int, numlines: int) -> Atomnames:
         """Extracts atoms names from parm7 file
 
         Parameters
@@ -341,7 +342,7 @@ class TOPParser(TopologyReaderBase):
         attr = Atomnames(np.array(vals, dtype=object))
         return attr
 
-    def parse_resnames(self, num_per_record, numlines):
+    def parse_resnames(self, num_per_record: int, numlines: int) -> Resnames:
         """Extracts the names of each residue
 
         Parameters
@@ -361,7 +362,7 @@ class TOPParser(TopologyReaderBase):
         attr = Resnames(np.array(vals, dtype=object))
         return attr
 
-    def parse_charges(self, num_per_record, numlines):
+    def parse_charges(self, num_per_record: int, numlines: int) -> Charges:
         """Extracts the partial charges for each atom
 
         Parameters
@@ -383,7 +384,7 @@ class TOPParser(TopologyReaderBase):
         attr = Charges(charges)
         return attr
 
-    def parse_masses(self, num_per_record, numlines):
+    def parse_masses(self, num_per_record: int, numlines: int) -> Masses:
         """Extracts the mass of each atom
 
         Parameters
@@ -403,7 +404,7 @@ class TOPParser(TopologyReaderBase):
         attr = Masses(vals)
         return attr
 
-    def parse_elements(self, num_per_record, numlines):
+    def parse_elements(self, num_per_record: int, numlines: int) -> Elements:
         """Extracts the atomic numbers of each atom and converts to element type
 
         Parameters
@@ -456,7 +457,8 @@ class TOPParser(TopologyReaderBase):
         attr = Atomtypes(np.array(vals, dtype=object))
         return attr
 
-    def parse_type_indices(self, num_per_record, numlines):
+    def parse_type_indices(self, num_per_record: int,
+                           numlines: int) -> TypeIndices:
         """Extracts the index of atom types of the each atom involved in Lennard
         Jones (6-12) interactions.
 
@@ -477,7 +479,7 @@ class TOPParser(TopologyReaderBase):
         attr = TypeIndices(np.array(vals, dtype=np.int32))
         return attr
 
-    def parse_residx(self, num_per_record, numlines):
+    def parse_residx(self, num_per_record: int, numlines: int) -> List[int]:
         """Extracts the residue pointers for each atom
 
         Parameters
@@ -495,7 +497,8 @@ class TOPParser(TopologyReaderBase):
         vals = self.parsesection_mapper(numlines, lambda x: int(x) - 1)
         return vals
 
-    def parse_chunks(self, data, chunksize):
+    def parse_chunks(self, data: List[int], chunksize: int
+                     ) -> List[Tuple[int]]:
         """Helper function to parse AMBER PRMTOP bonds/angles.
 
         Parameters
@@ -524,7 +527,8 @@ class TOPParser(TopologyReaderBase):
                 for x in range(0, len(data), chunksize)]
         return vals
 
-    def parse_bonded(self, num_per_record, numlines):
+    def parse_bonded(self, num_per_record: int,
+                     numlines: int) -> List[Tuple[int]]:
         """Extracts bond information from PARM7 format files
 
         Parameters
@@ -546,7 +550,7 @@ class TOPParser(TopologyReaderBase):
         section = self.parse_chunks(fields, num_per_record)
         return section
 
-    def parsesection_mapper(self, numlines, mapper):
+    def parsesection_mapper(self, numlines: int, mapper) -> List:
         """Parses FORTRAN formatted section, and returns a list of all entries
         in each line
 
@@ -574,7 +578,8 @@ class TOPParser(TopologyReaderBase):
                     section.append(mapper(val))
         return section
 
-    def parse_dihedrals(self, diha, dihh):
+    def parse_dihedrals(self, diha: List[Tuple],
+                        dihh: List[Tuple]) -> Tuple[Dihedrals, Impropers]:
         """Combines hydrogen and non-hydrogen containing AMBER dihedral lists
         and extracts sublists for conventional dihedrals and improper angles
 

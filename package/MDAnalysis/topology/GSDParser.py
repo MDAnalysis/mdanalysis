@@ -74,6 +74,7 @@ from ..core.topologyattrs import (
     Resnames,
     Segids,
 )
+from typing import Dict, Union
 
 
 class GSDParser(TopologyReaderBase):
@@ -101,12 +102,12 @@ class GSDParser(TopologyReaderBase):
     """
     format = 'GSD'
 
-    def parse(self, **kwargs):
+    def parse(self, **kwargs) -> Topology:
         """Parse Hoomd GSD file
 
         .. versionadded:: 0.17.0
         """
-        attrs = {}
+        attrs: Dict[str, Union[Atomtypes, Radii, Charges, Masses]] = {}
 
         with gsd.hoomd.open(self.filename,mode='rb') as t :
             # Here it is assumed that the particle data does not change in the
@@ -124,9 +125,9 @@ class GSDParser(TopologyReaderBase):
 
             # set radii, masses, charges
             p = snap.particles
-            attrs['diameter'] = Radii(np.array(p.diameter / 2.,dtype=np.float32))
-            attrs['mass'] = Masses(np.array(p.mass,dtype=np.float64))
-            attrs['charge'] = Charges(np.array(p.charge,dtype=np.float32))
+            attrs['diameter'] = Radii(np.array(p.diameter / 2., dtype=np.float32))
+            attrs['mass'] = Masses(np.array(p.mass, dtype=np.float64))
+            attrs['charge'] = Charges(np.array(p.charge, dtype=np.float32))
 
             # set bonds, angles, dihedrals, impropers
             for attrname, attr, in (
@@ -153,7 +154,7 @@ class GSDParser(TopologyReaderBase):
             bodies = np.unique(blist).astype(np.int32)
             nbodies = bodies.size
 
-        attrs = list(attrs.values())
+        attrs: list = list(attrs.values())
         attrs.append(Atomnames(np.array(atypes, dtype=object)))
         attrs.append(Atomids(np.arange(natoms) + 1))
         attrs.append(Resids(bodies))
