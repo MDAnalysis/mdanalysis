@@ -13,14 +13,15 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay
+??/??/?? IAlibay, hmacdope
 
  * 2.4.0
 
 Fixes
 
 Enhancements
-  * Added a reader for GROMACS TNG files based on PyTNG (PR #3765, Issue #3237) 
+  * Added a reader for GROMACS TNG files based on PyTNG (PR #3765,
+    Issue #3237, #865) 
 
 Changes
 
