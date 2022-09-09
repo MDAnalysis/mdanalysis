@@ -4,7 +4,6 @@ macos_instance:
 task:
   script: |
     brew install python@3.10
-    brew install python-tk@3.10
     /opt/homebrew/opt/python@3.10/bin/python3 -m venv ~/py_310
     source ~/py_310/bin/activate
     cd package
