@@ -35,7 +35,8 @@ The classes in this module are based on the `pytng`_ package for reading TNG
 files. The reader is directed to the `pytng documentation`_ for further reading
 about how pytng works under the hood. Pytng is an optional dependency and must
 be installed to use this Reader. Use of the reader without pytng installed will
-raise an `ImportError`. 
+raise an `ImportError`. The variable `HAS_PYTNG` indicates whether this module
+has pytng availble.
 
 In addition to particle-dependent trajectory information like positions,
 forces and velocities, the TNG format can store trajectory metadata and
@@ -83,7 +84,7 @@ divisible by the shared integrator step of the special blocks.
 """
 
 import warnings
-from typing import List, Optional
+from typing import List, Optional, Annotated
 
 import MDAnalysis as mda
 import numpy as np
@@ -96,8 +97,10 @@ from ..due import Doi, due
 try:
     import pytng
 except ImportError:
+    #: Indicates whether pytng is found.
     HAS_PYTNG = False
 else:
+    #: Indicates whether pytng is found.
     HAS_PYTNG = True
 
 
