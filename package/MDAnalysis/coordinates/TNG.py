@@ -28,12 +28,14 @@ TNG trajectory files --- :mod:`MDAnalysis.coordinates.TNG`
 
 The TNG format is a format used in `GROMACS`_ for storage of trajectory and
 topology information. The TNG format allows a wide range of compression
-algorithms and unlike the compressed XTC format can also store velocities
+algorithms and unlike the compressed XTC format can also store velocities and
 forces in addition to positions.
 
 The classes in this module are based on the `pytng`_ package for reading TNG
-files. The reader is directed to the `documentation`_ for further reading about
-how pytng works under the hood.
+files. The reader is directed to the `pytng_documentation`_ for further reading
+about how pytng works under the hood. Pytng is an optional dependency and must
+be installed to use this Reader. Use of the reader without pytng installed will
+raise an `ImportError`. 
 
 In addition to particle-dependent trajectory information like positions,
 forces and velocities, the TNG format can store trajectory metadata and
@@ -41,14 +43,14 @@ other arbitrary time dependent data. Additional information can range from
 the virial and pressure components to the molecular topology of the system.
 This is enabled by a block based system in which binary flags indicate the
 presence or absence of various data blocks. The structure of a TNG file is
-provided  in the TNG `specification`_. The TNG `paper`_ and the
-pytng `documentation`_ are also good resources. The user is encouraged to read
-the full list of `blocks`_ to understand the full power of the TNG format.
+provided  in the `TNG_specification`_. The `TNG_paper`_ and the
+`pytng_documentation`_ are also good resources. The user is encouraged to read
+the full list of `TNG_blocks`_ to understand the full power of the TNG format.
 
 
 
-Notes
------
+Current Limitations
+-------------------
 Currently there is only a Reader for TNG files and no Writer. This will depend
 on upstream changes in pytng. Additionally, it is not currently possible to
 read the molecular topology from a TNG file.
@@ -69,13 +71,13 @@ divisible by the shared integrator step of the special blocks.
     https://www.gromacs.org/
 .. _pytng:
     https://github.com/MDAnalysis/pytng
-.. _documentation:
+.. _pytng_documentation:
     https://www.mdanalysis.org/pytng/
-.. _blocks:
+.. _TNG_blocks:
     https://www.mdanalysis.org/pytng/documentation_pages/Blocks.html
-.. _specification:
+.. _TNG_specification:
     https://gitlab.com/hugomacdermott/tng/-/blob/master/Trajectoryformatspecification.mk
-.. _paper:
+.. _TNG_paper:
     https://onlinelibrary.wiley.com/doi/10.1002/jcc.23495
 
 """
@@ -102,11 +104,20 @@ else:
 class TNGReader(base.ReaderBase):
     r"""Reader for the TNG format
 
+    The TNG format is a format used in `GROMACS`_ for storage of trajectory and
+    topology information. This reader is  are based on the `pytng`_ package
+    for reading TNG files. The reader is directed to the `pytng_documentation`_
+    and `TNG_specification`_ for further reading.
+
+    The TNG format allows a wide range of compression
+    algorithms and unlike the compressed XTC format can also store velocities
+    and forces in addition to positions.
+
     The contents of the *special blocks* (positions, box, velocities, forces)
     are read into the timestep if present. Additional blocks are read into the
     `ts.data` dictionary if they are available at the current frame.
 
-    .. versionadded:: 2.3.0
+    .. versionadded:: 2.4.0
     """
 
     format = 'TNG'
@@ -235,9 +246,9 @@ class TNGReader(base.ReaderBase):
                         " divisible by the global stride_length."
                         " It will not be read")
                 else:
-                    self._additional_blocks_to_read.append(block)
+                    self._additional_blocks_to_read.append(block) 
             else:
-                self._additional_blocks_to_read.append(block)
+                self._additional_blocks_to_read.append(block) # pragma: nocover
 
     def close(self):
         """close the reader"""
@@ -258,6 +269,9 @@ class TNGReader(base.ReaderBase):
             The number of atoms in the TNG file
 
         """
+        if not HAS_PYTNG:
+            raise ImportError("TNGReader: To read TNG files please install"
+                              " pytng")
         with pytng.TNGFileIterator(filename, 'r') as tng:
             n_atoms = tng.n_atoms
         return n_atoms
