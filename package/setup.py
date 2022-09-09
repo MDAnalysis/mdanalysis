@@ -647,9 +647,6 @@ if __name__ == '__main__':
           # you might prefer to use the version available through your
           # packaging system
           extras_require={
-              'AMBER': [           # REMOVE for 2.4.0, use 'extra_formats'
-                  'netCDF4>=1.0',  # for fast AMBER writing, also needs HDF5
-              ],
               'extra_formats': [   # additional file formats
                   'netCDF4>=1.0',  # for fast AMBER writing, also needs HDF5
                   'h5py>=2.10',    # H5MD
