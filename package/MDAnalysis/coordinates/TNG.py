@@ -84,7 +84,7 @@ divisible by the shared integrator step of the special blocks.
 """
 
 import warnings
-from typing import List, Optional, Annotated
+from typing import List, Optional
 
 import MDAnalysis as mda
 import numpy as np
