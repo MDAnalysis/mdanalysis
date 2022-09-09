@@ -43,6 +43,11 @@ def test_pytng_not_present_raises():
     with pytest.raises(ImportError, match="please install pytng"):
         u = mda.Universe(TNG_traj_gro, TNG_traj)
 
+@pytest.mark.skipif(HAS_PYTNG, reason="pytng present")
+def test_parse_n_atoms_no_pytng():
+    with pytest.raises(ImportError, match="please install pytng"):
+        mda.coordinates.TNG.TNGReader.parse_n_atoms(TNG_traj)
+
 
 @pytest.mark.skipif(not HAS_PYTNG, reason="pytng not installed")
 class TNGReference(BaseReference):
