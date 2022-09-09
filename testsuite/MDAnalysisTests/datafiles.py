@@ -335,7 +335,7 @@ TRR_multi_frame = resource_filename(
     __name__, 'data/trr_test_only_10_frame_10_atoms.trr'
 )
 TNG_traj = resource_filename(__name__, 'data/argon_npt_compressed.tng')
-TNG_traj_gro = resource_filename(__name__, 'data/argon_npt_compressed.gro')
+TNG_traj_gro = resource_filename(__name__, 'data/argon_npt_compressed.gro.gz')
 TNG_traj_uneven_blocks = resource_filename(__name__, 'data/argon_npt_compressed_uneven.tng')
 TNG_traj_vels_forces = resource_filename(__name__, 'data/argon_npt_compressed_vels_forces.tng')
 PDB_xvf = resource_filename(__name__, 'data/cobrotoxin.pdb')
