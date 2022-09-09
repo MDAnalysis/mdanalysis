@@ -13,7 +13,11 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+<<<<<<< HEAD
 ??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud
+=======
+??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, hmacdope
+>>>>>>> refs/remotes/origin/add_pytng_reader
 
  * 2.4.0
 
@@ -23,7 +27,11 @@ Fixes
 
 Enhancements
   * Added a reader for GROMACS TNG files based on PyTNG (PR #3765,
+<<<<<<< HEAD
     Issues #3237, #865) 
+=======
+    Issue #3237, #865) 
+>>>>>>> refs/remotes/origin/add_pytng_reader
   * Added benchmarks for bonds topology attribute (Issue #3785, PR #3806)
 
 
