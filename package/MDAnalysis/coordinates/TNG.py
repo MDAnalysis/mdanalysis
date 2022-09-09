@@ -251,14 +251,14 @@ class TNGReader(base.ReaderBase):
         for block in self._additional_blocks:
             stride_add = self._block_strides[block]
             if (stride_add != self._global_stride):
-                if stride_add % self._global_stride: # pragma: no cover
+                if stride_add % self._global_stride:  # pragma: no cover
                     warnings.warn(
                         f"TNG additional block {block} does not match"
                         " strides of other blocks and is not"
                         " divisible by the global stride_length."
                         " It will not be read")
                 else:
-                    self._additional_blocks_to_read.append(block) # pragma: no cover
+                    self._additional_blocks_to_read.append(block)  # pragma: no cover
             else:
                 self._additional_blocks_to_read.append(block)
 
