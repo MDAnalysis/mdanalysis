@@ -32,7 +32,7 @@ algorithms and unlike the compressed XTC format can also store velocities and
 forces in addition to positions.
 
 The classes in this module are based on the `pytng`_ package for reading TNG
-files. The reader is directed to the `pytng_documentation`_ for further reading
+files. The reader is directed to the `pytng documentation`_ for further reading
 about how pytng works under the hood. Pytng is an optional dependency and must
 be installed to use this Reader. Use of the reader without pytng installed will
 raise an `ImportError`. 
@@ -43,9 +43,9 @@ other arbitrary time dependent data. Additional information can range from
 the virial and pressure components to the molecular topology of the system.
 This is enabled by a block based system in which binary flags indicate the
 presence or absence of various data blocks. The structure of a TNG file is
-provided  in the `TNG_specification`_. The `TNG_paper`_ and the
-`pytng_documentation`_ are also good resources. The user is encouraged to read
-the full list of `TNG_blocks`_ to understand the full power of the TNG format.
+provided  in the `TNG specification`_. The `TNG paper`_ and the
+`pytng documentation`_ are also good resources. The user is encouraged to read
+the full list of `TNG blocks`_ to understand the full power of the TNG format.
 
 
 
@@ -71,13 +71,13 @@ divisible by the shared integrator step of the special blocks.
     https://www.gromacs.org/
 .. _pytng:
     https://github.com/MDAnalysis/pytng
-.. _pytng_documentation:
+.. _pytng documentation:
     https://www.mdanalysis.org/pytng/
-.. _TNG_blocks:
+.. _TNG blocks:
     https://www.mdanalysis.org/pytng/documentation_pages/Blocks.html
-.. _TNG_specification:
+.. _TNG specification:
     https://gitlab.com/hugomacdermott/tng/-/blob/master/Trajectoryformatspecification.mk
-.. _TNG_paper:
+.. _TNG paper:
     https://onlinelibrary.wiley.com/doi/10.1002/jcc.23495
 
 """
@@ -105,9 +105,9 @@ class TNGReader(base.ReaderBase):
     r"""Reader for the TNG format
 
     The TNG format is a format used in `GROMACS`_ for storage of trajectory and
-    topology information. This reader is  are based on the `pytng`_ package
-    for reading TNG files. The reader is directed to the `pytng_documentation`_
-    and `TNG_specification`_ for further reading.
+    topology information. This reader is are based on the `pytng`_ package
+    for reading TNG files. The reader is directed to the `pytng documentation`_
+    and `TNG specification`_ for further reading.
 
     The TNG format allows a wide range of compression
     algorithms and unlike the compressed XTC format can also store velocities
@@ -239,16 +239,16 @@ class TNGReader(base.ReaderBase):
         for block in self._additional_blocks:
             stride_add = self._block_strides[block]
             if (stride_add != self._global_stride):
-                if stride_add % self._global_stride:
+                if stride_add % self._global_stride: # pragma: no cover
                     warnings.warn(
                         f"TNG additional block {block} does not match"
                         " strides of other blocks and is not"
                         " divisible by the global stride_length."
                         " It will not be read")
                 else:
-                    self._additional_blocks_to_read.append(block) 
+                    self._additional_blocks_to_read.append(block) # pragma: no cover
             else:
-                self._additional_blocks_to_read.append(block) # pragma: nocover
+                self._additional_blocks_to_read.append(block)
 
     def close(self):
         """close the reader"""
