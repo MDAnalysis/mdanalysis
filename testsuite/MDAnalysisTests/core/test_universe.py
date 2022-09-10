@@ -1367,8 +1367,7 @@ class TestOnlyTopology:
             u = mda.Universe(t)
 
         with pytest.warns(UserWarning,
-                          match='Can not guess attributes '
-                                           'for universe with 0 atoms'):
+                          match='Can not guess attributes for universe with 0 atoms'):
             u = mda.Universe(t)
 
 
