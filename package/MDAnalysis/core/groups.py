@@ -3269,9 +3269,9 @@ class AtomGroup(GroupBase):
         Parameters
         ----------
         vdwradii : dict, optional
-        Dict relating atom types: vdw radii
+            Dict relating atom types: vdw radii
         context : string
-        context of the universe
+            context of the universe
         See Also
         --------
         :func:`MDAnalysis.topology.guessers.guess_bonds`

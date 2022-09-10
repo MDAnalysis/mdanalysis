@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import pytest
->>> from pytest import approx
+from pytest import approx
 import MDAnalysis as mda
 
 from MDAnalysis import guesser
@@ -90,6 +90,7 @@ class TestGuessMasses(object):
         with pytest.raises(ValueError, match=('there is no reference attributes ')):
             u.guess_TopologyAttributes('default', ['masses'])
 
+
 class TestGuessTypes(object):
 
     def test_guess_types(self):
@@ -131,6 +132,7 @@ class TestGuessTypes(object):
     def test_guess_element_from_name(self, name, element, default_guesser):
         assert default_guesser.guess_atom_element(name) == element
 
+
 def test_guess_charge(default_guesser):
     # this always returns 0.0
     assert default_guesser.guess_atom_charge('this') == approx(0.0)
@@ -141,10 +143,12 @@ def test_guess_bonds_Error():
     with pytest.raises(ValueError):
         u.guess_TopologyAttributes(to_guess=['bonds'])
 
+
 def test_guess_bond_coord_error():
     u = mda.Universe(datafiles.PDB)
     with pytest.raises(ValueError):
         DefaultGuesser(None).guess_bonds(u.atoms, [[1,2,2]])
+
 
 def test_guess_impropers(default_guesser):
     u = make_starshape()

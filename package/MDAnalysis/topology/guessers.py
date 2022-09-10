@@ -225,7 +225,7 @@ def guess_atom_element(atomname):
         return no_symbols
 
 
-def guess_bonds( atoms, coords, box=None, **kwargs):
+def guess_bonds(atoms, coords, box=None, **kwargs):
     r"""Guess if bonds exist between two atoms based on their distance.
 
     Bond between two atoms is created, if the two atoms are within

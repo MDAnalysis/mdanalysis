@@ -523,6 +523,7 @@ class TestGuessBonds(object):
         u = mda.Universe(CONECT)
         assert len(u.bonds) == 72
 
+
 class TestInMemoryUniverse(object):
     def test_reader_w_timeseries(self):
         universe = mda.Universe(PSF, DCD, in_memory=True)
@@ -752,7 +753,8 @@ class TestAddTopologyAttr(object):
     def test_add_attr_length_error(self, universe):
         with pytest.raises(ValueError):
             universe.add_TopologyAttr('masses', np.array([1, 2, 3], dtype=np.float64))
-            
+
+
 class TestDelTopologyAttr(object):
     @pytest.fixture()
     def universe(self):

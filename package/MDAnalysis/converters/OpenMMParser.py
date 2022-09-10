@@ -195,7 +195,7 @@ class OpenMMTopologyParser(TopologyReaderBase):
                         "Atomtype attribute will be guessed using atom "
                         "name and mass will be guessed using atomtype."
                         "for MDAnalysis version 2.1 this is done automatically, but it will be removed in "
-                        "future vesrions. "
+                        "future versions. "
                         "These can be guessed using "
                         "universe.guess_TopologyAttributes(to_guess=['masses', 'types']) "
                         "See MDAnalysis.guessers.")
