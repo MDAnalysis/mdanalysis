@@ -1529,8 +1529,7 @@ class Universe(object):
 
         else:
             warnings.warn('Can not guess attributes '
-                             'for universe with 0 atoms'
-                             )
+                             'for universe with 0 atoms')
 
 
 def Merge(*args):
