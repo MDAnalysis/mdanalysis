@@ -182,7 +182,7 @@ class OpenMMTopologyParser(TopologyReaderBase):
                                   "set to 'X' and mass has been set to 0.0. "
                                   "If needed these can be guessed using "
                                   "universe.guess_TopologyAttributes(to_guess=['masses', 'types']). "
-                                  "(for MDAnalysis version 2.1 this is done automatically, but it will be removed in "
+                                  "(for MDAnalysis version 2.x this is done automatically, but it will be removed in "
                                   "future vesrions).")
                 attrs.append(Elements(np.array(validated_elements,
                                                dtype=object)))

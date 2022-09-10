@@ -96,15 +96,17 @@ class GuesserBase(metaclass=_GuesserMeta):
 
         Parameters
         ----------
-        guess: list of atrributes sto be guessed then added to the universe
+        guess: list of atrributes to be guessed then added to the universe
         Returns
         -------
         Boolean value
         """
-        for a in guess:
-            if a.lower() not in self._guess:
-                return False
-        return True
+        if guess:
+            for a in guess:
+                if a.lower() not in self._guess:
+                    return False
+            return True
+        return False
 
     def guess_Attr(self, guess, **kwargs):
         """map the attribute to be guessed with the apporpiate guessing method

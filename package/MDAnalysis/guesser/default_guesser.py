@@ -63,9 +63,9 @@ class DefaultGuesser(GuesserBase):
         self._guess = {'masses': self.guess_masses,
                        'types': self.guess_types,
                        'elements' : self.guess_types,
-                       'angles': self.guess_angles,
-                       'dihedrals': self.guess_dihedrals,
-                       'bonds': self.guess_bonds,
+                       'angles': self.add_guessed_angles,
+                       'dihedrals': self.add_guessed_dihedrals,
+                       'bonds': self.add_guessed_bonds,
                        'improper dihedrals': self.guess_improper_dihedrals,
                        'aromaticities': self.guess_aromaticities,
                        }
@@ -81,10 +81,6 @@ class DefaultGuesser(GuesserBase):
         parser = self._kwargs.get('parser', [])
         if atoms is not None:
             atom_types = atoms
-            
-        elif 'TXYZ' in parser or 'ARC' in parser:
-            atom_types = self._universe.atoms.names
- 
         elif hasattr(self._universe.atoms, 'elements'):
             atom_types = self._universe.atoms.elements
         elif hasattr(self._universe.atoms, 'types'):
@@ -96,10 +92,9 @@ class DefaultGuesser(GuesserBase):
                     self.context, ['types'])
                 atom_types = self._universe.atoms.types
             except BaseException:
-                raise ValueError(
-                    'there is no reference attributes in this universe\
-                                 to guess mass from')
-        
+                raise ValueError("there is no reference attributes in this universe"
+                                 "to guess mass from")
+
         self.validate_atom_types(atom_types)
         masses = np.array([self.get_atom_mass(atom_t)
                            for atom_t in atom_types], dtype=np.float64)
@@ -321,8 +316,15 @@ class DefaultGuesser(GuesserBase):
         return tuple(bonds)
 
 
+    def add_guessed_bonds(self):
+        vdwradii = self._kwargs.get('vdwradii', None)
+        if not hasattr(self._universe.atoms, 'types'):
+            self._universe.guess_TopologyAttributes(context=self.context, to_guess=['types'])
 
-    def guess_angles(self, bonds):
+        return self.guess_bonds(self._universe.atoms, self._universe.atoms.positions,
+                          box=self._universe.atoms.dimensions, vdwradii=vdwradii)
+    
+    def guess_angles(self, bonds=None):
         """Given a list of Bonds, find all angles that exist between atoms.
 
         Works by assuming that if atoms 1 & 2 are bonded, and 2 & 3 are bonded,
@@ -342,7 +344,6 @@ class DefaultGuesser(GuesserBase):
 
         .. versionadded 0.9.0
         """
-
         angles_found = set()
 
         for b in bonds:
@@ -357,6 +358,13 @@ class DefaultGuesser(GuesserBase):
                         angles_found.add(desc)
 
         return tuple(angles_found)
+
+    def add_guessed_angles(self):
+
+        if not hasattr(self._universe.atoms, 'bonds'):
+            self._universe.guess_TopologyAttributes(context=self.context, to_guess=['bonds'])
+
+        return self.guess_angles(self._universe.atoms.bonds)
 
     def guess_dihedrals(self, angles):
         """Given a list of Angles, find all dihedrals that exist between atoms.
@@ -391,6 +399,12 @@ class DefaultGuesser(GuesserBase):
 
         return tuple(dihedrals_found)
 
+    def add_guessed_dihedrals(self):
+
+        if not hasattr(self._universe.atoms, 'angles'):
+            self._universe.guess_TopologyAttributes(context=self.context, to_guess=['angles'])
+        
+        return self.guess_dihedrals(self._universe.atoms.angles)
 
     def guess_improper_dihedrals(self, angles):
         """Given a list of Angles, find all improper dihedrals that exist between

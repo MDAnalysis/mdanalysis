@@ -33,7 +33,7 @@ from numpy.testing import (
     assert_allclose,
     assert_almost_equal,
     assert_equal,
-    assert_array_equal,
+    assert_array_equal
 )
 import pytest
 
@@ -395,6 +395,7 @@ class TestGuessTopologyAttr(object):
         u = mda.Universe(PDB_small)
         with pytest.raises(ValueError):
             u.guess_TopologyAttributes(to_guess=['trash'])
+
     def test_guess_masses_before_types(self):
             u = mda.Universe(PDB_small, to_guess=('masses', 'types'))
             assert_equal(len(u.atoms.masses), 3341)
@@ -402,10 +403,10 @@ class TestGuessTopologyAttr(object):
         
     def test_guessing_read_attributes(self):
         u = mda.Universe(PSF)
-        with pytest.warns(UserWarning, match='You are trying to '
-        'overwrite it by guessed values'):
-            u.guess_TopologyAttributes(to_guess=['masses'])
-
+        old_types = u.atoms.types
+        u.guess_TopologyAttributes(force_guess=['types'])
+        with pytest.raises(AssertionError):
+            assert_equal(old_types, u.atoms.types)
         
 class TestGuessMasses(object):
     """Tests the Mass Guesser in topology.guessers
@@ -520,8 +521,7 @@ class TestGuessBonds(object):
 
     def test_guess_read_bonds(self):
         u = mda.Universe(CONECT)
-        with pytest.warns(UserWarning, match='The attribute bonds have already been read'):
-            u.guess_TopologyAttributes(to_guess=['bonds'])
+        assert len(u.bonds) == 72
 
 class TestInMemoryUniverse(object):
     def test_reader_w_timeseries(self):
@@ -1352,7 +1352,7 @@ class ThingyParser(TopologyReaderBase):
         return isinstance(thing, Thingy)
 
     def parse(self, **kwargs):
-        return mda.core.topology.Topology(n_atoms=10)
+        return mda.core.topology.Topology(n_atoms=0)
 
 
 class TestOnlyTopology:
@@ -1364,4 +1364,10 @@ class TestOnlyTopology:
                           match="No coordinate reader found for"):
             u = mda.Universe(t)
 
-        assert len(u.atoms) == 10
+        with pytest.warns(UserWarning,
+                          match='Can not guess attributes '
+                                           'for universe with 0 atoms'):
+            u = mda.Universe(t)
+
+
+        assert len(u.atoms) == 0

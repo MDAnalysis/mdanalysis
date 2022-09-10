@@ -29,7 +29,7 @@ from MDAnalysisTests.datafiles import TXYZ, ARC
 
 class TestTXYZParser(ParserBase):
     parser = mda.topology.TXYZParser.TXYZParser
-    expected_attrs = ['ids', 'names', 'bonds', 'types']
+    expected_attrs = ['ids', 'names', 'bonds', 'types', 'elements']
     expected_n_residues = 1
     expected_n_atoms = 9
     expected_n_segments = 1

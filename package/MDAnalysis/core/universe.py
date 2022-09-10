@@ -325,7 +325,7 @@ class Universe(object):
     def __init__(self, topology=None, *coordinates, all_coordinates=False,
                  format=None, topology_format=None, transformations=None,
                  guess_bonds=False, vdwradii=None, context='default',
-                 to_guess=(), in_memory=False,
+                 to_guess=(), force_guess=(), in_memory=False,
                  in_memory_step=1, **kwargs):
 
         self._trajectory = None  # managed attribute holding Reader
@@ -337,8 +337,6 @@ class Universe(object):
         self._context = context
         self._kwargs = {
             'transformations': transformations,
-            'context': context,
-            'to_guess': to_guess,
             'guess_bonds': guess_bonds,
             'vdwradii': vdwradii,
             'in_memory': in_memory,
@@ -356,8 +354,7 @@ class Universe(object):
             top = _topology_from_file_like(self.filename,
                                            topology_format=topology_format,
                                            **kwargs)
-            topology = top[0]
-            self._parser = top[1]
+            topology, self._parser = top
         if topology is not None:
             self._topology = topology
         else:
@@ -381,25 +378,21 @@ class Universe(object):
                 transformations = [transformations]
             self._trajectory.add_transformations(*transformations)
 
-        to_guess = list(to_guess)
         self._topology_atrrs = list(
             att.attrname for att in self._topology.read_attributes)
 
-        if ('MINIMAL' not in self._parser and 'THINGY' not in self._parser and
-            self._topology.n_atoms > 0 and any(fmt in _PARSERS for fmt in self._parser)):
+        to_guess = list(to_guess)
+        force_guess = list(force_guess)
 
-            
-            if (not any(att == 'types' for att in self._topology_atrrs) and
-                    'types' not in to_guess):
-                to_guess.append('types')
-            if (not any(att == 'masses' for att in self._topology_atrrs) and
-                    'masses' not in to_guess):
-                to_guess.append('masses')
-        if guess_bonds and 'bonds' not in to_guess:
-            to_guess.append('bonds')
+        if any(fmt in _PARSERS for fmt in self._parser) and 'MINIMAL' not in self._parser:
+            to_guess.extend(['types', 'masses'])
 
-        if to_guess:
-            self.guess_TopologyAttributes(context, to_guess, parser=self._parser)
+        if guess_bonds:
+            force_guess.extend(['bonds', 'angles', 'dihedrals'])
+
+        if to_guess or force_guess:
+            self.guess_TopologyAttributes(
+                context, to_guess, force_guess, vdwradii=vdwradii, ** kwargs)
 
     def copy(self):
         """Return an independent copy of this Universe"""
@@ -585,24 +578,20 @@ class Universe(object):
         except ValueError as err:
             raise TypeError(
                 "Cannot find an appropriate coordinate reader for file '{0}'.\n"
-                "           {1}".format(
-                    filename, err))
+                "           {1}".format(filename, err))
 
         # supply number of atoms for readers that cannot do it for themselves
         kwargs['n_atoms'] = self.atoms.n_atoms
 
         self.trajectory = reader(filename, format=format, **kwargs)
         if self.trajectory.n_atoms != len(self.atoms):
-            raise ValueError(
-                "The topology and {form} trajectory files don't"
-                " have the same number of atoms!\n"
-                "Topology number of atoms {top_n_atoms}\n"
-                "Trajectory: {fname} Number of atoms {trj_n_atoms}".format(
-                    form=self.trajectory.format,
-                    top_n_atoms=len(
-                        self.atoms),
-                    fname=filename,
-                    trj_n_atoms=self.trajectory.n_atoms))
+
+            msg = f"The topology and {self.trajectory.format} trajectory files don't"
+            " have the same number of atoms!\n"
+            f"Topology number of atoms {len(self.atoms)}\n"
+            f"Trajectory: {filename} Number of atoms {self.trajectory.n_atoms}"
+
+            raise ValueError(msg)
 
         if in_memory:
             self.transfer_to_memory(step=in_memory_step)
@@ -932,8 +921,7 @@ class Universe(object):
                   'residue': self._topology.n_residues,
                   'segment': self._topology.n_segments}
         logger.debug("_process_attr: Adding {0} to topology".format(attr))
-        if (attr.per_object is not None and len(
-                attr) != n_dict[attr.per_object]):
+        if (attr.per_object is not None and len(attr) != n_dict[attr.per_object]):
             raise ValueError('Length of {attr} does not'
                              ' match number of {obj}s.\n'
                              'Expect: {n:d} Have: {m:d}'.format(
@@ -1018,8 +1006,7 @@ class Universe(object):
         # pass this information to the topology
         residx = self._topology.add_Residue(segment, **attrs)
         # resize my residues
-        self.residues = ResidueGroup(
-            np.arange(self._topology.n_residues), self)
+        self.residues = ResidueGroup(np.arange(self._topology.n_residues), self)
 
         # return the new residue
         return self.residues[residx]
@@ -1474,7 +1461,7 @@ class Universe(object):
 
         return cls(mol, **kwargs)
 
-    def guess_TopologyAttributes(self, context=None, to_guess=None, **kwargs):
+    def guess_TopologyAttributes(self, context=None, to_guess=(), force_guess=(), **kwargs):
         """guess attributes passed to the universe within specific context
 
         Parameters
@@ -1483,50 +1470,68 @@ class Universe(object):
         for calling a matching guesser class for this specific context
         to_guess: list
         list of atrributes to be guessed then added to the universe
+        force_guess: list
+        list of atrributes to be guessed wether it has been read from file or not 
         **kwargs: extra arguments are passed to the guesser class
         
         Examples
         --------
-        guess masses and elements attribute 
-        u.guess_TopologyAttributes(context='default', to_guess=['masses', elements])
+        guess masses and elements attribute::
+        >>>u.guess_TopologyAttributes(context='default', to_guess=['masses', elements])
         """
         if not context:
-            context =  self._context
-                
+            context = self._context
+
         guesser = get_guesser(context, self.universe, **kwargs)
         self._context = guesser
 
-        if guesser.is_guessable(to_guess):           
-            if 'bonds' in to_guess:
-                self._kwargs['guess_bonds'] = True
-                to_guess.remove('bonds')
+        to_guess = list(to_guess)
+        force_guess = list(force_guess)
+        guess = force_guess + to_guess
+        
+        # removing duplicate from the guess list with keeping attributes order 
+        # as it is more convientent to guess attributes
+        # in the same order that the user provided
+        guess = list(dict.fromkeys(guess))
 
-            for attr in to_guess:
-                if any(attr == a for a in self._topology_atrrs):
-                    warnings.warn('The attribute {} have already been read '
-                                  'from the topology file. You are trying to '
-                                  'overwrite it by guessed values'
-                                  .format(attr))
+        objects = ['bonds', 'angles', 'dihedrals', 'impropers']
+    
+        if (self._topology.n_atoms > 0):
 
-                values = guesser.guess_Attr(attr)
-                tcls = _TOPOLOGY_ATTRS[attr](values, True)
-                self.add_TopologyAttr(tcls)
-                logger.info('attribute {} has been guessed successfully.'.format(attr))
+            if guesser.is_guessable(guess):
 
-            if self._kwargs['guess_bonds']:
-                if 'bonds' in self._topology_atrrs:
-                    warnings.warn('The attribute bonds have already been read '
-                                  'from the topology file. You are trying to '
-                                  'overwrite it by guessed values'
-                                  )
-                
-                self.atoms.guess_bonds(self._kwargs['vdwradii'], guesser)
+                for attr in to_guess:
+                    if any(attr == a for a in self._topology_atrrs):
+                        logger.info('The attribute {} have already been read '
+                                    'from the topology file. To '
+                                    'overwrite the read values by guessed ones, you can pass the attribute to the force_guess'
+                                    'parameter instead of the to_guess one'
+                                    .format(attr))
+                        if attr not in force_guess:                            
+                            guess.remove(attr)
 
-                    
+                for attr in guess:
+                    values = guesser.guess_Attr(attr)
+                    if attr in objects:
+                        self._add_topology_objects(attr, values, guessed=True)
+                    else:
+                        tcls = _TOPOLOGY_ATTRS[attr](values, True)
+                        self.add_TopologyAttr(tcls)
+
+                    logger.info(
+                        'attribute {} has been guessed successfully.'.format(attr))
+
+
+            else:
+                raise ValueError('{0} guesser can not guess one or more '
+                                 'of the provided attributes'
+                                  .format(context))      
+
         else:
-            raise ValueError('{0} guesser can not guess one or more '
-                             'of the provided attributes'
-                              .format(context))      
+            warnings.warn('Can not guess attributes '
+                             'for universe with 0 atoms'
+                             )
+
 
 def Merge(*args):
     """Create a new new :class:`Universe` from one or more

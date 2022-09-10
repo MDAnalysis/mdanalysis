@@ -373,8 +373,7 @@ class Molecule:
         """Figure out residue borders and assign moltypes and molnums"""
         resids = np.array(self.resids, dtype=np.int32)
         resnames = np.array(self.resnames, dtype=object)
-        self.residx, (self.resids, resnames) = change_squash(
-            (resids,), (resids, resnames))
+        self.residx, (self.resids, resnames) = change_squash((resids,), (resids, resnames))
         self.resnames = list(resnames)
         self.moltypes = [self.name] * len(self.resids)
         self.molnums = np.array([1] * len(self.resids))

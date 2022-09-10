@@ -21,10 +21,11 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import pytest
+>>> from pytest import approx
 import MDAnalysis as mda
 
 from MDAnalysis import guesser
-from numpy.testing import assert_equal
+from numpy.testing import assert_equal, assert_allclose
 import numpy as np
 from MDAnalysis.core.topologyattrs import (Angles, Atomtypes, Atomnames)
 from MDAnalysis.guesser.default_guesser import DefaultGuesser
@@ -56,42 +57,41 @@ class TestGuessMasses(object):
         u.guess_TopologyAttributes(to_guess=['masses'])
 
         assert isinstance(u.atoms.masses, np.ndarray)
-        assert_equal(u.atoms.masses, np.array([12.011, 12.011, 1.008]))
-        
-        
+        assert_allclose(u.atoms.masses, np.array([12.011, 12.011, 1.008]), rtol=1e-3, atol=0)
+
+
     def test_guess_masses_from_guesser_object(self, default_guesser):
         elements = ['H', 'Ca', 'Am']
         values = np.array([1.008, 40.08000, 243.0])
-        assert_equal( default_guesser.guess_masses(elements), values)
+        assert_allclose( default_guesser.guess_masses(elements), values, rtol=1e-3, atol=0)
 
     def test_guess_masses_warn(self):
         topology = Topology(1, attrs=[Atomtypes(['X'])])
         u = mda.Universe(topology)
 
         with pytest.warns(UserWarning):
-            u.guess_TopologyAttributes(to_guess=['masses'])
+            u.guess_TopologyAttributes(to_guess=['masses'], match="Failed to guess the mass for the following atom type")
 
     def test_guess_masses_miss(self):
         topology = Topology(2, attrs=[Atomtypes(['X', 'Z'])])
         u = mda.Universe(topology)
         u.guess_TopologyAttributes(to_guess=['masses'])
-        assert_equal(u.atoms.masses, np.array([0.0, 0.0]))
+        assert_allclose(u.atoms.masses, np.array([0.0, 0.0]), rtol=1e-3, atol=0)
 
     @pytest.mark.parametrize('element, value', (('H', 1.008), ('XYZ', 0.0), ))
     def test_get_atom_mass(self, element, value, default_guesser):
-        assert default_guesser.get_atom_mass(element) == value
+        default_guesser.get_atom_mass(element) == approx(value)
 
     def test_guess_atom_mass(self, default_guesser):
-        assert default_guesser.guess_atom_mass('1H') == 1.008
+        assert default_guesser.guess_atom_mass('1H') == approx(1.008)
+
     def test_guess_masses_with_no_reference_elements(self):
         u = mda.Universe.empty(3)
         with pytest.raises(ValueError, match=('there is no reference attributes ')):
             u.guess_TopologyAttributes('default', ['masses'])
 
 class TestGuessTypes(object):
-    # guess_types
-    # guess_atom_type
-    # guess_atom_element
+
     def test_guess_types(self):
         topology = Topology(2, attrs=[Atomnames(['MG2+', 'C12'])])
         u = mda.Universe(topology)
@@ -113,7 +113,7 @@ class TestGuessTypes(object):
     def test_guess_atom_element_1H(self, default_guesser):
         assert default_guesser.guess_atom_element('1H') == 'H'
         assert default_guesser.guess_atom_element('2H') == 'H'
-    
+
     @pytest.mark.parametrize('name, element', (
         ('AO5*', 'O'),
         ('F-', 'F'),
@@ -123,7 +123,7 @@ class TestGuessTypes(object):
         ('3hg2', 'H'),
         ('OH-', 'O'),
         ('HO', 'H'),
-        ('he', 'H'), 
+        ('he', 'H'),
         ('zn', 'ZN'),
         ('Ca2+', 'CA'),
         ('CA', 'C'),
@@ -133,7 +133,7 @@ class TestGuessTypes(object):
 
 def test_guess_charge(default_guesser):
     # this always returns 0.0
-    assert default_guesser.guess_atom_charge('this') == 0.0
+    assert default_guesser.guess_atom_charge('this') == approx(0.0)
 
 
 def test_guess_bonds_Error():
@@ -142,8 +142,8 @@ def test_guess_bonds_Error():
         u.guess_TopologyAttributes(to_guess=['bonds'])
 
 def test_guess_bond_coord_error():
-    u = mda.Universe(datafiles.PDB)  
-    with pytest.raises(ValueError):                              
+    u = mda.Universe(datafiles.PDB)
+    with pytest.raises(ValueError):
         DefaultGuesser(None).guess_bonds(u.atoms, [[1,2,2]])
 
 def test_guess_impropers(default_guesser):
@@ -177,7 +177,7 @@ def test_guess_bonds_water(default_guesser):
 
 def test_guess_bonds_adk():
     u = mda.Universe(datafiles.PSF, datafiles.DCD)
-    u.guess_TopologyAttributes(to_guess=['types'])
+    u.guess_TopologyAttributes(force_guess=['types'])
     guesser = DefaultGuesser(None)
     bonds = bond_sort(guesser.guess_bonds(u.atoms, u.atoms.positions))
     assert_equal(np.sort(u.bonds.indices, axis=0),
@@ -185,7 +185,7 @@ def test_guess_bonds_adk():
 
 def test_guess_bonds_peptide():
     u = mda.Universe(datafiles.PSF_NAMD, datafiles.PDB_NAMD)
-    u.guess_TopologyAttributes(to_guess=['types'])
+    u.guess_TopologyAttributes(force_guess=['types'])
     guesser = DefaultGuesser(None)
     bonds = bond_sort(guesser.guess_bonds(u.atoms, u.atoms.positions))
     assert_equal(np.sort(u.bonds.indices, axis=0),
@@ -210,7 +210,7 @@ def test_guess_aromaticities(smi):
     u.guess_TopologyAttributes(to_guess=['aromaticities'])
     assert_equal(values, expected)
     assert_equal(u.atoms.aromaticities, expected)
-  
+
 
 @pytest.mark.parametrize("smi", [
     "c1ccccc1",

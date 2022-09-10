@@ -86,8 +86,7 @@ class CRDParser(TopologyReaderBase):
         ----
         Could use the resnum and temp factor better
         """
-        extformat = FORTRANReader(
-            '2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10')
+        extformat = FORTRANReader('2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10')
         stdformat = FORTRANReader('2I5,1X,A4,1X,A4,3F10.5,1X,A4,1X,A4,F10.5')
 
         atomids = []
