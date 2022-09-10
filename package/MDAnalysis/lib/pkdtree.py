@@ -129,16 +129,17 @@ class PeriodicKDTree(object):
         MDAnalysis.lib.distances.augment_coordinates
 
         """
-        # If no cutoff distance is provided but PBC aware
 
         # set coords dtype to float32
         # augment coordinates will work only with float32
         coords = np.asarray(coords, dtype=np.float32)
 
+        # If no cutoff distance is provided but PBC aware
         if self.pbc:
-            if self.cutoff is None:
-                raise ValueError("Cutoff needs to be provided "
-                                 "when working with PBC.")
+            self.cutoff = cutoff
+            if cutoff is None:
+                raise RuntimeError('Provide a cutoff distance'
+                                   ' with tree.set_coords(...)')
 
             # Bring the coordinates in the central cell
             self.coords = apply_PBC(coords, self.box)
