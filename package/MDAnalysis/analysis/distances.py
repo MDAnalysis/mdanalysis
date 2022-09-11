@@ -199,6 +199,6 @@ def between(group, A, B, distance):
 
     """
     ns_group = AtomNeighborSearch(group)
-    resA = set(ns_group.search(A, distance))
-    resB = set(ns_group.search(B, distance))
-    return sum(sorted(resB.intersection(resA)))
+    resA = ns_group.search(A, distance)
+    resB = ns_group.search(B, distance)
+    return resB.intersection(resA)
