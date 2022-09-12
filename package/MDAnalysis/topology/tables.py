@@ -307,13 +307,10 @@ TABLE_VDWRADII = r"""
 # Van der Waals radii taken from
 # [1] Bondi, A. (1964). "Van der Waals Volumes and Radii".
 #     J. Phys. Chem. 68 (3): 441-451. doi:10.1021/j100785a001.
-# [2] Rowland and Taylor (1996). "Intermolecular Nonbonded Contact Distances in
-#                                 Organic Crystal Structures:
-#                                 Comparison with Distances Expected from
-#                                 van der Waals Radii".
+# [2] Rowland and Taylor (1996). "Intermolecular Nonbonded Contact Distances in Organic Crystal Structures:
+#                                 Comparison with Distances Expected from van der Waals Radii".
 #     J. Phys. Chem., 1996, 100 (18), 7384.7391. doi:10.1021/jp953141+.
-# [3] Mantina, et al. (2009). "Consistent van der Waals Radii
-# for the Whole Main Group".
+# [3] Mantina, et al. (2009). "Consistent van der Waals Radii for the Whole Main Group".
 #     J. Phys. Chem. A, 2009, 113 (19), 5806-5812. doi:10.1021/jp8111556.
 #------------ -----------
 # atomtype    r_vdw
@@ -379,27 +376,24 @@ U    1.86
 #: .. SeeAlso:: :func:`MDAnalysis.topology.core.guess_bonds`
 vdwradii = kv2dict(TABLE_VDWRADII, convertor=float)
 
-Z2SYMB = {1: 'H', 2: 'He',
-          3: 'Li', 4: 'Be', 5: 'B', 6: 'C', 7: 'N', 8: 'O', 9: 'F', 10: 'Ne',
-          11: 'Na', 12: 'Mg', 13: 'Al', 14: 'Si', 15: 'P', 16: 'S', 17: 'Cl',
-          18: 'Ar', 20: 'Ca', 21: 'Sc', 22: 'Ti', 23: 'V', 24: 'Cr', 25: 'Mn',
-          19: 'K', 26: 'Fe', 29: 'Cu', 30: 'Zn', 31: 'Ga', 32: 'Ge', 33: 'As',
-          27: 'Co', 28: 'Ni', 34: 'Se', 38: 'Sr', 39: 'Y', 40: 'Zr', 41: 'Nb',
-          35: 'Br', 36: 'Kr', 37: 'Rb', 42: 'Mo', 47: 'Ag', 48: 'Cd', 49: 'In',
-          43: 'Tc', 44: 'Ru', 45: 'Rh', 46: 'Pd', 50: 'Sn', 56: 'Ba', 57: 'La',
-          51: 'Sb', 52: 'Te', 53: 'I', 54: 'Xe', 55: 'Cs', 58: 'Ce', 65: 'Tb',
-          59: 'Pr', 60: 'Nd', 61: 'Pm', 62: 'Sm', 63: 'Eu', 64: 'Gd', 66: 'Dy',
-          67: 'Ho', 68: 'Er', 69: 'Tm', 70: 'Yb', 71: 'Lu', 72: 'Hf', 73: 'Ta',
-          74: 'W', 76: 'Os', 77: 'Ir', 78: 'Pt', 80: 'Hg', 81: 'Tl', 82: 'Pb',
-          75: 'Re', 79: 'Au', 85: 'At', 86: 'Rn', 87: 'Fr', 88: 'Ra', 97: 'Bk',
-          83: 'Bi', 84: 'Po', 89: 'Ac', 90: 'Th', 95: 'Am', 96: 'Cm',
-          91: 'Pa', 92: 'U', 93: 'Np', 94: 'Pu', 98: 'Cf', 104: 'Rf',
-          105: 'Db', 99: 'Es', 100: 'Fm', 101: 'Md', 102: 'No', 103: 'Lr',
-          111: 'Rg', 106: 'Sg', 107: 'Bh', 108: 'Hs', 109: 'Mt', 110: 'Ds',
-          112: 'Cn', 113: 'Nh', 114: 'Fl', 115: 'Mc', 116: 'Lv',
-          117: 'Ts', 118: 'Og'}
+Z2SYMB = {1: 'H',                                                                2: 'He', 
+          3: 'Li',   4: 'Be',  5: 'B',   6: 'C',   7: 'N',   8: 'O',   9: 'F',  10: 'Ne', 
+          11: 'Na', 12: 'Mg', 13: 'Al', 14: 'Si', 15: 'P',  16: 'S',  17: 'Cl', 18: 'Ar', 
+          19: 'K',  20: 'Ca', 21: 'Sc', 22: 'Ti', 23: 'V',  24: 'Cr', 25: 'Mn', 26: 'Fe', 
+          27: 'Co', 28: 'Ni', 29: 'Cu', 30: 'Zn', 31: 'Ga', 32: 'Ge', 33: 'As', 34: 'Se', 
+          35: 'Br', 36: 'Kr', 37: 'Rb', 38: 'Sr', 39: 'Y',  40: 'Zr', 41: 'Nb', 42: 'Mo', 
+          43: 'Tc', 44: 'Ru', 45: 'Rh', 46: 'Pd', 47: 'Ag', 48: 'Cd', 49: 'In', 50: 'Sn', 
+          51: 'Sb', 52: 'Te', 53: 'I',  54: 'Xe', 55: 'Cs', 56: 'Ba', 57: 'La', 58: 'Ce', 
+          59: 'Pr', 60: 'Nd', 61: 'Pm', 62: 'Sm', 63: 'Eu', 64: 'Gd', 65: 'Tb', 66: 'Dy', 
+          67: 'Ho', 68: 'Er', 69: 'Tm', 70: 'Yb', 71: 'Lu', 72: 'Hf', 73: 'Ta', 74: 'W', 
+          75: 'Re', 76: 'Os', 77: 'Ir', 78: 'Pt', 79: 'Au', 80: 'Hg', 81: 'Tl', 82: 'Pb', 
+          83: 'Bi', 84: 'Po', 85: 'At', 86: 'Rn', 87: 'Fr', 88: 'Ra', 89: 'Ac', 90: 'Th', 
+          91: 'Pa', 92: 'U',  93: 'Np', 94: 'Pu', 95: 'Am', 96: 'Cm', 97: 'Bk', 98: 'Cf', 
+          99: 'Es', 100: 'Fm', 101: 'Md', 102: 'No', 103: 'Lr', 104: 'Rf', 105: 'Db', 
+          106: 'Sg', 107: 'Bh', 108: 'Hs', 109: 'Mt', 110: 'Ds', 111: 'Rg', 112: 'Cn', 
+          113: 'Nh', 114: 'Fl', 115: 'Mc', 116: 'Lv', 117: 'Ts', 118: 'Og'}
 
-SYMB2Z = {v: k for k, v in Z2SYMB.items()}
+SYMB2Z = {v:k for k, v in Z2SYMB.items()}
 
 # Conversion between SYBYL atom types and corresponding elements
 # Tripos MOL2 file format:
