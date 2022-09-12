@@ -147,7 +147,7 @@ def test_guess_bonds_Error():
 def test_guess_bond_coord_error():
     u = mda.Universe(datafiles.PDB)
     with pytest.raises(ValueError):
-        DefaultGuesser(None).guess_bonds(u.atoms, [[1,2,2]])
+        DefaultGuesser(u).guess_bonds(u.atoms, [[1,2,2]])
 
 
 def test_guess_impropers(default_guesser):

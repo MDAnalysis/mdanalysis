@@ -38,7 +38,7 @@ class RDKitParserBase(ParserBase):
     expected_attrs = ['ids', 'names', 'elements', 'masses', 'aromaticities',
                       'resids', 'resnums', 'chiralities',
                       'segids',
-                      'bonds', 'types'
+                      'bonds', 'types',
                      ]
     
     expected_n_atoms = 0
