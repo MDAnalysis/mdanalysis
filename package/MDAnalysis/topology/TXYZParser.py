@@ -47,6 +47,7 @@ import itertools
 import numpy as np
 
 from . import guessers
+from .tables import SYMB2Z
 from ..lib.util import openany
 from .base import TopologyReaderBase
 from ..core.topology import Topology
@@ -59,6 +60,7 @@ from ..core.topologyattrs import (
     Resids,
     Resnums,
     Segids,
+    Elements,
 )
 
 
@@ -89,6 +91,7 @@ class TXYZParser(TopologyReaderBase):
             names = np.zeros(natoms, dtype=object)
             types = np.zeros(natoms, dtype=object)
             bonds = []
+            validated_elements = []
             # Find first atom line, maybe there's box information
             fline = inf.readline()
             try:
@@ -117,9 +120,16 @@ class TXYZParser(TopologyReaderBase):
         # Guessing time
         masses = guessers.guess_masses(names)
 
+        for n in names:
+             if n.capitalize() in SYMB2Z:
+                 validated_elements.append(n.capitalize())
+             else:
+                validated_elements.append('')
+
         attrs = [Atomnames(names),
                  Atomids(atomids),
                  Atomtypes(types),
+                 Elements(np.array(validated_elements, dtype=object)),
                  Bonds(tuple(bonds)),
                  Masses(masses, guessed=True),
                  Resids(np.array([1])),
