@@ -23,13 +23,14 @@
 
 import pytest
 import numpy as np
-from numpy.testing import assert_almost_equal
+from numpy.testing import assert_allclose
 import pickle
 
 from pathlib import Path
 
 import MDAnalysis as mda
 from MDAnalysis import units
+from MDAnalysis.auxiliary.EDR import HAS_PYEDR
 
 from MDAnalysisTests.datafiles import (AUX_EDR,
                                        AUX_EDR_TPR,
@@ -62,12 +63,16 @@ def get_auxstep_data(step):
 def get_edr_unit_dict(step):
     return read_raw_data_file(step)[1]
 
+@pytest.mark.skipif(HAS_PYEDR, reason="pyedr present")
+def test_pyedr_not_present_raises():
+    with pytest.raises(ImportError, match="please install pyedr"):
+        aux = mda.auxiliary.EDR.EDRReader(AUX_EDR)
 
 # The EDRReader behaves differently from the XVGReader, creating dummy test
 # data similar to what is done for XVG is not possible. The EDRReference and
 # some tests in TestEDRReader had to be changed.
 
-
+@pytest.mark.skipif(not HAS_PYEDR, reason="pyedr not installed")
 class EDRReference(BaseAuxReference):
     def __init__(self):
         super(EDRReference, self).__init__()
@@ -161,7 +166,7 @@ class EDRReference(BaseAuxReference):
         self.angles = np.array([3764.52734375, 3752.83032227,
                                 3731.59179688, 3683.40942383])
 
-
+@pytest.mark.skipif(not HAS_PYEDR, reason="pyedr not installed")
 class TestEDRReader(BaseAuxReaderTest):
     @staticmethod
     @pytest.fixture
@@ -213,7 +218,7 @@ class TestEDRReader(BaseAuxReaderTest):
         # trajectory here has same dt, offset; so there's a direct
         # correspondence between frames and steps
         for i, ts in enumerate(ref_universe.trajectory):
-            assert_almost_equal(ts.aux.test, ref.auxsteps[i].data["Bond"])
+            assert_allclose(ts.aux.test, ref.auxsteps[i].data["Bond"])
 
     def test_iterate_as_auxiliary_from_trajectory(self, ref, ref_universe):
         # check representative values of aux for each frame are as expected
@@ -221,7 +226,7 @@ class TestEDRReader(BaseAuxReaderTest):
         # correspondence between frames and steps, and iter_as_aux will run
         # through all frames
         for i, ts in enumerate(ref_universe.trajectory.iter_as_aux('test')):
-            assert_almost_equal(ts.aux.test, ref.auxsteps[i].data["Bond"])
+            assert_allclose(ts.aux.test, ref.auxsteps[i].data["Bond"])
 
     def test_step_to_frame_time_diff(self, reader, ref):
         # Timestep is 0.002 (10 %) longer than auxiliary data
@@ -234,14 +239,14 @@ class TestEDRReader(BaseAuxReaderTest):
                                                     return_time_diff=True)
 
             assert frame == idx
-            np.testing.assert_almost_equal(time_diff, idx * 0.002)
+            np.testing.assert_allclose(time_diff, idx * 0.002)
 
     def test_read_lower_freq_timestep(self, ref, reader):
         # test reading a timestep with lower frequency
         ts = ref.lower_freq_ts
         reader.update_ts(ts)
         # check the value set in ts is as we expect
-        assert_almost_equal(ts.aux.test["Bond"], ref.lowf_closest_rep,
+        assert_allclose(ts.aux.test["Bond"], ref.lowf_closest_rep,
                             err_msg="Representative value in ts.aux "
                                     "does not match")
 
@@ -249,7 +254,7 @@ class TestEDRReader(BaseAuxReaderTest):
         # try reading a timestep with higher frequency
         ts = ref.higher_freq_ts
         reader.update_ts(ts)
-        assert_almost_equal(ts.aux.test, ref.highf_rep,
+        assert_allclose(ts.aux.test, ref.highf_rep,
                             err_msg="Representative value in ts.aux "
                                     "does not match")
 
@@ -257,7 +262,7 @@ class TestEDRReader(BaseAuxReaderTest):
         # try reading a timestep offset from auxiliary
         ts = ref.offset_ts
         reader.update_ts(ts)
-        assert_almost_equal(ts.aux.test["Bond"], ref.offset_closest_rep,
+        assert_allclose(ts.aux.test["Bond"], ref.offset_closest_rep,
                             err_msg="Representative value in ts.aux "
                                     "does not match")
 
@@ -270,7 +275,7 @@ class TestEDRReader(BaseAuxReaderTest):
         reader.update_ts(ts)
         # check the representative value set in ts is as expected
         test_value = [ts.aux.test["Time"], ts.aux.test["Bond"]]
-        assert_almost_equal(test_value, ref.lowf_average_rep,
+        assert_allclose(test_value, ref.lowf_average_rep,
                             err_msg="Representative value does not match when "
                                     "using with option 'average'")
 
@@ -282,7 +287,7 @@ class TestEDRReader(BaseAuxReaderTest):
         ts = ref.lower_freq_ts
         reader.update_ts(ts)
         # check representative value set in ts is as expected
-        assert_almost_equal(ts.aux.test["Bond"], ref.lowf_cutoff_average_rep,
+        assert_allclose(ts.aux.test["Bond"], ref.lowf_cutoff_average_rep,
                             err_msg="Representative value does not match when "
                                     "applying cutoff")
 
@@ -361,20 +366,20 @@ class TestEDRReader(BaseAuxReaderTest):
 
     def test_read_all_times(self, reader):
         all_times_expected = np.array([0., 0.02, 0.04, 0.06])
-        assert np.all(all_times_expected == reader.read_all_times())
+        assert_allclose(all_times_expected,reader.read_all_times())
 
     def test_get_data_from_string(self, ref, reader):
         returned = reader.get_data("Bond")
         assert isinstance(returned, dict)
-        assert_almost_equal(ref.times, returned["Time"])
-        assert_almost_equal(ref.bonds, returned["Bond"])
+        assert_allclose(ref.times, returned["Time"])
+        assert_allclose(ref.bonds, returned["Bond"])
 
     def test_get_data_from_list(self, ref, reader):
         returned = reader.get_data(["Bond", "Angle"])
         assert isinstance(returned, dict)
-        assert_almost_equal(ref.times, returned["Time"])
-        assert_almost_equal(ref.bonds, returned["Bond"])
-        assert_almost_equal(ref.angles, returned["Angle"])
+        assert_allclose(ref.times, returned["Time"])
+        assert_allclose(ref.bonds, returned["Bond"])
+        assert_allclose(ref.angles, returned["Angle"])
 
     def test_get_data_everything(self, ref, reader):
         returned = reader.get_data()
@@ -382,15 +387,14 @@ class TestEDRReader(BaseAuxReaderTest):
         assert returned.keys() == returned_asterisk.keys()
         ref_terms = [key for key in get_auxstep_data(0).keys()]
         assert ref_terms == reader.terms
-        assert_almost_equal(ref.bonds, returned["Bond"])
+        assert_allclose(ref.bonds, returned["Bond"])
 
-    def test_get_data_invalid_selections(self, reader):
+    @pytest.mark.parametrize("get_data_input", (42,
+                                                "Not a valid term",
+                                                ["Bond", "Not a valid term"]))
+    def test_get_data_invalid_selections(self, reader, get_data_input):
         with pytest.raises(KeyError, match="data selector"):
-            reader.get_data(42)
-        with pytest.raises(KeyError, match="data selector"):
-            reader.get_data("Not a valid term")
-        with pytest.raises(KeyError, match="data selector"):
-            reader.get_data(["Bond", "Not a valid term"])
+            reader.get_data(get_data_input)
 
 # TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def test_warning_when_space_in_aux_spec(self, ref_universe, reader):
@@ -401,8 +405,8 @@ class TestEDRReader(BaseAuxReaderTest):
 # TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def test_warn_too_much_memory_usage(self, ref_universe, reader):
         with pytest.warns(UserWarning, match="AuxReader: memory usage "
-                          "warning! Auxiliary data takes up 3.328e-06 GB of "
-                          r"memory \(Warning limit: 1e-08 GB\)"):
+                          "warning! Auxiliary data takes up 3[0-9.]*e-06 GB of"
+                          r" memory \(Warning limit: 1e-08 GB\)"):
             ref_universe.trajectory.add_auxiliary({"temp": "Temperature"},
                                                   reader,
                                                   memory_limit=10)

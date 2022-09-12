@@ -23,4 +23,3 @@ sphinx_rtd_theme
 sphinx_sitemap
 threadpoolctl
 tqdm
-pyedr

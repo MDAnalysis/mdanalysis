@@ -23,9 +23,11 @@ Fixes
   * Upgrade to chemfiles 0.10.3 (Issue #3798)
 
 Enhancements
+  * AuxReaders not have a memory_limit parameter to control when memory usage
+    warnings are issued. (PR # 3749)
   * MDAnalysis.units now has a lookup dictionary called MDANALYSIS_BASE_UNITS
     where unit types like length or speed are mapped to their base units in
-    MDAnalysis (i.e. "A" or "A/ps")
+    MDAnalysis (i.e. "A" or "A/ps") (PR # 3749)
   * A new AuxReader for the GROMACS EDR file format was implemented.
     (Issue # 3629, PR # 3749)
   * Added benchmarks for bonds topology attribute (Issue #3785, PR #3806)
@@ -47,6 +49,7 @@ Deprecations
 
 08/29/22 IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli, miss77jun, rzhao271,
          yuxuanzhuang, hsadia538, lilyminium
+
  * 2.3.0
 
 Fixes

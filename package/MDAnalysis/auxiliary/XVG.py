@@ -325,10 +325,9 @@ class XVGFileReader(base.AuxFileReader):
                     # haven't set n_cols yet; set now
                     auxstep._n_cols = len(auxstep._data)
                 if len(auxstep._data) != auxstep._n_cols:
-                    raise ValueError('Step {0} has {1} columns instead of '
-                                     '{2}'.format(self.step,
-                                                  len(auxstep._data),
-                                                  auxstep._n_cols))
+                    raise ValueError(f'Step {self.step} has '
+                                     f'{len(auxstep._data)} columns instead '
+                                     f'of {auxstep._n_cols}')
                 return auxstep
             # line is comment only - move to next
             line = next(self.auxfile)

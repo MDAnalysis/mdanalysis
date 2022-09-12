@@ -39,6 +39,12 @@ auxiliary reader to parse EDR files. As such, a dictionary with string keys and
 numpy array values is loaded into the :class:`EDRReader`. It is basically a
 Python-based version of the C++ code in GROMACS_.
 
+
+The classes in this module are based on the `pyedr`_ package. Pyedr is an
+optional dependency and must be installed to use this Reader. Use of the reader
+without pyedr installed will raise an `ImportError`. The variable `HAS_PYEDR`
+indicates whether this module has pyedr availble.
+
 The EDR auxiliary reader takes the output from pyedr and makes this data
 available within MDAnalysis. The usual workflow starts with creating an
 EDRReader and passing it the file to read as such::
@@ -94,9 +100,8 @@ In general, to add EDR data to a trajectory, one needs to provide two
 arguments.
 
 .. note::
-    The following will change with the release of MDAnalysis 3.0, which is
-    scheduled for September 2023. From then on, the order of these two
-    arguments will be reversed.
+    The following will change with the release of MDAnalysis 3.0. From then on,
+    the order of these two arguments will be reversed.
 
 The first argument is the `aux_spec` dictionary. With it, users specify which
 entries from the EDR file they want to add, and they give it a more convenient
@@ -189,10 +194,18 @@ import warnings
 from typing import Optional, Union, Dict, List
 
 import numpy as np
-import pyedr
 
 from . import base
 from .. import units
+
+try:
+    import pyedr
+except ImportError:
+    # Indicates whether pyedr is found
+    HAS_PYEDR = False
+else:
+    # Indicates whether pyedr is found
+    HAS_PYEDR = True
 
 
 class EDRStep(base.AuxStep):
@@ -288,13 +301,17 @@ class EDRReader(base.AuxReader):
     Note
     ----
     The file is assumed to be of a size such that reading and storing the full
-    contents is practical.
+    contents is practical. A warning will be issued when memory usage exceeds
+    1 GB. This warning limit can be changed via the ``memory_limit`` kwarg.
     """
 
     format = "EDR"
     _Auxstep = EDRStep
 
     def __init__(self, filename: str, convert_units: bool = True, **kwargs):
+        if not HAS_PYEDR:
+            raise ImportError("EDRReader: To read EDR files please install "
+                              "pyedr.")
         self._auxdata = Path(filename).resolve()
         self.data_dict = pyedr.edr_to_dict(filename)
         self.unit_dict = pyedr.get_unit_dictionary(filename)

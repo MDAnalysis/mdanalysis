@@ -53,6 +53,7 @@ from .. import units
 from . import _AUXREADERS
 from .core import auxreader
 
+
 class _AuxReaderMeta(type):
     # auto register on class creation
     def __init__(cls, name, bases, classdict):
@@ -71,6 +72,9 @@ class AuxStep(object):
 
     Stores the auxiliary data for the current auxiliary step. On creation,
     ``step`` is set to -1.
+
+    .. versionchanged:: 2.4.0
+        Added memory_limit parameter to control raising memory usage warnings.
 
     Parameters
     ----------
@@ -98,13 +102,16 @@ class AuxStep(object):
         (Default: True) Set to False if ``dt`` is not constant
         throughout the auxiliary data set, in which case a valid
         ``time_selector`` must be provided.
+    memory_limit : float, optional
+        Sets the threshold of memory usage by auxiliary data  (in GB) at which
+        to issue a warning. Default: 1 GB.
 
     Attributes
     ----------
     step : int
         Number of the current auxiliary step (0-based).
-
     """
+
     def __init__(self, dt=1, initial_time=0, time_selector=None,
                  data_selector=None, constant_dt=True, memory_limit=None):
         self.step = -1
@@ -116,9 +123,6 @@ class AuxStep(object):
         # if invalid, will catch later
         self._time_selector_ = time_selector
         self._data_selector_ = data_selector
-
-
-
 
     @property
     def time(self):
@@ -231,6 +235,9 @@ class AuxStep(object):
 
         Default behaviour here works when ``data`` is a ndarray of floats. May
         need to overwrite in individual format's AuxSteps.
+
+        .. versionchanged:: 2.4.0
+            dtype changed to np.float64 from np.float_
         """
         return np.full_like(self.data, np.nan, dtype=np.float64)
 
@@ -244,6 +251,10 @@ class AuxReader(metaclass=_AuxReaderMeta):
 
     See the :ref:`Auxiliary API` for more on use.
 
+    .. versionchanged:: 2.4.0
+        Behaviour of ``cutoff`` changed, default parameter which specifies
+        not cutoff is set is now None, not -1.
+
     Parameters
     ----------
     auxname : str, optional
@@ -255,7 +266,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
         trajectory timestep. See :func:`calc_representative` for valid options.
     cutoff : float, optional
         Auxiliary steps further from the trajectory timestep than *cutoff*
-        (in ps) will be ignored when calculating representative values. If -1
+        (in ps) will be ignored when calculating representative values. If None
         (default), all auxiliary steps assigned to that timestep will be used.
     **kwargs
         Options to be passed to :class:`~AuxStep`
@@ -293,7 +304,9 @@ class AuxReader(metaclass=_AuxReaderMeta):
         # trajectory.
         self.auxname = auxname
         self.represent_ts_as = represent_ts_as
-        self.cutoff = cutoff
+        # no cutoff was previously passed as -1. This check is to maintain this
+        # behaviour: negative number is appropriately turned to None
+        self.cutoff = cutoff if cutoff is not None and cutoff >= 0 else None
         self.frame_data = None
         self.frame_rep = None
 
@@ -759,6 +772,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
         else:
             cutoff_data = {key: val for key, val in self.frame_data.items()
                            if abs(key) <= self.cutoff}
+
         if len(cutoff_data) == 0:
             # no steps are 'assigned' to this trajectory frame, so return
             # values of ``np.nan``

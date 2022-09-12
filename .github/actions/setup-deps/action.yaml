@@ -76,13 +76,13 @@ inputs:
     default: 'pytest-cov<=2.10.1'
   pytest-xdist:
     default: 'pytest-xdist'
-  pyedr:
-    default: 'pyedr'
   # pip-install optional dependencies
   duecredit:
     default: 'duecredit'
   parmed:
     default: 'parmed'
+  pyedr:
+    default: 'pyedr'
 
 runs:
   using: "composite"
@@ -142,10 +142,10 @@ runs:
           ${{ inputs.coverage }}
           ${{ inputs.pytest-cov }}
           ${{ inputs.pytest-xdist }}
-          ${{ inputs.pyedr }}
         PIP_OPT_DEPS: |
           ${{ inputs.duecredit }}
           ${{ inputs.parmed }}
+          ${{ inputs.pyedr }}
       run: |
         # setup full variable
         if [ ${{ inputs.full-deps }} = "true" ]; then
