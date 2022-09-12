@@ -46,7 +46,7 @@ from MDAnalysisTests.datafiles import (
     GRO, TRR,
     two_water_gro, two_water_gro_nonames,
     TRZ, TRZ_psf,
-    PDB, MMTF, CONECT
+    PDB, MMTF, CONECT,
 )
 
 import MDAnalysis as mda
