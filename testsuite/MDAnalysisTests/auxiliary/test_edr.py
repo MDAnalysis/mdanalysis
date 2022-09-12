@@ -63,6 +63,7 @@ def get_auxstep_data(step):
 def get_edr_unit_dict(step):
     return read_raw_data_file(step)[1]
 
+
 @pytest.mark.skipif(HAS_PYEDR, reason="pyedr present")
 def test_pyedr_not_present_raises():
     with pytest.raises(ImportError, match="please install pyedr"):
@@ -71,6 +72,7 @@ def test_pyedr_not_present_raises():
 # The EDRReader behaves differently from the XVGReader, creating dummy test
 # data similar to what is done for XVG is not possible. The EDRReference and
 # some tests in TestEDRReader had to be changed.
+
 
 @pytest.mark.skipif(not HAS_PYEDR, reason="pyedr not installed")
 class EDRReference(BaseAuxReference):
@@ -166,6 +168,7 @@ class EDRReference(BaseAuxReference):
         self.angles = np.array([3764.52734375, 3752.83032227,
                                 3731.59179688, 3683.40942383])
 
+
 @pytest.mark.skipif(not HAS_PYEDR, reason="pyedr not installed")
 class TestEDRReader(BaseAuxReaderTest):
     @staticmethod
@@ -247,24 +250,24 @@ class TestEDRReader(BaseAuxReaderTest):
         reader.update_ts(ts)
         # check the value set in ts is as we expect
         assert_allclose(ts.aux.test["Bond"], ref.lowf_closest_rep,
-                            err_msg="Representative value in ts.aux "
-                                    "does not match")
+                        err_msg="Representative value in ts.aux "
+                                "does not match")
 
     def test_read_higher_freq_timestep(self, ref, reader):
         # try reading a timestep with higher frequency
         ts = ref.higher_freq_ts
         reader.update_ts(ts)
         assert_allclose(ts.aux.test, ref.highf_rep,
-                            err_msg="Representative value in ts.aux "
-                                    "does not match")
+                        err_msg="Representative value in ts.aux "
+                                "does not match")
 
     def test_read_offset_timestep(self, ref, reader):
         # try reading a timestep offset from auxiliary
         ts = ref.offset_ts
         reader.update_ts(ts)
         assert_allclose(ts.aux.test["Bond"], ref.offset_closest_rep,
-                            err_msg="Representative value in ts.aux "
-                                    "does not match")
+                        err_msg="Representative value in ts.aux "
+                                "does not match")
 
     def test_represent_as_average(self, ref, reader):
         # test the 'average' option for 'represent_ts_as'
@@ -276,8 +279,8 @@ class TestEDRReader(BaseAuxReaderTest):
         # check the representative value set in ts is as expected
         test_value = [ts.aux.test["Time"], ts.aux.test["Bond"]]
         assert_allclose(test_value, ref.lowf_average_rep,
-                            err_msg="Representative value does not match when "
-                                    "using with option 'average'")
+                        err_msg="Representative value does not match when "
+                                "using with option 'average'")
 
     def test_represent_as_average_with_cutoff(self, ref, reader):
         # test the 'represent_ts_as' 'average' option when we have a cutoff set
@@ -288,8 +291,8 @@ class TestEDRReader(BaseAuxReaderTest):
         reader.update_ts(ts)
         # check representative value set in ts is as expected
         assert_allclose(ts.aux.test["Bond"], ref.lowf_cutoff_average_rep,
-                            err_msg="Representative value does not match when "
-                                    "applying cutoff")
+                        err_msg="Representative value does not match when "
+                                "applying cutoff")
 
 # TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def test_add_all_terms_from_file(self, ref, ref_universe):
@@ -366,7 +369,7 @@ class TestEDRReader(BaseAuxReaderTest):
 
     def test_read_all_times(self, reader):
         all_times_expected = np.array([0., 0.02, 0.04, 0.06])
-        assert_allclose(all_times_expected,reader.read_all_times())
+        assert_allclose(all_times_expected, reader.read_all_times())
 
     def test_get_data_from_string(self, ref, reader):
         returned = reader.get_data("Bond")
