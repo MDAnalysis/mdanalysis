@@ -617,6 +617,7 @@ class H5MDReader(base.ReaderBase):
 
     def _read_frame(self, frame):
         """reads data from h5md file and copies to current timestep"""
+        print('read_frame')
         try:
             for name, value in self._has.items():
                 if value:
@@ -817,7 +818,6 @@ class H5MDReader(base.ReaderBase):
         self.__dict__ = state
         self._particle_group = self._file['particles'][
                                list(self._file['particles'])[0]]
-        self[self.ts.frame]
 
 
 class H5MDWriter(base.WriterBase):
