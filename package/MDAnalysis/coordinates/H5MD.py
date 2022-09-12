@@ -617,7 +617,6 @@ class H5MDReader(base.ReaderBase):
 
     def _read_frame(self, frame):
         """reads data from h5md file and copies to current timestep"""
-        print('read_frame')
         try:
             for name, value in self._has.items():
                 if value:
