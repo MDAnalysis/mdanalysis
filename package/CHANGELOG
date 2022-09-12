@@ -13,16 +13,22 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud
+??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, yuxuanzhuang
 
  * 2.4.0
 
 Fixes
   * Fixes distances.between not always returning AtomGroup (Issue #3794)
   * Upgrade to chemfiles 0.10.3 (Issue #3798)
+  * Fix failure in double-serialization of TextIOPicklable file reader.
+    (Issue #3723, PR #3722)
+  * Fix failure to preserve modification of coordinates after serialization.
+    (Issue #3723, PR #3722)
 
 Enhancements
   * Added benchmarks for bonds topology attribute (Issue #3785, PR #3806)
+  * Improve performance in Universe serialization by no explicit redirection to
+    the timestep. (Issue #3721, PR #3722)
 
 
 Changes
@@ -43,8 +49,6 @@ Fixes
   * add a 0.5 for correct midpoints in hole analysis (Issue #3715)
   * Fix reading error when PDB CONECT records are corrupt. (Issue #988)
   * Fix writing unusable PDB CONECT records with index>100000. (Issue #988)
-  * Fixes failure in double-serialization of TextIOPicklable file reader.
-    (Issue #3723, PR #3722)
 
 Enhancements
   * Add a new `formalcharge` attribute for storing formal charges (PR #3755)
@@ -58,8 +62,6 @@ Enhancements
     (CZI Performance track, PR #3683)
   * Refactor make_downshift_arrays with vector operation in numpy(PR #3724)
   * Optimize topology serialization/construction by lazy-building _RA and _SR.
-  * Improve performance in Universe serialization by no explicit redirection to
-    the timestep. (Issue #3721, PR #3722)
 
 Changes
   * To add additional optional packages for different file formats when

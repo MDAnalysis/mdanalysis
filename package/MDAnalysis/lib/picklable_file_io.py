@@ -189,7 +189,7 @@ class TextIOPicklable(io.TextIOWrapper):
 
 
     .. versionadded:: 2.0.0
-    .. versionchanged:: 2.3.0
+    .. versionchanged:: 2.4.0
        The raw class instance instead of the class name
        that is wrapped inside will be serialized.
        After deserialization, the current position is no longer reset

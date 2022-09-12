@@ -656,6 +656,9 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
     .. versionchanged:: 2.0.0
        Now supports (un)pickle. Upon unpickling,
        the current timestep is retained by reconstrunction.
+    .. versionchanged:: 2.4.0
+       the modification of coordinates was preserved
+       after serialization.
     """
 
     #: The appropriate Timestep class, e.g.
