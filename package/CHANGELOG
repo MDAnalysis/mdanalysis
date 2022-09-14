@@ -21,6 +21,8 @@ The rules for this file:
 Fixes
   * Fixes distances.between not always returning AtomGroup (Issue #3794)
   * Upgrade to chemfiles 0.10.3 (Issue #3798)
+  * Auxiliary; determination of representative frames: Removed undefined
+    behaviour for cutoff values < -1 (PR # 3749)
 
 Enhancements
   * AuxReaders not have a memory_limit parameter to control when memory usage
@@ -34,6 +36,9 @@ Enhancements
 
 
 Changes
+ * Auxiliary; determination of representative frames: The default value for
+   cutoff is now None, not -1. Negative values are now turned
+   to None. (PR #3749)
  * `MDAnalysis.coordinates.base.add_auxiliary()` now supports adding of
     multiple auxiliary data points at the same time. To this end, the API was
     rewritten and now expects dictionaries of `desired attribute name`:

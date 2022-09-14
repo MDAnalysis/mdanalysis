@@ -69,13 +69,17 @@ def test_pyedr_not_present_raises():
     with pytest.raises(ImportError, match="please install pyedr"):
         aux = mda.auxiliary.EDR.EDRReader(AUX_EDR)
 
-# The EDRReader behaves differently from the XVGReader, creating dummy test
-# data similar to what is done for XVG is not possible. The EDRReference and
-# some tests in TestEDRReader had to be changed.
-
 
 @pytest.mark.skipif(not HAS_PYEDR, reason="pyedr not installed")
 class EDRReference(BaseAuxReference):
+    """
+    Class to hold reference values for :class:`TestEDRReader` to test against.
+
+    Because of the binary file format, it is not possible to create a test file
+    of the format that is assumed for :class:`BaseAuxReference`. As such, some
+    adaptations were necessary for the EDRReader.
+    """
+
     def __init__(self):
         super(EDRReference, self).__init__()
         self.testdata = AUX_EDR
@@ -171,6 +175,16 @@ class EDRReference(BaseAuxReference):
 
 @pytest.mark.skipif(not HAS_PYEDR, reason="pyedr not installed")
 class TestEDRReader(BaseAuxReaderTest):
+    """ Class to conduct tests for the auxiliary EDRReader
+
+    Normally, it would be desirable to use the tests from
+    :class:`BaseAuxReaderTest`, but this is not possible for some of the tests
+    there because of the differences between :class:`BaseAuxReference` and
+    :class:`EDRReference` which are ultimately due to the different file
+    format. Therefore, some tests had to be overridden here. New tests for EDR-
+    specific functionality were also added.
+    """
+
     @staticmethod
     @pytest.fixture
     def ref():
@@ -242,7 +256,7 @@ class TestEDRReader(BaseAuxReaderTest):
                                                     return_time_diff=True)
 
             assert frame == idx
-            np.testing.assert_allclose(time_diff, idx * 0.002)
+            assert_allclose(time_diff, idx * 0.002)
 
     def test_read_lower_freq_timestep(self, ref, reader):
         # test reading a timestep with lower frequency

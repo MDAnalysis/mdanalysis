@@ -44,6 +44,7 @@ import numbers
 import math
 import warnings
 from typing import Union, Optional, Dict
+from collections import defaultdict
 
 import numpy as np
 
@@ -794,13 +795,10 @@ class AuxReader(metaclass=_AuxReaderMeta):
                 # for readers like EDRReader, the above does not work
                 # because each step contains a dictionary of numpy arrays
                 # as data
-                value = {}
+                value = defaultdict(float)
                 for dataset in cutoff_data:
                     for term in self.terms:
-                        if term not in value:
-                            value[term] = cutoff_data[dataset][term]
-                        else:
-                            value[term] += cutoff_data[dataset][term]
+                        value[term] += cutoff_data[dataset][term]
                 for term in value:
                     value[term] = value[term] / len(cutoff_data)
         return value
