@@ -13,6 +13,15 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+09/16/22 aya9aladdin
+
+*2.4
+
+Fixes
+  *fixes guessed_attributes and read_attributes methods of Topology class, as 
+   those methods was giving unexpected result regarding atoms attribute objects that 
+   has a list values for its is_guessed attribute (bonds, angles, etc)
+
 ??/??/?? IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli, miss77jun
 
  * 2.3.0
