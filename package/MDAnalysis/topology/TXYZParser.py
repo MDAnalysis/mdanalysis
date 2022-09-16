@@ -122,9 +122,10 @@ class TXYZParser(TopologyReaderBase):
 
         # Guessing time
         masses = guessers.guess_masses(names)
+        
+        
 
-
-
+         
         attrs = [Atomnames(names),
                  Atomids(atomids),
                  Atomtypes(types),
