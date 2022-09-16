@@ -72,8 +72,11 @@ class TXYZParser(TopologyReaderBase):
 
     - Atomnames
     - Atomtypes
+    -Elements
 
     .. versionadded:: 0.17.0
+    .. versionchanged:: 2.3
+       Adding Element attribute if all names is a valid element symbol
     """
     format = ['TXYZ', 'ARC']
 
@@ -92,7 +95,6 @@ class TXYZParser(TopologyReaderBase):
             names = np.zeros(natoms, dtype=object)
             types = np.zeros(natoms, dtype=object)
             bonds = []
-            validated_elements = []
             # Find first atom line, maybe there's box information
             fline = inf.readline()
             try:

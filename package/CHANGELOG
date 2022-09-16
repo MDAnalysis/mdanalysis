@@ -13,6 +13,14 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+09/16/22 aya9aladdin
+
+* 2.3.0
+
+Changes
+  *adding element attribute to TXYZParser if all atom names are valid element symbols
+
+
 ??/??/?? IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli, miss77jun
 
  * 2.3.0
