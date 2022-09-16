@@ -120,6 +120,7 @@ class TXYZParser(TopologyReaderBase):
                     if i < other_atom:
                         bonds.append((i, other_atom))
 
+
         # Guessing time
         masses = guessers.guess_masses(names)
         
