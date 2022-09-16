@@ -687,7 +687,7 @@ class TestTopologyGuessed(object):
         assert resnames in guessed
         assert not names in guessed
         assert not resids in guessed
-        assert not bonds in guessed
+        assert bonds not in guessed
 
     def test_read(self, names, types, resids, resnames, bonds, top):
         read = top.read_attributes
