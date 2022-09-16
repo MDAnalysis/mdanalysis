@@ -72,7 +72,7 @@ class TXYZParser(TopologyReaderBase):
 
     - Atomnames
     - Atomtypes
-    -Elements
+    - Elements
 
     .. versionadded:: 0.17.0
     .. versionchanged:: 2.3
@@ -122,6 +122,7 @@ class TXYZParser(TopologyReaderBase):
 
         # Guessing time
         masses = guessers.guess_masses(names)
+
         attrs = [Atomnames(names),
                  Atomids(atomids),
                  Atomtypes(types),
