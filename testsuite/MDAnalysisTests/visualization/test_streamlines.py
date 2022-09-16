@@ -21,13 +21,13 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import numpy as np
-from numpy.testing import assert_almost_equal
 import MDAnalysis
 from MDAnalysis.visualization import (streamlines,
                                       streamlines_3D)
 from MDAnalysis.coordinates.XTC import XTCWriter
 from MDAnalysisTests.datafiles import Martini_membrane_gro
 import pytest
+from pytest import approx
 import matplotlib.pyplot as plt
 import os
 
@@ -105,6 +105,6 @@ def test_streamplot_3D(membrane_xtc, univ, tmpdir):
     assert dx.shape == (5, 5, 2)
     assert dy.shape == (5, 5, 2)
     assert dz.shape == (5, 5, 2)
-    assert_almost_equal(dx[4, 4, 0], 0.700004, decimal=5)
-    assert_almost_equal(dy[0, 0, 0], 0.460000, decimal=5)
-    assert_almost_equal(dz[2, 2, 0], 0.240005, decimal=5)
+    assert dx[4, 4, 0] == approx(0.700004, abs=1e-5)
+    assert dy[0, 0, 0] == approx(0.460000, abs=1e-5)
+    assert dz[2, 2, 0] == approx(0.240005, abs=1e-5)

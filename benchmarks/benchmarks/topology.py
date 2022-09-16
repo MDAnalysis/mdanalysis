@@ -30,3 +30,20 @@ class TopologyGuessBench(object):
                              box=self.ag.dimensions,
                              vdwradii=self.vdwradii)
 
+
+class BondsBench(object):
+    """
+    Benchmarks for getting bonds
+    """
+
+    params = (1000, 10000, 100000, 1000000)
+    param_names = ['num_bonds']
+
+    def setup(self, num_bonds):
+        self.u = MDAnalysis.Universe.empty(2*num_bonds)
+        bonds = np.arange(2*num_bonds).reshape(num_bonds, 2)
+        self.u.add_bonds(bonds)
+
+    def time_bonds(self, num_bonds):
+        """Benchmark for calculating bonds"""
+        self.u.bonds
