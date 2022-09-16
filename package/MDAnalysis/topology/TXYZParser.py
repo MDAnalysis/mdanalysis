@@ -45,6 +45,7 @@ Classes
 
 import itertools
 import numpy as np
+import warnings
 
 from . import guessers
 from .tables import SYMB2Z
@@ -120,23 +121,23 @@ class TXYZParser(TopologyReaderBase):
         # Guessing time
         masses = guessers.guess_masses(names)
 
-        for n in names:
-             if n.capitalize() in SYMB2Z:
-                 validated_elements.append(n.capitalize())
-             else:
-                validated_elements.append('')
-
         attrs = [Atomnames(names),
                  Atomids(atomids),
                  Atomtypes(types),
-                 Elements(np.array(validated_elements, dtype=object)),
                  Bonds(tuple(bonds)),
                  Masses(masses, guessed=True),
                  Resids(np.array([1])),
                  Resnums(np.array([1])),
                  Segids(np.array(['SYSTEM'], dtype=object)),
                  ]
-
+        if all(n.capitalize() in SYMB2Z for n in names):
+            attrs.append(Elements(np.array(names, dtype=object)))
+            
+        else:
+            warnings.warn("Element information is missing, elements attribute "
+                          "will not be populated. If needed these can be "
+                          "guessed using MDAnalysis.topology.guessers.")
+ 
         top = Topology(natoms, 1, 1,
                        attrs=attrs)
 
