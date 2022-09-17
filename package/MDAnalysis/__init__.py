@@ -155,6 +155,8 @@ __all__ = ['Universe', 'Writer', 'fetch_mmtf',
 
 import logging
 import warnings
+from typing import Dict
+
 
 logger = logging.getLogger("MDAnalysis.__init__")
 
@@ -167,14 +169,14 @@ except ImportError:
 
 # Registry of Readers, Parsers and Writers known to MDAnalysis
 # Metaclass magic fills these as classes are declared.
-_READERS = {}
-_READER_HINTS = {}
-_SINGLEFRAME_WRITERS = {}
-_MULTIFRAME_WRITERS = {}
-_PARSERS = {}
-_PARSER_HINTS = {}
-_SELECTION_WRITERS = {}
-_CONVERTERS = {}
+_READERS: Dict = {}
+_READER_HINTS: Dict = {}
+_SINGLEFRAME_WRITERS: Dict = {}
+_MULTIFRAME_WRITERS: Dict = {}
+_PARSERS: Dict = {}
+_PARSER_HINTS: Dict = {}
+_SELECTION_WRITERS: Dict = {}
+_CONVERTERS: Dict = {}
 # Registry of TopologyAttributes
 _TOPOLOGY_ATTRS = {}  # {attrname: cls}
 _TOPOLOGY_TRANSPLANTS = {}   # {name: [attrname, method, transplant class]}

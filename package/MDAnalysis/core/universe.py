@@ -466,13 +466,13 @@ class Universe(object):
             n_residues = 0
             n_segments = 0
 
-        if atom_resindex is None:
+        if atom_resindex is None and n_residues > 1:
             warnings.warn(
                 'Residues specified but no atom_resindex given.  '
                 'All atoms will be placed in first Residue.',
                 UserWarning)
 
-        if residue_segindex is None:
+        if residue_segindex is None and n_segments > 1:
             warnings.warn(
                 'Segments specified but no segment_resindex given.  '
                 'All residues will be placed in first Segment',
