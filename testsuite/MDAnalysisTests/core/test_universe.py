@@ -381,6 +381,7 @@ class TestTransformations(object):
         ref = translate([10,10,10])(uref.trajectory.ts)
         assert_almost_equal(u.trajectory.ts.positions, ref, decimal=6)
 
+
 class TestGuessTopologyAttr(object):
     def test_automatic_type_and_mass_guessing(self):
         u = mda.Universe(PDB_small)
@@ -516,6 +517,7 @@ class TestGuessBonds(object):
         ag.guess_bonds()
 
         self._check_atomgroup(ag, u)
+
     def guess_bonds_with_to_guess(self):
         u = mda.Universe(two_water_gro, to_guess=['bonds'])
         assert u.atoms.bonds

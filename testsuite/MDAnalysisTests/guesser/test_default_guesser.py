@@ -50,6 +50,7 @@ requires_rdkit = pytest.mark.skipif(import_not_available("rdkit"),
 def default_guesser():
     return DefaultGuesser(None)
 
+
 class TestGuessMasses(object):
     def test_guess_masses_from_universe(self):
         topology = Topology(3, attrs=[Atomtypes(['C', 'C', 'H'])])
@@ -84,10 +85,12 @@ class TestGuessMasses(object):
     def test_guess_atom_mass(self, default_guesser):
         assert default_guesser.guess_atom_mass('1H') == approx(1.008)
 
+
     def test_guess_masses_with_no_reference_elements(self):
         u = mda.Universe.empty(3)
         with pytest.raises(ValueError, match=('there is no reference attributes ')):
             u.guess_TopologyAttributes('default', ['masses'])
+
 
 
 class TestGuessTypes(object):
@@ -143,10 +146,12 @@ def test_guess_bonds_Error():
         u.guess_TopologyAttributes(to_guess=['bonds'])
 
 
+
 def test_guess_bond_coord_error():
     u = mda.Universe(datafiles.PDB)
     with pytest.raises(ValueError):
         DefaultGuesser(u).guess_bonds(u.atoms, [[1,2,2]])
+
 
 
 def test_guess_impropers(default_guesser):
@@ -170,6 +175,7 @@ def bond_sort(arr):
         out.append((i, j))
     return sorted(out)
 
+
 def test_guess_bonds_water(default_guesser):
     u = mda.Universe(datafiles.two_water_gro)
     bonds = bond_sort(default_guesser.guess_bonds(u.atoms, u.atoms.positions, u.dimensions))
@@ -178,6 +184,7 @@ def test_guess_bonds_water(default_guesser):
                           (3, 4),
                           (3, 5)))
 
+
 def test_guess_bonds_adk():
     u = mda.Universe(datafiles.PSF, datafiles.DCD)
     u.guess_TopologyAttributes(force_guess=['types'])
@@ -185,6 +192,7 @@ def test_guess_bonds_adk():
     bonds = bond_sort(guesser.guess_bonds(u.atoms, u.atoms.positions))
     assert_equal(np.sort(u.bonds.indices, axis=0),
                   np.sort(bonds, axis=0))
+
 
 def test_guess_bonds_peptide():
     u = mda.Universe(datafiles.PSF_NAMD, datafiles.PDB_NAMD)
