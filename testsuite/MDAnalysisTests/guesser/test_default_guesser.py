@@ -70,7 +70,7 @@ class TestGuessMasses(object):
         topology = Topology(1, attrs=[Atomtypes(['X'])])
         u = mda.Universe(topology)
         with pytest.warns(UserWarning, match="Failed to guess the mass for the following atom type"):
-            u.guess_TopologyAttributes(xsto_guess=['masses'])
+            u.guess_TopologyAttributes(to_guess=['masses'])
 
     def test_guess_masses_miss(self):
         topology = Topology(2, attrs=[Atomtypes(['X', 'Z'])])
