@@ -68,9 +68,9 @@ class TestGuessMasses(object):
     def test_guess_masses_warn(self):
         topology = Topology(1, attrs=[Atomtypes(['X'])])
         u = mda.Universe(topology)
-
         with pytest.warns(UserWarning):
-            u.guess_TopologyAttributes(to_guess=['masses'], match="Failed to guess the mass for the following atom type")
+            u.guess_TopologyAttributes(
+                to_guess=['masses'], match="Failed to guess the mass for the following atom type")
 
     def test_guess_masses_miss(self):
         topology = Topology(2, attrs=[Atomtypes(['X', 'Z'])])
@@ -78,7 +78,7 @@ class TestGuessMasses(object):
         u.guess_TopologyAttributes(to_guess=['masses'])
         assert_allclose(u.atoms.masses, np.array([0.0, 0.0]), rtol=1e-3, atol=0)
 
-    @pytest.mark.parametrize('element, value', (('H', 1.008), ('XYZ', 0.0), ))
+    @pytest.mark.parametrize('element, value', (('H', 1.008), ('XYZ', 0.0 ), ))
     def test_get_atom_mass(self, element, value, default_guesser):
         default_guesser.get_atom_mass(element) == approx(value)
 

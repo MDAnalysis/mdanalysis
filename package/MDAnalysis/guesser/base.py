@@ -108,7 +108,7 @@ class GuesserBase(metaclass=_GuesserMeta):
             return True
         return False
 
-    def guess_Attr(self, guess, **kwargs):
+    def guess_Attr(self, guess):
         """map the attribute to be guessed with the apporpiate guessing method
 
         Parameters
@@ -119,7 +119,6 @@ class GuesserBase(metaclass=_GuesserMeta):
         -------
         values: list of guessed values
         """
-        self._kwargs.update(kwargs)
         return self._guess[guess]()
 
 

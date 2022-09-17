@@ -390,9 +390,8 @@ class Universe(object):
         if guess_bonds:
             force_guess.extend(['bonds', 'angles', 'dihedrals'])
 
-        if to_guess or force_guess:
-            self.guess_TopologyAttributes(
-                context, to_guess, force_guess, vdwradii=vdwradii, ** kwargs)
+        self.guess_TopologyAttributes(
+            context, to_guess, force_guess, vdwradii=vdwradii, ** kwargs)
 
     def copy(self):
         """Return an independent copy of this Universe"""
@@ -1496,40 +1495,41 @@ class Universe(object):
 
         objects = ['bonds', 'angles', 'dihedrals', 'impropers']
     
-        if (self._topology.n_atoms > 0):
+        if(guess):
+            if (self._topology.n_atoms > 0):
 
-            if guesser.is_guessable(guess):
+                if guesser.is_guessable(guess):
 
-                for attr in to_guess:
-                    if any(attr == a for a in self._topology_atrrs):
-                        logger.info('The attribute {} have already been read '
-                                    'from the topology file. To '
-                                    'overwrite the read values by guessed ones, you can pass the attribute to the force_guess'
-                                    'parameter instead of the to_guess one'
-                                    .format(attr))
-                        if attr not in force_guess:                            
-                            guess.remove(attr)
+                    for attr in to_guess:
+                        if any(attr == a for a in self._topology_atrrs):
+                            logger.info('The attribute {} have already been read '
+                                        'from the topology file. To '
+                                        'overwrite the read values by guessed ones, you can pass the attribute to the force_guess'
+                                        'parameter instead of the to_guess one'
+                                        .format(attr))
+                            if attr not in force_guess:                            
+                                guess.remove(attr)
 
-                for attr in guess:
-                    values = guesser.guess_Attr(attr)
-                    if attr in objects:
-                        self._add_topology_objects(attr, values, guessed=True)
-                    else:
-                        tcls = _TOPOLOGY_ATTRS[attr](values, True)
-                        self.add_TopologyAttr(tcls)
+                    for attr in guess:
+                        values = guesser.guess_Attr(attr)
+                        if attr in objects:
+                            self._add_topology_objects(attr, values, guessed=True)
+                        else:
+                            tcls = _TOPOLOGY_ATTRS[attr](values, True)
+                            self.add_TopologyAttr(tcls)
 
-                    logger.info(
-                        'attribute {} has been guessed successfully.'.format(attr))
+                        logger.info(
+                            'attribute {} has been guessed successfully.'.format(attr))
 
+
+                else:
+                    raise ValueError('{0} guesser can not guess one or more '
+                                     'of the provided attributes'
+                                      .format(context))      
 
             else:
-                raise ValueError('{0} guesser can not guess one or more '
-                                 'of the provided attributes'
-                                  .format(context))      
-
-        else:
-            warnings.warn('Can not guess attributes '
-                             'for universe with 0 atoms')
+                warnings.warn('Can not guess attributes '
+                                 'for universe with 0 atoms')
 
 
 def Merge(*args):
