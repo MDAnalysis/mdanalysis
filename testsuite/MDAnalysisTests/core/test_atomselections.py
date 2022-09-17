@@ -46,6 +46,7 @@ from MDAnalysis.tests.datafiles import (
     PDB_HOLE,
     PDB_helix,
     PDB_elements,
+    PDB_charges,
 )
 from MDAnalysisTests import make_Universe
 
@@ -1021,6 +1022,7 @@ class TestSelectionErrors(object):
         'mass :3.0',
         'mass 1-',
         'chirality ',
+        'formalcharge 0.2',
     ])
     def test_selection_fail(self, selstr, universe):
         with pytest.raises(SelectionError):
@@ -1457,3 +1459,16 @@ def test_chirality_selection(sel, size):
     ag = u.select_atoms('chirality {}'.format(sel))
 
     assert len(ag) == size
+
+
+@pytest.mark.parametrize('sel,size,name', [
+    ('1', 1, 'NH2'), ('-1', 1, 'OD2'), ('0', 34, 'N'), ('-1 1', 2, 'OD2'),
+])
+def test_formal_charge_selection(sel, size, name):
+    # 2 charge points, one positive one negative
+    u = mda.Universe(PDB_charges)
+
+    ag = u.select_atoms(f'formalcharge {sel}')
+
+    assert len(ag) == size
+    assert ag.atoms[0].name == name
