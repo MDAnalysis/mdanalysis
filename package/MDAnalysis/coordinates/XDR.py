@@ -203,7 +203,8 @@ class XDRBaseReader(base.ReaderBase):
                                "{self.filename}. Using slow offset calculation.")
                 self._read_offsets(store=True)
                 return
-            raise e
+            else:
+                raise
 
         with fasteners.InterProcessLock(lock_name) as filelock:
             if not isfile(fname):
