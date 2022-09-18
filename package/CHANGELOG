@@ -32,7 +32,6 @@ Fixes
     (e.g. bonds, angles) (PR #3779).
 
 
-
 Enhancements
   * AuxReaders now have a memory_limit parameter to control when memory usage
     warnings are issued. (PR # 3749)
