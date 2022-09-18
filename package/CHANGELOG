@@ -13,13 +13,14 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud
+??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, jaclark5
 
  * 2.4.0
 
 Fixes
   * Fixes distances.between not always returning AtomGroup (Issue #3794)
   * Upgrade to chemfiles 0.10.3 (Issue #3798)
+  * Ensure Timestep passed to transform is the same as AtomGroup Trajectory Timestep (Issue #3657)
 
 Enhancements
   * Added benchmarks for bonds topology attribute (Issue #3785, PR #3806)
