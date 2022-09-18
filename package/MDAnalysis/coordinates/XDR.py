@@ -197,11 +197,13 @@ class XDRBaseReader(base.ReaderBase):
         try:
             with fasteners.InterProcessLock(lock_name) as filelock:
                 pass
-        except (PermissionError, OSError):
-            warnings.warn(f"Cannot write lock/offset file in same location as "
-                           "{self.filename}. Using slow offset calculation.")
-            self._read_offsets(store=True)
-            return
+        except OSError as e:
+            if isinstance(e, PermissionError) or e.errno == errno.EROFS:
+                warnings.warn(f"Cannot write lock/offset file in same location as "
+                               "{self.filename}. Using slow offset calculation.")
+                self._read_offsets(store=True)
+                return
+            raise e
 
         with fasteners.InterProcessLock(lock_name) as filelock:
             if not isfile(fname):
