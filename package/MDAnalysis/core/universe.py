@@ -262,7 +262,7 @@ class Universe(object):
     dimensions : numpy.ndarray
         system dimensions (simulation unit cell, if set in the
         trajectory) at the *current time step*
-        (see :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`).
+        (see :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`).
         The unit cell can be set for the current time step (but the change is
         not permanent unless written to a file).
     atoms : AtomGroup
@@ -445,13 +445,13 @@ class Universe(object):
             n_residues = 0
             n_segments = 0
 
-        if atom_resindex is None:
+        if atom_resindex is None and n_residues > 1:
             warnings.warn(
                 'Residues specified but no atom_resindex given.  '
                 'All atoms will be placed in first Residue.',
                 UserWarning)
 
-        if residue_segindex is None:
+        if residue_segindex is None and n_segments > 1:
             warnings.warn(
                 'Segments specified but no segment_resindex given.  '
                 'All residues will be placed in first Segment',
@@ -739,7 +739,7 @@ class Universe(object):
         represented as a :class:`numpy.float32` array.
 
         Because :attr:`coord` is a reference to a
-        :class:`~MDAnalysis.coordinates.base.Timestep`, it changes its contents
+        :class:`~MDAnalysis.coordinates.timestep.Timestep`, it changes its contents
         while one is stepping through the trajectory.
 
         .. Note::

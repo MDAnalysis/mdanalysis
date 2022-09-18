@@ -107,7 +107,7 @@ class rotateby(TransformationBase):
 
     Returns
     -------
-    MDAnalysis.coordinates.base.Timestep
+    MDAnalysis.coordinates.timestep.Timestep
 
     Warning
     -------

@@ -37,7 +37,8 @@ from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        PDB_cm, PDB_cm_gz, PDB_cm_bz2,
                                        PDB_mc, PDB_mc_gz, PDB_mc_bz2,
                                        PDB_CRYOEM_BOX, MMTF_NOCRYST,
-                                       PDB_HOLE, mol2_molecule)
+                                       PDB_HOLE, mol2_molecule, PDB_charges,
+                                       CONECT_ERROR,)
 from numpy.testing import (assert_equal,
                            assert_array_almost_equal,
                            assert_almost_equal)
@@ -548,7 +549,7 @@ class TestPDBWriter(object):
         universe.atoms.ids = universe.atoms.ids + 23
         universe.atoms.write(outfile, reindex=False)
         read_universe = mda.Universe(outfile)
-        assert np.all(read_universe.atoms.ids == universe.atoms.ids)
+        assert_equal(read_universe.atoms.ids, universe.atoms.ids)
 
     @pytest.mark.filterwarnings(IGNORE_NO_INFORMATION_WARNING)
     def test_no_reindex_bonds(self, universe, outfile):
@@ -576,7 +577,7 @@ class TestPDBWriter(object):
         universe.atoms.write(outfile, reindex=True)
         read_universe = mda.Universe(outfile)
         # AG.ids is 1-based, while AG.indices is 0-based, hence the +1
-        assert np.all(read_universe.atoms.ids == universe.atoms.indices + 1)
+        assert_equal(read_universe.atoms.ids, universe.atoms.indices + 1)
 
     def test_no_reindex_missing_ids(self, u_no_ids, outfile):
         """
@@ -656,6 +657,10 @@ class TestMultiPDBReader(object):
 
         assert_equal(len(u1.atoms), 1890)
         assert_equal(len(u1.bonds), 1922)
+
+    def test_conect_error(self):
+        with pytest.warns(UserWarning, match='CONECT records was corrupt'):
+            u = mda.Universe(CONECT_ERROR)
 
     def test_numconnections(self, multiverse):
         u = multiverse
@@ -746,6 +751,17 @@ def test_write_bonds_partial(tmpdir):
     # check bonding is correct in new universe
     for a_ref, atom in zip(ag, u2.atoms):
         assert len(a_ref.bonds) == len(atom.bonds)
+
+
+def test_write_bonds_with_100000_ag_index(tmpdir):
+    u = mda.Universe(CONECT)
+
+    ag = u.atoms
+    ag.ids = ag.ids + 100000
+
+    with pytest.warns(UserWarning, match='Atom with index'):
+        outfile = os.path.join(str(tmpdir), 'test.pdb')
+        ag.write(outfile, reindex=False)
 
 
 class TestMultiPDBWriter(object):
@@ -1071,7 +1087,7 @@ class TestWriterAlignments(object):
 
     def test_atomtype_alignment(self, writtenstuff):
         result_line = ("ATOM      1  H5T GUA X   1       7.974   6.430   9.561"
-                       "  1.00  0.00      RNAA  \n")
+                       "  1.00  0.00      RNAA    \n")
         assert_equal(writtenstuff[9], result_line)
 
 
@@ -1273,3 +1289,33 @@ def test_cryst_meaningless_select():
     u = mda.Universe(PDB_CRYOEM_BOX)
     cur_sele = u.select_atoms('around 0.1 (resid 4 and name CA and segid A)')
     assert cur_sele.n_atoms == 0
+
+
+def test_charges_roundtrip(tmpdir):
+    """
+    Roundtrip test for PDB formal charges reading/writing.
+    """
+    u = mda.Universe(PDB_charges)
+
+    outfile = os.path.join(str(tmpdir), 'newcharges.pdb')
+    with mda.coordinates.PDB.PDBWriter(outfile) as writer:
+        writer.write(u.atoms)
+
+    u_written = mda.Universe(outfile)
+
+    assert_equal(u.atoms.formalcharges, u_written.atoms.formalcharges)
+
+
+def test_charges_not_int():
+    # np.zeros yields a float64 dtype
+    arr = np.zeros(10)
+    with pytest.raises(ValueError, match="array should be of `int` type"):
+        mda.coordinates.PDB.PDBWriter._format_PDB_charges(arr)
+
+
+@pytest.mark.parametrize('value', [99, -100])
+def test_charges_limit(value):
+    # test for raising error when writing charges > 9
+    arr = np.array([0, 0, 0, value, 1, -1, 0], dtype=int)
+    with pytest.raises(ValueError, match="9 is not supported by PDB standard"):
+        mda.coordinates.PDB.PDBWriter._format_PDB_charges(arr)

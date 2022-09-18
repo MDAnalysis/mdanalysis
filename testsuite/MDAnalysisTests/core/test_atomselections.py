@@ -46,6 +46,7 @@ from MDAnalysis.tests.datafiles import (
     PDB_HOLE,
     PDB_helix,
     PDB_elements,
+    PDB_charges,
 )
 from MDAnalysisTests import make_Universe
 
@@ -575,10 +576,28 @@ class TestSelectionRDKit(object):
         with pytest.raises(ValueError, match="not a valid SMARTS"):
             u2.select_atoms("smarts foo")
 
-    def test_passing_args_to_converter(self):
+    def test_passing_rdkit_kwargs_to_converter(self):
         u = mda.Universe.from_smiles("O=C=O")
         sel = u.select_atoms("smarts [$(O=C)]", rdkit_kwargs=dict(force=True))
         assert sel.n_atoms == 2
+
+    def test_passing_max_matches_to_converter(self, u2):
+        with pytest.warns(UserWarning, match="Your smarts-based") as wsmg:
+            sel = u2.select_atoms("smarts C", smarts_kwargs=dict(maxMatches=2))
+            sel2 = u2.select_atoms(
+                    "smarts C", smarts_kwargs=dict(maxMatches=1000))
+            assert sel.n_atoms == 2
+            assert sel2.n_atoms == 3
+
+        sel3 = u2.select_atoms("smarts c")
+        assert sel3.n_atoms == 4
+
+    def test_passing_use_chirality_to_converter(self):
+        u = mda.Universe.from_smiles("CC[C@H](C)O")
+        sel3 = u.select_atoms("byres smarts CC[C@@H](C)O")
+        assert sel3.n_atoms == 0
+        sel4 = u.select_atoms("byres smarts CC[C@@H](C)O", smarts_kwargs={"useChirality": False})
+        assert sel4.n_atoms == 15
 
 
 class TestSelectionsNucleicAcids(object):
@@ -1003,6 +1022,7 @@ class TestSelectionErrors(object):
         'mass :3.0',
         'mass 1-',
         'chirality ',
+        'formalcharge 0.2',
     ])
     def test_selection_fail(self, selstr, universe):
         with pytest.raises(SelectionError):
@@ -1439,3 +1459,16 @@ def test_chirality_selection(sel, size):
     ag = u.select_atoms('chirality {}'.format(sel))
 
     assert len(ag) == size
+
+
+@pytest.mark.parametrize('sel,size,name', [
+    ('1', 1, 'NH2'), ('-1', 1, 'OD2'), ('0', 34, 'N'), ('-1 1', 2, 'OD2'),
+])
+def test_formal_charge_selection(sel, size, name):
+    # 2 charge points, one positive one negative
+    u = mda.Universe(PDB_charges)
+
+    ag = u.select_atoms(f'formalcharge {sel}')
+
+    assert len(ag) == size
+    assert ag.atoms[0].name == name

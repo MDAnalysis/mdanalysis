@@ -122,6 +122,7 @@ __all__ = [
     "DMS_DOMAINS",  # ADK closed with multiple segids
     "DMS_NO_SEGID",  # ADK closed with no segids or chains
     "CONECT",  # HIV Reverse Transcriptase with inhibitor
+    "CONECT_ERROR",  # PDB file with corrupt CONECT
     "TRZ", "TRZ_psf",
     "TRIC",
     "XTC_multi_frame",
@@ -152,6 +153,7 @@ __all__ = [
     "DLP_CONFIG", "DLP_CONFIG_order", "DLP_CONFIG_minimal",  # dl_poly 4 config file
     "DLP_HISTORY", "DLP_HISTORY_order", "DLP_HISTORY_minimal",  # dl_poly 4 history file
     "DLP_HISTORY_minimal_cell", # dl_poly 4 history file with cell parameters
+    "DLP_HISTORY_classic",  # dl_poly classic history file
     "waterPSF","waterDCD","rmsfArray",
     "HoomdXMLdata",
     "Make_Whole",  # for testing the function lib.mdamath.make_whole, has 9 atoms
@@ -210,7 +212,7 @@ __all__ = [
     "SDF_molecule",  # MDL SDFile for rdkit
     "PDBX",  # PDBxfile
     "PDB_elements",  # PDB file with elements
-    "PDB_elements",  # PDB file with elements
+    "PDB_charges",  # PDB file with formal charges
     "SURFACE_PDB",  # 111 FCC lattice topology for NSGrid bug #2345
     "SURFACE_TRR",  # full precision coordinates for NSGrid bug #2345
 ]
@@ -451,6 +453,7 @@ DMS_DOMAINS = resource_filename(__name__, 'data/adk_closed_domains.dms')
 DMS_NO_SEGID = resource_filename(__name__, 'data/adk_closed_no_segid.dms')
 
 CONECT = resource_filename(__name__, 'data/1hvr.pdb')
+CONECT_ERROR = resource_filename(__name__, 'data/conect_error.pdb')
 
 TRZ = resource_filename(__name__, 'data/trzfile.trz')
 TRZ_psf = resource_filename(__name__, 'data/trz_psf.psf')
@@ -518,6 +521,7 @@ DLP_HISTORY = resource_filename(__name__, "data/dlpoly/HISTORY")
 DLP_HISTORY_order = resource_filename(__name__, "data/dlpoly/HISTORY_order")
 DLP_HISTORY_minimal = resource_filename(__name__, "data/dlpoly/HISTORY_minimal")
 DLP_HISTORY_minimal_cell = resource_filename(__name__, "data/dlpoly/HISTORY_minimal_cell")
+DLP_HISTORY_classic = resource_filename(__name__, "data/dlpoly/HISTORY_classic")
 
 waterPSF = resource_filename(__name__, 'data/watdyn.psf')
 waterDCD = resource_filename(__name__, 'data/watdyn.dcd')
@@ -580,7 +584,7 @@ NAMDBIN = resource_filename(__name__, 'data/adk_open.coor')
 SDF_molecule = resource_filename(__name__, 'data/molecule.sdf')
 
 PDB_elements = resource_filename(__name__, 'data/elements.pdb')
-
+PDB_charges = resource_filename(__name__, 'data/charges.pdb')
 
 PDBX = resource_filename(__name__, "data/4x8u.pdbx")
 

@@ -19,6 +19,10 @@ import MDAnalysis as mda
 import msmb_theme  # for little versions pop-up
 # https://sphinx-rtd-theme.readthedocs.io/en/stable/
 import sphinx_rtd_theme
+# Custom MDA Formating
+from pybtex.style.formatting.unsrt import Style as UnsrtStyle
+from pybtex.style.labels import BaseLabelStyle
+from pybtex.plugin import register_plugin
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -39,7 +43,29 @@ extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx',
               'sphinx.ext.mathjax', 'sphinx.ext.viewcode',
               'sphinx.ext.napoleon', 'sphinx.ext.todo',
               'sphinx_sitemap',
-              'sphinx_rtd_theme']
+              'sphinx_rtd_theme',
+              'sphinxcontrib.bibtex']
+
+bibtex_bibfiles = ['references.bib']
+
+
+# Define custom MDA style for references
+class KeyLabelStyle(BaseLabelStyle):
+    def format_labels(self, entries):
+        entry_list = []
+        for entry in entries:
+            author = str(entry.persons['author'][0]).split(",")[0]
+            year = entry.fields['year']
+            entry_list.append(f"{author}{year}")
+        return entry_list
+
+
+class KeyStyle(UnsrtStyle):
+    default_label_style = 'keylabel'
+
+
+register_plugin('pybtex.style.labels', 'keylabel', KeyLabelStyle)
+register_plugin('pybtex.style.formatting', 'MDA', KeyStyle)
 
 mathjax_path = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML'
 
@@ -99,7 +125,7 @@ release = packageversion
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = []
+exclude_patterns = ['_build']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
