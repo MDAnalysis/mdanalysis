@@ -99,6 +99,8 @@ class wrap(TransformationBase):
         self.compound = compound
 
     def _transform(self, ts):
+        if id(ts) != id(self.ag.universe.trajectory.ts):
+            self.ag.universe.trajectory.ts = ts
         self.ag.wrap(compound=self.compound)
         return ts
 
