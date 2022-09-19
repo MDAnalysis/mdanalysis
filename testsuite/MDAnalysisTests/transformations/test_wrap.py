@@ -133,6 +133,19 @@ def test_unwrap(wrap_universes):
     unwrap(trans.atoms)(trans.trajectory.ts)
     assert_array_almost_equal(trans.trajectory.ts.positions, ref.trajectory.ts.positions, decimal=6)
 
+def test_unwrap_id(wrap_universes):
+    # If the translation is given a different timestep from what it has, the timestep will 
+    # be updated to the new one given. This should only matter in a ChainReader
+    ref_u, trans_u = wrap_universes
+    trans_u.dimensions = [363., 364., 365., 90., 90., 90.]
+    ref_u.dimensions = [363., 364., 365., 90., 90., 90.]
+
+    ag = trans_u.atoms
+    trans = unwrap(ag)
+    id_trans = id(trans_u.trajectory.ts)
+    trans = trans._transform(ref_u.trajectory.ts)
+    assert id_trans != id(trans_u.trajectory.ts) and id(trans_u.trajectory.ts) == id(ref_u.trajectory.ts)
+
 
 def test_unwrap_api(wrap_universes):
     ref, trans = wrap_universes

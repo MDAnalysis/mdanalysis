@@ -165,6 +165,8 @@ class unwrap(TransformationBase):
             raise AttributeError("{} has no fragments".format(self.ag))
 
     def _transform(self, ts):
+        if id(ts) != id(self.ag.universe.trajectory.ts):
+            self.ag.universe.trajectory.ts = ts
         for frag in self.ag.fragments:
             make_whole(frag)
         return ts
