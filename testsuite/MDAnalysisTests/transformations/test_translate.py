@@ -50,7 +50,7 @@ def test_translate_coords(translate_universes):
     assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
 
 def test_wrap_id(translate_universes):
-    # If the translation is given a different timestep from what is has, the timestep will 
+    # If the translation is given a different timestep from what it has, the timestep will 
     # be updated to the new one given. This should only matter in a ChainReader
     ref_u, trans_u = translate_universes
     trans_u.dimensions = [363., 364., 365., 90., 90., 90.]
