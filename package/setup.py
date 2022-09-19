@@ -651,6 +651,7 @@ if __name__ == '__main__':
                   'netCDF4>=1.0',  # for fast AMBER writing, also needs HDF5
                   'h5py>=2.10',    # H5MD
                   'chemfiles>=0.10',  # multiple formats supported by chemfiles
+                  'pyedr>=0.7.0',  # EDR files for the EDR AuxReader
                   ],
               'analysis': [
                   'seaborn',  # for annotated heat map and nearest neighbor
