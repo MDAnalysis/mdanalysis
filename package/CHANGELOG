@@ -19,13 +19,14 @@ The rules for this file:
  * 2.4.0
 
 Fixes
-  * Fixes distances.between not always returning AtomGroup (Issue #3794)
-  * Upgrade to chemfiles 0.10.3 (Issue #3798)
   * Auxiliary; determination of representative frames: Removed undefined
     behaviour for cutoff values < -1 (PR # 3749)
+  * Fixes distances.between not always returning AtomGroup (Issue #3794)
+  * Upgrade to chemfiles 0.10.3 (Issue #3798)
+
 
 Enhancements
-  * AuxReaders not have a memory_limit parameter to control when memory usage
+  * AuxReaders now have a memory_limit parameter to control when memory usage
     warnings are issued. (PR # 3749)
   * MDAnalysis.units now has a lookup dictionary called MDANALYSIS_BASE_UNITS
     where unit types like length or speed are mapped to their base units in
