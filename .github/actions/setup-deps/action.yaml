@@ -82,7 +82,7 @@ inputs:
   parmed:
     default: 'parmed'
   pyedr:
-    default: 'pyedr'
+    default: 'pyedr>=0.7.0'
 
 runs:
   using: "composite"
