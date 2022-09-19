@@ -141,6 +141,17 @@ def test_fit_translation_plane(fit_universe, plane):
     ref_coordinates = ref_u.trajectory.ts.positions + shiftz
     assert_array_almost_equal(test_u.trajectory.ts.positions, ref_coordinates, decimal=6)
 
+def test_fit_translation_id(fit_universe):
+    # If the transform is given a different timestep from what it has, the timestep will 
+    # be updated to the new one given. This should only matter in a ChainReader
+    test_u, ref_u = fit_universe
+    id_test = id(test_u.trajectory.ts)
+
+    trans = fit_translation(test_u, ref_u)
+    trans._transform(ref_u.trajectory.ts)
+
+    assert id_test != id(test_u.trajectory.ts) and id(test_u.trajectory.ts) == id(ref_u.trajectory.ts)
+
 
 def test_fit_translation_all_options(fit_universe):
     test_u = fit_universe[0]
@@ -255,6 +266,17 @@ def test_fit_rot_trans_plane(fit_universe, plane):
     ref_u.trajectory.ts.positions += ref_com
     fit_rot_trans(test_u, ref_u, plane=plane)(test_u.trajectory.ts)
     assert_array_almost_equal(test_u.trajectory.ts.positions[:,idx], ref_u.trajectory.ts.positions[:,idx], decimal=3)
+
+def test_fit_rot_trans_id(fit_universe):
+    # If the transform is given a different timestep from what it has, the timestep will 
+    # be updated to the new one given. This should only matter in a ChainReader
+    test_u, ref_u = fit_universe
+    id_test = id(test_u.trajectory.ts)
+
+    trans = fit_rot_trans(test_u, ref_u)
+    trans._transform(ref_u.trajectory.ts)
+
+    assert id_test != id(test_u.trajectory.ts) and id(test_u.trajectory.ts) == id(ref_u.trajectory.ts)
 
 
 def test_fit_rot_trans_transformations_api(fit_universe):

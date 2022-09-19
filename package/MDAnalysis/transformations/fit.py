@@ -127,6 +127,8 @@ class fit_translation(TransformationBase):
         self.ref_com = self.ref.center(self.weights)
 
     def _transform(self, ts):
+        if id(ts) != id(self.mobile.universe.trajectory.ts):
+             self.mobile.universe.trajectory.ts = ts
         mobile_com = np.asarray(self.mobile.atoms.center(self.weights),
                                 np.float32)
         vector = self.ref_com - mobile_com
@@ -234,6 +236,8 @@ class fit_rot_trans(TransformationBase):
         self.ref_coordinates = self.ref.atoms.positions - self.ref_com
 
     def _transform(self, ts):
+        if id(ts) != id(self.mobile.universe.trajectory.ts):
+             self.mobile.universe.trajectory.ts = ts
         mobile_com = self.mobile.atoms.center(self.weights)
         mobile_coordinates = self.mobile.atoms.positions - mobile_com
         rotation, dump = align.rotation_matrix(mobile_coordinates,
