@@ -14,23 +14,18 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 
-09/16/22 aya9aladdin
-
-*2.4
-
-Fixes
-  * fixes guessed_attributes and read_attributes methods of the Topology class, as 
-    those methods were giving unexpected results for some topology attributes
-    (e.g. bonds, angles) (PR #3779).
-   
  
-??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud
+09/16/22 IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, aya9aladdin
 
  * 2.4.0
 
 Fixes
   * Fixes distances.between not always returning AtomGroup (Issue #3794)
   * Upgrade to chemfiles 0.10.3 (Issue #3798)
+  * fixes guessed_attributes and read_attributes methods of the Topology class, as 
+    those methods were giving unexpected results for some topology attributes
+    (e.g. bonds, angles) (PR #3779).
+   
 
 Enhancements
   * Added benchmarks for bonds topology attribute (Issue #3785, PR #3806)
