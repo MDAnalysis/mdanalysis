@@ -19,9 +19,9 @@ The rules for this file:
 *2.4
 
 Fixes
-  *fixes guessed_attributes and read_attributes methods of Topology class, as 
-   those methods was giving unexpected result regarding atoms attribute objects that 
-   has a list values for its is_guessed attribute (bonds, angles, etc)
+  * fixes guessed_attributes and read_attributes methods of the Topology class, as 
+    those methods were giving unexpected results for some topology attributes
+    (e.g. bonds, angles) (PR #3779).
    
  
 ??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud
