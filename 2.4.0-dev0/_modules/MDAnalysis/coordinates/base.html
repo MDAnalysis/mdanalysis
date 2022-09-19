@@ -219,6 +219,7 @@
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">weakref</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
 
 <span class="kn">from</span> <span class="nn">.timestep</span> <span class="kn">import</span> <span class="n">Timestep</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">core</span>
@@ -232,6 +233,8 @@
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">units</span>
 <span class="kn">from</span> <span class="nn">..auxiliary.base</span> <span class="kn">import</span> <span class="n">AuxReader</span>
 <span class="kn">from</span> <span class="nn">..auxiliary.core</span> <span class="kn">import</span> <span class="n">auxreader</span>
+<span class="kn">from</span> <span class="nn">..auxiliary.core</span> <span class="kn">import</span> <span class="n">get_auxreader_for</span>
+<span class="kn">from</span> <span class="nn">..auxiliary</span> <span class="kn">import</span> <span class="n">_AUXREADERS</span>
 <span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">asiterable</span><span class="p">,</span> <span class="n">Namespace</span><span class="p">,</span> <span class="n">store_init_arguments</span>
 
 
@@ -788,7 +791,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">rewind</span><span class="p">()</span>
             <span class="k">raise</span> <span class="ne">StopIteration</span> <span class="kn">from</span> <span class="bp">None</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">auxname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">aux_list</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">auxname</span><span class="p">,</span> <span class="n">reader</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxs</span><span class="p">[</span><span class="n">auxname</span><span class="p">]</span><span class="o">.</span><span class="n">update_ts</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
 
             <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_transformations</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
@@ -1070,13 +1073,18 @@
             <span class="n">natoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span>
         <span class="p">))</span>
 
-<div class="viewcode-block" id="ProtoReader.add_auxiliary"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.add_auxiliary">[docs]</a>    <span class="k">def</span> <span class="nf">add_auxiliary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auxname</span><span class="p">,</span> <span class="n">auxdata</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="c1"># TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811</span>
+<div class="viewcode-block" id="ProtoReader.add_auxiliary"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.add_auxiliary">[docs]</a>    <span class="k">def</span> <span class="nf">add_auxiliary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                      <span class="n">aux_spec</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                      <span class="n">auxdata</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AuxReader</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                      <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                      <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Add auxiliary data to be read alongside trajectory.</span>
 
-<span class="sd">        Auxiliary data may be any data timeseries from the trajectory additional</span>
-<span class="sd">        to that read in by the trajectory reader. *auxdata* can be an</span>
-<span class="sd">        :class:`~MDAnalysis.auxiliary.base.AuxReader` instance, or the data</span>
-<span class="sd">        itself as e.g. a filename; in the latter case an appropriate</span>
+<span class="sd">        Auxiliary data may be any data timeseries from the trajectory</span>
+<span class="sd">        additional to that read in by the trajectory reader. *auxdata* can</span>
+<span class="sd">        be an :class:`~MDAnalysis.auxiliary.base.AuxReader` instance, or the</span>
+<span class="sd">        data itself as e.g. a filename; in the latter case an appropriate</span>
 <span class="sd">        :class:`~MDAnalysis.auxiliary.base.AuxReader` is guessed from the</span>
 <span class="sd">        data/file format. An appropriate `format` may also be directly provided</span>
 <span class="sd">        as a key word argument.</span>
@@ -1088,14 +1096,40 @@
 
 <span class="sd">        The representative value(s) of the auxiliary data for each timestep (as</span>
 <span class="sd">        calculated by the :class:`~MDAnalysis.auxiliary.base.AuxReader`) are</span>
-<span class="sd">        stored in the current timestep in the ``ts.aux`` namespace under *auxname*;</span>
-<span class="sd">        e.g. to add additional pull force data stored in pull-force.xvg::</span>
+<span class="sd">        stored in the current timestep in the ``ts.aux`` namespace under</span>
+<span class="sd">        *aux_spec*; e.g. to add additional pull force data stored in</span>
+<span class="sd">        pull-force.xvg::</span>
 
 <span class="sd">            u = MDAnalysis.Universe(PDB, XTC)</span>
 <span class="sd">            u.trajectory.add_auxiliary(&#39;pull&#39;, &#39;pull-force.xvg&#39;)</span>
 
 <span class="sd">        The representative value for the current timestep may then be accessed</span>
 <span class="sd">        as ``u.trajectory.ts.aux.pull`` or ``u.trajectory.ts.aux[&#39;pull&#39;]``.</span>
+
+
+<span class="sd">        The following applies to energy readers like the</span>
+<span class="sd">        :class:`~MDAnalysis.auxiliary.EDR.EDRReader`.</span>
+
+<span class="sd">        All data that is present in the (energy) file can be added by omitting</span>
+<span class="sd">        `aux_spec` like so::</span>
+
+<span class="sd">            u.trajectory.add_auxiliary(auxdata=&quot;ener.edr&quot;)</span>
+
+<span class="sd">        *aux_spec* is expected to be a dictionary that maps the desired</span>
+<span class="sd">        attribute name in the ``ts.aux`` namespace to the precise data to be</span>
+<span class="sd">        added as identified by a :attr:`data_selector`::</span>
+
+<span class="sd">            term_dict = {&quot;temp&quot;: &quot;Temperature&quot;, &quot;epot&quot;: &quot;Potential&quot;}</span>
+<span class="sd">            u.trajectory.add_auxiliary(term_dict, &quot;ener.edr&quot;)</span>
+
+<span class="sd">        Adding this data can be useful, for example, to filter trajectory</span>
+<span class="sd">        frames based on non-coordinate data like the potential energy of each</span>
+<span class="sd">        time step. Trajectory slicing allows working on a subset of frames::</span>
+
+<span class="sd">            selected_frames = np.array([ts.frame for ts in u.trajectory</span>
+<span class="sd">                                        if ts.aux.epot &lt; some_threshold])</span>
+<span class="sd">            subset = u.trajectory[selected_frames]</span>
+
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
@@ -1106,16 +1140,16 @@
 <span class="sd">        Auxiliary data is assumed to be time-ordered, with no duplicates. See</span>
 <span class="sd">        the :ref:`Auxiliary API`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">auxname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">aux_list</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Auxiliary data with name </span><span class="si">{name}</span><span class="s2"> already &quot;</span>
-                             <span class="s2">&quot;exists&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">auxname</span><span class="p">))</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">auxdata</span><span class="p">,</span> <span class="n">AuxReader</span><span class="p">):</span>
-            <span class="n">aux</span> <span class="o">=</span> <span class="n">auxdata</span>
-            <span class="n">aux</span><span class="o">.</span><span class="n">auxname</span> <span class="o">=</span> <span class="n">auxname</span>
+        <span class="k">if</span> <span class="n">auxdata</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No input `auxdata` specified, but it needs &quot;</span>
+                             <span class="s2">&quot;to be provided.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">auxdata</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">_AUXREADERS</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+            <span class="c1"># i.e. if auxdata is a file, not an instance of an AuxReader</span>
+            <span class="n">reader_type</span> <span class="o">=</span> <span class="n">get_auxreader_for</span><span class="p">(</span><span class="n">auxdata</span><span class="p">)</span>
+            <span class="n">auxreader</span> <span class="o">=</span> <span class="n">reader_type</span><span class="p">(</span><span class="n">auxdata</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">aux</span> <span class="o">=</span> <span class="n">auxreader</span><span class="p">(</span><span class="n">auxdata</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span> <span class="n">auxname</span><span class="o">=</span><span class="n">auxname</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_auxs</span><span class="p">[</span><span class="n">auxname</span><span class="p">]</span> <span class="o">=</span> <span class="n">aux</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="n">aux</span><span class="o">.</span><span class="n">update_ts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="p">)</span></div>
+            <span class="n">auxreader</span> <span class="o">=</span> <span class="n">auxdata</span>
+        <span class="n">auxreader</span><span class="o">.</span><span class="n">attach_auxiliary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aux_spec</span><span class="p">,</span> <span class="nb">format</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ProtoReader.remove_auxiliary"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.remove_auxiliary">[docs]</a>    <span class="k">def</span> <span class="nf">remove_auxiliary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auxname</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Clear data and close the :class:`~MDAnalysis.auxiliary.base.AuxReader`</span>

@@ -194,6 +194,7 @@
             <span class="k">yield</span> <span class="n">stripped_line</span></div>
         <span class="c1"># if comment_position == 0, then the line is empty</span>
 
+
 <div class="viewcode-block" id="XVGStep"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/XVG.html#MDAnalysis.auxiliary.XVG.XVGStep">[docs]</a><span class="k">class</span> <span class="nc">XVGStep</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">AuxStep</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; AuxStep class for .xvg file format.</span>
 
@@ -216,6 +217,7 @@
 <span class="sd">    --------</span>
 <span class="sd">    :class:`~MDAnalysis.auxiliary.base.AuxStep`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_selector</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">data_selector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">XVGStep</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">time_selector</span><span class="o">=</span><span class="n">time_selector</span><span class="p">,</span>
                                       <span class="n">data_selector</span><span class="o">=</span><span class="n">data_selector</span><span class="p">,</span>
@@ -248,8 +250,8 @@
 <div class="viewcode-block" id="XVGReader"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/XVG.html#MDAnalysis.auxiliary.XVG.XVGReader">[docs]</a><span class="k">class</span> <span class="nc">XVGReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">AuxReader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Auxiliary reader to read data from an .xvg file.</span>
 
-<span class="sd">    Detault reader for .xvg files. All data from the file will be read and stored</span>
-<span class="sd">    on initialisation.</span>
+<span class="sd">    Default reader for .xvg files. All data from the file will be read and</span>
+<span class="sd">    stored on initialisation.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -279,9 +281,9 @@
         <span class="c1"># remove comments before storing</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">uncomment</span><span class="p">(</span><span class="n">lines</span><span class="p">)):</span>
             <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;&amp;&#39;</span><span class="p">:</span>
-                <span class="c1"># multiple data sets not supported; stop at the end of the first</span>
+                <span class="c1"># multiple data sets not supported; stop at end of first set</span>
                 <span class="k">break</span>
-            <span class="n">auxdata_values</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()])</span>
+            <span class="n">auxdata_values</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()])</span>
             <span class="c1"># check the number of columns is consistent</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">auxdata_values</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">auxdata_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Step </span><span class="si">{0}</span><span class="s1"> has </span><span class="si">{1}</span><span class="s1"> columns instead of &#39;</span>
@@ -290,6 +292,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_auxdata_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">auxdata_values</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_n_steps</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_auxdata_values</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">XVGReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_memory_usage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_auxdata_values</span><span class="o">.</span><span class="n">nbytes</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_read_next_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Read next auxiliary step and update ``auxstep``.</span>
@@ -339,18 +344,18 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span>
 
 <div class="viewcode-block" id="XVGReader.read_all_times"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/XVG.html#MDAnalysis.auxiliary.XVG.XVGReader.read_all_times">[docs]</a>    <span class="k">def</span> <span class="nf">read_all_times</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get list of time at each step.</span>
+        <span class="sd">&quot;&quot;&quot; Get NumPy array of time at each step.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        list of float</span>
+<span class="sd">        NumPy array of float</span>
 <span class="sd">            Time at each step.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxdata_values</span><span class="p">[:,</span><span class="bp">self</span><span class="o">.</span><span class="n">time_selector</span><span class="p">]</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxdata_values</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_selector</span><span class="p">]</span></div></div>
 
 
 <div class="viewcode-block" id="XVGFileReader"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/XVG.html#MDAnalysis.auxiliary.XVG.XVGFileReader">[docs]</a><span class="k">class</span> <span class="nc">XVGFileReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">AuxFileReader</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Auxiliary reader to read (step at a time) from an .xvg file.</span>
+    <span class="sd">&quot;&quot;&quot; Auxiliary reader to read (one step at a time) from an .xvg file.</span>
 
 <span class="sd">    An alternative XVG reader which reads each step from the .xvg file as</span>
 <span class="sd">    needed (rather than reading and storing all from the start), for a lower</span>
@@ -380,7 +385,7 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">XVGFileReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_read_next_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Read next recorded step in xvg file and update ``austep``.</span>
+        <span class="sd">&quot;&quot;&quot; Read next recorded step in xvg file and update ``auxstep``.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -412,9 +417,9 @@
                     <span class="c1"># haven&#39;t set n_cols yet; set now</span>
                     <span class="n">auxstep</span><span class="o">.</span><span class="n">_n_cols</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span> <span class="o">!=</span> <span class="n">auxstep</span><span class="o">.</span><span class="n">_n_cols</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Step </span><span class="si">{0}</span><span class="s1"> has </span><span class="si">{1}</span><span class="s1"> columns instead of &#39;</span>
-                                     <span class="s1">&#39;</span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_data</span><span class="p">),</span>
-                                                  <span class="n">auxstep</span><span class="o">.</span><span class="n">_n_cols</span><span class="p">))</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Step </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="si">}</span><span class="s1"> has &#39;</span>
+                                     <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span><span class="si">}</span><span class="s1"> columns instead &#39;</span>
+                                     <span class="sa">f</span><span class="s1">&#39;of </span><span class="si">{</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_n_cols</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">auxstep</span>
             <span class="c1"># line is comment only - move to next</span>
             <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">auxfile</span><span class="p">)</span>
@@ -449,7 +454,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        list of float</span>
+<span class="sd">        NumPy array of float</span>
 <span class="sd">            Time of each step</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_restart</span><span class="p">()</span>

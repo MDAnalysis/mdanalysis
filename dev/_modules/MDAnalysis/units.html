@@ -128,7 +128,7 @@
 
 <span class="sd">.. _table-baseunits:</span>
 
-<span class="sd">.. Table:: Base units in MDAnalysis</span>
+<span class="sd">.. Table:: Base units in MDAnalysis as encoded in :data:`MDANALYSIS_BASE_UNITS`</span>
 
 <span class="sd">   =========== ============== ===============================================</span>
 <span class="sd">   quantity    unit            SI units</span>
@@ -226,6 +226,7 @@
 <span class="sd">Data</span>
 <span class="sd">----</span>
 
+<span class="sd">.. autodata:: MDANALYSIS_BASE_UNITS</span>
 <span class="sd">.. autodata:: constants</span>
 <span class="sd">.. autodata:: lengthUnit_factor</span>
 <span class="sd">.. autodata:: water</span>
@@ -433,6 +434,14 @@
     <span class="k">for</span> <span class="n">unit</span> <span class="ow">in</span> <span class="n">ufactor</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="k">assert</span> <span class="ow">not</span> <span class="n">unit</span> <span class="ow">in</span> <span class="n">unit_types</span>  <span class="c1"># see comment!</span>
         <span class="n">unit_types</span><span class="p">[</span><span class="n">unit</span><span class="p">]</span> <span class="o">=</span> <span class="n">utype</span>
+
+<span class="c1">#: Lookup table for base units in MDAnalysis by unit type.</span>
+<span class="n">MDANALYSIS_BASE_UNITS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span>
+                         <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;ps&quot;</span><span class="p">,</span>
+                         <span class="s2">&quot;energy&quot;</span><span class="p">:</span> <span class="s2">&quot;kJ/mol&quot;</span><span class="p">,</span>
+                         <span class="s2">&quot;charge&quot;</span><span class="p">:</span> <span class="s2">&quot;e&quot;</span><span class="p">,</span>
+                         <span class="s2">&quot;force&quot;</span><span class="p">:</span> <span class="s2">&quot;kJ/(mol*A)&quot;</span><span class="p">,</span>
+                         <span class="s2">&quot;speed&quot;</span><span class="p">:</span> <span class="s2">&quot;A/ps&quot;</span><span class="p">}</span>
 
 
 <div class="viewcode-block" id="get_conversion_factor"><a class="viewcode-back" href="../../documentation_pages/units.html#MDAnalysis.units.get_conversion_factor">[docs]</a><span class="k">def</span> <span class="nf">get_conversion_factor</span><span class="p">(</span><span class="n">unit_type</span><span class="p">,</span> <span class="n">u1</span><span class="p">,</span> <span class="n">u2</span><span class="p">):</span>

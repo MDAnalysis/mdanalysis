@@ -63,6 +63,7 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">10.2. Auxiliary Readers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.base</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="core.html">10.3. Common functions for auxiliary reading — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.core</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="XVG.html">10.4. XVG auxiliary reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.XVG</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="EDR.html">10.5. EDR auxiliary reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.EDR</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../core_modules.html">11. Core modules</a></li>
@@ -104,10 +105,13 @@
 <p>Base classes for deriving all auxiliary data readers. See the API in <a class="reference internal" href="init.html#module-MDAnalysis.auxiliary.__init__" title="MDAnalysis.auxiliary.__init__"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.__init__</span></code></a>.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.auxiliary.base.AuxStep">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.auxiliary.base.</span></span><span class="sig-name descname"><span class="pre">AuxStep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_selector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_selector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constant_dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/base.html#AuxStep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxStep" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.auxiliary.base.</span></span><span class="sig-name descname"><span class="pre">AuxStep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_selector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_selector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constant_dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/base.html#AuxStep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxStep" title="Permalink to this definition"></a></dt>
 <dd><p>Base class for auxiliary timesteps.</p>
 <p>Stores the auxiliary data for the current auxiliary step. On creation,
 <code class="docutils literal notranslate"><span class="pre">step</span></code> is set to -1.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.4.0: </span>Added memory_limit parameter to control raising memory usage warnings.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -130,6 +134,8 @@ If <code class="docutils literal notranslate"><span class="pre">None</span></cod
 <li><p><strong>constant_dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – (Default: True) Set to False if <code class="docutils literal notranslate"><span class="pre">dt</span></code> is not constant
 throughout the auxiliary data set, in which case a valid
 <code class="docutils literal notranslate"><span class="pre">time_selector</span></code> must be provided.</p></li>
+<li><p><strong>memory_limit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – Sets the threshold of memory usage by auxiliary data  (in GB) at which
+to issue a warning. Default: 1 GB.</p></li>
 </ul>
 </dd>
 </dl>
@@ -166,12 +172,16 @@ calculated as <code class="docutils literal notranslate"><span class="pre">step<
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.auxiliary.base.AuxReader">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.auxiliary.base.</span></span><span class="sig-name descname"><span class="pre">AuxReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">represent_ts_as</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'closest'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auxname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/base.html#AuxReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.auxiliary.base.</span></span><span class="sig-name descname"><span class="pre">AuxReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">represent_ts_as</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'closest'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auxname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/base.html#AuxReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader" title="Permalink to this definition"></a></dt>
 <dd><p>Base class for auxiliary readers.</p>
 <p>Allows iteration over a set of data from a trajectory, additional
 (‘auxiliary’) to the regular positions/velocities/etc. This auxiliary
 data may be stored in e.g. an array or a separate file.</p>
 <p>See the <a class="reference internal" href="init.html#auxiliary-api"><span class="std std-ref">Auxiliary API</span></a> for more on use.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.4.0: </span>Behaviour of <code class="docutils literal notranslate"><span class="pre">cutoff</span></code> changed, default parameter which specifies
+not cutoff is set is now None, not -1.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -181,7 +191,7 @@ or <code class="docutils literal notranslate"><span class="pre">ts.aux['auxname'
 <li><p><strong>represent_ts_as</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – Method to use to calculate representative value of auxiliary data for a
 trajectory timestep. See <a class="reference internal" href="#MDAnalysis.auxiliary.base.AuxReader.calc_representative" title="MDAnalysis.auxiliary.base.AuxReader.calc_representative"><code class="xref py py-func docutils literal notranslate"><span class="pre">calc_representative()</span></code></a> for valid options.</p></li>
 <li><p><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – Auxiliary steps further from the trajectory timestep than <em>cutoff</em>
-(in ps) will be ignored when calculating representative values. If -1
+(in ps) will be ignored when calculating representative values. If None
 (default), all auxiliary steps assigned to that timestep will be used.</p></li>
 <li><p><strong>**kwargs</strong> – Options to be passed to <a class="reference internal" href="#MDAnalysis.auxiliary.base.AuxStep" title="MDAnalysis.auxiliary.base.AuxStep"><code class="xref py py-class docutils literal notranslate"><span class="pre">AuxStep</span></code></a></p></li>
 </ul>
@@ -221,6 +231,39 @@ the step and trajectory timestep (i.e. <code class="docutils literal notranslate
 <p class="admonition-title">Note</p>
 <p>Auxiliary data are assumed to be time ordered and contain no duplicates.</p>
 </div>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.auxiliary.base.AuxReader.attach_auxiliary">
+<span class="sig-name descname"><span class="pre">attach_auxiliary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coord_parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aux_spec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/base.html#AuxReader.attach_auxiliary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.attach_auxiliary" title="Permalink to this definition"></a></dt>
+<dd><p>Attaches the data specified in <cite>aux_spec</cite> to the <cite>coord_parent</cite></p>
+<p>This method is called from within
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.ReaderBase.add_auxiliary" title="MDAnalysis.coordinates.base.ReaderBase.add_auxiliary"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.ReaderBase.add_auxiliary()</span></code></a>.
+<cite>add_auxiliary</cite> should be agnostic to the type of AuxReader, so the
+method call leads here instead. First, some checks are done on
+the arguments to make sure the input is treated properly. Then,
+the AuxReader(s) with appropriate <a class="reference internal" href="#MDAnalysis.auxiliary.base.AuxReader.data_selector" title="MDAnalysis.auxiliary.base.AuxReader.data_selector"><code class="xref py py-attr docutils literal notranslate"><span class="pre">data_selector</span></code></a> are
+associated with the <cite>coord_parent</cite> from which <cite>add_auxiliary</cite> was
+called.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coord_parent</strong> (<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.ReaderBase" title="MDAnalysis.coordinates.base.ReaderBase"><em>MDAnalysis.coordinates.base.ReaderBase</em></a>) – Reader object to which to attach the auxiliary data.</p></li>
+<li><p><strong>aux_spec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>Dict</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>]</em><em>, </em><em>None</em>) – Specifies which data to add to <cite>coord_parent</cite>. String types are
+for <a class="reference internal" href="XVG.html#MDAnalysis.auxiliary.XVG.XVGReader" title="MDAnalysis.auxiliary.XVG.XVGReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.XVG.XVGReader</span></code></a> only. Dictionaries
+are the standard way of providing <cite>aux_spec</cite> information (see also:
+<a class="reference internal" href="EDR.html#module-MDAnalysis.auxiliary.EDR" title="MDAnalysis.auxiliary.EDR"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.EDR</span></code></a>).
+Passing <cite>None</cite> causes all data to be added.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If trying to add data under an <cite>aux_spec</cite> key that is already
+    assigned.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.auxiliary.base.AuxReader.calc_representative">
 <span class="sig-name descname"><span class="pre">calc_representative</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/base.html#AuxReader.calc_representative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.calc_representative" title="Permalink to this definition"></a></dt>
