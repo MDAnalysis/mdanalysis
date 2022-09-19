@@ -13,15 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-
-09/16/22 aya9aladdin
-
-* 2.4.0
-
-Changes
-  *adding element attribute to TXYZParser if all atom names are valid element symbols
-
-??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud
+09/16/22 IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, aya9aladdin
 
  * 2.4.0
 
@@ -37,6 +29,7 @@ Changes
   * The "AMBER" entry in setup.py's extra_requires has now been removed. Please
     use `pip install ./package[extra_formats]` instead (PR #3810)
   * `Universe.empty` emmits less warnings (PR #3814)
+  * adding element attribute to TXYZParser if all atom names are valid element symbols (PR #3826)
 
 Deprecations
 
