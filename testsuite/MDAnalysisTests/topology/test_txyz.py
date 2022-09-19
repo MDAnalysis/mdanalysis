@@ -61,6 +61,7 @@ def test_TXYZ_elements():
     element_list = np.array(['C', 'H', 'H', 'O', 'H', 'C', 'H', 'H', 'H'], dtype=object)
     assert_equal(u.atoms.elements, element_list)
     
+    
 def test_missing_elements_noattribute():
     """Check that:
 

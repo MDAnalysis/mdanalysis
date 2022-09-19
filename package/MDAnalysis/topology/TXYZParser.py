@@ -75,8 +75,8 @@ class TXYZParser(TopologyReaderBase):
     - Elements
 
     .. versionadded:: 0.17.0
-    .. versionchanged:: 2.4
-       Adding Element attribute if all names is a valid element symbol
+    .. versionchanged:: 2.4.0
+       Adding the `Element` attribute if all names are valid element symbols.
     """
     format = ['TXYZ', 'ARC']
 
