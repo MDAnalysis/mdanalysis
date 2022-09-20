@@ -72,7 +72,7 @@ class TXYZParser(TopologyReaderBase):
 
     - Atomnames
     - Atomtypes
-    - Elements
+    - Elements (if all atom names are element symbols)
 
     .. versionadded:: 0.17.0
     .. versionchanged:: 2.4.0
