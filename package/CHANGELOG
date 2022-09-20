@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 
-??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, BFedder
+??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, BFedder, aya9aladdin
 
  * 2.4.0
 
@@ -23,6 +23,10 @@ Fixes
     behaviour for cutoff values < -1 (PR # 3749)
   * Fixes distances.between not always returning AtomGroup (Issue #3794)
   * Upgrade to chemfiles 0.10.3 (Issue #3798)
+  * fixes guessed_attributes and read_attributes methods of the Topology class, as 
+    those methods were giving unexpected results for some topology attributes
+    (e.g. bonds, angles) (PR #3779).
+   
 
 
 Enhancements
