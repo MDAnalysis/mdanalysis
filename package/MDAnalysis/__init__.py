@@ -178,10 +178,10 @@ _PARSER_HINTS: Dict = {}
 _SELECTION_WRITERS: Dict = {}
 _CONVERTERS: Dict = {}
 # Registry of TopologyAttributes
-_TOPOLOGY_ATTRS = {}  # {attrname: cls}
-_TOPOLOGY_TRANSPLANTS = {}   # {name: [attrname, method, transplant class]}
-_TOPOLOGY_ATTRNAMES = {}  # {lower case name w/o _ : name}
-_GUESSERS = {}
+_TOPOLOGY_ATTRS: Dict = {}  # {attrname: cls}
+_TOPOLOGY_TRANSPLANTS: Dict = {}   # {name: [attrname, method, transplant class]}
+_TOPOLOGY_ATTRNAMES: Dict = {}  # {lower case name w/o _ : name}
+_GUESSERS: Dict = {}
 
 # custom exceptions and warnings
 from .exceptions import (
