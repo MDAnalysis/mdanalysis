@@ -28,7 +28,7 @@ import re
 
 from ..lib import distances
 from . import tables
-
+from ..core.topologyattrs import Masses
 class DefaultGuesser(GuesserBase):
     """
     this guesser hold generic methods (not directed to specific context) for guessing different topology attribute. 
@@ -60,15 +60,16 @@ class DefaultGuesser(GuesserBase):
 
     def __init__(self, universe, **kwargs):
         super().__init__(universe, **kwargs)
-        self._guess = {'masses': self.guess_masses,
-                       'types': self.guess_types,
-                       'elements' : self.guess_types,
-                       'angles': self.add_guessed_angles,
-                       'dihedrals': self.add_guessed_dihedrals,
-                       'bonds': self.add_guessed_bonds,
-                       'improper dihedrals': self.guess_improper_dihedrals,
-                       'aromaticities': self.guess_aromaticities,
-                       }
+        self._guesser_box = {'masses': {'builder': self.guess_masses, 'parent': ['types', 'elements']},
+                                 'types': {'builder': self.guess_types}, 'parent': ['names'],
+                                 'elements': {'builder': self.guess_types, 'parent': ['names']},
+                                 'angles': {'builder': self.add_guessed_angles, 'parent': ['positions']},
+                                 'dihedrals': {'builder': self.add_guessed_dihedrals},
+                                 'bonds': {'builder': self.add_guessed_bonds},
+                                 'improper dihedrals': {'builder': self.guess_improper_dihedrals},
+                                 'aromaticities': {'builder': self.guess_aromaticities},
+                                 }
+
 
     def guess_masses(self, atoms=None):
         """Guess the mass of many atoms based upon their type
@@ -78,7 +79,6 @@ class DefaultGuesser(GuesserBase):
         atom_masses : np.ndarray dtype float64
         """
         atom_types = None
-        parser = self._kwargs.get('parser', [])
         if atoms is not None:
             atom_types = atoms
         elif hasattr(self._universe.atoms, 'elements'):
@@ -135,7 +135,7 @@ class DefaultGuesser(GuesserBase):
             try:
                 return tables.masses[element.upper()]
             except KeyError:
-                return 0.0
+                return np.nan
 
     def guess_atom_mass(self, atomname):
         """Guess a mass based on the atom name.

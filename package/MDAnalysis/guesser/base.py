@@ -37,6 +37,11 @@ Classes
 
 """
 from .. import _GUESSERS
+import numpy as np
+from ..  import _TOPOLOGY_ATTRS
+import logging
+
+logger = logging.getLogger("MDAnalysis.guesser.base")
 
 
 class _GuesserMeta(type):
@@ -73,7 +78,7 @@ class GuesserBase(metaclass=_GuesserMeta):
  
    """
     context = 'base'
-    _guess = {}
+    _guesser_box = {}
 
     def __init__(self, universe=None, **kwargs):
         self._universe = universe
@@ -103,23 +108,68 @@ class GuesserBase(metaclass=_GuesserMeta):
         """
         if guess:
             for a in guess:
-                if a.lower() not in self._guess:
+                if a.lower() not in self._guesser_box:
                     return False
             return True
         return False
 
-    def guess_Attr(self, guess):
+    def guess_Attr(self, attr_to_guess, force_guess=False):
         """map the attribute to be guessed with the apporpiate guessing method
 
         Parameters
         ----------
-        guess: an atrribute to be guessed then to be added to the universe
+        attr_to_guess: an atrribute to be guessed then to be added to the universe
         
+        force_guess: boolean to indicate wether to partialy guess the empty values of the attribute
+        or to overwrite all existing values by guessed one
         Returns
         -------
-        values: list of guessed values
+        list of guessed values
         """
-        return self._guess[guess]()
+        
+        # check if the topology already has the attribute to partially guess it
+        if hasattr(self._universe.atoms, attr_to_guess) and not force_guess:
+            attr = np.array(getattr(self._universe.atoms, attr_to_guess, None))
+
+            emptyAttr = []
+            try:
+                for a in attr:
+                   emptyAttr.append(_TOPOLOGY_ATTRS[attr_to_guess].is_empty(a))
+            except:
+                pass
+
+            if True in emptyAttr:
+                guessed_values=[]
+                parentAttr =[]
+                
+                # check if the parent attribute from which we can begin guessing exists in the universe
+                for x in self._guesser_box[attr_to_guess]['parent']: 
+                    if hasattr(self._universe.atoms, x):
+                        parentAttr = np.array(getattr(self._universe.atoms, x, None))
+                        break
+                
+                # if didn't find any parent attribute we must guess it first
+                if len(parentAttr) == 0:
+                    self._universe.guess_TopologyAttributes(context=self.context,
+                                                        to_guess=[self._parent_attr[attr_to_guess][0]])
+                    parentAttr = np.array(getattr(self._universe.atoms, x, None))
+
+                # guess the empty values
+                for p in parentAttr[emptyAttr]:
+                    guessed_values.append(self._guesser_box[attr_to_guess]['builder']([p,]))
+
+                guessed_values = np.array(guessed_values).flatten()
+                attr[emptyAttr] = guessed_values
+                logger.info(
+                    f'attribute {attr_to_guess} has been guessed successfully.')
+                return attr
+
+            else:
+                logger.info(
+                    f'There is no empty {attr_to_guess} values. Guesser did not guess any new values for {attr_to_guess} attribute')
+                return None
+        else:
+            return np.array(self._guesser_box[attr_to_guess]['builder']())
 
 
 def get_guesser(context, u=None, **kwargs):

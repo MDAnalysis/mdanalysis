@@ -24,7 +24,7 @@
 import warnings
 import pytest
 import numpy as np
-from numpy.testing import assert_equal
+from numpy.testing import assert_equal, assert_allclose
 
 import MDAnalysis as mda
 from MDAnalysisTests.topology.base import ParserBase
@@ -46,12 +46,32 @@ class RDKitParserBase(ParserBase):
     expected_n_segments = 1
     expected_n_bonds = 0
 
+    @pytest.fixture()
+    def top(self, filename):
+        with self.parser(filename) as p:
+            yield p.parse()
+
     def test_creates_universe(self, filename):
         u = mda.Universe(filename, format='RDKIT')
         assert isinstance(u, mda.Universe)
 
     def test_bonds_total_counts(self, top):
         assert len(top.bonds.values) == self.expected_n_bonds
+
+    def test_guessed_attributes(self, filename):
+        u = mda.Universe(filename, format='RDKIT')
+        for attr in self.guessed_attr:
+            assert hasattr(u.atoms, attr)
+
+    @pytest.mark.skipif('types' in expected_attrs, reason="RDKITParser doesn't guess atom types if it is available to read")
+    def test_guessed_types(self, filename, guessed_types):
+      u = mda.Universe(filename, format='RDKIT')
+      assert_equal(u.atoms.types, guessed_types)
+
+    @pytest.mark.skip(reason="RDKITParser doesn't guess masses")
+    def test_guessed_masses(self, filename, guessed_masses):
+       u = mda.Universe(filename, format='RDKIT')
+       assert_allclose(u.atoms.masses, guessed_masses, rtol=1e-3, atol=0)
 
 
 class TestRDKitParserMOL2(RDKitParserBase):

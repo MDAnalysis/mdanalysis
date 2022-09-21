@@ -21,12 +21,14 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import pytest
+from numpy.testing import assert_equal,  assert_allclose
 
 import MDAnalysis as mda
 from MDAnalysis.core.topology import Topology
+from MDAnalysis.guesser import DefaultGuesser
 
 mandatory_attrs = ['ids', 'resids', 'resnums', 'segids']
-    
+
 
 
 class ParserBase(object):
@@ -36,6 +38,7 @@ class ParserBase(object):
     """
 
     expected_attrs = []
+    guessed_attr = []
 
     @pytest.fixture
     def filename(self):
@@ -45,6 +48,14 @@ class ParserBase(object):
     def top(self, filename):
         with self.parser(filename) as p:
             yield p.parse()
+
+    @pytest.fixture
+    def guessed_types(self, top):
+        return DefaultGuesser(None).guess_types(atoms=top.names.values)
+
+    @pytest.fixture
+    def guessed_masses(self, top):
+        return DefaultGuesser(None).guess_masses(atoms=top.types.values)
 
     def test_output(self, filename):
         """Testing the call signature"""
@@ -63,7 +74,7 @@ class ParserBase(object):
         # Extra attributes as declared in specific implementations
         for attr in self.expected_attrs:
             assert hasattr(top, attr), 'Missing expected attribute: {}'.format(attr)
-    
+
     def test_no_unexpected_attributes(self, top):
         attrs = set(self.expected_attrs
                     + mandatory_attrs
@@ -91,3 +102,23 @@ class ParserBase(object):
         """Check that Universe works with this Parser"""
         u = mda.Universe(filename)
         assert isinstance(u, mda.Universe)
+
+    def test_guessed_attributes(self, filename):
+        """check that the universe created with certain parser have the same
+        guessed attributes as  when it was guessed inside the parser"""
+        u = mda.Universe(filename)
+        for attr in self.guessed_attr:
+            assert hasattr(u.atoms, attr)
+
+    @pytest.mark.skipif('names' not in expected_attrs, reason="topology doesn't have names attribute")
+    def test_guessed_types(self, filename, guessed_types):
+       """check that guessed types from universe creation have the same
+       values as the type guessing that used to happen inisde the parser"""
+       u = mda.Universe(filename)
+       assert_equal(u.atoms.types, guessed_types)
+
+    def test_guessed_masses(self, filename, guessed_masses):
+        """check that guessed masses from universe creation have the same
+        values as the masses guessing that used to happen inisde the parser"""
+        u = mda.Universe(filename)
+        assert_allclose(u.atoms.masses, guessed_masses, rtol=1e-3, atol=0)

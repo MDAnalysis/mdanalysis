@@ -28,6 +28,8 @@ import pytest
 
 import MDAnalysis as mda
 from MDAnalysisTests.topology.base import ParserBase
+from MDAnalysis.guesser import DefaultGuesser
+
 from MDAnalysisTests.datafiles import (
     mol2_molecule,
     mol2_molecules,
@@ -178,6 +180,13 @@ class TestMOL2Base(ParserBase):
         'ids', 'names', 'types', 'charges', 'resids', 'resnames', 'bonds',
         'elements',
     ]
+
+    @pytest.fixture
+    def guessed_masses(self, top):
+        return DefaultGuesser(None).guess_masses(atoms=top.elements.values)
+
+
+    guessed_attrs = ['masses']
     expected_n_atoms = 49
     expected_n_residues = 1
     expected_n_segments = 1
@@ -199,6 +208,9 @@ class TestMOL2Base(ParserBase):
     def filename(self, request):
         return request.param
 
+    @pytest.mark.skip(reason="MOL2arser doesn't guess types")
+    def test_guessed_types(self, filename, guessed_types):
+        pass
 
 def test_bond_orders():
     ref_orders = ('am 1 1 2 1 2 1 1 am 1 1 am 2 2 '

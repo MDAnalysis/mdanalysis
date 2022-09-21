@@ -44,6 +44,12 @@ class PSFBase(ParserBase):
                       'segids',
                       'bonds', 'angles', 'dihedrals', 'impropers']
 
+    @pytest.mark.skip(reason="PSFParser doesn't guess types")
+    def test_guessed_types(self, filename, guessed_types):
+        pass
+    @pytest.mark.skip(reason="PSFParser dozsn't guess masses")
+    def test_guessed_masses(self, filename, guessed_masses):
+        pass
 
 class TestPSFParser(PSFBase):
     """
@@ -147,7 +153,7 @@ class TestPSFParserNoTop(PSFBase):
 
     def test_dihedrals_total_counts(self, top):
         assert len(top.dihedrals.values) == 0
-    
+
     def test_impropers_total_counts(self, top):
         assert len(top.impropers.values) == 0
 

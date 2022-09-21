@@ -21,8 +21,10 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import MDAnalysis as mda
+import pytest
 
 from MDAnalysisTests.topology.base import ParserBase
+from MDAnalysis.guesser import DefaultGuesser
 from MDAnalysisTests.datafiles import (
     XPDB_small,
 )
@@ -34,6 +36,15 @@ class TestXPDBParser(ParserBase):
     expected_attrs = ['ids', 'names', 'record_types', 'resids',
                       'resnames', 'altLocs', 'icodes', 'occupancies',
                       'tempfactors', 'chainIDs']
+    guessed_attrs = ['masses', 'types']
     expected_n_atoms = 5
     expected_n_residues = 5
     expected_n_segments = 1
+
+    @pytest.fixture
+    def guessed_masses(self, top):
+        if hasattr(top, 'elements'):
+            atomtypes = top.elements.values
+            return DefaultGuesser(None).guess_masses(atoms=atomtypes) 
+        else:
+            return DefaultGuesser(None).guess_masses(atoms=DefaultGuesser(None).guess_types(atoms=top.names.values))

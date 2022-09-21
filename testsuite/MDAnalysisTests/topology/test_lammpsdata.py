@@ -91,6 +91,14 @@ class LammpsBase(ParserBase):
     def test_creates_universe(self, filename):
         u = mda.Universe(filename, format='DATA')
 
+    def test_guessed_attributes(self, filename):
+        u = mda.Universe(filename, format='DATA')
+        for attr in self.guessed_attr:
+            assert hasattr(u.atoms, attr)
+
+    @pytest.mark.skip(reason="LAMMPSParser doesn't guess masses")
+    def test_guessed_masses(self, filename, guessed_masses):
+        pass
 
 class TestLammpsData(LammpsBase):
     """Tests the reading of lammps .data topology files.
@@ -240,7 +248,6 @@ def test_interpret_atom_style_missing():
         style = mda.topology.LAMMPSParser.DATAParser._interpret_atom_style(
             'id charge z y x')
 
-
 class TestDumpParser(ParserBase):
     expected_attrs = ['types', 'masses']
     expected_n_atoms = 24
@@ -252,16 +259,23 @@ class TestDumpParser(ParserBase):
 
     def test_creates_universe(self):
         u = mda.Universe(self.ref_filename, format='LAMMPSDUMP')
-
         assert isinstance(u, mda.Universe)
         assert len(u.atoms) == 24
 
-           
+    def test_guessed_attributes(self, filename):
+        u = mda.Universe(filename, format='LAMMPSDUMP')
+        for attr in self.guessed_attr:
+            assert hasattr(u.atoms, attr)
+
     def test_id_ordering(self):
         # ids are nonsequential in file, but should get rearranged
         u = mda.Universe(self.ref_filename, format='LAMMPSDUMP')
         # the 4th in file has id==13, but should have been sorted
         assert u.atoms[3].id == 4
+
+    @pytest.mark.skip(reason="LammpsDumpParser doesn't guess masses")
+    def test_guessed_masses(self, filename, guessed_masses):
+        pass
 
 # this tests that topology can still be constructed if non-standard or uneven
 # column present.

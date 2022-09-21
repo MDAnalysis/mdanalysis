@@ -25,6 +25,7 @@ import pytest
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
+from MDAnalysis.guesser import DefaultGuesser
 from MDAnalysisTests.datafiles import (
     GRO,
     two_water_gro_widebox,
@@ -41,9 +42,14 @@ class TestGROParser(ParserBase):
     parser = mda.topology.GROParser.GROParser
     ref_filename = GRO
     expected_attrs = ['ids', 'names', 'resids', 'resnames']
+    guessed_attrs = ['masses', 'types']
     expected_n_atoms = 47681
     expected_n_residues = 11302
     expected_n_segments = 1
+
+    @pytest.fixture
+    def guessed_masses(self, top):
+        return DefaultGuesser(None).guess_masses(atoms=DefaultGuesser(None).guess_types(atoms=top.names.values))
 
     def test_attr_size(self, top):
         assert len(top.ids) == top.n_atoms

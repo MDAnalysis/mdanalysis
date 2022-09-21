@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import MDAnalysis as mda
-
+import pytest
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import DMS_DOMAINS, DMS_NO_SEGID
 
@@ -32,6 +32,7 @@ class TestDMSParser(ParserBase):
     expected_attrs = ['ids', 'names', 'bonds', 'charges',
                       'masses', 'resids', 'resnames', 'segids',
                       'chainIDs', 'atomnums']
+    guessed_attrs = ['masses', 'types']
     expected_n_atoms = 3341
     expected_n_residues = 214
     expected_n_segments = 3
@@ -61,6 +62,9 @@ class TestDMSParser(ParserBase):
         s5 = u.select_atoms("resname ALA")
         assert len(s5) == 190
 
+    @pytest.mark.skip(reason="DMSParser dozsn't guess masses")
+    def test_guessed_masses(self, filename, guessed_masses):
+        pass
 
 class TestDMSParserNoSegid(TestDMSParser):
     ref_filename = DMS_NO_SEGID

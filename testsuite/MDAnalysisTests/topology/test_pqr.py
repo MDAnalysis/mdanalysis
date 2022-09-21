@@ -26,6 +26,7 @@ import pytest
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
+from MDAnalysis.guesser import DefaultGuesser
 from MDAnalysisTests.datafiles import (
     PQR,
     PQR_icodes,
@@ -38,9 +39,14 @@ class TestPQRParser(ParserBase):
     expected_attrs = ['ids', 'names', 'charges', 'radii', 'record_types',
                       'resids', 'resnames', 'icodes',
                       'segids']
+    guessed_attrs = ['masses', 'types']
     expected_n_atoms = 3341
     expected_n_residues = 214
     expected_n_segments = 1
+
+    @pytest.fixture
+    def guessed_masses(self, top):
+        return DefaultGuesser(None).guess_masses(atoms=DefaultGuesser(None).guess_types(atoms=top.names.values))
 
     def test_attr_size(self, top):
         assert len(top.ids) == top.n_atoms

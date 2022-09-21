@@ -24,7 +24,6 @@ import pytest
 from pytest import approx
 import MDAnalysis as mda
 
-from MDAnalysis import guesser
 from numpy.testing import assert_equal, assert_allclose
 import numpy as np
 from MDAnalysis.core.topologyattrs import (Angles, Atomtypes, Atomnames)
@@ -76,7 +75,7 @@ class TestGuessMasses(object):
         topology = Topology(2, attrs=[Atomtypes(['X', 'Z'])])
         u = mda.Universe(topology)
         u.guess_TopologyAttributes(to_guess=['masses'])
-        assert_allclose(u.atoms.masses, np.array([0.0, 0.0]), rtol=1e-3, atol=0)
+        assert_allclose(u.atoms.masses, np.array([np.nan, np.nan]), rtol=1e-3, atol=0)
 
     @pytest.mark.parametrize('element, value', (('H', 1.008), ('XYZ', 0.0 ), ))
     def test_get_atom_mass(self, element, value, default_guesser):

@@ -49,6 +49,15 @@ class BaseITP(ParserBase):
                       'resids', 'resnames',
                       'segids', 'moltypes', 'molnums',
                       'bonds', 'angles', 'dihedrals', 'impropers']
+
+    @pytest.fixture
+    def guessed_masses(self, top):
+        if not all(top.masses.values):
+            empty = top.masses.values == np.nan
+            top.masses.values[empty] = DefaultGuesser(None).guess_masses(
+                DefaultGuesser(None).guess_types(top.types.values)[empty])
+        return top.masses.values
+
     expected_n_atoms = 63
     expected_n_residues = 10
     expected_n_segments = 1
@@ -64,15 +73,19 @@ class BaseITP(ParserBase):
 
     def test_bonds_total_counts(self, top):
         assert len(top.bonds.values) == self.expected_n_bonds
-    
+
     def test_angles_total_counts(self, top):
         assert len(top.angles.values) == self.expected_n_angles
 
     def test_dihedrals_total_counts(self, top):
         assert len(top.dihedrals.values) == self.expected_n_dihedrals
-    
+
     def test_impropers_total_counts(self, top):
         assert len(top.impropers.values) == self.expected_n_impropers
+
+    @pytest.mark.skip(reason="TPParser doesn't guess types")
+    def test_guessed_types(self, filename, guessed_types):
+        pass
 
 
 class TestITP(BaseITP):
@@ -86,7 +99,7 @@ class TestITP(BaseITP):
     expected_n_angles = 91
     expected_n_dihedrals = 30
     expected_n_impropers = 29
-    
+
     def test_bonds_atom_counts(self, universe):
         assert len(universe.atoms[[0]].bonds) == 3
         assert len(universe.atoms[[42]].bonds) == 1
@@ -95,7 +108,7 @@ class TestITP(BaseITP):
         vals = top.bonds.values
         for b in ((0, 1), (0, 2), (0, 3), (3, 4)):
             assert b in vals
-        
+
     def test_bonds_type(self, universe):
         assert universe.bonds[0].type == 2
 
@@ -107,7 +120,7 @@ class TestITP(BaseITP):
         vals = top.angles.values
         for b in ((1, 0, 2), (1, 0, 3), (2, 0, 3)):
             assert (b in vals) or (b[::-1] in vals)
-    
+
     def test_angles_type(self, universe):
         assert universe.angles[0].type == 2
 
@@ -123,7 +136,7 @@ class TestITP(BaseITP):
         vals = top.dihedrals.values
         for b in ((1, 0, 3, 5), (0, 3, 5, 7)):
             assert (b in vals) or (b[::-1] in vals)
-    
+
     def test_dihedrals_type(self, universe):
         assert universe.dihedrals[0].type == (1, 1)
 
@@ -134,7 +147,7 @@ class TestITP(BaseITP):
         vals = top.impropers.values
         for b in ((3, 0, 5, 4), (5, 3, 7, 6)):
             assert (b in vals) or (b[::-1] in vals)
-    
+
     def test_impropers_type(self, universe):
         assert universe.impropers[0].type == 2
 
@@ -146,7 +159,8 @@ class TestITPNoMass(ParserBase):
                       'charges', 'chargegroups',
                       'resids', 'resnames',
                       'segids', 'moltypes', 'molnums',
-                      'bonds', 'angles', 'dihedrals', 'impropers']
+                      'bonds', 'angles', 'dihedrals', 'impropers', 'masses',]
+
     expected_n_atoms = 60
     expected_n_residues = 1
     expected_n_segments = 1
@@ -155,8 +169,21 @@ class TestITPNoMass(ParserBase):
     def universe(self, filename):
         return mda.Universe(filename)
 
+    @pytest.fixture
+    def guessed_masses(self, top):
+        if not all(top.masses.values):
+            empty = top.masses.values == np.nan
+            top.masses.values[empty] = DefaultGuesser(None).guess_masses(
+                DefaultGuesser(None).guess_types(top.types.values)[empty])
+        return top.masses.values
+
+
     def test_mass_guess(self, universe):
         assert universe.atoms[0].mass not in ('', None)
+
+    @pytest.mark.skip(reason="TPParser doesn't guess types")
+    def test_guessed_types(self, filename, guessed_types):
+        pass
 
 
 class TestITPAtomtypes(ParserBase):
@@ -164,7 +191,7 @@ class TestITPAtomtypes(ParserBase):
     ref_filename = ITP_atomtypes
     expected_attrs = ['ids', 'names', 'types',
                       'charges', 'chargegroups',
-                      'resids', 'resnames',
+                      'resids', 'resnames', 'masses'
                       'segids', 'moltypes', 'molnums',
                       'bonds', 'angles', 'dihedrals', 'impropers']
     expected_n_atoms = 4
@@ -174,6 +201,14 @@ class TestITPAtomtypes(ParserBase):
     @pytest.fixture
     def universe(self, filename):
         return mda.Universe(filename)
+
+    @pytest.fixture
+    def guessed_masses(self, top):
+        if not all(top.masses.values):
+            empty = top.masses.values == np.nan
+            top.masses.values[empty] = DefaultGuesser(None).guess_masses(
+                DefaultGuesser(None).guess_types(top.types.values)[empty])
+        return top.masses.values
 
     def test_charge_parse(self, universe):
         assert_allclose(universe.atoms[0].charge, 4)
@@ -187,6 +222,9 @@ class TestITPAtomtypes(ParserBase):
         assert_allclose(universe.atoms[2].mass, 20.989)
         assert_allclose(universe.atoms[3].mass, 1.008)
 
+    @pytest.mark.skip(reason="TPParser doesn't guess types")
+    def test_guessed_types(self, filename, guessed_types):
+        pass
 
 class TestITPAtomtypes(ParserBase):
     parser = mda.topology.ITPParser.ITPParser
@@ -204,6 +242,14 @@ class TestITPAtomtypes(ParserBase):
     def universe(self, filename):
         return mda.Universe(filename)
 
+    @pytest.fixture
+    def guessed_masses(self, top):
+        if not all(top.masses.values):
+            empty = top.masses.values == np.nan
+            top.masses.values[empty] = DefaultGuesser(None).guess_masses(
+                DefaultGuesser(None).guess_types(top.types.values)[empty])
+        return top.masses.values
+
     def test_charge_parse(self, universe):
         assert_allclose(universe.atoms[0].charge, -1.0)
         assert_allclose(universe.atoms[1].charge, 0)
@@ -215,6 +261,10 @@ class TestITPAtomtypes(ParserBase):
         assert_allclose(universe.atoms[1].mass, 100.0)
         assert_allclose(universe.atoms[2].mass, 100.0)
         assert_allclose(universe.atoms[3].mass, 100.0)
+
+    @pytest.mark.skip(reason="TPParser doesn't guess types")
+    def test_guessed_types(self, filename, guessed_types):
+        pass
 
 class TestDifferentDirectivesITP(BaseITP):
 
@@ -245,8 +295,9 @@ class TestITPNoKeywords(BaseITP):
                       'charges', 'chargegroups',
                       'resids', 'resnames',
                       'segids', 'moltypes', 'molnums',
-                      'bonds', 'angles', 'dihedrals', 'impropers']
-   
+                      'bonds', 'angles', 'dihedrals', 'impropers', 'masses',]
+
+
     """
     Test reading ITP files *without* defined keywords.
 
@@ -255,7 +306,7 @@ class TestITPNoKeywords(BaseITP):
         #ifndef HW1_CHARGE
             #define HW1_CHARGE 0.241
         #endif
-        
+
         [ atoms ]
             1       opls_118     1       SOL              OW             1       0
             2       opls_119     1       SOL             HW1             1       HW1_CHARGE
@@ -285,7 +336,7 @@ class TestITPNoKeywords(BaseITP):
         assert_allclose(top.charges.values[1], 0.241)
         assert_allclose(top.charges.values[2], 0.241)
 
-    
+
 class TestITPKeywords(TestITPNoKeywords):
     """
     Test reading ITP files *with* defined keywords.
@@ -294,20 +345,20 @@ class TestITPKeywords(TestITPNoKeywords):
                       'charges', 'chargegroups',
                       'resids', 'resnames',
                       'segids', 'moltypes', 'molnums',
-                      'bonds', 'angles', 'dihedrals', 'impropers']
+                      'bonds', 'angles', 'dihedrals', 'impropers', 'masses',]
     expected_n_atoms = 7
     # FLEXIBLE is set -> no SETTLE constraint -> water should have angle
     expected_n_angles = 1
 
     @pytest.fixture
     def universe(self, filename):
-        return mda.Universe(filename, FLEXIBLE=True, EXTRA_ATOMS=True, 
+        return mda.Universe(filename, FLEXIBLE=True, EXTRA_ATOMS=True,
                             HW1_CHARGE=1, HW2_CHARGE=3)
 
     @pytest.fixture()
     def top(self, filename):
         with self.parser(filename) as p:
-            yield p.parse(FLEXIBLE=True, EXTRA_ATOMS=True, 
+            yield p.parse(FLEXIBLE=True, EXTRA_ATOMS=True,
                           HW1_CHARGE=1, HW2_CHARGE=3)
 
     def test_whether_settles_types(self, universe):
@@ -322,6 +373,13 @@ class TestITPKeywords(TestITPNoKeywords):
 
     def test_kwargs_overrides_defines(self, top):
         assert_allclose(top.charges.values[2], 3)
+
+    def test_guessed_masses(self, filename, guessed_masses):
+        """check that guessed masses from universe creation have the same
+        values as the masses guessing that used to happen inisde the parser"""
+        u = mda.Universe(filename, FLEXIBLE=True, EXTRA_ATOMS=True,
+                            HW1_CHARGE=1, HW2_CHARGE=3)
+        assert_allclose(u.atoms.masses, guessed_masses, rtol=1e-3, atol=0)
 
 
 class TestNestedIfs(BaseITP):
@@ -346,9 +404,13 @@ class TestNestedIfs(BaseITP):
     def top(self, filename):
         with self.parser(filename) as p:
             yield p.parse(HEAVY_H=True, EXTRA_ATOMS=True, HEAVY_SIX=True)
-    
+
     def test_heavy_atom(self, universe):
         assert universe.atoms[5].mass > 40
+
+    def test_guessed_masses(self, filename, guessed_masses):
+        u = mda.Universe(filename, HEAVY_H=True, EXTRA_ATOMS=True, HEAVY_SIX=True)
+        assert_allclose(u.atoms.masses, guessed_masses, rtol=1e-3, atol=0)
 
 
 class TestReadTop(BaseITP):
@@ -384,6 +446,20 @@ class TestReadTop(BaseITP):
     def test_creates_universe(self, filename):
         """Check that Universe works with this Parser"""
         u = mda.Universe(filename, topology_format='ITP', include_dir=GMX_DIR)
+
+    def test_guessed_attributes(self, filename):
+        """check that the universe created with certain parser have the same
+        guessed attributes as  when it was guessed inside the parser"""
+        u = mda.Universe(filename, topology_format='ITP', include_dir=GMX_DIR)
+        for attr in self.guessed_attr:
+            assert hasattr(u.atoms, attr)
+
+    def test_guessed_masses(self, filename, guessed_masses):
+        """check that guessed masses from universe creation have the same
+        values as the masses guessing that used to happen inisde the parser"""
+        u = mda.Universe(filename, topology_format='ITP', include_dir=GMX_DIR)
+        assert_allclose(u.atoms.masses, guessed_masses, rtol=1e-3, atol=0)
+
 
     def test_sequential(self, universe):
         resids = np.array(list(range(2, 12)) + list(range(13, 23)))

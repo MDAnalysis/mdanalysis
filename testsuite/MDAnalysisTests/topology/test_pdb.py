@@ -28,6 +28,7 @@ from numpy.testing import assert_equal
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
+from MDAnalysis.guesser import DefaultGuesser
 from MDAnalysisTests.datafiles import (
     PDB,
     PDB_HOLE,
@@ -76,7 +77,15 @@ class PDBBase(ParserBase):
     expected_attrs = ['ids', 'names', 'record_types', 'resids',
                       'resnames', 'altLocs', 'icodes', 'occupancies',
                       'tempfactors', 'chainIDs']
+    guessed_attrs = ['types', 'masses']
 
+    @pytest.fixture
+    def guessed_masses(self, top):
+        if hasattr(top, 'elements'):
+            atomtypes = top.elements.values
+            return DefaultGuesser(None).guess_masses(atoms=atomtypes) 
+        else:
+            return DefaultGuesser(None).guess_masses(atoms=DefaultGuesser(None).guess_types(atoms=top.names.values))
 
 class TestPDBParser(PDBBase):
     """This one has neither chainids or segids"""

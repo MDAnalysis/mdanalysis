@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from numpy.testing import assert_almost_equal
-
+import pytest
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
@@ -84,3 +84,7 @@ class TestHoomdXMLParser(ParserBase):
         # is the same as the default so this test does not fully test
         # reading of charges from the file (#2888)
         assert_almost_equal(top.charges.values, 0.0)
+
+    @pytest.mark.skip(reason="HoomdXMLParser dozsn't guess masses")
+    def test_guessed_masses(self, filename, guessed_masses):
+        pass

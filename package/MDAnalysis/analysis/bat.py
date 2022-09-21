@@ -181,7 +181,7 @@ logger = logging.getLogger(__name__)
 
 
 def _sort_atoms_by_mass(atoms, reverse=False):
-    r"""Sorts a list of atoms by name and then by index
+    r"""Sorts a list of atoms by mass and then by index
 
     The atom index is used as a tiebreaker so that the ordering is reproducible.
 
@@ -197,7 +197,11 @@ def _sort_atoms_by_mass(atoms, reverse=False):
     ag_n : list of Atoms
         Sorted list
     """
-    return sorted(atoms, key=lambda a: (a.mass, a.index), reverse=reverse)
+    s = sorted(atoms, key=lambda a: (a.mass, a.index))
+    if reverse:
+        s.reverse()
+
+    return s
 
 
 def _find_torsions(root, atoms):
@@ -304,6 +308,8 @@ class BAT(AnalysisBase):
         # The initial atom must be a terminal atom
         terminal_atoms = _sort_atoms_by_mass(\
             [a for a in self._ag.atoms if len(a.bonds)==1], reverse=True)
+        for i in terminal_atoms:
+            print("first sort\n",i)        
         if (initial_atom is None):
             # Select the heaviest root atoms from the heaviest terminal atom
             initial_atom = terminal_atoms[0]
@@ -318,18 +324,20 @@ class BAT(AnalysisBase):
         # If there are more than three atoms,
         # then the last atom cannot be a terminal atom.
         if self._ag.n_atoms != 3:
-            third_atom = _sort_atoms_by_mass(\
+            v = _sort_atoms_by_mass(\
                 [a for a in second_atom.bonded_atoms \
                 if (a in self._ag) and (a!=initial_atom) \
                 and (a not in terminal_atoms)], \
-                reverse=True)[0]
+                reverse=True)
+            third_atom = v[0]
+            for i in v:
+                print('third sort\n', third_atom)
         else:
             third_atom = _sort_atoms_by_mass(\
                 [a for a in second_atom.bonded_atoms \
                 if (a in self._ag) and (a!=initial_atom)], \
                 reverse=True)[0]
         self._root = mda.AtomGroup([initial_atom, second_atom, third_atom])
-
         # Construct a list of torsion angles
         self._torsions = _find_torsions(self._root, self._ag)
 

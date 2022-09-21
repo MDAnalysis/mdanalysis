@@ -1503,23 +1503,24 @@ class Universe(object):
                     for attr in to_guess:
                         if any(attr == a for a in self._topology_atrrs):
                             logger.info('The attribute {} have already been read '
-                                        'from the topology file. To '
-                                        'overwrite the read values by guessed ones, you can pass the attribute to the force_guess'
+                                        'from the topology file. The '
+                                        'guesser will only guess empty values for this attribute, if any exists.'
+                                        'To overwrite it by completely guessed values, you can pass the attribute to the force_guess'
                                         'parameter instead of the to_guess one'
                                         .format(attr))
-                            if attr not in force_guess:                            
-                                guess.remove(attr)
-
+                            
                     for attr in guess:
-                        values = guesser.guess_Attr(attr)
-                        if attr in objects:
-                            self._add_topology_objects(attr, values, guessed=True)
-                        else:
-                            tcls = _TOPOLOGY_ATTRS[attr](values, True)
-                            self.add_TopologyAttr(tcls)
-
-                        logger.info(
-                            'attribute {} has been guessed successfully.'.format(attr))
+                        fg = False
+                        if attr in force_guess:
+                            fg = True
+                        values = guesser.guess_Attr(attr, fg)
+                        
+                        if values is not None:
+                            if attr in objects:
+                                self._add_topology_objects(attr, values, guessed=True)
+                            else:
+                                tcls = _TOPOLOGY_ATTRS[attr](values, True)
+                                self.add_TopologyAttr(tcls)
 
 
                 else:

@@ -23,6 +23,7 @@
 import MDAnalysis as mda
 import pytest
 
+from MDAnalysis.guesser import DefaultGuesser
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import TXYZ, ARC
 
@@ -30,9 +31,14 @@ from MDAnalysisTests.datafiles import TXYZ, ARC
 class TestTXYZParser(ParserBase):
     parser = mda.topology.TXYZParser.TXYZParser
     expected_attrs = ['ids', 'names', 'bonds', 'types', 'elements']
+    guessed_attrs = ['masses']
     expected_n_residues = 1
     expected_n_atoms = 9
     expected_n_segments = 1
+
+    @pytest.fixture
+    def guessed_masses(self, top):
+        return DefaultGuesser(None).guess_masses(atoms=top.names.values)
 
     def test_number_of_bonds(self, top):
         assert len(top.bonds.values) == 8
@@ -50,3 +56,7 @@ class TestTXYZParser(ParserBase):
         types = top.types.values
         type_is_str = [isinstance(atom_type, str) for atom_type in types]
         assert all(type_is_str)
+
+    @pytest.mark.skip(reason="TXYZParser doesn't guess types")
+    def test_guessed_types(self, filename, guessed_types):
+        pass

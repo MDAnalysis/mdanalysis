@@ -149,6 +149,12 @@ class TOPBase(ParserBase):
         else:
             assert not hasattr(top, 'elements'), 'Unexpected elements attr'
 
+    @pytest.mark.skip(reason="TOParser doesn't guess types")
+    def test_guessed_types(self, filename, guessed_types):
+        pass
+    @pytest.mark.skip(reason="TOParser doesn't guess masses")
+    def test_guessed_masses(self, filename, guessed_masses):
+        pass
 
 class TestPRMParser(TOPBase):
     ref_filename = PRM
