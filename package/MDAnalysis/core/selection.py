@@ -356,6 +356,48 @@ class SphericalLayerSelection(Selection):
         return group[np.asarray(indices, dtype=np.int64)]
 
 
+class IsoLayerSelection(Selection):
+    token = 'isolayer'
+    precedence = 1
+
+    def __init__(self, parser, tokens):
+        super().__init__(parser, tokens)
+        self.periodic = parser.periodic
+        self.inRadius = float(tokens.popleft())
+        self.exRadius = float(tokens.popleft())
+        self.sel = parser.parse_expression(self.precedence)
+
+    @return_empty_on_apply
+    def _apply(self, group):
+        indices = []
+        sel = self.sel.apply(group)
+        # All atoms in group that aren't in sel
+        sys = group[~np.in1d(group.indices, sel.indices)]
+
+        if not sys or not sel:
+            return sys[[]]
+
+        box = group.dimensions if self.periodic else None
+        pairs_outer = distances.capped_distance(sel.positions, sys.positions,
+                                                self.exRadius, box=box,
+                                                return_distances=False)
+        pairs_inner = distances.capped_distance(sel.positions, sys.positions,
+                                                self.inRadius, box=box,
+                                                return_distances=False)
+        inner = np.array(pairs_inner).T[1]
+        outer = np.array(pairs_outer).T[1]
+
+        if pairs_outer.size > 0:
+            sys_ind_outer = np.sort(np.unique(pairs_outer[:,1]))
+            if pairs_inner.size > 0:
+                sys_ind_inner = np.sort(np.unique(pairs_inner[:,1]))
+                indices = sys_ind_outer[~np.in1d(sys_ind_outer, sys_ind_inner)]
+            else:
+                indices = sys_ind_outer
+
+        return sys[np.asarray(indices, dtype=np.int64)]
+
+
 class SphericalZoneSelection(Selection):
     token = 'sphzone'
     precedence = 1

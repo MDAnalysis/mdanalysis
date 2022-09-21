@@ -196,6 +196,14 @@ class TestSelectionsCHARMM(object):
         assert_equal(len(sel), 66)
 
     @pytest.mark.parametrize('selstr', [
+        'isolayer 4.0 6.0 bynum 1281',
+        'isolayer 4.0 6.0 index 1280'
+    ])
+    def test_isolayer(self, universe, selstr):
+        sel = universe.select_atoms(selstr)
+        assert_equal(len(sel), 66)
+
+    @pytest.mark.parametrize('selstr', [
         'sphzone 6.0 bynum 1281',
         'sphzone 6.0 index 1280'
     ])
@@ -690,6 +698,34 @@ class BaseDistanceSelection(object):
         assert ref == set(result.indices)
 
     @pytest.mark.parametrize('periodic', (True, False))
+    def test_isolayer(self, u, periodic):
+
+        rmin, rmax = 2.4, 3
+        if u.atoms.types[0].isdigit():
+            r1 = u.select_atoms("resid 1 or resid 2 and type 7")
+        else:
+            r1 = u.select_atoms("resid 1 or resid 2 and type O")
+
+        sel = Parser.parse("isolayer {} {} (index {} or index {})".format(rmin, rmax, *r1.ix), u.atoms)
+        if periodic:
+            sel.periodic = True
+        else:
+            sel.periodic = False
+        result = sel.apply(u.atoms)
+
+        box = u.dimensions if periodic else None
+        cog1 = r1[0].position.reshape(1, 3)
+        d1 = distance_array(u.atoms.positions, cog1, box=box)
+        cog2 = r1[1].position.reshape(1, 3)
+        d2 = distance_array(u.atoms.positions, cog2, box=box)
+
+        ref_inner  = set(np.where((d1 < rmin) | (d2 < rmin))[0])
+        ref_outer  = set(np.where((d1 < rmax) | (d2 < rmax))[0])
+        ref_outer -= ref_inner
+
+        assert ref_outer == set(result.indices)
+
+    @pytest.mark.parametrize('periodic', (True, False))
     def test_spherical_zone(self, u, periodic):
         sel = Parser.parse('sphzone 5.0 resid 1', u.atoms)
         if periodic:
@@ -804,6 +840,10 @@ class TestTriclinicSelections(object):
 
     def test_empty_sphlayer(self, u):
         empty = u.select_atoms('sphlayer 2.4 6.0 name NOT_A_NAME')
+        assert len(empty) == 0
+
+    def test_empty_isolayer(self, u):
+        empty = u.select_atoms('isolayer 2.4 6.0 name NOT_A_NAME')
         assert len(empty) == 0
 
     def test_sphzone(self, u):
