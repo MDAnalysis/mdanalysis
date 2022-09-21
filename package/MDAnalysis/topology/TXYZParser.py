@@ -131,7 +131,6 @@ class TXYZParser(TopologyReaderBase):
         attrs = [Atomnames(names),
                  Atomids(atomids),
                  Atomtypes(types),
-                 Elements(np.array(validated_elements, dtype=object)),
                  Bonds(tuple(bonds)),
                  Resids(np.array([1])),
                  Resnums(np.array([1])),
@@ -143,8 +142,8 @@ class TXYZParser(TopologyReaderBase):
         else:
             warnings.warn("Element information is missing, elements attribute "
                           "will not be populated. If needed these can be "
-                          "guessed using MDAnalysis.topology.guessers.")
- 
+                          "guessed using universe.guess_topologyAttributes(to_guess=['elements']).")
+
         top = Topology(natoms, 1, 1,
                        attrs=attrs)
 

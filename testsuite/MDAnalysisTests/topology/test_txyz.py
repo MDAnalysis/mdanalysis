@@ -70,18 +70,17 @@ def test_TXYZ_elements():
     u = mda.Universe(TXYZ, format='TXYZ')
     element_list = np.array(['C', 'H', 'H', 'O', 'H', 'C', 'H', 'H', 'H'], dtype=object)
     assert_equal(u.atoms.elements, element_list)
-    
-    
+
+
 def test_missing_elements_noattribute():
     """Check that:
 
     1) a warning is raised if elements are missing
     2) the elements attribute is not set
     """
-    wmsg = ("Element information is missing, elements attribute will not be "
-            "populated")
+    wmsg = ("Element information is missing, elements attribute "
+            "will not be populated. If needed these can be ")
     with pytest.warns(UserWarning, match=wmsg):
         u = mda.Universe(ARC_PBC)
     with pytest.raises(AttributeError):
         _ = u.atoms.elements
-
