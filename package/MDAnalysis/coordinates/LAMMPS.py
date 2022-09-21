@@ -661,7 +661,10 @@ class DumpReader(base.ReaderBase):
                 ts.forces[i] = [fields[dim] for dim in self._forces_ind]
 
         order = np.argsort(indices)
-        ts.positions = ts.positions[order]
+        if not triclinic:
+            ts.positions = ts.positions[order] - [xlo, ylo, zlo]
+        else:
+            ts.positions = ts.positions[order]
         if self._has_vels:
             ts.velocities = ts.velocities[order]
         if self._has_forces:
