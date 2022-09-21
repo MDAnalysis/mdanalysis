@@ -45,7 +45,10 @@ Classes
 
 import itertools
 import numpy as np
+import warnings
 
+
+from ..guesser.tables import SYMB2Z
 from ..lib.util import openany
 from .base import TopologyReaderBase
 from ..core.topology import Topology
@@ -58,7 +61,8 @@ from ..core.topologyattrs import (
     Resids,
     Resnums,
     Segids,
-    Elements
+
+    Elements,
 )
 
 
@@ -69,8 +73,11 @@ class TXYZParser(TopologyReaderBase):
 
     - Atomnames
     - Atomtypes
+    - Elements (if all atom names are element symbols)
 
     .. versionadded:: 0.17.0
+    .. versionchanged:: 2.4.0
+       Adding the `Element` attribute if all names are valid element symbols.
     """
     format = ['TXYZ', 'ARC']
 
@@ -130,7 +137,14 @@ class TXYZParser(TopologyReaderBase):
                  Resnums(np.array([1])),
                  Segids(np.array(['SYSTEM'], dtype=object)),
                  ]
-
+        if all(n.capitalize() in SYMB2Z for n in names):
+            attrs.append(Elements(np.array(names, dtype=object)))
+            
+        else:
+            warnings.warn("Element information is missing, elements attribute "
+                          "will not be populated. If needed these can be "
+                          "guessed using MDAnalysis.topology.guessers.")
+ 
         top = Topology(natoms, 1, 1,
                        attrs=attrs)
 
