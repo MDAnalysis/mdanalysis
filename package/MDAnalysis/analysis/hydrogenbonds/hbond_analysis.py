@@ -407,11 +407,19 @@ class HydrogenBondAnalysis(AnalysisBase):
             ))
         ]
 
-        hydrogens_list = np.unique(
-            [
-                '(resname {} and name {})'.format(r, p) for r, p in zip(hydrogens_ag.resnames, hydrogens_ag.names)
-            ]
-        )
+        if hasattr(hydrogens_ag,"resnames") and hasattr(hydrogens_ag,"names"):
+            hydrogens_list = np.unique(
+                [
+                    '(resname {} and name {})'.format(r, p) for r, p in zip(hydrogens_ag.resnames, hydrogens_ag.names)
+                ]
+            )
+        else:
+            hydrogens_list = np.unique(
+                [
+                    'type {}'.format(tp) for tp in hydrogens_ag.types
+                ]
+            )
+
 
         return " or ".join(hydrogens_list)
 
@@ -463,11 +471,19 @@ class HydrogenBondAnalysis(AnalysisBase):
             )
         )
         donors_ag = ag[ag.charges < max_charge]
-        donors_list = np.unique(
-            [
-                '(resname {} and name {})'.format(r, p) for r, p in zip(donors_ag.resnames, donors_ag.names)
-            ]
-        )
+
+        if hasattr(donors_ag,"resnames") and hasattr(donors_ag,"names"):
+            donors_list = np.unique(
+                [
+                    '(resname {} and name {})'.format(r, p) for r, p in zip(donors_ag.resnames, donors_ag.names)
+                ]
+            )
+        else:
+            donors_list = np.unique(
+                [
+                    'type {}'.format(tp) for tp in donors_ag.types if tp not in hydrogens_ag.types
+                ]
+            )
 
         return " or ".join(donors_list)
 
@@ -503,11 +519,18 @@ class HydrogenBondAnalysis(AnalysisBase):
 
         ag = self.u.select_atoms(select)
         acceptors_ag = ag[ag.charges < max_charge]
-        acceptors_list = np.unique(
-            [
-                '(resname {} and name {})'.format(r, p) for r, p in zip(acceptors_ag.resnames, acceptors_ag.names)
-            ]
-        )
+        if hasattr(acceptors_ag,"resnames") and hasattr(acceptors_ag,"names"):
+            acceptors_list = np.unique(
+                [
+                    '(resname {} and name {})'.format(r, p) for r, p in zip(acceptors_ag.resnames, acceptors_ag.names)
+                ]
+            )
+        else:
+            acceptors_list = np.unique(
+                [
+                    'type {}'.format(tp) for tp in acceptors_ag.types
+                ]
+            )
 
         return " or ".join(acceptors_list)
 
@@ -816,8 +839,17 @@ class HydrogenBondAnalysis(AnalysisBase):
         d = self.u.atoms[self.hbonds[:, 1].astype(np.intp)]
         a = self.u.atoms[self.hbonds[:, 3].astype(np.intp)]
 
-        tmp_hbonds = np.array([d.resnames, d.types, a.resnames, a.types],
-                              dtype=str).T
+        if hasattr(d,"resnames"):
+            d_res = d.resnames
+        else:
+            d_res = [None for x in range(len(d.types))]
+
+        if hasattr(a,"resnames"):
+            a_res = a.resnames
+        else:
+            a_res = [None for x in range(len(a.types))]
+
+        tmp_hbonds = np.array([d_res, d.types, a_res, a.types], dtype=str).T
         hbond_type, type_counts = np.unique(
             tmp_hbonds, axis=0, return_counts=True)
         hbond_type_list = []
