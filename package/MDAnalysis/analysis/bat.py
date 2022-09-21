@@ -308,8 +308,6 @@ class BAT(AnalysisBase):
         # The initial atom must be a terminal atom
         terminal_atoms = _sort_atoms_by_mass(\
             [a for a in self._ag.atoms if len(a.bonds)==1], reverse=True)
-        for i in terminal_atoms:
-            print("first sort\n",i)        
         if (initial_atom is None):
             # Select the heaviest root atoms from the heaviest terminal atom
             initial_atom = terminal_atoms[0]
@@ -324,15 +322,12 @@ class BAT(AnalysisBase):
         # If there are more than three atoms,
         # then the last atom cannot be a terminal atom.
         if self._ag.n_atoms != 3:
-            v = _sort_atoms_by_mass(\
+            third_atom = _sort_atoms_by_mass(\
                 [a for a in second_atom.bonded_atoms \
                 if (a in self._ag) and (a!=initial_atom) \
                 and (a not in terminal_atoms)], \
                 reverse=True)
-            third_atom = v[0]
-            for i in v:
-                print('third sort\n', third_atom)
-        else:
+      else:
             third_atom = _sort_atoms_by_mass(\
                 [a for a in second_atom.bonded_atoms \
                 if (a in self._ag) and (a!=initial_atom)], \
