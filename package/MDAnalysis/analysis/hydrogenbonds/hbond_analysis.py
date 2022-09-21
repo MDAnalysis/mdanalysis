@@ -622,6 +622,14 @@ class HydrogenBondAnalysis(AnalysisBase):
             return_distances=True,
         )
 
+        if not d_a_indices:
+            warnings.warn(
+                "No hydrogen bonds were found given d-a cutoff of {} between "\
+                "Donor, {}, and Acceptor, {}.".format(self.d_a_cutoff, 
+                                                      self.donors_sel, 
+                                                      self.acceptors_sel)
+            )
+
         # Remove D-A pairs more than d_a_cutoff away from one another
         tmp_donors = self._donors[d_a_indices.T[0]]
         tmp_hydrogens = self._hydrogens[d_a_indices.T[0]]
@@ -643,6 +651,14 @@ class HydrogenBondAnalysis(AnalysisBase):
             )
         )
         hbond_indices = np.where(d_h_a_angles > self.d_h_a_angle)[0]
+
+        if not hbond_indices:
+            warnings.warn(
+                "No hydrogen bonds were found given angle of {} between "\
+                "Donor, {}, and Acceptor, {}.".format(self.d_h_a_cutoff, 
+                                                      self.donors_sel, 
+                                                      self.acceptors_sel)
+            )
 
         # Retrieve atoms, distances and angles of hydrogen bonds
         hbond_donors = tmp_donors[hbond_indices]
