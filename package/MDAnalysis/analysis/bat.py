@@ -333,6 +333,7 @@ class BAT(AnalysisBase):
                 if (a in self._ag) and (a!=initial_atom)], \
                 reverse=True)[0]
         self._root = mda.AtomGroup([initial_atom, second_atom, third_atom])
+
         # Construct a list of torsion angles
         self._torsions = _find_torsions(self._root, self._ag)
 
