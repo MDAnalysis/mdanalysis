@@ -43,13 +43,14 @@ class PSFBase(ParserBase):
                       'resids', 'resnames',
                       'segids',
                       'bonds', 'angles', 'dihedrals', 'impropers']
+    @pytest.fixture
+    def guessed_types(self, top):
+        return top.types.values
 
-    @pytest.mark.skip(reason="PSFParser doesn't guess types")
-    def test_guessed_types(self, filename, guessed_types):
-        pass
-    @pytest.mark.skip(reason="PSFParser dozsn't guess masses")
-    def test_guessed_masses(self, filename, guessed_masses):
-        pass
+    @pytest.fixture
+    def guessed_masses(self, top):
+        return top.masses.values
+
 
 class TestPSFParser(PSFBase):
     """

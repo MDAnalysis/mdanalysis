@@ -45,6 +45,15 @@ class BaseTestParmedParser(ParserBase):
                       'segids',
                       'bonds', 'ureybradleys', 'angles',
                       'dihedrals', 'impropers', 'cmaps']
+    
+    @pytest.fixture
+    def guessed_types(self, top):
+        return top.types.values
+
+    @pytest.fixture
+    def guessed_masses(self, top):
+        return top.masses.values
+
 
     expected_n_atoms = 0
     expected_n_residues = 1
@@ -103,19 +112,6 @@ class BaseTestParmedParser(ParserBase):
         for erange, evals in zip(self.elems_ranges, self.expected_elems):
             assert_equal(top.elements.values[erange[0]:erange[1]], evals,
                          "unexpected element match")
-
-    @pytest.mark.skip(reason="ParmedParser doesn't guess types")
-    def test_guessed_types(self, filename, guessed_types):
-        u = mda.Universe(filename)
-        assert_equal(u.atoms.types, guessed_types)
-
-    @pytest.mark.skip(reason="ParmedParser doesn't guess masses")
-    def test_guessed_masses(self, filename, guessed_masses):
-       u = mda.Universe(filename)
-       assert_allclose(u.atoms.masses, guessed_masses, rtol=1e-3, atol=0)
-
-
-
 
 
 class TestParmedParserPSF(BaseTestParmedParser):

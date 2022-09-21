@@ -49,6 +49,9 @@ class BaseITP(ParserBase):
                       'resids', 'resnames',
                       'segids', 'moltypes', 'molnums',
                       'bonds', 'angles', 'dihedrals', 'impropers']
+    @pytest.fixture
+    def guessed_types(self, top):
+        return top.types.values
 
     @pytest.fixture
     def guessed_masses(self, top):
@@ -82,10 +85,6 @@ class BaseITP(ParserBase):
 
     def test_impropers_total_counts(self, top):
         assert len(top.impropers.values) == self.expected_n_impropers
-
-    @pytest.mark.skip(reason="TPParser doesn't guess types")
-    def test_guessed_types(self, filename, guessed_types):
-        pass
 
 
 class TestITP(BaseITP):
@@ -161,6 +160,10 @@ class TestITPNoMass(ParserBase):
                       'segids', 'moltypes', 'molnums',
                       'bonds', 'angles', 'dihedrals', 'impropers', 'masses',]
 
+    @pytest.fixture
+    def guessed_types(self, top):
+        return top.types.values
+
     expected_n_atoms = 60
     expected_n_residues = 1
     expected_n_segments = 1
@@ -181,10 +184,6 @@ class TestITPNoMass(ParserBase):
     def test_mass_guess(self, universe):
         assert universe.atoms[0].mass not in ('', None)
 
-    @pytest.mark.skip(reason="TPParser doesn't guess types")
-    def test_guessed_types(self, filename, guessed_types):
-        pass
-
 
 class TestITPAtomtypes(ParserBase):
     parser = mda.topology.ITPParser.ITPParser
@@ -197,6 +196,10 @@ class TestITPAtomtypes(ParserBase):
     expected_n_atoms = 4
     expected_n_residues = 1
     expected_n_segments = 1
+
+    @pytest.fixture
+    def guessed_typess(self, top):
+        return top.types.values
 
     @pytest.fixture
     def universe(self, filename):
@@ -222,9 +225,6 @@ class TestITPAtomtypes(ParserBase):
         assert_allclose(universe.atoms[2].mass, 20.989)
         assert_allclose(universe.atoms[3].mass, 1.008)
 
-    @pytest.mark.skip(reason="TPParser doesn't guess types")
-    def test_guessed_types(self, filename, guessed_types):
-        pass
 
 class TestITPAtomtypes(ParserBase):
     parser = mda.topology.ITPParser.ITPParser

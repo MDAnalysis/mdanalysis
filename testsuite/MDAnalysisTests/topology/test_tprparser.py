@@ -70,6 +70,13 @@ class TPRAttrs(ParserBase):
                       'resids', 'resnames', 'types', 'masses',
                       'moltypes', 'molnums', 'charges',
                       'bonds', 'angles', 'dihedrals', 'impropers']
+    @pytest.fixture
+    def guessed_types(self, top):
+        return top.types.values
+
+    @pytest.fixture
+    def guessed_masses(self, top):
+        return top.masses.values
 
     def test_moltypes(self, top):
         moltypes = top.moltypes.values
@@ -80,13 +87,6 @@ class TPRAttrs(ParserBase):
         assert_equal(molnums, self.ref_molnums)
         assert molnums.dtype == np.intp
 
-    @pytest.mark.skip(reason="TPRarser doesn't guess types")
-    def test_guessed_types(self, filename, guessed_types):
-        pass
-
-    @pytest.mark.skip(reason="TPRParser dozsn't guess masses")
-    def test_guessed_masses(self, filename, guessed_masses):
-        pass
 
 class TestTPR(TPRAttrs):
     """

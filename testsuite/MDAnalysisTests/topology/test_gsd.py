@@ -40,6 +40,14 @@ class GSDBase(ParserBase):
     expected_n_dihedrals = 0
     expected_n_impropers = 0
 
+    @pytest.fixture
+    def guessed_masses(self, top):
+        return top.masses.values
+
+    @pytest.fixture
+    def guessed_types(self, top):
+        return top.types.values
+
     def test_attr_size(self, top):
         assert len(top.ids) == top.n_atoms
         assert len(top.names) == top.n_atoms
@@ -76,10 +84,6 @@ class GSDBase(ParserBase):
             assert isinstance(top.angles.values[0], tuple)
         else:
             assert top.impropers.values == []
-
-    @pytest.mark.skip(reason="GSDParser dozsn't guess masses")
-    def test_guessed_masses(self, filename, guessed_masses):
-        pass
 
 class TestGSDParser(GSDBase):
     ref_filename = GSD

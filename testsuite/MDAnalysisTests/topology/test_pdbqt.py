@@ -37,11 +37,12 @@ class TestPDBQT(ParserBase):
         'ids', 'names', 'charges', 'types', 'altLocs', 'resids', 'resnames',
         'segids', 'record_types', 'icodes', 'occupancies', 'tempfactors'
     ]
+
+    @pytest.fixture
+    def guessed_types(self, top):
+        return top.types.values
+
     guessed_attrs = ['masses']
     expected_n_atoms = 1805
     expected_n_residues = 199  # resids go 2-102 then 2-99
     expected_n_segments = 2  # res2-102 are A, 2-99 are B
-
-    @pytest.mark.skip(reason="PDBQTParser doesn't guess types")
-    def test_guessed_types(self, filename, guessed_types):
-        pass

@@ -32,10 +32,15 @@ class TestDMSParser(ParserBase):
     expected_attrs = ['ids', 'names', 'bonds', 'charges',
                       'masses', 'resids', 'resnames', 'segids',
                       'chainIDs', 'atomnums']
-    guessed_attrs = ['masses', 'types']
+    guessed_attrs = ['types']
     expected_n_atoms = 3341
     expected_n_residues = 214
     expected_n_segments = 3
+
+    @pytest.fixture
+    def guessed_masses(self, top):
+        return top.masses.values
+
 
     def test_number_of_bonds(self, top):
         assert len(top.bonds.values) == 3365
@@ -62,9 +67,6 @@ class TestDMSParser(ParserBase):
         s5 = u.select_atoms("resname ALA")
         assert len(s5) == 190
 
-    @pytest.mark.skip(reason="DMSParser dozsn't guess masses")
-    def test_guessed_masses(self, filename, guessed_masses):
-        pass
 
 class TestDMSParserNoSegid(TestDMSParser):
     ref_filename = DMS_NO_SEGID

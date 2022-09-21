@@ -49,6 +49,13 @@ class TOPBase(ParserBase):
         "names", "types", "type_indices", "charges", "masses", "resnames",
         "bonds", "angles", "dihedrals", "impropers", "elements"
     ]
+    @pytest.fixture
+    def guessed_types(self, top):
+        return top.types.values
+    @pytest.fixture
+    def guessed_masses(self, top):
+        return top.masses.values
+
     expected_n_segments = 1
 
     def test_attr_size(self, top):
@@ -149,12 +156,6 @@ class TOPBase(ParserBase):
         else:
             assert not hasattr(top, 'elements'), 'Unexpected elements attr'
 
-    @pytest.mark.skip(reason="TOParser doesn't guess types")
-    def test_guessed_types(self, filename, guessed_types):
-        pass
-    @pytest.mark.skip(reason="TOParser doesn't guess masses")
-    def test_guessed_masses(self, filename, guessed_masses):
-        pass
 
 class TestPRMParser(TOPBase):
     ref_filename = PRM

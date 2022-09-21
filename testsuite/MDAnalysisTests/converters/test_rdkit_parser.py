@@ -40,7 +40,14 @@ class RDKitParserBase(ParserBase):
                       'segids',
                       'bonds', 'types',
                      ]
-    
+    @pytest.fixture
+    def guessed_types(self, top):
+        return top.types.values
+
+    @pytest.fixture
+    def guessed_masses(self, top):
+        return top.masses.values
+
     expected_n_atoms = 0
     expected_n_residues = 1
     expected_n_segments = 1
@@ -62,16 +69,6 @@ class RDKitParserBase(ParserBase):
         u = mda.Universe(filename, format='RDKIT')
         for attr in self.guessed_attr:
             assert hasattr(u.atoms, attr)
-
-    @pytest.mark.skipif('types' in expected_attrs, reason="RDKITParser doesn't guess atom types if it is available to read")
-    def test_guessed_types(self, filename, guessed_types):
-      u = mda.Universe(filename, format='RDKIT')
-      assert_equal(u.atoms.types, guessed_types)
-
-    @pytest.mark.skip(reason="RDKITParser doesn't guess masses")
-    def test_guessed_masses(self, filename, guessed_masses):
-       u = mda.Universe(filename, format='RDKIT')
-       assert_allclose(u.atoms.masses, guessed_masses, rtol=1e-3, atol=0)
 
 
 class TestRDKitParserMOL2(RDKitParserBase):

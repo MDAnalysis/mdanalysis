@@ -182,6 +182,10 @@ class TestMOL2Base(ParserBase):
     ]
 
     @pytest.fixture
+    def guessed_types(self, top):
+        return top.types.values
+
+    @pytest.fixture
     def guessed_masses(self, top):
         return DefaultGuesser(None).guess_masses(atoms=top.elements.values)
 
@@ -207,10 +211,6 @@ class TestMOL2Base(ParserBase):
     @pytest.fixture(params=[mol2_molecule, mol2_molecules])
     def filename(self, request):
         return request.param
-
-    @pytest.mark.skip(reason="MOL2arser doesn't guess types")
-    def test_guessed_types(self, filename, guessed_types):
-        pass
 
 def test_bond_orders():
     ref_orders = ('am 1 1 2 1 2 1 1 am 1 1 am 2 2 '

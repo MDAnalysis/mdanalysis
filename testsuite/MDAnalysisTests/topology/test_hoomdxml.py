@@ -34,6 +34,11 @@ class TestHoomdXMLParser(ParserBase):
     expected_attrs = [
         'types', 'masses', 'charges', 'radii', 'bonds', 'angles', 'dihedrals', 'impropers'
     ]
+
+    @pytest.fixture
+    def guessed_masses(self, top):
+        return top.masses.values
+
     expected_n_atoms = 769
     expected_n_residues = 1
     expected_n_segments = 1
@@ -84,7 +89,3 @@ class TestHoomdXMLParser(ParserBase):
         # is the same as the default so this test does not fully test
         # reading of charges from the file (#2888)
         assert_almost_equal(top.charges.values, 0.0)
-
-    @pytest.mark.skip(reason="HoomdXMLParser dozsn't guess masses")
-    def test_guessed_masses(self, filename, guessed_masses):
-        pass

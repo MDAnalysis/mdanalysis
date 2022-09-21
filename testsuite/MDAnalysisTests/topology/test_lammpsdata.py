@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import pytest
-from numpy.testing import assert_equal
+from numpy.testing import assert_equal, assert_allclose
 import numpy as np
 from io import StringIO
 
@@ -44,6 +44,10 @@ class LammpsBase(ParserBase):
     expected_n_segments = 1
     expected_attrs = ['types', 'resids', 'masses', 'charges',
                       'bonds', 'angles', 'dihedrals', 'impropers']
+
+    @pytest.fixture
+    def guessed_masses(self, top):
+        return top.masses.values
 
     def test_n_atom_types(self, top):
         assert_equal(len(set(top.types.values)), self.expected_n_atom_types)
@@ -96,9 +100,15 @@ class LammpsBase(ParserBase):
         for attr in self.guessed_attr:
             assert hasattr(u.atoms, attr)
 
-    @pytest.mark.skip(reason="LAMMPSParser doesn't guess masses")
+    @pytest.mark.skipif('names' not in expected_attrs, reason="topology doesn't have names attribute")
+    def test_guessed_types(self, filename, guessed_types):
+       u = mda.Universe(filename, format='DATA')
+       assert_equal(u.atoms.types, guessed_types)
+
     def test_guessed_masses(self, filename, guessed_masses):
-        pass
+        u = mda.Universe(filename, format='DATA')
+        assert_allclose(u.atoms.masses, guessed_masses, rtol=1e-3, atol=0)
+
 
 class TestLammpsData(LammpsBase):
     """Tests the reading of lammps .data topology files.
@@ -254,6 +264,10 @@ class TestDumpParser(ParserBase):
     expected_n_residues = 1
     expected_n_segments = 1
 
+    @pytest.fixture
+    def guessed_masses(self, top):
+        return top.masses.values
+
     parser = mda.topology.LAMMPSParser.LammpsDumpParser
     ref_filename = LAMMPSDUMP
 
@@ -267,15 +281,20 @@ class TestDumpParser(ParserBase):
         for attr in self.guessed_attr:
             assert hasattr(u.atoms, attr)
 
+    @pytest.mark.skipif('names' not in expected_attrs, reason="topology doesn't have names attribute")
+    def test_guessed_types(self, filename, guessed_types):
+       u = mda.Universe(filename, format='LAMMPSDUMP')
+       assert_equal(u.atoms.types, guessed_types)
+
+    def test_guessed_masses(self, filename, guessed_masses):
+        u = mda.Universe(filename, format='LAMMPSDUMP')
+        assert_allclose(u.atoms.masses, guessed_masses, rtol=1e-3, atol=0)
+
     def test_id_ordering(self):
         # ids are nonsequential in file, but should get rearranged
         u = mda.Universe(self.ref_filename, format='LAMMPSDUMP')
         # the 4th in file has id==13, but should have been sorted
         assert u.atoms[3].id == 4
-
-    @pytest.mark.skip(reason="LammpsDumpParser doesn't guess masses")
-    def test_guessed_masses(self, filename, guessed_masses):
-        pass
 
 # this tests that topology can still be constructed if non-standard or uneven
 # column present.

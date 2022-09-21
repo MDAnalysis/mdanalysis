@@ -37,6 +37,10 @@ class TestTXYZParser(ParserBase):
     expected_n_segments = 1
 
     @pytest.fixture
+    def guessed_types(self, top):
+        return top.types.values
+
+    @pytest.fixture
     def guessed_masses(self, top):
         return DefaultGuesser(None).guess_masses(atoms=top.names.values)
 
@@ -56,7 +60,3 @@ class TestTXYZParser(ParserBase):
         types = top.types.values
         type_is_str = [isinstance(atom_type, str) for atom_type in types]
         assert all(type_is_str)
-
-    @pytest.mark.skip(reason="TXYZParser doesn't guess types")
-    def test_guessed_types(self, filename, guessed_types):
-        pass
