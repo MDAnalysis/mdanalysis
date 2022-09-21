@@ -479,9 +479,10 @@ class DumpReader(base.ReaderBase):
     .. versionadded:: 0.19.0
     """
     format = 'LAMMPSDUMP'
-    _conventions = ["auto", "unscaled", "scaled", "unwrapped",
+    _conventions = ["auto", "imageflag_unscaled", "unscaled", "scaled", "unwrapped",
                     "scaled_unwrapped"]
     _coordtype_column_names = {
+        "imageflag_unscaled": ["x", "y", "z", "ix", "iy", "iz"],
         "unscaled": ["x", "y", "z"],
         "scaled": ["xs", "ys", "zs"],
         "unwrapped": ["xu", "yu", "zu"],
@@ -504,6 +505,11 @@ class DumpReader(base.ReaderBase):
                              f"Please choose one of {option_string}")
 
         self._has_vels, self._has_forces = self._check_vels_forces()
+
+        if "unwrap" in kwargs: # Added JAC, to optionally unwrap coordinates
+            self._unwrap = kwargs["unwrap"]
+        else:
+            self._unwrap = False
 
         self._cache = {}
 
@@ -653,7 +659,20 @@ class DumpReader(base.ReaderBase):
             fields = f.readline().split()
             if ids:
                 indices[i] = fields[attr_to_col_ix["id"]]
-            ts.positions[i] = [fields[dim] for dim in coord_cols]
+            coords = [fields[dim] for dim in coord_cols]
+            if len(coords) > 3:
+                if self._unwrap:
+                    if not triclinic:
+                        coords = np.array(coords,np.float)
+                        coords = [coords[x]+ts.dimensions[x]*coords[x+3] for x in range(3)]
+                    else:
+                        raise ValueError("Wrapping triclinic systems using image flags is not yet supported.")
+                else:
+                    coords = coords[:3]
+            else:
+                if self._unwrap:
+                    raise ValueError("Cannot unwrap coordinates without image flags.")
+            ts.positions[i] = coords
 
             if self._has_vels:
                 ts.velocities[i] = [fields[dim] for dim in self._vel_ind]
