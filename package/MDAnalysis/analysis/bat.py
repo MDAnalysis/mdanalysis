@@ -326,7 +326,7 @@ class BAT(AnalysisBase):
                 [a for a in second_atom.bonded_atoms \
                 if (a in self._ag) and (a!=initial_atom) \
                 and (a not in terminal_atoms)], \
-                reverse=True)
+                reverse=True)[0]
       else:
             third_atom = _sort_atoms_by_mass(\
                 [a for a in second_atom.bonded_atoms \
