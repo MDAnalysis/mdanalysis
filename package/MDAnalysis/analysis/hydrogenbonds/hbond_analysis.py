@@ -463,14 +463,17 @@ class HydrogenBondAnalysis(AnalysisBase):
             hydrogens_sel = self.hydrogens_sel
         hydrogens_ag = self.u.select_atoms(hydrogens_sel)
 
-        ag = hydrogens_ag.residues.atoms.select_atoms(
-            "({donors_sel}) and around {d_h_cutoff} {hydrogens_sel}".format(
-                donors_sel=select,
-                d_h_cutoff=self.d_h_cutoff,
-                hydrogens_sel=hydrogens_sel
+        if hasattr(hydrogens_ag[0],"bonded_atoms") and hydrogens_ag[0].bonded_atoms:
+            donors_ag = self.u.atoms[[x.bonded_atoms[0].ix for x in hydrogens_ag]]
+        else:
+            ag = hydrogens_ag.residues.atoms.select_atoms(
+                "({donors_sel}) and around {d_h_cutoff} {hydrogens_sel}".format(
+                    donors_sel=select,
+                    d_h_cutoff=self.d_h_cutoff,
+                    hydrogens_sel=hydrogens_sel
+                )
             )
-        )
-        donors_ag = ag[ag.charges < max_charge]
+            donors_ag = ag[ag.charges < max_charge]
 
         if hasattr(donors_ag,"resnames") and hasattr(donors_ag,"names"):
             donors_list = np.unique(
