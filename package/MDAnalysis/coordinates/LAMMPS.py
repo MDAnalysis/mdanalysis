@@ -503,6 +503,8 @@ class DumpReader(base.ReaderBase):
                              " is not a valid option. "
                              f"Please choose one of {option_string}")
 
+        self._has_vels, self._has_forces = self._check_vels_forces()
+
         self._cache = {}
 
         self._reopen()
@@ -512,8 +514,30 @@ class DumpReader(base.ReaderBase):
     def _reopen(self):
         self.close()
         self._file = util.anyopen(self.filename)
-        self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
+        self.ts = self._Timestep(self.n_atoms, # NoteHere
+                                 velocities=self._has_vels,
+                                 forces=self._has_forces,
+                                 **self._ts_kwargs)
         self.ts.frame = -1
+
+    def _check_vels_forces(self):
+        with util.anyopen(self.filename) as f:
+            for i in range(8):
+                tmp = f.readline()
+            tmp = f.readline().split() 
+            _has_vels = "vx" in tmp
+            if _has_vels:
+                self._vel_ind = []
+                for i in range(len(tmp)):
+                    if tmp[i][0] == "v":
+                        self._vel_ind.append(i-2)
+            _has_forces = "fx" in tmp
+            if _has_forces:
+                self._forces_ind = []
+                for i in range(len(tmp)):
+                    if tmp[i][0] == "f":
+                        self._forces_ind.append(i-2)
+        return _has_vels, _has_forces
 
     @property
     @cached('n_atoms')
@@ -631,8 +655,17 @@ class DumpReader(base.ReaderBase):
                 indices[i] = fields[attr_to_col_ix["id"]]
             ts.positions[i] = [fields[dim] for dim in coord_cols]
 
+            if self._has_vels:
+                ts.velocities[i] = [fields[dim] for dim in self._vel_ind]
+            if self._has_forces:
+                ts.forces[i] = [fields[dim] for dim in self._forces_ind]
+
         order = np.argsort(indices)
         ts.positions = ts.positions[order]
+        if self._has_vels:
+            ts.velocities = ts.velocities[order]
+        if self._has_forces:
+            ts.forces = ts.forces[order]
         if (self.lammps_coordinate_convention.startswith("scaled")):
             # if coordinates are given in scaled format, undo that
             ts.positions = distances.transform_StoR(ts.positions,
