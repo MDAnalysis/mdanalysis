@@ -40,6 +40,7 @@ from .. import _GUESSERS
 import numpy as np
 from ..  import _TOPOLOGY_ATTRS
 import logging
+from typing import Dict
 
 logger = logging.getLogger("MDAnalysis.guesser.base")
 
@@ -78,7 +79,7 @@ class GuesserBase(metaclass=_GuesserMeta):
  
    """
     context = 'base'
-    _guesser_box = {}
+    _guesser_box : Dict = {}
 
     def __init__(self, universe=None, **kwargs):
         self._universe = universe
