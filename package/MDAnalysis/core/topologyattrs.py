@@ -1519,8 +1519,8 @@ class Masses(AtomAttr):
            is deprecated and will be removed in version 3.0.
         """
         atoms = group.atoms
-        if not len(atoms):
-            raise ValueError("There are no atoms provided group")
+        if not atoms:
+            raise ValueError("There are no atoms provided in this group")
         return atoms.center(weights=atoms.masses, wrap=wrap, compound=compound,
                             unwrap=unwrap)
 
@@ -1990,6 +1990,8 @@ class Charges(AtomAttr):
         .. versionadded:: 2.2.0
         """
         atoms = group.atoms
+        if not atoms:
+            raise ValueError("There are no atoms provided in this group")
         return atoms.center(weights=atoms.charges.__abs__(),
                             wrap=wrap,
                             compound=compound,
