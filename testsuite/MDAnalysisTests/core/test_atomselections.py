@@ -723,7 +723,7 @@ class BaseDistanceSelection(object):
         ref_outer  = set(np.where((d1 < rmax) | (d2 < rmax))[0])
         ref_outer -= ref_inner
 
-        assert ref_outer == set(result.indices)
+        assert ref_outer == set(result.indices) and len(list(ref_outer)) > 0
 
     @pytest.mark.parametrize('periodic', (True, False))
     def test_spherical_zone(self, u, periodic):
