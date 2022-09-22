@@ -295,7 +295,6 @@ class ChainReader(base.ProtoReader):
 
         # calculate new start_frames to have a time continuous trajectory.
         if continuous:
-            check_allowed_filetypes(self.readers, ['XTC', 'TRR'])
             if np.any(np.array(n_frames) == 1):
                 raise RuntimeError("ChainReader: Need at least two frames in "
                                    "every trajectory with continuous=True")
@@ -314,9 +313,9 @@ class ChainReader(base.ProtoReader):
             times = []
             for r in self.readers:
                 r[0]
-                start = r.ts.time
+                start = r.ts.__call_time()
                 r[-1]
-                end = r.ts.time
+                end = r.ts.__call_time()
                 times.append((start, end))
             # sort step
             sort_idx = multi_level_argsort(times)
@@ -337,21 +336,21 @@ class ChainReader(base.ProtoReader):
             n_frames = 0
             for r1, r2 in zip(self.readers[:-1], self.readers[1:]):
                 r2[0], r1[0]
-                r1_start_time = r1.time
-                start_time = r2.time
+                r1_start_time = r1.ts.__call_time()
+                start_time = r2.ts.__call_time()
                 r1[-1]
-                if r1.time < start_time:
+                if r1.ts.__call_time() < start_time:
                     warnings.warn("Missing frame in continuous chain", UserWarning)
 
                 # check for interleaving
                 r1[1]
-                if r1_start_time < start_time < r1.time:
+                if r1_start_time < start_time < r1.ts.__call_time():
                     raise RuntimeError("ChainReader: Interleaving not supported "
                                        "with continuous=True.")
 
                 # find end where trajectory was restarted from
                 for ts in r1[::-1]:
-                    if ts.time < start_time:
+                    if ts.__call_time() < start_time:
                         break
                 sf.append(sf[-1] + ts.frame + 1)
                 n_frames += ts.frame + 1
