@@ -455,7 +455,7 @@ class DumpReader(base.ReaderBase):
     """Reads the default `LAMMPS dump format`_
 
     Supports coordinates in the LAMMPS "unscaled" (x,y,z), "scaled" (xs,ys,zs),
-    "unwrapped" (xu,yu,zu) and "scaled_unwrapped" (xsu,ysu,zsu) coordinate
+    "unwrapped" (xu,yu,zu), and "scaled_unwrapped" (xsu,ysu,zsu) coordinate
     conventions (see https://docs.lammps.org/dump.html for more details).
     If `lammps_coordinate_convention='auto'` (default),
     one will be guessed. Guessing checks whether the coordinates fit each convention in the order "unscaled",
@@ -465,12 +465,18 @@ class DumpReader(base.ReaderBase):
     (xsu,ysu,zsu) they will automatically be converted from their
     scaled/fractional representation to their real values.
 
+    If a dump file has image flags it can be unwrapped upon loading with 
+    the keyword `unwrap_images=True`.
+
     Supports both orthogonal and triclinic simulation box dimensions (for more
     details see https://docs.lammps.org/Howto_triclinic.html). In either case,
     MDAnalysis will always use ``(*A*, *B*, *C*, *alpha*, *beta*, *gamma*)``
     to represent the unit cell. Lengths *A*, *B*, *C* are in the MDAnalysis
     length unit (Å), and angles are in degrees.
 
+    .. versionchanges:: 2.4.0
+       Now imports velocities and forces, translates the box to the origin,
+       and optionally unwraps trajectories with image flags upon loading.
     .. versionchanged:: 2.2.0
        Triclinic simulation boxes are supported.
        (Issue `#3383 <https://github.com/MDAnalysis/mdanalysis/issues/3383>`__)
@@ -479,10 +485,8 @@ class DumpReader(base.ReaderBase):
     .. versionadded:: 0.19.0
     """
     format = 'LAMMPSDUMP'
-    _conventions = ["auto", "imageflag_unscaled", "unscaled", "scaled", "unwrapped",
-                    "scaled_unwrapped"]
+    _conventions = ["auto", "unscaled", "scaled", "unwrapped", "scaled_unwrapped"]
     _coordtype_column_names = {
-        "imageflag_unscaled": ["x", "y", "z", "ix", "iy", "iz"],
         "unscaled": ["x", "y", "z"],
         "scaled": ["xs", "ys", "zs"],
         "unwrapped": ["xu", "yu", "zu"],
@@ -506,8 +510,8 @@ class DumpReader(base.ReaderBase):
 
         self._has_vels, self._has_forces = self._check_vels_forces()
 
-        if "unwrap" in kwargs: # Added JAC, to optionally unwrap coordinates
-            self._unwrap = kwargs["unwrap"]
+        if "unwrap_images" in kwargs:
+            self._unwrap = kwargs["unwrap_images"]
         else:
             self._unwrap = False
 
@@ -639,6 +643,13 @@ class DumpReader(base.ReaderBase):
                 convention_to_col_ix[cv_name] = [attr_to_col_ix[x] for x in cv_col_names]
             except KeyError:
                 pass
+
+        if self._unwrap:
+            try:
+                image_cols = [attr_to_col_ix[x] for x in ["ix", "iy", "iz"]]
+            except:
+                raise ValueError("Trajectory must have image flag in order to unwrap.")
+
         # this should only trigger on first read of "ATOM" card, after which it
         # is fixed to the guessed value. Auto proceeds unscaled -> scaled
         # -> unwrapped -> scaled_unwrapped
@@ -650,23 +661,29 @@ class DumpReader(base.ReaderBase):
             except IndexError:
                 raise ValueError("No coordinate information detected")
         elif not self.lammps_coordinate_convention in convention_to_col_ix:
-            raise ValueError(f"No coordinates following convention {self.lammps_coordinate_convention} found in timestep")
+            raise ValueError(
+                f"No coordinates following convention {self.lammps_coordinate_convention}"\
+                " found in timestep")
 
         coord_cols = convention_to_col_ix[self.lammps_coordinate_convention]
+        if self._unwrap:
+            coord_cols.extend(image_cols)
 
         ids = "id" in attr_to_col_ix
         for i in range(self.n_atoms):
             fields = f.readline().split()
             if ids:
                 indices[i] = fields[attr_to_col_ix["id"]]
-            coords = [fields[dim] for dim in coord_cols]
+            coords = np.array([fields[dim] for dim in coord_cols], np.float32)
+
             if len(coords) > 3:
                 if self._unwrap:
-                    if not triclinic:
-                        coords = np.array(coords,np.float)
-                        coords = [coords[x]+ts.dimensions[x]*coords[x+3] for x in range(3)]
+                    if coords.shape[1] == 6:
+                        images = coords[:, 3:]
+                        coords = coords[:, :3]
+                        coords += images * ts.dimensions[:3]
                     else:
-                        raise ValueError("Wrapping triclinic systems using image flags is not yet supported.")
+                        raise ValueError("Six coord elements are needed to unwrap with image flags.") 
                 else:
                     coords = coords[:3]
             else:
@@ -680,10 +697,7 @@ class DumpReader(base.ReaderBase):
                 ts.forces[i] = [fields[dim] for dim in self._forces_ind]
 
         order = np.argsort(indices)
-        if not triclinic:
-            ts.positions = ts.positions[order] - [xlo, ylo, zlo]
-        else:
-            ts.positions = ts.positions[order]
+        ts.positions = ts.positions[order] - [xlo, ylo, zlo]
         if self._has_vels:
             ts.velocities = ts.velocities[order]
         if self._has_forces:
