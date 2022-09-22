@@ -202,17 +202,6 @@ def _build_stub(method_name, method, attribute_name):
         )
         raise NoDataError(message)
 
-    def stub_method(self, *args, **kwargs):
-        message = (
-            '{class_name}.{method_name}() '
-            'not available; this requires {attribute_name}'
-        ).format(
-            class_name=self.__class__.__name__,
-            method_name=method_name,
-            attribute_name=attribute_name,
-        )
-        raise NoDataError(message)
-
     annotation = textwrap.dedent("""\
         .. note::
 
@@ -2006,9 +1995,6 @@ class Charges(AtomAttr):
 
         .. versionadded:: 2.2.0
         """
-        atoms = group.atoms
-        if not len(atoms):
-            raise ValueError("There are no atoms provided group")
         return atoms.center(weights=atoms.charges.__abs__(),
                             wrap=wrap,
                             compound=compound,
@@ -2062,7 +2048,7 @@ class Charges(AtomAttr):
         r"""Dipole vector of the group.
 
         Computes the dipole moment of :class:`Atoms<Atom>` in the group.
-        Dipoleper :class:`Residue`, :class:`Segment`, molecule, or
+        Dipole per :class:`Residue`, :class:`Segment`, molecule, or
         fragment can be obtained by setting the `compound` parameter
         accordingly.
 
@@ -2124,7 +2110,7 @@ class Charges(AtomAttr):
         else:
             choices = ["mass", "charge"]
             raise ValueError(
-                "The dipole center, {}, is not supported. Choose: {}".format(
+                "The dipole center, {}, is not supported. Choose one of: {}".format(
                  center,choices))
 
         if compound == 'group':
@@ -2223,9 +2209,8 @@ class Charges(AtomAttr):
                     atom[np.newaxis,:])*charges[i]
 
             quad_trace = np.sum(np.diag(tensor))
-            tensor = 3*tensor/2
-            for j in (0,1,2):
-                tensor[j][j] += -quad_trace/2
+            tensor = 3*tensor/2 - np.identity(3)*quad_trace/2
+
             return np.sqrt(2*np.tensordot(tensor,tensor)/3)
 
         compound = compound.lower()
@@ -2249,7 +2234,7 @@ class Charges(AtomAttr):
         else:
             choices = ["mass", "charge"]
             raise ValueError(
-                "The dipole center, {}, is not supported. Choose: {}".format(
+                "The quadrupole center, {}, is not supported. Choose one of: {}".format(
                  center,choices))
 
         if compound == 'group':
