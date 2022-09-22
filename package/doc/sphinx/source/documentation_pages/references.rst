@@ -180,6 +180,10 @@ If you use the Mean Squared Displacement analysis code in
 
 .. _`10.21105/joss.00877`: https://doi.org/10.21105/joss.00877
 
+For additional information on non-gaussian parameter, consider [Fuchs1998]_.
+
+.. [Fuchs1998] Fuchs M., Gotze W., and Mayr M. R. Asymptotic laws for tagged-particle motion in glassy systems. *Phys. Rev. E*, 58(3), 3384-3399. doi:`10.1103/PhysRevE.58.3384 <https://doi.org/10.1103/PhysRevE.58.3384>`_
+
 If you calculate shape parameters using
 :meth:`~MDAnalysis.core.group.AtomGroup.shape_parameter`,
 :meth:`~MDAnalysis.core.group.ResidueGroup.shape_parameter`,

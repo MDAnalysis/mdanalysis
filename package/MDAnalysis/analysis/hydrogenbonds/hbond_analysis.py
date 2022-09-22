@@ -236,6 +236,7 @@ from MDAnalysis.lib.distances import capped_distance, calc_angles
 from MDAnalysis.lib.correlations import autocorrelation, correct_intermittency
 from MDAnalysis.exceptions import NoDataError
 from MDAnalysis.core.groups import AtomGroup
+from MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel import find_hydrogen_donors
 
 from ...due import due, Doi
 
@@ -464,7 +465,8 @@ class HydrogenBondAnalysis(AnalysisBase):
         hydrogens_ag = self.u.select_atoms(hydrogens_sel)
 
         if hasattr(hydrogens_ag[0],"bonded_atoms") and hydrogens_ag[0].bonded_atoms:
-            donors_ag = self.u.atoms[[x.bonded_atoms[0].ix for x in hydrogens_ag]]
+            donors_ag = find_hydrogen_donors(hydrogens_ag)
+#            donors_ag = self.u.atoms[[x.bonded_atoms[0].ix for x in hydrogens_ag]]
         else:
             ag = hydrogens_ag.residues.atoms.select_atoms(
                 "({donors_sel}) and around {d_h_cutoff} {hydrogens_sel}".format(
@@ -648,7 +650,7 @@ class HydrogenBondAnalysis(AnalysisBase):
             return_distances=True,
         )
 
-        if not d_a_indices:
+        if np.size(d_a_indices) == 0:
             warnings.warn(
                 "No hydrogen bonds were found given d-a cutoff of {} between "\
                 "Donor, {}, and Acceptor, {}.".format(self.d_a_cutoff, 
@@ -678,10 +680,10 @@ class HydrogenBondAnalysis(AnalysisBase):
         )
         hbond_indices = np.where(d_h_a_angles > self.d_h_a_angle)[0]
 
-        if not hbond_indices:
+        if np.size(hbond_indices) == 0:
             warnings.warn(
                 "No hydrogen bonds were found given angle of {} between "\
-                "Donor, {}, and Acceptor, {}.".format(self.d_h_a_cutoff, 
+                "Donor, {}, and Acceptor, {}.".format(self.d_h_a_angle, 
                                                       self.donors_sel, 
                                                       self.acceptors_sel)
             )

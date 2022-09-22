@@ -13,7 +13,8 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, BFedder, aya9aladdin
+??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, BFedder, aya9aladdin,
+         jaclark5
 
  * 2.4.0
 
@@ -25,6 +26,9 @@ Fixes
   * fixes guessed_attributes and read_attributes methods of the Topology class, as 
     those methods were giving unexpected results for some topology attributes
     (e.g. bonds, angles) (PR #3779).
+  * Make cutoffs in hbond analysis inclusive to match language (#3847)
+  * Added ability for hbond anaylsis to use types when resnames aren't there
+  * Added explanatory warnings when hbond analysis doesn't find any hbonds
    
 
 
