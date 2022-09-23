@@ -141,7 +141,7 @@ class XYZWriter(base.WriterBase):
     units = {'time': 'ps', 'length': 'Angstrom'}
 
     def __init__(self, filename, n_atoms=None, convert_units=True,
-                 remark=None, **kwargs):
+                 remark=None, mode='wt', **kwargs):
         """Initialize the XYZ trajectory writer
 
         Parameters
@@ -161,6 +161,8 @@ class XYZWriter(base.WriterBase):
         remark: str (optional)
             single line of text ("molecule name"). By default writes MDAnalysis
             version and frame
+        mode : str (optional)
+            Mode to open file with, by default "wt" is used.
 
 
         .. versionchanged:: 1.0.0
@@ -170,6 +172,8 @@ class XYZWriter(base.WriterBase):
            parameter is no longer relevant and has been removed. If passing
            an empty universe, please use ``add_TopologyAttr`` to add in the
            required elements or names.
+        .. versionchanged:: 2.4.0
+           Chage open mode to be a keyword argument.
         """
         self.filename = filename
         self.remark = remark
@@ -177,7 +181,7 @@ class XYZWriter(base.WriterBase):
         self.convert_units = convert_units
 
         # can also be gz, bz2
-        self._xyz = util.anyopen(self.filename, 'wt')
+        self._xyz = util.anyopen(self.filename, mode)
 
     def _get_atoms_elements_or_names(self, atoms):
         """Return a list of atom elements (if present) or fallback to atom names"""
