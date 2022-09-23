@@ -170,6 +170,8 @@ class XYZWriter(base.WriterBase):
            parameter is no longer relevant and has been removed. If passing
            an empty universe, please use ``add_TopologyAttr`` to add in the
            required elements or names.
+        .. versionchanged:: 2.4.0
+           Allow XYZWriter to use atom.types
         """
         self.filename = filename
         self.remark = remark
@@ -187,11 +189,14 @@ class XYZWriter(base.WriterBase):
             try:
                 return atoms.atoms.names
             except (AttributeError, NoDataError):
-                wmsg = ("Input AtomGroup or Universe does not have atom "
-                        "elements or names attributes, writer will default "
-                        "atom names to 'X'")
-                warnings.warn(wmsg)
-                return itertools.cycle(('X',))
+                try:
+                    return atoms.atoms.types
+                except:
+                    wmsg = ("Input AtomGroup or Universe does not have atom "
+                            "elements, names, or types attributes, writer will"
+                            " default atom names to 'X'")
+                    warnings.warn(wmsg)
+                    return itertools.cycle(('X',))
 
     def close(self):
         """Close the trajectory file and finalize the writing"""

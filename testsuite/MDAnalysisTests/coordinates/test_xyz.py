@@ -153,7 +153,7 @@ class TestXYZWriterNames(object):
         """Atoms should all be named 'X'"""
         u = make_Universe(trajectory=True)
         
-        wmsg = "does not have atom elements or names"
+        wmsg = "does not have atom elements, names, or types"
 
         with pytest.warns(UserWarning, match=wmsg):
             w = XYZWriter(outfile)
