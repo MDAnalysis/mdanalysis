@@ -583,7 +583,7 @@ class ITPParser(TopologyReaderBase):
 
         if not all(self.masses):
            empty = self.masses == ''
-           self.masses[empty] = Masses.noValue
+           self.masses[empty] = Masses.missing_value_label
 
            
         attrs.append(Masses(np.array(self.masses, dtype=np.float64),

@@ -88,15 +88,11 @@ class GuesserBase(metaclass=_GuesserMeta):
     @property
     def universe(self):
         return self._universe
-    
-    @universe.setter
-    def set_universe(self, u):
-        self._universe = u
 
     def update_kwargs(self, **kwargs):
         self._kwargs.update(kwargs)
 
-    def is_guessable(self, guess):
+    def are_guessable(self, guess):
         """check that the passed atrributes in the to_guess
         list can be guessed by the class
 
@@ -113,6 +109,13 @@ class GuesserBase(metaclass=_GuesserMeta):
                     return False
             return True
         return False
+    
+    def is_value_missing(self, value, attr_class):
+        """check if an attribute value is equal to missing_value_label value"""
+        if hasattr(attr_class, 'missing_value_label'):
+            return value == attr_class.missing_value_label or np.isnan(value)
+        else:
+            return False
 
     def guess_Attr(self, attr_to_guess, force_guess=False):
         """map the attribute to be guessed with the apporpiate guessing method
@@ -134,8 +137,9 @@ class GuesserBase(metaclass=_GuesserMeta):
 
             emptyAttr = []
             try:
+                top_attr = _TOPOLOGY_ATTRS[attr_to_guess]
                 for a in attr:
-                   emptyAttr.append(_TOPOLOGY_ATTRS[attr_to_guess].is_empty(a))
+                   emptyAttr.append(self.is_value_missing(a, top_attr))
             except:
                 pass
 
@@ -195,7 +199,7 @@ def get_guesser(context, u=None, **kwargs):
 
     """
     if isinstance(context, GuesserBase):
-        context.set_universe = u
+        context._universe = u
         context.update_kwargs(**kwargs)
         return context
     try:

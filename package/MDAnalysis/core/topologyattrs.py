@@ -397,7 +397,6 @@ class TopologyAttr(object, metaclass=_TopologyAttrMeta):
     top = None  # pointer to Topology object
     transplants = defaultdict(list)
     target_classes = []
-    noValue = None #placeholder value when there is no value for the attribute
 
     groupdoc = None
     singledoc = None
@@ -504,12 +503,7 @@ class TopologyAttr(object, metaclass=_TopologyAttrMeta):
         """Set segmentattributes for a given SegmentGroup"""
         raise NotImplementedError
 
-    @classmethod
-    def is_empty(self, value):
-        """check if an attribute value is equal to noValue value"""
-        raise NotImplementedError
-
-# core attributes
+ # core attributes
 
 class Atomindices(TopologyAttr):
     """Globally unique indices for each atom in the group.
@@ -1410,11 +1404,12 @@ class Masses(AtomAttr):
     attrname = 'masses'
     singular = 'mass'
     per_object = 'atom'
+    missing_value_label = np.nan
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
                       Atom, Residue, Segment]
     transplants = defaultdict(list)
     dtype = np.float64
-    noValue = np.nan
+    no_value = np.nan
 
     groupdoc = """Mass of each component in the Group.
 
@@ -1893,9 +1888,6 @@ class Masses(AtomAttr):
 
     transplants[GroupBase].append(
         ('align_principal_axis', align_principal_axis))
-    @classmethod
-    def is_empty(self, value):
-        return np.isnan(value)
 
 # TODO: update docs to property doc
 class Charges(AtomAttr):

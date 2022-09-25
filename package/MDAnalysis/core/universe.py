@@ -1498,7 +1498,7 @@ class Universe(object):
         if(guess):
             if (self._topology.n_atoms > 0):
 
-                if guesser.is_guessable(guess):
+                if guesser.are_guessable(guess):
 
                     for attr in to_guess:
                         if any(attr == a for a in self._topology_atrrs):
