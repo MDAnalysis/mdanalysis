@@ -19,6 +19,7 @@ The rules for this file:
  * 2.4.0
 
 Fixes
+  * LAMMPS Dump Reader translates the box to the origin (#3741)
   * Auxiliary; determination of representative frames: Removed undefined
     behaviour for cutoff values < -1 (PR # 3749)
   * Fixes distances.between not always returning AtomGroup (Issue #3794)
@@ -26,13 +27,12 @@ Fixes
   * fixes guessed_attributes and read_attributes methods of the Topology class, as 
     those methods were giving unexpected results for some topology attributes
     (e.g. bonds, angles) (PR #3779).
-  * LAMMPS Dump Reader now imports velocities and forces (#3843)
   * LAMMPS Dump Readerr translates the box to the origin (#3741)
-  * Optionally unwraps trajectories with image flags upon loading (#3843)
-   
 
 
 Enhancements
+  * Optionally unwraps trajectories with image flags upon loading (#3843)
+  * LAMMPS Dump Reader now imports velocities and forces (#3843)
   * AuxReaders now have a memory_limit parameter to control when memory usage
     warnings are issued. (PR # 3749)
   * MDAnalysis.units now has a lookup dictionary called MDANALYSIS_BASE_UNITS

@@ -494,7 +494,9 @@ class DumpReader(base.ReaderBase):
     }
 
     @store_init_arguments
-    def __init__(self, filename, lammps_coordinate_convention="auto",
+    def __init__(self, filename, 
+                 lammps_coordinate_convention="auto",
+                 unwrap_images=False,
                  **kwargs):
         super(DumpReader, self).__init__(filename, **kwargs)
 
@@ -510,7 +512,7 @@ class DumpReader(base.ReaderBase):
 
         self._has_vels, self._has_forces = self._check_vels_forces()
 
-        if "unwrap_images" in kwargs:
+        if unwrap_images:
             self._unwrap = kwargs["unwrap_images"]
         else:
             self._unwrap = False
@@ -661,9 +663,8 @@ class DumpReader(base.ReaderBase):
             except IndexError:
                 raise ValueError("No coordinate information detected")
         elif not self.lammps_coordinate_convention in convention_to_col_ix:
-            raise ValueError(
-                f"No coordinates following convention {self.lammps_coordinate_convention}"\
-                " found in timestep")
+            raise ValueError("No coordinates following convention {} found in "
+                "timestep".format(self.lammps_coordinate_convention))
 
         coord_cols = convention_to_col_ix[self.lammps_coordinate_convention]
         if self._unwrap:
