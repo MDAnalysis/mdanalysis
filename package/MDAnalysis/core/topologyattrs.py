@@ -390,6 +390,7 @@ class TopologyAttr(object, metaclass=_TopologyAttrMeta):
     top : Topology
         handle for the Topology object TopologyAttr is associated with
 
+
     """
     attrname = 'topologyattrs'
     singular = 'topologyattr'
@@ -1409,7 +1410,6 @@ class Masses(AtomAttr):
                       Atom, Residue, Segment]
     transplants = defaultdict(list)
     dtype = np.float64
-    no_value = np.nan
 
     groupdoc = """Mass of each component in the Group.
 

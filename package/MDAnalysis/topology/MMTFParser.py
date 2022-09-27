@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
@@ -38,6 +38,8 @@ attribute on Universe.
 .. versionchanged:: 2.0.0
    Aliased ``bfactors`` topologyattribute to ``tempfactors``.
    ``tempfactors`` is deprecated and will be removed in 3.0 (Issue #1901)
+.. versionchanged:: 2.4.0
+   removed mass guessing (guessing takes place now inside universe)
 
 Reads the following topology attributes:
 

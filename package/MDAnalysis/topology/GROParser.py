@@ -67,6 +67,8 @@ class GROParser(TopologyReaderBase):
       - atomids
       - atomnames
 
+    .. versionchanged:: 2.4.0
+      removed type and mass guessing (guessing takes place now inside universe)
     """
     format = 'GRO'
 

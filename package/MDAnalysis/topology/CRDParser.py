@@ -72,6 +72,8 @@ class CRDParser(TopologyReaderBase):
      - Resnums
      - Segids
 
+    .. versionchanged:: 2.4.0
+      removed type and mass guessing (guessing takes place now inside universe)
     """
     format = 'CRD'
 

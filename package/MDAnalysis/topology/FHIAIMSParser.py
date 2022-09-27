@@ -67,6 +67,8 @@ class FHIAIMSParser(TopologyReaderBase):
     Creates the following attributes:
      - Atomnames
 
+    .. versionchanged:: 2.4.0
+      removed type and mass guessing (guessing takes place now inside universe)
     """
     format = ['IN', 'FHIAIMS']
 

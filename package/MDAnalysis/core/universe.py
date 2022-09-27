@@ -245,6 +245,12 @@ class Universe(object):
     vdwradii: dict, ``None``, default ``None``
         For use with *guess_bonds*. Supply a dict giving a vdwradii for each
         atom type which are used in guessing bonds.
+    context: string or Guesser, default ``default``
+        Type of the Guesser to be used in guessing different attributes
+    to_guess: list, (optional)
+        Attributes to be guessed (these attributes will be either guessed if it don exist in the universe or partially guessed by only filling its empty values if universe has the attribute)
+    force_guess: list, (optional)
+        Attributes to be forced guessed (these attributes will be either guessed if they don't exist in the universe or their values will be completely overwritten by guessed ones if the universe has the attribute)
     transformations: function or list, ``None``, default ``None``
         Provide a list of transformations that you wish to apply to the
         trajectory upon reading. Transformations can be found in
@@ -319,6 +325,11 @@ class Universe(object):
     .. versionchanged:: 2.0.0
         Universe now can be (un)pickled.
         ``topology`` and ``trajectory`` are reserved upon unpickle.
+
+    .. versionchanged:: 2.4.0
+      added guess_TopologyAttributes API
+      guessing masses and atom types when topology is read from a registered parser
+
 
     """
 
@@ -1461,22 +1472,30 @@ class Universe(object):
         return cls(mol, **kwargs)
 
     def guess_TopologyAttributes(self, context=None, to_guess=(), force_guess=(), **kwargs):
-        """guess attributes passed to the universe within specific context
+        
+        """.. _guess_TopologyAttributes:
+        
+        guess and add attributes through a specific context-aware guesser.
 
         Parameters
         ----------
         context: string or Guesser class
-        for calling a matching guesser class for this specific context
-        to_guess: list
-        list of atrributes to be guessed then added to the universe
-        force_guess: list
-        list of atrributes to be guessed wether it has been read from file or not 
-        **kwargs: extra arguments are passed to the guesser class
+            For calling a matching guesser class for this specific context
+        to_guess: list, (optional)
+            Attributes to be guessed (these attributes will be either guessed, if it deosn't exist in the universe or partially guessed by only filling its empty values, if universe has the attribute)
+        force_guess: list, (optional)
+            Attributes to be forced guessed (these attributes will be either guessed if they don't exist in the universe or their values will be completely overwritten by guessed values if the universe has the attribute)
+        **kwargs: extra arguments to be passed to the guesser class
         
         Examples
         --------
         guess masses and elements attribute::
+
         >>>u.guess_TopologyAttributes(context='default', to_guess=['masses', elements])
+    
+
+        .. versionadded:: 2.4.0
+
         """
         if not context:
             context = self._context

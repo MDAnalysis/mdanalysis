@@ -24,9 +24,7 @@
 Base guesser classes --- :mod:`MDAnalysis.guesser.base`
 ================================================================
 
-Derive topology reader classes from the base class in this module. All
-topology readers raise :exc:`IOError` upon failing to read a topology
-file and :exc:`ValueError` upon failing to make sense of the read data.
+Derive context-specific guesser classes from the base class in this module. 
 
 Classes
 -------
@@ -52,14 +50,15 @@ class _GuesserMeta(type):
     this metaclass makes it known to MDAnalysis.  'context'
     attribute  are read:
      - `context` defines the context of the guesser class for example: forcefield specific context
-     as MartiniGuesser and file specific context as PDBGuesser.
+       as MartiniGuesser and file specific context as PDBGuesser.
 
     Eg::
 
       class FooGuesser(GuesserBase):
           format = 'foo'
 
-  """
+    .. versionadded:: 2.4.0
+    """
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
        
@@ -67,19 +66,22 @@ class _GuesserMeta(type):
      
 
 class GuesserBase(metaclass=_GuesserMeta):
-    """Base class for context-aware guessers
+    """Base class for context-specific guessers to inherit from
 
     Parameters
     ----------
+    universe : Universe
+        Universe
     universe : Universe, optional
-        Supply a Universe to the guesser.  This then become the source of atom attributes
-        to be used in guessing processes (more relevant with the universe guess_topologyAttributes API).
-    **kwargs: to pass additional data to the guesser that can be used with different methos. 
-    Eg van der Waals radii that is used with bond guessing methods
- 
-   """
+        Supply a Universe to the Parser. This then become the source of atom attributes
+        to be used in guessing processes. (this is relevant to how the universe's guess_topologyAttributes API works. See :ref:`guess_TopologyAttributes <guess_TopologyAttributes>`).
+    **kwargs: to pass additional data to the guesser that can be used with different methos.
+    
+    .. versionadded:: 2.4.0
+
+    """
     context = 'base'
-    _guesser_box : Dict = {}
+    _guesser_methods : Dict = {}
 
     def __init__(self, universe=None, **kwargs):
         self._universe = universe
@@ -93,25 +95,26 @@ class GuesserBase(metaclass=_GuesserMeta):
         self._kwargs.update(kwargs)
 
     def are_guessable(self, guess):
-        """check that the passed atrributes in the to_guess
-        list can be guessed by the class
+        """check if the passed atrributes can be guessed by the guesser class
 
         Parameters
         ----------
-        guess: list of atrributes to be guessed then added to the universe
+        guess: list
+            Atrributes to be guessed then added to the universe
+
         Returns
         -------
         Boolean value
         """
         if guess:
             for a in guess:
-                if a.lower() not in self._guesser_box:
+                if a.lower() not in self._guesser_methods:
                     return False
             return True
         return False
     
     def is_value_missing(self, value, attr_class):
-        """check if an attribute value is equal to missing_value_label value"""
+        """check if an attribute has a missing value"""
         if hasattr(attr_class, 'missing_value_label'):
             return value == attr_class.missing_value_label or np.isnan(value)
         else:
@@ -122,10 +125,11 @@ class GuesserBase(metaclass=_GuesserMeta):
 
         Parameters
         ----------
-        attr_to_guess: an atrribute to be guessed then to be added to the universe
-        
-        force_guess: boolean to indicate wether to partialy guess the empty values of the attribute
-        or to overwrite all existing values by guessed one
+        attr_to_guess: list
+            an atrribute to be guessed then to be added to the universe
+        force_guess: boolean 
+            To indicate wether to only partialy guess the empty values of the attribute or to overwrite all existing values by guessed one
+
         Returns
         -------
         list of guessed values
@@ -148,7 +152,7 @@ class GuesserBase(metaclass=_GuesserMeta):
                 parentAttr =[]
                 
                 # check if the parent attribute from which we can begin guessing exists in the universe
-                for x in self._guesser_box[attr_to_guess]['parent']: 
+                for x in self._guesser_methods[attr_to_guess]['parent']: 
                     if hasattr(self._universe.atoms, x):
                         parentAttr = np.array(getattr(self._universe.atoms, x, None))
                         break
@@ -161,7 +165,7 @@ class GuesserBase(metaclass=_GuesserMeta):
 
                 # guess the empty values
                 for p in parentAttr[emptyAttr]:
-                    guessed_values.append(self._guesser_box[attr_to_guess]['builder']([p,]))
+                    guessed_values.append(self._guesser_methods[attr_to_guess]['builder']([p,]))
 
                 guessed_values = np.array(guessed_values).flatten()
                 attr[emptyAttr] = guessed_values
@@ -174,7 +178,7 @@ class GuesserBase(metaclass=_GuesserMeta):
                     f'There is no empty {attr_to_guess} values. Guesser did not guess any new values for {attr_to_guess} attribute')
                 return None
         else:
-            return np.array(self._guesser_box[attr_to_guess]['builder']())
+            return np.array(self._guesser_methods[attr_to_guess]['builder']())
 
 
 def get_guesser(context, u=None, **kwargs):
@@ -184,18 +188,19 @@ def get_guesser(context, u=None, **kwargs):
     Parameters
     ----------
     u: Universe
-    to be passed to the guesser 
-
+        to be passed to the guesser 
     context: string or Guesser class
     **kwargs: extra arguments are passed to the guesser.
 
     Returns
     -------
     Guesser class
-    
+
     Raises
     ------
     * :exc:`KeyError` upon failing to return a guesser class
+
+    .. versionadded:: 2.4.0
 
     """
     if isinstance(context, GuesserBase):

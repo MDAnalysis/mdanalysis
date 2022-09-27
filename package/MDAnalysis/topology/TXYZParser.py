@@ -78,6 +78,8 @@ class TXYZParser(TopologyReaderBase):
     .. versionadded:: 0.17.0
     .. versionchanged:: 2.4.0
        Adding the `Element` attribute if all names are valid element symbols.
+      removed mass guessing (guessing takes place now inside universe)
+
     """
     format = ['TXYZ', 'ARC']
 
@@ -138,7 +140,7 @@ class TXYZParser(TopologyReaderBase):
                  ]
         if all(n.capitalize() in SYMB2Z for n in names):
             attrs.append(Elements(np.array(names, dtype=object)))
-            
+
         else:
             warnings.warn("Element information is missing, elements attribute "
                           "will not be populated. If needed these can be "

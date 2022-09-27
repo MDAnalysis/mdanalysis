@@ -20,6 +20,26 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 
+r"""
+Default Guesser
+================
+
+DefaultGuesser is a generic guesser class that have basic guessing methods. This class is a
+general purpose guesser that can be used with most topologies, but being generic make it
+the less accurate among all guessers.
+
+In general `guess_atom_X` returns the guessed value for a single value,
+while `guess_Xs` will work on an array of many atoms.
+
+
+Classes
+-------
+
+.. autoclass:: DefaultGuesser
+   :members:
+   :inherited-members:
+
+"""
 from .base import GuesserBase
 import numpy as np
 import warnings
@@ -28,39 +48,41 @@ import re
 
 from ..lib import distances
 from . import tables
-from ..core.topologyattrs import Masses
+
 class DefaultGuesser(GuesserBase):
     """
     this guesser hold generic methods (not directed to specific context) for guessing different topology attribute. 
     it has the same methods that was originally found in Topology.guesser.py. The attributes that can be
     guessed by this class are:
-       masses 
-       types
-       elements
-       angles
-       dihedrals
-       bonds
-       improper dihedrals
-       aromaticities
+    masses 
+    types
+    elements
+    angles
+    dihedrals
+    bonds
+    improper dihedrals
+    aromaticities
      
-     you can use this guesser either directly by initiating an object of it or through
-     universe.guess_TopologyAttributes API.
+    you can use this guesser either directly by initiating an object of it or through
+    universe.guess_TopologyAttributes API.
 
-     Examples
-     --------
-      to guess bonds for a universe:
+    Examples
+    --------
+     to guess bonds for a universe:
       
-      import MDAnalysis as mda
-      from MDAnalysisTests.datafiles import two_water_gro
+     import MDAnalysis as mda
+     from MDAnalysisTests.datafiles import two_water_gro
 
-      u = mda.Universe(two_water_gro, to_guess=['bonds'])
-      
+     u = mda.Universe(two_water_gro, context = 'default', to_guess=['bonds'])
+
+    .. versionadded:: 2.4.0
+
     """
     context = 'default'
 
     def __init__(self, universe, **kwargs):
         super().__init__(universe, **kwargs)
-        self._guesser_box = {'masses': {'builder': self.guess_masses, 'parent': ['types', 'elements']},
+        self._guesser_methods = {'masses': {'builder': self.guess_masses, 'parent': ['types', 'elements']},
                                  'types': {'builder': self.guess_types}, 'parent': ['names'],
                                  'elements': {'builder': self.guess_types, 'parent': ['names']},
                                  'angles': {'builder': self.add_guessed_angles, 'parent': ['positions']},
@@ -73,6 +95,11 @@ class DefaultGuesser(GuesserBase):
 
     def guess_masses(self, atoms=None):
         """Guess the mass of many atoms based upon their type
+
+        Parameters
+        ----------
+        atoms
+          Atom types/elements to guess masses from
 
         Returns
         -------
@@ -101,14 +128,17 @@ class DefaultGuesser(GuesserBase):
         return masses
 
     def validate_atom_types(self, atom_types):
-        """Validates the atom types based on whether they are available
-        in our tables
-      Returns
-        -------
-        None
+        """Vaildates the atom types based on whether they are available in our tables
 
-        .. versionchanged:: 0.20.0
-           Try uppercase atom type name as well
+        Parameters
+        ----------
+        atom_types
+          Type of each atom
+
+        Raises
+        ------
+        :exc:`KeyError` if atom_types is invalid atomic symbol.
+
         """
         for atom_type in np.unique(atom_types):
             try:
@@ -119,15 +149,12 @@ class DefaultGuesser(GuesserBase):
                 except KeyError:
                     warnings.warn("Failed to guess the mass for the following atom types: {}".format(atom_type))
 
+
     def get_atom_mass(self, element):
         """Return the atomic mass in u for *element*.
-
         Masses are looked up in :data:`MDAnalysis.topology.tables.masses`.
+        .. Warning:: Unknown masses are set to nan
 
-        .. Warning:: Unknown masses are set to 0.0
-
-        .. versionchanged:: 0.20.0
-           Try uppercase atom type name as well
         """
         try:
             return tables.masses[element]
@@ -142,8 +169,7 @@ class DefaultGuesser(GuesserBase):
 
         :func:`guess_atom_element` is used to determine the kind of atom.
 
-        .. warning:: Anything not recognized is simply set to 0;
-        if you rely on the masses you might want to double check.
+        .. warning:: Anything not recognized is simply set to nan; if you rely on the masses you might want to double check.
         """
         return self.get_atom_mass(self.guess_atom_element(atomname))
 
@@ -264,12 +290,6 @@ class DefaultGuesser(GuesserBase):
         .. _`same algorithm that VMD uses`:
            http://www.ks.uiuc.edu/Research/vmd/vmd-1.9.1/ug/node26.html
 
-        .. versionadded:: 0.7.7
-        .. versionchanged:: 0.9.0
-           Updated method internally to use more :mod:`numpy`, should work
-           faster.  Should also use less memory, previously scaled as
-           :math:`O(n^2)`.  *vdwradii* argument now augments table list
-           rather than replacing entirely.
         """
         # why not just use atom.positions?
         if len(atoms) != len(coords):
@@ -341,9 +361,7 @@ class DefaultGuesser(GuesserBase):
         --------
         :meth:`guess_bonds`
 
-
-        .. versionadded 0.9.0
-        """
+      """
         angles_found = set()
 
         for b in bonds:
@@ -378,7 +396,6 @@ class DefaultGuesser(GuesserBase):
             List of tuples defining the dihedrals.
             Suitable for use in u._topology
 
-        .. versionadded 0.9.0
         """
 
         dihedrals_found = set()
@@ -420,7 +437,6 @@ class DefaultGuesser(GuesserBase):
             List of tuples defining the improper dihedrals.
             Suitable for use in u._topology
 
-        .. versionadded 0.9.0
         """
 
         dihedrals_found = set()
@@ -460,8 +476,6 @@ class DefaultGuesser(GuesserBase):
         aromaticities : numpy.ndarray
             Array of boolean values for the aromaticity of each atom
 
-
-        .. versionadded:: 2.0.0
         """
         if atomgroup is None:
             atomgroup = self._universe.atoms
@@ -482,8 +496,6 @@ class DefaultGuesser(GuesserBase):
         charges : numpy.ndarray
             Array of float values representing the charge of each atom
 
-
-        .. versionadded:: 2.0.0
         """
   
         mol = atomgroup.convert_to("RDKIT")

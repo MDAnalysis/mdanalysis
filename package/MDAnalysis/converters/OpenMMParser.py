@@ -25,6 +25,8 @@
 ===================================================================
 
 .. versionadded:: 2.0.0
+.. versionchanged:: 2.4.0
+   removed type and mass guessing (guessing takes place now inside universe)
 
 
 Converts an
@@ -199,7 +201,7 @@ class OpenMMTopologyParser(TopologyReaderBase):
                         "These can be guessed using "
                         "universe.guess_TopologyAttributes(to_guess=['masses', 'types']) "
                         "See MDAnalysis.guessers.")
-   
+
                 warnings.warn(wmsg)
         else:
             attrs.append(Elements(np.array(validated_elements, dtype=object)))

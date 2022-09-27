@@ -20,5 +20,32 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+
+"""
+context-specific guessers --- :mod:`MDAnalysis.guesser`
+========================================================
+
+You can use guesser classes either directly by initiating an instance of it and use its guessing methods or through
+the :ref:`guess_TopologyAttributes <guess_TopologyAttributes>`: API of the universe.
+
+The following table lists the currently supported Context-axare Guessers along with
+the attributes they can guess.
+
+.. table:: Table of Supported Guessers
+
+   ================= ========== ===================== ===================================================
+   Name              context      attributes          remarks
+   ================= ========== ===================== ===================================================
+   DefaultGuesser     default    types, elements,      generic guesser that have the same old guessing 
+                                                       method
+                                 masses, bonds,
+                                 angles, dihedrals,
+                                 improper dihedrals
+   ================= ========== ===================== ===================================================
+                        
+                                
+
+
+"""
 from . import base
 from .default_guesser import DefaultGuesser

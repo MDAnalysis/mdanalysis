@@ -29,11 +29,14 @@ from MDAnalysis.core.topology import Topology
 class TesttBaseGuesser():
     
     def test_get_guesser(self):
-        class TestGuesser(GuesserBase):
-            context = 'test'
+        class TestGuesser1(GuesserBase):
+            context = 'test1'
 
-        test = TestGuesser()        
-        assert isinstance(get_guesser(test), TestGuesser)
+        class TestGuesser2(TestGuesser1):
+            context = 'test2'
+
+        assert get_guesser(TestGuesser1()).context == 'test1'
+        assert get_guesser(TestGuesser2()).context == 'test2'
 
        
 

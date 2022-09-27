@@ -478,6 +478,8 @@ class ITPParser(TopologyReaderBase):
 
     .. versionchanged:: 2.2.0
       no longer adds angles for water molecules with SETTLE constraint
+    .. versionchanged:: 2.4.0
+      removed mass guessing (guessing takes place now inside universe)
     """
     format = 'ITP'
 
@@ -585,7 +587,7 @@ class ITPParser(TopologyReaderBase):
            empty = self.masses == ''
            self.masses[empty] = Masses.missing_value_label
 
-           
+
         attrs.append(Masses(np.array(self.masses, dtype=np.float64),
                                 guessed=False))
 
