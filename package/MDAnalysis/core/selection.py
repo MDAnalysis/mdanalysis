@@ -384,8 +384,6 @@ class IsoLayerSelection(Selection):
         pairs_inner = distances.capped_distance(sel.positions, sys.positions,
                                                 self.inRadius, box=box,
                                                 return_distances=False)
-        inner = np.array(pairs_inner).T[1]
-        outer = np.array(pairs_outer).T[1]
 
         if pairs_outer.size > 0:
             sys_ind_outer = np.sort(np.unique(pairs_outer[:,1]))

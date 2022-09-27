@@ -249,9 +249,11 @@ isolayer *inner radius* *outer radius* *selection*
     Similar to sphlayer, but will find layer around all referenced atoms. 
     For example, if the atom types for a polymer backbone were chosen, then
     an isolayer parallel to the backbone will be generated. As another 
-    example, if an ions were chosen as a reference to isolate the second 
-    hydration layer, then those solvent atoms that overlap will not include
-    the first shell of another ion.
+    example, if a set of ions were chosen as a reference to isolate the second 
+    hydration layer, then they will all be included in the same group.
+    However, in the instance that a molecule is in the second hydration layer 
+    of one ion and the first hydration layer of another, those atoms will not
+    be included.
 
 cylayer *innerRadius* *externalRadius* *zMax* *zMin* *selection*
     selects all atoms within a cylindric layer centered in the center of
