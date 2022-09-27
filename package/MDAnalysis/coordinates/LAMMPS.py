@@ -474,7 +474,7 @@ class DumpReader(base.ReaderBase):
     to represent the unit cell. Lengths *A*, *B*, *C* are in the MDAnalysis
     length unit (Å), and angles are in degrees.
 
-    .. versionchanges:: 2.4.0
+    .. versionchanged:: 2.4.0
        Now imports velocities and forces, translates the box to the origin,
        and optionally unwraps trajectories with image flags upon loading.
     .. versionchanged:: 2.2.0
