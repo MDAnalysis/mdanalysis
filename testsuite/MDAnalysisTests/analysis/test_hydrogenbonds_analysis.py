@@ -335,6 +335,40 @@ class TestHydrogenBondAnalysisNoRes(object):
             h = HydrogenBondAnalysis(universe, **kwargs)
             h._get_dh_pairs()
 
+    def test_no_bond_no_mass_donor_sel(self, universe):
+
+        kwargs = {
+            'donors_sel': "type O",
+            'hydrogens_sel': None,
+            'acceptors_sel': None,
+            'd_h_cutoff': 1.2,
+            'd_a_cutoff': 3.0,
+            'd_h_a_angle_cutoff': 120.0
+        }
+
+        with pytest.raises(NoDataError, match="not contain mass information"):
+            h = HydrogenBondAnalysis(universe, **kwargs)
+            h._get_dh_pairs()
+
+    def test_no_bond_donor_sel(self, universe):
+
+        kwargs = {
+            'donors_sel': "type O",
+            'hydrogens_sel': None,
+            'acceptors_sel': None,
+            'd_h_cutoff': 1.2,
+            'd_a_cutoff': 3.0,
+            'd_h_a_angle_cutoff': 120.0
+        }
+        u = universe.copy()
+        n_residues = 2
+        u.add_TopologyAttr('mass', [15.999, 1.008, 1.008] * n_residues)
+        u.add_TopologyAttr('charge', [-1.04, 0.52, 0.52] * n_residues)
+        h = HydrogenBondAnalysis(u, **kwargs)
+        pairs = h._get_dh_pairs()
+
+        assert len(pairs) == 2
+
     def test_first_hbond(self, hydrogen_bonds):
         assert len(hydrogen_bonds.results.hbonds) == 2
         frame_no, donor_index, hydrogen_index, acceptor_index, da_dst, angle =\
