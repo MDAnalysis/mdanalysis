@@ -174,6 +174,17 @@ with use of :attr:`between`. If in the above example,
 protein-water and protein-protein hydrogen bonds will be found, but
 no water-water hydrogen bonds.
 
+One can now also define hydrogen bonds with atom types::
+
+  import MDAnalysis
+  from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import HydrogenBondAnalysis as HBA
+  hbonds = HBA(
+               universe=u,
+               donors_sel='type 2',
+               hydrogens_sel='type 1',
+               acceptors_sel='type 2',
+              )
+
 In order to compute the hydrogen bond lifetime, after finding hydrogen bonds
 one can use the :attr:`lifetime` function::
 
@@ -261,6 +272,9 @@ class HydrogenBondAnalysis(AnalysisBase):
         """Set up atom selections and geometric criteria for finding hydrogen
         bonds in a Universe.
 
+        Hydrogen bond selections may be achieved with either a resname, atom 
+        name combination, or when those are absent, atom types.
+
         Parameters
         ----------
         universe : Universe
@@ -311,6 +325,8 @@ class HydrogenBondAnalysis(AnalysisBase):
         information is used, as this is the only way that guarantees the
         correct identification of donor-hydrogen pairs.
 
+        .. versionchanged:: 2.4.0
+            Added use of atom types
         .. versionadded:: 2.0.0
             Added `between` keyword
         """
@@ -367,6 +383,9 @@ class HydrogenBondAnalysis(AnalysisBase):
                         min_mass=0.9
                         ):
         """Guesses which hydrogen atoms should be used in the analysis.
+
+        Hydrogen selections may be achieved with either a resname, atom 
+        name combination, or when those are absent, atom types.
 
         Parameters
         ----------
@@ -428,6 +447,9 @@ class HydrogenBondAnalysis(AnalysisBase):
         """Guesses which atoms could be considered donors in the analysis. Only use if the universe topology does not
         contain bonding information, otherwise donor-hydrogen pairs may be incorrectly assigned.
 
+        Donor selections may be achieved with either a resname, atom 
+        name combination, or when those are absent, atom types.
+
         Parameters
         ----------
         select: str (optional)
@@ -466,7 +488,6 @@ class HydrogenBondAnalysis(AnalysisBase):
 
         if hasattr(hydrogens_ag[0],"bonded_atoms") and hydrogens_ag[0].bonded_atoms:
             donors_ag = find_hydrogen_donors(hydrogens_ag)
-#            donors_ag = self.u.atoms[[x.bonded_atoms[0].ix for x in hydrogens_ag]]
         else:
             ag = hydrogens_ag.residues.atoms.select_atoms(
                 "({donors_sel}) and around {d_h_cutoff} {hydrogens_sel}".format(
@@ -494,6 +515,9 @@ class HydrogenBondAnalysis(AnalysisBase):
 
     def guess_acceptors(self, select='all', max_charge=-0.5):
         """Guesses which atoms could be considered acceptors in the analysis.
+
+        Acceptor selections may be achieved with either a resname, atom 
+        name combination, or when those are absent, atom types.
 
         Parameters
         ----------
