@@ -2174,10 +2174,8 @@ def check_atomgroup_not_empty(groupmethod):
     Raises
     ------
     ValueError
-        If the :class:`~MDAnalysis.core.groups.AtomGroup`,
-        :class:`~MDAnalysis.core.groups.ResidueGroup`, or
-        :class:`~MDAnalysis.core.groups.SegmentGroup` of which the decorated
-        method is a member is empty.
+        If the input :class:`~MDAnalysis.core.groups.AtomGroup`,
+        of a decorated method is empty.
 
 
     .. versionadded:: 2.4.0
