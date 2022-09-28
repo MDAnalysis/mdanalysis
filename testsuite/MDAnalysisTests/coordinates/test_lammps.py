@@ -455,6 +455,12 @@ class TestLammpsDumpReader(object):
             np.array([length2, length2, length2, 90., 90., 90.]),
         ]
         data['box'] = boxes
+        box_mins = [
+            np.array([0., 0., 0.]),
+            np.array([0.21427867, 0.21427867, 0.21427867]),
+            np.array([-0.00544581, -0.00544581, -0.00544581]),
+        ]
+        data["mins"] = box_mins
 
         # data for atom id 1 in traj (ie first in frame)
         # isn't sensitive to required sorting
@@ -489,11 +495,13 @@ class TestLammpsDumpReader(object):
 
         assert_almost_equal(u.dimensions, reference_positions['box'][1],
                             decimal=5)
-        assert_almost_equal(u.atoms[0].position,
-                            reference_positions['atom1_pos'][1],
+        pos = (reference_positions['atom1_pos'][1] - 
+            reference_positions['mins'][1])
+        assert_almost_equal(u.atoms[0].position, pos,
                             decimal=5)
-        assert_almost_equal(u.atoms[12].position,
-                            reference_positions['atom13_pos'][1],
+        pos = (reference_positions['atom13_pos'][1] -
+            reference_positions['mins'][1])
+        assert_almost_equal(u.atoms[12].position, pos,
                             decimal=5)
 
     def test_boxsize(self, u, reference_positions):
@@ -504,11 +512,12 @@ class TestLammpsDumpReader(object):
     def test_atom_reordering(self, u, reference_positions):
         atom1 = u.atoms[0]
         atom13 = u.atoms[12]
-        for ts, atom1_pos, atom13_pos in zip(u.trajectory,
+        for ts, atom1_pos, atom13_pos, bmin in zip(u.trajectory,
                                              reference_positions['atom1_pos'],
-                                             reference_positions['atom13_pos']):
-            assert_almost_equal(atom1.position, atom1_pos, decimal=5)
-            assert_almost_equal(atom13.position, atom13_pos, decimal=5)
+                                             reference_positions['atom13_pos'],
+                                             reference_positions['mins']):
+            assert_almost_equal(atom1.position, atom1_pos-bmin, decimal=5)
+            assert_almost_equal(atom13.position, atom13_pos-bmin, decimal=5)
 
 
 @pytest.mark.parametrize("convention",
@@ -556,9 +565,10 @@ class TestCoordinateMatches(object):
     def reference_unscaled_positions(self):
         # copied from trajectory file
         # atom 340 is the first one in the trajectory so we use that
-        atom340_pos1_unscaled = [4.48355, 0.331422, 1.59231]
-        atom340_pos2_unscaled = [4.41947, 35.4403, 2.25115]
-        atom340_pos3_unscaled = [4.48989, 0.360633, 2.63623]
+        bmin = np.array([0.02645, 0.02645, 0.02641])
+        atom340_pos1_unscaled = np.array([4.48355, 0.331422, 1.59231]) - bmin
+        atom340_pos2_unscaled = np.array([4.41947, 35.4403, 2.25115]) - bmin
+        atom340_pos3_unscaled = np.array([4.48989, 0.360633, 2.63623]) - bmin
         return np.asarray([atom340_pos1_unscaled, atom340_pos2_unscaled,
                           atom340_pos3_unscaled])
 

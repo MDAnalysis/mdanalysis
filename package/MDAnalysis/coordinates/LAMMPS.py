@@ -698,7 +698,7 @@ class DumpReader(base.ReaderBase):
                 ts.forces[i] = [fields[dim] for dim in self._forces_ind]
 
         order = np.argsort(indices)
-        ts.positions = ts.positions[order] - [xlo, ylo, zlo]
+        ts.positions = ts.positions[order]
         if self._has_vels:
             ts.velocities = ts.velocities[order]
         if self._has_forces:
@@ -707,5 +707,7 @@ class DumpReader(base.ReaderBase):
             # if coordinates are given in scaled format, undo that
             ts.positions = distances.transform_StoR(ts.positions,
                                                     ts.dimensions)
+        # Transform to origin after transformation of scaled variables
+        ts.positions -= np.array([xlo, ylo, zlo])[None,:]
 
         return ts
