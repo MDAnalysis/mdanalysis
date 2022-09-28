@@ -67,7 +67,7 @@ class RDKitParserBase(ParserBase):
 
     def test_guessed_attributes(self, filename):
         u = mda.Universe(filename, format='RDKIT')
-        for attr in self.guessed_attr:
+        for attr in self.guessed_attrs:
             assert hasattr(u.atoms, attr)
 
 

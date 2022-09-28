@@ -132,8 +132,10 @@ import os
 
 import logging
 import numpy as np
-
+import warnings 
 from ..lib.util import openany
+from ..guesser.tables import SYMB2Z
+from ..guesser.default_guesser import DefaultGuesser
 from .base import TopologyReaderBase, change_squash, reduce_singular
 from ..core.topologyattrs import (
     Atomids,
@@ -152,6 +154,7 @@ from ..core.topologyattrs import (
     Dihedrals,
     Impropers,
     AtomAttr,
+    Elements,
 )
 from ..core.topology import Topology
 
@@ -480,6 +483,7 @@ class ITPParser(TopologyReaderBase):
       no longer adds angles for water molecules with SETTLE constraint
     .. versionchanged:: 2.4.0
       removed mass guessing (guessing takes place now inside universe)
+      Added guessed elements if all elements are valid
     """
     format = 'ITP'
 
@@ -570,6 +574,8 @@ class ITPParser(TopologyReaderBase):
                 )
                 for x in self.types[empty]
             ]
+            
+
 
         attrs = []
         # atom stuff
@@ -590,6 +596,17 @@ class ITPParser(TopologyReaderBase):
 
         attrs.append(Masses(np.array(self.masses, dtype=np.float64),
                                 guessed=False))
+        
+        self.elements = DefaultGuesser(None).guess_types(self.names)
+        if all(e.capitalize() in SYMB2Z for e in self.elements):
+            attrs.append(Elements(np.array(self.elements, dtype=object)))
+        
+        else:
+            warnings.warn("Element information is missing, elements attribute "
+                          "will not be populated. If needed these can be "
+                          "guessed using universe.guess_topologyAttributes(to_guess=['elements']).")
+
+            
 
         # residue stuff
         resids = np.array(self.resids, dtype=np.int32)

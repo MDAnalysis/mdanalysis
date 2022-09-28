@@ -504,6 +504,16 @@ class TopologyAttr(object, metaclass=_TopologyAttrMeta):
         """Set segmentattributes for a given SegmentGroup"""
         raise NotImplementedError
 
+    @classmethod
+    def is_value_missing(self, value):
+        """check if an attribute has a missing value
+        .. versionadded:: 2.4.0
+        """
+        if hasattr(self, 'missing_value_label'):
+            return value == self.missing_value_label or np.isnan(value)
+        else:
+            return False
+
  # core attributes
 
 class Atomindices(TopologyAttr):

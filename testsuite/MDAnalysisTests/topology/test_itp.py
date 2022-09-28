@@ -27,6 +27,7 @@ import numpy as np
 from numpy.testing import assert_allclose, assert_equal
 
 from MDAnalysisTests.topology.base import ParserBase
+from MDAnalysis.guesser import DefaultGuesser
 from MDAnalysisTests.datafiles import (
     ITP,  # GROMACS itp
     ITP_nomass,  # from Automated Topology Builder
@@ -49,17 +50,25 @@ class BaseITP(ParserBase):
                       'resids', 'resnames',
                       'segids', 'moltypes', 'molnums',
                       'bonds', 'angles', 'dihedrals', 'impropers']
+
+    guessed_attrs = ['elements',]
+
     @pytest.fixture
     def guessed_types(self, top):
         return top.types.values
 
     @pytest.fixture
     def guessed_masses(self, top):
-        if not all(top.masses.values):
-            empty = top.masses.values == np.nan
-            top.masses.values[empty] = DefaultGuesser(None).guess_masses(
-                DefaultGuesser(None).guess_types(top.types.values)[empty])
-        return top.masses.values
+        masses = np.array(top.masses.values)
+        names = np.array(top.names.values)
+        
+        empty = []
+        for a in masses:
+            empty.append(np.isnan(a))
+
+        masses[empty] = DefaultGuesser(None).guess_masses(
+                DefaultGuesser(None).guess_types(names[empty]))
+        return masses
 
     expected_n_atoms = 63
     expected_n_residues = 10
@@ -159,6 +168,7 @@ class TestITPNoMass(ParserBase):
                       'resids', 'resnames',
                       'segids', 'moltypes', 'molnums',
                       'bonds', 'angles', 'dihedrals', 'impropers', 'masses',]
+    guessed_attrs = ['elements',]
 
     @pytest.fixture
     def guessed_types(self, top):
@@ -174,15 +184,20 @@ class TestITPNoMass(ParserBase):
 
     @pytest.fixture
     def guessed_masses(self, top):
-        if not all(top.masses.values):
-            empty = top.masses.values == np.nan
-            top.masses.values[empty] = DefaultGuesser(None).guess_masses(
-                DefaultGuesser(None).guess_types(top.types.values)[empty])
-        return top.masses.values
+        masses = np.array(top.masses.values)
+        names = np.array(top.names.values)
+        
+        empty = []
+        for a in masses:
+            empty.append(np.isnan(a))
+
+        masses[empty] = DefaultGuesser(None).guess_masses(
+                DefaultGuesser(None).guess_types(names[empty]))
+        return masses
 
 
     def test_mass_guess(self, universe):
-        assert universe.atoms[0].mass not in ('', None)
+        assert not np.isnan(universe.atoms[0].mass)
 
 
 class TestITPAtomtypes(ParserBase):
@@ -193,6 +208,8 @@ class TestITPAtomtypes(ParserBase):
                       'resids', 'resnames', 'masses'
                       'segids', 'moltypes', 'molnums',
                       'bonds', 'angles', 'dihedrals', 'impropers']
+    guessed_attrs = ['elements',]
+
     expected_n_atoms = 4
     expected_n_residues = 1
     expected_n_segments = 1
@@ -207,11 +224,16 @@ class TestITPAtomtypes(ParserBase):
 
     @pytest.fixture
     def guessed_masses(self, top):
-        if not all(top.masses.values):
-            empty = top.masses.values == np.nan
-            top.masses.values[empty] = DefaultGuesser(None).guess_masses(
-                DefaultGuesser(None).guess_types(top.types.values)[empty])
-        return top.masses.values
+        masses = np.array(top.masses.values)
+        names = np.array(top.names.values)
+        
+        empty = []
+        for a in masses:
+            empty.append(np.isnan(a))
+
+        masses[empty] = DefaultGuesser(None).guess_masses(
+                DefaultGuesser(None).guess_types(names[empty]))
+        return masses
 
     def test_charge_parse(self, universe):
         assert_allclose(universe.atoms[0].charge, 4)
@@ -234,6 +256,8 @@ class TestITPAtomtypes(ParserBase):
                       'resids', 'resnames',
                       'segids', 'moltypes', 'molnums',
                       'bonds', 'angles', 'dihedrals', 'impropers']
+    guessed_attrs = ['elements',]
+
     expected_n_atoms = 9
     expected_n_residues = 3
     expected_n_segments = 1
@@ -244,11 +268,16 @@ class TestITPAtomtypes(ParserBase):
 
     @pytest.fixture
     def guessed_masses(self, top):
-        if not all(top.masses.values):
-            empty = top.masses.values == np.nan
-            top.masses.values[empty] = DefaultGuesser(None).guess_masses(
-                DefaultGuesser(None).guess_types(top.types.values)[empty])
-        return top.masses.values
+        masses = np.array(top.masses.values)
+        names = np.array(top.names.values)
+        
+        empty = []
+        for a in masses:
+            empty.append(np.isnan(a))
+
+        masses[empty] = DefaultGuesser(None).guess_masses(
+                DefaultGuesser(None).guess_types(names[empty]))
+        return masses
 
     def test_charge_parse(self, universe):
         assert_allclose(universe.atoms[0].charge, -1.0)
@@ -290,12 +319,14 @@ class TestDifferentDirectivesITP(BaseITP):
         assert universe.dihedrals[0].type == (1, 1)
 
 
+
 class TestITPNoKeywords(BaseITP):
     expected_attrs = ['ids', 'names', 'types',
                       'charges', 'chargegroups',
                       'resids', 'resnames',
                       'segids', 'moltypes', 'molnums',
                       'bonds', 'angles', 'dihedrals', 'impropers', 'masses',]
+    guessed_attrs = ['elements',]
 
 
     """
@@ -346,6 +377,8 @@ class TestITPKeywords(TestITPNoKeywords):
                       'resids', 'resnames',
                       'segids', 'moltypes', 'molnums',
                       'bonds', 'angles', 'dihedrals', 'impropers', 'masses',]
+    guessed_attrs = ['elements',]
+
     expected_n_atoms = 7
     # FLEXIBLE is set -> no SETTLE constraint -> water should have angle
     expected_n_angles = 1
@@ -451,7 +484,7 @@ class TestReadTop(BaseITP):
         """check that the universe created with certain parser have the same
         guessed attributes as  when it was guessed inside the parser"""
         u = mda.Universe(filename, topology_format='ITP', include_dir=GMX_DIR)
-        for attr in self.guessed_attr:
+        for attr in self.guessed_attrs:
             assert hasattr(u.atoms, attr)
 
     def test_guessed_masses(self, filename, guessed_masses):
@@ -534,3 +567,16 @@ class TestRelativePath:
                 with subsubdir.as_cwd():
                     u = mda.Universe("../test.itp")
                     assert len(u.atoms) == 1
+
+def test_missing_elements_noattribute():
+    """Check that:
+
+    1) a warning is raised if elements are missing
+    2) the elements attribute is not set
+    """
+    wmsg = ("Element information is missing, elements attribute "
+            "will not be populated. If needed these can be ")
+    with pytest.warns(UserWarning, match=wmsg):
+        u = mda.Universe(ITP_atomtypes)
+    with pytest.raises(AttributeError):
+        _ = u.atoms.elements

@@ -152,7 +152,7 @@ class OpenMMTopologyBase(ParserBase):
     
     def test_guessed_attributes(self, filename):
         u = mda.Universe(filename, topology_format="OPENMMTOPOLOGY")
-        for attr in self.guessed_attr:
+        for attr in self.guessed_attrs:
             assert hasattr(u.atoms, attr)
 
 
@@ -183,7 +183,7 @@ class OpenMMAppTopologyBase(OpenMMTopologyBase):
 
     def test_guessed_attributes(self, filename):
         u = mda.Universe(filename, topology_format="OPENMMAPP")
-        for attr in self.guessed_attr:
+        for attr in self.guessed_attrs:
             assert hasattr(u.atoms, attr)
 
     @pytest.mark.skipif(not hasattr(top, 'elements'), reason="OPENMMAPParser doesn't guess atom types when element attribute is read")

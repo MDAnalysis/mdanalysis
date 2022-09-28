@@ -38,7 +38,7 @@ class ParserBase(object):
     """
 
     expected_attrs = []
-    guessed_attr = []
+    guessed_attrs = []
 
     @pytest.fixture
     def filename(self):
@@ -78,9 +78,10 @@ class ParserBase(object):
     def test_no_unexpected_attributes(self, top):
         attrs = set(self.expected_attrs
                     + mandatory_attrs
-                    + ['indices', 'resindices', 'segindices'])
+                    + ['indices', 'resindices', 'segindices'] + self.guessed_attrs)
         for attr in top.attrs:
-            assert attr.attrname in attrs, 'Unexpected attribute: {}'.format(attr.attrname)
+            assert attr.attrname in attrs, 'Unexpected attribute: {}'.format(
+                attr.attrname)
 
 
     def test_size(self, top):
@@ -107,7 +108,7 @@ class ParserBase(object):
         """check that the universe created with certain parser have the same
         guessed attributes as  when it was guessed inside the parser"""
         u = mda.Universe(filename)
-        for attr in self.guessed_attr:
+        for attr in self.guessed_attrs:
             assert hasattr(u.atoms, attr)
 
     @pytest.mark.skipif('names' not in expected_attrs, reason="topology doesn't have names attribute")

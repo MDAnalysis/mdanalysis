@@ -97,7 +97,7 @@ class LammpsBase(ParserBase):
 
     def test_guessed_attributes(self, filename):
         u = mda.Universe(filename, format='DATA')
-        for attr in self.guessed_attr:
+        for attr in self.guessed_attrs:
             assert hasattr(u.atoms, attr)
 
     @pytest.mark.skipif('names' not in expected_attrs, reason="topology doesn't have names attribute")
@@ -108,7 +108,6 @@ class LammpsBase(ParserBase):
     def test_guessed_masses(self, filename, guessed_masses):
         u = mda.Universe(filename, format='DATA')
         assert_allclose(u.atoms.masses, guessed_masses, rtol=1e-3, atol=0)
-
 
 class TestLammpsData(LammpsBase):
     """Tests the reading of lammps .data topology files.
@@ -278,7 +277,7 @@ class TestDumpParser(ParserBase):
 
     def test_guessed_attributes(self, filename):
         u = mda.Universe(filename, format='LAMMPSDUMP')
-        for attr in self.guessed_attr:
+        for attr in self.guessed_attrs:
             assert hasattr(u.atoms, attr)
 
     @pytest.mark.skipif('names' not in expected_attrs, reason="topology doesn't have names attribute")

@@ -82,14 +82,14 @@ class DefaultGuesser(GuesserBase):
 
     def __init__(self, universe, **kwargs):
         super().__init__(universe, **kwargs)
-        self._guesser_methods = {'masses': {'builder': self.guess_masses, 'parent': ['types', 'elements']},
-                                 'types': {'builder': self.guess_types}, 'parent': ['names'],
-                                 'elements': {'builder': self.guess_types, 'parent': ['names']},
-                                 'angles': {'builder': self.add_guessed_angles, 'parent': ['positions']},
-                                 'dihedrals': {'builder': self.add_guessed_dihedrals},
-                                 'bonds': {'builder': self.add_guessed_bonds},
-                                 'improper dihedrals': {'builder': self.guess_improper_dihedrals},
-                                 'aromaticities': {'builder': self.guess_aromaticities},
+        self._guesser_methods = {'masses': {'guesser': self.guess_masses, 'parent': ['elements', 'types']},
+                                 'types': {'guesser': self.guess_types}, 'parent': ['names'],
+                                 'elements': {'guesser': self.guess_types, 'parent': ['names']},
+                                 'angles': {'guesser': self.add_guessed_angles, 'parent': ['positions']},
+                                 'dihedrals': {'guesser': self.add_guessed_dihedrals},
+                                 'bonds': {'guesser': self.add_guessed_bonds},
+                                 'improper dihedrals': {'guesser': self.guess_improper_dihedrals},
+                                 'aromaticities': {'guesser': self.guess_aromaticities},
                                  }
 
 
@@ -152,8 +152,8 @@ class DefaultGuesser(GuesserBase):
 
     def get_atom_mass(self, element):
         """Return the atomic mass in u for *element*.
-        Masses are looked up in :data:`MDAnalysis.topology.tables.masses`.
-        .. Warning:: Unknown masses are set to nan
+        Masses are looked up in :data:`MDAnalysis.guesser.tables.masses`.
+        .. Warning:: Untill vesion 3.0.0 unknown masses are set to 0.0
 
         """
         try:
@@ -162,14 +162,17 @@ class DefaultGuesser(GuesserBase):
             try:
                 return tables.masses[element.upper()]
             except KeyError:
-                return np.nan
+                warnings.warn("Unknown masses are set to 0.0 for current version, this will be"
+                              "depracated in version 3.0.0 and replaced by Masse's no_value_label (np.nan)"
+                              , PendingDeprecationWarning)
+                return 0.0
 
     def guess_atom_mass(self, atomname):
         """Guess a mass based on the atom name.
 
         :func:`guess_atom_element` is used to determine the kind of atom.
 
-        .. warning:: Anything not recognized is simply set to nan; if you rely on the masses you might want to double check.
+        .. warning:: Untill vesion 3.0.0 anything not recognized is simply set to 0.0; if you rely on the masses you might want to double check.
         """
         return self.get_atom_mass(self.guess_atom_element(atomname))
 
@@ -205,7 +208,7 @@ class DefaultGuesser(GuesserBase):
         See Also
         --------
         :func:`guess_atom_type`
-        :mod:`MDAnalysis.topology.tables`
+        :mod:`MDAnalysis.guesser.tables`
         """
         if atomname == '':
             return ''
@@ -259,7 +262,7 @@ class DefaultGuesser(GuesserBase):
         vdwradii : dict, optional
             To supply custom vdwradii for atoms in the algorithm. Must be a dict
             of format {type:radii}. The default table of van der Waals radii is
-            hard-coded as :data:`MDAnalysis.topology.tables.vdwradii`.  Any user
+            hard-coded as :data:`MDAnalysis.guesser.tables.vdwradii`.  Any user
             defined vdwradii passed as an argument will supercede the table
             values. [``None``]
         lower_bound : float, optional

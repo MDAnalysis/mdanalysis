@@ -61,7 +61,6 @@ from ..core.topologyattrs import (
     Resids,
     Resnums,
     Segids,
-
     Elements,
 )
 

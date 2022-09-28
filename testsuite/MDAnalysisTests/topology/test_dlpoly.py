@@ -47,7 +47,7 @@ class DLPUniverse(ParserBase):
 
     def test_guessed_attributes(self, filename):
         u = mda.Universe(filename, topology_format=self.format)
-        for attr in self.guessed_attr:
+        for attr in self.guessed_attrs:
             assert hasattr(u.atoms, attr)
 
     def test_guessed_types(self, filename, guessed_types):

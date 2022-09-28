@@ -246,8 +246,8 @@ def test_wrong_elements_warnings():
     with pytest.warns(UserWarning, match='Unknown elements found') as record:
         u = mda.Universe(StringIO(mol2_wrong_element), format='MOL2')
 
-    # One warning from invalid elements, one from invalid masses
-    assert len(record) == 2
+    # One warning from invalid elements, one from invalid masses + masses PendingDeprecationWarning
+    assert len(record) == 4
 
     expected = np.array(['N', '', ''], dtype=object)
     assert_equal(u.atoms.elements, expected)
