@@ -507,7 +507,8 @@ LAMMPSDUMP_long = resource_filename(__name__, "data/lammps/wat.lammpstrj_long.bz
 LAMMPSDUMP_allcoords = resource_filename(__name__, "data/lammps/spce_all_coords.lammpstrj.bz2")
 LAMMPSDUMP_nocoords = resource_filename(__name__, "data/lammps/spce_no_coords.lammpstrj.bz2")
 LAMMPSDUMP_triclinic = resource_filename(__name__, "data/lammps/albite_triclinic.dump")
-
+LAMMPSDUMP_image_vf = resource_filename(__name__, "data/lammps/image_vf.lammpstrj")
+LAMMPS_image_vf = resource_filename(__name__, "data/lammps/image_vf.data")
 
 unordered_res = resource_filename(__name__, "data/unordered_res.pdb")
 

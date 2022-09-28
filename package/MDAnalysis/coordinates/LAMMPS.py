@@ -513,7 +513,7 @@ class DumpReader(base.ReaderBase):
         self._has_vels, self._has_forces = self._check_vels_forces()
 
         if unwrap_images:
-            self._unwrap = kwargs["unwrap_images"]
+            self._unwrap = unwrap_images
         else:
             self._unwrap = False
 
@@ -677,19 +677,15 @@ class DumpReader(base.ReaderBase):
                 indices[i] = fields[attr_to_col_ix["id"]]
             coords = np.array([fields[dim] for dim in coord_cols], np.float32)
 
-            if len(coords) > 3:
-                if self._unwrap:
-                    if coords.shape[1] == 6:
-                        images = coords[:, 3:]
-                        coords = coords[:, :3]
-                        coords += images * ts.dimensions[:3]
-                    else:
-                        raise ValueError("Six coord elements are needed to unwrap with image flags.") 
-                else:
+            if self._unwrap:
+                if len(coords) >= 6:
+                    images = coords[3:]
                     coords = coords[:3]
-            else:
-                if self._unwrap:
+                    coords += images * ts.dimensions[:3]
+                else:
                     raise ValueError("Cannot unwrap coordinates without image flags.")
+            else:
+                coords = coords[:3]
             ts.positions[i] = coords
 
             if self._has_vels:

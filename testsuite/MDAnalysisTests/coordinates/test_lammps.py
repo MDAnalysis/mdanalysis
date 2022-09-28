@@ -37,7 +37,8 @@ from MDAnalysisTests.coordinates.reference import (
 )
 from MDAnalysisTests.datafiles import (
     LAMMPScnt, LAMMPShyd, LAMMPSdata, LAMMPSdata_mini, LAMMPSdata_triclinic,
-    LAMMPSDUMP, LAMMPSDUMP_allcoords, LAMMPSDUMP_nocoords, LAMMPSDUMP_triclinic
+    LAMMPSDUMP, LAMMPSDUMP_allcoords, LAMMPSDUMP_nocoords, LAMMPSDUMP_triclinic,
+    LAMMPSDUMP_image_vf, LAMMPS_image_vf
 )
 
 
@@ -112,6 +113,37 @@ def LAMMPSDATAWriter(request, tmpdir_factory):
     u_new = mda.Universe(outfile)
 
     return u, u_new
+
+def test_unwrap_vel_force():
+
+    u_wrapped = mda.Universe(LAMMPS_image_vf, [LAMMPSDUMP_image_vf], 
+                             format="LAMMPSDUMP")
+    u_wrapped.trajectory[-1]
+ 
+    assert_almost_equal(u_wrapped.atoms.positions[0], 
+                        np.array([2.56616, 6.11565, 7.37956]),
+                        decimal=5)
+    assert hasattr(u_wrapped.atoms, "velocities")
+    assert hasattr(u_wrapped.atoms, "forces")
+
+def test_unwrap_image_wrap():
+    u_unwrapped = mda.Universe(LAMMPS_image_vf, LAMMPSDUMP_image_vf,
+                               format="LAMMPSDUMP", unwrap_images=True)
+    u_unwrapped.trajectory[-1]
+
+    pos = (np.array([2.56616, 6.11565, 7.37956]) + 
+        np.array([3, 1, -4])*u_unwrapped.dimensions[:3])
+    assert_almost_equal(u_unwrapped.atoms.positions[0], 
+                        pos,
+                        decimal=5,
+                       )
+
+def test_unwrap_no_image():
+    with pytest.raises(ValueError, match="must have image flag"):
+        u_unwrapped = mda.Universe( 
+                                   LAMMPSDUMP_allcoords,
+                                   format="LAMMPSDUMP", 
+                                   unwrap_images=True)
 
 
 class TestLAMMPSDATAWriter(object):
