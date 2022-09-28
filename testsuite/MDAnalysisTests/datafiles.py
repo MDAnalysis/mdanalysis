@@ -143,6 +143,8 @@ __all__ = [
     "LAMMPSDUMP_allcoords",  # lammpsdump file with all coordinate conventions (x,xs,xu,xsu) present, from LAMMPS rdf example
     "LAMMPSDUMP_nocoords",  # lammpsdump file with no coordinates
     "LAMMPSDUMP_triclinic", # lammpsdump file to test triclinic dimension parsing, albite with most atoms deleted
+    "LAMMPSDUMP_image_vf", # Lammps dump file with image flags, velocities, and forces.
+    "LAMMPS_image_vf", # Lammps data file to go with LAMMPSDUMP_image_vf
     "unordered_res",  # pdb file with resids non sequential
     "GMS_ASYMOPT",  # GAMESS C1  optimization
     "GMS_SYMOPT",   # GAMESS D4h optimization
