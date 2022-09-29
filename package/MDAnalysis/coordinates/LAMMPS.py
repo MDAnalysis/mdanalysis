@@ -510,8 +510,6 @@ class DumpReader(base.ReaderBase):
                              " is not a valid option. "
                              f"Please choose one of {option_string}")
 
-        self._has_vels, self._has_forces = self._check_vels_forces()
-
         if unwrap_images:
             self._unwrap = unwrap_images
         else:
@@ -527,29 +525,8 @@ class DumpReader(base.ReaderBase):
         self.close()
         self._file = util.anyopen(self.filename)
         self.ts = self._Timestep(self.n_atoms, # NoteHere
-                                 velocities=self._has_vels,
-                                 forces=self._has_forces,
                                  **self._ts_kwargs)
         self.ts.frame = -1
-
-    def _check_vels_forces(self):
-        with util.anyopen(self.filename) as f:
-            for i in range(8):
-                tmp = f.readline()
-            tmp = f.readline().split() 
-            _has_vels = "vx" in tmp
-            if _has_vels:
-                self._vel_ind = []
-                for i in range(len(tmp)):
-                    if tmp[i][0] == "v":
-                        self._vel_ind.append(i-2)
-            _has_forces = "fx" in tmp
-            if _has_forces:
-                self._forces_ind = []
-                for i in range(len(tmp)):
-                    if tmp[i][0] == "f":
-                        self._forces_ind.append(i-2)
-        return _has_vels, _has_forces
 
     @property
     @cached('n_atoms')
@@ -652,6 +629,15 @@ class DumpReader(base.ReaderBase):
             except:
                 raise ValueError("Trajectory must have image flag in order to unwrap.")
 
+        self._has_vels = "vx" in attr_to_col_ix
+        if self._has_vels:
+            ts.has_velocities = True
+            vel_cols = [attr_to_col_ix[x] for x in ["vx", "vy", "vz"]]
+        self._has_forces = "fx" in attr_to_col_ix
+        if self._has_forces:
+            ts.has_forces = True
+            force_cols = [attr_to_col_ix[x] for x in ["fx", "fy", "fz"]]
+
         # this should only trigger on first read of "ATOM" card, after which it
         # is fixed to the guessed value. Auto proceeds unscaled -> scaled
         # -> unwrapped -> scaled_unwrapped
@@ -689,9 +675,9 @@ class DumpReader(base.ReaderBase):
             ts.positions[i] = coords
 
             if self._has_vels:
-                ts.velocities[i] = [fields[dim] for dim in self._vel_ind]
+                ts.velocities[i] = [fields[dim] for dim in vel_cols]
             if self._has_forces:
-                ts.forces[i] = [fields[dim] for dim in self._forces_ind]
+                ts.forces[i] = [fields[dim] for dim in force_cols]
 
         order = np.argsort(indices)
         ts.positions = ts.positions[order]
