@@ -392,9 +392,11 @@ class HydrogenBondAnalysis(AnalysisBase):
         select: str (optional)
             Selection string for atom group from which hydrogens will be identified.
         max_mass: float (optional)
-            Maximum allowed mass of a hydrogen atom.
+            The mass of a hydrogen atom must be less than this value.
+        min_mass: float (optional)
+            The mass of a hydrogen atom must be greater than this value.
         min_charge: float (optional)
-            Minimum allowed charge of a hydrogen atom.
+            The charge of a hydrogen atom must be greater than this value.
 
         Returns
         -------
@@ -455,7 +457,7 @@ class HydrogenBondAnalysis(AnalysisBase):
         select: str (optional)
             Selection string for atom group from which donors will be identified.
         max_charge: float (optional)
-            Maximum allowed charge of a donor atom.
+            The charge of a donor atom must be less than this value.
 
         Returns
         -------
@@ -527,7 +529,7 @@ class HydrogenBondAnalysis(AnalysisBase):
         select: str (optional)
             Selection string for atom group from which acceptors will be identified.
         max_charge: float (optional)
-            Maximum allowed charge of an acceptor atom.
+            The charge of an acceptor atom must be less than this value.
 
         Returns
         -------
