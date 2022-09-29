@@ -486,7 +486,10 @@ class HydrogenBondAnalysis(AnalysisBase):
             hydrogens_sel = self.hydrogens_sel
         hydrogens_ag = self.u.select_atoms(hydrogens_sel)
 
-        if hasattr(hydrogens_ag[0],"bonded_atoms") and hydrogens_ag[0].bonded_atoms:
+        # We're using u._topology.bonds rather than u.bonds as it is a million times faster to access.
+        # This is because u.bonds also calculates properties of each bond (e.g bond length).
+        # See https://github.com/MDAnalysis/mdanalysis/issues/2396#issuecomment-596251787
+        if (hasattr(self.u._topology, 'bonds') and len(self.u._topology.bonds.values) != 0):
             donors_ag = find_hydrogen_donors(hydrogens_ag)
         else:
             ag = hydrogens_ag.residues.atoms.select_atoms(

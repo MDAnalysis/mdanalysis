@@ -204,6 +204,23 @@ class TestHydrogenBondAnalysisIdeal(object):
             h = HydrogenBondAnalysis(universe, **kwargs)
             h._get_dh_pairs()
 
+    def test_no_bond_donor_sel(self, universe):
+
+        kwargs = {
+            'donors_sel': "type O",
+            'hydrogens_sel': None,
+            'acceptors_sel': None,
+            'd_h_cutoff': 1.2,
+            'd_a_cutoff': 3.0,
+            'd_h_a_angle_cutoff': 120.0
+        }
+        u = universe.copy()
+        n_residues = 2
+        u.add_TopologyAttr('mass', [15.999, 1.008, 1.008] * n_residues)
+        u.add_TopologyAttr('charge', [-1.04, 0.52, 0.52] * n_residues)
+        h = HydrogenBondAnalysis(u, **kwargs)
+        donors = u.select_atoms(h.guess_donors())
+
     def test_first_hbond(self, hydrogen_bonds):
         assert len(hydrogen_bonds.results.hbonds) == 2
         frame_no, donor_index, hydrogen_index, acceptor_index, da_dst, angle =\
@@ -319,6 +336,16 @@ class TestHydrogenBondAnalysisNoRes(object):
         h.run()
         return h
 
+    def test_count_by_type(self, universe):
+
+        h = HydrogenBondAnalysis(
+            universe,
+            **TestHydrogenBondAnalysisNoRes.kwargs
+        )
+        h.run()
+        counts = h.count_by_type()
+        ref_count = 2
+        assert int(counts[0, 2]) == ref_count
 
     def test_no_bond_info_exception(self, universe):
 
@@ -365,9 +392,9 @@ class TestHydrogenBondAnalysisNoRes(object):
         u.add_TopologyAttr('mass', [15.999, 1.008, 1.008] * n_residues)
         u.add_TopologyAttr('charge', [-1.04, 0.52, 0.52] * n_residues)
         h = HydrogenBondAnalysis(u, **kwargs)
-        pairs = h._get_dh_pairs()
+        donors = u.select_atoms(h.guess_donors())
 
-        assert len(pairs) == 2
+        assert len(donors) == 2
 
     def test_first_hbond(self, hydrogen_bonds):
         assert len(hydrogen_bonds.results.hbonds) == 2
