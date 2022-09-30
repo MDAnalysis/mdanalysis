@@ -2255,12 +2255,12 @@ class Charges(AtomAttr):
         .. versionadded:: 2.4.0
         """
         def __quadrupole(recenteredpos, charges):
-            tensor = np.zeros((3,3))
-            for i,atom in enumerate(recenteredpos):
-                tensor += np.matmul(
-                    atom[:,np.newaxis],
-                    atom[np.newaxis,:])*charges[i]
-
+            if len(charges.shape) > 1:
+                charges = np.squeeze(charges)
+            tensor = np.einsum( "ki,kj->ij",
+                                recenteredpos,
+                                np.einsum("ij,i->ij", recenteredpos, charges),
+                              )
             quad_trace = np.sum(np.diag(tensor))
             return 3*tensor/2 - np.identity(3)*quad_trace/2
 
@@ -2317,6 +2317,8 @@ class Charges(AtomAttr):
                      coords[mask]-ref[compound_mask][i],
                      chgs[mask][:,None]
                     ) for i,mask in enumerate(atom_mask)]
+
+#        sys.exit()
 
         return quad_tensor
 
