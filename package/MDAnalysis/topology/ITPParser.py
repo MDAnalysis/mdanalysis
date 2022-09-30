@@ -599,7 +599,7 @@ class ITPParser(TopologyReaderBase):
         
         self.elements = DefaultGuesser(None).guess_types(self.names)
         if all(e.capitalize() in SYMB2Z for e in self.elements):
-            attrs.append(Elements(np.array(self.elements, dtype=object)))
+            attrs.append(Elements(np.array(self.elements, dtype=object), guessed=True))
         
         else:
             warnings.warn("Element information is missing, elements attribute "

@@ -144,20 +144,26 @@ class GuesserBase(metaclass=_GuesserMeta):
             if True in emptyAttr:
                 parentAttr =[]
                 # check if the parent attribute from which we can begin guessing exists in the universe
-                for x in self._guesser_methods[attr_to_guess]['parent']: 
-                    if hasattr(self._universe.atoms, x):
-                        parentAttr = np.array(getattr(self._universe.atoms, x, None))
+                for p in self._guesser_methods[attr_to_guess]['parent']: 
+                    if hasattr(self._universe.atoms, p):
+                        parentAttr = np.array(getattr(self._universe.atoms, p))
                         break
 
-                # if didn't find any parent attribute we must guess it first
+                # if didn't find any parent attribute we try to guess one parent first
                 if len(parentAttr) == 0:
-                    self._universe.guess_TopologyAttributes(context=self.context,
-                                                            to_guess=[self._parent_attr[attr_to_guess][0]])
-                    parentAttr = np.array(
-                        getattr(self._universe.atoms, x, None))
+                    for p in self._guesser_methods[attr_to_guess]['parent']:
+                        try:
+                            self._universe.guess_TopologyAttributes(context=self.context, to_guess=[p])
+                            parentAttr = np.array(getattr(self._universe.atoms, p))
+                            break
+                        except ValueError:
+                                pass
+    
+                if len(parentAttr) > 0:
+                    attr[emptyAttr] = self._guesser_methods[attr_to_guess]['guesser'](parentAttr[emptyAttr])
 
-                attr[emptyAttr] = self._guesser_methods[attr_to_guess]['guesser'](
-                    parentAttr[emptyAttr])
+                else:
+                    raise ValueError(f'Failed to find/guess a parent attribute to guess {attr_to_guess} from')
 
                 logger.info(
                     f'attribute {attr_to_guess} has been guessed successfully.')
