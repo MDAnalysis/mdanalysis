@@ -1532,7 +1532,7 @@ class Universe(object):
                         fg = False
                         if attr in force_guess:
                             fg = True
-                        values = guesser.guess_Attr(attr, fg)
+                        values = guesser.guess_attr(attr, fg)
                         
                         if values is not None:
                             if attr in objects:

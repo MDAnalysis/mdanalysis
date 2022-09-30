@@ -114,7 +114,7 @@ class GuesserBase(metaclass=_GuesserMeta):
         return False
     
 
-    def guess_Attr(self, attr_to_guess, force_guess=False):
+    def guess_attr(self, attr_to_guess, force_guess=False):
         """map the attribute to be guessed with the apporpiate guessing method
 
         Parameters
@@ -127,6 +127,12 @@ class GuesserBase(metaclass=_GuesserMeta):
         Returns
         -------
         list of guessed values
+
+        Raises
+        ------
+        ValueError
+            Failed to find or guess parent attribute
+
         """
         
         # check if the topology already has the attribute to partially guess it
