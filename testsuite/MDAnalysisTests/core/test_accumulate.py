@@ -25,7 +25,7 @@ from numpy.testing import assert_equal, assert_almost_equal
 
 import MDAnalysis as mda
 from MDAnalysis.exceptions import DuplicateWarning, NoDataError
-from MDAnalysisTests.datafiles import PSF, DCD, GRO
+from MDAnalysisTests.datafiles import PSF, DCD, GRO, PDB_multipole
 from MDAnalysisTests.core.util import UnWrapUniverse
 import pytest
 
@@ -154,115 +154,81 @@ class TestMultipole(object):
     """Tests the functionality of *Group.*_moment() like dipole_moment
     and quadrupole_moment.
     """
-    @pytest.fixture(params=levels)
-    def group(self, request):
-        u = mda.Universe(PSF, DCD)
-        return getattr(u, request.param)
+    @pytest.fixture(scope='class')
+    def group(self):
+        u = mda.Universe(PDB_multipole)
+        u.add_TopologyAttr("charges", 
+                           [-0.078, 0.019, 0.019, 0.019, 0.019, # methane 
+                            -0.004, 0.001, 0.001, 0.001, # ammonia
+                            -0.217, 0.108, 0.108, # water
+                            -0.523, 0.524, 0.265, 0.265, 0.265, -0.324, 0.179, -0.651,
+                           ]) # acetic acid
+                          
+        group = u.select_atoms("all")
+        return group
 
     # Dipole
     def test_dipole_moment(self, group):
+        
         assert_almost_equal(
-            group.dipole_moment(unwrap=False), 
-            np.array([-33.9281028,  -5.1098802,  -6.4160602])
-        )
+            group.dipole_moment(unwrap=False), 1.4938575)
 
-    @pytest.mark.parametrize('name, compound',
-                             (('resids', 'residues'), 
-                            ))
-    def test_dipole_moment_residues(self, group, name, compound):
-        if compound == 'group':
-            n_compounds = 1
-        else:
-            (_, _, 
-             n_compounds) = group.atoms._split_by_compound_indices(compound)
+    def test_dipole_moment_residues(self, group):
+        compound = "residues"
+        (_, _, n_compounds) = group.atoms._split_by_compound_indices(compound)
         dipoles = group.dipole_moment(compound=compound, unwrap=False)
-        assert_almost_equal(
-           np.sqrt(np.sum(dipoles**2, axis=1))[:10],
-           np.array([2.9168364, 3.2816886, 0.5223232, 0.6369967, 0.5212321, 0.8351054,
-                     0.8497664, 0.9862403, 0.6242501, 0.5324908])
+
+        assert_almost_equal(dipoles[:10],
+           np.array([2.7049843e-05, 1.1890718e-03, 1.3088355e-01, 1.4539127e+00])
         ) and len(dipoles) == n_compounds
 
-    @pytest.mark.parametrize('name, compound',
-                             (('segids', 'segments'),
-                            ))
-    def test_dipole_moment_segments(self, group, name, compound):
-        if compound == 'group':
-            n_compounds = 1
-        else:
-            (_, _,
-             n_compounds) = group.atoms._split_by_compound_indices(compound)
+    def test_dipole_moment_segments(self, group):
+        compound = 'segments'
+        (_, _, n_compounds) = group.atoms._split_by_compound_indices(compound)
         dipoles = group.dipole_moment(compound=compound, unwrap=False)
-        print(np.shape(dipoles))
-        assert_almost_equal(
-           np.sqrt(np.sum(dipoles**2, axis=1))[:10],
-           np.array([34.9054848])
+        assert_almost_equal(dipoles[:10],
+           np.array([1.4938575])
         ) and len(dipoles) == n_compounds
 
-    @pytest.mark.parametrize('name, compound',
-                             (('fragindices', 'fragments'),
-                            ))
-    def test_dipole_moment_fragments(self, group, name, compound):
-        if compound == 'group':
-            n_compounds = 1
-        else:
-            (_, _,
-             n_compounds) = group.atoms._split_by_compound_indices(compound)
+    def test_dipole_moment_fragments(self, group):
+        compound = 'fragments'
+        (_, _, n_compounds) = group.atoms._split_by_compound_indices(compound)
         dipoles = group.dipole_moment(compound=compound, unwrap=False)
-        assert_almost_equal(
-           np.sqrt(np.sum(dipoles**2, axis=1))[:10],
-           np.array([34.9054848])
+        assert_almost_equal(dipoles[:10],
+            np.array([2.7049843e-05, 1.1890718e-03, 1.3088355e-01, 1.4539127e+00])
         ) and len(dipoles) == n_compounds
 
     # Quadrupole
     def test_quadrupole_moment(self, group):
         assert_almost_equal(
-            group.quadrupole_moment(unwrap=False),
-            1206.7502932562816
-        )
+            group.quadrupole_moment(unwrap=False), 4.9907387)
 
-    @pytest.mark.parametrize('name, compound',
-                             (('resids', 'residues'),
-                            ))
-    def test_quadrupole_moment_residues(self, group, name, compound):
-        if compound == 'group':
-            n_compounds = 1
-        else:
-            (_, _,
-             n_compounds) = group.atoms._split_by_compound_indices(compound)
+    def test_quadrupole_moment_residues(self, group):
+        compound = "residues"
+        (_, _, n_compounds) = group.atoms._split_by_compound_indices(compound)
+
         quadrupoles = group.quadrupole_moment(compound=compound, unwrap=False)
         assert_almost_equal(
            quadrupoles[:10],
-           np.array([7.704137 , 11.2069447,  2.4408188,  2.6156687,  2.7453227,
-                     3.6980534,  1.5527648,  1.7533825,  2.2326446,  2.2311686])
+           np.array([8.7673207e-05, 1.1590484e-03, 1.1473767e-01, 1.2218774e+00])
         ) and len(quadrupoles) == n_compounds
 
-    @pytest.mark.parametrize('name, compound',
-                             (('segids', 'segments'),
-                            )) 
-    def test_quadrupole_moment_segments(self, group, name, compound):
-        if compound == 'group':
-            n_compounds = 1
-        else:
-            (_, _,
-             n_compounds) = group.atoms._split_by_compound_indices(compound)
+    def test_quadrupole_moment_segments(self, group):
+        compound = "segments"
+        (_, _, n_compounds) = group.atoms._split_by_compound_indices(compound)
+
         quadrupoles = group.quadrupole_moment(compound=compound, unwrap=False)
         assert_almost_equal(
            quadrupoles[:10],
-           np.array([1206.7502933])
+           np.array([4.9907387])
         ) and len(quadrupoles) == n_compounds
 
-    @pytest.mark.parametrize('name, compound',
-                             (('fragindices', 'fragments'),
-                            ))
-    def test_quadrupole_moment_fragments(self, group, name, compound):
-        if compound == 'group':
-            n_compounds = 1
-        else:
-            (_, _,
-             n_compounds) = group.atoms._split_by_compound_indices(compound)
+    def test_quadrupole_moment_fragments(self, group):
+        compound = "fragments"
+        (_, _, n_compounds) = group.atoms._split_by_compound_indices(compound)
+
         quadrupoles = group.quadrupole_moment(compound=compound, unwrap=False)
-        print(np.shape(quadrupoles))
         assert_almost_equal(
            quadrupoles[:10],
-           np.array([1206.7502933])
+           np.array([8.7673207e-05, 1.1590484e-03, 1.1473767e-01, 1.2218774e+00])
         ) and len(quadrupoles) == n_compounds
