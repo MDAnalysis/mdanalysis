@@ -30,6 +30,16 @@ parsers.
 
 TopologyAttrs are used to contain attributes such as atom names or resids.
 These are usually read by the TopologyParser.
+
+References
+----------
+
+.. bibliography::
+    :filter: False
+    :style: MDA
+
+    Gray1984
+
 """
 
 from collections import defaultdict
@@ -2343,7 +2353,7 @@ class Charges(AtomAttr):
         ('quadrupole_tensor', quadrupole_tensor))
 
     def quadrupole_moment(group, **kwargs):
-        r"""Quadrupole moment of the group according to [Gray1984]_
+        r"""Quadrupole moment of the group according to :cite:p:`Gray1984`.
          
         .. math::
             Q = \sqrt{\frac{2}{3}{\hat{\mathsf{Q}}}:{\hat{\mathsf{Q}}}}
