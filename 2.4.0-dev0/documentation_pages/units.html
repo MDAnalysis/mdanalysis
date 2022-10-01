@@ -18,6 +18,7 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../_static/js/versions.js"></script>
     <script src="../_static/js/theme.js"></script>
@@ -69,12 +70,38 @@
 <li class="toctree-l3"><a class="reference internal" href="#conversions">15.1.1. Conversions</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#functions">15.2. Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#data">15.3. Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#functions">15.2. Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.units.get_conversion_factor"><code class="docutils literal notranslate"><span class="pre">get_conversion_factor()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.units.convert"><code class="docutils literal notranslate"><span class="pre">convert()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#data">15.3. Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.units.MDANALYSIS_BASE_UNITS"><code class="docutils literal notranslate"><span class="pre">MDANALYSIS_BASE_UNITS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.units.constants"><code class="docutils literal notranslate"><span class="pre">constants</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.units.lengthUnit_factor"><code class="docutils literal notranslate"><span class="pre">lengthUnit_factor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.units.water"><code class="docutils literal notranslate"><span class="pre">water</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.units.densityUnit_factor"><code class="docutils literal notranslate"><span class="pre">densityUnit_factor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.units.timeUnit_factor"><code class="docutils literal notranslate"><span class="pre">timeUnit_factor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.units.speedUnit_factor"><code class="docutils literal notranslate"><span class="pre">speedUnit_factor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.units.forceUnit_factor"><code class="docutils literal notranslate"><span class="pre">forceUnit_factor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.units.chargeUnit_factor"><code class="docutils literal notranslate"><span class="pre">chargeUnit_factor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.units.conversion_factor"><code class="docutils literal notranslate"><span class="pre">conversion_factor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.units.unit_types"><code class="docutils literal notranslate"><span class="pre">unit_types</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#references-and-footnotes">15.4. References and footnotes</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">16. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html#MDAnalysis.exceptions.ApplicationError"><code class="docutils literal notranslate"><span class="pre">ApplicationError</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html#MDAnalysis.exceptions.ConversionWarning"><code class="docutils literal notranslate"><span class="pre">ConversionWarning</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html#MDAnalysis.exceptions.DuplicateWarning"><code class="docutils literal notranslate"><span class="pre">DuplicateWarning</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html#MDAnalysis.exceptions.FileFormatWarning"><code class="docutils literal notranslate"><span class="pre">FileFormatWarning</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html#MDAnalysis.exceptions.MissingDataWarning"><code class="docutils literal notranslate"><span class="pre">MissingDataWarning</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html#MDAnalysis.exceptions.NoDataError"><code class="docutils literal notranslate"><span class="pre">NoDataError</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html#MDAnalysis.exceptions.SelectionError"><code class="docutils literal notranslate"><span class="pre">SelectionError</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html#MDAnalysis.exceptions.SelectionWarning"><code class="docutils literal notranslate"><span class="pre">SelectionWarning</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html#MDAnalysis.exceptions.StreamWarning"><code class="docutils literal notranslate"><span class="pre">StreamWarning</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="references.html">17. References</a></li>
 </ul>
 
@@ -401,7 +428,7 @@ become</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
+    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
   </div>
 
   

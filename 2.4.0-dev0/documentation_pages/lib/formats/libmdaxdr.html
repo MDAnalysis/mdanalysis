@@ -18,6 +18,7 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -26,7 +27,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="13.3.2. Low level DCD trajectory reading - MDAnalysis.lib.formats.libdcd" href="libdcd.html" />
-    <link rel="prev" title="13.2.12. Picklable read-only I/O classes — MDAnalysis.lib.picklable_file_io" href="../picklable_file_io.html" /> 
+    <link rel="prev" title="13.2.14. Picklable read-only I/O classes — MDAnalysis.lib.picklable_file_io" href="../picklable_file_io.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -66,7 +67,32 @@
 <li class="toctree-l2"><a class="reference internal" href="../../lib_modules.html#list-of-modules">13.2. List of modules</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../../lib_modules.html#low-level-file-formats">13.3. Low level file formats</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">13.3.1. Low-level Gromacs XDR trajectory reading — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats.libmdaxdr</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile"><code class="docutils literal notranslate"><span class="pre">TRRFile</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.calc_offsets"><code class="docutils literal notranslate"><span class="pre">TRRFile.calc_offsets()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.close"><code class="docutils literal notranslate"><span class="pre">TRRFile.close()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.offsets"><code class="docutils literal notranslate"><span class="pre">TRRFile.offsets</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.open"><code class="docutils literal notranslate"><span class="pre">TRRFile.open()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.read"><code class="docutils literal notranslate"><span class="pre">TRRFile.read()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.seek"><code class="docutils literal notranslate"><span class="pre">TRRFile.seek()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.set_offsets"><code class="docutils literal notranslate"><span class="pre">TRRFile.set_offsets()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.tell"><code class="docutils literal notranslate"><span class="pre">TRRFile.tell()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.write"><code class="docutils literal notranslate"><span class="pre">TRRFile.write()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile"><code class="docutils literal notranslate"><span class="pre">XTCFile</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.calc_offsets"><code class="docutils literal notranslate"><span class="pre">XTCFile.calc_offsets()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.close"><code class="docutils literal notranslate"><span class="pre">XTCFile.close()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.offsets"><code class="docutils literal notranslate"><span class="pre">XTCFile.offsets</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.open"><code class="docutils literal notranslate"><span class="pre">XTCFile.open()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.read"><code class="docutils literal notranslate"><span class="pre">XTCFile.read()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.seek"><code class="docutils literal notranslate"><span class="pre">XTCFile.seek()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.set_offsets"><code class="docutils literal notranslate"><span class="pre">XTCFile.set_offsets()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.tell"><code class="docutils literal notranslate"><span class="pre">XTCFile.tell()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.write"><code class="docutils literal notranslate"><span class="pre">XTCFile.write()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="libdcd.html">13.3.2. Low level DCD  trajectory reading - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats.libdcd</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="libdcd.html#MDAnalysis.lib.formats.libdcd.DCDFile"><code class="docutils literal notranslate"><span class="pre">DCDFile</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -74,6 +100,15 @@
 <li class="toctree-l1"><a class="reference internal" href="../../version.html">14. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../units.html">15. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../exceptions.html">16. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exceptions.html#MDAnalysis.exceptions.ApplicationError"><code class="docutils literal notranslate"><span class="pre">ApplicationError</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exceptions.html#MDAnalysis.exceptions.ConversionWarning"><code class="docutils literal notranslate"><span class="pre">ConversionWarning</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exceptions.html#MDAnalysis.exceptions.DuplicateWarning"><code class="docutils literal notranslate"><span class="pre">DuplicateWarning</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exceptions.html#MDAnalysis.exceptions.FileFormatWarning"><code class="docutils literal notranslate"><span class="pre">FileFormatWarning</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exceptions.html#MDAnalysis.exceptions.MissingDataWarning"><code class="docutils literal notranslate"><span class="pre">MissingDataWarning</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exceptions.html#MDAnalysis.exceptions.NoDataError"><code class="docutils literal notranslate"><span class="pre">NoDataError</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exceptions.html#MDAnalysis.exceptions.SelectionError"><code class="docutils literal notranslate"><span class="pre">SelectionError</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exceptions.html#MDAnalysis.exceptions.SelectionWarning"><code class="docutils literal notranslate"><span class="pre">SelectionWarning</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exceptions.html#MDAnalysis.exceptions.StreamWarning"><code class="docutils literal notranslate"><span class="pre">StreamWarning</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../references.html">17. References</a></li>
 </ul>
 
@@ -127,6 +162,7 @@ lazily generating a offset list for stored frames. The offset list is generated
 the first time <a class="reference external" href="https://docs.python.org/3/library/functions.html#len" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">len()</span></code></a> or :<cite>~XTCFile.seek</cite> is called.</p>
 <p>(For more details on how to use <a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile" title="MDAnalysis.lib.formats.libmdaxdr.XTCFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">XTCFile</span></code></a> and <a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile" title="MDAnalysis.lib.formats.libmdaxdr.TRRFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">TRRFile</span></code></a> on their
 own please see the source code in <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/blob/develop/package/MDAnalysis/lib/formats/libmdaxdr.pyx">lib/formats/libmdaxdr.pyx</a> for the time being.)</p>
+</section>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.lib.formats.libmdaxdr.TRRFile">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.formats.libmdaxdr.</span></span><span class="sig-name descname"><span class="pre">TRRFile</span></span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile" title="Permalink to this definition"></a></dt>
@@ -424,20 +460,19 @@ means a precision of 1000 yields an accuracy of 3 decimal places.</p>
 
 </dd></dl>
 
-</section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../picklable_file_io.html" class="btn btn-neutral float-left" title="13.2.12. Picklable read-only I/O classes — MDAnalysis.lib.picklable_file_io" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../picklable_file_io.html" class="btn btn-neutral float-left" title="13.2.14. Picklable read-only I/O classes — MDAnalysis.lib.picklable_file_io" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="libdcd.html" class="btn btn-neutral float-right" title="13.3.2. Low level DCD trajectory reading - MDAnalysis.lib.formats.libdcd" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
+    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
   </div>
 
   

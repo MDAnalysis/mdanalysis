@@ -18,6 +18,7 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -80,12 +81,258 @@
 <li class="toctree-l2"><a class="reference internal" href="base.html">5.24. Base topology reader classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.base</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="core.html">5.25. Common functions for topology building — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.core</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="guessers.html">5.26. Guessing unknown Topology information — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="guessers.html#MDAnalysis.topology.guessers.get_atom_mass"><code class="docutils literal notranslate"><span class="pre">get_atom_mass()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="guessers.html#MDAnalysis.topology.guessers.guess_angles"><code class="docutils literal notranslate"><span class="pre">guess_angles()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="guessers.html#MDAnalysis.topology.guessers.guess_aromaticities"><code class="docutils literal notranslate"><span class="pre">guess_aromaticities()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="guessers.html#MDAnalysis.topology.guessers.guess_atom_charge"><code class="docutils literal notranslate"><span class="pre">guess_atom_charge()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="guessers.html#MDAnalysis.topology.guessers.guess_atom_element"><code class="docutils literal notranslate"><span class="pre">guess_atom_element()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="guessers.html#MDAnalysis.topology.guessers.guess_atom_mass"><code class="docutils literal notranslate"><span class="pre">guess_atom_mass()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="guessers.html#MDAnalysis.topology.guessers.guess_atom_type"><code class="docutils literal notranslate"><span class="pre">guess_atom_type()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="guessers.html#MDAnalysis.topology.guessers.guess_bonds"><code class="docutils literal notranslate"><span class="pre">guess_bonds()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="guessers.html#MDAnalysis.topology.guessers.guess_dihedrals"><code class="docutils literal notranslate"><span class="pre">guess_dihedrals()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="guessers.html#MDAnalysis.topology.guessers.guess_gasteiger_charges"><code class="docutils literal notranslate"><span class="pre">guess_gasteiger_charges()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="guessers.html#MDAnalysis.topology.guessers.guess_improper_dihedrals"><code class="docutils literal notranslate"><span class="pre">guess_improper_dihedrals()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="guessers.html#MDAnalysis.topology.guessers.guess_masses"><code class="docutils literal notranslate"><span class="pre">guess_masses()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="guessers.html#MDAnalysis.topology.guessers.guess_types"><code class="docutils literal notranslate"><span class="pre">guess_types()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="guessers.html#MDAnalysis.topology.guessers.validate_atom_types"><code class="docutils literal notranslate"><span class="pre">validate_atom_types()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="tables.html">5.27. MDAnalysis topology tables</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">5.28. Utility functions for the TPR topology parser</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#tpr-support">5.28.1. TPR support</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tpr-support">5.28.1. TPR support</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.SUPPORTED_VERSIONS"><code class="docutils literal notranslate"><span class="pre">SUPPORTED_VERSIONS</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#tprparser-settings">5.28.2. TPRParser settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_ANGLES"><code class="docutils literal notranslate"><span class="pre">F_ANGLES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_ANGRES"><code class="docutils literal notranslate"><span class="pre">F_ANGRES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_ANGRESZ"><code class="docutils literal notranslate"><span class="pre">F_ANGRESZ</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_ANHARM_POL"><code class="docutils literal notranslate"><span class="pre">F_ANHARM_POL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_BHAM"><code class="docutils literal notranslate"><span class="pre">F_BHAM</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_BHAM_LR"><code class="docutils literal notranslate"><span class="pre">F_BHAM_LR</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_BONDS"><code class="docutils literal notranslate"><span class="pre">F_BONDS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_CBTDIHS"><code class="docutils literal notranslate"><span class="pre">F_CBTDIHS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_CMAP"><code class="docutils literal notranslate"><span class="pre">F_CMAP</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_COM_PULL"><code class="docutils literal notranslate"><span class="pre">F_COM_PULL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_CONNBONDS"><code class="docutils literal notranslate"><span class="pre">F_CONNBONDS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_CONSTR"><code class="docutils literal notranslate"><span class="pre">F_CONSTR</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_CONSTRNC"><code class="docutils literal notranslate"><span class="pre">F_CONSTRNC</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_COUL14"><code class="docutils literal notranslate"><span class="pre">F_COUL14</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_COUL_LR"><code class="docutils literal notranslate"><span class="pre">F_COUL_LR</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_COUL_RECIP"><code class="docutils literal notranslate"><span class="pre">F_COUL_RECIP</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_COUL_SR"><code class="docutils literal notranslate"><span class="pre">F_COUL_SR</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_CROSS_BOND_ANGLES"><code class="docutils literal notranslate"><span class="pre">F_CROSS_BOND_ANGLES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_CROSS_BOND_BONDS"><code class="docutils literal notranslate"><span class="pre">F_CROSS_BOND_BONDS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_CUBICBONDS"><code class="docutils literal notranslate"><span class="pre">F_CUBICBONDS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_DENSITYFITTING"><code class="docutils literal notranslate"><span class="pre">F_DENSITYFITTING</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_DHDL_CON"><code class="docutils literal notranslate"><span class="pre">F_DHDL_CON</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_DIHRES"><code class="docutils literal notranslate"><span class="pre">F_DIHRES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_DIHRESVIOL"><code class="docutils literal notranslate"><span class="pre">F_DIHRESVIOL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_DISPCORR"><code class="docutils literal notranslate"><span class="pre">F_DISPCORR</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_DISRES"><code class="docutils literal notranslate"><span class="pre">F_DISRES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_DISRESVIOL"><code class="docutils literal notranslate"><span class="pre">F_DISRESVIOL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_DKDL"><code class="docutils literal notranslate"><span class="pre">F_DKDL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_DPD"><code class="docutils literal notranslate"><span class="pre">F_DPD</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_DVDL"><code class="docutils literal notranslate"><span class="pre">F_DVDL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_DVDL_BONDED"><code class="docutils literal notranslate"><span class="pre">F_DVDL_BONDED</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_DVDL_COUL"><code class="docutils literal notranslate"><span class="pre">F_DVDL_COUL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_DVDL_RESTRAINT"><code class="docutils literal notranslate"><span class="pre">F_DVDL_RESTRAINT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_DVDL_TEMPERATURE"><code class="docutils literal notranslate"><span class="pre">F_DVDL_TEMPERATURE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_DVDL_VDW"><code class="docutils literal notranslate"><span class="pre">F_DVDL_VDW</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_ECONSERVED"><code class="docutils literal notranslate"><span class="pre">F_ECONSERVED</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_EKIN"><code class="docutils literal notranslate"><span class="pre">F_EKIN</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_EPOT"><code class="docutils literal notranslate"><span class="pre">F_EPOT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_EQM"><code class="docutils literal notranslate"><span class="pre">F_EQM</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_ETOT"><code class="docutils literal notranslate"><span class="pre">F_ETOT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_FBPOSRES"><code class="docutils literal notranslate"><span class="pre">F_FBPOSRES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_FENEBONDS"><code class="docutils literal notranslate"><span class="pre">F_FENEBONDS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_FOURDIHS"><code class="docutils literal notranslate"><span class="pre">F_FOURDIHS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_G96ANGLES"><code class="docutils literal notranslate"><span class="pre">F_G96ANGLES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_G96BONDS"><code class="docutils literal notranslate"><span class="pre">F_G96BONDS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_GB12"><code class="docutils literal notranslate"><span class="pre">F_GB12</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_GB13"><code class="docutils literal notranslate"><span class="pre">F_GB13</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_GB14"><code class="docutils literal notranslate"><span class="pre">F_GB14</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_GBPOL"><code class="docutils literal notranslate"><span class="pre">F_GBPOL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_HARMONIC"><code class="docutils literal notranslate"><span class="pre">F_HARMONIC</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_IDIHS"><code class="docutils literal notranslate"><span class="pre">F_IDIHS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_LINEAR_ANGLES"><code class="docutils literal notranslate"><span class="pre">F_LINEAR_ANGLES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_LJ"><code class="docutils literal notranslate"><span class="pre">F_LJ</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_LJ14"><code class="docutils literal notranslate"><span class="pre">F_LJ14</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_LJC14_Q"><code class="docutils literal notranslate"><span class="pre">F_LJC14_Q</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_LJC_PAIRS_NB"><code class="docutils literal notranslate"><span class="pre">F_LJC_PAIRS_NB</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_LJ_LR"><code class="docutils literal notranslate"><span class="pre">F_LJ_LR</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_LJ_RECIP"><code class="docutils literal notranslate"><span class="pre">F_LJ_RECIP</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_MORSE"><code class="docutils literal notranslate"><span class="pre">F_MORSE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_NPSOLVATION"><code class="docutils literal notranslate"><span class="pre">F_NPSOLVATION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_NRE"><code class="docutils literal notranslate"><span class="pre">F_NRE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_ORIRES"><code class="docutils literal notranslate"><span class="pre">F_ORIRES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_ORIRESDEV"><code class="docutils literal notranslate"><span class="pre">F_ORIRESDEV</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_PDIHS"><code class="docutils literal notranslate"><span class="pre">F_PDIHS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_PDISPCORR"><code class="docutils literal notranslate"><span class="pre">F_PDISPCORR</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_PIDIHS"><code class="docutils literal notranslate"><span class="pre">F_PIDIHS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_POLARIZATION"><code class="docutils literal notranslate"><span class="pre">F_POLARIZATION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_POSRES"><code class="docutils literal notranslate"><span class="pre">F_POSRES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_PRES"><code class="docutils literal notranslate"><span class="pre">F_PRES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_QUARTIC_ANGLES"><code class="docutils literal notranslate"><span class="pre">F_QUARTIC_ANGLES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_RBDIHS"><code class="docutils literal notranslate"><span class="pre">F_RBDIHS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_RESTRANGLES"><code class="docutils literal notranslate"><span class="pre">F_RESTRANGLES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_RESTRBONDS"><code class="docutils literal notranslate"><span class="pre">F_RESTRBONDS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_RESTRDIHS"><code class="docutils literal notranslate"><span class="pre">F_RESTRDIHS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_RF_EXCL"><code class="docutils literal notranslate"><span class="pre">F_RF_EXCL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_SETTLE"><code class="docutils literal notranslate"><span class="pre">F_SETTLE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_TABANGLES"><code class="docutils literal notranslate"><span class="pre">F_TABANGLES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_TABBONDS"><code class="docutils literal notranslate"><span class="pre">F_TABBONDS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_TABBONDSNC"><code class="docutils literal notranslate"><span class="pre">F_TABBONDSNC</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_TABDIHS"><code class="docutils literal notranslate"><span class="pre">F_TABDIHS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_TEMP"><code class="docutils literal notranslate"><span class="pre">F_TEMP</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_THOLE_POL"><code class="docutils literal notranslate"><span class="pre">F_THOLE_POL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_UREY_BRADLEY"><code class="docutils literal notranslate"><span class="pre">F_UREY_BRADLEY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_VSITE1"><code class="docutils literal notranslate"><span class="pre">F_VSITE1</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_VSITE2"><code class="docutils literal notranslate"><span class="pre">F_VSITE2</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_VSITE2FD"><code class="docutils literal notranslate"><span class="pre">F_VSITE2FD</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_VSITE3"><code class="docutils literal notranslate"><span class="pre">F_VSITE3</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_VSITE3FAD"><code class="docutils literal notranslate"><span class="pre">F_VSITE3FAD</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_VSITE3FD"><code class="docutils literal notranslate"><span class="pre">F_VSITE3FD</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_VSITE3OUT"><code class="docutils literal notranslate"><span class="pre">F_VSITE3OUT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_VSITE4FD"><code class="docutils literal notranslate"><span class="pre">F_VSITE4FD</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_VSITE4FDN"><code class="docutils literal notranslate"><span class="pre">F_VSITE4FDN</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_VSITEN"><code class="docutils literal notranslate"><span class="pre">F_VSITEN</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_VTEMP_NOLONGERUSED"><code class="docutils literal notranslate"><span class="pre">F_VTEMP_NOLONGERUSED</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.F_WATER_POL"><code class="docutils literal notranslate"><span class="pre">F_WATER_POL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.SUPPORTED_VERSIONS"><code class="docutils literal notranslate"><span class="pre">SUPPORTED_VERSIONS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.ftupd"><code class="docutils literal notranslate"><span class="pre">ftupd</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.setting.interaction_types"><code class="docutils literal notranslate"><span class="pre">interaction_types</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#class-definitions-for-the-tprparser">5.28.3. Class definitions for the TPRParser</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Atom"><code class="docutils literal notranslate"><span class="pre">Atom</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Atom.atomnumber"><code class="docutils literal notranslate"><span class="pre">Atom.atomnumber</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Atom.m"><code class="docutils literal notranslate"><span class="pre">Atom.m</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Atom.mB"><code class="docutils literal notranslate"><span class="pre">Atom.mB</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Atom.ptype"><code class="docutils literal notranslate"><span class="pre">Atom.ptype</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Atom.q"><code class="docutils literal notranslate"><span class="pre">Atom.q</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Atom.qB"><code class="docutils literal notranslate"><span class="pre">Atom.qB</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Atom.resind"><code class="docutils literal notranslate"><span class="pre">Atom.resind</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Atom.tp"><code class="docutils literal notranslate"><span class="pre">Atom.tp</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Atom.typeB"><code class="docutils literal notranslate"><span class="pre">Atom.typeB</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.AtomKind"><code class="docutils literal notranslate"><span class="pre">AtomKind</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.AtomKind.element_symbol"><code class="docutils literal notranslate"><span class="pre">AtomKind.element_symbol</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Atoms"><code class="docutils literal notranslate"><span class="pre">Atoms</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Atoms.atomnames"><code class="docutils literal notranslate"><span class="pre">Atoms.atomnames</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Atoms.atoms"><code class="docutils literal notranslate"><span class="pre">Atoms.atoms</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Atoms.nr"><code class="docutils literal notranslate"><span class="pre">Atoms.nr</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Atoms.nres"><code class="docutils literal notranslate"><span class="pre">Atoms.nres</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Atoms.resnames"><code class="docutils literal notranslate"><span class="pre">Atoms.resnames</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Atoms.type"><code class="docutils literal notranslate"><span class="pre">Atoms.type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Atoms.typeB"><code class="docutils literal notranslate"><span class="pre">Atoms.typeB</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Box"><code class="docutils literal notranslate"><span class="pre">Box</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Box.rel"><code class="docutils literal notranslate"><span class="pre">Box.rel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Box.size"><code class="docutils literal notranslate"><span class="pre">Box.size</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Box.v"><code class="docutils literal notranslate"><span class="pre">Box.v</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Ilist"><code class="docutils literal notranslate"><span class="pre">Ilist</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Ilist.iatoms"><code class="docutils literal notranslate"><span class="pre">Ilist.iatoms</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Ilist.ik"><code class="docutils literal notranslate"><span class="pre">Ilist.ik</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Ilist.nr"><code class="docutils literal notranslate"><span class="pre">Ilist.nr</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.InteractionKind"><code class="docutils literal notranslate"><span class="pre">InteractionKind</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.InteractionKind.process"><code class="docutils literal notranslate"><span class="pre">InteractionKind.process()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Molblock"><code class="docutils literal notranslate"><span class="pre">Molblock</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Molblock.molb_natoms_mol"><code class="docutils literal notranslate"><span class="pre">Molblock.molb_natoms_mol</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Molblock.molb_nmol"><code class="docutils literal notranslate"><span class="pre">Molblock.molb_nmol</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Molblock.molb_nposres_xA"><code class="docutils literal notranslate"><span class="pre">Molblock.molb_nposres_xA</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Molblock.molb_nposres_xB"><code class="docutils literal notranslate"><span class="pre">Molblock.molb_nposres_xB</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Molblock.molb_type"><code class="docutils literal notranslate"><span class="pre">Molblock.molb_type</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.MoleculeKind"><code class="docutils literal notranslate"><span class="pre">MoleculeKind</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.MoleculeKind.number_of_atoms"><code class="docutils literal notranslate"><span class="pre">MoleculeKind.number_of_atoms()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.MoleculeKind.number_of_residues"><code class="docutils literal notranslate"><span class="pre">MoleculeKind.number_of_residues()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.MoleculeKind.remap_angles"><code class="docutils literal notranslate"><span class="pre">MoleculeKind.remap_angles()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.MoleculeKind.remap_bonds"><code class="docutils literal notranslate"><span class="pre">MoleculeKind.remap_bonds()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.MoleculeKind.remap_dihe"><code class="docutils literal notranslate"><span class="pre">MoleculeKind.remap_dihe()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.MoleculeKind.remap_impr"><code class="docutils literal notranslate"><span class="pre">MoleculeKind.remap_impr()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Mtop"><code class="docutils literal notranslate"><span class="pre">Mtop</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Mtop.moltypes"><code class="docutils literal notranslate"><span class="pre">Mtop.moltypes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Mtop.nmolblock"><code class="docutils literal notranslate"><span class="pre">Mtop.nmolblock</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Mtop.nmoltype"><code class="docutils literal notranslate"><span class="pre">Mtop.nmoltype</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Params"><code class="docutils literal notranslate"><span class="pre">Params</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Params.atnr"><code class="docutils literal notranslate"><span class="pre">Params.atnr</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Params.fudgeQQ"><code class="docutils literal notranslate"><span class="pre">Params.fudgeQQ</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Params.functype"><code class="docutils literal notranslate"><span class="pre">Params.functype</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Params.ntypes"><code class="docutils literal notranslate"><span class="pre">Params.ntypes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.Params.reppow"><code class="docutils literal notranslate"><span class="pre">Params.reppow</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.TpxHeader"><code class="docutils literal notranslate"><span class="pre">TpxHeader</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.TpxHeader.bBox"><code class="docutils literal notranslate"><span class="pre">TpxHeader.bBox</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.TpxHeader.bF"><code class="docutils literal notranslate"><span class="pre">TpxHeader.bF</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.TpxHeader.bIr"><code class="docutils literal notranslate"><span class="pre">TpxHeader.bIr</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.TpxHeader.bTop"><code class="docutils literal notranslate"><span class="pre">TpxHeader.bTop</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.TpxHeader.bV"><code class="docutils literal notranslate"><span class="pre">TpxHeader.bV</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.TpxHeader.bX"><code class="docutils literal notranslate"><span class="pre">TpxHeader.bX</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.TpxHeader.fep_state"><code class="docutils literal notranslate"><span class="pre">TpxHeader.fep_state</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.TpxHeader.fgen"><code class="docutils literal notranslate"><span class="pre">TpxHeader.fgen</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.TpxHeader.file_tag"><code class="docutils literal notranslate"><span class="pre">TpxHeader.file_tag</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.TpxHeader.fver"><code class="docutils literal notranslate"><span class="pre">TpxHeader.fver</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.TpxHeader.lamb"><code class="docutils literal notranslate"><span class="pre">TpxHeader.lamb</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.TpxHeader.natoms"><code class="docutils literal notranslate"><span class="pre">TpxHeader.natoms</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.TpxHeader.ngtc"><code class="docutils literal notranslate"><span class="pre">TpxHeader.ngtc</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.TpxHeader.precision"><code class="docutils literal notranslate"><span class="pre">TpxHeader.precision</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.TpxHeader.sizeOfTprBody"><code class="docutils literal notranslate"><span class="pre">TpxHeader.sizeOfTprBody</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.obj.TpxHeader.ver_str"><code class="docutils literal notranslate"><span class="pre">TpxHeader.ver_str</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#utilities-for-the-tprparser">5.28.4. Utilities for the TPRParser</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker"><code class="docutils literal notranslate"><span class="pre">TPXUnpacker</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker.do_string"><code class="docutils literal notranslate"><span class="pre">TPXUnpacker.do_string()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker.unpack_int64"><code class="docutils literal notranslate"><span class="pre">TPXUnpacker.unpack_int64()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker.unpack_uchar"><code class="docutils literal notranslate"><span class="pre">TPXUnpacker.unpack_uchar()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker.unpack_uint64"><code class="docutils literal notranslate"><span class="pre">TPXUnpacker.unpack_uint64()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker.unpack_ushort"><code class="docutils literal notranslate"><span class="pre">TPXUnpacker.unpack_ushort()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker2020"><code class="docutils literal notranslate"><span class="pre">TPXUnpacker2020</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.do_string"><code class="docutils literal notranslate"><span class="pre">TPXUnpacker2020.do_string()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.from_unpacker"><code class="docutils literal notranslate"><span class="pre">TPXUnpacker2020.from_unpacker()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_fstring"><code class="docutils literal notranslate"><span class="pre">TPXUnpacker2020.unpack_fstring()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_uchar"><code class="docutils literal notranslate"><span class="pre">TPXUnpacker2020.unpack_uchar()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_ushort"><code class="docutils literal notranslate"><span class="pre">TPXUnpacker2020.unpack_ushort()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.define_unpack_real"><code class="docutils literal notranslate"><span class="pre">define_unpack_real()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.do_atom"><code class="docutils literal notranslate"><span class="pre">do_atom()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.do_atoms"><code class="docutils literal notranslate"><span class="pre">do_atoms()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.do_block"><code class="docutils literal notranslate"><span class="pre">do_block()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.do_blocka"><code class="docutils literal notranslate"><span class="pre">do_blocka()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.do_ffparams"><code class="docutils literal notranslate"><span class="pre">do_ffparams()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.do_harm"><code class="docutils literal notranslate"><span class="pre">do_harm()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.do_ilists"><code class="docutils literal notranslate"><span class="pre">do_ilists()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.do_iparams"><code class="docutils literal notranslate"><span class="pre">do_iparams()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.do_molblock"><code class="docutils literal notranslate"><span class="pre">do_molblock()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.do_moltype"><code class="docutils literal notranslate"><span class="pre">do_moltype()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.do_mtop"><code class="docutils literal notranslate"><span class="pre">do_mtop()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.do_resinfo"><code class="docutils literal notranslate"><span class="pre">do_resinfo()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.do_rvec"><code class="docutils literal notranslate"><span class="pre">do_rvec()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.do_symstr"><code class="docutils literal notranslate"><span class="pre">do_symstr()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.do_symtab"><code class="docutils literal notranslate"><span class="pre">do_symtab()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.extract_box_info"><code class="docutils literal notranslate"><span class="pre">extract_box_info()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.fileVersion_err"><code class="docutils literal notranslate"><span class="pre">fileVersion_err()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.ndo_int"><code class="docutils literal notranslate"><span class="pre">ndo_int()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.ndo_ivec"><code class="docutils literal notranslate"><span class="pre">ndo_ivec()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.ndo_real"><code class="docutils literal notranslate"><span class="pre">ndo_real()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.ndo_rvec"><code class="docutils literal notranslate"><span class="pre">ndo_rvec()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.topology.tpr.utils.read_tpxheader"><code class="docutils literal notranslate"><span class="pre">read_tpxheader()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -101,6 +348,15 @@
 <li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.ApplicationError"><code class="docutils literal notranslate"><span class="pre">ApplicationError</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.ConversionWarning"><code class="docutils literal notranslate"><span class="pre">ConversionWarning</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.DuplicateWarning"><code class="docutils literal notranslate"><span class="pre">DuplicateWarning</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.FileFormatWarning"><code class="docutils literal notranslate"><span class="pre">FileFormatWarning</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.MissingDataWarning"><code class="docutils literal notranslate"><span class="pre">MissingDataWarning</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError"><code class="docutils literal notranslate"><span class="pre">NoDataError</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.SelectionError"><code class="docutils literal notranslate"><span class="pre">SelectionError</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.SelectionWarning"><code class="docutils literal notranslate"><span class="pre">SelectionWarning</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.StreamWarning"><code class="docutils literal notranslate"><span class="pre">StreamWarning</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
 </ul>
 
@@ -159,6 +415,7 @@ If iterable is specified the tuple is initialized from iterable’s items.</p>
 <p>Definition of constants.</p>
 <p>The currently read file format versions are defined in
 <a class="reference internal" href="#MDAnalysis.topology.tpr.setting.SUPPORTED_VERSIONS" title="MDAnalysis.topology.tpr.setting.SUPPORTED_VERSIONS"><code class="xref py py-data docutils literal notranslate"><span class="pre">SUPPORTED_VERSIONS</span></code></a>.</p>
+</section>
 <dl class="py data">
 <dt class="sig sig-object py" id="MDAnalysis.topology.tpr.setting.F_ANGLES">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.tpr.setting.</span></span><span class="sig-name descname"><span class="pre">F_ANGLES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_ANGLES" title="Permalink to this definition"></a></dt>
@@ -747,9 +1004,9 @@ If iterable is specified the tuple is initialized from iterable’s items.</p>
 <dd><p>Interaction types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/gmxlib/ifunc.c</span></code></p>
 </dd></dl>
 
-</section>
 <span class="target" id="module-MDAnalysis.topology.tpr.obj"></span><section id="class-definitions-for-the-tprparser">
 <h2><span class="section-number">5.28.3. </span>Class definitions for the TPRParser<a class="headerlink" href="#class-definitions-for-the-tprparser" title="Permalink to this heading"></a></h2>
+</section>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.topology.tpr.obj.Atom">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.tpr.obj.</span></span><span class="sig-name descname"><span class="pre">Atom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typeB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ptype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resind</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atomnumber</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Atom" title="Permalink to this definition"></a></dt>
@@ -1164,7 +1421,6 @@ atom (e.g a coarse-grained particle), an empty string is returned.</p>
 
 </dd></dl>
 
-</section>
 <span class="target" id="module-MDAnalysis.topology.tpr.utils"></span><section id="utilities-for-the-tprparser">
 <h2><span class="section-number">5.28.4. </span>Utilities for the TPRParser<a class="headerlink" href="#utilities-for-the-tprparser" title="Permalink to this heading"></a></h2>
 <p>Function calling order:</p>
@@ -1181,6 +1437,7 @@ atom (e.g a coarse-grained particle), an empty string is returned.</p>
 </div>
 <p>Then compose the stuffs in the format <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.Universe</span></code> reads in.</p>
 <p>The module also contains the <code class="xref py py-func docutils literal notranslate"><span class="pre">do_inputrec()</span></code> to read the TPR header with.</p>
+</section>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.topology.tpr.utils.TPXUnpacker">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.tpr.utils.</span></span><span class="sig-name descname"><span class="pre">TPXUnpacker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#TPXUnpacker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker" title="Permalink to this definition"></a></dt>
@@ -1374,7 +1631,6 @@ keep using the previous implementation of the serializer).</p>
 </dd></dl>
 
 </section>
-</section>
 
 
            </div>
@@ -1387,7 +1643,7 @@ keep using the previous implementation of the serializer).</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
+    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
   </div>
 
   

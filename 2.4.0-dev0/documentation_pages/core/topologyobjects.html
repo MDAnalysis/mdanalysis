@@ -18,6 +18,7 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -65,7 +66,109 @@
 <li class="toctree-l2 current"><a class="reference internal" href="../core_modules.html#topology-system">11.3. Topology system</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="topology.html">11.3.1. Core Topology object — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topology</span></code></a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">11.3.2. Core Topology Objects — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyobjects</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.Angle"><code class="docutils literal notranslate"><span class="pre">Angle</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.Angle.angle"><code class="docutils literal notranslate"><span class="pre">Angle.angle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.Angle.value"><code class="docutils literal notranslate"><span class="pre">Angle.value()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.Bond"><code class="docutils literal notranslate"><span class="pre">Bond</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.Bond.length"><code class="docutils literal notranslate"><span class="pre">Bond.length()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.Bond.partner"><code class="docutils literal notranslate"><span class="pre">Bond.partner()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.Bond.value"><code class="docutils literal notranslate"><span class="pre">Bond.value()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.CMap"><code class="docutils literal notranslate"><span class="pre">CMap</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.Dihedral"><code class="docutils literal notranslate"><span class="pre">Dihedral</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.Dihedral.dihedral"><code class="docutils literal notranslate"><span class="pre">Dihedral.dihedral()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.Dihedral.value"><code class="docutils literal notranslate"><span class="pre">Dihedral.value()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.ImproperDihedral"><code class="docutils literal notranslate"><span class="pre">ImproperDihedral</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.ImproperDihedral.improper"><code class="docutils literal notranslate"><span class="pre">ImproperDihedral.improper()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.TopologyDict"><code class="docutils literal notranslate"><span class="pre">TopologyDict</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.TopologyDict.keys"><code class="docutils literal notranslate"><span class="pre">TopologyDict.keys()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.TopologyGroup"><code class="docutils literal notranslate"><span class="pre">TopologyGroup</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.TopologyGroup.angles"><code class="docutils literal notranslate"><span class="pre">TopologyGroup.angles()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.TopologyGroup.atom1"><code class="docutils literal notranslate"><span class="pre">TopologyGroup.atom1</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.TopologyGroup.atom2"><code class="docutils literal notranslate"><span class="pre">TopologyGroup.atom2</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.TopologyGroup.atom3"><code class="docutils literal notranslate"><span class="pre">TopologyGroup.atom3</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.TopologyGroup.atom4"><code class="docutils literal notranslate"><span class="pre">TopologyGroup.atom4</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.TopologyGroup.atomgroup_intersection"><code class="docutils literal notranslate"><span class="pre">TopologyGroup.atomgroup_intersection()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.TopologyGroup.bonds"><code class="docutils literal notranslate"><span class="pre">TopologyGroup.bonds()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.TopologyGroup.dihedrals"><code class="docutils literal notranslate"><span class="pre">TopologyGroup.dihedrals()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.TopologyGroup.dump_contents"><code class="docutils literal notranslate"><span class="pre">TopologyGroup.dump_contents()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.TopologyGroup.indices"><code class="docutils literal notranslate"><span class="pre">TopologyGroup.indices</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.TopologyGroup.selectBonds"><code class="docutils literal notranslate"><span class="pre">TopologyGroup.selectBonds()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.TopologyGroup.select_bonds"><code class="docutils literal notranslate"><span class="pre">TopologyGroup.select_bonds()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.TopologyGroup.to_indices"><code class="docutils literal notranslate"><span class="pre">TopologyGroup.to_indices()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.TopologyGroup.topDict"><code class="docutils literal notranslate"><span class="pre">TopologyGroup.topDict</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.TopologyGroup.types"><code class="docutils literal notranslate"><span class="pre">TopologyGroup.types()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.TopologyGroup.universe"><code class="docutils literal notranslate"><span class="pre">TopologyGroup.universe</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.TopologyGroup.values"><code class="docutils literal notranslate"><span class="pre">TopologyGroup.values()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.TopologyObject"><code class="docutils literal notranslate"><span class="pre">TopologyObject</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.TopologyObject.atoms"><code class="docutils literal notranslate"><span class="pre">TopologyObject.atoms</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.TopologyObject.indices"><code class="docutils literal notranslate"><span class="pre">TopologyObject.indices</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.TopologyObject.type"><code class="docutils literal notranslate"><span class="pre">TopologyObject.type</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.UreyBradley"><code class="docutils literal notranslate"><span class="pre">UreyBradley</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.UreyBradley.distance"><code class="docutils literal notranslate"><span class="pre">UreyBradley.distance()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.UreyBradley.partner"><code class="docutils literal notranslate"><span class="pre">UreyBradley.partner()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.core.topologyobjects.UreyBradley.value"><code class="docutils literal notranslate"><span class="pre">UreyBradley.value()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="topologyattrs.html">11.3.3. Topology attribute objects — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyattrs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.AltLocs"><code class="docutils literal notranslate"><span class="pre">AltLocs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Angles"><code class="docutils literal notranslate"><span class="pre">Angles</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Aromaticities"><code class="docutils literal notranslate"><span class="pre">Aromaticities</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.AtomAttr"><code class="docutils literal notranslate"><span class="pre">AtomAttr</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.AtomStringAttr"><code class="docutils literal notranslate"><span class="pre">AtomStringAttr</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Atomids"><code class="docutils literal notranslate"><span class="pre">Atomids</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Atomindices"><code class="docutils literal notranslate"><span class="pre">Atomindices</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Atomnames"><code class="docutils literal notranslate"><span class="pre">Atomnames</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Atomtypes"><code class="docutils literal notranslate"><span class="pre">Atomtypes</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Bonds"><code class="docutils literal notranslate"><span class="pre">Bonds</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.CMaps"><code class="docutils literal notranslate"><span class="pre">CMaps</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.ChainIDs"><code class="docutils literal notranslate"><span class="pre">ChainIDs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Charges"><code class="docutils literal notranslate"><span class="pre">Charges</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Dihedrals"><code class="docutils literal notranslate"><span class="pre">Dihedrals</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Elements"><code class="docutils literal notranslate"><span class="pre">Elements</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Epsilon14s"><code class="docutils literal notranslate"><span class="pre">Epsilon14s</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Epsilons"><code class="docutils literal notranslate"><span class="pre">Epsilons</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.FormalCharges"><code class="docutils literal notranslate"><span class="pre">FormalCharges</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.GBScreens"><code class="docutils literal notranslate"><span class="pre">GBScreens</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.ICodes"><code class="docutils literal notranslate"><span class="pre">ICodes</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Impropers"><code class="docutils literal notranslate"><span class="pre">Impropers</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Masses"><code class="docutils literal notranslate"><span class="pre">Masses</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Molnums"><code class="docutils literal notranslate"><span class="pre">Molnums</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Moltypes"><code class="docutils literal notranslate"><span class="pre">Moltypes</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.NonbondedIndices"><code class="docutils literal notranslate"><span class="pre">NonbondedIndices</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Occupancies"><code class="docutils literal notranslate"><span class="pre">Occupancies</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.RMin14s"><code class="docutils literal notranslate"><span class="pre">RMin14s</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.RMins"><code class="docutils literal notranslate"><span class="pre">RMins</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.RSChirality"><code class="docutils literal notranslate"><span class="pre">RSChirality</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Radii"><code class="docutils literal notranslate"><span class="pre">Radii</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.RecordTypes"><code class="docutils literal notranslate"><span class="pre">RecordTypes</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Resids"><code class="docutils literal notranslate"><span class="pre">Resids</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.ResidueAttr"><code class="docutils literal notranslate"><span class="pre">ResidueAttr</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.ResidueStringAttr"><code class="docutils literal notranslate"><span class="pre">ResidueStringAttr</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Resindices"><code class="docutils literal notranslate"><span class="pre">Resindices</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Resnames"><code class="docutils literal notranslate"><span class="pre">Resnames</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Resnums"><code class="docutils literal notranslate"><span class="pre">Resnums</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Segids"><code class="docutils literal notranslate"><span class="pre">Segids</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Segindices"><code class="docutils literal notranslate"><span class="pre">Segindices</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.SegmentAttr"><code class="docutils literal notranslate"><span class="pre">SegmentAttr</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.SegmentStringAttr"><code class="docutils literal notranslate"><span class="pre">SegmentStringAttr</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.SolventRadii"><code class="docutils literal notranslate"><span class="pre">SolventRadii</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Tempfactors"><code class="docutils literal notranslate"><span class="pre">Tempfactors</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr"><code class="docutils literal notranslate"><span class="pre">TopologyAttr</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.UreyBradleys"><code class="docutils literal notranslate"><span class="pre">UreyBradleys</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../core_modules.html#selection-system">11.4. Selection system</a></li>
@@ -76,6 +179,15 @@
 <li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.ApplicationError"><code class="docutils literal notranslate"><span class="pre">ApplicationError</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.ConversionWarning"><code class="docutils literal notranslate"><span class="pre">ConversionWarning</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.DuplicateWarning"><code class="docutils literal notranslate"><span class="pre">DuplicateWarning</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.FileFormatWarning"><code class="docutils literal notranslate"><span class="pre">FileFormatWarning</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.MissingDataWarning"><code class="docutils literal notranslate"><span class="pre">MissingDataWarning</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError"><code class="docutils literal notranslate"><span class="pre">NoDataError</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.SelectionError"><code class="docutils literal notranslate"><span class="pre">SelectionError</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.SelectionWarning"><code class="docutils literal notranslate"><span class="pre">SelectionWarning</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.StreamWarning"><code class="docutils literal notranslate"><span class="pre">StreamWarning</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
 </ul>
 
@@ -107,6 +219,7 @@
   <span class="target" id="module-MDAnalysis.core.topologyobjects"></span><section id="core-topology-objects-mdanalysis-core-topologyobjects">
 <h1><span class="section-number">11.3.2. </span>Core Topology Objects — <a class="reference internal" href="#module-MDAnalysis.core.topologyobjects" title="MDAnalysis.core.topologyobjects"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyobjects</span></code></a><a class="headerlink" href="#core-topology-objects-mdanalysis-core-topologyobjects" title="Permalink to this heading"></a></h1>
 <p>The building blocks for MDAnalysis’ description of topology</p>
+</section>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.core.topologyobjects.Angle">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.topologyobjects.</span></span><span class="sig-name descname"><span class="pre">Angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guessed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyobjects.html#Angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topologyobjects.Angle" title="Permalink to this definition"></a></dt>
@@ -852,7 +965,6 @@ numbers are involved.</p>
 
 </dd></dl>
 
-</section>
 
 
            </div>
@@ -865,7 +977,7 @@ numbers are involved.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
+    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
   </div>
 
   
