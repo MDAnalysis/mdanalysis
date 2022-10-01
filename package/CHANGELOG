@@ -13,11 +13,13 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, BFedder, aya9aladdin
+??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, BFedder, aya9aladdin,
+         jaclark5
 
  * 2.4.0
 
 Fixes
+  * Added isolayer selection method (Issue #3845)
   * Auxiliary; determination of representative frames: Removed undefined
     behaviour for cutoff values < -1 (PR # 3749)
   * Fixes distances.between not always returning AtomGroup (Issue #3794)
@@ -25,7 +27,7 @@ Fixes
   * fixes guessed_attributes and read_attributes methods of the Topology class, as 
     those methods were giving unexpected results for some topology attributes
     (e.g. bonds, angles) (PR #3779).
-   
+
 
 
 Enhancements
