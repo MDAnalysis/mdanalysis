@@ -27,7 +27,6 @@ Fixes
   * fixes guessed_attributes and read_attributes methods of the Topology class, as 
     those methods were giving unexpected results for some topology attributes
     (e.g. bonds, angles) (PR #3779).
-  * LAMMPS Dump Readerr translates the box to the origin (#3741)
 
 
 Enhancements

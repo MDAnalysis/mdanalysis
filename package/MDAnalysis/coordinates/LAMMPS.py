@@ -524,7 +524,7 @@ class DumpReader(base.ReaderBase):
     def _reopen(self):
         self.close()
         self._file = util.anyopen(self.filename)
-        self.ts = self._Timestep(self.n_atoms, # NoteHere
+        self.ts = self._Timestep(self.n_atoms,
                                  **self._ts_kwargs)
         self.ts.frame = -1
 
@@ -629,7 +629,7 @@ class DumpReader(base.ReaderBase):
             except:
                 raise ValueError("Trajectory must have image flag in order to unwrap.")
 
-        self._has_vels = "vx" in attr_to_col_ix
+        self._has_vels = all(x in attr_to_col_ix for x in ["vx", "vy", "vz"])
         if self._has_vels:
             ts.has_velocities = True
             vel_cols = [attr_to_col_ix[x] for x in ["vx", "vy", "vz"]]
@@ -649,8 +649,8 @@ class DumpReader(base.ReaderBase):
             except IndexError:
                 raise ValueError("No coordinate information detected")
         elif not self.lammps_coordinate_convention in convention_to_col_ix:
-            raise ValueError("No coordinates following convention {} found in "
-                "timestep".format(self.lammps_coordinate_convention))
+            raise ValueError(f"No coordinates following convention "
+                "{self.lammps_coordinate_convention} found in timestep")
 
         coord_cols = convention_to_col_ix[self.lammps_coordinate_convention]
         if self._unwrap:
@@ -664,12 +664,9 @@ class DumpReader(base.ReaderBase):
             coords = np.array([fields[dim] for dim in coord_cols], np.float32)
 
             if self._unwrap:
-                if len(coords) >= 6:
-                    images = coords[3:]
-                    coords = coords[:3]
-                    coords += images * ts.dimensions[:3]
-                else:
-                    raise ValueError("Cannot unwrap coordinates without image flags.")
+                images = coords[3:]
+                coords = coords[:3]
+                coords += images * ts.dimensions[:3]
             else:
                 coords = coords[:3]
             ts.positions[i] = coords
