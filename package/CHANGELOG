@@ -19,6 +19,8 @@ The rules for this file:
  * 2.4.0
 
 Fixes
+  * Update hbond analysis doc string to use exclusive bound language (#3847)
+  * Added isolayer selection method (Issue #3845)
   * Auxiliary; determination of representative frames: Removed undefined
     behaviour for cutoff values < -1 (PR # 3749)
   * Fixes distances.between not always returning AtomGroup (Issue #3794)
@@ -26,13 +28,12 @@ Fixes
   * fixes guessed_attributes and read_attributes methods of the Topology class, as 
     those methods were giving unexpected results for some topology attributes
     (e.g. bonds, angles) (PR #3779).
-  * Make cutoffs in hbond analysis inclusive to match language (#3847)
-  * Added ability for hbond anaylsis to use types when resnames aren't there
-  * Added explanatory warnings when hbond analysis doesn't find any hbonds
-   
+
 
 
 Enhancements
+  * Added ability for hbond anaylsis to use types when resnames aren't there
+  * Added explanatory warnings when hbond analysis doesn't find any hbonds
   * AuxReaders now have a memory_limit parameter to control when memory usage
     warnings are issued. (PR # 3749)
   * MDAnalysis.units now has a lookup dictionary called MDANALYSIS_BASE_UNITS
