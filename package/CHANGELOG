@@ -14,22 +14,23 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 
-??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, BFedder, aya9aladdin, jaclark5
-
-
+??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, BFedder, aya9aladdin,
+         jaclark5
 
  * 2.4.0
 
 Fixes
+  * Ensure Timestep passed to transform is the same as AtomGroup Trajectory 
+    Timestep (Issue #3657)
+  * Added isolayer selection method (Issue #3845)
   * Auxiliary; determination of representative frames: Removed undefined
     behaviour for cutoff values < -1 (PR # 3749)
   * Fixes distances.between not always returning AtomGroup (Issue #3794)
   * Upgrade to chemfiles 0.10.3 (Issue #3798)
-  * Ensure Timestep passed to transform is the same as AtomGroup Trajectory Timestep (Issue #3657)
   * fixes guessed_attributes and read_attributes methods of the Topology class, as 
     those methods were giving unexpected results for some topology attributes
     (e.g. bonds, angles) (PR #3779).
-   
+
 
 
 Enhancements
