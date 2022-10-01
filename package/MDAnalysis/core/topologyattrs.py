@@ -2281,8 +2281,7 @@ class Charges(AtomAttr):
                                 recenteredpos,
                                 np.einsum("ij,i->ij", recenteredpos, charges),
                               )
-            quad_trace = np.sum(np.diag(tensor))
-            return 3 * tensor / 2 - np.identity(3) * quad_trace / 2
+            return 3 * tensor / 2 - np.identity(3) * np.trace(tensor) / 2
 
         compound = compound.lower()
 
