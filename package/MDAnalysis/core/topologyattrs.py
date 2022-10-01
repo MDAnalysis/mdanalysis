@@ -2052,6 +2052,14 @@ class Charges(AtomAttr):
         fragment can be obtained by setting the `compound` parameter
         accordingly.
 
+        Note that the magnitude of the dipole moment is independant of the
+        ``center`` chosen unless the species has a net charge. In the case of
+        a charged group the dipole moment can be later adjusted  with:
+
+        .. math::
+            \mathsf{\mu_{COC}} = \mathsf{\mu_{COM}} + 
+            q_{ag}\mathsf{r_{COM}} - q_{ag}\mathsf{r_{COC}}
+
         Parameters
         ----------
         group : obj
@@ -2085,6 +2093,7 @@ class Charges(AtomAttr):
             If `compound` was set to ``'group'``, the output will be a single
             value. Otherwise, the output will be a 1d array of shape ``(n,)``
             where ``n`` is the number of compounds.
+
 
         .. versionadded:: 2.4.0
         """
@@ -2120,7 +2129,8 @@ class Charges(AtomAttr):
                 recenteredpos = (atomgroup.unwrap(inplace=False) - ref)
             else:
                 recenteredpos = (atomgroup.positions - ref)
-            dipole_moment = np.sum(recenteredpos*charges[:,np.newaxis], axis=0)
+            dipole_moment = np.sum(recenteredpos * charges[:,np.newaxis],
+                                   axis=0)
         else:
             (atom_masks, 
              compound_masks, 
@@ -2139,8 +2149,8 @@ class Charges(AtomAttr):
             dipole_moment = np.empty((n_compounds, 3), dtype=np.float64)
             for compound_mask, atom_mask in zip(compound_masks, atom_masks):
                 dipole_moment[compound_mask] = np.sum(
-                    (coords[atom_mask]-ref[compound_mask][:,None,:])
-                    *chgs[atom_mask][:,:,None], axis=1)
+                    (coords[atom_mask] - ref[compound_mask][:,None,:])
+                    * chgs[atom_mask][:,:,None], axis=1)
 
         return dipole_moment
 
@@ -2154,6 +2164,10 @@ class Charges(AtomAttr):
         Dipole per :class:`Residue`, :class:`Segment`, molecule, or
         fragment can be obtained by setting the `compound` parameter
         accordingly.
+
+        Note that when there is a net charge, the magnitude of the dipole 
+        moment is dependant on the ``center`` chosen. 
+        See :meth:`~dipole_vector`.
 
         Parameters
         ----------
@@ -2189,6 +2203,7 @@ class Charges(AtomAttr):
             value. Otherwise, the output will be a 1d array of shape ``(n,)``
             where ``n`` is the number of compounds.
 
+
         .. versionadded:: 2.4.0
         """
 
@@ -2217,6 +2232,10 @@ class Charges(AtomAttr):
         Tensor per :class:`Residue`, :class:`Segment`, molecule, or
         fragment can be obtained by setting the `compound` parameter
         accordingly.
+
+        Note that when there is an unsymmetrical plane in the molecule or 
+        group, the magnitude of the quadrupole tensor is dependant on the 
+        ``center`` chosen and cannot be translated.
 
         Parameters
         ----------
@@ -2252,6 +2271,7 @@ class Charges(AtomAttr):
             value. Otherwise, the output will be a 1d array of shape ``(n,)``
             where ``n`` is the number of compounds.
 
+
         .. versionadded:: 2.4.0
         """
         def __quadrupole(recenteredpos, charges):
@@ -2262,7 +2282,7 @@ class Charges(AtomAttr):
                                 np.einsum("ij,i->ij", recenteredpos, charges),
                               )
             quad_trace = np.sum(np.diag(tensor))
-            return 3*tensor/2 - np.identity(3)*quad_trace/2
+            return 3 * tensor / 2 - np.identity(3) * quad_trace / 2
 
         compound = compound.lower()
 
@@ -2314,11 +2334,9 @@ class Charges(AtomAttr):
             quad_tensor = np.empty((n_compounds,3,3), dtype=np.float64)
             for compound_mask, atom_mask in zip(compound_masks, atom_masks):
                 quad_tensor[compound_mask,:,:] = [__quadrupole(
-                     coords[mask]-ref[compound_mask][i],
+                     coords[mask] - ref[compound_mask][i],
                      chgs[mask][:,None]
                     ) for i,mask in enumerate(atom_mask)]
-
-#        sys.exit()
 
         return quad_tensor
 
@@ -2329,15 +2347,19 @@ class Charges(AtomAttr):
         r"""Quadrupole moment of the group according to [Gray1984]_
          
         .. math::
-            Q = \sqrt{\frac{2}{3}\boldsymbol{\hat{Q}}:\boldsymbol{\hat{Q}}}
+            Q = \sqrt{\frac{2}{3}{\hat{\mathsf{Q}}}:{\hat{\mathsf{Q}}}}
 
-        where :math:`\boldsymbol{\hat{Q}}` is the traceless quadrupole 
+        where :math:`\hat{\mathsf{Q}}` is the traceless quadrupole 
         tensor.
 
         Computes the quadrupole moment of :class:`Atoms<Atom>` in the group.
         Quadrupole per :class:`Residue`, :class:`Segment`, molecule, or
         fragment can be obtained by setting the `compound` parameter
         accordingly.
+
+        Note that when there is an unsymmetrical plane in the molecule or 
+        group, the magnitude of the quadrupole moment is dependant on the 
+        ``center`` chosen and cannot be translated.
 
         Parameters
         ----------
@@ -2372,6 +2394,7 @@ class Charges(AtomAttr):
             If `compound` was set to ``'group'``, the output will be a single
             value. Otherwise, the output will be a 1d array of shape ``(n,)``
             where ``n`` is the number of compounds.
+
 
         .. versionadded:: 2.4.0
         """
