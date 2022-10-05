@@ -1,0 +1,14 @@
+macos_instance:
+  image: ghcr.io/cirruslabs/macos-monterey-base:latest
+
+task:
+  script: |
+    brew install python@3.10
+    /opt/homebrew/opt/python@3.10/bin/python3 -m venv ~/py_310
+    source ~/py_310/bin/activate
+    cd package
+    python -m pip install .
+    cd ../testsuite
+    python -m pip install .
+    python -m pip install pytest
+    python -m pytest MDAnalysisTests
