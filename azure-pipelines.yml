@@ -48,6 +48,12 @@ jobs:
           BUILD_TYPE: 'wheel'
           NUMPY_MIN: '1.20.0'
           imageName: 'windows-2019'
+        Linux-Python311rc-64bit-full-wheel:
+          PYTHON_VERSION: '3.11.0-rc.2'
+          PYTHON_ARCH: 'x64'
+          BUILD_TYPE: 'wheel'
+          NUMPY_MIN: '1.23.3'
+          imageName: 'ubuntu-latest'
         Linux-Python39-64bit-full-wheel:
           PYTHON_VERSION: '3.9'
           PYTHON_ARCH: 'x64'
@@ -68,6 +74,7 @@ jobs:
       versionSpec: $(PYTHON_VERSION)
       addToPath: true
       architecture: $(PYTHON_ARCH)
+      allowUnstable: true
   # a PEP518 compliant wheel build shoud be
   # able to build MDAnalysis in an isolated
   # environment *before* any deps are installed
