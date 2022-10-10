@@ -14,6 +14,7 @@ requires = [
     # As per https://github.com/scipy/oldest-supported-numpy/blob/main/setup.cfg
     # safest to build at 1.21.6 for all platforms
     "numpy==1.21.6; python_version=='3.10' and platform_python_implementation != 'PyPy'",
+    "numpy==1.23.2; python_version=='3.11' and platform_python_implementation != 'PyPy'",
     "setuptools",
     "wheel",
 ]
