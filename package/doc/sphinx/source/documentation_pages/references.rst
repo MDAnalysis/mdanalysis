@@ -1,5 +1,5 @@
 .. -*- coding: utf-8 -*-
-.. note: make sure that no lines accidentaly start with a single character
+.. note: make sure that no lines accidentally start with a single character
 ..       followed by a period: reST interprets it as an enumerated list and
 ..       messes up the formatting
 
@@ -203,6 +203,17 @@ please cite [Dima2004b]_.
    proteins. *J Phys Chem B*, 108(21),
    6564-6570. doi:`10.1021/jp037128y
    <https://doi.org/10.1021/jp037128y>`_
+
+If you calculate shape parameters using
+:meth:`~MDAnalysis.core.group.AtomGroup.quadrupole_moment`,
+:meth:`~MDAnalysis.core.group.ResidueGroup.quadrupole_moment`,
+:meth:`~MDAnalysis.core.group.SegmentGroup.quadrupole_moment`
+please cite [Gray1984]_.
+
+.. [Gray1984] Gray, C. G., Gubbins, K. E., & Joslin C. G. (1984). 
+   Theory of molecular fluids. The International Series of 
+   Monographs on Chemistry 9. Oxford; New York: Oxford University
+   Press.
 
 If you use use the dielectric analysis code in
 :class:`~MDAnalysis.analysis.dielectric.DielectricConstant` please cite [Neumann1983]_.
