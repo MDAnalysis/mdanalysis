@@ -2005,6 +2005,7 @@ class Charges(AtomAttr):
 
         .. versionadded:: 2.2.0
         """
+        atoms = group.atoms
         return atoms.center(weights=atoms.charges.__abs__(),
                             wrap=wrap,
                             compound=compound,
