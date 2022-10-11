@@ -15,6 +15,7 @@ numpy>=1.20.0
 packaging
 parmed
 pytest
+pyyaml>=3.02
 scikit-learn
 scipy
 seaborn>=0.7.0,<=0.9
