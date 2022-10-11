@@ -214,6 +214,7 @@ class TestGroupProperties(object):
         assert unsorted_unique is sorted_unique
         assert unique._cache['unsorted_unique'] is sorted_unique
 
+
 class TestEmptyAtomGroup(object):
     """ Test empty atom groups
     """

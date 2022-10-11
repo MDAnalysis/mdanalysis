@@ -2166,6 +2166,7 @@ def check_coords(*coord_names, **options):
         return wrapper
     return check_coords_decorator
 
+
 def check_atomgroup_not_empty(groupmethod):
     """Decorator triggering a ``ValueError`` if the underlying group is empty.
 
