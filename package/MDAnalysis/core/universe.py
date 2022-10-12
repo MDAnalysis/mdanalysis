@@ -1539,44 +1539,35 @@ class Universe(object):
 def Merge(*args):
     """Create a new new :class:`Universe` from one or more
     :class:`~MDAnalysis.core.groups.AtomGroup` instances.
-
     Parameters
     ----------
     *args: :class:`~MDAnalysis.core.groups.AtomGroup`
         One or more AtomGroups.
-
     Returns
     -------
     universe: :class:`Universe`
-
     Raises
     ------
     ValueError
         Too few arguments or an AtomGroup is empty and
     TypeError
         Arguments are not :class:`AtomGroup` instances.
-
     Notes
     -----
     The resulting :class:`Universe` will only inherit the common topology
     attributes that all merged universes share.
-
     :class:`AtomGroup` instances can come from different Universes, or can come
     directly from a :meth:`~Universe.select_atoms` call.
-
     :class:`Merge` can also be used with a single :class:`AtomGroup` if the
     user wants to, for example, re-order the atoms in the :class:`Universe`.
-
     If multiple :class:`AtomGroup` instances from the same :class:`Universe`
     are given, the merge will first simply "add" together the
     :class:`AtomGroup` instances.
-
     Merging does not create a full trajectory but only a single structure even
     if the input consists of one or more trajectories.  However, one can use
     the :class:`~MDAnalysis.coordinates.memory.MemoryReader` to construct a
     trajectory for the new Universe as described under
     :ref:`creating-in-memory-trajectory-label`.
-
     Example
     -------
     In this example, protein, ligand, and solvent were externally prepared in
@@ -1584,23 +1575,17 @@ def Merge(*args):
     objects (where they could be further manipulated, e.g. renumbered,
     relabeled, rotated, ...) The :func:`Merge` command is used to combine all
     of them together::
-
        u1 = Universe("protein.pdb")
        u2 = Universe("ligand.pdb")
        u3 = Universe("solvent.pdb")
        u = Merge(u1.select_atoms("protein"), u2.atoms, u3.atoms)
        u.atoms.write("system.pdb")
-
     The complete system is then written out to a new PDB file.
-
-
     .. versionchanged:: 0.9.0
        Raises exceptions instead of assertion errors.
-
     .. versionchanged:: 0.16.0
        The trajectory is now a
        :class:`~MDAnalysis.coordinates.memory.MemoryReader`.
-
     """
     from ..topology.base import squash_by
 
@@ -1642,7 +1627,7 @@ def Merge(*args):
                                           " TopologyAttr not subclassed"
                                           " from AtomAttr, ResidueAttr,"
                                           " or SegmentAttr.")
-            if not isinstance(attr, np.ndarray):
+            if type(attr) != np.ndarray:
                 raise TypeError('Encountered unexpected topology '
                                 'attribute of type {}'.format(type(attr)))
             try:
@@ -1670,13 +1655,12 @@ def Merge(*args):
             tg = tg.atomgroup_intersection(ag, strict=True)
 
             # Map them so they refer to our new indices
-            new_idx = [tuple([mapping[x] for x in entry])
-                       for entry in tg.indices]
+            new_idx = [tuple([mapping[x] for x in entry]) for entry in tg.indices]
             bondidx.extend(new_idx)
             if hasattr(tg, '_bondtypes'):
                 types.extend(tg._bondtypes)
             else:
-                types.extend([None] * len(tg))
+                types.extend([None]*len(tg))
         if any(t is None for t in types):
             attrs.append(bonds_class(bondidx))
         else:
@@ -1717,12 +1701,12 @@ def Merge(*args):
 
     # Create and populate a universe
     try:
-        # Create universe with coordinates if they exists in args
+        #Create universe with coordinates if they exists in args
         coords = np.vstack([a.positions for a in args])
         u = Universe(top, coords[None, :, :],
-                     format=MDAnalysis.coordinates.memory.MemoryReader)
+                 format=MDAnalysis.coordinates.memory.MemoryReader)
     except AttributeError:
-        # Create universe without coordinates if they dont exists in args
+        #Create universe without coordinates if they dont exists in args
         u = Universe(top)
 
     return u
