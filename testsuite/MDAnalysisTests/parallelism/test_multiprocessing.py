@@ -83,10 +83,10 @@ from MDAnalysisTests.datafiles import (
 def u(request):
     if len(request.param) == 1:
         f = request.param[0]
-        return mda.Universe(f)
+        return mda.Universe(f, to_guess=())
     else:
         top, trj = request.param
-        return mda.Universe(top, trj)
+        return mda.Universe(top, trj, to_guess=())
 
 @pytest.fixture(scope="function")
 def temp_xtc(tmp_path):

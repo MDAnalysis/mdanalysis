@@ -119,7 +119,7 @@ class TestTimestep(object):
 
     def test_repr(self, ts):
         assert_equal(type(repr(ts)), str)
-    
+
     def test_repr_with_box(self, ts):
         assert("with unit cell dimensions" in repr(ts))
 
@@ -698,7 +698,7 @@ class TestBaseTimestepInterface(object):
 def test_atomgroup_dims_access(uni):
     uni_args, uni_kwargs = uni
     # check that AtomGroup.dimensions always returns a copy
-    u = mda.Universe(*uni_args, **uni_kwargs)
+    u = mda.Universe(*uni_args, **uni_kwargs, to_guess=())
 
     ag = u.atoms[:10]
 

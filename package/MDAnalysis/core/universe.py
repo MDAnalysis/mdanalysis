@@ -112,28 +112,20 @@ def _topology_from_file_like(topology_file, topology_format=None,
         # one because the file isn't present
         # or the permissions are bad, second when the parser fails
         if (err.errno is not None and
-                errno.errorcode[err.errno] in ['ENOENT', 'EACCES']):
-            # Runs if the error is propagated due to no permission / file not
-            # found
+            errno.errorcode[err.errno] in ['ENOENT', 'EACCES']):
+            # Runs if the error is propagated due to no permission / file not found
             raise sys.exc_info()[1] from err
         else:
             # Runs when the parser fails
             raise IOError("Failed to load from the topology file {0}"
-                          " with parser {1}.\n"
-                          "Error: {2}".format(topology_file, parser, err))
+                            " with parser {1}.\n"
+                            "Error: {2}".format(topology_file, parser, err))
     except (ValueError, NotImplementedError) as err:
         raise ValueError(
             "Failed to construct topology from file {0}"
             " with parser {1}.\n"
             "Error: {2}".format(topology_file, parser, err))
-    formats = []
-    if hasattr(parser, 'format'):
-        if not isinstance(parser.format, list):
-            formats.append(parser.format)
-        else:
-            formats = parser.format
-    return [topology, formats]
-
+    return topology
 
 def _resolve_formats(*coordinates, format=None, topology_format=None):
     if not coordinates:
@@ -247,7 +239,7 @@ class Universe(object):
         atom type which are used in guessing bonds.
     context: string or Guesser, default ``default``
         Type of the Guesser to be used in guessing different attributes
-    to_guess: list, (optional)
+    to_guess: list, (optional), defualt ['types', 'masses'] (in future versions types and masses will be removed)
         Attributes to be guessed (these attributes will be either guessed if it don exist in the universe or partially guessed by only filling its empty values if universe has the attribute)
     force_guess: list, (optional)
         Attributes to be forced guessed (these attributes will be either guessed if they don't exist in the universe or their values will be completely overwritten by guessed ones if the universe has the attribute)
@@ -336,7 +328,7 @@ class Universe(object):
     def __init__(self, topology=None, *coordinates, all_coordinates=False,
                  format=None, topology_format=None, transformations=None,
                  guess_bonds=False, vdwradii=None, context='default',
-                 to_guess=(), force_guess=(), in_memory=False,
+                 to_guess=('types', 'masses'), force_guess=(), in_memory=False,
                  in_memory_step=1, **kwargs):
 
         self._trajectory = None  # managed attribute holding Reader
@@ -357,15 +349,13 @@ class Universe(object):
             'all_coordinates': all_coordinates
         }
         self._kwargs.update(kwargs)
-        self._parser = []
         format, topology_format = _resolve_formats(
             *coordinates, format=format, topology_format=topology_format)
         if not isinstance(topology, Topology) and topology is not None:
             self.filename = _check_file_like(topology)
-            top = _topology_from_file_like(self.filename,
+            topology = _topology_from_file_like(self.filename,
                                            topology_format=topology_format,
                                            **kwargs)
-            topology, self._parser = top
         if topology is not None:
             self._topology = topology
         else:
@@ -395,8 +385,6 @@ class Universe(object):
         to_guess = list(to_guess)
         force_guess = list(force_guess)
 
-        if any(fmt in _PARSERS for fmt in self._parser) and 'MINIMAL' not in self._parser:
-            to_guess.extend(['types', 'masses'])
 
         if guess_bonds:
             force_guess.extend(['bonds', 'angles', 'dihedrals'])
@@ -493,7 +481,7 @@ class Universe(object):
                        residue_segindex=residue_segindex,
                        )
 
-        u = cls(top)
+        u = cls(top, to_guess=())
 
         if trajectory:
             coords = np.zeros((1, n_atoms, 3), dtype=np.float32)
@@ -596,12 +584,14 @@ class Universe(object):
         self.trajectory = reader(filename, format=format, **kwargs)
         if self.trajectory.n_atoms != len(self.atoms):
 
-            msg = f"The topology and {self.trajectory.format} trajectory files don't"
-            " have the same number of atoms!\n"
-            f"Topology number of atoms {len(self.atoms)}\n"
-            f"Trajectory: {filename} Number of atoms {self.trajectory.n_atoms}"
-
-            raise ValueError(msg)
+           raise ValueError("The topology and {form} trajectory files don't"
+                             " have the same number of atoms!\n"
+                             "Topology number of atoms {top_n_atoms}\n"
+                             "Trajectory: {fname} Number of atoms {trj_n_atoms}".format(
+                                 form=self.trajectory.format,
+                                 top_n_atoms=len(self.atoms),
+                                 fname=filename,
+                                 trj_n_atoms=self.trajectory.n_atoms))
 
         if in_memory:
             self.transfer_to_memory(step=in_memory_step)
@@ -722,7 +712,7 @@ class Universe(object):
     def __repr__(self):
         # return "<Universe with {n_atoms} atoms{bonds}>".format(
         #    n_atoms=len(self.atoms),
-        # bonds=" and {0} bonds".format(len(self.bonds)) if self.bonds else "")
+        #    bonds=" and {0} bonds".format(len(self.bonds)) if self.bonds else "")
 
         return "<Universe with {n_atoms} atoms>".format(
             n_atoms=len(self.atoms))
@@ -1043,20 +1033,13 @@ class Universe(object):
         # pass this information to the topology
         segidx = self._topology.add_Segment(**attrs)
         # resize my segments
-        self.segments = SegmentGroup(
-            np.arange(self._topology.n_segments), self)
+        self.segments = SegmentGroup(np.arange(self._topology.n_segments), self)
         # return the new segment
         return self.segments[segidx]
 
-    def _add_topology_objects(
-            self,
-            object_type,
-            values,
-            types=None,
-            guessed=False,
-            order=None):
+    def _add_topology_objects(self, object_type, values, types=None, guessed=False,
+                           order=None):
         """Add new TopologyObjects to this Universe
-
         Parameters
         ----------
         object_type : {'bonds', 'angles', 'dihedrals', 'impropers'}
@@ -1073,8 +1056,6 @@ class Universe(object):
             bool, or an iterable of hashable values with the same length as ``values``
         order : iterable (optional, default None)
             None, or an iterable of hashable values with the same length as ``values``
-
-
         .. versionadded:: 1.0.0
         """
         if all(isinstance(x, TopologyObject) for x in values):
@@ -1107,6 +1088,7 @@ class Universe(object):
         except AttributeError:
             self.add_TopologyAttr(object_type, [])
             attr = getattr(self._topology, object_type)
+
 
         attr._add_bonds(indices, types=types, guessed=guessed, order=order)
 

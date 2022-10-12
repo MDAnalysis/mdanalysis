@@ -1366,7 +1366,7 @@ class ThingyParser(TopologyReaderBase):
         return isinstance(thing, Thingy)
 
     def parse(self, **kwargs):
-        return mda.core.topology.Topology(n_atoms=0)
+        return mda.core.topology.Topology(n_atoms=10)
 
 
 class TestOnlyTopology:
@@ -1376,11 +1376,6 @@ class TestOnlyTopology:
 
         with pytest.warns(UserWarning,
                           match="No coordinate reader found for"):
-            u = mda.Universe(t)
+            u = mda.Universe(t, to_guess=())
 
-        with pytest.warns(UserWarning,
-                          match='Can not guess attributes for universe with 0 atoms'):
-            u = mda.Universe(t)
-
-
-        assert len(u.atoms) == 0
+        assert len(u.atoms) == 10
