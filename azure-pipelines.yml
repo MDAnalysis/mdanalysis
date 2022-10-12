@@ -26,6 +26,7 @@ jobs:
           PYTHON_ARCH: 'x86'
           BUILD_TYPE: 'normal'
           imageName: 'windows-2019'
+          scipyPin: '==1.9.1'
         Win-Python38-64bit-full:
           PYTHON_VERSION: '3.8'
           PYTHON_ARCH: 'x64'
@@ -91,7 +92,7 @@ jobs:
       pytest-cov
       pytest-xdist
       scikit-learn
-      scipy
+      scipy$(scipyPin)
       h5py>=2.10
       tqdm
       threadpoolctl
