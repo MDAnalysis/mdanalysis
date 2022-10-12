@@ -83,7 +83,7 @@ jobs:
     displayName: 'Install tools'
   - script: python -m pip install $(PIP_PRE_EXTRAS)
     displayName: 'Pre-deps extras'
-    condition: ne(variables['PIP_PRE_EXTRAS', '')
+    condition: ne(variables['PIP_PRE_EXTRAS'], '')
   - script: >-
       python -m pip install --only-binary=h5py
       cython
