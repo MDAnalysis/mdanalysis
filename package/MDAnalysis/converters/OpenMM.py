@@ -74,7 +74,6 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
 
 
     .. versionadded:: 2.0.0
-
     """
 
     format = "OPENMMSIMULATION"
