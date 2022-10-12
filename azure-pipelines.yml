@@ -26,7 +26,7 @@ jobs:
           PYTHON_ARCH: 'x86'
           BUILD_TYPE: 'normal'
           imageName: 'windows-2019'
-          scipyPin: '==1.9.1'
+          PIP_PRE_EXTRAS: 'scipy==1.9.1'
         Win-Python38-64bit-full:
           PYTHON_VERSION: '3.8'
           PYTHON_ARCH: 'x64'
@@ -81,6 +81,9 @@ jobs:
     condition: and(succeeded(), eq(variables['BUILD_TYPE'], 'wheel'))
   - script: python -m pip install --upgrade pip setuptools wheel
     displayName: 'Install tools'
+  - script: python -m pip install $(PIP_PRE_EXTRAS)
+    displayName: 'Pre-deps extras'
+    condition: ne(variables['PIP_PRE_EXTRAS', '')
   - script: >-
       python -m pip install --only-binary=h5py
       cython
@@ -92,7 +95,7 @@ jobs:
       pytest-cov
       pytest-xdist
       scikit-learn
-      scipy$(scipyPin)
+      scipy
       h5py>=2.10
       tqdm
       threadpoolctl
