@@ -481,7 +481,7 @@ class Universe(object):
         top = Topology(n_atoms, n_residues, n_segments,
                        atom_resindex=atom_resindex,
                        residue_segindex=residue_segindex,
-                       )
+        )
 
         u = cls(top, to_guess=())
 
@@ -1141,7 +1141,7 @@ class Universe(object):
         .. versionadded:: 1.0.0
         """
         self._add_topology_objects('bonds', values, types=types,
-                                   guessed=guessed, order=order)
+                                 guessed=guessed, order=order)
         # Invalidate bond-related caches
         self._cache.pop('fragments', None)
         self._cache['_valid'].pop('fragments', None)
@@ -1166,7 +1166,7 @@ class Universe(object):
         .. versionadded:: 1.0.0
         """
         self._add_topology_objects('angles', values, types=types,
-                                   guessed=guessed)
+                                 guessed=guessed)
 
     def add_dihedrals(self, values, types=None, guessed=False):
         """Add new Dihedrals to this Universe.
@@ -1210,7 +1210,7 @@ class Universe(object):
         .. versionadded:: 1.0.0
         """
         self._add_topology_objects('impropers', values, types=types,
-                                   guessed=guessed)
+                                 guessed=guessed)
 
     def _delete_topology_objects(self, object_type, values):
         """Delete TopologyObjects from this Universe
@@ -1457,9 +1457,8 @@ class Universe(object):
 
     def guess_TopologyAttributes(self, context=None, to_guess=(), force_guess=(), **kwargs):
         
-        """.. _guess_TopologyAttributes:
-        
-        guess and add attributes through a specific context-aware guesser.
+        """
+        Guess and add attributes through a specific context-aware guesser.
 
         Parameters
         ----------
