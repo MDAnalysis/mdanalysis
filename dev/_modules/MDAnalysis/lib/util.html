@@ -262,6 +262,7 @@
 <span class="sd">.. autofunction:: static_variables</span>
 <span class="sd">.. autofunction:: warn_if_not_unique</span>
 <span class="sd">.. autofunction:: check_coords</span>
+<span class="sd">.. autofunction:: check_atomgroup_not_empty</span>
 
 <span class="sd">Code management</span>
 <span class="sd">---------------</span>
@@ -2266,6 +2267,32 @@
             <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">wrapper</span>
     <span class="k">return</span> <span class="n">check_coords_decorator</span></div>
+
+
+<div class="viewcode-block" id="check_atomgroup_not_empty"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.check_atomgroup_not_empty">[docs]</a><span class="k">def</span> <span class="nf">check_atomgroup_not_empty</span><span class="p">(</span><span class="n">groupmethod</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Decorator triggering a ``ValueError`` if the underlying group is empty.</span>
+
+<span class="sd">    Avoids downstream errors in computing properties of empty atomgroups. </span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the input :class:`~MDAnalysis.core.groups.AtomGroup`,</span>
+<span class="sd">        of a decorated method is empty.</span>
+
+
+<span class="sd">    .. versionadded:: 2.4.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">groupmethod</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># Throw error if the group is empty.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">group</span><span class="o">.</span><span class="n">atoms</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;AtomGroup is empty.&quot;</span><span class="p">)</span>
+        <span class="c1"># Proceed as usual if the calling group is not empty.</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">groupmethod</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+    <span class="k">return</span> <span class="n">wrapper</span></div>
 
 
 <span class="c1"># ------------------------------------------------------------------</span>

@@ -149,7 +149,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="p">(</span><span class="n">cached</span><span class="p">,</span> <span class="n">convert_aa_code</span><span class="p">,</span> <span class="n">iterable</span><span class="p">,</span> <span class="n">warn_if_not_unique</span><span class="p">,</span>
-                        <span class="n">unique_int_1d</span><span class="p">)</span>
+                        <span class="n">unique_int_1d</span><span class="p">,</span> <span class="n">check_atomgroup_not_empty</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">transformations</span><span class="p">,</span> <span class="n">mdamath</span>
 <span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span><span class="p">,</span> <span class="n">SelectionError</span>
 <span class="kn">from</span> <span class="nn">.topologyobjects</span> <span class="kn">import</span> <span class="n">TopologyGroup</span>
@@ -1555,6 +1555,7 @@
 <div class="viewcode-block" id="Masses.center_of_mass"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.center_of_mass">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
     <span class="nd">@_pbc_to_wrap</span>
     <span class="nd">@check_wrap_and_unwrap</span>
+    <span class="nd">@check_atomgroup_not_empty</span>
     <span class="k">def</span> <span class="nf">center_of_mass</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Center of mass of (compounds of) the group</span>
 
@@ -1628,6 +1629,7 @@
         <span class="p">(</span><span class="s1">&#39;center_of_mass&#39;</span><span class="p">,</span> <span class="n">center_of_mass</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Masses.total_mass"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.total_mass">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
+    <span class="nd">@check_atomgroup_not_empty</span>
     <span class="k">def</span> <span class="nf">total_mass</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Total mass of (compounds of) the group.</span>
 
@@ -1666,6 +1668,7 @@
 <div class="viewcode-block" id="Masses.moment_of_inertia"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.moment_of_inertia">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
     <span class="nd">@_pbc_to_wrap</span>
     <span class="nd">@check_wrap_and_unwrap</span>
+    <span class="nd">@check_atomgroup_not_empty</span>
     <span class="k">def</span> <span class="nf">moment_of_inertia</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s2">&quot;group&quot;</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Moment of inertia tensor relative to center of mass.</span>
 
@@ -1773,6 +1776,7 @@
 
 <div class="viewcode-block" id="Masses.radius_of_gyration"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.radius_of_gyration">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
     <span class="nd">@_pbc_to_wrap</span>
+    <span class="nd">@check_atomgroup_not_empty</span>
     <span class="k">def</span> <span class="nf">radius_of_gyration</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Radius of gyration.</span>
 
@@ -1808,6 +1812,7 @@
 
 <div class="viewcode-block" id="Masses.shape_parameter"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.shape_parameter">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
     <span class="nd">@_pbc_to_wrap</span>
+    <span class="nd">@check_atomgroup_not_empty</span>
     <span class="k">def</span> <span class="nf">shape_parameter</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Shape parameter.</span>
 
@@ -1854,6 +1859,7 @@
 <div class="viewcode-block" id="Masses.asphericity"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.asphericity">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
     <span class="nd">@_pbc_to_wrap</span>
     <span class="nd">@check_wrap_and_unwrap</span>
+    <span class="nd">@check_atomgroup_not_empty</span>
     <span class="k">def</span> <span class="nf">asphericity</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Asphericity.</span>
 
@@ -1912,6 +1918,7 @@
 
 <div class="viewcode-block" id="Masses.principal_axes"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.principal_axes">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
     <span class="nd">@_pbc_to_wrap</span>
+    <span class="nd">@check_atomgroup_not_empty</span>
     <span class="k">def</span> <span class="nf">principal_axes</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Calculate the principal axes from the moment of inertia.</span>
 
@@ -2032,6 +2039,7 @@
 <div class="viewcode-block" id="Charges.center_of_charge"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Charges.center_of_charge">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
     <span class="nd">@_pbc_to_wrap</span>
     <span class="nd">@check_wrap_and_unwrap</span>
+    <span class="nd">@check_atomgroup_not_empty</span>
     <span class="k">def</span> <span class="nf">center_of_charge</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Center of (absolute) charge of (compounds of) the group</span>
 
@@ -2099,6 +2107,7 @@
         <span class="p">(</span><span class="s1">&#39;center_of_charge&#39;</span><span class="p">,</span> <span class="n">center_of_charge</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Charges.total_charge"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Charges.total_charge">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
+    <span class="nd">@check_atomgroup_not_empty</span>
     <span class="k">def</span> <span class="nf">total_charge</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Total charge of (compounds of) the group.</span>
 

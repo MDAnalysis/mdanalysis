@@ -1362,6 +1362,22 @@ allow_atomgroup with default False to retain old behaviour</p>
 </div>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="MDAnalysis.lib.util.check_atomgroup_not_empty">
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.util.</span></span><span class="sig-name descname"><span class="pre">check_atomgroup_not_empty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groupmethod</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#check_atomgroup_not_empty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.util.check_atomgroup_not_empty" title="Permalink to this definition"></a></dt>
+<dd><p>Decorator triggering a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> if the underlying group is empty.</p>
+<p>Avoids downstream errors in computing properties of empty atomgroups.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If the input <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>,
+    of a decorated method is empty.</p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.4.0.</span></p>
+</div>
+</dd></dl>
+
 </section>
 <section id="code-management">
 <h2><span class="section-number">13.2.10.10. </span>Code management<a class="headerlink" href="#code-management" title="Permalink to this heading"></a></h2>
