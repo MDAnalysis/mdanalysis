@@ -1475,6 +1475,25 @@ class WriterBase(IOBase, metaclass=_Writermeta):
        :func:`write` instead.
 
     """
+    def __init__(self,
+                 filename,
+                 n_atoms,
+                 append=False):
+        """Set up single frame writer.
+
+        Parameters
+        ----------
+        filename : str
+            filename of trajectory file
+        n_atoms : int
+            number of atoms in trajectory
+        append : bool (optional)
+            whether to append to an existing file or overwrite it
+        """
+        self.filename = filename
+        self.n_atoms = n_atoms  # number of atoms to be written
+        self.append = append
+        self._n_frames_written = 0
 
     def convert_dimensions_to_unitcell(self, ts, inplace=True):
         """Read dimensions from timestep *ts* and return appropriate unitcell.
@@ -1493,7 +1512,7 @@ class WriterBase(IOBase, metaclass=_Writermeta):
         lengths = self.convert_pos_to_native(lengths)
         return np.concatenate([lengths, angles])
 
-    def write(self, obj):
+    def write(self, obj, **kwargs):
         """Write current timestep, using the supplied `obj`.
 
         Parameters
@@ -1511,7 +1530,8 @@ class WriterBase(IOBase, metaclass=_Writermeta):
            Deprecated support for Timestep argument to write has now been
            removed. Use AtomGroup or Universe as an input instead.
         """
-        return self._write_next_frame(obj)
+        self._n_frames_written += 1
+        return self._write_next_frame(obj, **kwargs)
 
     def __del__(self):
         self.close()
@@ -1544,6 +1564,57 @@ class WriterBase(IOBase, metaclass=_Writermeta):
         """
         x = np.ravel(x)
         return np.all(criteria["min"] < x) and np.all(x <= criteria["max"])
+
+class SingleFrameWriterBase(WriterBase):
+    """Base class for single frame writers.
+
+    See :ref:`Trajectory API` definition in for the required attributes and
+    methods.
+
+    """
+    def __init__(self,
+                 filename,
+                 n_atoms,
+                 append=False):
+        """Set up single frame writer.
+
+        Parameters
+        ----------
+        filename : str
+            filename of trajectory file
+        n_atoms : int
+            number of atoms in trajectory
+        append : bool (optional)
+            whether to append to an existing file or overwrite it
+        """
+        self.filename = filename
+        self.n_atoms = n_atoms  # number of atoms to be written
+        if append:
+            raise ValueError("Single frame writers do not support appending")
+        self._n_frames_written = 0
+    
+    def write(self, obj, **kwargs):
+        """Write current timestep, using the supplied `obj`.
+
+        Parameters
+        ----------
+        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe`
+            write coordinate information associate with `obj`
+
+        Note
+        ----
+        The size of the `obj` must be the same as the number of atoms provided
+        when setting up the trajectory.
+
+        .. versionchanged:: 2.0.0
+           Deprecated support for Timestep argument to write has now been
+           removed. Use AtomGroup or Universe as an input instead.
+        """
+        if self._n_frames_written > 1:
+            raise ValueError("SingleFrameWriter can only write one frame")
+
+        self._n_frames_written += 1
+        return self._write_next_frame(obj)
 
 
 class SingleFrameReaderBase(ProtoReader):
