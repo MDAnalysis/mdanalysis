@@ -129,7 +129,7 @@ import numpy as np
 
 from ..core.groups import requires
 from ..lib import util, mdamath, distances
-from ..lib.util import cached
+from ..lib.util import cached, store_init_arguments
 from . import DCD
 from .. import units
 from ..topology.LAMMPSParser import DATAParser
@@ -178,6 +178,7 @@ class DCDReader(DCD.DCDReader):
     format = 'LAMMPS'
     flavor = 'LAMMPS'
 
+    @store_init_arguments
     def __init__(self, dcdfilename, **kwargs):
         self.units = {'time': 'fs', 'length': 'Angstrom'}  # must be instance level
         self.units['time'] = kwargs.pop('timeunit', self.units['time'])
@@ -201,6 +202,7 @@ class DATAReader(base.SingleFrameReaderBase):
     format = 'DATA'
     units = {'time': None, 'length': 'Angstrom', 'velocity': 'Angstrom/fs'}
 
+    @store_init_arguments
     def __init__(self, filename, **kwargs):
         self.n_atoms = kwargs.pop('n_atoms', None)
         if self.n_atoms is None:  # this should be done by parsing DATA first
@@ -486,6 +488,7 @@ class DumpReader(base.ReaderBase):
         "scaled_unwrapped": ["xsu", "ysu", "zsu"]
     }
 
+    @store_init_arguments
     def __init__(self, filename, lammps_coordinate_convention="auto",
                  **kwargs):
         super(DumpReader, self).__init__(filename, **kwargs)

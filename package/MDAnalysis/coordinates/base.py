@@ -26,104 +26,21 @@
 Base classes --- :mod:`MDAnalysis.coordinates.base`
 ===================================================
 
-Derive other Timestep, FrameIterator, Reader and Writer classes from the classes
+Derive, FrameIterator, Reader and Writer classes from the classes
 in this module. The derived classes must follow the :ref:`Trajectory API`.
 
-Timestep
---------
 
-A :class:`Timestep` holds information for the current time frame in
-the trajectory. It is one of the central data structures in
-MDAnalysis.
-
-.. class:: Timestep
-
-   .. automethod:: __init__
-   .. automethod:: from_coordinates
-   .. automethod:: from_timestep
-   .. autoattribute:: n_atoms
-   .. attribute::`frame`
-
-      frame number (0-based)
-
-      .. versionchanged:: 0.11.0
-         Frames now 0-based; was 1-based
-
-   .. autoattribute:: time
-   .. autoattribute:: dt
-   .. autoattribute:: positions
-   .. autoattribute:: velocities
-   .. autoattribute:: forces
-   .. autoattribute:: has_positions
-   .. autoattribute:: has_velocities
-   .. autoattribute:: has_forces
-   .. attribute:: _pos
-
-      :class:`numpy.ndarray` of dtype :class:`~numpy.float32` of shape
-      (*n_atoms*, 3) and internal FORTRAN order, holding the raw
-      cartesian coordinates (in MDAnalysis units, i.e. Å).
-
-      .. Note::
-
-         Normally one does not directly access :attr:`_pos` but uses
-         the :meth:`~MDAnalysis.core.groups.AtomGroup.coordinates`
-         method of an :class:`~MDAnalysis.core.groups.AtomGroup` but
-         sometimes it can be faster to directly use the raw
-         coordinates. Any changes to this array are immediately
-         reflected in atom positions. If the frame is written to a new
-         trajectory then the coordinates are changed. If a new
-         trajectory frame is loaded, then *all* contents of
-         :attr:`_pos` are overwritten.
-
-   .. attribute:: _velocities
-
-      :class:`numpy.ndarray` of dtype :class:`~numpy.float32`. of shape
-      (*n_atoms*, 3), holding the raw velocities (in MDAnalysis
-      units, i.e. typically Å/ps).
-
-      .. Note::
-
-         Normally velocities are accessed through the
-         :attr:`velocities` or the
-         :meth:`~MDAnalysis.core.groups.AtomGroup.velocities`
-         method of an :class:`~MDAnalysis.core.groups.AtomGroup`
-
-         :attr:`~Timestep._velocities` only exists if the :attr:`has_velocities`
-         flag is True
-
-      .. versionadded:: 0.7.5
-
-   .. attribute:: _forces
-
-      :class:`numpy.ndarray` of dtype :class:`~numpy.float32`. of shape
-      (*n_atoms*, 3), holding the forces
-
-      :attr:`~Timestep._forces` only exists if :attr:`has_forces`
-      is True
-
-      .. versionadded:: 0.11.0
-         Added as optional to :class:`Timestep`
-
-   .. autoattribute:: dimensions
-   .. autoattribute:: triclinic_dimensions
-   .. autoattribute:: volume
-   .. attribute:: data
-
-      :class:`dict` that holds arbitrary per Timestep data
-
-      .. versionadded:: 0.11.0
-
-   .. automethod:: __getitem__
-   .. automethod:: __eq__
-   .. automethod:: __iter__
-   .. automethod:: copy
-   .. automethod:: copy_slice
-
+.. _FrameIterators:
 
 FrameIterators
 --------------
 
-Iterator classes used by the by the :class:`ProtoReader`.
+FrameIterators are "sliced trajectories" (a trajectory is a
+:ref:`Reader <Readers>`) that can be iterated over. They are typically
+created by slicing a trajectory or by fancy-indexing of a trajectory
+with an array of frame numbers or a boolean mask of all frames.
+
+Iterator classes used by the by the :class:`ProtoReader`:
 
 .. autoclass:: FrameIteratorBase
 
@@ -133,6 +50,8 @@ Iterator classes used by the by the :class:`ProtoReader`.
 
 .. autoclass:: FrameIteratorIndices
 
+
+.. _ReadersBase:
 
 Readers
 -------
@@ -170,6 +89,8 @@ case, :class:`ProtoReader` should be used.
 
 
 
+.. _WritersBase:
+
 Writers
 -------
 
@@ -206,7 +127,9 @@ import numbers
 import copy
 import warnings
 import weakref
+from typing import Union, Optional, List, Dict
 
+from .timestep import Timestep
 from . import core
 from .. import NoDataError
 from .. import (
@@ -218,715 +141,9 @@ from .. import (
 from .. import units
 from ..auxiliary.base import AuxReader
 from ..auxiliary.core import auxreader
-from ..lib.util import asiterable, Namespace
-
-
-class Timestep(object):
-    """Timestep data for one frame
-
-    :Methods:
-
-      ``ts = Timestep(n_atoms)``
-
-         create a timestep object with space for n_atoms
-
-
-    .. versionchanged:: 0.11.0
-       Added :meth:`from_timestep` and :meth:`from_coordinates` constructor
-       methods.
-       :class:`Timestep` init now only accepts integer creation.
-       :attr:`n_atoms` now a read only property.
-       :attr:`frame` now 0-based instead of 1-based.
-       Attributes `status` and `step` removed.
-    .. versionchanged:: 2.0.0
-       Timestep now can be (un)pickled. Weakref for Reader
-       will be dropped.
-       Timestep now stores in to numpy array memory in 'C' order rather than
-       'F' (Fortran).
-    """
-    order = 'C'
-
-    def __init__(self, n_atoms, **kwargs):
-        """Create a Timestep, representing a frame of a trajectory
-
-        Parameters
-        ----------
-        n_atoms : int
-          The total number of atoms this Timestep describes
-        positions : bool, optional
-          Whether this Timestep has position information [``True``]
-        velocities : bool (optional)
-          Whether this Timestep has velocity information [``False``]
-        forces : bool (optional)
-          Whether this Timestep has force information [``False``]
-        reader : Reader (optional)
-          A weak reference to the owning Reader.  Used for
-          when attributes require trajectory manipulation (e.g. dt)
-        dt : float (optional)
-          The time difference between frames (ps).  If :attr:`time`
-          is set, then `dt` will be ignored.
-        time_offset : float (optional)
-          The starting time from which to calculate time (in ps)
-
-
-        .. versionchanged:: 0.11.0
-           Added keywords for `positions`, `velocities` and `forces`.
-           Can add and remove position/velocity/force information by using
-           the ``has_*`` attribute.
-        """
-        # readers call Reader._read_next_timestep() on init, incrementing
-        # self.frame to 0
-        self.frame = -1
-        self._n_atoms = n_atoms
-
-        self.data = {}
-
-        for att in ('dt', 'time_offset'):
-            try:
-                self.data[att] = kwargs[att]
-            except KeyError:
-                pass
-        try:
-            # do I have a hook back to the Reader?
-            self._reader = weakref.ref(kwargs['reader'])
-        except KeyError:
-            pass
-
-        # Stupid hack to make it allocate first time round
-        # ie we have to go from not having, to having positions
-        # to make the Timestep allocate
-        self._has_positions = False
-        self._has_velocities = False
-        self._has_forces = False
-        self._has_dimensions = False
-
-        # These will allocate the arrays if the has flag
-        # gets set to True
-        self.has_positions = kwargs.get('positions', True)
-        self.has_velocities = kwargs.get('velocities', False)
-        self.has_forces = kwargs.get('forces', False)
-
-        self._unitcell = np.zeros(6, dtype=np.float32)
-
-        # set up aux namespace for adding auxiliary data
-        self.aux = Namespace()
-
-    @classmethod
-    def from_timestep(cls, other, **kwargs):
-        """Create a copy of another Timestep, in the format of this Timestep
-
-        .. versionadded:: 0.11.0
-        """
-        ts = cls(other.n_atoms,
-                 positions=other.has_positions,
-                 velocities=other.has_velocities,
-                 forces=other.has_forces,
-                 **kwargs)
-        ts.frame = other.frame
-        ts.dimensions = other.dimensions
-        try:
-            ts.positions = other.positions.copy(order=cls.order)
-        except NoDataError:
-            pass
-        try:
-            ts.velocities = other.velocities.copy(order=cls.order)
-        except NoDataError:
-            pass
-        try:
-            ts.forces = other.forces.copy(order=cls.order)
-        except NoDataError:
-            pass
-
-        # Optional attributes that don't live in .data
-        # should probably iron out these last kinks
-        for att in ('_frame',):
-            try:
-                setattr(ts, att, getattr(other, att))
-            except AttributeError:
-                pass
-
-        if hasattr(ts, '_reader'):
-            other._reader = weakref.ref(ts._reader())
-
-        ts.data = copy.deepcopy(other.data)
-
-        return ts
-
-    @classmethod
-    def from_coordinates(cls,
-                         positions=None,
-                         velocities=None,
-                         forces=None,
-                         **kwargs):
-        """Create an instance of this Timestep, from coordinate data
-
-        Can pass position, velocity and force data to form a Timestep.
-
-        .. versionadded:: 0.11.0
-        """
-        has_positions = positions is not None
-        has_velocities = velocities is not None
-        has_forces = forces is not None
-
-        lens = [len(a) for a in [positions, velocities, forces]
-                if a is not None]
-        if not lens:
-            raise ValueError("Must specify at least one set of data")
-        n_atoms = max(lens)
-        # Check arrays are matched length?
-        if not all(val == n_atoms for val in lens):
-            raise ValueError("Lengths of input data mismatched")
-
-        ts = cls(n_atoms,
-                 positions=has_positions,
-                 velocities=has_velocities,
-                 forces=has_forces,
-                 **kwargs)
-        if has_positions:
-            ts.positions = positions
-        if has_velocities:
-            ts.velocities = velocities
-        if has_forces:
-            ts.forces = forces
-
-        return ts
-
-    def __getstate__(self):
-        #  The `dt` property is lazy loaded.
-        #  We need to load it once from the `_reader` (if exists)
-        #  attached to this timestep to get the dt value.
-        #  This will help to (un)pickle a `Timestep` without pickling `_reader`
-        #  and retain its dt value.
-        self.dt
-
-        state = self.__dict__.copy()
-        state.pop('_reader', None)
-
-        return state
-
-    def __setstate__(self, state):
-        self.__dict__.update(state)
-
-    def __eq__(self, other):
-        """Compare with another Timestep
-
-        .. versionadded:: 0.11.0
-        """
-        if not isinstance(other, Timestep):
-            return False
-
-        if not self.frame == other.frame:
-            return False
-
-        if not self.n_atoms == other.n_atoms:
-            return False
-
-        if not self.has_positions == other.has_positions:
-            return False
-        if self.has_positions:
-            if not (self.positions == other.positions).all():
-                return False
-
-        if self.dimensions is None:
-            if other.dimensions is not None:
-                return False
-        else:
-            if other.dimensions is None:
-                return False
-            if not (self.dimensions == other.dimensions).all():
-                return False
-
-        if not self.has_velocities == other.has_velocities:
-            return False
-        if self.has_velocities:
-            if not (self.velocities == other.velocities).all():
-                return False
-
-        if not self.has_forces == other.has_forces:
-            return False
-        if self.has_forces:
-            if not (self.forces == other.forces).all():
-                return False
-
-        return True
-
-    def __ne__(self, other):
-        return not self == other
-
-    def __getitem__(self, atoms):
-        """Get a selection of coordinates
-
-        ``ts[i]``
-
-           return coordinates for the i'th atom (0-based)
-
-        ``ts[start:stop:skip]``
-
-           return an array of coordinates, where start, stop and skip
-           correspond to atom indices,
-           :attr:`MDAnalysis.core.groups.Atom.index` (0-based)
-        """
-        if isinstance(atoms, numbers.Integral):
-            return self._pos[atoms]
-        elif isinstance(atoms, (slice, np.ndarray)):
-            return self._pos[atoms]
-        else:
-            raise TypeError
-
-    def __getattr__(self, attr):
-        # special-case timestep info
-        if attr in ('velocities', 'forces', 'positions'):
-            raise NoDataError('This Timestep has no ' + attr)
-        err = "{selfcls} object has no attribute '{attr}'"
-        raise AttributeError(err.format(selfcls=type(self).__name__,
-                                        attr=attr))
-
-    def __len__(self):
-        return self.n_atoms
-
-    def __iter__(self):
-        """Iterate over coordinates
-
-        ``for x in ts``
-
-            iterate of the coordinates, atom by atom
-        """
-        for i in range(self.n_atoms):
-            yield self[i]
-
-    def __repr__(self):
-        desc = "< Timestep {0}".format(self.frame)
-        try:
-            tail = " with unit cell dimensions {0} >".format(self.dimensions)
-        except NotImplementedError:
-            tail = " >"
-        return desc + tail
-
-    def copy(self):
-        """Make an independent ("deep") copy of the whole :class:`Timestep`."""
-        return self.__deepcopy__()
-
-    def __deepcopy__(self):
-        return self.from_timestep(self)
-
-    def copy_slice(self, sel):
-        """Make a new `Timestep` containing a subset of the original `Timestep`.
-
-        Parameters
-        ----------
-        sel : array_like or slice
-            The underlying position, velocity, and force arrays are sliced
-            using a :class:`list`, :class:`slice`, or any array-like.
-
-        Returns
-        -------
-        :class:`Timestep`
-            A `Timestep` object of the same type containing all header
-            information and all atom information relevant to the selection.
-
-        Note
-        ----
-        The selection must be a 0 based :class:`slice` or array of the atom indices
-        in this :class:`Timestep`
-
-        Example
-        -------
-        Using a Python :class:`slice` object::
-
-           new_ts = ts.copy_slice(slice(start, stop, step))
-
-        Using a list of indices::
-
-           new_ts = ts.copy_slice([0, 2, 10, 20, 23])
-
-
-        .. versionadded:: 0.8
-        .. versionchanged:: 0.11.0
-           Reworked to follow new Timestep API.  Now will strictly only
-           copy official attributes of the Timestep.
-
-        """
-        # Detect the size of the Timestep by doing a dummy slice
-        try:
-            pos = self.positions[sel, :]
-        except NoDataError:
-            # It's cool if there's no Data, we'll live
-            pos = None
-        except Exception:
-            errmsg = ("Selection type must be compatible with slicing the "
-                      "coordinates")
-            raise TypeError(errmsg) from None
-        try:
-            vel = self.velocities[sel, :]
-        except NoDataError:
-            vel = None
-        except Exception:
-            errmsg = ("Selection type must be compatible with slicing the "
-                      "coordinates")
-            raise TypeError(errmsg) from None
-        try:
-            force = self.forces[sel, :]
-        except NoDataError:
-            force = None
-        except Exception:
-            errmsg = ("Selection type must be compatible with slicing the "
-                      "coordinates")
-            raise TypeError(errmsg) from None
-
-        new_TS = self.__class__.from_coordinates(
-            positions=pos,
-            velocities=vel,
-            forces=force)
-
-        new_TS.dimensions = self.dimensions
-
-        new_TS.frame = self.frame
-
-        for att in ('_frame',):
-            try:
-                setattr(new_TS, att, getattr(self, att))
-            except AttributeError:
-                pass
-
-        if hasattr(self, '_reader'):
-            new_TS._reader = weakref.ref(self._reader())
-
-        new_TS.data = copy.deepcopy(self.data)
-
-        return new_TS
-
-    @property
-    def n_atoms(self):
-        """A read only view of the number of atoms this Timestep has
-
-        .. versionchanged:: 0.11.0
-           Changed to read only property
-        """
-        # In future could do some magic here to make setting n_atoms
-        # resize the coordinate arrays, but
-        # - not sure if that is ever useful
-        # - not sure how to manage existing data upon extension
-        return self._n_atoms
-
-    @property
-    def has_positions(self):
-        """A boolean of whether this Timestep has position data
-
-        This can be changed to ``True`` or ``False`` to allocate space for
-        or remove the data.
-
-        .. versionadded:: 0.11.0
-        """
-        return self._has_positions
-
-    @has_positions.setter
-    def has_positions(self, val):
-        if val and not self._has_positions:
-            # Setting this will always reallocate position data
-            # ie
-            # True -> False -> True will wipe data from first True state
-            self._pos = np.zeros((self.n_atoms, 3), dtype=np.float32,
-                                 order=self.order)
-            self._has_positions = True
-        elif not val:
-            # Unsetting val won't delete the numpy array
-            self._has_positions = False
-
-    @property
-    def positions(self):
-        """A record of the positions of all atoms in this Timestep
-
-        Setting this attribute will add positions to the Timestep if they
-        weren't originally present.
-
-        Returns
-        -------
-        positions : numpy.ndarray with dtype numpy.float32
-               position data of shape ``(n_atoms, 3)`` for all atoms
-
-        Raises
-        ------
-        :exc:`MDAnalysis.exceptions.NoDataError`
-               if the Timestep has no position data
-
-
-        .. versionchanged:: 0.11.0
-           Now can raise :exc:`NoDataError` when no position data present
-        """
-        if self.has_positions:
-            return self._pos
-        else:
-            raise NoDataError("This Timestep has no positions")
-
-    @positions.setter
-    def positions(self, new):
-        self.has_positions = True
-        self._pos[:] = new
-
-    @property
-    def _x(self):
-        """A view onto the x dimension of position data
-
-        .. versionchanged:: 0.11.0
-           Now read only
-        """
-        return self.positions[:, 0]
-
-    @property
-    def _y(self):
-        """A view onto the y dimension of position data
-
-        .. versionchanged:: 0.11.0
-           Now read only
-        """
-        return self.positions[:, 1]
-
-    @property
-    def _z(self):
-        """A view onto the z dimension of position data
-
-        .. versionchanged:: 0.11.0
-           Now read only
-        """
-        return self.positions[:, 2]
-
-    @property
-    def has_velocities(self):
-        """A boolean of whether this Timestep has velocity data
-
-        This can be changed to ``True`` or ``False`` to allocate space for
-        or remove the data.
-
-        .. versionadded:: 0.11.0
-        """
-        return self._has_velocities
-
-    @has_velocities.setter
-    def has_velocities(self, val):
-        if val and not self._has_velocities:
-            self._velocities = np.zeros((self.n_atoms, 3), dtype=np.float32,
-                                        order=self.order)
-            self._has_velocities = True
-        elif not val:
-            self._has_velocities = False
-
-    @property
-    def velocities(self):
-        """A record of the velocities of all atoms in this Timestep
-
-        Setting this attribute will add velocities to the Timestep if they
-        weren't originally present.
-
-        Returns
-        -------
-        velocities : numpy.ndarray with dtype numpy.float32
-               velocity data of shape ``(n_atoms, 3)`` for all atoms
-
-        Raises
-        ------
-        :exc:`MDAnalysis.exceptions.NoDataError`
-               if the Timestep has no velocity data
-
-
-        .. versionadded:: 0.11.0
-        """
-        if self.has_velocities:
-            return self._velocities
-        else:
-            raise NoDataError("This Timestep has no velocities")
-
-    @velocities.setter
-    def velocities(self, new):
-        self.has_velocities = True
-        self._velocities[:] = new
-
-    @property
-    def has_forces(self):
-        """A boolean of whether this Timestep has force data
-
-        This can be changed to ``True`` or ``False`` to allocate space for
-        or remove the data.
-
-        .. versionadded:: 0.11.0
-        """
-        return self._has_forces
-
-    @has_forces.setter
-    def has_forces(self, val):
-        if val and not self._has_forces:
-            self._forces = np.zeros((self.n_atoms, 3), dtype=np.float32,
-                                    order=self.order)
-            self._has_forces = True
-        elif not val:
-            self._has_forces = False
-
-    @property
-    def forces(self):
-        """A record of the forces of all atoms in this Timestep
-
-        Setting this attribute will add forces to the Timestep if they
-        weren't originally present.
-
-        Returns
-        -------
-        forces : numpy.ndarray with dtype numpy.float32
-               force data of shape ``(n_atoms, 3)`` for all atoms
-
-        Raises
-        ------
-        :exc:`MDAnalysis.exceptions.NoDataError`
-               if the Timestep has no force data
-
-
-        .. versionadded:: 0.11.0
-        """
-        if self.has_forces:
-            return self._forces
-        else:
-            raise NoDataError("This Timestep has no forces")
-
-    @forces.setter
-    def forces(self, new):
-        self.has_forces = True
-        self._forces[:] = new
-
-    @property
-    def dimensions(self):
-        """View of unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
-
-        lengths *a*, *b*, *c* are in the MDAnalysis length unit (Å), and
-        angles are in degrees.
-        """
-        if (self._unitcell[:3] == 0).all():
-            return None
-        else:
-            return self._unitcell
-
-    @dimensions.setter
-    def dimensions(self, box):
-        if box is None:
-            self._unitcell[:] = 0
-        else:
-            self._unitcell[:] = box
-
-    @property
-    def volume(self):
-        """volume of the unitcell"""
-        if self.dimensions is None:
-            return 0
-        else:
-            return core.box_volume(self.dimensions)
-
-    @property
-    def triclinic_dimensions(self):
-        """The unitcell dimensions represented as triclinic vectors
-
-        Returns
-        -------
-        numpy.ndarray
-             A (3, 3) numpy.ndarray of unit cell vectors
-
-        Examples
-        --------
-        The unitcell for a given system can be queried as either three
-        vectors lengths followed by their respective angle, or as three
-        triclinic vectors.
-
-          >>> ts.dimensions
-          array([ 13.,  14.,  15.,  90.,  90.,  90.], dtype=float32)
-          >>> ts.triclinic_dimensions
-          array([[ 13.,   0.,   0.],
-                 [  0.,  14.,   0.],
-                 [  0.,   0.,  15.]], dtype=float32)
-
-        Setting the attribute also works::
-
-          >>> ts.triclinic_dimensions = [[15, 0, 0], [5, 15, 0], [5, 5, 15]]
-          >>> ts.dimensions
-          array([ 15.        ,  15.81138802,  16.58312416,  67.58049774,
-                  72.45159912,  71.56504822], dtype=float32)
-
-        See Also
-        --------
-        :func:`MDAnalysis.lib.mdamath.triclinic_vectors`
-
-
-        .. versionadded:: 0.11.0
-        """
-        if self.dimensions is None:
-            return None
-        else:
-            return core.triclinic_vectors(self.dimensions)
-
-    @triclinic_dimensions.setter
-    def triclinic_dimensions(self, new):
-        """Set the unitcell for this Timestep as defined by triclinic vectors
-
-        .. versionadded:: 0.11.0
-        """
-        if new is None:
-            self.dimensions = None
-        else:
-            self.dimensions = core.triclinic_box(*new)
-
-    @property
-    def dt(self):
-        """The time difference in ps between timesteps
-
-        Note
-        ----
-        This defaults to 1.0 ps in the absence of time data
-
-
-        .. versionadded:: 0.11.0
-        """
-        try:
-            return self.data['dt']
-        except KeyError:
-            pass
-        try:
-            dt = self.data['dt'] = self._reader()._get_dt()
-            return dt
-        except AttributeError:
-            pass
-        warnings.warn("Reader has no dt information, set to 1.0 ps")
-        return 1.0
-
-    @dt.setter
-    def dt(self, new):
-        self.data['dt'] = new
-
-    @dt.deleter
-    def dt(self):
-        del self.data['dt']
-
-    @property
-    def time(self):
-        """The time in ps of this timestep
-
-        This is calculated as::
-
-          time = ts.data['time_offset'] + ts.time
-
-        Or, if the trajectory doesn't provide time information::
-
-          time = ts.data['time_offset'] + ts.frame * ts.dt
-
-        .. versionadded:: 0.11.0
-        """
-        offset = self.data.get('time_offset', 0)
-        try:
-            return self.data['time'] + offset
-        except KeyError:
-            return self.dt * self.frame + offset
-
-    @time.setter
-    def time(self, new):
-        self.data['time'] = new
-
-    @time.deleter
-    def time(self):
-        del self.data['time']
+from ..auxiliary.core import get_auxreader_for
+from ..auxiliary import _AUXREADERS
+from ..lib.util import asiterable, Namespace, store_init_arguments
 
 
 class FrameIteratorBase(object):
@@ -1112,6 +329,7 @@ class FrameIteratorIndices(FrameIteratorBase):
     def __iter__(self):
         for frame in self.frames:
             yield self.trajectory._read_frame_with_aux(frame)
+        self.trajectory.rewind()
 
     def __getitem__(self, frame):
         if isinstance(frame, numbers.Integral):
@@ -1481,7 +699,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             self.rewind()
             raise StopIteration from None
         else:
-            for auxname in self.aux_list:
+            for auxname, reader in self._auxs.items():
                 ts = self._auxs[auxname].update_ts(ts)
 
             ts = self._apply_transformations(ts)
@@ -1763,13 +981,18 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             natoms=self.n_atoms
         ))
 
-    def add_auxiliary(self, auxname, auxdata, format=None, **kwargs):
+# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
+    def add_auxiliary(self,
+                      aux_spec: Union[str, Dict[str, str]] = None,
+                      auxdata: Union[str, AuxReader] = None,
+                      format: str = None,
+                      **kwargs) -> None:
         """Add auxiliary data to be read alongside trajectory.
 
-        Auxiliary data may be any data timeseries from the trajectory additional
-        to that read in by the trajectory reader. *auxdata* can be an
-        :class:`~MDAnalysis.auxiliary.base.AuxReader` instance, or the data
-        itself as e.g. a filename; in the latter case an appropriate
+        Auxiliary data may be any data timeseries from the trajectory
+        additional to that read in by the trajectory reader. *auxdata* can
+        be an :class:`~MDAnalysis.auxiliary.base.AuxReader` instance, or the
+        data itself as e.g. a filename; in the latter case an appropriate
         :class:`~MDAnalysis.auxiliary.base.AuxReader` is guessed from the
         data/file format. An appropriate `format` may also be directly provided
         as a key word argument.
@@ -1781,14 +1004,40 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
 
         The representative value(s) of the auxiliary data for each timestep (as
         calculated by the :class:`~MDAnalysis.auxiliary.base.AuxReader`) are
-        stored in the current timestep in the ``ts.aux`` namespace under *auxname*;
-        e.g. to add additional pull force data stored in pull-force.xvg::
+        stored in the current timestep in the ``ts.aux`` namespace under
+        *aux_spec*; e.g. to add additional pull force data stored in
+        pull-force.xvg::
 
             u = MDAnalysis.Universe(PDB, XTC)
             u.trajectory.add_auxiliary('pull', 'pull-force.xvg')
 
         The representative value for the current timestep may then be accessed
         as ``u.trajectory.ts.aux.pull`` or ``u.trajectory.ts.aux['pull']``.
+
+
+        The following applies to energy readers like the
+        :class:`~MDAnalysis.auxiliary.EDR.EDRReader`.
+
+        All data that is present in the (energy) file can be added by omitting
+        `aux_spec` like so::
+
+            u.trajectory.add_auxiliary(auxdata="ener.edr")
+
+        *aux_spec* is expected to be a dictionary that maps the desired
+        attribute name in the ``ts.aux`` namespace to the precise data to be
+        added as identified by a :attr:`data_selector`::
+
+            term_dict = {"temp": "Temperature", "epot": "Potential"}
+            u.trajectory.add_auxiliary(term_dict, "ener.edr")
+
+        Adding this data can be useful, for example, to filter trajectory
+        frames based on non-coordinate data like the potential energy of each
+        time step. Trajectory slicing allows working on a subset of frames::
+
+            selected_frames = np.array([ts.frame for ts in u.trajectory
+                                        if ts.aux.epot < some_threshold])
+            subset = u.trajectory[selected_frames]
+
 
         See Also
         --------
@@ -1799,16 +1048,16 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         Auxiliary data is assumed to be time-ordered, with no duplicates. See
         the :ref:`Auxiliary API`.
         """
-        if auxname in self.aux_list:
-            raise ValueError("Auxiliary data with name {name} already "
-                             "exists".format(name=auxname))
-        if isinstance(auxdata, AuxReader):
-            aux = auxdata
-            aux.auxname = auxname
+        if auxdata is None:
+            raise ValueError("No input `auxdata` specified, but it needs "
+                             "to be provided.")
+        if type(auxdata) not in list(_AUXREADERS.values()):
+            # i.e. if auxdata is a file, not an instance of an AuxReader
+            reader_type = get_auxreader_for(auxdata)
+            auxreader = reader_type(auxdata)
         else:
-            aux = auxreader(auxdata, format=format, auxname=auxname, **kwargs)
-        self._auxs[auxname] = aux
-        self.ts = aux.update_ts(self.ts)
+            auxreader = auxdata
+        auxreader.attach_auxiliary(self, aux_spec, format, **kwargs)
 
     def remove_auxiliary(self, auxname):
         """Clear data and close the :class:`~MDAnalysis.auxiliary.base.AuxReader`
@@ -2134,7 +1383,7 @@ class ReaderBase(ProtoReader):
        Removed deprecated flags functionality, use convert_units kwarg instead
 
     """
-
+    @store_init_arguments
     def __init__(self, filename, convert_units=True, **kwargs):
         super(ReaderBase, self).__init__()
 
@@ -2158,11 +1407,19 @@ class ReaderBase(ProtoReader):
         New Reader will have its own file handle and can seek/iterate
         independently of the original.
 
-        Will also copy the current state of the Timestep held in
-        the original Reader
+        Will also copy the current state of the Timestep held in the original
+        Reader.
+
+
+        .. versionchanged:: 2.2.0
+           Arguments used to construct the reader are correctly captured and
+           passed to the creation of the new class. Previously the only
+           ``n_atoms`` was passed to class copies, leading to a class created
+           with default parameters which may differ from the original class.
         """
-        new = self.__class__(self.filename,
-                             n_atoms=self.n_atoms)
+
+        new = self.__class__(**self._kwargs)
+
         if self.transformations:
             new.add_transformations(*self.transformations)
         # seek the new reader to the same frame we started with
@@ -2300,9 +1557,14 @@ class SingleFrameReaderBase(ProtoReader):
     .. versionchanged:: 0.11.0
        Added attribute "_ts_kwargs" for subclasses
        Keywords "dt" and "time_offset" read into _ts_kwargs
+    .. versionchanged:: 2.2.0
+       Calling `__iter__` now rewinds the reader before yielding a
+       :class:`Timestep` object (fixing behavior that was not
+       well defined previously).
     """
     _err = "{0} only contains a single frame"
 
+    @store_init_arguments
     def __init__(self, filename, convert_units=True, n_atoms=None, **kwargs):
         super(SingleFrameReaderBase, self).__init__()
 
@@ -2330,11 +1592,18 @@ class SingleFrameReaderBase(ProtoReader):
         New Reader will have its own file handle and can seek/iterate
         independently of the original.
 
-        Will also copy the current state of the Timestep held in
-        the original Reader
+        Will also copy the current state of the Timestep held in the original
+        Reader.
+
+
+        .. versionchanged:: 2.2.0
+           Arguments used to construct the reader are correctly captured and
+           passed to the creation of the new class. Previously the only
+           ``n_atoms`` was passed to class copies, leading to a class created
+           with default parameters which may differ from the original class.
         """
-        new = self.__class__(self.filename,
-                             n_atoms=self.n_atoms)
+        new = self.__class__(**self._kwargs)
+
         new.ts = self.ts.copy()
         for auxname, auxread in self._auxs.items():
             new.add_auxiliary(auxname, auxread.copy())
@@ -2361,6 +1630,7 @@ class SingleFrameReaderBase(ProtoReader):
         raise StopIteration(self._err.format(self.__class__.__name__))
 
     def __iter__(self):
+        self.rewind()
         yield self.ts
         return
 

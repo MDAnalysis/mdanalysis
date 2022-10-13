@@ -13,7 +13,7 @@ concurrency:
   # Probably overly cautious group naming.
   # Commits to develop/master will cancel each other, but PRs will only cancel
   # commits within the same PR
-  group: "${{ github.ref }}-${{ github.head_ref }}"
+  group: "${{ github.ref }}-${{ github.head_ref }}-${{ github.workflow }}"
   cancel-in-progress: true
 
 defaults:
@@ -28,45 +28,39 @@ jobs:
         fail-fast: false
         matrix:
           os: [ubuntu-latest, ]
-          python-version: [3.7, 3.8, 3.9]
+          python-version: [3.8, 3.9, "3.10"]
           full-deps: [true, ]
           install_hole: [true, ]
           codecov: [true, ]
           include:
-            - name: linux_mindeps_py3_10
-              os: ubuntu-latest
-              python-version: "3.10"
-              full-deps: false
-              install_hole: true
-              codecov: true
-            - name: macOS_bigsur_py39
-              os: macOS-11
+            - name: macOS_monterey_py39
+              os: macOS-12
               python-version: 3.9
               full-deps: true
               install_hole: true
               codecov: true
-            - name: macOS_catalina_py37
-              os: macOS-10.15
-              python-version: 3.7
+            - name: macOS_bigsur_py38
+              os: macOS-11
+              python-version: 3.8
               full-deps: true
               install_hole: true
               codecov: false
             - name: minimal-ubuntu
               os: ubuntu-latest
-              python-version: 3.7
+              python-version: 3.8
               full-deps: false
               install_hole: false
               codecov: true
             - name: numpy_min
               os: ubuntu-latest
-              python-version: 3.7
+              python-version: 3.8
               full-deps: false
               install_hole: false
               codecov: false
-              numpy: numpy=1.18.1
+              numpy: numpy=1.20.0
             - name: asv_check
               os: ubuntu-latest
-              python-version: 3.7
+              python-version: 3.8
               full-deps: true
               install_hole: false
               codecov: false
@@ -76,7 +70,7 @@ jobs:
       MPLBACKEND: agg
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: setup_os
       uses: ./.github/actions/setup-os
@@ -115,7 +109,7 @@ jobs:
       run: |
         PYTEST_FLAGS="--disable-pytest-warnings --durations=50"
         if [ ${{ matrix.codecov }} = "true" ]; then
-          PYTEST_FLAGS="${PYTEST_FLAGS} --cov=MDAnalysis --cov-report=xml"
+          PYTEST_FLAGS="${PYTEST_FLAGS} --cov-config=.coveragerc --cov=MDAnalysis --cov-report=xml"
         fi
         echo $PYTEST_FLAGS
         pytest -n $numprocs testsuite/MDAnalysisTests $PYTEST_FLAGS
@@ -143,12 +137,12 @@ jobs:
       MPLBACKEND: agg
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: setup_miniconda
       uses: conda-incubator/setup-miniconda@v2
       with:
-        python-version: 3.7
+        python-version: 3.8
         auto-update-conda: true
         channel-priority: flexible
         channels: conda-forge, bioconda
@@ -161,7 +155,7 @@ jobs:
       with:
         mamba: true
         full-deps: true
-        extra-pip-deps: "sphinx sphinx-sitemap sphinx_rtd_theme msmb_theme==1.2.0"
+        extra-pip-deps: "sphinx sphinx-sitemap sphinx_rtd_theme msmb_theme==1.2.0 sphinxcontrib-bibtex pybtex pybtex-docutils"
 
     - name: build_srcs
       uses: ./.github/actions/build-src
@@ -230,12 +224,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: setup_miniconda
       uses: conda-incubator/setup-miniconda@v2
       with:
-        python-version: 3.7
+        python-version: 3.8
         auto-update-conda: true
         channel-priority: flexible
         channels: conda-forge
@@ -260,12 +254,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: setup_miniconda
       uses: conda-incubator/setup-miniconda@v2
       with:
-        python-version: 3.7
+        python-version: 3.8
         auto-update-conda: true
         channel-priority: flexible
         channels: conda-forge
@@ -273,9 +267,11 @@ jobs:
         # mamba not enabled as install longer than deps install
         architecture: x64
 
-    - name: install_conda
+    - name: install_pip_conda
       run: |
-        conda install setuptools cython numpy twine
+        # Issue 3612 - readme_renderer is outdated on conda-forge
+        conda install setuptools cython numpy twine 
+        pip install "readme-renderer>=34.0"
 
     - name: install_mdanalysis
       run: |

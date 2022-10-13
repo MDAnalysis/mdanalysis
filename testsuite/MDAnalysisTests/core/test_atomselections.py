@@ -46,6 +46,7 @@ from MDAnalysis.tests.datafiles import (
     PDB_HOLE,
     PDB_helix,
     PDB_elements,
+    PDB_charges,
 )
 from MDAnalysisTests import make_Universe
 
@@ -191,6 +192,14 @@ class TestSelectionsCHARMM(object):
         'sphlayer 4.0 6.0 index 1280'
     ])
     def test_sphlayer(self, universe, selstr):
+        sel = universe.select_atoms(selstr)
+        assert_equal(len(sel), 66)
+
+    @pytest.mark.parametrize('selstr', [
+        'isolayer 4.0 6.0 bynum 1281',
+        'isolayer 4.0 6.0 index 1280'
+    ])
+    def test_isolayer(self, universe, selstr):
         sel = universe.select_atoms(selstr)
         assert_equal(len(sel), 66)
 
@@ -575,10 +584,28 @@ class TestSelectionRDKit(object):
         with pytest.raises(ValueError, match="not a valid SMARTS"):
             u2.select_atoms("smarts foo")
 
-    def test_passing_args_to_converter(self):
+    def test_passing_rdkit_kwargs_to_converter(self):
         u = mda.Universe.from_smiles("O=C=O")
         sel = u.select_atoms("smarts [$(O=C)]", rdkit_kwargs=dict(force=True))
         assert sel.n_atoms == 2
+
+    def test_passing_max_matches_to_converter(self, u2):
+        with pytest.warns(UserWarning, match="Your smarts-based") as wsmg:
+            sel = u2.select_atoms("smarts C", smarts_kwargs=dict(maxMatches=2))
+            sel2 = u2.select_atoms(
+                    "smarts C", smarts_kwargs=dict(maxMatches=1000))
+            assert sel.n_atoms == 2
+            assert sel2.n_atoms == 3
+
+        sel3 = u2.select_atoms("smarts c")
+        assert sel3.n_atoms == 4
+
+    def test_passing_use_chirality_to_converter(self):
+        u = mda.Universe.from_smiles("CC[C@H](C)O")
+        sel3 = u.select_atoms("byres smarts CC[C@@H](C)O")
+        assert sel3.n_atoms == 0
+        sel4 = u.select_atoms("byres smarts CC[C@@H](C)O", smarts_kwargs={"useChirality": False})
+        assert sel4.n_atoms == 15
 
 
 class TestSelectionsNucleicAcids(object):
@@ -669,6 +696,34 @@ class BaseDistanceSelection(object):
         ref = set(np.where((d > 2.4) & (d < 6.0))[0])
 
         assert ref == set(result.indices)
+
+    @pytest.mark.parametrize('periodic', (True, False))
+    def test_isolayer(self, u, periodic):
+
+        rmin, rmax = 2.4, 3
+        if u.atoms.types[0].isdigit():
+            r1 = u.select_atoms("resid 1 or resid 2 and type 7")
+        else:
+            r1 = u.select_atoms("resid 1 or resid 2 and type O")
+
+        sel = Parser.parse("isolayer {} {} (index {} or index {})".format(rmin, rmax, *r1.ix), u.atoms)
+        if periodic:
+            sel.periodic = True
+        else:
+            sel.periodic = False
+        result = sel.apply(u.atoms)
+
+        box = u.dimensions if periodic else None
+        cog1 = r1[0].position.reshape(1, 3)
+        d1 = distance_array(u.atoms.positions, cog1, box=box)
+        cog2 = r1[1].position.reshape(1, 3)
+        d2 = distance_array(u.atoms.positions, cog2, box=box)
+
+        ref_inner  = set(np.where((d1 < rmin) | (d2 < rmin))[0])
+        ref_outer  = set(np.where((d1 < rmax) | (d2 < rmax))[0])
+        ref_outer -= ref_inner
+
+        assert ref_outer == set(result.indices) and len(list(ref_outer)) > 0
 
     @pytest.mark.parametrize('periodic', (True, False))
     def test_spherical_zone(self, u, periodic):
@@ -785,6 +840,10 @@ class TestTriclinicSelections(object):
 
     def test_empty_sphlayer(self, u):
         empty = u.select_atoms('sphlayer 2.4 6.0 name NOT_A_NAME')
+        assert len(empty) == 0
+
+    def test_empty_isolayer(self, u):
+        empty = u.select_atoms('isolayer 2.4 6.0 name NOT_A_NAME')
         assert len(empty) == 0
 
     def test_sphzone(self, u):
@@ -1003,6 +1062,7 @@ class TestSelectionErrors(object):
         'mass :3.0',
         'mass 1-',
         'chirality ',
+        'formalcharge 0.2',
     ])
     def test_selection_fail(self, selstr, universe):
         with pytest.raises(SelectionError):
@@ -1439,3 +1499,16 @@ def test_chirality_selection(sel, size):
     ag = u.select_atoms('chirality {}'.format(sel))
 
     assert len(ag) == size
+
+
+@pytest.mark.parametrize('sel,size,name', [
+    ('1', 1, 'NH2'), ('-1', 1, 'OD2'), ('0', 34, 'N'), ('-1 1', 2, 'OD2'),
+])
+def test_formal_charge_selection(sel, size, name):
+    # 2 charge points, one positive one negative
+    u = mda.Universe(PDB_charges)
+
+    ag = u.select_atoms(f'formalcharge {sel}')
+
+    assert len(ag) == size
+    assert ag.atoms[0].name == name

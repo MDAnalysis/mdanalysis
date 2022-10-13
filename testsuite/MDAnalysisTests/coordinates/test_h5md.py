@@ -1,5 +1,5 @@
 import pytest
-from numpy.testing import assert_almost_equal, assert_equal
+from numpy.testing import assert_almost_equal, assert_equal, assert_allclose
 import numpy as np
 import sys
 import os
@@ -75,6 +75,39 @@ class TestH5MDReaderBaseAPI(MultiframeReaderTest):
             with reader.Writer(outfile, n_atoms=100) as W:
                 assert_equal(isinstance(W, ref.writer), True)
                 assert_equal(W.n_atoms, 100)
+
+    def test_copying(self, ref, reader):
+        # Issue #3664 - test not done in test_copying due to dependencies
+        original = mda.coordinates.H5MD.H5MDReader(
+                ref.trajectory, convert_units=False, dt=2,
+                time_offset=10, foo="bar")
+        copy = original.copy()
+
+        assert original.format not in ('MEMORY', 'CHAIN')
+        assert original.convert_units is False
+        assert copy.convert_units is False
+        assert original._ts_kwargs['time_offset'] == 10
+        assert copy._ts_kwargs['time_offset'] == 10
+        assert original._ts_kwargs['dt'] == 2
+        assert copy._ts_kwargs['dt'] == 2
+
+        assert original.ts.data['time_offset'] == 10
+        assert copy.ts.data['time_offset'] == 10
+
+        assert original.ts.data['dt'] == 2
+        assert copy.ts.data['dt'] == 2
+
+        assert copy._kwargs['foo'] == 'bar'
+
+        # check coordinates
+        assert original.ts.frame == copy.ts.frame
+        assert_allclose(original.ts.positions, copy.ts.positions)
+
+        original.next()
+        copy.next()
+
+        assert original.ts.frame == copy.ts.frame
+        assert_allclose(original.ts.positions, copy.ts.positions)
 
 
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")

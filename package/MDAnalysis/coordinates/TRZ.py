@@ -51,9 +51,10 @@ import os
 import errno
 
 from . import base
-from .base import Timestep
+from ..exceptions import NoDataError
+from .timestep import Timestep
 from ..lib import util
-from ..lib.util import cached
+from ..lib.util import cached, store_init_arguments
 from .core import triclinic_box, triclinic_vectors
 
 
@@ -62,8 +63,8 @@ class TRZReader(base.ReaderBase):
 
     Attributes
     ----------
-    ts : base.Timestep
-         :class:`~MDAnalysis.coordinates.base.Timestep` object containing
+    ts : timestep.Timestep
+         :class:`~MDAnalysis.coordinates.timestep.Timestep` object containing
          coordinates of current frame
 
     Note
@@ -83,12 +84,15 @@ class TRZReader(base.ReaderBase):
     .. versionchanged:: 2.1.0
        TRZReader now returns a default :attr:`dt` of 1.0 when it cannot be
        obtained from the difference between two frames.
+    .. versionchanged:: 2.3.0
+       _frame attribute moved to `ts.data` dictionary.
     """
 
     format = "TRZ"
 
     units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps'}
 
+    @store_init_arguments
     def __init__(self, trzfilename, n_atoms=None, **kwargs):
         """Creates a TRZ Reader
 
@@ -197,7 +201,7 @@ class TRZReader(base.ReaderBase):
                                  "Maybe `topology` is wrong?".format(
                                                              self.n_atoms))
             ts.frame = data['nframe'][0] - 1  # 0 based for MDA
-            ts._frame = data['ntrj'][0]
+            ts.data['frame'] = data['ntrj'][0] # moved from attr to data
             ts.time = data['treal'][0]
             ts.dimensions = triclinic_box(*(data['box'].reshape(3, 3)))
             ts.data['pressure'] = data['pressure']
@@ -294,9 +298,9 @@ class TRZReader(base.ReaderBase):
         """Timesteps between trajectory frames"""
         curr_frame = self.ts.frame
         try:
-            t0 = self.ts._frame
+            t0 = self.ts.data['frame']
             self.next()
-            t1 = self.ts._frame
+            t1 = self.ts.data['frame']
             skip_timestep = t1 - t0
         except StopIteration:
             return 0
@@ -519,8 +523,8 @@ class TRZWriter(base.WriterBase):
                     data[att] = 0.0
                 faked_attrs.append(att)
         try:
-            data['step'] = ts._frame
-        except AttributeError:
+            data['step'] = ts.data['frame']
+        except KeyError:
             data['step'] = ts.frame
             faked_attrs.append('step')
         try:
@@ -542,8 +546,8 @@ class TRZWriter(base.WriterBase):
             unitcell = np.zeros(9, dtype=np.float32)
 
         try:
-            vels = ts._velocities
-        except AttributeError:
+            vels = ts.velocities
+        except NoDataError:
             vels = np.zeros((self.n_atoms, 3), dtype=np.float32, order='F')
             warnings.warn("Timestep didn't have velocity information, "
                           "this will be set to zero in output trajectory. ")

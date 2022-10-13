@@ -20,6 +20,8 @@ inputs:
     default: 'codecov'
   cython:
     default: 'cython'
+  fasteners:
+    default: 'fasteners'
   griddataformats:
     default: 'griddataformats'
   gsd:
@@ -52,7 +54,7 @@ inputs:
   clustalw:
     default: 'clustalw=2.1'
   h5py:
-    default: 'h5py'
+    default: 'h5py>=2.10'
   joblib:
     default: 'joblib>=0.12'
   netcdf4:
@@ -69,9 +71,9 @@ inputs:
     default: 'tidynamics>=1.0.0'
   # pip-installed min dependencies
   coverage:
-    default: 'coverage<5'
+    default: 'coverage<5.0'
   pytest-cov:
-    default: 'pytest-cov==2.10.1'
+    default: 'pytest-cov<=2.10.1'
   pytest-xdist:
     default: 'pytest-xdist'
   # pip-install optional dependencies
@@ -79,6 +81,8 @@ inputs:
     default: 'duecredit'
   parmed:
     default: 'parmed'
+  pyedr:
+    default: 'pyedr>=0.7.0'
 
 runs:
   using: "composite"
@@ -90,6 +94,7 @@ runs:
           ${{ inputs.biopython }}
           ${{ inputs.codecov }}
           ${{ inputs.cython }}
+          ${{ inputs.fasteners }}
           ${{ inputs.griddataformats }}
           ${{ inputs.gsd }}
           ${{ inputs.hypothesis }}
@@ -129,7 +134,7 @@ runs:
         else
           conda install ${CONDA_DEPS}
         fi
-          
+
     - name: pip_install
       shell: bash -l {0}
       env:
@@ -140,6 +145,7 @@ runs:
         PIP_OPT_DEPS: |
           ${{ inputs.duecredit }}
           ${{ inputs.parmed }}
+          ${{ inputs.pyedr }}
       run: |
         # setup full variable
         if [ ${{ inputs.full-deps }} = "true" ]; then
@@ -147,7 +153,6 @@ runs:
         else
           PIP_DEPS="${PIP_MIN_DEPS} ${{ inputs.extra-pip-deps }}"
         fi
-        
+
         # do the install
         pip install ${PIP_DEPS}
-

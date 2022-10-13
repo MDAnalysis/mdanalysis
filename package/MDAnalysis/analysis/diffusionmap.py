@@ -31,18 +31,18 @@
 This module contains the non-linear dimension reduction method diffusion map.
 The eigenvectors of a diffusion matrix represent the 'collective coordinates'
 of a molecule; the largest eigenvalues are the more dominant collective
-coordinates. Assigning phyiscal meaning to the 'collective coordinates' is a
+coordinates. Assigning physical meaning to the 'collective coordinates' is a
 fundamentally difficult problem. The time complexity of the diffusion map is
 :math:`O(N^3)`, where N is the number of frames in the trajectory, and the in-memory
 storage complexity is :math:`O(N^2)`. Instead of a single trajectory a sample of
-protein structures can be used. The sample should be equiblibrated, at least
+protein structures can be used. The sample should be equilibrated, at least
 locally. The order of the sampled structures in the trajectory is irrelevant.
 
 The :ref:`Diffusion-Map-tutorial` shows how to use diffusion map for dimension
 reduction.
 
-More details about diffusion maps are in [deLaPorte1]_, [Lafon1]_ ,
-[Ferguson1]_, and [Clementi1]_.
+More details about diffusion maps are in
+:cite:p:`deLaPorte2008,Coifman-Lafon,Ferguson2011,Clementi2011`.
 
 .. _Diffusion-Map-tutorial:
 
@@ -71,9 +71,9 @@ the corresponding eigenvalues and eigenvectors.
    u = mda.Universe(PSF,DCD)
 
 We leave determination of the appropriate scale parameter epsilon to the user,
-[Clementi1]_ uses a complex method involving the k-nearest-neighbors of a
-trajectory frame, whereas others simple use a trial-and-error approach with
-a constant epsilon. Currently, the constant epsilon method is implemented
+:cite:p:`Clementi2011` uses a complex method involving the k-nearest-neighbors
+of a trajectory frame, whereas others simple use a trial-and-error approach
+with a constant epsilon. Currently, the constant epsilon method is implemented
 by MDAnalysis.
 
 .. code-block:: python
@@ -124,31 +124,24 @@ References
 ----------
 
 If you use this Dimension Reduction method in a publication, please
-cite [Lafon1]_.
+cite :cite:p:`Coifman-Lafon`.
 
 If you choose the default metric, this module uses the fast QCP algorithm
-[Theobald2005]_ to calculate the root mean square distance (RMSD) between two
-coordinate sets (as implemented in
+:cite:p:`Theobald2005` to calculate the root mean square distance (RMSD)
+between two coordinate sets (as implemented in
 :func:`MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix`).  When using this
-module in published work please cite [Theobald2005]_.
+module in published work please :cite:p:`Theobald2005`.
 
 
-.. [Lafon1] Coifman, Ronald R., Lafon, Stephane. Diffusion
-            maps. Appl. Comput. Harmon.  Anal. 21, 5–30 (2006).
+.. bibliography::
+    :filter: False
+    :style: MDA
 
-.. [deLaPorte1] J. de la Porte, B. M. Herbst, W. Hereman, S. J. van der Walt.
-             An Introduction to Diffusion Maps. In: The 19th Symposium of the
-             Pattern Recognition Association of South Africa (2008).
-
-.. [Clementi1] Rohrdanz, M. A, Zheng, W, Maggioni, M, & Clementi, C.
-             Determination of reaction coordinates via locally scaled diffusion
-             map. J. Chem. Phys. 134, 124116 (2011).
-
-.. [Ferguson1] Ferguson, A. L.; Panagiotopoulos, A. Z.; Kevrekidis, I. G.
-             Debenedetti, P. G. Nonlinear dimensionality reduction in molecular
-             simulation: The diffusion map approach Chem. Phys. Lett. 509, 1−11
-             (2011)
-
+    Coifman-Lafon
+    deLaPorte2008
+    Clementi2011
+    Ferguson2011
+    Theobald2005
 """
 import logging
 import warnings
@@ -156,6 +149,7 @@ import warnings
 import numpy as np
 
 from MDAnalysis.core.universe import Universe
+from MDAnalysis.core.groups import AtomGroup, UpdatingAtomGroup
 from .rms import rmsd
 from .base import AnalysisBase
 
@@ -171,7 +165,7 @@ class DistanceMatrix(AnalysisBase):
 
     Parameters
     ----------
-    universe : `~MDAnalysis.core.universe.Universe`
+    universe : `~MDAnalysis.core.universe.Universe` or `~MDAnalysis.core.groups.AtomGroup`
         The MD Trajectory for dimension reduction, remember that
         computational cost of eigenvalue decomposition
         scales at O(N^3) where N is the number of frames.
@@ -243,12 +237,20 @@ class DistanceMatrix(AnalysisBase):
     .. versionchanged:: 2.0.0
          :attr:`dist_matrix` is now stored in a
          :class:`MDAnalysis.analysis.base.Results` instance.
-
+    .. versionchanged:: 2.2.0
+         :class:`DistanceMatrix` now also accepts `AtomGroup`.
     """
     def __init__(self, universe, select='all', metric=rmsd, cutoff=1E0-5,
                  weights=None, **kwargs):
         # remember that this must be called before referencing self.n_frames
-        super(DistanceMatrix, self).__init__(universe.trajectory, **kwargs)
+        super(DistanceMatrix, self).__init__(universe.universe.trajectory,
+                                             **kwargs)
+
+        if isinstance(universe, UpdatingAtomGroup):
+            wmsg = ("U must be a static AtomGroup. Parsing an updating AtomGroup "
+                    "will result in a static AtomGroup with the current frame "
+                    "atom selection.")
+            warnings.warn(wmsg)
 
         self.atoms = universe.select_atoms(select)
         self._metric = metric
@@ -309,31 +311,35 @@ class DiffusionMap(object):
     transform(n_eigenvectors, time)
         Perform an embedding of a frame into the eigenvectors representing
         the collective coordinates.
+
+
+    .. versionchanged:: 2.2.0
+         :class:`DiffusionMap` now also accepts `AtomGroup`.
     """
 
     def __init__(self, u, epsilon=1, **kwargs):
         """
         Parameters
         -------------
-        u : MDAnalysis Universe or DistanceMatrix object
-            Can be a Universe, in which case one must supply kwargs for the
+        u : MDAnalysis Universe or AtomGroup or DistanceMatrix object.
+            Can be a Universe or AtomGroup, in which case one must supply kwargs for the
             initialization of a DistanceMatrix. Otherwise, this can be a
             DistanceMatrix already initialized. Either way, this will be made
             into a diffusion kernel.
         epsilon : Float
             Specifies the method used for the choice of scale parameter in the
-            diffusion map. More information in [Lafon1]_, [Ferguson1]_ and
-            [Clementi1]_, Default: 1.
+            diffusion map. More information in
+            :cite:p:`Coifman-Lafon,Ferguson2011,Clementi2011`, Default: 1.
         **kwargs
             Parameters to be passed for the initialization of a
             :class:`DistanceMatrix`.
         """
-        if isinstance(u, Universe):
+        if isinstance(u, AtomGroup) or isinstance(u, Universe):
             self._dist_matrix = DistanceMatrix(u, **kwargs)
         elif isinstance(u, DistanceMatrix):
             self._dist_matrix = u
         else:
-            raise ValueError("U is not a Universe or DistanceMatrix and"
+            raise ValueError("U is not a Universe or AtomGroup or DistanceMatrix and"
                              " so the DiffusionMap has no data to work with.")
         self._epsilon = epsilon
 
@@ -389,7 +395,7 @@ class DiffusionMap(object):
         Return
         ------
         diffusion_space : array (n_frames, n_eigenvectors)
-            The diffusion map embedding as defined by [Ferguson1]_.
+            The diffusion map embedding as defined by :cite:p:`Ferguson2011`.
         """
         return (self._eigenvectors[1:n_eigenvectors+1,].T *
                 (self.eigenvalues[1:n_eigenvectors+1]**time))

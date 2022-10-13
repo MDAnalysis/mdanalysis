@@ -73,7 +73,7 @@ NMP domain.
 * calculate the backbone RMSD and RMSD for CORE, LID, NMP (backbone atoms)
 
 The trajectory is included with the test data files. The data in
-:attr:`RMSD.results.rmsd` is plotted with :func:`matplotlib.pyplot.plot`::
+:attr:`RMSD.results.rmsd` is plotted with :func:`matplotlib.pyplot.plot` (see Figure :ref:`RMSD plot figure <figure-RMSD>`)::
 
    import MDAnalysis
    from MDAnalysis.tests.datafiles import PSF,DCD,CRD
@@ -103,8 +103,16 @@ The trajectory is included with the test data files. The data in
    ax.set_xlabel("time (ps)")
    ax.set_ylabel(r"RMSD ($\\AA$)")
    fig.savefig("rmsd_all_CORE_LID_NMP_ref1AKE.pdf")
+   
+.. _figure-RMSD:
 
+.. figure:: /images/RSMD_plot.png
+      :scale: 50 %
+      :alt: RMSD plot
+      
+      RMSD plot for backbone and CORE, LID, NMP domain of the protein.
 
+      
 Functions
 ---------
 
@@ -916,7 +924,7 @@ class RMSF(AnalysisBase):
         No mass weighting is performed.
 
         This method implements an algorithm for computing sums of squares while
-        avoiding overflows and underflows [Welford1962]_.
+        avoiding overflows and underflows :cite:p:`Welford1962`.
 
 
         Examples
@@ -993,9 +1001,11 @@ class RMSF(AnalysisBase):
 
         References
         ----------
-        .. [Welford1962] B. P. Welford (1962). "Note on a Method for
-           Calculating Corrected Sums of Squares and Products." Technometrics
-           4(3):419-420.
+        .. bibliography::
+            :filter: False
+            :style: MDA
+
+            Welford1962
 
 
         .. versionadded:: 0.11.0

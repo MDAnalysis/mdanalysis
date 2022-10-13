@@ -30,7 +30,7 @@ from numpy.testing import (assert_equal, assert_almost_equal,
                            assert_array_almost_equal, assert_allclose)
 
 import MDAnalysis as mda
-from MDAnalysis.coordinates.base import Timestep
+from MDAnalysis.coordinates.timestep import Timestep
 from MDAnalysis.transformations import translate
 from MDAnalysis import NoDataError
 
@@ -393,7 +393,6 @@ class BaseReaderTest(object):
             idealcoords = ref.iter_ts(ts.frame).positions + v1 + v2
             assert_array_almost_equal(ts.positions, idealcoords, decimal = ref.prec)
 
-
     def test_transformations_switch_frame(self, ref, transformed):
         # This test checks if the transformations are applied and if the coordinates
         # "overtransformed" on different situations
@@ -511,6 +510,16 @@ class MultiframeReaderTest(BaseReaderTest):
             assert_timestep_almost_equal(ts,
                                          ref.iter_ts(ref.aux_lowf_frames_with_steps[i]),
                                          decimal=ref.prec)
+
+    @pytest.mark.parametrize("accessor", [
+              lambda traj: traj[[0, 1, 2]],
+              lambda traj: traj[:3],
+              lambda traj: traj],
+              ids=["indexed", "sliced", "all"])
+    def test_iter_rewinds(self, reader, accessor):
+        for ts_indices in accessor(reader):
+            pass
+        assert_equal(ts_indices.frame, 0)
 
     #  To make sure we not only save the current timestep information,
     #  but also maintain its relative position.
@@ -650,9 +659,9 @@ def assert_timestep_equal(A, B, msg=''):
 
 
 def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):
-    if not isinstance(A, Timestep):
+    if not isinstance(A, mda.coordinates.timestep.Timestep):
         raise AssertionError('A is not of type Timestep')
-    if not isinstance(B, Timestep):
+    if not isinstance(B, mda.coordinates.timestep.Timestep):
         raise AssertionError('B is not of type Timestep')
 
     if A.frame != B.frame:

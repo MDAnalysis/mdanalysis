@@ -47,7 +47,7 @@ import Bio.SeqRecord
 import numpy as np
 
 from ..lib.util import (cached, convert_aa_code, iterable, warn_if_not_unique,
-                        unique_int_1d)
+                        unique_int_1d, check_atomgroup_not_empty)
 from ..lib import transformations, mdamath
 from ..exceptions import NoDataError, SelectionError
 from .topologyobjects import TopologyGroup
@@ -1453,10 +1453,16 @@ class Masses(AtomAttr):
     @warn_if_not_unique
     @_pbc_to_wrap
     @check_wrap_and_unwrap
+    @check_atomgroup_not_empty
     def center_of_mass(group, wrap=False, unwrap=False, compound='group'):
-        """Center of mass of (compounds of) the group.
+        r"""Center of mass of (compounds of) the group
 
-        Computes the center of mass of :class:`Atoms<Atom>` in the group.
+        .. math::
+            \boldsymbol R = \frac{\sum_i m_i \boldsymbol r_i}{\sum m_i}
+
+        where :math:`m_i` is the mass and :math:`\boldsymbol r_i` the
+        position of atom :math:`i` in the given
+        :class:`MDAnalysis.core.groups.AtomGroup`.
         Centers of mass per :class:`Residue`, :class:`Segment`, molecule, or
         fragment can be obtained by setting the `compound` parameter
         accordingly. If the masses of a compound sum up to zero, the
@@ -1521,6 +1527,7 @@ class Masses(AtomAttr):
         ('center_of_mass', center_of_mass))
 
     @warn_if_not_unique
+    @check_atomgroup_not_empty
     def total_mass(group, compound='group'):
         r"""Total mass of (compounds of) the group.
 
@@ -1559,6 +1566,7 @@ class Masses(AtomAttr):
     @warn_if_not_unique
     @_pbc_to_wrap
     @check_wrap_and_unwrap
+    @check_atomgroup_not_empty
     def moment_of_inertia(group, wrap=False, unwrap=False, compound="group"):
         r"""Moment of inertia tensor relative to center of mass.
 
@@ -1666,6 +1674,7 @@ class Masses(AtomAttr):
 
     @warn_if_not_unique
     @_pbc_to_wrap
+    @check_atomgroup_not_empty
     def radius_of_gyration(group, wrap=False, **kwargs):
         """Radius of gyration.
 
@@ -1701,6 +1710,7 @@ class Masses(AtomAttr):
 
     @warn_if_not_unique
     @_pbc_to_wrap
+    @check_atomgroup_not_empty
     def shape_parameter(group, wrap=False):
         """Shape parameter.
 
@@ -1747,6 +1757,7 @@ class Masses(AtomAttr):
     @warn_if_not_unique
     @_pbc_to_wrap
     @check_wrap_and_unwrap
+    @check_atomgroup_not_empty
     def asphericity(group, wrap=False, unwrap=None, compound='group'):
         """Asphericity.
 
@@ -1805,6 +1816,7 @@ class Masses(AtomAttr):
 
     @warn_if_not_unique
     @_pbc_to_wrap
+    @check_atomgroup_not_empty
     def principal_axes(group, wrap=False):
         """Calculate the principal axes from the moment of inertia.
 
@@ -1923,6 +1935,77 @@ class Charges(AtomAttr):
         return charges
 
     @warn_if_not_unique
+    @_pbc_to_wrap
+    @check_wrap_and_unwrap
+    @check_atomgroup_not_empty
+    def center_of_charge(group, wrap=False, unwrap=False, compound='group'):
+        r"""Center of (absolute) charge of (compounds of) the group
+
+        .. math::
+            \boldsymbol R = \frac{\sum_i \vert q_i \vert \boldsymbol r_i}
+                                 {\sum_i \vert q_i \vert}
+
+        where :math:`q_i` is the charge and :math:`\boldsymbol r_i` the
+        position of atom :math:`i` in the given
+        :class:`MDAnalysis.core.groups.AtomGroup`.
+        Centers of charge per :class:`Residue`, :class:`Segment`, molecule, or
+        fragment can be obtained by setting the `compound` parameter
+        accordingly. If the charges of a compound sum up to zero, the
+        center of mass coordinates of that compound will be ``nan`` (not a
+        number).
+
+        Parameters
+        ----------
+        wrap : bool, optional
+            If ``True`` and `compound` is ``'group'``, move all atoms to the
+            primary unit cell before calculation.
+            If ``True`` and `compound` is not ``group``, the
+            centers of mass of each compound will be calculated without moving
+            any atoms to keep the compounds intact. Instead, the resulting
+            center-of-mass position vectors will be moved to the primary unit
+            cell after calculation.
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their
+            centers.
+        compound : {'group', 'segments', 'residues', 'molecules', \
+                    'fragments'}, optional
+            If ``'group'``, the center of mass of all atoms in the group will
+            be returned as a single position vector. Otherwise, the centers of
+            mass of each :class:`Segment`, :class:`Residue`, molecule, or
+            fragment will be returned as an array of position vectors, i.e.
+            a 2d array.
+            Note that, in any case, *only* the positions of
+            :class:`Atoms<Atom>` *belonging to the group* will be taken into
+            account.
+
+        Returns
+        -------
+        center : numpy.ndarray
+            Position vector(s) of the center(s) of charge of the group.
+            If `compound` was set to ``'group'``, the output will be a single
+            position vector.
+            If `compound` was set to ``'segments'`` or ``'residues'``, the
+            output will be a 2d coordinate array of shape ``(n, 3)`` where
+            ``n`` is the number of compounds.
+
+        Note
+        ----
+        This method can only be accessed if the underlying topology has
+        information about atomic charges.
+
+        .. versionadded:: 2.2.0
+        """
+        atoms = group.atoms
+        return atoms.center(weights=atoms.charges.__abs__(),
+                            wrap=wrap,
+                            compound=compound,
+                            unwrap=unwrap)
+
+    transplants[GroupBase].append(
+        ('center_of_charge', center_of_charge))
+
+    @warn_if_not_unique
+    @check_atomgroup_not_empty
     def total_charge(group, compound='group'):
         r"""Total charge of (compounds of) the group.
 
@@ -1957,6 +2040,18 @@ class Charges(AtomAttr):
 
     transplants[GroupBase].append(
         ('total_charge', total_charge))
+
+
+class FormalCharges(AtomAttr):
+    """Formal charge on each atom"""
+    attrname = 'formalcharges'
+    singular = 'formalcharge'
+    per_object = 'atom'
+    dtype = int
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
 
 
 # TODO: update docs to property doc
