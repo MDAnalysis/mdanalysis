@@ -31,6 +31,8 @@ Fixes
 
 
 Enhancements
+  * Added decorator to check for an empty atom group, applied in topological 
+    attributes(Issue #3837)
   * AuxReaders now have a memory_limit parameter to control when memory usage
     warnings are issued. (PR # 3749)
   * MDAnalysis.units now has a lookup dictionary called MDANALYSIS_BASE_UNITS
