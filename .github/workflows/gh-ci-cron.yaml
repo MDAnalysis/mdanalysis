@@ -140,6 +140,9 @@ jobs:
     - name: pip install mdanalysis
       run: |
         cd package && pip install .
+
+    - name: pip install mdanalysistests
+      run: |
         cd testsuite && pip install .
 
     - name: install_pip_extras
