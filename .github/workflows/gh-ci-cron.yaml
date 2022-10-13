@@ -3,6 +3,9 @@ on:
   schedule:
     # once a week at midnight on Sunday
     - cron: "0 3 * * 0"
+  pull_request:
+    branches:
+      - develop
 
 concurrency:
   # Probably overly cautious group naming.
