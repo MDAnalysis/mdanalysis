@@ -115,7 +115,10 @@ jobs:
   pip-only:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
-
+    strategy:
+        fail-fast: false
+        matrix:
+          python-version: ["3.10", "3.11.0-rc.2"]
     steps:
     - uses: actions/checkout@v3
 
@@ -124,17 +127,9 @@ jobs:
       with:
         os-type: "ubuntu"
 
-    - name: setup_miniconda
-      uses: conda-incubator/setup-miniconda@v2
+    - name: actions/setup-python@v4
       with:
-        python-version: 3.9
-        auto-update-conda: true
-        add-pip-as-python-dependency: true
-        architecture: x64
-
-    - name: install_minimum_pip
-      run: |
-        pip install numpy Cython pytest-xdist
+        python-version: ${{ matrix.python-version }}
 
     - name: build_srcs
       uses: ./.github/actions/build-src
@@ -142,6 +137,10 @@ jobs:
         build-hole: false
         build-tests: true
         build-docs: false
+
+    - name: install_pip_extras
+      run: |
+        pip install pytest-xdist
 
     - name: run_tests
       run: |
