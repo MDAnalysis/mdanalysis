@@ -137,12 +137,10 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: build_srcs
-      uses: ./.github/actions/build-src
-      with:
-        build-hole: false
-        build-tests: true
-        build-docs: false
+    - name: pip install mdanalysis
+      run: |
+        cd package && pip install .
+        cd testsuite && pip install .
 
     - name: install_pip_extras
       run: |
