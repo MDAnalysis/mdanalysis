@@ -437,7 +437,8 @@ class TestSymmRMSD(object):
     @pytest.fixture()
     def benzene_traj_still(self, benzene):
         """
-        Build fictitious trajectory for benzene, which remains still at every frame
+        Build fictitious trajectory for benzene, which remains still at every frame.
+        Returns atom group of the whole universe (benzene).
         """
         B = mda.Universe.empty(
             6, atom_resindex=[0] * 6, residue_segindex=[0], trajectory=True
@@ -451,12 +452,14 @@ class TestSymmRMSD(object):
 
         B.load_new(np.array(coords), order='fac')
 
-        return B
-    
+        return B.atoms
+
     @pytest.fixture()
-    def benzene_traj_rotating(self, benzene):
+    def benzene_traj_rotating_random(self, benzene):
         """
-        Build fictitious trajectory for benzene, rotating of 60 degrees.
+        Build fictitious trajectory for benzene, rotating of 60 degrees, with additional
+        random coordinates.
+        Returns atom group of the whole universe (benzene and random atoms).
         """
         from MDAnalysis.lib.transformations import rotation_matrix
         
@@ -464,48 +467,75 @@ class TestSymmRMSD(object):
         n_frames = len(angles)
 
         B = mda.Universe.empty(
-            6, atom_resindex=[0] * 6, residue_segindex=[0], trajectory=True
+            20,
+            n_residues=2,
+            atom_resindex=[0] * 6 + [1] * 14,
+            residue_segindex=[0, 0],
+            trajectory=True,
         )
         B.add_TopologyAttr('bonds', benzene.bonds)
-        B.add_TopologyAttr('type', ['C'] * 6)
-        B.add_TopologyAttr('resname', ['BNZ'])
+        B.add_TopologyAttr('type', ['C'] * 6 + ['X'] * 14)
+        B.add_TopologyAttr('resname', ['BNZ'] + ['UNK'])
 
-        coords = np.zeros((n_frames, B.atoms.n_atoms, 3))
+        coords = np.zeros((n_frames, 20, 3))
         for i, angle in enumerate(angles):
             cog = np.mean(benzene.coords, axis=0)
             assert np.allclose(cog, [0, 0, 0])
 
             R = rotation_matrix(angle, [0, 0, 1], cog)[:3,:3]
-            coords[i, :, :] = benzene.coords @ R.T # Apply rotation to all coordinates
+            coords[i, :6, :] = benzene.coords @ R.T # Apply rotation to all coordinates
+            coords[i, 6:, :] = np.random.random((14, 3))
 
-        assert np.allclose(coords[0], benzene.coords)
-        assert np.allclose(coords[-1], benzene.coords)
+        assert np.allclose(coords[0, :6], benzene.coords)
+        assert np.allclose(coords[-1, :6], benzene.coords)
 
         B.load_new(np.array(coords), order='fac')
 
-        return B
+        return B.atoms
+
+    @pytest.fixture()
+    def benzene_traj_rotating(self, benzene_traj_rotating_random):
+        """
+        Build fictitious trajectory for benzene, rotating of 60 degrees.
+        Returns atom group of benzene only.
+        """
+        return benzene_traj_rotating_random.select_atoms("resname BNZ")
 
     def test_rmsd_benzene_self(self, benzene_traj_rotating):
-        assert len(benzene_traj_rotating.trajectory) == 7
-        
-        R = rms.SymmRMSD(benzene_traj_rotating.atoms)
+        assert len(benzene_traj_rotating.universe.trajectory) == 7
+
+        R = rms.SymmRMSD(benzene_traj_rotating)
         R.run()
 
         assert np.allclose(R.results.rmsd[:,-1], 0.0, atol=1e-5)
 
     def test_rmsd_benzene(self, benzene_traj_still, benzene_traj_rotating):
-        assert len(benzene_traj_still.trajectory) == 7
-        assert len(benzene_traj_rotating.trajectory) == 7
+        assert len(benzene_traj_still.universe.trajectory) == 7
+        assert len(benzene_traj_rotating.universe.trajectory) == 7
 
-        R = rms.SymmRMSD(benzene_traj_rotating.atoms, reference=benzene_traj_still.atoms, ref_frame=-1)
+        R = rms.SymmRMSD(
+            benzene_traj_rotating,
+            reference=benzene_traj_still,
+            ref_frame=-1,
+        )
         R.run()
 
         assert np.allclose(R.results.rmsd[:,-1], 0.0, atol=1e-5)
 
-    def test_rmsd(self):
-        # Find suitable trajectory for test
-        # See https://github.com/MDAnalysis/MDAnalysisData/issues/45
-        raise NotImplementedError
+    def test_rmsd_benzene_rand(self,
+            benzene_traj_rotating,
+            benzene_traj_rotating_random
+        ):
+        assert len(benzene_traj_rotating.universe.trajectory) == 7
+        assert len(benzene_traj_rotating_random.universe.trajectory) == 7
+
+        R = rms.SymmRMSD(
+            benzene_traj_rotating_random.select_atoms("resname BNZ"),
+            reference=benzene_traj_rotating,
+        )
+        R.run()
+
+        assert np.allclose(R.results.rmsd[:,-1], 0.0, atol=1e-5)
 
     def test_isomorphisms(self, benzene_traj_still):
         """
