@@ -28,7 +28,7 @@ from MDAnalysis.coordinates.GRO import GROReader, GROWriter
 from MDAnalysis.transformations import translate
 from MDAnalysisTests import make_Universe
 from MDAnalysisTests.coordinates.base import (
-    BaseReference, BaseReaderTest, BaseWriterTest,
+    BaseReference, BaseReaderTest, SingleFrameBaseWriterTest,
 )
 from MDAnalysisTests.coordinates.reference import RefAdK
 from MDAnalysisTests.datafiles import (
@@ -188,7 +188,7 @@ class TestGROReader(BaseReaderTest):
         assert_equal(frames, np.arange(u.trajectory.n_frames))
 
 
-class TestGROWriter(BaseWriterTest):
+class TestGROWriter(SingleFrameBaseWriterTest):
     @staticmethod
     @pytest.fixture(scope='class')
     def ref():
@@ -301,7 +301,7 @@ class TestGROReaderNoConversion(BaseReaderTest):
         return transformed
 
 
-class TestGROWriterNoConversion(BaseWriterTest):
+class TestGROWriterNoConversion(SingleFrameBaseWriterTest):
     @staticmethod
     @pytest.fixture(scope='class')
     def ref():
@@ -334,7 +334,7 @@ class TestGROReaderIncompleteVelocities(BaseReaderTest):
         return GROReaderIncompleteVelocitiesReference()
 
 
-class TestGROWriterIncompleteVelocities(BaseWriterTest):
+class TestGROWriterIncompleteVelocities(SingleFrameBaseWriterTest):
     @staticmethod
     @pytest.fixture(scope='class')
     def ref():
@@ -355,7 +355,7 @@ class TestGROBZ2Reader(BaseReaderTest):
         return GROBZReference()
 
 
-class TestGROBZ2Writer(BaseWriterTest):
+class TestGROBZ2Writer(SingleFrameBaseWriterTest):
     @staticmethod
     @pytest.fixture(scope='class')
     def ref():
@@ -369,7 +369,7 @@ class GROLargeReference(GROReference):
         self.topology = GRO_large
 
 
-class TestGROLargeWriter(BaseWriterTest):
+class TestGROLargeWriter(SingleFrameBaseWriterTest):
     @staticmethod
     @pytest.fixture(scope='class')
     def ref():

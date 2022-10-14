@@ -96,7 +96,17 @@ class TestCRDWriter(object):
             len(u2.atoms.segments)), 'Equal number of segments expected in'\
                         'both CRD formats'
         assert_allclose(cog1, cog2, rtol=1e-6, atol=0), 'Same centroid expected for both CRD formats'
+    
+    def test_append_to_trajectory(self, u, outfile):
+        with pytest.raises(ValueError, match="Single frame"):
+            u.atoms.write(outfile, append=True)
 
+    def test_write_multiple_frame(self, u, outfile):
+        with pytest.raises(ValueError, match="SingleFrameBaseWriter can"):
+            print(outfile)
+            with u.trajectory.Writer(outfile) as W:
+                W.write(u)
+                W.write(u)
 
 class TestCRDWriterMissingAttrs(object):
     # All required attributes with the default value
