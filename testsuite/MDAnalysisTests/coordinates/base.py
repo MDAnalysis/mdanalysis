@@ -650,6 +650,50 @@ class BaseWriterTest(object):
                 W.write(universe)
                 assert_timestep_almost_equal(copy_ts, universe.trajectory.ts)
 
+    @pytest.mark.xfail(raises=NotImplementedError)
+    def test_write_append_to_trajectory(self, ref, universe, tmpdir):
+        outfile = 'write-append-to-trajectory.' + ref.ext
+        with tmpdir.as_cwd():
+            with ref.writer(outfile, universe.atoms.n_atoms) as W:
+                for ts in universe.trajectory:
+                    W.write(universe)
+
+            with ref.writer(outfile, universe.atoms.n_atoms,
+                            append=True) as W:
+                for ts in universe.trajectory:
+                    W.write(universe)
+            copy = ref.reader(outfile)
+            assert_equal(len(universe.trajectory) * 2, len(copy))
+
+            with pytest.raises(ValueError, match='n_atoms'):
+                ref.writer(outfile, universe.atoms.n_atoms + 1, append=True)
+            copy = ref.reader(outfile)
+            assert_equal(len(universe.trajectory) * 2, len(copy))
+
+class SingleFrameBaseWriterTest(BaseWriterTest):
+    """Test the base class for single frame writers"""
+    def test_write_append_to_trajectory(self, ref, universe, tmpdir):
+        outfile = 'write-single-frame.' + ref.ext
+        with tmpdir.as_cwd():
+            with ref.writer(outfile, universe.atoms.n_atoms) as W:
+                W.write(universe)
+            with pytest.raises(ValueError, match="Single frame"):
+                with ref.writer(outfile, universe.atoms.n_atoms,
+                                append=True) as W:
+                    W.write(universe)
+            copy = ref.reader(outfile)
+            assert_equal(len(copy), 1)
+
+    def test_write_multiple_frame(self, ref, universe, tmpdir):
+        outfile = 'write-single-frame.' + ref.ext
+        with tmpdir.as_cwd():
+            with pytest.raises(ValueError, match="SingleFrameBaseWriter can"):
+                with ref.writer(outfile, universe.atoms.n_atoms) as W:
+                    W.write(universe)
+                    W.write(universe)
+            copy = ref.reader(outfile)
+            assert_equal(len(copy), 1)
+
 
 def assert_timestep_equal(A, B, msg=''):
     """ assert that two timesteps are exactly equal and commutative
@@ -711,3 +755,4 @@ def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):
     if len(A.aux) > 0 and len(B.aux) > 0:
         assert_equal(A.aux, B.aux, err_msg='Auxiliary values do not match: '
                                   'A.aux = {}, B.aux = {}'.format(A.aux, B.aux))
+    
