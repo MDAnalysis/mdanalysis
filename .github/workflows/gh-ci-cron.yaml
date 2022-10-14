@@ -1,14 +1,8 @@
 name: GH Actions Cron CI
 on:
   schedule:
-    # once a week at midnight on Sunday
-    - cron: "0 3 * * 0"
-  push:
-    branches:
-      - develop
-  pull_request:
-    branches:
-      - develop
+    # 3 am Tuesdays and Fridays
+    - cron: "0 3 * * 2,5"
 
 concurrency:
   # Probably overly cautious group naming.
