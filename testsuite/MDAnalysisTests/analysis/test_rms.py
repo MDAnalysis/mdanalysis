@@ -435,7 +435,26 @@ class TestSymmRMSD(object):
         return Molecule(coords, bonds)
 
     @pytest.fixture()
-    def benzene_traj(self, benzene):
+    def benzene_traj_still(self, benzene):
+        """
+        Build fictitious trajectory for benzene, which remains still at every frame
+        """
+        B = mda.Universe.empty(
+            6, atom_resindex=[0] * 6, residue_segindex=[0], trajectory=True
+        )
+        B.add_TopologyAttr('bonds', benzene.bonds)
+        B.add_TopologyAttr('type', ['C'] * 6)
+        B.add_TopologyAttr('resname', ['BNZ'])
+
+        coords = np.zeros((7, B.atoms.n_atoms, 3))
+        coords[:, :, :] = benzene.coords
+
+        B.load_new(np.array(coords), order='fac')
+
+        return B
+    
+    @pytest.fixture()
+    def benzene_traj_rotating(self, benzene):
         """
         Build fictitious trajectory for benzene, rotating of 60 degrees.
         """
@@ -466,10 +485,19 @@ class TestSymmRMSD(object):
 
         return B
 
-    def test_rmsd_benzene(self, benzene_traj):
-        assert len(benzene_traj.trajectory) == 7
+    def test_rmsd_benzene_self(self, benzene_traj_rotating):
+        assert len(benzene_traj_rotating.trajectory) == 7
         
-        R = rms.SymmRMSD(benzene_traj.atoms)
+        R = rms.SymmRMSD(benzene_traj_rotating.atoms)
+        R.run()
+
+        assert np.allclose(R.results.rmsd[:,-1], 0.0, atol=1e-5)
+
+    def test_rmsd_benzene(self, benzene_traj_still, benzene_traj_rotating):
+        assert len(benzene_traj_still.trajectory) == 7
+        assert len(benzene_traj_rotating.trajectory) == 7
+
+        R = rms.SymmRMSD(benzene_traj_rotating.atoms, reference=benzene_traj_still.atoms, ref_frame=-1)
         R.run()
 
         assert np.allclose(R.results.rmsd[:,-1], 0.0, atol=1e-5)
@@ -479,11 +507,11 @@ class TestSymmRMSD(object):
         # See https://github.com/MDAnalysis/MDAnalysisData/issues/45
         raise NotImplementedError
 
-    def test_isomorphisms(self, benzene_traj):
+    def test_isomorphisms(self, benzene_traj_still):
         """
         Test isomorphisms between two selections.
         """
-        R = rms.SymmRMSD(benzene_traj.atoms)
+        R = rms.SymmRMSD(benzene_traj_still.atoms)
         R.run()
 
         assert R.isomorphisms is not None
