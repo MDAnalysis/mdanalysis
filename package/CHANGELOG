@@ -28,9 +28,8 @@ Fixes
     those methods were giving unexpected results for some topology attributes
     (e.g. bonds, angles) (PR #3779).
 
-
-
 Enhancements
+  * Minimum NumPy version for py3.11 is now set to 1.23.2.
   * Added decorator to check for an empty atom group, applied in topological 
     attributes(Issue #3837)
   * AuxReaders now have a memory_limit parameter to control when memory usage
@@ -41,7 +40,6 @@ Enhancements
   * A new AuxReader for the GROMACS EDR file format was implemented.
     (Issue # 3629, PR # 3749)
   * Added benchmarks for bonds topology attribute (Issue #3785, PR #3806)
-
 
 Changes
  * Auxiliary; determination of representative frames: The default value for
