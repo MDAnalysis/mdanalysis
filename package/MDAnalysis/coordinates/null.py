@@ -51,8 +51,8 @@ class NullWriter(base.WriterBase):
     multiframe = True
     units = {'time': 'ps', 'length': 'Angstrom'}
 
-    def __init__(self, filename, **kwargs):
-        pass
+    def __init__(self, filename, n_atoms=None, append=False, **kwargs):
+        super().__init__(filename, n_atoms, append)
 
     def _write_next_frame(self, obj):
         try:

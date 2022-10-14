@@ -338,6 +338,7 @@ class DCDWriter(base.WriterBase):
     def __init__(self,
                  filename,
                  n_atoms,
+                 append=False,
                  convert_units=True,
                  step=1,
                  dt=1,
@@ -351,6 +352,9 @@ class DCDWriter(base.WriterBase):
             filename of trajectory
         n_atoms : int
             number of atoms to be written
+        append : bool (optional)
+            append to an existing trajectory if True, default is to
+            overwrite an existing file: ``False``
         convert_units : bool (optional)
             convert from MDAnalysis units to format specific units
         step : int (optional)
@@ -376,11 +380,10 @@ class DCDWriter(base.WriterBase):
             General writer arguments
 
         """
-        self.filename = filename
         self._convert_units = convert_units
         if n_atoms is None:
             raise ValueError("n_atoms argument is required")
-        self.n_atoms = n_atoms
+        super().__init__(filename, n_atoms, append)
         self._file = DCDFile(self.filename, 'w')
         self.step = step
         self.dt = dt

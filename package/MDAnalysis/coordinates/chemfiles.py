@@ -275,6 +275,7 @@ class ChemfilesWriter(base.WriterBase):
         self,
         filename,
         n_atoms=0,
+        append=False,
         mode="w",
         chemfiles_format="",
         topology=None,
@@ -308,8 +309,7 @@ class ChemfilesWriter(base.WriterBase):
             raise RuntimeError(
                 "Please install Chemfiles > {}" "".format(MIN_CHEMFILES_VERSION)
             )
-        self.filename = filename
-        self.n_atoms = n_atoms
+        super().__init__(filename, n_atoms, append)
         if mode != "a" and mode != "w":
             raise IOError("Expected 'a' or 'w' as mode in ChemfilesWriter")
         self._file = chemfiles.Trajectory(self.filename, mode, chemfiles_format)

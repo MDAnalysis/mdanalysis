@@ -190,7 +190,7 @@ class PDBQTReader(base.SingleFrameReaderBase):
         return PDBQTWriter(filename, **kwargs)
 
 
-class PDBQTWriter(base.WriterBase):
+class PDBQTWriter(base.SingleFrameWriterBase):
     """PDBQT writer that implements a subset of the PDB_ 3.2 standard and the PDBQT_ spec.
 
     .. _PDB: http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html
@@ -212,14 +212,15 @@ class PDBQTWriter(base.WriterBase):
     units = {'time': None, 'length': 'Angstrom'}
     pdb_coor_limits = {"min": -999.9995, "max": 9999.9995}
 
-    def __init__(self, filename, **kwargs):
-        self.filename = util.filename(filename, ext='pdbqt')
+    def __init__(self, filename, n_atoms=None, append=False, **kwargs):
+        filename = util.filename(filename, ext='pdbqt')
+        super().__init__(filename, n_atoms, append)
         self.pdb = util.anyopen(self.filename, 'w')
 
     def close(self):
         self.pdb.close()
 
-    def write(self, selection, frame=None):
+    def _write_next_frame(self, selection, frame=None):
         """Write selection at current trajectory frame to file.
 
         Parameters

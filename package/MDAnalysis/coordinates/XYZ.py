@@ -140,8 +140,8 @@ class XYZWriter(base.WriterBase):
     # these are assumed!
     units = {'time': 'ps', 'length': 'Angstrom'}
 
-    def __init__(self, filename, n_atoms=None, convert_units=True,
-                 remark=None, **kwargs):
+    def __init__(self, filename, n_atoms=None, append=False,
+                 convert_units=True, remark=None, **kwargs):
         """Initialize the XYZ trajectory writer
 
         Parameters
@@ -155,6 +155,9 @@ class XYZWriter(base.WriterBase):
             and that this file is used to store several different models
             instead of a single trajectory. If a number is provided each
             written TimeStep has to contain the same number of atoms.
+        append: bool (optional)
+            If ``True``, append to an existing file. If ``False``, overwrite
+            the file. Default is ``False``.
         convert_units : bool (optional)
             convert quantities to default MDAnalysis units of Angstrom upon
             writing  [``True``]
@@ -171,9 +174,8 @@ class XYZWriter(base.WriterBase):
            an empty universe, please use ``add_TopologyAttr`` to add in the
            required elements or names.
         """
-        self.filename = filename
+        super().__init__(filename, n_atoms, append)
         self.remark = remark
-        self.n_atoms = n_atoms
         self.convert_units = convert_units
 
         # can also be gz, bz2
@@ -200,24 +202,17 @@ class XYZWriter(base.WriterBase):
             self._xyz.close()
         self._xyz = None
 
-    def write(self, obj):
-        """Write object `obj` at current trajectory frame to file.
 
-        Atom elements (or names) in the output are taken from the `obj` or
-        default to the value of the `atoms` keyword supplied to the
-        :class:`XYZWriter` constructor.
-
-        Parameters
-        ----------
-        obj : Universe or AtomGroup
-            The :class:`~MDAnalysis.core.groups.AtomGroup` or
-            :class:`~MDAnalysis.core.universe.Universe` to write.
-
-
-        .. versionchanged:: 2.0.0
-           Deprecated support for Timestep argument has now been removed.
-           Use AtomGroup or Universe as an input instead.
+    def _write_next_frame(self, obj):
         """
+        Write coordinate information in *ts* to the trajectory
+
+        .. versionchanged:: 1.0.0
+           Print out :code:`remark` if present, otherwise use generic one 
+           (Issue #2692).
+           Renamed from `write_next_timestep` to `_write_next_frame`.
+        """
+
         # prepare the Timestep and extract atom names if possible
         # (The way it is written it should be possible to write
         # trajectories with frames that differ in atom numbers
@@ -239,20 +234,11 @@ class XYZWriter(base.WriterBase):
             elif hasattr(obj, 'trajectory'):
                 # For Universe only --- get everything
                 ts = obj.trajectory.ts
+            else:
+                ts = None
             # update atom names
             self.atomnames = self._get_atoms_elements_or_names(atoms)
-
-        self._write_next_frame(ts)
-
-    def _write_next_frame(self, ts=None):
-        """
-        Write coordinate information in *ts* to the trajectory
-
-        .. versionchanged:: 1.0.0
-           Print out :code:`remark` if present, otherwise use generic one 
-           (Issue #2692).
-           Renamed from `write_next_timestep` to `_write_next_frame`.
-        """
+        
         if ts is None:
             if not hasattr(self, 'ts'):
                 raise NoDataError('XYZWriter: no coordinate data to write to '

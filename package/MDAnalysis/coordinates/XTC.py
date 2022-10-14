@@ -51,8 +51,8 @@ class XTCWriter(XDRBaseWriter):
     units = {'time': 'ps', 'length': 'nm'}
     _file = XTCFile
 
-    def __init__(self, filename, n_atoms, convert_units=True,
-                 precision=3, **kwargs):
+    def __init__(self, filename, n_atoms, append=False,
+                 convert_units=True, precision=3, **kwargs):
         """
         Parameters
         ----------
@@ -60,13 +60,15 @@ class XTCWriter(XDRBaseWriter):
             filename of the trajectory
         n_atoms : int
             number of atoms to write
+        append : bool (optional)
+            append to an existing trajectory if True
         convert_units : bool (optional)
             convert into MDAnalysis units
         precision : float (optional)
             set precision of saved trjactory to this number of decimal places.
         """
-        super(XTCWriter, self).__init__(filename, n_atoms, convert_units,
-                                        **kwargs)
+        super().__init__(filename, n_atoms, append=append,
+                         convert_units=convert_units, **kwargs)
         self.precision = precision
 
     def _write_next_frame(self, ag):

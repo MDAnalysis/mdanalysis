@@ -205,7 +205,7 @@ class FHIAIMSReader(base.SingleFrameReaderBase):
         return FHIAIMSWriter(filename, n_atoms=n_atoms, **kwargs)
 
 
-class FHIAIMSWriter(base.WriterBase):
+class FHIAIMSWriter(base.SingleFrameWriterBase):
     """FHI-AIMS Writer.
 
        Single frame writer for the `FHI-AIMS`_ format.  Writes geometry (3D and
@@ -228,7 +228,8 @@ class FHIAIMSWriter(base.WriterBase):
         'box_triclinic': "lattice_vector {box[0]:12.8f} {box[1]:12.8f} {box[2]:12.8f}\nlattice_vector {box[3]:12.8f} {box[4]:12.8f} {box[5]:12.8f}\nlattice_vector {box[6]:12.8f} {box[7]:12.8f} {box[8]:12.8f}\n"
     }
 
-    def __init__(self, filename, convert_units=True, n_atoms=None, **kwargs):
+    def __init__(self, filename, convert_units=True, n_atoms=None,
+                 append=False, **kwargs):
         """Set up the FHI-AIMS Writer
 
         Parameters
@@ -239,8 +240,8 @@ class FHIAIMSWriter(base.WriterBase):
             number of atoms
 
         """
-        self.filename = util.filename(filename, ext='.in', keep=True)
-        self.n_atoms = n_atoms
+        filename = util.filename(filename, ext='.in', keep=True)
+        super().__init__(filename, n_atoms, append)
 
     def _write_next_frame(self, obj):
         """Write selection at current trajectory frame to file.

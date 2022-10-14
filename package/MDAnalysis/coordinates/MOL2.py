@@ -287,17 +287,21 @@ class MOL2Writer(base.WriterBase):
     multiframe = True
     units = {'time': None, 'length': 'Angstrom'}
 
-    def __init__(self, filename, n_atoms=None, convert_units=True):
+    def __init__(self, filename, n_atoms=None, append=False, 
+                 convert_units=True):
         """Create a new MOL2Writer
 
         Parameters
         ----------
         filename: str
             name of output file
+        append: bool (optional)
+            If ``True``, append to an existing file. If ``False``, overwrite
+            the file. Default is ``False``.
         convert_units: bool (optional)
             units are converted to the MDAnalysis base format; [``True``]
         """
-        self.filename = filename
+        super().__init__(filename, n_atoms, append)
         self.convert_units = convert_units  # convert length and time to base units
 
         self.frames_written = 0

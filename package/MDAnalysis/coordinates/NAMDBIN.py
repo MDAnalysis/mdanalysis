@@ -91,7 +91,7 @@ class NAMDBINReader(base.SingleFrameReaderBase):
         return NAMDBINWriter(filename, **kwargs)
 
 
-class NAMDBINWriter(base.WriterBase):
+class NAMDBINWriter(base.SingleFrameWriterBase):
     """Writer for NAMD binary coordinate files.
     
     
@@ -100,7 +100,7 @@ class NAMDBINWriter(base.WriterBase):
     format = ['COOR', 'NAMDBIN']
     units = {'time': None, 'length': 'Angstrom'}
 
-    def __init__(self, filename, n_atoms=None, **kwargs):
+    def __init__(self, filename, n_atoms=None, append=False, **kwargs):
         """
         Parameters
         ----------
@@ -109,7 +109,8 @@ class NAMDBINWriter(base.WriterBase):
         n_atoms  : int
             number of atoms for the output coordinate
         """
-        self.filename = util.filename(filename)
+        filename = util.filename(filename)
+        super().__init__(filename, n_atoms, append)
 
     def _write_next_frame(self, obj):
         """Write information associated with ``obj`` at current frame into

@@ -1473,7 +1473,8 @@ class WriterBase(IOBase, metaclass=_Writermeta):
     .. versionchanged:: 2.0.0
        Deprecated :func:`write_next_timestep` has now been removed, please use
        :func:`write` instead.
-
+    .. versionchanged:: 3.0.0
+       Add append functionality to Writers.
     """
     def __init__(self,
                  filename,
@@ -1487,14 +1488,26 @@ class WriterBase(IOBase, metaclass=_Writermeta):
             filename of trajectory file
         n_atoms : int
             number of atoms in trajectory
-        append : bool (optional)
-            whether to append to an existing file or overwrite it
+        append: bool (optional)
+            If ``True``, append to an existing file. If ``False``, overwrite
+            the file. Default is ``False``.
         """
         self.filename = filename
         self.n_atoms = n_atoms  # number of atoms to be written
+        if append:
+            self.check_append_match()
         self.append = append
         self._n_frames_written = 0
 
+    def check_append_match(self):
+        """Check if the file to be appended matches the Writer.
+
+        Raises
+        ------
+        ValueError
+            If the file to be appended does not match the Writer.
+        """
+        raise NotImplementedError("Writer does not support appending")
     def convert_dimensions_to_unitcell(self, ts, inplace=True):
         """Read dimensions from timestep *ts* and return appropriate unitcell.
 
@@ -1571,6 +1584,8 @@ class SingleFrameWriterBase(WriterBase):
     See :ref:`Trajectory API` definition in for the required attributes and
     methods.
 
+    .. versionadded:: 3.0.0
+       Separate single frame writer as new base class.
     """
     def __init__(self,
                  filename,
@@ -1584,13 +1599,15 @@ class SingleFrameWriterBase(WriterBase):
             filename of trajectory file
         n_atoms : int
             number of atoms in trajectory
-        append : bool (optional)
-            whether to append to an existing file or overwrite it
+        append: bool (optional)
+            If ``True``, append to an existing file. If ``False``, overwrite
+            the file. Default is ``False``.
         """
         self.filename = filename
         self.n_atoms = n_atoms  # number of atoms to be written
         if append:
             raise ValueError("Single frame writers do not support appending")
+        self.append = append
         self._n_frames_written = 0
     
     def write(self, obj, **kwargs):
@@ -1610,11 +1627,11 @@ class SingleFrameWriterBase(WriterBase):
            Deprecated support for Timestep argument to write has now been
            removed. Use AtomGroup or Universe as an input instead.
         """
-        if self._n_frames_written > 1:
-            raise ValueError("SingleFrameWriter can only write one frame")
+        if self._n_frames_written >= 1:
+            raise ValueError("SingleFrameBaseWriter can only write one frame")
 
         self._n_frames_written += 1
-        return self._write_next_frame(obj)
+        return self._write_next_frame(obj, **kwargs)
 
 
 class SingleFrameReaderBase(ProtoReader):

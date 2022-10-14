@@ -885,15 +885,15 @@ class NCDFWriter(base.WriterBase):
              'velocity': 'Angstrom/ps',
              'force': 'kcal/(mol*Angstrom)'}
 
-    def __init__(self, filename, n_atoms, remarks=None, convert_units=True,
+    def __init__(self, filename, n_atoms, append=False,
+                 remarks=None, convert_units=True,
                  velocities=False, forces=False, scale_time=None,
                  scale_cell_lengths=None, scale_cell_angles=None,
                  scale_coordinates=None, scale_velocities=None,
                  scale_forces=None, **kwargs):
-        self.filename = filename
         if n_atoms == 0:
             raise ValueError("NCDFWriter: no atoms in output trajectory")
-        self.n_atoms = n_atoms
+        super().__init__(filename, n_atoms, append)
         # convert length and time to base units on the fly?
         self.convert_units = convert_units
 
