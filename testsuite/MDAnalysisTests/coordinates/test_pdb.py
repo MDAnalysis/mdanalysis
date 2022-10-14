@@ -435,10 +435,8 @@ class TestPDBWriter(object):
                     if line.startswith("MODEL"):
                         yield line
 
-        print(outfile)
         MODEL_lines = list(get_MODEL_lines(outfile))
 
-        print(MODEL_lines)
         assert len(MODEL_lines) == maxframes
         for model, line in enumerate(MODEL_lines, start=startframe+1):
             # test that only the right-most 4 digits are stored (rest must be space)
@@ -1194,7 +1192,6 @@ def test_atom_not_match(tmpdir):
     protein = u.select_atoms("protein and name CA")
     atoms = u.select_atoms(
         'resid 1 or resid 10 or resid 100 or resid 1000 or resid 10000')
-    print(outfile)
     with mda.Writer(outfile, multiframe=True, n_atoms=10) as pdb:
         # write these two groups of atoms to pdb
         # Then the n_atoms will not match

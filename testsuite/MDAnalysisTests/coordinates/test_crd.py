@@ -103,7 +103,6 @@ class TestCRDWriter(object):
 
     def test_write_multiple_frame(self, u, outfile):
         with pytest.raises(ValueError, match="SingleFrameBaseWriter can"):
-            print(outfile)
             with u.trajectory.Writer(outfile) as W:
                 W.write(u)
                 W.write(u)
