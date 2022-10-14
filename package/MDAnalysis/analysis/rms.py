@@ -805,10 +805,10 @@ class SymmRMSD(AnalysisBase):
         # Columns: frame, time, rmsd
         self.results.rmsd = np.zeros((self.n_frames, 3))
 
-        self.ref_adj = self._adjacency_matrix(self.ref_atoms)
+        self.ref_adj = adjacency_matrix(self.ref_atoms)
         self.ref_aprops = self.ref_atoms.types.copy()
 
-        self.mobile_adj = self._adjacency_matrix(self.mobile_atoms)
+        self.mobile_adj = adjacency_matrix(self.mobile_atoms)
         self.mobile_aprops = self.mobile_atoms.types.copy()
 
         # Compute isomorphisms at the first iteration

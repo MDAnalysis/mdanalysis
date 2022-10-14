@@ -409,21 +409,88 @@ def test_adjacency_matrix():
 
 class TestSymmRMSD(object):
     @pytest.fixture()
-    def universe(self):
-        return MDAnalysis.Universe(PSF, DCD)
+    def benzene(self):
+        from collections import namedtuple
 
-    def test_rmsd(self, universe):
+        Molecule = namedtuple('Molecule', ["coords", "bonds"])
+
+        coords = np.array([
+            [+0.00000, +1.40272, 0.00000],
+            [-1.21479, +0.70136, 0.00000],
+            [-1.21479, -0.70136, 0.00000],
+            [+0.00000, -1.40272, 0.00000],
+            [+1.21479, -0.70136, 0.00000],
+            [+1.21479, +0.70136, 0.00000],
+        ])
+
+        bonds = np.array([
+            [0, 1],
+            [1, 2],
+            [2, 3],
+            [3, 4],
+            [4, 5],
+            [5, 0],
+        ])
+
+        return Molecule(coords, bonds)
+
+    @pytest.fixture()
+    def benzene_traj(self, benzene):
+        """
+        Build fictitious trajectory for benzene, rotating of 60 degrees.
+        """
+        from MDAnalysis.lib.transformations import rotation_matrix
+        
+        angles = np.array([0, 60, 120, 180, 240, 300, 360]) * np.pi / 180
+        n_frames = len(angles)
+
+        B = mda.Universe.empty(
+            6, atom_resindex=[0] * 6, residue_segindex=[0], trajectory=True
+        )
+        B.add_TopologyAttr('bonds', benzene.bonds)
+        B.add_TopologyAttr('type', ['C'] * 6)
+        B.add_TopologyAttr('resname', ['BNZ'])
+
+        coords = np.zeros((n_frames, B.atoms.n_atoms, 3))
+        for i, angle in enumerate(angles):
+            cog = np.mean(benzene.coords, axis=0)
+            assert np.allclose(cog, [0, 0, 0])
+
+            R = rotation_matrix(angle, [0, 0, 1], cog)[:3,:3]
+            coords[i, :, :] = benzene.coords @ R.T # Apply rotation to all coordinates
+
+        assert np.allclose(coords[0], benzene.coords)
+        assert np.allclose(coords[-1], benzene.coords)
+
+        B.load_new(np.array(coords), order='fac')
+
+        return B
+
+    def test_rmsd_benzene(self, benzene_traj):
+        assert len(benzene_traj.trajectory) == 7
+        
+        R = rms.SymmRMSD(benzene_traj.atoms)
+        R.run()
+
+        assert np.allclose(R.results.rmsd[:,-1], 0.0, atol=1e-5)
+
+    def test_rmsd(self):
         # Find suitable trajectory for test
         # See https://github.com/MDAnalysis/MDAnalysisData/issues/45
         raise NotImplementedError
 
-    def test_isomorphisms(self, universe):
+    def test_isomorphisms(self, benzene_traj):
         """
         Test isomorphisms between two selections.
         """
-        # Find suitable trajectory for test
-        # See https://github.com/MDAnalysis/MDAnalysisData/issues/45
-        raise NotImplementedError
+        R = rms.SymmRMSD(benzene_traj.atoms)
+        R.run()
+
+        assert R.isomorphisms is not None
+        assert len(R.isomorphisms) == 12
+        
+        # Check identity
+        assert ([0,1,2,3,4,5], [0,1,2,3,4,5]) in R.isomorphisms
 
 
 class TestRMSF(object):
