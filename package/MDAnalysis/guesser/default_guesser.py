@@ -82,18 +82,18 @@ class DefaultGuesser(GuesserBase):
 
     def __init__(self, universe, **kwargs):
         super().__init__(universe, **kwargs)
-        self._guesser_methods = {'masses': {'guesser': self.guess_masses, 'parent': ['elements', 'types']},
-                                 'types': {'guesser': self.guess_types}, 'parent': ['names'],
-                                 'elements': {'guesser': self.guess_types, 'parent': ['names']},
-                                 'angles': {'guesser': self.add_guessed_angles, 'parent': ['positions']},
-                                 'dihedrals': {'guesser': self.add_guessed_dihedrals},
-                                 'bonds': {'guesser': self.add_guessed_bonds},
-                                 'improper dihedrals': {'guesser': self.guess_improper_dihedrals},
-                                 'aromaticities': {'guesser': self.guess_aromaticities},
+        self._guesser_methods = {'masses': self.guess_masses,
+                                 'types': self.guess_types,
+                                 'elements': self.guess_types,
+                                 'angles': self.add_guessed_angles,
+                                 'dihedrals': self.add_guessed_dihedrals,
+                                 'bonds': self.add_guessed_bonds,
+                                 'improper dihedrals': self.guess_improper_dihedrals,
+                                 'aromaticities': self.guess_aromaticities,
                                  }
 
 
-    def guess_masses(self, atoms=None):
+    def guess_masses(self, atoms=None, partial_guess=None):
         """Guess the mass of many atoms based upon their type
 
         Parameters
@@ -122,9 +122,11 @@ class DefaultGuesser(GuesserBase):
                 raise ValueError("there is no reference attributes in this universe"
                                  "to guess mass from")
 
+        atoms_indicies = []
+        atoms_indicies = partial_guess if partial_guess else list(range(len(atom_types)))
         self.validate_atom_types(atom_types)
-        masses = np.array([self.get_atom_mass(atom_t)
-                           for atom_t in atom_types], dtype=np.float64)
+        masses = np.array([self.get_atom_mass(atom_types[atom_t])
+                           for atom_t in atoms_indicies], dtype=np.float64)
         return masses
 
     def validate_atom_types(self, atom_types):
@@ -176,19 +178,23 @@ class DefaultGuesser(GuesserBase):
         """
         return self.get_atom_mass(self.guess_atom_element(atomname))
 
-    def guess_types(self, atoms=None):
+    def guess_types(self, atoms=None, partial_guess=None):
         """Guess the atom type of many atoms based on atom name
         Returns
         -------
         atom_types : np.ndarray dtype object
         """
-        names=''
+        names = ''
         if atoms is not None:
             names = atoms
         else:     
             names = self._universe.atoms.names
-        return np.array([self.guess_atom_element(n)
-                        for n in names], dtype=object)
+
+        atoms_indicies = []
+        atoms_indicies = partial_guess if partial_guess else list(range(len(names)))
+
+        return np.array([self.guess_atom_element(names[n])
+                        for n in atoms_indicies], dtype=object)
 
     NUMBERS = re.compile(r'[0-9]')  # match numbers
     SYMBOLS = re.compile(r'[*+-]')  # match *, +, -

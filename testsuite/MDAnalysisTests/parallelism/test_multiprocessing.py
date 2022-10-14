@@ -86,7 +86,7 @@ def u(request):
         return mda.Universe(f, to_guess=())
     else:
         top, trj = request.param
-        return mda.Universe(top, trj, to_guess=())
+        return mda.Universe(top, trj)
 
 @pytest.fixture(scope="function")
 def temp_xtc(tmp_path):

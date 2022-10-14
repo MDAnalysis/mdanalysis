@@ -30,7 +30,7 @@ import MDAnalysis.tests.datafiles as datafiles
 from numpy.testing import assert_allclose
 
 class TesttBaseGuesser():
-    
+
     def test_get_guesser(self):
         class TestGuesser1(GuesserBase):
             context = 'test1'
@@ -50,16 +50,5 @@ class TesttBaseGuesser():
         masses = Masses(np.array([np.nan, np.nan, np.nan, np.nan], dtype=np.float64))
         top = Topology(4, 1, 1, attrs=[names,masses,])
         u = mda.Universe(top, to_guess=['masses'])
-        assert hasattr(u.atoms, 'elements')
+        assert hasattr(u.atoms, 'types')
         assert_allclose(u.atoms.masses, np.array([12.01100, 1.00800, 1.00800, 15.99900]), rtol=1e-3, atol=0)
-        
-    def test_failed_to_find_parent_attr(self):
-        masses = Masses(np.array([np.nan, np.nan, np.nan, np.nan], dtype=np.float64))
-        top = Topology(4, 1, 1, attrs=[masses,])
-        with pytest.raises(ValueError, match='Failed to find/guess a parent attribute to guess masses from'):
-            mda.Universe(top, to_guess=['masses'])
-        
-          
-        
-        
-        

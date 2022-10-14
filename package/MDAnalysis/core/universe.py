@@ -384,15 +384,11 @@ class Universe(object):
         self._topology_atrrs = list(
             att.attrname for att in self._topology.read_attributes)
 
-        to_guess = list(to_guess)
-        force_guess = list(force_guess)
-
-
         if guess_bonds:
-            force_guess.extend(['bonds', 'angles', 'dihedrals'])
-
+            force_guess = list(force_guess) + ['bonds', 'angles', 'dihedrals']
+        
         self.guess_TopologyAttributes(
-            context, to_guess, force_guess, vdwradii=vdwradii, ** kwargs)
+            context, to_guess, force_guess, vdwradii=vdwradii, **kwargs)
 
     def copy(self):
         """Return an independent copy of this Universe"""
@@ -1459,6 +1455,9 @@ class Universe(object):
         
         """
         Guess and add attributes through a specific context-aware guesser.
+         .. _guess_TopologyAttributes:
+        
+        guess and add attributes through a specific context-aware guesser.
 
         Parameters
         ----------
@@ -1486,21 +1485,19 @@ class Universe(object):
         guesser = get_guesser(context, self.universe, **kwargs)
         self._context = guesser
 
-        to_guess = list(to_guess)
-        force_guess = list(force_guess)
-        guess = force_guess + to_guess
+        total_guess = list(force_guess) + list(to_guess)
         
         # removing duplicate from the guess list with keeping attributes order 
         # as it is more convientent to guess attributes
         # in the same order that the user provided
-        guess = list(dict.fromkeys(guess))
+        total_guess = list(dict.fromkeys(total_guess))
 
         objects = ['bonds', 'angles', 'dihedrals', 'impropers']
     
-        if(guess):
+        if(total_guess):
             if (self._topology.n_atoms > 0):
 
-                if guesser.are_guessable(guess):
+                if guesser.are_guessable(total_guess):
 
                     for attr in to_guess:
                         if any(attr == a for a in self._topology_atrrs):
@@ -1511,10 +1508,8 @@ class Universe(object):
                                         'parameter instead of the to_guess one'
                                         .format(attr))
                             
-                    for attr in guess:
-                        fg = False
-                        if attr in force_guess:
-                            fg = True
+                    for attr in total_guess:
+                        fg = True if attr in force_guess else False
                         values = guesser.guess_attr(attr, fg)
                         
                         if values is not None:

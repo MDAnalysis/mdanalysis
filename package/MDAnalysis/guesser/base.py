@@ -139,37 +139,21 @@ class GuesserBase(metaclass=_GuesserMeta):
         if hasattr(self._universe.atoms, attr_to_guess) and not force_guess:
             attr = np.array(getattr(self._universe.atoms, attr_to_guess, None))
 
-            emptyAttr = []
+            emptyAttrs = []
             try:
                 top_attr = _TOPOLOGY_ATTRS[attr_to_guess]
-                for a in attr:
-                   emptyAttr.append(top_attr.is_value_missing(a))
+                emptyAttrs_indices=[]
+                for i, a in enumerate(attr):
+                   value_missing = top_attr.is_value_missing(a)
+                   emptyAttrs.append(value_missing)
+                   if value_missing:
+                       emptyAttrs_indices.append(i)
             except:
                 pass
 
-            if True in emptyAttr:
-                parentAttr =[]
-                # check if the parent attribute from which we can begin guessing exists in the universe
-                for p in self._guesser_methods[attr_to_guess]['parent']: 
-                    if hasattr(self._universe.atoms, p):
-                        parentAttr = np.array(getattr(self._universe.atoms, p))
-                        break
-
-                # if didn't find any parent attribute we try to guess one parent first
-                if len(parentAttr) == 0:
-                    for p in self._guesser_methods[attr_to_guess]['parent']:
-                        try:
-                            self._universe.guess_TopologyAttributes(context=self.context, to_guess=[p])
-                            parentAttr = np.array(getattr(self._universe.atoms, p))
-                            break
-                        except ValueError:
-                                pass
-    
-                if len(parentAttr) > 0:
-                    attr[emptyAttr] = self._guesser_methods[attr_to_guess]['guesser'](parentAttr[emptyAttr])
-
-                else:
-                    raise ValueError(f'Failed to find/guess a parent attribute to guess {attr_to_guess} from')
+            if True in emptyAttrs:
+                # pass to the guesser_method indecies of attributes that have empty values to be guessed
+                attr[emptyAttrs] = self._guesser_methods[attr_to_guess](partial_guess = emptyAttrs_indices)
 
                 logger.info(
                     f'attribute {attr_to_guess} has been guessed successfully.')
@@ -180,7 +164,8 @@ class GuesserBase(metaclass=_GuesserMeta):
                     f'There is no empty {attr_to_guess} values. Guesser did not guess any new values for {attr_to_guess} attribute')
                 return None
         else:
-            return np.array(self._guesser_methods[attr_to_guess]['guesser']())
+            return np.array(self._guesser_methods[attr_to_guess]())
+
 
 
 def get_guesser(context, u=None, **kwargs):
