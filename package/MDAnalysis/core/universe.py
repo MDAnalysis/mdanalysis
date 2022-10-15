@@ -719,7 +719,7 @@ class Universe(object):
     def _unpickle_U(cls, top, traj):
         """Special method used by __reduce__ to deserialise a Universe"""
         #  top is a Topology obj at this point, but Universe can handle that.
-        u = cls(top)
+        u = cls(top, to_guess=())
         u.trajectory = traj
 
         return u
