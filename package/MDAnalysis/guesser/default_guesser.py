@@ -104,6 +104,11 @@ class DefaultGuesser(GuesserBase):
         Returns
         -------
         atom_masses : np.ndarray dtype float64
+        
+        Raises
+        ------
+        :exc:`ValueError` if there is no atom types or elements to guess mass from.
+
         """
         atom_types = None
         if atoms is not None:
