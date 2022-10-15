@@ -29,7 +29,7 @@ amino_acids = ["ACE", "ALA", "ARG", "ASN", "ASP", "ASX", "CYS", "FOR", "GLN", "G
 nucleic_acids = [" A", " C", " G", " T", " U", " +U", " YG", "1MA",
                  "1MG", "2MG", "5MC", "5MU", "7MG", "H2U", "M2G", "OMC", "OMG", "PSU"]
 
-known_HETATM = ["101", "12A", "1AR", "1GL", "2AS", "2GL", "3AA", "3AT", "3DR", "3PO", "6HA", "6HC", "6HG", "6HT", "A26", "AA6", "ABD", "AC1", "ACO", "AIR", "AMU", "AMX", "AP5", "AMG", "APU", "B9A", "BCA", "BNA", "CAA",
+known_groups = ["101", "12A", "1AR", "1GL", "2AS", "2GL", "3AA", "3AT", "3DR", "3PO", "6HA", "6HC", "6HG", "6HT", "A26", "AA6", "ABD", "AC1", "ACO", "AIR", "AMU", "AMX", "AP5", "AMG", "APU", "B9A", "BCA", "BNA", "CAA",
                 "CBS", "CGS", "CMC", "CND", "CO8", "COA", "COF", "COS", "DCA", "DGD", "FAB", "FAD", "FAG", "FAM", "FDA", "GPC", "IB2", "NAD", "NAH", "NAI", "NAL", "NAP", "NBD", "NDP", "PAD", "SAD", "SAE", "T5A", "tRE", "UP5","ZID"]
 
-standard_groups = amino_acids + nucleic_acids + known_HETATM
+standard_groups = amino_acids + nucleic_acids + known_groups

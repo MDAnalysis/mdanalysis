@@ -265,7 +265,7 @@ class PDBParser(TopologyReaderBase):
                 finally:
                     serials.append(serial)
 
-                names.append(line[12:16].strip())
+                names.append(line[12:16])
                 altlocs.append(line[16:17].strip())
                 resnames.append(line[17:21].strip())
                 chainids.append(line[21:22].strip())

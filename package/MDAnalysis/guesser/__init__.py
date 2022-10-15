@@ -49,3 +49,4 @@ the attributes they can guess.
 """
 from . import base
 from .default_guesser import DefaultGuesser
+from .pdb_guesser import PDBGuesser

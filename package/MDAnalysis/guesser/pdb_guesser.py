@@ -26,6 +26,44 @@ import numpy as np
 from . import tables, pdb_tables
 import warnings
 
+"""
+PDB Guesser
+=========================================================================
+
+This guesser class is tailored to be used with PDB standard files data. 
+to be continued after settling the funtionalities
+
+Elements guessing
+PDB has a well-defined formatt for names, which from it we can get the atomic symbol easily.
+
+Names always found in columns 13-16. The first two charachters represents the atom symbol. If
+the symbol consists of one characters then the first character is blank. Then at the third character
+comes the remoteness indicator code for amino acids residues [A, B, G, D, E, Z, H]. The last character
+is a branching factor if needed.
+
+The above rules is the standard rules but there is some exceptions to it:
+    1- CONCORD generated PDB files shift the atom name columns and generate the second character of the atom symbol
+    as a lower case, so if the third charachter is a lower case, then the atom symbols is taken from
+    the second and third characters
+    2- If the first character is blank and the second character is not recognized as atomic symbol,
+    we check if the third character contains "H", "C", "N", "O", "P" or "S", then it is considered
+    the atomic symbol
+    3-  If the first character is a digit, \”, \’, or *, then the second character is the atomic symbol
+    4- If the fisrt character in 'H' and the residudes is a standard amino acid, nucliec acid or known
+    hetero groups (found in pdb_tables.py), then the atom element is 'H'
+    5- If the first two characters are not recognized as atomic symmbol and the first character is 'H',
+    then the element is considered to be H
+
+
+Classes
+-------
+
+.. autoclass:: PDBGuesser
+   :members:
+   :inherited-members:
+
+"""
+
 
 class PDBGuesser(GuesserBase):
     context = 'pdb'
@@ -38,43 +76,35 @@ class PDBGuesser(GuesserBase):
 
                                  }
 
-    def guess_types(self, atoms_index=None):          
+    def guess_types(self, atoms_index=None, partial_guess=None):
 
         names = []
-        residues =[]
+        residues = []
 
         try:
             names = self._universe.atoms.names
         except AttributeError:
             raise ValueError("there is no name attribute in this universe"
-                                 "to guess types from")
-             
+                             "to guess types from")
 
-        try:
-            residues = self._universe.atoms.residues.resnames
-        except AttributeError:
+        if not hasattr(self._universe.atoms.residues, 'resnames'):
             raise ValueError("there is no residue name attribute in this universe"
-                                 "to guess types from")
+                             "to guess types from")
 
-        if not atoms_index:
-           atoms_index = list(range(len(names)))
+        atoms_indices = partial_guess if partial_guess else list(
+            range(len(names)))
 
         elements = []
         failed_guessing = set()
         failiur_count = 0
-        SYMBOLS = re.compile(r'[*\'\s\d\"]')  # match *, ', " space charachter, and digits
-        for n in atoms_index:
+        # match *, ', " space charachter, and digits
+        SYMBOLS = re.compile(r'[*\'\s\d\"]')
+        for n in atoms_indices:
             if(SYMBOLS.match(names[n][0])):
+                # concord files special case
                 if names[n][0] == ' ' and names[n][2].islower():
-                    if names[n][1:2].upper() in tables.masses:
-                        # concord file ??
-                        elements.append(names[n][1:2].upper())
-                    elif names[n][1].upper() in tables.masses:
-                        elements.append(names[n][1].upper())
-                    else:
-                        elements.append('')
-                        failed_guessing.add(names[n])
-                        failiur_count += 1
+                    if names[n][1:3].upper() in tables.masses:
+                        elements.append(names[n][1:3].upper())
                 elif names[n][1] in tables.masses:
                     elements.append(names[n][1])
 
@@ -85,12 +115,12 @@ class PDBGuesser(GuesserBase):
                     failed_guessing.add(names[n])
                     failiur_count += 1
             else:
-                if names[n][0] == 'H' and residues[n] in pdb_tables.standard_groups:
+                if names[n][0] == 'H' and self._universe.atoms[n].residue.resname in pdb_tables.standard_groups:
                     elements.append(names[n][0])
-                elif names[n][:1].upper() in tables.masses:
-                    elements.append(names[n][:1].upper())
-                elif names[n][0] == 'H':
-                    elements.append(names[n][0])
+                elif names[n][:2].upper() in tables.masses:
+                    elements.append(names[n][:2].upper())
+                elif names[n][1].upper() in tables.masses:
+                    elements.append(names[n][1])
                 else:
                     elements.append('')
                     failed_guessing.add(names[n])
