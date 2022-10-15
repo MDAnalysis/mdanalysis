@@ -47,7 +47,7 @@ import Bio.SeqRecord
 import numpy as np
 
 from ..lib.util import (cached, convert_aa_code, iterable, warn_if_not_unique,
-                        unique_int_1d)
+                        unique_int_1d, check_atomgroup_not_empty)
 from ..lib import transformations, mdamath
 from ..exceptions import NoDataError, SelectionError
 from .topologyobjects import TopologyGroup
@@ -1464,6 +1464,7 @@ class Masses(AtomAttr):
     @warn_if_not_unique
     @_pbc_to_wrap
     @check_wrap_and_unwrap
+    @check_atomgroup_not_empty
     def center_of_mass(group, wrap=False, unwrap=False, compound='group'):
         r"""Center of mass of (compounds of) the group
 
@@ -1537,6 +1538,7 @@ class Masses(AtomAttr):
         ('center_of_mass', center_of_mass))
 
     @warn_if_not_unique
+    @check_atomgroup_not_empty
     def total_mass(group, compound='group'):
         r"""Total mass of (compounds of) the group.
 
@@ -1575,6 +1577,7 @@ class Masses(AtomAttr):
     @warn_if_not_unique
     @_pbc_to_wrap
     @check_wrap_and_unwrap
+    @check_atomgroup_not_empty
     def moment_of_inertia(group, wrap=False, unwrap=False, compound="group"):
         r"""Moment of inertia tensor relative to center of mass.
 
@@ -1682,6 +1685,7 @@ class Masses(AtomAttr):
 
     @warn_if_not_unique
     @_pbc_to_wrap
+    @check_atomgroup_not_empty
     def radius_of_gyration(group, wrap=False, **kwargs):
         """Radius of gyration.
 
@@ -1717,6 +1721,7 @@ class Masses(AtomAttr):
 
     @warn_if_not_unique
     @_pbc_to_wrap
+    @check_atomgroup_not_empty
     def shape_parameter(group, wrap=False):
         """Shape parameter.
 
@@ -1763,6 +1768,7 @@ class Masses(AtomAttr):
     @warn_if_not_unique
     @_pbc_to_wrap
     @check_wrap_and_unwrap
+    @check_atomgroup_not_empty
     def asphericity(group, wrap=False, unwrap=None, compound='group'):
         """Asphericity.
 
@@ -1821,6 +1827,7 @@ class Masses(AtomAttr):
 
     @warn_if_not_unique
     @_pbc_to_wrap
+    @check_atomgroup_not_empty
     def principal_axes(group, wrap=False):
         """Calculate the principal axes from the moment of inertia.
 
@@ -1940,6 +1947,7 @@ class Charges(AtomAttr):
     @warn_if_not_unique
     @_pbc_to_wrap
     @check_wrap_and_unwrap
+    @check_atomgroup_not_empty
     def center_of_charge(group, wrap=False, unwrap=False, compound='group'):
         r"""Center of (absolute) charge of (compounds of) the group
 
@@ -2007,6 +2015,7 @@ class Charges(AtomAttr):
         ('center_of_charge', center_of_charge))
 
     @warn_if_not_unique
+    @check_atomgroup_not_empty
     def total_charge(group, compound='group'):
         r"""Total charge of (compounds of) the group.
 
