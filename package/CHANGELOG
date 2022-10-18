@@ -32,7 +32,8 @@ Fixes
 
 
 Enhancements
-  * Optionally unwraps trajectories with image flags upon loading (#3843)
+  * LammpsDump Reader optionally unwraps trajectories with image flags upon 
+    loading (#3843)
   * LAMMPS Dump Reader now imports velocities and forces (#3843)
   * AuxReaders now have a memory_limit parameter to control when memory usage
     warnings are issued. (PR # 3749)

@@ -466,7 +466,9 @@ class DumpReader(base.ReaderBase):
     scaled/fractional representation to their real values.
 
     If a dump file has image flags it can be unwrapped upon loading with 
-    the keyword `unwrap_images=True`.
+    the keyword `unwrap_images=True`. See `read_data 
+    <https://docs.lammps.org/read_data.html>`_  in the lammps documentation
+    for more information.
 
     Supports both orthogonal and triclinic simulation box dimensions (for more
     details see https://docs.lammps.org/Howto_triclinic.html). In either case,
@@ -633,7 +635,7 @@ class DumpReader(base.ReaderBase):
         if self._has_vels:
             ts.has_velocities = True
             vel_cols = [attr_to_col_ix[x] for x in ["vx", "vy", "vz"]]
-        self._has_forces = "fx" in attr_to_col_ix
+        self._has_forces = all(x in attr_to_col_ix for x in ["fx", "fy", "fz"])
         if self._has_forces:
             ts.has_forces = True
             force_cols = [attr_to_col_ix[x] for x in ["fx", "fy", "fz"]]
@@ -650,7 +652,8 @@ class DumpReader(base.ReaderBase):
                 raise ValueError("No coordinate information detected")
         elif not self.lammps_coordinate_convention in convention_to_col_ix:
             raise ValueError(f"No coordinates following convention "
-                "{self.lammps_coordinate_convention} found in timestep")
+                             "{self.lammps_coordinate_convention} found in "
+                             "timestep")
 
         coord_cols = convention_to_col_ix[self.lammps_coordinate_convention]
         if self._unwrap:
@@ -661,7 +664,8 @@ class DumpReader(base.ReaderBase):
             fields = f.readline().split()
             if ids:
                 indices[i] = fields[attr_to_col_ix["id"]]
-            coords = np.array([fields[dim] for dim in coord_cols], np.float32)
+            coords = np.array([fields[dim] for dim in coord_cols], 
+                              dtype=np.float32)
 
             if self._unwrap:
                 images = coords[3:]
