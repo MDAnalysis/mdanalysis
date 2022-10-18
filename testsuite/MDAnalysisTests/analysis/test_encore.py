@@ -610,7 +610,6 @@ class TestEncoreClustering(object):
         assert_equal(cc.clusters[1].centroid, 3, err_msg)
         assert_equal(cc.clusters[2].centroid, 5, err_msg)
 
- 
     def test_Cluster_init(self, cluster):
         err_msg = "Cluster was not constructed correctly"
         assert_equal(cluster.elements, [0, 1, 2], err_msg)
