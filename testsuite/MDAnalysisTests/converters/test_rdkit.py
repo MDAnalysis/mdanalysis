@@ -65,7 +65,7 @@ class TestRequiresRDKit(object):
 
 @requires_rdkit
 class MolFactory:
-    @staticmethoc
+    @staticmethod
     def mol2_mol():
         return Chem.MolFromMol2File(mol2_molecule, removeHs=False)
 
