@@ -263,9 +263,10 @@ class TestHydrogenBondAnalysisIdeal(object):
         caplog.set_level(logging.WARNING)
         hbonds.lifetime(tau_max=2, intermittency=1)
 
-        warning = \
-            "Autocorrelation: Hydrogen bonds were computed with step > 1."
+        warning = ("Autocorrelation: Hydrogen bonds were computed with "
+                   "step > 1.")
         assert any(warning in rec.getMessage() for rec in caplog.records)
+
 
 class TestHydrogenBondAnalysisNoRes(object):
 
@@ -438,8 +439,8 @@ class TestHydrogenBondAnalysisNoRes(object):
         caplog.set_level(logging.WARNING)
         hbonds.lifetime(tau_max=2, intermittency=1)
 
-        warning = \
-            "Autocorrelation: Hydrogen bonds were computed with step > 1."
+        warning = ("Autocorrelation: Hydrogen bonds were computed with "
+                   "step > 1.")
         assert any(warning in rec.getMessage() for rec in caplog.records)
 
 

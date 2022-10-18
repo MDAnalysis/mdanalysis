@@ -19,7 +19,6 @@ The rules for this file:
  * 2.4.0
 
 Fixes
-  * Update hbond analysis doc string to use exclusive bound language (#3847)
   * Added isolayer selection method (Issue #3845)
   * Auxiliary; determination of representative frames: Removed undefined
     behaviour for cutoff values < -1 (PR # 3749)
@@ -32,6 +31,7 @@ Fixes
 
 
 Enhancements
+  * Update hbond analysis doc string to use exclusive bound language (#3847)
   * Added ability for hbond anaylsis to use types when resnames aren't there
   * Added explanatory warnings when hbond analysis doesn't find any hbonds
   * AuxReaders now have a memory_limit parameter to control when memory usage

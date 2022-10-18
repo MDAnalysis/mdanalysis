@@ -429,21 +429,7 @@ class HydrogenBondAnalysis(AnalysisBase):
             ))
         ]
 
-        if hasattr(hydrogens_ag,"resnames") and hasattr(hydrogens_ag,"names"):
-            hydrogens_list = np.unique(
-                [
-                    '(resname {} and name {})'.format(r, p) for r, p in zip(hydrogens_ag.resnames, hydrogens_ag.names)
-                ]
-            )
-        else:
-            hydrogens_list = np.unique(
-                [
-                    'type {}'.format(tp) for tp in hydrogens_ag.types
-                ]
-            )
-
-
-        return " or ".join(hydrogens_list)
+        return self.__group_categories(hydrogens_ag)
 
     def guess_donors(self, select='all', max_charge=-0.5):
         """Guesses which atoms could be considered donors in the analysis. Only use if the universe topology does not
@@ -503,20 +489,7 @@ class HydrogenBondAnalysis(AnalysisBase):
             )
             donors_ag = ag[ag.charges < max_charge]
 
-        if hasattr(donors_ag,"resnames") and hasattr(donors_ag,"names"):
-            donors_list = np.unique(
-                [
-                    '(resname {} and name {})'.format(r, p) for r, p in zip(donors_ag.resnames, donors_ag.names)
-                ]
-            )
-        else:
-            donors_list = np.unique(
-                [
-                    'type {}'.format(tp) for tp in donors_ag.types if tp not in hydrogens_ag.types
-                ]
-            )
-
-        return " or ".join(donors_list)
+        return self.__group_categories(donors_ag)
 
     def guess_acceptors(self, select='all', max_charge=-0.5):
         """Guesses which atoms could be considered acceptors in the analysis.
@@ -553,20 +526,40 @@ class HydrogenBondAnalysis(AnalysisBase):
 
         ag = self.u.select_atoms(select)
         acceptors_ag = ag[ag.charges < max_charge]
-        if hasattr(acceptors_ag,"resnames") and hasattr(acceptors_ag,"names"):
-            acceptors_list = np.unique(
+
+        return self.__group_categories(acceptors_ag)
+
+    @staticmethod
+    def __group_categories(group):
+        """ Find categories according to universe constraints
+        
+        Parameters
+        ----------
+        group : AtomGroup
+            AtomGroups corresponding to either hydrogen bond acceptors, 
+            donors, or hydrogen atoms that meant their respective charge
+            and mass constraints. 
+
+        Returns
+        -------
+        select : str
+            String for each hydrogen bond acceptor/donor/hydrogen atom category.
+        """
+
+        if hasattr(group,"resnames") and hasattr(group,"names"):
+            group_list = np.unique(
                 [
-                    '(resname {} and name {})'.format(r, p) for r, p in zip(acceptors_ag.resnames, acceptors_ag.names)
+                    '(resname {} and name {})'.format(r, p) for r, p in zip(group.resnames, group.names)
                 ]
             )
         else:
-            acceptors_list = np.unique(
+            group_list = np.unique(
                 [
-                    'type {}'.format(tp) for tp in acceptors_ag.types
+                    'type {}'.format(tp) for tp in group.types
                 ]
             )
 
-        return " or ".join(acceptors_list)
+        return " or ".join(group_list)
 
     def _get_dh_pairs(self):
         """Finds donor-hydrogen pairs.
@@ -686,10 +679,9 @@ class HydrogenBondAnalysis(AnalysisBase):
 
         if np.size(d_a_indices) == 0:
             warnings.warn(
-                "No hydrogen bonds were found given d-a cutoff of {} between "\
-                "Donor, {}, and Acceptor, {}.".format(self.d_a_cutoff, 
-                                                      self.donors_sel, 
-                                                      self.acceptors_sel)
+                f"No hydrogen bonds were found given d-a cutoff of "
+                "{self.d_a_cutoff} between Donor, {self.donors_sel}, and "
+                "Acceptor, {self.acceptors_sel}."
             )
 
         # Remove D-A pairs more than d_a_cutoff away from one another
@@ -716,10 +708,9 @@ class HydrogenBondAnalysis(AnalysisBase):
 
         if np.size(hbond_indices) == 0:
             warnings.warn(
-                "No hydrogen bonds were found given angle of {} between "\
-                "Donor, {}, and Acceptor, {}.".format(self.d_h_a_angle, 
-                                                      self.donors_sel, 
-                                                      self.acceptors_sel)
+                "No hydrogen bonds were found given angle of "
+                "{self.d_h_a_angle} between Donor, {self.donors_sel}, and "
+                "Acceptor, {self.acceptors_sel}."
             )
 
         # Retrieve atoms, distances and angles of hydrogen bonds
@@ -880,12 +871,9 @@ class HydrogenBondAnalysis(AnalysisBase):
 
         if hasattr(d,"resnames"):
             d_res = d.resnames
-        else:
-            d_res = [None for x in range(len(d.types))]
-
-        if hasattr(a,"resnames"):
             a_res = a.resnames
         else:
+            d_res = [None for x in range(len(d.types))]
             a_res = [None for x in range(len(a.types))]
 
         tmp_hbonds = np.array([d_res, d.types, a_res, a.types], dtype=str).T
