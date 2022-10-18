@@ -24,7 +24,7 @@
 Base guesser classes --- :mod:`MDAnalysis.guesser.base`
 ================================================================
 
-Derive context-specific guesser classes from the base class in this module. 
+Derive context-specific guesser classes from the base class in this module.
 
 Classes
 -------
@@ -36,7 +36,7 @@ Classes
 """
 from .. import _GUESSERS
 import numpy as np
-from ..  import _TOPOLOGY_ATTRS
+from .. import _TOPOLOGY_ATTRS
 import logging
 from typing import Dict
 
@@ -61,9 +61,9 @@ class _GuesserMeta(type):
     """
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
-       
+
         _GUESSERS[classdict['context'].upper()] = cls
-     
+
 
 class GuesserBase(metaclass=_GuesserMeta):
     """Base class for context-specific guessers to inherit from
@@ -76,12 +76,12 @@ class GuesserBase(metaclass=_GuesserMeta):
         Supply a Universe to the Parser. This then become the source of atom attributes
         to be used in guessing processes. (this is relevant to how the universe's guess_topologyAttributes API works. See :ref:`guess_TopologyAttributes <guess_TopologyAttributes>`).
     **kwargs: to pass additional data to the guesser that can be used with different methos.
-    
+
     .. versionadded:: 2.4.0
 
     """
     context = 'base'
-    _guesser_methods : Dict = {}
+    _guesser_methods: Dict = {}
 
     def __init__(self, universe=None, **kwargs):
         self._universe = universe
@@ -112,7 +112,6 @@ class GuesserBase(metaclass=_GuesserMeta):
                     return False
             return True
         return False
-    
 
     def guess_attr(self, attr_to_guess, force_guess=False):
         """map the attribute to be guessed with the apporpiate guessing method
@@ -121,7 +120,7 @@ class GuesserBase(metaclass=_GuesserMeta):
         ----------
         attr_to_guess: list
             an atrribute to be guessed then to be added to the universe
-        force_guess: boolean 
+        force_guess: boolean
             To indicate wether to only partialy guess the empty values of the attribute or to overwrite all existing values by guessed one
 
         Returns
@@ -134,7 +133,7 @@ class GuesserBase(metaclass=_GuesserMeta):
             Failed to find or guess parent attribute
 
         """
-        
+
         # check if the topology already has the attribute to partially guess it
         if hasattr(self._universe.atoms, attr_to_guess) and not force_guess:
             attr = np.array(getattr(self._universe.atoms, attr_to_guess, None))
@@ -142,18 +141,20 @@ class GuesserBase(metaclass=_GuesserMeta):
             emptyAttrs = []
             try:
                 top_attr = _TOPOLOGY_ATTRS[attr_to_guess]
-                emptyAttrs_indices=[]
+                emptyAttrs_indices = []
                 for i, a in enumerate(attr):
-                   value_missing = top_attr.is_value_missing(a)
-                   emptyAttrs.append(value_missing)
-                   if value_missing:
-                       emptyAttrs_indices.append(i)
-            except:
+                    value_missing = top_attr.is_value_missing(a)
+                    emptyAttrs.append(value_missing)
+                    if value_missing:
+                        emptyAttrs_indices.append(i)
+            except BaseException:
                 pass
 
             if True in emptyAttrs:
-                # pass to the guesser_method indecies of attributes that have empty values to be guessed
-                attr[emptyAttrs] = self._guesser_methods[attr_to_guess](partial_guess = emptyAttrs_indices)
+                # pass to the guesser_method indecies of attributes that have
+                # empty values to be guessed
+                attr[emptyAttrs] = self._guesser_methods[attr_to_guess](
+                    partial_guess=emptyAttrs_indices)
 
                 logger.info(
                     f'attribute {attr_to_guess} has been guessed successfully.')
@@ -167,7 +168,6 @@ class GuesserBase(metaclass=_GuesserMeta):
             return np.array(self._guesser_methods[attr_to_guess]())
 
 
-
 def get_guesser(context, u=None, **kwargs):
     """get an appropiate guesser to the universe and pass
        the atomGroup of the universe to the guesser
@@ -175,7 +175,7 @@ def get_guesser(context, u=None, **kwargs):
     Parameters
     ----------
     u: Universe
-        to be passed to the guesser 
+        to be passed to the guesser
     context: string or Guesser class
     **kwargs: extra arguments are passed to the guesser.
 

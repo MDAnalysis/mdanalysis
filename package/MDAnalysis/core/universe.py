@@ -1451,12 +1451,13 @@ class Universe(object):
 
         return cls(mol, **kwargs)
 
-    def guess_TopologyAttributes(self, context=None, to_guess=(), force_guess=(), **kwargs):
-        
+
+    def guess_TopologyAttributes(
+            self, context=None, to_guess=(), force_guess=(), **kwargs):
         """
         Guess and add attributes through a specific context-aware guesser.
          .. _guess_TopologyAttributes:
-        
+
         guess and add attributes through a specific context-aware guesser.
 
         Parameters
@@ -1468,13 +1469,13 @@ class Universe(object):
         force_guess: list, (optional)
             Attributes to be forced guessed (these attributes will be either guessed if they don't exist in the universe or their values will be completely overwritten by guessed values if the universe has the attribute)
         **kwargs: extra arguments to be passed to the guesser class
-        
+
         Examples
         --------
         guess masses and elements attribute::
 
         >>>u.guess_TopologyAttributes(context='default', to_guess=['masses', elements])
-    
+
 
         .. versionadded:: 2.4.0
 
@@ -1486,14 +1487,14 @@ class Universe(object):
         self._context = guesser
 
         total_guess = list(force_guess) + list(to_guess)
-        
-        # removing duplicate from the guess list with keeping attributes order 
+
+        # removing duplicate from the guess list with keeping attributes order
         # as it is more convientent to guess attributes
         # in the same order that the user provided
         total_guess = list(dict.fromkeys(total_guess))
 
         objects = ['bonds', 'angles', 'dihedrals', 'impropers']
-    
+
         if(total_guess):
             if (self._topology.n_atoms > 0):
 
@@ -1501,33 +1502,33 @@ class Universe(object):
 
                     for attr in to_guess:
                         if any(attr == a for a in self._topology_atrrs):
-                            logger.info('The attribute {} have already been read '
-                                        'from the topology file. The '
-                                        'guesser will only guess empty values for this attribute, if any exists.'
-                                        'To overwrite it by completely guessed values, you can pass the attribute to the force_guess'
-                                        'parameter instead of the to_guess one'
-                                        .format(attr))
-                            
+                            logger.info(
+                                'The attribute {} have already been read '
+                                'from the topology file. The '
+                                'guesser will only guess empty values for this attribute, if any exists.'
+                                'To overwrite it by completely guessed values, you can pass the attribute to the force_guess'
+                                'parameter instead of the to_guess one' .format(attr))
+
                     for attr in total_guess:
                         fg = True if attr in force_guess else False
                         values = guesser.guess_attr(attr, fg)
-                        
+
                         if values is not None:
                             if attr in objects:
-                                self._add_topology_objects(attr, values, guessed=True)
+                                self._add_topology_objects(
+                                    attr, values, guessed=True)
                             else:
                                 tcls = _TOPOLOGY_ATTRS[attr](values, True)
                                 self.add_TopologyAttr(tcls)
 
-
                 else:
                     raise ValueError('{0} guesser can not guess one or more '
                                      'of the provided attributes'
-                                      .format(context))      
+                                     .format(context))
 
             else:
                 warnings.warn('Can not guess attributes '
-                                 'for universe with 0 atoms')
+                              'for universe with 0 atoms')
 
 
 def Merge(*args):

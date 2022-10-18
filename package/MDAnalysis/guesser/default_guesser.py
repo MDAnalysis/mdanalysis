@@ -52,10 +52,10 @@ from . import tables
 
 class DefaultGuesser(GuesserBase):
     """
-    this guesser hold generic methods (not directed to specific context) for guessing different topology attribute. 
+    this guesser hold generic methods (not directed to specific context) for guessing different topology attribute.
     it has the same methods that was originally found in Topology.guesser.py. The attributes that can be
     guessed by this class are:
-    masses 
+    masses
     types
     elements
     angles
@@ -63,14 +63,14 @@ class DefaultGuesser(GuesserBase):
     bonds
     improper dihedrals
     aromaticities
-     
+
     you can use this guesser either directly by initiating an object of it or through
     universe.guess_TopologyAttributes API.
 
     Examples
     --------
      to guess bonds for a universe:
-      
+
      import MDAnalysis as mda
      from MDAnalysisTests.datafiles import two_water_gro
 
@@ -104,7 +104,7 @@ class DefaultGuesser(GuesserBase):
         Returns
         -------
         atom_masses : np.ndarray dtype float64
-        
+
         Raises
         ------
         :exc:`ValueError` if there is no atom types or elements to guess mass from.
@@ -341,11 +341,12 @@ class DefaultGuesser(GuesserBase):
         bonds = []
 
         pairs, dist = distances.self_capped_distance(coords,
-                                                     max_cutoff=2.0*max_vdw,
+                                                     max_cutoff=2.0 * max_vdw,
                                                      min_cutoff=lower_bound,
                                                      box=box)
         for idx, (i, j) in enumerate(pairs):
-            d = (vdwradii[atomtypes[i]] + vdwradii[atomtypes[j]])*fudge_factor
+            d = (vdwradii[atomtypes[i]] +
+                 vdwradii[atomtypes[j]]) * fudge_factor
             if (dist[idx] < d):
                 bonds.append((atoms[i].index, atoms[j].index))
         return tuple(bonds)
