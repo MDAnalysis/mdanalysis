@@ -795,30 +795,30 @@ def rmsip(a, b, n_components=None):
     Examples
     --------
 
-        .. testsetup::
+    .. testsetup::
 
-            >>> import MDAnalysis as mda
-            >>> import MDAnalysis.analysis.pca as pca
-            >>> from MDAnalysis.tests.datafiles import PSF, DCD
-            >>> u = mda.Universe(PSF, DCD)
+        >>> import MDAnalysis as mda
+        >>> import MDAnalysis.analysis.pca as pca
+        >>> from MDAnalysis.tests.datafiles import PSF, DCD
+        >>> u = mda.Universe(PSF, DCD)
 
 
-        You can compare the RMSIP between different intervals of the same trajectory.
-        For example, to compare similarity within the top three principal components:
+    You can compare the RMSIP between different intervals of the same trajectory.
+    For example, to compare similarity within the top three principal components:
 
-        .. doctest::
+    .. doctest::
 
-            >>> first_interval = pca.PCA(u, select="backbone").run(start=0, stop=25)
-            >>> second_interval = pca.PCA(u, select="backbone").run(start=25, stop=50)
-            >>> last_interval = pca.PCA(u, select="backbone").run(start=75)
-            >>> pca.rmsip(first_interval.results.p_components.T,
-            ...           second_interval.results.p_components.T,
-            ...           n_components=3)
-            0.38147609331128324
-            >>> pca.rmsip(first_interval.results.p_components.T,
-            ...           last_interval.results.p_components.T,
-            ...           n_components=3)
-            0.17478244043688052
+        >>> first_interval = pca.PCA(u, select="backbone").run(start=0, stop=25)
+        >>> second_interval = pca.PCA(u, select="backbone").run(start=25, stop=50)
+        >>> last_interval = pca.PCA(u, select="backbone").run(start=75)
+        >>> pca.rmsip(first_interval.results.p_components.T,
+        ...           second_interval.results.p_components.T,
+        ...           n_components=3)
+        0.38147609331128324
+        >>> pca.rmsip(first_interval.results.p_components.T,
+        ...           last_interval.results.p_components.T,
+        ...           n_components=3)
+        0.17478244043688052
 
 
     .. versionadded:: 1.0.0
