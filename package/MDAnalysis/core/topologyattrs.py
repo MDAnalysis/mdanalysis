@@ -510,7 +510,7 @@ class TopologyAttr(object, metaclass=_TopologyAttrMeta):
         .. versionadded:: 2.4.0
         """
         if hasattr(self, 'missing_value_label'):
-            return value == self.missing_value_label or np.isnan(value)
+            return value == self.missing_value_label
         else:
             return False
 
@@ -1905,6 +1905,11 @@ class Masses(AtomAttr):
 
     transplants[GroupBase].append(
         ('align_principal_axis', align_principal_axis))
+    
+    @classmethod
+    def is_value_missing(self, value):
+       return np.isnan(value)
+
 
 # TODO: update docs to property doc
 class Charges(AtomAttr):
