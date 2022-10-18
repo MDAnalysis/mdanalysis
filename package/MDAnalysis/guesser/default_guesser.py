@@ -49,6 +49,7 @@ import re
 from ..lib import distances
 from . import tables
 
+
 class DefaultGuesser(GuesserBase):
     """
     this guesser hold generic methods (not directed to specific context) for guessing different topology attribute. 
@@ -92,7 +93,6 @@ class DefaultGuesser(GuesserBase):
                                  'aromaticities': self.guess_aromaticities,
                                  }
 
-
     def guess_masses(self, atoms=None, partial_guess=None):
         """Guess the mass of many atoms based upon their type
 
@@ -117,7 +117,7 @@ class DefaultGuesser(GuesserBase):
             atom_types = self._universe.atoms.elements
         elif hasattr(self._universe.atoms, 'types'):
             atom_types = self._universe.atoms.types
-           
+
         else:
             try:
                 self._universe.guess_TopologyAttributes(
@@ -128,7 +128,8 @@ class DefaultGuesser(GuesserBase):
                                  "to guess mass from")
 
         atoms_indicies = []
-        atoms_indicies = partial_guess if partial_guess else list(range(len(atom_types)))
+        atoms_indicies = partial_guess if partial_guess else list(
+            range(len(atom_types)))
         self.validate_atom_types(atom_types)
         masses = np.array([self.get_atom_mass(atom_types[atom_t])
                            for atom_t in atoms_indicies], dtype=np.float64)
@@ -154,8 +155,8 @@ class DefaultGuesser(GuesserBase):
                 try:
                     tables.masses[atom_type.upper()]
                 except KeyError:
-                    warnings.warn("Failed to guess the mass for the following atom types: {}".format(atom_type))
-
+                    warnings.warn(
+                        "Failed to guess the mass for the following atom types: {}".format(atom_type))
 
     def get_atom_mass(self, element):
         """Return the atomic mass in u for *element*.
@@ -170,8 +171,7 @@ class DefaultGuesser(GuesserBase):
                 return tables.masses[element.upper()]
             except KeyError:
                 warnings.warn("Unknown masses are set to 0.0 for current version, this will be"
-                              "depracated in version 3.0.0 and replaced by Masse's no_value_label (np.nan)"
-                              , PendingDeprecationWarning)
+                              "depracated in version 3.0.0 and replaced by Masse's no_value_label (np.nan)", PendingDeprecationWarning)
                 return 0.0
 
     def guess_atom_mass(self, atomname):
@@ -192,11 +192,12 @@ class DefaultGuesser(GuesserBase):
         names = ''
         if atoms is not None:
             names = atoms
-        else:     
+        else:
             names = self._universe.atoms.names
 
         atoms_indicies = []
-        atoms_indicies = partial_guess if partial_guess else list(range(len(names)))
+        atoms_indicies = partial_guess if partial_guess else list(
+            range(len(names)))
 
         return np.array([self.guess_atom_element(names[n])
                         for n in atoms_indicies], dtype=object)
@@ -349,15 +350,15 @@ class DefaultGuesser(GuesserBase):
                 bonds.append((atoms[i].index, atoms[j].index))
         return tuple(bonds)
 
-
     def add_guessed_bonds(self):
         vdwradii = self._kwargs.get('vdwradii', None)
         if not hasattr(self._universe.atoms, 'types'):
-            self._universe.guess_TopologyAttributes(context=self.context, to_guess=['types'])
+            self._universe.guess_TopologyAttributes(
+                context=self.context, to_guess=['types'])
 
         return self.guess_bonds(self._universe.atoms, self._universe.atoms.positions,
-                          box=self._universe.atoms.dimensions, vdwradii=vdwradii)
-    
+                                box=self._universe.atoms.dimensions, vdwradii=vdwradii)
+
     def guess_angles(self, bonds=None):
         """Given a list of Bonds, find all angles that exist between atoms.
 
@@ -384,7 +385,8 @@ class DefaultGuesser(GuesserBase):
                 for other_b in atom.bonds:
                     if other_b != b:  # if not the same bond I start as
                         third_a = other_b.partner(atom)
-                        desc = tuple([other_a.index, atom.index, third_a.index])
+                        desc = tuple(
+                            [other_a.index, atom.index, third_a.index])
                         if desc[0] > desc[-1]:  # first index always less than last
                             desc = desc[::-1]
                         angles_found.add(desc)
@@ -394,7 +396,8 @@ class DefaultGuesser(GuesserBase):
     def add_guessed_angles(self):
 
         if not hasattr(self._universe.atoms, 'bonds'):
-            self._universe.guess_TopologyAttributes(context=self.context, to_guess=['bonds'])
+            self._universe.guess_TopologyAttributes(
+                context=self.context, to_guess=['bonds'])
 
         return self.guess_angles(self._universe.atoms.bonds)
 
@@ -433,8 +436,9 @@ class DefaultGuesser(GuesserBase):
     def add_guessed_dihedrals(self):
 
         if not hasattr(self._universe.atoms, 'angles'):
-            self._universe.guess_TopologyAttributes(context=self.context, to_guess=['angles'])
-        
+            self._universe.guess_TopologyAttributes(
+                context=self.context, to_guess=['angles'])
+
         return self.guess_dihedrals(self._universe.atoms.angles)
 
     def guess_improper_dihedrals(self, angles):
@@ -472,7 +476,6 @@ class DefaultGuesser(GuesserBase):
 
         return tuple(dihedrals_found)
 
-
     def guess_atom_charge(self, atoms):
         """Guess atom charge from the name.
 
@@ -480,7 +483,6 @@ class DefaultGuesser(GuesserBase):
         """
         # TODO: do something slightly smarter, at least use name/element
         return 0.0
-
 
     def guess_aromaticities(self, atomgroup=None):
         """Guess aromaticity of atoms using RDKit
@@ -511,7 +513,7 @@ class DefaultGuesser(GuesserBase):
             Array of float values representing the charge of each atom
 
         """
-  
+
         mol = atomgroup.convert_to("RDKIT")
         from rdkit.Chem.rdPartialCharges import ComputeGasteigerCharges
         ComputeGasteigerCharges(mol, throwOnParamFailure=True)
