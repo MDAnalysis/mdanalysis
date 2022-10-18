@@ -83,15 +83,16 @@ class DefaultGuesser(GuesserBase):
 
     def __init__(self, universe, **kwargs):
         super().__init__(universe, **kwargs)
-        self._guesser_methods = {'masses': self.guess_masses,
-                                 'types': self.guess_types,
-                                 'elements': self.guess_types,
-                                 'angles': self.add_guessed_angles,
-                                 'dihedrals': self.add_guessed_dihedrals,
-                                 'bonds': self.add_guessed_bonds,
-                                 'improper dihedrals': self.guess_improper_dihedrals,
-                                 'aromaticities': self.guess_aromaticities,
-                                 }
+        self._guesser_methods = {
+            'masses': self.guess_masses,
+            'types': self.guess_types,
+            'elements': self.guess_types,
+            'angles': self.add_guessed_angles,
+            'dihedrals': self.add_guessed_dihedrals,
+            'bonds': self.add_guessed_bonds,
+            'improper dihedrals': self.guess_improper_dihedrals,
+            'aromaticities': self.guess_aromaticities,
+        }
 
     def guess_masses(self, atoms=None, partial_guess=None):
         """Guess the mass of many atoms based upon their type
@@ -124,8 +125,9 @@ class DefaultGuesser(GuesserBase):
                     self.context, ['types'])
                 atom_types = self._universe.atoms.types
             except BaseException:
-                raise ValueError("there is no reference attributes in this universe"
-                                 "to guess mass from")
+                raise ValueError(
+                    "there is no reference attributes in this universe"
+                    "to guess mass from")
 
         atoms_indicies = []
         atoms_indicies = partial_guess if partial_guess else list(
@@ -170,8 +172,10 @@ class DefaultGuesser(GuesserBase):
             try:
                 return tables.masses[element.upper()]
             except KeyError:
-                warnings.warn("Unknown masses are set to 0.0 for current version, this will be"
-                              "depracated in version 3.0.0 and replaced by Masse's no_value_label (np.nan)", PendingDeprecationWarning)
+                warnings.warn(
+                    "Unknown masses are set to 0.0 for current version, this will be"
+                    "depracated in version 3.0.0 and replaced by Masse's no_value_label (np.nan)",
+                    PendingDeprecationWarning)
                 return 0.0
 
     def guess_atom_mass(self, atomname):
@@ -324,7 +328,7 @@ class DefaultGuesser(GuesserBase):
         if not all(val in vdwradii for val in set(atomtypes)):
             raise ValueError(("vdw radii for types: " +
                               ", ".join([t for t in set(atomtypes) if
-                                         not t in vdwradii]) +
+                                         t not in vdwradii]) +
                               ". These can be defined manually using the" +
                               " keyword 'vdwradii'"))
 
@@ -357,8 +361,11 @@ class DefaultGuesser(GuesserBase):
             self._universe.guess_TopologyAttributes(
                 context=self.context, to_guess=['types'])
 
-        return self.guess_bonds(self._universe.atoms, self._universe.atoms.positions,
-                                box=self._universe.atoms.dimensions, vdwradii=vdwradii)
+        return self.guess_bonds(
+            self._universe.atoms,
+            self._universe.atoms.positions,
+            box=self._universe.atoms.dimensions,
+            vdwradii=vdwradii)
 
     def guess_angles(self, bonds=None):
         """Given a list of Bonds, find all angles that exist between atoms.
@@ -469,7 +476,7 @@ class DefaultGuesser(GuesserBase):
             for other_b in atom.bonds:
                 other_atom = other_b.partner(atom)
                 # if this atom isn't in the angle I started with
-                if not other_atom in b:
+                if other_atom not in b:
                     desc = a_tup + (other_atom.index,)
                     if desc[0] > desc[-1]:
                         desc = desc[::-1]
