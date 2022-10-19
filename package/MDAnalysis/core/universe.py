@@ -758,7 +758,7 @@ class Universe(object):
         represented as a :class:`numpy.float32` array.
 
         Because :attr:`coord` is a reference to a
-        :class:`~MDAnalysis.coordinates.base.Timestep`, it changes its contents
+        :class:`~MDAnalysis.coordinates.timestep.Timestep`, it changes its contents
         while one is stepping through the trajectory.
 
         .. Note::
