@@ -1540,15 +1540,18 @@ def Merge(*args):
     ----------
     *args: :class:`~MDAnalysis.core.groups.AtomGroup`
         One or more AtomGroups.
+
     Returns
     -------
     universe: :class:`Universe`
+
     Raises
     ------
     ValueError
         Too few arguments or an AtomGroup is empty and
     TypeError
         Arguments are not :class:`AtomGroup` instances.
+
     Notes
     -----
     The resulting :class:`Universe` will only inherit the common topology
@@ -1565,6 +1568,7 @@ def Merge(*args):
     the :class:`~MDAnalysis.coordinates.memory.MemoryReader` to construct a
     trajectory for the new Universe as described under
     :ref:`creating-in-memory-trajectory-label`.
+
     Example
     -------
     In this example, protein, ligand, and solvent were externally prepared in
@@ -1572,17 +1576,23 @@ def Merge(*args):
     objects (where they could be further manipulated, e.g. renumbered,
     relabeled, rotated, ...) The :func:`Merge` command is used to combine all
     of them together::
+
        u1 = Universe("protein.pdb")
        u2 = Universe("ligand.pdb")
        u3 = Universe("solvent.pdb")
        u = Merge(u1.select_atoms("protein"), u2.atoms, u3.atoms)
        u.atoms.write("system.pdb")
+
     The complete system is then written out to a new PDB file.
+
+
     .. versionchanged:: 0.9.0
        Raises exceptions instead of assertion errors.
+
     .. versionchanged:: 0.16.0
        The trajectory is now a
        :class:`~MDAnalysis.coordinates.memory.MemoryReader`.
+
     """
     from ..topology.base import squash_by
 
