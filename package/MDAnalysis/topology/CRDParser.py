@@ -150,8 +150,7 @@ class CRDParser(TopologyReaderBase):
                            Resnames(res_resnames),
                            Resnums(res_resnums),
                            Segids(seg_segids),
-        ],
-            atom_resindex=atom_residx,
-            residue_segindex=res_segidx)
-
+                       ],
+                       atom_resindex=atom_residx,
+                       residue_segindex=res_segidx)
         return top

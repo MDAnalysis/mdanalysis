@@ -100,10 +100,11 @@ class LammpsBase(ParserBase):
         for attr in self.guessed_attrs:
             assert hasattr(u.atoms, attr)
 
-    @pytest.mark.skipif('names' not in expected_attrs, reason="topology doesn't have names attribute")
+    @pytest.mark.skipif('names' not in expected_attrs,
+                        reason="topology doesn't have names attribute")
     def test_guessed_types(self, filename, guessed_types):
-       u = mda.Universe(filename, format='DATA')
-       assert_equal(u.atoms.types, guessed_types)
+        u = mda.Universe(filename, format='DATA')
+        assert_equal(u.atoms.types, guessed_types)
 
     def test_guessed_masses(self, filename, guessed_masses):
         u = mda.Universe(filename, format='DATA')
@@ -272,6 +273,7 @@ class TestDumpParser(ParserBase):
 
     def test_creates_universe(self):
         u = mda.Universe(self.ref_filename, format='LAMMPSDUMP')
+
         assert isinstance(u, mda.Universe)
         assert len(u.atoms) == 24
 
@@ -280,10 +282,11 @@ class TestDumpParser(ParserBase):
         for attr in self.guessed_attrs:
             assert hasattr(u.atoms, attr)
 
-    @pytest.mark.skipif('names' not in expected_attrs, reason="topology doesn't have names attribute")
+    @pytest.mark.skipif('names' not in expected_attrs,
+                        reason="topology doesn't have names attribute")
     def test_guessed_types(self, filename, guessed_types):
-       u = mda.Universe(filename, format='LAMMPSDUMP')
-       assert_equal(u.atoms.types, guessed_types)
+        u = mda.Universe(filename, format='LAMMPSDUMP')
+        assert_equal(u.atoms.types, guessed_types)
 
     def test_guessed_masses(self, filename, guessed_masses):
         u = mda.Universe(filename, format='LAMMPSDUMP')

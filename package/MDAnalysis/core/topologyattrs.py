@@ -390,7 +390,6 @@ class TopologyAttr(object, metaclass=_TopologyAttrMeta):
     top : Topology
         handle for the Topology object TopologyAttr is associated with
 
-
     """
     attrname = 'topologyattrs'
     singular = 'topologyattr'
@@ -514,7 +513,7 @@ class TopologyAttr(object, metaclass=_TopologyAttrMeta):
         else:
             return False
 
- # core attributes
+# core attributes
 
 class Atomindices(TopologyAttr):
     """Globally unique indices for each atom in the group.
@@ -1905,7 +1904,7 @@ class Masses(AtomAttr):
 
     transplants[GroupBase].append(
         ('align_principal_axis', align_principal_axis))
-    
+
     @classmethod
     def is_value_missing(self, value):
        return np.isnan(value)

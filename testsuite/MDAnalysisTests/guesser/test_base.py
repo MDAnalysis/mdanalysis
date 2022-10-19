@@ -43,7 +43,9 @@ class TesttBaseGuesser():
         assert get_guesser(TestGuesser2()).context == 'test2'
 
     def test_guess_invalid_attribute(self):
-        with pytest.raises(ValueError, match='default guesser can not guess one or more of the provided attributes'):
+        with pytest.raises(ValueError,
+                           match='default guesser can not guess '
+                                 'one or more of the provided attributes'):
             mda.Universe(datafiles.PDB, to_guess=['foo'])
 
     def test_guess_attribute_with_missing_parent_attr(self):

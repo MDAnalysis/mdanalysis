@@ -290,7 +290,8 @@ class TOPParser(TopologyReaderBase):
             # only send out one warning that some elements are unknown
             msg = ("Unknown ATOMIC_NUMBER value found for some atoms, these "
                    "have been given an empty element record. If needed these "
-                   "can be guessed using universe.guess_TopologyAttributes(to_guess=['elements']).")
+                   "can be guessed using "
+                   "universe.guess_TopologyAttributes(to_guess=['elements']).")
             logger.warning(msg)
             warnings.warn(msg)
 

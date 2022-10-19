@@ -43,7 +43,8 @@ class GMSBase(ParserBase):
 
     @pytest.fixture
     def guessed_masses(self, top):
-        return DefaultGuesser(None).guess_masses(atoms=DefaultGuesser(None).guess_types(atoms=top.names.values))
+        return DefaultGuesser(None).guess_masses(
+            atoms=DefaultGuesser(None).guess_types(atoms=top.names.values))
 
 
 class TestGMSASYMOPT(GMSBase):

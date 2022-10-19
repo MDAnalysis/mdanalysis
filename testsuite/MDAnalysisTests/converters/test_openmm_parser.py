@@ -22,7 +22,7 @@
 #
 import pytest
 import numpy as np
-from numpy.testing import assert_equal,  assert_allclose
+from numpy.testing import assert_equal, assert_allclose
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
@@ -74,7 +74,9 @@ class OpenMMTopologyBase(ParserBase):
 
     @pytest.fixture
     def guessed_masses(self, top):
-        return DefaultGuesser(None).guess_masses(atoms=DefaultGuesser(None).guess_types(atoms=top.names.values))
+        return DefaultGuesser(None).guess_masses(
+            atoms=DefaultGuesser(None).guess_types(
+                atoms=top.names.values))
 
     def test_creates_universe(self, filename):
         """Check that Universe works with this Parser"""
@@ -149,7 +151,7 @@ class OpenMMTopologyBase(ParserBase):
                        for mass in top.masses.values)
         else:
             assert top.masses.values == []
-    
+
     def test_guessed_attributes(self, filename):
         u = mda.Universe(filename, topology_format="OPENMMTOPOLOGY")
         for attr in self.guessed_attrs:
@@ -186,15 +188,18 @@ class OpenMMAppTopologyBase(OpenMMTopologyBase):
         for attr in self.guessed_attrs:
             assert hasattr(u.atoms, attr)
 
-    @pytest.mark.skipif(not hasattr(top, 'elements'), reason="OPENMMAPParser doesn't guess atom types when element attribute is read")
+    @pytest.mark.skipif(
+        not hasattr(top,'elements'),
+                    reason="OPENMMAPParser doesn't guess atom types when element attribute is read")
     def test_guessed_types(self, filename, guessed_types):
-      u = mda.Universe(filename, topology_format="OPENMMAPP")
-      assert_equal(u.atoms.types, guessed_types)
+        u = mda.Universe(filename, topology_format="OPENMMAPP")
+        assert_equal(u.atoms.types, guessed_types)
 
-    @pytest.mark.skipif(hasattr(top, 'elements'), reason="OPENMMAPParser doesn't guess masses when element attribute is read")
+    @pytest.mark.skipif(hasattr(top, 'elements'),
+                        reason="OPENMMAPParser doesn't guess masses when element attribute is read")
     def test_guessed_masses(self, filename, guessed_masses):
-       u = mda.Universe(filename, topology_format="OPENMMAPP")
-       assert_allclose(u.atoms.masses, guessed_masses, rtol=1e-3, atol=0)
+        u = mda.Universe(filename, topology_format="OPENMMAPP")
+        assert_allclose(u.atoms.masses, guessed_masses, rtol=1e-3, atol=0)
 
 
 class TestOpenMMTopologyParser(OpenMMTopologyBase):
@@ -217,12 +222,13 @@ class TestOpenMMTopologyParserWithPartialElements(OpenMMTopologyBase):
         wmsg1 = ("Element information missing for some atoms. "
                  "These have been given an empty element record ")
 
-        wmsg2 = ("For absent elements, atomtype has been  "
-                      "set to 'X' and mass has been set to 0.0. "
-                      "If needed these can be guessed using "
-                      "universe.guess_TopologyAttributes(to_guess=['masses', 'types']). "
-                      "(for MDAnalysis version 2.x this is done automatically, but it will be removed in "
-                      "future versions).")
+        wmsg2 = (
+            "For absent elements, atomtype has been  "
+            "set to 'X' and mass has been set to 0.0. "
+            "If needed these can be guessed using "
+            "universe.guess_TopologyAttributes(to_guess=['masses', 'types']). "
+            "(for MDAnalysis version 2.x this is done automatically, but it will be removed in "
+            "future versions).")
 
         with pytest.warns(UserWarning) as warnings:
             mda_top = self.parser(self.ref_filename).parse()
@@ -242,15 +248,16 @@ def test_no_elements_warn():
     for a in omm_top.atoms():
         a.element = None
 
-    wmsg = ("Element information is missing for all the atoms. "
-            "Elements attribute will not be populated. "
-            "Atomtype attribute will be guessed using atom "
-            "name and mass will be guessed using atomtype."
-            "for MDAnalysis version 2.x this is done automatically, but it will be removed in "
-            "future versions. "
-            "These can be guessed using "
-            "universe.guess_TopologyAttributes(to_guess=['masses', 'types']) "
-            "See MDAnalysis.guessers.")
+    wmsg = (
+        "Element information is missing for all the atoms. "
+        "Elements attribute will not be populated. "
+        "Atomtype attribute will be guessed using atom "
+        "name and mass will be guessed using atomtype."
+        "for MDAnalysis version 2.x this is done automatically, but it will be removed in "
+        "future versions. "
+        "These can be guessed using "
+        "universe.guess_TopologyAttributes(to_guess=['masses', 'types']) "
+        "See MDAnalysis.guessers.")
 
     with pytest.warns(UserWarning) as warnings:
         mda_top = parser(omm_top).parse()

@@ -20,6 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+
 import pytest
 
 import MDAnalysis as mda
@@ -49,7 +50,8 @@ class TestGROParser(ParserBase):
 
     @pytest.fixture
     def guessed_masses(self, top):
-        return DefaultGuesser(None).guess_masses(atoms=DefaultGuesser(None).guess_types(atoms=top.names.values))
+        return DefaultGuesser(None).guess_masses(
+            atoms=DefaultGuesser(None).guess_types(atoms=top.names.values))
 
     def test_attr_size(self, top):
         assert len(top.ids) == top.n_atoms
@@ -79,6 +81,7 @@ def test_parse_missing_atomname_IOerror():
     with parser(GRO_missing_atomname) as p:
         with pytest.raises(IOError):
             p.parse()
+
 
 class TestGroResidWrapping(object):
     # resid is 5 digit field, so is limited to 100k

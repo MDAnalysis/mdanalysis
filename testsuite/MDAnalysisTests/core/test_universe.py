@@ -34,7 +34,7 @@ from numpy.testing import (
     assert_allclose,
     assert_almost_equal,
     assert_equal,
-    assert_array_equal
+    assert_array_equal,
 )
 import pytest
 
@@ -236,7 +236,7 @@ class TestUniverseFromSmiles(object):
 
     def test_no_Hs(self):
         smi = "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"
-        u = mda.Universe.from_smiles(smi, addHs=False, 
+        u = mda.Universe.from_smiles(smi, addHs=False,
             generate_coordinates=False, format='RDKIT')
         assert u.atoms.n_atoms == 14
         assert len(u.bonds.indices) == 15
@@ -258,7 +258,7 @@ class TestUniverseFromSmiles(object):
     def test_rdkit_kwargs(self):
         # test for bad kwarg:
         # Unfortunately, exceptions from Boost cannot be passed to python,
-        # we cannot `from Boost.Python import ArgumentError` and use it with 
+        # we cannot `from Boost.Python import ArgumentError` and use it with
         # pytest.raises(ArgumentError), so "this is the way"
         try:
             u = mda.Universe.from_smiles("CCO", rdkit_kwargs=dict(abc=42))
@@ -271,13 +271,13 @@ class TestUniverseFromSmiles(object):
         u1 = mda.Universe.from_smiles("C", rdkit_kwargs=dict(randomSeed=42))
         u2 = mda.Universe.from_smiles("C", rdkit_kwargs=dict(randomSeed=51))
         with pytest.raises(AssertionError) as e:
-            assert_equal(u1.trajectory.coordinate_array, 
+            assert_equal(u1.trajectory.coordinate_array,
                          u2.trajectory.coordinate_array)
             assert "Mismatched elements: 15 / 15 (100%)" in str(e.value)
 
 
     def test_coordinates(self):
-        u = mda.Universe.from_smiles("C", numConfs=2, 
+        u = mda.Universe.from_smiles("C", numConfs=2,
                                      rdkit_kwargs=dict(randomSeed=42))
         assert u.trajectory.n_frames == 2
         expected = np.array([
@@ -392,7 +392,7 @@ class TestGuessTopologyAttr(object):
         u = mda.Universe(PDB_small)
         with pytest.raises(KeyError):
             u.guess_TopologyAttributes(context='trash', to_guess=['masses'])
-            
+
     def test_invalid_attributes(self):
         u = mda.Universe(PDB_small)
         with pytest.raises(ValueError):
@@ -402,14 +402,14 @@ class TestGuessTopologyAttr(object):
             u = mda.Universe(PDB_small, to_guess=('masses', 'types'))
             assert_equal(len(u.atoms.masses), 3341)
             assert_equal(len(u.atoms.types), 3341)
-        
+
     def test_guessing_read_attributes(self):
         u = mda.Universe(PSF)
         old_types = u.atoms.types
         u.guess_TopologyAttributes(force_guess=['types'])
         with pytest.raises(AssertionError):
             assert_equal(old_types, u.atoms.types)
-        
+
 class TestGuessMasses(object):
     """Tests the Mass Guesser in topology.guessers
     """
@@ -833,7 +833,7 @@ class TestDelTopologyAttr(object):
                 return "potoooooooo"
 
             transplants["Universe"].append(("potatoes", potatoes))
-        
+
         universe.add_TopologyAttr("tubers")
         assert universe.potatoes() == "potoooooooo"
         universe.del_TopologyAttr("tubers")

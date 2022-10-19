@@ -68,7 +68,9 @@ class TestGuessMasses(object):
 
     def test_guess_masses_warn(self):
         topology = Topology(1, attrs=[Atomtypes(['X'])])
-        with pytest.warns(UserWarning, match="Failed to guess the mass for the following atom type"):
+        with pytest.warns(UserWarning,
+                          match="Failed to guess the mass for "
+                                "the following atom type"):
             mda.Universe(topology, to_guess=['masses'])
 
     def test_guess_masses_miss(self):
@@ -86,7 +88,8 @@ class TestGuessMasses(object):
 
     def test_guess_masses_with_no_reference_elements(self):
         u = mda.Universe.empty(3)
-        with pytest.raises(ValueError, match=('there is no reference attributes ')):
+        with pytest.raises(ValueError,
+                           match=('there is no reference attributes ')):
             u.guess_TopologyAttributes('default', ['masses'])
 
 

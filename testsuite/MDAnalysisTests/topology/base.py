@@ -30,7 +30,6 @@ from MDAnalysis.guesser import DefaultGuesser
 mandatory_attrs = ['ids', 'resids', 'resnums', 'segids']
 
 
-
 class ParserBase(object):
     """Base class for testing Topology parsers.
 
@@ -80,8 +79,7 @@ class ParserBase(object):
                     + mandatory_attrs
                     + ['indices', 'resindices', 'segindices'] + self.guessed_attrs)
         for attr in top.attrs:
-            assert attr.attrname in attrs, 'Unexpected attribute: {}'.format(
-                attr.attrname)
+            assert attr.attrname in attrs, 'Unexpected attribute: {}'.format(attr.attrname)
 
 
     def test_size(self, top):
@@ -111,12 +109,13 @@ class ParserBase(object):
         for attr in self.guessed_attrs:
             assert hasattr(u.atoms, attr)
 
-    @pytest.mark.skipif('names' not in expected_attrs, reason="topology doesn't have names attribute")
+    @pytest.mark.skipif('names' not in expected_attrs,
+                        reason="topology doesn't have names attribute")
     def test_guessed_types(self, filename, guessed_types):
-       """check that guessed types from universe creation have the same
-       values as the type guessing that used to happen inisde the parser"""
-       u = mda.Universe(filename)
-       assert_equal(u.atoms.types, guessed_types)
+        """check that guessed types from universe creation have the same
+        values as the type guessing that used to happen inisde the parser"""
+        u = mda.Universe(filename)
+        assert_equal(u.atoms.types, guessed_types)
 
     def test_guessed_masses(self, filename, guessed_masses):
         """check that guessed masses from universe creation have the same

@@ -20,6 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+# autopep8: off
 import pytest
 from pathlib import Path
 import MDAnalysis as mda
@@ -51,7 +52,7 @@ class BaseITP(ParserBase):
                       'segids', 'moltypes', 'molnums',
                       'bonds', 'angles', 'dihedrals', 'impropers']
 
-    guessed_attrs = ['elements',]
+    guessed_attrs = ['elements', ]
 
     @pytest.fixture
     def guessed_types(self, top):
@@ -61,7 +62,7 @@ class BaseITP(ParserBase):
     def guessed_masses(self, top):
         masses = np.array(top.masses.values)
         names = np.array(top.names.values)
-        
+
         empty = []
         for a in masses:
             empty.append(np.isnan(a))
@@ -167,8 +168,8 @@ class TestITPNoMass(ParserBase):
                       'charges', 'chargegroups',
                       'resids', 'resnames',
                       'segids', 'moltypes', 'molnums',
-                      'bonds', 'angles', 'dihedrals', 'impropers', 'masses',]
-    guessed_attrs = ['elements',]
+                      'bonds', 'angles', 'dihedrals', 'impropers', 'masses', ]
+    guessed_attrs = ['elements', ]
 
     @pytest.fixture
     def guessed_types(self, top):
@@ -186,7 +187,7 @@ class TestITPNoMass(ParserBase):
     def guessed_masses(self, top):
         masses = np.array(top.masses.values)
         names = np.array(top.names.values)
-        
+
         empty = []
         for a in masses:
             empty.append(np.isnan(a))
@@ -194,7 +195,6 @@ class TestITPNoMass(ParserBase):
         masses[empty] = DefaultGuesser(None).guess_masses(
                 DefaultGuesser(None).guess_types(names[empty]))
         return masses
-
 
     def test_mass_guess(self, universe):
         assert not np.isnan(universe.atoms[0].mass)
@@ -208,7 +208,7 @@ class TestITPAtomtypes(ParserBase):
                       'resids', 'resnames', 'masses'
                       'segids', 'moltypes', 'molnums',
                       'bonds', 'angles', 'dihedrals', 'impropers']
-    guessed_attrs = ['elements',]
+    guessed_attrs = ['elements', ]
 
     expected_n_atoms = 4
     expected_n_residues = 1
@@ -226,7 +226,7 @@ class TestITPAtomtypes(ParserBase):
     def guessed_masses(self, top):
         masses = np.array(top.masses.values)
         names = np.array(top.names.values)
-        
+
         empty = []
         for a in masses:
             empty.append(np.isnan(a))
@@ -256,7 +256,7 @@ class TestITPAtomtypes(ParserBase):
                       'resids', 'resnames',
                       'segids', 'moltypes', 'molnums',
                       'bonds', 'angles', 'dihedrals', 'impropers']
-    guessed_attrs = ['elements',]
+    guessed_attrs = ['elements', ]
 
     expected_n_atoms = 9
     expected_n_residues = 3
@@ -270,7 +270,7 @@ class TestITPAtomtypes(ParserBase):
     def guessed_masses(self, top):
         masses = np.array(top.masses.values)
         names = np.array(top.names.values)
-        
+
         empty = []
         for a in masses:
             empty.append(np.isnan(a))
@@ -294,6 +294,7 @@ class TestITPAtomtypes(ParserBase):
     @pytest.mark.skip(reason="TPParser doesn't guess types")
     def test_guessed_types(self, filename, guessed_types):
         pass
+
 
 class TestDifferentDirectivesITP(BaseITP):
 
@@ -319,15 +320,13 @@ class TestDifferentDirectivesITP(BaseITP):
         assert universe.dihedrals[0].type == (1, 1)
 
 
-
 class TestITPNoKeywords(BaseITP):
     expected_attrs = ['ids', 'names', 'types',
                       'charges', 'chargegroups',
                       'resids', 'resnames',
                       'segids', 'moltypes', 'molnums',
-                      'bonds', 'angles', 'dihedrals', 'impropers', 'masses',]
-    guessed_attrs = ['elements',]
-
+                      'bonds', 'angles', 'dihedrals', 'impropers', 'masses', ]
+    guessed_attrs = ['elements', ]
 
     """
     Test reading ITP files *without* defined keywords.
@@ -346,7 +345,6 @@ class TestITPNoKeywords(BaseITP):
     expected_n_atoms = 5
     expected_n_residues = 1
     expected_n_segments = 1
-
 
     expected_n_bonds = 2
     # FLEXIBLE not set -> SETTLE constraint -> water has no angle
@@ -376,8 +374,8 @@ class TestITPKeywords(TestITPNoKeywords):
                       'charges', 'chargegroups',
                       'resids', 'resnames',
                       'segids', 'moltypes', 'molnums',
-                      'bonds', 'angles', 'dihedrals', 'impropers', 'masses',]
-    guessed_attrs = ['elements',]
+                      'bonds', 'angles', 'dihedrals', 'impropers', 'masses', ]
+    guessed_attrs = ['elements', ]
 
     expected_n_atoms = 7
     # FLEXIBLE is set -> no SETTLE constraint -> water should have angle
@@ -411,7 +409,7 @@ class TestITPKeywords(TestITPNoKeywords):
         """check that guessed masses from universe creation have the same
         values as the masses guessing that used to happen inisde the parser"""
         u = mda.Universe(filename, FLEXIBLE=True, EXTRA_ATOMS=True,
-                            HW1_CHARGE=1, HW2_CHARGE=3)
+                         HW1_CHARGE=1, HW2_CHARGE=3)
         assert_allclose(u.atoms.masses, guessed_masses, rtol=1e-3, atol=0)
 
 
@@ -442,7 +440,11 @@ class TestNestedIfs(BaseITP):
         assert universe.atoms[5].mass > 40
 
     def test_guessed_masses(self, filename, guessed_masses):
-        u = mda.Universe(filename, HEAVY_H=True, EXTRA_ATOMS=True, HEAVY_SIX=True)
+        u = mda.Universe(
+            filename,
+            HEAVY_H=True,
+            EXTRA_ATOMS=True,
+            HEAVY_SIX=True)
         assert_allclose(u.atoms.masses, guessed_masses, rtol=1e-3, atol=0)
 
 
@@ -492,7 +494,6 @@ class TestReadTop(BaseITP):
         values as the masses guessing that used to happen inisde the parser"""
         u = mda.Universe(filename, topology_format='ITP', include_dir=GMX_DIR)
         assert_allclose(u.atoms.masses, guessed_masses, rtol=1e-3, atol=0)
-
 
     def test_sequential(self, universe):
         resids = np.array(list(range(2, 12)) + list(range(13, 23)))
@@ -568,7 +569,8 @@ class TestRelativePath:
                     u = mda.Universe("../test.itp")
                     assert len(u.atoms) == 1
 
-def test_missing_elements_noattribute():
+
+def test_missing_elements_no_attribute():
     """Check that:
 
     1) a warning is raised if elements are missing

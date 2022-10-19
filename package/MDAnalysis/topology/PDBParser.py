@@ -254,7 +254,7 @@ class PDBParser(TopologyReaderBase):
                 record_types.append(line[:6].strip())
                 try:
                     serial = int(line[6:11])
-                except BaseException:
+                except:
                     try:
                         serial = hy36decode(5, line[6:11])
                     except ValueError:
@@ -292,8 +292,7 @@ class PDBParser(TopologyReaderBase):
                     icodes.append(line[26:27].strip())
 
                 occupancies.append(float_or_default(line[54:60], 0.0))
-                tempfactors.append(float_or_default(
-                    line[60:66], 1.0))  # AKA bfactor
+                tempfactors.append(float_or_default(line[60:66], 1.0))  # AKA bfactor
 
                 segids.append(line[66:76].strip())
 
@@ -334,14 +333,16 @@ class PDBParser(TopologyReaderBase):
                     wmsg = (f"Unknown element {elem} found for some atoms. "
                             f"These have been given an empty element record. "
                             f"If needed they can be guessed using "
-                            f"universe.guess_TopologyAttributes(context='PDB', to_guess['elements']).")
+                            f"universe.guess_TopologyAttributes(context='PDB',"
+                            " to_guess['elements']).")
                     warnings.warn(wmsg)
                     validated_elements.append('')
             attrs.append(Elements(np.array(validated_elements, dtype=object)))
         else:
             warnings.warn("Element information is missing, elements attribute "
                           "will not be populated. If needed these can be "
-                          "guessed universe.guess_TopologyAttributes(context='PDB', to_guess['elements']).")
+                          "guessed universe.guess_TopologyAttributes(context='PDB',"
+                          " to_guess['elements']).")
 
         if any(formalcharges):
             for i, entry in enumerate(formalcharges):
@@ -365,7 +366,7 @@ class PDBParser(TopologyReaderBase):
                 else:
                     formalcharges[i] = 0
             attrs.append(
-                FormalCharges(np.array(formalcharges, dtype=int)))
+                    FormalCharges(np.array(formalcharges, dtype=int)))
 
         # Residue level stuff from here
         resids = np.array(resids, dtype=np.int32)

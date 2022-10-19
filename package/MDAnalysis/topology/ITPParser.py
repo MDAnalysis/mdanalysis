@@ -96,9 +96,8 @@ whether a keyword flag is given. For example, this modified TIP5P water file:
         #endif
 
 
-Define these preprocessor variables by passing keyword arguments.
-Any arguments that you pass in *override* any variables defined in the file.
-For example, the universe below
+Define these preprocessor variables by passing keyword arguments. Any arguments that you
+pass in *override* any variables defined in the file. For example, the universe below
 will have charges of 3 for the HW1 and HW2 atoms::
 
     import MDAnalysis as mda
@@ -106,9 +105,8 @@ will have charges of 3 for the HW1 and HW2 atoms::
 
     u = mda.Universe(ITP_tip5p, EXTRA_ATOMS=True, HW1_CHARGE=3, HW2_CHARGE=3)
 
-These keyword variables are **case-sensitive**.
-Note that if you set keywords to ``False`` or ``None``,
-they will be treated as if they are not defined in #ifdef conditions.
+These keyword variables are **case-sensitive**. Note that if you set keywords to
+``False`` or ``None``, they will be treated as if they are not defined in #ifdef conditions.
 
 For example, the universe below will only have 5 atoms. ::
 
@@ -132,7 +130,7 @@ import os
 
 import logging
 import numpy as np
-import warnings 
+import warnings
 from ..lib.util import openany
 from ..guesser.tables import SYMB2Z
 from ..guesser.default_guesser import DefaultGuesser
@@ -369,8 +367,8 @@ class Molecule:
         except ValueError:
             pass
         else:
-            self.bonds[(base, base + 1)].append("settles")
-            self.bonds[(base, base + 2)].append("settles")
+            self.bonds[(base, base+1)].append("settles")
+            self.bonds[(base, base+2)].append("settles")
 
     def resolve_residue_attrs(self):
         """Figure out residue borders and assign moltypes and molnums"""
@@ -383,14 +381,7 @@ class Molecule:
 
         self.resolved_residue_attrs = True
 
-    def shift_indices(
-            self,
-            atomid=0,
-            resid=0,
-            molnum=0,
-            cgnr=0,
-            n_res=0,
-            n_atoms=0):
+    def shift_indices(self, atomid=0, resid=0, molnum=0, cgnr=0, n_res=0, n_atoms=0):
         """
         Get attributes ready for adding onto a larger topology.
 
@@ -411,16 +402,16 @@ class Molecule:
         if not self.resolved_residue_attrs:
             self.resolve_residue_attrs()
 
-        resids = list(np.array(self.resids) + resid)
-        residx = list(np.array(self.residx) + n_res)
+        resids = list(np.array(self.resids)+resid)
+        residx = list(np.array(self.residx)+n_res)
         molnums = list(np.array(self.molnums) + molnum)
         ids = list(np.array(self.ids, dtype=int) + atomid)
 
         try:
             cg = np.array(self.chargegroups, dtype=int)
         except ValueError:
-            cg = np.arange(1, len(self.chargegroups) + 1)
-        chargegroups = list(cg + cgnr)
+            cg = np.arange(1, len(self.chargegroups)+1)
+        chargegroups = list(cg+cgnr)
 
         atom_order = [ids, self.types, resids, self.resnames,
                       self.names, chargegroups, self.charges,
@@ -430,7 +421,7 @@ class Molecule:
         for p in self.params:
             new = {}
             for indices, values in p.items():
-                new[tuple(np.array(indices) + n_atoms)] = values
+                new[tuple(np.array(indices)+n_atoms)] = values
             new_params.append(new)
 
         return atom_order, new_params, molnums, self.moltypes, residx
@@ -535,8 +526,7 @@ class ITPParser(TopologyReaderBase):
                         self.parser = self.parse_molecules
 
                     elif self.current_mol:
-                        self.parser = self.current_mol.parsers.get(
-                            section, self._pass)
+                        self.parser = self.current_mol.parsers.get(section, self._pass)
 
                     else:
                         self.parser = self._pass
@@ -574,8 +564,6 @@ class ITPParser(TopologyReaderBase):
                 )
                 for x in self.types[empty]
             ]
-            
-
 
         attrs = []
         # atom stuff
@@ -596,17 +584,17 @@ class ITPParser(TopologyReaderBase):
 
         attrs.append(Masses(np.array(self.masses, dtype=np.float64),
                                 guessed=False))
-        
+
         self.elements = DefaultGuesser(None).guess_types(self.names)
         if all(e.capitalize() in SYMB2Z for e in self.elements):
             attrs.append(Elements(np.array(self.elements, dtype=object), guessed=True))
-        
+
         else:
             warnings.warn("Element information is missing, elements attribute "
                           "will not be populated. If needed these can be "
                           "guessed using universe.guess_topologyAttributes(to_guess=['elements']).")
 
-            
+
 
         # residue stuff
         resids = np.array(self.resids, dtype=np.int32)
@@ -622,7 +610,7 @@ class ITPParser(TopologyReaderBase):
         n_residues = len(self.resids)
         n_segments = len(self.system_molecules)
         attrs.append(Segids(np.array(self.system_molecules, dtype=object)))
-        segidx = molnums - 1
+        segidx = molnums-1
 
         top = Topology(n_atoms, n_residues, n_segments,
                        attrs=attrs,
@@ -672,7 +660,7 @@ class ITPParser(TopologyReaderBase):
 
     def parse_molecules(self, line):
         name, n_mol = line.split()
-        self.system_molecules.extend([name] * int(n_mol))
+        self.system_molecules.extend([name]*int(n_mol))
 
     def build_system(self):
         self.ids = []
