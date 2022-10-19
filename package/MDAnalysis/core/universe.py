@@ -128,6 +128,7 @@ def _topology_from_file_like(topology_file, topology_format=None,
             "Error: {2}".format(topology_file, parser, err))
     return topology
 
+
 def _resolve_formats(*coordinates, format=None, topology_format=None):
     if not coordinates:
         if format is None:
@@ -135,7 +136,6 @@ def _resolve_formats(*coordinates, format=None, topology_format=None):
         elif topology_format is None:
             topology_format = format
     return format, topology_format
-
 
 
 def _resolve_coordinates(filename, *coordinates, format=None,
@@ -169,7 +169,7 @@ def _generate_from_topology(universe):
 
     universe.residues = ResidueGroup(
             np.arange(universe._topology.n_residues), universe)
-   
+
     universe.segments = SegmentGroup(
             np.arange(universe._topology.n_segments), universe)
 
@@ -350,8 +350,10 @@ class Universe(object):
             'all_coordinates': all_coordinates
         }
         self._kwargs.update(kwargs)
+
         format, topology_format = _resolve_formats(*coordinates, format=format,
                                                    topology_format=topology_format)
+
         if not isinstance(topology, Topology) and not topology is None:
             self.filename = _check_file_like(topology)
             topology = _topology_from_file_like(self.filename,
@@ -581,7 +583,6 @@ class Universe(object):
 
         self.trajectory = reader(filename, format=format, **kwargs)
         if self.trajectory.n_atoms != len(self.atoms):
-
             raise ValueError("The topology and {form} trajectory files don't"
                              " have the same number of atoms!\n"
                              "Topology number of atoms {top_n_atoms}\n"
@@ -1187,7 +1188,7 @@ class Universe(object):
         .. versionadded:: 1.0.0
         """
         self._add_topology_objects('dihedrals', values, types=types,
-                                   guessed=guessed)
+                                 guessed=guessed)
 
     def add_impropers(self, values, types=None, guessed=False):
         """Add new Impropers to this Universe.
@@ -1539,6 +1540,7 @@ class Universe(object):
 def Merge(*args):
     """Create a new new :class:`Universe` from one or more
     :class:`~MDAnalysis.core.groups.AtomGroup` instances.
+
     Parameters
     ----------
     *args: :class:`~MDAnalysis.core.groups.AtomGroup`
