@@ -243,7 +243,7 @@ class Universe(object):
     to_guess: list, (optional), defualt ['types', 'masses']
               (in future versions types and masses will be removed)
         Attributes to be guessed (these attributes will be either guessed
-        if it don exist in the universe or partially guessed by only filling
+        if they don't exist in the universe or partially guessed by only filling
         its empty values if universe has the attribute)
     force_guess: list, (optional)
         Attributes to be forced guessed (these attributes will be either
@@ -1475,9 +1475,9 @@ class Universe(object):
         context: string or Guesser class
             For calling a matching guesser class for this specific context
         to_guess: list, (optional)
-            Attributes to be guessed (these attributes will be either guessed,
-            if it deosn't exist in the universe or partially guessed
-            by only filling its empty values, if universe has the attribute)
+            Attributes to be guessed (these attributes will be either guessed
+            if they don't exist in the universe or partially guessed by only filling
+            its empty values if universe has the attribute)
         force_guess: list, (optional)
             Attributes to be forced guessed (these attributes will be either
             guessed if they don't exist in the universe or their values will be
@@ -1487,11 +1487,9 @@ class Universe(object):
 
         Examples
         --------
-        guess masses and elements attribute::
+        guess masses and types attribute::
 
-        >>>u.guess_TopologyAttributes(
-            context='default', to_guess=['masses', elements])
-
+        >>>u.guess_TopologyAttributes(context='default', to_guess=['masses', 'types'])
 
         .. versionadded:: 2.4.0
 

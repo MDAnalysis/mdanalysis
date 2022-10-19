@@ -188,7 +188,6 @@ class DefaultGuesser(GuesserBase):
         """Guess a mass based on the atom name.
 
         :func:`guess_atom_element` is used to determine the kind of atom.
-
         .. warning:: Untill vesion 3.0.0 anything not recognized is simply
         set to 0.0; if you rely on the masses you might want to double check.
         """
