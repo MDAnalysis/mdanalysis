@@ -60,6 +60,7 @@ import copy
 import warnings
 import contextlib
 import collections
+
 import MDAnalysis
 import sys
 
@@ -90,6 +91,7 @@ from ..guesser.base import get_guesser
 logger = logging.getLogger("MDAnalysis.core.universe")
 
 
+
 def _check_file_like(topology):
     if isstream(topology):
         if hasattr(topology, 'name'):
@@ -98,7 +100,6 @@ def _check_file_like(topology):
             _name = None
         return NamedStream(topology, _name)
     return topology
-
 
 def _topology_from_file_like(topology_file, topology_format=None,
                              **kwargs):
@@ -136,6 +137,7 @@ def _resolve_formats(*coordinates, format=None, topology_format=None):
     return format, topology_format
 
 
+
 def _resolve_coordinates(filename, *coordinates, format=None,
                          all_coordinates=False):
     if all_coordinates or not coordinates and filename is not None:
@@ -143,11 +145,10 @@ def _resolve_coordinates(filename, *coordinates, format=None,
             get_reader_for(filename, format=format)
         except (ValueError, TypeError):
             warnings.warn('No coordinate reader found for {}. Skipping '
-                          'this file.'.format(filename))
+                            'this file.'.format(filename))
         else:
             coordinates = (filename,) + coordinates
     return coordinates
-
 
 def _generate_from_topology(universe):
     # generate Universe version of each class
@@ -167,10 +168,10 @@ def _generate_from_topology(universe):
     universe.atoms = AtomGroup(np.arange(universe._topology.n_atoms), universe)
 
     universe.residues = ResidueGroup(
-        np.arange(universe._topology.n_residues), universe)
-
+            np.arange(universe._topology.n_residues), universe)
+   
     universe.segments = SegmentGroup(
-        np.arange(universe._topology.n_segments), universe)
+            np.arange(universe._topology.n_segments), universe)
 
 
 class Universe(object):
@@ -349,9 +350,8 @@ class Universe(object):
             'all_coordinates': all_coordinates
         }
         self._kwargs.update(kwargs)
-        format, topology_format = _resolve_formats(
-            *coordinates, format=format, topology_format=topology_format)
-
+        format, topology_format = _resolve_formats(*coordinates, format=format,
+                                                   topology_format=topology_format)
         if not isinstance(topology, Topology) and not topology is None:
             self.filename = _check_file_like(topology)
             topology = _topology_from_file_like(self.filename,
@@ -374,7 +374,7 @@ class Universe(object):
 
         if coordinates:
             self.load_new(coordinates, format=format, in_memory=in_memory,
-                          in_memory_step=in_memory_step, **kwargs)
+                        in_memory_step=in_memory_step, **kwargs)
 
         if transformations:
             if callable(transformations):
@@ -582,7 +582,7 @@ class Universe(object):
         self.trajectory = reader(filename, format=format, **kwargs)
         if self.trajectory.n_atoms != len(self.atoms):
 
-           raise ValueError("The topology and {form} trajectory files don't"
+            raise ValueError("The topology and {form} trajectory files don't"
                              " have the same number of atoms!\n"
                              "Topology number of atoms {top_n_atoms}\n"
                              "Trajectory: {fname} Number of atoms {trj_n_atoms}".format(
@@ -1038,6 +1038,7 @@ class Universe(object):
     def _add_topology_objects(self, object_type, values, types=None, guessed=False,
                            order=None):
         """Add new TopologyObjects to this Universe
+
         Parameters
         ----------
         object_type : {'bonds', 'angles', 'dihedrals', 'impropers'}
@@ -1054,6 +1055,8 @@ class Universe(object):
             bool, or an iterable of hashable values with the same length as ``values``
         order : iterable (optional, default None)
             None, or an iterable of hashable values with the same length as ``values``
+
+
         .. versionadded:: 1.0.0
         """
         if all(isinstance(x, TopologyObject) for x in values):
@@ -1441,12 +1444,12 @@ class Universe(object):
         if generate_coordinates:
             if not addHs:
                 raise ValueError("Generating coordinates requires adding "
-                                 "hydrogens with `addHs=True`")
+                "hydrogens with `addHs=True`")
 
             numConfs = rdkit_kwargs.pop("numConfs", numConfs)
-            if not (isinstance(numConfs, int) and numConfs > 0):
+            if not (type(numConfs) is int and numConfs > 0):
                 raise SyntaxError("numConfs must be a non-zero positive "
-                                  "integer instead of {0}".format(numConfs))
+                "integer instead of {0}".format(numConfs))
             AllChem.EmbedMultipleConfs(mol, numConfs, **rdkit_kwargs)
 
         return cls(mol, **kwargs)
@@ -1556,13 +1559,17 @@ def Merge(*args):
     -----
     The resulting :class:`Universe` will only inherit the common topology
     attributes that all merged universes share.
+
     :class:`AtomGroup` instances can come from different Universes, or can come
     directly from a :meth:`~Universe.select_atoms` call.
+
     :class:`Merge` can also be used with a single :class:`AtomGroup` if the
     user wants to, for example, re-order the atoms in the :class:`Universe`.
+
     If multiple :class:`AtomGroup` instances from the same :class:`Universe`
     are given, the merge will first simply "add" together the
     :class:`AtomGroup` instances.
+
     Merging does not create a full trajectory but only a single structure even
     if the input consists of one or more trajectories.  However, one can use
     the :class:`~MDAnalysis.coordinates.memory.MemoryReader` to construct a
