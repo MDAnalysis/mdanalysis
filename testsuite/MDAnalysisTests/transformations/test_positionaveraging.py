@@ -106,3 +106,6 @@ def test_posavging_specific_noreset(posaveraging_universes_noreset):
         specr_avgd[...,idx] = ts.positions.copy()
         idx += 1
     assert_array_almost_equal(ref_matrix_specr, specr_avgd[1,:,-1], decimal=5) 
+
+
+
