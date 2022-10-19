@@ -87,14 +87,10 @@ class GuesserBase(metaclass=_GuesserMeta):
         self._universe = universe
         self._kwargs = kwargs
 
-    @property
-    def universe(self):
-        return self._universe
-
     def update_kwargs(self, **kwargs):
         self._kwargs.update(kwargs)
 
-    def are_guessable(self, guess):
+    def are_guessable(self, attrs_to_guess):
         """check if the passed atrributes can be guessed by the guesser class
 
         Parameters
@@ -106,12 +102,11 @@ class GuesserBase(metaclass=_GuesserMeta):
         -------
         Boolean value
         """
-        if guess:
-            for a in guess:
+        if attrs_to_guess:
+            for a in attrs_to_guess:
                 if a.lower() not in self._guesser_methods:
                     return False
             return True
-        return False
 
     def guess_attr(self, attr_to_guess, force_guess=False):
         """map the attribute to be guessed with the apporpiate guessing method
@@ -155,9 +150,6 @@ class GuesserBase(metaclass=_GuesserMeta):
                 # empty values to be guessed
                 attr[emptyAttrs] = self._guesser_methods[attr_to_guess](
                     partial_guess=emptyAttrs_indices)
-
-                logger.info(
-                    f'attribute {attr_to_guess} has been guessed successfully.')
                 return attr
 
             else:

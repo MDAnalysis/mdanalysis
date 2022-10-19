@@ -57,38 +57,37 @@ class TestGuessMasses(object):
         u.guess_TopologyAttributes(to_guess=['masses'])
 
         assert isinstance(u.atoms.masses, np.ndarray)
-        assert_allclose(u.atoms.masses, np.array([12.011, 12.011, 1.008]), rtol=1e-3, atol=0)
-
+        assert_allclose(u.atoms.masses, np.array(
+            [12.011, 12.011, 1.008]), rtol=1e-3, atol=0)
 
     def test_guess_masses_from_guesser_object(self, default_guesser):
         elements = ['H', 'Ca', 'Am']
         values = np.array([1.008, 40.08000, 243.0])
-        assert_allclose( default_guesser.guess_masses(elements), values, rtol=1e-3, atol=0)
+        assert_allclose(default_guesser.guess_masses(
+            elements), values, rtol=1e-3, atol=0)
 
     def test_guess_masses_warn(self):
         topology = Topology(1, attrs=[Atomtypes(['X'])])
         with pytest.warns(UserWarning, match="Failed to guess the mass for the following atom type"):
-            u = mda.Universe(topology, to_guess=['masses'])
+            mda.Universe(topology, to_guess=['masses'])
 
     def test_guess_masses_miss(self):
         topology = Topology(2, attrs=[Atomtypes(['X', 'Z'])])
         u = mda.Universe(topology)
-        u.guess_TopologyAttributes(to_guess=['masses'])
-        assert_allclose(u.atoms.masses, np.array([0.0, 0.0]), rtol=1e-3, atol=0)
+        assert_allclose(u.atoms.masses, np.array(
+            [0.0, 0.0]), rtol=1e-3, atol=0)
 
-    @pytest.mark.parametrize('element, value', (('H', 1.008), ('XYZ', 0.0 ), ))
+    @pytest.mark.parametrize('element, value', (('H', 1.008), ('XYZ', 0.0), ))
     def test_get_atom_mass(self, element, value, default_guesser):
         default_guesser.get_atom_mass(element) == approx(value)
 
     def test_guess_atom_mass(self, default_guesser):
         assert default_guesser.guess_atom_mass('1H') == approx(1.008)
 
-
     def test_guess_masses_with_no_reference_elements(self):
         u = mda.Universe.empty(3)
         with pytest.raises(ValueError, match=('there is no reference attributes ')):
             u.guess_TopologyAttributes('default', ['masses'])
-
 
 
 class TestGuessTypes(object):
@@ -144,12 +143,10 @@ def test_guess_bonds_Error():
         u.guess_TopologyAttributes(to_guess=['bonds'])
 
 
-
 def test_guess_bond_coord_error():
     u = mda.Universe(datafiles.PDB)
     with pytest.raises(ValueError):
-        DefaultGuesser(u).guess_bonds(u.atoms, [[1,2,2]])
-
+        DefaultGuesser(u).guess_bonds(u.atoms, [[1, 2, 2]])
 
 
 def test_guess_impropers(default_guesser):
@@ -161,6 +158,15 @@ def test_guess_impropers(default_guesser):
 
     vals = default_guesser.guess_improper_dihedrals(ag.angles)
     assert_equal(len(vals), 12)
+
+
+def test_guess_dihedrals_with_no_bonds():
+    "Test guessing bonds and angles first before guessing "
+    "dihedral for a univers with no bonds and angles "
+    u = mda.Universe(datafiles.two_water_gro)
+    u.guess_TopologyAttributes(to_guess=['dihedrals'])
+    assert hasattr(u, 'bonds')
+    assert hasattr(u, 'angles')
 
 
 def bond_sort(arr):
@@ -176,11 +182,15 @@ def bond_sort(arr):
 
 def test_guess_bonds_water(default_guesser):
     u = mda.Universe(datafiles.two_water_gro)
-    bonds = bond_sort(default_guesser.guess_bonds(u.atoms, u.atoms.positions, u.dimensions))
+    bonds = bond_sort(
+        default_guesser.guess_bonds(
+            u.atoms,
+            u.atoms.positions,
+            u.dimensions))
     assert_equal(bonds, ((0, 1),
-                          (0, 2),
-                          (3, 4),
-                          (3, 5)))
+                         (0, 2),
+                         (3, 4),
+                         (3, 5)))
 
 
 def test_guess_bonds_adk():
@@ -189,7 +199,7 @@ def test_guess_bonds_adk():
     guesser = DefaultGuesser(None)
     bonds = bond_sort(guesser.guess_bonds(u.atoms, u.atoms.positions))
     assert_equal(np.sort(u.bonds.indices, axis=0),
-                  np.sort(bonds, axis=0))
+                 np.sort(bonds, axis=0))
 
 
 def test_guess_bonds_peptide():
@@ -198,7 +208,7 @@ def test_guess_bonds_peptide():
     guesser = DefaultGuesser(None)
     bonds = bond_sort(guesser.guess_bonds(u.atoms, u.atoms.positions))
     assert_equal(np.sort(u.bonds.indices, axis=0),
-                  np.sort(bonds, axis=0))
+                 np.sort(bonds, axis=0))
 
 
 @pytest.mark.parametrize("smi", [
@@ -234,7 +244,7 @@ def test_guess_gasteiger_charges(smi):
     mol = Chem.AddHs(mol)
     ComputeGasteigerCharges(mol, throwOnParamFailure=True)
     expected = np.array([atom.GetDoubleProp("_GasteigerCharge")
-                          for atom in mol.GetAtoms()], dtype=np.float32)
+                         for atom in mol.GetAtoms()], dtype=np.float32)
     u = mda.Universe(mol)
     guesser = DefaultGuesser(None)
     values = guesser.guess_gasteiger_charges(u.atoms)

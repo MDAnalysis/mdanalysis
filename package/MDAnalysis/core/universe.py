@@ -1520,6 +1520,8 @@ class Universe(object):
                             else:
                                 tcls = _TOPOLOGY_ATTRS[attr](values, True)
                                 self.add_TopologyAttr(tcls)
+                            logger.info(
+                                f'attribute {attr} has been guessed successfully.')
 
                 else:
                     raise ValueError('{0} guesser can not guess one or more '
