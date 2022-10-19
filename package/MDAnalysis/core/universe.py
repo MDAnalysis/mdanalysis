@@ -240,10 +240,16 @@ class Universe(object):
         atom type which are used in guessing bonds.
     context: string or Guesser, default ``default``
         Type of the Guesser to be used in guessing different attributes
-    to_guess: list, (optional), defualt ['types', 'masses'] (in future versions types and masses will be removed)
-        Attributes to be guessed (these attributes will be either guessed if it don exist in the universe or partially guessed by only filling its empty values if universe has the attribute)
+    to_guess: list, (optional), defualt ['types', 'masses']
+              (in future versions types and masses will be removed)
+        Attributes to be guessed (these attributes will be either guessed
+        if it don exist in the universe or partially guessed by only filling
+        its empty values if universe has the attribute)
     force_guess: list, (optional)
-        Attributes to be forced guessed (these attributes will be either guessed if they don't exist in the universe or their values will be completely overwritten by guessed ones if the universe has the attribute)
+        Attributes to be forced guessed (these attributes will be either
+        guessed if they don't exist in the universe or their values will be
+        completely overwritten by guessed ones if the universe has
+        the attribute)
     transformations: function or list, ``None``, default ``None``
         Provide a list of transformations that you wish to apply to the
         trajectory upon reading. Transformations can be found in
@@ -321,7 +327,8 @@ class Universe(object):
 
     .. versionchanged:: 2.4.0
       added guess_TopologyAttributes API
-      guessing masses and atom types when topology is read from a registered parser
+      guessing masses and atom types when topology
+      is read from a registered parser
 
 
     """
@@ -388,7 +395,7 @@ class Universe(object):
 
         if guess_bonds:
             force_guess = list(force_guess) + ['bonds', 'angles', 'dihedrals']
-        
+
         self.guess_TopologyAttributes(
             context, to_guess, force_guess, vdwradii=vdwradii, **kwargs)
 
@@ -1455,7 +1462,6 @@ class Universe(object):
 
         return cls(mol, **kwargs)
 
-
     def guess_TopologyAttributes(
             self, context=None, to_guess=(), force_guess=(), **kwargs):
         """
@@ -1469,16 +1475,22 @@ class Universe(object):
         context: string or Guesser class
             For calling a matching guesser class for this specific context
         to_guess: list, (optional)
-            Attributes to be guessed (these attributes will be either guessed, if it deosn't exist in the universe or partially guessed by only filling its empty values, if universe has the attribute)
+            Attributes to be guessed (these attributes will be either guessed,
+            if it deosn't exist in the universe or partially guessed
+            by only filling its empty values, if universe has the attribute)
         force_guess: list, (optional)
-            Attributes to be forced guessed (these attributes will be either guessed if they don't exist in the universe or their values will be completely overwritten by guessed values if the universe has the attribute)
+            Attributes to be forced guessed (these attributes will be either
+            guessed if they don't exist in the universe or their values will be
+            completely overwritten by guessed values if the universe has the
+            attribute)
         **kwargs: extra arguments to be passed to the guesser class
 
         Examples
         --------
         guess masses and elements attribute::
 
-        >>>u.guess_TopologyAttributes(context='default', to_guess=['masses', elements])
+        >>>u.guess_TopologyAttributes(
+            context='default', to_guess=['masses', elements])
 
 
         .. versionadded:: 2.4.0
@@ -1508,10 +1520,12 @@ class Universe(object):
                         if any(attr == a for a in self._topology_atrrs):
                             logger.info(
                                 'The attribute {} have already been read '
-                                'from the topology file. The '
-                                'guesser will only guess empty values for this attribute, if any exists.'
-                                'To overwrite it by completely guessed values, you can pass the attribute to the force_guess'
-                                'parameter instead of the to_guess one' .format(attr))
+                                'from the topology file. The guesser will '
+                                'only guess empty values for this attribute, '
+                                'if any exists. To overwrite it by completely '
+                                'guessed values, you can pass the attribute to'
+                                ' the force_guess parameter instead of '
+                                'the to_guess one' .format(attr))
 
                     for attr in total_guess:
                         fg = True if attr in force_guess else False
@@ -1525,7 +1539,8 @@ class Universe(object):
                                 tcls = _TOPOLOGY_ATTRS[attr](values, True)
                                 self.add_TopologyAttr(tcls)
                             logger.info(
-                                f'attribute {attr} has been guessed successfully.')
+                                f'attribute {attr} has been guessed'
+                                ' successfully.')
 
                 else:
                     raise ValueError('{0} guesser can not guess one or more '

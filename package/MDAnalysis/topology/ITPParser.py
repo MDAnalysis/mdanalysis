@@ -578,23 +578,22 @@ class ITPParser(TopologyReaderBase):
                 attrs.append(Attr(np.array(vals, dtype=dtype)))
 
         if not all(self.masses):
-           empty = self.masses == ''
-           self.masses[empty] = Masses.missing_value_label
-
+            empty = self.masses == ''
+            self.masses[empty] = Masses.missing_value_label
 
         attrs.append(Masses(np.array(self.masses, dtype=np.float64),
-                                guessed=False))
+                            guessed=False))
 
         self.elements = DefaultGuesser(None).guess_types(self.names)
         if all(e.capitalize() in SYMB2Z for e in self.elements):
-            attrs.append(Elements(np.array(self.elements, dtype=object), guessed=True))
+            attrs.append(Elements(np.array(self.elements,
+                         dtype=object), guessed=True))
 
         else:
             warnings.warn("Element information is missing, elements attribute "
                           "will not be populated. If needed these can be "
-                          "guessed using universe.guess_topologyAttributes(to_guess=['elements']).")
-
-
+                          "guessed using universe.guess_topologyAttributes("
+                          "to_guess=['elements']).")
 
         # residue stuff
         resids = np.array(self.resids, dtype=np.int32)

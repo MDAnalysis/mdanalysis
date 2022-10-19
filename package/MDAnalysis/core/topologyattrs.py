@@ -1907,7 +1907,7 @@ class Masses(AtomAttr):
 
     @classmethod
     def is_value_missing(self, value):
-       return np.isnan(value)
+        return np.isnan(value)
 
 
 # TODO: update docs to property doc

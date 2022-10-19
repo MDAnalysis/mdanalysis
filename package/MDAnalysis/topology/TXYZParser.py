@@ -127,7 +127,7 @@ class TXYZParser(TopologyReaderBase):
             if n.capitalize() in SYMB2Z:
                 validated_elements.append(n.capitalize())
             else:
-               validated_elements.append('')
+                validated_elements.append('')
 
         attrs = [Atomnames(names),
                  Atomids(atomids),
@@ -143,7 +143,8 @@ class TXYZParser(TopologyReaderBase):
         else:
             warnings.warn("Element information is missing, elements attribute "
                           "will not be populated. If needed these can be "
-                          "guessed using universe.guess_topologyAttributes(to_guess=['elements']).")
+                          "guessed using universe.guess_topologyAttributes("
+                          "to_guess=['elements']).")
 
         top = Topology(natoms, 1, 1,
                        attrs=attrs)

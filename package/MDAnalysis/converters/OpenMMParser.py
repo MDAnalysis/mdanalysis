@@ -185,9 +185,12 @@ class OpenMMTopologyParser(TopologyReaderBase):
                         "For absent elements, atomtype has been  "
                         "set to 'X' and mass has been set to 0.0. "
                         "If needed these can be guessed using "
-                        "universe.guess_TopologyAttributes(to_guess=['masses', 'types']). "
-                        "(for MDAnalysis version 2.x this is done automatically, but it will be removed in "
-                        "future versions).")
+                        "universe.guess_TopologyAttributes("
+                        "to_guess=['masses', 'types']). "
+                        "(for MDAnalysis version 2.x "
+                        "this is done automatically,"
+                        " but it will be removed in future versions).")
+
                 attrs.append(Elements(np.array(validated_elements,
                                                dtype=object)))
                 attrs.append(Atomtypes(np.array(atomtypes, dtype=object)))
@@ -199,10 +202,11 @@ class OpenMMTopologyParser(TopologyReaderBase):
                     "Elements attribute will not be populated. "
                     "Atomtype attribute will be guessed using atom "
                     "name and mass will be guessed using atomtype."
-                    "for MDAnalysis version 2.x this is done automatically, but it will be removed in "
-                    "future versions. "
+                    "for MDAnalysis version 2.x this is done automatically, "
+                    "but it will be removed in future versions. "
                     "These can be guessed using "
-                    "universe.guess_TopologyAttributes(to_guess=['masses', 'types']) "
+                    "universe.guess_TopologyAttributes("
+                    "to_guess=['masses', 'types']) "
                     "See MDAnalysis.guessers.")
 
                 warnings.warn(wmsg)

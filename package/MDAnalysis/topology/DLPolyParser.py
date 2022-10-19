@@ -96,7 +96,6 @@ class ConfigParser(TopologyReaderBase):
         else:
             ids = np.arange(n_atoms)
 
-
         attrs = [
             Atomnames(names),
             Atomids(ids),
@@ -158,7 +157,6 @@ class HistoryParser(TopologyReaderBase):
             names = names[order]
         else:
             ids = np.arange(n_atoms)
-
 
         attrs = [
             Atomnames(names),

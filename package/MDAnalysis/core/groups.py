@@ -3286,6 +3286,7 @@ class AtomGroup(GroupBase):
         """
         from .topologyattrs import Bonds, Angles, Dihedrals
         from ..guesser.default_guesser import DefaultGuesser
+
         def get_TopAttr(u, name, cls):
             """either get *name* or create one from *cls*"""
             try:
@@ -3298,8 +3299,8 @@ class AtomGroup(GroupBase):
         # indices of bonds
         guesser = DefaultGuesser(None)
         b = guesser.guess_bonds(self.atoms, self.atoms.positions,
-                        vdwradii=vdwradii, box=self.dimensions)
-        
+                                vdwradii=vdwradii, box=self.dimensions)
+
         bondattr = get_TopAttr(self.universe, 'bonds', Bonds)
         bondattr._add_bonds(b, guessed=True)
 

@@ -196,7 +196,7 @@ class MOL2Parser(TopologyReaderBase):
                 aid, name, x, y, z, atom_type = columns[:6]
                 id_name_charge = [1, None, None]
                 for i in range(6, len(columns)):
-                    id_name_charge[i - 6] = columns[i]
+                    id_name_charge[i-6] = columns[i]
                 resid, resname, charge = id_name_charge
             if has_charges:
                 if charge is None:
@@ -238,7 +238,6 @@ class MOL2Parser(TopologyReaderBase):
         attrs.append(Atomids(np.array(ids, dtype=np.int32)))
         attrs.append(Atomnames(np.array(names, dtype=object)))
         attrs.append(Atomtypes(np.array(types, dtype=object)))
-
         if has_charges:
             attrs.append(Charges(np.array(charges, dtype=np.float32)))
 

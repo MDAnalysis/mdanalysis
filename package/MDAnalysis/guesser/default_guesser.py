@@ -24,9 +24,10 @@ r"""
 Default Guesser
 ================
 
-DefaultGuesser is a generic guesser class that have basic guessing methods. This class is a
-general purpose guesser that can be used with most topologies, but being generic make it
-the less accurate among all guessers.
+DefaultGuesser is a generic guesser class that have basic guessing methods.
+This class is a general purpose guesser that can be used with most topologies,
+but being generic make it the less accurate among all guessers.
+
 
 In general `guess_atom_X` returns the guessed value for a single value,
 while `guess_Xs` will work on an array of many atoms.
@@ -52,8 +53,9 @@ from . import tables
 
 class DefaultGuesser(GuesserBase):
     """
-    this guesser hold generic methods (not directed to specific context) for guessing different topology attribute.
-    it has the same methods that was originally found in Topology.guesser.py. The attributes that can be
+    this guesser hold generic methods (not directed to specific context) for
+    guessing different topology attribute. it has the same methods that was
+    originally found in Topology.guesser.py. The attributes that can be
     guessed by this class are:
     masses
     types
@@ -64,8 +66,8 @@ class DefaultGuesser(GuesserBase):
     improper dihedrals
     aromaticities
 
-    you can use this guesser either directly by initiating an object of it or through
-    universe.guess_TopologyAttributes API.
+    you can use this guesser either directly by initiating an
+    object of it or through universe.guess_TopologyAttributes API.
 
     Examples
     --------
@@ -108,7 +110,8 @@ class DefaultGuesser(GuesserBase):
 
         Raises
         ------
-        :exc:`ValueError` if there is no atom types or elements to guess mass from.
+        :exc:`ValueError` if there is no atom types
+         or elements to guess mass from.
 
         """
         atom_types = None
@@ -138,7 +141,8 @@ class DefaultGuesser(GuesserBase):
         return masses
 
     def validate_atom_types(self, atom_types):
-        """Vaildates the atom types based on whether they are available in our tables
+        """Vaildates the atom types based on whether
+        they are available in our tables
 
         Parameters
         ----------
@@ -158,7 +162,8 @@ class DefaultGuesser(GuesserBase):
                     tables.masses[atom_type.upper()]
                 except KeyError:
                     warnings.warn(
-                        "Failed to guess the mass for the following atom types: {}".format(atom_type))
+                        "Failed to guess the mass for the "
+                        "following atom types: {}".format(atom_type))
 
     def get_atom_mass(self, element):
         """Return the atomic mass in u for *element*.
@@ -173,8 +178,9 @@ class DefaultGuesser(GuesserBase):
                 return tables.masses[element.upper()]
             except KeyError:
                 warnings.warn(
-                    "Unknown masses are set to 0.0 for current version, this will be"
-                    "depracated in version 3.0.0 and replaced by Masse's no_value_label (np.nan)",
+                    "Unknown masses are set to 0.0 for current version, "
+                    "this will be depracated in version 3.0.0 and replaced by"
+                    " Masse's no_value_label (np.nan)",
                     PendingDeprecationWarning)
                 return 0.0
 
@@ -183,7 +189,8 @@ class DefaultGuesser(GuesserBase):
 
         :func:`guess_atom_element` is used to determine the kind of atom.
 
-        .. warning:: Untill vesion 3.0.0 anything not recognized is simply set to 0.0; if you rely on the masses you might want to double check.
+        .. warning:: Untill vesion 3.0.0 anything not recognized is simply
+        set to 0.0; if you rely on the masses you might want to double check.
         """
         return self.get_atom_mass(self.guess_atom_element(atomname))
 
@@ -274,22 +281,22 @@ class DefaultGuesser(GuesserBase):
              coordinates of the atoms (i.e., `AtomGroup.positions)`)
         fudge_factor : float, optional
             The factor by which atoms must overlap eachother to be considered a
-            bond.  Larger values will increase the number of bonds found. [0.55]
+            bond. Larger values will increase the number of bonds found. [0.55]
         vdwradii : dict, optional
-            To supply custom vdwradii for atoms in the algorithm. Must be a dict
-            of format {type:radii}. The default table of van der Waals radii is
-            hard-coded as :data:`MDAnalysis.guesser.tables.vdwradii`.  Any user
-            defined vdwradii passed as an argument will supercede the table
-            values. [``None``]
+            To supply custom vdwradii for atoms in the algorithm. Must be a
+            dict of format {type:radii}. The default table of van der Waals
+            radii is hard-coded as :data:`MDAnalysis.guesser.tables.vdwradii`.
+            Any user defined vdwradii passed as an argument will supercede the
+            table values. [``None``]
         lower_bound : float, optional
-            The minimum bond length. All bonds found shorter than this length will
-            be ignored. This is useful for parsing PDB with altloc records where
-            atoms with altloc A and B maybe very close together and there should be
-            no chemical bond between them. [0.1]
+            The minimum bond length. All bonds found shorter than this length
+            will be ignored. This is useful for parsing PDB with altloc records
+            where atoms with altloc A and B maybe very close together and
+            there should be no chemical bond between them. [0.1]
         box : array_like, optional
-            Bonds are found using a distance search, if unit cell information is
-            given, periodic boundary conditions will be considered in the distance
-            search. [``None``]
+            Bonds are found using a distance search, if unit cell information
+            is given, periodic boundary conditions will be considered in the
+            distance search. [``None``]
 
         Returns
         -------
@@ -303,7 +310,8 @@ class DefaultGuesser(GuesserBase):
 
         Raises
         ------
-        :exc:`ValueError` if inputs are malformed or `vdwradii` data is missing.
+        :exc:`ValueError` if inputs are malformed or `vdwradii` data
+        is missing.
 
 
         .. _`same algorithm that VMD uses`:
@@ -316,9 +324,11 @@ class DefaultGuesser(GuesserBase):
 
         fudge_factor = kwargs.get('fudge_factor', 0.55)
 
-        vdwradii = tables.vdwradii.copy()  # so I don't permanently change it
+        # so I don't permanently change it
+        vdwradii = tables.vdwradii.copy()
         user_vdwradii = kwargs.get('vdwradii', None)
-        if user_vdwradii:  # this should make algo use their values over defaults
+        # this should make algo use their values over defaults
+        if user_vdwradii:
             vdwradii.update(user_vdwradii)
 
         # Try using types, then elements
@@ -395,7 +405,8 @@ class DefaultGuesser(GuesserBase):
                         third_a = other_b.partner(atom)
                         desc = tuple(
                             [other_a.index, atom.index, third_a.index])
-                        if desc[0] > desc[-1]:  # first index always less than last
+                        # first index always less than last
+                        if desc[0] > desc[-1]:
                             desc = desc[::-1]
                         angles_found.add(desc)
 
@@ -450,8 +461,8 @@ class DefaultGuesser(GuesserBase):
         return self.guess_dihedrals(self._universe.atoms.angles)
 
     def guess_improper_dihedrals(self, angles):
-        """Given a list of Angles, find all improper dihedrals that exist between
-        atoms.
+        """Given a list of Angles, find all improper dihedrals
+        that exist between atoms.
 
         Works by assuming that if (1,2,3) is an angle, and 2 & 4 are bonded,
         then (2, 1, 3, 4) must be an improper dihedral.

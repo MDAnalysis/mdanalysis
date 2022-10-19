@@ -143,7 +143,6 @@ class PDBQTParser(TopologyReaderBase):
 
         n_atoms = len(serials)
 
-
         attrs = []
         for attrlist, Attr, dtype in (
                 (record_types, RecordTypes, object),

@@ -200,7 +200,7 @@ def _sort_atoms_by_mass(atoms, reverse=False):
     s = sorted(atoms, key=lambda a: (a.mass, a.index))
 
     # reverse in a seperate step cause the reverse parameter
-    # of the sorted method doesn't work as expected with nan 
+    # of the sorted method doesn't work as expected with nan
     # values of masses, which causes errors in sorting
     if reverse:
         s.reverse()

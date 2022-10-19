@@ -49,8 +49,9 @@ class _GuesserMeta(type):
     When classes which inherit from GuesserBase are *defined*
     this metaclass makes it known to MDAnalysis.  'context'
     attribute  are read:
-     - `context` defines the context of the guesser class for example: forcefield specific context
-       as MartiniGuesser and file specific context as PDBGuesser.
+     - `context` defines the context of the guesser class for example:
+       forcefield specific context  as MartiniGuesser
+       and file specific context as PDBGuesser.
 
     Eg::
 
@@ -70,12 +71,13 @@ class GuesserBase(metaclass=_GuesserMeta):
 
     Parameters
     ----------
-    universe : Universe
-        Universe
     universe : Universe, optional
-        Supply a Universe to the Parser. This then become the source of atom attributes
-        to be used in guessing processes. (this is relevant to how the universe's guess_topologyAttributes API works. See :ref:`guess_TopologyAttributes <guess_TopologyAttributes>`).
-    **kwargs: to pass additional data to the guesser that can be used with different methos.
+        Supply a Universe to the Parser. This then become the source of atom
+        attributes to be used in guessing processes. (this is relevant to how
+        the universe's guess_topologyAttributes API works.
+        See :ref:`guess_TopologyAttributes <guess_TopologyAttributes>`).
+    **kwargs: to pass additional data to the guesser that can be used with
+              different methos.
 
     .. versionadded:: 2.4.0
 
@@ -116,7 +118,8 @@ class GuesserBase(metaclass=_GuesserMeta):
         attr_to_guess: list
             an atrribute to be guessed then to be added to the universe
         force_guess: boolean
-            To indicate wether to only partialy guess the empty values of the attribute or to overwrite all existing values by guessed one
+            To indicate wether to only partialy guess the empty values of the
+            attribute or to overwrite all existing values by guessed one
 
         Returns
         -------
@@ -154,7 +157,8 @@ class GuesserBase(metaclass=_GuesserMeta):
 
             else:
                 logger.info(
-                    f'There is no empty {attr_to_guess} values. Guesser did not guess any new values for {attr_to_guess} attribute')
+                    f'There is no empty {attr_to_guess} values. Guesser did '
+                    'not guess any new values for {attr_to_guess} attribute')
                 return None
         else:
             return np.array(self._guesser_methods[attr_to_guess]())
