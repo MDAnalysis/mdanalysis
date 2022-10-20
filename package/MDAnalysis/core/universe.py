@@ -1455,9 +1455,9 @@ class Universe(object):
                 "hydrogens with `addHs=True`")
 
             numConfs = rdkit_kwargs.pop("numConfs", numConfs)
-            if not (type(numConfs) is int and numConfs > 0):
+            if not (isinstance(numConfs, int) and numConfs > 0):
                 raise SyntaxError("numConfs must be a non-zero positive "
-                "integer instead of {0}".format(numConfs))
+                                  "integer instead of {0}".format(numConfs))
             AllChem.EmbedMultipleConfs(mol, numConfs, **rdkit_kwargs)
 
         return cls(mol, **kwargs)
