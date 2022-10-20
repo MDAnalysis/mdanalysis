@@ -136,7 +136,12 @@ jobs:
 
     - name: pre_installs
       if: startsWith(matrix.python-version, 'pypy')
-      run: sudo apt install -y libopenblas-dev 
+      run: |
+        sudo apt install -y libopenblas-dev 
+        pypy -m ensurepip
+        pypy -m pip install -U pip wheel
+        which pip
+        pypy -m pip install cython>=0.28.0
 
     - name: pip install mdanalysis
       run: |
