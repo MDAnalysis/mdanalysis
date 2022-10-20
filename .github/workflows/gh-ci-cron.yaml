@@ -135,7 +135,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
 
     - name: pre_installs
-      if: ${{ startsWith(${{ matrix.python-version }}, 'pypy') }}
+      if: startsWith(matrix.python-version, 'pypy')
       run: sudo apt install -y libopenblas-dev 
 
     - name: pip install mdanalysis
