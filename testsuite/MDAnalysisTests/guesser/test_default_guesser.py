@@ -116,8 +116,8 @@ class TestGuessTypes(object):
         assert default_guesser.guess_atom_element('2H') == 'H'
 
     def test_guess_atom_element_from_masses(self, default_guesser):
-        m = [79.904, 40.08000, 1.008, 99]
-        elements = np.array(['BR', 'CA', 'H', ''], dtype=object)
+        m = [79.904, 40.08000, 1.008, 99,262]
+        elements = np.array(['BR', 'CA', 'H', '', ''], dtype=object)
         assert_equal(elements, default_guesser.guess_types(masses=list(m)))
 
     def guess_universe_atom_element_from_masses(self, default_guesser):
