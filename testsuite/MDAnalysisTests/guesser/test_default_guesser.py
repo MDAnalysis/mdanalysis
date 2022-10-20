@@ -26,7 +26,7 @@ import MDAnalysis as mda
 
 from numpy.testing import assert_equal, assert_allclose
 import numpy as np
-from MDAnalysis.core.topologyattrs import (Angles, Atomtypes, Atomnames)
+from MDAnalysis.core.topologyattrs import Angles, Atomtypes, Atomnames, Masses
 from MDAnalysis.guesser.default_guesser import DefaultGuesser
 from MDAnalysis.core.topology import Topology
 from MDAnalysisTests import make_Universe
@@ -116,17 +116,17 @@ class TestGuessTypes(object):
         assert default_guesser.guess_atom_element('2H') == 'H'
 
     def test_guess_atom_element_from_masses(self, default_guesser):
-        m = [79.904, 40.08000, 1.008, 99,262]
+        m = [79.904, 40.08000, 1.008, 99, 262]
         elements = np.array(['BR', 'CA', 'H', '', ''], dtype=object)
         assert_equal(elements, default_guesser.guess_types(masses=list(m)))
 
-    def guess_universe_atom_element_from_masses(self, default_guesser):
-        masses = [127.6, 98, 10.811]
-        top = Topology(5, attrs=[masses])
+    def test_guess_universe_atom_element_from_masses(self, default_guesser):
+        masses = np.array([127.6, 98, 10.811], dtype=np.float32)
+        top = Topology(3, attrs=[Masses(masses)])
         u = mda.Universe(top, to_guess=['types'])
-        assert_equal(u.atoms.types, np.array['TE', 'TC', 'B'])
+        assert_equal(u.atoms.types, ['TE', 'TC', 'B'])
 
-    def guess_elements_from_no_data(self):
+    def test_guess_elements_from_no_data(self):
         top = Topology(5)
         msg = "there is no reference attributes in this universe"
         "to guess types from"

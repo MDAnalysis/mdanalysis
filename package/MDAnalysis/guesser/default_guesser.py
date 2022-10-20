@@ -231,7 +231,7 @@ class DefaultGuesser(GuesserBase):
                         "there is no reference attributes in this universe"
                         "to guess types from")
 
-        if masses:
+        if masses is not None:
             atoms_indices = partial_guess if partial_guess else list(
                 range(len(masses)))
 

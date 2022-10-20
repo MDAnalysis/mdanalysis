@@ -81,3 +81,12 @@ class TesttBaseGuesser():
         u = mda.Universe(top, to_guess=['masses'], force_guess=['masses'])
         assert_allclose(u.atoms.masses, np.array(
             [12.01100, 1.00800, 1.00800, 15.99900]), rtol=1e-3, atol=0)
+
+    def test_partial_guess_attr_with_unknown_no_value_label(self):
+        "trying to partially guess attribute tha doesn't have declared"
+        "no_value_label should gives no effect"
+        names = Atomnames(np.array(['C', 'H', 'H', 'O'], dtype=object))
+        types = Atomtypes(np.array(['', '', '', ''], dtype=object))
+        top = Topology(4, 1, 1, attrs=[names, types, ])
+        u = mda.Universe(top, to_guess=['types'])
+        assert_equal(u.atoms.types, ['', '', '', ''])
