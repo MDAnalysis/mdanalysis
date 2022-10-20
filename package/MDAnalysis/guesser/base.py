@@ -137,16 +137,13 @@ class GuesserBase(metaclass=_GuesserMeta):
             attr = np.array(getattr(self._universe.atoms, attr_to_guess, None))
 
             emptyAttrs = []
-            try:
-                top_attr = _TOPOLOGY_ATTRS[attr_to_guess]
-                emptyAttrs_indices = []
-                for i, a in enumerate(attr):
-                    value_missing = top_attr.is_value_missing(a)
-                    emptyAttrs.append(value_missing)
-                    if value_missing:
-                        emptyAttrs_indices.append(i)
-            except BaseException:
-                pass
+            top_attr = _TOPOLOGY_ATTRS[attr_to_guess]
+            emptyAttrs_indices = []
+            for i, a in enumerate(attr):
+                value_missing = top_attr.is_value_missing(a)
+                emptyAttrs.append(value_missing)
+                if value_missing:
+                    emptyAttrs_indices.append(i)
 
             if True in emptyAttrs:
                 # pass to the guesser_method indecies of attributes that have
