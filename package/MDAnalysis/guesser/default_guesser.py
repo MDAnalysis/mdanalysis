@@ -44,6 +44,7 @@ Classes
 from .base import GuesserBase
 import numpy as np
 import warnings
+import math
 
 import re
 
@@ -97,12 +98,18 @@ class DefaultGuesser(GuesserBase):
         }
 
     def guess_masses(self, atoms=None, partial_guess=None):
-        """Guess the mass of many atoms based upon their type
+        """Guess the mass of many atoms based upon their type.
+        For guessing masses through Univese.guess_topologyAttribute():
+        First try to guess masses from atom elements, if not available,
+        try to guess masses from types and if not availaible, try to guess
+        types.
 
         Parameters
         ----------
         atoms
           Atom types/elements to guess masses from
+        partial_guess (optional)
+          Index of certain atoms to guess masses for
 
         Returns
         -------
@@ -114,30 +121,27 @@ class DefaultGuesser(GuesserBase):
          or elements to guess mass from.
 
         """
-        atom_types = None
-        if atoms is not None:
-            atom_types = atoms
-        elif hasattr(self._universe.atoms, 'elements'):
-            atom_types = self._universe.atoms.elements
-        elif hasattr(self._universe.atoms, 'types'):
-            atom_types = self._universe.atoms.types
-
-        else:
+        if atoms is None:
             try:
-                self._universe.guess_TopologyAttributes(
-                    self.context, ['types'])
-                atom_types = self._universe.atoms.types
-            except BaseException:
-                raise ValueError(
-                    "there is no reference attributes in this universe"
-                    "to guess mass from")
+                atoms = self._universe.atoms.elements
+            except AttributeError:
+                try:
+                    atoms = self._universe.atoms.types
+                except AttributeError:
+                    try:
+                        self._universe.guess_TopologyAttributes(
+                            self.context, ['types'])
+                        atoms = self._universe.atoms.types
+                    except ValueError:
+                        raise ValueError(
+                            "there is no reference attributes in this universe"
+                            "to guess mass from")
 
-        atoms_indicies = []
-        atoms_indicies = partial_guess if partial_guess else list(
-            range(len(atom_types)))
-        self.validate_atom_types(atom_types)
-        masses = np.array([self.get_atom_mass(atom_types[atom_t])
-                           for atom_t in atoms_indicies], dtype=np.float64)
+        atoms_indices = partial_guess if partial_guess else list(
+            range(len(atoms)))
+        self.validate_atom_types(atoms)
+        masses = np.array([self.get_atom_mass(atoms[atom_t])
+                           for atom_t in atoms_indices], dtype=np.float64)
         return masses
 
     def validate_atom_types(self, atom_types):
@@ -193,24 +197,53 @@ class DefaultGuesser(GuesserBase):
         """
         return self.get_atom_mass(self.guess_atom_element(atomname))
 
-    def guess_types(self, atoms=None, partial_guess=None):
+    def guess_types(self, atoms=None, masses=None, partial_guess=None):
         """Guess the atom type of many atoms based on atom name
+        Parameters
+        ----------
+        atoms (optional)
+          atoms names if types guessing is desired to be from names
+        masses (optional)
+           atoms masses if types guessing is desired to be from masses
+        partial_guess (optional)
+          Index of certain atoms to guess masses for
+
         Returns
         -------
         atom_types : np.ndarray dtype object
+
+        Raises
+        ------
+        :exc:`ValueError` if there is no names
+         or masses to guess types from.
+
         """
-        names = ''
-        if atoms is not None:
-            names = atoms
+
+        if atoms is None and masses is None:
+            try:
+                atoms = self._universe.atoms.names
+            except AttributeError:
+                try:
+                    # if names is not available we can guess types from masses
+                    masses = self._universe.atoms.masses
+                except AttributeError:
+                    raise ValueError(
+                        "there is no reference attributes in this universe"
+                        "to guess types from")
+
+        if masses:
+            atoms_indices = partial_guess if partial_guess else list(
+                range(len(masses)))
+
+            return np.array([self.guess_element_from_mass(masses[n])
+                             for n in atoms_indices], dtype=object)
+
         else:
-            names = self._universe.atoms.names
+            atoms_indices = partial_guess if partial_guess else list(
+                range(len(atoms)))
 
-        atoms_indicies = []
-        atoms_indicies = partial_guess if partial_guess else list(
-            range(len(names)))
-
-        return np.array([self.guess_atom_element(names[n])
-                        for n in atoms_indicies], dtype=object)
+            return np.array([self.guess_atom_element(atoms[n])
+                            for n in atoms_indices], dtype=object)
 
     NUMBERS = re.compile(r'[0-9]')  # match numbers
     SYMBOLS = re.compile(r'[*+-]')  # match *, +, -
@@ -258,6 +291,31 @@ class DefaultGuesser(GuesserBase):
 
             # if it's numbers
             return no_symbols
+
+    def guess_element_from_mass(self, mass):
+        """Guess the element of the atom from the mass.
+
+        Compare mass to the known element masses with
+        a percision of five decimal places. If masses
+        matched, return the corresponding element,
+        else return empty string.
+        NB: guessing elements from masses fail
+        with elements that doesn't have unique mass.
+
+        See Also
+        --------
+        :func:`guess_atom_type`
+        :mod:`MDAnalysis.guesser.tables`
+        """
+        for e, m in tables.masses.items():
+            if math.isclose(m, mass, rel_tol=1e-5):
+                # skipping masses that represent more than one element
+                # neglect it better that guessing wrong type
+                if mass == 247 or mass == 262:
+                    return ''
+                else:
+                    return e.upper()
+        return ''
 
     def guess_bonds(self, atoms, coords, box=None, **kwargs):
         r"""Guess if bonds exist between two atoms based on their distance.

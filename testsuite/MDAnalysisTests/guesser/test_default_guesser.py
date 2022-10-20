@@ -32,7 +32,6 @@ from MDAnalysis.core.topology import Topology
 from MDAnalysisTests import make_Universe
 from MDAnalysisTests.core.test_fragments import make_starshape
 import MDAnalysis.tests.datafiles as datafiles
-
 from MDAnalysisTests.util import import_not_available
 
 try:
@@ -95,11 +94,10 @@ class TestGuessMasses(object):
 
 class TestGuessTypes(object):
 
-    def test_guess_types(self):
+    def test_guess_types(self, default_guesser):
         topology = Topology(2, attrs=[Atomnames(['MG2+', 'C12'])])
-        u = mda.Universe(topology)
-        u.guess_TopologyAttributes(to_guess=['types'])
-        values = DefaultGuesser(None).guess_types(u.atoms.names)
+        u = mda.Universe(topology, to_guess=['types'])
+        values = default_guesser.guess_types(atoms=u.atoms.names)
         assert isinstance(u.atoms.types, np.ndarray)
         assert_equal(u.atoms.types, np.array(['MG', 'C'], dtype=object))
         assert_equal(values, np.array(['MG', 'C'], dtype=object))
@@ -116,6 +114,24 @@ class TestGuessTypes(object):
     def test_guess_atom_element_1H(self, default_guesser):
         assert default_guesser.guess_atom_element('1H') == 'H'
         assert default_guesser.guess_atom_element('2H') == 'H'
+
+    def test_guess_atom_element_from_masses(self, default_guesser):
+        m = [79.904, 40.08000, 1.008, 99]
+        elements = np.array(['BR', 'CA', 'H', ''], dtype=object)
+        assert_equal(elements, default_guesser.guess_types(masses=list(m)))
+
+    def guess_universe_atom_element_from_masses(self, default_guesser):
+        masses = [127.6, 98, 10.811]
+        top = Topology(5, attrs=[masses])
+        u = mda.Universe(top, to_guess=['types'])
+        assert_equal(u.atoms.types, np.array['TE', 'TC', 'B'])
+
+    def guess_elements_from_no_data(self):
+        top = Topology(5)
+        msg = "there is no reference attributes in this universe"
+        "to guess types from"
+        with pytest.raises(ValueError, match=(msg)):
+            mda.Universe(top, to_guess=['types'])
 
     @pytest.mark.parametrize('name, element', (
         ('AO5*', 'O'),
