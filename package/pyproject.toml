@@ -7,22 +7,19 @@ requires = [
     # In part adapted from: https://github.com/scipy/oldest-supported-numpy/blob/main/setup.cfg
     # except for more exotic platform (Mac Arm flavors)
     # aarch64, AIX, s390x all support < 1.20 so we can safely pin to this
-    "numpy==1.20.0; python_version=='3.8' and (platform_machine!='arm64' or platform_system!='Darwin')",
-    "numpy==1.20.0; python_version=='3.9' and (platform_machine!='arm64' or platform_system!='Darwin')",
+    # Note: MDA does not build with PyPy so we do not support it in the build system
+    "numpy==1.20.0; python_version=='3.8' and (platform_machine!='arm64' or platform_system!='Darwin') and platform_python_implementation != 'PyPy'",
+    "numpy==1.20.0; python_version=='3.9' and (platform_machine!='arm64' or platform_system!='Darwin') and platform_python_implementation != 'PyPy'",
     # arm64 on darwin for py3.8+ requires numpy >=1.21.0
-    "numpy==1.21.0; python_version=='3.8' and platform_machine=='arm64' and platform_system=='Darwin'",
-    "numpy==1.21.0; python_version=='3.9' and platform_machine=='arm64' and platform_system=='Darwin'",
+    "numpy==1.21.0; python_version=='3.8' and platform_machine=='arm64' and platform_system=='Darwin' and platform_python_implementation != 'PyPy'",
+    "numpy==1.21.0; python_version=='3.9' and platform_machine=='arm64' and platform_system=='Darwin' and platform_python_implementation != 'PyPy'",
     # As per https://github.com/scipy/oldest-supported-numpy/blob/main/setup.cfg
     # safest to build at 1.21.6 for all platforms
     "numpy==1.21.6; python_version=='3.10' and platform_python_implementation != 'PyPy'",
     "numpy==1.23.2; python_version=='3.11' and platform_python_implementation != 'PyPy'",
     # For unreleased versions of Python there is currently no known supported
     # NumPy version. In that case we just let it be a bare NumPy install
-    # Same thing goes for PyPy and Python >=3.8
     "numpy; python_version>='3.12'",
-    # PyPy requirements
-    "numpy==1.22.2; python_version=='3.8' and platform_machine!='loongarch64' and platform_python_implementation=='PyPy'",
-    "numpy; python_version>='3.9' and platform_python_implementation=='PyPy'",
     "setuptools",
     "wheel",
 ]
