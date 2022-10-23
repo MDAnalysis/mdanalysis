@@ -240,7 +240,7 @@ class Universe(object):
         atom type which are used in guessing bonds.
     context: string or Guesser, default ``default``
         Type of the Guesser to be used in guessing different attributes
-    to_guess: list, (optional), defualt ['types', 'masses']
+    to_guess: list, (optional), defualt ``['types', 'masses']``
               (in future versions types and masses will be removed)
         Attributes to be guessed (these attributes will be either guessed
         if they don't exist in the universe or partially guessed by only filling
@@ -326,7 +326,7 @@ class Universe(object):
         ``topology`` and ``trajectory`` are reserved upon unpickle.
 
     .. versionchanged:: 2.4.0
-      added guess_TopologyAttributes API
+      added :ref:`guess_TopologyAttributes <guess_TopologyAttributes>` API
       guessing masses and atom types when topology
       is read from a registered parser
 
@@ -1487,9 +1487,9 @@ class Universe(object):
 
         Examples
         --------
-        guess masses and types attribute::
+        guess ``masses`` and ``types`` attribute::
 
-        >>>u.guess_TopologyAttributes(context='default', to_guess=['masses', 'types'])
+            u.guess_TopologyAttributes(context='default', to_guess=['masses', 'types'])
 
         .. versionadded:: 2.4.0
 

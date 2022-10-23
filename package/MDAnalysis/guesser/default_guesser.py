@@ -23,6 +23,7 @@
 r"""
 Default Guesser
 ================
+.. _DefaultGuesser:
 
 DefaultGuesser is a generic guesser class that have basic guessing methods.
 This class is a general purpose guesser that can be used with most topologies,
@@ -72,12 +73,12 @@ class DefaultGuesser(GuesserBase):
 
     Examples
     --------
-     to guess bonds for a universe:
+    to guess bonds for a universe::
 
-     import MDAnalysis as mda
-     from MDAnalysisTests.datafiles import two_water_gro
+        import MDAnalysis as mda
+        from MDAnalysisTests.datafiles import two_water_gro
 
-     u = mda.Universe(two_water_gro, context = 'default', to_guess=['bonds'])
+        u = mda.Universe(two_water_gro, context = 'default', to_guess=['bonds'])
 
     .. versionadded:: 2.4.0
 

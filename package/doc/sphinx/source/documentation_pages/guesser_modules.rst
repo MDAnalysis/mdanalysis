@@ -3,10 +3,9 @@
 **************************
 guesser modules
 **************************
-This module contains the context-specific guessers. Context-specific guessers main purpose
-is to be a more tailored guesser classes that serve specific file formats or force fields. Having
-such guessers makes attribute guessing more accurate and reliable than having one generic guessing
-class that is used with all topologies.
+This module contains the context-aware guessers, which are used by the :ref:`guess_TopologyAttributes <guess_TopologyAttributes>` API. Context-aware guessers' main purpose
+is to be tailored guesser classes that target specific file format or force field (eg. PDB file format, or Martini forcefield).
+Having such guessers makes attribute guessing more accurate and reliable than having generic guessing methods that doesn't  fit all topologies.
 
 Example uses of guessers
 ------------------------
@@ -28,6 +27,18 @@ Guessing can be done through the universe's :func:`guess_TopologyAttributes` as 
 In the above example, we passed ``elements`` as the attribute we want to guess, and
 :func:`guess_TopologyAttributes` guess then add it as a topology
 attribute to the ``AtomGroup`` of the universe.
+
+If the attribute already exist in the universe, passing the attribute of interest to the ``to_guess`` parameter will only fill the empty values of the attribute if any exists.
+To override all the attribute values, you can pass the attribute to the ``force_guess`` parameter instead of the to_guess one as following::
+
+   import MDAnalysis as mda
+   from MDAnalysisTests.datafiles import PRM12
+ 
+   u = mda.Universe(PRM12, context='default', to_guess=()) # types ['HW', 'OW', ..]
+
+   u.guess_TopologyAttributes(force_guess=['types']) # types ['H', 'O', ..]
+
+N.B.: If you didn't pass any ``context`` to the API, it will use the :ref:`DefaultGuesser <DefaultGuesser>`
 
 .. rubric:: available guessers
 .. toctree::

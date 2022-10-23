@@ -33,15 +33,14 @@ the attributes they can guess.
 
 .. table:: Table of Supported Guessers
 
-   ================= ========== ===================== ===================================================
-   Name              context      attributes          remarks
-   ================= ========== ===================== ===================================================
-   DefaultGuesser     default    types, elements,      generic guesser that have the same old guessing 
-                                                       method
-                                 masses, bonds,
-                                 angles, dihedrals,
-                                 improper dihedrals
-   ================= ========== ===================== ===================================================
+   ============================================== ========== ===================== ===================================================
+   Name                                           context    attributes            remarks
+   ============================================== ========== ===================== ===================================================
+   :ref:`DefaultGuesser <DefaultGuesser>`         default    types, elements,      general purpose guesser                                                                                       
+                                                             masses, bonds,
+                                                             angles, dihedrals,
+                                                             improper dihedrals
+   ============================================== ========== ===================== ===================================================
                         
                                 
 
