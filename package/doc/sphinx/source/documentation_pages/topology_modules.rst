@@ -19,7 +19,8 @@ properly recognize a file format then a user can explicitly set the
 topology file format in the *topology_format* keyword argument to
 :class:`~MDAnalysis.core.universe.Universe`.
 
-Note: mass and type guessing have been removed from all parsers and now takes place inside the :class:`~MDAnalysis.core.universe.Universe`.
+Note: ``masses`` and ``types`` guessing have been removed from all parsers and now takes place inside the :class:`~MDAnalysis.core.universe.Universe`.
+
 .. rubric:: Topology formats
 
 .. toctree::
