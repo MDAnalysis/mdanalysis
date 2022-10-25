@@ -51,7 +51,8 @@ Citations for included algorithms and modules
 
 If you use the RMSD calculation (:mod:`MDAnalysis.analysis.rms`) or alignment
 code (:mod:`MDAnalysis.analysis.align`) that uses the
-:mod:`~MDAnalysis.lib.qcprot` module please also cite :cite:p:`a-Liu2010`.
+:mod:`~MDAnalysis.lib.qcprot` module please also cite :cite:p:`a-Theobald2005`
+and :cite:p:`a-Liu2010`.
 
 .. bibliography::
    :filter: False
@@ -60,6 +61,7 @@ code (:mod:`MDAnalysis.analysis.align`) that uses the
    :labelprefix: ᵃ
 
    Liu2010
+   Theobald2005
 
 If you use the HELANAL_ algorithm in
 :mod:`MDAnalysis.analysis.helix_analysis` please cite :cite:p:`a-Bansal2000,a-Sugeta1967`.

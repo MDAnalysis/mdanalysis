@@ -87,8 +87,8 @@ Fast QCP RMSD structure alignment --- :mod:`MDAnalysis.lib.qcprot`
 
 PyQCPROT_ is a python/cython implementation of Douglas Theobald's QCP
 method for calculating the minimum RMSD between two structures
-[Theobald2005]_ and determining the optimal least-squares rotation
-matrix [Liu2010]_.
+:cite:p:`c-Theobald2005` and determining the optimal least-squares rotation
+matrix :cite:p:`c-Liu2010`.
 
 A full description of the method, along with the original C implementation can
 be found at http://theobald.brandeis.edu/qcp/
@@ -112,16 +112,14 @@ References
 If you use this QCP rotation calculation method in a publication, please
 reference:
 
-.. [Theobald2005] Douglas L. Theobald (2005)
-   "Rapid calculation of RMSD using a quaternion-based characteristic
-   polynomial."  Acta Crystallographica A 61(4):478-480.
+.. bibliography::
+   :filter: False
+   :style: MDA
+   :keyprefix: c-
+   :labelprefix: ᶜ
 
-.. [Liu2010] Pu Liu, Dmitris K. Agrafiotis, and Douglas L. Theobald (2010)
-   "Fast determination of the optimal rotational matrix for macromolecular
-   superpositions."  J. Comput. Chem. 31, 1561-1563.
-
-.. _PyQCPROT: https://github.com/synapticarbors/pyqcprot
-
+   Liu2010
+   Theobald2005
 
 Functions
 ---------
