@@ -90,6 +90,8 @@ method for calculating the minimum RMSD between two structures
 :cite:p:`c-Theobald2005` and determining the optimal least-squares rotation
 matrix :cite:p:`c-Liu2010`.
 
+.. _PyQCPROT: https://github.com/synapticarbors/pyqcprot
+
 A full description of the method, along with the original C implementation can
 be found at http://theobald.brandeis.edu/qcp/
 
