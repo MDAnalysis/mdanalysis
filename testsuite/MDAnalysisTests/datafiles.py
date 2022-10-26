@@ -143,6 +143,8 @@ __all__ = [
     "LAMMPSDUMP_allcoords",  # lammpsdump file with all coordinate conventions (x,xs,xu,xsu) present, from LAMMPS rdf example
     "LAMMPSDUMP_nocoords",  # lammpsdump file with no coordinates
     "LAMMPSDUMP_triclinic", # lammpsdump file to test triclinic dimension parsing, albite with most atoms deleted
+    "LAMMPSDUMP_image_vf", # Lammps dump file with image flags, velocities, and forces.
+    "LAMMPS_image_vf", # Lammps data file to go with LAMMPSDUMP_image_vf
     "unordered_res",  # pdb file with resids non sequential
     "GMS_ASYMOPT",  # GAMESS C1  optimization
     "GMS_SYMOPT",   # GAMESS D4h optimization
@@ -176,6 +178,8 @@ __all__ = [
     "RANDOM_WALK_TOPO", # garbage topology to go along with XTC positions above
     "AUX_XVG", "XVG_BAD_NCOL", #for testing .xvg auxiliary reader
     "AUX_XVG_LOWF", "AUX_XVG_HIGHF",
+    "AUX_EDR", "AUX_EDR_TPR",
+    "AUX_EDR_XTC", "AUX_EDR_RAW",  # for testing .edr auxiliary reader
     "MMTF", "MMTF_gz", 'MMTF_skinny',  # skinny - some optional fields stripped out
     "MMTF_skinny2",
     "ALIGN_BOUND",  # two component bound system
@@ -240,6 +244,10 @@ AUX_XVG_LOWF = resource_filename(__name__, 'data/test_lowf.xvg')
 AUX_XVG_HIGHF = resource_filename(__name__, 'data/test_highf.xvg')
 XVG_BAD_NCOL = resource_filename(__name__, 'data/bad_num_col.xvg')
 AUX_XVG = resource_filename(__name__, 'data/test.xvg')
+AUX_EDR = resource_filename(__name__, 'data/test.edr')
+AUX_EDR_RAW = resource_filename(__name__, 'data/aux_edr_raw.txt')
+AUX_EDR_TPR = resource_filename(__name__, 'data/aux_edr.tpr')
+AUX_EDR_XTC = resource_filename(__name__, 'data/aux_edr.xtc')
 ENT = resource_filename(__name__, 'data/testENT.ent')
 GRO_missing_atomname = resource_filename(__name__, 'data/missing_atomname.gro')
 GRO_empty_atom = resource_filename(__name__, 'data/empty_atom.gro')
@@ -501,7 +509,8 @@ LAMMPSDUMP_long = resource_filename(__name__, "data/lammps/wat.lammpstrj_long.bz
 LAMMPSDUMP_allcoords = resource_filename(__name__, "data/lammps/spce_all_coords.lammpstrj.bz2")
 LAMMPSDUMP_nocoords = resource_filename(__name__, "data/lammps/spce_no_coords.lammpstrj.bz2")
 LAMMPSDUMP_triclinic = resource_filename(__name__, "data/lammps/albite_triclinic.dump")
-
+LAMMPSDUMP_image_vf = resource_filename(__name__, "data/lammps/image_vf.lammpstrj")
+LAMMPS_image_vf = resource_filename(__name__, "data/lammps/image_vf.data")
 
 unordered_res = resource_filename(__name__, "data/unordered_res.pdb")
 

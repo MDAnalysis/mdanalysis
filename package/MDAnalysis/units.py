@@ -36,7 +36,7 @@ table on :ref:`table-baseunits`.
 
 .. _table-baseunits:
 
-.. Table:: Base units in MDAnalysis
+.. Table:: Base units in MDAnalysis as encoded in :data:`MDANALYSIS_BASE_UNITS`
 
    =========== ============== ===============================================
    quantity    unit            SI units
@@ -134,6 +134,7 @@ Functions
 Data
 ----
 
+.. autodata:: MDANALYSIS_BASE_UNITS
 .. autodata:: constants
 .. autodata:: lengthUnit_factor
 .. autodata:: water
@@ -341,6 +342,14 @@ for utype, ufactor in conversion_factor.items():
     for unit in ufactor.keys():
         assert not unit in unit_types  # see comment!
         unit_types[unit] = utype
+
+#: Lookup table for base units in MDAnalysis by unit type.
+MDANALYSIS_BASE_UNITS = {"length": "A",
+                         "time": "ps",
+                         "energy": "kJ/mol",
+                         "charge": "e",
+                         "force": "kJ/(mol*A)",
+                         "speed": "A/ps"}
 
 
 def get_conversion_factor(unit_type, u1, u2):

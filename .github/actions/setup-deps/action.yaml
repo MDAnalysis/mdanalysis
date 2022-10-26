@@ -81,6 +81,8 @@ inputs:
     default: 'duecredit'
   parmed:
     default: 'parmed'
+  pyedr:
+    default: 'pyedr>=0.7.0'
 
 runs:
   using: "composite"
@@ -132,7 +134,7 @@ runs:
         else
           conda install ${CONDA_DEPS}
         fi
-          
+
     - name: pip_install
       shell: bash -l {0}
       env:
@@ -143,6 +145,7 @@ runs:
         PIP_OPT_DEPS: |
           ${{ inputs.duecredit }}
           ${{ inputs.parmed }}
+          ${{ inputs.pyedr }}
       run: |
         # setup full variable
         if [ ${{ inputs.full-deps }} = "true" ]; then
@@ -150,7 +153,6 @@ runs:
         else
           PIP_DEPS="${PIP_MIN_DEPS} ${{ inputs.extra-pip-deps }}"
         fi
-        
+
         # do the install
         pip install ${PIP_DEPS}
-

@@ -266,6 +266,7 @@ def extensions(config):
     # usually (except coming from release tarball) cython files must be generated
     use_cython = config.get('use_cython', default=cython_found)
     use_openmp = config.get('use_openmp', default=True)
+    annotate_cython = config.get('annotate_cython', default=False)
 
     extra_compile_args = ['-std=c99', '-ffast-math', '-O3', '-funroll-loops',
                           '-fsigned-zeros'] # see #2722
@@ -449,6 +450,7 @@ def extensions(config):
     if use_cython:
         extensions = cythonize(
             pre_exts,
+            annotate=annotate_cython,
             compiler_directives={'linetrace': cython_linetrace,
                                  'embedsignature': False,
                                  'language_level': '3'},
@@ -651,6 +653,7 @@ if __name__ == '__main__':
                   'netCDF4>=1.0',  # for fast AMBER writing, also needs HDF5
                   'h5py>=2.10',    # H5MD
                   'chemfiles>=0.10',  # multiple formats supported by chemfiles
+                  'pyedr>=0.7.0',  # EDR files for the EDR AuxReader
                   ],
               'analysis': [
                   'seaborn',  # for annotated heat map and nearest neighbor

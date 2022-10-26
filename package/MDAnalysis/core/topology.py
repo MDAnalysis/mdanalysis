@@ -59,6 +59,7 @@ Helper functions
 import contextlib
 
 import numpy as np
+import typing
 
 from .topologyattrs import Atomindices, Resindices, Segindices
 from ..exceptions import NoDataError
@@ -537,12 +538,16 @@ class Topology(object):
     @property
     def guessed_attributes(self):
         """A list of the guessed attributes in this topology"""
-        return filter(lambda x: x.is_guessed, self.attrs)
+        return filter(lambda x: x.is_guessed
+                      if(not isinstance(x.is_guessed, typing.Container))
+                      else True in x.is_guessed, self.attrs)
 
     @property
     def read_attributes(self):
         """A list of the attributes read from the topology"""
-        return filter(lambda x: not x.is_guessed, self.attrs)
+        return filter(lambda x: not x.is_guessed
+                      if(not isinstance(x.is_guessed, typing.Container))
+                      else False in x.is_guessed, self.attrs)
 
     def add_Residue(self, segment, **new_attrs):
         """
