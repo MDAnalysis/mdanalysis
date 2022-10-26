@@ -395,6 +395,7 @@ cdef class DCDFile:
     cdef int _estimate_n_frames(self):
         """ Only call this function in _read_header!!!
         """
+        cdef int extrablocksize
         extrablocksize = 48 + 8 if self.charmm & DCD_HAS_EXTRA_BLOCK else 0
         self._firstframesize = (self.natoms + 2) * self.ndims * sizeof(float) + extrablocksize
         self._framesize = ((self.natoms - self.nfixed + 2) * self.ndims * sizeof(float) +
