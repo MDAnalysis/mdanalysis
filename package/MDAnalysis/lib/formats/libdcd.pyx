@@ -567,6 +567,7 @@ cdef class DCDFile:
         if (shape[0] != self.natoms) or (shape[1] != 3):
             raise ValueError("xyz shape is wrong should be (natoms, 3), got:".format(xyz.shape))
         cdef DOUBLE_T[::1] c_box = np.asarray(box, order='C', dtype=DOUBLE)
+        # fortran contiguity
         cdef FLOAT_T[::1] x = xyz_[:, 0]
         cdef FLOAT_T[::1] y = xyz_[:, 1]
         cdef FLOAT_T[::1] z = xyz_[:, 2]
@@ -618,9 +619,12 @@ cdef class DCDFile:
         cdef np.ndarray[DOUBLE_T, ndim=1] unitcell = np.PyArray_EMPTY(1, unitcell_dims, np.NPY_FLOAT64, 0)
         unitcell[0] = unitcell[2] = unitcell[5] = 0.0;
         unitcell[4] = unitcell[3] = unitcell[1] = 90.0;
-
+        # fortran contiguity
+        cdef FLOAT_T[::1] x = xyz[:, 0]
+        cdef FLOAT_T[::1] y = xyz[:, 1]
+        cdef FLOAT_T[::1] z = xyz[:, 2]
         cdef int first_frame = self.current_frame == 0
-        cdef int ok = self.c_readframes_helper(xyz[:, 0], xyz[:, 1], xyz[:, 2], unitcell, first_frame)
+        cdef int ok = self.c_readframes_helper(x, y, z, unitcell, first_frame)
         if ok != 0 and ok != -4:
             raise IOError("Reading DCD header failed: {}".format(DCD_ERRORS[ok]))
 
@@ -632,7 +636,8 @@ cdef class DCDFile:
         self.current_frame += 1
         return DCDFrame(xyz, unitcell)
 
-
+    @cython.boundscheck(False)
+    @cython.wraparound(False)
     def readframes(self, start=None, stop=None, step=None, order='fac', indices=None):
         """readframes(start=None, stop=None, step=None, order='fac', indices=None)
         read multiple frames at once
@@ -686,10 +691,10 @@ cdef class DCDFile:
 
         cdef int n
         n = len(range(start, stop, step))
-
+        cdef int natoms
         cdef np.ndarray[np.int64_t, ndim=1] c_indices
         if indices is None:
-            c_indices = np.arange(self.natoms, dtype=np.int64)
+            c_indices = np.PyArray_Arange(0, self.natoms, 1, np.NPY_INT64)
             natoms = self.natoms
         else:
             natoms = len(indices)
