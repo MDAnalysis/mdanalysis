@@ -96,11 +96,6 @@ def _assert_compare_readers(old_reader, new_reader):
     assert_almost_equal(frame.xyz, new_frame.xyz)
     assert_almost_equal(frame.unitcell, new_frame.unitcell)
 
-def test_whence_vals(dcd):
-    assert(dcd._whence_vals[b'FIO_SEEK_SET'] == 0)
-    assert(dcd._whence_vals[b'SEEK_CUR'] == 1)
-    assert(dcd._whence_vals[b'SEEK_END'] == 2)
-
 
 def test_pickle(dcd):
     mid = len(dcd) // 2

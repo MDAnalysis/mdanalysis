@@ -88,8 +88,8 @@ cdef extern from 'sys/types.h':
 ctypedef int fio_fd;
 ctypedef off_t fio_size_t
 
-ctypedef np.float32_t FLOAT_T
-ctypedef np.float64_t DOUBLE_T
+ctypedef float FLOAT_T
+ctypedef double DOUBLE_T
 FLOAT = np.float32
 DOUBLE = np.float64
 
@@ -485,7 +485,7 @@ cdef class DCDFile:
         """
         return self.charmm
 
-    def write_header(self, remarks, natoms, istart, nsavc, delta, is_periodic):
+    def write_header(self,  remarks,  int natoms, int istart, int nsavc, float delta, int is_periodic):
         """write_header(remarks, natoms, istart, nsavc, delta, is_periodic)
         Write DCD header
 
@@ -517,7 +517,7 @@ cdef class DCDFile:
 
         cdef int with_unitcell = is_periodic
         if is_periodic:
-            self.charmm = DCD_HAS_EXTRA_BLOCK | DCD_IS_CHARMM
+            self.charmm = DCD_HAS_EXTRA_BLOCK_ | DCD_IS_CHARMM_
         self.natoms = natoms
 
         if isinstance(remarks, str):
@@ -526,7 +526,7 @@ cdef class DCDFile:
             except UnicodeDecodeError:
                 remarks = bytearray(remarks)
 
-        ok = write_dcdheader(self.fp, remarks, self.natoms, istart,
+        cdef int ok = write_dcdheader(self.fp, remarks, self.natoms, istart,
                              nsavc, delta, with_unitcell,
                              self.charmm)
         if ok != 0:
@@ -540,7 +540,7 @@ cdef class DCDFile:
         Parameters
         ----------
         xyz : array_like, shape=(natoms, 3)
-            cartesion coordinates
+            cartesian coordinates
         box : array_like, shape=(6) (optional)
             Box vectors for this frame. Can be left to skip writing a unitcell
 
@@ -550,7 +550,7 @@ cdef class DCDFile:
         if self.mode != 'w':
             raise IOError('File opened in mode: {}. Writing only allowed '
                           'in mode "w"'.format('self.mode'))
-        if (self.charmm & DCD_HAS_EXTRA_BLOCK):
+        if (self.charmm & DCD_HAS_EXTRA_BLOCK_):
             if len(box) != 6:
                 raise ValueError("box size is wrong should be 6, got: {}".format(box.size))
         else:
