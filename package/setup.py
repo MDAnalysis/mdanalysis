@@ -346,10 +346,12 @@ def extensions(config):
         cpp_extra_compile_args.append("-DCYTHON_TRACE_NOGIL")
 
     libdcd = MDAExtension('MDAnalysis.lib.formats.libdcd',
-                          ['MDAnalysis/lib/formats/libdcd' + source_suffix],
+                          ['MDAnalysis/lib/formats/libdcd' + cpp_source_suffix],
+                          language='c++',
                           include_dirs=include_dirs + ['MDAnalysis/lib/formats/include'],
                           define_macros=define_macros,
-                          extra_compile_args=extra_compile_args)
+                          extra_compile_args=cpp_extra_compile_args,
+                          extra_link_args= cpp_extra_link_args)
     distances = MDAExtension('MDAnalysis.lib.c_distances',
                              ['MDAnalysis/lib/c_distances' + source_suffix],
                              include_dirs=include_dirs + ['MDAnalysis/lib/include'],

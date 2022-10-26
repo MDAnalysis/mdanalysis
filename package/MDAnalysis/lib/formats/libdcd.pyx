@@ -72,6 +72,7 @@ cimport numpy as np
 from libc.stdio cimport SEEK_SET, SEEK_CUR, SEEK_END
 from libc.stdint cimport uintptr_t
 from libc.stdlib cimport free
+from libcpp cimport bool as cbool
 
 np.import_array()
 
@@ -97,9 +98,9 @@ cdef enum:
     FIO_READ = 0x01
     FIO_WRITE = 0x02
 
-DCD_IS_CHARMM       = 0x01
-DCD_HAS_4DIMS       = 0x02
-DCD_HAS_EXTRA_BLOCK = 0x04
+cdef int DCD_IS_CHARMM       = 0x01
+cdef int DCD_HAS_4DIMS       = 0x02
+cdef int DCD_HAS_EXTRA_BLOCK = 0x04
 
 DCD_ERRORS = {
     0: 'Success',
@@ -198,7 +199,7 @@ cdef class DCDFile:
     cdef float *fixedcoords
     cdef int reverse_endian
     cdef int charmm
-    cdef readonly is_periodic
+    cdef readonly cbool is_periodic
     cdef remarks
     cdef str mode
     cdef readonly int ndims
@@ -299,6 +300,8 @@ cdef class DCDFile:
             The mode in which to open the file, either 'r' read or 'w' write
 
         """
+        cdef int ok
+
         if self.is_open:
             self.close()
 
@@ -328,6 +331,7 @@ cdef class DCDFile:
         """Close the open DCD file
 
         """
+        cdef int ok
         if self.is_open:
             # In case there are fixed atoms we should free the memory again.
             # Both pointers are guaranted to be non NULL if either one is.
@@ -350,6 +354,7 @@ cdef class DCDFile:
         cdef char* c_remarks
         cdef int len_remarks = 0
         cdef int nsets
+        cdef int ok
 
         ok = read_dcdheader(self.fp, &self.natoms, &nsets, &self.istart,
                             &self.nsavc, &self.delta, &self.nfixed, &self.freeind,
@@ -358,8 +363,7 @@ cdef class DCDFile:
         if ok != 0:
             raise IOError("Reading DCD header failed: {}".format(DCD_ERRORS[ok]))
 
-        self.is_periodic = bool((self.charmm & DCD_IS_CHARMM) and
-                                (self.charmm & DCD_HAS_EXTRA_BLOCK))
+        self.is_periodic = (self.charmm & DCD_IS_CHARMM) & (self.charmm & DCD_HAS_EXTRA_BLOCK)
 
         if c_remarks != NULL:
             py_remarks = <bytes> c_remarks[:len_remarks]
@@ -380,12 +384,9 @@ cdef class DCDFile:
             if self.n_frames != 0:
                 raise IOError("DCD is corrupted")
 
-        if sys.version_info[0] < 3:
-            py_remarks = unicode(py_remarks, 'ascii', "ignore")
-            py_remarks = str(py_remarks.encode('ascii', 'ignore'))
-        else:
-            if isinstance(py_remarks, bytes):
-                py_remarks = py_remarks.decode('ascii', 'ignore')
+
+        if isinstance(py_remarks, bytes):
+            py_remarks = py_remarks.decode('ascii', 'ignore')
 
         py_remarks = "".join(s for s in py_remarks if s in string.printable)
 
