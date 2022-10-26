@@ -452,29 +452,47 @@ class DATAWriter(base.WriterBase):
 
 
 class DumpReader(base.ReaderBase):
-    """Reads the default `LAMMPS dump format`_
+    """Reads the default `LAMMPS dump format 
+    <https://docs.lammps.org/dump.html>`__
 
-    Supports coordinates in the LAMMPS "unscaled" (x,y,z), "scaled" (xs,ys,zs),
-    "unwrapped" (xu,yu,zu), and "scaled_unwrapped" (xsu,ysu,zsu) coordinate
-    conventions (see https://docs.lammps.org/dump.html for more details).
-    If `lammps_coordinate_convention='auto'` (default),
-    one will be guessed. Guessing checks whether the coordinates fit each convention in the order "unscaled",
-    "scaled", "unwrapped", "scaled_unwrapped" and whichever set of coordinates
-    is detected first will be used. If coordinates are given in the scaled
-    coordinate convention (xs,ys,zs) or scaled unwrapped coordinate convention
-    (xsu,ysu,zsu) they will automatically be converted from their
-    scaled/fractional representation to their real values.
+    Supports coordinates in various LAMMPS coordinate conventions and both 
+    orthogonal and triclinic simulation box dimensions (for more details see 
+    `documentation <https://docs.lammps.org/Howto_triclinic.html>`__). In 
+    either case, MDAnalysis will always use ``(*A*, *B*, *C*, *alpha*, *beta*,
+    *gamma*)`` to represent the unit cell. Lengths *A*, *B*, *C* are in the 
+    MDAnalysis length unit (Å), and angles are in degrees.
 
-    If a dump file has image flags it can be unwrapped upon loading with 
-    the keyword `unwrap_images=True`. See `read_data 
-    <https://docs.lammps.org/read_data.html>`_  in the lammps documentation
-    for more information.
+    Parameters
+    ----------
+    filename : str
+        Filename of LAMMPS dump file
+    lammps_coordinate_convention : str (optional) default="auto"
+        Convention used in coordinates, can be one of the following according
+        to the `LAMMPS documentation <https://docs.lammps.org/dump.html>`__:
 
-    Supports both orthogonal and triclinic simulation box dimensions (for more
-    details see https://docs.lammps.org/Howto_triclinic.html). In either case,
-    MDAnalysis will always use ``(*A*, *B*, *C*, *alpha*, *beta*, *gamma*)``
-    to represent the unit cell. Lengths *A*, *B*, *C* are in the MDAnalysis
-    length unit (Å), and angles are in degrees.
+         - "auto" - Detect coordinate type from file column header. If auto 
+           detection is used, the guessing checks whether the coordinates
+           fit each convention in the order "unscaled", "scaled", "unwrapped", 
+           "scaled_unwrapped" and whichever set of coordinates is detected 
+           first will be used.
+         - "scaled" - Coordinates wrapped in box and scaled by box length (see
+            note below), i.e., xs, ys, zs
+         - "scaled_unwrapped" - Coordinates unwrapped and scaled by box length,
+           (see note below) i.e., xsu, ysu, zsu
+         - "unscaled" - Coordinates wrapped in box, i.e., x, y, z
+         - "unwrapped" - Coordinates unwrapped, i.e., xu, yu, zu
+
+        If coordinates are given in the scaled coordinate convention (xs,ys,zs)
+        or scaled unwrapped coordinate convention (xsu,ysu,zsu) they will 
+        automatically be converted from their scaled/fractional representation
+        to their real values.
+    unwrap_images : bool (optional) default=False
+        If `True` and the dump file contains image flags, the coordinates 
+        will be unwrapped. See `read_data 
+        <https://docs.lammps.org/read_data.html>`__  in the lammps 
+        documentation for more information.
+    **kwargs
+       Other keyword arguments used in :class:`~MDAnalysis.coordinates.base.ReaderBase`
 
     .. versionchanged:: 2.4.0
        Now imports velocities and forces, translates the box to the origin,
@@ -487,7 +505,8 @@ class DumpReader(base.ReaderBase):
     .. versionadded:: 0.19.0
     """
     format = 'LAMMPSDUMP'
-    _conventions = ["auto", "unscaled", "scaled", "unwrapped", "scaled_unwrapped"]
+    _conventions = ["auto", "unscaled", "scaled", "unwrapped",
+                    "scaled_unwrapped"]
     _coordtype_column_names = {
         "unscaled": ["x", "y", "z"],
         "scaled": ["xs", "ys", "zs"],
@@ -512,10 +531,7 @@ class DumpReader(base.ReaderBase):
                              " is not a valid option. "
                              f"Please choose one of {option_string}")
 
-        if unwrap_images:
-            self._unwrap = unwrap_images
-        else:
-            self._unwrap = False
+        self._unwrap = unwrap_images
 
         self._cache = {}
 
@@ -526,8 +542,7 @@ class DumpReader(base.ReaderBase):
     def _reopen(self):
         self.close()
         self._file = util.anyopen(self.filename)
-        self.ts = self._Timestep(self.n_atoms,
-                                 **self._ts_kwargs)
+        self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
         self.ts.frame = -1
 
     @property
@@ -621,7 +636,8 @@ class DumpReader(base.ReaderBase):
         convention_to_col_ix = {}
         for cv_name, cv_col_names in self._coordtype_column_names.items():
             try:
-                convention_to_col_ix[cv_name] = [attr_to_col_ix[x] for x in cv_col_names]
+                convention_to_col_ix[cv_name] = [attr_to_col_ix[x] 
+                    for x in cv_col_names]
             except KeyError:
                 pass
 
@@ -629,7 +645,8 @@ class DumpReader(base.ReaderBase):
             try:
                 image_cols = [attr_to_col_ix[x] for x in ["ix", "iy", "iz"]]
             except:
-                raise ValueError("Trajectory must have image flag in order to unwrap.")
+                raise ValueError("Trajectory must have image flag in order "
+                                 "to unwrap.")
 
         self._has_vels = all(x in attr_to_col_ix for x in ["vx", "vy", "vz"])
         if self._has_vels:
