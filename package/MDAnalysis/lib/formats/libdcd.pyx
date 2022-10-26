@@ -98,9 +98,14 @@ cdef enum:
     FIO_READ = 0x01
     FIO_WRITE = 0x02
 
-cdef int DCD_IS_CHARMM       = 0x01
-cdef int DCD_HAS_4DIMS       = 0x02
-cdef int DCD_HAS_EXTRA_BLOCK = 0x04
+# exportable versions in python
+DCD_IS_CHARMM       = 0x01
+DCD_HAS_4DIMS       = 0x02
+DCD_HAS_EXTRA_BLOCK = 0x04
+# module level C decls 
+cdef  int DCD_IS_CHARMM_       = 0x01
+cdef  int DCD_HAS_4DIMS_       = 0x02
+cdef  int DCD_HAS_EXTRA_BLOCK_ = 0x04
 
 DCD_ERRORS = {
     0: 'Success',
@@ -363,14 +368,14 @@ cdef class DCDFile:
         if ok != 0:
             raise IOError("Reading DCD header failed: {}".format(DCD_ERRORS[ok]))
 
-        self.is_periodic = (self.charmm & DCD_IS_CHARMM) & (self.charmm & DCD_HAS_EXTRA_BLOCK)
+        self.is_periodic = (self.charmm & DCD_IS_CHARMM_) and (self.charmm & DCD_HAS_EXTRA_BLOCK_)
 
         if c_remarks != NULL:
             py_remarks = <bytes> c_remarks[:len_remarks]
             free(c_remarks)
         else:
             py_remarks = ""
-        self.ndims = 3 if not self.charmm & DCD_HAS_4DIMS else 4
+        self.ndims = 3 if not self.charmm & DCD_HAS_4DIMS_ else 4
         # This function assumes that the dcd header was already read and
         # self.ndims is set. It will only work when called here !!!
         self.n_frames = self._estimate_n_frames()
@@ -396,16 +401,17 @@ cdef class DCDFile:
         """ Only call this function in _read_header!!!
         """
         cdef int extrablocksize
-        extrablocksize = 48 + 8 if self.charmm & DCD_HAS_EXTRA_BLOCK else 0
+        extrablocksize = 48 + 8 if self.charmm & DCD_HAS_EXTRA_BLOCK_ else 0
         self._firstframesize = (self.natoms + 2) * self.ndims * sizeof(float) + extrablocksize
         self._framesize = ((self.natoms - self.nfixed + 2) * self.ndims * sizeof(float) +
                           extrablocksize)
-        filesize = path.getsize(self.fname)
+        # this should be a size_t
+        cdef size_t filesize = path.getsize(self.fname)
         # It's safe to use ftell, even though ftell returns a long, because the
         # header size is < 4GB.
         self._header_size = fio_ftell(self.fp)
-        nframessize = filesize - self._header_size - self._firstframesize
-        return nframessize / self._framesize + 1
+        cdef int nframessize = filesize - self._header_size - self._firstframesize
+        return nframessize // self._framesize + 1
 
     def seek(self, frame):
         """seek(frame)
