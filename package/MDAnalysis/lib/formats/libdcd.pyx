@@ -67,6 +67,7 @@ import numpy as np
 from collections import namedtuple
 import string
 import sys
+import cython 
 
 cimport numpy as np
 from libc.stdio cimport SEEK_SET, SEEK_CUR, SEEK_END
@@ -533,6 +534,8 @@ cdef class DCDFile:
             raise IOError("Writing DCD header failed: {}".format(DCD_ERRORS[ok]))
         self.wrote_header = True
 
+    @cython.boundscheck(False)
+    @cython.wraparound(False)
     def write(self, xyz,  box=None):
         """write(xyz, box=None)
         write one frame into DCD file.
@@ -559,14 +562,14 @@ cdef class DCDFile:
 
         if not self.wrote_header:
             raise IOError("write header first before frames can be written")
-        xyz = np.asarray(xyz, order='F', dtype=FLOAT)
-        if xyz.shape != (self.natoms, 3):
+        cdef np.ndarray xyz_ = np.asarray(xyz, order='F', dtype=FLOAT)
+        cdef np.npy_intp[2] shape = np.PyArray_DIMS(xyz_)
+        if (shape[0] != self.natoms) or (shape[1] != 3):
             raise ValueError("xyz shape is wrong should be (natoms, 3), got:".format(xyz.shape))
-
         cdef DOUBLE_T[::1] c_box = np.asarray(box, order='C', dtype=DOUBLE)
-        cdef FLOAT_T[::1] x = xyz[:, 0]
-        cdef FLOAT_T[::1] y = xyz[:, 1]
-        cdef FLOAT_T[::1] z = xyz[:, 2]
+        cdef FLOAT_T[::1] x = xyz_[:, 0]
+        cdef FLOAT_T[::1] y = xyz_[:, 1]
+        cdef FLOAT_T[::1] z = xyz_[:, 2]
 
         step = self.istart + self.current_frame * self.nsavc
         ok = write_dcdstep(self.fp, self.current_frame + 1, step,
@@ -578,6 +581,8 @@ cdef class DCDFile:
 
         self.current_frame += 1
 
+    @cython.boundscheck(False)
+    @cython.wraparound(False)
     def read(self):
         """
         Read next dcd frame
@@ -603,14 +608,19 @@ cdef class DCDFile:
                                'in mode "r"'.format('self.mode'))
         if self.n_frames == 0:
             raise IOError("opened empty file. No frames are saved")
-
-        cdef np.ndarray xyz = np.empty((self.natoms, self.ndims), dtype=FLOAT, order='F')
-        cdef np.ndarray unitcell = np.empty(6, dtype=DOUBLE)
+        cdef np.npy_intp[2] dims 
+        dims[0] = self.natoms
+        dims[1] = self.ndims
+        # note use of fortran flag (1)
+        cdef np.ndarray[FLOAT_T, ndim=2] xyz = np.PyArray_EMPTY(2, dims, np.NPY_FLOAT32, 1)
+        cdef np.npy_intp[1] unitcell_dims
+        unitcell_dims[0] = 6
+        cdef np.ndarray[DOUBLE_T, ndim=1] unitcell = np.PyArray_EMPTY(1, unitcell_dims, np.NPY_FLOAT64, 0)
         unitcell[0] = unitcell[2] = unitcell[5] = 0.0;
         unitcell[4] = unitcell[3] = unitcell[1] = 90.0;
 
-        first_frame = self.current_frame == 0
-        ok = self.c_readframes_helper(xyz[:, 0], xyz[:, 1], xyz[:, 2], unitcell, first_frame)
+        cdef int first_frame = self.current_frame == 0
+        cdef int ok = self.c_readframes_helper(xyz[:, 0], xyz[:, 1], xyz[:, 2], unitcell, first_frame)
         if ok != 0 and ok != -4:
             raise IOError("Reading DCD header failed: {}".format(DCD_ERRORS[ok]))
 
