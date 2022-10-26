@@ -554,25 +554,51 @@
 
 
 <div class="viewcode-block" id="DumpReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/LAMMPS.html#MDAnalysis.coordinates.LAMMPS.DumpReader">[docs]</a><span class="k">class</span> <span class="nc">DumpReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Reads the default `LAMMPS dump format`_</span>
+    <span class="sd">&quot;&quot;&quot;Reads the default `LAMMPS dump format </span>
+<span class="sd">    &lt;https://docs.lammps.org/dump.html&gt;`__</span>
 
-<span class="sd">    Supports coordinates in the LAMMPS &quot;unscaled&quot; (x,y,z), &quot;scaled&quot; (xs,ys,zs),</span>
-<span class="sd">    &quot;unwrapped&quot; (xu,yu,zu) and &quot;scaled_unwrapped&quot; (xsu,ysu,zsu) coordinate</span>
-<span class="sd">    conventions (see https://docs.lammps.org/dump.html for more details).</span>
-<span class="sd">    If `lammps_coordinate_convention=&#39;auto&#39;` (default),</span>
-<span class="sd">    one will be guessed. Guessing checks whether the coordinates fit each convention in the order &quot;unscaled&quot;,</span>
-<span class="sd">    &quot;scaled&quot;, &quot;unwrapped&quot;, &quot;scaled_unwrapped&quot; and whichever set of coordinates</span>
-<span class="sd">    is detected first will be used. If coordinates are given in the scaled</span>
-<span class="sd">    coordinate convention (xs,ys,zs) or scaled unwrapped coordinate convention</span>
-<span class="sd">    (xsu,ysu,zsu) they will automatically be converted from their</span>
-<span class="sd">    scaled/fractional representation to their real values.</span>
+<span class="sd">    Supports coordinates in various LAMMPS coordinate conventions and both </span>
+<span class="sd">    orthogonal and triclinic simulation box dimensions (for more details see </span>
+<span class="sd">    `documentation &lt;https://docs.lammps.org/Howto_triclinic.html&gt;`__). In </span>
+<span class="sd">    either case, MDAnalysis will always use ``(*A*, *B*, *C*, *alpha*, *beta*,</span>
+<span class="sd">    *gamma*)`` to represent the unit cell. Lengths *A*, *B*, *C* are in the </span>
+<span class="sd">    MDAnalysis length unit (Å), and angles are in degrees.</span>
 
-<span class="sd">    Supports both orthogonal and triclinic simulation box dimensions (for more</span>
-<span class="sd">    details see https://docs.lammps.org/Howto_triclinic.html). In either case,</span>
-<span class="sd">    MDAnalysis will always use ``(*A*, *B*, *C*, *alpha*, *beta*, *gamma*)``</span>
-<span class="sd">    to represent the unit cell. Lengths *A*, *B*, *C* are in the MDAnalysis</span>
-<span class="sd">    length unit (Å), and angles are in degrees.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        Filename of LAMMPS dump file</span>
+<span class="sd">    lammps_coordinate_convention : str (optional) default=&quot;auto&quot;</span>
+<span class="sd">        Convention used in coordinates, can be one of the following according</span>
+<span class="sd">        to the `LAMMPS documentation &lt;https://docs.lammps.org/dump.html&gt;`__:</span>
 
+<span class="sd">         - &quot;auto&quot; - Detect coordinate type from file column header. If auto </span>
+<span class="sd">           detection is used, the guessing checks whether the coordinates</span>
+<span class="sd">           fit each convention in the order &quot;unscaled&quot;, &quot;scaled&quot;, &quot;unwrapped&quot;, </span>
+<span class="sd">           &quot;scaled_unwrapped&quot; and whichever set of coordinates is detected </span>
+<span class="sd">           first will be used.</span>
+<span class="sd">         - &quot;scaled&quot; - Coordinates wrapped in box and scaled by box length (see</span>
+<span class="sd">            note below), i.e., xs, ys, zs</span>
+<span class="sd">         - &quot;scaled_unwrapped&quot; - Coordinates unwrapped and scaled by box length,</span>
+<span class="sd">           (see note below) i.e., xsu, ysu, zsu</span>
+<span class="sd">         - &quot;unscaled&quot; - Coordinates wrapped in box, i.e., x, y, z</span>
+<span class="sd">         - &quot;unwrapped&quot; - Coordinates unwrapped, i.e., xu, yu, zu</span>
+
+<span class="sd">        If coordinates are given in the scaled coordinate convention (xs,ys,zs)</span>
+<span class="sd">        or scaled unwrapped coordinate convention (xsu,ysu,zsu) they will </span>
+<span class="sd">        automatically be converted from their scaled/fractional representation</span>
+<span class="sd">        to their real values.</span>
+<span class="sd">    unwrap_images : bool (optional) default=False</span>
+<span class="sd">        If `True` and the dump file contains image flags, the coordinates </span>
+<span class="sd">        will be unwrapped. See `read_data </span>
+<span class="sd">        &lt;https://docs.lammps.org/read_data.html&gt;`__  in the lammps </span>
+<span class="sd">        documentation for more information.</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">       Other keyword arguments used in :class:`~MDAnalysis.coordinates.base.ReaderBase`</span>
+
+<span class="sd">    .. versionchanged:: 2.4.0</span>
+<span class="sd">       Now imports velocities and forces, translates the box to the origin,</span>
+<span class="sd">       and optionally unwraps trajectories with image flags upon loading.</span>
 <span class="sd">    .. versionchanged:: 2.2.0</span>
 <span class="sd">       Triclinic simulation boxes are supported.</span>
 <span class="sd">       (Issue `#3383 &lt;https://github.com/MDAnalysis/mdanalysis/issues/3383&gt;`__)</span>
@@ -591,7 +617,9 @@
     <span class="p">}</span>
 
     <span class="nd">@store_init_arguments</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">lammps_coordinate_convention</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> 
+                 <span class="n">lammps_coordinate_convention</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+                 <span class="n">unwrap_images</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">DumpReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -604,6 +632,8 @@
                              <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">lammps_coordinate_convention</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
                              <span class="s2">&quot; is not a valid option. &quot;</span>
                              <span class="sa">f</span><span class="s2">&quot;Please choose one of </span><span class="si">{</span><span class="n">option_string</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span> <span class="o">=</span> <span class="n">unwrap_images</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="p">{}</span>
 
@@ -708,9 +738,27 @@
         <span class="n">convention_to_col_ix</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">cv_name</span><span class="p">,</span> <span class="n">cv_col_names</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coordtype_column_names</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">convention_to_col_ix</span><span class="p">[</span><span class="n">cv_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">attr_to_col_ix</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cv_col_names</span><span class="p">]</span>
+                <span class="n">convention_to_col_ix</span><span class="p">[</span><span class="n">cv_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">attr_to_col_ix</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> 
+                    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cv_col_names</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">pass</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">image_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">attr_to_col_ix</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;ix&quot;</span><span class="p">,</span> <span class="s2">&quot;iy&quot;</span><span class="p">,</span> <span class="s2">&quot;iz&quot;</span><span class="p">]]</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Trajectory must have image flag in order &quot;</span>
+                                 <span class="s2">&quot;to unwrap.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_vels</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span><span class="n">x</span> <span class="ow">in</span> <span class="n">attr_to_col_ix</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;vx&quot;</span><span class="p">,</span> <span class="s2">&quot;vy&quot;</span><span class="p">,</span> <span class="s2">&quot;vz&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_vels</span><span class="p">:</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">has_velocities</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">vel_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">attr_to_col_ix</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;vx&quot;</span><span class="p">,</span> <span class="s2">&quot;vy&quot;</span><span class="p">,</span> <span class="s2">&quot;vz&quot;</span><span class="p">]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_forces</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span><span class="n">x</span> <span class="ow">in</span> <span class="n">attr_to_col_ix</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;fx&quot;</span><span class="p">,</span> <span class="s2">&quot;fy&quot;</span><span class="p">,</span> <span class="s2">&quot;fz&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_forces</span><span class="p">:</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">has_forces</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">force_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">attr_to_col_ix</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;fx&quot;</span><span class="p">,</span> <span class="s2">&quot;fy&quot;</span><span class="p">,</span> <span class="s2">&quot;fz&quot;</span><span class="p">]]</span>
+
         <span class="c1"># this should only trigger on first read of &quot;ATOM&quot; card, after which it</span>
         <span class="c1"># is fixed to the guessed value. Auto proceeds unscaled -&gt; scaled</span>
         <span class="c1"># -&gt; unwrapped -&gt; scaled_unwrapped</span>
@@ -722,23 +770,47 @@
             <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No coordinate information detected&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">lammps_coordinate_convention</span> <span class="ow">in</span> <span class="n">convention_to_col_ix</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No coordinates following convention </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">lammps_coordinate_convention</span><span class="si">}</span><span class="s2"> found in timestep&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No coordinates following convention &quot;</span>
+                             <span class="s2">&quot;</span><span class="si">{self.lammps_coordinate_convention}</span><span class="s2"> found in &quot;</span>
+                             <span class="s2">&quot;timestep&quot;</span><span class="p">)</span>
 
         <span class="n">coord_cols</span> <span class="o">=</span> <span class="n">convention_to_col_ix</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">lammps_coordinate_convention</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span><span class="p">:</span>
+            <span class="n">coord_cols</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">image_cols</span><span class="p">)</span>
 
         <span class="n">ids</span> <span class="o">=</span> <span class="s2">&quot;id&quot;</span> <span class="ow">in</span> <span class="n">attr_to_col_ix</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">):</span>
             <span class="n">fields</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">ids</span><span class="p">:</span>
                 <span class="n">indices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="n">attr_to_col_ix</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]]</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">fields</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span> <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="n">coord_cols</span><span class="p">]</span>
+            <span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">fields</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span> <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="n">coord_cols</span><span class="p">],</span> 
+                              <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span><span class="p">:</span>
+                <span class="n">images</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
+                <span class="n">coords</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+                <span class="n">coords</span> <span class="o">+=</span> <span class="n">images</span> <span class="o">*</span> <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">coords</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">coords</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_vels</span><span class="p">:</span>
+                <span class="n">ts</span><span class="o">.</span><span class="n">velocities</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">fields</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span> <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="n">vel_cols</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_forces</span><span class="p">:</span>
+                <span class="n">ts</span><span class="o">.</span><span class="n">forces</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">fields</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span> <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="n">force_cols</span><span class="p">]</span>
 
         <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_vels</span><span class="p">:</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">velocities</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">velocities</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_forces</span><span class="p">:</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">forces</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">forces</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
         <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lammps_coordinate_convention</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;scaled&quot;</span><span class="p">)):</span>
             <span class="c1"># if coordinates are given in scaled format, undo that</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">transform_StoR</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
                                                     <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+        <span class="c1"># Transform to origin after transformation of scaled variables</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">xlo</span><span class="p">,</span> <span class="n">ylo</span><span class="p">,</span> <span class="n">zlo</span><span class="p">])[</span><span class="kc">None</span><span class="p">,:]</span>
 
         <span class="k">return</span> <span class="n">ts</span></div>
 </pre></div>
