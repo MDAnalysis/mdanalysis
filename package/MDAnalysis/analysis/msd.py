@@ -234,6 +234,7 @@ References
     Maginn2019
     Yeh2004
     Bulow2020
+    Fuchs1998
 
 
 Classes
@@ -267,6 +268,10 @@ del Doi
 class EinsteinMSD(AnalysisBase):
     r"""Class to calculate Mean Squared Displacement by the Einstein relation.
 
+    If `fft=False` so that the "windowed" algorithm is used, the second order
+    nonbonded parameter is also computed to capture heterogiety as different
+    time scales. See :cite:p:`Fuchs1998` for more information. 
+
     Parameters
     ----------
     u : Universe or AtomGroup
@@ -291,6 +296,12 @@ class EinsteinMSD(AnalysisBase):
         The averaged MSD over all the particles with respect to lag-time.
     results.msds_by_particle : :class:`numpy.ndarray`
         The MSD of each individual particle with respect to lag-time.
+    results.nongaussian : :class:`numpy.ndarray`
+        Only available when `fft==False`. The averaged nongaussian 
+        parameter  over all the particles with respect to lag-time.
+    results.msds_by_nongaussian : :class:`numpy.ndarray`
+        Only available when `fft==False`. The nongaussian parameter 
+        of each individual particle with respect to lag-time.
     ag : :class:`AtomGroup`
         The :class:`AtomGroup` resulting from your selection
     n_frames : int
@@ -338,12 +349,18 @@ class EinsteinMSD(AnalysisBase):
         # result
         self.results.msds_by_particle = None
         self.results.timeseries = None
+        if not fft:
+            self.results.nongaussian_by_particle = None
+            self.results.nongaussian = None
 
     def _prepare(self):
         # self.n_frames only available here
         # these need to be zeroed prior to each run() call
         self.results.msds_by_particle = np.zeros((self.n_frames,
                                                   self.n_particles))
+        if not self.fft:
+            self.results.nongaussian_by_particle = np.zeros((self.n_frames,
+                                                      self.n_particles))
         self._position_array = np.zeros(
             (self.n_frames, self.n_particles, self.dim_fac))
         # self.results.timeseries not set here
@@ -382,7 +399,8 @@ class EinsteinMSD(AnalysisBase):
             self._conclude_simple()
 
     def _conclude_simple(self):
-        r""" Calculates the MSD via the simple "windowed" algorithm.
+        r""" Calculates the MSD via the simple "windowed" algorithm 
+        with nongaussian parameter.
 
         """
         lagtimes = np.arange(1, self.n_frames)
@@ -390,8 +408,16 @@ class EinsteinMSD(AnalysisBase):
         for lag in lagtimes:
             disp = positions[:-lag, :, :] - positions[lag:, :, :]
             sqdist = np.square(disp).sum(axis=-1)
-            self.results.msds_by_particle[lag, :] = np.mean(sqdist, axis=0)
+            tmp = np.mean(sqdist, axis=0)
+            self.results.msds_by_particle[lag, :] = tmp
+            self.results.nongaussian_by_particle[lag, :] = 3.0/5.0*np.mean(
+                sqdist**2, axis=0)/tmp**2 - 1.0
+
         self.results.timeseries = self.results.msds_by_particle.mean(axis=1)
+        self.results.nongaussian_parameter = 3.0/5.0*np.mean(
+            (self.results.nongaussian_by_particle + 1.0)*5.0/3.0*np.square(
+            self.results.timeseries), axis=1)/np.square(
+            self.results.timeseries) - 1.0
 
     def _conclude_fft(self):  # with FFT, np.float64 bit prescision required.
         r""" Calculates the MSD via the FCA fast correlation algorithm.
