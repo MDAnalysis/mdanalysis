@@ -73,12 +73,11 @@ from libc.stdio cimport SEEK_SET, SEEK_CUR, SEEK_END
 from libc.stdint cimport uintptr_t
 from libc.stdlib cimport free
 from libcpp cimport bool as cbool
+from libcpp.string cimport string as cstring
+from libcpp.map cimport map as cmap
 
 np.import_array()
 
-_whence_vals = {"FIO_SEEK_SET": SEEK_SET,
-                "FIO_SEEK_CUR": SEEK_CUR,
-                "FIO_SEEK_END": SEEK_END}
 
 # Tell cython about the off_t type. It doesn't need to match exactly what is
 # defined since we don't expose it to python but the cython compiler needs to
@@ -217,6 +216,9 @@ cdef class DCDFile:
     cdef int is_open
     cdef int reached_eof
     cdef int wrote_header
+    # whence vals not declared at module level to be able to pop values
+    cdef readonly cmap[cstring,int] _whence_vals
+
 
     def __cinit__(self, fname, mode='r'):
         self.fname = fname.encode('utf-8')
@@ -224,6 +226,9 @@ cdef class DCDFile:
         self.is_open = False
         self.wrote_header = False
         self.open(mode)
+        self._whence_vals[b'FIO_SEEK_SET'] = SEEK_SET
+        self._whence_vals[b'SEEK_CUR'] = SEEK_CUR
+        self._whence_vals[b'SEEK_END'] = SEEK_END
 
     def __dealloc__(self):
         self.close()
@@ -413,7 +418,7 @@ cdef class DCDFile:
         cdef int nframessize = filesize - self._header_size - self._firstframesize
         return nframessize // self._framesize + 1
 
-    def seek(self, frame):
+    def seek(self, int frame):
         """seek(frame)
 
         Seek to Frame.
@@ -434,7 +439,7 @@ cdef class DCDFile:
         else:
             offset = self._header_size + self._firstframesize + self._framesize * (frame - 1)
 
-        ok = fio_fseek(self.fp, offset, _whence_vals["FIO_SEEK_SET"])
+        cdef int ok = fio_fseek(self.fp, offset, self._whence_vals[b'FIO_SEEK_SET'])
         if ok != 0:
             raise IOError("DCD seek failed with DCD error={}".format(DCD_ERRORS[ok]))
         self.current_frame = frame
