@@ -20,6 +20,7 @@ The rules for this file:
 
 Fixes
   * LAMMPSDump Reader translates the box to the origin (#3741)
+  * hbond analysis: access hbonds results through new results member in count_by_ids() and count_by_type()
   * Added isolayer selection method (Issue #3845)
   * Auxiliary; determination of representative frames: Removed undefined
     behaviour for cutoff values < -1 (PR # 3749)
