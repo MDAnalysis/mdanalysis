@@ -19,6 +19,7 @@ The rules for this file:
  * 2.4.0
 
 Fixes
+  * LAMMPSDump Reader translates the box to the origin (#3741)
   * hbond analysis: access hbonds results through new results member in count_by_ids() and count_by_type()
   * Added isolayer selection method (Issue #3845)
   * Auxiliary; determination of representative frames: Removed undefined
@@ -30,6 +31,9 @@ Fixes
     (e.g. bonds, angles) (PR #3779).
 
 Enhancements
+  * LAMMPSDump Reader optionally unwraps trajectories with image flags upon 
+    loading (#3843
+  * LAMMPSDump Reader now imports velocities and forces (#3843)
   * Minimum NumPy version for py3.11 is now set to 1.23.2.
   * Added decorator to check for an empty atom group, applied in topological 
     attributes(Issue #3837)
