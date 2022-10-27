@@ -688,6 +688,10 @@ cdef class DCDFile:
         start = start if not start is None else 0
         step = step if not step is None else 1
 
+        # c delcs
+        cdef int stop_ = stop
+        cdef int start_ = start
+        cdef int step_ = step 
 
         cdef int n
         n = len(range(start, stop, step))
@@ -699,39 +703,64 @@ cdef class DCDFile:
         else:
             natoms = len(indices)
             c_indices = np.asarray(indices, dtype=np.int64)
-
+        
+        cdef np.npy_intp[3] dims
         cdef int hash_order = -1
         if order == 'fac':
-            shape = (n, natoms, self.ndims)
+            dims[0] = n
+            dims[1] = natoms
+            dims[2] = self.ndims
             hash_order = 1
         elif order == 'fca':
-            shape = (n, self.ndims, natoms)
+            dims[0] = n
+            dims[1] = self.ndims
+            dims[2] = natoms
             hash_order = 2
         elif order == 'afc':
-            shape = (natoms, n, self.ndims)
+            dims[0] = natoms
+            dims[1] = n
+            dims[2] = self.ndims
             hash_order = 3
         elif order == 'acf':
-            shape = (natoms, self.ndims, n)
+            dims[0] = natoms
+            dims[1] = self.ndims
+            dims[2] = n
             hash_order = 4
         elif order == 'caf':
-            shape = (self.ndims, natoms, n)
+            dims[0] = self.ndims
+            dims[1] = natoms
+            dims[2] = n
             hash_order = 5
         elif order == 'cfa':
+            dims[0] = self.ndims
+            dims[1] = n
+            dims[2] = natoms
             hash_order = 6
-            shape = (self.ndims, n, natoms)
         else:
             raise ValueError("unkown order '{}'".format(order))
 
-        cdef np.ndarray[FLOAT_T, ndim=3] xyz = np.empty(shape, dtype=FLOAT)
-        cdef np.ndarray[DOUBLE_T, ndim=2] box = np.empty((n, 6))
+        cdef np.ndarray[FLOAT_T, ndim=3] xyz = np.PyArray_EMPTY(3, dims, np.NPY_FLOAT32, 0)
+        cdef np.npy_intp[2] unitcell_dims
+        unitcell_dims[0] = n
+        unitcell_dims[1] = 6
+        cdef np.ndarray[DOUBLE_T, ndim=2] box = np.PyArray_EMPTY(2, unitcell_dims, np.NPY_FLOAT64, 0)
 
+        cdef np.npy_intp[2] xyz_tmp_dims
+        xyz_tmp_dims[0] = self.natoms
+        xyz_tmp_dims[1] = self.ndims
+        # note fortran flag (1)
+        cdef np.ndarray[FLOAT_T, ndim=2] xyz_tmp = np.PyArray_EMPTY(2, xyz_tmp_dims, np.NPY_FLOAT32, 1)
 
-        cdef np.ndarray xyz_tmp = np.empty((self.natoms, self.ndims), dtype=FLOAT, order='F')
-        cdef int ok, i
+        # memoryviews for slices into xyz_temp, note fortran contiguous
+        cdef FLOAT_T[::1] x = xyz_tmp[:, 0]
+        cdef FLOAT_T[::1] y = xyz_tmp[:, 1]
+        cdef FLOAT_T[::1] z = xyz_tmp[:, 2]
 
-        if start == 0 and step == 1 and stop == self.n_frames:
+        cdef int ok, i, counter 
+        
+        if (start_ == 0) and (step_ == 1) and (stop_ == self.n_frames):
             for i in range(n):
-                ok = self.c_readframes_helper(xyz_tmp[:, 0], xyz_tmp[:, 1], xyz_tmp[:, 2], box[i], i==0)
+                ok = self.c_readframes_helper(x, y, z, box[i], i==0)
                 if ok != 0 and ok != -4:
                     raise IOError("Reading DCD frames failed: {}".format(DCD_ERRORS[ok]))
                 copy_in_order(xyz_tmp[c_indices], xyz, hash_order, i)
@@ -739,7 +768,7 @@ cdef class DCDFile:
             counter = 0
             for i in range(start, stop, step):
                 self.seek(i)
-                ok = self.c_readframes_helper(xyz_tmp[:, 0], xyz_tmp[:, 1], xyz_tmp[:, 2], box[counter], i==0)
+                ok = self.c_readframes_helper(x, y, z, box[counter], i==0)
                 if ok != 0 and ok != -4:
                     raise IOError("Reading DCD frames failed: {}".format(DCD_ERRORS[ok]))
                 copy_in_order(xyz_tmp[c_indices], xyz, hash_order, counter)
@@ -748,6 +777,8 @@ cdef class DCDFile:
         return DCDFrame(xyz, box)
 
     # Helper to read current DCD frame
+    @cython.boundscheck(False)
+    @cython.wraparound(False)
     cdef int c_readframes_helper(self, FLOAT_T[::1] x,
                                  FLOAT_T[::1] y, FLOAT_T[::1] z,
                                  DOUBLE_T[::1] unitcell, int first_frame):
@@ -762,6 +793,8 @@ cdef class DCDFile:
 
 
 # Helper in readframes to copy given a specific memory layout
+@cython.boundscheck(False)
+@cython.wraparound(False)
 cdef void copy_in_order(FLOAT_T[:, :] source, FLOAT_T[:, :, :] target, int order, int index):
     if order == 1:  #  'fac':
         target[index] = source
