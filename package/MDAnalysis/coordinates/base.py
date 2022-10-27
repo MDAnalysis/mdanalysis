@@ -1428,8 +1428,7 @@ class ReaderBase(ProtoReader):
         # been modified since initial load
         new.ts = self.ts.copy()
         for auxname, auxread in self._auxs.items():
-            copied_reader = auxread.copy()
-            new.add_auxiliary(auxname, copied_reader)
+            new.add_auxiliary(auxname, auxread.copy())
         return new
 
     def __del__(self):
