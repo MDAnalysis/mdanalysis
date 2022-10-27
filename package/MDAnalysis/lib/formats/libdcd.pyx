@@ -406,18 +406,16 @@ cdef class DCDFile:
     cdef int _estimate_n_frames(self):
         """ Only call this function in _read_header!!!
         """
-        cdef int extrablocksize
-        extrablocksize = 48 + 8 if self.charmm & DCD_HAS_EXTRA_BLOCK_ else 0
+        extrablocksize = 48 + 8 if self.charmm & DCD_HAS_EXTRA_BLOCK else 0
         self._firstframesize = (self.natoms + 2) * self.ndims * sizeof(float) + extrablocksize
         self._framesize = ((self.natoms - self.nfixed + 2) * self.ndims * sizeof(float) +
                           extrablocksize)
-        # this should be a size_t
-        cdef size_t filesize = path.getsize(self.fname)
+        filesize = path.getsize(self.fname)
         # It's safe to use ftell, even though ftell returns a long, because the
         # header size is < 4GB.
         self._header_size = fio_ftell(self.fp)
-        cdef int nframessize = filesize - self._header_size - self._firstframesize
-        return nframessize // self._framesize + 1
+        nframessize = filesize - self._header_size - self._firstframesize
+        return nframessize / self._framesize + 1
 
     def seek(self, int frame):
         """seek(frame)
