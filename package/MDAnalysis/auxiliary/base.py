@@ -323,7 +323,9 @@ class AuxReader(metaclass=_AuxReaderMeta):
             self.rewind()
 
     def copy(self):
-        raise NotImplementedError("Copy not implemented for AuxReader")
+        orig_description = self.get_description()
+        new_reader = auxreader(**orig_description)
+        return new_reader
 
     def __len__(self):
         """ Number of steps in auxiliary data. """
@@ -521,7 +523,10 @@ class AuxReader(metaclass=_AuxReaderMeta):
             # This is necessary so all attributes can be iterated over
             aux = auxreader(**description_kwargs)
             aux.auxname = auxname
-            aux.data_selector = aux_spec[auxname]
+            if aux.data_selector is None:
+                # When calling ReaderBase.copy(), aux_spec information is lost
+                # but data_selector is retained
+                aux.data_selector = aux_spec[auxname]
             coord_parent._auxs[auxname] = aux
             coord_parent.ts = aux.update_ts(coord_parent.ts)
 
