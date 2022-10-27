@@ -32,13 +32,13 @@ jobs:
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'normal'
           imageName: 'windows-2019'
-        Win-Python310-64bit-full:
-          PYTHON_VERSION: '3.10'
+        Win-Python311-64bit-full:
+          PYTHON_VERSION: '3.11'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'normal'
           imageName: 'windows-2019'
-        Win-Python39-64bit-full-wheel:
-          PYTHON_VERSION: '3.9'
+        Win-Python311-64bit-full-wheel:
+          PYTHON_VERSION: '3.11'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
           NUMPY_MIN: '1.20.0'
@@ -49,8 +49,8 @@ jobs:
           BUILD_TYPE: 'wheel'
           NUMPY_MIN: '1.20.0'
           imageName: 'windows-2019'
-        Linux-Python39-64bit-full-wheel:
-          PYTHON_VERSION: '3.9'
+        Linux-Python311-64bit-full-wheel:
+          PYTHON_VERSION: '3.11'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
           NUMPY_MIN: '1.20.0'
