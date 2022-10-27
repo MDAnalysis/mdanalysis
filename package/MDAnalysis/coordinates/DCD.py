@@ -191,7 +191,7 @@ class DCDReader(base.ReaderBase):
         if ts is None:
             # use a copy to avoid that ts always points to the same reference
             # removing this breaks lammps reader
-            ts = self.ts.copy()
+            ts = self.ts.copy() # why is this copy required ??
         frame = self._file.read()
         self._frame += 1
         ts = self._frame_to_ts(frame, ts)
