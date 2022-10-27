@@ -81,7 +81,7 @@ jobs:
   - script: python -m pip install --upgrade pip setuptools wheel
     displayName: 'Install tools'
   - script: >-
-      python -m pip install --only-binary=h5py
+      python -m pip install --only-binary=h5py,scipy
       cython
       hypothesis
       matplotlib
@@ -91,7 +91,6 @@ jobs:
       pytest-cov
       pytest-xdist
       scikit-learn
-      scipy
       h5py>=2.10
       tqdm
       threadpoolctl

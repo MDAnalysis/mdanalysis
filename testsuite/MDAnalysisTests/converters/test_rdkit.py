@@ -65,15 +65,18 @@ class TestRequiresRDKit(object):
 
 @requires_rdkit
 class MolFactory:
+    @staticmethod
     def mol2_mol():
         return Chem.MolFromMol2File(mol2_molecule, removeHs=False)
 
+    @staticmethod
     def smiles_mol():
         mol = Chem.MolFromSmiles("CN1C=NC2=C1C(=O)N(C(=O)N2C)C")
         mol = Chem.AddHs(mol)
         cids = AllChem.EmbedMultipleConfs(mol, numConfs=3)
         return mol
 
+    @staticmethod
     def dummy_product():
         mol = Chem.RWMol()
         atom = Chem.Atom(1)
@@ -82,6 +85,7 @@ class MolFactory:
         mol.AddAtom(atom)
         return mol
 
+    @staticmethod
     def dummy_reactant():
         mol = Chem.RWMol()
         atom = Chem.Atom(1)

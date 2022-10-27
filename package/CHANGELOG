@@ -13,23 +13,55 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, hmacdope
+??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, BFedder, aya9aladdin,
+         jaclark5, jfennick
 
  * 2.4.0
 
 Fixes
+  * LAMMPSDump Reader translates the box to the origin (#3741)
+  * hbond analysis: access hbonds results through new results member in count_by_ids() and count_by_type()
+  * Added isolayer selection method (Issue #3845)
+  * Auxiliary; determination of representative frames: Removed undefined
+    behaviour for cutoff values < -1 (PR # 3749)
   * Fixes distances.between not always returning AtomGroup (Issue #3794)
   * Upgrade to chemfiles 0.10.3 (Issue #3798)
+  * fixes guessed_attributes and read_attributes methods of the Topology class, as 
+    those methods were giving unexpected results for some topology attributes
+    (e.g. bonds, angles) (PR #3779).
 
 Enhancements
   * Added a reader for GROMACS TNG files based on PyTNG (PR #3765,
     Issue #3237, partially addressing Issue #865) 
+  * LAMMPSDump Reader optionally unwraps trajectories with image flags upon 
+    loading (#3843
+  * LAMMPSDump Reader now imports velocities and forces (#3843)
+  * Minimum NumPy version for py3.11 is now set to 1.23.2.
+  * Added decorator to check for an empty atom group, applied in topological 
+    attributes(Issue #3837)
+  * AuxReaders now have a memory_limit parameter to control when memory usage
+    warnings are issued. (PR # 3749)
+  * MDAnalysis.units now has a lookup dictionary called MDANALYSIS_BASE_UNITS
+    where unit types like length or speed are mapped to their base units in
+    MDAnalysis (i.e. "A" or "A/ps") (PR # 3749)
+  * A new AuxReader for the GROMACS EDR file format was implemented.
+    (Issue # 3629, PR # 3749)
   * Added benchmarks for bonds topology attribute (Issue #3785, PR #3806)
 
 Changes
+ * Auxiliary; determination of representative frames: The default value for
+   cutoff is now None, not -1. Negative values are now turned
+   to None. (PR #3749)
+ * `MDAnalysis.coordinates.base.add_auxiliary()` now supports adding of
+    multiple auxiliary data points at the same time. To this end, the API was
+    rewritten and now expects dictionaries of `desired attribute name`:
+    `name in auxiliary data file` as input. Adding all data found in the
+    auxiliary data source is possible by omitting the dictionary and explicitly
+    passing the AuxReader instance as `auxdata`. (PR #3749)
   * The "AMBER" entry in setup.py's extra_requires has now been removed. Please
     use `pip install ./package[extra_formats]` instead (PR #3810)
   * `Universe.empty` emmits less warnings (PR #3814)
+  * adding element attribute to TXYZParser if all atom names are valid element symbols (PR #3826)
 
 Deprecations
 

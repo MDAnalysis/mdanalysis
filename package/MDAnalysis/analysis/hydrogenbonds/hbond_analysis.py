@@ -797,8 +797,8 @@ class HydrogenBondAnalysis(AnalysisBase):
         acceptor atoms in a hydrogen bond.
         """
 
-        d = self.u.atoms[self.hbonds[:, 1].astype(np.intp)]
-        a = self.u.atoms[self.hbonds[:, 3].astype(np.intp)]
+        d = self.u.atoms[self.results.hbonds[:, 1].astype(np.intp)]
+        a = self.u.atoms[self.results.hbonds[:, 3].astype(np.intp)]
 
         tmp_hbonds = np.array([d.resnames, d.types, a.resnames, a.types],
                               dtype=str).T
@@ -826,9 +826,9 @@ class HydrogenBondAnalysis(AnalysisBase):
         in a hydrogen bond.
         """
 
-        d = self.u.atoms[self.hbonds[:, 1].astype(np.intp)]
-        h = self.u.atoms[self.hbonds[:, 2].astype(np.intp)]
-        a = self.u.atoms[self.hbonds[:, 3].astype(np.intp)]
+        d = self.u.atoms[self.results.hbonds[:, 1].astype(np.intp)]
+        h = self.u.atoms[self.results.hbonds[:, 2].astype(np.intp)]
+        a = self.u.atoms[self.results.hbonds[:, 3].astype(np.intp)]
 
         tmp_hbonds = np.array([d.ids, h.ids, a.ids]).T
         hbond_ids, ids_counts = np.unique(tmp_hbonds, axis=0,
