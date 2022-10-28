@@ -444,6 +444,17 @@ class BaseReaderTest(object):
         assert_equal(len(reader), len(reader_p))
         assert_equal(reader.ts, reader_p.ts,
                      "Timestep is changed after pickling")
+    
+    def test_frame_collect_all_same(self, reader):
+        # check that the timestep resets so that the base pointer is the same 
+        # for all timesteps in a collection witht eh exception of memoryreader
+        if isinstance(reader, mda.coordinates.memory.MemoryReader):
+            pytest.xfail() 
+        collected_ts = []
+        for i, ts in enumerate(reader):
+            collected_ts.append(ts.positions)
+        for array  in collected_ts:
+            assert_allclose(array, collected_ts[0])
 
 
 class MultiframeReaderTest(BaseReaderTest):
