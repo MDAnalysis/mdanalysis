@@ -21,6 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import itertools
+from os import terminal_size
 import pickle
 
 import numpy as np
@@ -444,6 +445,29 @@ class BaseReaderTest(object):
         assert_equal(len(reader), len(reader_p))
         assert_equal(reader.ts, reader_p.ts,
                      "Timestep is changed after pickling")
+
+    
+    @pytest.mark.parametrize('order', ('fac', 'fca', 'afc', 'acf', 'caf', 'cfa'))
+    def test_timeseries_shape(self, reader, order):
+        timeseries = reader.timeseries(order=order)
+        a_index = order.find('a')
+        f_index = order.find('f')
+        c_index = order.find('c')
+        assert(timeseries.shape[a_index] == reader.n_atoms)
+        assert(timeseries.shape[f_index] == len(reader))
+        assert(timeseries.shape[c_index] == 3)
+
+    @pytest.mark.parametrize('slice', ([0,2,1], [0,10,2], [0,10,3]))
+    def test_timeseries_values(self, reader, slice):
+        ts_positions = []
+        if slice[1] > len(reader):
+            pytest.xfail()
+        for i in range(slice[0], slice[1], slice[2]):
+            ts = reader[i]
+            ts_positions.append(ts.positions.copy())
+        positions = np.asarray(ts_positions)
+        timeseries = reader.timeseries(start=slice[0], stop=slice[1], step=slice[2], order='fac')
+        np.testing.assert_allclose(timeseries, positions)
 
 
 class MultiframeReaderTest(BaseReaderTest):
