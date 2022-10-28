@@ -310,6 +310,9 @@ class EinsteinMSD(AnalysisBase):
         Number of particles MSD was calculated over.
 
 
+    .. versionchanged:: 2.4.0
+       Added second order non-gaussian parameter to output for "simple"
+       algorithm.
     .. versionadded:: 2.0.0
     """
 
@@ -351,7 +354,7 @@ class EinsteinMSD(AnalysisBase):
         self.results.timeseries = None
         if not fft:
             self.results.nongaussian_by_particle = None
-            self.results.nongaussian = None
+            self.results.nongaussian_parameter = None
 
     def _prepare(self):
         # self.n_frames only available here
@@ -411,13 +414,16 @@ class EinsteinMSD(AnalysisBase):
             tmp = np.mean(sqdist, axis=0)
             self.results.msds_by_particle[lag, :] = tmp
             self.results.nongaussian_by_particle[lag, :] = 3.0/5.0*np.mean(
-                sqdist**2, axis=0)/tmp**2 - 1.0
+                np.square(sqdist), axis=0)/np.square(tmp) - 1.0
 
         self.results.timeseries = self.results.msds_by_particle.mean(axis=1)
-        self.results.nongaussian_parameter = 3.0/5.0*np.mean(
-            (self.results.nongaussian_by_particle + 1.0)*5.0/3.0*np.square(
-            self.results.timeseries), axis=1)/np.square(
-            self.results.timeseries) - 1.0
+        self.results.nongaussian_parameter = (3.0/5.0*
+            np.mean(
+                (self.results.nongaussian_by_particle + 1.0)*5.0/3.0
+                    *np.square(self.results.msds_by_particle), 
+                axis=1
+            )
+            /np.square(self.results.timeseries) - 1.0)
 
     def _conclude_fft(self):  # with FFT, np.float64 bit prescision required.
         r""" Calculates the MSD via the FCA fast correlation algorithm.
