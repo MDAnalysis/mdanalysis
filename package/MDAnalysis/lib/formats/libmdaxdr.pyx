@@ -530,7 +530,7 @@ cdef class TRRFile(_XDRFile):
         cdef np.ndarray[np.float32_t, ndim=2] xyz = np.PyArray_EMPTY(2, dim, np.NPY_FLOAT32, 0)
         cdef np.ndarray[np.float32_t, ndim=2] velocity = np.PyArray_EMPTY(2, dim, np.NPY_FLOAT32, 0)
         cdef np.ndarray[np.float32_t, ndim=2] forces = np.PyArray_EMPTY(2, dim, np.NPY_FLOAT32, 0)
-        cdef np.ndarray[np.float32_t, ndim=2] box = np.PyArray_EMPTY(1, unitcell_dim, np.NPY_FLOAT32, 0)
+        cdef np.ndarray[np.float32_t, ndim=2] box = np.PyArray_EMPTY(2, unitcell_dim, np.NPY_FLOAT32, 0)
 
         return_code = read_trr(self.xfp, self.n_atoms, <int*> &step,
                                       &time, &lmbda, <matrix>box.data,
@@ -753,7 +753,7 @@ cdef class XTCFile(_XDRFile):
         unitcell_dim[1] = DIMS
 
         cdef np.ndarray[np.float32_t, ndim=2] xyz = np.PyArray_EMPTY(2, dim, np.NPY_FLOAT32, 0)
-        cdef np.ndarray[np.float32_t, ndim=2] box = np.PyArray_EMPTY(1, unitcell_dim, np.NPY_FLOAT32, 0)
+        cdef np.ndarray[np.float32_t, ndim=2] box = np.PyArray_EMPTY(2, unitcell_dim, np.NPY_FLOAT32, 0)
 
         return_code = read_xtc(self.xfp, self.n_atoms, <int*> &step,
                                       &time, <matrix>box.data,
