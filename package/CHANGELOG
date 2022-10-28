@@ -13,11 +13,15 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, BFedder, aya9aladdin
+??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, BFedder, aya9aladdin,
+         jaclark5, jfennick
 
  * 2.4.0
 
 Fixes
+  * LAMMPSDump Reader translates the box to the origin (#3741)
+  * hbond analysis: access hbonds results through new results member in count_by_ids() and count_by_type()
+  * Added isolayer selection method (Issue #3845)
   * Auxiliary; determination of representative frames: Removed undefined
     behaviour for cutoff values < -1 (PR # 3749)
   * Fixes distances.between not always returning AtomGroup (Issue #3794)
@@ -25,10 +29,14 @@ Fixes
   * fixes guessed_attributes and read_attributes methods of the Topology class, as 
     those methods were giving unexpected results for some topology attributes
     (e.g. bonds, angles) (PR #3779).
-   
-
 
 Enhancements
+  * LAMMPSDump Reader optionally unwraps trajectories with image flags upon 
+    loading (#3843
+  * LAMMPSDump Reader now imports velocities and forces (#3843)
+  * Minimum NumPy version for py3.11 is now set to 1.23.2.
+  * Added decorator to check for an empty atom group, applied in topological 
+    attributes(Issue #3837)
   * AuxReaders now have a memory_limit parameter to control when memory usage
     warnings are issued. (PR # 3749)
   * MDAnalysis.units now has a lookup dictionary called MDANALYSIS_BASE_UNITS
@@ -37,7 +45,6 @@ Enhancements
   * A new AuxReader for the GROMACS EDR file format was implemented.
     (Issue # 3629, PR # 3749)
   * Added benchmarks for bonds topology attribute (Issue #3785, PR #3806)
-
 
 Changes
  * Auxiliary; determination of representative frames: The default value for

@@ -3081,6 +3081,9 @@ class AtomGroup(GroupBase):
             sphlayer *inner radius* *outer radius* *selection*
                 Similar to sphzone, but also excludes atoms that are within
                 *inner radius* of the selection COG
+            isolayer *inner radius* *outer radius* *selection*
+                Similar to sphlayer, but will find layer around all reference
+                layer, creating an iso-surface.
             cyzone *externalRadius* *zMax* *zMin* *selection*
                 selects all atoms within a cylindric zone centered in the
                 center of geometry (COG) of a given selection,
