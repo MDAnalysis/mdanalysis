@@ -446,10 +446,10 @@ class BaseReaderTest(object):
                      "Timestep is changed after pickling")
     
     def test_frame_collect_all_same(self, reader):
-        # check that the timestep resets so that the base pointer is the same 
-        # for all timesteps in a collection witht eh exception of memoryreader
+        # check that the timestep resets so that the base reference is the same 
+        # for all timesteps in a collection with the exception of memoryreader
         if isinstance(reader, mda.coordinates.memory.MemoryReader):
-            pytest.xfail() 
+            pytest.xfail("memoryreader allows independent coordinates") 
         collected_ts = []
         for i, ts in enumerate(reader):
             collected_ts.append(ts.positions)
