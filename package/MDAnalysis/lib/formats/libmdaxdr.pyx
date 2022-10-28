@@ -132,7 +132,7 @@ from collections import namedtuple
 
 np.import_array()
 
-ctypedef np.float32_t DTYPE_T
+ctypedef float DTYPE_T
 DTYPE = np.float32
 cdef int DIMS = 3
 cdef int HASX = 1
@@ -458,7 +458,7 @@ cdef class TRRFile(_XDRFile):
 
     def _calc_natoms(self, fname):
         cdef int n_atoms
-        return_code = read_trr_natoms(fname, &n_atoms)
+        cdef int return_code = read_trr_natoms(fname, &n_atoms)
         return return_code, n_atoms
 
 
@@ -469,7 +469,7 @@ cdef class TRRFile(_XDRFile):
         cdef int n_frames = 0
         cdef int est_nframes = 0
         cdef int64_t* offsets = NULL
-        ok = read_trr_n_frames(self.fname, &n_frames, &est_nframes, &offsets)
+        cdef int ok = read_trr_n_frames(self.fname, &n_frames, &est_nframes, &offsets)
         if ok != EOK:
             raise IOError("TRR couldn't calculate offsets. "
                           "XDR error = {}".format(error_message[ok]))
@@ -477,7 +477,10 @@ cdef class TRRFile(_XDRFile):
         # overestimation. This number is saved in est_nframes and we need to
         # tell the new numpy array about the whole allocated memory to avoid
         # memory leaks.
-        cdef np.ndarray dims = np.array([est_nframes], dtype=np.int64)
+        cdef np.npy_intp[1] dim
+        dim[0] = 1
+        cdef np.ndarray[np.int64_t, ndim=1] dims = np.PyArray_EMPTY(1, dim, np.NPY_INT64, 0)
+        dims[0] = est_nframes
         # this handles freeing the allocated memory correctly.
         cdef np.ndarray nd_offsets = ptr_to_ndarray(<void*> offsets, dims, np.NPY_INT64)
         return nd_offsets[:n_frames]
@@ -515,10 +518,19 @@ cdef class TRRFile(_XDRFile):
 
         # Use this instead of memviews here to make sure that references are
         # counted correctly
-        cdef np.ndarray xyz = np.empty((self.n_atoms, DIMS), dtype=DTYPE)
-        cdef np.ndarray velocity = np.empty((self.n_atoms, DIMS), dtype=DTYPE)
-        cdef np.ndarray forces = np.empty((self.n_atoms, DIMS), dtype=DTYPE)
-        cdef np.ndarray box = np.empty((DIMS, DIMS), dtype=DTYPE)
+
+        cdef np.npy_intp[2] dim
+        dim[0] = self.n_atoms
+        dim[1] = DIMS
+
+        cdef np.npy_intp[2] unitcell_dim
+        unitcell_dim[0] = DIMS
+        unitcell_dim[1] = DIMS
+
+        cdef np.ndarray[np.float32_t, ndim=2] xyz = np.PyArray_EMPTY(2, dim, np.NPY_FLOAT32, 0)
+        cdef np.ndarray[np.float32_t, ndim=2] velocity = np.PyArray_EMPTY(2, dim, np.NPY_FLOAT32, 0)
+        cdef np.ndarray[np.float32_t, ndim=2] forces = np.PyArray_EMPTY(2, dim, np.NPY_FLOAT32, 0)
+        cdef np.ndarray[np.float32_t, ndim=2] box = np.PyArray_EMPTY(1, unitcell_dim, np.NPY_FLOAT32, 0)
 
         return_code = read_trr(self.xfp, self.n_atoms, <int*> &step,
                                       &time, &lmbda, <matrix>box.data,
@@ -676,7 +688,7 @@ cdef class XTCFile(_XDRFile):
 
     def _calc_natoms(self, fname):
         cdef int n_atoms
-        return_code = read_xtc_natoms(fname, &n_atoms)
+        cdef int return_code = read_xtc_natoms(fname, &n_atoms)
         return return_code, n_atoms
 
 
@@ -687,7 +699,7 @@ cdef class XTCFile(_XDRFile):
         cdef int n_frames = 0
         cdef int est_nframes = 0
         cdef int64_t* offsets = NULL
-        ok = read_xtc_n_frames(self.fname, &n_frames, &est_nframes, &offsets)
+        cdef int ok = read_xtc_n_frames(self.fname, &n_frames, &est_nframes, &offsets)
         if ok != EOK:
             raise IOError("XTC couldn't calculate offsets. "
                           "XDR error = {}".format(error_message[ok]))
@@ -695,7 +707,10 @@ cdef class XTCFile(_XDRFile):
         # overestimation. This number is saved in est_nframes and we need to
         # tell the new numpy array about the whole allocated memory to avoid
         # memory leaks.
-        cdef np.ndarray dims = np.array([est_nframes], dtype=np.int64)
+        cdef np.npy_intp[1] dim
+        dim[0] = 1
+        cdef np.ndarray[np.int64_t, ndim=1] dims = np.PyArray_EMPTY(1, dim, np.NPY_INT64, 0)
+        dims[0] = est_nframes
         # this handles freeing the allocated memory correctly.
         cdef np.ndarray nd_offsets = ptr_to_ndarray(<void*> offsets, dims, np.NPY_INT64)
         return nd_offsets[:n_frames]
@@ -729,8 +744,16 @@ cdef class XTCFile(_XDRFile):
         cdef int step
         cdef float time, prec
 
-        cdef np.ndarray xyz = np.empty((self.n_atoms, DIMS), dtype=DTYPE)
-        cdef np.ndarray box = np.empty((DIMS, DIMS), dtype=DTYPE)
+        cdef np.npy_intp[2] dim
+        dim[0] = self.n_atoms
+        dim[1] = DIMS
+
+        cdef np.npy_intp[2] unitcell_dim
+        unitcell_dim[0] = DIMS
+        unitcell_dim[1] = DIMS
+
+        cdef np.ndarray[np.float32_t, ndim=2] xyz = np.PyArray_EMPTY(2, dim, np.NPY_FLOAT32, 0)
+        cdef np.ndarray[np.float32_t, ndim=2] box = np.PyArray_EMPTY(1, unitcell_dim, np.NPY_FLOAT32, 0)
 
         return_code = read_xtc(self.xfp, self.n_atoms, <int*> &step,
                                       &time, <matrix>box.data,
