@@ -222,6 +222,8 @@ cdef class _XDRFile:
         self.reached_eof = False
         self.current_frame = 0
 
+        cdef int return_code
+
         if mode == 'r':
             opening_mode = b'r'
         elif mode == 'w':
@@ -322,7 +324,7 @@ cdef class _XDRFile:
                               )
     @cython.boundscheck(False)
     @cython.wraparound(False)
-    def seek(self, frame):
+    def seek(self, int frame):
         """Seek to Frame.
 
         Please note that this function will generate internal file offsets if
