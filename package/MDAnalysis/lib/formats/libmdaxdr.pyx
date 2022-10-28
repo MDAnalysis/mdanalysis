@@ -320,7 +320,8 @@ cdef class _XDRFile:
                                "not happen.".format(current_frame,
                                                     self.offsets.size)
                               )
-
+    @cython.boundscheck(False)
+    @cython.wraparound(False)
     def seek(self, frame):
         """Seek to Frame.
 
@@ -357,6 +358,8 @@ cdef class _XDRFile:
             raise IOError("XDR seek failed with system errno={}".format(ok))
         self.current_frame = frame
 
+    @cython.boundscheck(False)
+    @cython.wraparound(False)
     def _bytes_seek(self, offset, whence="SEEK_SET"):
         """Low-level access to the stream repositioning xdr_seek call.
 
@@ -412,15 +415,21 @@ cdef class _XDRFile:
             self._has_offsets = True
         return self._offsets
 
+    @cython.boundscheck(False)
+    @cython.wraparound(False)
     def set_offsets(self, offsets):
         """set frame offsets"""
         self._offsets = offsets
         self._has_offsets = True
 
+    @cython.boundscheck(False)
+    @cython.wraparound(False)
     def tell(self):
         """Get current frame"""
         return self.current_frame
 
+    @cython.boundscheck(False)
+    @cython.wraparound(False)
     def _bytes_tell(self):
         """Low-level call to xdr_tell to get current byte offset."""
         return xdr_tell(self.xfp)
@@ -461,7 +470,8 @@ cdef class TRRFile(_XDRFile):
         cdef int return_code = read_trr_natoms(fname, &n_atoms)
         return return_code, n_atoms
 
-
+    @cython.boundscheck(False)
+    @cython.wraparound(False)
     def calc_offsets(self):
         """read byte offsets from TRR file directly"""
         if not self.is_open:
@@ -485,6 +495,8 @@ cdef class TRRFile(_XDRFile):
         cdef np.ndarray nd_offsets = ptr_to_ndarray(<void*> offsets, dims, np.NPY_INT64)
         return nd_offsets[:n_frames]
 
+    @cython.boundscheck(False)
+    @cython.wraparound(False)
     def read(self):
         """Read next frame in the TRR file
 
@@ -561,7 +573,8 @@ cdef class TRRFile(_XDRFile):
         has_f = bool(has_prop & HASF)
         return TRRFrame(xyz, velocity, forces, box, step, time, lmbda,
                         has_x, has_v, has_f)
-
+    @cython.boundscheck(False)
+    @cython.wraparound(False)
     def write(self, xyz, velocity, forces, box, int step, float time,
               float _lambda, int natoms):
         """write one frame into TRR file.
@@ -686,12 +699,15 @@ cdef class XTCFile(_XDRFile):
     """
     cdef float precision
 
+    @cython.boundscheck(False)
+    @cython.wraparound(False)
     def _calc_natoms(self, fname):
         cdef int n_atoms
         cdef int return_code = read_xtc_natoms(fname, &n_atoms)
         return return_code, n_atoms
 
-
+    @cython.boundscheck(False)
+    @cython.wraparound(False)
     def calc_offsets(self):
         """Calculate offsets from XTC file directly"""
         if not self.is_open:
@@ -715,6 +731,8 @@ cdef class XTCFile(_XDRFile):
         cdef np.ndarray nd_offsets = ptr_to_ndarray(<void*> offsets, dims, np.NPY_INT64)
         return nd_offsets[:n_frames]
 
+    @cython.boundscheck(False)
+    @cython.wraparound(False)
     def read(self):
         """Read next frame in the XTC file
 
@@ -770,6 +788,8 @@ cdef class XTCFile(_XDRFile):
             self.current_frame += 1
         return XTCFrame(xyz, box, step, time, prec)
 
+    @cython.boundscheck(False)
+    @cython.wraparound(False)
     def write(self, xyz, box, int step, float time, float precision=1000):
         """write one frame to the XTC file
 
@@ -802,11 +822,11 @@ cdef class XTCFile(_XDRFile):
             raise IOError('File opened in mode: {}. Writing only allow '
                           'in mode "w"'.format('self.mode'))
 
-        xyz = np.asarray(xyz)
-        box = np.asarray(box)
+        xyz = np.asarray(xyz, dtype=np.float32)
+        box = np.asarray(box, dtype=np.float32)
 
-        cdef DTYPE_T[:, ::1] xyz_view = np.ascontiguousarray(xyz, dtype=DTYPE)
-        cdef DTYPE_T[:, ::1] box_view = np.ascontiguousarray(box, dtype=DTYPE)
+        cdef DTYPE_T[:, ::1] xyz_view = np.PyArray_GETCONTIGUOUS(xyz)
+        cdef DTYPE_T[:, ::1] box_view = np.PyArray_GETCONTIGUOUS(box)
 
         if self.current_frame == 0:
             self.n_atoms = xyz.shape[0]
