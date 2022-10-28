@@ -461,7 +461,7 @@ class BaseReaderTest(object):
     def test_timeseries_values(self, reader, slice):
         ts_positions = []
         if slice[1] > len(reader):
-            pytest.xfail()
+            pytest.skip()
         for i in range(slice[0], slice[1], slice[2]):
             ts = reader[i]
             ts_positions.append(ts.positions.copy())

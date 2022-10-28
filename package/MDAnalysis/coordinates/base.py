@@ -1018,6 +1018,9 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         start, stop, step = self.check_slice_indices(start, stop, step)
         nframes = len(range(start, stop, step))
 
+        if sorted(order) != sorted(self._default_timeseries_order):
+            raise ValueError("The order of the returned coordinate array must"
+                            " be a permutation of `fac`.")
         if asel is not None:
             if len(asel) == 0:
                 raise NoDataError(
@@ -1049,8 +1052,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             coordinates = np.swapaxes(coordinates, 2, 0)
             coordinates = np.swapaxes(coordinates, 1, 2)
         else:
-            raise ValueError("The order of the returned coordinate array must"
-                            " be a permutation of `fac`.")
+            pass
         return coordinates
 
 

@@ -133,6 +133,10 @@ class _TestReader(object):
         with pytest.raises(StopIteration):
             next(reader)
 
+    @pytest.mark.parametrize('order', ['turnip', 'abc', ''])
+    def test_timeseries_raises_incorrect_order(self, reader, order):
+        with pytest.raises(ValueError, match="must be a permutation of `fac`"):
+            reader.timeseries(order=order)
 
 class _Multi(_TestReader):
     n_frames = 10
