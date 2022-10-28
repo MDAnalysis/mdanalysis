@@ -19,6 +19,8 @@ The rules for this file:
  * 2.4.0
 
 Fixes
+  * DCD reader no loner copies timestep and instead updates it in line with other readers
+    (Issue #3889, PR #3888)
   * hbond analysis: access hbonds results through new results member in count_by_ids() and count_by_type()
   * Added isolayer selection method (Issue #3845)
   * Auxiliary; determination of representative frames: Removed undefined
@@ -30,6 +32,7 @@ Fixes
     (e.g. bonds, angles) (PR #3779).
 
 Enhancements
+  * Quality of life updates to libdcd Cython (Issue #3882, PR #3888)
   * Minimum NumPy version for py3.11 is now set to 1.23.2.
   * Added decorator to check for an empty atom group, applied in topological 
     attributes(Issue #3837)
