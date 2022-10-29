@@ -98,14 +98,14 @@ cdef enum:
     FIO_READ = 0x01
     FIO_WRITE = 0x02
 
-# exportable versions in python
-DCD_IS_CHARMM       = 0x01
-DCD_HAS_4DIMS       = 0x02
-DCD_HAS_EXTRA_BLOCK = 0x04
 # module level C decls 
 cdef  int DCD_IS_CHARMM_       = 0x01
 cdef  int DCD_HAS_4DIMS_       = 0x02
 cdef  int DCD_HAS_EXTRA_BLOCK_ = 0x04
+# exportable versions in python
+DCD_IS_CHARMM       = DCD_IS_CHARMM_
+DCD_HAS_4DIMS       = DCD_HAS_4DIMS_
+DCD_HAS_EXTRA_BLOCK = DCD_HAS_EXTRA_BLOCK_
 
 DCD_ERRORS = {
     0: 'Success',
