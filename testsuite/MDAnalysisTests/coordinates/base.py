@@ -21,7 +21,6 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import itertools
-from os import terminal_size
 import pickle
 
 import numpy as np
@@ -450,9 +449,9 @@ class BaseReaderTest(object):
     @pytest.mark.parametrize('order', ('fac', 'fca', 'afc', 'acf', 'caf', 'cfa'))
     def test_timeseries_shape(self, reader, order):
         timeseries = reader.timeseries(order=order)
-        a_index = order.find('a')
-        f_index = order.find('f')
-        c_index = order.find('c')
+        a_index = order.index('a')
+        f_index = order.index('f')
+        c_index = order.index('c')
         assert(timeseries.shape[a_index] == reader.n_atoms)
         assert(timeseries.shape[f_index] == len(reader))
         assert(timeseries.shape[c_index] == 3)
@@ -461,13 +460,14 @@ class BaseReaderTest(object):
     def test_timeseries_values(self, reader, slice):
         ts_positions = []
         if slice[1] > len(reader):
-            pytest.skip()
+            pytest.skip("too few frames in reader")
         for i in range(slice[0], slice[1], slice[2]):
             ts = reader[i]
             ts_positions.append(ts.positions.copy())
         positions = np.asarray(ts_positions)
-        timeseries = reader.timeseries(start=slice[0], stop=slice[1], step=slice[2], order='fac')
-        np.testing.assert_allclose(timeseries, positions)
+        timeseries = reader.timeseries(start=slice[0], stop=slice[1],
+                                       step=slice[2], order='fac')
+        assert_allclose(timeseries, positions)
 
 
 class MultiframeReaderTest(BaseReaderTest):

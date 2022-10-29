@@ -664,8 +664,6 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
     #: The appropriate Timestep class, e.g.
     #: :class:`MDAnalysis.coordinates.xdrfile.XTC.Timestep` for XTC.
     _Timestep = Timestep
-    # the default coordinate layout for timeseries
-    _default_timeseries_order = 'fac'
 
     def __init__(self):
         # initialise list to store added auxiliary readers in
@@ -1010,17 +1008,17 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             of 'a', 'f', 'c' are allowed ie "fac" - return array
             where the shape is (frame, number of atoms,
             coordinates)
+
         See Also
         --------
-        MDAnalysis.coordinates.memory
+        :class:`MDAnalysis.coordinates.memory`
+
+
         .. versionadded:: 2.4.0
         """
         start, stop, step = self.check_slice_indices(start, stop, step)
         nframes = len(range(start, stop, step))
 
-        if sorted(order) != sorted(self._default_timeseries_order):
-            raise ValueError("The order of the returned coordinate array must"
-                            " be a permutation of `fac`.")
         if asel is not None:
             if len(asel) == 0:
                 raise NoDataError(
@@ -1037,22 +1035,20 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             coordinates[i, :] = ts.positions[atom_numbers]
 
         # switch axes around
-        if order == self._default_timeseries_order:
-            pass
-        elif order[0] == self._default_timeseries_order[0]:
-            coordinates = np.swapaxes(coordinates, 1, 2)
-        elif order[1] == self._default_timeseries_order[1]:
-            coordinates = np.swapaxes(coordinates, 0, 2)
-        elif order[2] == self._default_timeseries_order[2]:
-            coordinates = np.swapaxes(coordinates, 0, 1)
-        elif order[0] == self._default_timeseries_order[1]:
-            coordinates = np.swapaxes(coordinates, 1, 0)
-            coordinates = np.swapaxes(coordinates, 1, 2)
-        elif order[0] == self._default_timeseries_order[2]:
-            coordinates = np.swapaxes(coordinates, 2, 0)
-            coordinates = np.swapaxes(coordinates, 1, 2)
-        else:
-            pass
+        default_order = 'fac'
+        if order != default_order:
+            try:
+                newidx = [default_order.index(i) for i in order]
+            except ValueError:
+                raise ValueError(f"Unrecognized order key in {order}, "
+                                 "must be permutation of 'fac'")
+
+            try:
+                coordinates = np.moveaxis(coordinates, [0, 1, 2], newidx)
+            except ValueError:
+                errmsg = ("Repeated or missing keys passed to argument "
+                          f"`order`: {order}, each key must be used once")
+                raise ValueError(errmsg)
         return coordinates
 
 
