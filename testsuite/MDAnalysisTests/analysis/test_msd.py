@@ -123,7 +123,12 @@ class TestMSDSimple(object):
         m_simple = MSD(step_traj, 'all', msd_type=dim, fft=False)
         m_simple.run()
         poly = characteristic_poly(NSTEP, dim_factor)
+        alpha = -0.4*np.ones(NSTEP)
+        alpha[0] = np.nan
         assert_almost_equal(m_simple.results.timeseries, poly, decimal=4)
+        assert_almost_equal(m_simple.results.nongaussian_parameter,
+                            alpha,
+                            decimal=5)
 
     @pytest.mark.parametrize("dim, dim_factor", [
         ('xyz', 3), ('xy', 2), ('xz', 2), ('yz', 2), ('x', 1), ('y', 1),
@@ -147,6 +152,15 @@ class TestMSDSimple(object):
         norm = np.linalg.norm(msd_rw.results.timeseries)
         val = 3932.39927487146
         assert_almost_equal(norm, val, decimal=5)
+        # nongaussian parameter may have negative values (above -2.5) and 
+        # postiive values, but converge to zero at long times.
+        assert_almost_equal(msd_rw.results.nongaussian_parameter[:20], 
+                            np.array([np.nan,  0.00049,  0.00048,  0.00536, 
+                                -0.00299,  0.00014, -0.0046 , -0.00612, 
+                                -0.00307,  0.00033,  0.00584,  0.0131 ,
+                                0.01516,  0.01666,  0.01924,  0.02052,  
+                                0.01961,  0.01743, 0.01355,  0.00997]), 
+                            decimal=5)
 
 
 @pytest.mark.skipif(import_not_available("tidynamics"),
