@@ -1039,12 +1039,13 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         if order != default_order:
             try:
                 newidx = [default_order.index(i) for i in order]
+                print(newidx)
             except ValueError:
                 raise ValueError(f"Unrecognized order key in {order}, "
                                  "must be permutation of 'fac'")
 
             try:
-                coordinates = np.moveaxis(coordinates, [0, 1, 2], newidx)
+                coordinates = np.moveaxis(coordinates, newidx, [0, 1, 2])
             except ValueError:
                 errmsg = ("Repeated or missing keys passed to argument "
                           f"`order`: {order}, each key must be used once")
