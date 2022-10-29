@@ -515,6 +515,12 @@ class MemoryReader(base.ProtoReader):
         .. versionchanged:: 1.0.0
            Deprecated `format` keyword has been removed. Use `order` instead.
         """
+        warnings.warn(
+            "Inclusive `start` and `stop` indexing will be removed in 3.0 in" 
+            " favour of exclusive indexing"
+            category=DeprecationWarning
+        )
+
         array = self.get_array()
         if order == self.stored_order:
             pass
