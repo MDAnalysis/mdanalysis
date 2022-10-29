@@ -1039,7 +1039,6 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         if order != default_order:
             try:
                 newidx = [default_order.index(i) for i in order]
-                print(newidx)
             except ValueError:
                 raise ValueError(f"Unrecognized order key in {order}, "
                                  "must be permutation of 'fac'")
