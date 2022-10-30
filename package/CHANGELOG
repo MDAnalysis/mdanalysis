@@ -62,6 +62,7 @@ Changes
   * adding element attribute to TXYZParser if all atom names are valid element symbols (PR #3826)
 
 Deprecations
+  * Add deprecation warning for inclusive start, stop, step indexing in MemoryReader.timeseries 
 
 
 08/29/22 IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli, miss77jun, rzhao271,
