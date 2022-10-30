@@ -523,7 +523,7 @@ class MemoryReader(base.ProtoReader):
         """
         if stop != -1:
             warnings.warn("MemoryReader.timeseries inclusive `start` and `stop`"
-                      "indexing will be removed in 3.0 in favour of exclusive"
+                      " indexing will be removed in 3.0 in favour of exclusive "
                       "indexing",category=DeprecationWarning)
 
         array = self.get_array()

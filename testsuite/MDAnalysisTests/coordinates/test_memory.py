@@ -198,7 +198,8 @@ class TestMemoryReader(MultiframeReaderTest):
         assert_almost_equal(reader.ts.positions, new_positions)
 
     def test_timeseries_warns_deprecation(self, reader):
-        with pytest.raises(DeprecationWarning):
+        with pytest.warns(DeprecationWarning, match="MemoryReader.timeseries "
+                          "inclusive"):
             reader.timeseries(start=0, stop=3, step=1)
 
 
