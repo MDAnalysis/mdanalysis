@@ -502,8 +502,12 @@ class MemoryReader(base.ProtoReader):
             data is returned whenever `asel` is different from ``None``.
         start : int (optional)
         stop : int (optional)
+            Note that `stop` is currently *inclusive* but will be deprecated in
+            favour of being *exclusive* in 3.0.  
         step : int (optional)
-            range of trajectory to access, `start` and `stop` are *inclusive*
+            range of trajectory to access, `start` and `stop` are
+            currently *inclusive* but will be changed to be *exclusive* in
+            3.0.
         order : {"afc", "acf", "caf", "fac", "fca", "cfa"} (optional)
             the order/shape of the return data array, corresponding
             to (a)tom, (f)rame, (c)oordinates all six combinations
@@ -514,8 +518,11 @@ class MemoryReader(base.ProtoReader):
 
         .. versionchanged:: 1.0.0
            Deprecated `format` keyword has been removed. Use `order` instead.
+        .. versionchanged:: 2.4.0
+           Deprecation warning 
         """
-        warnings.warn("MemoryReader.timeseries inclusive `start` and `stop`"
+        if stop != -1:
+            warnings.warn("MemoryReader.timeseries inclusive `start` and `stop`"
                       "indexing will be removed in 3.0 in favour of exclusive"
                       "indexing",category=DeprecationWarning)
 
