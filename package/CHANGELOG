@@ -14,13 +14,14 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, BFedder, aya9aladdin,
-         jaclark5
+         jaclark5, jfennick
 
  * 2.4.0
 
 Fixes
-  * DCD reader no loner copies timestep and instead updates it in line with other readers
+  * DCD reader no longer copies timestep and instead updates it in line with other readers
     (Issue #3889, PR #3888)
+  * LAMMPSDump Reader translates the box to the origin (#3741)
   * hbond analysis: access hbonds results through new results member in count_by_ids() and count_by_type()
   * Added isolayer selection method (Issue #3845)
   * Auxiliary; determination of representative frames: Removed undefined
@@ -33,6 +34,9 @@ Fixes
 
 Enhancements
   * Quality of life updates to libdcd Cython (Issue #3882, PR #3888)
+  * LAMMPSDump Reader optionally unwraps trajectories with image flags upon 
+    loading (#3843
+  * LAMMPSDump Reader now imports velocities and forces (#3843)
   * Minimum NumPy version for py3.11 is now set to 1.23.2.
   * Added decorator to check for an empty atom group, applied in topological 
     attributes(Issue #3837)
