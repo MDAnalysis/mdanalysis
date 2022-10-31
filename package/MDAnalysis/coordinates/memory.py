@@ -502,9 +502,9 @@ class MemoryReader(base.ProtoReader):
             data is returned whenever `asel` is different from ``None``.
         start : int (optional)
         stop : int (optional)
-            .. deprecated:: 3.0
+            .. deprecated:: 2.4.0
                 Note that `stop` is currently *inclusive* but will be
-                deprecated in favour of being *exclusive* in 3.0.  
+                changed in favour of being *exclusive* in version 3.0.  
         step : int (optional)
         order : {"afc", "acf", "caf", "fac", "fca", "cfa"} (optional)
             the order/shape of the return data array, corresponding
