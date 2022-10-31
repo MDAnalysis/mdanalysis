@@ -460,7 +460,8 @@ class BaseReaderTest(object):
     def test_timeseries_values(self, reader, slice):
         ts_positions = []
         if isinstance(reader, mda.coordinates.memory.MemoryReader):
-            pytest.xfail("MemoryReader uses deprecated indexing")
+            pytest.xfail("MemoryReader uses deprecated stop inclusive"
+                         " indexing, see Issue #3893")
         if slice[1] > len(reader):
             pytest.skip("too few frames in reader")
         for i in range(slice[0], slice[1], slice[2]):
