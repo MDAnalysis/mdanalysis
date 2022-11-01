@@ -113,9 +113,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../analysis_modules.html"><span class="section-number">4. </span>Analysis modules</a> &raquo;</li>
-      <li><span class="section-number">4.4.1. </span>HOLE analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2</span></code></li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../analysis_modules.html"><span class="section-number">4. </span>Analysis modules</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">4.4.1. </span>HOLE analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/documentation_pages/analysis/hole2.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -370,18 +370,18 @@ is supported and can be set with keyword arguments.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pdbfile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The <cite>filename</cite> is used as input for HOLE in the “COORD” card of the
+<li><p><strong>pdbfile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The <cite>filename</cite> is used as input for HOLE in the “COORD” card of the
 input file.  It specifies the name of a PDB coordinate file to be
 used. This must be in Brookhaven protein databank format or
 something closely approximating this. Both ATOM and HETATM records
 are read.</p></li>
-<li><p><strong>infile_text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – HOLE input text or template. If set to <code class="docutils literal notranslate"><span class="pre">None</span></code>, the function will
+<li><p><strong>infile_text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – HOLE input text or template. If set to <code class="docutils literal notranslate"><span class="pre">None</span></code>, the function will
 create the input text from the other parameters.</p></li>
-<li><p><strong>infile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – File to write the HOLE input text for later inspection. If set to
+<li><p><strong>infile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – File to write the HOLE input text for later inspection. If set to
 <code class="docutils literal notranslate"><span class="pre">None</span></code>, the input text is not written out.</p></li>
-<li><p><strong>outfile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – file name of the file collecting HOLE’s output (which can be
+<li><p><strong>outfile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – file name of the file collecting HOLE’s output (which can be
 parsed using <code class="xref py py-meth docutils literal notranslate"><span class="pre">collect_hole(outfile)()</span></code>.</p></li>
-<li><p><strong>sphpdb_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – path to the HOLE sph file, a PDB-like file containing the
+<li><p><strong>sphpdb_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – path to the HOLE sph file, a PDB-like file containing the
 coordinates of the pore centers.
 The coordinates are set to the sphere centres and the occupancies
 are the sphere radii. All centres are assigned the atom name QSS and
@@ -393,24 +393,24 @@ distance of particular atoms from the sphere-centre line.
 .sph files can be used to produce molecular graphical
 output from a hole run, by using the
 <strong class="program">sph_process</strong> program to read the .sph file.</p></li>
-<li><p><strong>vdwradii_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – path to the file specifying van der Waals radii for each atom. If
+<li><p><strong>vdwradii_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – path to the file specifying van der Waals radii for each atom. If
 set to <code class="docutils literal notranslate"><span class="pre">None</span></code>, then a set of default radii,
 <code class="xref py py-data docutils literal notranslate"><span class="pre">SIMPLE2_RAD</span></code>, is used (an extension of <code class="docutils literal notranslate"><span class="pre">simple.rad</span></code> from
 the HOLE distribution).</p></li>
-<li><p><strong>executable</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – Path to the <strong class="program">hole</strong> executable.
+<li><p><strong>executable</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Path to the <strong class="program">hole</strong> executable.
 (e.g. <code class="docutils literal notranslate"><span class="pre">~/hole2/exe/hole</span></code>). If
 <strong class="program">hole</strong> is found on the <span class="target" id="index-0"></span><a class="reference external" href="https://matplotlib.org/stable/users/faq/environment_variables_faq.html#envvar-PATH" title="(in Matplotlib v3.6.0)"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">PATH</span></code></a>, then the bare
 executable name is sufficient.</p></li>
-<li><p><strong>tmpdir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – The temporary directory that files can be symlinked to, to shorten
+<li><p><strong>tmpdir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – The temporary directory that files can be symlinked to, to shorten
 the path name. HOLE can only read filenames up to a certain length.</p></li>
-<li><p><strong>sample</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – distance of sample points in Å.
+<li><p><strong>sample</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – distance of sample points in Å.
 Specifies the distance between the planes used in the HOLE
 procedure. The default value should be reasonable for most
 purposes. However, if you wish to visualize a very tight
 constriction then specify a smaller value.
 This value determines how many points in the pore profile are
 calculated.</p></li>
-<li><p><strong>end_radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – Radius in Å, which is considered to be the end of the pore. This
+<li><p><strong>end_radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – Radius in Å, which is considered to be the end of the pore. This
 keyword can be used to specify the radius above which the
 program regards a result as indicating that the end of the pore
 has been reached. This may need to be increased for large channels,
@@ -444,7 +444,7 @@ reasonably symmetric. The guess will be either along the X axis
 aligned on one of these axis the results will clearly be
 approximate. If a guess is used then results should be carefully
 checked.</p></li>
-<li><p><strong>random_seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – integer number to start the random number generator.
+<li><p><strong>random_seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – integer number to start the random number generator.
 By default,
 <strong class="program">hole</strong> will use the time of the day.
 For reproducible runs (e.g., for testing) set <code class="docutils literal notranslate"><span class="pre">random_seed</span></code>
@@ -453,7 +453,7 @@ to an integer.</p></li>
 account during the calculation; wildcards are <em>not</em>
 supported. Note that all residues must have 3 letters. Pad
 with space on the right-hand side if necessary.</p></li>
-<li><p><strong>output_level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – Determines the output of output in the <code class="docutils literal notranslate"><span class="pre">outfile</span></code>.
+<li><p><strong>output_level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – Determines the output of output in the <code class="docutils literal notranslate"><span class="pre">outfile</span></code>.
 For automated processing, this must be &lt; 3.
 0: Full text output,
 1: All text output given except “run in progress” (i.e.,
@@ -462,7 +462,7 @@ detailed contemporary description of what HOLE is doing).
 radius and conductance calculations.
 3: All text output other than input card mirroring and error messages
 turned off.</p></li>
-<li><p><strong>dcd</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – File name of CHARMM-style DCD trajectory (must be supplied together with a
+<li><p><strong>dcd</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – File name of CHARMM-style DCD trajectory (must be supplied together with a
 matching PDB file <cite>filename</cite>) and then HOLE runs its analysis on
 each frame. HOLE can <em>not</em> read DCD trajectories written by MDAnalysis,
 which are NAMD-style (see Notes). Note that structural parameters
@@ -472,9 +472,9 @@ output file using a <strong class="program">grep</strong> command. The reading o
 can be controlled by the <code class="docutils literal notranslate"><span class="pre">dcd_step</span></code> keyword and/or setting
 <code class="docutils literal notranslate"><span class="pre">dcd_iniskip</span></code> to the number of frames to be skipped
 initially.</p></li>
-<li><p><strong>dcd_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – step size for going through the trajectory (skips <code class="docutils literal notranslate"><span class="pre">dcd_step-1</span></code>
+<li><p><strong>dcd_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – step size for going through the trajectory (skips <code class="docutils literal notranslate"><span class="pre">dcd_step-1</span></code>
 frames).</p></li>
-<li><p><strong>keep_files</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to keep the HOLE output files and possible temporary
+<li><p><strong>keep_files</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to keep the HOLE output files and possible temporary
 symlinks after running the function.</p></li>
 </ul>
 </dd>
@@ -482,7 +482,7 @@ symlinks after running the function.</p></li>
 <dd class="field-even"><p>A dictionary of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.23)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.recarray</span></code></a>s, indexed by frame.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)">dict</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)">dict</a></p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -518,15 +518,15 @@ by HOLE, e.g. sphpdb files and logfiles.</p>
 <li><p><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em> or </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – The Universe or AtomGroup to apply the analysis to.</p></li>
 <li><p><strong>select</strong> (<em>string</em><em>, </em><em>optional</em>) – The selection string to create an atom selection that the HOLE
 analysis is applied to.</p></li>
-<li><p><strong>vdwradii_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – path to the file specifying van der Waals radii for each atom. If
+<li><p><strong>vdwradii_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – path to the file specifying van der Waals radii for each atom. If
 set to <code class="docutils literal notranslate"><span class="pre">None</span></code>, then a set of default radii,
 <code class="xref py py-data docutils literal notranslate"><span class="pre">SIMPLE2_RAD</span></code>, is used (an extension of <code class="docutils literal notranslate"><span class="pre">simple.rad</span></code> from
 the HOLE distribution).</p></li>
-<li><p><strong>executable</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – Path to the <strong class="program">hole</strong> executable.
+<li><p><strong>executable</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Path to the <strong class="program">hole</strong> executable.
 (e.g. <code class="docutils literal notranslate"><span class="pre">~/hole2/exe/hole</span></code>). If
 <strong class="program">hole</strong> is found on the <span class="target" id="index-1"></span><a class="reference external" href="https://matplotlib.org/stable/users/faq/environment_variables_faq.html#envvar-PATH" title="(in Matplotlib v3.6.0)"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">PATH</span></code></a>, then the bare
 executable name is sufficient.</p></li>
-<li><p><strong>tmpdir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – The temporary directory that files can be symlinked to, to shorten
+<li><p><strong>tmpdir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – The temporary directory that files can be symlinked to, to shorten
 the path name. HOLE can only read filenames up to a certain length.</p></li>
 <li><p><strong>cpoint</strong> (<em>array_like</em><em>, </em><em>'center_of_geometry'</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – coordinates of a point inside the pore, e.g. <code class="docutils literal notranslate"><span class="pre">[12.3,</span> <span class="pre">0.7,</span>
 <span class="pre">18.55]</span></code>. If set to <code class="docutils literal notranslate"><span class="pre">None</span></code> (the default) then HOLE’s own search
@@ -557,19 +557,19 @@ reasonably symmetric. The guess will be either along the X axis
 aligned on one of these axis the results will clearly be
 approximate. If a guess is used then results should be carefully
 checked.</p></li>
-<li><p><strong>sample</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – distance of sample points in Å.
+<li><p><strong>sample</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – distance of sample points in Å.
 Specifies the distance between the planes used in the HOLE
 procedure. The default value should be reasonable for most
 purposes. However, if you wish to visualize a very tight
 constriction then specify a smaller value.
 This value determines how many points in the pore profile are
 calculated.</p></li>
-<li><p><strong>end_radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – Radius in Å, which is considered to be the end of the pore. This
+<li><p><strong>end_radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – Radius in Å, which is considered to be the end of the pore. This
 keyword can be used to specify the radius above which the
 program regards a result as indicating that the end of the pore
 has been reached. This may need to be increased for large channels,
 or reduced for small channels.</p></li>
-<li><p><strong>output_level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – Determines the output of output in the <code class="docutils literal notranslate"><span class="pre">outfile</span></code>.
+<li><p><strong>output_level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – Determines the output of output in the <code class="docutils literal notranslate"><span class="pre">outfile</span></code>.
 For automated processing, this must be &lt; 3.
 0: Full text output,
 1: All text output given except “run in progress” (i.e.,
@@ -582,8 +582,8 @@ turned off.</p></li>
 account during the calculation; wildcards are <em>not</em>
 supported. Note that all residues must have 3 letters. Pad
 with space on the right-hand side if necessary.</p></li>
-<li><p><strong>prefix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – Prefix for HOLE output files.</p></li>
-<li><p><strong>write_input_files</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to write out the input HOLE text as files.
+<li><p><strong>prefix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Prefix for HOLE output files.</p></li>
+<li><p><strong>write_input_files</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to write out the input HOLE text as files.
 Files are called <cite>hole.inp</cite>.</p></li>
 </ul>
 </dd>
@@ -626,7 +626,7 @@ A dictionary of <a class="reference external" href="https://numpy.org/doc/stable
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)">dict</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)">dict</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -671,7 +671,7 @@ A dictionary of <a class="reference external" href="https://numpy.org/doc/stable
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)">dict</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)">dict</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -696,12 +696,12 @@ instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>frames</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>iterable</em><em> of </em><em>ints</em><em>, </em><em>optional</em>) – Profiles to include by frame. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, includes
+<li><p><strong>frames</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>iterable</em><em> of </em><em>ints</em><em>, </em><em>optional</em>) – Profiles to include by frame. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, includes
 all frames.</p></li>
-<li><p><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>iterable</em><em> of </em><em>edges</em><em>, </em><em>optional</em>) – If bins is an int, it defines the number of equal-width bins in the given
+<li><p><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>iterable</em><em> of </em><em>edges</em><em>, </em><em>optional</em>) – If bins is an int, it defines the number of equal-width bins in the given
 range. If bins is a sequence, it defines a monotonically increasing array of
 bin edges, including the rightmost edge, allowing for non-uniform bin widths.</p></li>
-<li><p><strong>range</strong> (<em>(</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>)</em><em>, </em><em>optional</em>) – The lower and upper range of the bins.
+<li><p><strong>range</strong> (<em>(</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>)</em><em>, </em><em>optional</em>) – The lower and upper range of the bins.
 If not provided, <code class="docutils literal notranslate"><span class="pre">range</span></code> is simply <code class="docutils literal notranslate"><span class="pre">(a.min(),</span> <span class="pre">a.max())</span></code>,
 where <code class="docutils literal notranslate"><span class="pre">a</span></code> is the array of reaction coordinates.
 Values outside the range are ignored. The first element of the range must be
@@ -740,18 +740,18 @@ Tk Console:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – file to write the pore surfaces to.</p></li>
-<li><p><strong>dot_density</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – density of facets for generating a 3D pore representation.
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – file to write the pore surfaces to.</p></li>
+<li><p><strong>dot_density</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – density of facets for generating a 3D pore representation.
 The number controls the density of dots that will be used.
 A sphere of dots is placed on each centre determined in the
 Monte Carlo procedure. The actual number of dots written is
 controlled by <code class="docutils literal notranslate"><span class="pre">dot_density</span></code> and the <code class="docutils literal notranslate"><span class="pre">sample</span></code> level of the
 original analysis. <code class="docutils literal notranslate"><span class="pre">dot_density</span></code> should be set between 5
 (few dots per sphere) and 35 (many dots per sphere).</p></li>
-<li><p><strong>no_water_color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – Color of the surface where the pore radius is too tight for a
+<li><p><strong>no_water_color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Color of the surface where the pore radius is too tight for a
 water molecule.</p></li>
-<li><p><strong>one_water_color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – Color of the surface where the pore can fit one water molecule.</p></li>
-<li><p><strong>double_water_color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – Color of the surface where the radius is at least double the
+<li><p><strong>one_water_color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Color of the surface where the pore can fit one water molecule.</p></li>
+<li><p><strong>double_water_color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Color of the surface where the radius is at least double the
 minimum radius for one water molecule.</p></li>
 </ul>
 </dd>
@@ -759,7 +759,7 @@ minimum radius for one water molecule.</p></li>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">filename</span></code> with the pore surfaces.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)">str</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -777,9 +777,9 @@ minimum radius for one water molecule.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>frames</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>iterable</em><em> of </em><em>ints</em><em>, </em><em>optional</em>) – Profiles to include by frame. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, includes
+<li><p><strong>frames</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>iterable</em><em> of </em><em>ints</em><em>, </em><em>optional</em>) – Profiles to include by frame. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, includes
 all frames.</p></li>
-<li><p><strong>flat</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to flatten the list of field arrays into a
+<li><p><strong>flat</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to flatten the list of field arrays into a
 single array.</p></li>
 </ul>
 </dd>
@@ -787,7 +787,7 @@ single array.</p></li>
 <dd class="field-even"><p>dictionary of fields</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)">dict</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)">dict</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -803,7 +803,7 @@ guess.</p>
 <dd class="field-odd"><p>center of geometry of selected AtomGroup</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)">float</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -819,12 +819,12 @@ aggregated radii and bin edges.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>aggregator</strong> (<em>callable</em><em>, </em><em>optional</em>) – this function must take an iterable of floats and return a
 single value.</p></li>
-<li><p><strong>frames</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>iterable</em><em> of </em><em>ints</em><em>, </em><em>optional</em>) – Profiles to include by frame. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, includes
+<li><p><strong>frames</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>iterable</em><em> of </em><em>ints</em><em>, </em><em>optional</em>) – Profiles to include by frame. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, includes
 all frames.</p></li>
-<li><p><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>iterable</em><em> of </em><em>edges</em><em>, </em><em>optional</em>) – If bins is an int, it defines the number of equal-width bins in the given
+<li><p><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>iterable</em><em> of </em><em>edges</em><em>, </em><em>optional</em>) – If bins is an int, it defines the number of equal-width bins in the given
 range. If bins is a sequence, it defines a monotonically increasing array of
 bin edges, including the rightmost edge, allowing for non-uniform bin widths.</p></li>
-<li><p><strong>range</strong> (<em>(</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>)</em><em>, </em><em>optional</em>) – The lower and upper range of the bins.
+<li><p><strong>range</strong> (<em>(</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>)</em><em>, </em><em>optional</em>) – The lower and upper range of the bins.
 If not provided, <code class="docutils literal notranslate"><span class="pre">range</span></code> is simply <code class="docutils literal notranslate"><span class="pre">(a.min(),</span> <span class="pre">a.max())</span></code>,
 where <code class="docutils literal notranslate"><span class="pre">a</span></code> is the array of reaction coordinates.
 Values outside the range are ignored. The first element of the range must be
@@ -864,7 +864,7 @@ be same length as trajectory.</p></li>
 <dd class="field-even"><p>sorted dictionary of {order_parameter:profile}</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/collections.html#collections.OrderedDict" title="(in Python v3.10)">collections.OrderedDict</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/collections.html#collections.OrderedDict" title="(in Python v3.11)">collections.OrderedDict</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -880,19 +880,19 @@ plotted for each trajectory frame.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>frames</strong> (<em>array-like</em><em>, </em><em>optional</em>) – Frames to plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, plots all of them.</p></li>
-<li><p><strong>color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Color or colors for the plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, colors are
+<li><p><strong>color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Color or colors for the plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, colors are
 drawn from <code class="docutils literal notranslate"><span class="pre">cmap</span></code>.</p></li>
-<li><p><strong>cmap</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – color map to make colors for the plot if <code class="docutils literal notranslate"><span class="pre">color</span></code> is
+<li><p><strong>cmap</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – color map to make colors for the plot if <code class="docutils literal notranslate"><span class="pre">color</span></code> is
 not given. Names should be from the <code class="docutils literal notranslate"><span class="pre">matplotlib.pyplot.cm</span></code>
 module.</p></li>
-<li><p><strong>linestyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Line style for the plot.</p></li>
-<li><p><strong>y_shift</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – displace each <span class="math notranslate nohighlight">\(R(\zeta)\)</span> profile by <code class="docutils literal notranslate"><span class="pre">y_shift</span></code> in the
+<li><p><strong>linestyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Line style for the plot.</p></li>
+<li><p><strong>y_shift</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – displace each <span class="math notranslate nohighlight">\(R(\zeta)\)</span> profile by <code class="docutils literal notranslate"><span class="pre">y_shift</span></code> in the
 <span class="math notranslate nohighlight">\(y\)</span>-direction for clearer visualization.</p></li>
-<li><p><strong>label</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em> or </em><em>string</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">False</span></code> then no legend is
+<li><p><strong>label</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em> or </em><em>string</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">False</span></code> then no legend is
 displayed.</p></li>
 <li><p><strong>ax</strong> (<a class="reference external" href="https://matplotlib.org/stable/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v3.6.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a>) – If no <cite>ax</cite> is supplied or set to <code class="docutils literal notranslate"><span class="pre">None</span></code> then the plot will
 be added to the current active axes.</p></li>
-<li><p><strong>legend_loc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – Location of the legend.</p></li>
+<li><p><strong>legend_loc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Location of the legend.</p></li>
 <li><p><strong>kwargs</strong> (<cite>**kwargs</cite>) – All other <cite>kwargs</cite> are passed to <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot" title="(in Matplotlib v3.6.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.plot()</span></code></a>.</p></li>
 </ul>
 </dd>
@@ -916,17 +916,17 @@ plotted for each trajectory frame.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>frames</strong> (<em>array-like</em><em>, </em><em>optional</em>) – Frames to plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, plots all of them.</p></li>
-<li><p><strong>color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Color or colors for the plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, colors are
+<li><p><strong>color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Color or colors for the plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, colors are
 drawn from <code class="docutils literal notranslate"><span class="pre">cmap</span></code>.</p></li>
-<li><p><strong>cmap</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – color map to make colors for the plot if <code class="docutils literal notranslate"><span class="pre">color</span></code> is
+<li><p><strong>cmap</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – color map to make colors for the plot if <code class="docutils literal notranslate"><span class="pre">color</span></code> is
 not given. Names should be from the <code class="docutils literal notranslate"><span class="pre">matplotlib.pyplot.cm</span></code>
 module.</p></li>
-<li><p><strong>linestyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Line style for the plot.</p></li>
-<li><p><strong>r_max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – only display radii up to <code class="docutils literal notranslate"><span class="pre">r_max</span></code>. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, all radii are
+<li><p><strong>linestyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Line style for the plot.</p></li>
+<li><p><strong>r_max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – only display radii up to <code class="docutils literal notranslate"><span class="pre">r_max</span></code>. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, all radii are
 plotted.</p></li>
 <li><p><strong>ax</strong> (<a class="reference external" href="https://matplotlib.org/stable/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v3.6.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a>) – If no <cite>ax</cite> is supplied or set to <code class="docutils literal notranslate"><span class="pre">None</span></code> then the plot will
 be added to the current active axes.</p></li>
-<li><p><strong>ylabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – Y-axis label.</p></li>
+<li><p><strong>ylabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Y-axis label.</p></li>
 <li><p><strong>**kwargs</strong> – All other <cite>kwargs</cite> are passed to <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot" title="(in Matplotlib v3.6.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.plot()</span></code></a>.</p></li>
 </ul>
 </dd>
@@ -953,17 +953,17 @@ plotted for each trajectory frame.</p>
 numbers) corresponding to the frames in the trajectory. Must
 be same length as trajectory.</p></li>
 <li><p><strong>frames</strong> (<em>array-like</em><em>, </em><em>optional</em>) – Frames to plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, plots all of them.</p></li>
-<li><p><strong>color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Color or colors for the plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, colors are
+<li><p><strong>color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Color or colors for the plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, colors are
 drawn from <code class="docutils literal notranslate"><span class="pre">cmap</span></code>.</p></li>
-<li><p><strong>cmap</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – color map to make colors for the plot if <code class="docutils literal notranslate"><span class="pre">color</span></code> is
+<li><p><strong>cmap</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – color map to make colors for the plot if <code class="docutils literal notranslate"><span class="pre">color</span></code> is
 not given. Names should be from the <code class="docutils literal notranslate"><span class="pre">matplotlib.pyplot.cm</span></code>
 module.</p></li>
-<li><p><strong>linestyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Line style for the plot.</p></li>
+<li><p><strong>linestyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Line style for the plot.</p></li>
 <li><p><strong>ax</strong> (: class: <cite>matplotlib.axes.Axes</cite>) – If no <cite>ax</cite> is supplied or set to <code class="docutils literal notranslate"><span class="pre">None</span></code> then the plot will
 be added to the current active axes.</p></li>
-<li><p><strong>r_max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – only display radii up to <code class="docutils literal notranslate"><span class="pre">r_max</span></code>. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, all radii are
+<li><p><strong>r_max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – only display radii up to <code class="docutils literal notranslate"><span class="pre">r_max</span></code>. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, all radii are
 plotted.</p></li>
-<li><p><strong>ylabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – Y-axis label.</p></li>
+<li><p><strong>ylabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Y-axis label.</p></li>
 <li><p><strong>**kwargs</strong> – All other <cite>kwargs</cite> are passed to: func: <cite>matplotlib.pyplot.plot</cite>.</p></li>
 </ul>
 </dd>
@@ -983,25 +983,25 @@ plotted.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>frames</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>iterable</em><em> of </em><em>ints</em><em>, </em><em>optional</em>) – Profiles to include by frame. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, includes
+<li><p><strong>frames</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>iterable</em><em> of </em><em>ints</em><em>, </em><em>optional</em>) – Profiles to include by frame. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, includes
 all frames.</p></li>
-<li><p><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>iterable</em><em> of </em><em>edges</em><em>, </em><em>optional</em>) – If bins is an int, it defines the number of equal-width bins in the given
+<li><p><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>iterable</em><em> of </em><em>edges</em><em>, </em><em>optional</em>) – If bins is an int, it defines the number of equal-width bins in the given
 range. If bins is a sequence, it defines a monotonically increasing array of
 bin edges, including the rightmost edge, allowing for non-uniform bin widths.</p></li>
-<li><p><strong>range</strong> (<em>(</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>)</em><em>, </em><em>optional</em>) – The lower and upper range of the bins.
+<li><p><strong>range</strong> (<em>(</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>)</em><em>, </em><em>optional</em>) – The lower and upper range of the bins.
 If not provided, <code class="docutils literal notranslate"><span class="pre">range</span></code> is simply <code class="docutils literal notranslate"><span class="pre">(a.min(),</span> <span class="pre">a.max())</span></code>,
 where <code class="docutils literal notranslate"><span class="pre">a</span></code> is the array of reaction coordinates.
 Values outside the range are ignored. The first element of the range must be
 less than or equal to the second.</p></li>
-<li><p><strong>color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Color for the plot.</p></li>
-<li><p><strong>linestyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Line style for the plot.</p></li>
+<li><p><strong>color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Color for the plot.</p></li>
+<li><p><strong>linestyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Line style for the plot.</p></li>
 <li><p><strong>ax</strong> (<a class="reference external" href="https://matplotlib.org/stable/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v3.6.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a>) – If no <cite>ax</cite> is supplied or set to <code class="docutils literal notranslate"><span class="pre">None</span></code> then the plot will
 be added to the current active axes.</p></li>
-<li><p><strong>xlabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – X-axis label.</p></li>
-<li><p><strong>fill_alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – Opacity of filled standard deviation area</p></li>
-<li><p><strong>n_std</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – Number of standard deviations from the mean to fill between.</p></li>
-<li><p><strong>legend</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to plot a legend.</p></li>
-<li><p><strong>legend_loc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – Location of legend.</p></li>
+<li><p><strong>xlabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – X-axis label.</p></li>
+<li><p><strong>fill_alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – Opacity of filled standard deviation area</p></li>
+<li><p><strong>n_std</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – Number of standard deviations from the mean to fill between.</p></li>
+<li><p><strong>legend</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to plot a legend.</p></li>
+<li><p><strong>legend_loc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Location of legend.</p></li>
 <li><p><strong>**kwargs</strong> – All other <cite>kwargs</cite> are passed to <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot" title="(in Matplotlib v3.6.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.plot()</span></code></a>.</p></li>
 </ul>
 </dd>
@@ -1029,12 +1029,12 @@ be same length as trajectory.</p></li>
 <li><p><strong>aggregator</strong> (<em>callable</em><em>, </em><em>optional</em>) – Function applied to the radius array of each profile to
 reduce it to one representative value.</p></li>
 <li><p><strong>frames</strong> (<em>array-like</em><em>, </em><em>optional</em>) – Frames to plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, plots all of them.</p></li>
-<li><p><strong>color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Color for the plot.</p></li>
-<li><p><strong>linestyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Line style for the plot.</p></li>
+<li><p><strong>color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Color for the plot.</p></li>
+<li><p><strong>linestyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Line style for the plot.</p></li>
 <li><p><strong>ax</strong> (<a class="reference external" href="https://matplotlib.org/stable/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v3.6.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a>) – If no <cite>ax</cite> is supplied or set to <code class="docutils literal notranslate"><span class="pre">None</span></code> then the plot will
 be added to the current active axes.</p></li>
-<li><p><strong>xlabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – X-axis label.</p></li>
-<li><p><strong>ylabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – Y-axis label.</p></li>
+<li><p><strong>xlabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – X-axis label.</p></li>
+<li><p><strong>ylabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Y-axis label.</p></li>
 <li><p><strong>**kwargs</strong> – All other <cite>kwargs</cite> are passed to <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot" title="(in Matplotlib v3.6.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.plot()</span></code></a>.</p></li>
 </ul>
 </dd>
@@ -1054,11 +1054,11 @@ be added to the current active axes.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</p></li>
-<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</p></li>
-<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – number of frames to skip between each analysed frame</p></li>
-<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on verbosity</p></li>
-<li><p><strong>random_seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – integer number to start the random number generator.
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</p></li>
+<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</p></li>
+<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – number of frames to skip between each analysed frame</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on verbosity</p></li>
+<li><p><strong>random_seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – integer number to start the random number generator.
 By default,
 <strong class="program">hole</strong> will use the time of the day.
 For reproducible runs (e.g., for testing) set <code class="docutils literal notranslate"><span class="pre">random_seed</span></code>
@@ -1148,12 +1148,12 @@ temporary PDB files for each frame of a
 <ol class="arabic simple">
 <li><p>returns <cite>filename</cite> if HOLE can process it</p></li>
 <li><dl class="simple">
-<dt>returns a relative path (see <a class="reference external" href="https://docs.python.org/3/library/os.path.html#os.path.relpath" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.path.relpath()</span></code></a>) if that shortens the</dt><dd><p>path sufficiently</p>
+<dt>returns a relative path (see <a class="reference external" href="https://docs.python.org/3/library/os.path.html#os.path.relpath" title="(in Python v3.11)"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.path.relpath()</span></code></a>) if that shortens the</dt><dd><p>path sufficiently</p>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
-<dt>creates a symlink to <cite>filename</cite> (<a class="reference external" href="https://docs.python.org/3/library/os.html#os.symlink" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.symlink()</span></code></a>) in a safe temporary</dt><dd><p>directory and returns the path of the symlink.</p>
+<dt>creates a symlink to <cite>filename</cite> (<a class="reference external" href="https://docs.python.org/3/library/os.html#os.symlink" title="(in Python v3.11)"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.symlink()</span></code></a>) in a safe temporary</dt><dd><p>directory and returns the path of the symlink.</p>
 </dd>
 </dl>
 </li>
@@ -1161,8 +1161,8 @@ temporary PDB files for each frame of a
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – file name to be processed</p></li>
-<li><p><strong>tmpdir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – By default the temporary directory is created inside the current
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – file name to be processed</p></li>
+<li><p><strong>tmpdir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – By default the temporary directory is created inside the current
 directory in order to keep that path name short. This can be changed
 with the <cite>tmpdir</cite> keyword (e.g. one can use “/tmp”). The default is
 the current directory <code class="xref py py-data docutils literal notranslate"><span class="pre">os.path.curdir</span></code>.</p></li>
@@ -1173,10 +1173,10 @@ the current directory <code class="xref py py-data docutils literal notranslate"
 <code class="docutils literal notranslate"><span class="pre">max_length</span></code></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)">str</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a></p>
 </dd>
 <dt class="field-even">Raises</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – If none of the tricks for filename shortening worked. In this case,
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.11)"><strong>RuntimeError</strong></a> – If none of the tricks for filename shortening worked. In this case,
     manually rename the file or recompile your version of HOLE.</p>
 </dd>
 </dl>
@@ -1188,13 +1188,13 @@ the current directory <code class="xref py py-data docutils literal notranslate"
 <dd><p>Collect data from HOLE output</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>outfile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – HOLE output file to read. Default: ‘hole.out’</p>
+<dd class="field-odd"><p><strong>outfile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – HOLE output file to read. Default: ‘hole.out’</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Dictionary of HOLE profiles as record arrays</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)">dict</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)">dict</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1206,12 +1206,12 @@ the current directory <code class="xref py py-data docutils literal notranslate"
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>sphpdb</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – sphpdb file to read. Default: ‘hole.sph’</p></li>
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – output VMD surface file. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, a temporary file
+<li><p><strong>sphpdb</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – sphpdb file to read. Default: ‘hole.sph’</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – output VMD surface file. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, a temporary file
 is generated. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-<li><p><strong>sph_process</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – Executable for <code class="docutils literal notranslate"><span class="pre">sph_process</span></code> program. Default: ‘sph_process’</p></li>
-<li><p><strong>sos_triangle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – Executable for <code class="docutils literal notranslate"><span class="pre">sos_triangle</span></code> program. Default: ‘sos_triangle’</p></li>
-<li><p><strong>dot_density</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – density of facets for generating a 3D pore representation.
+<li><p><strong>sph_process</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Executable for <code class="docutils literal notranslate"><span class="pre">sph_process</span></code> program. Default: ‘sph_process’</p></li>
+<li><p><strong>sos_triangle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Executable for <code class="docutils literal notranslate"><span class="pre">sos_triangle</span></code> program. Default: ‘sos_triangle’</p></li>
+<li><p><strong>dot_density</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – density of facets for generating a 3D pore representation.
 The number controls the density of dots that will be used.
 A sphere of dots is placed on each centre determined in the
 Monte Carlo procedure. The actual number of dots written is
@@ -1225,7 +1225,7 @@ Default: 15</p></li>
 <dd class="field-even"><p>the output filename for the VMD surface</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)">str</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1237,17 +1237,17 @@ Default: 15</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>outfile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – Output file name</p></li>
-<li><p><strong>infile_text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – HOLE input text
+<li><p><strong>outfile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Output file name</p></li>
+<li><p><strong>infile_text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – HOLE input text
 (typically generated by <code class="xref py py-func docutils literal notranslate"><span class="pre">set_up_hole_input()</span></code>)</p></li>
-<li><p><strong>executable</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – HOLE executable</p></li>
+<li><p><strong>executable</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – HOLE executable</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Output file name</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)">str</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1259,13 +1259,13 @@ Default: 15</p></li>
 <p>Does nothing if <cite>filename</cite> already exists.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – output file name; the default is “simple2.rad”</p>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – output file name; the default is “simple2.rad”</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>filename</strong> – returns the name of the data file</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)">str</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a></p>
 </dd>
 </dl>
 </dd></dl>

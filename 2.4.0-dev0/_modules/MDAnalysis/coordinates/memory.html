@@ -88,9 +88,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-      <li>MDAnalysis.coordinates.memory</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">MDAnalysis.coordinates.memory</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -603,9 +603,16 @@
 <span class="sd">            of the underlying numpy array is returned, while a copy of the</span>
 <span class="sd">            data is returned whenever `asel` is different from ``None``.</span>
 <span class="sd">        start : int (optional)</span>
+<span class="sd">            the start trajectory frame</span>
 <span class="sd">        stop : int (optional)</span>
+<span class="sd">            the end trajectory frame</span>
+
+<span class="sd">            .. deprecated:: 2.4.0</span>
+<span class="sd">               Note that `stop` is currently *inclusive* but will be</span>
+<span class="sd">               changed in favour of being *exclusive* in version 3.0.  </span>
+
 <span class="sd">        step : int (optional)</span>
-<span class="sd">            range of trajectory to access, `start` and `stop` are *inclusive*</span>
+<span class="sd">            the number of trajectory frames to skip</span>
 <span class="sd">        order : {&quot;afc&quot;, &quot;acf&quot;, &quot;caf&quot;, &quot;fac&quot;, &quot;fca&quot;, &quot;cfa&quot;} (optional)</span>
 <span class="sd">            the order/shape of the return data array, corresponding</span>
 <span class="sd">            to (a)tom, (f)rame, (c)oordinates all six combinations</span>
@@ -617,6 +624,11 @@
 <span class="sd">        .. versionchanged:: 1.0.0</span>
 <span class="sd">           Deprecated `format` keyword has been removed. Use `order` instead.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">stop</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;MemoryReader.timeseries inclusive `stop` &quot;</span>
+                      <span class="s2">&quot;indexing will be removed in 3.0 in favour of exclusive &quot;</span>
+                      <span class="s2">&quot;indexing&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">)</span>
+
         <span class="n">array</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_array</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">stored_order</span><span class="p">:</span>
             <span class="k">pass</span>

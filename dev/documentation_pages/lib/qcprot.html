@@ -140,9 +140,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../lib_modules.html"><span class="section-number">13. </span>Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a> &raquo;</li>
-      <li><span class="section-number">13.2.9. </span>Fast QCP RMSD structure alignment — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../lib_modules.html"><span class="section-number">13. </span>Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">13.2.9. </span>Fast QCP RMSD structure alignment — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/documentation_pages/lib/qcprot.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -217,7 +217,7 @@ superpositions.”  J. Comput. Chem. 31, 1561-1563.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ref</strong> (<em>ndarray</em><em>, </em><em>np.float64_t</em>) – reference structure coordinates</p></li>
 <li><p><strong>conf</strong> (<em>ndarray</em><em>, </em><em>np.float64_t</em>) – condidate structure coordinates</p></li>
-<li><p><strong>N</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – size of the system</p></li>
+<li><p><strong>N</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – size of the system</p></li>
 <li><p><strong>rot</strong> (<em>ndarray</em><em>, </em><em>np.float64_t</em>) – array to store rotation matrix. Must be flat</p></li>
 <li><p><strong>weights</strong> (<em>ndarray</em><em>, </em><em>npfloat64_t</em><em> (</em><em>optional</em><em>)</em>) – weights for each component</p></li>
 </ul>
@@ -242,7 +242,7 @@ superpositions.”  J. Comput. Chem. 31, 1561-1563.</p>
 <li><p><strong>A</strong> (<em>ndarray np.float64_t</em>) – result inner product array, modified in place</p></li>
 <li><p><strong>coords1</strong> (<em>ndarray np.float64_t</em>) – reference structure</p></li>
 <li><p><strong>coord2</strong> (<em>ndarray np.float64_t</em>) – candidate structure</p></li>
-<li><p><strong>N</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – size of system</p></li>
+<li><p><strong>N</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – size of system</p></li>
 <li><p><strong>weights</strong> (<em>ndarray np.float64_t</em><em> (</em><em>optional</em><em>)</em>) – use to calculate weighted inner product</p></li>
 </ul>
 </dd>
@@ -275,14 +275,14 @@ function.</p></li>
 <li><p><strong>rot</strong> (<em>ndarray np.float64_t</em>) – result rotation matrix, modified inplace</p></li>
 <li><p><strong>A</strong> (<em>ndarray np.float64_t</em>) – the inner product of two structures</p></li>
 <li><p><strong>E0</strong> (<em>float64</em>) – 0.5 * (G1 + G2)</p></li>
-<li><p><strong>N</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – size of the system</p></li>
+<li><p><strong>N</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – size of the system</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>rmsd</strong> – RMSD value for two structures</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
 </dd>
 </dl>
 <div class="versionchanged">

@@ -122,10 +122,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../analysis_modules.html"><span class="section-number">4. </span>Analysis modules</a> &raquo;</li>
-          <li><a href="../encore.html"><span class="section-number">4.2.6. </span>ENCORE Ensemble Similarity Calculations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a> &raquo;</li>
-      <li><span class="section-number">4.2.6.1.5. </span>Covariance calculation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">encore.covariance</span></code></li>
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../analysis_modules.html"><span class="section-number">4. </span>Analysis modules</a></li>
+          <li class="breadcrumb-item"><a href="../encore.html"><span class="section-number">4.2.6. </span>ENCORE Ensemble Similarity Calculations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">4.2.6.1.5. </span>Covariance calculation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">encore.covariance</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/documentation_pages/analysis/encore/covariance.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -156,7 +156,7 @@ an ensemble of structures.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ensemble</strong> (<em>Universe object</em>) – The structural ensemble</p></li>
-<li><p><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Atom selection string in the MDAnalysis format.</p></li>
+<li><p><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Atom selection string in the MDAnalysis format.</p></li>
 <li><p><strong>estimator</strong> (<em>function</em><em> (</em><em>optional</em><em>)</em>) – Function that estimates the covariance matrix. It requires at least
 a “coordinates” numpy array (of shape (N,M,3), where N is the number
 of frames and M the number of atoms). See ml_covariance_estimator and
@@ -210,7 +210,7 @@ Ledoit on his website:
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>coordinates</strong> (<em>numpy.array</em>) – Flattened array of coordinates</p></li>
 <li><p><strong>reference_coordinates</strong> (<em>numpy.array</em>) – Optional reference to use instead of mean</p></li>
-<li><p><strong>shrinkage_parameter</strong> (<em>None</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – Optional shrinkage parameter</p></li>
+<li><p><strong>shrinkage_parameter</strong> (<em>None</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Optional shrinkage parameter</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

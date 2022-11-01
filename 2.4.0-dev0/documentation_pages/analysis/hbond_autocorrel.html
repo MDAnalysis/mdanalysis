@@ -118,9 +118,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../analysis_modules.html"><span class="section-number">4. </span>Analysis modules</a> &raquo;</li>
-      <li><span class="section-number">4.3.2. </span>Hydrogen bond autocorrelation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel</span></code></li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../analysis_modules.html"><span class="section-number">4. </span>Analysis modules</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">4.3.2. </span>Hydrogen bond autocorrelation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/documentation_pages/analysis/hbond_autocorrel.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -328,20 +328,20 @@ must be identical in length to the hydrogen group and matched,
 ie hydrogens[0] is bonded to donors[0].
 For water, this will mean a donor appears twice in this
 group, once for each hydrogen.</p></li>
-<li><p><strong>bond_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – Which definition of hydrogen bond lifetime to consider, either
+<li><p><strong>bond_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Which definition of hydrogen bond lifetime to consider, either
 ‘continuous’ or ‘intermittent’.</p></li>
 <li><p><strong>exclusions</strong> (<em>ndarray</em><em>, </em><em>optional</em>) – Indices of Hydrogen-Acceptor pairs to be excluded.
 With nH and nA Hydrogens and Acceptors, a (nH x nA) array of distances
 is calculated, <em>exclusions</em> is used as a mask on this array to exclude
 some pairs.</p></li>
-<li><p><strong>angle_crit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – The angle (in degrees) which all bonds must be greater than [130.0]</p></li>
-<li><p><strong>dist_crit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – The maximum distance (in Angstroms) for a hydrogen bond [3.0]</p></li>
-<li><p><strong>sample_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – The amount of time, in ps, that you wish to observe hydrogen
+<li><p><strong>angle_crit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – The angle (in degrees) which all bonds must be greater than [130.0]</p></li>
+<li><p><strong>dist_crit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – The maximum distance (in Angstroms) for a hydrogen bond [3.0]</p></li>
+<li><p><strong>sample_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – The amount of time, in ps, that you wish to observe hydrogen
 bonds for [100]</p></li>
-<li><p><strong>nruns</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – The number of different start points within the trajectory
+<li><p><strong>nruns</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – The number of different start points within the trajectory
 to use [1]</p></li>
-<li><p><strong>nsamples</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – Within each run, the number of frames to analyse [50]</p></li>
-<li><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to consider periodic boundaries in calculations [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</p></li>
+<li><p><strong>nsamples</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – Within each run, the number of frames to analyse [50]</p></li>
+<li><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to consider periodic boundaries in calculations [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</p></li>
 <li><p><strong>..versionchanged</strong> (<em>1.0.0</em>) – <code class="docutils literal notranslate"><span class="pre">save_results()</span></code> method was removed. You can instead use <code class="docutils literal notranslate"><span class="pre">np.savez()</span></code>
 on <code class="xref py py-attr docutils literal notranslate"><span class="pre">HydrogenBondAutoCorrel.solution['time']</span></code> and
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">HydrogenBondAutoCorrel.solution['results']</span></code> instead.</p></li>
@@ -354,7 +354,7 @@ on <code class="xref py py-attr docutils literal notranslate"><span class="pre">
 <dd><p>Run all the required passes</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Will overwrite previous results if they exist</p>
+<dd class="field-odd"><p><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – Will overwrite previous results if they exist</p>
 </dd>
 </dl>
 </dd></dl>
@@ -366,7 +366,7 @@ on <code class="xref py py-attr docutils literal notranslate"><span class="pre">
 characteristic time</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>p_guess</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><em>tuple</em></a><em> of </em><em>floats</em><em>, </em><em>optional</em>) – Initial guess for the leastsq fit, must match the shape of the
+<dd class="field-odd"><p><strong>p_guess</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a><em> of </em><em>floats</em><em>, </em><em>optional</em>) – Initial guess for the leastsq fit, must match the shape of the
 expected coefficients</p>
 </dd>
 </dl>
