@@ -501,11 +501,14 @@ class MemoryReader(base.ProtoReader):
             of the underlying numpy array is returned, while a copy of the
             data is returned whenever `asel` is different from ``None``.
         start : int (optional)
+            the start trajectory frame
         stop : int (optional)
+            the end trajectory frame
             .. deprecated:: 2.4.0
                 Note that `stop` is currently *inclusive* but will be
                 changed in favour of being *exclusive* in version 3.0.  
         step : int (optional)
+            the number of trajectory frames to skip
         order : {"afc", "acf", "caf", "fac", "fca", "cfa"} (optional)
             the order/shape of the return data array, corresponding
             to (a)tom, (f)rame, (c)oordinates all six combinations
