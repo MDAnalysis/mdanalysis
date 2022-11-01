@@ -986,6 +986,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
                    step: Optional[int]=None,
                    order: Optional[str]='fac') -> np.ndarray:
         """Return a subset of coordinate data for an AtomGroup
+        
         Parameters
         ----------
         asel : AtomGroup (optional)
@@ -993,15 +994,15 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             coordinates from. Defaults to ``None``, in which case the full set of
             coordinate data is returned.
         start :  int (optional)
-             Begin reading the trajectory at frame index `start` (where 0 is the index
-             of the first frame in the trajectory); the default ``None`` starts
-             at the beginning.
+            Begin reading the trajectory at frame index `start` (where 0 is the index
+            of the first frame in the trajectory); the default ``None`` starts
+            at the beginning.
         stop : int (optional)
-             End reading the trajectory at frame index `stop`-1, i.e, `stop` is excluded.
-             The trajectory is read to the end with the default ``None``.
+            End reading the trajectory at frame index `stop`-1, i.e, `stop` is excluded.
+            The trajectory is read to the end with the default ``None``.
         step : int (optional)
-             Step size for reading; the default ``None`` is equivalent to 1 and means to
-             read every frame.
+            Step size for reading; the default ``None`` is equivalent to 1 and means to
+            read every frame.
         order : str (optional)
             the order/shape of the return data array, corresponding
             to (a)tom, (f)rame, (c)oordinates all six combinations
