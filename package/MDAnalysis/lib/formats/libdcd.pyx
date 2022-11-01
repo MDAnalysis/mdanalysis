@@ -630,6 +630,7 @@ cdef class DCDFile:
             raise StopIteration
 
         self.current_frame += 1
+        xyz = np.PyArray_GETCONTIGUOUS(xyz)
         return DCDFrame(xyz, unitcell)
 
     def readframes(self, start=None, stop=None, step=None, order='fac', indices=None):
