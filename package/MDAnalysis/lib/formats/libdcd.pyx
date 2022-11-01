@@ -20,6 +20,8 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+
+#cython: boundscheck=False, wraparound=False,
 """\
 Low level DCD  trajectory reading - :mod:`MDAnalysis.lib.formats.libdcd`
 ------------------------------------------------------------------------
@@ -532,8 +534,6 @@ cdef class DCDFile:
             raise IOError("Writing DCD header failed: {}".format(DCD_ERRORS[ok]))
         self.wrote_header = True
 
-    @cython.boundscheck(False)
-    @cython.wraparound(False)
     def write(self, xyz,  box=None):
         """write(xyz, box=None)
         write one frame into DCD file.
@@ -580,8 +580,6 @@ cdef class DCDFile:
 
         self.current_frame += 1
 
-    @cython.boundscheck(False)
-    @cython.wraparound(False)
     def read(self):
         """
         Read next dcd frame
@@ -634,8 +632,6 @@ cdef class DCDFile:
         self.current_frame += 1
         return DCDFrame(xyz, unitcell)
 
-    @cython.boundscheck(False)
-    @cython.wraparound(False)
     def readframes(self, start=None, stop=None, step=None, order='fac', indices=None):
         """readframes(start=None, stop=None, step=None, order='fac', indices=None)
         read multiple frames at once
@@ -775,8 +771,6 @@ cdef class DCDFile:
         return DCDFrame(xyz, box)
 
     # Helper to read current DCD frame
-    @cython.boundscheck(False)
-    @cython.wraparound(False)
     cdef int c_readframes_helper(self, FLOAT_T[::1] x,
                                  FLOAT_T[::1] y, FLOAT_T[::1] z,
                                  DOUBLE_T[::1] unitcell, int first_frame):
@@ -791,8 +785,6 @@ cdef class DCDFile:
 
 
 # Helper in readframes to copy given a specific memory layout
-@cython.boundscheck(False)
-@cython.wraparound(False)
 cdef void copy_in_order(FLOAT_T[:, :] source, FLOAT_T[:, :, :] target, int order, int index):
     if order == 1:  #  'fac':
         target[index] = source
