@@ -188,6 +188,7 @@ import warnings
 import copy
 
 from . import base
+from .. import NoDataError
 from .timestep import Timestep
 
 
@@ -547,6 +548,9 @@ class MemoryReader(base.ProtoReader):
         if (asel is None or asel is asel.universe.atoms):
             return array
         else:
+            if len(asel) == 0:
+                raise NoDataError("Timeseries requires at least one atom "
+                                  "to analyze")
             # If selection is specified, return a copy
             return array.take(asel.indices, a_index)
 
