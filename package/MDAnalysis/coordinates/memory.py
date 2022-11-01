@@ -505,8 +505,8 @@ class MemoryReader(base.ProtoReader):
         stop : int (optional)
             the end trajectory frame
             .. deprecated:: 2.4.0
-                Note that `stop` is currently *inclusive* but will be
-                changed in favour of being *exclusive* in version 3.0.  
+            Note that `stop` is currently *inclusive* but will be
+            changed in favour of being *exclusive* in version 3.0.  
         step : int (optional)
             the number of trajectory frames to skip
         order : {"afc", "acf", "caf", "fac", "fca", "cfa"} (optional)
