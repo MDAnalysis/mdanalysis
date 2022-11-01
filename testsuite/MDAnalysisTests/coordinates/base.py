@@ -445,7 +445,6 @@ class BaseReaderTest(object):
         assert_equal(reader.ts, reader_p.ts,
                      "Timestep is changed after pickling")
 
-    
     @pytest.mark.parametrize('order', ('fac', 'fca', 'afc', 'acf', 'caf', 'cfa'))
     def test_timeseries_shape(self, reader, order):
         timeseries = reader.timeseries(order=order)
@@ -471,7 +470,6 @@ class BaseReaderTest(object):
         timeseries = reader.timeseries(start=slice[0], stop=slice[1],
                                        step=slice[2], order='fac')
         assert_allclose(timeseries, positions)
-
 
 class MultiframeReaderTest(BaseReaderTest):
     def test_last_frame(self, ref, reader):

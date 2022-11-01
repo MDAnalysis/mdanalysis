@@ -1029,7 +1029,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             natoms = self.n_atoms
             atom_numbers = np.arange(natoms)
 
-        # allocate output array in 'fac' (_default_timeseries_order) order
+        # allocate output array in 'fac' order
         coordinates = np.empty((nframes, natoms, 3), dtype=np.float32)
         for i, ts in enumerate(self[start:stop:step]):
             coordinates[i, :] = ts.positions[atom_numbers]
@@ -1050,7 +1050,6 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
                           f"`order`: {order}, each key must be used once")
                 raise ValueError(errmsg)
         return coordinates
-
 
 # TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def add_auxiliary(self,
