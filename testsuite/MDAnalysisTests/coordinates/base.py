@@ -470,6 +470,11 @@ class BaseReaderTest(object):
         timeseries = reader.timeseries(start=slice[0], stop=slice[1],
                                        step=slice[2], order='fac')
         assert_allclose(timeseries, positions)
+    
+    def test_timeseries_empty_asel(self, reader):
+        atoms = mda.Universe(reader.filename).select_atoms(None)
+        with pytest.raises(NoDataError, match="Timeseries requires at least"):
+            reader.timeseries(atoms)
 
 class MultiframeReaderTest(BaseReaderTest):
     def test_last_frame(self, ref, reader):
