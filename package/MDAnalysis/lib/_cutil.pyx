@@ -408,6 +408,7 @@ cdef float _norm(float * a):
         result += a[n]*a[n]
     return sqrt(result)
 
+
 @cython.boundscheck(False)
 @cython.wraparound(False)
 cpdef np.float64_t _sarrus_det_single(np.float64_t[:, ::1] m):
@@ -420,6 +421,7 @@ cpdef np.float64_t _sarrus_det_single(np.float64_t[:, ::1] m):
     det += m[0, 2] * m[1, 0] * m[2, 1]
     det -= m[0, 2] * m[1, 1] * m[2, 0]
     return det
+
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -438,6 +440,7 @@ cpdef np.ndarray _sarrus_det_multiple(np.float64_t[:, :, ::1] m):
         det[i] += m[i, 0, 2] * m[i, 1, 0] * m[i, 2, 1]
         det[i] -= m[i, 0, 2] * m[i, 1, 1] * m[i, 2, 0]
     return np.array(det)
+
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
