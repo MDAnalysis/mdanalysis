@@ -502,9 +502,16 @@ class MemoryReader(base.ProtoReader):
             of the underlying numpy array is returned, while a copy of the
             data is returned whenever `asel` is different from ``None``.
         start : int (optional)
+            the start trajectory frame
         stop : int (optional)
+            the end trajectory frame
+
+            .. deprecated:: 2.4.0
+               Note that `stop` is currently *inclusive* but will be
+               changed in favour of being *exclusive* in version 3.0.  
+
         step : int (optional)
-            range of trajectory to access, `start` and `stop` are *inclusive*
+            the number of trajectory frames to skip
         order : {"afc", "acf", "caf", "fac", "fca", "cfa"} (optional)
             the order/shape of the return data array, corresponding
             to (a)tom, (f)rame, (c)oordinates all six combinations
@@ -516,6 +523,11 @@ class MemoryReader(base.ProtoReader):
         .. versionchanged:: 1.0.0
            Deprecated `format` keyword has been removed. Use `order` instead.
         """
+        if stop != -1:
+            warnings.warn("MemoryReader.timeseries inclusive `stop` "
+                      "indexing will be removed in 3.0 in favour of exclusive "
+                      "indexing", category=DeprecationWarning)
+
         array = self.get_array()
         if order == self.stored_order:
             pass
