@@ -896,7 +896,7 @@ cdef class XTCFile(_XDRFile):
 
         if return_code == EOK:
             self.current_frame += 1
-        return  step, time, prec, box
+        return  XTCFrame(positions, box, step, time, prec)
 
 
     def write(self, xyz, box, int step, float time, float precision=1000):
