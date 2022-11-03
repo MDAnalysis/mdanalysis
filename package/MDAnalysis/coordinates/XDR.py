@@ -294,9 +294,12 @@ class XDRBaseReader(base.ReaderBase):
             raise IOError(errno.EIO, 'trying to go over trajectory limit')
         if ts is None:
             ts = self.ts
-        frame = self._xdr.read()
+        if ts.has_positions:
+            self._xdr.read_direct(ts.positions)
+        else:
+            frame = self._xdr.read()
+            self._frame_to_ts(frame, ts)
         self._frame += 1
-        self._frame_to_ts(frame, ts)
         return ts
 
     def Writer(self, filename, n_atoms=None, **kwargs):
