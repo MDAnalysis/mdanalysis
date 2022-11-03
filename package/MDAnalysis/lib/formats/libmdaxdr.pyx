@@ -20,6 +20,9 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+
+#cython: boundscheck=False, wraparound=False
+
 """\
 Low-level Gromacs XDR trajectory reading — :mod:`MDAnalysis.lib.formats.libmdaxdr`
 ----------------------------------------------------------------------------------
@@ -320,10 +323,8 @@ cdef class _XDRFile:
         else:       # pragma: no cover
             raise RuntimeError("Invalid frame number {} > {} -- this should"
                                "not happen.".format(current_frame,
-                                                    self.offsets.size)
-                              )
-    @cython.boundscheck(False)
-    @cython.wraparound(False)
+                                                    self.offsets.size))
+
     def seek(self, int frame):
         """Seek to Frame.
 
@@ -360,9 +361,7 @@ cdef class _XDRFile:
             raise IOError("XDR seek failed with system errno={}".format(ok))
         self.current_frame = frame
 
-    @cython.boundscheck(False)
-    @cython.wraparound(False)
-    def _bytes_seek(self, offset, whence="SEEK_SET"):
+    def _bytes_seek(self, int64_t offset, whence="SEEK_SET"):
         """Low-level access to the stream repositioning xdr_seek call.
 
         Beware that this function will not update :attr:`current_frame`,
@@ -417,25 +416,18 @@ cdef class _XDRFile:
             self._has_offsets = True
         return self._offsets
 
-    @cython.boundscheck(False)
-    @cython.wraparound(False)
-    def set_offsets(self, offsets):
+    def set_offsets(self, np.ndarray offsets):
         """set frame offsets"""
         self._offsets = offsets
         self._has_offsets = True
 
-    @cython.boundscheck(False)
-    @cython.wraparound(False)
     def tell(self):
         """Get current frame"""
         return self.current_frame
 
-    @cython.boundscheck(False)
-    @cython.wraparound(False)
     def _bytes_tell(self):
         """Low-level call to xdr_tell to get current byte offset."""
         return xdr_tell(self.xfp)
-
 
 TRRFrame = namedtuple('TRRFrame', 'x v f box step time lmbda hasx hasv hasf')
 
@@ -472,8 +464,6 @@ cdef class TRRFile(_XDRFile):
         cdef int return_code = read_trr_natoms(fname, &n_atoms)
         return return_code, n_atoms
 
-    @cython.boundscheck(False)
-    @cython.wraparound(False)
     def calc_offsets(self):
         """read byte offsets from TRR file directly"""
         if not self.is_open:
@@ -497,8 +487,6 @@ cdef class TRRFile(_XDRFile):
         cdef np.ndarray nd_offsets = ptr_to_ndarray(<void*> offsets, dims, np.NPY_INT64)
         return nd_offsets[:n_frames]
 
-    @cython.boundscheck(False)
-    @cython.wraparound(False)
     def read(self):
         """Read next frame in the TRR file
 
@@ -575,8 +563,7 @@ cdef class TRRFile(_XDRFile):
         has_f = bool(has_prop & HASF)
         return TRRFrame(xyz, velocity, forces, box, step, time, lmbda,
                         has_x, has_v, has_f)
-    @cython.boundscheck(False)
-    @cython.wraparound(False)
+
     def write(self, xyz, velocity, forces, box, int step, float time,
               float _lambda, int natoms):
         """write one frame into TRR file.
@@ -701,15 +688,11 @@ cdef class XTCFile(_XDRFile):
     """
     cdef float precision
 
-    @cython.boundscheck(False)
-    @cython.wraparound(False)
     def _calc_natoms(self, fname):
         cdef int n_atoms
         cdef int return_code = read_xtc_natoms(fname, &n_atoms)
         return return_code, n_atoms
 
-    @cython.boundscheck(False)
-    @cython.wraparound(False)
     def calc_offsets(self):
         """Calculate offsets from XTC file directly"""
         if not self.is_open:
@@ -733,8 +716,6 @@ cdef class XTCFile(_XDRFile):
         cdef np.ndarray nd_offsets = ptr_to_ndarray(<void*> offsets, dims, np.NPY_INT64)
         return nd_offsets[:n_frames]
 
-    @cython.boundscheck(False)
-    @cython.wraparound(False)
     def read(self):
         """Read next frame in the XTC file
 
@@ -790,8 +771,6 @@ cdef class XTCFile(_XDRFile):
             self.current_frame += 1
         return XTCFrame(xyz, box, step, time, prec)
 
-    @cython.boundscheck(False)
-    @cython.wraparound(False)
     def write(self, xyz, box, int step, float time, float precision=1000):
         """write one frame to the XTC file
 
