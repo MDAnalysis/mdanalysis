@@ -45,6 +45,7 @@ import math
 import warnings
 from typing import Union, Optional, Dict
 from collections import defaultdict
+import pickle
 
 import numpy as np
 
@@ -323,9 +324,15 @@ class AuxReader(metaclass=_AuxReaderMeta):
             self.rewind()
 
     def copy(self):
-        orig_description = self.get_description()
-        new_reader = auxreader(**orig_description)
+        orig_dict = pickle.dumps(self)
+        new_reader = pickle.loads(orig_dict)
         return new_reader
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, dictionary):
+        self.__dict__ = dictionary
 
     def __len__(self):
         """ Number of steps in auxiliary data. """
