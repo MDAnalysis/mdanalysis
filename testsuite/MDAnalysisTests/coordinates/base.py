@@ -470,6 +470,14 @@ class BaseReaderTest(object):
         timeseries = reader.timeseries(start=slice[0], stop=slice[1],
                                        step=slice[2], order='fac')
         assert_allclose(timeseries, positions)
+
+    @pytest.mark.parametrize('asel', ("index 1", "index 2", "index 1 to 3"))
+    def test_timeseries_asel_shape(self, reader, asel):
+        atoms = mda.Universe(reader.filename).select_atoms(asel)
+        timeseries = reader.timeseries(atoms, order='fac')
+        assert(timeseries.shape[0] == len(reader))
+        assert(timeseries.shape[1] == len(atoms))
+        assert(timeseries.shape[2] == 3)
     
     def test_timeseries_empty_asel(self, reader):
         atoms = mda.Universe(reader.filename).select_atoms(None)
