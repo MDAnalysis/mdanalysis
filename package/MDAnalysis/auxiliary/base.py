@@ -324,6 +324,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
             self.rewind()
 
     def copy(self):
+        """Returns a deep copy of the AuxReader"""
         orig_dict = pickle.dumps(self)
         new_reader = pickle.loads(orig_dict)
         return new_reader
