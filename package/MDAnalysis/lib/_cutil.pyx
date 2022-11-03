@@ -49,7 +49,7 @@ ctypedef cset[int] intset
 ctypedef cmap[int, intset] intmap
 
 
-@cython.boundscheck(False) # turn off bounds-checking for entire function
+@cython.boundscheck(False)  # turn off bounds-checking for entire function
 @cython.wraparound(False)  # turn off negative index wrapping for entire function
 def unique_int_1d(np.intp_t[:] values):
     """Find the unique elements of a 1D array of integers.
@@ -260,7 +260,7 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
     # map of global indices to local indices
     ix_view = atomgroup.ix[:]
     natoms = atomgroup.ix.shape[0]
-    
+
     oldpos = atomgroup.positions
 
     # Nothing to do for less than 2 atoms
@@ -274,7 +274,7 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
         ref = 0
     else:
         # Sanity check
-        if not reference_atom in atomgroup:
+        if reference_atom not in atomgroup:
             raise ValueError("Reference atom not in atomgroup")
         ref = ix_to_rel[reference_atom.ix]
 
