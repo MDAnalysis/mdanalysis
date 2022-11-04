@@ -2094,13 +2094,13 @@ class Charges(AtomAttr):
             :class:`Atoms<Atom>` *belonging to the group* will be taken into
             account.
         center : str, optional
-            Choose whether the dipole moment is calculated at the center of 
+            Choose whether the dipole vector is calculated at the center of 
             "mass" or the center of "charge"
 
         Returns
         -------
         numpy.ndarray
-            Dipole moment of (compounds of) the group in e*angstroms.
+            Dipole vectors of (compounds of) the group in e*angstroms.
             If `compound` was set to ``'group'``, the output will be a single
             value. Otherwise, the output will be a 1d array of shape ``(n,)``
             where ``n`` is the number of compounds.
@@ -2137,10 +2137,13 @@ class Charges(AtomAttr):
             if wrap:
                 recenteredpos = (atomgroup.pack_into_box(inplace=False) - ref)
             elif unwrap:
-                recenteredpos = (atomgroup.unwrap(inplace=False) - ref)
+                recenteredpos = (atomgroup.unwrap(inplace=False,
+                                                  compound=compound,
+                                                  reference=None,
+                                                 ) - ref)
             else:
                 recenteredpos = (atomgroup.positions - ref)
-            dipole_moment = np.sum(recenteredpos * charges[:,np.newaxis],
+            dipole_vector = np.sum(recenteredpos * charges[:,np.newaxis],
                                    axis=0)
         else:
             (atom_masks, 
@@ -2157,13 +2160,13 @@ class Charges(AtomAttr):
                 coords = atomgroup.positions
             chgs = atomgroup.charges
 
-            dipole_moment = np.empty((n_compounds, 3), dtype=np.float64)
+            dipole_vector = np.empty((n_compounds, 3), dtype=np.float64)
             for compound_mask, atom_mask in zip(compound_masks, atom_masks):
-                dipole_moment[compound_mask] = np.sum(
+                dipole_vector[compound_mask] = np.sum(
                     (coords[atom_mask] - ref[compound_mask][:,None,:])
                     * chgs[atom_mask][:,:,None], axis=1)
 
-        return dipole_moment
+        return dipole_vector
 
     transplants[GroupBase].append(
         ('dipole_vector', dipole_vector))
@@ -2322,7 +2325,10 @@ class Charges(AtomAttr):
             if wrap:
                 recenteredpos = (atomgroup.pack_into_box(inplace=False) - ref)
             elif unwrap:
-                recenteredpos = (atomgroup.unwrap(inplace=False) - ref)
+                recenteredpos = (atomgroup.unwrap(inplace=False,
+                                                  compound=compound, 
+                                                  reference=None, 
+                                                 ) - ref)
             else:
                 recenteredpos = (atomgroup.positions - ref)
             quad_tensor = __quadrupole(recenteredpos, charges)
