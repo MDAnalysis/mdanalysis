@@ -1729,7 +1729,87 @@ class Masses(AtomAttr):
     @warn_if_not_unique
     @_pbc_to_wrap
     @check_atomgroup_not_empty
-    def shape_parameter(group, wrap=False):
+    def gyration_moments(group, wrap=False, unwrap=None, compound='group'):
+        """Moments of the gyration tensor.
+
+        Parameters
+        ----------
+        wrap : bool, optional
+            If ``True``, move all atoms within the primary unit cell before
+            calculation. [``False``]
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their centers.
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
+            Which type of component to keep together during unwrapping.
+
+        Returns
+        -------
+        principle_moments_of_gyration : numpy.ndarray
+            Gyration vector(s) of (compounds of) the group in :math:`Å^2`.
+            If `compound` was set to ``'group'``, the output will be a single
+            value. Otherwise, the output will be a 1d array of shape ``(n,3)``
+            where ``n`` is the number of compounds.
+
+        .. versionadded:: 2.4.0
+        """
+
+        def __gyration(recenteredpos, masses):
+            if len(masses.shape) > 1:
+                masses = np.squeeze(masses)
+            tensor = np.einsum( "ki,kj->ij",
+                                recenteredpos,
+                                np.einsum("ij,i->ij", recenteredpos, masses),
+                              )
+            return np.linalg.eigvalsh(tensor/np.sum(masses))
+
+        atomgroup = group.atoms
+        masses = atomgroup.masses
+
+        com = atomgroup.center_of_mass(
+            wrap=wrap, unwrap=unwrap, compound=compound)
+
+        if compound == 'group':
+             if wrap:
+                 recenteredpos = (atomgroup.pack_into_box(inplace=False) - com)
+             elif unwrap:
+                 recenteredpos = (atomgroup.unwrap(inplace=False,
+                                                   compound=compound, 
+                                                   reference=None, 
+                                                  ) - com)
+             else:
+                 recenteredpos = (atomgroup.positions - com)
+             eig_vals = __gyration(recenteredpos, masses)
+        else:
+             (atom_masks, 
+              compound_masks, 
+              n_compounds) = atomgroup._split_by_compound_indices(compound)
+
+             if unwrap:
+                 coords = atomgroup.unwrap(
+                     compound=compound, 
+                     reference=None, 
+                     inplace=False
+                 )
+             else:
+                 coords = atomgroup.positions
+
+             eig_vals = np.empty((n_compounds,3), dtype=np.float64)
+             for compound_mask, atom_mask in zip(compound_masks, atom_masks):
+                 eig_vals[compound_mask,:] = [__gyration(
+                      coords[mask] - com[compound_mask][i],
+                      masses[mask][:,None]
+                     ) for i,mask in enumerate(atom_mask)]
+
+        return eig_vals
+
+    transplants[GroupBase].append(
+        ('gyration_moments', gyration_moments))
+
+
+    @warn_if_not_unique
+    @_pbc_to_wrap
+    @check_atomgroup_not_empty
+    def shape_parameter(group, wrap=False, unwrap=None, compound='group'):
         """Shape parameter.
 
         See [Dima2004a]_ for background information.
@@ -1739,6 +1819,10 @@ class Masses(AtomAttr):
         wrap : bool, optional
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their centers.
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
+            Which type of component to keep together during unwrapping.
 
 
         .. versionadded:: 0.7.7
@@ -1748,24 +1832,17 @@ class Masses(AtomAttr):
            Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
            is deprecated and will be removed in version 3.0.
            Superfluous kwargs were removed.
+        .. versionchanged:: 2.4.0
+           Added use of gyration_moments for per residue quantities
         """
         atomgroup = group.atoms
-        masses = atomgroup.masses
-
-        com = atomgroup.center_of_mass(wrap=wrap)
-        if wrap:
-            recenteredpos = atomgroup.pack_into_box(inplace=False) - com
-        else:
-            recenteredpos = atomgroup.positions - com
-        tensor = np.zeros((3, 3))
-
-        for x in range(recenteredpos.shape[0]):
-            tensor += masses[x] * np.outer(recenteredpos[x, :],
-                                           recenteredpos[x, :])
-        tensor /= atomgroup.total_mass()
-        eig_vals = np.linalg.eigvalsh(tensor)
-        shape = 27.0 * np.prod(eig_vals - np.mean(eig_vals)
-                               ) / np.power(np.sum(eig_vals), 3)
+        eig_vals = atomgroup.gyration_moments(wrap=wrap, unwrap=unwrap, compound=compound)
+        try:
+            shape = 27.0 * np.prod(eig_vals - np.mean(eig_vals, axis=1), axis=1
+                                   ) / np.power(np.sum(eig_vals, axis=1), 3)
+        except:
+            shape = 27.0 * np.prod(eig_vals - np.mean(eig_vals)
+                                   ) / np.power(np.sum(eig_vals), 3)
 
         return shape
 
@@ -1800,32 +1877,17 @@ class Masses(AtomAttr):
         .. versionchanged:: 2.1.0
            Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
            is deprecated and will be removed in version 3.0.
+        .. versionchanged:: 2.4.0
+           Added use of gyration_moments for per residue quantities
         """
         atomgroup = group.atoms
-        masses = atomgroup.masses
-
-        com = atomgroup.center_of_mass(
-            wrap=wrap, unwrap=unwrap, compound=compound)
-        if compound != 'group':
-            com = (com * group.masses[:, None]
-                   ).sum(axis=0) / group.masses.sum()
-
-        if wrap:
-            recenteredpos = (atomgroup.pack_into_box(inplace=False) - com)
-        elif unwrap:
-            recenteredpos = (atomgroup.unwrap(inplace=False) - com)
-        else:
-            recenteredpos = (atomgroup.positions - com)
-
-        tensor = np.zeros((3, 3))
-        for x in range(recenteredpos.shape[0]):
-            tensor += masses[x] * np.outer(recenteredpos[x],
-                                           recenteredpos[x])
-
-        tensor /= atomgroup.total_mass()
-        eig_vals = np.linalg.eigvalsh(tensor)
-        shape = (3.0 / 2.0) * (np.sum((eig_vals - np.mean(eig_vals))**2) /
-                               np.sum(eig_vals)**2)
+        eig_vals = atomgroup.gyration_moments(wrap=wrap, unwrap=unwrap, compound=compound)
+        try:
+            shape = (3.0 / 2.0) * (np.sum((eig_vals - np.mean(eig_vals, axis=1))**2, axis=1) /
+                                   np.sum(eig_vals, axis=1)**2)
+        except:
+            shape = (3.0 / 2.0) * (np.sum((eig_vals - np.mean(eig_vals))**2) /
+                                   np.sum(eig_vals)**2)
 
         return shape
 

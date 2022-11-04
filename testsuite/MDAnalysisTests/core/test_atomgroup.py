@@ -994,7 +994,7 @@ class TestUnwrapFlag(object):
             np.array([[7333.79167791, -211.8997285, -721.50785456],
                       [-211.8997285, 7059.07470427, -91.32156884],
                       [-721.50785456, -91.32156884, 6509.31735029]]),
-        'asphericity': 0.02060121,
+        'asphericity': np.array([0.135, 0.047, 0.094]),
     }
 
     ref_Unwrap_residues = {
@@ -1009,7 +1009,7 @@ class TestUnwrapFlag(object):
         'moment_of_inertia': np.array([[16687.941, -1330.617, 2925.883],
                                        [-1330.617, 19256.178, 3354.832],
                                        [2925.883,  3354.832, 8989.946]]),
-        'asphericity': 0.2969491080,
+        'asphericity': np.array([0.61 , 0.701, 0.381]),
     }
 
     ref_noUnwrap = {
