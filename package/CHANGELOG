@@ -30,6 +30,7 @@ Fixes
     (e.g. bonds, angles) (PR #3779).
 
 Enhancements
+  * MDAnalysis now officially supports py3.11 (Issue #3878)
   * Minimum NumPy version for py3.11 is now set to 1.23.2.
   * Added decorator to check for an empty atom group, applied in topological 
     attributes(Issue #3837)
