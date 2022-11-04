@@ -479,7 +479,7 @@ class HydrogenBondAnalysis(AnalysisBase):
         # See https://github.com/MDAnalysis/mdanalysis/issues/2396#issuecomment-596251787
         if (hasattr(self.u._topology, 'bonds') and len(self.u._topology.bonds.values) != 0):
             donors_ag = find_hydrogen_donors(hydrogens_ag)
-            donors_ag = donors_ag.intersection(u.select_atoms(select))
+            donors_ag = donors_ag.intersection(self.u.select_atoms(select))
         else:
             donors_ag = hydrogens_ag.residues.atoms.select_atoms(
                 "({donors_sel}) and around {d_h_cutoff} {hydrogens_sel}".format(
