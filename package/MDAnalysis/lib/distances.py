@@ -85,6 +85,13 @@ from .nsgrid import FastNS
 from .c_distances import _minimize_vectors_ortho, _minimize_vectors_triclinic
 
 
+try:
+    import distopia
+except ImportError:
+    HAS_DISTOPIA = False
+else:
+    HAS_DISTOPIA = True
+
 # hack to select backend with backend=<backend> kwarg. Note that
 # the cython parallel code (prange) in parallel.distances is
 # independent from the OpenMP code
@@ -1432,25 +1439,38 @@ def calc_bonds(coords1: Union[np.ndarray, 'AtomGroup'],
     .. versionchanged:: 2.3.0
        Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
        argument in any position and checks inputs using type hinting.
+    .. versionchanged:: 2.4.0 
+       Can use the fast distance functions from distopia
     """
     numatom = coords1.shape[0]
-    bondlengths = _check_result_array(result, (numatom,))
 
     if numatom > 0:
         if box is not None:
             boxtype, box = check_box(box)
+
             if boxtype == 'ortho':
-                _run("calc_bond_distance_ortho",
-                     args=(coords1, coords2, box, bondlengths),
-                     backend=backend)
+                if HAS_DISTOPIA:
+                    bondlengths = distopia.calc_bonds_ortho_float(coords1, coords2, box[:3])
+                else:
+                    bondlengths = _check_result_array(result, (numatom,))
+                    _run("calc_bond_distance_ortho",
+                        args=(coords1, coords2, box, bondlengths),
+                        backend=backend)
             else:
+                bondlengths = _check_result_array(result, (numatom,))
                 _run("calc_bond_distance_triclinic",
                      args=(coords1, coords2, box, bondlengths),
                      backend=backend)
         else:
-            _run("calc_bond_distance",
+            if HAS_DISTOPIA:
+                 bondlengths = distopia.calc_bonds_no_box_float(coords1, coords2)
+            else:
+                bondlengths = _check_result_array(result, (numatom,))
+                _run("calc_bond_distance",
                  args=(coords1, coords2, bondlengths),
                  backend=backend)
+    else:
+        bondlengths = _check_result_array(result, (numatom,))
 
     return bondlengths
 
