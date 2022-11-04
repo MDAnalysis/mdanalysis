@@ -272,7 +272,7 @@ class TestHydrogenBondAnalysisNoRes(TestHydrogenBondAnalysisIdeal):
 
     kwargs = {
         'donors_sel': 'type O',
-        'hydrogens_sel': 'type H H',
+#        'hydrogens_sel': 'type H H',
         'acceptors_sel': 'type O',
         'd_h_cutoff': 1.2,
         'd_a_cutoff': 3.0,
@@ -301,6 +301,8 @@ class TestHydrogenBondAnalysisNoRes(TestHydrogenBondAnalysisIdeal):
 
         u.add_TopologyAttr('type', ['O', 'H', 'H'] * n_residues)
         u.add_TopologyAttr('id', list(range(1, (n_residues * 3) + 1)))
+        u.add_TopologyAttr('mass', [15.999, 1.008, 1.008] * n_residues)
+        u.add_TopologyAttr('charge', [-1.04, 0.52, 0.52] * n_residues)
 
         # Atomic coordinates with a single hydrogen bond between O1-H2---O2
         pos1 = np.array([[0, 0, 0],             # O1
