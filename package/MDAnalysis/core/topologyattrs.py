@@ -2100,9 +2100,9 @@ class Charges(AtomAttr):
         Returns
         -------
         numpy.ndarray
-            Dipole vectors of (compounds of) the group in e*angstroms.
+            Dipole vector(s) of (compounds of) the group in :math:`eÅ`.
             If `compound` was set to ``'group'``, the output will be a single
-            value. Otherwise, the output will be a 1d array of shape ``(n,)``
+            value. Otherwise, the output will be a 1d array of shape ``(n,3)``
             where ``n`` is the number of compounds.
 
 
@@ -2212,7 +2212,7 @@ class Charges(AtomAttr):
         Returns
         -------
         numpy.ndarray
-            Dipole moment of (compounds of) the group in e*angstroms.
+            Dipole moment(s) of (compounds of) the group in :math:`eÅ`.
             If `compound` was set to ``'group'``, the output will be a single
             value. Otherwise, the output will be a 1d array of shape ``(n,)``
             where ``n`` is the number of compounds.
@@ -2280,10 +2280,10 @@ class Charges(AtomAttr):
         Returns
         -------
         numpy.ndarray
-            Quadrupole tensor of (compounds of) the group in e*angstroms**2.
+            Quadrupole tensor(s) of (compounds of) the group in :math:`eÅ^2`.
             If `compound` was set to ``'group'``, the output will be a single
-            value. Otherwise, the output will be a 1d array of shape ``(n,)``
-            where ``n`` is the number of compounds.
+            tensor of shape ``(3,3)``. Otherwise, the output will be a 1d array 
+            of shape ``(n,3,3)`` where ``n`` is the number of compounds.
 
 
         .. versionadded:: 2.4.0
@@ -2406,7 +2406,7 @@ class Charges(AtomAttr):
         Returns
         -------
         numpy.ndarray
-            Quadrupole moment of (compounds of) the group in e*angstroms**2.
+            Quadrupole moment(s) of (compounds of) the group in :math:`eÅ^2`.
             If `compound` was set to ``'group'``, the output will be a single
             value. Otherwise, the output will be a 1d array of shape ``(n,)``
             where ``n`` is the number of compounds.
