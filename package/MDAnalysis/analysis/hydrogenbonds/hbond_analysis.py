@@ -592,12 +592,7 @@ class HydrogenBondAnalysis(AnalysisBase):
         # Otherwise, use d_h_cutoff as a cutoff distance
         else:
 
-            if self.hydrogens_sel is None:
-                hydrogens_sel = self.guess_hydrogens()
-            else:
-                hydrogens_sel = self.hydrogens_sel
-
-            hydrogens = self.u.select_atoms(hydrogens_sel)
+            hydrogens = self.u.select_atoms(self.hydrogens_sel)
             donors = self.u.select_atoms(self.donors_sel)
             donors_indices, hydrogen_indices = capped_distance(
                 donors.positions,
