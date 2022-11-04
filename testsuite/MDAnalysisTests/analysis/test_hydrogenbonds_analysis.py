@@ -268,7 +268,7 @@ class TestHydrogenBondAnalysisIdeal(object):
         assert any(warning in rec.getMessage() for rec in caplog.records)
 
 
-class TestHydrogenBondAnalysisNoRes(object):
+class TestHydrogenBondAnalysisNoRes(TestHydrogenBondAnalysisIdeal):
 
     kwargs = {
         'donors_sel': 'type O',
@@ -280,7 +280,7 @@ class TestHydrogenBondAnalysisNoRes(object):
     }
 
     @staticmethod
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope='class', autouse=True)
     def universe():
         # create two water molecules
         """
@@ -293,6 +293,9 @@ class TestHydrogenBondAnalysisNoRes(object):
         n_residues = 2
         u = MDAnalysis.Universe.empty(
             n_atoms=n_residues*3,
+            n_residues=n_residues,
+            atom_resindex=np.repeat(range(n_residues), 3),
+            residue_segindex=[0] * n_residues,
             trajectory=True,  # necessary for adding coordinates
             )
 
@@ -336,112 +339,6 @@ class TestHydrogenBondAnalysisNoRes(object):
         )
         h.run()
         return h
-
-    def test_count_by_type(self, universe):
-
-        h = HydrogenBondAnalysis(
-            universe,
-            **TestHydrogenBondAnalysisNoRes.kwargs
-        )
-        h.run()
-        counts = h.count_by_type()
-        ref_count = 2
-        assert int(counts[0, 2]) == ref_count
-
-    def test_no_bond_info_exception(self, universe):
-
-        kwargs = {
-            'donors_sel': None,
-            'hydrogens_sel': None,
-            'acceptors_sel': None,
-            'd_h_cutoff': 1.2,
-            'd_a_cutoff': 3.0,
-            'd_h_a_angle_cutoff': 120.0
-        }
-
-        with pytest.raises(NoDataError, match="no bond information"):
-            h = HydrogenBondAnalysis(universe, **kwargs)
-            h._get_dh_pairs()
-
-    def test_no_bond_no_mass_donor_sel(self, universe):
-
-        kwargs = {
-            'donors_sel': "type O",
-            'hydrogens_sel': None,
-            'acceptors_sel': None,
-            'd_h_cutoff': 1.2,
-            'd_a_cutoff': 3.0,
-            'd_h_a_angle_cutoff': 120.0
-        }
-
-        with pytest.raises(NoDataError, match="not contain mass information"):
-            h = HydrogenBondAnalysis(universe, **kwargs)
-            h._get_dh_pairs()
-
-    def test_no_bond_donor_sel(self, universe):
-
-        kwargs = {
-            'donors_sel': "type O",
-            'hydrogens_sel': None,
-            'acceptors_sel': None,
-            'd_h_cutoff': 1.2,
-            'd_a_cutoff': 3.0,
-            'd_h_a_angle_cutoff': 120.0
-        }
-        u = universe.copy()
-        n_residues = 2
-        u.add_TopologyAttr('mass', [15.999, 1.008, 1.008] * n_residues)
-        u.add_TopologyAttr('charge', [-1.04, 0.52, 0.52] * n_residues)
-        h = HydrogenBondAnalysis(u, **kwargs)
-        donors = u.select_atoms(h.guess_donors())
-
-        assert len(donors) == 2
-
-    def test_first_hbond(self, hydrogen_bonds):
-        assert len(hydrogen_bonds.results.hbonds) == 2
-        frame_no, donor_index, hydrogen_index, acceptor_index, da_dst, angle =\
-            hydrogen_bonds.results.hbonds[0]
-        assert_equal(donor_index, 0)
-        assert_equal(hydrogen_index, 2)
-        assert_equal(acceptor_index, 3)
-        assert_almost_equal(da_dst, 2.5)
-        assert_almost_equal(angle, 180)
-
-    def test_count_by_time(self, hydrogen_bonds):
-        ref_times = np.array([0, 1, 2]) # u.trajectory.dt is 1
-        ref_counts = np.array([1, 0, 1])
-
-        counts = hydrogen_bonds.count_by_time()
-        assert_array_almost_equal(hydrogen_bonds.times, ref_times)
-        assert_array_equal(counts, ref_counts)
-
-    def test_hydrogen_bond_lifetime(self, hydrogen_bonds):
-        tau_timeseries, timeseries = hydrogen_bonds.lifetime(tau_max=2)
-        assert_array_equal(timeseries, [1, 0, 0])
-
-    def test_hydrogen_bond_lifetime_intermittency(self, hydrogen_bonds):
-        tau_timeseries, timeseries = hydrogen_bonds.lifetime(
-            tau_max=2, intermittency=1
-        )
-        assert_array_equal(timeseries, 1)
-
-    def test_no_attr_hbonds(self, universe):
-        hbonds = HydrogenBondAnalysis(universe, **self.kwargs)
-        # hydrogen bonds are not computed
-        with pytest.raises(NoDataError, match=".hbonds attribute is None"):
-            hbonds.lifetime(tau_max=2, intermittency=1)
-
-    def test_logging_step_not_1(self, universe, caplog):
-        hbonds = HydrogenBondAnalysis(universe, **self.kwargs)
-        # using step 2
-        hbonds.run(step=2)
-
-        caplog.set_level(logging.WARNING)
-        hbonds.lifetime(tau_max=2, intermittency=1)
-
-        warning = ("Autocorrelation: Hydrogen bonds were computed with "
-                   "step > 1.")
-        assert any(warning in rec.getMessage() for rec in caplog.records)
 
 
 class TestHydrogenBondAnalysisBetween(object):

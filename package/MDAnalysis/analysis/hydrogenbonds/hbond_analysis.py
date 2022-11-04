@@ -479,15 +479,17 @@ class HydrogenBondAnalysis(AnalysisBase):
         # See https://github.com/MDAnalysis/mdanalysis/issues/2396#issuecomment-596251787
         if (hasattr(self.u._topology, 'bonds') and len(self.u._topology.bonds.values) != 0):
             donors_ag = find_hydrogen_donors(hydrogens_ag)
+            donors_ag = donors_ag.intersection(u.select_atoms(select))
         else:
-            ag = hydrogens_ag.residues.atoms.select_atoms(
+            donors_ag = hydrogens_ag.residues.atoms.select_atoms(
                 "({donors_sel}) and around {d_h_cutoff} {hydrogens_sel}".format(
                     donors_sel=select,
                     d_h_cutoff=self.d_h_cutoff,
                     hydrogens_sel=hydrogens_sel
                 )
             )
-            donors_ag = ag[ag.charges < max_charge]
+
+        donors_ag = donors_ag[donors_ag.charges < max_charge]
 
         return self.__group_categories(donors_ag)
 
@@ -537,7 +539,7 @@ class HydrogenBondAnalysis(AnalysisBase):
         ----------
         group : AtomGroup
             AtomGroups corresponding to either hydrogen bond acceptors, 
-            donors, or hydrogen atoms that meant their respective charge
+            donors, or hydrogen atoms that meet their respective charge
             and mass constraints. 
 
         Returns
