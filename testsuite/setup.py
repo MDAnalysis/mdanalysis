@@ -179,6 +179,7 @@ if __name__ == '__main__':
                          'data/*.in',
                          'data/*.top',
                          'data/*.sdf',
+                         'data/*.edr',
                         ],
           },
           python_requires='>=3.8',

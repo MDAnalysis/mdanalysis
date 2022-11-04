@@ -143,6 +143,8 @@ __all__ = [
     "LAMMPSDUMP_allcoords",  # lammpsdump file with all coordinate conventions (x,xs,xu,xsu) present, from LAMMPS rdf example
     "LAMMPSDUMP_nocoords",  # lammpsdump file with no coordinates
     "LAMMPSDUMP_triclinic", # lammpsdump file to test triclinic dimension parsing, albite with most atoms deleted
+    "LAMMPSDUMP_image_vf", # Lammps dump file with image flags, velocities, and forces.
+    "LAMMPS_image_vf", # Lammps data file to go with LAMMPSDUMP_image_vf
     "unordered_res",  # pdb file with resids non sequential
     "GMS_ASYMOPT",  # GAMESS C1  optimization
     "GMS_SYMOPT",   # GAMESS D4h optimization
@@ -507,7 +509,8 @@ LAMMPSDUMP_long = resource_filename(__name__, "data/lammps/wat.lammpstrj_long.bz
 LAMMPSDUMP_allcoords = resource_filename(__name__, "data/lammps/spce_all_coords.lammpstrj.bz2")
 LAMMPSDUMP_nocoords = resource_filename(__name__, "data/lammps/spce_no_coords.lammpstrj.bz2")
 LAMMPSDUMP_triclinic = resource_filename(__name__, "data/lammps/albite_triclinic.dump")
-
+LAMMPSDUMP_image_vf = resource_filename(__name__, "data/lammps/image_vf.lammpstrj")
+LAMMPS_image_vf = resource_filename(__name__, "data/lammps/image_vf.data")
 
 unordered_res = resource_filename(__name__, "data/unordered_res.pdb")
 
