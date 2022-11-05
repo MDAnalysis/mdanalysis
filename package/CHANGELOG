@@ -13,15 +13,18 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay
+??/??/?? IAlibay, jaclark5
 
  * 2.6.0
 
 Fixes
 
 Enhancements
+  * LAMMPSDump Reader use of `continuous` option to stitch trajectories
 
 Changes
+ * Continuous feature of ChainReader now uses `_call_time()` method from 
+   ProtoReader
 
 Deprecations
 
