@@ -19,6 +19,7 @@ The rules for this file:
  * 2.4.0
 
 Fixes
+  * Update hbond analysis doc string to use exclusive bound language (#3847)
   * LAMMPSDump Reader translates the box to the origin (#3741)
   * hbond analysis: access hbonds results through new results member in count_by_ids() and count_by_type()
   * Added isolayer selection method (Issue #3845)
@@ -31,9 +32,10 @@ Fixes
     (e.g. bonds, angles) (PR #3779).
 
 Enhancements
-  * Update hbond analysis doc string to use exclusive bound language (#3847)
-  * Added ability for hbond anaylsis to use types when resnames aren't there
+  * Added ability for hbond analysis to use types when resnames are not 
+    present (#3847)
   * Added explanatory warnings when hbond analysis doesn't find any hbonds
+    (#3847)
   * LAMMPSDump Reader optionally unwraps trajectories with image flags upon 
     loading (#3843
   * LAMMPSDump Reader now imports velocities and forces (#3843)

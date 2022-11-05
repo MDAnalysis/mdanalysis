@@ -174,9 +174,8 @@ with use of :attr:`between`. If in the above example,
 protein-water and protein-protein hydrogen bonds will be found, but
 no water-water hydrogen bonds.
 
-One can now also define hydrogen bonds with atom types::
+One can also define hydrogen bonds with atom types::
 
-  import MDAnalysis
   from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import HydrogenBondAnalysis as HBA
   hbonds = HBA(
                universe=u,
@@ -272,8 +271,9 @@ class HydrogenBondAnalysis(AnalysisBase):
         """Set up atom selections and geometric criteria for finding hydrogen
         bonds in a Universe.
 
-        Hydrogen bond selections may be achieved with either a resname, atom 
-        name combination, or when those are absent, atom types.
+        Hydrogen bond selections with `donors_sel` , `hydrogens_sel`, and
+        `acceptors_sel` may be achieved with either a *resname*, atom *name* 
+        combination, or when those are absent, with atom *type* selections.
 
         Parameters
         ----------
@@ -384,13 +384,11 @@ class HydrogenBondAnalysis(AnalysisBase):
                         ):
         """Guesses which hydrogen atoms should be used in the analysis.
 
-        Hydrogen selections may be achieved with either a resname, atom 
-        name combination, or when those are absent, atom types.
-
         Parameters
         ----------
         select: str (optional)
-            Selection string for atom group from which hydrogens will be identified.
+            :doc:`Selection string </documentation_pages/selections>` for atom group from which hydrogens 
+            will be identified. (e.g., ``(resname X and name H1)`` or ``type 2``)
         max_mass: float (optional)
             The mass of a hydrogen atom must be less than this value.
         min_mass: float (optional)
@@ -406,6 +404,9 @@ class HydrogenBondAnalysis(AnalysisBase):
 
         Notes
         -----
+        Hydrogen selections may be achieved with either a resname, atom 
+        name combination, or when those are absent, atom types.
+
         This function makes use of atomic masses and atomic charges to identify which atoms are hydrogen atoms that are
         capable of participating in hydrogen bonding. If an atom has a mass less than :attr:`max_mass` and an atomic
         charge greater than :attr:`min_charge` then it is considered capable of participating in hydrogen bonds.
@@ -415,6 +416,10 @@ class HydrogenBondAnalysis(AnalysisBase):
         Alternatively, this function may be used to quickly generate a :class:`str` of potential hydrogen atoms involved
         in hydrogen bonding. This str may then be modified before being used to set the attribute
         :attr:`hydrogens_sel`.
+
+        .. versionchanged:: 2.4.0
+            Added ability to use atom types
+
         """
 
         if min_mass > max_mass:
@@ -435,13 +440,11 @@ class HydrogenBondAnalysis(AnalysisBase):
         """Guesses which atoms could be considered donors in the analysis. Only use if the universe topology does not
         contain bonding information, otherwise donor-hydrogen pairs may be incorrectly assigned.
 
-        Donor selections may be achieved with either a resname, atom 
-        name combination, or when those are absent, atom types.
-
         Parameters
         ----------
         select: str (optional)
-            Selection string for atom group from which donors will be identified.
+            :doc:`Selection string </documentation_pages/selections>` for atom group from which donors 
+            will be identified. (e.g., ``(resname X and name O1)`` or ``type 2``)
         max_charge: float (optional)
             The charge of a donor atom must be less than this value.
 
@@ -453,6 +456,9 @@ class HydrogenBondAnalysis(AnalysisBase):
 
         Notes
         -----
+        Donor selections may be achieved with either a resname, atom 
+        name combination, or when those are absent, atom types.
+
         This function makes use of and atomic charges to identify which atoms could be considered donor atoms in the
         hydrogen bond analysis. If an atom has an atomic charge less than :attr:`max_charge`, and it is within
         :attr:`d_h_cutoff` of a hydrogen atom, then it is considered capable of participating in hydrogen bonds.
@@ -463,6 +469,9 @@ class HydrogenBondAnalysis(AnalysisBase):
         Alternatively, this function may be used to quickly generate a :class:`str` of potential donor atoms involved
         in hydrogen bonding. This :class:`str` may then be modified before being used to set the attribute
         :attr:`donors_sel`.
+
+        .. versionchanged:: 2.4.0
+            Added ability to use atom types
 
         """
 
@@ -502,7 +511,8 @@ class HydrogenBondAnalysis(AnalysisBase):
         Parameters
         ----------
         select: str (optional)
-            Selection string for atom group from which acceptors will be identified.
+            :doc:`Selection string </documentation_pages/selections>` for atom group from which acceptors will
+            be identified. (e.g., ``(resname X and name O1)`` or ``type 2``)
         max_charge: float (optional)
             The charge of an acceptor atom must be less than this value.
 
@@ -514,6 +524,9 @@ class HydrogenBondAnalysis(AnalysisBase):
 
         Notes
         -----
+        Acceptor selections may be achieved with either a resname, atom 
+        name combination, or when those are absent, atom types.
+
         This function makes use of and atomic charges to identify which atoms could be considered acceptor atoms in the
         hydrogen bond analysis. If an atom has an atomic charge less than :attr:`max_charge` then it is considered
         capable of participating in hydrogen bonds.
@@ -523,6 +536,9 @@ class HydrogenBondAnalysis(AnalysisBase):
         Alternatively, this function may be used to quickly generate a :class:`str` of potential acceptor atoms involved
         in hydrogen bonding. This :class:`str` may then be modified before being used to set the attribute
         :attr:`acceptors_sel`.
+
+        .. versionchanged:: 2.4.0
+            Added ability to use atom types
 
         """
 
@@ -546,9 +562,12 @@ class HydrogenBondAnalysis(AnalysisBase):
         -------
         select : str
             String for each hydrogen bond acceptor/donor/hydrogen atom category.
+
+        .. versionadded:: 2.4.0
+
         """
 
-        if hasattr(group,"resnames") and hasattr(group,"names"):
+        if hasattr(group, "resnames") and hasattr(group, "names"):
             group_list = np.unique(
                 [
                     '(resname {} and name {})'.format(r, p) for r, p in zip(group.resnames, group.names)
@@ -866,7 +885,7 @@ class HydrogenBondAnalysis(AnalysisBase):
         d = self.u.atoms[self.results.hbonds[:, 1].astype(np.intp)]
         a = self.u.atoms[self.results.hbonds[:, 3].astype(np.intp)]
 
-        if hasattr(d,"resnames"):
+        if hasattr(d, "resnames"):
             d_res = d.resnames
             a_res = a.resnames
         else:
