@@ -157,6 +157,9 @@ __all__ = [
     "LAMMPSDUMP_triclinic",  # lammpsdump file to test triclinic dimension parsing, albite with most atoms deleted
     "LAMMPSDUMP_image_vf",  # Lammps dump file with image flags, velocities, and forces.
     "LAMMPS_image_vf",  # Lammps data file to go with LAMMPSDUMP_image_vf
+    "LAMMPSDUMP_chain1", # Lammps dump file with chain reader
+    "LAMMPSDUMP_chain2", # Lammps dump file with chain reader
+    "LAMMPS_chain", # Lammps data file with chain reader
     "unordered_res",  # pdb file with resids non sequential
     "GMS_ASYMOPT",  # GAMESS C1  optimization
     "GMS_SYMOPT",   # GAMESS D4h optimization
