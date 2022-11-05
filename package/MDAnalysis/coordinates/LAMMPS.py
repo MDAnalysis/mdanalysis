@@ -582,7 +582,7 @@ class DumpReader(base.ReaderBase):
 
         return self._read_next_timestep()
 
-    def __call_time(self):
+    def _call_time(self):
         return self.ts.data["step"]
 
     def _read_next_timestep(self):

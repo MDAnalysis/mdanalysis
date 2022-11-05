@@ -720,12 +720,12 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         """Time between two trajectory frames in picoseconds."""
         return self.ts.dt
 
-    def __call_time(self):
+    def _call_time(self):
         try:
             return self.ts.time
         except:
-            raise NotImplementedError("ChainReader: continuous=True not "
-                                  "supported this formats")
+            raise NotImplementedError("ChainReader: continuous=True does not "
+                                      "support this format")
 
     @property
     def totaltime(self):

@@ -145,6 +145,9 @@ __all__ = [
     "LAMMPSDUMP_triclinic", # lammpsdump file to test triclinic dimension parsing, albite with most atoms deleted
     "LAMMPSDUMP_image_vf", # Lammps dump file with image flags, velocities, and forces.
     "LAMMPS_image_vf", # Lammps data file to go with LAMMPSDUMP_image_vf
+    "LAMMPSDUMP_chain1", # Lammps dump file with chain reader
+    "LAMMPSDUMP_chain2", # Lammps dump file with chain reader
+    "LAMMPS_chain", # Lammps data file with chain reader
     "unordered_res",  # pdb file with resids non sequential
     "GMS_ASYMOPT",  # GAMESS C1  optimization
     "GMS_SYMOPT",   # GAMESS D4h optimization
@@ -511,6 +514,9 @@ LAMMPSDUMP_nocoords = resource_filename(__name__, "data/lammps/spce_no_coords.la
 LAMMPSDUMP_triclinic = resource_filename(__name__, "data/lammps/albite_triclinic.dump")
 LAMMPSDUMP_image_vf = resource_filename(__name__, "data/lammps/image_vf.lammpstrj")
 LAMMPS_image_vf = resource_filename(__name__, "data/lammps/image_vf.data")
+LAMMPSDUMP_chain1 = resource_filename(__name__, "data/lammps/chain_dump_1.lammpstrj")
+LAMMPSDUMP_chain2 = resource_filename(__name__, "data/lammps/chain_dump_2.lammpstrj")
+LAMMPS_chain = resource_filename(__name__, "data/lammps/chain_initial.data")
 
 unordered_res = resource_filename(__name__, "data/unordered_res.pdb")
 

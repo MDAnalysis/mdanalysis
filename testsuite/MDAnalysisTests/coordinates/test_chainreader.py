@@ -33,7 +33,9 @@ from numpy.testing import (assert_equal, assert_almost_equal)
 import MDAnalysis as mda
 from MDAnalysis.transformations import translate
 from MDAnalysisTests.datafiles import (PDB, PSF, CRD, DCD,
-                                       GRO, XTC, TRR, PDB_small, PDB_closed)
+                                       GRO, XTC, TRR, PDB_small, PDB_closed,
+                                       LAMMPS_chain, LAMMPSDUMP_chain1,
+                                       LAMMPSDUMP_chain2,)
 from MDAnalysisTests.util import no_warning
 
 
@@ -205,6 +207,12 @@ class TestChainReaderFormats(object):
                                                                    'trr')])
         assert universe.trajectory.n_frames == 21
         assert_equal(universe.trajectory.filenames, [PDB, XTC, TRR])
+
+    def test_set_all_format_lammps(self):
+        universe = mda.Universe(
+            LAMMPS_chain, [LAMMPSDUMP_chain1, LAMMPSDUMP_chain2], 
+            format="LAMMPSDUMP", continuous=True)
+        assert universe.trajectory.n_frames == 11
 
     def test_set_format_tuples_and_format(self):
         universe = mda.Universe(GRO, [(PDB, 'pdb'), GRO, GRO, (XTC, 'xtc'), 
