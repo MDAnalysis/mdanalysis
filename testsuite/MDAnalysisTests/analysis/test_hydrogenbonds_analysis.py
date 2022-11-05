@@ -188,6 +188,13 @@ class TestHydrogenBondAnalysisIdeal(object):
         h.run()
         return h
 
+    def test_count_by_type(self, hydrogen_bonds):
+
+        # Only one type of hydrogen bond in this system
+        ref_count = 2
+
+        counts = hydrogen_bonds.count_by_type()
+        assert int(counts[0, 2]) == ref_count
 
     def test_no_bond_info_exception(self, universe):
 
