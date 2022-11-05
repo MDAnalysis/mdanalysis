@@ -721,11 +721,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         return self.ts.dt
 
     def _call_time(self):
-        try:
-            return self.ts.time
-        except:
-            raise NotImplementedError("ChainReader: continuous=True does not "
-                                      "support this format")
+        return self.ts.time
 
     @property
     def totaltime(self):

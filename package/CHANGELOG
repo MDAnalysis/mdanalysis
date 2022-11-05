@@ -31,6 +31,7 @@ Fixes
     (e.g. bonds, angles) (PR #3779).
 
 Enhancements
+  * LAMMPSDump Reader use of `continuous` option to stitch trajectories
   * LAMMPSDump Reader optionally unwraps trajectories with image flags upon 
     loading (#3843
   * LAMMPSDump Reader now imports velocities and forces (#3843)
@@ -47,6 +48,8 @@ Enhancements
   * Added benchmarks for bonds topology attribute (Issue #3785, PR #3806)
 
 Changes
+ * Continuous feature of ChainReader now uses `_call_time()` method from 
+   ProtoReader
  * Auxiliary; determination of representative frames: The default value for
    cutoff is now None, not -1. Negative values are now turned
    to None. (PR #3749)
