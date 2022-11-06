@@ -457,6 +457,10 @@ cdef class TRRFile(_XDRFile):
     -----
     This class can be pickled. The pickle will store filename, mode, current
     frame and offsets
+
+
+    .. versionchanged:: 2.4.0
+       Added read_direct method to read into an existing positions array
     """
 
     def _calc_natoms(self, fname):
@@ -565,7 +569,14 @@ cdef class TRRFile(_XDRFile):
                         has_x, has_v, has_f)
     
     def read_direct(self, np.float32_t[:, ::1] positions):
-        """Read next frame in the TRR file
+        """
+        Read next frame in the TRR file with positions read directly into
+        a pre-existing array.
+
+        Parameters
+        ----------
+        positions : np.ndarray
+            positions array to read positions into
 
         Returns
         -------
@@ -606,14 +617,13 @@ cdef class TRRFile(_XDRFile):
         unitcell_dim[0] = DIMS
         unitcell_dim[1] = DIMS
 
-        cdef np.ndarray[np.float32_t, ndim=2] xyz = np.PyArray_EMPTY(2, dim, np.NPY_FLOAT32, 0)
         cdef np.ndarray[np.float32_t, ndim=2] velocity = np.PyArray_EMPTY(2, dim, np.NPY_FLOAT32, 0)
         cdef np.ndarray[np.float32_t, ndim=2] forces = np.PyArray_EMPTY(2, dim, np.NPY_FLOAT32, 0)
         cdef np.ndarray[np.float32_t, ndim=2] box = np.PyArray_EMPTY(2, unitcell_dim, np.NPY_FLOAT32, 0)
 
         return_code = read_trr(self.xfp, self.n_atoms, <int*> &step,
                                       &time, &lmbda, <matrix>box.data,
-                                      <rvec*>xyz.data,
+                                      <rvec*>&positions[0,0],
                                       <rvec*>velocity.data,
                                       <rvec*>forces.data,
                                       <int*> &has_prop)
@@ -638,7 +648,7 @@ cdef class TRRFile(_XDRFile):
         has_x = bool(has_prop & HASX)
         has_v = bool(has_prop & HASV)
         has_f = bool(has_prop & HASF)
-        return TRRFrame(xyz, velocity, forces, box, step, time, lmbda,
+        return TRRFrame(positions, velocity, forces, box, step, time, lmbda,
                         has_x, has_v, has_f)
 
     def write(self, xyz, velocity, forces, box, int step, float time,
@@ -849,7 +859,14 @@ cdef class XTCFile(_XDRFile):
         return XTCFrame(xyz, box, step, time, prec)
 
     def read_direct(self, np.float32_t[:, ::1] positions):
-        """Read next frame in the XTC file
+        """
+        Read next frame in the XTC file with positions read directly into
+        a pre-existing array.
+
+        Parameters
+        ----------
+        positions : np.ndarray
+           positions array to read positions into
 
         Returns
         -------

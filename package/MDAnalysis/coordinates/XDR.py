@@ -120,7 +120,8 @@ class XDRBaseReader(base.ReaderBase):
        XDR offsets read from trajectory if offsets file read-in fails
     .. versionchanged:: 2.0.0
        Add a InterProcessLock when generating offsets
-
+    .. versionchanged:: 2.4.0
+       Use a direct read into ts attributes
     """
     @store_init_arguments
     def __init__(self, filename, convert_units=True, sub=None,
