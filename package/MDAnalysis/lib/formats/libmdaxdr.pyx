@@ -71,43 +71,6 @@ from libc.stdint cimport int64_t
 from libc.stdio cimport SEEK_SET, SEEK_CUR, SEEK_END
 _whence_vals = {"SEEK_SET": SEEK_SET, "SEEK_CUR": SEEK_CUR, "SEEK_END": SEEK_END}
 
-cdef extern from 'include/xdrfile.h':
-    ctypedef struct XDRFILE:
-        pass
-
-    XDRFILE* xdrfile_open (char * path, char * mode)
-    int xdrfile_close (XDRFILE * xfp)
-    int xdr_seek(XDRFILE *xfp, int64_t pos, int whence)
-    int64_t xdr_tell(XDRFILE *xfp)
-    ctypedef float matrix[3][3]
-    ctypedef float rvec[3]
-
-
-cdef extern from 'include/xdrfile_xtc.h':
-    int read_xtc_natoms(char * fname, int * natoms)
-    int read_xtc(XDRFILE * xfp, int natoms, int * step, float * time, matrix box,
-                 rvec * x, float * prec)
-    int write_xtc(XDRFILE * xfp, int natoms, int step, float time, matrix box,
-                  rvec * x, float prec)
-
-
-
-cdef extern from 'include/xdrfile_trr.h':
-    int read_trr_natoms(char *fname, int *natoms)
-    int read_trr(XDRFILE *xfp, int natoms, int *step, float *time, float *_lambda,
-                 matrix box, rvec *x, rvec *v, rvec *f, int *has_prop)
-    int write_trr(XDRFILE *xfp, int natoms, int step, float time, float _lambda,
-                  matrix box, rvec *x, rvec *v, rvec *f)
-
-
-cdef extern from 'include/xtc_seek.h':
-    int read_xtc_n_frames(char *fn, int *n_frames, int *est_nframes, int64_t **offsets)
-
-
-cdef extern from 'include/trr_seek.h':
-    int read_trr_n_frames(char *fn, int *n_frames, int *est_nframes, int64_t **offsets)
-
-
 cdef enum:
     EOK = 0
     EHEADER = 1
@@ -165,16 +128,6 @@ cdef class _XDRFile:
     ----
     This class can't be initialized use one of the subclasses XTCFile, TRRFile
     """
-    cdef readonly int n_atoms
-    cdef int is_open
-    cdef int reached_eof
-    cdef XDRFILE *xfp
-    cdef readonly fname
-    cdef int current_frame
-    cdef str mode
-    cdef np.ndarray box
-    cdef np.ndarray _offsets
-    cdef readonly int _has_offsets
 
     def __cinit__(self, fname, mode='r'):
         self.fname = fname.encode('utf-8')
@@ -773,7 +726,6 @@ cdef class XTCFile(_XDRFile):
     This class can be pickled. The pickle will store filename, mode, current
     frame and offsets
     """
-    cdef float precision
 
     def _calc_natoms(self, fname):
         cdef int n_atoms
