@@ -14,11 +14,12 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, BFedder, aya9aladdin,
-         jaclark5, jfennick
+         jaclark5, jfennick, lilyminium
 
  * 2.4.0
 
 Fixes
+  * Removes ``pbc`` kwarg from ``AtomGroup.wrap`` (Issue #3909)
   * LAMMPSDump Reader translates the box to the origin (#3741)
   * hbond analysis: access hbonds results through new results member in count_by_ids() and count_by_type()
   * Added isolayer selection method (Issue #3845)
