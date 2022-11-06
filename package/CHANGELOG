@@ -14,13 +14,14 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, BFedder, aya9aladdin,
-         jaclark5, jfennick
+         jaclark5, jfennick, lilyminium
 
  * 2.4.0
 
 Fixes
   * DCD reader no longer copies timestep and instead updates it in line with other readers
     (Issue #3889, PR #3888)
+  * Removes ``pbc`` kwarg from ``AtomGroup.wrap`` (Issue #3909)
   * LAMMPSDump Reader translates the box to the origin (#3741)
   * hbond analysis: access hbonds results through new results member in count_by_ids() and count_by_type()
   * Added isolayer selection method (Issue #3845)
@@ -34,6 +35,7 @@ Fixes
 
 Enhancements
   * Quality of life updates to libdcd Cython (Issue #3882, PR #3888)
+  * MDAnalysis now officially supports py3.11 (Issue #3878)
   * LAMMPSDump Reader optionally unwraps trajectories with image flags upon 
     loading (#3843
   * LAMMPSDump Reader now imports velocities and forces (#3843)
@@ -65,6 +67,8 @@ Changes
   * adding element attribute to TXYZParser if all atom names are valid element symbols (PR #3826)
 
 Deprecations
+  * Add deprecation warning for inclusive stop indexing in
+    MemoryReader.timeseries (#PR 3894)
 
 
 08/29/22 IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli, miss77jun, rzhao271,
