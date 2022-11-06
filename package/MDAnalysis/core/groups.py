@@ -1014,7 +1014,7 @@ class GroupBase(_MutableBase):
             If `compound` is not one of ``'group'``, ``'segments'``,
             ``'residues'``, ``'molecules'``, or ``'fragments'``.
         ValueError
-            If both 'pbc' and 'unwrap' set to true.
+            If both 'wrap' and 'unwrap' set to true.
         ~MDAnalysis.exceptions.NoDataError
             If `compound` is ``'molecule'`` but the topology doesn't
             contain molecule information (molnums) or if `compound` is
