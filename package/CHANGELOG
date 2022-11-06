@@ -33,7 +33,8 @@ Fixes
     (e.g. bonds, angles) (PR #3779).
 
 Enhancements
-  * The timeseries method for dumping coordinates to a NumPy array was added to ProtoReader
+  * The timeseries method for dumping coordinates to a NumPy array was added
+    to ProtoReader (PR #3890)
   * LAMMPSDump Reader optionally unwraps trajectories with image flags upon 
     loading (#3843
   * LAMMPSDump Reader now imports velocities and forces (#3843)
