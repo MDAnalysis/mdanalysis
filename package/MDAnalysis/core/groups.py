@@ -1714,14 +1714,14 @@ class GroupBase(_MutableBase):
 
             # compute and apply required shift:
             if ctr == 'com':
-                ctrpos = atoms.center_of_mass(pbc=False, compound=comp)
+                ctrpos = atoms.center_of_mass(wrap=False, compound=comp)
                 if np.any(np.isnan(ctrpos)):
                     specifier = 'the' if comp == 'group' else 'one of the'
                     raise ValueError("Cannot use compound='{0}' with "
                                      "center='com' because {1} {0}\'s total "
                                      "mass is zero.".format(comp, specifier))
             else:  # ctr == 'cog'
-                ctrpos = atoms.center_of_geometry(pbc=False, compound=comp)
+                ctrpos = atoms.center_of_geometry(wrap=False, compound=comp)
             ctrpos = ctrpos.astype(np.float32, copy=False)
             target = distances.apply_PBC(ctrpos, box)
             shifts = target - ctrpos
