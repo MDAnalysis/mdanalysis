@@ -81,29 +81,11 @@ from libcpp.map cimport map as cmap
 
 np.import_array()
 
-
-# Tell cython about the off_t type. It doesn't need to match exactly what is
-# defined since we don't expose it to python but the cython compiler needs to
-# know about it.
-cdef extern from 'sys/types.h':
-    ctypedef int off_t
-
-ctypedef int fio_fd;
-ctypedef off_t fio_size_t
-
-ctypedef float FLOAT_T
-ctypedef double DOUBLE_T
-FLOAT = np.float32
-DOUBLE = np.float64
-
-cdef enum:
-    FIO_READ = 0x01
-    FIO_WRITE = 0x02
-
-# module level C decls 
-cdef  int DCD_IS_CHARMM_       = 0x01
-cdef  int DCD_HAS_4DIMS_       = 0x02
+# module level C decls
+cdef  int DCD_IS_CHARMM_ = 0x01
+cdef  int DCD_HAS_4DIMS_ = 0x02
 cdef  int DCD_HAS_EXTRA_BLOCK_ = 0x04
+
 # exportable versions in python
 DCD_IS_CHARMM       = DCD_IS_CHARMM_
 DCD_HAS_4DIMS       = DCD_HAS_4DIMS_
@@ -121,33 +103,8 @@ DCD_ERRORS = {
     -8: 'malloc failed'
 }
 
-cdef extern from 'include/fastio.h':
-    int fio_open(const char *filename, int mode, fio_fd *fd)
-    int fio_fclose(fio_fd fd)
-    fio_size_t fio_ftell(fio_fd fd)
-    fio_size_t fio_fseek(fio_fd fd, fio_size_t offset, int whence)
-
-cdef extern from 'include/readdcd.h':
-    int read_dcdheader(fio_fd fd, int *natoms, int *nsets, int *istart,
-                       int *nsavc, double *delta, int *nfixed, int **freeind,
-                       float **fixedcoords, int *reverse_endian, int *charmm,
-                       char **remarks, int *len_remarks)
-    void close_dcd_read(int *freeind, float *fixedcoords)
-    int read_dcdstep(fio_fd fd, int natoms, float *X, float *Y, float *Z,
-                     double *unitcell, int num_fixed,
-                     int first, int *indexes, float *fixedcoords,
-                     int reverse_endian, int charmm)
-    int read_dcdsubset(fio_fd fd, int natoms, int lowerb, int upperb,
-                     float *X, float *Y, float *Z,
-                     double *unitcell, int num_fixed,
-                     int first, int *indexes, float *fixedcoords,
-                     int reverse_endian, int charmm)
-    int write_dcdheader(fio_fd fd, const char *remarks, int natoms,
-                   int istart, int nsavc, double delta, int with_unitcell,
-                   int charmm);
-    int write_dcdstep(fio_fd fd, int curframe, int curstep,
-             int natoms, const float *x, const float *y, const float *z,
-             const double *unitcell, int charmm);
+FLOAT = np.float32
+DOUBLE = np.float64
 
 DCDFrame = namedtuple('DCDFrame', 'xyz unitcell')
 
@@ -195,33 +152,6 @@ cdef class DCDFile:
 
     .. _mdawiki: https://github.com/MDAnalysis/mdanalysis/wiki/FileFormats#dcd
     """
-    cdef fio_fd fp
-    cdef readonly fname
-    cdef int istart
-    cdef int nsavc
-    cdef double delta
-    cdef int natoms
-    cdef int nfixed
-    cdef int *freeind
-    cdef float *fixedcoords
-    cdef int reverse_endian
-    cdef int charmm
-    cdef readonly cbool is_periodic
-    cdef remarks
-    cdef str mode
-    cdef readonly int ndims
-    cdef readonly int n_frames
-    cdef bint b_read_header
-    cdef int current_frame
-    cdef readonly int _firstframesize
-    cdef readonly int _framesize
-    cdef readonly int _header_size
-    cdef int is_open
-    cdef int reached_eof
-    cdef int wrote_header
-    # whence vals not declared at module level to be able to pop values
-    cdef readonly cmap[cstring,int] _whence_vals
-
 
     def __cinit__(self, fname, mode='r'):
         self.fname = fname.encode('utf-8')
