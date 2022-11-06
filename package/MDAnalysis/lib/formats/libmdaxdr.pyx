@@ -65,7 +65,6 @@ own please see the source code in `lib/formats/libmdaxdr.pyx`_ for the time bein
 
 cimport numpy as np
 cimport cython
-from cython cimport NULL
 from MDAnalysis.lib.formats.cython_util cimport ptr_to_ndarray
 from libc.stdint cimport int64_t
 
@@ -618,15 +617,15 @@ cdef class TRRFile(_XDRFile):
         unitcell_dim[0] = DIMS
         unitcell_dim[1] = DIMS
 
-        # cdef np.ndarray[np.float32_t, ndim=2] velocity = np.PyArray_EMPTY(2, dim, np.NPY_FLOAT32, 0)
-        # cdef np.ndarray[np.float32_t, ndim=2] forces = np.PyArray_EMPTY(2, dim, np.NPY_FLOAT32, 0)
+        cdef np.ndarray[np.float32_t, ndim=2] velocity = np.PyArray_EMPTY(2, dim, np.NPY_FLOAT32, 0)
+        cdef np.ndarray[np.float32_t, ndim=2] forces = np.PyArray_EMPTY(2, dim, np.NPY_FLOAT32, 0)
         cdef np.ndarray[np.float32_t, ndim=2] box = np.PyArray_EMPTY(2, unitcell_dim, np.NPY_FLOAT32, 0)
 
         return_code = read_trr(self.xfp, self.n_atoms, <int*> &step,
                                       &time, &lmbda, <matrix>box.data,
                                       <rvec*>&positions[0,0],
-                                      NULL,
-                                      NULL,
+                                      <rvec*>velocity.data,
+                                      <rvec*>forces.data,
                                       <int*> &has_prop)
         # trr are a bit weird. Reading after the last frame always always
         # results in an integer error while reading. I tried it also with trr
@@ -649,7 +648,7 @@ cdef class TRRFile(_XDRFile):
         has_x = bool(has_prop & HASX)
         has_v = bool(has_prop & HASV)
         has_f = bool(has_prop & HASF)
-        return TRRFrame(positions, [], [], box, step, time, lmbda,
+        return TRRFrame(positions, velocity, forces, box, step, time, lmbda,
                         has_x, has_v, has_f)
 
     def write(self, xyz, velocity, forces, box, int step, float time,
