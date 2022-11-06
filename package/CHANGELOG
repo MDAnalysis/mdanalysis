@@ -34,7 +34,8 @@ Fixes
     (e.g. bonds, angles) (PR #3779).
 
 Enhancements
-  * Quality of life updates to libdcd Cython (Issue #3882, PR #3888)
+  * Improve C content of libdcd Cython and compile as C++ (Issue #3882,
+    PR #3888)
   * MDAnalysis now officially supports py3.11 (Issue #3878)
   * LAMMPSDump Reader optionally unwraps trajectories with image flags upon 
     loading (#3843
