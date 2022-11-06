@@ -131,7 +131,6 @@ from typing import Union, Optional, List, Dict
 
 from .timestep import Timestep
 from . import core
-from .. import NoDataError
 from .. import (
     _READERS, _READER_HINTS,
     _SINGLEFRAME_WRITERS,
@@ -1023,7 +1022,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
 
         if asel is not None:
             if len(asel) == 0:
-                raise NoDataError(
+                raise ValueError(
                     "Timeseries requires at least one atom to analyze")
             atom_numbers = asel.indices
             natoms = len(atom_numbers)

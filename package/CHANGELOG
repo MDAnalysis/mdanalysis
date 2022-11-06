@@ -19,6 +19,8 @@ The rules for this file:
  * 2.4.0
 
 Fixes
+  * NoDataErrors raised on empty atomgroup provided to timeseries in DCDReader and MemoryReader
+    were changed to ValueError as NoDataError is intended for TopologyAttrs (cf #3901)
   * LAMMPSDump Reader translates the box to the origin (#3741)
   * hbond analysis: access hbonds results through new results member in count_by_ids() and count_by_type()
   * Added isolayer selection method (Issue #3845)
@@ -31,6 +33,7 @@ Fixes
     (e.g. bonds, angles) (PR #3779).
 
 Enhancements
+  * The timeseries method for dumping coordinates to a NumPy array was added to ProtoReader
   * LAMMPSDump Reader optionally unwraps trajectories with image flags upon 
     loading (#3843
   * LAMMPSDump Reader now imports velocities and forces (#3843)

@@ -32,7 +32,6 @@ from numpy.testing import (assert_equal, assert_almost_equal,
 import MDAnalysis as mda
 from MDAnalysis.coordinates.timestep import Timestep
 from MDAnalysis.transformations import translate
-from MDAnalysis import NoDataError
 
 
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
@@ -481,7 +480,7 @@ class BaseReaderTest(object):
     
     def test_timeseries_empty_asel(self, reader):
         atoms = mda.Universe(reader.filename).select_atoms(None)
-        with pytest.raises(NoDataError, match="Timeseries requires at least"):
+        with pytest.raises(ValueError, match="Timeseries requires at least"):
             reader.timeseries(atoms)
 
 class MultiframeReaderTest(BaseReaderTest):

@@ -188,7 +188,6 @@ import warnings
 import copy
 
 from . import base
-from .. import NoDataError
 from .timestep import Timestep
 
 
@@ -522,6 +521,9 @@ class MemoryReader(base.ProtoReader):
 
         .. versionchanged:: 1.0.0
            Deprecated `format` keyword has been removed. Use `order` instead.
+        .. versionchanged:: 2.4.0
+            ValueError now raised instead of NoDataError for empty input
+            AtomGroup
         """
         if stop != -1:
             warnings.warn("MemoryReader.timeseries inclusive `stop` "
@@ -561,7 +563,7 @@ class MemoryReader(base.ProtoReader):
             return array
         else:
             if len(asel) == 0:
-                raise NoDataError("Timeseries requires at least one atom "
+                raise ValueError("Timeseries requires at least one atom "
                                   "to analyze")
             # If selection is specified, return a copy
             return array.take(asel.indices, a_index)
