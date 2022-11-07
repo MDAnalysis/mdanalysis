@@ -91,6 +91,10 @@ DCD_IS_CHARMM       = DCD_IS_CHARMM_
 DCD_HAS_4DIMS       = DCD_HAS_4DIMS_
 DCD_HAS_EXTRA_BLOCK = DCD_HAS_EXTRA_BLOCK_
 
+cdef enum:
+    FIO_READ = 0x01
+    FIO_WRITE = 0x02
+
 DCD_ERRORS = {
     0: 'Success',
     -1: 'Normal EOF',
