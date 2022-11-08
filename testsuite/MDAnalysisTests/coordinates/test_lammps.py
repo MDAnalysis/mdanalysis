@@ -606,7 +606,7 @@ class TestLammpsDumpReader(object):
             assert_allclose(atom1.position, atom1_pos-bmin, atol=1e-5)
             assert_allclose(atom13.position, atom13_pos-bmin, atol=1e-5)
 
-    def test_additional_columns(self, u_additional_columns, reference_additional_columns):
+    def test_additional_columns(self, u_additional_columns):
         # this is the universe with just q
         charges = u_additional_columns[0].trajectory[0].data['q']
         # this is the universe with both
