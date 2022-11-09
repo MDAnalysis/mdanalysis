@@ -31,6 +31,7 @@ See Also
 MDAnalysis.coordinates.XTC: Read and write GROMACS XTC trajectory files.
 MDAnalysis.coordinates.XDR: BaseReader/Writer for XDR based formats
 """
+import errno
 from . import base
 from .XDR import XDRBaseReader, XDRBaseWriter
 from ..lib.formats.libmdaxdr import TRRFile
@@ -150,6 +151,20 @@ class TRRReader(XDRBaseReader):
              'force': 'kJ/(mol*nm)'}
     _writer = TRRWriter
     _file = TRRFile
+
+    def _read_next_timestep(self, ts=None):
+        """copy next frame into timestep"""
+        if self._frame == self.n_frames - 1:
+            raise IOError(errno.EIO, 'trying to go over trajectory limit')
+        if ts is None:
+            ts = self.ts
+        ts.has_positions = True
+        ts.has_velocities = True
+        ts.has_forces = True
+        frame = self._xdr.read_direct_pvf(ts.positions, ts.velocities, ts.forces)
+        self._frame += 1
+        self._frame_to_ts(frame, ts)
+        return ts
 
     def _frame_to_ts(self, frame, ts):
         """convert a trr-frame to a mda TimeStep"""

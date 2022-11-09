@@ -604,6 +604,83 @@ cdef class TRRFile(_XDRFile):
         return TRRFrame(positions, velocity, forces, box, step, time, lmbda,
                         has_x, has_v, has_f)
 
+    def read_direct_pvf(self, np.float32_t[:, ::1] positions,
+                        np.float32_t[:, ::1] velocities,
+                        np.float32_t[:, ::1] forces,):
+        """
+        Read next frame in the TRR file with positions read directly into
+        a pre-existing array.
+
+        Parameters
+        ----------
+        positions : np.ndarray
+            positions array to read positions into
+
+        Returns
+        -------
+        frame : libmdaxdr.TRRFrame
+            namedtuple with frame information
+
+        See Also
+        --------
+        TRRFrame
+        XTCFile
+
+        Raises
+        ------
+        IOError
+        """
+        if self.reached_eof:
+            raise EOFError('Reached last frame in TRR, seek to 0')
+        if not self.is_open:
+            raise IOError('No file opened')
+        if self.mode != 'r':
+            raise IOError('File opened in mode: {}. Reading only allow '
+                               'in mode "r"'.format('self.mode'))
+
+        return_code = 1
+        cdef int step = 0
+        cdef int has_prop = 0
+        cdef float time = 0
+        cdef float lmbda = 0
+
+        cdef np.npy_intp[2] unitcell_dim
+        unitcell_dim[0] = DIMS
+        unitcell_dim[1] = DIMS
+
+
+        cdef np.ndarray[np.float32_t, ndim=2] box = np.PyArray_EMPTY(2, unitcell_dim, np.NPY_FLOAT32, 0)
+
+        return_code = read_trr(self.xfp, self.n_atoms, <int*> &step,
+                                      &time, &lmbda, <matrix>box.data,
+                                      <rvec*>&positions[0,0],
+                                      <rvec*>&velocities[0,0],
+                                      <rvec*>&forces[0,0],
+                                      <int*> &has_prop)
+        # trr are a bit weird. Reading after the last frame always always
+        # results in an integer error while reading. I tried it also with trr
+        # produced by different codes (Gromacs, ...).
+        if return_code != EOK and return_code != EENDOFFILE \
+           and return_code != EINTEGER:
+            raise IOError('TRR read error = {}'.format(
+                error_message[return_code]))
+
+        # In a trr the integer error seems to indicate that the file is ending.
+        # There might be corrupted files where this is a legitimate error. But
+        # then we just can't read it and stop there which is not too bad.
+        if return_code == EENDOFFILE or return_code == EINTEGER:
+            self.reached_eof = True
+            raise StopIteration
+
+        if return_code == EOK:
+            self.current_frame += 1
+
+        has_x = bool(has_prop & HASX)
+        has_v = bool(has_prop & HASV)
+        has_f = bool(has_prop & HASF)
+        return TRRFrame(positions, velocities, forces, box, step, time, lmbda,
+                        has_x, has_v, has_f)
+
     def write(self, xyz, velocity, forces, box, int step, float time,
               float _lambda, int natoms):
         """write one frame into TRR file.
