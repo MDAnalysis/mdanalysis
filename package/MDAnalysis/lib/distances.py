@@ -1443,34 +1443,31 @@ def calc_bonds(coords1: Union[np.ndarray, 'AtomGroup'],
        Can use the fast distance functions from distopia
     """
     numatom = coords1.shape[0]
+    bondlengths = _check_result_array(result, (numatom,))
 
     if numatom > 0:
         if box is not None:
             boxtype, box = check_box(box)
-
             if boxtype == 'ortho':
                 if HAS_DISTOPIA:
-                    bondlengths = distopia.calc_bonds_ortho_float(coords1, coords2, box[:3])
+                    distopia.calc_bonds_ortho_float(coords1, coords2, box[:3],
+                                                    results=bondlengths)
                 else:
-                    bondlengths = _check_result_array(result, (numatom,))
                     _run("calc_bond_distance_ortho",
-                        args=(coords1, coords2, box, bondlengths),
-                        backend=backend)
+                         args=(coords1, coords2, box, bondlengths),
+                         backend=backend)
             else:
-                bondlengths = _check_result_array(result, (numatom,))
                 _run("calc_bond_distance_triclinic",
                      args=(coords1, coords2, box, bondlengths),
                      backend=backend)
         else:
             if HAS_DISTOPIA:
-                 bondlengths = distopia.calc_bonds_no_box_float(coords1, coords2)
+                distopia.calc_bonds_no_box_float(coords1, coords2,
+                                                 results=bondlengths)
             else:
-                bondlengths = _check_result_array(result, (numatom,))
                 _run("calc_bond_distance",
-                 args=(coords1, coords2, bondlengths),
-                 backend=backend)
-    else:
-        bondlengths = _check_result_array(result, (numatom,))
+                     args=(coords1, coords2, bondlengths),
+                     backend=backend)
 
     return bondlengths
 
