@@ -158,6 +158,8 @@ class TRRReader(XDRBaseReader):
             raise IOError(errno.EIO, 'trying to go over trajectory limit')
         if ts is None:
             ts = self.ts
+        # allocate arrays to read into, will set to proper values
+        # in _frame_to_ts
         ts.has_positions = True
         ts.has_velocities = True
         ts.has_forces = True
