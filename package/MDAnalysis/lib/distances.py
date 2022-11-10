@@ -1451,7 +1451,9 @@ def calc_bonds(coords1: Union[np.ndarray, 'AtomGroup'],
             if boxtype == 'ortho':
                 if HAS_DISTOPIA:
                     distopia.calc_bonds_ortho_float(coords1, coords2, box[:3],
-                                                    results=bondlengths)
+                                                    results=bondlengths.astype(np.float32))
+                    # upcast is currently required
+                    bondlengths = bondlengths.astype(np.float64)
                 else:
                     _run("calc_bond_distance_ortho",
                          args=(coords1, coords2, box, bondlengths),
@@ -1463,7 +1465,9 @@ def calc_bonds(coords1: Union[np.ndarray, 'AtomGroup'],
         else:
             if HAS_DISTOPIA:
                 distopia.calc_bonds_no_box_float(coords1, coords2,
-                                                 results=bondlengths)
+                                                 results=bondlengths.astype(np.float32))
+                # upcast is currently required
+                bondlengths = bondlengths.astype(np.float64)
             else:
                 _run("calc_bond_distance",
                      args=(coords1, coords2, bondlengths),
