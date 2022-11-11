@@ -521,6 +521,9 @@ class MemoryReader(base.ProtoReader):
 
         .. versionchanged:: 1.0.0
            Deprecated `format` keyword has been removed. Use `order` instead.
+        .. versionchanged:: 2.4.0
+            ValueError now raised instead of NoDataError for empty input
+            AtomGroup
         """
         if stop != -1:
             warnings.warn("MemoryReader.timeseries inclusive `stop` "
@@ -559,6 +562,9 @@ class MemoryReader(base.ProtoReader):
         if (asel is None or asel is asel.universe.atoms):
             return array
         else:
+            if len(asel) == 0:
+                raise ValueError("Timeseries requires at least one atom "
+                                  "to analyze")
             # If selection is specified, return a copy
             return array.take(asel.indices, a_index)
 
