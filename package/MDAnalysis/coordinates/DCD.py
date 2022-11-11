@@ -64,7 +64,6 @@ import types
 import warnings
 
 from .. import units as mdaunits  # use mdaunits instead of units to avoid a clash
-from ..exceptions import NoDataError
 from . import base, core
 from ..lib.formats.libdcd import DCDFile
 from ..lib.mdamath import triclinic_box
@@ -298,13 +297,16 @@ class DCDReader(base.ReaderBase):
 
         .. versionchanged:: 1.0.0
            `skip` and `format` keywords have been removed.
+        .. versionchanged:: 2.4.0
+            ValueError now raised instead of NoDataError for empty input
+            AtomGroup
         """
 
         start, stop, step = self.check_slice_indices(start, stop, step)
 
         if asel is not None:
             if len(asel) == 0:
-                raise NoDataError(
+                raise ValueError(
                     "Timeseries requires at least one atom to analyze")
             atom_numbers = list(asel.indices)
         else:
