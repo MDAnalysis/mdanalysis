@@ -623,6 +623,9 @@
 
 <span class="sd">        .. versionchanged:: 1.0.0</span>
 <span class="sd">           Deprecated `format` keyword has been removed. Use `order` instead.</span>
+<span class="sd">        .. versionchanged:: 2.4.0</span>
+<span class="sd">            ValueError now raised instead of NoDataError for empty input</span>
+<span class="sd">            AtomGroup</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">stop</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;MemoryReader.timeseries inclusive `stop` &quot;</span>
@@ -661,6 +664,9 @@
         <span class="k">if</span> <span class="p">(</span><span class="n">asel</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">asel</span> <span class="ow">is</span> <span class="n">asel</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">array</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">asel</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Timeseries requires at least one atom &quot;</span>
+                                  <span class="s2">&quot;to analyze&quot;</span><span class="p">)</span>
             <span class="c1"># If selection is specified, return a copy</span>
             <span class="k">return</span> <span class="n">array</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">asel</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">a_index</span><span class="p">)</span></div>
 
