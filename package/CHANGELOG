@@ -54,6 +54,7 @@ Enhancements
   * Added isolayer selection method (Issue #3845)
 
 Changes
+ * Moved `libmdanalysis` cython header to `lib`(Issue #3912, PR #3913)
  * Auxiliary; determination of representative frames: The default value for
    cutoff is now None, not -1. Negative values are now turned
    to None. (PR #3749)
