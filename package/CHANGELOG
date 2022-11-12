@@ -19,7 +19,8 @@ The rules for this file:
  * 2.4.0
 
 Fixes
-  * Update hbond analysis doc string to use exclusive bound language (#3847)
+  * Update hbond analysis doc string to use exclusive bound language 
+    (Issue #3847)
   * NoDataError raised on empty atomgroup provided to `DCDReader.timeseries` 
     was changed to ValueError (see #3901). A matching ValueError was added to
     `MemoryReader.timeseries`(PR #3890). 
@@ -37,15 +38,15 @@ Fixes
 
 Enhancements
   * Added ability for hbond analysis to use types when resnames are not 
-    present (#3847)
+    present (Issue #3847)
   * Added explanatory warnings when hbond analysis doesn't find any hbonds
-    (#3847)
+    (Issue #3847)
   * The timeseries method for exporting coordinates from multiple frames to a
     NumPy array was added to ProtoReader (PR #3890)
   * MDAnalysis now officially supports py3.11 (Issue #3878)
   * LAMMPSDump Reader optionally unwraps trajectories with image flags upon 
-    loading (#3843
-  * LAMMPSDump Reader now imports velocities and forces (#3843)
+    loading (Issue #3843)
+  * LAMMPSDump Reader now imports velocities and forces (Issue #3843)
   * Minimum NumPy version for py3.11 is now set to 1.23.2.
   * Added decorator to check for an empty atom group, applied in topological 
     attributes(Issue #3837)

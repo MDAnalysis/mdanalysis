@@ -329,7 +329,8 @@ class HydrogenBondAnalysis(AnalysisBase):
         .. versionadded:: 2.0.0
             Added `between` keyword
         .. versionchanged:: 2.4.0
-            Added use of atom types
+            Added use of atom types in selection strings for hydrogen atoms, 
+            bond donors, or bond acceptors
 
         """
 
@@ -462,7 +463,7 @@ class HydrogenBondAnalysis(AnalysisBase):
         -------
         potential_donors: str
             String containing the :attr:`resname` and :attr:`name` of all atoms 
-            that potentially capable of forming hydrogen bonds.
+            that are potentially capable of forming hydrogen bonds.
 
         Notes
         -----
@@ -719,9 +720,9 @@ class HydrogenBondAnalysis(AnalysisBase):
 
         if np.size(d_a_indices) == 0:
             warnings.warn(
-                f"No hydrogen bonds were found given d-a cutoff of "
-                "{self.d_a_cutoff} between Donor, {self.donors_sel}, and "
-                "Acceptor, {self.acceptors_sel}."
+                "No hydrogen bonds were found given d-a cutoff of "
+                f"{self.d_a_cutoff} between Donor, {self.donors_sel}, and "
+                f"Acceptor, {self.acceptors_sel}."
             )
 
         # Remove D-A pairs more than d_a_cutoff away from one another
@@ -749,8 +750,8 @@ class HydrogenBondAnalysis(AnalysisBase):
         if np.size(hbond_indices) == 0:
             warnings.warn(
                 "No hydrogen bonds were found given angle of "
-                "{self.d_h_a_angle} between Donor, {self.donors_sel}, and "
-                "Acceptor, {self.acceptors_sel}."
+                f"{self.d_h_a_angle} between Donor, {self.donors_sel}, and "
+                f"Acceptor, {self.acceptors_sel}."
             )
 
         # Retrieve atoms, distances and angles of hydrogen bonds

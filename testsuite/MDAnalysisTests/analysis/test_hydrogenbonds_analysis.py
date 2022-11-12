@@ -23,6 +23,7 @@
 import numpy as np
 import logging
 import pytest
+import copy
 
 from numpy.testing import (assert_allclose, assert_equal,
                            assert_array_almost_equal, assert_array_equal,
@@ -348,6 +349,17 @@ class TestHydrogenBondAnalysisNoRes(TestHydrogenBondAnalysisIdeal):
         )
         h.run()
         return h
+
+    def test_no_hydrogen_bonds(self, universe):
+        tmp_kwargs = copy.deepcopy(self.kwargs)
+        tmp_kwargs["d_h_a_angle_cutoff"] = 50
+        hbonds = HydrogenBondAnalysis(universe, **tmp_kwargs)
+
+        with pytest.warns(UserWarning,
+                          match=("No hydrogen bonds were found given angle "
+                                 "of 50 between Donor, type O, and Acceptor,"
+                                 " type O.")):
+            hbonds.run(step=1)
 
 
 class TestHydrogenBondAnalysisBetween(object):
