@@ -131,7 +131,6 @@ from typing import Union, Optional, List, Dict
 
 from .timestep import Timestep
 from . import core
-from .. import NoDataError
 from .. import (
     _READERS, _READER_HINTS,
     _SINGLEFRAME_WRITERS,
@@ -980,6 +979,78 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             nframes=self.n_frames,
             natoms=self.n_atoms
         ))
+    
+    def timeseries(self, asel: Optional['AtomGroup']=None,
+                   start: Optional[int]=None, stop: Optional[int]=None,
+                   step: Optional[int]=None,
+                   order: Optional[str]='fac') -> np.ndarray:
+        """Return a subset of coordinate data for an AtomGroup
+
+        Parameters
+        ----------
+        asel : AtomGroup (optional)
+            The :class:`~MDAnalysis.core.groups.AtomGroup` to read the
+            coordinates from. Defaults to ``None``, in which case the full set
+            of coordinate data is returned.
+        start :  int (optional)
+            Begin reading the trajectory at frame index `start` (where 0 is the
+            index of the first frame in the trajectory); the default
+            ``None`` starts at the beginning.
+        stop : int (optional)
+            End reading the trajectory at frame index `stop`-1, i.e, `stop` is
+            excluded. The trajectory is read to the end with the default
+            ``None``.
+        step : int (optional)
+            Step size for reading; the default ``None`` is equivalent to 1 and
+            means to read every frame.
+        order : str (optional)
+            the order/shape of the return data array, corresponding
+            to (a)tom, (f)rame, (c)oordinates all six combinations
+            of 'a', 'f', 'c' are allowed ie "fac" - return array
+            where the shape is (frame, number of atoms,
+            coordinates)
+
+        See Also
+        --------
+        :class:`MDAnalysis.coordinates.memory`
+
+
+        .. versionadded:: 2.4.0
+        """
+        start, stop, step = self.check_slice_indices(start, stop, step)
+        nframes = len(range(start, stop, step))
+
+        if asel is not None:
+            if len(asel) == 0:
+                raise ValueError(
+                    "Timeseries requires at least one atom to analyze")
+            atom_numbers = asel.indices
+            natoms = len(atom_numbers)
+        else:
+            natoms = self.n_atoms
+            atom_numbers = np.arange(natoms)
+
+        # allocate output array in 'fac' order
+        coordinates = np.empty((nframes, natoms, 3), dtype=np.float32)
+        for i, ts in enumerate(self[start:stop:step]):
+            coordinates[i, :] = ts.positions[atom_numbers]
+
+        # switch axes around
+        default_order = 'fac'
+        if order != default_order:
+            try:
+                newidx = [default_order.index(i) for i in order]
+            except ValueError:
+                raise ValueError(f"Unrecognized order key in {order}, "
+                                 "must be permutation of 'fac'")
+
+            try:
+                coordinates = np.moveaxis(coordinates, newidx, [0, 1, 2])
+            except ValueError:
+                errmsg = ("Repeated or missing keys passed to argument "
+                          f"`order`: {order}, each key must be used once")
+                raise ValueError(errmsg)
+        return coordinates
 
 # TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def add_auxiliary(self,

@@ -24,7 +24,6 @@ import numpy as np
 
 import MDAnalysis as mda
 from MDAnalysis.coordinates.DCD import DCDReader
-from MDAnalysis.exceptions import NoDataError
 
 from numpy.testing import (assert_equal, assert_array_equal,
                            assert_almost_equal, assert_array_almost_equal)
@@ -231,7 +230,7 @@ def test_timeseries_atomindices(indices, universe_dcd):
 
 
 def test_timeseries_empty_selection(universe_dcd):
-    with pytest.raises(NoDataError):
+    with pytest.raises(ValueError):
         asel = universe_dcd.select_atoms('name FOO')
         universe_dcd.trajectory.timeseries(asel=asel)
 
