@@ -6,6 +6,7 @@ dependencies:
   - chemfiles>=0.10
   - codecov
   - cython
+  - distopia>=0.2.0
   - fasteners
   - griddataformats
   - gsd
