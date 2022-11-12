@@ -269,7 +269,7 @@ class EinsteinMSD(AnalysisBase):
     r"""Class to calculate Mean Squared Displacement by the Einstein relation.
 
     If `fft=False` so that the "windowed" algorithm is used, the second order
-    nonbonded parameter can also computed with ``nongaussian==True`` to 
+    nongaussian parameter can also computed with ``nongaussian==True`` to 
     capture heterogeneity as different time scales. See :cite:p:`Fuchs1998` 
     for more information. 
 
@@ -320,7 +320,7 @@ class EinsteinMSD(AnalysisBase):
     """
 
     def __init__(self, u, select='all', msd_type='xyz', fft=True, 
-                 nongaussian=True, **kwargs):
+                 nongaussian=False, **kwargs):
         r"""
         Parameters
         ----------
