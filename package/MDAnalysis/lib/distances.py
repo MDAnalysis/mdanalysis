@@ -50,10 +50,34 @@ case-insensitive):
                                         with OpenMP
    ========== ========================= ======================================
 
+Use of the distopia library
+---------------------------
+
+MDAnalysis has developed a standalone library, `distopia`_ for accelerating
+the distance functions in this module using explicit SIMD vectorisation.
+This can provide many-fold speedups in calculating distances. Distopia is
+under active development and as such only a selection of functions in this
+module are covered. Consult the following table to see if the function 
+you wish to use is covered by distopia.
+
++------------+
+| Functions  |
++============+
+| calc_bonds |
++------------+
+
+If `distopia`_ is installed, the functions in this table will be replaced by their
+equivalents from distopia.
+ 
+.. _distopia: https://github.com/MDAnalysis/distopia
+
+
 .. versionadded:: 0.13.0
 .. versionchanged:: 2.3.0
    Distance functions can now accept an
    :class:`~MDAnalysis.core.groups.AtomGroup` or an :class:`np.ndarray`
+.. versionchanged:: 2.4.0
+   Interface to the `distopia` package added.
 
 Functions
 ---------
@@ -1440,7 +1464,7 @@ def calc_bonds(coords1: Union[np.ndarray, 'AtomGroup'],
        Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
        argument in any position and checks inputs using type hinting.
     .. versionchanged:: 2.4.0 
-       Can use the fast distance functions from distopia
+       Can now optionally use the fast distance functions from distopia
     """
     numatom = coords1.shape[0]
     bondlengths = _check_result_array(result, (numatom,))
