@@ -25,7 +25,7 @@
 from MDAnalysis.analysis.msd import EinsteinMSD as MSD
 import MDAnalysis as mda
 
-from numpy.testing import (assert_almost_equal, assert_equal)
+from numpy.testing import (assert_almost_equal, assert_equal, assert_allclose)
 import numpy as np
 
 from MDAnalysisTests.datafiles import PSF, DCD, RANDOM_WALK, RANDOM_WALK_TOPO
@@ -147,20 +147,21 @@ class TestMSDSimple(object):
 
     def test_random_walk_u_simple(self, random_walk_u):
         # regress against random_walk test data
-        msd_rw = MSD(random_walk_u, 'all', msd_type='xyz', fft=False)
+        msd_rw = MSD(random_walk_u, 'all', msd_type='xyz', fft=False, 
+                     nongaussian=True)
         msd_rw.run()
         norm = np.linalg.norm(msd_rw.results.timeseries)
         val = 3932.39927487146
         assert_almost_equal(norm, val, decimal=5)
         # nongaussian parameter may have negative values (above -2.5) and 
-        # postiive values, but converge to zero at long times.
-        assert_almost_equal(msd_rw.results.nongaussian_parameter[:20], 
+        # positive values, but converge to zero at long times.
+        assert_allclose(msd_rw.results.nongaussian_parameter[:20], 
                             np.array([np.nan,  0.00049,  0.00048,  0.00536, 
                                 -0.00299,  0.00014, -0.0046 , -0.00612, 
                                 -0.00307,  0.00033,  0.00584,  0.0131 ,
                                 0.01516,  0.01666,  0.01924,  0.02052,  
                                 0.01961,  0.01743, 0.01355,  0.00997]), 
-                            decimal=5)
+                            atol=1e-5)
 
 
 @pytest.mark.skipif(import_not_available("tidynamics"),

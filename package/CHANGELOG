@@ -31,7 +31,7 @@ Fixes
     (e.g. bonds, angles) (PR #3779).
 
 Enhancements
-  * Nongaussian parameter available from msd.run(fft=False), (#3895)
+  * Nongaussian parameter available from msd.run(fft=False), (Issue #3895)
   * LAMMPSDump Reader optionally unwraps trajectories with image flags upon 
     loading (#3843
   * LAMMPSDump Reader now imports velocities and forces (#3843)

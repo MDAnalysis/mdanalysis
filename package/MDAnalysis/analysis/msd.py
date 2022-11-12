@@ -269,8 +269,9 @@ class EinsteinMSD(AnalysisBase):
     r"""Class to calculate Mean Squared Displacement by the Einstein relation.
 
     If `fft=False` so that the "windowed" algorithm is used, the second order
-    nonbonded parameter is also computed to capture heterogiety as different
-    time scales. See :cite:p:`Fuchs1998` for more information. 
+    nonbonded parameter can also computed with ``nongaussian==True`` to 
+    capture heterogeneity as different time scales. See :cite:p:`Fuchs1998` 
+    for more information. 
 
     Parameters
     ----------
@@ -287,6 +288,8 @@ class EinsteinMSD(AnalysisBase):
         the MSD. Otherwise, use the simple "windowed" algorithm.
         The tidynamics package is required for `fft=True`.
         Defaults to ``True``.
+    nongaussian : bool
+        If ``True`` the nongaussian parameter is calculated.
 
     Attributes
     ----------
@@ -296,10 +299,10 @@ class EinsteinMSD(AnalysisBase):
         The averaged MSD over all the particles with respect to lag-time.
     results.msds_by_particle : :class:`numpy.ndarray`
         The MSD of each individual particle with respect to lag-time.
-    results.nongaussian : :class:`numpy.ndarray`
+    results.nongaussian_parameter : :class:`numpy.ndarray`
         Only available when `fft==False`. The averaged nongaussian 
         parameter  over all the particles with respect to lag-time.
-    results.msds_by_nongaussian : :class:`numpy.ndarray`
+    results.nongaussian_by_particle : :class:`numpy.ndarray`
         Only available when `fft==False`. The nongaussian parameter 
         of each individual particle with respect to lag-time.
     ag : :class:`AtomGroup`
@@ -316,7 +319,8 @@ class EinsteinMSD(AnalysisBase):
     .. versionadded:: 2.0.0
     """
 
-    def __init__(self, u, select='all', msd_type='xyz', fft=True, **kwargs):
+    def __init__(self, u, select='all', msd_type='xyz', fft=True, 
+                 nongaussian=True, **kwargs):
         r"""
         Parameters
         ----------
@@ -331,6 +335,8 @@ class EinsteinMSD(AnalysisBase):
             If ``True``, uses a fast FFT based algorithm for computation of
             the MSD. Otherwise, use the simple "windowed" algorithm.
             The tidynamics package is required for `fft=True`.
+        nongaussian : bool
+            If ``True`` the nongaussian parameter is calculated.
         """
         if isinstance(u, groups.UpdatingAtomGroup):
             raise TypeError("UpdatingAtomGroups are not valid for MSD "
@@ -343,6 +349,7 @@ class EinsteinMSD(AnalysisBase):
         self.msd_type = msd_type
         self._parse_msd_type()
         self.fft = fft
+        self.nongaussian = nongaussian
 
         # local
         self.ag = u.select_atoms(self.select)
@@ -352,7 +359,7 @@ class EinsteinMSD(AnalysisBase):
         # result
         self.results.msds_by_particle = None
         self.results.timeseries = None
-        if not fft:
+        if not fft and nongaussian:
             self.results.nongaussian_by_particle = None
             self.results.nongaussian_parameter = None
 
@@ -361,7 +368,7 @@ class EinsteinMSD(AnalysisBase):
         # these need to be zeroed prior to each run() call
         self.results.msds_by_particle = np.zeros((self.n_frames,
                                                   self.n_particles))
-        if not self.fft:
+        if not self.fft and self.nongaussian:
             self.results.nongaussian_by_particle = np.zeros((self.n_frames,
                                                       self.n_particles))
         self._position_array = np.zeros(
@@ -413,17 +420,19 @@ class EinsteinMSD(AnalysisBase):
             sqdist = np.square(disp).sum(axis=-1)
             tmp = np.mean(sqdist, axis=0)
             self.results.msds_by_particle[lag, :] = tmp
-            self.results.nongaussian_by_particle[lag, :] = 3.0/5.0*np.mean(
-                np.square(sqdist), axis=0)/np.square(tmp) - 1.0
+            if self.nongaussian:
+                self.results.nongaussian_by_particle[lag, :] = 3.0/5.0*np.mean(
+                    np.square(sqdist), axis=0)/np.square(tmp) - 1.0
 
         self.results.timeseries = self.results.msds_by_particle.mean(axis=1)
-        self.results.nongaussian_parameter = (3.0/5.0*
-            np.mean(
-                (self.results.nongaussian_by_particle + 1.0)*5.0/3.0
-                    *np.square(self.results.msds_by_particle), 
-                axis=1
-            )
-            /np.square(self.results.timeseries) - 1.0)
+        if self.nongaussian:
+            self.results.nongaussian_parameter = (3.0/5.0*
+                np.mean(
+                    (self.results.nongaussian_by_particle + 1.0)*5.0/3.0
+                        *np.square(self.results.msds_by_particle), 
+                    axis=1
+                )
+                /np.square(self.results.timeseries) - 1.0)
 
     def _conclude_fft(self):  # with FFT, np.float64 bit prescision required.
         r""" Calculates the MSD via the FCA fast correlation algorithm.
