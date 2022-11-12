@@ -163,7 +163,7 @@ class TRRReader(XDRBaseReader):
         ts.has_positions = True
         ts.has_velocities = True
         ts.has_forces = True
-        frame = self._xdr.read_direct_pvf(ts.positions, ts.velocities, ts.forces)
+        frame = self._xdr.read_direct_xvf(ts.positions, ts.velocities, ts.forces)
         self._frame += 1
         self._frame_to_ts(frame, ts)
         return ts

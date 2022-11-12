@@ -413,7 +413,7 @@ cdef class TRRFile(_XDRFile):
 
 
     .. versionchanged:: 2.4.0
-       Added read_direct method to read into an existing positions array
+       Added read_direct and read_direct_xvf method to read into an existing positions array
     """
 
     def _calc_natoms(self, fname):
@@ -604,7 +604,7 @@ cdef class TRRFile(_XDRFile):
         return TRRFrame(positions, velocity, forces, box, step, time, lmbda,
                         has_x, has_v, has_f)
 
-    def read_direct_pvf(self, np.float32_t[:, ::1] positions,
+    def read_direct_xvf(self, np.float32_t[:, ::1] positions,
                         np.float32_t[:, ::1] velocities,
                         np.float32_t[:, ::1] forces,):
         """
