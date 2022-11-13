@@ -77,3 +77,10 @@ Python-based projects.
 
    ./lib/formats/libmdaxdr
    ./lib/formats/libdcd
+
+Libmdanalysis
+-------------
+
+The `__init__.pxd` file in :mod:`MDAnalysis.lib.libmdanalysis` provides a single place to 
+import MDAnalysis' public Cython headers. This is reccomended for advanced
+developers only.
