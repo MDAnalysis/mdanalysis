@@ -172,6 +172,10 @@ References and footnotes
 
 """
 
+from pint import UnitRegistry
+
+MDA_PINT_UNITS = UnitRegistry(system='SI')
+
 #
 # NOTE: Whenever a constant is added to the constants dict, you also
 #       MUST add an appropriate entry to
@@ -189,10 +193,12 @@ References and footnotes
 #:    http://physics.nist.gov/Pubs/SP811/appenB8.html#C
 #:
 #: .. versionadded:: 0.9.0
+#  .. versionchanged:: 2.4.0
+#       Now uses pint for units
 constants = {
-    'N_Avogadro': 6.02214129e+23,          # mol**-1
-    'elementary_charge': 1.602176565e-19,  # As
-    'calorie': 4.184,                      # J
+    'N_Avogadro': (1*MDA_PINT_UNITS.avogadro_constant).to("1/mol").magnitude, # mol**-1
+    'elementary_charge': (1*MDA_PINT_UNITS.elementary_charge).to("A*s").magnitude,  # Ampere*sec
+    'calorie': (1* MDA_PINT_UNITS.cal).to("J").magnitude,  # J
     'Boltzman_constant': 8.314462159e-3,   # KJ (mol K)**-1
     'electric_constant': 5.526350e-3,      # As (Angstroms Volts)**-1
 }
