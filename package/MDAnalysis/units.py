@@ -176,6 +176,18 @@ from pint import UnitRegistry
 
 MDA_PINT_UNITS = UnitRegistry(system='SI')
 
+#: Lookup table for base units in MDAnalysis by unit type.
+MDANALYSIS_BASE_UNITS = {"length": "A",
+                         "time": "ps",
+                         "energy": "kJ/mol",
+                         "charge": "e",
+                         "force": "kJ/(mol*A)",
+                         "speed": "A/ps",
+                         "substance": "mol"}
+
+#: Lookup table for base units in MDAnalysis by as pint units
+MDANALYSIS_BASE_PINT_UNITS = {k:MDA_PINT_UNITS.Unit(MDANALYSIS_BASE_UNITS[v]) for k, v in MDANALYSIS_BASE_UNITS.items()}
+
 #
 # NOTE: Whenever a constant is added to the constants dict, you also
 #       MUST add an appropriate entry to
@@ -197,7 +209,7 @@ MDA_PINT_UNITS = UnitRegistry(system='SI')
 #       Now uses pint for units
 constants = {
     'N_Avogadro': (1*MDA_PINT_UNITS.avogadro_constant).to("1/mol").magnitude, # mol**-1
-    'elementary_charge': (1*MDA_PINT_UNITS.elementary_charge).to("A*s").magnitude,  # Ampere*sec
+    'elementary_charge': (1*MDA_PINT_UNITS.elementary_charge).to("A*s").magnitude,  # Ampere*sec (C)
     'calorie': (1* MDA_PINT_UNITS.cal).to("J").magnitude,  # J
     'Boltzman_constant': 8.314462159e-3,   # KJ (mol K)**-1
     'electric_constant': 5.526350e-3,      # As (Angstroms Volts)**-1
@@ -208,16 +220,16 @@ constants = {
 #: Conversions follow `L/x = L/Angstrom * lengthUnit_factor[x]`.
 #: *x* can be *nm*/*nanometer* or *fm*.
 lengthUnit_factor = {
-    'Angstrom': (1*MDA_PINT_UNITS.angstrom).to("angstrom").magnitude,
-    'A': (1*MDA_PINT_UNITS.angstrom).to("angstrom").magnitude,
-    'angstrom': (1*MDA_PINT_UNITS.angstrom).to("angstrom").magnitude,
-    u'\u212b': (1*MDA_PINT_UNITS.angstrom).to("angstrom").magnitude,   # Unicode and UTF-8 encoded symbol for angstroms
-    'nm': (1*MDA_PINT_UNITS.angstrom).to("nanometer").magnitude,
-    'nanometer': (1*MDA_PINT_UNITS.angstrom).to("nanometer").magnitude,
-    'pm': (1*MDA_PINT_UNITS.angstrom).to("picometer").magnitude,
-    'picometer': (1*MDA_PINT_UNITS.angstrom).to("picometer").magnitude,
-    'fm': (1*MDA_PINT_UNITS.angstrom).to("femtometer").magnitude,
-    'femtometer': (1*MDA_PINT_UNITS.angstrom).to("femtometer").magnitude,
+    'Angstrom': (1*MDANALYSIS_BASE_PINT_UNITS["length"]).to("angstrom").magnitude,
+    'A': (1*MDANALYSIS_BASE_PINT_UNITS["length"]).to("angstrom").magnitude,
+    'angstrom': (1*MDANALYSIS_BASE_PINT_UNITS["length"]).to("angstrom").magnitude,
+    u'\u212b': (1*MDANALYSIS_BASE_PINT_UNITS["length"]).to("angstrom").magnitude,   # Unicode and UTF-8 encoded symbol for angstroms
+    'nm': (1*MDANALYSIS_BASE_PINT_UNITS["length"]).to("nanometer").magnitude,
+    'nanometer': (1*MDANALYSIS_BASE_PINT_UNITS["length"]).to("nanometer").magnitude,
+    'pm': (1*MDANALYSIS_BASE_PINT_UNITS["length"]).to("picometer").magnitude,
+    'picometer': (1*MDANALYSIS_BASE_PINT_UNITS["length"]).to("picometer").magnitude,
+    'fm': (1*MDANALYSIS_BASE_PINT_UNITS["length"]).to("femtometer").magnitude,
+    'femtometer': (1*MDANALYSIS_BASE_PINT_UNITS["length"]).to("femtometer").magnitude,
 }
 
 
@@ -242,9 +254,11 @@ water = {
 #: it can be convenient to measure the density relative to bulk, and
 #: hence a number of values are pre-stored in :data:`water`.
 densityUnit_factor = {
-    'Angstrom^{-3}': 1 / 1.0, 'A^{-3}': 1 / 1.0,
-    '\u212b^{-3}': 1 / 1.0,
-    'nm^{-3}': 1 / 1e-3, 'nanometer^{-3}': 1 / 1e-3,
+    'Angstrom^{-3}': (1*MDANALYSIS_BASE_PINT_UNITS["length"]**3).to("angstrom**3").magnitude,
+    'A^{-3}': (1*MDANALYSIS_BASE_PINT_UNITS["length"]**3).to("angstrom**3").magnitude,
+    '\u212b^{-3}': (1*MDANALYSIS_BASE_PINT_UNITS["length"]**3).to("angstrom**3").magnitude,
+    'nm^{-3}': (1*MDANALYSIS_BASE_PINT_UNITS["length"]**3).to("nm**3").magnitude,
+    'nanometer^{-3}': (1*MDANALYSIS_BASE_PINT_UNITS["length"]**3).to("nm**3").magnitude,
     'Molar': 1 / (1e-27 * constants['N_Avogadro']),
     'SPC': 1 / (1e-24 * constants['N_Avogadro'] * water['SPC'] / water['MolarMass']),
     'TIP3P': 1 / (1e-24 * constants['N_Avogadro'] * water['TIP3P'] / water['MolarMass']),
@@ -256,12 +270,20 @@ densityUnit_factor = {
 #: For *time*, the basic unit is ps; in particular CHARMM's
 #: 1 AKMA_ time unit = 4.888821E-14 sec is supported.
 timeUnit_factor = {
-    'ps': 1.0, 'picosecond': 1.0,  # 1/1.0
-    'fs': 1e3, 'femtosecond': 1e3,  # 1/1e-3,
-    'ns': 1e-3, 'nanosecond': 1e-3,  # 1/1e3,
-    'ms': 1e-9, 'millisecond': 1e-9,  # 1/1e9,
-    'us': 1e-6, 'microsecond': 1e-6, '\u03BCs': 1e-6,  # 1/1e6,
-    'second': 1e-12, 'sec': 1e-12, 's': 1e-12,  # 1/1e12,
+    'ps': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("ps").magnitude,
+    'picosecond': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("ps").magnitude,
+    'fs': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("fs").magnitude,
+    'femtosecond': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("fs").magnitude,
+    'ns': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("ns").magnitude,
+    'nanosecond': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("ns").magnitude,
+    'ms': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("ms").magnitude,
+    'millisecond': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("ms").magnitude,
+    'us': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("us").magnitude,
+    'microsecond': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("us").magnitude,
+    '\u03BCs': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("us").magnitude,
+    'second': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("s").magnitude,
+    'sec': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("s").magnitude,
+    's':(1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("s").magnitude,
     'AKMA': 1 / 4.888821e-2,
 }
 # getting the factor f:  1200ps * f = 1.2 ns  ==> f = 1/1000 ns/ps
@@ -353,15 +375,6 @@ for utype, ufactor in conversion_factor.items():
     for unit in ufactor.keys():
         assert not unit in unit_types  # see comment!
         unit_types[unit] = utype
-
-#: Lookup table for base units in MDAnalysis by unit type.
-MDANALYSIS_BASE_UNITS = {"length": "A",
-                         "time": "ps",
-                         "energy": "kJ/mol",
-                         "charge": "e",
-                         "force": "kJ/(mol*A)",
-                         "speed": "A/ps"}
-
 
 def get_conversion_factor(unit_type, u1, u2):
     """generate the conversion factor u1 -> u2 by using the base unit as an intermediate
