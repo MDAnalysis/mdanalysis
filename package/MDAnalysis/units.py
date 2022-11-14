@@ -208,11 +208,16 @@ constants = {
 #: Conversions follow `L/x = L/Angstrom * lengthUnit_factor[x]`.
 #: *x* can be *nm*/*nanometer* or *fm*.
 lengthUnit_factor = {
-    'Angstrom': 1.0, 'A': 1.0, 'angstrom': 1.0,
-    u'\u212b': 1.0,   # Unicode and UTF-8 encoded symbol for angstroms
-    'nm': 1.0 / 10, 'nanometer': 1.0 / 10,
-    'pm': 1e2, 'picometer': 1e2,
-    'fm': 1e5, 'femtometer': 1e5,
+    'Angstrom': (1*MDA_PINT_UNITS.angstrom).to("angstrom").magnitude,
+    'A': (1*MDA_PINT_UNITS.angstrom).to("angstrom").magnitude,
+    'angstrom': (1*MDA_PINT_UNITS.angstrom).to("angstrom").magnitude,
+    u'\u212b': (1*MDA_PINT_UNITS.angstrom).to("angstrom").magnitude,   # Unicode and UTF-8 encoded symbol for angstroms
+    'nm': (1*MDA_PINT_UNITS.angstrom).to("nanometer").magnitude,
+    'nanometer': (1*MDA_PINT_UNITS.angstrom).to("nanometer").magnitude,
+    'pm': (1*MDA_PINT_UNITS.angstrom).to("picometer").magnitude,
+    'picometer': (1*MDA_PINT_UNITS.angstrom).to("picometer").magnitude,
+    'fm': (1*MDA_PINT_UNITS.angstrom).to("femtometer").magnitude,
+    'femtometer': (1*MDA_PINT_UNITS.angstrom).to("femtometer").magnitude,
 }
 
 
