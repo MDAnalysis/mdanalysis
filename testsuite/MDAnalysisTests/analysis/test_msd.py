@@ -120,7 +120,8 @@ class TestMSDSimple(object):
                                        dim_factor):
         # testing the "simple" algorithm on constant velocity trajectory
         # should fit the polynomial y=dim_factor*x**2
-        m_simple = MSD(step_traj, 'all', msd_type=dim, fft=False)
+        m_simple = MSD(step_traj, 'all', msd_type=dim, fft=False, 
+                       nongaussian=True)
         m_simple.run()
         poly = characteristic_poly(NSTEP, dim_factor)
         alpha = -0.4*np.ones(NSTEP)
