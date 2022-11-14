@@ -185,8 +185,16 @@ MDANALYSIS_BASE_UNITS = {"length": "A",
                          "speed": "A/ps",
                          "substance": "mol"}
 
-#: Lookup table for base units in MDAnalysis by as pint units
-MDANALYSIS_BASE_PINT_UNITS = {k:MDA_PINT_UNITS.Unit(MDANALYSIS_BASE_UNITS[v]) for k, v in MDANALYSIS_BASE_UNITS.items()}
+#: Lookup table for base units in MDAnalysis as pint units
+#  NOTE: A is not a valid pint symbol for angstrom (it means Ampere),
+#  so requires the use of "angstrom"
+MDANALYSIS_BASE_PINT_UNITS = {"length": MDA_PINT_UNITS.Unit("angstrom"),
+                              "time": MDA_PINT_UNITS.Unit("ps"),
+                              "energy": MDA_PINT_UNITS.Unit("kJ/mol"),
+                              "charge": MDA_PINT_UNITS.Unit("e"),
+                              "force": MDA_PINT_UNITS.Unit("kJ/(mol*angstrom)"),
+                              "speed": MDA_PINT_UNITS.Unit("angstrom/ps"),
+                              "substance": MDA_PINT_UNITS.Unit("mol")}
 
 #
 # NOTE: Whenever a constant is added to the constants dict, you also
@@ -208,28 +216,35 @@ MDANALYSIS_BASE_PINT_UNITS = {k:MDA_PINT_UNITS.Unit(MDANALYSIS_BASE_UNITS[v]) fo
 #  .. versionchanged:: 2.4.0
 #       Now uses pint for units
 constants = {
-    'N_Avogadro': (1*MDA_PINT_UNITS.avogadro_constant).to("1/mol").magnitude, # mol**-1
-    'elementary_charge': (1*MDA_PINT_UNITS.elementary_charge).to("A*s").magnitude,  # Ampere*sec (C)
-    'calorie': (1* MDA_PINT_UNITS.cal).to("J").magnitude,  # J
-    'Boltzman_constant': 8.314462159e-3,   # KJ (mol K)**-1
-    'electric_constant': 5.526350e-3,      # As (Angstroms Volts)**-1
-}
+    # mol**-1
+    'N_Avogadro': (1.0*MDA_PINT_UNITS.avogadro_constant).to("1/mol").magnitude,
+    # Ampere*sec (C)
+    'elementary_charge': (1.0*MDA_PINT_UNITS.elementary_charge).to("A*s").magnitude,
+    # J
+    'calorie': (1.0 * MDA_PINT_UNITS.cal).to("J").magnitude,  
+    # KJ (mol K)**-1
+    'Boltzmann_constant': (1.0*MDA_PINT_UNITS.boltzmann_constant*MDA_PINT_UNITS.avogadro_constant).to("kJ/mol/K").magnitude,
+    # e**2 (eV *A)**-1 
+    'electric_constant': (1.0*MDA_PINT_UNITS.electric_constant).to("e**2/eV/angstrom").magnitude}
 
 #: The basic unit of *length* in MDAnalysis is the Angstrom.
 #: Conversion factors between the base unit and other lengthUnits *x* are stored.
 #: Conversions follow `L/x = L/Angstrom * lengthUnit_factor[x]`.
 #: *x* can be *nm*/*nanometer* or *fm*.
 lengthUnit_factor = {
-    'Angstrom': (1*MDANALYSIS_BASE_PINT_UNITS["length"]).to("angstrom").magnitude,
-    'A': (1*MDANALYSIS_BASE_PINT_UNITS["length"]).to("angstrom").magnitude,
-    'angstrom': (1*MDANALYSIS_BASE_PINT_UNITS["length"]).to("angstrom").magnitude,
-    u'\u212b': (1*MDANALYSIS_BASE_PINT_UNITS["length"]).to("angstrom").magnitude,   # Unicode and UTF-8 encoded symbol for angstroms
-    'nm': (1*MDANALYSIS_BASE_PINT_UNITS["length"]).to("nanometer").magnitude,
-    'nanometer': (1*MDANALYSIS_BASE_PINT_UNITS["length"]).to("nanometer").magnitude,
-    'pm': (1*MDANALYSIS_BASE_PINT_UNITS["length"]).to("picometer").magnitude,
-    'picometer': (1*MDANALYSIS_BASE_PINT_UNITS["length"]).to("picometer").magnitude,
-    'fm': (1*MDANALYSIS_BASE_PINT_UNITS["length"]).to("femtometer").magnitude,
-    'femtometer': (1*MDANALYSIS_BASE_PINT_UNITS["length"]).to("femtometer").magnitude,
+    'Angstrom': (1.0*MDANALYSIS_BASE_PINT_UNITS["length"]).to("angstrom").magnitude,
+    'A': (1.0*MDANALYSIS_BASE_PINT_UNITS["length"]).to("angstrom").magnitude,
+    'angstrom': (1.0*MDANALYSIS_BASE_PINT_UNITS["length"]).to("angstrom").magnitude,
+    # Unicode and UTF-8 encoded symbol for angstroms
+    u'\u212b': (1.0*MDANALYSIS_BASE_PINT_UNITS["length"]).to("angstrom").magnitude,
+    'nm': (1.0*MDANALYSIS_BASE_PINT_UNITS["length"]).to("nanometer").magnitude,
+    'nanometer': (1.0*MDANALYSIS_BASE_PINT_UNITS["length"]).to("nanometer").magnitude,
+    'pm': (1.0*MDANALYSIS_BASE_PINT_UNITS["length"]).to("picometer").magnitude,
+    'picometer': (1.0*MDANALYSIS_BASE_PINT_UNITS["length"]).to("picometer").magnitude,
+    'fm': (1.0*MDANALYSIS_BASE_PINT_UNITS["length"]).to("femtometer").magnitude,
+    'femtometer': (1.0*MDANALYSIS_BASE_PINT_UNITS["length"]).to("femtometer").magnitude,
+    'm': (1.0*MDANALYSIS_BASE_PINT_UNITS["length"]).to("meter").magnitude,
+    'meter': (1.0*MDANALYSIS_BASE_PINT_UNITS["length"]).to("meter").magnitude
 }
 
 
@@ -270,62 +285,37 @@ densityUnit_factor = {
 #: For *time*, the basic unit is ps; in particular CHARMM's
 #: 1 AKMA_ time unit = 4.888821E-14 sec is supported.
 timeUnit_factor = {
-    'ps': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("ps").magnitude,
-    'picosecond': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("ps").magnitude,
-    'fs': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("fs").magnitude,
-    'femtosecond': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("fs").magnitude,
-    'ns': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("ns").magnitude,
-    'nanosecond': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("ns").magnitude,
-    'ms': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("ms").magnitude,
-    'millisecond': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("ms").magnitude,
-    'us': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("us").magnitude,
-    'microsecond': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("us").magnitude,
+    'ps': (1.0*MDANALYSIS_BASE_PINT_UNITS["time"]).to("ps").magnitude,
+    'picosecond': (1.0*MDANALYSIS_BASE_PINT_UNITS["time"]).to("ps").magnitude,
+    'fs': (1.0*MDANALYSIS_BASE_PINT_UNITS["time"]).to("fs").magnitude,
+    'femtosecond': (1.0*MDANALYSIS_BASE_PINT_UNITS["time"]).to("fs").magnitude,
+    'ns': (1.0*MDANALYSIS_BASE_PINT_UNITS["time"]).to("ns").magnitude,
+    'nanosecond': (1.0*MDANALYSIS_BASE_PINT_UNITS["time"]).to("ns").magnitude,
+    'ms': (1.0*MDANALYSIS_BASE_PINT_UNITS["time"]).to("ms").magnitude,
+    'millisecond': (1.0*MDANALYSIS_BASE_PINT_UNITS["time"]).to("ms").magnitude,
+    'us': (1.0*MDANALYSIS_BASE_PINT_UNITS["time"]).to("us").magnitude,
+    'microsecond': (1.0*MDANALYSIS_BASE_PINT_UNITS["time"]).to("us").magnitude,
     '\u03BCs': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("us").magnitude,
     'second': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("s").magnitude,
     'sec': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("s").magnitude,
-    's':(1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("s").magnitude,
+    's': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("s").magnitude,
     'AKMA': 1 / 4.888821e-2,
 }
 # getting the factor f:  1200ps * f = 1.2 ns  ==> f = 1/1000 ns/ps
 
-#: For *speed*, the basic unit is Angstrom/ps.
-speedUnit_factor = {
-    'Angstrom/ps': 1.0, 'A/ps': 1.0, '\u212b/ps': 1.0,
-    'Angstrom/picosecond': 1.0,
-    'angstrom/picosecond': 1.0,  # 1
-    'Angstrom/fs': 1.0 * 1e3,
-    'Angstrom/femtosecond': 1.0 * 1e3,
-    'angstrom/femtosecond': 1.0 * 1e3,
-    'angstrom/fs': 1.0 * 1e3,
-    'A/fs': 1.0 * 1e3,
-    'Angstrom/ms': 1.0 * 1e-9,
-    'Angstrom/millisecond': 1.0 * 1e-9,
-    'angstrom/millisecond': 1.0 * 1e-9,
-    'angstrom/ms': 1.0 * 1e-9,
-    'A/ms': 1.0 * 1e-9,
-    'Angstrom/us': 1.0 * 1e-6,
-    'angstrom/us': 1.0 * 1e-6,
-    'A/us': 1.0 * 1e-6,
-    'Angstrom/microsecond': 1.0 * 1e-6,
-    'angstrom/microsecond': 1.0 * 1e-6,
-    'Angstrom/\u03BCs': 1.0 * 1e-6,
-    'angstrom/\u03BCs': 1.0 * 1e-6,
-    'Angstrom/AKMA': 4.888821e-2,
-    'A/AKMA': 4.888821e-2,
-    'nm/ps': 0.1, 'nanometer/ps': 0.1, 'nanometer/picosecond': 0.1,  # 1/10
-    'nm/ns': 0.1 / 1e-3,
-    'pm/ps': 1e2,
-    'm/s': 1e-10 / 1e-12,
-}
-# (TODO: build this combinatorically from lengthUnit and timeUnit)
+speedUnit_factor = {}
+for length, lfactor in lengthUnit_factor.items():
+    for time, tfactor in timeUnit_factor.items():
+        speedUnit_factor[length + '/' + time] = lfactor/tfactor
+
 
 #: *Energy* is measured in kJ/mol.
 energyUnit_factor = {
-    'kJ/mol': 1.0,
-    'kcal/mol': 1/constants['calorie'],
-    'J': 1e3/constants['N_Avogadro'],
+    'kJ/mol': (1*MDANALYSIS_BASE_PINT_UNITS["energy"]).to("kJ/mol").magnitude,
+    'kcal/mol': (1*MDANALYSIS_BASE_PINT_UNITS["energy"]).to("kcal/mol").magnitude,
+    'J': (1*MDANALYSIS_BASE_PINT_UNITS["energy"]/MDA_PINT_UNITS.avogadro_constant).to("J").magnitude,
     'eV': 1e3/(constants['N_Avogadro'] * constants['elementary_charge']),
-    }
+}
 
 #: For *force* the basic unit is kJ/(mol*Angstrom).
 forceUnit_factor = {
@@ -411,7 +401,7 @@ def convert(x, u1, u2):
         errmsg = (f"unit '{u1}' not recognized.\n"
                   f"It must be one of {', '.join(unit_types)}.")
         raise ValueError(errmsg) from None
-                  
+
     try:
         ut2 = unit_types[u2]
     except KeyError:
