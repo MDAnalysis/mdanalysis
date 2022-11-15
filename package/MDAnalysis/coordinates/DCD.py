@@ -96,6 +96,14 @@ class DCDReader(base.ReaderBase):
     degrees then it is assumed it is a new-style CHARMM unitcell (at least
     since c36b2) in which box vectors were recorded.
 
+    .. deprecated:: 2.4.0
+        DCDReader currently makes independent timesteps
+        by copying the :class:`Timestep` associated with the reader.
+        Other readers update the :class:`Timestep` inplace meaning all
+        references to the :class:`Timestep` contain the same data. The unique
+        independent :class:`Timestep` behaviour of the DCDReader is deprecated
+        will be changed in 3.0 to be the same as other readers
+
     .. warning::
         The DCD format is not well defined. Check your unit cell
         dimensions carefully, especially when using triclinic boxes.
@@ -158,7 +166,7 @@ class DCDReader(base.ReaderBase):
         self.ts.dt = dt
         warnings.warn("DCDReader currently makes independent timesteps"
                       " by copying self.ts while other readers update"
-                      " self.ts. This behaviour will be changed in"
+                      " self.ts inplace. This behaviour will be changed in"
                       " 3.0 to be the same as other readers",
                        category=DeprecationWarning)
 
@@ -195,6 +203,7 @@ class DCDReader(base.ReaderBase):
         if self._frame == self.n_frames - 1:
             raise IOError('trying to go over trajectory limit')
         if ts is None:
+            #TODO remove copying the ts in 3.0 
             ts = self.ts.copy()
         frame = self._file.read()
         self._frame += 1

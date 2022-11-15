@@ -451,7 +451,7 @@ class BaseReaderTest(object):
         if isinstance(reader, mda.coordinates.memory.MemoryReader):
             pytest.xfail("memoryreader allows independent coordinates") 
         if isinstance(reader, mda.coordinates.DCD.DCDReader):
-            pytest;.xfail("DCDReader allows independent coordinates."
+            pytest.xfail("DCDReader allows independent coordinates."
                           "This behaviour is deprecated and will be changed"
                           "in 3.0")
         collected_ts = []
