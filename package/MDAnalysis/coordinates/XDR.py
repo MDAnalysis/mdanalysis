@@ -290,6 +290,7 @@ class XDRBaseReader(base.ReaderBase):
         return timestep
 
     def _read_next_timestep(self, ts=None):
+        # NOTE: TRR implements its own version
         """copy next frame into timestep"""
         if self._frame == self.n_frames - 1:
             raise IOError(errno.EIO, 'trying to go over trajectory limit')

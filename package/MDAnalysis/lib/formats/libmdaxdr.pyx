@@ -475,9 +475,6 @@ cdef class TRRFile(_XDRFile):
         cdef float time = 0
         cdef float lmbda = 0
 
-        # Use this instead of memviews here to make sure that references are
-        # counted correctly
-
         cdef np.npy_intp[2] dim
         dim[0] = self.n_atoms
         dim[1] = DIMS
@@ -570,6 +567,8 @@ cdef class TRRFile(_XDRFile):
         unitcell_dim[0] = DIMS
         unitcell_dim[1] = DIMS
 
+        # we have positions memoryview to read into but we still need to allocate
+        # memory for the trr reader to work correctly
         cdef np.ndarray[np.float32_t, ndim=2] velocity = np.PyArray_EMPTY(2, dim, np.NPY_FLOAT32, 0)
         cdef np.ndarray[np.float32_t, ndim=2] forces = np.PyArray_EMPTY(2, dim, np.NPY_FLOAT32, 0)
         cdef np.ndarray[np.float32_t, ndim=2] box = np.PyArray_EMPTY(2, unitcell_dim, np.NPY_FLOAT32, 0)
