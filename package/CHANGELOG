@@ -19,14 +19,11 @@ The rules for this file:
  * 2.4.0
 
 Fixes
-<<<<<<< HEAD
   * DCD reader no longer copies timestep and instead updates it in line with other readers
     (Issue #3889, PR #3888)
-=======
   * NoDataError raised on empty atomgroup provided to `DCDReader.timeseries` 
     was changed to ValueError (see #3901). A matching ValueError was added to
     `MemoryReader.timeseries`(PR #3890). 
->>>>>>> upstream/develop
   * Removes ``pbc`` kwarg from ``AtomGroup.wrap`` (Issue #3909)
   * LAMMPSDump Reader translates the box to the origin (#3741)
   * hbond analysis: access hbonds results through new results member in count_by_ids() and count_by_type()
