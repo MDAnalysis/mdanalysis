@@ -447,8 +447,13 @@ class BaseReaderTest(object):
     def test_frame_collect_all_same(self, reader):
         # check that the timestep resets so that the base reference is the same 
         # for all timesteps in a collection with the exception of memoryreader
+        # and DCDReader
         if isinstance(reader, mda.coordinates.memory.MemoryReader):
             pytest.xfail("memoryreader allows independent coordinates") 
+        if isinstance(reader, mda.coordinates.DCD.DCDReader):
+            pytest;.xfail("DCDReader allows independent coordinates."
+                          "This behaviour is deprecated and will be changed"
+                          "in 3.0")
         collected_ts = []
         for i, ts in enumerate(reader):
             collected_ts.append(ts.positions)

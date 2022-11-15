@@ -76,6 +76,7 @@ Changes
 Deprecations
   * Add deprecation warning for inclusive stop indexing in
     MemoryReader.timeseries (#PR 3894)
+  * Add deprecation warning for timestep copying in DCDReader (PR #3888)
 
 
 08/29/22 IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli, miss77jun, rzhao271,

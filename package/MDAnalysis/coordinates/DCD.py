@@ -130,6 +130,8 @@ class DCDReader(base.ReaderBase):
 
         .. versionchanged:: 0.17.0
            Changed to use libdcd.pyx library and removed the correl function
+        .. versionchanged:: 2.4.0
+           Added deprecation warning for timestep copying
         """
         super(DCDReader, self).__init__(
             filename, convert_units=convert_units, **kwargs)
@@ -154,6 +156,11 @@ class DCDReader(base.ReaderBase):
         self.ts = self._frame_to_ts(frame, self.ts)
         # these should only be initialized once
         self.ts.dt = dt
+        warnings.warn("DCDReader currently makes independent timesteps"
+                      " by copying self.ts while other readers update"
+                      " self.ts. This behaviour will be changed in"
+                      " 3.0 to be the same as other readers",
+                       category=DeprecationWarning)
 
     @staticmethod
     def parse_n_atoms(filename, **kwargs):
@@ -188,10 +195,11 @@ class DCDReader(base.ReaderBase):
         if self._frame == self.n_frames - 1:
             raise IOError('trying to go over trajectory limit')
         if ts is None:
-            ts = self.ts
+            ts = self.ts.copy()
         frame = self._file.read()
         self._frame += 1
         self._frame_to_ts(frame, ts)
+        self.ts = ts
         return ts
 
     def Writer(self, filename, n_atoms=None, **kwargs):
