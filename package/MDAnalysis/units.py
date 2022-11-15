@@ -269,11 +269,11 @@ water = {
 #: it can be convenient to measure the density relative to bulk, and
 #: hence a number of values are pre-stored in :data:`water`.
 densityUnit_factor = {
-    'Angstrom^{-3}': (1*MDANALYSIS_BASE_PINT_UNITS["length"]**3).to("angstrom**3").magnitude,
-    'A^{-3}': (1*MDANALYSIS_BASE_PINT_UNITS["length"]**3).to("angstrom**3").magnitude,
-    '\u212b^{-3}': (1*MDANALYSIS_BASE_PINT_UNITS["length"]**3).to("angstrom**3").magnitude,
-    'nm^{-3}': (1*MDANALYSIS_BASE_PINT_UNITS["length"]**3).to("nm**3").magnitude,
-    'nanometer^{-3}': (1*MDANALYSIS_BASE_PINT_UNITS["length"]**3).to("nm**3").magnitude,
+    'Angstrom^{-3}': (1.0*MDANALYSIS_BASE_PINT_UNITS["length"]**3).to("angstrom**3").magnitude,
+    'A^{-3}': (1.0*MDANALYSIS_BASE_PINT_UNITS["length"]**3).to("angstrom**3").magnitude,
+    '\u212b^{-3}': (1.0*MDANALYSIS_BASE_PINT_UNITS["length"]**3).to("angstrom**3").magnitude,
+    'nm^{-3}': (1.0*MDANALYSIS_BASE_PINT_UNITS["length"]**3).to("nm**3").magnitude,
+    'nanometer^{-3}': (1.0*MDANALYSIS_BASE_PINT_UNITS["length"]**3).to("nm**3").magnitude,
     'Molar': 1 / (1e-27 * constants['N_Avogadro']),
     'SPC': 1 / (1e-24 * constants['N_Avogadro'] * water['SPC'] / water['MolarMass']),
     'TIP3P': 1 / (1e-24 * constants['N_Avogadro'] * water['TIP3P'] / water['MolarMass']),
@@ -295,39 +295,38 @@ timeUnit_factor = {
     'millisecond': (1.0*MDANALYSIS_BASE_PINT_UNITS["time"]).to("ms").magnitude,
     'us': (1.0*MDANALYSIS_BASE_PINT_UNITS["time"]).to("us").magnitude,
     'microsecond': (1.0*MDANALYSIS_BASE_PINT_UNITS["time"]).to("us").magnitude,
-    '\u03BCs': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("us").magnitude,
-    'second': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("s").magnitude,
-    'sec': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("s").magnitude,
-    's': (1*MDANALYSIS_BASE_PINT_UNITS["time"]).to("s").magnitude,
+    '\u03BCs': (1.0*MDANALYSIS_BASE_PINT_UNITS["time"]).to("us").magnitude,
+    'second': (1.0*MDANALYSIS_BASE_PINT_UNITS["time"]).to("s").magnitude,
+    'sec': (1.0*MDANALYSIS_BASE_PINT_UNITS["time"]).to("s").magnitude,
+    's': (1.0*MDANALYSIS_BASE_PINT_UNITS["time"]).to("s").magnitude,
     'AKMA': 1 / 4.888821e-2,
 }
 # getting the factor f:  1200ps * f = 1.2 ns  ==> f = 1/1000 ns/ps
 
+# For *speed* the basic unit is A/psec
 speedUnit_factor = {}
 for length, lfactor in lengthUnit_factor.items():
     for time, tfactor in timeUnit_factor.items():
         speedUnit_factor[length + '/' + time] = lfactor/tfactor
 
 
-#: *Energy* is measured in kJ/mol.
+#: *energy* is measured in kJ/mol.
 energyUnit_factor = {
-    'kJ/mol': (1*MDANALYSIS_BASE_PINT_UNITS["energy"]).to("kJ/mol").magnitude,
-    'kcal/mol': (1*MDANALYSIS_BASE_PINT_UNITS["energy"]).to("kcal/mol").magnitude,
+    'kJ/mol': (1.0*MDANALYSIS_BASE_PINT_UNITS["energy"]).to("kJ/mol").magnitude,
+    'kcal/mol': (1.0*MDANALYSIS_BASE_PINT_UNITS["energy"]).to("kcal/mol").magnitude,
     'J': (1*MDANALYSIS_BASE_PINT_UNITS["energy"]/MDA_PINT_UNITS.avogadro_constant).to("J").magnitude,
     'eV': 1e3/(constants['N_Avogadro'] * constants['elementary_charge']),
 }
 
 #: For *force* the basic unit is kJ/(mol*Angstrom).
-forceUnit_factor = {
-    'kJ/(mol*Angstrom)': 1.0, 'kJ/(mol*A)': 1.0,
-    'kJ/(mol*\u212b)': 1.0,
-    'kJ/(mol*nm)': 10.0,
-    'Newton': 1e13/constants['N_Avogadro'],
-    'N': 1e13/constants['N_Avogadro'],
-    'J/m': 1e13/constants['N_Avogadro'],
-    'kcal/(mol*Angstrom)': 1/constants['calorie'],
-}
-# (TODO: build this combinatorically from lengthUnit and energyUnit)
+forceUnit_factor = {}
+for energy, efactor in energyUnit_factor.items():
+    for length, lfactor in lengthUnit_factor.items():
+        forceUnit_factor[energy + '/' + length] = efactor/lfactor
+# others
+forceUnit_factor['Newton']:  (1.0*MDANALYSIS_BASE_PINT_UNITS["force"]/MDA_PINT_UNITS.avogadro_constant).to("newton").magnitude
+forceUnit_factor['N']:(1.0*MDANALYSIS_BASE_PINT_UNITS["force"]/MDA_PINT_UNITS.avogadro_constant).to("newton").magnitude
+forceUnit_factor['J/m']: (1.0*MDANALYSIS_BASE_PINT_UNITS["force"]/MDA_PINT_UNITS.avogadro_constant).to("J/m").magnitude
 
 #: *Charge* is measured in multiples of the `electron charge`_ *e*, with the value
 #: *elementary_charge* in :data:`constants`.
