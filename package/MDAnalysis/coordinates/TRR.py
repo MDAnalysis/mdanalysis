@@ -153,7 +153,12 @@ class TRRReader(XDRBaseReader):
     _file = TRRFile
 
     def _read_next_timestep(self, ts=None):
-        """copy next frame into timestep"""
+        """copy next frame into timestep
+        
+        versionadded:: 2.4.0
+            TRRReader now implements this method so that it can use full
+            `xvf` read from file. 
+        """
         if self._frame == self.n_frames - 1:
             raise IOError(errno.EIO, 'trying to go over trajectory limit')
         if ts is None:

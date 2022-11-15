@@ -541,6 +541,9 @@ cdef class TRRFile(_XDRFile):
         Raises
         ------
         IOError
+
+
+        .. versionadded:: 2.4.0
         """
         if self.reached_eof:
             raise EOFError('Reached last frame in TRR, seek to 0')
@@ -628,6 +631,9 @@ cdef class TRRFile(_XDRFile):
         Raises
         ------
         IOError
+
+
+        .. versionadded:: 2.4.0
         """
         if self.reached_eof:
             raise EOFError('Reached last frame in TRR, seek to 0')
@@ -909,6 +915,9 @@ cdef class XTCFile(_XDRFile):
         Raises
         ------
         IOError
+
+
+        .. versionadded:: 2.4.0
         """
         if self.reached_eof:
             raise EOFError('Reached last frame in XTC, seek to 0')
