@@ -34,6 +34,10 @@ Fixes
     (e.g. bonds, angles) (PR #3779).
 
 Enhancements
+  * Improve C content of libxdr Cython, add `read_direct` methods to read 
+    coordinates, velocities and forces directly into memoryviews of `Timestep`
+    attributes, make `TRR` timestep have positions, velocities and forces on
+    `__init__`. (Issue #3891 PR  #3892).
   * The timeseries method for exporting coordinates from multiple frames to a
     NumPy array was added to ProtoReader (PR #3890)
   * MDAnalysis now officially supports py3.11 (Issue #3878)
