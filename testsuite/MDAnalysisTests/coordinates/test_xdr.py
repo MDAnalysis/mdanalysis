@@ -212,7 +212,15 @@ class _GromacsReader(object):
 
         with pytest.raises(StopIteration):
             go_beyond_EOF()
-
+    
+    def test_read_next_timestep_ts_no_positions(self, universe):
+        # primarily tests branching on ts.has_positions in _read_next_timestep
+        ts = universe.trajectory[0]
+        ts.has_positions=False
+        ts_passed_in = universe.trajectory._read_next_timestep(ts=ts).copy()
+        universe.trajectory.rewind()
+        ts_returned = universe.trajectory._read_next_timestep(ts=None).copy()
+        assert(ts_passed_in == ts_returned)
 
 class TestXTCReader(_GromacsReader):
     filename = XTC
