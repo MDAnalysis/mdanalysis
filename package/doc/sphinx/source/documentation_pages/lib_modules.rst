@@ -84,3 +84,18 @@ Libmdanalysis
 The `__init__.pxd` file in :mod:`MDAnalysis.lib.libmdanalysis` provides a single place to 
 import MDAnalysis' public Cython headers. This is recommended for advanced
 developers only.
+
+For example 
+
+.. code-block:: cython
+
+   from MDAnalysis.lib.libmdanalysis cimport timestep
+
+   cdef timestep.Timestep ts
+
+   ts.positions = new
+
+
+Currently modules that are exposed as public Cython headers are:
+
+- :mod:`MDAnalysis.coordinates.timestep`
