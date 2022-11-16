@@ -222,7 +222,7 @@ constants = {
     'elementary_charge': (1.0*MDA_PINT_UNITS.elementary_charge).to("A*s").magnitude,
     # J
     'calorie': (1.0 * MDA_PINT_UNITS.cal).to("J").magnitude,  
-    # KJ (mol K)**-1
+    # kJ (mol K)**-1
     'Boltzmann_constant': (1.0*MDA_PINT_UNITS.boltzmann_constant*MDA_PINT_UNITS.avogadro_constant).to("kJ/mol/K").magnitude,
     # e**2 (eV *A)**-1 
     'electric_constant': (1.0*MDA_PINT_UNITS.electric_constant).to("e**2/eV/angstrom").magnitude}
