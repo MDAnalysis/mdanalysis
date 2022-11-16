@@ -643,7 +643,7 @@ cdef class TRRFile(_XDRFile):
             raise IOError('File opened in mode: {}. Reading only allow '
                                'in mode "r"'.format('self.mode'))
 
-        return_code = 1
+        cdef int return_code = 1
         cdef int step = 0
         cdef int has_prop = 0
         cdef float time = 0
