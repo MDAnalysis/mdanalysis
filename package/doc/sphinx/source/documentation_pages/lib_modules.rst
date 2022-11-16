@@ -81,8 +81,8 @@ Python-based projects.
 Libmdanalysis
 -------------
 
-The `__init__.pxd` file in :mod:`MDAnalysis.lib.libmdanalysis` provides a
-single place to `cimport` MDAnalysis' public Cython headers. This is recommended
+The :file:`__init__.pxd` file in :mod:`MDAnalysis.lib.libmdanalysis` provides a
+single place to ``cimport`` MDAnalysis' public Cython headers. This is recommended
 for advanced developers only.
 
 For example, imagine we are writing a Cython extension module in
