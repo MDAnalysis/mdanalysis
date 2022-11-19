@@ -114,6 +114,7 @@
 <li class="toctree-l3"><a class="reference internal" href="lib/formats/libdcd.html#MDAnalysis.lib.formats.libdcd.DCDFile"><code class="docutils literal notranslate"><span class="pre">DCDFile</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#libmdanalysis">13.4. Libmdanalysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="version.html">14. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
@@ -249,6 +250,29 @@ Python-based projects.</p>
 <li class="toctree-l1"><a class="reference internal" href="lib/formats/libdcd.html#MDAnalysis.lib.formats.libdcd.DCDFile"><code class="docutils literal notranslate"><span class="pre">DCDFile</span></code></a></li>
 </ul>
 </div>
+</section>
+<section id="libmdanalysis">
+<h2><span class="section-number">13.4. </span>Libmdanalysis<a class="headerlink" href="#libmdanalysis" title="Permalink to this heading"></a></h2>
+<p>The <code class="file docutils literal notranslate"><span class="pre">__init__.pxd</span></code> file in <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.libmdanalysis</span></code> provides a
+single place to <code class="docutils literal notranslate"><span class="pre">cimport</span></code> MDAnalysis’ public Cython headers. This is recommended
+for advanced developers only.</p>
+<p>For example, imagine we are writing a Cython extension module in
+<a class="reference internal" href="#module-MDAnalysis.lib" title="MDAnalysis.lib: ``lib`` collects independent code for re-use in MDAnalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a> and we would like to make a function that creates a
+<a class="reference internal" href="coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep.Timestep</span></code></a></p>
+<div class="highlight-cython notranslate"><div class="highlight"><pre><span></span><span class="k">from</span> <span class="nn">MDAnalysis.lib.libmdanalysis</span> <span class="k">cimport</span> <span class="n">timestep</span>
+<span class="c"># or we could use the relative cimport</span>
+<span class="c"># from .libmdanalysis cimport timestep</span>
+
+<span class="k">cdef</span> <span class="kt">timestep</span>.<span class="kt">Timestep</span> <span class="nf">make_timestep</span><span class="p">(</span><span class="nb">int</span> <span class="n">natoms</span><span class="p">):</span>
+   <span class="k">cdef</span> <span class="kt">timestep</span>.<span class="kt">Timestep</span> <span class="nf">ts</span> <span class="o">=</span> <span class="n">timestep</span><span class="o">.</span><span class="n">Timestep</span><span class="p">(</span><span class="n">natoms</span><span class="p">)</span>
+   <span class="k">return</span> <span class="n">ts</span>
+</pre></div>
+</div>
+<p>Currently modules that are exposed as public Cython headers are:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="coordinates/timestep.html#module-MDAnalysis.coordinates.timestep" title="MDAnalysis.coordinates.timestep"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep</span></code></a></p></li>
+</ul>
+<p>For more details consult the source <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.libmdanalysis.__init__.pxd</span></code></p>
 </section>
 </section>
 
