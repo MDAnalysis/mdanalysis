@@ -66,8 +66,9 @@ you wish to use is covered by distopia.
 | calc_bonds |
 +------------+
 
-If `distopia`_ is installed, the functions in this table will be replaced by their
-equivalents from distopia.
+If `distopia`_ is installed, the functions in this table will accept the key 
+'distopia' as the backend. The distopia library will be used to calculate the
+distances.
  
 .. _distopia: https://github.com/MDAnalysis/distopia
 
@@ -128,7 +129,10 @@ try:
                                           package="MDAnalysis.lib")
 except ImportError:
     pass
-del importlib
+
+if HAS_DISTOPIA:
+    _distances['distopia'] = importlib.import_module("._distopia",
+                                          package="distopia")
 
 
 def _run(funcname: str, args: Optional[tuple] = None,
@@ -1400,7 +1404,7 @@ def calc_bonds(coords1: Union[np.ndarray, 'AtomGroup'],
                coords2: Union[np.ndarray, 'AtomGroup'],
                box: Optional[np.ndarray] = None,
                result: Optional[np.ndarray] = None,
-               backend: str = "serial") -> np.ndarray:
+               backend: str = "distopia" if HAS_DISTOPIA else "serial" ) -> np.ndarray:
     """Calculates the bond lengths between pairs of atom positions from the two
     coordinate arrays `coords1` and `coords2`, which must contain the same
     number of coordinates. ``coords1[i]`` and ``coords2[i]`` represent the
@@ -1443,8 +1447,9 @@ def calc_bonds(coords1: Union[np.ndarray, 'AtomGroup'],
         Preallocated result array of dtype ``numpy.float64`` and shape ``(n,)``
         (for ``n`` coordinate pairs). Avoids recreating the array in repeated
         function calls.
-    backend : {'serial', 'OpenMP'}, optional
-        Keyword selecting the type of acceleration.
+    backend : {'serial', 'OpenMP', 'distopia'}, optional
+        Keyword selecting the type of acceleration. Distopia acceleration is
+        the default if available otherwise serial acceleration is used.
 
     Returns
     -------
@@ -1473,23 +1478,36 @@ def calc_bonds(coords1: Union[np.ndarray, 'AtomGroup'],
         if box is not None:
             boxtype, box = check_box(box)
             if boxtype == 'ortho':
-                if HAS_DISTOPIA:
-                    bondlengths = distopia.calc_bonds_ortho_float(coords1, coords2, box[:3],
-                                                    results=bondlengths.astype(np.float32))
+                if backend == 'distopia':
+                    # need explicit branch on backend to prepare input types correctly
+                    # must assign to result to get correct reference on memview
+                    bondlengths = _run("calc_bonds_ortho_float",
+                         args=(coords1, coords2, box[:3]),
+                         kwargs={'results': bondlengths.astype(np.float32)},
+                         backend=backend)
                     # upcast is currently required
-                    bondlengths = bondlengths.astype(np.float64)
+                    # bondlengths = bondlengths.astype(np.float64)
                 else:
                     _run("calc_bond_distance_ortho",
                          args=(coords1, coords2, box, bondlengths),
                          backend=backend)
             else:
+                if backend == 'distopia':
+                    # distopia does not support triclinic boxes
+                    backend_ = 'serial'
+                else:
+                    backend_ = backend
                 _run("calc_bond_distance_triclinic",
                      args=(coords1, coords2, box, bondlengths),
-                     backend=backend)
+                     backend=backend_)
         else:
-            if HAS_DISTOPIA:
-                bondlengths = distopia.calc_bonds_no_box_float(coords1, coords2,
-                                                 results=bondlengths.astype(np.float32))
+            if backend == 'distopia':
+                # need explicit branch on backend to prepare input types correctly
+                # must assign to result to get correct reference on memview
+                bondlengths = _run("calc_bonds_no_box_float",
+                     args=(coords1, coords2),
+                     kwargs={'results': bondlengths.astype(np.float32)},
+                     backend=backend)
                 # upcast is currently required
                 bondlengths = bondlengths.astype(np.float64)
             else:
