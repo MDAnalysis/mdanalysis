@@ -156,8 +156,9 @@ class TRRReader(XDRBaseReader):
         """copy next frame into timestep
         
         versionadded:: 2.4.0
-            TRRReader now implements this method so that it can use full
-            `xvf` read from file. 
+            TRRReader implements this method so that it can use
+            read_direct_xvf to read the data directly into the timestep
+            rather than copying it from a temporary array.
         """
         if self._frame == self.n_frames - 1:
             raise IOError(errno.EIO, 'trying to go over trajectory limit')

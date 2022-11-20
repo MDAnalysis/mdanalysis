@@ -289,21 +289,6 @@ class XDRBaseReader(base.ReaderBase):
             timestep = self._read_next_timestep()
         return timestep
 
-    def _read_next_timestep(self, ts=None):
-        # NOTE: TRR implements its own version
-        """copy next frame into timestep"""
-        if self._frame == self.n_frames - 1:
-            raise IOError(errno.EIO, 'trying to go over trajectory limit')
-        if ts is None:
-            ts = self.ts
-        if ts.has_positions:
-            frame = self._xdr.read_direct(ts.positions)
-        else:
-            frame = self._xdr.read()
-        self._frame += 1
-        self._frame_to_ts(frame, ts)
-        return ts
-
     def Writer(self, filename, n_atoms=None, **kwargs):
         """Return writer for trajectory format"""
         if n_atoms is None:
