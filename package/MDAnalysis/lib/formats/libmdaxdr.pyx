@@ -511,6 +511,9 @@ cdef class TRRFile(_XDRFile):
 
         if return_code == EOK:
             self.current_frame += 1
+        else:
+            raise IOError('TRR read error = {}'.format(
+                error_message[return_code]))
 
         has_x = bool(has_prop & HASX)
         has_v = bool(has_prop & HASV)
@@ -591,6 +594,9 @@ cdef class TRRFile(_XDRFile):
 
         if return_code == EOK:
             self.current_frame += 1
+        else:
+            raise IOError('TRR read error = {}'.format(
+                error_message[return_code]))
 
         has_x = bool(has_prop & HASX)
         has_v = bool(has_prop & HASV)
@@ -805,6 +811,9 @@ cdef class XTCFile(_XDRFile):
 
         if return_code == EOK:
             self.current_frame += 1
+        else:
+            raise IOError('XTC read error = {}'.format(
+                error_message[return_code]))
         return XTCFrame(xyz, box, step, time, prec)
 
     def read_direct_x(self, np.float32_t[:, ::1] positions):
@@ -865,6 +874,9 @@ cdef class XTCFile(_XDRFile):
 
         if return_code == EOK:
             self.current_frame += 1
+        else:
+            raise IOError('XTC read error = {}'.format(
+                error_message[return_code]))
         return  XTCFrame(positions, box, step, time, prec)
 
 
