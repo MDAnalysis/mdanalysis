@@ -75,7 +75,7 @@ cdef class _XDRFile:
 
     Note
     ----
-    This class can't be initialized use one of the subclasses XTCFile, TRRFile
+    This class can't be initialized; use one of the subclasses :class:`XTCFile` or :class:`TRRFile`.
     """
     # number of atoms
     cdef readonly int n_atoms
