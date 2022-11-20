@@ -117,6 +117,39 @@ def _check_length(func):
     return wrapper
 
 
+def _check_dtype(func):
+    """ Wrapper which validates the data type for the `values` argument to the
+    __setitem__ method of the :class:`TopologyAttr` class.
+
+    Iterates through `values` if it's a list and assets that all its items
+    match the data type of the `group` class's `dtype` attribute.
+    """
+    _ERROR_MSG = "Setting {group} {attr_name} to wrong data type. " \
+                 "Must be of type `{expected_dtype}`"
+    # Eg "Setting Atom name to wrong data type. Must be of type `str`"
+
+    @functools.wraps(func)
+    def wrapper(obj, group, values):
+        if isinstance(values, (list, np.ndarray)):
+            iter_values = values
+        else:
+            iter_values = [values]
+
+        if isinstance(obj, TopologyAttr) and obj.dtype:
+            attr_name = [obj.singular, obj.attrname][isinstance(values, list)]
+            exp_dtype = str if obj.dtype is object else obj.dtype
+            if not all(map(lambda v: isinstance(v, exp_dtype), iter_values)):
+                raise TypeError(_ERROR_MSG.format(
+                    group=group.__class__.__name__,
+                    attr_name=attr_name,
+                    expected_dtype=exp_dtype.__name__
+                ))
+
+        return func(obj, group, values)
+
+    return wrapper
+
+
 def _wronglevel_error(attr, group):
     """Generate an error for setting attr at wrong level
 
@@ -459,6 +492,7 @@ class TopologyAttr(object, metaclass=_TopologyAttrMeta):
         elif isinstance(group, (Segment, SegmentGroup)):
             return self.get_segments(group)
 
+    @_check_dtype
     def __setitem__(self, group, values):
         if isinstance(group, (Atom, AtomGroup)):
             return self.set_atoms(group, values)
@@ -1408,7 +1442,7 @@ class Masses(AtomAttr):
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
                       Atom, Residue, Segment]
     transplants = defaultdict(list)
-    dtype = np.float64
+    dtype = float
 
     groupdoc = """Mass of each component in the Group.
 
