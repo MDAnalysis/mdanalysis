@@ -161,7 +161,7 @@ class TestDist(object):
         pairwise distance matrix.'''
         actual = MDAnalysis.analysis.distances.dist(
             ag, ag2, offset=229)[2]
-        assert_equal(actual, expected)
+        assert_allclose(actual, expected)
 
     def test_offset_calculation(self, ag, ag2):
         '''Test that offsets fed to dist() are correctly calculated.'''
