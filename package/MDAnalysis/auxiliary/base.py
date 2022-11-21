@@ -257,6 +257,10 @@ class AuxReader(metaclass=_AuxReaderMeta):
         Behaviour of ``cutoff`` changed, default parameter which specifies
         not cutoff is set is now None, not -1.
 
+    .. versionchanged:: 2.4.0
+        :class:`AuxReader` instances now have a :meth:`copy` method which
+        creates a deep copy of the instance.
+
     Parameters
     ----------
     auxname : str, optional
@@ -328,12 +332,6 @@ class AuxReader(metaclass=_AuxReaderMeta):
         orig_dict = pickle.dumps(self)
         new_reader = pickle.loads(orig_dict)
         return new_reader
-
-    def __getstate__(self):
-        return self.__dict__
-
-    def __setstate__(self, dictionary):
-        self.__dict__ = dictionary
 
     def __len__(self):
         """ Number of steps in auxiliary data. """

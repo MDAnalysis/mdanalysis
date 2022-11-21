@@ -45,6 +45,7 @@ Enhancements
   * A new AuxReader for the GROMACS EDR file format was implemented.
     (Issue # 3629, PR # 3749)
   * Added benchmarks for bonds topology attribute (Issue #3785, PR #3806)
+  * AuxReaders are now pickle-able and copy-able (Issue #1785, PR #3887)
 
 Changes
  * Auxiliary; determination of representative frames: The default value for
