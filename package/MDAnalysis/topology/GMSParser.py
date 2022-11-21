@@ -48,15 +48,12 @@ Classes
 import re
 import numpy as np
 
-from . import guessers
 from ..lib.util import openany
 from .base import TopologyReaderBase
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomids,
     Atomnames,
-    Atomtypes,
-    Masses,
     Resids,
     Resnums,
     Segids,
@@ -75,11 +72,10 @@ class GMSParser(TopologyReaderBase):
     Creates the following Attributes:
      - names
      - atomic charges
-    Guesses:
-     - types
-     - masses
 
     .. versionadded:: 0.9.1
+    .. versionchanged:: 2.4.0
+      removed type and mass guessing (guessing takes place now inside universe)
     """
     format = 'GMS'
 
@@ -112,15 +108,11 @@ r'^\s*([A-Za-z_][A-Za-z_0-9]*)\s+([0-9]+\.[0-9]+)\s+(\-?[0-9]+\.[0-9]+)\s+(\-?[0
                 at_charges.append(at_charge)
                 #TODO: may be use coordinates info from _m.group(3-5) ??
 
-        atomtypes = guessers.guess_types(names)
-        masses = guessers.guess_masses(atomtypes)
         n_atoms = len(names)
         attrs = [
             Atomids(np.arange(n_atoms) + 1),
             Atomnames(np.array(names, dtype=object)),
             AtomicCharges(np.array(at_charges, dtype=np.int32)),
-            Atomtypes(atomtypes, guessed=True),
-            Masses(masses, guessed=True),
             Resids(np.array([1])),
             Resnums(np.array([1])),
             Segids(np.array(['SYSTEM'], dtype=object)),

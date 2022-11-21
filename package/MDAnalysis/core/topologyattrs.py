@@ -390,6 +390,7 @@ class TopologyAttr(object, metaclass=_TopologyAttrMeta):
     top : Topology
         handle for the Topology object TopologyAttr is associated with
 
+
     """
     attrname = 'topologyattrs'
     singular = 'topologyattr'
@@ -503,8 +504,17 @@ class TopologyAttr(object, metaclass=_TopologyAttrMeta):
         """Set segmentattributes for a given SegmentGroup"""
         raise NotImplementedError
 
+    @classmethod
+    def is_value_missing(self, value):
+        """check if an attribute has a missing value
+        .. versionadded:: 2.4.0
+        """
+        if hasattr(self, 'missing_value_label'):
+            return value == self.missing_value_label or np.isnan(value)
+        else:
+            return False
 
-# core attributes
+ # core attributes
 
 class Atomindices(TopologyAttr):
     """Globally unique indices for each atom in the group.
@@ -1405,6 +1415,7 @@ class Masses(AtomAttr):
     attrname = 'masses'
     singular = 'mass'
     per_object = 'atom'
+    missing_value_label = np.nan
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
                       Atom, Residue, Segment]
     transplants = defaultdict(list)
@@ -1894,7 +1905,6 @@ class Masses(AtomAttr):
 
     transplants[GroupBase].append(
         ('align_principal_axis', align_principal_axis))
-
 
 # TODO: update docs to property doc
 class Charges(AtomAttr):

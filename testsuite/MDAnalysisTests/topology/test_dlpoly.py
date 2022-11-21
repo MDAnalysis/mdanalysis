@@ -22,8 +22,10 @@
 #
 from numpy.testing import assert_equal
 import pytest
+from numpy.testing import assert_equal,  assert_allclose
 
 import MDAnalysis as mda
+from MDAnalysis.guesser import DefaultGuesser
 
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
@@ -43,10 +45,29 @@ class DLPUniverse(ParserBase):
         u = mda.Universe(filename, topology_format=self.format)
         assert isinstance(u, mda.Universe)
 
+    def test_guessed_attributes(self, filename):
+        u = mda.Universe(filename, topology_format=self.format)
+        for attr in self.guessed_attrs:
+            assert hasattr(u.atoms, attr)
+
+    def test_guessed_types(self, filename, guessed_types):
+       u = mda.Universe(filename, topology_format=self.format)
+       assert_equal(u.atoms.types, guessed_types)
+
+    def test_guessed_masses(self, filename, guessed_masses):
+        """check that guessed masses from universe creation have the same
+        values as the masses guessing that used to happen inisde the parser"""
+        u = mda.Universe(filename, topology_format=self.format)
+        assert_allclose(u.atoms.masses, guessed_masses, rtol=1e-3, atol=0)
+
+    @pytest.fixture
+    def guessed_masses(self, top):
+        return DefaultGuesser(None).guess_masses(atoms=DefaultGuesser(None).guess_types(atoms=top.names.values))
 
 class DLPBase2(DLPUniverse):
     expected_attrs = ['ids', 'names']
-    guessed_attrs = ['types', 'masses']
+    guessed_attrs = ['masses', 'types']
+
     expected_n_atoms = 216
     expected_n_residues = 1
     expected_n_segments = 1
@@ -70,7 +91,6 @@ class TestDLPConfigParser(DLPBase2):
 
 class DLPBase(DLPUniverse):
     expected_attrs = ['ids', 'names']
-    guessed_attrs = ['types', 'masses']
     expected_n_atoms = 3
     expected_n_residues = 1
     expected_n_segments = 1

@@ -47,19 +47,17 @@ Classes
 """
 import numpy as np
 
-from . import guessers
 from ..lib.util import openany
 from .base import TopologyReaderBase
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomnames,
     Atomids,
-    Atomtypes,
-    Masses,
     Resids,
     Resnums,
     Segids,
     Elements,
+    Atomtypes
 )
 
 
@@ -69,10 +67,8 @@ class FHIAIMSParser(TopologyReaderBase):
     Creates the following attributes:
      - Atomnames
 
-    Guesses the following attributes:
-     - Atomtypes
-     - Masses
-
+    .. versionchanged:: 2.4.0
+      removed type and mass guessing (guessing takes place now inside universe)
     """
     format = ['IN', 'FHIAIMS']
 
@@ -100,18 +96,13 @@ class FHIAIMSParser(TopologyReaderBase):
             names = np.asarray(names)
             natoms = len(names)
 
-        # Guessing time
-        atomtypes = guessers.guess_types(names)
-        masses = guessers.guess_masses(names)
-
         attrs = [Atomnames(names),
                  Atomids(np.arange(natoms) + 1),
-                 Atomtypes(atomtypes, guessed=True),
-                 Masses(masses, guessed=True),
                  Resids(np.array([1])),
                  Resnums(np.array([1])),
                  Segids(np.array(['SYSTEM'], dtype=object)),
-                 Elements(names)]
+                 Elements(names),
+                 Atomtypes(names)]
 
         top = Topology(natoms, 1, 1,
                        attrs=attrs)

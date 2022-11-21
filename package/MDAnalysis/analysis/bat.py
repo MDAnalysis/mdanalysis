@@ -181,7 +181,7 @@ logger = logging.getLogger(__name__)
 
 
 def _sort_atoms_by_mass(atoms, reverse=False):
-    r"""Sorts a list of atoms by name and then by index
+    r"""Sorts a list of atoms by mass and then by index
 
     The atom index is used as a tiebreaker so that the ordering is reproducible.
 
@@ -197,7 +197,15 @@ def _sort_atoms_by_mass(atoms, reverse=False):
     ag_n : list of Atoms
         Sorted list
     """
-    return sorted(atoms, key=lambda a: (a.mass, a.index), reverse=reverse)
+    s = sorted(atoms, key=lambda a: (a.mass, a.index))
+
+    # reverse in a seperate step cause the reverse parameter
+    # of the sorted method doesn't work as expected with nan 
+    # values of masses, which causes errors in sorting
+    if reverse:
+        s.reverse()
+
+    return s
 
 
 def _find_torsions(root, atoms):

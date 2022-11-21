@@ -67,9 +67,16 @@ BONDED_TPRS = (
 class TPRAttrs(ParserBase):
     parser = MDAnalysis.topology.TPRParser.TPRParser
     expected_attrs = ['ids', 'names', 'elements',
-                      'resids', 'resnames',
+                      'resids', 'resnames', 'types', 'masses',
                       'moltypes', 'molnums', 'charges',
                       'bonds', 'angles', 'dihedrals', 'impropers']
+    @pytest.fixture
+    def guessed_types(self, top):
+        return top.types.values
+
+    @pytest.fixture
+    def guessed_masses(self, top):
+        return top.masses.values
 
     def test_moltypes(self, top):
         moltypes = top.moltypes.values

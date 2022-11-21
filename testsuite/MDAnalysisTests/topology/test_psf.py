@@ -43,6 +43,13 @@ class PSFBase(ParserBase):
                       'resids', 'resnames',
                       'segids',
                       'bonds', 'angles', 'dihedrals', 'impropers']
+    @pytest.fixture
+    def guessed_types(self, top):
+        return top.types.values
+
+    @pytest.fixture
+    def guessed_masses(self, top):
+        return top.masses.values
 
 
 class TestPSFParser(PSFBase):
@@ -147,7 +154,7 @@ class TestPSFParserNoTop(PSFBase):
 
     def test_dihedrals_total_counts(self, top):
         assert len(top.dihedrals.values) == 0
-    
+
     def test_impropers_total_counts(self, top):
         assert len(top.impropers.values) == 0
 

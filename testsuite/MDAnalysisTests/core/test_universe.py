@@ -34,7 +34,7 @@ from numpy.testing import (
     assert_allclose,
     assert_almost_equal,
     assert_equal,
-    assert_array_equal,
+    assert_array_equal
 )
 import pytest
 
@@ -47,7 +47,7 @@ from MDAnalysisTests.datafiles import (
     GRO, TRR,
     two_water_gro, two_water_gro_nonames,
     TRZ, TRZ_psf,
-    PDB, MMTF,
+    PDB, MMTF, CONECT,
 )
 
 import MDAnalysis as mda
@@ -381,6 +381,35 @@ class TestTransformations(object):
         ref = translate([10,10,10])(uref.trajectory.ts)
         assert_almost_equal(u.trajectory.ts.positions, ref, decimal=6)
 
+
+class TestGuessTopologyAttr(object):
+    def test_automatic_type_and_mass_guessing(self):
+        u = mda.Universe(PDB_small)
+        assert_equal(len(u.atoms.masses), 3341)
+        assert_equal(len(u.atoms.types), 3341)
+
+    def test_invalid_context(self):
+        u = mda.Universe(PDB_small)
+        with pytest.raises(KeyError):
+            u.guess_TopologyAttributes(context='trash', to_guess=['masses'])
+            
+    def test_invalid_attributes(self):
+        u = mda.Universe(PDB_small)
+        with pytest.raises(ValueError):
+            u.guess_TopologyAttributes(to_guess=['trash'])
+
+    def test_guess_masses_before_types(self):
+            u = mda.Universe(PDB_small, to_guess=('masses', 'types'))
+            assert_equal(len(u.atoms.masses), 3341)
+            assert_equal(len(u.atoms.types), 3341)
+        
+    def test_guessing_read_attributes(self):
+        u = mda.Universe(PSF)
+        old_types = u.atoms.types
+        u.guess_TopologyAttributes(force_guess=['types'])
+        with pytest.raises(AssertionError):
+            assert_equal(old_types, u.atoms.types)
+        
 class TestGuessMasses(object):
     """Tests the Mass Guesser in topology.guessers
     """
@@ -488,6 +517,14 @@ class TestGuessBonds(object):
         ag.guess_bonds()
 
         self._check_atomgroup(ag, u)
+
+    def guess_bonds_with_to_guess(self):
+        u = mda.Universe(two_water_gro, to_guess=['bonds'])
+        assert u.atoms.bonds
+
+    def test_guess_read_bonds(self):
+        u = mda.Universe(CONECT)
+        assert len(u.bonds) == 72
 
 
 class TestInMemoryUniverse(object):
@@ -712,9 +749,13 @@ class TestAddTopologyAttr(object):
             ('impropers', [(1, 2, 3)]),
         )
     )
-    def add_connection_error(self, universe, attr, values):
+    def test_add_connection_error(self, universe, attr, values):
         with pytest.raises(ValueError):
             universe.add_TopologyAttr(attr, values)
+
+    def test_add_attr_length_error(self, universe):
+        with pytest.raises(ValueError):
+            universe.add_TopologyAttr('masses', np.array([1, 2, 3], dtype=np.float64))
 
 
 class TestDelTopologyAttr(object):
@@ -1335,6 +1376,6 @@ class TestOnlyTopology:
 
         with pytest.warns(UserWarning,
                           match="No coordinate reader found for"):
-            u = mda.Universe(t)
+            u = mda.Universe(t, to_guess=())
 
         assert len(u.atoms) == 10

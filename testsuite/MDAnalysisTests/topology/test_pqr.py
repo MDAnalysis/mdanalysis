@@ -26,6 +26,7 @@ import pytest
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
+from MDAnalysis.guesser import DefaultGuesser
 from MDAnalysisTests.datafiles import (
     PQR,
     PQR_icodes,
@@ -42,6 +43,10 @@ class TestPQRParser(ParserBase):
     expected_n_atoms = 3341
     expected_n_residues = 214
     expected_n_segments = 1
+
+    @pytest.fixture
+    def guessed_masses(self, top):
+        return DefaultGuesser(None).guess_masses(atoms=DefaultGuesser(None).guess_types(atoms=top.names.values))
 
     def test_attr_size(self, top):
         assert len(top.ids) == top.n_atoms
@@ -88,7 +93,6 @@ def test_gromacs_flavour():
     # topology things
     assert u.atoms[0].type == 'O'
     assert u.atoms[0].segid == 'SYSTEM'
-    assert not u._topology.types.is_guessed
     assert_almost_equal(u.atoms[0].radius, 1.48, decimal=5)
     assert_almost_equal(u.atoms[0].charge, -0.67, decimal=5)
     # coordinatey things

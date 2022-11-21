@@ -39,8 +39,10 @@ numbers up to 99,999.
 
 .. Note::
 
-   The parser processes atoms and their names. Masses are guessed and set to 0
-   if unknown. Partial charges are not set. Elements are parsed if they are
+   The parser processes atoms and their names.
+   Partial charges are not set. Elements are parsed if they are
+
+
    valid. If partially missing or incorrect, empty records are assigned.
 
 See Also
@@ -61,8 +63,7 @@ Classes
 import numpy as np
 import warnings
 
-from .guessers import guess_masses, guess_types
-from .tables import SYMB2Z
+from ..guesser.tables import SYMB2Z
 from ..lib import util
 from .base import TopologyReaderBase, change_squash
 from ..core.topology import Topology
@@ -75,7 +76,6 @@ from ..core.topologyattrs import (
     Atomtypes,
     Elements,
     ICodes,
-    Masses,
     Occupancies,
     RecordTypes,
     Resids,
@@ -169,9 +169,6 @@ class PDBParser(TopologyReaderBase):
      - bonds
      - formalcharges
 
-    Guesses the following Attributes:
-     - masses
-
     See Also
     --------
     :class:`MDAnalysis.coordinates.PDB.PDBReader`
@@ -194,6 +191,9 @@ class PDBParser(TopologyReaderBase):
        Any formal charges not set are assumed to have a value of 0.
        Raise `UserWarning` instead `RuntimeError`
        when CONECT records are corrupt.
+    .. versionchanged:: 2.4.0
+      removed type and mass guessing (guessing takes place now inside universe)
+
     """
     format = ['PDB', 'ENT']
 
@@ -254,7 +254,7 @@ class PDBParser(TopologyReaderBase):
                 record_types.append(line[:6].strip())
                 try:
                     serial = int(line[6:11])
-                except:
+                except BaseException:
                     try:
                         serial = hy36decode(5, line[6:11])
                     except ValueError:
@@ -265,7 +265,7 @@ class PDBParser(TopologyReaderBase):
                 finally:
                     serials.append(serial)
 
-                names.append(line[12:16].strip())
+                names.append(line[12:16])
                 altlocs.append(line[16:17].strip())
                 resnames.append(line[17:21].strip())
                 chainids.append(line[21:22].strip())
@@ -292,7 +292,8 @@ class PDBParser(TopologyReaderBase):
                     icodes.append(line[26:27].strip())
 
                 occupancies.append(float_or_default(line[54:60], 0.0))
-                tempfactors.append(float_or_default(line[60:66], 1.0))  # AKA bfactor
+                tempfactors.append(float_or_default(
+                    line[60:66], 1.0))  # AKA bfactor
 
                 segids.append(line[66:76].strip())
 
@@ -319,16 +320,8 @@ class PDBParser(TopologyReaderBase):
                 (occupancies, Occupancies, np.float32),
         ):
             attrs.append(Attr(np.array(vals, dtype=dtype)))
-        # Guessed attributes
-        # masses from types if they exist
         # OPT: We do this check twice, maybe could refactor to avoid this
-        if not any(elements):
-            atomtypes = guess_types(names)
-            attrs.append(Atomtypes(atomtypes, guessed=True))
-            warnings.warn("Element information is missing, elements attribute "
-                          "will not be populated. If needed these can be "
-                          "guessed using MDAnalysis.topology.guessers.")
-        else:
+        if any(elements):
             # Feed atomtypes as raw element column, but validate elements
             atomtypes = elements
             attrs.append(Atomtypes(np.array(elements, dtype=object)))
@@ -341,10 +334,14 @@ class PDBParser(TopologyReaderBase):
                     wmsg = (f"Unknown element {elem} found for some atoms. "
                             f"These have been given an empty element record. "
                             f"If needed they can be guessed using "
-                            f"MDAnalysis.topology.guessers.")
+                            f"universe.guess_TopologyAttributes(context='PDB', to_guess['elements']).")
                     warnings.warn(wmsg)
                     validated_elements.append('')
             attrs.append(Elements(np.array(validated_elements, dtype=object)))
+        else:
+            warnings.warn("Element information is missing, elements attribute "
+                          "will not be populated. If needed these can be "
+                          "guessed universe.guess_TopologyAttributes(context='PDB', to_guess['elements']).")
 
         if any(formalcharges):
             for i, entry in enumerate(formalcharges):
@@ -368,10 +365,7 @@ class PDBParser(TopologyReaderBase):
                 else:
                     formalcharges[i] = 0
             attrs.append(
-                    FormalCharges(np.array(formalcharges, dtype=int)))
-
-        masses = guess_masses(atomtypes)
-        attrs.append(Masses(masses, guessed=True))
+                FormalCharges(np.array(formalcharges, dtype=int)))
 
         # Residue level stuff from here
         resids = np.array(resids, dtype=np.int32)

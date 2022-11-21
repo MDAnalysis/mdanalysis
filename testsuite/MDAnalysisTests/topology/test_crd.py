@@ -21,8 +21,10 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import MDAnalysis as mda
+import pytest
 
 from MDAnalysisTests.topology.base import ParserBase
+from MDAnalysis.guesser import DefaultGuesser
 from MDAnalysisTests.datafiles import (
     CRD,
 )
@@ -35,6 +37,11 @@ class TestCRDParser(ParserBase):
                       'resids', 'resnames', 'resnums',
                       'segids']
     guessed_attrs = ['masses', 'types']
+
     expected_n_atoms = 3341
     expected_n_residues = 214
     expected_n_segments = 1
+
+    @pytest.fixture
+    def guessed_masses(self, top):
+        return DefaultGuesser(None).guess_masses(atoms=DefaultGuesser(None).guess_types(atoms=top.names.values))

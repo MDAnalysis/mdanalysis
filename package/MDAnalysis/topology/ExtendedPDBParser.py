@@ -78,8 +78,6 @@ class ExtendedPDBParser(PDBParser.PDBParser):
      - bonds
      - formalcharges
 
-    Guesses the following Attributes:
-     - masses
 
     See Also
     --------

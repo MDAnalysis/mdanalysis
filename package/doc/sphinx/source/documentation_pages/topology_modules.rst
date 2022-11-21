@@ -19,6 +19,7 @@ properly recognize a file format then a user can explicitly set the
 topology file format in the *topology_format* keyword argument to
 :class:`~MDAnalysis.core.universe.Universe`.
 
+Note: mass and type guessing have been removed from all parsers and now takes place inside the :class:`~MDAnalysis.core.universe.Universe`.
 .. rubric:: Topology formats
 
 .. toctree::
@@ -28,10 +29,10 @@ topology file format in the *topology_format* keyword argument to
    topology/CRDParser
    topology/DLPolyParser
    topology/DMSParser
-   topology/FHIAIMSParser   
+   topology/FHIAIMSParser
    topology/GMSParser
    topology/GROParser
-   topology/GSDParser   
+   topology/GSDParser
    topology/HoomdXMLParser
    topology/ITPParser
    topology/LAMMPSParser

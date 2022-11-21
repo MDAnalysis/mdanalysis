@@ -60,7 +60,6 @@ import copy
 import warnings
 import contextlib
 import collections
-
 import MDAnalysis
 import sys
 
@@ -86,10 +85,9 @@ from .groups import (ComponentBase, GroupBase,
 from .topology import Topology
 from .topologyattrs import AtomAttr, ResidueAttr, SegmentAttr, BFACTOR_WARNING
 from .topologyobjects import TopologyObject
-
+from ..guesser.base import get_guesser
 
 logger = logging.getLogger("MDAnalysis.core.universe")
-
 
 
 def _check_file_like(topology):
@@ -100,6 +98,7 @@ def _check_file_like(topology):
             _name = None
         return NamedStream(topology, _name)
     return topology
+
 
 def _topology_from_file_like(topology_file, topology_format=None,
                              **kwargs):
@@ -128,7 +127,6 @@ def _topology_from_file_like(topology_file, topology_format=None,
             "Error: {2}".format(topology_file, parser, err))
     return topology
 
-
 def _resolve_formats(*coordinates, format=None, topology_format=None):
     if not coordinates:
         if format is None:
@@ -145,10 +143,11 @@ def _resolve_coordinates(filename, *coordinates, format=None,
             get_reader_for(filename, format=format)
         except (ValueError, TypeError):
             warnings.warn('No coordinate reader found for {}. Skipping '
-                            'this file.'.format(filename))
+                          'this file.'.format(filename))
         else:
             coordinates = (filename,) + coordinates
     return coordinates
+
 
 def _generate_from_topology(universe):
     # generate Universe version of each class
@@ -168,10 +167,10 @@ def _generate_from_topology(universe):
     universe.atoms = AtomGroup(np.arange(universe._topology.n_atoms), universe)
 
     universe.residues = ResidueGroup(
-            np.arange(universe._topology.n_residues), universe)
+        np.arange(universe._topology.n_residues), universe)
 
     universe.segments = SegmentGroup(
-            np.arange(universe._topology.n_segments), universe)
+        np.arange(universe._topology.n_segments), universe)
 
 
 class Universe(object):
@@ -238,6 +237,12 @@ class Universe(object):
     vdwradii: dict, ``None``, default ``None``
         For use with *guess_bonds*. Supply a dict giving a vdwradii for each
         atom type which are used in guessing bonds.
+    context: string or Guesser, default ``default``
+        Type of the Guesser to be used in guessing different attributes
+    to_guess: list, (optional), defualt ['types', 'masses'] (in future versions types and masses will be removed)
+        Attributes to be guessed (these attributes will be either guessed if it don exist in the universe or partially guessed by only filling its empty values if universe has the attribute)
+    force_guess: list, (optional)
+        Attributes to be forced guessed (these attributes will be either guessed if they don't exist in the universe or their values will be completely overwritten by guessed ones if the universe has the attribute)
     transformations: function or list, ``None``, default ``None``
         Provide a list of transformations that you wish to apply to the
         trajectory upon reading. Transformations can be found in
@@ -262,7 +267,7 @@ class Universe(object):
     dimensions : numpy.ndarray
         system dimensions (simulation unit cell, if set in the
         trajectory) at the *current time step*
-        (see :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`).
+        (see :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`).
         The unit cell can be set for the current time step (but the change is
         not permanent unless written to a file).
     atoms : AtomGroup
@@ -313,10 +318,17 @@ class Universe(object):
         Universe now can be (un)pickled.
         ``topology`` and ``trajectory`` are reserved upon unpickle.
 
+    .. versionchanged:: 2.4.0
+      added guess_TopologyAttributes API
+      guessing masses and atom types when topology is read from a registered parser
+
+
     """
+
     def __init__(self, topology=None, *coordinates, all_coordinates=False,
                  format=None, topology_format=None, transformations=None,
-                 guess_bonds=False, vdwradii=None, in_memory=False,
+                 guess_bonds=False, vdwradii=None, context='default',
+                 to_guess=('types', 'masses'), force_guess=(), in_memory=False,
                  in_memory_step=1, **kwargs):
 
         self._trajectory = None  # managed attribute holding Reader
@@ -325,7 +337,7 @@ class Universe(object):
         self.residues = None
         self.segments = None
         self.filename = None
-
+        self._context = context
         self._kwargs = {
             'transformations': transformations,
             'guess_bonds': guess_bonds,
@@ -337,9 +349,8 @@ class Universe(object):
             'all_coordinates': all_coordinates
         }
         self._kwargs.update(kwargs)
-
-        format, topology_format = _resolve_formats(*coordinates, format=format,
-                                                   topology_format=topology_format)
+        format, topology_format = _resolve_formats(
+            *coordinates, format=format, topology_format=topology_format)
 
         if not isinstance(topology, Topology) and not topology is None:
             self.filename = _check_file_like(topology)
@@ -363,15 +374,21 @@ class Universe(object):
 
         if coordinates:
             self.load_new(coordinates, format=format, in_memory=in_memory,
-                        in_memory_step=in_memory_step, **kwargs)
+                          in_memory_step=in_memory_step, **kwargs)
 
         if transformations:
             if callable(transformations):
                 transformations = [transformations]
             self._trajectory.add_transformations(*transformations)
 
+        self._topology_atrrs = list(
+            att.attrname for att in self._topology.read_attributes)
+
         if guess_bonds:
-            self.atoms.guess_bonds(vdwradii=vdwradii)
+            force_guess = list(force_guess) + ['bonds', 'angles', 'dihedrals']
+        
+        self.guess_TopologyAttributes(
+            context, to_guess, force_guess, vdwradii=vdwradii, **kwargs)
 
     def copy(self):
         """Return an independent copy of this Universe"""
@@ -462,7 +479,7 @@ class Universe(object):
                        residue_segindex=residue_segindex,
         )
 
-        u = cls(top)
+        u = cls(top, to_guess=())
 
         if trajectory:
             coords = np.zeros((1, n_atoms, 3), dtype=np.float32)
@@ -564,7 +581,8 @@ class Universe(object):
 
         self.trajectory = reader(filename, format=format, **kwargs)
         if self.trajectory.n_atoms != len(self.atoms):
-            raise ValueError("The topology and {form} trajectory files don't"
+
+           raise ValueError("The topology and {form} trajectory files don't"
                              " have the same number of atoms!\n"
                              "Topology number of atoms {top_n_atoms}\n"
                              "Trajectory: {fname} Number of atoms {trj_n_atoms}".format(
@@ -739,7 +757,7 @@ class Universe(object):
         represented as a :class:`numpy.float32` array.
 
         Because :attr:`coord` is a reference to a
-        :class:`~MDAnalysis.coordinates.timestep.Timestep`, it changes its contents
+        :class:`~MDAnalysis.coordinates.base.Timestep`, it changes its contents
         while one is stepping through the trajectory.
 
         .. Note::
@@ -1020,7 +1038,6 @@ class Universe(object):
     def _add_topology_objects(self, object_type, values, types=None, guessed=False,
                            order=None):
         """Add new TopologyObjects to this Universe
-
         Parameters
         ----------
         object_type : {'bonds', 'angles', 'dihedrals', 'impropers'}
@@ -1037,8 +1054,6 @@ class Universe(object):
             bool, or an iterable of hashable values with the same length as ``values``
         order : iterable (optional, default None)
             None, or an iterable of hashable values with the same length as ``values``
-
-
         .. versionadded:: 1.0.0
         """
         if all(isinstance(x, TopologyObject) for x in values):
@@ -1169,7 +1184,7 @@ class Universe(object):
         .. versionadded:: 1.0.0
         """
         self._add_topology_objects('dihedrals', values, types=types,
-                                 guessed=guessed)
+                                   guessed=guessed)
 
     def add_impropers(self, values, types=None, guessed=False):
         """Add new Impropers to this Universe.
@@ -1426,58 +1441,127 @@ class Universe(object):
         if generate_coordinates:
             if not addHs:
                 raise ValueError("Generating coordinates requires adding "
-                "hydrogens with `addHs=True`")
+                                 "hydrogens with `addHs=True`")
 
             numConfs = rdkit_kwargs.pop("numConfs", numConfs)
-            if not (type(numConfs) is int and numConfs > 0):
+            if not (isinstance(numConfs, int) and numConfs > 0):
                 raise SyntaxError("numConfs must be a non-zero positive "
-                "integer instead of {0}".format(numConfs))
+                                  "integer instead of {0}".format(numConfs))
             AllChem.EmbedMultipleConfs(mol, numConfs, **rdkit_kwargs)
 
         return cls(mol, **kwargs)
+
+    def guess_TopologyAttributes(self, context=None, to_guess=(), force_guess=(), **kwargs):
+        
+        """
+        Guess and add attributes through a specific context-aware guesser.
+         .. _guess_TopologyAttributes:
+        
+        guess and add attributes through a specific context-aware guesser.
+
+        Parameters
+        ----------
+        context: string or Guesser class
+            For calling a matching guesser class for this specific context
+        to_guess: list, (optional)
+            Attributes to be guessed (these attributes will be either guessed, if it deosn't exist in the universe or partially guessed by only filling its empty values, if universe has the attribute)
+        force_guess: list, (optional)
+            Attributes to be forced guessed (these attributes will be either guessed if they don't exist in the universe or their values will be completely overwritten by guessed values if the universe has the attribute)
+        **kwargs: extra arguments to be passed to the guesser class
+        
+        Examples
+        --------
+        guess masses and elements attribute::
+
+        >>>u.guess_TopologyAttributes(context='default', to_guess=['masses', elements])
+    
+
+        .. versionadded:: 2.4.0
+
+        """
+        if not context:
+            context = self._context
+
+        guesser = get_guesser(context, self.universe, **kwargs)
+        self._context = guesser
+
+        total_guess = list(force_guess) + list(to_guess)
+        
+        # removing duplicate from the guess list with keeping attributes order 
+        # as it is more convientent to guess attributes
+        # in the same order that the user provided
+        total_guess = list(dict.fromkeys(total_guess))
+
+        objects = ['bonds', 'angles', 'dihedrals', 'impropers']
+    
+        if(total_guess):
+            if (self._topology.n_atoms > 0):
+
+                if guesser.are_guessable(total_guess):
+
+                    for attr in to_guess:
+                        if any(attr == a for a in self._topology_atrrs):
+                            logger.info('The attribute {} have already been read '
+                                        'from the topology file. The '
+                                        'guesser will only guess empty values for this attribute, if any exists.'
+                                        'To overwrite it by completely guessed values, you can pass the attribute to the force_guess'
+                                        'parameter instead of the to_guess one'
+                                        .format(attr))
+                            
+                    for attr in total_guess:
+                        fg = True if attr in force_guess else False
+                        values = guesser.guess_attr(attr, fg)
+                        
+                        if values is not None:
+                            if attr in objects:
+                                self._add_topology_objects(attr, values, guessed=True)
+                            else:
+                                tcls = _TOPOLOGY_ATTRS[attr](values, True)
+                                self.add_TopologyAttr(tcls)
+
+
+                else:
+                    raise ValueError('{0} guesser can not guess one or more '
+                                     'of the provided attributes'
+                                      .format(context))      
+
+            else:
+                warnings.warn('Can not guess attributes '
+                                 'for universe with 0 atoms')
 
 
 def Merge(*args):
     """Create a new new :class:`Universe` from one or more
     :class:`~MDAnalysis.core.groups.AtomGroup` instances.
-
     Parameters
     ----------
     *args: :class:`~MDAnalysis.core.groups.AtomGroup`
         One or more AtomGroups.
-
     Returns
     -------
     universe: :class:`Universe`
-
     Raises
     ------
     ValueError
         Too few arguments or an AtomGroup is empty and
     TypeError
         Arguments are not :class:`AtomGroup` instances.
-
     Notes
     -----
     The resulting :class:`Universe` will only inherit the common topology
     attributes that all merged universes share.
-
     :class:`AtomGroup` instances can come from different Universes, or can come
     directly from a :meth:`~Universe.select_atoms` call.
-
     :class:`Merge` can also be used with a single :class:`AtomGroup` if the
     user wants to, for example, re-order the atoms in the :class:`Universe`.
-
     If multiple :class:`AtomGroup` instances from the same :class:`Universe`
     are given, the merge will first simply "add" together the
     :class:`AtomGroup` instances.
-
     Merging does not create a full trajectory but only a single structure even
     if the input consists of one or more trajectories.  However, one can use
     the :class:`~MDAnalysis.coordinates.memory.MemoryReader` to construct a
     trajectory for the new Universe as described under
     :ref:`creating-in-memory-trajectory-label`.
-
     Example
     -------
     In this example, protein, ligand, and solvent were externally prepared in
@@ -1485,23 +1569,17 @@ def Merge(*args):
     objects (where they could be further manipulated, e.g. renumbered,
     relabeled, rotated, ...) The :func:`Merge` command is used to combine all
     of them together::
-
        u1 = Universe("protein.pdb")
        u2 = Universe("ligand.pdb")
        u3 = Universe("solvent.pdb")
        u = Merge(u1.select_atoms("protein"), u2.atoms, u3.atoms)
        u.atoms.write("system.pdb")
-
     The complete system is then written out to a new PDB file.
-
-
     .. versionchanged:: 0.9.0
        Raises exceptions instead of assertion errors.
-
     .. versionchanged:: 0.16.0
        The trajectory is now a
        :class:`~MDAnalysis.coordinates.memory.MemoryReader`.
-
     """
     from ..topology.base import squash_by
 

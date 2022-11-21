@@ -21,12 +21,14 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import pytest
+from numpy.testing import assert_equal,  assert_allclose
 
 import MDAnalysis as mda
 from MDAnalysis.core.topology import Topology
+from MDAnalysis.guesser import DefaultGuesser
 
-mandatory_attrs = ['ids', 'masses', 'types', 
-                   'resids', 'resnums', 'segids']
+mandatory_attrs = ['ids', 'resids', 'resnums', 'segids']
+
 
 
 class ParserBase(object):
@@ -47,6 +49,14 @@ class ParserBase(object):
         with self.parser(filename) as p:
             yield p.parse()
 
+    @pytest.fixture
+    def guessed_types(self, top):
+        return DefaultGuesser(None).guess_types(atoms=top.names.values)
+
+    @pytest.fixture
+    def guessed_masses(self, top):
+        return DefaultGuesser(None).guess_masses(atoms=top.types.values)
+
     def test_output(self, filename):
         """Testing the call signature"""
         with self.parser(filename) as p:
@@ -62,24 +72,17 @@ class ParserBase(object):
 
     def test_expected_attributes(self, top):
         # Extra attributes as declared in specific implementations
-        for attr in self.expected_attrs+self.guessed_attrs:
+        for attr in self.expected_attrs:
             assert hasattr(top, attr), 'Missing expected attribute: {}'.format(attr)
-    
+
     def test_no_unexpected_attributes(self, top):
         attrs = set(self.expected_attrs
-                    + self.guessed_attrs
                     + mandatory_attrs
-                    + ['indices', 'resindices', 'segindices'])
+                    + ['indices', 'resindices', 'segindices'] + self.guessed_attrs)
         for attr in top.attrs:
-            assert attr.attrname in attrs, 'Unexpected attribute: {}'.format(attr.attrname)
+            assert attr.attrname in attrs, 'Unexpected attribute: {}'.format(
+                attr.attrname)
 
-    def test_guessed_attributes(self, top):
-        # guessed attributes must be declared as guessed
-        for attr in top.attrs:
-            val = attr.is_guessed
-            if not val in (True, False):  # only for simple yes/no cases
-                continue
-            assert val == (attr.attrname in self.guessed_attrs), 'Attr "{}" guessed= {}'.format(attr, val)
 
     def test_size(self, top):
         """Check that the Topology is correctly sized"""
@@ -100,3 +103,23 @@ class ParserBase(object):
         """Check that Universe works with this Parser"""
         u = mda.Universe(filename)
         assert isinstance(u, mda.Universe)
+
+    def test_guessed_attributes(self, filename):
+        """check that the universe created with certain parser have the same
+        guessed attributes as  when it was guessed inside the parser"""
+        u = mda.Universe(filename)
+        for attr in self.guessed_attrs:
+            assert hasattr(u.atoms, attr)
+
+    @pytest.mark.skipif('names' not in expected_attrs, reason="topology doesn't have names attribute")
+    def test_guessed_types(self, filename, guessed_types):
+       """check that guessed types from universe creation have the same
+       values as the type guessing that used to happen inisde the parser"""
+       u = mda.Universe(filename)
+       assert_equal(u.atoms.types, guessed_types)
+
+    def test_guessed_masses(self, filename, guessed_masses):
+        """check that guessed masses from universe creation have the same
+        values as the masses guessing that used to happen inisde the parser"""
+        u = mda.Universe(filename)
+        assert_allclose(u.atoms.masses, guessed_masses, rtol=1e-3, atol=0)

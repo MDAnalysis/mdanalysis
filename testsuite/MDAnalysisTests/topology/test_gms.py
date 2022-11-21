@@ -21,10 +21,12 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from numpy.testing import assert_equal
+import pytest
 
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
+from MDAnalysis.guesser import DefaultGuesser
 from MDAnalysisTests.datafiles import (
     GMS_ASYMOPT,  # c1opt.gms.gz
     GMS_SYMOPT,  # symopt.gms
@@ -38,6 +40,10 @@ class GMSBase(ParserBase):
     guessed_attrs = ['masses', 'types']
     expected_n_residues = 1
     expected_n_segments = 1
+
+    @pytest.fixture
+    def guessed_masses(self, top):
+        return DefaultGuesser(None).guess_masses(atoms=DefaultGuesser(None).guess_types(atoms=top.names.values))
 
 
 class TestGMSASYMOPT(GMSBase):

@@ -28,6 +28,8 @@ import pytest
 
 import MDAnalysis as mda
 from MDAnalysisTests.topology.base import ParserBase
+from MDAnalysis.guesser import DefaultGuesser
+
 from MDAnalysisTests.datafiles import (
     mol2_molecule,
     mol2_molecules,
@@ -178,6 +180,16 @@ class TestMOL2Base(ParserBase):
         'ids', 'names', 'types', 'charges', 'resids', 'resnames', 'bonds',
         'elements',
     ]
+
+    @pytest.fixture
+    def guessed_types(self, top):
+        return top.types.values
+
+    @pytest.fixture
+    def guessed_masses(self, top):
+        return DefaultGuesser(None).guess_masses(atoms=top.elements.values)
+
+
     guessed_attrs = ['masses']
     expected_n_atoms = 49
     expected_n_residues = 1
@@ -199,7 +211,6 @@ class TestMOL2Base(ParserBase):
     @pytest.fixture(params=[mol2_molecule, mol2_molecules])
     def filename(self, request):
         return request.param
-
 
 def test_bond_orders():
     ref_orders = ('am 1 1 2 1 2 1 1 am 1 1 am 2 2 '
@@ -235,8 +246,8 @@ def test_wrong_elements_warnings():
     with pytest.warns(UserWarning, match='Unknown elements found') as record:
         u = mda.Universe(StringIO(mol2_wrong_element), format='MOL2')
 
-    # One warning from invalid elements, one from invalid masses
-    assert len(record) == 2
+    # One warning from invalid elements, one from invalid masses + masses PendingDeprecationWarning
+    assert len(record) == 4
 
     expected = np.array(['N', '', ''], dtype=object)
     assert_equal(u.atoms.elements, expected)

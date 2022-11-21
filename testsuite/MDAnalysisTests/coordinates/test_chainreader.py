@@ -50,12 +50,12 @@ class TestChainReader(object):
         return mda.Universe(PSF,
                             [DCD, CRD, DCD, CRD, DCD, CRD, CRD],
                             transformations=[translate([10,10,10])])
-                            
+
     def test_regular_repr(self):
         u = mda.Universe(PSF, [DCD, CRD, DCD])
         assert_equal("<ChainReader containing adk_dims.dcd, adk_open.crd, adk_dims.dcd with 197 frames of 3341 atoms>", u.trajectory.__repr__())
-        
-                                
+
+
     def test_truncated_repr(self, universe):
         assert_equal("<ChainReader containing adk_dims.dcd and 6 more with 298 frames of 3341 atoms>", universe.trajectory.__repr__())
 
@@ -133,8 +133,8 @@ class TestChainReader(object):
                 ts_new._pos,
                 self.prec,
                 err_msg="Coordinates disagree at frame {0:d}".format(
-                    ts_orig.frame))       
-    
+                    ts_orig.frame))
+
     def test_transform_iteration(self, universe, transformed):
         vector = np.float32([10,10,10])
         # # Are the transformations applied and
@@ -149,7 +149,7 @@ class TestChainReader(object):
             frame = ts.frame
             ref = universe.trajectory[frame].positions + vector
             assert_almost_equal(ts.positions, ref, decimal = 6)
-    
+
     def test_transform_slice(self, universe, transformed):
         vector = np.float32([10,10,10])
         # what happens when we slice the trajectory?
@@ -157,7 +157,7 @@ class TestChainReader(object):
             frame = ts.frame
             ref = universe.trajectory[frame].positions + vector
             assert_almost_equal(ts.positions, ref, decimal = 6)
-    
+
     def test_transform_switch(self, universe, transformed):
         vector = np.float32([10,10,10])
         # grab a frame:
@@ -168,7 +168,7 @@ class TestChainReader(object):
         assert_almost_equal(transformed.trajectory[10].positions, newref, decimal = 6)
         # what happens when we comeback to the previous frame?
         assert_almost_equal(transformed.trajectory[2].positions, ref, decimal = 6)
-    
+
     def test_transfrom_rewind(self, universe, transformed):
         vector = np.float32([10,10,10])
         ref = universe.trajectory[0].positions + vector
@@ -207,13 +207,13 @@ class TestChainReaderFormats(object):
         assert_equal(universe.trajectory.filenames, [PDB, XTC, TRR])
 
     def test_set_format_tuples_and_format(self):
-        universe = mda.Universe(GRO, [(PDB, 'pdb'), GRO, GRO, (XTC, 'xtc'), 
+        universe = mda.Universe(GRO, [(PDB, 'pdb'), GRO, GRO, (XTC, 'xtc'),
                                       (TRR, 'trr')], format='gro')
         assert universe.trajectory.n_frames == 23
         assert_equal(universe.trajectory.filenames, [PDB, GRO, GRO, XTC, TRR])
-        
+
         with pytest.raises(TypeError) as errinfo:
-            mda.Universe(GRO, [(PDB, 'pdb'), GRO, GRO, (XTC, 'xtc'), 
+            mda.Universe(GRO, [(PDB, 'pdb'), GRO, GRO, (XTC, 'xtc'),
                                       (TRR, 'trr')], format='pdb')
         assert 'Unable to read' in str(errinfo.value)
 
@@ -254,7 +254,7 @@ def build_trajectories(folder, sequences, fmt='xtc'):
     fnames = []
     for index, subseq in enumerate(sequences):
         coords = np.zeros((len(subseq), 1, 3), dtype=np.float32) + index
-        u = mda.Universe(utop._topology, coords)
+        u = mda.Universe(utop._topology, coords, to_guess=())
         out_traj = mda.Writer(template.format(index), n_atoms=len(u.atoms))
         fnames.append(out_traj.filename)
         with out_traj:
@@ -306,7 +306,7 @@ class TestChainReaderContinuous(object):
     def test_order(self, seq_info, tmpdir, fmt):
         folder = str(tmpdir)
         utop, fnames = build_trajectories(folder, sequences=seq_info.seq, fmt=fmt)
-        u = mda.Universe(utop._topology, fnames, continuous=True)
+        u = mda.Universe(utop._topology, fnames, continuous=True, to_guess=())
         assert u.trajectory.n_frames == seq_info.n_frames
         for i, ts in enumerate(u.trajectory):
             assert_almost_equal(i, ts.time, decimal=4)
@@ -317,14 +317,14 @@ class TestChainReaderContinuous(object):
         folder = str(tmpdir)
         sequences = ([0, 1, 2, 3], [2, 3, 4, 5], [4, 5, 6, 7])
         utop, fnames = build_trajectories(folder, sequences=sequences,)
-        u = mda.Universe(utop._topology, fnames, continuous=True)
+        u = mda.Universe(utop._topology, fnames, continuous=True, to_guess=())
         assert_equal(u.trajectory._start_frames, [0, 2, 4])
 
     def test_missing(self, tmpdir):
         folder = str(tmpdir)
         sequences = ([0, 1, 2, 3], [5, 6, 7, 8, 9])
         utop, fnames = build_trajectories(folder, sequences=sequences,)
-        u = mda.Universe(utop._topology, fnames, continuous=True)
+        u = mda.Universe(utop._topology, fnames, continuous=True, to_guess=())
         assert u.trajectory.n_frames == 9
 
     def test_warning(self, tmpdir):
@@ -333,7 +333,7 @@ class TestChainReaderContinuous(object):
         sequences = ([0, 1, 2, 3], [5, 6, 7])
         utop, fnames = build_trajectories(folder, sequences=sequences,)
         with pytest.warns(UserWarning):
-            mda.Universe(utop._topology, fnames, continuous=True)
+            mda.Universe(utop._topology, fnames, continuous=True, to_guess=())
 
     def test_interleaving_error(self, tmpdir):
         folder = str(tmpdir)
@@ -341,7 +341,7 @@ class TestChainReaderContinuous(object):
         sequences = ([0, 2, 4, 6], [1, 3, 5, 7])
         utop, fnames = build_trajectories(folder, sequences=sequences,)
         with pytest.raises(RuntimeError):
-            mda.Universe(utop._topology, fnames, continuous=True)
+            mda.Universe(utop._topology, fnames, continuous=True, to_guess=())
 
     def test_easy_trigger_warning(self, tmpdir):
         folder = str(tmpdir)
@@ -358,14 +358,14 @@ class TestChainReaderContinuous(object):
                     warnings.filterwarnings(
                             action='ignore',
                             category=ImportWarning)
-                mda.Universe(utop._topology, fnames, continuous=True)
+                mda.Universe(utop._topology, fnames, continuous=True, to_guess=())
 
     def test_single_frames(self, tmpdir):
         folder = str(tmpdir)
         sequences = ([0, 1, 2, 3], [5, ])
         utop, fnames = build_trajectories(folder, sequences=sequences,)
         with pytest.raises(RuntimeError):
-            mda.Universe(utop._topology, fnames, continuous=True)
+            mda.Universe(utop._topology, fnames, continuous=True, to_guess=())
 
     def test_mixed_filetypes(self):
         with pytest.raises(ValueError):
@@ -374,9 +374,9 @@ class TestChainReaderContinuous(object):
     def test_unsupported_filetypes(self):
         with pytest.raises(NotImplementedError):
             mda.Universe(PSF, [DCD, DCD], continuous=True)
-        # see issue 2353. The PDB reader has multiple format endings. To ensure 
-        # the not implemented error is thrown  we  do a check here. A more  
-        # careful test in the future would be a dummy reader with multiple 
+        # see issue 2353. The PDB reader has multiple format endings. To ensure
+        # the not implemented error is thrown  we  do a check here. A more
+        # careful test in the future would be a dummy reader with multiple
         # formats, just in case PDB will allow continuous reading in the future.
         with pytest.raises(ValueError):
             mda.Universe(PDB, [PDB, XTC], continuous=True)

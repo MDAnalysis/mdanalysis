@@ -28,8 +28,7 @@ CRD topology parser
 Read a list of atoms from a CHARMM CARD coordinate file (CRD_)
 to build a basic topology.  Reads atom ids (ATOMNO), atom names (TYPES),
 resids (RESID), residue numbers (RESNO), residue names (RESNames), segment ids
-(SEGID) and tempfactor (Weighting).  Atom element and mass are guessed based on
-the name of the atom.
+(SEGID) and tempfactor (Weighting).
 
 Residues are detected through a change is either resid or resname
 while segments are detected according to changes in segid.
@@ -49,13 +48,10 @@ import numpy as np
 
 from ..lib.util import openany, FORTRANReader
 from .base import TopologyReaderBase, change_squash
-from . import guessers
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomids,
     Atomnames,
-    Atomtypes,
-    Masses,
     Resids,
     Resnames,
     Resnums,
@@ -76,9 +72,8 @@ class CRDParser(TopologyReaderBase):
      - Resnums
      - Segids
 
-    Guesses the following attributes:
-     - Atomtypes
-     - Masses
+    .. versionchanged:: 2.4.0
+      removed type and mass guessing (guessing takes place now inside universe)
     """
     format = 'CRD'
 
@@ -141,10 +136,6 @@ class CRDParser(TopologyReaderBase):
         resnums = np.array(resnums, dtype=np.int32)
         segids = np.array(segids, dtype=object)
 
-        # Guess some attributes
-        atomtypes = guessers.guess_types(atomnames)
-        masses = guessers.guess_masses(atomtypes)
-
         atom_residx, (res_resids, res_resnames, res_resnums, res_segids) = change_squash(
             (resids, resnames), (resids, resnames, resnums, segids))
         res_segidx, (seg_segids,) = change_squash(
@@ -154,15 +145,13 @@ class CRDParser(TopologyReaderBase):
                        attrs=[
                            Atomids(atomids),
                            Atomnames(atomnames),
-                           Atomtypes(atomtypes, guessed=True),
-                           Masses(masses, guessed=True),
                            Tempfactors(tempfactors),
                            Resids(res_resids),
                            Resnames(res_resnames),
                            Resnums(res_resnums),
                            Segids(seg_segids),
-                       ],
-                       atom_resindex=atom_residx,
-                       residue_segindex=res_segidx)
+        ],
+            atom_resindex=atom_residx,
+            residue_segindex=res_segidx)
 
         return top

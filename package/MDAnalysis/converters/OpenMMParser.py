@@ -25,6 +25,8 @@
 ===================================================================
 
 .. versionadded:: 2.0.0
+.. versionchanged:: 2.4.0
+   removed type and mass guessing (guessing takes place now inside universe)
 
 
 Converts an
@@ -59,8 +61,7 @@ import numpy as np
 import warnings
 
 from ..topology.base import TopologyReaderBase
-from ..topology.tables import SYMB2Z
-from ..topology.guessers import guess_types, guess_masses
+from ..guesser.tables import SYMB2Z
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomids,
@@ -108,11 +109,6 @@ class OpenMMTopologyParser(TopologyReaderBase):
         -------
         top : MDAnalysis.core.topology.Topology
 
-        Note
-        ----
-        When none of the elements are present in the openmm topolgy, their
-        atomtypes are guessed using their names and their masses are
-        then guessed using their atomtypes.
 
         When partial elements are present, values from available elements
         are used whereas the absent elements are assigned an empty string
@@ -187,23 +183,30 @@ class OpenMMTopologyParser(TopologyReaderBase):
                     warnings.warn("For absent elements, atomtype has been  "
                                   "set to 'X' and mass has been set to 0.0. "
                                   "If needed these can be guessed using "
-                                  "MDAnalysis.topology.guessers.")
+                                  "universe.guess_TopologyAttributes(to_guess=['masses', 'types']). "
+                                  "(for MDAnalysis version 2.x this is done automatically, but it will be removed in "
+                                  "future versions).")
                 attrs.append(Elements(np.array(validated_elements,
                                                dtype=object)))
+                attrs.append(Atomtypes(np.array(atomtypes, dtype=object)))
+                attrs.append(Masses(np.array(masses)))
 
             else:
-                atomtypes = guess_types(atomnames)
-                masses = guess_masses(atomtypes)
                 wmsg = ("Element information is missing for all the atoms. "
                         "Elements attribute will not be populated. "
                         "Atomtype attribute will be guessed using atom "
                         "name and mass will be guessed using atomtype."
-                        "See MDAnalysis.topology.guessers.")
+                        "for MDAnalysis version 2.x this is done automatically, but it will be removed in "
+                        "future versions. "
+                        "These can be guessed using "
+                        "universe.guess_TopologyAttributes(to_guess=['masses', 'types']) "
+                        "See MDAnalysis.guessers.")
+
                 warnings.warn(wmsg)
         else:
             attrs.append(Elements(np.array(validated_elements, dtype=object)))
-        attrs.append(Atomtypes(np.array(atomtypes, dtype=object)))
-        attrs.append(Masses(np.array(masses)))
+            attrs.append(Atomtypes(np.array(atomtypes, dtype=object)))
+            attrs.append(Masses(np.array(masses)))
 
         n_atoms = len(atomids)
         n_residues = len(resids)

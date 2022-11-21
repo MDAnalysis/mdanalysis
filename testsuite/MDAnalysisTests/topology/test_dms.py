@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import MDAnalysis as mda
-
+import pytest
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import DMS_DOMAINS, DMS_NO_SEGID
 
@@ -36,6 +36,11 @@ class TestDMSParser(ParserBase):
     expected_n_atoms = 3341
     expected_n_residues = 214
     expected_n_segments = 3
+
+    @pytest.fixture
+    def guessed_masses(self, top):
+        return top.masses.values
+
 
     def test_number_of_bonds(self, top):
         assert len(top.bonds.values) == 3365

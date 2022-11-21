@@ -23,6 +23,8 @@
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
+import pytest
+
 from MDAnalysisTests.datafiles import (
     PDBQT_input,  # pdbqt_inputpdbqt.pdbqt
 )
@@ -35,6 +37,11 @@ class TestPDBQT(ParserBase):
         'ids', 'names', 'charges', 'types', 'altLocs', 'resids', 'resnames',
         'segids', 'record_types', 'icodes', 'occupancies', 'tempfactors'
     ]
+
+    @pytest.fixture
+    def guessed_types(self, top):
+        return top.types.values
+
     guessed_attrs = ['masses']
     expected_n_atoms = 1805
     expected_n_residues = 199  # resids go 2-102 then 2-99

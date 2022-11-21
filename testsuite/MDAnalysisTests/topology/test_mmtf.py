@@ -39,16 +39,16 @@ class TestMMTFSkinny(MMTFBase):
     # for all attributes often in MMTF,
     # check that we get expected error on access
     # (sort so pytest gets reliable order)
-    guessed_attrs = ['ids', 'masses', 'segids']
+    guessed_attrs = ['ids', 'segids', 'masses']
     expected_n_atoms = 660
     expected_n_residues = 134
     expected_n_segments = 2
 
-    
+
 class TestMMTFSkinny2(MMTFBase):
     parser = mda.topology.MMTFParser.MMTFParser
     ref_filename = MMTF_skinny2
-    guessed_attrs = ['ids', 'masses', 'segids']
+    guessed_attrs = ['ids', 'segids', 'masses']
     expected_n_atoms = 169
     expected_n_residues = 44
     expected_n_segments = 2
@@ -138,7 +138,7 @@ class TestMMTFFetch(TestMMTFUniverse):
 
 
 class TestSelectModels(object):
-    # tests for 'model' keyword in select_atoms   
+    # tests for 'model' keyword in select_atoms
     @pytest.fixture()
     def u(self):
         return mda.Universe(MMTF_gz)

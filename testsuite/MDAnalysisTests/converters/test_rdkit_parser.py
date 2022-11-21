@@ -24,7 +24,7 @@
 import warnings
 import pytest
 import numpy as np
-from numpy.testing import assert_equal
+from numpy.testing import assert_equal, assert_allclose
 
 import MDAnalysis as mda
 from MDAnalysisTests.topology.base import ParserBase
@@ -38,13 +38,25 @@ class RDKitParserBase(ParserBase):
     expected_attrs = ['ids', 'names', 'elements', 'masses', 'aromaticities',
                       'resids', 'resnums', 'chiralities',
                       'segids',
-                      'bonds',
+                      'bonds', 'types',
                      ]
-    
+    @pytest.fixture
+    def guessed_types(self, top):
+        return top.types.values
+
+    @pytest.fixture
+    def guessed_masses(self, top):
+        return top.masses.values
+
     expected_n_atoms = 0
     expected_n_residues = 1
     expected_n_segments = 1
     expected_n_bonds = 0
+
+    @pytest.fixture()
+    def top(self, filename):
+        with self.parser(filename) as p:
+            yield p.parse()
 
     def test_creates_universe(self, filename):
         u = mda.Universe(filename, format='RDKIT')
@@ -52,6 +64,11 @@ class RDKitParserBase(ParserBase):
 
     def test_bonds_total_counts(self, top):
         assert len(top.bonds.values) == self.expected_n_bonds
+
+    def test_guessed_attributes(self, filename):
+        u = mda.Universe(filename, format='RDKIT')
+        for attr in self.guessed_attrs:
+            assert hasattr(u.atoms, attr)
 
 
 class TestRDKitParserMOL2(RDKitParserBase):
@@ -142,7 +159,6 @@ class TestRDKitParserPDB(RDKitParserBase):
     expected_attrs = RDKitParserBase.expected_attrs + [
         'resnames', 'altLocs', 'chainIDs', 'occupancies', 'icodes',
         'tempfactors']
-    guessed_attrs = ['types']
     
     expected_n_atoms = 137
     expected_n_residues = 13
@@ -166,7 +182,6 @@ class TestRDKitParserPDB(RDKitParserBase):
 class TestRDKitParserSMILES(RDKitParserBase):
     ref_filename = "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"
 
-    guessed_attrs = ['types']
 
     expected_n_atoms = 24
     expected_n_residues = 1
@@ -183,7 +198,6 @@ class TestRDKitParserSMILES(RDKitParserBase):
 class TestRDKitParserSDF(RDKitParserBase):
     ref_filename = SDF_molecule
 
-    guessed_attrs = ['types']
 
     expected_n_atoms = 49
     expected_n_residues = 1

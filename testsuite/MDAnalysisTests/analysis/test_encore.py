@@ -610,6 +610,23 @@ class TestEncoreClustering(object):
         assert_equal(cc.clusters[1].centroid, 3, err_msg)
         assert_equal(cc.clusters[2].centroid, 5, err_msg)
 
+    def test_empty_ClusterCollection(self):
+        c = encore.ClusterCollection()
+        assert c.clusters is None
+
+    def test_ClusterCollection_element_diff_types(self):
+        with pytest.raises(TypeError, match=("all the elements must have the same type")):
+            encore.ClusterCollection(['foo', 1, 2, False])
+
+    def test_ClusterCollection_centroid_error(self):
+        with pytest.raises(ValueError, match=("which is a centroid, doesn't belong to its own cluster")):
+            encore.ClusterCollection([2, 1, 3, 3, 3])
+        
+    def test_ClusterCollection_repr(self, cc):
+        empty = encore.ClusterCollection()
+        assert_equal(repr(cc), "<ClusterCollection with 3 clusters>")
+        assert_equal(repr(empty), "<ClusterCollection with no clusters>")
+    
     def test_Cluster_init(self, cluster):
         err_msg = "Cluster was not constructed correctly"
         assert_equal(cluster.elements, [0, 1, 2], err_msg)
@@ -881,6 +898,12 @@ class TestEncoreDimensionalityReduction(object):
                         encore.PrincipalComponentAnalysis(dims[1])])
         assert_equal(coordinates[1].shape[0], dims[1])
 
+    def test_dimensionality_reduction_distance_matrix_error(self, ens1, ens2):
+        dm = confdistmatrix.get_distance_matrix(ens1)
+        l = [dm] * 2
+        with pytest.raises(ValueError, match=("Dimensions of provided list of distance matrices "
+                                              "does not match that of provided list of ")):
+            encore.reduce_dimensionality([ens1, ens2], distance_matrix=l)
 
 class TestEncoreConfDistMatrix(object):
     def test_get_distance_matrix(self):

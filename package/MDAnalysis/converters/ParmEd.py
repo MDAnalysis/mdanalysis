@@ -82,7 +82,7 @@ import itertools
 import warnings
 
 from ..coordinates import base
-from ..topology.tables import SYMB2Z
+from ..guesser.tables import SYMB2Z
 from ..core.universe import Universe
 from ..exceptions import NoDataError
 

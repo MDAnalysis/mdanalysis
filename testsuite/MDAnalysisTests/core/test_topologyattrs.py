@@ -82,7 +82,7 @@ class TopologyAttrMixin(object):
 
     @pytest.fixture()
     def universe(self, top):
-        return mda.Universe(top)
+        return mda.Universe(top, to_guess=())
 
     def test_len(self, attr):
         assert len(attr) == len(attr.values)
