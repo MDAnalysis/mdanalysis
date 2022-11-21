@@ -1486,7 +1486,7 @@ def calc_bonds(coords1: Union[np.ndarray, 'AtomGroup'],
                          kwargs={'results': bondlengths.astype(np.float32)},
                          backend=backend)
                     # upcast is currently required
-                    # bondlengths = bondlengths.astype(np.float64)
+                    bondlengths = bondlengths.astype(np.float64)
                 else:
                     _run("calc_bond_distance_ortho",
                          args=(coords1, coords2, box, bondlengths),
