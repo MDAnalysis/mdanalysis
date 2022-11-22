@@ -19,8 +19,7 @@ The rules for this file:
  * 2.4.0
 
 Fixes
-  * DCD reader no longer copies timestep and instead updates it in line with other readers
-    (Issue #3889, PR #3888)
+  * DCD reader copying of `timestep` is now deprecated (Issue #3889, PR #3888).
   * NoDataError raised on empty atomgroup provided to `DCDReader.timeseries` 
     was changed to ValueError (see #3901). A matching ValueError was added to
     `MemoryReader.timeseries`(PR #3890). 
