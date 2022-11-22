@@ -138,8 +138,6 @@ class DCDReader(base.ReaderBase):
 
         .. versionchanged:: 0.17.0
            Changed to use libdcd.pyx library and removed the correl function
-        .. versionchanged:: 2.4.0
-           Added deprecation warning for timestep copying
         """
         super(DCDReader, self).__init__(
             filename, convert_units=convert_units, **kwargs)
