@@ -1730,7 +1730,19 @@ class Masses(AtomAttr):
     @_pbc_to_wrap
     @check_atomgroup_not_empty
     def gyration_moments(group, wrap=False, unwrap=None, compound='group'):
-        """Moments of the gyration tensor.
+        r"""Moments of the gyration tensor.
+
+        The moments are defined as the eigenvalues of the gyration
+        tensor.
+
+        .. math::
+        
+            \mathsf{T} = \frac{1}{N} \sum_{i=1}^{N} (\mathsf{r_{i}} - 
+                \mathsf{r_{COM}})(\mathsf{r_{i}} - \mathsf{r_{COM}})
+
+        Where :math:`r_{COM}` is the center of mass.
+
+        See [Dima2004a]_ for background information.
 
         Parameters
         ----------
@@ -1882,10 +1894,10 @@ class Masses(AtomAttr):
         """
         atomgroup = group.atoms
         eig_vals = atomgroup.gyration_moments(wrap=wrap, unwrap=unwrap, compound=compound)
-        try:
+        if len(eig_vals.shape()) > 1:
             shape = (3.0 / 2.0) * (np.sum((eig_vals - np.mean(eig_vals, axis=1))**2, axis=1) /
                                    np.sum(eig_vals, axis=1)**2)
-        except:
+        else:
             shape = (3.0 / 2.0) * (np.sum((eig_vals - np.mean(eig_vals))**2) /
                                    np.sum(eig_vals)**2)
 
