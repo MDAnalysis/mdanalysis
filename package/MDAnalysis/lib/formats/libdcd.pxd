@@ -44,9 +44,6 @@ cdef extern from 'sys/types.h':
 ctypedef int fio_fd
 ctypedef off_t fio_size_t
 
-ctypedef float FLOAT_T
-ctypedef double DOUBLE_T
-
 cdef extern from 'include/fastio.h':
     int fio_open(const char * filename, int mode, fio_fd * fd)
     int fio_fclose(fio_fd fd)
@@ -135,13 +132,29 @@ cdef class DCDFile:
     # Whence vals (SEEK_SET, SEEK_CUR, SEEK_END)
     cdef readonly cmap[cstring, int] _whence_vals
 
+    cdef int _buffers_setup
+
+
+    # buffer for reading coordinates
+    cdef np.ndarray _coordinate_buffer
+    # buffer for reading unitcell     
+    cdef np.ndarray _unitcell_buffer
+
+    # fortran contiguious memoryviews of the buffers to pass to the C code
+    cdef float[::1] xview
+    cdef float[::1] yview
+    cdef float[::1] zview
+    cdef double[::1] unitcellview
+
+    cdef void _setup_buffers(self)
+
     cdef void _read_header(self)
     # Estimate the number of frames
     cdef int _estimate_n_frames(self)
     # Helper to read current DCD frame
-    cdef int c_readframes_helper(self, FLOAT_T[::1] x,
-                                 FLOAT_T[::1] y, FLOAT_T[::1] z,
-                                 DOUBLE_T[::1] unitcell, int first_frame)
+    cdef int c_readframes_helper(self, float[::1] x,
+                                 float[::1] y, float[::1] z,
+                                 double[::1] unitcell, int first_frame)
 
 # Helper in readframes to copy given a specific memory layout
-cdef void copy_in_order(FLOAT_T[:, :] source, FLOAT_T[:, :, :] target, int order, int index)
+cdef void copy_in_order(float[:, :] source, float[:, :, :] target, int order, int index)

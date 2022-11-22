@@ -162,6 +162,7 @@ cdef class DCDFile:
         self.natoms = 0
         self.is_open = False
         self.wrote_header = False
+        self._buffers_setup = False
         self.open(mode)
         self._whence_vals[b'FIO_SEEK_SET'] = SEEK_SET
         self._whence_vals[b'SEEK_CUR'] = SEEK_CUR
@@ -273,6 +274,7 @@ cdef class DCDFile:
         # Has to come last since it checks the reached_eof flag
         if self.mode == 'r':
             self._read_header()
+            self._setup_buffers()
 
     def close(self):
         """Close the open DCD file
@@ -338,6 +340,23 @@ cdef class DCDFile:
         py_remarks = "".join(s for s in py_remarks if s in string.printable)
 
         self.remarks = py_remarks
+
+    cdef void _setup_buffers(self):
+        cdef np.npy_intp[2] dims 
+        dims[0] = self.natoms
+        dims[1] = self.ndims
+        # note use of fortran flag (1)
+        self._coordinate_buffer = np.PyArray_EMPTY(2, dims, np.NPY_FLOAT32, 1)
+        cdef np.npy_intp[1] unitcell_dims
+        unitcell_dims[0] = 6
+        self._unitcell_buffer = np.PyArray_EMPTY(1, unitcell_dims, np.NPY_FLOAT64, 0)
+
+        # fortran contiguity
+        self.xview = self._coordinate_buffer[:, 0]
+        self.yview = self._coordinate_buffer[:, 1]
+        self.zview = self._coordinate_buffer[:, 2]
+        self.unitcellview = self._unitcell_buffer[:]
+        self._buffers_setup = True
 
     cdef int _estimate_n_frames(self):
         """ Only call this function in _read_header!!!
@@ -498,17 +517,17 @@ cdef class DCDFile:
         cdef np.npy_intp[2] shape = np.PyArray_DIMS(xyz_)
         if (shape[0] != self.natoms) or (shape[1] != 3):
             raise ValueError("xyz shape is wrong should be (natoms, 3), got:".format(xyz.shape))
-        cdef DOUBLE_T[::1] c_box = np.asarray(box, order='C', dtype=DOUBLE)
+        cdef double[::1] c_box = np.asarray(box, order='C', dtype=DOUBLE)
         # fortran contiguity
-        cdef FLOAT_T[::1] x = xyz_[:, 0]
-        cdef FLOAT_T[::1] y = xyz_[:, 1]
-        cdef FLOAT_T[::1] z = xyz_[:, 2]
+        cdef float[::1] x = xyz_[:, 0]
+        cdef float[::1] y = xyz_[:, 1]
+        cdef float[::1] z = xyz_[:, 2]
 
         step = self.istart + self.current_frame * self.nsavc
         ok = write_dcdstep(self.fp, self.current_frame + 1, step,
-                           self.natoms, <FLOAT_T*> &x[0],
-                           <FLOAT_T*> &y[0], <FLOAT_T*> &z[0],
-                           <DOUBLE_T*> &c_box[0], self.charmm)
+                           self.natoms, <float*> &x[0],
+                           <float*> &y[0], <float*> &z[0],
+                           <double*> &c_box[0], self.charmm)
         if ok != 0:
             raise IOError("Couldn't write DCD frame: reason {}".format(DCD_ERRORS[ok]))
 
@@ -539,22 +558,15 @@ cdef class DCDFile:
                                'in mode "r"'.format('self.mode'))
         if self.n_frames == 0:
             raise IOError("opened empty file. No frames are saved")
-        cdef np.npy_intp[2] dims 
-        dims[0] = self.natoms
-        dims[1] = self.ndims
-        # note use of fortran flag (1)
-        cdef np.ndarray[FLOAT_T, ndim=2] xyz = np.PyArray_EMPTY(2, dims, np.NPY_FLOAT32, 1)
-        cdef np.npy_intp[1] unitcell_dims
-        unitcell_dims[0] = 6
-        cdef np.ndarray[DOUBLE_T, ndim=1] unitcell = np.PyArray_EMPTY(1, unitcell_dims, np.NPY_FLOAT64, 0)
-        unitcell[0] = unitcell[2] = unitcell[5] = 0.0;
-        unitcell[4] = unitcell[3] = unitcell[1] = 90.0;
-        # fortran contiguity
-        cdef FLOAT_T[::1] x = xyz[:, 0]
-        cdef FLOAT_T[::1] y = xyz[:, 1]
-        cdef FLOAT_T[::1] z = xyz[:, 2]
+
+        if not self._buffers_setup:
+            self._setup_buffers()
+
+        self.unitcellview[0] = self.unitcellview[2] = self.unitcellview[5] = 0.0;
+        self.unitcellview[4] = self.unitcellview[3] = self.unitcellview[1] = 90.0;
+
         cdef int first_frame = self.current_frame == 0
-        cdef int ok = self.c_readframes_helper(x, y, z, unitcell, first_frame)
+        cdef int ok = self.c_readframes_helper(self.xview, self.yview, self.zview, self.unitcellview, first_frame)
         if ok != 0 and ok != -4:
             raise IOError("Reading DCD header failed: {}".format(DCD_ERRORS[ok]))
 
@@ -564,7 +576,7 @@ cdef class DCDFile:
             raise StopIteration
 
         self.current_frame += 1
-        return DCDFrame(xyz, unitcell)
+        return DCDFrame(self._coordinate_buffer, self._unitcell_buffer)
 
     def readframes(self, start=None, stop=None, step=None, order='fac', indices=None):
         """readframes(start=None, stop=None, step=None, order='fac', indices=None)
@@ -667,22 +679,22 @@ cdef class DCDFile:
         else:
             raise ValueError("unkown order '{}'".format(order))
 
-        cdef np.ndarray[FLOAT_T, ndim=3] xyz = np.PyArray_EMPTY(3, dims, np.NPY_FLOAT32, 0)
+        cdef np.ndarray[float, ndim=3] xyz = np.PyArray_EMPTY(3, dims, np.NPY_FLOAT32, 0)
         cdef np.npy_intp[2] unitcell_dims
         unitcell_dims[0] = n
         unitcell_dims[1] = 6
-        cdef np.ndarray[DOUBLE_T, ndim=2] box = np.PyArray_EMPTY(2, unitcell_dims, np.NPY_FLOAT64, 0)
+        cdef np.ndarray[double, ndim=2] box = np.PyArray_EMPTY(2, unitcell_dims, np.NPY_FLOAT64, 0)
 
         cdef np.npy_intp[2] xyz_tmp_dims
         xyz_tmp_dims[0] = self.natoms
         xyz_tmp_dims[1] = self.ndims
         # note fortran flag (1)
-        cdef np.ndarray[FLOAT_T, ndim=2] xyz_tmp = np.PyArray_EMPTY(2, xyz_tmp_dims, np.NPY_FLOAT32, 1)
+        cdef np.ndarray[float, ndim=2] xyz_tmp = np.PyArray_EMPTY(2, xyz_tmp_dims, np.NPY_FLOAT32, 1)
 
         # memoryviews for slices into xyz_temp, note fortran contiguous
-        cdef FLOAT_T[::1] x = xyz_tmp[:, 0]
-        cdef FLOAT_T[::1] y = xyz_tmp[:, 1]
-        cdef FLOAT_T[::1] z = xyz_tmp[:, 2]
+        cdef float[::1] x = xyz_tmp[:, 0]
+        cdef float[::1] y = xyz_tmp[:, 1]
+        cdef float[::1] z = xyz_tmp[:, 2]
 
         cdef int ok, i, counter 
         
@@ -705,21 +717,21 @@ cdef class DCDFile:
         return DCDFrame(xyz, box)
 
     # Helper to read current DCD frame
-    cdef int c_readframes_helper(self, FLOAT_T[::1] x,
-                                 FLOAT_T[::1] y, FLOAT_T[::1] z,
-                                 DOUBLE_T[::1] unitcell, int first_frame):
+    cdef int c_readframes_helper(self, float[::1] x,
+                                 float[::1] y, float[::1] z,
+                                 double[::1] unitcell, int first_frame):
         cdef int ok
         ok = read_dcdstep(self.fp, self.natoms,
-                          <FLOAT_T*> &x[0],
-                          <FLOAT_T*> &y[0], <FLOAT_T*> &z[0],
-                          <DOUBLE_T*> &unitcell[0], self.nfixed, first_frame,
+                          <float*> &x[0],
+                          <float*> &y[0], <float*> &z[0],
+                          <double*> &unitcell[0], self.nfixed, first_frame,
                           self.freeind, self.fixedcoords,
                           self.reverse_endian, self.charmm)
         return ok
 
 
 # Helper in readframes to copy given a specific memory layout
-cdef void copy_in_order(FLOAT_T[:, :] source, FLOAT_T[:, :, :] target, int order, int index):
+cdef void copy_in_order(float[:, :] source, float[:, :, :] target, int order, int index):
     if order == 1:  #  'fac':
         target[index] = source
     elif order == 2:  #  'fca':
