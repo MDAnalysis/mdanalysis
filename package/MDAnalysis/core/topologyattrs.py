@@ -2058,18 +2058,25 @@ class Charges(AtomAttr):
         compound='group', center="mass"):
         r"""Dipole vector of the group.
 
+        .. math::
+            \mathbf{\mu} = \sum_{i=1}^{N} q_{i} ( \mathbf{r_{i}} - 
+            \mathbf{r_{COM}} )
+
         Computes the dipole vector of :class:`Atoms<Atom>` in the group.
         Dipole vector per :class:`Residue`, :class:`Segment`, molecule, or
         fragment can be obtained by setting the `compound` parameter
         accordingly.
 
-        Note that the magnitude of the dipole moment is independant of the
+        Note that the magnitude of the dipole moment is independent of the
         ``center`` chosen unless the species has a net charge. In the case of
         a charged group the dipole moment can be later adjusted  with:
 
         .. math::
-            \mathsf{\mu_{COC}} = \mathsf{\mu_{COM}} + 
-            q_{ag}\mathsf{r_{COM}} - q_{ag}\mathsf{r_{COC}}
+            \mathbf{\mu_{COC}} = \mathbf{\mu_{COM}} + 
+            q_{ag}\mathbf{r_{COM}} - q_{ag}\mathbf{r_{COC}}
+
+        Where :math:`\mathbf{r_{COM}}` is the center of mass and 
+        :math:`\mathbf{r_{COC}}` is the center of charge.
 
         Parameters
         ----------
@@ -2174,13 +2181,18 @@ class Charges(AtomAttr):
     def dipole_moment(group, **kwargs):
         r"""Dipole moment of the group or compounds in a group.
 
+        .. math::
+            \mu = \sqrt{ \sum_{i=1}^{D} \mathbf{\mu}^2 }
+
+        Where :math:`D` is the number of dimensions.
+
         Computes the dipole moment of :class:`Atoms<Atom>` in the group.
         Dipole per :class:`Residue`, :class:`Segment`, molecule, or
         fragment can be obtained by setting the `compound` parameter
         accordingly.
 
         Note that when there is a net charge, the magnitude of the dipole 
-        moment is dependant on the ``center`` chosen. 
+        moment is dependent on the ``center`` chosen. 
         See :meth:`~dipole_vector`.
 
         Parameters
@@ -2241,6 +2253,17 @@ class Charges(AtomAttr):
     def quadrupole_tensor(group, wrap=False, unwrap=False, 
         compound='group', center="mass"):
         r"""Traceless quadrupole tensor of the group or compounds.
+
+        .. math::
+            \mathsf{Q} = \sum_{i=1}^{N} q_{i} ( \mathbf{r_{i}} - 
+            \mathbf{r_{COM}} ) \cdot ( \mathbf{r_{i}} - \mathbf{r_{COM}} )
+
+        .. math::
+            \hat{\mathsf{Q}} = \frac{3}{2} \mathsf{Q} - \frac{1}{2} 
+            tr(\mathsf{Q})
+
+        where :math:`\hat{\mathsf{Q}}` is the traceless quadrupole 
+        tensor.
          
         Computes the quadrupole tensor of :class:`Atoms<Atom>` in the group.
         Tensor per :class:`Residue`, :class:`Segment`, molecule, or
@@ -2248,8 +2271,8 @@ class Charges(AtomAttr):
         accordingly.
 
         Note that when there is an unsymmetrical plane in the molecule or 
-        group, the magnitude of the quadrupole tensor is dependant on the 
-        ``center`` chosen and cannot be translated.
+        group, the magnitude of the quadrupole tensor is dependent on the 
+        ``center`` (e.g., :math:`r_{COM}`) chosen and cannot be translated.
 
         Parameters
         ----------
@@ -2289,6 +2312,8 @@ class Charges(AtomAttr):
         .. versionadded:: 2.4.0
         """
         def __quadrupole(recenteredpos, charges):
+            """ Calculate the traceless quadrupole tensor
+            """
             if len(charges.shape) > 1:
                 charges = np.squeeze(charges)
             tensor = np.einsum( "ki,kj->ij",
