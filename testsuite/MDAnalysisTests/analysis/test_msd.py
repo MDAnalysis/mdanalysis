@@ -124,6 +124,8 @@ class TestMSDSimple(object):
                        nongaussian=True)
         m_simple.run()
         poly = characteristic_poly(NSTEP, dim_factor)
+        # In the simple alorithm with an exact solution, mean(r(d)^4) == MSD^2
+        # So, alpha = 3/5 - 1 = -0.4
         alpha = -0.4*np.ones(NSTEP)
         alpha[0] = np.nan
         assert_almost_equal(m_simple.results.timeseries, poly, decimal=4)
