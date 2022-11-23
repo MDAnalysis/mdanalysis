@@ -75,11 +75,13 @@ cimport numpy as np
 from libc.stdio cimport SEEK_SET, SEEK_CUR, SEEK_END
 from libc.stdint cimport uintptr_t
 from libc.stdlib cimport free
-from libcpp cimport bool as cbool
-from libcpp.string cimport string as cstring
-from libcpp.map cimport map as cmap
 
 np.import_array()
+
+_whence_vals = {"FIO_SEEK_SET": SEEK_SET,
+                "FIO_SEEK_CUR": SEEK_CUR,
+                "FIO_SEEK_END": SEEK_END}
+
 
 # module level C decls
 cdef  int DCD_IS_CHARMM_ = 0x01
@@ -164,9 +166,6 @@ cdef class DCDFile:
         self.wrote_header = False
         self._buffers_setup = False
         self.open(mode)
-        self._whence_vals[b'FIO_SEEK_SET'] = SEEK_SET
-        self._whence_vals[b'SEEK_CUR'] = SEEK_CUR
-        self._whence_vals[b'SEEK_END'] = SEEK_END
 
     def __dealloc__(self):
         self.close()
@@ -393,7 +392,7 @@ cdef class DCDFile:
         else:
             offset = self._header_size + self._firstframesize + self._framesize * (frame - 1)
 
-        cdef int ok = fio_fseek(self.fp, offset, self._whence_vals[b'FIO_SEEK_SET'])
+        cdef int ok = fio_fseek(self.fp, offset, _whence_vals['FIO_SEEK_SET'])
         if ok != 0:
             raise IOError("DCD seek failed with DCD error={}".format(DCD_ERRORS[ok]))
         self.current_frame = frame

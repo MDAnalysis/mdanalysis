@@ -129,9 +129,7 @@ cdef class DCDFile:
     cdef int reached_eof
     # Have we written the header?
     cdef int wrote_header
-    # Whence vals (SEEK_SET, SEEK_CUR, SEEK_END)
-    cdef readonly cmap[cstring, int] _whence_vals
-
+    # Are buffers set up?
     cdef int _buffers_setup
 
 
