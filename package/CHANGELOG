@@ -73,9 +73,10 @@ Changes
   * adding element attribute to TXYZParser if all atom names are valid element symbols (PR #3826)
 
 Deprecations
+  * Add deprecation warning for `timestep` copying in DCDReader
+    (Issue #3889, PR #3888)
   * Add deprecation warning for inclusive stop indexing in
     MemoryReader.timeseries (#PR 3894)
-  * Add deprecation warning for timestep copying in DCDReader (PR #3888)
 
 
 08/29/22 IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli, miss77jun, rzhao271,
