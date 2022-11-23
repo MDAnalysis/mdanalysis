@@ -347,7 +347,6 @@ def extensions(config):
 
     libdcd = MDAExtension('MDAnalysis.lib.formats.libdcd',
                           ['MDAnalysis/lib/formats/libdcd' + source_suffix],
-                          language='c++',
                           include_dirs=include_dirs + ['MDAnalysis/lib/formats/include'],
                           define_macros=define_macros,
                           extra_compile_args=extra_compile_args)
