@@ -22,9 +22,6 @@
 #
 
 
-from libcpp.map cimport map as cmap
-from libcpp.string cimport string as cstring
-from libcpp cimport bool as cbool
 from libc.stdlib cimport free
 from libc.stdint cimport uintptr_t
 from libc.stdio cimport SEEK_SET, SEEK_CUR, SEEK_END
@@ -104,7 +101,7 @@ cdef class DCDFile:
     # Is the DCD file CHARMM style
     cdef int charmm
     # Is the file periodic
-    cdef readonly cbool is_periodic
+    cdef readonly int is_periodic
     # String data in the file
     cdef remarks
     # File mode
