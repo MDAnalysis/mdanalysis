@@ -497,11 +497,6 @@ cdef class TRRFile(_XDRFile):
         # trr are a bit weird. Reading after the last frame always always
         # results in an integer error while reading. I tried it also with trr
         # produced by different codes (Gromacs, ...).
-        if return_code != EOK and return_code != EENDOFFILE \
-           and return_code != EINTEGER:
-            raise IOError('TRR read error = {}'.format(
-                error_message[return_code]))
-
         # In a trr the integer error seems to indicate that the file is ending.
         # There might be corrupted files where this is a legitimate error. But
         # then we just can't read it and stop there which is not too bad.
@@ -509,11 +504,11 @@ cdef class TRRFile(_XDRFile):
             self.reached_eof = True
             raise StopIteration
 
-        if return_code == EOK:
-            self.current_frame += 1
-        else:
+        if return_code != EOK:
             raise IOError('TRR read error = {}'.format(
                 error_message[return_code]))
+
+        self.current_frame += 1
 
         has_x = bool(has_prop & HASX)
         has_v = bool(has_prop & HASV)
@@ -580,11 +575,6 @@ cdef class TRRFile(_XDRFile):
         # trr are a bit weird. Reading after the last frame always always
         # results in an integer error while reading. I tried it also with trr
         # produced by different codes (Gromacs, ...).
-        if return_code != EOK and return_code != EENDOFFILE \
-           and return_code != EINTEGER:
-            raise IOError('TRR read error = {}'.format(
-                error_message[return_code]))
-
         # In a trr the integer error seems to indicate that the file is ending.
         # There might be corrupted files where this is a legitimate error. But
         # then we just can't read it and stop there which is not too bad.
@@ -592,11 +582,10 @@ cdef class TRRFile(_XDRFile):
             self.reached_eof = True
             raise StopIteration
 
-        if return_code == EOK:
-            self.current_frame += 1
-        else:
-            raise IOError('TRR read error = {}'.format(
-                error_message[return_code]))
+        if return_code != EOK:
+            raise IOError('TRR read error = {}'.format(error_message[return_code]))
+
+        self.current_frame += 1
 
         has_x = bool(has_prop & HASX)
         has_v = bool(has_prop & HASV)
@@ -801,19 +790,15 @@ cdef class XTCFile(_XDRFile):
         return_code = read_xtc(self.xfp, self.n_atoms, <int*> &step,
                                       &time, <matrix>box.data,
                                       <rvec*>xyz.data, <float*> &prec)
-        if return_code != EOK and return_code != EENDOFFILE:
-            raise IOError('XTC read error = {}'.format(
-                error_message[return_code]))
 
         if return_code == EENDOFFILE:
             self.reached_eof = True
             raise StopIteration
 
-        if return_code == EOK:
-            self.current_frame += 1
-        else:
-            raise IOError('XTC read error = {}'.format(
-                error_message[return_code]))
+        if return_code != EOK:
+            raise IOError('XTC read error = {}'.format(error_message[return_code]))
+        self.current_frame += 1
+
         return XTCFrame(xyz, box, step, time, prec)
 
     def read_direct_x(self, np.float32_t[:, ::1] positions):
@@ -864,19 +849,15 @@ cdef class XTCFile(_XDRFile):
         return_code = read_xtc(self.xfp, self.n_atoms, <int*> &step,
                                       &time, <matrix>box.data,
                                       <rvec*>&positions[0,0], <float*> &prec)
-        if return_code != EOK and return_code != EENDOFFILE:
-            raise IOError('XTC read error = {}'.format(
-                error_message[return_code]))
 
         if return_code == EENDOFFILE:
             self.reached_eof = True
             raise StopIteration
 
-        if return_code == EOK:
-            self.current_frame += 1
-        else:
-            raise IOError('XTC read error = {}'.format(
-                error_message[return_code]))
+        if return_code != EOK:
+            raise IOError('XTC read error = {}'.format(error_message[return_code]))
+        self.current_frame += 1
+
         return  XTCFrame(positions, box, step, time, prec)
 
 
