@@ -58,20 +58,25 @@ the distance functions in this module using explicit SIMD vectorisation.
 This can provide many-fold speedups in calculating distances. Distopia is
 under active development and as such only a selection of functions in this
 module are covered. Consult the following table to see if the function 
-you wish to use is covered by distopia.
+you wish to use is covered by distopia. For more information see the
+`distopia documentation`_.
 
-+------------+
-| Functions  |
-+============+
-| calc_bonds |
-+------------+
+.. Table:: Functions available using the `distopia`_ backend.
+
+    +-------------------------------------+
+    | Functions                           |
+    +=====================================+
+    | MDAnalysis.lib.distances.calc_bonds |
+    +-------------------------------------+
 
 If `distopia`_ is installed, the functions in this table will accept the key 
-'distopia' as the backend. The distopia library will be used to calculate the
-distances.
+'distopia' for the `backend` keyword argument. If the distopia backend is
+selected the `distopia` library will be used to calculate the distances. Note
+that for functions listed in this table **distopia is the default backend if it
+is available**.
  
 .. _distopia: https://github.com/MDAnalysis/distopia
-
+.. _distopia documentation: https://www.mdanalysis.org/distopia
 
 .. versionadded:: 0.13.0
 .. versionchanged:: 2.3.0
@@ -130,6 +135,7 @@ try:
 except ImportError:
     pass
 
+# import distopia if we have it 
 if HAS_DISTOPIA:
     _distances['distopia'] = importlib.import_module("._distopia",
                                           package="distopia")
@@ -1485,7 +1491,7 @@ def calc_bonds(coords1: Union[np.ndarray, 'AtomGroup'],
                          args=(coords1, coords2, box[:3]),
                          kwargs={'results': bondlengths.astype(np.float32)},
                          backend=backend)
-                    # upcast is currently required
+                    # upcast is currently required, change for 3.0
                     bondlengths = bondlengths.astype(np.float64)
                 else:
                     _run("calc_bond_distance_ortho",
@@ -1508,7 +1514,7 @@ def calc_bonds(coords1: Union[np.ndarray, 'AtomGroup'],
                      args=(coords1, coords2),
                      kwargs={'results': bondlengths.astype(np.float32)},
                      backend=backend)
-                # upcast is currently required
+                # upcast is currently required change for 3.0
                 bondlengths = bondlengths.astype(np.float64)
             else:
                 _run("calc_bond_distance",
