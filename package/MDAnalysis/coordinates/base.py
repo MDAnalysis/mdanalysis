@@ -1458,7 +1458,7 @@ class ReaderBase(ProtoReader):
     def __init__(self, filename, convert_units=True, **kwargs):
         super(ReaderBase, self).__init__()
 
-        self.filename = filename
+        self.filename = str(filename)
         self.convert_units = convert_units
 
         ts_kwargs = {}

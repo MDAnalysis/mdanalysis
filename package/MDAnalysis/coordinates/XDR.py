@@ -145,7 +145,7 @@ class XDRBaseReader(base.ReaderBase):
         super(XDRBaseReader, self).__init__(filename,
                                             convert_units=convert_units,
                                             **kwargs)
-        self._xdr = self._file(str(self.filename))
+        self._xdr = self._file(self.filename)
 
         self._sub = sub
         if self._sub is not None:
