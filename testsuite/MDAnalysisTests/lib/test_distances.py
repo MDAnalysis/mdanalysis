@@ -28,6 +28,7 @@ from itertools import combinations_with_replacement as comb
 
 import MDAnalysis
 from MDAnalysis.lib import distances
+from MDAnalysis.lib.distances import HAS_DISTOPIA
 from MDAnalysis.lib import mdamath
 from MDAnalysis.tests.datafiles import PSF, DCD, TRIC
 
@@ -825,7 +826,12 @@ def convert_position_dtype_if_ndarray(a, b, c, d, dtype):
             conv_dtype_if_ndarr(d, dtype))
 
 
-@pytest.mark.parametrize('backend', ['serial', 'openmp'])
+def distopia_conditional_backend():
+    if HAS_DISTOPIA:
+        return ['serial', 'openmp', 'distopia']
+    else:
+        return  ['serial', 'openmp']
+
 class TestCythonFunctions(object):
     # Unit tests for calc_bonds calc_angles and calc_dihedrals in lib.distances
     # Tests both numerical results as well as input types as Cython will silently
@@ -880,6 +886,7 @@ class TestCythonFunctions(object):
 
     @pytest.mark.parametrize('dtype', (np.float32, np.float64))
     @pytest.mark.parametrize('pos', ['positions', 'positions_atomgroups'])
+    @pytest.mark.parametrize('backend', distopia_conditional_backend())
     def test_bonds(self, box, backend, dtype, pos, request):
         a, b, c, d = request.getfixturevalue(pos)
         a, b, c, d = convert_position_dtype_if_ndarray(a, b, c, d, dtype)
@@ -900,6 +907,7 @@ class TestCythonFunctions(object):
         assert_almost_equal(dists_pbc[3], 3.46410072, self.prec,
                             err_msg="PBC check #w with box")
 
+    @pytest.mark.parametrize('backend', distopia_conditional_backend())
     def test_bonds_badbox(self, positions, backend):
         a, b, c, d = positions
         badbox1 = np.array([10., 10., 10.], dtype=np.float64)
@@ -911,6 +919,7 @@ class TestCythonFunctions(object):
         with pytest.raises(ValueError):
             distances.calc_bonds(a, b, box=badbox2, backend=backend)
 
+    @pytest.mark.parametrize('backend', distopia_conditional_backend())
     def test_bonds_badresult(self, positions, backend):
         a, b, c, d = positions
         badresult = np.zeros(len(a) - 1)  # Bad result array
@@ -919,6 +928,7 @@ class TestCythonFunctions(object):
 
     @pytest.mark.parametrize('dtype', (np.float32, np.float64))
     @pytest.mark.parametrize('pos', ['positions', 'positions_atomgroups'])
+    @pytest.mark.parametrize('backend', distopia_conditional_backend())
     def test_bonds_triclinic(self, triclinic_box, backend, dtype, pos,
                              request):
         a, b, c, d = request.getfixturevalue(pos)
@@ -929,6 +939,7 @@ class TestCythonFunctions(object):
 
     @pytest.mark.parametrize('shift', shifts)
     @pytest.mark.parametrize('periodic', [True, False])
+    @pytest.mark.parametrize('backend', distopia_conditional_backend())
     def test_bonds_single_coords(self, shift, periodic, backend):
         box = np.array([10, 20, 30, 90., 90., 90.], dtype=np.float32)
 
@@ -948,6 +959,7 @@ class TestCythonFunctions(object):
 
     @pytest.mark.parametrize('dtype', (np.float32, np.float64))
     @pytest.mark.parametrize('pos', ['positions', 'positions_atomgroups'])
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
     def test_angles(self, backend, dtype, pos, request):
         a, b, c, d = request.getfixturevalue(pos)
         a, b, c, d = convert_position_dtype_if_ndarray(a, b, c, d, dtype)
@@ -963,6 +975,7 @@ class TestCythonFunctions(object):
         assert_almost_equal(angles[3], 0.098174833, self.prec,
                             err_msg="Small angle failed in calc_angles")
 
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
     def test_angles_bad_result(self, positions, backend):
         a, b, c, d = positions
         badresult = np.zeros(len(a) - 1)  # Bad result array
@@ -976,6 +989,7 @@ class TestCythonFunctions(object):
     ])
     @pytest.mark.parametrize('shift', shifts)
     @pytest.mark.parametrize('periodic', [True, False])
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
     def test_angles_single_coords(self, case, shift, periodic, backend):
         def manual_angle(x, y, z):
             return mdamath.angle(y - x, y - z)
@@ -996,6 +1010,7 @@ class TestCythonFunctions(object):
 
     @pytest.mark.parametrize('dtype', (np.float32, np.float64))
     @pytest.mark.parametrize('pos', ['positions', 'positions_atomgroups'])
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
     def test_dihedrals(self, backend, dtype, pos, request):
         a, b, c, d = request.getfixturevalue(pos)
         a, b, c, d = convert_position_dtype_if_ndarray(a, b, c, d, dtype)
@@ -1008,6 +1023,7 @@ class TestCythonFunctions(object):
         assert_almost_equal(dihedrals[3], -0.50714064, self.prec,
                             err_msg="arbitrary dihedral angle failed")
 
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
     def test_dihedrals_wronglength(self, positions, wronglength, backend):
         a, b, c, d = positions
         with pytest.raises(ValueError):
@@ -1022,6 +1038,7 @@ class TestCythonFunctions(object):
         with pytest.raises(ValueError):
             distances.calc_dihedrals(a, b, c, wronglength, backend=backend)
 
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
     def test_dihedrals_bad_result(self, positions, backend):
         a, b, c, d = positions
         badresult = np.zeros(len(a) - 1)  # Bad result array
@@ -1039,6 +1056,7 @@ class TestCythonFunctions(object):
     ])
     @pytest.mark.parametrize('shift', shifts)
     @pytest.mark.parametrize('periodic', [True, False])
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
     def test_dihedrals_single_coords(self, case, shift, periodic, backend):
         def manual_dihedral(a, b, c, d):
             return mdamath.dihedral(b - a, c - b, d - c)
@@ -1059,6 +1077,7 @@ class TestCythonFunctions(object):
         reference = ref if periodic else manual_dihedral(a, b, c, d)
         assert_almost_equal(abs(result), abs(reference), decimal=4)
 
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
     def test_numpy_compliance(self, positions, backend):
         a, b, c, d = positions
         # Checks that the cython functions give identical results to the numpy versions
@@ -1369,7 +1388,7 @@ class TestInputUnchanged(object):
         assert_equal(crd, ref)
 
     @pytest.mark.parametrize('box', boxes)
-    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    @pytest.mark.parametrize('backend', distopia_conditional_backend())
     def test_input_unchanged_calc_bonds(self, coords, box, backend):
         crds = coords[:2]
         refs = [crd.copy() for crd in crds]
@@ -1377,7 +1396,7 @@ class TestInputUnchanged(object):
         assert_equal(crds, refs)
 
     @pytest.mark.parametrize('box', boxes)
-    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    @pytest.mark.parametrize('backend', distopia_conditional_backend())
     def test_input_unchanged_calc_bonds_atomgroup(self, coords_atomgroups,
                                                   box, backend):
         crds = coords_atomgroups[:2]
@@ -1527,7 +1546,7 @@ class TestEmptyInputCoordinates(object):
         assert_equal(res, empty_coord)
 
     @pytest.mark.parametrize('box', boxes)
-    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    @pytest.mark.parametrize('backend', distopia_conditional_backend())
     def test_empty_input_calc_bonds(self, empty_coord, box, backend):
         res = distances.calc_bonds(empty_coord, empty_coord, box=box,
                                    backend=backend)
@@ -1683,7 +1702,7 @@ class TestOutputTypes(object):
     @pytest.mark.parametrize('box', boxes)
     @pytest.mark.parametrize('incoords',
                              [2 * [coords[0]]] + list(comb(coords[1:], 2)))
-    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    @pytest.mark.parametrize('backend', distopia_conditional_backend())
     def test_output_type_calc_bonds(self, incoords, box, backend):
         res = distances.calc_bonds(*incoords, box=box, backend=backend)
         maxdim = max([crd.ndim for crd in incoords])
