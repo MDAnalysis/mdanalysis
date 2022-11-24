@@ -311,8 +311,8 @@ cdef class DCDFile:
         if ok != 0:
             raise IOError("Reading DCD header failed: {}".format(DCD_ERRORS[ok]))
 
-        self.is_periodic = bool((self.charmm & DCD_IS_CHARMM) and
-                                (self.charmm & DCD_HAS_EXTRA_BLOCK))
+        self.is_periodic = int(bool((self.charmm & DCD_IS_CHARMM) and
+                                (self.charmm & DCD_HAS_EXTRA_BLOCK)))
 
         if c_remarks != NULL:
             py_remarks = <bytes> c_remarks[:len_remarks]
