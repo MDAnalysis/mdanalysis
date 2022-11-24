@@ -827,6 +827,8 @@ def convert_position_dtype_if_ndarray(a, b, c, d, dtype):
 
 
 def distopia_conditional_backend():
+    # functions that allow distopia acceleration need to be tested with 
+    # distopia backend argument but distopia is an optional dep. 
     if HAS_DISTOPIA:
         return ['serial', 'openmp', 'distopia']
     else:
@@ -1077,28 +1079,37 @@ class TestCythonFunctions(object):
         reference = ref if periodic else manual_dihedral(a, b, c, d)
         assert_almost_equal(abs(result), abs(reference), decimal=4)
 
-    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
-    def test_numpy_compliance(self, positions, backend):
+    @pytest.mark.parametrize('backend', distopia_conditional_backend())
+    def test_numpy_compliance_bonds(self, positions, backend):
         a, b, c, d = positions
         # Checks that the cython functions give identical results to the numpy versions
         bonds = distances.calc_bonds(a, b, backend=backend)
-        angles = distances.calc_angles(a, b, c, backend=backend)
-        dihedrals = distances.calc_dihedrals(a, b, c, d, backend=backend)
-
         bonds_numpy = np.array([mdamath.norm(y - x) for x, y in zip(a, b)])
+
+        assert_almost_equal(bonds, bonds_numpy, self.prec,
+                            err_msg="Cython bonds didn't match numpy calculations")
+
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_numpy_compliance_angles(self, positions, backend):
+        a, b, c, d = positions
+        # Checks that the cython functions give identical results to the numpy versions
+        angles = distances.calc_angles(a, b, c, backend=backend)
         vec1 = a - b
         vec2 = c - b
         angles_numpy = np.array([mdamath.angle(x, y) for x, y in zip(vec1, vec2)])
+        # numpy 0 angle returns NaN rather than 0
+        assert_almost_equal(angles[1:], angles_numpy[1:], self.prec,
+                            err_msg="Cython angles didn't match numpy calcuations")
+
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_numpy_compliance_dihedrals(self, positions, backend):
+        a, b, c, d = positions
+        # Checks that the cython functions give identical results to the numpy versions
+        dihedrals = distances.calc_dihedrals(a, b, c, d, backend=backend)
         ab = a - b
         bc = b - c
         cd = c - d
         dihedrals_numpy = np.array([mdamath.dihedral(x, y, z) for x, y, z in zip(ab, bc, cd)])
-
-        assert_almost_equal(bonds, bonds_numpy, self.prec,
-                            err_msg="Cython bonds didn't match numpy calculations")
-        # numpy 0 angle returns NaN rather than 0
-        assert_almost_equal(angles[1:], angles_numpy[1:], self.prec,
-                            err_msg="Cython angles didn't match numpy calcuations")
         assert_almost_equal(dihedrals, dihedrals_numpy, self.prec,
                             err_msg="Cython dihedrals didn't match numpy calculations")
 
