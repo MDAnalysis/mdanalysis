@@ -31,6 +31,8 @@ Fixes
     (e.g. bonds, angles) (PR #3779).
 
 Enhancements
+  * Add distopia distance calculation library bindings as a selectable backend
+    for `calc_bonds` in `MDA.lib.distances`. (Issue #3783, PR #3914)
   * LAMMPSDump Reader optionally unwraps trajectories with image flags upon 
     loading (#3843
   * LAMMPSDump Reader now imports velocities and forces (#3843)
