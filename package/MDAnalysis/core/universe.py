@@ -579,7 +579,7 @@ class Universe(object):
         return self
 
     def transfer_to_memory(self, start=None, stop=None, step=None,
-                           verbose=False):
+                           verbose=False **kwargs):
         """Transfer the trajectory to in memory representation.
 
         Replaces the current trajectory reader object with one of type
@@ -641,7 +641,7 @@ class Universe(object):
                 dt=self.trajectory.ts.dt * step,
                 filename=self.trajectory.filename,
                 velocities=velocities,
-                forces=forces,
+                forces=forces, **kwargs
             )
 
     # python 2 doesn't allow an efficient splitting of kwargs in function
