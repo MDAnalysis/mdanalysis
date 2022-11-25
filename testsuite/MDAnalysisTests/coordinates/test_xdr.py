@@ -29,6 +29,7 @@ import os
 from os.path import split
 import shutil
 import subprocess
+from pathlib import Path
 
 from numpy.testing import (assert_equal,
                            assert_almost_equal,
@@ -904,3 +905,14 @@ class TestTRRReader_offsets(_GromacsReader_offsets):
         9155712, 10300176
     ])
     _reader = mda.coordinates.TRR.TRRReader
+
+
+def test_pathlib():
+    # regression test for XDR path of
+    # gh-2497
+    top = Path(GRO)
+    traj = Path(XTC)
+    u = mda.Universe(top, traj)
+    # we really only care that pathlib
+    # object handling worked
+    assert u.atoms.n_atoms == 47681

@@ -143,6 +143,7 @@ from ..auxiliary.core import auxreader
 from ..auxiliary.core import get_auxreader_for
 from ..auxiliary import _AUXREADERS
 from ..lib.util import asiterable, Namespace, store_init_arguments
+from ..lib.util import NamedStream
 
 
 class FrameIteratorBase(object):
@@ -1458,7 +1459,10 @@ class ReaderBase(ProtoReader):
     def __init__(self, filename, convert_units=True, **kwargs):
         super(ReaderBase, self).__init__()
 
-        self.filename = filename
+        if isinstance(filename, NamedStream):
+            self.filename = filename
+        else:
+            self.filename = str(filename)
         self.convert_units = convert_units
 
         ts_kwargs = {}
