@@ -541,6 +541,8 @@ class Universe(object):
         .. versionchanged:: 0.17.0
            Now returns a :class:`Universe` instead of the tuple of file/array
            and detected file type.
+        .. versionchanged:: 2.4.0
+           Passes through kwargs if `in_memory=True`.
 
         """
         # filename==None happens when only a topology is provided
@@ -600,6 +602,8 @@ class Universe(object):
 
 
         .. versionadded:: 0.16.0
+        .. versionchanged:: 2.4.0
+           Passes through kwargs to MemoryReader
         """
         from ..coordinates.memory import MemoryReader
 
