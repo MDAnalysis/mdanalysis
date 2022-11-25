@@ -224,6 +224,9 @@ constants = {
     'calorie': (1.0 * MDA_PINT_UNITS.cal).to("J").magnitude,  
     # kJ (mol K)**-1
     'Boltzmann_constant': (1.0*MDA_PINT_UNITS.boltzmann_constant*MDA_PINT_UNITS.avogadro_constant).to("kJ/mol/K").magnitude,
+    # we previously used a misspelling
+    'Boltzman_constant': (1.0*MDA_PINT_UNITS.boltzmann_constant*MDA_PINT_UNITS.avogadro_constant).to("kJ/mol/K").magnitude,
+
     # e**2 (eV *A)**-1 
     'electric_constant': (1.0*MDA_PINT_UNITS.electric_constant).to("e**2/eV/angstrom").magnitude}
 
@@ -324,9 +327,14 @@ for energy, efactor in energyUnit_factor.items():
     for length, lfactor in lengthUnit_factor.items():
         forceUnit_factor[energy + '/' + length] = efactor/lfactor
 # others
-forceUnit_factor['Newton']:  (1.0*MDANALYSIS_BASE_PINT_UNITS["force"]/MDA_PINT_UNITS.avogadro_constant).to("newton").magnitude
-forceUnit_factor['N']:(1.0*MDANALYSIS_BASE_PINT_UNITS["force"]/MDA_PINT_UNITS.avogadro_constant).to("newton").magnitude
-forceUnit_factor['J/m']: (1.0*MDANALYSIS_BASE_PINT_UNITS["force"]/MDA_PINT_UNITS.avogadro_constant).to("J/m").magnitude
+forceUnit_factor['Newton'] =  (1.0*MDANALYSIS_BASE_PINT_UNITS["force"]/MDA_PINT_UNITS.avogadro_constant).to("newton").magnitude
+forceUnit_factor['N'] = (1.0*MDANALYSIS_BASE_PINT_UNITS["force"]/MDA_PINT_UNITS.avogadro_constant).to("newton").magnitude
+forceUnit_factor['J/m'] = (1.0*MDANALYSIS_BASE_PINT_UNITS["force"]/MDA_PINT_UNITS.avogadro_constant).to("J/m").magnitude
+forceUnit_factor['kJ/(mol*Angstrom)'] = (1.0*MDANALYSIS_BASE_PINT_UNITS["force"]).to("kJ/(mol*angstrom)").magnitude
+forceUnit_factor['kJ/(mol*nm)'] = (1.0*MDANALYSIS_BASE_PINT_UNITS["force"]).to("kJ/(mol*nm)").magnitude
+forceUnit_factor['kJ/(mol*\u212b)'] = (1.0*MDANALYSIS_BASE_PINT_UNITS["force"]).to("kJ/(mol*angstrom)").magnitude
+forceUnit_factor['kcal/(mol*Angstrom)'] = (1.0*MDANALYSIS_BASE_PINT_UNITS["force"]).to("kcal/(mol*angstrom)").magnitude
+forceUnit_factor['kcal/(mol*\u212b)'] = (1.0*MDANALYSIS_BASE_PINT_UNITS["force"]).to("kcal/(mol*angstrom)").magnitude
 
 #: *Charge* is measured in multiples of the `electron charge`_ *e*, with the value
 #: *elementary_charge* in :data:`constants`.
@@ -338,9 +346,10 @@ forceUnit_factor['J/m']: (1.0*MDANALYSIS_BASE_PINT_UNITS["force"]/MDA_PINT_UNITS
 #:    Use CODATA 2010 value for *elementary charge*, which differs from the previously used value
 #:    *e* =  1.602176487 x 10**(-19) C by 7.8000000e-27 C.
 chargeUnit_factor = {
-    'e': 1.0,
+    'e': (1.0*MDANALYSIS_BASE_PINT_UNITS["charge"]).to("e").magnitude,
     'Amber': 18.2223,  # http://ambermd.org/formats.html#parm
-    'C': constants['elementary_charge'], 'As': constants['elementary_charge'],
+    'C': (1.0*MDANALYSIS_BASE_PINT_UNITS["charge"]).to("C").magnitude,
+    'As': (1.0*MDANALYSIS_BASE_PINT_UNITS["charge"]).to("A*s").magnitude,
 }
 
 #: :data:`conversion_factor` is used by :func:`get_conversion_factor`
