@@ -14,14 +14,17 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, BFedder, aya9aladdin,
-         jaclark5, jfennick
+         jaclark5, jfennick, lilyminium
 
  * 2.4.0
 
 Fixes
+  * NoDataError raised on empty atomgroup provided to `DCDReader.timeseries` 
+    was changed to ValueError (see #3901). A matching ValueError was added to
+    `MemoryReader.timeseries`(PR #3890). 
+  * Removes ``pbc`` kwarg from ``AtomGroup.wrap`` (Issue #3909)
   * LAMMPSDump Reader translates the box to the origin (#3741)
   * hbond analysis: access hbonds results through new results member in count_by_ids() and count_by_type()
-  * Added isolayer selection method (Issue #3845)
   * Auxiliary; determination of representative frames: Removed undefined
     behaviour for cutoff values < -1 (PR # 3749)
   * Fixes distances.between not always returning AtomGroup (Issue #3794)
@@ -31,8 +34,14 @@ Fixes
     (e.g. bonds, angles) (PR #3779).
 
 Enhancements
+<<<<<<< HEAD
   * Add distopia distance calculation library bindings as a selectable backend
     for `calc_bonds` in `MDA.lib.distances`. (Issue #3783, PR #3914)
+=======
+  * The timeseries method for exporting coordinates from multiple frames to a
+    NumPy array was added to ProtoReader (PR #3890)
+  * MDAnalysis now officially supports py3.11 (Issue #3878)
+>>>>>>> upstream/develop
   * LAMMPSDump Reader optionally unwraps trajectories with image flags upon 
     loading (#3843
   * LAMMPSDump Reader now imports velocities and forces (#3843)
@@ -47,8 +56,10 @@ Enhancements
   * A new AuxReader for the GROMACS EDR file format was implemented.
     (Issue # 3629, PR # 3749)
   * Added benchmarks for bonds topology attribute (Issue #3785, PR #3806)
+  * Added isolayer selection method (Issue #3845)
 
 Changes
+ * Moved `libmdanalysis` cython header to `lib`(Issue #3912, PR #3913)
  * Auxiliary; determination of representative frames: The default value for
    cutoff is now None, not -1. Negative values are now turned
    to None. (PR #3749)
@@ -64,6 +75,8 @@ Changes
   * adding element attribute to TXYZParser if all atom names are valid element symbols (PR #3826)
 
 Deprecations
+  * Add deprecation warning for inclusive stop indexing in
+    MemoryReader.timeseries (#PR 3894)
 
 
 08/29/22 IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli, miss77jun, rzhao271,
