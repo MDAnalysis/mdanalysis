@@ -74,9 +74,18 @@ If `distopia`_ is installed, the functions in this table will accept the key
 selected the `distopia` library will be used to calculate the distances. Note
 that for functions listed in this table **distopia is the default backend if it
 is available**.
+
+.. Note:: 
+    Due to the use of Instruction Set Architecture (`ISA`_) specific SIMD
+    intrinsics in distopia, via `VCL2`_ the precision of your results may
+    depend on the ISA available on your machine. However, in all tested cases
+    distopia satisfied the accuracy thresholds used to the functions in this
+    module. 
  
 .. _distopia: https://github.com/MDAnalysis/distopia
 .. _distopia documentation: https://www.mdanalysis.org/distopia
+.. _ISA: https://en.wikipedia.org/wiki/Instruction_set_architecture
+.. _VCL2: https://github.com/vectorclass/version2
 
 .. versionadded:: 0.13.0
 .. versionchanged:: 2.3.0
