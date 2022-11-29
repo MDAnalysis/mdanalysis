@@ -287,8 +287,9 @@ class EinsteinMSD(AnalysisBase):
     select : str (optional)
         A selection string. Defaults to "all" in which case
         all atoms are selected.
-    msd_type : {'xyz', 'xy', 'yz', 'xz', 'x', 'y', 'z'} (optional)
-        Desired dimensions to be included in the MSD. Defaults to 'xyz'.
+    msd_type : str (optional)
+        Desired dimensions to be included in the MSD, can be any of the following: 
+        'xyz', 'xy', 'yz', 'xz', 'x', 'y', 'z'. Defaults to 'xyz'.
     fft : bool (optional)
         If ``True``, uses a fast FFT based algorithm for computation of
         the MSD. Otherwise, use the simple "windowed" algorithm.
@@ -306,7 +307,7 @@ class EinsteinMSD(AnalysisBase):
     results.msds_by_particle : :class:`numpy.ndarray`
         The MSD of each individual particle with respect to lag-time.
     results.nongaussian_parameter : :class:`numpy.ndarray`
-        Only available when `fft==False`. The averaged nongaussian 
+        Can only be ``True`` when `fft==False`. The averaged nongaussian 
         parameter  over all the particles with respect to lag-time.
     results.nongaussian_by_particle : :class:`numpy.ndarray`
         Only available when `fft==False`. The nongaussian parameter 
@@ -335,14 +336,16 @@ class EinsteinMSD(AnalysisBase):
         select : str (optional)
             A selection string. Defaults to "all" in which case
             all atoms are selected.
-        msd_type : {'xyz', 'xy', 'yz', 'xz', 'x', 'y', 'z'} (optional)
-            Desired dimensions to be included in the MSD.
+        msd_type : str (optional)
+            Desired dimensions to be included in the MSD, can be any of the following: 
+            'xyz', 'xy', 'yz', 'xz', 'x', 'y', 'z'. Defaults to 'xyz'.
         fft : bool (optional)
             If ``True``, uses a fast FFT based algorithm for computation of
             the MSD. Otherwise, use the simple "windowed" algorithm.
             The tidynamics package is required for `fft=True`.
         nongaussian : bool (optional)
             If ``True`` the nongaussian parameter is calculated.
+            Can only be ``True`` when `fft==False`. The averaged nongaussian 
         """
         if isinstance(u, groups.UpdatingAtomGroup):
             raise TypeError("UpdatingAtomGroups are not valid for MSD "
@@ -365,12 +368,12 @@ class EinsteinMSD(AnalysisBase):
         # result
         self.results.msds_by_particle = None
         self.results.timeseries = None
-        if not fft and nongaussian:
+        if fft and nongaussian:
+            raise ValueError("The nongaussian parameter can only be computed"
+                             " when `fft=False`")
+        elif nongaussian:
             self.results.nongaussian_by_particle = None
             self.results.nongaussian_parameter = None
-        elif fft and nongaussian:
-            raise ValueError("The nongaussian parameter is only computed when "
-                             "`fft=False`")
 
     def _prepare(self):
         # self.n_frames only available here

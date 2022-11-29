@@ -166,6 +166,14 @@ class TestMSDSimple(object):
                                 0.01961,  0.01743, 0.01355,  0.00997]), 
                             atol=1e-5)
 
+    def test_no_fft_if_nongaussian(self, random_walk_u):
+        # regress against random_walk test data
+        errmsg = ("The nongaussian parameter can only be computed"
+                  " when `fft=False`")
+        with pytest.raises(ValueError, match=errmsg):
+            msd_rw = MSD(random_walk_u, 'all', fft=True,
+                     nongaussian=True)
+
 
 @pytest.mark.skipif(import_not_available("tidynamics"),
                     reason="Test skipped because tidynamics not found")
