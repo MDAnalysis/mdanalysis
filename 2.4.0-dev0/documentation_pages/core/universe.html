@@ -838,6 +838,9 @@ features than the
 <p><span class="versionmodified changed">Changed in version 0.17.0: </span>Now returns a <a class="reference internal" href="#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> instead of the tuple of file/array
 and detected file type.</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.4.0: </span>Passes through kwargs if <cite>in_memory=True</cite>.</p>
+</div>
 </dd></dl>
 
 <dl class="py property">
@@ -871,7 +874,7 @@ resulting in a different number of atoms in each model.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.transfer_to_memory">
-<span class="sig-name descname"><span class="pre">transfer_to_memory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.transfer_to_memory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.transfer_to_memory" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transfer_to_memory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.transfer_to_memory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.transfer_to_memory" title="Permalink to this definition"></a></dt>
 <dd><p>Transfer the trajectory to in memory representation.</p>
 <p>Replaces the current trajectory reader object with one of type
 <a class="reference internal" href="../coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory.MemoryReader</span></code></a> to support in-place
@@ -889,6 +892,9 @@ set to True. Default value is False.</p></li>
 </dl>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.16.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.4.0: </span>Passes through kwargs to MemoryReader</p>
 </div>
 </dd></dl>
 

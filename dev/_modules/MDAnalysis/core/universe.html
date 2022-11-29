@@ -643,6 +643,8 @@
 <span class="sd">        .. versionchanged:: 0.17.0</span>
 <span class="sd">           Now returns a :class:`Universe` instead of the tuple of file/array</span>
 <span class="sd">           and detected file type.</span>
+<span class="sd">        .. versionchanged:: 2.4.0</span>
+<span class="sd">           Passes through kwargs if `in_memory=True`.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># filename==None happens when only a topology is provided</span>
@@ -676,12 +678,12 @@
                                  <span class="n">trj_n_atoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">in_memory</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">transfer_to_memory</span><span class="p">(</span><span class="n">step</span><span class="o">=</span><span class="n">in_memory_step</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transfer_to_memory</span><span class="p">(</span><span class="n">step</span><span class="o">=</span><span class="n">in_memory_step</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="Universe.transfer_to_memory"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.transfer_to_memory">[docs]</a>    <span class="k">def</span> <span class="nf">transfer_to_memory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                           <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                           <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Transfer the trajectory to in memory representation.</span>
 
 <span class="sd">        Replaces the current trajectory reader object with one of type</span>
@@ -702,6 +704,8 @@
 
 
 <span class="sd">        .. versionadded:: 0.16.0</span>
+<span class="sd">        .. versionchanged:: 2.4.0</span>
+<span class="sd">           Passes through kwargs to MemoryReader</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">..coordinates.memory</span> <span class="kn">import</span> <span class="n">MemoryReader</span>
 
@@ -743,8 +747,7 @@
                 <span class="n">dt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span> <span class="o">*</span> <span class="n">step</span><span class="p">,</span>
                 <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
                 <span class="n">velocities</span><span class="o">=</span><span class="n">velocities</span><span class="p">,</span>
-                <span class="n">forces</span><span class="o">=</span><span class="n">forces</span><span class="p">,</span>
-            <span class="p">)</span></div>
+                <span class="n">forces</span><span class="o">=</span><span class="n">forces</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
     <span class="c1"># python 2 doesn&#39;t allow an efficient splitting of kwargs in function</span>
     <span class="c1"># argument signatures.</span>
