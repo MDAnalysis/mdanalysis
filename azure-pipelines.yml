@@ -81,7 +81,7 @@ jobs:
   - script: python -m pip install --upgrade pip setuptools wheel
     displayName: 'Install tools'
   - script: >-
-      python -m pip install --only-binary=h5py,scipy
+      python -m pip install --only-binary=scipy
       cython
       hypothesis
       matplotlib
@@ -91,11 +91,15 @@ jobs:
       pytest-cov
       pytest-xdist
       scikit-learn
-      h5py>=2.10
       tqdm
       threadpoolctl
       fasteners
     displayName: 'Install dependencies'
+  # h5py wheels are not available for 3.11 yet, so we skip them if necessary
+  - script: >-
+      python -m pip install h5py>=2.10 --only-binary=h5py
+    displayName: 'h5py install'
+    condition: not(eq(variables['PYTHON_VERSION'], '3.11'))
   # for wheel install testing, we pin to an
   # older NumPy, the oldest version we support and that
   # supports the Python version in use
