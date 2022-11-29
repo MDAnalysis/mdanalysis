@@ -125,11 +125,11 @@ class TestAtomGroupWriting(object):
     def test_write_frames(self, u, tmpdir, frames):
         destination = str(tmpdir / 'test.dcd')
         selection = u.trajectory[frames]
-        ref_positions = np.stack([ts.positions for ts in selection])
+        ref_positions = np.stack([ts.positions.copy() for ts in selection])
         u.atoms.write(destination, frames=frames)
 
         u_new = mda.Universe(destination)
-        new_positions = np.stack([ts.positions for ts in u_new.trajectory])
+        new_positions = np.stack([ts.positions.copy() for ts in u_new.trajectory])
 
         assert_array_almost_equal(new_positions, ref_positions)
 
@@ -141,11 +141,11 @@ class TestAtomGroupWriting(object):
     def test_write_frame_iterator(self, u, tmpdir, frames):
         destination = str(tmpdir / 'test.dcd')
         selection = u.trajectory[frames]
-        ref_positions = np.stack([ts.positions for ts in selection])
+        ref_positions = np.stack([ts.positions.copy() for ts in selection])
         u.atoms.write(destination, frames=selection)
 
         u_new = mda.Universe(destination)
-        new_positions = np.stack([ts.positions for ts in u_new.trajectory])
+        new_positions = np.stack([ts.positions.copy() for ts in u_new.trajectory])
 
         assert_array_almost_equal(new_positions, ref_positions)
 
@@ -165,8 +165,8 @@ class TestAtomGroupWriting(object):
         destination = str(tmpdir / 'test.dcd' + compression)
         u.atoms.write(destination, frames='all')
         u_new = mda.Universe(destination)
-        ref_positions = np.stack([ts.positions for ts in u.trajectory])
-        new_positions = np.stack([ts.positions for ts in u_new.trajectory])
+        ref_positions = np.stack([ts.positions.copy() for ts in u.trajectory])
+        new_positions = np.stack([ts.positions.copy() for ts in u_new.trajectory])
         assert_array_almost_equal(new_positions, ref_positions)
 
     @pytest.mark.parametrize('frames', ('invalid', 8, True, False, 3.2))

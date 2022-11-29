@@ -19,6 +19,9 @@ The rules for this file:
  * 2.4.0
 
 Fixes
+  * Consolidate license files across MDAnalysis library packages (PR #3939)
+  * Kwargs passed through to `MemoryReader` when using `transfer_to_memory()`
+    and `in_memory=True`.
   * NoDataError raised on empty atomgroup provided to `DCDReader.timeseries` 
     was changed to ValueError (see #3901). A matching ValueError was added to
     `MemoryReader.timeseries`(PR #3890). 
@@ -34,6 +37,7 @@ Fixes
     (e.g. bonds, angles) (PR #3779).
 
 Enhancements
+  * Improve C content of libdcd Cython (Issue #3882, PR #3888)
   * The timeseries method for exporting coordinates from multiple frames to a
     NumPy array was added to ProtoReader (PR #3890)
   * MDAnalysis now officially supports py3.11 (Issue #3878)
@@ -70,6 +74,8 @@ Changes
   * adding element attribute to TXYZParser if all atom names are valid element symbols (PR #3826)
 
 Deprecations
+  * Add deprecation warning for `timestep` copying in DCDReader
+    (Issue #3889, PR #3888)
   * Add deprecation warning for inclusive stop indexing in
     MemoryReader.timeseries (#PR 3894)
 
