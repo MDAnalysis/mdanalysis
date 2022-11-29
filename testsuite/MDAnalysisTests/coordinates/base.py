@@ -32,7 +32,6 @@ from numpy.testing import (assert_equal, assert_almost_equal,
 import MDAnalysis as mda
 from MDAnalysis.coordinates.timestep import Timestep
 from MDAnalysis.transformations import translate
-from MDAnalysis import NoDataError
 
 
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
@@ -445,6 +444,44 @@ class BaseReaderTest(object):
         assert_equal(reader.ts, reader_p.ts,
                      "Timestep is changed after pickling")
 
+    @pytest.mark.parametrize('order', ('fac', 'fca', 'afc', 'acf', 'caf', 'cfa'))
+    def test_timeseries_shape(self, reader, order):
+        timeseries = reader.timeseries(order=order)
+        a_index = order.index('a')
+        f_index = order.index('f')
+        c_index = order.index('c')
+        assert(timeseries.shape[a_index] == reader.n_atoms)
+        assert(timeseries.shape[f_index] == len(reader))
+        assert(timeseries.shape[c_index] == 3)
+
+    @pytest.mark.parametrize('slice', ([0,2,1], [0,10,2], [0,10,3]))
+    def test_timeseries_values(self, reader, slice):
+        ts_positions = []
+        if isinstance(reader, mda.coordinates.memory.MemoryReader):
+            pytest.xfail("MemoryReader uses deprecated stop inclusive"
+                         " indexing, see Issue #3893")
+        if slice[1] > len(reader):
+            pytest.skip("too few frames in reader")
+        for i in range(slice[0], slice[1], slice[2]):
+            ts = reader[i]
+            ts_positions.append(ts.positions.copy())
+        positions = np.asarray(ts_positions)
+        timeseries = reader.timeseries(start=slice[0], stop=slice[1],
+                                       step=slice[2], order='fac')
+        assert_allclose(timeseries, positions)
+
+    @pytest.mark.parametrize('asel', ("index 1", "index 2", "index 1 to 3"))
+    def test_timeseries_asel_shape(self, reader, asel):
+        atoms = mda.Universe(reader.filename).select_atoms(asel)
+        timeseries = reader.timeseries(atoms, order='fac')
+        assert(timeseries.shape[0] == len(reader))
+        assert(timeseries.shape[1] == len(atoms))
+        assert(timeseries.shape[2] == 3)
+    
+    def test_timeseries_empty_asel(self, reader):
+        atoms = mda.Universe(reader.filename).select_atoms(None)
+        with pytest.raises(ValueError, match="Timeseries requires at least"):
+            reader.timeseries(atoms)
 
 class MultiframeReaderTest(BaseReaderTest):
     def test_last_frame(self, ref, reader):

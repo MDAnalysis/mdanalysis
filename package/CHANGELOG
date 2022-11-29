@@ -14,14 +14,21 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, BFedder, aya9aladdin,
-         jaclark5
+         jaclark5, jfennick, lilyminium
 
  * 2.4.0
 
 Fixes
   * Ensure Timestep passed to transform is the same as AtomGroup Trajectory 
     Timestep (Issue #3657)
-  * Added isolayer selection method (Issue #3845)
+  * Kwargs passed through to `MemoryReader` when using `transfer_to_memory()`
+    and `in_memory=True`.
+  * NoDataError raised on empty atomgroup provided to `DCDReader.timeseries` 
+    was changed to ValueError (see #3901). A matching ValueError was added to
+    `MemoryReader.timeseries`(PR #3890). 
+  * Removes ``pbc`` kwarg from ``AtomGroup.wrap`` (Issue #3909)
+  * LAMMPSDump Reader translates the box to the origin (#3741)
+  * hbond analysis: access hbonds results through new results member in count_by_ids() and count_by_type()
   * Auxiliary; determination of representative frames: Removed undefined
     behaviour for cutoff values < -1 (PR # 3749)
   * Fixes distances.between not always returning AtomGroup (Issue #3794)
@@ -30,9 +37,16 @@ Fixes
     those methods were giving unexpected results for some topology attributes
     (e.g. bonds, angles) (PR #3779).
 
-
-
 Enhancements
+  * The timeseries method for exporting coordinates from multiple frames to a
+    NumPy array was added to ProtoReader (PR #3890)
+  * MDAnalysis now officially supports py3.11 (Issue #3878)
+  * LAMMPSDump Reader optionally unwraps trajectories with image flags upon 
+    loading (#3843
+  * LAMMPSDump Reader now imports velocities and forces (#3843)
+  * Minimum NumPy version for py3.11 is now set to 1.23.2.
+  * Added decorator to check for an empty atom group, applied in topological 
+    attributes(Issue #3837)
   * AuxReaders now have a memory_limit parameter to control when memory usage
     warnings are issued. (PR # 3749)
   * MDAnalysis.units now has a lookup dictionary called MDANALYSIS_BASE_UNITS
@@ -41,9 +55,10 @@ Enhancements
   * A new AuxReader for the GROMACS EDR file format was implemented.
     (Issue # 3629, PR # 3749)
   * Added benchmarks for bonds topology attribute (Issue #3785, PR #3806)
-
+  * Added isolayer selection method (Issue #3845)
 
 Changes
+ * Moved `libmdanalysis` cython header to `lib`(Issue #3912, PR #3913)
  * Auxiliary; determination of representative frames: The default value for
    cutoff is now None, not -1. Negative values are now turned
    to None. (PR #3749)
@@ -59,6 +74,8 @@ Changes
   * adding element attribute to TXYZParser if all atom names are valid element symbols (PR #3826)
 
 Deprecations
+  * Add deprecation warning for inclusive stop indexing in
+    MemoryReader.timeseries (#PR 3894)
 
 
 08/29/22 IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli, miss77jun, rzhao271,

@@ -160,6 +160,7 @@ Function decorators
 .. autofunction:: static_variables
 .. autofunction:: warn_if_not_unique
 .. autofunction:: check_coords
+.. autofunction:: check_atomgroup_not_empty
 
 Code management
 ---------------
@@ -2164,6 +2165,32 @@ def check_coords(*coord_names, **options):
             return func(*args, **kwargs)
         return wrapper
     return check_coords_decorator
+
+
+def check_atomgroup_not_empty(groupmethod):
+    """Decorator triggering a ``ValueError`` if the underlying group is empty.
+
+    Avoids downstream errors in computing properties of empty atomgroups. 
+
+    Raises
+    ------
+    ValueError
+        If the input :class:`~MDAnalysis.core.groups.AtomGroup`,
+        of a decorated method is empty.
+
+
+    .. versionadded:: 2.4.0
+    """
+    @wraps(groupmethod)
+    def wrapper(group, *args, **kwargs):
+        # Throw error if the group is empty.
+        if not group.atoms:
+            raise ValueError("AtomGroup is empty.")
+        # Proceed as usual if the calling group is not empty.
+        else:
+            result = groupmethod(group, *args, **kwargs)
+        return result
+    return wrapper
 
 
 # ------------------------------------------------------------------
