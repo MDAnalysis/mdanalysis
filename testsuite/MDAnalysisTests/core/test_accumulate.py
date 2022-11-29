@@ -31,20 +31,22 @@ import pytest
 
 levels = ('atoms', 'residues', 'segments')
 
+
 class TestAccumulate(object):
     """Tests the functionality of *Group.accumulate()."""
+
     @pytest.fixture(params=levels)
     def group(self, request):
         u = mda.Universe(PSF, DCD)
         return getattr(u, request.param)
 
     def test_accumulate_str_attribute(self, group):
-        assert_almost_equal(group.accumulate("masses"), np.sum(group.atoms.masses))
+        assert_almost_equal(group.accumulate("masses"),
+                            np.sum(group.atoms.masses))
 
     def test_accumulate_different_func(self, group):
-        assert_almost_equal(
-            group.accumulate("masses", function=np.prod),
-            np.prod(group.atoms.masses))
+        assert_almost_equal(group.accumulate("masses", function=np.prod),
+                            np.prod(group.atoms.masses))
 
     @pytest.mark.parametrize('name, compound', (('resindices', 'residues'),
                                                 ('segindices', 'segments'),
@@ -94,13 +96,20 @@ class TestAccumulate(object):
     def test_accumulate_array_attribute_compounds(self, name, compound, level):
         u = UnWrapUniverse()
         group = getattr(u, level)
-        ref = [np.ones((len(a), 2, 5)).sum(axis=0) for a in group.atoms.groupby(name).values()]
-        assert_equal(group.accumulate(np.ones((len(group.atoms), 2, 5)), compound=compound), ref)
+        ref = [
+            np.ones((len(a), 2, 5)).sum(axis=0)
+            for a in group.atoms.groupby(name).values()
+        ]
+        assert_equal(
+            group.accumulate(np.ones((len(group.atoms), 2, 5)),
+                             compound=compound), ref)
+
 
 class TestTotals(object):
     """Tests the functionality of *Group.total*() like total_mass
     and total_charge.
     """
+
     @pytest.fixture(params=levels)
     def group(self, request):
         u = mda.Universe(PSF, DCD)
@@ -119,8 +128,7 @@ class TestTotals(object):
     @pytest.mark.filterwarnings(  # Prevents regression of issue #2990
         "error:"
         "Using a non-tuple sequence for multidimensional indexing is deprecated:"
-        "FutureWarning"
-    )
+        "FutureWarning")
     def test_total_charge_duplicates(self, group):
         group2 = group + group[0]
         ref = group.total_charge() + group[0].charge
@@ -141,14 +149,14 @@ class TestTotals(object):
     @pytest.mark.filterwarnings(  # Prevents regression of issue #2990
         "error:"
         "Using a non-tuple sequence for multidimensional indexing is deprecated:"
-        "FutureWarning"
-    )
+        "FutureWarning")
     def test_total_mass_duplicates(self, group):
         group2 = group + group[0]
         ref = group.total_mass() + group2[0].mass
         with pytest.warns(DuplicateWarning) as w:
             assert_almost_equal(group2.total_mass(), ref)
             assert len(w) == 1
+
 
 class TestMultipole(object):
     """Tests the functionality of *Group.*_moment() like dipole_moment
@@ -158,13 +166,31 @@ class TestMultipole(object):
     @pytest.fixture(scope='class')
     def u(self):
         u = mda.Universe(PDB_multipole)
-        u.add_TopologyAttr("charges",
-                           [-0.076, 0.019, 0.019, 0.019, 0.019, # methane [:5] 
-                            -0.003, 0.001, 0.001, 0.001, # ammonia [5:9]
-                            -0.216, 0.108, 0.108, # water [9:12]
-                            -0.25, 0.034, 0.35, 0.037, -0.25, 0.034, 0.034
-                           ]) # acetate [12:]
-        lx, ly, lz = np.max(u.atoms.positions, axis=0) - np.min(u.atoms.positions, axis=0)
+        u.add_TopologyAttr(
+            "charges",
+            [
+                -0.076,
+                0.019,
+                0.019,
+                0.019,
+                0.019,  # methane [:5] 
+                -0.003,
+                0.001,
+                0.001,
+                0.001,  # ammonia [5:9]
+                -0.216,
+                0.108,
+                0.108,  # water [9:12]
+                -0.25,
+                0.034,
+                0.35,
+                0.037,
+                -0.25,
+                0.034,
+                0.034
+            ])  # acetate [12:]
+        lx, ly, lz = np.max(u.atoms.positions, axis=0) - np.min(
+            u.atoms.positions, axis=0)
         u.dimensions = np.array([lx, ly, lz, 90, 90, 90], dtype=float)
 
         return u
@@ -183,9 +209,10 @@ class TestMultipole(object):
     def test_dipole_moment_com(self, methane):
         dipoles = [
             methane.dipole_moment(unwrap=True),
-            methane.dipole_moment(wrap=True)
+            methane.dipole_moment(wrap=True),
+            methane.dipole_moment(),
         ]
-        assert_almost_equal(dipoles, [0.       , 0.2493469])
+        assert_almost_equal(dipoles, [0., 0.2493469, 0.])
 
     def test_dipole_moment_no_center(self, group):
         try:
@@ -197,42 +224,44 @@ class TestMultipole(object):
         compound = "residues"
         (_, _, n_compounds) = group.atoms._split_by_compound_indices(compound)
         dipoles_com = group.dipole_moment(compound=compound, unwrap=False)
-        dipoles_coc = group.dipole_moment(compound=compound, unwrap=False, 
+        dipoles_coc = group.dipole_moment(compound=compound,
+                                          unwrap=False,
                                           center="charge")
 
         assert_almost_equal(dipoles_com,
-           np.array([0.       , 0.0010198, 0.1209898, 0.5681058])
-        )
+                            np.array([0., 0.0010198, 0.1209898, 0.5681058]))
         assert_almost_equal(dipoles_com[:3], dipoles_coc[:3])
-        assert dipoles_com[3] !=dipoles_coc[3]
+        assert dipoles_com[3] != dipoles_coc[3]
         assert len(dipoles_com) == n_compounds
 
     def test_dipole_moment_segment(self, methane):
         compound = 'segments'
-        (_, _, n_compounds) = methane.atoms._split_by_compound_indices(compound)
+        (_, _,
+         n_compounds) = methane.atoms._split_by_compound_indices(compound)
         dipoles = methane.dipole_moment(compound=compound, unwrap=True)
-        assert_almost_equal(dipoles, [0.]
-        ) and len(dipoles) == n_compounds
+        assert_almost_equal(dipoles, [0.]) and len(dipoles) == n_compounds
 
     def test_dipole_moment_fragments(self, group):
         compound = 'fragments'
         (_, _, n_compounds) = group.atoms._split_by_compound_indices(compound)
         dipoles = group.dipole_moment(compound=compound, unwrap=False)
         assert_almost_equal(dipoles,
-            np.array([0.       , 0.0010198, 0.1209898, 0.5681058])
-        ) and len(dipoles) == n_compounds
+                            np.array([0., 0.0010198, 0.1209898, 0.5681058
+                                      ])) and len(dipoles) == n_compounds
 
     # Quadrupole
     def test_quadrupole_moment_com(self, methane):
         quadrupoles = [
             methane.quadrupole_moment(unwrap=True),
-            methane.quadrupole_moment(wrap=True)
+            methane.quadrupole_moment(wrap=True),
+            methane.quadrupole_moment(),
         ]
-        assert_almost_equal(quadrupoles, [0.       , 0.4657596])
+        assert_almost_equal(quadrupoles, [0., 0.4657596, 0.])
 
     def test_quadrupole_moment_coc(self, group):
         assert_almost_equal(
-            group.quadrupole_moment(unwrap=False, center="charge"), 0.9769951421535777)
+            group.quadrupole_moment(unwrap=False, center="charge"),
+            0.9769951421535777)
 
     def test_quadrupole_moment_no_center(self, group):
         try:
@@ -245,25 +274,23 @@ class TestMultipole(object):
         (_, _, n_compounds) = group.atoms._split_by_compound_indices(compound)
 
         quadrupoles = group.quadrupole_moment(compound=compound, unwrap=False)
-        assert_almost_equal(
-           quadrupoles,
-           np.array([0.       , 0.0011629, 0.1182701, 0.6891748])
-        ) and len(quadrupoles) == n_compounds
+        assert_almost_equal(quadrupoles,
+                            np.array([0., 0.0011629, 0.1182701, 0.6891748
+                                      ])) and len(quadrupoles) == n_compounds
 
     def test_quadrupole_moment_segment(self, methane):
         compound = "segments"
-        (_, _, n_compounds) = methane.atoms._split_by_compound_indices(compound)
+        (_, _,
+         n_compounds) = methane.atoms._split_by_compound_indices(compound)
         quadrupoles = methane.quadrupole_moment(compound=compound, unwrap=True)
-        assert_almost_equal(quadrupoles, [0.]
-        ) and len(quadrupoles) == n_compounds
+        assert_almost_equal(quadrupoles,
+                            [0.]) and len(quadrupoles) == n_compounds
 
     def test_quadrupole_moment_fragments(self, group):
         compound = "fragments"
         (_, _, n_compounds) = group.atoms._split_by_compound_indices(compound)
 
         quadrupoles = group.quadrupole_moment(compound=compound, unwrap=False)
-        assert_almost_equal(
-           quadrupoles,
-           np.array([0.       , 0.0011629, 0.1182701, 0.6891748])
-        ) and len(quadrupoles) == n_compounds
-
+        assert_almost_equal(quadrupoles,
+                            np.array([0., 0.0011629, 0.1182701, 0.6891748
+                                      ])) and len(quadrupoles) == n_compounds
