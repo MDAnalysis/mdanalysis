@@ -47,7 +47,7 @@ jobs:
           fetch-depth: 0
 
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.11
+        uses: pypa/cibuildwheel@v2.11.2
         with:
           package-dir: package
         env:
