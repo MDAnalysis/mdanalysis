@@ -2059,7 +2059,7 @@ class Charges(AtomAttr):
         r"""Dipole vector of the group.
 
         .. math::
-            \mathbf{\mu} = \sum_{i=1}^{N} q_{i} ( \mathbf{r_{i}} - 
+            \boldsymbol{\mu} = \sum_{i=1}^{N} q_{i} ( \mathbf{r_{i}} - 
             \mathbf{r_{COM}} )
 
         Computes the dipole vector of :class:`Atoms<Atom>` in the group.
@@ -2072,8 +2072,8 @@ class Charges(AtomAttr):
         a charged group the dipole moment can be later adjusted  with:
 
         .. math::
-            \mathbf{\mu_{COC}} = \mathbf{\mu_{COM}} + 
-            q_{ag}\mathbf{r_{COM}} - q_{ag}\mathbf{r_{COC}}
+            \boldsymbol{\mu_{COC}} = \boldsymbol{\mu_{COM}} + 
+            q_{ag}\mathbf{r_{COM}} - q_{ag}\boldsymbol{r_{COC}}
 
         Where :math:`\mathbf{r_{COM}}` is the center of mass and 
         :math:`\mathbf{r_{COC}}` is the center of charge.
@@ -2182,7 +2182,7 @@ class Charges(AtomAttr):
         r"""Dipole moment of the group or compounds in a group.
 
         .. math::
-            \mu = \sqrt{ \sum_{i=1}^{D} \mathbf{\mu}^2 }
+            \mu = \sqrt{ \sum_{i=1}^{D} \boldsymbol{\mu}^2 }
 
         Where :math:`D` is the number of dimensions.
 
