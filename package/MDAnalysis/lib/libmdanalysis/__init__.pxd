@@ -3,3 +3,4 @@
 
 from ..coordinates cimport timestep
 from .formats cimport libmdaxdr
+from .formats cimport libdcd
