@@ -2059,8 +2059,8 @@ class Charges(AtomAttr):
         r"""Dipole vector of the group.
 
         .. math::
-            \boldsymbol{\mu} = \sum_{i=1}^{N} q_{i} ( \mathbf{r_{i}} - 
-            \mathbf{r_{COM}} )
+            \boldsymbol{\mu} = \sum_{i=1}^{N} q_{i} ( \mathbf{r}_{i} - 
+            \mathbf{r}_{COM} )
 
         Computes the dipole vector of :class:`Atoms<Atom>` in the group.
         Dipole vector per :class:`Residue`, :class:`Segment`, molecule, or
@@ -2072,11 +2072,11 @@ class Charges(AtomAttr):
         a charged group the dipole moment can be later adjusted  with:
 
         .. math::
-            \boldsymbol{\mu_{COC}} = \boldsymbol{\mu_{COM}} + 
-            q_{ag}\mathbf{r_{COM}} - q_{ag}\boldsymbol{r_{COC}}
+            \boldsymbol{\mu}_{COC} = \boldsymbol{\mu}_{COM} + 
+            q_{ag}\mathbf{r}_{COM} - q_{ag}\boldsymbol{r}_{COC}
 
-        Where :math:`\mathbf{r_{COM}}` is the center of mass and 
-        :math:`\mathbf{r_{COC}}` is the center of charge.
+        Where :math:`\mathbf{r}_{COM}` is the center of mass and 
+        :math:`\mathbf{r}_{COC}` is the center of charge.
 
         Parameters
         ----------
@@ -2138,7 +2138,7 @@ class Charges(AtomAttr):
             choices = ["mass", "charge"]
             raise ValueError(
                 "The dipole center, {}, is not supported. Choose one of: {}".format(
-                 center,choices))
+                 center, choices))
 
         if compound == 'group':
             if wrap:
@@ -2150,7 +2150,7 @@ class Charges(AtomAttr):
                                                  ) - ref)
             else:
                 recenteredpos = (atomgroup.positions - ref)
-            dipole_vector = np.sum(recenteredpos * charges[:,np.newaxis],
+            dipole_vector = np.sum(recenteredpos * charges[:, np.newaxis],
                                    axis=0)
         else:
             (atom_masks, 
@@ -2170,8 +2170,8 @@ class Charges(AtomAttr):
             dipole_vector = np.empty((n_compounds, 3), dtype=np.float64)
             for compound_mask, atom_mask in zip(compound_masks, atom_masks):
                 dipole_vector[compound_mask] = np.sum(
-                    (coords[atom_mask] - ref[compound_mask][:,None,:])
-                    * chgs[atom_mask][:,:,None], axis=1)
+                    (coords[atom_mask] - ref[compound_mask][:, None, :])
+                    * chgs[atom_mask][:, :, None], axis=1)
 
         return dipole_vector
 
@@ -2182,7 +2182,7 @@ class Charges(AtomAttr):
         r"""Dipole moment of the group or compounds in a group.
 
         .. math::
-            \mu = \sqrt{ \sum_{i=1}^{D} \boldsymbol{\mu}^2 }
+            \mu = |\boldsymbol{\mu}| = \sqrt{ \sum_{i=1}^{D} \mu^2 }
 
         Where :math:`D` is the number of dimensions.
 
@@ -2192,7 +2192,7 @@ class Charges(AtomAttr):
         accordingly.
 
         Note that when there is a net charge, the magnitude of the dipole 
-        moment is dependent on the ``center`` chosen. 
+        moment is dependent on the `center` chosen. 
         See :meth:`~dipole_vector`.
 
         Parameters
@@ -2255,8 +2255,8 @@ class Charges(AtomAttr):
         r"""Traceless quadrupole tensor of the group or compounds.
 
         .. math::
-            \mathsf{Q} = \sum_{i=1}^{N} q_{i} ( \mathbf{r_{i}} - 
-            \mathbf{r_{COM}} ) \cdot ( \mathbf{r_{i}} - \mathbf{r_{COM}} )
+            \mathsf{Q} = \sum_{i=1}^{N} q_{i} ( \mathbf{r}_{i} - 
+            \mathbf{r}_{COM} ) \cdot ( \mathbf{r}_{i} - \mathbf{r}_{COM} )
 
         .. math::
             \hat{\mathsf{Q}} = \frac{3}{2} \mathsf{Q} - \frac{1}{2} 
@@ -2272,7 +2272,7 @@ class Charges(AtomAttr):
 
         Note that when there is an unsymmetrical plane in the molecule or 
         group, the magnitude of the quadrupole tensor is dependent on the 
-        ``center`` (e.g., :math:`r_{COM}`) chosen and cannot be translated.
+        ``center`` (e.g., :math:`\mathbf{r}_{COM}`) chosen and cannot be translated.
 
         Parameters
         ----------
@@ -2344,7 +2344,7 @@ class Charges(AtomAttr):
             choices = ["mass", "charge"]
             raise ValueError(
                 "The quadrupole center, {}, is not supported. Choose one of: {}".format(
-                 center,choices))
+                 center, choices))
 
         if compound == 'group':
             if wrap:
@@ -2372,12 +2372,12 @@ class Charges(AtomAttr):
                 coords = atomgroup.positions
             chgs = atomgroup.charges
 
-            quad_tensor = np.empty((n_compounds,3,3), dtype=np.float64)
+            quad_tensor = np.empty((n_compounds, 3, 3), dtype=np.float64)
             for compound_mask, atom_mask in zip(compound_masks, atom_masks):
-                quad_tensor[compound_mask,:,:] = [__quadrupole(
+                quad_tensor[compound_mask, :, :] = [__quadrupole(
                      coords[mask] - ref[compound_mask][i],
-                     chgs[mask][:,None]
-                    ) for i,mask in enumerate(atom_mask)]
+                     chgs[mask][:, None]
+                    ) for i, mask in enumerate(atom_mask)]
 
         return quad_tensor
 
@@ -2390,8 +2390,8 @@ class Charges(AtomAttr):
         .. math::
             Q = \sqrt{\frac{2}{3}{\hat{\mathsf{Q}}}:{\hat{\mathsf{Q}}}}
 
-        where :math:`\hat{\mathsf{Q}}` is the traceless quadrupole 
-        tensor.
+        where the quadrupole moment is calculated from the tensor double 
+        contraction of the traceless quadropole tensor :math:`\hat{\mathsf{Q}}`
 
         Computes the quadrupole moment of :class:`Atoms<Atom>` in the group.
         Quadrupole per :class:`Residue`, :class:`Segment`, molecule, or
@@ -2424,7 +2424,7 @@ class Charges(AtomAttr):
             Note that, in any case, *only* the positions of
             :class:`Atoms<Atom>` *belonging to the group* will be taken into
             account.
-        center : str, optional
+        center : {'mass', 'charge'}, optional
             Choose whether the quadrupole moment is calculated at the center of 
             "mass" or the center of "charge"
 
@@ -2443,7 +2443,7 @@ class Charges(AtomAttr):
         atomgroup = group.atoms
 
         def __quadrupole(tensor):
-            return np.sqrt(2*np.tensordot(tensor,tensor)/3)
+            return np.sqrt(2*np.tensordot(tensor, tensor)/3)
 
         quad_tensor = atomgroup.quadrupole_tensor(**kwargs)
 
