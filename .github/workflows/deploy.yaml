@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - "package-*"
+      - "develop"
   push:
     branches:
       - "package-*"
@@ -33,10 +34,10 @@ jobs:
       fail-fast: false
       matrix:
         buildplat:
-          - [ubuntu-18.04, manylinux_x86_64]
-          - [macos-10.15, macosx_*]
+          - [ubuntu-20.04, manylinux_x86_64]
+          - [macos-11, macosx_*]
           - [windows-2019, win_amd64]
-        python: ["cp38", "cp39", "cp310"]
+        python: ["cp38", "cp39", "cp310", "cp311"]
     defaults:
       run:
         working-directory: ./package
@@ -46,7 +47,7 @@ jobs:
           fetch-depth: 0
 
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.6.0
+        uses: pypa/cibuildwheel@v2
         with:
           package-dir: package
         env:
