@@ -198,6 +198,14 @@
 <span class="sd">    degrees then it is assumed it is a new-style CHARMM unitcell (at least</span>
 <span class="sd">    since c36b2) in which box vectors were recorded.</span>
 
+<span class="sd">    .. deprecated:: 2.4.0</span>
+<span class="sd">        DCDReader currently makes independent timesteps</span>
+<span class="sd">        by copying the :class:`Timestep` associated with the reader.</span>
+<span class="sd">        Other readers update the :class:`Timestep` inplace meaning all</span>
+<span class="sd">        references to the :class:`Timestep` contain the same data. The unique</span>
+<span class="sd">        independent :class:`Timestep` behaviour of the DCDReader is deprecated</span>
+<span class="sd">        will be changed in 3.0 to be the same as other readers</span>
+
 <span class="sd">    .. warning::</span>
 <span class="sd">        The DCD format is not well defined. Check your unit cell</span>
 <span class="sd">        dimensions carefully, especially when using triclinic boxes.</span>
@@ -256,6 +264,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_to_ts</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="p">)</span>
         <span class="c1"># these should only be initialized once</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;DCDReader currently makes independent timesteps&quot;</span>
+                      <span class="s2">&quot; by copying self.ts while other readers update&quot;</span>
+                      <span class="s2">&quot; self.ts inplace. This behaviour will be changed in&quot;</span>
+                      <span class="s2">&quot; 3.0 to be the same as other readers&quot;</span><span class="p">,</span>
+                       <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DCDReader.parse_n_atoms"><a class="viewcode-back" href="../../../documentation_pages/coordinates/LAMMPS.html#MDAnalysis.coordinates.DCD.DCDReader.parse_n_atoms">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">parse_n_atoms</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -290,12 +303,11 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">&#39;trying to go over trajectory limit&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># use a copy to avoid that ts always points to the same reference</span>
-            <span class="c1"># removing this breaks lammps reader</span>
+            <span class="c1">#TODO remove copying the ts in 3.0 </span>
             <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_to_ts</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">ts</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frame_to_ts</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">ts</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span>
         <span class="k">return</span> <span class="n">ts</span>
 

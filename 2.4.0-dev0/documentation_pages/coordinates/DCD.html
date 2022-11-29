@@ -209,6 +209,14 @@ original unitcell is read as <code class="docutils literal notranslate"><span cl
 file. If any of these values are &lt; 0 or if any of the angles are &gt; 180
 degrees then it is assumed it is a new-style CHARMM unitcell (at least
 since c36b2) in which box vectors were recorded.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 2.4.0: </span>DCDReader currently makes independent timesteps
+by copying the <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code> associated with the reader.
+Other readers update the <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code> inplace meaning all
+references to the <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code> contain the same data. The unique
+independent <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code> behaviour of the DCDReader is deprecated
+will be changed in 3.0 to be the same as other readers</p>
+</div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>The DCD format is not well defined. Check your unit cell
