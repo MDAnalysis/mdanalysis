@@ -19,8 +19,12 @@ The rules for this file:
  * 2.4.0
 
 Fixes
+<<<<<<< HEAD
   * XTC and TRR readers now fail with IOError when a status except EOK (=0) is
     detected on reading a frame instead of silently continuing
+=======
+  * Consolidate license files across MDAnalysis library packages (PR #3939)
+>>>>>>> 9e1953359 (Consolidate licenses across top directory, testsuite and package (#3939))
   * Kwargs passed through to `MemoryReader` when using `transfer_to_memory()`
     and `in_memory=True`.
   * NoDataError raised on empty atomgroup provided to `DCDReader.timeseries` 
