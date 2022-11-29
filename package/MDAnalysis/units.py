@@ -310,7 +310,7 @@ timeUnit_factor = {
 speedUnit_factor = {}
 for length, lfactor in lengthUnit_factor.items():
     for time, tfactor in timeUnit_factor.items():
-        speedUnit_factor[length + '/' + time] = lfactor/tfactor
+        speedUnit_factor[length + '/' + time] = tfactor/lfactor
 
 
 #: *energy* is measured in kJ/mol.
@@ -331,9 +331,11 @@ forceUnit_factor['Newton'] =  (1.0*MDANALYSIS_BASE_PINT_UNITS["force"]/MDA_PINT_
 forceUnit_factor['N'] = (1.0*MDANALYSIS_BASE_PINT_UNITS["force"]/MDA_PINT_UNITS.avogadro_constant).to("newton").magnitude
 forceUnit_factor['J/m'] = (1.0*MDANALYSIS_BASE_PINT_UNITS["force"]/MDA_PINT_UNITS.avogadro_constant).to("J/m").magnitude
 forceUnit_factor['kJ/(mol*Angstrom)'] = (1.0*MDANALYSIS_BASE_PINT_UNITS["force"]).to("kJ/(mol*angstrom)").magnitude
-forceUnit_factor['kJ/(mol*nm)'] = (1.0*MDANALYSIS_BASE_PINT_UNITS["force"]).to("kJ/(mol*nm)").magnitude
+forceUnit_factor['kJ/(mol*A)'] = (1.0*MDANALYSIS_BASE_PINT_UNITS["force"]).to("kJ/(mol*angstrom)").magnitude
 forceUnit_factor['kJ/(mol*\u212b)'] = (1.0*MDANALYSIS_BASE_PINT_UNITS["force"]).to("kJ/(mol*angstrom)").magnitude
+forceUnit_factor['kJ/(mol*nm)'] = (1.0*MDANALYSIS_BASE_PINT_UNITS["force"]).to("kJ/(mol*nm)").magnitude
 forceUnit_factor['kcal/(mol*Angstrom)'] = (1.0*MDANALYSIS_BASE_PINT_UNITS["force"]).to("kcal/(mol*angstrom)").magnitude
+forceUnit_factor['kcal/(mol*A)'] = (1.0*MDANALYSIS_BASE_PINT_UNITS["force"]).to("kcal/(mol*angstrom)").magnitude
 forceUnit_factor['kcal/(mol*\u212b)'] = (1.0*MDANALYSIS_BASE_PINT_UNITS["force"]).to("kcal/(mol*angstrom)").magnitude
 
 #: *Charge* is measured in multiples of the `electron charge`_ *e*, with the value
