@@ -87,6 +87,10 @@ import scipy.io.netcdf
 import warnings
 import logging
 
+from .timestep import Timestep
+from ..lib.util import store_init_arguments
+
+
 logger = logging.getLogger("MDAnalysis.coordinates.AMBER")
 
 
@@ -168,9 +172,6 @@ class NCRSTReader(base.SingleFrameReaderBase):
     the restart file, then :attr:`Timestep.dimensions` will return
     ``[0,0,0,0,0,0]``).
 
-    The NCRST reader uses :mod:`scipy.io.netcdf` and therefore :mod:`scipy`
-    must be installed.
-
     Support for the *mmap* keyword is available as detailed
     in :class:`NCDFReader` and :mod:`scipy.io.netcdf.netcdf_file`. The use of
     ``mmap=True`` leads to around a 2x read speed improvement in a ~ 1 million
@@ -195,8 +196,8 @@ class NCRSTReader(base.SingleFrameReaderBase):
     :class:`NCDFReader`
     :class:`NCDFWriter`
 
-    .. versionadded: 0.20.0
 
+    .. versionadded: 2.5.0
     """
 
     format = ['NCRST', 'NCRESTRT', 'NCRST7']
@@ -206,19 +207,10 @@ class NCRSTReader(base.SingleFrameReaderBase):
              'velocity': 'Angstrom/ps',
              'force': 'kcal/(mol*Angstrom)'}
 
-    class Timestep(base.Timestep):
-        """ Modified Timestep class for AMBER
-
-        Uses C order memory mapping to match the style used by AMBER TRAJ
-
-        The Timestep can be initialized with `arg` being an integer
-        (the number of atoms) and an optional keyword arguments to allocate
-        space for velocities, and forces.
-        """
-        order = 'C'
 
     _Timestep = Timestep
 
+    @store_init_arguments
     def __init__(self, filename, n_atoms=None, convert_units=None, mmap=None,
                  **kwargs):
         # Assign input mmap value
@@ -242,9 +234,6 @@ class NCRSTReader(base.SingleFrameReaderBase):
 
     def _read_first_frame(self):
         """Function to read NetCDF restart file and fill timestep
-
-        Called by: :class:`SingleFrameReaderBase`.__init__
-        Overrides :class:`SingleFrameReaderBase` placeholder function
         """
         # Open netcdf file via context manager
         with scipy.io.netcdf.netcdf_file(self.filename, mode='r',
