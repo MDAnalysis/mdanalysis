@@ -74,6 +74,7 @@ jobs:
   # "manually"
   - powershell: |
       cd package
+      python -m pip install numpy==1.21.6
       python -m pip -vvv install .
       cd ..
     displayName: 'Build MDAnalysis (wheel)'
