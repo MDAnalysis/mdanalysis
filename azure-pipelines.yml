@@ -120,7 +120,6 @@ jobs:
       networkx
       parmed
       tidynamics>=1.0.0
-      # rdkit>=2020.03.1
     displayName: 'Install additional dependencies for 64-bit tests'
     condition: and(succeeded(), eq(variables['PYTHON_ARCH'], 'x64'))
   - powershell: |
