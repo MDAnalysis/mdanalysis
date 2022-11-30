@@ -31,16 +31,16 @@ jobs:
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'normal'
           imageName: 'windows-2019'
-        Win-Python311-64bit-full:
-          PYTHON_VERSION: '3.11'
+        Win-Python310-64bit-full:
+          PYTHON_VERSION: '3.10'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'normal'
           imageName: 'windows-2019'
-        Win-Python311-64bit-full-wheel:
-          PYTHON_VERSION: '3.11'
+        Win-Python310-64bit-full-wheel:
+          PYTHON_VERSION: '3.10'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
-          NUMPY_MIN: '1.20.0'
+          NUMPY_MIN: '1.21.6'
           imageName: 'windows-2019'
         Win-Python38-64bit-full-wheel:
           PYTHON_VERSION: '3.8'
@@ -48,11 +48,11 @@ jobs:
           BUILD_TYPE: 'wheel'
           NUMPY_MIN: '1.20.0'
           imageName: 'windows-2019'
-        Linux-Python311-64bit-full-wheel:
-          PYTHON_VERSION: '3.11'
+        Linux-Python310-64bit-full-wheel:
+          PYTHON_VERSION: '3.10'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
-          NUMPY_MIN: '1.20.0'
+          NUMPY_MIN: '1.21.6'
           imageName: 'ubuntu-latest'
         Linux-Python38-64bit-full-wheel:
           PYTHON_VERSION: '3.8'
@@ -81,7 +81,7 @@ jobs:
   - script: python -m pip install --upgrade pip setuptools wheel
     displayName: 'Install tools'
   - script: >-
-      python -m pip install --only-binary=scipy
+      python -m pip install --only-binary=h5py,scipy
       cython
       hypothesis
       matplotlib
@@ -91,15 +91,11 @@ jobs:
       pytest-cov
       pytest-xdist
       scikit-learn
+      h5py>=2.10
       tqdm
       threadpoolctl
       fasteners
     displayName: 'Install dependencies'
-  # h5py wheels are not available for 3.11 yet, so we skip them if necessary
-  - script: >-
-      python -m pip install h5py>=2.10 --only-binary=h5py
-    displayName: 'h5py install'
-    condition: not(eq(variables['PYTHON_VERSION'], '3.11'))
   # for wheel install testing, we pin to an
   # older NumPy, the oldest version we support and that
   # supports the Python version in use
@@ -120,6 +116,7 @@ jobs:
       networkx
       parmed
       tidynamics>=1.0.0
+      rdkit>=2020.03.1
     displayName: 'Install additional dependencies for 64-bit tests'
     condition: and(succeeded(), eq(variables['PYTHON_ARCH'], 'x64'))
   - powershell: |
