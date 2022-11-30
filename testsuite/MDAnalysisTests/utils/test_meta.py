@@ -20,8 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
-
 import re
 
 import MDAnalysisTests
@@ -45,8 +43,8 @@ def test_version_format(version=None):
     if version is None:
         import MDAnalysis.version
         version = MDAnalysis.version.__version__
-    # see http://wiki.mdanalysis.org/SemanticVersioning for format definition
-    m = re.match('(?P<MAJOR>\d+)\.(?P<MINOR>\d+)\.(?P<PATCH>\d+)(-(?P<suffix>\w+))?$',
+    # see https://github.com/MDAnalysis/mdanalysis/wiki/SemanticVersioning for format definition
+    m = re.match(r'(?P<MAJOR>\d+)\.(?P<MINOR>\d+)\.(?P<PATCH>\d+)(-(?P<suffix>\w+))?$',
                  version)
     assert m, "version {0} does not match the MAJOR.MINOR.PATCH(-suffix) format".format(version)
 

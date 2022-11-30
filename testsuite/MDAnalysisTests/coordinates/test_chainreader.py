@@ -20,9 +20,9 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import division, absolute_import
-from six.moves import zip
-
+import sys
+import platform
+import warnings
 import numpy as np
 import os
 
@@ -99,6 +99,11 @@ class TestChainReader(object):
         universe.trajectory[98]  # index is 0-based and frames are 0-based
         assert_equal(universe.trajectory.frame, 98, "wrong frame number")
 
+    def test_next_after_frame_numbering(self, universe):
+        universe.trajectory[98]  # index is 0-based and frames are 0-based
+        universe.trajectory.next()
+        assert_equal(universe.trajectory.frame, 99, "wrong frame number")
+
     def test_frame(self, universe):
         universe.trajectory[0]
         coord0 = universe.atoms.positions.copy()
@@ -169,6 +174,7 @@ class TestChainReader(object):
         ref = universe.trajectory[0].positions + vector
         transformed.trajectory.rewind()
         assert_almost_equal(transformed.trajectory.ts.positions, ref, decimal = 6)
+
 
 class TestChainReaderCommonDt(object):
     common_dt = 100.0
@@ -257,7 +263,7 @@ def build_trajectories(folder, sequences, fmt='xtc'):
                 ts.dimensions = [10, 10, 10, 90, 90, 90]
                 # The time is set from the user input
                 ts.time = time
-                out_traj.write(ts)
+                out_traj.write(u)
     return utop, fnames
 
 
@@ -343,7 +349,16 @@ class TestChainReaderContinuous(object):
         sequences = ([0, 1, 2, 3], [2, 3, 4, 5], [4, 5, 6, 7])
         utop, fnames = build_trajectories(folder, sequences=sequences,)
         with no_warning(UserWarning):
-            mda.Universe(utop._topology, fnames, continuous=True)
+            with warnings.catch_warnings():
+                # for windows Python 3.10 ignore:
+                # ImportWarning('_SixMetaPathImporter.find_spec() not found
+                # TODO: remove when we no longer have a dependency
+                # that still imports six
+                if sys.version_info >= (3, 10):
+                    warnings.filterwarnings(
+                            action='ignore',
+                            category=ImportWarning)
+                mda.Universe(utop._topology, fnames, continuous=True)
 
     def test_single_frames(self, tmpdir):
         folder = str(tmpdir)

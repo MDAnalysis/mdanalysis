@@ -1,7 +1,6 @@
 """Tests for core.groups.requires decorator
 
 """
-from __future__ import absolute_import
 import numpy as np
 
 import pytest

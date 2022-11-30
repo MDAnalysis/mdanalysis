@@ -20,12 +20,10 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
-
 import pytest
 from numpy.testing import assert_equal
 import numpy as np
-from six import StringIO
+from io import StringIO
 
 import MDAnalysis as mda
 from MDAnalysisTests.topology.base import ParserBase
@@ -37,6 +35,7 @@ from MDAnalysis.tests.datafiles import (
     LAMMPShyd2,
     LAMMPSdata_deletedatoms,
     LAMMPSDUMP,
+    LAMMPSDUMP_long,
 )
 
 
@@ -270,3 +269,9 @@ class TestDumpParser(ParserBase):
         u = mda.Universe(self.ref_filename, format='LAMMPSDUMP')
         # the 4th in file has id==13, but should have been sorted
         assert u.atoms[3].id == 4
+
+# this tests that topology can still be constructed if non-standard or uneven
+# column present.
+class TestDumpParserLong(TestDumpParser):
+
+    ref_filename = LAMMPSDUMP_long

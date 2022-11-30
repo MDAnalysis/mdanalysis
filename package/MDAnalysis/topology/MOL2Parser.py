@@ -41,8 +41,6 @@ Classes
    :inherited-members:
 
 """
-from __future__ import absolute_import
-
 import os
 import numpy as np
 
@@ -55,6 +53,7 @@ from ..core.topologyattrs import (
     Atomtypes,
     Bonds,
     Charges,
+    Elements,
     Masses,
     Resids,
     Resnums,
@@ -62,28 +61,74 @@ from ..core.topologyattrs import (
     Segids,
 )
 from ..core.topology import Topology
+from .tables import SYBYL2SYMB
+
+import warnings
 
 
 class MOL2Parser(TopologyReaderBase):
-    """Read topology from a Tripos_ MOL2_ file.
+    """Reads topology from a Tripos_ MOL2_ file.
 
-    Create the following Attributes:
+    Creates the following Attributes:
      - Atomids
      - Atomnames
      - Atomtypes
      - Charges
-     - Resids,
+     - Resids
      - Resnames
      - Bonds
+     - Elements
 
     Guesses the following:
      - masses
+
+    Notes
+    -----
+    Elements are obtained directly from the SYBYL atom types. If some atoms have
+    unknown atom types, they will be assigned an empty element record. If all
+    atoms have unknown atom types, the elements attribute will not be set.
+
+    Dealing with optional fields:
+
+      1. ``resid`` will set to 1 when not provided.
+
+      2. If no atoms have ``resname`` field, resnames attribute will not be set;
+         If some atoms have ``resname`` while some do not,
+         :exc:`ValueError` will occur.
+    
+      3. If "NO_CHARGES" shows up in "@<TRIPOS>MOLECULE" section
+         and no atoms have the ``charge`` field, charges attribute will not be set;
+         If "NO_CHARGES" shows up while ``charge`` field appears,
+         :exc:`ValueError` will occur;
+         If a charge model is specified while some atoms don't have ``charge``,
+         :exc:`ValueError` will occur as well.
+
+    Raises
+    ------
+    ValueError
+      If some atoms have the optional field ``resname`` (aka ``subst_name``)
+      while some do not.
+
+    ValueError
+      If "NO_CHARGES" shows up in "@<TRIPOS>MOLECULE" section while
+      some atoms have the optional field ``charge``.
+
+    ValueError
+      If a charge model is specified in "@<TRIPOS>MOLECULE" section while
+      some atoms do not have the optional field ``charge``.
+
 
     .. versionchanged:: 0.9
        Now subclasses TopologyReaderBase
     .. versionchanged:: 0.20.0
        Allows for comments at the top of the file
        Ignores status bit strings
+    .. versionchanged:: 2.0.0
+       Bonds attribute is not added if no bonds are present in MOL2 file
+    .. versionchanged:: 2.0.0
+       Parse elements from atom types.
+    .. versionchanged:: 2.2.0
+       Read MOL2 files with optional columns omitted.
     """
     format = 'MOL2'
 
@@ -123,13 +168,10 @@ class MOL2Parser(TopologyReaderBase):
                 continue
             sections[cursor].append(line)
 
-        atom_lines, bond_lines = sections["atom"], sections["bond"]
+        atom_lines, bond_lines = sections["atom"], sections.get("bond")
 
         if not len(atom_lines):
             raise ValueError("The mol2 block ({0}:{1}) has no atoms".format(
-                os.path.basename(self.filename), block["start_line"]))
-        if not len(bond_lines):
-            raise ValueError("The mol2 block ({0}:{1}) has no bonds".format(
                 os.path.basename(self.filename), block["start_line"]))
 
         ids = []
@@ -138,9 +180,36 @@ class MOL2Parser(TopologyReaderBase):
         resids = []
         resnames = []
         charges = []
-
+        has_charges = sections['molecule'][3].strip() != 'NO_CHARGES'
         for a in atom_lines:
-            aid, name, x, y, z, atom_type, resid, resname, charge = a.split()[:9]
+            columns = a.split()
+            if len(columns) >= 9:
+                aid, name, x, y, z, atom_type, \
+                    resid, resname, charge = columns[:9]
+            elif len(columns) < 6:
+                raise ValueError(f"The @<TRIPOS>ATOM block in mol2 file"
+                                 f" {os.path.basename(self.filename)}"
+                                 f" should have at least 6 fields to be"
+                                 f" unpacked: atom_id atom_name x y z"
+                                 f" atom_type [subst_id[subst_name"
+                                 f" [charge [status_bit]]]]")
+            else:
+                aid, name, x, y, z, atom_type = columns[:6]
+                id_name_charge = [1, None, None]
+                for i in range(6, len(columns)):
+                    id_name_charge[i-6] = columns[i]
+                resid, resname, charge = id_name_charge
+            if has_charges:
+                if charge is None:
+                    raise ValueError(f"The mol2 file {self.filename}"
+                                     f" indicates a charge model"
+                                     f"{sections['molecule'][3]}, but"
+                                     f" no charge provided in line: {a}")
+            else:
+                if charge is not None:
+                    raise ValueError(f"The mol2 file {self.filename}"
+                                     f" indicates no charges, but charge"
+                                     f" {charge} provided in line: {a}.")
 
             ids.append(aid)
             names.append(name)
@@ -151,38 +220,68 @@ class MOL2Parser(TopologyReaderBase):
 
         n_atoms = len(ids)
 
-        masses = guessers.guess_masses(types)
+        validated_elements = np.empty(n_atoms, dtype="U3")
+        invalid_elements = set()
+        for i, at in enumerate(types):
+            if at in SYBYL2SYMB:
+                validated_elements[i] = SYBYL2SYMB[at]
+            else:
+                invalid_elements.add(at)
+                validated_elements[i] = ''
+
+        # Print single warning for all unknown elements, if any
+        if invalid_elements:
+            warnings.warn("Unknown elements found for some "
+                          f"atoms: {invalid_elements}. "
+                          "These have been given an empty element record.")
+
+        masses = guessers.guess_masses(validated_elements)
 
         attrs = []
         attrs.append(Atomids(np.array(ids, dtype=np.int32)))
         attrs.append(Atomnames(np.array(names, dtype=object)))
         attrs.append(Atomtypes(np.array(types, dtype=object)))
-        attrs.append(Charges(np.array(charges, dtype=np.float32)))
+        if has_charges:
+            attrs.append(Charges(np.array(charges, dtype=np.float32)))
         attrs.append(Masses(masses, guessed=True))
+
+        if not np.all(validated_elements == ''):
+            attrs.append(Elements(validated_elements))
 
         resids = np.array(resids, dtype=np.int32)
         resnames = np.array(resnames, dtype=object)
 
-        residx, resids, (resnames,) = squash_by(
-            resids, resnames)
-        n_residues = len(resids)
-        attrs.append(Resids(resids))
-        attrs.append(Resnums(resids.copy()))
-        attrs.append(Resnames(resnames))
+        if np.all(resnames):
+            residx, resids, (resnames,) = squash_by(
+                resids, resnames)
+            n_residues = len(resids)
+            attrs.append(Resids(resids))
+            attrs.append(Resnums(resids.copy()))
+            attrs.append(Resnames(resnames))
+        elif not np.any(resnames):
+            residx, resids, _ = squash_by(resids,)
+            n_residues = len(resids)
+            attrs.append(Resids(resids))
+            attrs.append(Resnums(resids.copy()))
+        else:
+            raise ValueError(f"Some atoms in the mol2 file {self.filename}"
+                             f" have subst_name while some do not.")
 
         attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
 
-        bonds = []
-        bondorder = []
-        for b in bond_lines:
-            # bond_type can be: 1, 2, am, ar
-            bid, a0, a1, bond_type = b.split()[:4]
+        # don't add Bonds if there are none (Issue #3057)
+        if bond_lines:
+            bonds = []
+            bondorder = []
+            for b in bond_lines:
+                # bond_type can be: 1, 2, am, ar
+                bid, a0, a1, bond_type = b.split()[:4]
 
-            a0, a1 = int(a0) - 1, int(a1) - 1
-            bond = tuple(sorted([a0, a1]))
-            bondorder.append(bond_type)
-            bonds.append(bond)
-        attrs.append(Bonds(bonds, order=bondorder))
+                a0, a1 = int(a0) - 1, int(a1) - 1
+                bond = tuple(sorted([a0, a1]))
+                bondorder.append(bond_type)
+                bonds.append(bond)
+            attrs.append(Bonds(bonds, order=bondorder))
 
         top = Topology(n_atoms, n_residues, 1,
                        attrs=attrs,

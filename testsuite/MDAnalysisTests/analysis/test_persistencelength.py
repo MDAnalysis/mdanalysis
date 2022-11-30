@@ -20,8 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import print_function, division, absolute_import
-
 import pytest
 
 import MDAnalysis as mda
@@ -64,14 +62,14 @@ class TestPersistenceLength(object):
             polymer.PersistenceLength(ags)
 
     def test_run(self, p_run):
-        assert len(p_run.results) == 280
+        assert len(p_run.results.bond_autocorrelation) == 280
 
     def test_lb(self, p_run):
-        assert_almost_equal(p_run.lb, 1.485, 3)
+        assert_almost_equal(p_run.results.lb, 1.485, 3)
 
     def test_fit(self, p_run):
-        assert_almost_equal(p_run.lp, 6.504, 3)
-        assert len(p_run.fit) == len(p_run.results)
+        assert_almost_equal(p_run.results.lp, 6.504, 3)
+        assert len(p_run.results.fit) == len(p_run.results.bond_autocorrelation)
 
     def test_raise_NoDataError(self, p):
         #Ensure that a NoDataError is raised if perform_fit()
@@ -93,9 +91,18 @@ class TestPersistenceLength(object):
 
         assert ax2 is ax
 
-    def test_perform_fit_warn(self, p_run):
-        with pytest.warns(DeprecationWarning):
-            p_run.perform_fit()
+    def test_current_axes(self, p_run):
+        fig, ax = plt.subplots()
+        ax2 = p_run.plot(ax=None)
+        assert ax2 is not ax
+
+    @pytest.mark.parametrize("attr", ("lb", "lp", "fit"))
+    def test(self, p, attr):
+        p_run = p.run(step=3)
+        wmsg = f"The `{attr}` attribute was deprecated in MDAnalysis 2.0.0"
+        with pytest.warns(DeprecationWarning, match=wmsg):
+            getattr(p_run, attr) is p_run.results[attr]
+
 
 class TestFitExponential(object):
     x = np.linspace(0, 250, 251)

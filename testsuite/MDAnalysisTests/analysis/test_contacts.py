@@ -20,8 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import print_function, division, absolute_import
-
+import warnings
 import MDAnalysis as mda
 import pytest
 from MDAnalysis.analysis import contacts
@@ -29,6 +28,7 @@ from MDAnalysis.analysis.distances import distance_array
 
 from numpy.testing import (
     assert_almost_equal,
+    assert_equal,
     assert_array_equal,
     assert_array_almost_equal
 )
@@ -37,12 +37,12 @@ import numpy as np
 from MDAnalysisTests.datafiles import (
     PSF,
     DCD,
+    TPR,
+    XTC,
     contacts_villin_folded,
     contacts_villin_unfolded,
     contacts_file
 )
-
-from MDAnalysisTests import tempdir
 
 
 def test_soft_cut_q():
@@ -171,15 +171,63 @@ class TestContacts(object):
     def universe():
         return mda.Universe(PSF, DCD)
 
-    def _run_Contacts(self, universe, start=None, stop=None, step=None, **kwargs):
+    def _run_Contacts(
+        self, universe,
+        start=None, stop=None, step=None, **kwargs
+    ):
         acidic = universe.select_atoms(self.sel_acidic)
         basic = universe.select_atoms(self.sel_basic)
         return contacts.Contacts(
             universe,
-            selection=(self.sel_acidic, self.sel_basic),
+            select=(self.sel_acidic, self.sel_basic),
             refgroup=(acidic, basic),
             radius=6.0,
             **kwargs).run(start=start, stop=stop, step=step)
+
+    @pytest.mark.parametrize("seltxt", [sel_acidic, sel_basic])
+    def test_select_valid_types(self, universe, seltxt):
+        """Test if Contacts._get_atomgroup() can take both string and AtomGroup
+         as selections.
+        """
+        ag = universe.select_atoms(seltxt)
+
+        ag_from_string = contacts.Contacts._get_atomgroup(universe, seltxt)
+        ag_from_ag = contacts.Contacts._get_atomgroup(universe, ag)
+
+        assert ag_from_string == ag_from_ag
+
+    def test_contacts_selections(self, universe):
+        """Test if Contacts can take both string and AtomGroup as selections.
+        """
+        aga = universe.select_atoms(self.sel_acidic)
+        agb = universe.select_atoms(self.sel_basic)
+
+        cag = contacts.Contacts(
+            universe, select=(aga, agb), refgroup=(aga, agb)
+        )
+
+        csel = contacts.Contacts(
+            universe, select=(self.sel_acidic, self.sel_basic),
+            refgroup=(aga, agb)
+        )
+
+        cag.run()
+        csel.run()
+
+        assert cag.grA == csel.grA
+        assert cag.grB == csel.grB
+
+    @pytest.mark.parametrize("ag", [1, [2], mda.Universe, "USE UPDATING AG"])
+    def test_select_wrong_types(self, universe, ag):
+        """Test that Contacts._get_atomgroup(u, sel) fails if sel is of the
+        wrong type"""
+        if ag == "USE UPDATING AG":
+            ag = universe.select_atoms(self.sel_acidic, updating=True)
+
+        with pytest.raises(
+            TypeError, match="must be either string or a static AtomGroup"
+        ) as te:
+            contacts.Contacts._get_atomgroup(universe, ag)
 
     def test_startframe(self, universe):
         """test_startframe: TestContactAnalysis1: start frame set to 0 (resolution of
@@ -187,18 +235,18 @@ class TestContacts(object):
 
         """
         CA1 = self._run_Contacts(universe)
-        assert len(CA1.timeseries) == universe.trajectory.n_frames
+        assert len(CA1.results.timeseries) == universe.trajectory.n_frames
 
     def test_end_zero(self, universe):
         """test_end_zero: TestContactAnalysis1: stop frame 0 is not ignored"""
         CA1 = self._run_Contacts(universe, stop=0)
-        assert len(CA1.timeseries) == 0
+        assert len(CA1.results.timeseries) == 0
 
     def test_slicing(self, universe):
         start, stop, step = 10, 30, 5
         CA1 = self._run_Contacts(universe, start=start, stop=stop, step=step)
         frames = np.arange(universe.trajectory.n_frames)[start:stop:step]
-        assert len(CA1.timeseries) == len(frames)
+        assert len(CA1.results.timeseries) == len(frames)
 
     def test_villin_folded(self):
         # one folded, one unfolded
@@ -209,17 +257,15 @@ class TestContacts(object):
         grF = f.select_atoms(sel)
 
         q = contacts.Contacts(u,
-                              selection=(sel, sel),
+                              select=(sel, sel),
                               refgroup=(grF, grF),
                               method="soft_cut")
         q.run()
 
         results = soft_cut(f, u, sel, sel)
-        assert_almost_equal(q.timeseries[:, 1], results[:, 1])
-
+        assert_almost_equal(q.results.timeseries[:, 1], results[:, 1])
 
     def test_villin_unfolded(self):
-
         # both folded
         f = mda.Universe(contacts_villin_folded)
         u = mda.Universe(contacts_villin_folded)
@@ -228,13 +274,13 @@ class TestContacts(object):
         grF = f.select_atoms(sel)
 
         q = contacts.Contacts(u,
-                              selection=(sel, sel),
+                              select=(sel, sel),
                               refgroup=(grF, grF),
                               method="soft_cut")
         q.run()
 
         results = soft_cut(f, u, sel, sel)
-        assert_almost_equal(q.timeseries[:, 1], results[:, 1])
+        assert_almost_equal(q.results.timeseries[:, 1], results[:, 1])
 
     def test_hard_cut_method(self, universe):
         ca = self._run_Contacts(universe)
@@ -258,8 +304,21 @@ class TestContacts(object):
                     0.48543689, 0.44660194, 0.4368932, 0.40776699, 0.41747573,
                     0.48543689, 0.45631068, 0.46601942, 0.47572816, 0.51456311,
                     0.45631068, 0.37864078, 0.42718447]
-        assert len(ca.timeseries) == len(expected)
-        assert_array_almost_equal(ca.timeseries[:, 1], expected)
+        assert len(ca.results.timeseries) == len(expected)
+        assert_array_almost_equal(ca.results.timeseries[:, 1], expected)
+
+    def test_radius_cut_method(self, universe):
+        acidic = universe.select_atoms(self.sel_acidic)
+        basic = universe.select_atoms(self.sel_basic)
+        r = contacts.distance_array(acidic.positions, basic.positions)
+        initial_contacts = contacts.contact_matrix(r, 6.0)
+        expected = []
+        for ts in universe.trajectory:
+            r = contacts.distance_array(acidic.positions, basic.positions)
+            expected.append(contacts.radius_cut_q(r[initial_contacts], None, radius=6.0))
+
+        ca = self._run_Contacts(universe, method='radius_cut')
+        assert_array_equal(ca.results.timeseries[:, 1], expected)
 
     @staticmethod
     def _is_any_closer(r, r0, dist=2.5):
@@ -276,7 +335,7 @@ class TestContacts(object):
                           1., 0., 1., 1., 1., 1., 1., 1., 0., 1., 1., 0., 1.,
                           0., 0., 1., 1., 0., 0., 1., 1., 1., 0., 1., 0., 0.,
                           1., 0., 1., 1., 1., 1., 1.]
-        assert_array_equal(ca.timeseries[:, 1], bound_expected)
+        assert_array_equal(ca.results.timeseries[:, 1], bound_expected)
 
     @staticmethod
     def _weird_own_method(r, r0):
@@ -290,15 +349,31 @@ class TestContacts(object):
         with pytest.raises(ValueError):
             self._run_Contacts(universe, method=2, stop=2)
 
-    def test_save(self, universe):
-        with tempdir.in_tempdir():
-            ca = self._run_Contacts(universe)
-            ca.save('testfile.npy')
-            saved = np.genfromtxt('testfile.npy')
-            assert_array_almost_equal(ca.timeseries, saved)
-            # check the header was written correctly
-            with open('testfile.npy', 'r') as fin:
-                assert fin.readline().strip() == '# q1 analysis'
+    @pytest.mark.parametrize("pbc,expected", [
+    (True, [1., 0.43138152, 0.3989021, 0.43824337, 0.41948765,
+            0.42223239, 0.41354071, 0.43641354, 0.41216834, 0.38334858]),
+    (False, [1., 0.42327791, 0.39192399, 0.40950119, 0.40902613,
+             0.42470309, 0.41140143, 0.42897862, 0.41472684, 0.38574822])
+    ])
+    def test_distance_box(self, pbc, expected):
+        u = mda.Universe(TPR, XTC)
+        sel_basic = "(resname ARG LYS)"
+        sel_acidic = "(resname ASP GLU)"
+        acidic = u.select_atoms(sel_acidic)
+        basic = u.select_atoms(sel_basic)
+        
+        r = contacts.Contacts(u, select=(sel_acidic, sel_basic),
+                        refgroup=(acidic, basic), radius=6.0, pbc=pbc)
+        r.run()
+        assert_array_almost_equal(r.results.timeseries[:, 1], expected)
+
+    def test_warn_deprecated_attr(self, universe):
+        """Test for warning message emitted on using deprecated `timeseries`
+        attribute"""
+        CA1 = self._run_Contacts(universe, stop=1)
+        wmsg = "The `timeseries` attribute was deprecated in MDAnalysis"
+        with pytest.warns(DeprecationWarning, match=wmsg):
+            assert_equal(CA1.timeseries, CA1.results.timeseries)
 
 
 def test_q1q2():
@@ -326,7 +401,7 @@ def test_q1q2():
                    0.93097184, 0.93006358, 0.93188011, 0.93278837, 0.93006358,
                    0.92915531, 0.92824705, 0.92733878, 0.92643052, 0.93188011,
                    0.93006358, 0.9346049, 0.93188011]
-    assert_array_almost_equal(q1q2.timeseries[:, 1], q1_expected)
+    assert_array_almost_equal(q1q2.results.timeseries[:, 1], q1_expected)
 
     q2_expected = [0.94649446, 0.94926199, 0.95295203, 0.95110701, 0.94833948,
                    0.95479705, 0.94926199, 0.9501845, 0.94926199, 0.95387454,
@@ -348,4 +423,4 @@ def test_q1q2():
                    0.97140221, 0.97601476, 0.97693727, 0.98154982, 0.98431734,
                    0.97601476, 0.9797048, 0.98154982, 0.98062731, 0.98431734,
                    0.98616236, 0.9898524, 1.]
-    assert_array_almost_equal(q1q2.timeseries[:, 2], q2_expected)
+    assert_array_almost_equal(q1q2.results.timeseries[:, 2], q2_expected)

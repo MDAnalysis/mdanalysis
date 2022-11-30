@@ -43,50 +43,44 @@ Also free to ask on the MDAnalysis mailing list for help:
 Google groups forbids any name that contains the string `anal'.)
 """
 
-from __future__ import print_function
 from setuptools import setup, Extension, find_packages
 from distutils.ccompiler import new_compiler
 from distutils.sysconfig import customize_compiler
+from packaging.version import Version
 import codecs
 import os
 import sys
+import re
 import shutil
 import tempfile
 import warnings
 import platform
 
 # Make sure I have the right Python version.
-if sys.version_info[:2] < (2, 7):
-    print('MDAnalysis requires Python 2.7 or better. Python {0:d}.{1:d} detected'.format(*
+if sys.version_info[:2] < (3, 8):
+    print('MDAnalysis requires Python 3.8 or better. Python {0:d}.{1:d} detected'.format(*
           sys.version_info[:2]))
     print('Please upgrade your version of Python.')
     sys.exit(-1)
 
-if sys.version_info[0] < 3:
-    import ConfigParser as configparser
-else:
-    import configparser
-
-if sys.version_info[0] >= 3:
-    from subprocess import getoutput
-else:
-    from commands import getoutput
+import configparser
+from subprocess import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "0.20.2-dev0"
+RELEASE = "2.4.0-dev0"
 
 is_release = 'dev' not in RELEASE
 
 # Handle cython modules
 try:
     # cython has to be >=0.16 <0.28 to support cython.parallel
+    # minimum cython version now set to 0.28 to match pyproject.toml
     import Cython
     from Cython.Build import cythonize
     cython_found = True
-    from distutils.version import LooseVersion
 
-    required_version = "0.16"
-    if not LooseVersion(Cython.__version__) >= LooseVersion(required_version):
+    required_version = "0.28"
+    if not Version(Cython.__version__) >= Version(required_version):
         # We don't necessarily die here. Maybe we already have
         #  the cythonized '.c' files.
         print("Cython version {0} was found but won't be used: version {1} "
@@ -103,6 +97,9 @@ except ImportError:
         sys.exit(1)
     cython_linetrace = False
 
+def abspath(file):
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                        file)
 
 class Config(object):
     """Config wrapper class to get build options
@@ -122,8 +119,9 @@ class Config(object):
     """
 
     def __init__(self, fname='setup.cfg'):
+        fname = abspath(fname)
         if os.path.exists(fname):
-            self.config = configparser.SafeConfigParser()
+            self.config = configparser.ConfigParser()
             self.config.read(fname)
 
     def get(self, option_name, default=None):
@@ -152,9 +150,10 @@ class MDAExtension(Extension, object):
     # This is accomplished by passing the get_numpy_include function
     #  as one of the include_dirs. This derived Extension class takes
     #  care of calling it when needed.
-    def __init__(self, *args, **kwargs):
+    def __init__(self, name, sources, *args, **kwargs):
         self._mda_include_dirs = []
-        super(MDAExtension, self).__init__(*args, **kwargs)
+        # don't abspath sources else packaging fails on Windows (issue #3129)
+        super(MDAExtension, self).__init__(name, sources, *args, **kwargs)
 
     @property
     def include_dirs(self):
@@ -163,7 +162,8 @@ class MDAExtension(Extension, object):
                 try:
                     self._mda_include_dirs.append(item()) #The numpy callable
                 except TypeError:
-                    self._mda_include_dirs.append(item)
+                    item = abspath(item)
+                    self._mda_include_dirs.append((item))
         return self._mda_include_dirs
 
     @include_dirs.setter
@@ -176,20 +176,14 @@ def get_numpy_include():
     # versions.
     # setuptools forgets to unset numpy's setup flag and we get a crippled
     # version of it unless we do it ourselves.
-    try:
-        # Python 3 renamed the ``__builin__`` module into ``builtins``.
-        # Here we import the python 2 or the python 3 version of the module
-        # with the python 3 name. This could be done with ``six`` but that
-        # module may not be installed at that point.
-        import builtins
-    except ImportError:
-        import __builtin__ as builtins
+    import builtins
+
     builtins.__NUMPY_SETUP__ = False
     try:
         import numpy as np
     except ImportError:
         print('*** package "numpy" not found ***')
-        print('MDAnalysis requires a version of NumPy (>=1.13.3), even for setup.')
+        print('MDAnalysis requires a version of NumPy (>=1.20.0), even for setup.')
         print('Please get it from http://numpy.scipy.org/ or install it through '
               'your package manager.')
         sys.exit(-1)
@@ -253,25 +247,50 @@ def using_clang():
     compiler = new_compiler()
     customize_compiler(compiler)
     compiler_ver = getoutput("{0} -v".format(compiler.compiler[0]))
-    return 'clang' in compiler_ver
+    if 'Spack GCC' in compiler_ver:
+        # when gcc toolchain is built from source with spack
+        # using clang, the 'clang' string may be present in
+        # the compiler metadata, but it is not clang
+        is_clang = False
+    elif 'clang' in compiler_ver:
+        # by default, Apple will typically alias gcc to
+        # clang, with some mention of 'clang' in the
+        # metadata
+        is_clang = True
+    else:
+        is_clang = False
+    return is_clang
 
 
 def extensions(config):
-    # dev installs must build their own cythonized files.
-    use_cython = config.get('use_cython', default=not is_release)
+    # usually (except coming from release tarball) cython files must be generated
+    use_cython = config.get('use_cython', default=cython_found)
     use_openmp = config.get('use_openmp', default=True)
+    annotate_cython = config.get('annotate_cython', default=False)
 
-    extra_compile_args = ['-std=c99', '-ffast-math', '-O3', '-funroll-loops']
+    extra_compile_args = ['-std=c99', '-ffast-math', '-O3', '-funroll-loops',
+                          '-fsigned-zeros'] # see #2722
     define_macros = []
     if config.get('debug_cflags', default=False):
         extra_compile_args.extend(['-Wall', '-pedantic'])
         define_macros.extend([('DEBUG', '1')])
 
-    # allow using architecture specific instructions. This allows people to
-    # build optimized versions of MDAnalysis.
-    arch = config.get('march', default=False)
-    if arch:
-        extra_compile_args.append('-march={}'.format(arch))
+    # encore is sensitive to floating point accuracy, especially on non-x86
+    # to avoid reducing optimisations on everything, we make a set of compile
+    # args specific to encore see #2997 for an example of this.
+    encore_compile_args = [a for a in extra_compile_args if 'O3' not in a]
+    if platform.machine() == 'aarch64' or platform.machine() == 'ppc64le':
+        encore_compile_args.append('-O1')
+    else:
+        encore_compile_args.append('-O3')
+
+    # allow using custom c/c++ flags and architecture specific instructions.
+    # This allows people to build optimized versions of MDAnalysis.
+    # Do here so not included in encore
+    extra_cflags = config.get('extra_cflags', default=False)
+    if extra_cflags:
+        flags = extra_cflags.split()
+        extra_compile_args.extend(flags)
 
     cpp_extra_compile_args = [a for a in extra_compile_args if 'std' not in a]
     cpp_extra_compile_args.append('-std=c++11')
@@ -281,7 +300,7 @@ def extensions(config):
         cpp_extra_compile_args.append('-stdlib=libc++')
         cpp_extra_compile_args.append('-mmacosx-version-min=10.9')
         cpp_extra_link_args.append('-stdlib=libc++')
-        cpp_extra_link_args.append('-mmacosx-version-min=10.7')
+        cpp_extra_link_args.append('-mmacosx-version-min=10.9')
 
     # Needed for large-file seeking under 32bit systems (for xtc/trr indexing
     # and access).
@@ -387,45 +406,54 @@ def extensions(config):
                          define_macros=define_macros,
                          extra_compile_args=cpp_extra_compile_args,
                          extra_link_args= cpp_extra_link_args)
+    timestep = MDAExtension('MDAnalysis.coordinates.timestep',
+                         sources=['MDAnalysis/coordinates/timestep' + cpp_source_suffix],
+                         language='c++',
+                         include_dirs=include_dirs,
+                         define_macros=define_macros,
+                         extra_compile_args=cpp_extra_compile_args,
+                         extra_link_args= cpp_extra_link_args)
 
 
     encore_utils = MDAExtension('MDAnalysis.analysis.encore.cutils',
                                 sources=['MDAnalysis/analysis/encore/cutils' + source_suffix],
                                 include_dirs=include_dirs,
                                 define_macros=define_macros,
-                                extra_compile_args=extra_compile_args)
+                                extra_compile_args=encore_compile_args)
     ap_clustering = MDAExtension('MDAnalysis.analysis.encore.clustering.affinityprop',
                                  sources=['MDAnalysis/analysis/encore/clustering/affinityprop' + source_suffix,
                                           'MDAnalysis/analysis/encore/clustering/src/ap.c'],
                                  include_dirs=include_dirs+['MDAnalysis/analysis/encore/clustering/include'],
                                  libraries=mathlib,
                                  define_macros=define_macros,
-                                 extra_compile_args=extra_compile_args)
+                                 extra_compile_args=encore_compile_args)
     spe_dimred = MDAExtension('MDAnalysis.analysis.encore.dimensionality_reduction.stochasticproxembed',
                               sources=['MDAnalysis/analysis/encore/dimensionality_reduction/stochasticproxembed' + source_suffix,
                                        'MDAnalysis/analysis/encore/dimensionality_reduction/src/spe.c'],
                               include_dirs=include_dirs+['MDAnalysis/analysis/encore/dimensionality_reduction/include'],
                               libraries=mathlib,
                               define_macros=define_macros,
-                              extra_compile_args=extra_compile_args)
+                              extra_compile_args=encore_compile_args)
     nsgrid = MDAExtension('MDAnalysis.lib.nsgrid',
                              ['MDAnalysis/lib/nsgrid' + cpp_source_suffix],
-                             include_dirs=include_dirs,
+                             include_dirs=include_dirs + ['MDAnalysis/lib/include'],
                              language='c++',
                              define_macros=define_macros,
                              extra_compile_args=cpp_extra_compile_args,
                              extra_link_args= cpp_extra_link_args)
     pre_exts = [libdcd, distances, distances_omp, qcprot,
                 transformation, libmdaxdr, util, encore_utils,
-                ap_clustering, spe_dimred, cutil, augment, nsgrid]
+                ap_clustering, spe_dimred, cutil, augment, nsgrid, timestep]
 
 
     cython_generated = []
     if use_cython:
         extensions = cythonize(
             pre_exts,
-            compiler_directives={'linetrace' : cython_linetrace,
-                                 'embedsignature' : False},
+            annotate=annotate_cython,
+            compiler_directives={'linetrace': cython_linetrace,
+                                 'embedsignature': False,
+                                 'language_level': '3'},
         )
         if cython_linetrace:
             print("Cython coverage will be enabled")
@@ -458,7 +486,7 @@ def dynamic_author_list():
     "Chronological list of authors" title.
     """
     authors = []
-    with codecs.open('AUTHORS', encoding='utf-8') as infile:
+    with codecs.open(abspath('AUTHORS'), encoding='utf-8') as infile:
         # An author is a bullet point under the title "Chronological list of
         # authors". We first want move the cursor down to the title of
         # interest.
@@ -497,7 +525,7 @@ def dynamic_author_list():
                + authors + ['Oliver Beckstein'])
 
     # Write the authors.py file.
-    out_path = 'MDAnalysis/authors.py'
+    out_path = abspath('MDAnalysis/authors.py')
     with codecs.open(out_path, 'w', encoding='utf-8') as outfile:
         # Write the header
         header = '''\
@@ -515,16 +543,34 @@ def dynamic_author_list():
         print(template.format(author_string), file=outfile)
 
 
+def long_description(readme):
+    """Create reST SUMMARY file for PyPi."""
+
+    with open(abspath(readme)) as summary:
+        buffer = summary.read()
+    # remove top heading that messes up pypi display
+    m = re.search('====*\n[^\n]*README[^\n]*\n=====*\n', buffer,
+                  flags=re.DOTALL)
+    assert m, "README.rst does not contain a level-1 heading"
+    return buffer[m.end():]
+
+
 if __name__ == '__main__':
     try:
         dynamic_author_list()
     except (OSError, IOError):
         warnings.warn('Cannot write the list of authors.')
 
-    with open("SUMMARY.txt") as summary:
-        LONG_DESCRIPTION = summary.read()
+    try:
+        # when building from repository for creating the distribution
+        LONG_DESCRIPTION = long_description("../README.rst")
+    except OSError:
+        # when building from a tar file for installation
+        # (LONG_DESCRIPTION is not really needed)
+        LONG_DESCRIPTION = "MDAnalysis -- https://www.mdanalysis.org/"
+
     CLASSIFIERS = [
-        'Development Status :: 4 - Beta',
+        'Development Status :: 6 - Mature',
         'Environment :: Console',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
@@ -532,12 +578,11 @@ if __name__ == '__main__':
         'Operating System :: MacOS :: MacOS X',
         'Operating System :: Microsoft :: Windows ',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
         'Programming Language :: C',
         'Topic :: Scientific/Engineering',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
@@ -548,21 +593,20 @@ if __name__ == '__main__':
     exts, cythonfiles = extensions(config)
 
     install_requires = [
-          'numpy>=1.13.3',
+          'numpy>=1.20.0',
           'biopython>=1.71',
-          'networkx>=1.0',
+          'networkx>=2.0',
           'GridDataFormats>=0.4.0',
-          'six>=1.4.0',
           'mmtf-python>=1.0.0',
           'joblib>=0.12',
-          'scipy>=1.0.0',
+          'scipy>=1.5.0',
           'matplotlib>=1.5.1',
-          'mock',
+          'tqdm>=4.43.0',
+          'threadpoolctl',
+          'packaging',
+          'fasteners',
+          'gsd>=1.9.3',
     ]
-    if not os.name == 'nt':
-        install_requires.append('gsd>=1.4.0')
-    else:
-        install_requires.append('gsd>=1.9.3')
 
     setup(name='MDAnalysis',
           version=RELEASE,
@@ -570,15 +614,19 @@ if __name__ == '__main__':
                        'trajectories generated by CHARMM, Gromacs, NAMD, LAMMPS, or Amber.'),
           long_description=LONG_DESCRIPTION,
           long_description_content_type='text/x-rst',
-          author='Naveen Michaud-Agrawal',
-          author_email='naveen.michaudagrawal@gmail.com',
-          maintainer='Richard Gowers',
-          maintainer_email='mdnalysis-discussion@googlegroups.com',
+          author='MDAnalysis Development Team',
+          author_email='mdanalysis@numfocus.org',
+          maintainer='MDAnalysis Core Developers',
+          maintainer_email='mdanalysis@numfocus.org',
           url='https://www.mdanalysis.org',
           download_url='https://github.com/MDAnalysis/mdanalysis/releases',
-          project_urls={'Documentation': 'https://www.mdanalysis.org/docs/',
+          project_urls={'Documentation': 'https://docs.mdanalysis.org/',
+                        'User Guide': 'https://userguide.mdanalysis.org/',
                         'Issue Tracker': 'https://github.com/mdanalysis/mdanalysis/issues',
-                        'User Group': 'https://groups.google.com/forum/#!forum/mdnalysis-discussion',
+                        'User Group': 'https://groups.google.com/g/mdnalysis-discussion/',
+                        'Discord': 'https://discord.com/channels/807348386012987462/',
+                        'Blog': 'https://www.mdanalysis.org/blog/',
+                        'Twitter': 'https://twitter.com/mdanalysis',
                         'Source': 'https://github.com/mdanalysis/mdanalysis',
                         },
           license='GPL 2',
@@ -590,27 +638,30 @@ if __name__ == '__main__':
                         ],
           },
           ext_modules=exts,
-          requires=['numpy (>=1.13.3)', 'biopython (>= 1.71)', 'mmtf (>=1.0.0)',
-                    'networkx (>=1.0)', 'GridDataFormats (>=0.3.2)', 'joblib',
-                    'scipy (>=1.0.0)', 'matplotlib (>=1.5.1)'],
+          python_requires='>=3.8',
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           setup_requires=[
-              'numpy>=1.13.3',
+              'numpy>=1.20.0',
+              'packaging',
           ],
           install_requires=install_requires,
           # extras can be difficult to install through setuptools and/or
           # you might prefer to use the version available through your
           # packaging system
           extras_require={
-              'AMBER': [
+              'extra_formats': [   # additional file formats
                   'netCDF4>=1.0',  # for fast AMBER writing, also needs HDF5
-              ],
+                  'h5py>=2.10',    # H5MD
+                  'chemfiles>=0.10',  # multiple formats supported by chemfiles
+                  'pyedr>=0.7.0',  # EDR files for the EDR AuxReader
+                  ],
               'analysis': [
                   'seaborn',  # for annotated heat map and nearest neighbor
                               # plotting in PSA
-                  'sklearn',  # For clustering and dimensionality reduction
-                              # functionality in encore
+                  'scikit-learn',  # For clustering and dimensionality
+                                   # reduction functionality in encore
+                  'tidynamics>=1.0.0', # For MSD analysis method
               ],
           },
           test_suite="MDAnalysisTests",

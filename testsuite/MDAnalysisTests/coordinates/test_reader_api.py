@@ -20,8 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
-
 import numpy as np
 from collections import OrderedDict
 from MDAnalysis.coordinates.base import (
@@ -29,7 +27,7 @@ from MDAnalysis.coordinates.base import (
     SingleFrameReaderBase,
     ReaderBase
 )
-from numpy.testing import assert_equal
+from numpy.testing import assert_equal, assert_allclose
 
 import pytest
 """
@@ -135,6 +133,15 @@ class _TestReader(object):
         with pytest.raises(StopIteration):
             next(reader)
 
+    @pytest.mark.parametrize('order', ['turnip', 'abc'])
+    def test_timeseries_raises_unknown_order_key(self, reader, order):
+        with pytest.raises(ValueError, match="Unrecognized order key"):
+            reader.timeseries(order=order)
+
+    @pytest.mark.parametrize('order', ['faac', 'affc', 'afcc', ''])
+    def test_timeseries_raises_incorrect_order_key(self, reader, order):
+        with pytest.raises(ValueError, match="Repeated or missing keys"):
+            reader.timeseries(order=order)
 
 class _Multi(_TestReader):
     n_frames = 10
@@ -381,3 +388,18 @@ class TestSingleFrameReader(_Single):
     def test_read_frame(self, reader):
         with pytest.raises(IndexError):
             reader._read_frame(1)
+
+    def test_iter_rewind(self, reader):
+        # Issue #3423
+        # positions should be zero to start with
+        assert_allclose(reader.ts.positions, np.zeros((10, 3)))
+
+        # modify positions in place
+        reader.ts.positions = np.ones((10, 3))
+        assert_allclose(reader.ts.positions, np.ones((10, 3)))
+
+        # iterate the reader
+        for ts in reader:
+            assert_allclose(ts.positions, np.zeros((10, 3)))
+
+        assert_allclose(reader.ts.positions, np.zeros((10, 3)))

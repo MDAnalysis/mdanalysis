@@ -30,7 +30,7 @@ Test cases for MDAnalysis
 Test cases are stored in a separate packacge (:mod:`MDAnalysisTests`)
 that has to be installed separately from
 https://www.mdanalysis.org. For more details on the tests see
-http://wiki.mdanalysis.org/UnitTests .
+https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests .
 
 We are using the NumPy_ testing frame work; thus, numpy *must* be
 installed for the tests to run at all.

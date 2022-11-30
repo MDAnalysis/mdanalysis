@@ -20,13 +20,14 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
 from . import ClusteringMethod
 from . import ClusterCollection
 
-__all__ = [
-    'ClusterCollection.ClusterCollection',
-    'ClusterCollection.Cluster',
-    'ClusteringMethod.AffinityPropagationNative'
-    'ClusteringMethod.AffinityPropagation'
-    'ClusteringMethod.DBSCAN']
+from .ClusteringMethod import AffinityPropagationNative
+from .ClusterCollection import ClusterCollection, Cluster
+
+__all__ = ['ClusterCollection', 'Cluster', 'AffinityPropagationNative']
+
+if ClusteringMethod.sklearn:
+    from .ClusteringMethod import AffinityPropagation, DBSCAN
+    __all__ += ['AffinityPropagation', 'DBSCAN']

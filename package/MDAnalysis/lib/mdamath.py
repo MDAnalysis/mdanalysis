@@ -25,10 +25,17 @@
 Mathematical helper functions --- :mod:`MDAnalysis.lib.mdamath`
 ===============================================================
 
-Helper functions for common mathematical operations
+
+Helper functions for common mathematical operations. Some of these functions
+are written in C/cython for higher performance.
+
+Linear algebra
+--------------
 
 .. autofunction:: normal
 .. autofunction:: norm
+.. autofunction:: pdot
+.. autofunction:: pnorm
 .. autofunction:: angle
 .. autofunction:: dihedral
 .. autofunction:: stp
@@ -36,22 +43,33 @@ Helper functions for common mathematical operations
 .. autofunction:: triclinic_box
 .. autofunction:: triclinic_vectors
 .. autofunction:: box_volume
+
+
+Connectivity
+------------
+
 .. autofunction:: make_whole
 .. autofunction:: find_fragments
 
+
 .. versionadded:: 0.11.0
+.. versionchanged: 1.0.0
+   Unused function :func:`_angle()` has now been removed.
+
 """
-from __future__ import division, absolute_import
-from six.moves import zip
 import numpy as np
 
 from ..exceptions import NoDataError
 from . import util
 from ._cutil import (make_whole, find_fragments, _sarrus_det_single,
                      _sarrus_det_multiple)
+import numpy.typing as npt
+from typing import Union
 
 # geometric functions
-def norm(v):
+
+
+def norm(v: npt.ArrayLike) -> float:
     r"""Calculate the norm of a vector v.
 
     .. math:: v = \sqrt{\mathbf{v}\cdot\mathbf{v}}
@@ -74,7 +92,8 @@ def norm(v):
     return np.sqrt(np.dot(v, v))
 
 
-def normal(vec1, vec2):
+# typing: numpy
+def normal(vec1: npt.ArrayLike, vec2: npt.ArrayLike) -> np.ndarray:
     r"""Returns the unit vector normal to two vectors.
 
     .. math::
@@ -90,25 +109,59 @@ def normal(vec1, vec2):
     n = norm(normal)
     if n == 0.0:
         return normal  # returns [0,0,0] instead of [nan,nan,nan]
-    return normal / n  # ... could also use numpy.nan_to_num(normal/norm(normal))
+    # ... could also use numpy.nan_to_num(normal/norm(normal))
+    return normal / n
 
 
-def angle(a, b):
+# typing: numpy
+def pdot(a: npt.ArrayLike, b: npt.ArrayLike) -> np.ndarray:
+    """Pairwise dot product.
+
+    ``a`` must be the same shape as ``b``.
+
+    Parameters
+    ----------
+    a: :class:`numpy.ndarray` of shape (N, M)
+    b: :class:`numpy.ndarray` of shape (N, M)
+
+    Returns
+    -------
+    :class:`numpy.ndarray` of shape (N,)
+    """
+    return np.einsum('ij,ij->i', a, b)
+
+
+# typing: numpy
+def pnorm(a: npt.ArrayLike) -> np.ndarray:
+    """Euclidean norm of each vector in a matrix
+
+    Parameters
+    ----------
+    a: :class:`numpy.ndarray` of shape (N, M)
+
+    Returns
+    -------
+    :class:`numpy.ndarray` of shape (N,)
+    """
+    return pdot(a, a)**0.5
+
+
+def angle(a: npt.ArrayLike, b: npt.ArrayLike) -> float:
     """Returns the angle between two vectors in radians
 
     .. versionchanged:: 0.11.0
        Moved into lib.mdamath
+    .. versionchanged:: 1.0.0
+       Changed rounding-off code to use `np.clip()`. Values lower than
+       -1.0 now return `np.pi` instead of `-np.pi`
     """
     x = np.dot(a, b) / (norm(a) * norm(b))
     # catch roundoffs that lead to nan otherwise
-    if x > 1.0:
-        return 0.0
-    elif x < -1.0:
-        return -np.pi
+    x = np.clip(x, -1.0, 1.0)
     return np.arccos(x)
 
 
-def stp(vec1, vec2, vec3):
+def stp(vec1: npt.ArrayLike, vec2: npt.ArrayLike, vec3: npt.ArrayLike) -> float:
     r"""Takes the scalar triple product of three vectors.
 
     Returns the volume *V* of the parallel epiped spanned by the three
@@ -124,7 +177,7 @@ def stp(vec1, vec2, vec3):
     return np.dot(vec3, np.cross(vec1, vec2))
 
 
-def dihedral(ab, bc, cd):
+def dihedral(ab: npt.ArrayLike, bc: npt.ArrayLike, cd: npt.ArrayLike) -> float:
     r"""Returns the dihedral angle in radians between vectors connecting A,B,C,D.
 
     The dihedral measures the rotation around bc::
@@ -146,21 +199,8 @@ def dihedral(ab, bc, cd):
     return (x if stp(ab, bc, cd) <= 0.0 else -x)
 
 
-def _angle(a, b):
-    """Angle between two vectors *a* and *b* in degrees.
-
-    If one of the lengths is 0 then the angle is returned as 0
-    (instead of `nan`).
-    """
-    # This function has different limits than angle?
-
-    angle = np.arccos(np.dot(a, b) / (norm(a) * norm(b)))
-    if np.isnan(angle):
-        return 0.0
-    return np.rad2deg(angle)
-
-
-def sarrus_det(matrix):
+# typing: numpy
+def sarrus_det(matrix: np.ndarray) -> Union[float, np.ndarray]:
     """Computes the determinant of a 3x3 matrix according to the
     `rule of Sarrus`_.
 
@@ -205,7 +245,8 @@ def sarrus_det(matrix):
     return _sarrus_det_multiple(m.reshape((-1, 3, 3))).reshape(shape[:-2])
 
 
-def triclinic_box(x, y, z):
+# typing: numpy
+def triclinic_box(x: npt.ArrayLike, y: npt.ArrayLike, z: npt.ArrayLike) -> np.ndarray:
     """Convert the three triclinic box vectors to
     ``[lx, ly, lz, alpha, beta, gamma]``.
 
@@ -233,7 +274,7 @@ def triclinic_box(x, y, z):
     numpy.ndarray
         A numpy array of shape ``(6,)`` and dtype ``np.float32`` providing the
         unitcell dimensions in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.\n
         Invalid boxes are returned as a zero vector.
 
@@ -267,7 +308,8 @@ def triclinic_box(x, y, z):
     return np.zeros(6, dtype=np.float32)
 
 
-def triclinic_vectors(dimensions, dtype=np.float32):
+# typing: numpy
+def triclinic_vectors(dimensions: npt.ArrayLike, dtype: npt.DTypeLike = np.float32) -> np.ndarray:
     """Convert ``[lx, ly, lz, alpha, beta, gamma]`` to a triclinic matrix
     representation.
 
@@ -285,7 +327,7 @@ def triclinic_vectors(dimensions, dtype=np.float32):
     ----------
     dimensions : array_like
         Unitcell dimensions provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.
     dtype: numpy.dtype
         The data type of the returned box matrix.
@@ -317,7 +359,7 @@ def triclinic_vectors(dimensions, dtype=np.float32):
     dim = np.asarray(dimensions, dtype=np.float64)
     lx, ly, lz, alpha, beta, gamma = dim
     # Only positive edge lengths and angles in (0, 180) are allowed:
-    if not (np.all(dim > 0.0) and \
+    if not (np.all(dim > 0.0) and
             alpha < 180.0 and beta < 180.0 and gamma < 180.0):
         # invalid box, return zero vectors:
         box_matrix = np.zeros((3, 3), dtype=dtype)
@@ -349,7 +391,7 @@ def triclinic_vectors(dimensions, dtype=np.float32):
         box_matrix[1, 1] = ly * sin_gamma
         box_matrix[2, 0] = lz * cos_beta
         box_matrix[2, 1] = lz * (cos_alpha - cos_beta * cos_gamma) / sin_gamma
-        box_matrix[2, 2] = np.sqrt(lz * lz - box_matrix[2, 0] ** 2 - \
+        box_matrix[2, 2] = np.sqrt(lz * lz - box_matrix[2, 0] ** 2 -
                                    box_matrix[2, 1] ** 2)
         # The discriminant of the above square root is only negative or zero for
         # triplets of box angles that lead to an invalid box (i.e., the sum of
@@ -365,7 +407,7 @@ def triclinic_vectors(dimensions, dtype=np.float32):
     return box_matrix
 
 
-def box_volume(dimensions):
+def box_volume(dimensions: npt.ArrayLike) -> float:
     """Return the volume of the unitcell described by `dimensions`.
 
     The volume is computed as the product of the box matrix trace, with the
@@ -378,7 +420,7 @@ def box_volume(dimensions):
     ----------
     dimensions : array_like
         Unitcell dimensions provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.
 
     Returns
@@ -402,4 +444,3 @@ def box_volume(dimensions):
         tri_vecs = triclinic_vectors(dim, dtype=np.float64)
         volume = tri_vecs[0, 0] * tri_vecs[1, 1] * tri_vecs[2, 2]
     return volume
-

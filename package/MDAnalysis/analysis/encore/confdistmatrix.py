@@ -35,8 +35,6 @@ class to compute an RMSD matrix in such a way is also available.
 .. versionadded:: 0.16.0
 
 """
-from __future__ import division, absolute_import
-
 from joblib import Parallel, delayed
 import numpy as np
 from getpass import getuser
@@ -55,8 +53,8 @@ from .utils import TriangularMatrix, trm_indices
 
 
 def conformational_distance_matrix(ensemble,
-                                   conf_dist_function, selection="",
-                                   superimposition_selection="", n_jobs=1, pairwise_align=True, weights='mass',
+                                   conf_dist_function, select="",
+                                   superimposition_select="", n_jobs=1, pairwise_align=True, weights='mass',
                                    metadata=True, verbose=False,
                                    max_nbytes=None):
     """
@@ -71,11 +69,11 @@ def conformational_distance_matrix(ensemble,
     conf_dist_function : function object
         Function that fills the matrix with conformational distance
         values. See set_rmsd_matrix_elements for an example.
-    selection : str, optional
+    select : str, optional
         use this selection for the calculation of conformational distance
-    superimposition_selection : str, optional
+    superimposition_select : str, optional
         use atoms from this selection for fitting instead of those of
-        "selection"
+        `select`
     pairwise_align : bool, optional
         Whether to perform pairwise alignment between conformations.
         Default is True (do the superimposition)
@@ -102,7 +100,7 @@ def conformational_distance_matrix(ensemble,
 
     # framesn: number of frames
     framesn = len(ensemble.trajectory.timeseries(
-        ensemble.select_atoms(selection), order='fac'))
+        ensemble.select_atoms(select), order='fac'))
 
     # Prepare metadata recarray
     if metadata:
@@ -112,7 +110,7 @@ def conformational_distance_matrix(ensemble,
                            ensemble.filename,
                            framesn,
                            pairwise_align,
-                           selection,
+                           select,
                            weights=='mass')],
                          dtype=[('host', object),
                                 ('user', object),
@@ -126,30 +124,30 @@ def conformational_distance_matrix(ensemble,
     # Prepare alignment subset coordinates as necessary
 
     rmsd_coordinates = ensemble.trajectory.timeseries(
-            ensemble.select_atoms(selection),
+            ensemble.select_atoms(select),
             order='fac')
 
     if pairwise_align:
-        if superimposition_selection:
-            subset_selection = superimposition_selection
+        if superimposition_select:
+            subset_select = superimposition_select
         else:
-            subset_selection = selection
+            subset_select = select
 
         fitting_coordinates = ensemble.trajectory.timeseries(
-            ensemble.select_atoms(subset_selection),
+            ensemble.select_atoms(subset_select),
             order='fac')
     else:
         fitting_coordinates = None
 
     if not isinstance(weights, (list, tuple, np.ndarray)) and weights == 'mass':
-        weights = ensemble.select_atoms(selection).masses.astype(np.float64)
+        weights = ensemble.select_atoms(select).masses.astype(np.float64)
         if pairwise_align:
-            subset_weights = ensemble.select_atoms(subset_selection).masses.astype(np.float64)
+            subset_weights = ensemble.select_atoms(subset_select).masses.astype(np.float64)
         else:
             subset_weights = None
     elif weights is None:
         weights = np.ones((ensemble.trajectory.timeseries(
-            ensemble.select_atoms(selection))[0].shape[0])).astype(np.float64)
+            ensemble.select_atoms(select))[0].shape[0])).astype(np.float64)
         if pairwise_align:
             subset_weights = np.ones((fit_coords[0].shape[0])).astype(np.float64)
         else:
@@ -159,8 +157,8 @@ def conformational_distance_matrix(ensemble,
             if len(weights) != 2:
                 raise RuntimeError("used pairwise alignment with custom "
                                    "weights. Please provide 2 tuple with "
-                                   "weights for 'selection' and "
-                                   "'superimposition_selection'")
+                                   "weights for 'select' and "
+                                   "'superimposition_select'")
             subset_weights = weights[1]
             weights = weights[0]
         else:
@@ -173,7 +171,7 @@ def conformational_distance_matrix(ensemble,
     # Initialize workers. Simple worker doesn't perform fitting,
     # fitter worker does.
     indices = trm_indices((0, 0), (framesn - 1, framesn - 1))
-    Parallel(n_jobs=n_jobs, verbose=verbose, require='sharedmem', 
+    Parallel(n_jobs=n_jobs, verbose=verbose, require='sharedmem',
             max_nbytes=max_nbytes)(delayed(conf_dist_function)(
         np.int64(element),
         rmsd_coordinates,
@@ -249,12 +247,12 @@ def set_rmsd_matrix_elements(tasks, coords, rmsdmat, weights, fit_coords=None,
             rotated_i.astype(np.float64), translated_j.astype(np.float64),
             coords[j].shape[0], weights, sumweights)
     else:
-        raise TypeError("Both fit_coords and fit_weights must be specified \
-                        if one of them is given")
+        raise TypeError("Both fit_coords and fit_weights must be specified "
+                        "if one of them is given")
 
 
 def get_distance_matrix(ensemble,
-                        selection="name CA",
+                        select="name CA",
                         load_matrix=None,
                         save_matrix=None,
                         superimpose=True,
@@ -276,7 +274,7 @@ def get_distance_matrix(ensemble,
     The distance matrix can either be calculated from input ensembles or
     loaded from an input numpy binary file.
 
-    Please notice that the .npz file does not contain a bidimensional array,
+    Please notice that the .npz file does not contain a bi-dimensional array,
     but a flattened representation that is meant to represent the elements of
     an encore.utils.TriangularMatrix object.
 
@@ -284,7 +282,7 @@ def get_distance_matrix(ensemble,
     Parameters
     ----------
     ensemble : Universe
-    selection : str
+    select : str
         Atom selection string in the MDAnalysis format. Default is "name CA"
     load_matrix : str, optional
         Load similarity/dissimilarity matrix from numpy binary file instead
@@ -322,7 +320,7 @@ def get_distance_matrix(ensemble,
         confdistmatrix = \
             TriangularMatrix(
                 size=ensemble.trajectory.timeseries(
-                    ensemble.select_atoms(selection),
+                    ensemble.select_atoms(select),
                     order='fac').shape[0],
                 loadfile=load_matrix)
         logging.info("        Done!")
@@ -333,7 +331,7 @@ def get_distance_matrix(ensemble,
         # Check matrix size for consistency
         if not confdistmatrix.size == \
                 ensemble.trajectory.timeseries(
-                    ensemble.select_atoms(selection),
+                    ensemble.select_atoms(select),
                     order='fac').shape[0]:
             logging.error(
                 "ERROR: The size of the loaded matrix and of the ensemble"
@@ -366,7 +364,7 @@ def get_distance_matrix(ensemble,
         # is not required, it will not be performed anyway.
         confdistmatrix = conformational_distance_matrix(ensemble,
                                                         conf_dist_function=set_rmsd_matrix_elements,
-                                                        selection=selection,
+                                                        select=select,
                                                         pairwise_align=superimpose,
                                                         weights=weights,
                                                         n_jobs=n_jobs,

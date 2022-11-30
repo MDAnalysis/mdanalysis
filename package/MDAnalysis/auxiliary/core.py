@@ -28,12 +28,9 @@ Common functions for auxiliary reading --- :mod:`MDAnalysis.auxiliary.core`
 .. autofunction:: get_auxreader_for
 .. autofunction:: auxreader
 """
-from __future__ import absolute_import
-
-from six import raise_from, string_types
-
 from . import _AUXREADERS
 from ..lib import util
+
 
 def get_auxreader_for(auxdata=None, format=None):
     """Return the appropriate auxiliary reader class for *auxdata*/*format*.
@@ -65,7 +62,7 @@ def get_auxreader_for(auxdata=None, format=None):
         raise ValueError('Must provide either auxdata or format')
 
     if format is None:
-        if isinstance(auxdata, string_types):
+        if isinstance(auxdata, str):
             ## assume it's a filename?
             format = util.guess_format(auxdata)
         else:
@@ -75,19 +72,14 @@ def get_auxreader_for(auxdata=None, format=None):
         try:
             return _AUXREADERS[format]
         except KeyError:
-            raise_from(
-                ValueError(
-                    "Unknown auxiliary data format for auxdata: "
-                    "{0}".format(auxdata)),
-                None
-                )
+            errmsg = f"Unknown auxiliary data format for auxdata: {auxdata}"
+            raise ValueError(errmsg) from None
     else:
         try:
             return _AUXREADERS[format]
         except KeyError:
-            raise_from(
-                ValueError("Unknown auxiliary data format {0}".format(format)),
-                None)
+            errmsg = f"Unknown auxiliary data format {format}"
+            raise ValueError(errmsg) from None
 
 def auxreader(auxdata, format=None, **kwargs):
     """ Return an auxiliary reader instance for *auxdata*.

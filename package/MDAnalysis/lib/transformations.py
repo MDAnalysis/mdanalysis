@@ -65,14 +65,14 @@ module for a faster implementation of some functions.
 
 Documentation in HTML format can be generated with epydoc.
 
-Matrices (M) can be inverted using numpy.linalg.inv(M), concatenated using
-numpy.dot(M0, M1), or used to transform homogeneous coordinates (v) using
-numpy.dot(M, v) for shape (4, \*) "point of arrays", respectively
-numpy.dot(v, M.T) for shape (\*, 4) "array of points".
+Matrices (M) can be inverted using ``numpy.linalg.inv(M)``, concatenated using
+``numpy.dot(M0, M1)``, or used to transform homogeneous coordinates (v) using
+``numpy.dot(M, v)`` for shape ``(4, *)`` "point of arrays", respectively
+``numpy.dot(v, M.T)`` for shape ``(*, 4)`` "array of points".
 
-Use the transpose of transformation matrices for OpenGL glMultMatrixd().
+Use the transpose of transformation matrices for OpenGL ``glMultMatrixd()``.
 
-Calculations are carried out with numpy.float64 precision.
+Calculations are carried out with ``numpy.float64`` precision.
 
 Vector, point, quaternion, and matrix function arguments are expected to be
 "array like", i.e. tuple, list, or numpy arrays.
@@ -81,55 +81,30 @@ Return types are numpy arrays unless specified otherwise.
 
 Angles are in radians unless specified otherwise.
 
-Quaternions w+ix+jy+kz are represented as [w, x, y, z].
+Quaternions w+ix+jy+kz are represented as ``[w, x, y, z]``.
 
 A triple of Euler angles can be applied/interpreted in 24 ways, which can
 be specified using a 4 character string or encoded 4-tuple:
 
-  *Axes 4-string*: e.g. 'sxyz' or 'ryxy'
+  - *Axes 4-string*: e.g. 'sxyz' or 'ryxy'
 
-  - first character : rotations are applied to 's'tatic or 'r'otating frame
-  - remaining characters : successive rotation axis 'x', 'y', or 'z'
+    - first character : rotations are applied to 's'tatic or 'r'otating frame
+    - remaining characters : successive rotation axis 'x', 'y', or 'z'
 
-  *Axes 4-tuple*: e.g. (0, 0, 0, 0) or (1, 1, 1, 1)
+  - *Axes 4-tuple*: e.g. (0, 0, 0, 0) or (1, 1, 1, 1)
 
-  - inner axis: code of axis ('x':0, 'y':1, 'z':2) of rightmost matrix.
-  - parity : even (0) if inner axis 'x' is followed by 'y', 'y' is followed
-    by 'z', or 'z' is followed by 'x'. Otherwise odd (1).
-  - repetition : first and last axis are same (1) or different (0).
-  - frame : rotations are applied to static (0) or rotating (1) frame.
+    - inner axis: code of axis ('x':0, 'y':1, 'z':2) of rightmost matrix.
+    - parity : even (0) if inner axis 'x' is followed by 'y', 'y' is followed
+      by 'z', or 'z' is followed by 'x'. Otherwise odd (1).
+    - repetition : first and last axis are same (1) or different (0).
+    - frame : rotations are applied to static (0) or rotating (1) frame.
 
-References
-----------
+.. rubric:: References
 
-(1)  Matrices and transformations. Ronald Goldman.
-     In "Graphics Gems I", pp 472-475. Morgan Kaufmann, 1990.
-(2)  More matrices and transformations: shear and pseudo-perspective.
-     Ronald Goldman. In "Graphics Gems II", pp 320-323. Morgan Kaufmann, 1991.
-(3)  Decomposing a matrix into simple transformations. Spencer Thomas.
-     In "Graphics Gems II", pp 320-323. Morgan Kaufmann, 1991.
-(4)  Recovering the data from the transformation matrix. Ronald Goldman.
-     In "Graphics Gems II", pp 324-331. Morgan Kaufmann, 1991.
-(5)  Euler angle conversion. Ken Shoemake.
-     In "Graphics Gems IV", pp 222-229. Morgan Kaufmann, 1994.
-(6)  Arcball rotation control. Ken Shoemake.
-     In "Graphics Gems IV", pp 175-192. Morgan Kaufmann, 1994.
-(7)  Representing attitude: Euler angles, unit quaternions, and rotation
-     vectors. James Diebel. 2006.
-(8)  A discussion of the solution for the best rotation to relate two sets
-     of vectors. W Kabsch. Acta Cryst. 1978. A34, 827-828.
-(9)  Closed-form solution of absolute orientation using unit quaternions.
-     BKP Horn. J Opt Soc Am A. 1987. 4(4):629-642.
-(10) Quaternions. Ken Shoemake.
-     http://www.sfu.ca/~jwa3/cmpt461/files/quatut.pdf
-(11) From quaternion to matrix and back. JMP van Waveren. 2005.
-     http://www.intel.com/cd/ids/developer/asmo-na/eng/293748.htm
-(12) Uniform random rotations. Ken Shoemake.
-     In "Graphics Gems III", pp 124-132. Morgan Kaufmann, 1992.
-(13) Quaternion in molecular modeling. CFF Karney.
-     J Mol Graph Mod, 25(5):595-604
-(14) New method for extracting the quaternion from a rotation matrix.
-     Itzhack Y Bar-Itzhack, J Guid Contr Dynam. 2000. 23(6): 1085-1087.
+.. bibliography::
+    :list: enumerated
+    :style: MDA
+    :filter: id % "transformations"
 
 Examples
 --------
@@ -187,10 +162,6 @@ Functions
    Transformations library moved from MDAnalysis.core.transformations to
    MDAnalysis.lib.transformations
 """
-
-from __future__ import division, absolute_import
-
-from six.moves import range
 
 import sys
 import os
@@ -900,9 +871,9 @@ def orthogonalization_matrix(lengths, angles):
 def superimposition_matrix(v0, v1, scaling=False, usesvd=True):
     """Return matrix to transform given vector set into second vector set.
 
-    v0 and v1 are shape (3, \*) or (4, \*) arrays of at least 3 vectors.
+    `v0` and `v1` are shape `(3, *)` or `(4, *)` arrays of at least 3 vectors.
 
-    If usesvd is True, the weighted sum of squared deviations (RMSD) is
+    If `usesvd` is ``True``, the weighted sum of squared deviations (RMSD) is
     minimized according to the algorithm by W. Kabsch [8]. Otherwise the
     quaternion based algorithm by B. Horn [9] is used (slower when using
     this Python implementation).
@@ -1381,7 +1352,7 @@ def quaternion_imag(quaternion):
 
 
 def quaternion_slerp(quat0, quat1, fraction, spin=0, shortestpath=True):
-    """Return spherical linear interpolation between two quaternions.
+    r"""Return spherical linear interpolation between two quaternions.
 
     >>> q0 = random_quaternion()
     >>> q1 = random_quaternion()

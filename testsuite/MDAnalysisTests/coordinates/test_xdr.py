@@ -20,18 +20,20 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import division, absolute_import
-
 import pytest
-from six.moves import zip, range
+from unittest.mock import patch
 
 import errno
 import numpy as np
 import os
+from os.path import split
 import shutil
 import subprocess
+from pathlib import Path
 
-from numpy.testing import (assert_equal, assert_almost_equal)
+from numpy.testing import (assert_equal,
+                           assert_almost_equal,
+                           assert_allclose)
 
 from MDAnalysisTests import make_Universe
 from MDAnalysisTests.datafiles import (
@@ -90,11 +92,6 @@ class _GromacsReader(object):
     @pytest.fixture(scope='class')
     def universe(self):
         return mda.Universe(GRO, self.filename, convert_units=True)
-
-    def test_flag_convert_lengths(self):
-        assert_equal(mda.core.flags['convert_lengths'], True,
-                     "MDAnalysis.core.flags['convert_lengths'] should be "
-                     "True by default")
 
     def test_rewind_xdrtrj(self, universe):
         universe.trajectory.rewind()
@@ -216,7 +213,15 @@ class _GromacsReader(object):
 
         with pytest.raises(StopIteration):
             go_beyond_EOF()
-
+    
+    def test_read_next_timestep_ts_no_positions(self, universe):
+        # primarily tests branching on ts.has_positions in _read_next_timestep
+        ts = universe.trajectory[0]
+        ts.has_positions=False
+        ts_passed_in = universe.trajectory._read_next_timestep(ts=ts).copy()
+        universe.trajectory.rewind()
+        ts_returned = universe.trajectory._read_next_timestep(ts=None).copy()
+        assert(ts_passed_in == ts_returned)
 
 class TestXTCReader(_GromacsReader):
     filename = XTC
@@ -344,7 +349,7 @@ class _GromacsWriter(object):
         """Test writing Gromacs trajectories (Issue 38)"""
         with Writer(outfile, universe.atoms.n_atoms, dt=universe.trajectory.dt) as W:
             for ts in universe.trajectory:
-                W.write_next_timestep(ts)
+                W.write(universe)
 
         uw = mda.Universe(GRO, outfile)
 
@@ -370,7 +375,7 @@ class _GromacsWriter(object):
         with Writer(outfile, trj.n_atoms, dt=trj.dt) as W:
             # last timestep (so that time != 0) (say it again, just in case...)
             trj[-1]
-            W.write_next_timestep(ts)
+            W.write(universe)
 
         assert_equal(
             ts._pos,
@@ -392,7 +397,7 @@ class TestTRRWriter(_GromacsWriter):
     def test_velocities(self, universe, Writer, outfile):
         with Writer(outfile, universe.atoms.n_atoms, dt=universe.trajectory.dt) as W:
             for ts in universe.trajectory:
-                W.write_next_timestep(ts)
+                W.write(universe)
 
         uw = mda.Universe(GRO, outfile)
 
@@ -418,7 +423,7 @@ class TestTRRWriter(_GromacsWriter):
                     ts.has_positions = False
                 if ts.frame % 2 == 0:
                     ts.has_velocities = False
-                W.write_next_timestep(ts)
+                W.write(universe)
 
         uw = mda.Universe(GRO, outfile)
         # check that the velocities are identical for each time step, except
@@ -449,6 +454,38 @@ class TestTRRWriter(_GromacsWriter):
             else:
                 with pytest.raises(mda.NoDataError):
                     getattr(written_ts, 'velocities')
+
+    def test_data_preservation(self, universe, Writer, outfile):
+
+        with Writer(outfile, universe.atoms.n_atoms, dt=universe.trajectory.dt) as W:
+            for ts in universe.trajectory:
+                W.write(universe)
+
+        uw = mda.Universe(GRO, outfile)
+
+        assert np.isclose(ts.data['time'], 0.0)
+        assert ts.data['step'] == 0
+        assert np.isclose(ts.data['lambda'], 0.0)
+        assert np.isclose(ts.data['dt'], 100.0)
+
+        # check that the data are identical for each time step
+        for orig_ts, written_ts in zip(universe.trajectory, uw.trajectory):
+            # data lengths must be the same
+            assert len(written_ts.data) == len(orig_ts.data)
+
+            # check that the keys exist in both dictionaries
+            for k in orig_ts.data:
+                assert k in written_ts.data
+
+            err_msg = ('mismatch between '
+                       'original and written trajectory at '
+                       f'frame {orig_ts.frame} vs {written_ts.frame}')
+
+            # check that each value is the same
+            for k in orig_ts.data:
+                assert_allclose(orig_ts.data[k],
+                                written_ts.data[k],
+                                err_msg=err_msg)
 
 
 class _GromacsWriterIssue101(object):
@@ -513,7 +550,7 @@ class _GromacsWriterIssue117(object):
         outfile = str(tmpdir.join('xdr-writer-issue117' + self.ext))
         with mda.Writer(outfile, n_atoms=universe.atoms.n_atoms) as W:
             for ts in universe.trajectory:
-                W.write_next_timestep(ts)
+                W.write(universe)
 
         uw = mda.Universe(PRMncdf, outfile)
 
@@ -577,19 +614,20 @@ class TestXTCWriter_2(BaseWriterTest):
     def ref():
         return XTCReference()
 
-    def test_different_precision(self, ref, tempdir):
-        out = self.tmp_file('precision-test', ref, tempdir)
+    def test_different_precision(self, ref, tmpdir):
+        out = 'precision-test' + ref.ext
         # store more then 9 atoms to enable compression
         n_atoms = 40
-        with ref.writer(out, n_atoms, precision=5) as w:
-            ts = Timestep(n_atoms=n_atoms)
-            ts.positions = np.random.random(size=(n_atoms, 3))
-            w.write(ts)
-        xtc = mda.lib.formats.libmdaxdr.XTCFile(out)
-        frame = xtc.read()
-        assert_equal(len(xtc), 1)
-        assert_equal(xtc.n_atoms, n_atoms)
-        assert_equal(frame.prec, 10.0**5)
+        with tmpdir.as_cwd():
+            with ref.writer(out, n_atoms, precision=5) as w:
+                u = make_Universe(size=(n_atoms, 1, 1), trajectory=True)
+                u.trajectory.ts.positions = np.random.random(size=(n_atoms, 3))
+                w.write(u)
+            xtc = mda.lib.formats.libmdaxdr.XTCFile(out)
+            frame = xtc.read()
+            assert_equal(len(xtc), 1)
+            assert_equal(xtc.n_atoms, n_atoms)
+            assert_equal(frame.prec, 10.0**5)
 
 
 class TRRReference(BaseReference):
@@ -638,16 +676,18 @@ class TestTRRWriter_2(BaseWriterTest):
         return TRRReference()
 
     # tests writing and reading in one!
-    def test_lambda(self, ref, reader, tempdir):
-        outfile = self.tmp_file('write-lambda-test', ref, tempdir)
-        with ref.writer(outfile, reader.n_atoms) as W:
-            for i, ts in enumerate(reader):
-                ts.data['lambda'] = i / float(reader.n_frames)
-                W.write(ts)
+    def test_lambda(self, ref, universe, tmpdir):
+        outfile = 'write-lambda-test' + ref.ext
 
-        reader = ref.reader(outfile)
-        for i, ts in enumerate(reader):
-            assert_almost_equal(ts.data['lambda'], i / float(reader.n_frames))
+        with tmpdir.as_cwd():
+            with ref.writer(outfile, universe.trajectory.n_atoms) as W:
+                for i, ts in enumerate(universe.trajectory):
+                    ts.data['lambda'] = i / float(universe.trajectory.n_frames)
+                    W.write(universe)
+
+            reader = ref.reader(outfile)
+            for i, ts in enumerate(reader):
+                assert_almost_equal(ts.data['lambda'], i / float(reader.n_frames))
 
 
 class _GromacsReader_offsets(object):
@@ -688,6 +728,8 @@ class _GromacsReader_offsets(object):
         outfile_offsets = XDR.offsets_filename(traj)
         saved_offsets = XDR.read_numpy_offsets(outfile_offsets)
 
+        assert isinstance(saved_offsets, dict), \
+            "read_numpy_offsets did not return a dict"
         assert_almost_equal(
             trajectory._xdr.offsets,
             saved_offsets['offsets'],
@@ -709,11 +751,57 @@ class _GromacsReader_offsets(object):
     def test_reload_offsets(self, traj):
         self._reader(traj, refresh_offsets=True)
 
+    def test_nonexistent_offsets_file(self, traj):
+        # assert that a nonexistent file returns False during read-in
+        outfile_offsets = XDR.offsets_filename(traj)
+        with patch.object(np, "load") as np_load_mock:
+            np_load_mock.side_effect = IOError
+            saved_offsets = XDR.read_numpy_offsets(outfile_offsets)
+            assert_equal(saved_offsets, False)
+
+    def test_nonexistent_offsets_file(self, traj):
+        # assert that a corrupted file returns False during read-in
+        # Issue #3230
+        outfile_offsets = XDR.offsets_filename(traj)
+        with patch.object(np, "load") as np_load_mock:
+            np_load_mock.side_effect = ValueError
+            saved_offsets = XDR.read_numpy_offsets(outfile_offsets)
+            assert_equal(saved_offsets, False)
+
+    def test_reload_offsets_if_offsets_readin_io_fails(self, trajectory):
+        # force the np.load call that is called in read_numpy_offsets
+        # during _load_offsets to give an IOError
+        # ensure that offsets are then read-in from the trajectory
+        with patch.object(np, "load") as np_load_mock:
+            np_load_mock.side_effect = IOError
+            trajectory._load_offsets()
+            assert_almost_equal(
+                trajectory._xdr.offsets,
+                self.ref_offsets,
+                err_msg="error loading frame offsets")
+
+    def test_reload_offsets_if_offsets_readin_value_fails(self, trajectory):
+        # force the np.load call that is called in read_numpy_offsets
+        # during _load_offsets to give an ValueError (Issue #3230)
+        # ensure that offsets are then read-in from the trajectory
+        with patch.object(np, "load") as np_load_mock:
+            np_load_mock.side_effect = ValueError
+            with pytest.warns(UserWarning, match="Failed to load offsets"):
+                trajectory._load_offsets()
+            assert_almost_equal(
+                trajectory._xdr.offsets,
+                self.ref_offsets,
+                err_msg="error loading frame offsets")
+
     def test_persistent_offsets_size_mismatch(self, traj):
         # check that stored offsets are not loaded when trajectory
         # size differs from stored size
         fname = XDR.offsets_filename(traj)
         saved_offsets = XDR.read_numpy_offsets(fname)
+
+        assert isinstance(saved_offsets, dict), \
+            "read_numpy_offsets did not return a dict"
+
         saved_offsets['size'] += 1
         with open(fname, 'wb') as f:
             np.savez(f, **saved_offsets)
@@ -726,6 +814,10 @@ class _GromacsReader_offsets(object):
         # ctime differs from stored ctime
         fname = XDR.offsets_filename(traj)
         saved_offsets = XDR.read_numpy_offsets(fname)
+
+        assert isinstance(saved_offsets, dict), \
+            "read_numpy_offsets did not return a dict"
+
         saved_offsets['ctime'] += 1
         with open(fname, 'wb') as f:
             np.savez(f, **saved_offsets)
@@ -738,6 +830,10 @@ class _GromacsReader_offsets(object):
         # ctime differs from stored ctime
         fname = XDR.offsets_filename(traj)
         saved_offsets = XDR.read_numpy_offsets(fname)
+
+        assert isinstance(saved_offsets, dict), \
+            "read_numpy_offsets did not return a dict"
+
         saved_offsets['n_atoms'] += 1
         np.savez(fname, **saved_offsets)
 
@@ -747,6 +843,9 @@ class _GromacsReader_offsets(object):
     def test_persistent_offsets_last_frame_wrong(self, traj):
         fname = XDR.offsets_filename(traj)
         saved_offsets = XDR.read_numpy_offsets(fname)
+
+        assert isinstance(saved_offsets, dict), \
+            "read_numpy_offsets did not return a dict"
 
         idx_frame = 3
         saved_offsets['offsets'][idx_frame] += 42
@@ -759,6 +858,9 @@ class _GromacsReader_offsets(object):
     def test_unsupported_format(self, traj):
         fname = XDR.offsets_filename(traj)
         saved_offsets = XDR.read_numpy_offsets(fname)
+
+        assert isinstance(saved_offsets, dict), \
+            "read_numpy_offsets did not return a dict"
 
         idx_frame = 3
         saved_offsets.pop('n_atoms')
@@ -780,8 +882,17 @@ class _GromacsReader_offsets(object):
 
         filename = str(tmpdir.join(os.path.basename(self.filename)))
         # try to write a offsets file
-        self._reader(filename)
+        with (pytest.warns(UserWarning, match="Couldn't save offsets") and
+              pytest.warns(UserWarning, match="Cannot write")):
+            self._reader(filename)
         assert_equal(os.path.exists(XDR.offsets_filename(filename)), False)
+        # check the lock file is not created as well.
+        assert_equal(os.path.exists(XDR.offsets_filename(filename,
+                                                    ending='.lock')), False)
+
+    def test_offset_lock_created(self):
+        assert os.path.exists(XDR.offsets_filename(self.filename,
+                                                   ending='lock'))
 
 
 class TestXTCReader_offsets(_GromacsReader_offsets):
@@ -802,3 +913,14 @@ class TestTRRReader_offsets(_GromacsReader_offsets):
         9155712, 10300176
     ])
     _reader = mda.coordinates.TRR.TRRReader
+
+
+def test_pathlib():
+    # regression test for XDR path of
+    # gh-2497
+    top = Path(GRO)
+    traj = Path(XTC)
+    u = mda.Universe(top, traj)
+    # we really only care that pathlib
+    # object handling worked
+    assert u.atoms.n_atoms == 47681

@@ -37,9 +37,6 @@ Helper functions:
 .. autofunction:: get_writer_for
 
 """
-from __future__ import absolute_import
-
-import six
 
 from ..lib import util
 from ..lib.mdamath import triclinic_box, triclinic_vectors, box_volume
@@ -84,14 +81,8 @@ def reader(filename, format=None, **kwargs):
     try:
         return Reader(filename, **kwargs)
     except ValueError:
-        six.raise_from(
-            TypeError(
-                'Unable to read {fn} with {r}.'.format(
-                    fn=filename,
-                    r=Reader
-                    )
-                ),
-            None)
+        errmsg = f'Unable to read {filename} with {Reader}.'
+        raise TypeError(errmsg) from None
 
 
 def writer(filename, n_atoms=None, **kwargs):

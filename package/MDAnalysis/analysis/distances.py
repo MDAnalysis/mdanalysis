@@ -38,8 +38,6 @@ See Also
 :mod:`MDAnalysis.lib.distances`
 """
 
-from __future__ import absolute_import
-
 __all__ = ['distance_array', 'self_distance_array',
            'contact_matrix', 'dist', 'between']
 
@@ -82,7 +80,7 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
        * ``"sparse"``: return as a :class:`scipy.sparse.lil_matrix`
     box : array-like or ``None``, optional, default ``None``
        Simulation cell dimensions in the form of
-       :attr:`MDAnalysis.trajectory.base.Timestep.dimensions` when
+       :attr:`MDAnalysis.trajectory.timestep.Timestep.dimensions` when
        periodic boundary conditions should be taken into account for
        the calculation of contacts.
 
@@ -201,6 +199,6 @@ def between(group, A, B, distance):
 
     """
     ns_group = AtomNeighborSearch(group)
-    resA = set(ns_group.search(A, distance))
-    resB = set(ns_group.search(B, distance))
-    return sum(sorted(resB.intersection(resA)))
+    resA = ns_group.search(A, distance)
+    resB = ns_group.search(B, distance)
+    return resB.intersection(resA)

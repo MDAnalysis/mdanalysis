@@ -28,7 +28,7 @@ Native contacts analysis --- :mod:`MDAnalysis.analysis.contacts`
 This module contains classes to analyze native contacts *Q* over a
 trajectory. Native contacts of a conformation are contacts that exist
 in a reference structure and in the conformation. Contacts in the
-reference structure are always defined as being closer then a distance
+reference structure are always defined as being closer than a distance
 `radius`. The fraction of native contacts for a conformation can be
 calculated in different ways. This module supports 3 different metrics
 listed below, as well as custom metrics.
@@ -77,16 +77,16 @@ in MDAnalysis. ::
     basic = u.select_atoms(sel_basic)
     # set up analysis of native contacts ("salt bridges"); salt bridges have a
     # distance <6 A
-    ca1 = contacts.Contacts(u, selection=(sel_acidic, sel_basic),
+    ca1 = contacts.Contacts(u, select=(sel_acidic, sel_basic),
                             refgroup=(acidic, basic), radius=6.0)
     # iterate through trajectory and perform analysis of "native contacts" Q
     ca1.run()
     # print number of averave contacts
-    average_contacts = np.mean(ca1.timeseries[:, 1])
+    average_contacts = np.mean(ca1.results.timeseries[:, 1])
     print('average contacts = {}'.format(average_contacts))
     # plot time series q(t)
     fig, ax = plt.subplots()
-    ax.plot(ca1.timeseries[:, 0], ca1.timeseries[:, 1])
+    ax.plot(ca1.results.timeseries[:, 0], ca1.results.timeseries[:, 1])
     ax.set(xlabel='frame', ylabel='fraction of native contacts',
            title='Native Contacts, average = {:.2f}'.format(average_contacts))
     fig.show()
@@ -112,7 +112,8 @@ Two-dimensional contact analysis (q1-q2)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Analyze a single DIMS transition of AdK between its closed and open
-conformation and plot the trajectory projected on q1-q2 [Franklin2007]_ ::
+conformation and plot the trajectory projected on q1-q2
+:cite:p:`Franklin2007` ::
 
 
     import MDAnalysis as mda
@@ -123,14 +124,17 @@ conformation and plot the trajectory projected on q1-q2 [Franklin2007]_ ::
     q1q2.run()
 
     f, ax = plt.subplots(1, 2, figsize=plt.figaspect(0.5))
-    ax[0].plot(q1q2.timeseries[:, 0], q1q2.timeseries[:, 1], label='q1')
-    ax[0].plot(q1q2.timeseries[:, 0], q1q2.timeseries[:, 2], label='q2')
+    ax[0].plot(q1q2.results.timeseries[:, 0], q1q2.results.timeseries[:, 1],
+               label='q1')
+    ax[0].plot(q1q2.results.timeseries[:, 0], q1q2.results.timeseries[:, 2],
+               label='q2')
     ax[0].legend(loc='best')
-    ax[1].plot(q1q2.timeseries[:, 1], q1q2.timeseries[:, 2], '.-')
+    ax[1].plot(q1q2.results.timeseries[:, 1],
+               q1q2.results.timeseries[:, 2], '.-')
     f.show()
 
 Compare the resulting pathway to the `MinActionPath result for AdK`_
-[Franklin2007]_.
+:cite:p:`Franklin2007`.
 
 .. _MinActionPath result for AdK:
    http://lorentz.dynstr.pasteur.fr/joel/adenylate.php
@@ -168,13 +172,13 @@ Next we are creating an instance of the :class:`Contacts` class and use the
     acidic = u.select_atoms(sel_acidic)
     basic = u.select_atoms(sel_basic)
 
-    nc = contacts.Contacts(u, selection=(sel_acidic, sel_basic),
+    nc = contacts.Contacts(u, select=(sel_acidic, sel_basic),
                            method=is_any_closer,
                            refgroup=(acidic, basic), kwargs={'dist': 2.5})
     nc.run()
 
-    bound = nc.timeseries[:, 1]
-    frames = nc.timeseries[:, 0]
+    bound = nc.results.timeseries[:, 1]
+    frames = nc.results.timeseries[:, 0]
 
     f, ax = plt.subplots()
 
@@ -201,13 +205,11 @@ Classes
    :members:
 
 """
-from __future__ import division, absolute_import
-from six.moves import zip
-
 import os
 import errno
 import warnings
 import bz2
+import functools
 
 import numpy as np
 
@@ -215,9 +217,9 @@ import logging
 
 import MDAnalysis
 import MDAnalysis.lib.distances
-from MDAnalysis.lib.util import openany, deprecate
+from MDAnalysis.lib.util import openany
 from MDAnalysis.analysis.distances import distance_array
-from MDAnalysis.core.groups import AtomGroup
+from MDAnalysis.core.groups import AtomGroup, UpdatingAtomGroup
 from .base import AnalysisBase
 
 logger = logging.getLogger("MDAnalysis.analysis.contacts")
@@ -226,7 +228,7 @@ logger = logging.getLogger("MDAnalysis.analysis.contacts")
 def soft_cut_q(r, r0, beta=5.0, lambda_constant=1.8):
     r"""Calculate fraction of native contacts *Q* for a soft cut off
 
-    The native contact function is defined as [Best2013]_
+    The native contact function is defined as :cite:p:`Best2013`
 
     .. math::
 
@@ -255,11 +257,11 @@ def soft_cut_q(r, r0, beta=5.0, lambda_constant=1.8):
 
     References
     ----------
-    .. [Best2013] RB Best, G Hummer, and WA Eaton, "Native contacts determine protein
-       folding mechanisms in atomistic simulations" _PNAS_ **110** (2013),
-       17874–17879. doi: `10.1073/pnas.1311599110
-       <http://doi.org/10.1073/pnas.1311599110>`_.
+    .. bibliography::
+        :filter: False
+        :style: MDA
 
+        Best2013
     """
     r = np.asarray(r)
     r0 = np.asarray(r0)
@@ -313,11 +315,11 @@ def radius_cut_q(r, r0, radius):
 
     References
     ----------
-    .. [Franklin2007] Franklin, J., Koehl, P., Doniach, S., & Delarue,
-       M. (2007).  MinActionPath: Maximum likelihood trajectory for large-scale
-       structural transitions in a coarse-grained locally harmonic energy
-       landscape.  Nucleic Acids Research, 35(SUPPL.2), 477–482.
-       doi: `10.1093/nar/gkm342 <http://doi.org/10.1093/nar/gkm342>`_
+    .. bibliography::
+        :filter: False
+        :style: MDA
+
+        Franklin2007
 
     """
     return hard_cut_q(r, radius)
@@ -332,7 +334,7 @@ def contact_matrix(d, radius, out=None):
         distance matrix
     radius : float
         distance below which a contact is formed.
-    out: array (optional)
+    out : array (optional)
         If `out` is supplied as a pre-allocated array of the correct
         shape then it is filled instead of allocating a new one in
         order to increase performance.
@@ -366,18 +368,37 @@ class Contacts(AnalysisBase):
 
     Attributes
     ----------
-    timeseries : list
-        list containing *Q* for all refgroup pairs and analyzed frames
+    results.timeseries : numpy.ndarray
+        2D array containing *Q* for all refgroup pairs and analyzed frames
 
+    timeseries : numpy.ndarray
+        Alias to the :attr:`results.timeseries` attribute.
+
+        .. deprecated:: 2.0.0
+           Will be removed in MDAnalysis 3.0.0. Please use
+           :attr:`results.timeseries` instead.
+
+
+    .. versionchanged:: 1.0.0
+       ``save()`` method has been removed. Use ``np.savetxt()`` on
+       :attr:`Contacts.results.timeseries` instead.
+    .. versionchanged:: 1.0.0
+        added ``pbc`` attribute to calculate distances using PBC.
+    .. versionchanged:: 2.0.0
+       :attr:`timeseries` results are now stored in a
+       :class:`MDAnalysis.analysis.base.Results` instance.
+    .. versionchanged:: 2.2.0
+       :class:`Contacts` accepts both AtomGroup and string for `select`
     """
-    def __init__(self, u, selection, refgroup, method="hard_cut", radius=4.5,
-                 kwargs=None, **basekwargs):
+
+    def __init__(self, u, select, refgroup, method="hard_cut", radius=4.5,
+                 pbc=True, kwargs=None, **basekwargs):
         """
         Parameters
         ----------
         u : Universe
             trajectory
-        selection : tuple(string, string)
+        select : tuple(AtomGroup, AtomGroup) | tuple(string, string)
             two contacting groups that change over time
         refgroup : tuple(AtomGroup, AtomGroup)
             two contacting atomgroups in their reference conformation. This
@@ -385,80 +406,108 @@ class Contacts(AnalysisBase):
         radius : float, optional (4.5 Angstroms)
             radius within which contacts exist in refgroup
         method : string | callable (optional)
-            Can either be one of ``['hard_cut' , 'soft_cut']`` or a callable
+            Can either be one of ``['hard_cut' , 'soft_cut', 'radius_cut']`` or a callable
             with call signature ``func(r, r0, **kwargs)`` (the "Contacts API").
+        pbc : bool (optional)
+            Uses periodic boundary conditions to calculate distances if set to ``True``; the
+            default is ``True``.
         kwargs : dict, optional
             dictionary of additional kwargs passed to `method`. Check
             respective functions for reasonable values.
         verbose : bool (optional)
              Show detailed progress of the calculation if set to ``True``; the
              default is ``False``.
+
+        Notes
+        -----
+
+        .. versionchanged:: 1.0.0
+           Changed `selection` keyword to `select`
         """
         self.u = u
         super(Contacts, self).__init__(self.u.trajectory, **basekwargs)
+
+        self.fraction_kwargs = kwargs if kwargs is not None else {}
 
         if method == 'hard_cut':
             self.fraction_contacts = hard_cut_q
         elif method == 'soft_cut':
             self.fraction_contacts = soft_cut_q
+        elif method == 'radius_cut':
+            self.fraction_contacts = functools.partial(radius_cut_q, radius=radius)
         else:
             if not callable(method):
                 raise ValueError("method has to be callable")
             self.fraction_contacts = method
 
-        self.selection = selection
-        self.grA = u.select_atoms(selection[0])
-        self.grB = u.select_atoms(selection[1])
+        self.select = select
 
+        self.grA, self.grB = (self._get_atomgroup(u, sel) for sel in select)
+
+        self.pbc = pbc
+        
         # contacts formed in reference
         self.r0 = []
         self.initial_contacts = []
 
+        #get dimension of box if pbc set to True
+        if self.pbc:
+            self._get_box = lambda ts: ts.dimensions
+        else:
+            self._get_box = lambda ts: None
+
         if isinstance(refgroup[0], AtomGroup):
             refA, refB = refgroup
-            self.r0.append(distance_array(refA.positions, refB.positions))
+            self.r0.append(distance_array(refA.positions, refB.positions,
+                                            box=self._get_box(refA.universe)))
             self.initial_contacts.append(contact_matrix(self.r0[-1], radius))
+
         else:
             for refA, refB in refgroup:
-                self.r0.append(distance_array(refA.positions, refB.positions))
-                self.initial_contacts.append(contact_matrix(self.r0[-1],
-                                                            radius))
+                self.r0.append(distance_array(refA.positions, refB.positions,
+                                                box=self._get_box(refA.universe)))
+                self.initial_contacts.append(contact_matrix(self.r0[-1], radius))
 
-        self.fraction_kwargs = kwargs if kwargs is not None else {}
-        self.timeseries = []
+    @staticmethod
+    def _get_atomgroup(u, sel):
+        select_error_message = ("selection must be either string or a "
+                                "static AtomGroup. Updating AtomGroups "
+                                "are not supported.")
+        if isinstance(sel, str):
+            return u.select_atoms(sel)
+        elif isinstance(sel, AtomGroup):
+            if isinstance(sel, UpdatingAtomGroup):
+                raise TypeError(select_error_message)
+            else:
+                return sel
+        else:
+            raise TypeError(select_error_message)
+
+    def _prepare(self):
+        self.results.timeseries = np.empty((self.n_frames, len(self.r0)+1))
 
     def _single_frame(self):
+        self.results.timeseries[self._frame_index][0] = self._ts.frame
+        
         # compute distance array for a frame
-        d = distance_array(self.grA.positions, self.grB.positions)
-
-        y = np.empty(len(self.r0) + 1)
-        y[0] = self._ts.frame
+        d = distance_array(self.grA.positions, self.grB.positions,
+                            box=self._get_box(self._ts))
+        
         for i, (initial_contacts, r0) in enumerate(zip(self.initial_contacts,
-                                                       self.r0)):
+                                                       self.r0), 1):
             # select only the contacts that were formed in the reference state
             r = d[initial_contacts]
             r0 = r0[initial_contacts]
-            y[i + 1] = self.fraction_contacts(r, r0, **self.fraction_kwargs)
+            q = self.fraction_contacts(r, r0, **self.fraction_kwargs)
+            self.results.timeseries[self._frame_index][i] = q
 
-        if len(y) == 1:
-            y = y[0]
-        self.timeseries.append(y)
-
-    def _conclude(self):
-        self.timeseries = np.array(self.timeseries, dtype=float)
-
-    @deprecate(release="0.19.0", remove="1.0.0")
-    def save(self, outfile):
-        """save contacts timeseries
-
-        Parameters
-        ----------
-        outfile : str
-            file to save contacts
-
-        """
-        np.savetxt(outfile, self.timeseries,
-                   header="# q1 analysis\n", comments='')
+    @property
+    def timeseries(self):
+        wmsg = ("The `timeseries` attribute was deprecated in MDAnalysis "
+                "2.0.0 and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.timeseries` instead")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.timeseries
 
 
 def _new_selections(u_orig, selections, frame):
@@ -468,39 +517,35 @@ def _new_selections(u_orig, selections, frame):
     return [u.select_atoms(s) for s in selections]
 
 
-def q1q2(u, selection='all', radius=4.5,
-         start=None, stop=None, step=None):
+def q1q2(u, select='all', radius=4.5):
     """Perform a q1-q2 analysis.
 
     Compares native contacts between the starting structure and final structure
-    of a trajectory [Franklin2007]_.
+    of a trajectory :cite:p:`Franklin2007`.
 
     Parameters
     ----------
     u : Universe
         Universe with a trajectory
-    selection : string, optional
+    select : string, optional
         atoms to do analysis on
     radius : float, optional
         distance at which contact is formed
-    start : int, optional
-        First frame of trajectory to analyse, Default: 0
-    stop : int, optional
-        Last frame of trajectory to analyse, Default: -1
-    step : int, optional
-        Step between frames to analyse, Default: 1
 
     Returns
     -------
     contacts : :class:`Contacts`
         Contact Analysis that is set up for a q1-q2 analysis
 
+    
+    .. versionchanged:: 1.0.0
+       Changed `selection` keyword to `select`
+       Support for setting ``start``, ``stop``, and ``step`` has been removed.
+       These should now be directly passed to :meth:`Contacts.run`.
     """
-    selection = (selection, selection)
+    selection = (select, select)
     first_frame_refs = _new_selections(u, selection, 0)
     last_frame_refs = _new_selections(u, selection, -1)
     return Contacts(u, selection,
                     (first_frame_refs, last_frame_refs),
-                    radius=radius, method=radius_cut_q,
-                    start=start, stop=stop, step=step,
-                    kwargs={'radius': radius})
+                    radius=radius, method='radius_cut')

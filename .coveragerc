@@ -3,10 +3,11 @@ branch = True
 source = MDAnalysis
 plugins = Cython.Coverage
 omit =
-    */migration/*
     */MDAnalysis/tests/*
     */legacy/*
     */due.py
+concurrency = thread, multiprocessing
+parallel = True
 
 [report]
 exclude_lines =

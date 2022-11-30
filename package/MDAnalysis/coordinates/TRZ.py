@@ -38,45 +38,6 @@ trajectories in *little-endian* byte order.
 Classes
 -------
 
-.. autoclass:: MDAnalysis.coordinates.TRZ.Timestep
-   :members:
-
-   .. attribute:: frame
-
-      Index of current frame number (0 based)
-
-   .. attribute:: time
-
-      Current system time in ps
-
-   .. attribute:: n_atoms
-
-      Number of atoms in the frame (will be constant throughout trajectory)
-
-   .. attribute:: pressure
-
-      System pressure in pascals
-
-   .. attribute:: pressure_tensor
-
-      Array containing pressure tensors in order: xx, xy, yy, xz, yz, zz
-
-   .. attribute:: total_energy
-
-      Hamiltonian for the system in kJ/mol
-
-   .. attribute:: potential_energy
-
-      Potential energy of the system in kJ/mol
-
-   .. attribute:: kinetic_energy
-
-      Kinetic energy of the system in kJ/mol
-
-   .. attribute:: temperature
-
-      Temperature of the system in Kelvin
-
 .. autoclass:: TRZReader
    :members:
 
@@ -84,46 +45,17 @@ Classes
    :members:
 
 """
-from __future__ import division, absolute_import
-import six
-from six.moves import range
-
-import sys
 import warnings
 import numpy as np
 import os
 import errno
 
 from . import base
-from ..core import flags
+from ..exceptions import NoDataError
+from .timestep import Timestep
 from ..lib import util
-from ..lib.util import cached
+from ..lib.util import cached, store_init_arguments
 from .core import triclinic_box, triclinic_vectors
-
-
-class Timestep(base.Timestep):
-    """ TRZ custom Timestep"""
-    def _init_unitcell(self):
-        return np.zeros(9)
-
-    @property
-    def dimensions(self):
-        """
-        Unit cell dimensions ``[A,B,C,alpha,beta,gamma]``.
-        """
-        x = self._unitcell[0:3]
-        y = self._unitcell[3:6]
-        z = self._unitcell[6:9]
-        return triclinic_box(x, y, z)
-
-    @dimensions.setter
-    def dimensions(self, box):
-        """Set the Timestep dimensions with MDAnalysis format cell
-        (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
-
-        .. versionadded:: 0.9.0
-        """
-        self._unitcell[:] = triclinic_vectors(box).reshape(9)
 
 
 class TRZReader(base.ReaderBase):
@@ -131,8 +63,8 @@ class TRZReader(base.ReaderBase):
 
     Attributes
     ----------
-    ts : TRZ.Timestep
-         :class:`~MDAnalysis.coordinates.TRZ.Timestep` object containing
+    ts : timestep.Timestep
+         :class:`~MDAnalysis.coordinates.timestep.Timestep` object containing
          coordinates of current frame
 
     Note
@@ -146,13 +78,21 @@ class TRZReader(base.ReaderBase):
        Extra data (Temperature, Energies, Pressures, etc) now read
        into ts.data dictionary.
        Now passes a weakref of self to ts (ts._reader).
-
+    .. versionchanged:: 1.0.1
+       Now checks for the correct `n_atoms` on reading
+       and can raise :exc:`ValueError`.
+    .. versionchanged:: 2.1.0
+       TRZReader now returns a default :attr:`dt` of 1.0 when it cannot be
+       obtained from the difference between two frames.
+    .. versionchanged:: 2.3.0
+       _frame attribute moved to `ts.data` dictionary.
     """
 
     format = "TRZ"
 
     units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps'}
 
+    @store_init_arguments
     def __init__(self, trzfilename, n_atoms=None, **kwargs):
         """Creates a TRZ Reader
 
@@ -164,6 +104,12 @@ class TRZReader(base.ReaderBase):
             number of atoms in trajectory, must be taken from topology file!
         convert_units : bool (optional)
             converts units to MDAnalysis defaults
+
+        Raises
+        ------
+        ValueError
+           If `n_atoms` or the number of atoms in the topology file do not
+           match the number of atoms in the trajectory.
         """
         super(TRZReader, self).__init__(trzfilename,  **kwargs)
 
@@ -249,10 +195,15 @@ class TRZReader(base.ReaderBase):
 
         try:
             data = np.fromfile(self.trzfile, dtype=self._dtype, count=1)
+            if data['natoms'][0] != self.n_atoms:
+                raise ValueError("Supplied n_atoms {} is incompatible "
+                                 "with provided trajectory file. "
+                                 "Maybe `topology` is wrong?".format(
+                                                             self.n_atoms))
             ts.frame = data['nframe'][0] - 1  # 0 based for MDA
-            ts._frame = data['ntrj'][0]
+            ts.data['frame'] = data['ntrj'][0] # moved from attr to data
             ts.time = data['treal'][0]
-            ts._unitcell[:] = data['box']
+            ts.dimensions = triclinic_box(*(data['box'].reshape(3, 3)))
             ts.data['pressure'] = data['pressure']
             ts.data['pressure_tensor'] = data['ptensor']
             ts.data['total_energy'] = data['etot']
@@ -270,12 +221,13 @@ class TRZReader(base.ReaderBase):
                 ts._forces[:, 1] = data['fy']
                 ts._forces[:, 2] = data['fz']
         except IndexError: # Raises indexerror if data has no data (EOF)
-            six.raise_from(IOError, None)
+            raise IOError from None
         else:
             # Convert things read into MDAnalysis' native formats (nm -> angstroms)
             if self.convert_units:
                 self.convert_pos_from_native(self.ts._pos)
-                self.convert_pos_from_native(self.ts._unitcell)
+                if self.ts.dimensions is not None:
+                    self.convert_pos_from_native(self.ts.dimensions[:3])
                 self.convert_velocities_from_native(self.ts._velocities)
 
             return ts
@@ -312,9 +264,14 @@ class TRZReader(base.ReaderBase):
     def _get_dt(self):
         """The amount of time between frames in ps
 
-        Assumes that this step is constant (ie. 2 trajectories with different steps haven't been
-        stitched together)
-        Returns 0 in case of IOError
+        Assumes that this step is constant (ie. 2 trajectories with different
+        steps haven't been stitched together).
+        Returns ``AttributeError`` in case of ``StopIteration``
+        (which makes :attr:`dt` return 1.0).
+
+        .. versionchanged:: 2.1.0
+           Now returns an ``AttributeError`` if dt can't be obtained from the
+           time difference between two frames.
         """
         curr_frame = self.ts.frame
         try:
@@ -323,7 +280,7 @@ class TRZReader(base.ReaderBase):
             t1 = self.ts.time
             dt = t1 - t0
         except StopIteration:
-            return 0
+            raise AttributeError
         else:
             return dt
         finally:
@@ -341,9 +298,9 @@ class TRZReader(base.ReaderBase):
         """Timesteps between trajectory frames"""
         curr_frame = self.ts.frame
         try:
-            t0 = self.ts._frame
+            t0 = self.ts.data['frame']
             self.next()
-            t1 = self.ts._frame
+            t1 = self.ts.data['frame']
             skip_timestep = t1 - t0
         except StopIteration:
             return 0
@@ -371,16 +328,9 @@ class TRZReader(base.ReaderBase):
 
         .. versionadded:: 0.9.0
         """
-        # On python 2, seek has issues with long int. This is solve in python 3
-        # where there is no longer a distinction between int and long int.
-        if six.PY2:
-            framesize = long(self._dtype.itemsize)
-            seeksize = framesize * nframes
-            maxi_l = long(sys.maxint)
-        else:
-            framesize = self._dtype.itemsize
-            seeksize = framesize * nframes
-            maxi_l = seeksize + 1
+        framesize = self._dtype.itemsize
+        seeksize = framesize * nframes
+        maxi_l = seeksize + 1
 
         if seeksize > maxi_l:
             # Workaround for seek not liking long ints
@@ -447,7 +397,7 @@ class TRZWriter(base.WriterBase):
 
     units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps'}
 
-    def __init__(self, filename, n_atoms, title='TRZ', convert_units=None):
+    def __init__(self, filename, n_atoms, title='TRZ', convert_units=True):
         """Create a TRZWriter
 
         Parameters
@@ -460,9 +410,7 @@ class TRZWriter(base.WriterBase):
             title of the trajectory; the title must be 80 characters or
             shorter, a longer title raises a ValueError exception.
         convert_units : bool (optional)
-            units are converted to the MDAnalysis base format; ``None`` selects
-            the value of :data:`MDAnalysis.core.flags` ['convert_lengths'].
-            (see :ref:`flags-label`)
+            units are converted to the MDAnalysis base format; [``True``]
         """
         self.filename = filename
         if n_atoms is None:
@@ -474,8 +422,6 @@ class TRZWriter(base.WriterBase):
         if len(title) > 80:
             raise ValueError("TRZWriter: 'title' must be 80 characters of shorter")
 
-        if convert_units is None:
-            convert_units = flags['convert_lengths']
         self.convert_units = convert_units
 
         self.trzfile = util.anyopen(self.filename, 'wb')
@@ -535,10 +481,33 @@ class TRZWriter(base.WriterBase):
         out['nrec'] = 10
         out.tofile(self.trzfile)
 
-    def write_next_timestep(self, ts):
+    def _write_next_frame(self, obj):
+        """Write information associated with ``obj`` at current frame into trajectory
+
+        Parameters
+        ----------
+        ag : AtomGroup or Universe
+
+
+        .. versionchanged:: 1.0.0
+           Renamed from `write_next_timestep` to `_write_next_frame`.
+        .. versionchanged:: 2.0.0
+           Deprecated support for Timestep argument has now been removed.
+           Use AtomGroup or Universe as an input instead.
+        """
         # Check size of ts is same as initial
-        if not ts.n_atoms == self.n_atoms:
-            raise ValueError("Number of atoms in ts different to initialisation")
+        try:  # atomgroup?
+            ts = obj.ts
+        except AttributeError:  # universe?
+            try:
+                ts = obj.trajectory.ts
+            except AttributeError:
+                errmsg = "Input obj is neither an AtomGroup or Universe"
+                raise TypeError(errmsg) from None
+
+        if not obj.atoms.n_atoms == self.n_atoms:
+            errmsg = "Number of atoms in ts different to initialisation"
+            raise ValueError(errmsg)
 
         # Gather data, faking it when unavailable
         data = {}
@@ -554,8 +523,8 @@ class TRZWriter(base.WriterBase):
                     data[att] = 0.0
                 faked_attrs.append(att)
         try:
-            data['step'] = ts._frame
-        except AttributeError:
+            data['step'] = ts.data['frame']
+        except KeyError:
             data['step'] = ts.frame
             faked_attrs.append('step')
         try:
@@ -569,10 +538,16 @@ class TRZWriter(base.WriterBase):
                           "".format(", ".join(faked_attrs)))
 
         # Convert other stuff into our format
-        unitcell = triclinic_vectors(ts.dimensions).reshape(9)
+        if ts.dimensions is not None:
+            unitcell = triclinic_vectors(ts.dimensions).reshape(9)
+        else:
+            warnings.warn("Timestep didn't have dimensions information, "
+                          "box will be written as all zero values")
+            unitcell = np.zeros(9, dtype=np.float32)
+
         try:
-            vels = ts._velocities
-        except AttributeError:
+            vels = ts.velocities
+        except NoDataError:
             vels = np.zeros((self.n_atoms, 3), dtype=np.float32, order='F')
             warnings.warn("Timestep didn't have velocity information, "
                           "this will be set to zero in output trajectory. ")
@@ -581,6 +556,7 @@ class TRZWriter(base.WriterBase):
         out['p1a'], out['p1b'] = 20, 20
         out['nframe'] = ts.frame + 1  # TRZ wants 1 based
         out['ntrj'] = data['step']
+        out['natoms'] = self.n_atoms
         out['treal'] = data['time']
         out['p2a'], out['p2b'] = 72, 72
         out['box'] = self.convert_pos_to_native(unitcell, inplace=False)

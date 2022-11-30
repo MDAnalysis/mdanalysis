@@ -39,9 +39,8 @@ The index groups are named *mdanalysis001*, *mdanalysis002*, etc.
 .. autoclass:: SelectionWriter
    :inherited-members:
 """
-from __future__ import absolute_import
-
 from . import base
+
 
 class SelectionWriter(base.SelectionWriterBase):
     format = ["Gromacs", "ndx"]

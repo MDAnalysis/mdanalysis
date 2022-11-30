@@ -24,26 +24,21 @@
 Useful functions for running tests
 
 """
-from __future__ import absolute_import
 
-try:
-    import __builtin__
-    builtins_name = '__builtin__'
-    importer = __builtin__.__import__
-except ImportError:
-    import builtins
-    builtins_name = 'builtins'
-    importer = builtins.__import__
+import builtins
+builtins_name = 'builtins'
+importer = builtins.__import__
 
 from contextlib import contextmanager
 from functools import wraps
 import importlib
-import mock
+from unittest import mock
 import os
 import warnings
 import pytest
 
 from numpy.testing import assert_warns
+
 
 def block_import(package):
     """Block import of a given package
@@ -95,6 +90,38 @@ def executable_not_found(*args):
     return True
 
 
+def import_not_available(module_name):
+    """Helper function to check if a module cannot be imported, intended as an
+    argument of pytest.mark.skipif
+
+    Parameters
+    ----------
+    module_name : str
+        Name of module to test importing
+
+    Returns
+    -------
+    True
+        if module cannot be imported
+    False
+        otherwise (i.e. module can be imported)
+
+    Example
+    -------
+    To be used in the following manner::
+
+    @pytest.mark.skipif(import_not_available("module_name"),
+                        msg="skip test as module_name could not be imported")
+
+    """
+    try:
+        test = importlib.import_module(module_name)
+    except ImportError:
+        return True
+    else:
+        return False
+
+
 @contextmanager
 def in_dir(dirname):
     """Context manager for safely changing directories.
@@ -126,7 +153,7 @@ def in_dir(dirname):
 
 
 def assert_nowarns(warning_class, *args, **kwargs):
-    """Fail if the given callable throws the specified warning.
+    r"""Fail if the given callable throws the specified warning.
 
     A warning of class warning_class should NOT be thrown by the callable when
     invoked with arguments args and keyword arguments kwargs.
@@ -213,6 +240,7 @@ class _NoDeprecatedCallContext(object):
                 __tracebackhide__ = True
                 msg = "Produced DeprecationWarning or PendingDeprecationWarning"
                 raise AssertionError(msg)
+
 
 def no_deprecated_call(func=None, *args, **kwargs):
 	# modified version of similar pytest function

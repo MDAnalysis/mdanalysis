@@ -22,11 +22,13 @@
 #
 
 r"""Radial Distribution Functions --- :mod:`MDAnalysis.analysis.rdf`
-================================================================
+====================================================================
 
 This module contains two classes to calculate radial
 `pair distribution functions`_ (`radial distribution functions`_ or "RDF").
 The RDF :math:`g_{ab}(r)` between types of particles :math:`a` and :math:`b` is
+
+.. _equation-gab:
 
 .. math::
 
@@ -46,6 +48,8 @@ The radial cumulative distribution function is
 
 and the average number of :math:`b` particles within radius :math:`r`
 
+.. _equation-countab:
+
 .. math::
 
    N_{ab}(r) = \rho G_{ab}(r)
@@ -55,94 +59,130 @@ compute, for instance, coordination numbers such as the number of neighbors in
 the first solvation shell :math:`N(r_1)` where :math:`r_1` is the position of
 the first minimum in :math:`g(r)`.
 
+We provide options for calculating the density of particle :math:`b`
+in a shell at distance :math:`r` around a :math:`a` particle, which is
+
+.. _equation-nab:
+
+.. math::
+   n_{ab}(r) = \rho g_{ab}(r)
 
 .. _`pair distribution functions`:
    https://en.wikipedia.org/wiki/Pair_distribution_function
 .. _`radial distribution functions`:
    https://en.wikipedia.org/wiki/Radial_distribution_function
 
-
-Average radial distribution function
-------------------------------------
-
-:class:`InterRDF` is a tool to calculate average radial distribution functions
-between two groups of atoms. Suppose we have two AtomGroups ``A`` and
-``B``. ``A`` contains atom ``A1``, ``A2``, and ``B`` contains ``B1``,
-``B2``. Give ``A`` and ``B`` to class:`InterRDF`, the output will be the
-average of RDFs between ``A1`` and ``B1``, ``A1`` and ``B2``, ``A2`` and
-``B1``, ``A2`` and ``B2``. A typical application is to calculate the RDF of
-solvent with itself or with another solute.
-
-.. autoclass:: InterRDF
-   :members:
-   :inherited-members:
-
-
-Site-specific radial distribution function
-------------------------------------------
-
-:class:`InterRDF_s` calculates site-specific radial distribution
-functions. Instead of two groups of atoms it takes as input a list of pairs of
-AtomGroup, ``[[A, B], [C, D], ...]``. Give the same ``A`` and ``B`` to
-:class:`InterRDF_s`, the output will be a list of RDFs between ``A1`` and
-``B1``, ``A1`` and ``B2``, ``A2`` and ``B1``, ``A2`` and ``B2`` (and similarly
-for ``C`` and ``D``). These site-specific radial distribution functions are
-typically calculated if one is interested in the solvation shells of a ligand
-in a binding site or the solvation of specific residues in a protein. A common
-use case is to choose ``A`` and ``C`` to be AtomGroups that only contain a
-single atom and ``W`` all solvent molecules: ``InterRDF_s(u, [[A, W], [B,
-W]])`` will then produce the RDF of solvent around atom ``A[0]`` and around
-atom ``B[0]``.
-
-
-.. autoclass:: InterRDF_s
-   :members:
-   :inherited-members:
-
-
 .. Not Implemented yet:
 .. - Structure factor?
 .. - Coordination number
-
 """
-from __future__ import division, absolute_import
+import warnings
 import numpy as np
 
-from ..lib.util import blocks_of
 from ..lib import distances
 from .base import AnalysisBase
-from six.moves import zip, range
 
 
 class InterRDF(AnalysisBase):
-    """Intermolecular pair distribution function
+    r"""Radial distribution function
 
-    InterRDF(g1, g2, nbins=75, range=(0.0, 15.0))
+    :class:`InterRDF` is a tool to calculate average radial distribution
+    functions between two groups of atoms. Suppose we have two AtomGroups ``A``
+    and ``B``. ``A`` contains atom ``A1``, ``A2``, and ``B`` contains ``B1``,
+    ``B2``. Given ``A`` and ``B`` to :class:`InterRDF`, the output will be the
+    average of RDFs between ``A1`` and ``B1``, ``A1`` and ``B2``, ``A2`` and
+    ``B1``, ``A2`` and ``B2``. A typical application is to calculate the RDF of
+    solvent with itself or with another solute.
 
-    Arguments
-    ---------
+    The :ref:`radial distribution function<equation-gab>` is calculated by
+    histogramming distances between all particles in `g1` and `g2` while taking
+    periodic boundary conditions into account via the minimum image
+    convention.
+
+    The `exclusion_block` keyword may be used to exclude a set of distances
+    from the calculations.
+
+    Results are available in the attributes :attr:`results.rdf`
+    and :attr:`results.count`.
+
+    Parameters
+    ----------
     g1 : AtomGroup
-      First AtomGroup
+        First AtomGroup
     g2 : AtomGroup
-      Second AtomGroup
-    nbins : int (optional)
-          Number of bins in the histogram [75]
-    range : tuple or list (optional)
-          The size of the RDF [0.0, 15.0]
-    exclusion_block : tuple (optional)
-          A tuple representing the tile to exclude from the distance
-          array. [None]
-    start : int (optional)
-          The frame to start at (default is first)
-    stop : int (optional)
-          The frame to end at (default is last)
-    step : int (optional)
-          The step size through the trajectory in frames (default is
-          every frame)
-    verbose : bool (optional)
-          Show detailed progress of the calculation if set to ``True``; the
-          default is ``False``.
+        Second AtomGroup
+    nbins : int
+        Number of bins in the histogram
+    range : tuple or list
+        The size of the RDF
+    norm : str, {'rdf', 'density', 'none'}
+          For 'rdf' calculate :math:`g_{ab}(r)`. For
+          'density' the :ref:`single particle density<equation-nab>`
+          :math:`n_{ab}(r)` is computed. 'none' computes the number of
+          particles occurences in each spherical shell.
 
+          .. versionadded:: 2.3.0
+
+    exclusion_block : tuple
+        A tuple representing the tile to exclude from the distance array.
+    verbose : bool
+        Show detailed progress of the calculation if set to `True`
+
+    Attributes
+    ----------
+    results.bins : numpy.ndarray
+       :class:`numpy.ndarray` of the centers of the `nbins` histogram
+       bins.
+
+       .. versionadded:: 2.0.0
+
+    bins : numpy.ndarray
+       Alias to the :attr:`results.bins` attribute.
+
+       .. deprecated:: 2.0.0
+           This attribute will be removed in 3.0.0.
+           Use :attr:`results.bins` instead.
+
+    results.edges : numpy.ndarray
+
+      :class:`numpy.ndarray` of the `nbins + 1` edges of the histogram
+      bins.
+
+       .. versionadded:: 2.0.0
+
+    edges : numpy.ndarray
+
+       Alias to the :attr:`results.edges` attribute.
+
+       .. deprecated:: 2.0.0
+           This attribute will be removed in 3.0.0.
+           Use :attr:`results.edges` instead.
+
+    results.rdf : numpy.ndarray
+      :class:`numpy.ndarray` of the :ref:`radial distribution
+      function<equation-gab>` values for the :attr:`results.bins`.
+
+       .. versionadded:: 2.0.0
+
+    rdf : numpy.ndarray
+       Alias to the :attr:`results.rdf` attribute.
+
+       .. deprecated:: 2.0.0
+           This attribute will be removed in 3.0.0.
+           Use :attr:`results.rdf` instead.
+
+    results.count : numpy.ndarray
+      :class:`numpy.ndarray` representing the radial histogram, i.e.,
+      the raw counts, for all :attr:`results.bins`.
+
+       .. versionadded:: 2.0.0
+
+    count : numpy.ndarray
+       Alias to the :attr:`results.count` attribute.
+
+       .. deprecated:: 2.0.0
+           This attribute will be removed in 3.0.0.
+           Use :attr:`results.count` instead.
 
     Example
     -------
@@ -152,113 +192,275 @@ class InterRDF(AnalysisBase):
       rdf = InterRDF(ag1, ag2)
       rdf.run()
 
-    Results are available through the :attr:`bins` and :attr:`rdf`
-    attributes::
+    Results are available through the :attr:`results.bins` and
+    :attr:`results.rdf` attributes::
 
-      plt.plot(rdf.bins, rdf.rdf)
+      plt.plot(rdf.results.bins, rdf.results.rdf)
 
     The `exclusion_block` keyword allows the masking of pairs from
-    within the same molecule.  For example, if there are 7 of each
-    atom in each molecule, the exclusion mask `(7, 7)` can be used.
+    within the same molecule. For example, if there are 7 of each
+    atom in each molecule, the exclusion mask ``(7, 7)`` can be used.
 
 
     .. versionadded:: 0.13.0
 
+    .. versionchanged:: 1.0.0
+       Support for the `start`, `stop`, and `step` keywords has been
+       removed. These should instead be passed to :meth:`InterRDF.run`.
+
+    .. versionchanged:: 2.0.0
+       Store results as attributes `bins`, `edges`, `rdf` and `count`
+       of the `results` attribute of
+       :class:`~MDAnalysis.analysis.AnalysisBase`.
     """
-    def __init__(self, g1, g2,
-                 nbins=75, range=(0.0, 15.0), exclusion_block=None,
+    def __init__(self,
+                 g1,
+                 g2,
+                 nbins=75,
+                 range=(0.0, 15.0),
+                 norm="rdf",
+                 exclusion_block=None,
                  **kwargs):
         super(InterRDF, self).__init__(g1.universe.trajectory, **kwargs)
         self.g1 = g1
         self.g2 = g2
-        self.u = g1.universe
+        self.norm = str(norm).lower()
 
         self.rdf_settings = {'bins': nbins,
                              'range': range}
         self._exclusion_block = exclusion_block
+
+        if self.norm not in ['rdf', 'density', 'none']:
+            raise ValueError(f"'{self.norm}' is an invalid norm. "
+                             "Use 'rdf', 'density' or 'none'.")
 
     def _prepare(self):
         # Empty histogram to store the RDF
         count, edges = np.histogram([-1], **self.rdf_settings)
         count = count.astype(np.float64)
         count *= 0.0
-        self.count = count
-        self.edges = edges
-        self.bins = 0.5 * (edges[:-1] + edges[1:])
+        self.results.count = count
+        self.results.edges = edges
+        self.results.bins = 0.5 * (edges[:-1] + edges[1:])
 
-        # Need to know average volume
-        self.volume = 0.0
+        if self.norm == "rdf":
+            # Cumulative volume for rdf normalization
+            self.volume_cum = 0
         # Set the max range to filter the search radius
         self._maxrange = self.rdf_settings['range'][1]
-
 
     def _single_frame(self):
         pairs, dist = distances.capped_distance(self.g1.positions,
                                                 self.g2.positions,
                                                 self._maxrange,
-                                                box=self.u.dimensions)
+                                                box=self._ts.dimensions)
         # Maybe exclude same molecule distances
         if self._exclusion_block is not None:
-            idxA, idxB = pairs[:, 0]//self._exclusion_block[0], pairs[:, 1]//self._exclusion_block[1]
+            idxA = pairs[:, 0]//self._exclusion_block[0]
+            idxB = pairs[:, 1]//self._exclusion_block[1]
             mask = np.where(idxA != idxB)[0]
             dist = dist[mask]
 
+        count, _ = np.histogram(dist, **self.rdf_settings)
+        self.results.count += count
 
-        count = np.histogram(dist, **self.rdf_settings)[0]
-        self.count += count
-
-        self.volume += self._ts.volume
+        if self.norm == "rdf":
+            self.volume_cum += self._ts.volume
 
     def _conclude(self):
-        # Number of each selection
-        nA = len(self.g1)
-        nB = len(self.g2)
-        N = nA * nB
+        norm = self.n_frames
+        if self.norm in ["rdf", "density"]:
+            # Volume in each radial shell
+            vols = np.power(self.results.edges, 3)
+            norm *= 4/3 * np.pi * np.diff(vols)
 
-        # If we had exclusions, take these into account
-        if self._exclusion_block:
-            xA, xB = self._exclusion_block
-            nblocks = nA / xA
-            N -= xA * xB * nblocks
+        if self.norm == "rdf":
+            # Number of each selection
+            nA = len(self.g1)
+            nB = len(self.g2)
+            N = nA * nB
 
-        # Volume in each radial shell
-        vol = np.power(self.edges[1:], 3) - np.power(self.edges[:-1], 3)
-        vol *= 4/3.0 * np.pi
+            # If we had exclusions, take these into account
+            if self._exclusion_block:
+                xA, xB = self._exclusion_block
+                nblocks = nA / xA
+                N -= xA * xB * nblocks
 
-        # Average number density
-        box_vol = self.volume / self.n_frames
-        density = N / box_vol
+            # Average number density
+            box_vol = self.volume_cum / self.n_frames
+            norm *= N / box_vol
 
-        rdf = self.count / (density * vol * self.n_frames)
+        self.results.rdf = self.results.count / norm
 
-        self.rdf = rdf
+    @property
+    def edges(self):
+        wmsg = ("The `edges` attribute was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.bins` instead")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.edges
+
+    @property
+    def count(self):
+        wmsg = ("The `count` attribute was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.bins` instead")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.count
+
+    @property
+    def bins(self):
+        wmsg = ("The `bins` attribute was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.bins` instead")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.bins
+
+    @property
+    def rdf(self):
+        wmsg = ("The `rdf` attribute was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.rdf` instead")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.rdf
 
 
 class InterRDF_s(AnalysisBase):
-    """Site-specific intermolecular pair distribution function
+    r"""Site-specific radial distribution function
 
-    Arguments
-    ---------
+    Calculates site-specific radial distribution
+    functions. Instead of two groups of atoms it takes as input a list of
+    pairs of AtomGroup, ``[[A, B], [C, D], ...]``. Given the same ``A`` and
+    ``B`` to
+    :class:`InterRDF_s`, the output will be a list of individual RDFs between
+    ``A1`` and ``B1``, ``A1`` and ``B2``, ``A2`` and ``B1``, ``A2`` and ``B2``
+    (and
+    similarly for ``C`` and ``D``). These site-specific radial distribution
+    functions are typically calculated if one is interested in the solvation
+    shells of a ligand in a binding site or the solvation of specific residues
+    in a protein.
+
+    Parameters
+    ----------
     u : Universe
-          a Universe that contains atoms in `ags`
+        a Universe that contains atoms in `ags`
+
+       .. deprecated:: 2.3.0
+           This parameter is superflous and will be removed in
+           MDAnalysis 3.0.0.
+
     ags : list
-          a list of pairs of :class:`~MDAnalysis.core.groups.AtomGroup`
-          instances
-    nbins : int (optional)
-          Number of bins in the histogram [75]
-    range : tuple or list (optional)
-          The size of the RDF [0.0, 15.0]
-    start : int (optional)
-          The frame to start at (default is first)
-    stop : int (optional)
-          The frame to end at (default is last)
-    step : int (optional)
-          The step size through the trajectory in frames (default is
-          every frame)
+        a list of pairs of :class:`~MDAnalysis.core.groups.AtomGroup`
+        instances
+    nbins : int
+        Number of bins in the histogram
+    range : tuple or list
+        The size of the RDF
+    norm : str, {'rdf', 'density', 'none'}
+        For 'rdf' calculate :math:`g_{ab}(r)`. For
+        'density' the :ref:`single particle density<equation-nab>`
+        :math:`n_{ab}(r)` is computed. 'none' computes the number of
+        particles occurences in each spherical shell.
+
+        .. versionadded:: 2.3.0
+
+    density : bool
+        `False`: calculate :math:`g_{ab}(r)`; `True`: calculate
+        the true :ref:`single particle density<equation-nab>`
+        :math:`n_{ab}(r)`. `density` overwrites the `norm` parameter.
+
+        .. versionadded:: 1.0.1
+
+            This keyword was available since 0.19.0 but was not
+            documented. Furthermore, it had the opposite
+            meaning. Since 1.0.1 it is officially supported as
+            documented.
+
+        .. deprecated:: 2.3.0
+            Instead of `density=True` use `norm='density'`
+
+    Attributes
+    ----------
+    results.bins : numpy.ndarray
+        :class:`numpy.ndarray` of the centers of the `nbins` histogram
+        bins; all individual site-specific RDFs have the same bins.
+
+        .. versionadded:: 2.0.0
+
+    bins : numpy.ndarray
+        Alias to the :attr:`results.bins` attribute.
+
+        .. deprecated:: 2.0.0
+            This attribute will be removed in 3.0.0.
+            Use :attr:`results.bins` instead.
+
+    results.edges : numpy.ndarray
+        array of the ``nbins + 1`` edges of the histogram
+        bins; all individual site-specific RDFs have the same bins.
+
+        .. versionadded:: 2.0.0
+
+    edges : numpy.ndarray
+        Alias to the :attr:`results.edges` attribute.
+
+        .. deprecated:: 2.0.0
+            This attribute will be removed in 3.0.0.
+            Use :attr:`results.edges` instead.
+
+    results.rdf : list
+        :class:`list` of the site-specific :ref:`radial distribution
+        functions<equation-gab>` if `norm='rdf'` or :ref:`density
+        functions<equation-nab>` for the :attr:`bins`
+        if `norm='density'`. The list contains
+        ``len(ags)`` entries. Each entry for the ``i``-th pair `[A, B]
+        = ags[i]` in `ags` is a :class:`numpy.ndarray` with shape
+        ``(len(A), len(B))``, i.e., a stack of RDFs. For example,
+        ``results.rdf[i][0, 2]`` is the RDF between atoms ``A[0]``
+        and ``B[2]``.
+
+        .. versionadded:: 2.0.0
+
+    rdf : list
+        Alias to the :attr:`results.rdf` attribute.
+
+        .. deprecated:: 2.0.0
+            This attribute will be removed in 3.0.0.
+            Use :attr:`results.rdf` instead.
+
+    results.count : list
+        :class:`list` of the site-specific radial histograms, i.e., the
+        raw counts, for all :attr:`results.bins`. The data have the same
+        structure as :attr:`results.rdf` except that the arrays contain
+        the raw counts.
+
+        .. versionadded:: 2.0.0
+
+    count : list
+        Alias to the :attr:`results.count` attribute.
+
+        .. deprecated:: 2.0.0
+            This attribute will be removed in 3.0.0.
+            Use :attr:`results.count` instead.
+
+    results.cdf : list
+        :class:`list` of the site-specific :ref:`cumulative
+        counts<equation-countab>`, for all :attr:`results.bins`. The data
+        have the same structure as :attr:`results.rdf` except that the arrays
+        contain the cumulative counts.
+
+        This attribute only exists after :meth:`get_cdf` has been run.
+
+        .. versionadded:: 2.0.0
+
+    cdf : list
+        Alias to the :attr:`results.cdf` attribute.
+
+        .. deprecated:: 2.0.0
+            This attribute will be removed in 3.0.0.
+            Use :attr:`results.cdf` instead.
 
     Example
     -------
-
     First create the :class:`InterRDF_s` object, by supplying one Universe and
     one list of pairs of AtomGroups, then use the :meth:`~InterRDF_s.run`
     method::
@@ -275,21 +477,23 @@ class InterRDF_s(AnalysisBase):
       rdf = InterRDF_s(u, ags)
       rdf.run()
 
-    Results are available through the :attr:`bins` and :attr:`rdf` attributes::
+    Results are available through the :attr:`results.bins`
+    and :attr:`results.rdf` attributes::
 
-      plt.plot(rdf.bins, rdf.rdf[0][0][0])
+      plt.plot(rdf.results.bins, rdf.results.rdf[0][0, 0])
 
     (Which plots the rdf between the first atom in ``s1`` and the first atom in
     ``s2``)
 
-    To generate the *cumulative distribution function* (cdf), use the
+    To generate the *cumulative distribution function* (cdf) in the sense of
+    "particles within radius :math:`r`", i.e., :math:`N_{ab}(r)`, use the
     :meth:`~InterRDF_s.get_cdf` method ::
 
       cdf = rdf.get_cdf()
 
-    Results are available through the :attr:'cdf' attribute::
+    Results are available through the :attr:`results.cdf` attribute::
 
-      plt.plot(rdf.bins, rdf.cdf[0][0][0])
+      plt.plot(rdf.results.bins, rdf.results.cdf[0][0, 0])
 
     (Which plots the cdf between the first atom in ``s1`` and the first atom in
     ``s2``)
@@ -297,94 +501,155 @@ class InterRDF_s(AnalysisBase):
 
     .. versionadded:: 0.19.0
 
-    """
-    def __init__(self, u, ags,
-                 nbins=75, range=(0.0, 15.0), density=True, **kwargs):
-        super(InterRDF_s, self).__init__(u.universe.trajectory, **kwargs)
+    .. versionchanged:: 1.0.0
+       Support for the `start`, `stop`, and `step` keywords has been
+       removed. These should instead be passed to :meth:`InterRDF_s.run`.
 
-        # List of pairs of AtomGroups
+    .. versionchanged:: 2.0.0
+       Store results as attributes `bins`, `edges`, `rdf`, `count`
+       and `cdf` of the `results` attribute
+       of :class:`~MDAnalysis.analysis.AnalysisBase`.
+
+    .. versionchanged:: 2.3.0
+       Introduce `norm` and `exclusion_blocks` attributes.
+    .. deprecated:: 2.3.0
+       Instead of `density=True` use `norm='density'`
+    .. deprecated:: 2.3.0
+       The `universe` parameter is superflous.
+    """
+    def __init__(self,
+                 u,
+                 ags,
+                 nbins=75,
+                 range=(0.0, 15.0),
+                 norm="rdf",
+                 density=False,
+                 **kwargs):
+        super(InterRDF_s, self).__init__(ags[0][0].universe.trajectory,
+                                         **kwargs)
+
+        warnings.warn("The `u` attribute is superflous and will be removed "
+                      "in MDAnalysis 3.0.0.", DeprecationWarning)
+
         self.ags = ags
-        self.u = u
-        self._density = density
+        self.norm = str(norm).lower()
         self.rdf_settings = {'bins': nbins,
                              'range': range}
 
+        if self.norm not in ['rdf', 'density', 'none']:
+            raise ValueError(f"'{self.norm}' is an invalid norm. "
+                             "Use 'rdf', 'density' or 'none'.")
+
+        if density:
+            warnings.warn("The `density` attribute was deprecated in "
+                          "MDAnalysis 2.3.0 and will be removed in "
+                          "MDAnalysis 3.0.0. Please use `norm=density` "
+                          "instead.", DeprecationWarning)
+            self.norm = "density"
+
     def _prepare(self):
-        # Empty list to store the RDF
-        count_list = []
         count, edges = np.histogram([-1], **self.rdf_settings)
-        count_list = [np.zeros((ag1.n_atoms, ag2.n_atoms, len(count)), dtype=np.float64)
-                         for ag1, ag2 in self.ags]
+        self.results.count = [np.zeros((ag1.n_atoms, ag2.n_atoms, len(count)),
+                                        dtype=np.float64) for ag1, ag2 in self.ags]
+        self.results.edges = edges
+        self.results.bins = 0.5 * (edges[:-1] + edges[1:])
 
-        self.count = count_list
-        self.edges = edges
-        self.bins = 0.5 * (edges[:-1] + edges[1:])
-
-        # Need to know average volume
-        self.volume = 0.0
+        if self.norm == "rdf":
+            # Cumulative volume for rdf normalization
+            self.volume_cum = 0
         self._maxrange = self.rdf_settings['range'][1]
-
 
     def _single_frame(self):
         for i, (ag1, ag2) in enumerate(self.ags):
             pairs, dist = distances.capped_distance(ag1.positions,
                                                     ag2.positions,
                                                     self._maxrange,
-                                                    box=self.u.dimensions)
+                                                    box=self._ts.dimensions)
 
             for j, (idx1, idx2) in enumerate(pairs):
-                self.count[i][idx1, idx2, :] += np.histogram(dist[j], 
-                                                             **self.rdf_settings)[0]            
+                count, _ = np.histogram(dist[j], **self.rdf_settings)
+                self.results.count[i][idx1, idx2, :] += count
 
-        self.volume += self._ts.volume
-
+        if self.norm == "rdf":
+            self.volume_cum += self._ts.volume
 
     def _conclude(self):
-        # Volume in each radial shell
-        vol = np.power(self.edges[1:], 3) - np.power(self.edges[:-1], 3)
-        vol *= 4/3.0 * np.pi
+        norm = self.n_frames
+        if self.norm in ["rdf", "density"]:
+            # Volume in each radial shell
+            vols = np.power(self.results.edges, 3)
+            norm *= 4/3 * np.pi * np.diff(vols)
+
+        if self.norm == "rdf":
+            # Average number density
+            norm *= 1 / (self.volume_cum / self.n_frames)
 
         # Empty lists to restore indices, RDF
-        indices = []
-        rdf = []
+        self.results.indices = []
+        self.results.rdf = []
 
         for i, (ag1, ag2) in enumerate(self.ags):
             # Number of each selection
-            nA = len(ag1)
-            nB = len(ag2)
-            N = nA * nB
-            indices.append([ag1.indices, ag2.indices])
-
-            # Average number density
-            box_vol = self.volume / self.n_frames
-            density = N / box_vol
-
-            if self._density:
-                rdf.append(self.count[i] / (density * vol * self.n_frames))
-            else:
-                rdf.append(self.count[i] / (vol * self.n_frames))
-
-        self.rdf = rdf
-        self.indices = indices
+            self.results.indices.append([ag1.indices, ag2.indices])
+            self.results.rdf.append(self.results.count[i] / norm)
 
     def get_cdf(self):
-        """Calculate the cumulative distribution functions (CDF) for all sites.
-        Note that this is the actual count within a given radius, i.e.,
-        :math:`N(r)`.
+        r"""Calculate the cumulative counts for all sites.
+
+        This is the :ref:`cumulative count<equation-countab>` within a given
+        radius, i.e., :math:`N_{ab}(r)`.
+
+        The result is returned and also stored in the attribute
+        :attr:`results.cdf`.
+
         Returns
         -------
-              cdf : list
-                      list of arrays with the same structure as :attr:`rdf`
+        cdf : list
+              list of arrays with the same structure as :attr:`results.rdf`
         """
-        # Calculate cumulative distribution function
-        # Empty list to restore CDF
-        cdf = []
+        self.results.cdf = []
 
-        for count in self.count:
-            cdf.append(np.cumsum(count, axis=2) / self.n_frames)
+        for count in self.results.count:
+            self.results.cdf.append(np.cumsum(count, axis=2) / self.n_frames)
 
-        # Results stored in self.cdf
-        # self.cdf is a list of cdf between pairs of AtomGroups in ags
-        self.cdf = cdf
+        return self.results.cdf
 
-        return cdf
+    @property
+    def edges(self):
+        wmsg = ("The `edges` attribute was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.bins` instead")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.edges
+
+    @property
+    def count(self):
+        wmsg = ("The `count` attribute was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.bins` instead")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.count
+
+    @property
+    def bins(self):
+        wmsg = ("The `bins` attribute was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.bins` instead")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.bins
+
+    @property
+    def rdf(self):
+        wmsg = ("The `rdf` attribute was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.rdf` instead")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.rdf
+
+    @property
+    def cdf(self):
+        wmsg = ("The `cdf` attribute was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.cdf` instead")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.cdf

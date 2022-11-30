@@ -20,7 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
 import numpy as np
 
 import MDAnalysis as mda
@@ -115,10 +114,6 @@ class TestMemoryReader(MultiframeReaderTest):
     def test_extract_array_afc(self,reader):
         assert_equal(reader.timeseries(order='afc').shape, (3341, 98, 3))
 
-    def test_timeseries_deprecation(self, reader):
-        with pytest.warns(DeprecationWarning):
-            reader.timeseries(format='fac')
-
     def test_extract_array_afc(self, reader):
         assert_equal(reader.timeseries(order='afc').shape, (3341, 98, 3))
 
@@ -201,6 +196,11 @@ class TestMemoryReader(MultiframeReaderTest):
         reader.ts.positions = new_positions
         reader[0]
         assert_almost_equal(reader.ts.positions, new_positions)
+
+    def test_timeseries_warns_deprecation(self, reader):
+        with pytest.warns(DeprecationWarning, match="MemoryReader.timeseries "
+                          "inclusive"):
+            reader.timeseries(start=0, stop=3, step=1)
 
 
 class TestMemoryReaderVelsForces(object):

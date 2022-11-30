@@ -20,11 +20,9 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import division, absolute_import
-
-from six.moves import range
-
 import os
+import textwrap
+from io import StringIO
 import itertools
 import numpy as np
 from numpy.testing import(
@@ -36,7 +34,7 @@ import MDAnalysis as mda
 import MDAnalysis.core.selection
 from MDAnalysis.lib.distances import distance_array
 from MDAnalysis.core.selection import Parser
-from MDAnalysis import SelectionError
+from MDAnalysis import SelectionError, SelectionWarning
 
 from MDAnalysis.tests.datafiles import (
     PSF, DCD,
@@ -46,6 +44,9 @@ from MDAnalysis.tests.datafiles import (
     TRZ_psf, TRZ,
     PDB_icodes,
     PDB_HOLE,
+    PDB_helix,
+    PDB_elements,
+    PDB_charges,
 )
 from MDAnalysisTests import make_Universe
 
@@ -78,7 +79,7 @@ class TestSelectionsCHARMM(object):
                      sorted(universe.select_atoms('segid 4AKE').indices),
                      "selected protein is not the same as auto-generated protein segment s4AKE")
 
-    @pytest.mark.parametrize('resname', MDAnalysis.core.selection.ProteinSelection.prot_res)
+    @pytest.mark.parametrize('resname', sorted(MDAnalysis.core.selection.ProteinSelection.prot_res))
     def test_protein_resnames(self, resname):
         u = make_Universe(('resnames',))
         # set half the residues' names to the resname we're testing
@@ -195,6 +196,14 @@ class TestSelectionsCHARMM(object):
         assert_equal(len(sel), 66)
 
     @pytest.mark.parametrize('selstr', [
+        'isolayer 4.0 6.0 bynum 1281',
+        'isolayer 4.0 6.0 index 1280'
+    ])
+    def test_isolayer(self, universe, selstr):
+        sel = universe.select_atoms(selstr)
+        assert_equal(len(sel), 66)
+
+    @pytest.mark.parametrize('selstr', [
         'sphzone 6.0 bynum 1281',
         'sphzone 6.0 index 1280'
     ])
@@ -210,6 +219,10 @@ class TestSelectionsCHARMM(object):
         sel = universe.select_atoms(selstr)
         assert_equal(len(sel), 88)
 
+    def test_empty_cylayer(self, universe):
+        empty = universe.select_atoms('cylayer 4.0 6.0 10 -10 name NOT_A_NAME')
+        assert_equal(len(empty), 0)
+
     @pytest.mark.parametrize('selstr', [
         'cyzone 6.0 10 -10 bynum 1281',
         'cyzone 6.0 10 -10 index 1280'
@@ -217,6 +230,10 @@ class TestSelectionsCHARMM(object):
     def test_cyzone(self, universe, selstr):
         sel = universe.select_atoms(selstr)
         assert_equal(len(sel), 166)
+
+    def test_empty_cyzone(self, universe):
+        empty = universe.select_atoms('cyzone 6.0 10 -10 name NOT_A_NAME')
+        assert_equal(len(empty), 0)
 
     def test_point(self, universe):
         ag = universe.select_atoms('point 5.0 5.0 5.0 3.5')
@@ -364,21 +381,21 @@ class TestSelectionsCHARMM(object):
         ag2 = ag.select_atoms("around 4 global backbone")
         assert_equal(ag2.indices, ag1.indices)
 
-    def test_wildcard_middle_selection(self, universe):
-        ag = universe.select_atoms('resname TYR or resname THR')
-        ag_wild = universe.select_atoms('resname T*R')
+    @pytest.mark.parametrize('selstring, wildstring', [
+        ('resname TYR THR', 'resname T*R'),
+        ('resname ASN GLN', 'resname *N'),
+        ('resname ASN ASP', 'resname AS*'),
+        ('resname TYR THR', 'resname T?R'),
+        ('resname ASN ASP HSD', 'resname *S?'),
+        ('resname LEU LYS', 'resname L**'),
+        ('resname MET', 'resname *M*'),
+        ('resname GLN GLY', 'resname GL[NY]'),
+        ('resname GLU', 'resname GL[!NY]'),
+    ])
+    def test_wildcard_selection(self, universe, selstring, wildstring):
+        ag = universe.select_atoms(selstring)
+        ag_wild = universe.select_atoms(wildstring)
         assert ag == ag_wild
-
-    def test_wildcard_start_selection(self, universe):
-        ag = universe.select_atoms('resname ASN GLN')
-        ag_wild = universe.select_atoms('resname *N')
-        assert ag == ag_wild
-
-    def test_wildcard_terminal_selection(self, universe):
-        ag = universe.select_atoms('resname ASN ASP')
-        ag_wild = universe.select_atoms('resname AS*')
-        assert ag == ag_wild
-
 
 class TestSelectionsAMBER(object):
     @pytest.fixture()
@@ -485,7 +502,7 @@ class TestSelectionsTPR(object):
     @staticmethod
     @pytest.fixture(scope='class')
     def universe():
-        return MDAnalysis.Universe(TPR,XTC)
+        return MDAnalysis.Universe(TPR, XTC, tpr_resid_from_one=False)
 
     @pytest.mark.parametrize('selstr', [
         'same fragment as bynum 1',
@@ -518,6 +535,77 @@ class TestSelectionsTPR(object):
     def test_molnum(self, universe, selection_string, reference):
         sel = universe.select_atoms(selection_string)
         assert_equal(sel.ids, np.array(reference, dtype=np.int32))
+
+
+class TestSelectionRDKit(object):
+    def setup_class(self):
+        pytest.importorskip("rdkit.Chem")
+
+    @pytest.fixture
+    def u(self):
+        smi = "Cc1cNcc1"
+        u = MDAnalysis.Universe.from_smiles(smi, addHs=False,
+                                            generate_coordinates=False)
+        return u
+
+    @pytest.fixture
+    def u2(self):
+        u = MDAnalysis.Universe.from_smiles("Nc1cc(C[C@H]([O-])C=O)c[nH]1")
+        return u
+
+    @pytest.mark.parametrize("sel_str, n_atoms", [
+        ("aromatic", 5),
+        ("not aromatic", 1),
+        ("type N and aromatic", 1),
+        ("type C and aromatic", 4),
+    ])
+    def test_aromatic_selection(self, u, sel_str, n_atoms):
+        sel = u.select_atoms(sel_str)
+        assert sel.n_atoms == n_atoms
+
+    @pytest.mark.parametrize("sel_str, indices", [
+        ("smarts n", [10]),
+        ("smarts [#7]", [0, 10]),
+        ("smarts a", [1, 2, 3, 9, 10]),
+        ("smarts c", [1, 2, 3, 9]),
+        ("smarts [*-]", [6]),
+        ("smarts [$([!#1]);$([!R][R])]", [0, 4]),
+        ("smarts [$([C@H](-[CH2])(-[O-])-C=O)]", [5]),
+        ("smarts [$([C@@H](-[CH2])(-[O-])-C=O)]", []),
+        ("smarts a and type C", [1, 2, 3, 9]),
+        ("(smarts a) and (type C)", [1, 2, 3, 9]),
+        ("smarts a and type N", [10]),
+    ])
+    def test_smarts_selection(self, u2, sel_str, indices):
+        sel = u2.select_atoms(sel_str)
+        assert_equal(sel.indices, indices)
+
+    def test_invalid_smarts_sel_raises_error(self, u2):
+        with pytest.raises(ValueError, match="not a valid SMARTS"):
+            u2.select_atoms("smarts foo")
+
+    def test_passing_rdkit_kwargs_to_converter(self):
+        u = mda.Universe.from_smiles("O=C=O")
+        sel = u.select_atoms("smarts [$(O=C)]", rdkit_kwargs=dict(force=True))
+        assert sel.n_atoms == 2
+
+    def test_passing_max_matches_to_converter(self, u2):
+        with pytest.warns(UserWarning, match="Your smarts-based") as wsmg:
+            sel = u2.select_atoms("smarts C", smarts_kwargs=dict(maxMatches=2))
+            sel2 = u2.select_atoms(
+                    "smarts C", smarts_kwargs=dict(maxMatches=1000))
+            assert sel.n_atoms == 2
+            assert sel2.n_atoms == 3
+
+        sel3 = u2.select_atoms("smarts c")
+        assert sel3.n_atoms == 4
+
+    def test_passing_use_chirality_to_converter(self):
+        u = mda.Universe.from_smiles("CC[C@H](C)O")
+        sel3 = u.select_atoms("byres smarts CC[C@@H](C)O")
+        assert sel3.n_atoms == 0
+        sel4 = u.select_atoms("byres smarts CC[C@@H](C)O", smarts_kwargs={"useChirality": False})
+        assert sel4.n_atoms == 15
 
 
 class TestSelectionsNucleicAcids(object):
@@ -608,6 +696,34 @@ class BaseDistanceSelection(object):
         ref = set(np.where((d > 2.4) & (d < 6.0))[0])
 
         assert ref == set(result.indices)
+
+    @pytest.mark.parametrize('periodic', (True, False))
+    def test_isolayer(self, u, periodic):
+
+        rmin, rmax = 2.4, 3
+        if u.atoms.types[0].isdigit():
+            r1 = u.select_atoms("resid 1 or resid 2 and type 7")
+        else:
+            r1 = u.select_atoms("resid 1 or resid 2 and type O")
+
+        sel = Parser.parse("isolayer {} {} (index {} or index {})".format(rmin, rmax, *r1.ix), u.atoms)
+        if periodic:
+            sel.periodic = True
+        else:
+            sel.periodic = False
+        result = sel.apply(u.atoms)
+
+        box = u.dimensions if periodic else None
+        cog1 = r1[0].position.reshape(1, 3)
+        d1 = distance_array(u.atoms.positions, cog1, box=box)
+        cog2 = r1[1].position.reshape(1, 3)
+        d2 = distance_array(u.atoms.positions, cog2, box=box)
+
+        ref_inner  = set(np.where((d1 < rmin) | (d2 < rmin))[0])
+        ref_outer  = set(np.where((d1 < rmax) | (d2 < rmax))[0])
+        ref_outer -= ref_inner
+
+        assert ref_outer == set(result.indices) and len(list(ref_outer)) > 0
 
     @pytest.mark.parametrize('periodic', (True, False))
     def test_spherical_zone(self, u, periodic):
@@ -722,6 +838,14 @@ class TestTriclinicSelections(object):
 
         assert idx == set(ag.indices)
 
+    def test_empty_sphlayer(self, u):
+        empty = u.select_atoms('sphlayer 2.4 6.0 name NOT_A_NAME')
+        assert len(empty) == 0
+
+    def test_empty_isolayer(self, u):
+        empty = u.select_atoms('isolayer 2.4 6.0 name NOT_A_NAME')
+        assert len(empty) == 0
+
     def test_sphzone(self, u):
         r1 = u.select_atoms('resid 1')
         cog = r1.center_of_geometry().reshape(1, 3)
@@ -732,6 +856,10 @@ class TestTriclinicSelections(object):
         idx = set(np.where(d < 5.0)[0])
 
         assert idx == set(ag.indices)
+
+    def test_empty_sphzone(self, u):
+        empty = u.select_atoms('sphzone 5.0 name NOT_A_NAME')
+        assert len(empty) == 0
 
     def test_point_1(self, u):
         # The example selection
@@ -927,12 +1055,22 @@ class TestSelectionErrors(object):
         'index or protein',
         'prop mass < 4.0 hello',  # unused token
         'prop mass > 10. and group this',  # missing group
-        'prop mass > 10. and fullgroup this',  # missing fullgroup
-        'resname E*Y*Z',  # >1 wildcards
+        # bad ranges
+        'mass 1.0 to',
+        'mass to 3.0',
+        'mass 1.0:',
+        'mass :3.0',
+        'mass 1-',
+        'chirality ',
+        'formalcharge 0.2',
     ])
     def test_selection_fail(self, selstr, universe):
         with pytest.raises(SelectionError):
             universe.select_atoms(selstr)
+
+    def test_invalid_prop_selection(self, universe):
+        with pytest.raises(SelectionError, match="Expected one of"):
+            universe.select_atoms("prop parsnip < 2")
 
 
 def test_segid_and_resid():
@@ -1103,6 +1241,55 @@ class TestICodeSelection(object):
             u.select_atoms('resid 10A-12')
 
 
+@pytest.fixture
+def u_pdb_icodes():
+    return mda.Universe(PDB_icodes)
+
+
+@pytest.mark.parametrize(
+    "selection, n_atoms",
+    [
+        # Selection using resindices
+        # For PDBs:
+        # residues with different insertion codes have different resindices
+        ("same residue as ", 11),
+        # Selection using resids
+        # Residues with different insertion codes have the same resid
+        # See Issues #2308 for a discussion
+        ("same resid as", 72),
+        # Selection using resindices
+        # For PDBs: 
+        # residues with different insertion codes have different resindices
+        ("byres", 11)
+    ]
+)
+def test_similarity_selection_icodes(u_pdb_icodes, selection, n_atoms):
+
+    # Select residues 162 and 163A
+    sel = u_pdb_icodes.select_atoms(selection + "(around 2.0 resid 163)")
+
+    assert len(sel.atoms) == n_atoms
+
+@pytest.mark.parametrize('selection', [
+    'all', 'protein', 'backbone', 'nucleic', 'nucleicbackbone',
+    'name O', 'name N*', 'resname stuff', 'resname ALA', 'type O',
+    'index 0', 'index 1', 'bynum 1-10',
+    'segid SYSTEM', 'resid 163', 'resid 1-10', 'resnum 2',
+    'around 10 resid 1', 'point 0 0 0 10', 'sphzone 10 resid 1',
+    'sphlayer 0 10 index 1', 'cyzone 15 4 -8 index 0',
+    'cylayer 5 10 10 -8 index 1', 'prop abs z <= 100',
+    'byres index 0', 'same resid as index 0',
+])
+def test_selections_on_empty_group(u_pdb_icodes, selection):
+    ag = u_pdb_icodes.atoms[[]].select_atoms(selection)
+    assert len(ag) == 0
+
+def test_empty_yet_global(u_pdb_icodes):
+    # slight exception to above test, an empty AG can return something if 'global' used
+    ag = u_pdb_icodes.atoms[[]].select_atoms('global name O')
+
+    assert len(ag) == 185  # len(u_pdb_icodes.select_atoms('name O'))
+
 def test_arbitrary_atom_group_raises_error():
     u = make_Universe(trajectory=True)
     with pytest.raises(TypeError):
@@ -1126,3 +1313,202 @@ def test_record_type_sel():
 
     assert len(u.select_atoms('name CA and not record_type HETATM')) == 30
     assert len(u.select_atoms('name CA and record_type HETATM')) == 2
+
+
+def test_element_sel():
+    # test auto-topattr addition of string
+    u = mda.Universe(PDB_elements)
+    assert len(u.select_atoms("element H")) == 8
+    assert len(u.select_atoms("same element as index 12")) == 8
+
+
+def test_chain_sel():
+    u = mda.Universe(PDB_elements)
+    assert len(u.select_atoms("chainID A")) == len(u.atoms)
+
+
+@pytest.fixture()
+def u_fake_masses():
+    u = mda.Universe(TPR)
+    u.atoms[-10:].masses = - (np.arange(10) + 1.001)
+    u.atoms[:5].masses = 0.1 * 3  # 0.30000000000000004
+    u.atoms[5:10].masses = 0.30000000000000001
+    return u
+
+
+@pytest.mark.parametrize("selstr,n_atoms, selkwargs", [
+    ("mass 0.8 to 1.2", 23844, {}),
+    ("mass 8e-1 to 1200e-3", 23844, {}),
+    ("mass -5--3", 2, {}),  # select -5 to -3
+    ("mass -3 : -5", 0, {}),  # wrong way around
+    # regex; spacing, delimiters, and negatives
+    ("mass -5 --3", 2, {}),
+    ("mass -5- -3", 2, {}),
+    ("mass -5 - -3", 2, {}),
+    ("mass -10:3", 34945, {}),
+    ("mass -10 :3", 34945, {}),
+    ("mass -10: 3", 34945, {}),
+    ("mass -10 : 3", 34945, {}),
+    ("mass -10 -3", 0, {}),  # separate selections, not range
+    # float equality
+    ("mass 0.3", 5, {"rtol": 0, "atol": 0}),
+    ("mass 0.3", 5, {"rtol": 1e-22, "atol": 1e-22}),
+    # 0.30000000000000001 == 0.3
+    ("mass 0.3 - 0.30000000000000004", 10, {}),
+    ("mass 0.30000000000000004", 5, {"rtol": 0, "atol": 0}),
+    ("mass 0.3 0.30000000000000001", 5, {"rtol": 0, "atol": 0}),
+    # float near-equality
+    ("mass 0.3", 10, {}),
+    ("mass 0.30000000000000004", 10, {}),
+    ("mass 0.3 0.30000000000000001", 10, {}),
+    # prop thingy
+    ("prop mass == 0.3", 10, {}),
+    ("prop mass == 0.30000000000000004", 10, {}),
+    ("prop mass == 0.30000000000000004", 5, {"rtol": 0, "atol": 0}),
+])
+def test_mass_sel(u_fake_masses, selstr, n_atoms, selkwargs):
+    # test auto-topattr addition of float (FloatRangeSelection)
+    ag = u_fake_masses.select_atoms(selstr, **selkwargs)
+    assert len(ag) == n_atoms
+
+def test_mass_sel_warning(u_fake_masses):
+    warn_msg = (r"Using float equality .* is not recommended .* "
+                r"we recommend using a range .*"
+                r"'mass -0.6 to 1.4'.*"
+                r"use the `atol` and `rtol` keywords")
+    with pytest.warns(SelectionWarning, match=warn_msg):
+        u_fake_masses.select_atoms("mass 0.4")
+
+
+@pytest.mark.parametrize("selstr,n_res", [
+    ("resnum -10 to 3", 13),
+    ("resnum -5--3", 3),  # select -5 to -3
+    ("resnum -3 : -5", 0),  # wrong way around
+])
+def test_int_sel(selstr, n_res):
+    # test auto-topattr addition of int (IntRangeSelection)
+    u = mda.Universe(TPR)
+    u.residues[-10:].resnums = - (np.arange(10) + 1)
+    ag = u.select_atoms(selstr).residues
+    assert len(ag) == n_res
+
+
+def test_negative_resid():
+    # this is its own separate test because ResidSelection
+    # has special matching for icodes
+    text = """\
+    ATOM      1  N   ASP A  -1      19.426  19.251   2.191  1.00 59.85           N
+    ATOM      2  CA  ASP A  -1      20.185  18.441   1.255  1.00 54.54           C
+    ATOM      3  C   ASP A  -1      21.660  18.901   1.297  1.00 40.12           C
+    ATOM      4  O   ASP A  -1      21.958  19.978   1.829  1.00 35.85           O"""
+    u = mda.Universe(StringIO(textwrap.dedent(text)), format="PDB")
+    ag = u.select_atoms("resid -1")
+    assert len(ag) == 4
+
+
+@pytest.mark.parametrize("selstr, n_atoms", [
+    ("aromaticity", 5),
+    ("aromaticity true", 5),
+    ("not aromaticity", 15),
+    ("aromaticity False", 15),
+])
+def test_bool_sel(selstr, n_atoms):
+    pytest.importorskip("rdkit.Chem")
+    u = MDAnalysis.Universe.from_smiles("Nc1cc(C[C@H]([O-])C=O)c[nH]1")
+    assert len(u.select_atoms(selstr)) == n_atoms
+
+
+def test_bool_sel_error():
+    pytest.importorskip("rdkit.Chem")
+    u = MDAnalysis.Universe.from_smiles("Nc1cc(C[C@H]([O-])C=O)c[nH]1")
+    with pytest.raises(SelectionError, match="'fragrant' is an invalid value"):
+        u.select_atoms("aromaticity fragrant")
+
+
+def test_error_selection_for_strange_dtype():
+    with pytest.raises(ValueError, match="No base class defined for dtype"):
+        MDAnalysis.core.selection.gen_selection_class("star", "stars",
+                                                      dict, "atom")
+
+
+@pytest.mark.parametrize("sel, ix", [
+    ("name N", [5, 335, 451]),
+    ("resname GLU", [5, 6, 7, 8, 335, 451]),
+])
+def test_default_selection_on_ordered_unique_group(u_pdb_icodes, sel, ix):
+    # manually ordered unique atomgroup => sorted by index
+    base_ag = u_pdb_icodes.atoms[[335, 5, 451, 8, 7, 6]]
+    ag = base_ag.select_atoms(sel)
+    assert_equal(ag.ix, ix)
+
+
+@pytest.mark.parametrize("sel, sort, ix", [
+    ("name N", True, [5, 335, 451]),
+    ("name N", False, [335, 5, 451]),
+    ("resname GLU", True, [5, 6, 7, 8, 335, 451]),
+    ("resname GLU", False, [335, 5, 451, 8, 7, 6]),
+])
+def test_unique_selection_on_ordered_unique_group(u_pdb_icodes, sel, sort, ix):
+    # manually ordered unique atomgroup
+    base_ag = u_pdb_icodes.atoms[[335, 5, 451, 8, 7, 6]]
+    ag = base_ag.select_atoms(sel, sorted=sort)
+    assert_equal(ag.ix, ix)
+
+
+@pytest.mark.parametrize("sel, sort, ix", [
+    ("name N", True, [5, 335, 451]),
+    ("name N", False, [335, 5, 451]),
+    ("resname GLU", True, [5, 6, 7, 8, 335, 451]),
+    ("resname GLU", False, [335, 5, 451, 8, 7, 6]),
+])
+def test_unique_selection_on_ordered_group(u_pdb_icodes, sel, sort, ix):
+    # manually ordered duplicate atomgroup
+    base_ag = u_pdb_icodes.atoms[[335, 5, 451, 8, 5, 5, 7, 6, 451]]
+    ag = base_ag.select_atoms(sel, sorted=sort)
+    assert_equal(ag.ix, ix)
+
+
+@pytest.mark.parametrize('smi,chirality', [
+    ('C[C@@H](C(=O)O)N', 'S'),
+    ('C[C@H](C(=O)O)N', 'R'),
+])
+def test_chirality(smi, chirality):
+    Chem = pytest.importorskip('rdkit.Chem', reason='requires rdkit')
+
+    m = Chem.MolFromSmiles(smi)
+    u = mda.Universe(m)
+
+    assert hasattr(u.atoms, 'chiralities')
+
+    assert u.atoms[0].chirality == ''
+    assert u.atoms[1].chirality == chirality
+
+    assert_equal(u.atoms[:3].chiralities, np.array(['', chirality, ''], dtype='U1'))
+
+
+@pytest.mark.parametrize('sel,size', [
+    ('R', 1), ('S', 1), ('R S', 2), ('S R', 2),
+])
+def test_chirality_selection(sel, size):
+    # 2 centers, one R one S
+    Chem = pytest.importorskip('rdkit.Chem', reason='requires rdkit')
+
+    m = Chem.MolFromSmiles('CC[C@H](C)[C@H](C(=O)O)N')
+    u = mda.Universe(m)
+
+    ag = u.select_atoms('chirality {}'.format(sel))
+
+    assert len(ag) == size
+
+
+@pytest.mark.parametrize('sel,size,name', [
+    ('1', 1, 'NH2'), ('-1', 1, 'OD2'), ('0', 34, 'N'), ('-1 1', 2, 'OD2'),
+])
+def test_formal_charge_selection(sel, size, name):
+    # 2 charge points, one positive one negative
+    u = mda.Universe(PDB_charges)
+
+    ag = u.select_atoms(f'formalcharge {sel}')
+
+    assert len(ag) == size
+    assert ag.atoms[0].name == name

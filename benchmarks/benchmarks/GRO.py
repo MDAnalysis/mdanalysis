@@ -1,5 +1,3 @@
-from __future__ import division, absolute_import, print_function
-
 import numpy as np
 from MDAnalysis.coordinates.GRO import GROReader
 from MDAnalysis.topology.GROParser import GROParser

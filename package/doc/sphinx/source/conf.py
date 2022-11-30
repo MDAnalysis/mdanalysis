@@ -15,8 +15,14 @@ import sys
 import os
 import platform
 import datetime
+import MDAnalysis as mda
+import msmb_theme  # for little versions pop-up
 # https://sphinx-rtd-theme.readthedocs.io/en/stable/
 import sphinx_rtd_theme
+# Custom MDA Formating
+from pybtex.style.formatting.unsrt import Style as UnsrtStyle
+from pybtex.style.labels import BaseLabelStyle
+from pybtex.plugin import register_plugin
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -33,20 +39,50 @@ sys.path.insert(0, os.path.abspath('../../..'))
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx',
-              'sphinx.ext.mathjax', 'sphinx.ext.viewcode',
-              'sphinx.ext.napoleon', 'sphinx.ext.todo',
-              'sphinx_sitemap',
-              'sphinx_rtd_theme']
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.mathjax',
+    'sphinx.ext.viewcode',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.todo',
+    'sphinx_sitemap',
+    'sphinx_rtd_theme',
+    'sphinxcontrib.bibtex',
+    'sphinx.ext.doctest',
+]
+
+bibtex_bibfiles = ['references.bib']
+
+
+# Define custom MDA style for references
+class KeyLabelStyle(BaseLabelStyle):
+    def format_labels(self, entries):
+        entry_list = []
+        for entry in entries:
+            author = str(entry.persons['author'][0]).split(",")[0]
+            year = entry.fields['year']
+            entry_list.append(f"{author}{year}")
+        return entry_list
+
+
+class KeyStyle(UnsrtStyle):
+    default_label_style = 'keylabel'
+
+
+register_plugin('pybtex.style.labels', 'keylabel', KeyLabelStyle)
+register_plugin('pybtex.style.formatting', 'MDA', KeyStyle)
 
 mathjax_path = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML'
 
 # for sitemap with https://github.com/jdillard/sphinx-sitemap
-# NOTE: This sitemap is only correct for the DEVELOPMENT doccs. The RELEASE docs
-#       are served from https://www.mdanalysis.org/docs/ and the sitemap.xml
-#       is manually fixed when deploying the release docs with the
-#       maintainer/deploy_master_docs.sh script
-site_url = "https://www.mdanalysis.org/mdanalysis/"
+# This sitemap is correct both for the development and release docs, which
+# are both served from docs.mdanalysis.org/$version .
+# The docs used to be available automatically at mdanalysis.org/mdanalysis;
+# they are now at docs.mdanalysis.org/, which requires a CNAME DNS record
+# pointing to mdanalysis.github.io. To change this URL you should change/delete
+# the CNAME record for "docs" and update the URL in GitHub settings
+site_url = "https://docs.mdanalysis.org/"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -65,7 +101,7 @@ master_doc = 'index'
 # (take the list from AUTHORS)
 # Ordering: (1) Naveen (2) Elizabeth, then all contributors in alphabetical order
 #           (last) Oliver
-author_list = __import__('MDAnalysis').__authors__
+author_list = mda.__authors__
 authors = u', '.join(author_list[:-1]) + u', and ' + author_list[-1]
 project = u'MDAnalysis'
 now = datetime.datetime.now()
@@ -78,7 +114,8 @@ copyright = u'2005-{}, '.format(now.year) + authors
 # Dynamically calculate the version
 packageversion = __import__('MDAnalysis').__version__
 # The short X.Y version.
-version = '.'.join(packageversion.split('.')[:2])
+# version = '.'.join(packageversion.split('.')[:2])
+version = packageversion  # needed for right sitemap.xml URLs
 # The full version, including alpha/beta/rc tags.
 release = packageversion
 
@@ -94,7 +131,7 @@ release = packageversion
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = []
+exclude_patterns = ['_build']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
@@ -116,20 +153,20 @@ pygments_style = 'default'
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []
 
-#to include decorated objects like __init__
+# to include decorated objects like __init__
 autoclass_content = 'both'
 
 # -- Options for HTML output ---------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'msmb_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# styles/fonts to match http://mdanalysis.org (see public/css)
+# styles/fonts to match https://userguide.mdanalysis.org
 #
 # /* MDAnalysis orange: #FF9200 */
 # /* MDAnalysis gray: #808080 */
@@ -139,7 +176,7 @@ html_theme = 'sphinx_rtd_theme'
 color = {'orange': '#FF9200',
          'gray': '#808080',
          'white': '#FFFFFF',
-         'black': '#000000',}
+         'black': '#000000', }
 
 html_theme_options = {
     'canonical_url': '',
@@ -151,13 +188,20 @@ html_theme_options = {
     # Toc options
     'collapse_navigation': True,
     'sticky_navigation': True,
-    'navigation_depth': 5,
+    'navigation_depth': 4,
     'includehidden': True,
     'titles_only': False,
 }
 
+html_context = {
+    'versions_json_url': 'https://docs.mdanalysis.org/versions.json'
+}
+
 # Add any paths that contain custom themes here, relative to this directory.
-# html_theme_path = ['_themes',]
+html_theme_path = [
+    msmb_theme.get_html_theme_path(),
+    sphinx_rtd_theme.get_html_theme_path()
+]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -246,8 +290,8 @@ htmlhelp_basename = 'MDAnalysisdoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('MDAnalysis.tex', u'MDAnalysis Documentation',
-   authors, 'manual'),
+    ('MDAnalysis.tex', u'MDAnalysis Documentation',
+     authors, 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -326,11 +370,15 @@ epub_copyright = u'2015, '+authors
 
 # Configuration for intersphinx: refer to the Python standard library
 # and other packages used by MDAnalysis
-intersphinx_mapping = {'https://docs.python.org/': None,
-                       'https://docs.scipy.org/doc/numpy/': None,
-                       'https://docs.scipy.org/doc/scipy/reference/': None,
-                       'https://matplotlib.org': None,
-                       'https://networkx.github.io/documentation/stable/': None,
-                       'https://www.mdanalysis.org/GridDataFormats/': None,
+intersphinx_mapping = {'https://docs.h5py.org/en/stable': None,
+                       'https://docs.python.org/3/': None,
+                       'https://docs.scipy.org/doc/scipy/': None,
                        'https://gsd.readthedocs.io/en/stable/': None,
+                       'https://matplotlib.org/stable/': None,
+                       'https://mdanalysis.org/GridDataFormats/': None,
+                       'https://mdanalysis.org/pmda/': None,
+                       'https://networkx.org/documentation/stable/': None,
+                       'https://numpy.org/doc/stable/': None,
+                       'https://parmed.github.io/ParmEd/html/': None,
+                       'https://rdkit.org/docs/': None,
                        }

@@ -12,7 +12,7 @@ syntax`_)::
   >>> kalp = universe.select_atoms("segid KALP")
 
 .. _`CHARMM's atom selection syntax`:
-   http://www.charmm.org/documentation/c37b1/select.html
+   https://www.charmm.org/charmm/documentation/by-version/c45b1/select.html
 
 The :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` method of a
 :class:`~MDAnalysis.core.groups.AtomGroup` or a
@@ -33,7 +33,29 @@ Almost all the basic CHARMM selections work.
 It is also possible to export selections for external software
 packages with the help of :ref:`Selection exporters`.
 
+.. note::
 
+    By default, atoms are sorted by index in the output AtomGroup.
+    For example, the below code will return the first, second, and
+    sixth atom in ``ag``::
+
+        >>> ag = u.select_atoms("name N")
+        >>> ag2 = ag[[5, 1, 0]]
+        >>> ag3 = ag2.select_atoms("name N")
+        >>> np.all(ag3.ix == ag2.ix)
+        False
+
+    You can turn off sorting behavior with the ``sorted`` keyword::
+
+        >>> ag = u.select_atoms("name N")
+        >>> ag2 = ag[[5, 1, 0]]
+        >>> ag3 = ag2.select_atoms("name N", sorted=False)
+        >>> np.all(ag3.ix == ag2.ix)
+        True
+
+    For further details on ordered selections, see :ref:`ordered-selections-label`.
+    
+    
 Selection Keywords
 ==================
 
@@ -46,15 +68,46 @@ selection parser. The following applies to all selections:
   necessary).
 * Selections are parsed left to right and parentheses can be used for
   grouping.
-* Currently, a single wildcard ``*`` character can be at the start, middle, or 
-  end of a string for pattern matching. For example, ``GL*`` selects
-  all strings that start with "GL" such as "GLU", "GLY", "GLX29", "GLN". 
-  ``resname *N`` selects all residue names that end in "N", such as "ASN" and 
-  "GLN".
+* You can use the singular name of any topology attribute as a selection
+  keyword. `Defined topology attributes`_ are listed in the User Guide.
+  Alternatively, you can define a 
+  :class:`~MDAnalysis.core.topologyattrs.TopologyAttr` yourself,
+  providing that the attribute ``dtype`` is one of ``int``, ``float``, 
+  ``str`` (or ``object``), or ``bool``.
+  However, the topology must contain this attribute information for
+  the selection to work.
+
+    * Selections of attributes that are integers or floats can use the
+      syntax "myTopologyAttr 0 - 2", "myTopologyAttr 0:2", or
+      "myTopologyAttr 0 to 2", to select a range with
+      both ends inclusive. Whitespace and negative numbers are allowed.
+    * "myTopologyAttr 0" can be used to select all atoms
+      matching the value; however, this can be tricky with floats because of
+      precision differences and we recommend using a range like above when
+      possible.
+    * Boolean selections default to True, so "myTopologyAttr" and
+      "myTopologyAttr True" both give all atoms with
+      ``myTopologyAttr == True``.
+
+.. seealso::
+
+    Regular expression patterns
+    :data:`~MDAnalysis.core.selection.FLOAT_PATTERN` for matching floats;
+    :data:`~MDAnalysis.core.selection.INT_PATTERN` for matching integers;
+    and :data:`~MDAnalysis.core.selection.RANGE_PATTERN` for matching
+    selection ranges.
+
+
+.. _`Defined topology attributes`: https://userguide.mdanalysis.org/stable/topology_system.html#format-specific-attributes
 
 
 Simple selections
 -----------------
+
+This is a non-exhaustive list of the available selection keywords. As noted
+in the dot point above, keywords will be automatically generated for any
+suitable :class:`~MDAnalysis.core.topologyattrs.TopologyAttr`. A list of
+`Defined topology attributes`_ is available in the User Guide.
 
 protein, backbone, nucleic, nucleicbackbone
     selects all atoms that belong to a standard set of residues; a protein
@@ -94,15 +147,70 @@ atom *seg-name*  *residue-number*  *atom-name*
     e.g. ``DMPC 1 C2`` selects the C2 carbon of the first residue of the
     DMPC segment
 
-altloc *alternative-location*
+altLoc *alternative-location*
     a selection for atoms where alternative locations are available, which is
     often the case with high-resolution crystal structures
-    e.g. `resid 4 and resname ALA and altloc B` selects only the atoms of ALA-4
-    that have an altloc B record.
+    e.g. ``resid 4 and resname ALA and altLoc B`` selects only the atoms of ALA-4
+    that have an altLoc B record.
+
+chainID *chain-name*
+    a selection for atoms where chainIDs have been defined.
+
+element *element-name*
+    a selection for atoms where elements have been defined. e.g. ``element H C``
 
 moltype *molecule-type*
     select by molecule type, e.g. ``moltype Protein_A``. At the moment, only
     the TPR format defines the molecule type.
+
+smarts *SMARTS-query*
+    select atoms using Daylight's SMARTS queries, e.g. ``smarts
+    [#7;R]`` to find nitrogen atoms in rings. Requires RDKit.
+    All matches are combined as a single unique match. The `smarts`
+    selection accepts two sets of key word arguments from
+    `select_atoms()`: the ``rdkit_kwargs`` are passed internally to
+    `RDKitConverter.convert()` and the ``smarts_kwargs`` are passed to
+    RDKit's `GetSubstructMatches
+    <https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol.GetSubstructMatches>`_.
+    By default, the `useChirality` kwarg in ``rdkit_kwargs`` is set to true
+    and maxMatches in ``smarts_kwargs`` is ``max(1000, 10 * n_atoms)``, where
+    ``n_atoms`` is either ``len(AtomGroup)`` or ``len(Universe.atoms)``,
+    whichever is applicable. Note that the number of matches can occasionally
+    exceed the default value of maxMatches, causing too few atoms to be
+    returned. If this occurs, a warning will be issued. The problem can be
+    fixed by increasing the value of maxMatches. This behavior may be updated
+    in the future
+
+chiral *R | S*
+    select a particular stereocenter. e.g. ``name C and chirality S``
+    to select only S-chiral carbon atoms.  Only ``R`` and ``S`` will be
+    possible options but other values will not raise an error.
+
+formalcharge *formal-charge*
+    select atoms based on their formal charge, e.g.
+    ``name O and formalcharge -1`` to select all oxygens with a
+    negative 1 formal charge.
+
+Pattern matching
+----------------
+
+The pattern matching notation described below is used to specify 
+patterns for matching strings (based on :mod:`fnmatch`):
+
+``?`` 
+    Is a pattern that will match any single character. For example,
+    ``resname T?R`` selects residues named "TYR" and "THR".
+``*`` 
+    Is a pattern that will match multiple characters.  For example,
+    ``GL*`` selects all strings that start with "GL" such as "GLU",
+    "GLY", "GLX29", "GLN".
+``[seq]``
+    Would match any character in seq. For example, "resname GL[NY]" 
+    selects all residues named "GLN" or "GLY" but would not select
+    "GLU".
+``[!seq]``
+    Would match any character not in seq. For example, "resname GL[!NY]"
+    would match residues named "GLU" but would not match "GLN" or "GLY".
 
 Boolean
 -------
@@ -136,6 +244,16 @@ sphzone *externalRadius* *selection*
     geometry (COG) of a given selection, e.g. ``sphzone 6.0 ( protein and (
     resid 130 or resid 80 ) )`` selects the center of geometry of protein,
     resid 130, resid 80 and creates a sphere of radius 6.0 around the COG.
+
+isolayer *inner radius* *outer radius* *selection*
+    Similar to sphlayer, but will find layer around all referenced atoms. 
+    For example, if the atom types for a polymer backbone were chosen, then
+    an isolayer parallel to the backbone will be generated. As another 
+    example, if a set of ions were chosen as a reference to isolate the second 
+    hydration layer, then they will all be included in the same group.
+    However, in the instance that a molecule is in the second hydration layer 
+    of one ion and the first hydration layer of another, those atoms will not
+    be included.
 
 cylayer *innerRadius* *externalRadius* *zMax* *zMin* *selection*
     selects all atoms within a cylindric layer centered in the center of
@@ -172,18 +290,13 @@ prop [abs] *property*  *operator*  *value*
     ``prop z >= 5.0`` selects all atoms with z coordinate greater than 5.0;
     ``prop abs z <= 5.0`` selects all atoms within -5.0 <= z <= 5.0.
 
-From version 0.6 onwards, some geometric selections (around, sphlayer,
-sphzone, point) can use a k-d tree based, fast search algorithm (about three
-times faster than the previous version). However, it does not take periodicity
-into account. The fast algorithm is the default for *around*. Periodicity is
-only taken into account with the
-:func:`~MDAnalysis.lib.distances.distance_array` functions via a minimum
-image convention (and this only works for rectangular simulation cells). If
-periodic boundary conditions should be taken into account then change the
-default behaviour of MDAnalysis by setting these two flags::
 
-  MDAnalysis.core.flags['use_periodic_selections'] = True
-  MDAnalysis.core.flags['use_KDTree_routines'] = False
+.. note::
+   By default periodicity **is** taken into account with geometric
+   selections, i.e. selections will find atoms that are in different
+   periodic images.
+   To control this behaviour, use the boolean ``"periodic"`` keyword
+   argument of :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms`.
 
 
 Similarity and connectivity
@@ -215,14 +328,26 @@ bynum *index-range*
     selects atoms 5 through 10 inclusive. All atoms in the
     :class:`MDAnalysis.Universe` are consecutively numbered, and the index
     runs from 1 up to the total number of atoms.
-
+    
+id *index-range*
+    selects all atoms in a range of (1-based) inclusive indices, e.g. ``id 1`` selects 
+    all the atoms with id 1; ``id 5:7`` selects all atoms with ids 5, all atoms with 
+    ids 6 and all atoms with ids 7.
+     
 index *index-range*
     selects all atoms within a range of (0-based) inclusive indices,
     e.g. ``index 0`` selects the first atom in the universe; ``index 5:10``
     selects atoms 6 through 11 inclusive. All atoms in the
     :class:`MDAnalysis.Universe` are consecutively numbered, and the index
     runs from 0 up to the total number of atoms - 1.
-
+    
+    
+.. note::
+    Conventionally, ``id`` corresponds to the serial number in the PDB format. In contrast 
+    to ``bynum``, the ``id`` topology attribute is not necessarily continuous, ordered, or 
+    unique, and can be arbitrarily assigned by the user. 
+    
+     
 .. _pre-selections-label:
 
 Preexisting selections and modifiers
@@ -251,9 +376,9 @@ global *selection*
     :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` from a
     :class:`~MDAnalysis.core.universe.Universe`, ``global`` is ignored.
 
-.. deprecated:: 0.11
-   The use of ``fullgroup`` has been deprecated in favor of the equivalent
-   ``global group``.
+.. versionchanged:: 1.0.0
+   The ``fullgroup`` selection has now been removed. Please use the equivalent
+   ``global group`` selection.
 
 Dynamic selections
 ==================
@@ -305,110 +430,6 @@ across frames::
  >>> static_ag
  <UpdatingAtomGroup with 3 atoms>
 
-.. _instance-selectors:
-
-Instant selectors
-=================
-
-.. deprecated:: 0.16.2
-   *Instant selectors* will be removed in the 1.0 release in order to
-   streamline the MDAnalysis user interface. They do not seem to be
-   widely used anymore, can produce cryptic error messages, and are
-   not considered "Pythonic" (and therefore not very intuitive for new
-   users). See issue `#1377
-   <https://github.com/MDAnalysis/mdanalysis/issues/1377>`_ for more
-   details.
-
-
-For interactive work it becomes rather tedious to type common selection strings
-repeatedly. MDAnalysis automatically generates a number of *instant selectors*
-as attributes of the :class:`~MDAnalysis.core.universe.Universe` and number of
-other levels of the structural hierarchy, namely for
-:class:`~MDAnalysis.core.groups.AtomGroup`,
-:class:`~MDAnalysis.core.groups.Residue`,
-:class:`~MDAnalysis.core.groups.ResidueGroup`,
-:class:`~MDAnalysis.core.groups.Segment` and
-:class:`~MDAnalysis.core.groups.SegmentGroup`.
-
-Segment selector
-----------------
-
-.. deprecated:: 0.16.2
-   Use ``SegmentGroup[SegmentGroup.segids == '<name>']`` instead. Note that this
-   *always* returns a :class:`SegmentGroup` and *never* a :class:`Segment`
-   (unlike the instant selector).
-
-- ``universe.<segid>`` or ``universe.s<segid>`` (if *<segid>* starts with a
-  number)
-- returns a :class:`~MDAnalysis.core.groups.Segment`
-- works for :class:`~MDAnalysis.core.universe.Universe` and :class:`~MDAnalysis.core.groups.SegmentGroup`
-- example
-   >>> u.s4AKE
-   <Segment '4AKE'>
-
-Resid selector
---------------
-
-.. deprecated:: 0.16.2
-   Use ``Segment.residues[N-1]`` instead.
-
-- ``seg.r<N>`` selects residue with number ``<N>``
-- returns a :class:`~MDAnalysis.core.groups.Residue`
-- works for :class:`~MDAnalysis.core.groups.Segment` and :class:`~MDAnalysis.core.groups.SegmentGroup`
-- example
-    >>>  u.s4AKE.r100
-    <Residue 'GLY', 100>
-
-Residue name selector
----------------------
-
-.. deprecated:: 0.16.2
-   Use ``ResidueGroup[ResidueGroup.resnames == '<name>']`` or
-   ``Segment.residues[Segment.residues == '<name>']`` instead. Note that this
-   *always* returns a :class:`ResidueGroup` and *never* a :class:`Residue`
-   (unlike the instant selector).
-
-- ``seg.<resname>`` selects residues with residue name ``<resname>``
-- returns a :class:`~MDAnalysis.core.groups.ResidueGroup`
-- works for :class:`~MDAnalysis.core.groups.Segment` and :class:`~MDAnalysis.core.groups.SegmentGroup`
-- examples
-    >>> u.s4AKE.MET
-    <ResidueGroup [<Residue 'MET', 1>, <Residue 'MET', 21>, <Residue 'MET', 34>, <Residue 'MET', 53>, <Residue 'MET', 96>, <Residue 'MET', 174>]>
-    >>> u.s4AKE.CYS
-    <ResidueGroup [<Residue 'CYS', 77>]>
-    >>> u.s4AKE.TRP
-    NoDataError: No atoms defined for AtomGroup
-- The result is always a :class:`~MDAnalysis.core.groups.ResidueGroup`; if no
-  residues can be found then a :exc:`MDAnalysis.NoDataError` is raised.
-
-Atom name selector
-------------------
-
-.. deprecated:: 0.16.2
-   Use ``AtomGroup.select_atoms('name <name>')`` instead. Note that this
-   *always* returns an :class:`AtomGroup` and *never* an :class:`Atom` (unlike
-   the instant selector).
-
-- ``g.<atomname>`` selects a single atom or a group of atoms with name
-  ``<atomname>``
-- returns
-    - a :class:`~MDAnalysis.core.groups.Atom` if only a single atom was found,
-    - a :class:`~MDAnalysis.core.groups.AtomGroup` if more than one atom was
-      found, or
-    - raises a :exc:`MDAnalysis.SelectionError` if no atom was found.
-- works for any group derived from :class:`~MDAnalysis.core.groups.AtomGroup`
-  (i.e. all the ones mentioned above)
-- examples
-    >>> u.atoms.CG
-    >>> <AtomGroup with 125 atoms>
-    >>> u.s4AKE.CG
-    <AtomGroup with 125 atoms>
-    >>> u.s4AKE.r100.CA
-    < Atom 1516: name 'CA' of type '23' of resname 'GLY', resid 100 and segid '4AKE'>
-    >>> u.s4AKE.r100.CB
-    SelectionError: No atom in residue GLY with name CB
-
-
 .. _ordered-selections-label:
 
 Ordered selections
@@ -426,7 +447,7 @@ The most straightforward way to concatentate two AtomGroups is by using the
 ``+`` operator::
 
  >>> ordered = u.select_atoms("segid DMPC and resid 3 and name P") + u.select_atoms("segid DMPC and resid 2 and name P")
- >>> print list(ordered)
+ >>> print(list(ordered))
  [< Atom 570: name 'P' of type '180' of resid 'DMPC', 3 and 'DMPC'>,
  < Atom 452: name 'P' of type '180' of resid 'DMPC', 2 and 'DMPC'>]
 
@@ -434,7 +455,7 @@ A shortcut is to provide *two or more* selections to
 :meth:`~MDAnalysis.core.universe.Universe.select_atoms`, which then
 does the concatenation automatically::
 
- >>> print list(universe.select_atoms("segid DMPC and resid 3 and name P", "segid DMPC and resid 2 and name P"))
+ >>> print(list(universe.select_atoms("segid DMPC and resid 3 and name P", "segid DMPC and resid 2 and name P")))
  [< Atom 570: name 'P' of type '180' of resid 'DMPC', 3 and 'DMPC'>,
  < Atom 452: name 'P' of type '180' of resid 'DMPC', 2 and 'DMPC'>]
 
@@ -442,6 +463,6 @@ Just for comparison to show that a single selection string does not
 work as one might expect::
 
  # WRONG!
- >>> print list(universe.select_atoms("segid DMPC and ( resid 3 or resid 2 ) and name P"))
+ >>> print(list(universe.select_atoms("segid DMPC and (resid 3 or resid 2) and name P")))
  [< Atom 452: name 'P' of type '180' of resid 'DMPC', 2 and 'DMPC'>,
  < Atom 570: name 'P' of type '180' of resid 'DMPC', 3 and 'DMPC'>]

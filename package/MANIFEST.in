@@ -2,13 +2,14 @@ global-include *.pyx
 global-include *.pxd
 global-include *.c
 global-include *.h
-include MDAnalysis/coordinates/xdrfile/src/*
-include MDAnalysis/lib/src/pyqcprot/*
+global-include *.cpp
 include MDAnalysis/lib/src/transformations/*
 recursive-include doc * 
-include README INSTALL CHANGELOG LICENSE AUTHORS SUMMARY.txt
+include README INSTALL CHANGELOG LICENSE AUTHORS
 include setup.py
+global-exclude doc/html/html
 global-exclude *.pyc
 global-exclude *.pyo
 global-exclude *.pyd
 global-exclude *~
+global-exclude .git

@@ -32,8 +32,10 @@ from MDAnalysis import NoDataError
 from libcpp.set cimport set as cset
 from libcpp.map cimport map as cmap
 from libcpp.vector cimport vector
+from libcpp.utility cimport pair
 from cython.operator cimport dereference as deref
 
+np.import_array()
 
 __all__ = ['unique_int_1d', 'make_whole', 'find_fragments',
            '_sarrus_det_single', '_sarrus_det_multiple']
@@ -47,9 +49,9 @@ ctypedef cset[int] intset
 ctypedef cmap[int, intset] intmap
 
 
-@cython.boundscheck(False) # turn off bounds-checking for entire function
+@cython.boundscheck(False)  # turn off bounds-checking for entire function
 @cython.wraparound(False)  # turn off negative index wrapping for entire function
-def unique_int_1d(np.int64_t[:] values):
+def unique_int_1d(np.intp_t[:] values):
     """Find the unique elements of a 1D array of integers.
 
     This function is optimal on sorted arrays.
@@ -71,7 +73,7 @@ def unique_int_1d(np.int64_t[:] values):
     cdef int i = 0
     cdef int j = 0
     cdef int n_values = values.shape[0]
-    cdef np.int64_t[:] result = np.empty(n_values, dtype=np.int64)
+    cdef np.intp_t[:] result = np.empty(n_values, dtype=np.intp)
 
     if n_values == 0:
         return np.array(result)
@@ -88,6 +90,60 @@ def unique_int_1d(np.int64_t[:] values):
         result = unique_int_1d(np.sort(result))
 
     return np.array(result)
+
+
+@cython.boundscheck(False)
+def _in2d(np.intp_t[:, :] arr1, np.intp_t[:, :] arr2):
+    """Similar to np.in1d except works on 2d arrays
+
+    Parameters
+    ----------
+    arr1, arr2 : numpy.ndarray, shape (n,2) and (m, 2)
+       arrays of integers
+
+    Returns
+    -------
+    in1d : bool array
+      if an element of arr1 was in arr2
+
+    .. versionadded:: 1.1.0
+    """
+    cdef object out
+    cdef ssize_t i
+    cdef cset[pair[np.intp_t, np.intp_t]] hits
+    cdef pair[np.intp_t, np.intp_t] p
+
+    """
+    Construct a set from arr2 called hits
+    then for each entry in arr1, check if there's a hit in this set
+
+    python would look like:
+
+    hits = {(i, j) for (i, j) in arr2}
+    results = np.empty(arr1.shape[0])
+    for i, (x, y) in enumerate(arr1):
+        results[i] = (x, y) in hits
+
+    return results
+    """
+    if not arr1.shape[1] == 2 or not arr2.shape[1] == 2:
+        raise ValueError("Both arrays must be (n, 2) arrays")
+
+    for i in range(arr2.shape[0]):
+        p = pair[np.intp_t, np.intp_t](arr2[i, 0], arr2[i, 1])
+        hits.insert(p)
+
+    out = np.empty(arr1.shape[0], dtype=np.uint8)
+    cdef unsigned char[::1] results = out
+    for i in range(arr1.shape[0]):
+        p = pair[np.intp_t, np.intp_t](arr1[i, 0], arr1[i, 1])
+
+        if hits.count(p):
+            results[i] = True
+        else:
+            results[i] = False
+
+    return out.astype(bool)
 
 
 cdef intset difference(intset a, intset b):
@@ -129,7 +185,7 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
     atomgroup : AtomGroup
         The :class:`MDAnalysis.core.groups.AtomGroup` to work with.
         The positions of this are modified in place.  All these atoms
-        must belong in the same molecule or fragment.
+        must belong to the same molecule or fragment.
     reference_atom : :class:`~MDAnalysis.core.groups.Atom`
         The atom around which all other atoms will be moved.
         Defaults to atom 0 in the atomgroup.
@@ -204,7 +260,7 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
     # map of global indices to local indices
     ix_view = atomgroup.ix[:]
     natoms = atomgroup.ix.shape[0]
-    
+
     oldpos = atomgroup.positions
 
     # Nothing to do for less than 2 atoms
@@ -218,16 +274,16 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
         ref = 0
     else:
         # Sanity check
-        if not reference_atom in atomgroup:
+        if reference_atom not in atomgroup:
             raise ValueError("Reference atom not in atomgroup")
         ref = ix_to_rel[reference_atom.ix]
 
+    if atomgroup.dimensions is None:
+        raise ValueError("No box information available. "
+                         "You can set dimensions using 'atomgroup.dimensions='")
     box = atomgroup.dimensions
     for i in range(3):
         half_box[i] = 0.5 * box[i]
-        if box[i] == 0.0:
-            raise ValueError("One or more dimensions was zero.  "
-                             "You can set dimensions using 'atomgroup.dimensions='")
 
     ortho = True
     for i in range(3, 6):
@@ -352,6 +408,7 @@ cdef float _norm(float * a):
         result += a[n]*a[n]
     return sqrt(result)
 
+
 @cython.boundscheck(False)
 @cython.wraparound(False)
 cpdef np.float64_t _sarrus_det_single(np.float64_t[:, ::1] m):
@@ -364,6 +421,7 @@ cpdef np.float64_t _sarrus_det_single(np.float64_t[:, ::1] m):
     det += m[0, 2] * m[1, 0] * m[2, 1]
     det -= m[0, 2] * m[1, 1] * m[2, 0]
     return det
+
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -382,6 +440,7 @@ cpdef np.ndarray _sarrus_det_multiple(np.float64_t[:, :, ::1] m):
         det[i] += m[i, 0, 2] * m[i, 1, 0] * m[i, 2, 1]
         det[i] -= m[i, 0, 2] * m[i, 1, 1] * m[i, 2, 0]
     return np.array(det)
+
 
 @cython.boundscheck(False)
 @cython.wraparound(False)

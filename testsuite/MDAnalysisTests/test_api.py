@@ -24,27 +24,60 @@
 Test the user facing API is as we expect...
 """
 
-from __future__ import absolute_import
+import importlib
+import os
+from pathlib import PurePath
+
+import pytest
+from numpy.testing import assert_equal
 
 import MDAnalysis as mda
+mda_dirname = os.path.dirname(mda.__file__)
+
 
 def test_Universe():
     assert mda.Universe is mda.core.universe.Universe
 
-def test_as_Universe():
-    assert mda.as_Universe is mda.core.universe.as_Universe
 
 def test_fetch_mmtf():
     assert mda.fetch_mmtf is mda.coordinates.MMTF.fetch_mmtf
 
+
 def test_Writer():
     assert mda.Writer is mda.coordinates.core.writer
+
 
 def test_AtomGroup():
     assert mda.AtomGroup is mda.core.groups.AtomGroup
 
+
 def test_ResidueGroup():
     assert mda.ResidueGroup is mda.core.groups.ResidueGroup
 
+
 def test_SegmentGroup():
     assert mda.SegmentGroup is mda.core.groups.SegmentGroup
+
+
+def init_files():
+    """A generator yielding all MDAnalysis __init__ files."""
+    os.chdir(mda_dirname)
+    for root, dirs, files in os.walk("."):
+        if "__init__.py" in files:
+            submodule = ".".join(PurePath(root).parts)
+            submodule = "."*(len(submodule) > 0) + submodule
+            yield submodule
+
+
+@pytest.mark.parametrize('submodule', init_files())
+def test_all_import(submodule):
+    module = importlib.import_module("MDAnalysis" + submodule)
+    module_path = os.path.join(mda_dirname, *submodule.split("."))
+    if hasattr(module, "__all__"):
+        missing = [name for name in module.__all__
+                if name not in module.__dict__.keys()
+                    and name not in [os.path.splitext(f)[0] for
+                                        f in os.listdir(module_path)]]
+        assert_equal(missing, [], err_msg="{}".format(submodule) +
+                                          " has errors in __all__ list: " +
+                     "missing = {}".format(missing))

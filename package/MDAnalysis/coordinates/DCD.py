@@ -56,23 +56,18 @@ Classes
    :inherited-members:
 
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-from six.moves import range
-
 import os
 import errno
 import numpy as np
-from numpy.lib.utils import deprecate
 import struct
 import types
 import warnings
 
-from ..core import flags
 from .. import units as mdaunits  # use mdaunits instead of units to avoid a clash
-from ..exceptions import NoDataError
 from . import base, core
 from ..lib.formats.libdcd import DCDFile
 from ..lib.mdamath import triclinic_box
+from ..lib.util import store_init_arguments
 
 
 class DCDReader(base.ReaderBase):
@@ -101,6 +96,14 @@ class DCDReader(base.ReaderBase):
     degrees then it is assumed it is a new-style CHARMM unitcell (at least
     since c36b2) in which box vectors were recorded.
 
+    .. deprecated:: 2.4.0
+        DCDReader currently makes independent timesteps
+        by copying the :class:`Timestep` associated with the reader.
+        Other readers update the :class:`Timestep` inplace meaning all
+        references to the :class:`Timestep` contain the same data. The unique
+        independent :class:`Timestep` behaviour of the DCDReader is deprecated
+        will be changed in 3.0 to be the same as other readers
+
     .. warning::
         The DCD format is not well defined. Check your unit cell
         dimensions carefully, especially when using triclinic boxes.
@@ -118,6 +121,7 @@ class DCDReader(base.ReaderBase):
     flavor = 'CHARMM'
     units = {'time': 'AKMA', 'length': 'Angstrom'}
 
+    @store_init_arguments
     def __init__(self, filename, convert_units=True, dt=None, **kwargs):
         """
         Parameters
@@ -158,8 +162,11 @@ class DCDReader(base.ReaderBase):
         self.ts = self._frame_to_ts(frame, self.ts)
         # these should only be initialized once
         self.ts.dt = dt
-        if self.convert_units:
-            self.convert_pos_from_native(self.ts.dimensions[:3])
+        warnings.warn("DCDReader currently makes independent timesteps"
+                      " by copying self.ts while other readers update"
+                      " self.ts inplace. This behaviour will be changed in"
+                      " 3.0 to be the same as other readers",
+                       category=DeprecationWarning)
 
     @staticmethod
     def parse_n_atoms(filename, **kwargs):
@@ -194,12 +201,11 @@ class DCDReader(base.ReaderBase):
         if self._frame == self.n_frames - 1:
             raise IOError('trying to go over trajectory limit')
         if ts is None:
-            # use a copy to avoid that ts always points to the same reference
-            # removing this breaks lammps reader
+            #TODO remove copying the ts in 3.0 
             ts = self.ts.copy()
         frame = self._file.read()
         self._frame += 1
-        ts = self._frame_to_ts(frame, ts)
+        self._frame_to_ts(frame, ts)
         self.ts = ts
         return ts
 
@@ -251,7 +257,8 @@ class DCDReader(base.ReaderBase):
         ts.positions = frame.xyz
 
         if self.convert_units:
-            self.convert_pos_from_native(ts.dimensions[:3])
+            if ts.dimensions is not None:
+                self.convert_pos_from_native(ts.dimensions[:3])
             self.convert_pos_from_native(ts.positions)
 
         return ts
@@ -272,9 +279,7 @@ class DCDReader(base.ReaderBase):
                    start=None,
                    stop=None,
                    step=None,
-                   skip=None,
-                   order='afc',
-                   format=None):
+                   order='afc'):
         """Return a subset of coordinate data for an AtomGroup
 
         Parameters
@@ -300,38 +305,24 @@ class DCDReader(base.ReaderBase):
             of 'a', 'f', 'c' are allowed ie "fac" - return array
             where the shape is (frame, number of atoms,
             coordinates)
-        format : str (optional)
-            deprecated, equivalent to `order`
 
 
-        .. deprecated:: 0.16.0
-           `skip` has been deprecated in favor of the standard keyword `step`.
-
-        .. deprecated:: 0.17.0
-           `format` has been deprecated in favor of the standard keyword `order`.
+        .. versionchanged:: 1.0.0
+           `skip` and `format` keywords have been removed.
+        .. versionchanged:: 2.4.0
+            ValueError now raised instead of NoDataError for empty input
+            AtomGroup
         """
-        if skip is not None:
-            step = skip
-            warnings.warn(
-                "Skip is deprecated and will be removed in"
-                "in 1.0. Use step instead.",
-                category=DeprecationWarning)
 
         start, stop, step = self.check_slice_indices(start, stop, step)
 
         if asel is not None:
             if len(asel) == 0:
-                raise NoDataError(
+                raise ValueError(
                     "Timeseries requires at least one atom to analyze")
             atom_numbers = list(asel.indices)
         else:
             atom_numbers = list(range(self.n_atoms))
-
-        if format is not None:
-            warnings.warn(
-                "'format' is deprecated and will be removed in 1.0. Use 'order' instead",
-                category=DeprecationWarning)
-            order = format
 
         frames = self._file.readframes(
             start, stop, step, order=order, indices=atom_numbers)
@@ -344,6 +335,13 @@ class DCDWriter(base.WriterBase):
     The writer follows recent NAMD/VMD convention for the unitcell (box lengths
     in Å and angle-cosines, ``[A, cos(gamma), B, cos(beta), cos(alpha), C]``)
     and writes positions in Å and time in AKMA time units.
+
+
+    .. note::
+        When writing out timesteps without ``dimensions`` (i.e. set ``None``)
+        the :class:`DCDWriter` will write out a zeroed unitcell (i.e.
+        ``[0, 0, 0, 0, 0, 0]``). As this behaviour is poorly defined, it may
+        not match the expectations of other software.
 
     """
     format = 'DCD'
@@ -411,19 +409,42 @@ class DCDWriter(base.WriterBase):
             is_periodic=1,
             istart=istart)
 
-    def write_next_timestep(self, ts):
-        """Write timestep object into trajectory.
+    def _write_next_frame(self, ag):
+        """Write information associated with ``obj`` at current frame into trajectory
 
         Parameters
         ----------
-        ts: TimeStep
+        ag : AtomGroup or Universe
 
         See Also
         --------
         :meth:`DCDWriter.write`  takes a more general input
+
+
+        .. versionchanged:: 1.0.0
+           Added ability to pass AtomGroup or Universe.
+           Renamed from `write_next_timestep` to `_write_next_frame`.
+        .. versionchanged:: 2.0.0
+           Deprecated support for Timestep argument has now been removed.
+           Use AtomGroup or Universe as an input instead.
         """
+        try:
+            ts = ag.ts
+        except AttributeError:
+            try:
+                # Universe?
+                ts = ag.trajectory.ts
+            except AttributeError:
+                errmsg = "Input obj is neither an AtomGroup or Universe"
+                raise TypeError(errmsg) from None
         xyz = ts.positions.copy()
-        dimensions = ts.dimensions.copy()
+        try:
+            dimensions = ts.dimensions.copy()
+        except AttributeError:
+            wmsg = ('No dimensions set for current frame, zeroed unitcell '
+                    'will be written')
+            warnings.warn(wmsg)
+            dimensions = np.zeros(6)
 
         if self._convert_units:
             xyz = self.convert_pos_to_native(xyz, inplace=True)

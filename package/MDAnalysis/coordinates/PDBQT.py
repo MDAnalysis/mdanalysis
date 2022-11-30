@@ -38,7 +38,6 @@ available in this case).
    http://autodock.scripps.edu/
 """
 
-from __future__ import absolute_import
 import os
 import errno
 import itertools
@@ -167,12 +166,13 @@ class PDBQTReader(base.SingleFrameReaderBase):
         self.ts = self._Timestep.from_coordinates(
             coords,
             **self._ts_kwargs)
-        self.ts._unitcell[:] = unitcell
+        self.ts.dimensions = unitcell
         self.ts.frame = 0  # 0-based frame number
         if self.convert_units:
             # in-place !
             self.convert_pos_from_native(self.ts._pos)
-            self.convert_pos_from_native(self.ts._unitcell[:3])
+            if self.ts.dimensions is not None:
+                self.convert_pos_from_native(self.ts.dimensions[:3])
 
     def Writer(self, filename, **kwargs):
         """Returns a permissive (simple) PDBQTWriter for *filename*.
@@ -241,7 +241,12 @@ class PDBQTWriter(base.WriterBase):
            Frames now 0-based instead of 1-based
 
         """
-        u = selection.universe
+        try:
+            u = selection.universe
+        except AttributeError:
+            errmsg = "Input obj is neither an AtomGroup or Universe"
+            raise TypeError(errmsg) from None
+
         if frame is not None:
             u.trajectory[frame]  # advance to frame
         else:

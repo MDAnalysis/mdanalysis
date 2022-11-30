@@ -21,8 +21,6 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-from __future__ import print_function, absolute_import
-
 import pytest
 from numpy.testing import assert_equal
 
@@ -51,3 +49,14 @@ def test_search(universe):
     ns_res = ns.search(universe.atoms[20], 20)
     pns_res = pns.search(universe.atoms[20], 20)
     assert_equal(ns_res, pns_res)
+
+
+def test_zero(universe):
+    """Check if empty atomgroup, residue, segments are returned"""
+    ns = NeighborSearch.AtomNeighborSearch(universe.atoms[:10])
+    ns_res = ns.search(universe.atoms[20], 0.1, level='A')
+    assert ns_res == universe.atoms[[]]
+    ns_res = ns.search(universe.atoms[20], 0.1, level='R')
+    assert ns_res == universe.atoms[[]].residues
+    ns_res = ns.search(universe.atoms[20], 0.1, level='S')
+    assert ns_res == universe.atoms[[]].segments

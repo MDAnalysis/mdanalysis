@@ -28,24 +28,24 @@ Neighbor Search wrapper for MDAnalysis --- :mod:`MDAnalysis.lib.NeighborSearch`
 This module contains classes that allow neighbor searches directly with
 `AtomGroup` objects from `MDAnalysis`.
 """
-from __future__ import absolute_import
-
 import numpy as np
 from MDAnalysis.lib.distances import capped_distance
 from MDAnalysis.lib.util import unique_int_1d
-
-from MDAnalysis.core.groups import AtomGroup, Atom
+from MDAnalysis.core.groups import AtomGroup, SegmentGroup, ResidueGroup
+import numpy.typing as npt
+from typing import Optional, Union, List
 
 
 class AtomNeighborSearch(object):
     """This class can be used to find all atoms/residues/segments within the
     radius of a given query position.
 
-    For the neighbor search, this class uses the BioPython KDTree and its
-    wrapper PeriodicKDTree for non-periodic and periodic systems, respectively.
+    For the neighbor search, this class is a wrapper around
+    :class:`~MDAnalysis.lib.distances.capped_distance`.
     """
 
-    def __init__(self, atom_group, box=None, bucket_size=10):
+    def __init__(self, atom_group: AtomGroup,
+                 box: Optional[npt.ArrayLike] = None) -> None:
         """
 
         Parameters
@@ -54,49 +54,65 @@ class AtomNeighborSearch(object):
           list of atoms
         box : array-like or ``None``, optional, default ``None``
           Simulation cell dimensions in the form of
-          :attr:`MDAnalysis.trajectory.base.Timestep.dimensions` when
+          :attr:`MDAnalysis.trajectory.timestep.Timestep.dimensions` when
           periodic boundary conditions should be taken into account for
           the calculation of contacts.
-        bucket_size : int
-          Number of entries in leafs of the KDTree. If you suffer poor
-          performance you can play around with this number. Increasing the
-          `bucket_size` will speed up the construction of the KDTree but
-          slow down the search.
         """
         self.atom_group = atom_group
         self._u = atom_group.universe
         self._box = box
-        #self.kdtree = PeriodicKDTree(box=box, leafsize=bucket_size)
 
-    def search(self, atoms, radius, level='A'):
+    def search(self, atoms: AtomGroup,
+               radius: float,
+               level: str = 'A'
+               ) -> Optional[Union[AtomGroup, ResidueGroup, SegmentGroup]]:
         """
         Return all atoms/residues/segments that are within *radius* of the
         atoms in *atoms*.
 
         Parameters
         ----------
-        atoms : AtomGroup, MDAnalysis.core.groups.Atom
-          list of atoms
+        atoms : AtomGroup, MDAnalysis.core.groups.AtomGroup
+          AtomGroup object
         radius : float
           Radius for search in Angstrom.
         level : str
           char (A, R, S). Return atoms(A), residues(R) or segments(S) within
           *radius* of *atoms*.
+
+        Returns
+        -------
+        AtomGroup : :class:`~MDAnalysis.core.groups.AtomGroup`
+          When ``level='A'``, AtomGroup is being returned.
+        ResidueGroup : :class:`~MDAnalysis.core.groups.ResidueGroup`
+          When ``level='R'``, ResidueGroup is being returned.
+        SegmentGroup : :class:`~MDAnalysis.core.groups.SegmentGroup`
+          When ``level='S'``, SegmentGroup is being returned.
+
+
+        .. versionchanged:: 2.0.0
+           Now returns :class:`AtomGroup` (when empty this is now an empty
+           :class:`AtomGroup` instead of an empty list), :class:`ResidueGroup`,
+           or a :class:`SegmentGroup`
         """
         unique_idx = []
-        if isinstance(atoms, Atom):
-            positions = atoms.position.reshape(1, 3)
-        else:
-            positions = atoms.positions
-        
-        pairs = capped_distance(positions, self.atom_group.positions,
+        try:
+            # For atom groups, take the positions attribute
+            position = atoms.positions
+        except AttributeError:
+            # For atom, take the position attribute
+            position = atoms.position
+        pairs = capped_distance(position, self.atom_group.positions,
                                 radius, box=self._box, return_distances=False)
 
         if pairs.size > 0:
-            unique_idx = unique_int_1d(np.asarray(pairs[:, 1], dtype=np.int64))
+            unique_idx = unique_int_1d(np.asarray(pairs[:, 1], dtype=np.intp))
         return self._index2level(unique_idx, level)
 
-    def _index2level(self, indices, level):
+    def _index2level(self,
+                     indices: List[int],
+                     level: str
+                     ) -> Union[AtomGroup, ResidueGroup, SegmentGroup]:
         """Convert list of atom_indices in a AtomGroup to either the
         Atoms or segments/residues containing these atoms.
 
@@ -108,15 +124,12 @@ class AtomNeighborSearch(object):
           char (A, R, S). Return atoms(A), residues(R) or segments(S) within
           *radius* of *atoms*.
         """
-        n_atom_list = self.atom_group[indices]
+        atomgroup = self.atom_group[indices]
         if level == 'A':
-            if not n_atom_list:
-                return []
-            else:
-                return n_atom_list
+            return atomgroup
         elif level == 'R':
-            return list({a.residue for a in n_atom_list})
+            return atomgroup.residues
         elif level == 'S':
-            return list(set([a.segment for a in n_atom_list]))
+            return atomgroup.segments
         else:
             raise NotImplementedError('{0}: level not implemented'.format(level))

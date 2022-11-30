@@ -20,8 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
-
 import MDAnalysis as mda
 import pytest
 
@@ -37,9 +35,8 @@ class XYZBase(ParserBase):
     parser = mda.topology.XYZParser.XYZParser
     expected_n_residues = 1
     expected_n_segments = 1
-    expected_attrs = ['names']
+    expected_attrs = ['names', "elements"]
     guessed_attrs = ['types', 'masses']
-
 
 class TestXYZMini(XYZBase):
     ref_filename = XYZ_mini

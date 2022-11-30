@@ -40,12 +40,19 @@ Help is also available through the mailinglist at
 http://groups.google.com/group/mdnalysis-discussion
 
 Please report bugs and feature requests through the issue tracker at
-http://issues.mdanalysis.org
+https://github.com/MDAnalysis/mdanalysis/issues
 
 Citation
 --------
 
 When using MDAnalysis in published work, please cite
+
+    R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+    D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein. 
+    MDAnalysis: A Python package for the rapid analysis of molecular dynamics 
+    simulations. In S. Benthall and S. Rostrup, editors, Proceedings of the 15th 
+    Python in Science Conference, pages 98-105, Austin, TX, 2016. SciPy, 
+    doi:10.25080/majora-629e541a-00e
 
     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics
@@ -142,13 +149,14 @@ the OPLS/AA force field.
    doi:10.1016/j.jmb.2009.09.009
 
 """
-from __future__ import absolute_import
 
-__all__ = ['Universe', 'as_Universe', 'Writer', 'fetch_mmtf',
+__all__ = ['Universe', 'Writer', 'fetch_mmtf',
            'AtomGroup', 'ResidueGroup', 'SegmentGroup']
 
 import logging
 import warnings
+from typing import Dict
+
 
 logger = logging.getLogger("MDAnalysis.__init__")
 
@@ -161,18 +169,19 @@ except ImportError:
 
 # Registry of Readers, Parsers and Writers known to MDAnalysis
 # Metaclass magic fills these as classes are declared.
-_READERS = {}
-_SINGLEFRAME_WRITERS = {}
-_MULTIFRAME_WRITERS = {}
-_PARSERS = {}
-_SELECTION_WRITERS = {}
+_READERS: Dict = {}
+_READER_HINTS: Dict = {}
+_SINGLEFRAME_WRITERS: Dict = {}
+_MULTIFRAME_WRITERS: Dict = {}
+_PARSERS: Dict = {}
+_PARSER_HINTS: Dict = {}
+_SELECTION_WRITERS: Dict = {}
+_CONVERTERS: Dict = {}
 # Registry of TopologyAttributes
-_TOPOLOGY_ATTRS = {}
+_TOPOLOGY_ATTRS: Dict = {}   # {attrname: cls}
+_TOPOLOGY_TRANSPLANTS: Dict = {}   # {name: [attrname, method, transplant class]}
+_TOPOLOGY_ATTRNAMES: Dict = {}   # {lower case name w/o _ : name}
 
-# Storing anchor universes for unpickling groups
-import weakref
-_ANCHOR_UNIVERSES = weakref.WeakValueDictionary()
-del weakref
 
 # custom exceptions and warnings
 from .exceptions import (
@@ -195,14 +204,13 @@ warnings.filterwarnings(action='once', category=DeprecationWarning,
 from . import units
 
 # Bring some often used objects into the current namespace
-from .core.universe import Universe, as_Universe, Merge
+from .core.universe import Universe, Merge
 from .core.groups import AtomGroup, ResidueGroup, SegmentGroup
 from .coordinates.core import writer as Writer
 
 # After Universe import
 from .coordinates.MMTF import fetch_mmtf
-
-from .migration.ten2eleven import ten2eleven
+from . import converters
 
 from .due import due, Doi, BibTeX
 

@@ -20,12 +20,9 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
-
 from os.path import abspath, basename, dirname, expanduser, normpath, relpath, split, splitext
 
-import six
-from six.moves import range, cStringIO, StringIO
+from io import StringIO
 
 import pytest
 import numpy as np
@@ -36,7 +33,6 @@ import MDAnalysis
 import MDAnalysis.lib.util as util
 import MDAnalysis.tests.datafiles as datafiles
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
-from MDAnalysisTests import tempdir
 
 import os
 
@@ -63,17 +59,6 @@ class TestIsstream(object):
         with open(datafiles.PSF) as obj:
             assert_equal(util.isstream(obj), True)
 
-    def test_cStringIO_read(self):
-        with open(datafiles.PSF, "r") as f:
-            obj = cStringIO(f.read())
-        assert_equal(util.isstream(obj), True)
-        obj.close()
-
-    def test_cStringIO_write(self):
-        obj = cStringIO()
-        assert_equal(util.isstream(obj), True)
-        obj.close()
-
     def test_StringIO_read(self):
         with open(datafiles.PSF, "r") as f:
             obj = StringIO(f.read())
@@ -97,23 +82,25 @@ class TestNamedStream(object):
     textname = "jabberwock.txt"
 
     def test_closing(self):
-        obj = cStringIO("".join(self.text))
+        obj = StringIO("".join(self.text))
         ns = util.NamedStream(obj, self.textname, close=True)
         assert_equal(ns.closed, False)
         ns.close()
         assert_equal(ns.closed, True)
 
     def test_closing_force(self):
-        obj = cStringIO("".join(self.text))
+        obj = StringIO("".join(self.text))
         ns = util.NamedStream(obj, self.textname)
         assert_equal(ns.closed, False)
         ns.close()
         assert_equal(ns.closed, False)
         ns.close(force=True)
         assert_equal(ns.closed, True)
+        # Issue 3386 - calling close again shouldn't raise an error
+        ns.close()
 
-    def test_cStringIO_read(self):
-        obj = cStringIO("".join(self.text))
+    def test_StringIO_read(self):
+        obj = StringIO("".join(self.text))
         ns = util.NamedStream(obj, self.textname)
         assert_equal(ns.name, self.textname)
         assert_equal(str(ns), self.textname)
@@ -132,8 +119,8 @@ class TestNamedStream(object):
         assert_equal(len(ns.readlines()), self.numlines)
         ns.close(force=True)
 
-    def test_cStringIO_write(self):
-        obj = cStringIO()
+    def test_StringIO_write(self):
+        obj = StringIO()
         ns = util.NamedStream(obj, self.textname)
         ns.writelines(self.text)
         assert_equal(ns.name, self.textname)
@@ -144,8 +131,8 @@ class TestNamedStream(object):
         assert_equal(ns.read(20), "".join(self.text)[:20])
         ns.close(force=True)
 
-    def test_File_write(self):
-        with tempdir.in_tempdir():
+    def test_File_write(self, tmpdir):
+        with tmpdir.as_cwd():
             outfile = "lookingglas.txt"
             with open(outfile, "w") as obj:
                 with util.NamedStream(obj, outfile, close=True) as ns:
@@ -160,7 +147,7 @@ class TestNamedStream(object):
             assert_equal("".join(text), "".join(self.text))
 
     def test_matryoshka(self):
-        obj = cStringIO()
+        obj = StringIO()
         ns = util.NamedStream(obj, 'r')
         with pytest.warns(RuntimeWarning):
             ns2 = util.NamedStream(ns, 'f')
@@ -176,7 +163,7 @@ class TestNamedStream_filename_behavior(object):
     def create_NamedStream(self, name=None):
         if name is None:
             name = self.textname
-        obj = cStringIO()
+        obj = StringIO()
         return util.NamedStream(obj, name)
 
     @pytest.mark.parametrize('func', (
@@ -215,18 +202,15 @@ class TestNamedStream_filename_behavior(object):
                      err_msg=("os.path.{0}() does not work with "
                               "NamedStream").format(funcname))
 
-    @pytest.mark.skipif(True, reason='See #1534]')
     def test_expanduser_noexpansion_returns_NamedStream(self):
         ns = self.create_NamedStream("de/zipferlack.txt")  # no tilde ~ in name!
-        reference = ns
+        reference = ns.name
         value = os.path.expanduser(ns)
         assert_equal(value, reference,
                      err_msg=("os.path.expanduser() without '~' did not "
                               "return NamedStream --- weird!!"))
 
-    @pytest.mark.skipif(True, reason='See #1534')
     @pytest.mark.skipif("HOME" not in os.environ, reason='It is needed')
-    @pytest.mark.xfail
     def test_expandvars(self):
         name = "${HOME}/stories/jabberwock.txt"
         ns = self.create_NamedStream(name)
@@ -235,10 +219,9 @@ class TestNamedStream_filename_behavior(object):
         assert_equal(value, reference,
                      err_msg="os.path.expandvars() did not expand HOME")
 
-    @pytest.mark.skipif(True, reason='See #1534')
     def test_expandvars_noexpansion_returns_NamedStream(self):
         ns = self.create_NamedStream() # no $VAR constructs
-        reference = ns
+        reference = ns.name
         value = os.path.expandvars(ns)
         assert_equal(value, reference,
                      err_msg=("os.path.expandvars() without '$VARS' did not "
@@ -274,8 +257,10 @@ class _StreamData(object):
     }
 
     def __init__(self):
-        self.buffers = {name: "".join(open(fn).readlines())
-                        for name, fn in six.iteritems(self.filenames)}
+        self.buffers = {}
+        for name, fn in self.filenames.items():
+            with open(fn) as filed:
+                self.buffers[name] = "".join(filed.readlines())
         self.filenames['XYZ_PSF'] = u"bogus/path/mini.psf"
         self.buffers['XYZ_PSF'] = u"""\
 PSF CMAP
@@ -331,45 +316,42 @@ frame 3
     def as_StringIO(self, name):
         return StringIO(self.buffers[name])
 
-    def as_cStringIO(self, name):
-        return cStringIO(self.buffers[name])
-
     def as_NamedStream(self, name):
-        return util.NamedStream(self.as_cStringIO(name), self.filenames[name])
+        return util.NamedStream(self.as_StringIO(name), self.filenames[name])
 
 
-streamData = _StreamData()
-del _StreamData
+@pytest.fixture(scope='module')
+def streamData():
+    return _StreamData()
 
 
 # possibly add tests to individual readers instead?
 class TestStreamIO(RefAdKSmall):
-    def test_PrimitivePDBReader(self):
+    def test_PrimitivePDBReader(self, streamData):
         u = MDAnalysis.Universe(streamData.as_NamedStream('PDB'))
         assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
 
-
-    def test_PDBReader(self):
+    def test_PDBReader(self, streamData):
         try:
             u = MDAnalysis.Universe(streamData.as_NamedStream('PDB'))
         except Exception as err:
             raise pytest.fail("StreamIO not supported:\n>>>>> {0}".format(err))
         assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
 
-    def test_CRDReader(self):
+    def test_CRDReader(self, streamData):
         u = MDAnalysis.Universe(streamData.as_NamedStream('CRD'))
         assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
 
-    def test_PSFParser(self):
+    def test_PSFParser(self, streamData):
         u = MDAnalysis.Universe(streamData.as_NamedStream('PSF'))
         assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
 
-    def test_PSF_CRD(self):
+    def test_PSF_CRD(self, streamData):
         u = MDAnalysis.Universe(streamData.as_NamedStream('PSF'),
                                 streamData.as_NamedStream('CRD'))
         assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
 
-    def test_PQRReader(self):
+    def test_PQRReader(self, streamData):
         u = MDAnalysis.Universe(streamData.as_NamedStream('PQR'))
         assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
         assert_almost_equal(u.atoms.total_charge(), self.ref_charmm_totalcharge, 3,
@@ -377,7 +359,7 @@ class TestStreamIO(RefAdKSmall):
         assert_almost_equal(u.atoms.select_atoms('name H').charges, self.ref_charmm_Hcharges, 3,
                             "Charges for H atoms do not match.")
 
-    def test_PDBQTReader(self):
+    def test_PDBQTReader(self, streamData):
         u = MDAnalysis.Universe(streamData.as_NamedStream('PDBQT'))
         sel = u.select_atoms('backbone')
         assert_equal(sel.n_atoms, 796)
@@ -386,7 +368,7 @@ class TestStreamIO(RefAdKSmall):
         sel = u.select_atoms('segid B')
         assert_equal(sel.n_atoms, 896, "failed to select segment B")
 
-    def test_GROReader(self):
+    def test_GROReader(self, streamData):
         u = MDAnalysis.Universe(streamData.as_NamedStream('GRO'))
         assert_equal(u.atoms.n_atoms, 6)
         assert_almost_equal(u.atoms[3].position,
@@ -396,14 +378,14 @@ class TestStreamIO(RefAdKSmall):
                             10. * np.array([0.2519, 0.3140, -0.1734]), 3,  # manually convert nm/ps -> A/ps
                             err_msg="wrong velocity for water 2 OW")
 
-    def test_MOL2Reader(self):
+    def test_MOL2Reader(self, streamData):
         u = MDAnalysis.Universe(streamData.as_NamedStream('MOL2'))
         assert_equal(len(u.atoms), 49)
         assert_equal(u.trajectory.n_frames, 200)
         u.trajectory[199]
         assert_array_almost_equal(u.atoms.positions[0], [1.7240, 11.2730, 14.1200])
 
-    def test_XYZReader(self):
+    def test_XYZReader(self, streamData):
         u = MDAnalysis.Universe(streamData.as_NamedStream('XYZ_PSF'),
                                 streamData.as_NamedStream('XYZ'))
         assert_equal(len(u.atoms), 8)

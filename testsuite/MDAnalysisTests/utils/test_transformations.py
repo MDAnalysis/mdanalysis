@@ -20,9 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import division, absolute_import
-
-from six.moves import range
 from itertools import permutations
 
 import numpy as np
@@ -43,6 +40,10 @@ once for each backend.  This is done through parametrizing and passing
 in both versions of the function as an argument.
 
 This should ensure that both versions work and are covered!
+
+.. versionchanged:: 1.0.0
+   test_transformations_old_module was removed as core/transformations.py is
+   gone 
 """
 
 # tolerance for tests
@@ -731,20 +732,6 @@ class TestArcBall(object):
         ball.drag([200, 400])
         R = ball.matrix()
         assert_allclose(np.sum(R), 0.2055924)
-
-
-def test_transformations_old_module():
-    """test that MDAnalysis.core.transformations is still importable
-    (deprecated for 1.0)
-
-    """
-    try:
-        import MDAnalysis.core.transformations
-    except (ImportError, NameError):
-        raise AssertionError("MDAnalysis.core.transformations not importable. "
-                             "Only remove for 1.0")
-
-    # NOTE: removed this test with release 1.0 when we remove the stub
 
 
 def test_rotaxis_equal_vectors():

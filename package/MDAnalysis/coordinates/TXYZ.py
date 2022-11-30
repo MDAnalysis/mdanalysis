@@ -45,18 +45,14 @@ Classes
    :inherited-members:
 
 """
-from __future__ import absolute_import, division
-from six.moves import range
-from six import raise_from
-
 import numpy as np
 import os
 import errno
 
 from ..lib import util
 from . import base
-from ..lib.util import openany, cached
-
+from ..lib.util import openany, cached, store_init_arguments
+from .timestep import Timestep
 
 class TXYZReader(base.ReaderBase):
     """Reads from a TXYZ file"""
@@ -65,8 +61,9 @@ class TXYZReader(base.ReaderBase):
     format = ['TXYZ', 'ARC']
     # these are assumed!
     units = {'time': 'ps', 'length': 'Angstrom'}
-    _Timestep = base.Timestep
+    _Timestep = Timestep
 
+    @store_init_arguments
     def __init__(self, filename, **kwargs):
         super(TXYZReader, self).__init__(filename, **kwargs)
 
@@ -78,15 +75,15 @@ class TXYZReader(base.ReaderBase):
         self._cache = dict()
         # Check if file has box information saved
         with util.openany(self.filename) as inp:
-           inp.readline()
-           line = inp.readline()
-           # If second line has float at second position, we have box info
-           try:
-               float(line.split()[1])
-           except ValueError:
-               self.periodic = False
-           else:
-               self.periodic = True
+            inp.readline()
+            line = inp.readline()
+            # If second line has float at second position, we have box info
+            try:
+                float(line.split()[1])
+            except ValueError:
+                self.periodic = False
+            else:
+                self.periodic = True
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
 
         self._read_next_timestep()
@@ -155,7 +152,7 @@ class TXYZReader(base.ReaderBase):
             ts.frame += 1
             return ts
         except (ValueError, IndexError) as err:
-            raise_from(EOFError(err), None)
+            raise EOFError(err) from None
 
     def _reopen(self):
         self.close()

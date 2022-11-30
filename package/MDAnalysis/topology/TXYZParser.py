@@ -43,13 +43,12 @@ Classes
 
 """
 
-from __future__ import absolute_import
-
 import itertools
 import numpy as np
-from six.moves import zip
+import warnings
 
 from . import guessers
+from .tables import SYMB2Z
 from ..lib.util import openany
 from .base import TopologyReaderBase
 from ..core.topology import Topology
@@ -62,6 +61,7 @@ from ..core.topologyattrs import (
     Resids,
     Resnums,
     Segids,
+    Elements,
 )
 
 
@@ -72,8 +72,11 @@ class TXYZParser(TopologyReaderBase):
 
     - Atomnames
     - Atomtypes
+    - Elements (if all atom names are element symbols)
 
     .. versionadded:: 0.17.0
+    .. versionchanged:: 2.4.0
+       Adding the `Element` attribute if all names are valid element symbols.
     """
     format = ['TXYZ', 'ARC']
 
@@ -88,9 +91,9 @@ class TXYZParser(TopologyReaderBase):
             #header
             natoms = int(inf.readline().split()[0])
 
-            atomids = np.zeros(natoms, dtype=np.int)
+            atomids = np.zeros(natoms, dtype=int)
             names = np.zeros(natoms, dtype=object)
-            types = np.zeros(natoms, dtype=np.int)
+            types = np.zeros(natoms, dtype=object)
             bonds = []
             # Find first atom line, maybe there's box information
             fline = inf.readline()
@@ -115,7 +118,7 @@ class TXYZParser(TopologyReaderBase):
                 for other_atom in bonded_atoms:
                     other_atom = int(other_atom) - 1
                     if i < other_atom:
-                         bonds.append((i, other_atom))
+                        bonds.append((i, other_atom))
 
         # Guessing time
         masses = guessers.guess_masses(names)
@@ -129,7 +132,14 @@ class TXYZParser(TopologyReaderBase):
                  Resnums(np.array([1])),
                  Segids(np.array(['SYSTEM'], dtype=object)),
                  ]
-
+        if all(n.capitalize() in SYMB2Z for n in names):
+            attrs.append(Elements(np.array(names, dtype=object)))
+            
+        else:
+            warnings.warn("Element information is missing, elements attribute "
+                          "will not be populated. If needed these can be "
+                          "guessed using MDAnalysis.topology.guessers.")
+ 
         top = Topology(natoms, 1, 1,
                        attrs=attrs)
 

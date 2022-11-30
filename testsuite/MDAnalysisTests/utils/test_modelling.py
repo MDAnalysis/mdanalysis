@@ -20,8 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import, print_function
-
 import os
 import MDAnalysis
 import pytest
@@ -140,6 +138,10 @@ def u_ligand():
 def u_water():
     return MDAnalysis.Universe(merge_water)
 
+@pytest.fixture()
+def u_without_coords():
+    return MDAnalysis.Universe(PSF)
+
 
 class TestMerge(object):
     def test_merge(self, u_protein, u_ligand, u_water, tmpdir):
@@ -211,6 +213,11 @@ class TestMerge(object):
         with pytest.raises(ValueError):
             Merge(a, b)
 
+    def test_merge_without_coords(self, u_without_coords):
+        subset = MDAnalysis.Merge(u_without_coords.atoms[:10])
+        assert(isinstance(subset, MDAnalysis.Universe))
+        assert_equal(len(subset.atoms) , 10)
+
 
 class TestMergeTopology(object):
     """Test that Merge correct does topology"""
@@ -242,7 +249,7 @@ class TestMergeTopology(object):
 
         # merge_protein doesn't contain bond topology, so merged universe
         # shouldn't have one either
-        print(u_merge.atoms.bonds)
+        assert not hasattr(u_merge.atoms, 'bonds')
         # PDB reader yields empty Bonds group, which means bonds from
         # PSF/DCD survive the merge
         # assert(not hasattr(u_merge.atoms, 'bonds') or len(u_merge.atoms.bonds) == 0)

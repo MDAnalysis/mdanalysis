@@ -81,9 +81,6 @@ types and will raise a :exc:`NotImplementedError` if anything else is detected.
 .. _NetCDF: http://www.unidata.ucar.edu/software/netcdf
 
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from six.moves import range
 
 from . import base
 import scipy.io.netcdf

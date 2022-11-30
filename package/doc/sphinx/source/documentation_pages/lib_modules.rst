@@ -59,6 +59,8 @@ List of modules
    ./lib/transformations
    ./lib/qcprot
    ./lib/util
+   ./lib/correlations
+   ./lib/picklable_file_io
 
 Low level file formats
 ----------------------
@@ -75,3 +77,31 @@ Python-based projects.
 
    ./lib/formats/libmdaxdr
    ./lib/formats/libdcd
+
+Libmdanalysis
+-------------
+
+The :file:`__init__.pxd` file in :mod:`MDAnalysis.lib.libmdanalysis` provides a
+single place to ``cimport`` MDAnalysis' public Cython headers. This is recommended
+for advanced developers only.
+
+For example, imagine we are writing a Cython extension module in
+:mod:`MDAnalysis.lib` and we would like to make a function that creates a 
+:class:`MDAnalysis.coordinates.timestep.Timestep`
+
+.. code-block:: cython
+
+   from MDAnalysis.lib.libmdanalysis cimport timestep
+   # or we could use the relative cimport
+   # from .libmdanalysis cimport timestep
+   
+   cdef timestep.Timestep make_timestep(int natoms):
+      cdef timestep.Timestep ts = timestep.Timestep(natoms)
+      return ts
+
+
+Currently modules that are exposed as public Cython headers are:
+
+- :mod:`MDAnalysis.coordinates.timestep`
+
+For more details consult the source :mod:`MDAnalysis.lib.libmdanalysis.__init__.pxd`

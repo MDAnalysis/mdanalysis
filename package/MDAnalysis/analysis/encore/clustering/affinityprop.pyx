@@ -32,6 +32,8 @@ import numpy
 cimport numpy
 cimport cython
 
+numpy.import_array()
+
 cdef extern from "ap.h":
     int CAffinityPropagation(float*, int, float, int, int, bint, long*)
 

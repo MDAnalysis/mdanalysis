@@ -20,9 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import division, absolute_import
-from six.moves import zip
-
 import numpy as np
 from numpy.testing import assert_equal
 import pytest
@@ -60,7 +57,7 @@ class TestTransTableCopy(object):
         refTT.n_atoms = -10
         assert new.n_atoms == old
 
-    @pytest.mark.parametrize('attr', ['_AR', '_RA', '_RS', '_SR'])
+    @pytest.mark.parametrize('attr', ['_AR', 'RA', '_RS', 'SR'])
     def test_AR(self, refTT, attr):
         new = refTT.copy()
         ref = getattr(refTT, attr)
@@ -69,7 +66,7 @@ class TestTransTableCopy(object):
         for a, b in zip(ref, other):
             assert_equal(a, b)
 
-    @pytest.mark.parametrize('attr', ['_AR', '_RA', '_RS', '_SR'])
+    @pytest.mark.parametrize('attr', ['_AR', 'RA', '_RS', 'SR'])
     def test_AR_independent(self, refTT, attr):
         new = refTT.copy()
         ref = getattr(refTT, attr)
@@ -112,7 +109,6 @@ TA_FILLER = {
     (ta.Tempfactors, float),
     (ta.Masses, float),
     (ta.Charges, float),
-    (ta.Bfactors, float),
     (ta.Occupancies, float),
     (ta.AltLocs, object),
     (ta.Resids, int),

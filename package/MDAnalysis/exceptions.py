@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
@@ -27,12 +27,17 @@ Custom exceptions and warnings --- :mod:`MDAnalysis.exceptions`
 
 """
 
+
 class SelectionError(Exception):
     """Raised when a atom selection failed."""
 
 
-class NoDataError(ValueError):
-    """Raised when empty input is not allowed or required data are missing."""
+class NoDataError(ValueError, AttributeError):
+    """Raised when empty input is not allowed or required data are missing.
+
+    .. versionchanged:: 1.0.0
+        Now a subclass of AttributeError as well as ValueError
+    """
 
 
 class ApplicationError(OSError):

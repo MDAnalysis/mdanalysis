@@ -20,7 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
 import MDAnalysis as mda
 import os
 import pytest
@@ -33,7 +32,7 @@ from numpy.testing import (
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.datafiles import PQR
-from MDAnalysisTests import tempdir, make_Universe
+from MDAnalysisTests import make_Universe
 
 
 class TestPQRReader(_SingleFrameReader):
@@ -50,7 +49,7 @@ class TestPQRReader(_SingleFrameReader):
             "Total charge (in CHARMM) does not match expected value.")
 
     def test_hydrogenCharges(self):
-        assert_almost_equal(self.universe.atoms.H.charges,
+        assert_almost_equal(self.universe.select_atoms('name H').charges,
                             self.ref_charmm_Hcharges, 3,
                             "Charges for H atoms do not match.")
 
@@ -67,6 +66,10 @@ class TestPQRReader(_SingleFrameReader):
         assert_almost_equal(
             ag.charges, self.ref_charmm_ProNcharges, 3,
             "Charges for N atoms in Pro residues do not match.")
+
+    def test_dimensions(self):
+        # Issue #3327 - dimensions should always be set to None
+        assert self.universe.dimensions is None
 
 
 class TestPQRWriter(RefAdKSmall):

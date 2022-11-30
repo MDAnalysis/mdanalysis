@@ -20,7 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
+from numpy.testing import assert_almost_equal
 
 import MDAnalysis as mda
 
@@ -54,7 +54,7 @@ class TestHoomdXMLParser(ParserBase):
     def test_dihedrals(self, top):
         assert len(top.dihedrals.values) == 576
         assert isinstance(top.dihedrals.values[0], tuple)
-    
+
     def test_impropers(self, top):
         assert len(top.impropers.values) == 0
 
@@ -75,3 +75,12 @@ class TestHoomdXMLParser(ParserBase):
         for b in ((0, 1, 2, 3), (1, 2, 3, 4), (2, 3, 4, 5), (3, 4, 5, 6)):
             assert (b in vals) or (b[::-1] in vals)
         assert ((0, 250, 350, 450) not in vals)
+
+    def test_read_masses(self, top):
+        assert_almost_equal(top.masses.values, 1.0)
+
+    def test_read_charges(self, top):
+        # note: the example topology file contains 0 for all charges which
+        # is the same as the default so this test does not fully test
+        # reading of charges from the file (#2888)
+        assert_almost_equal(top.charges.values, 0.0)
