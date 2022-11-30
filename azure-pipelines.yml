@@ -128,6 +128,9 @@ jobs:
       cd ..
     displayName: 'Build MDAnalysis'
     condition: and(succeeded(), eq(variables['BUILD_TYPE'], 'normal'))
+  - script: >-
+      pip list
+    displayName: 'list of installed python packages'
   - powershell: |
       cd testsuite
       pytest MDAnalysisTests --disable-pytest-warnings -n 2 -rsx --cov=MDAnalysis
