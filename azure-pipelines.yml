@@ -74,7 +74,7 @@ jobs:
   # "manually"
   - powershell: |
       cd package
-      python -m pip install .
+      python -m pip -vvv install .
       cd ..
     displayName: 'Build MDAnalysis (wheel)'
     condition: and(succeeded(), eq(variables['BUILD_TYPE'], 'wheel'))
