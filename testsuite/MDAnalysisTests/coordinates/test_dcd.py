@@ -20,6 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from pathlib import Path
 import numpy as np
 
 import MDAnalysis as mda
@@ -424,3 +425,14 @@ def test_ts_time(universe):
                  for ts in u.trajectory]
     times = [ts.time for ts in u.trajectory]
     assert_almost_equal(times, ref_times, decimal=5)
+
+
+def test_pathlib():
+    # regression test for DCD path of
+    # gh-2497
+    top = Path(PSF)
+    traj = Path(DCD)
+    u = mda.Universe(top, traj)
+    # we really only care that pathlib
+    # object handling worked
+    assert u.atoms.n_atoms == 3341
