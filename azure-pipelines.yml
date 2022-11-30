@@ -37,7 +37,7 @@ jobs:
           BUILD_TYPE: 'normal'
           imageName: 'windows-2019'
         Win-Python310-64bit-full-wheel:
-          PYTHON_VERSION: '3.10'
+          PYTHON_VERSION: '3.9'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
           NUMPY_MIN: '1.21.6'
