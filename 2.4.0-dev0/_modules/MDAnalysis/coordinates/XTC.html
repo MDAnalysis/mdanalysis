@@ -133,6 +133,8 @@
 <span class="sd">MDAnalysis.coordinates.TRR: Read and write GROMACS TRR trajectory files.</span>
 <span class="sd">MDAnalysis.coordinates.XDR: BaseReader/Writer for XDR based formats</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">errno</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
 <span class="kn">from</span> <span class="nn">.XDR</span> <span class="kn">import</span> <span class="n">XDRBaseReader</span><span class="p">,</span> <span class="n">XDRBaseWriter</span>
 <span class="kn">from</span> <span class="nn">..lib.formats.libmdaxdr</span> <span class="kn">import</span> <span class="n">XTCFile</span>
@@ -232,11 +234,34 @@
 <span class="sd">    See :ref:`Notes on offsets &lt;offsets-label&gt;` for more information about</span>
 <span class="sd">    offsets.</span>
 
+
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;XTC&#39;</span>
     <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="s1">&#39;ps&#39;</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;nm&#39;</span><span class="p">}</span>
     <span class="n">_writer</span> <span class="o">=</span> <span class="n">XTCWriter</span>
     <span class="n">_file</span> <span class="o">=</span> <span class="n">XTCFile</span>
+
+    <span class="k">def</span> <span class="nf">_read_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        copy next frame into timestep</span>
+<span class="sd">        </span>
+<span class="sd">        versionadded:: 2.4.0</span>
+<span class="sd">            XTCReader implements this method so that it can use</span>
+<span class="sd">            read_direct_x method of XTCFile to read the data directly</span>
+<span class="sd">            into the timestep rather than copying it from a temporary array.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">EIO</span><span class="p">,</span> <span class="s1">&#39;trying to go over trajectory limit&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
+        <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_positions</span><span class="p">:</span>
+            <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xdr</span><span class="o">.</span><span class="n">read_direct_x</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xdr</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frame_to_ts</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">ts</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ts</span>
 
     <span class="k">def</span> <span class="nf">_frame_to_ts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;convert a xtc-frame to a mda TimeStep&quot;&quot;&quot;</span>

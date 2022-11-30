@@ -73,6 +73,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.offsets"><code class="docutils literal notranslate"><span class="pre">TRRFile.offsets</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.open"><code class="docutils literal notranslate"><span class="pre">TRRFile.open()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.read"><code class="docutils literal notranslate"><span class="pre">TRRFile.read()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.read_direct_xvf"><code class="docutils literal notranslate"><span class="pre">TRRFile.read_direct_xvf()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.seek"><code class="docutils literal notranslate"><span class="pre">TRRFile.seek()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.set_offsets"><code class="docutils literal notranslate"><span class="pre">TRRFile.set_offsets()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.tell"><code class="docutils literal notranslate"><span class="pre">TRRFile.tell()</span></code></a></li>
@@ -85,6 +86,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.offsets"><code class="docutils literal notranslate"><span class="pre">XTCFile.offsets</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.open"><code class="docutils literal notranslate"><span class="pre">XTCFile.open()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.read"><code class="docutils literal notranslate"><span class="pre">XTCFile.read()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.read_direct_x"><code class="docutils literal notranslate"><span class="pre">XTCFile.read_direct_x()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.seek"><code class="docutils literal notranslate"><span class="pre">XTCFile.seek()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.set_offsets"><code class="docutils literal notranslate"><span class="pre">XTCFile.set_offsets()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.tell"><code class="docutils literal notranslate"><span class="pre">XTCFile.tell()</span></code></a></li>
@@ -189,6 +191,9 @@ line. Additionally the context-manager protocoll is supported as well.</p>
 <p class="rubric">Notes</p>
 <p>This class can be pickled. The pickle will store filename, mode, current
 frame and offsets</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.4.0: </span>Added read_direct_xvf method to read into an existing positions array</p>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.formats.libmdaxdr.TRRFile.calc_offsets">
 <span class="sig-name descname"><span class="pre">calc_offsets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.calc_offsets" title="Permalink to this definition"></a></dt>
@@ -255,6 +260,36 @@ frame and offsets</p>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.11)"><strong>IOError</strong></a> – </p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.lib.formats.libmdaxdr.TRRFile.read_direct_xvf">
+<span class="sig-name descname"><span class="pre">read_direct_xvf</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile.read_direct_xvf" title="Permalink to this definition"></a></dt>
+<dd><p>Read next frame in the TRR file with positions read directly into
+a pre-existing array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>positions</strong> (<em>np.ndarray</em>) – positions array to read positions into</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>frame</strong> – namedtuple with frame information</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>libmdaxdr.TRRFrame</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">TRRFrame</span></code>, <a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile" title="MDAnalysis.lib.formats.libmdaxdr.XTCFile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XTCFile</span></code></a></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.11)"><strong>IOError</strong></a> – </p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.4.0.</span></p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -336,6 +371,9 @@ line. Additionally the context-manager protocoll is supported as well.</p>
 <p class="rubric">Notes</p>
 <p>This class can be pickled. The pickle will store filename, mode, current
 frame and offsets</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.4.0: </span>Added read_direct_x method to read into an existing positions array</p>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.formats.libmdaxdr.XTCFile.calc_offsets">
 <span class="sig-name descname"><span class="pre">calc_offsets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.calc_offsets" title="Permalink to this definition"></a></dt>
@@ -402,6 +440,36 @@ frame and offsets</p>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.11)"><strong>IOError</strong></a> – </p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.lib.formats.libmdaxdr.XTCFile.read_direct_x">
+<span class="sig-name descname"><span class="pre">read_direct_x</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libmdaxdr.XTCFile.read_direct_x" title="Permalink to this definition"></a></dt>
+<dd><p>Read next frame in the XTC file with positions read directly into
+a pre-existing array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>positions</strong> (<em>np.ndarray</em>) – positions array to read positions into</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>frame</strong> – namedtuple with frame information</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>libmdaxdr.XTCFrame</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">XTCFrame</span></code>, <a class="reference internal" href="#MDAnalysis.lib.formats.libmdaxdr.TRRFile" title="MDAnalysis.lib.formats.libmdaxdr.TRRFile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TRRFile</span></code></a></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.11)"><strong>IOError</strong></a> – </p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.4.0.</span></p>
+</div>
 </dd></dl>
 
 <dl class="py method">
