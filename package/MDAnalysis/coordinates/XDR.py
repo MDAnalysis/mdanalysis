@@ -120,7 +120,8 @@ class XDRBaseReader(base.ReaderBase):
        XDR offsets read from trajectory if offsets file read-in fails
     .. versionchanged:: 2.0.0
        Add a InterProcessLock when generating offsets
-
+    .. versionchanged:: 2.4.0
+       Use a direct read into ts attributes
     """
     @store_init_arguments
     def __init__(self, filename, convert_units=True, sub=None,
@@ -287,17 +288,6 @@ class XDRBaseReader(base.ReaderBase):
             self._xdr.seek(i)
             timestep = self._read_next_timestep()
         return timestep
-
-    def _read_next_timestep(self, ts=None):
-        """copy next frame into timestep"""
-        if self._frame == self.n_frames - 1:
-            raise IOError(errno.EIO, 'trying to go over trajectory limit')
-        if ts is None:
-            ts = self.ts
-        frame = self._xdr.read()
-        self._frame += 1
-        self._frame_to_ts(frame, ts)
-        return ts
 
     def Writer(self, filename, n_atoms=None, **kwargs):
         """Return writer for trajectory format"""
