@@ -21,6 +21,11 @@ The rules for this file:
 Fixes
   * Ensure Timestep passed to transform is the same as AtomGroup Trajectory 
     Timestep (Issue #3657)
+  * Update hbond analysis doc string to use exclusive bound language 
+    (Issue #3847)
+  * XTC and TRR readers now fail with IOError when a status except EOK (=0) is
+    detected on reading a frame instead of silently continuing
+  * Consolidate license files across MDAnalysis library packages (PR #3939)
   * Kwargs passed through to `MemoryReader` when using `transfer_to_memory()`
     and `in_memory=True`.
   * NoDataError raised on empty atomgroup provided to `DCDReader.timeseries` 
@@ -38,12 +43,21 @@ Fixes
     (e.g. bonds, angles) (PR #3779).
 
 Enhancements
+  * Added ability for hbond analysis to use types when resnames are not 
+    present (Issue #3847)
+  * Added explanatory warnings when hbond analysis doesn't find any hbonds
+    (Issue #3847)
+  * Improve C content of libxdr Cython, add `read_direct` methods to read 
+    coordinates, velocities and forces directly into memoryviews of `Timestep`
+    attributes, make `TRR` timestep have positions, velocities and forces on
+    `__init__`. (Issue #3891 PR  #3892).
+  * Improve C content of libdcd Cython (Issue #3882, PR #3888)
   * The timeseries method for exporting coordinates from multiple frames to a
     NumPy array was added to ProtoReader (PR #3890)
   * MDAnalysis now officially supports py3.11 (Issue #3878)
   * LAMMPSDump Reader optionally unwraps trajectories with image flags upon 
-    loading (#3843
-  * LAMMPSDump Reader now imports velocities and forces (#3843)
+    loading (Issue #3843)
+  * LAMMPSDump Reader now imports velocities and forces (Issue #3843)
   * Minimum NumPy version for py3.11 is now set to 1.23.2.
   * Added decorator to check for an empty atom group, applied in topological 
     attributes(Issue #3837)
@@ -74,6 +88,8 @@ Changes
   * adding element attribute to TXYZParser if all atom names are valid element symbols (PR #3826)
 
 Deprecations
+  * Add deprecation warning for `timestep` copying in DCDReader
+    (Issue #3889, PR #3888)
   * Add deprecation warning for inclusive stop indexing in
     MemoryReader.timeseries (#PR 3894)
 

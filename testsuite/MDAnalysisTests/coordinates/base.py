@@ -443,6 +443,22 @@ class BaseReaderTest(object):
         assert_equal(len(reader), len(reader_p))
         assert_equal(reader.ts, reader_p.ts,
                      "Timestep is changed after pickling")
+    
+    def test_frame_collect_all_same(self, reader):
+        # check that the timestep resets so that the base reference is the same 
+        # for all timesteps in a collection with the exception of memoryreader
+        # and DCDReader
+        if isinstance(reader, mda.coordinates.memory.MemoryReader):
+            pytest.xfail("memoryreader allows independent coordinates") 
+        if isinstance(reader, mda.coordinates.DCD.DCDReader):
+            pytest.xfail("DCDReader allows independent coordinates."
+                          "This behaviour is deprecated and will be changed"
+                          "in 3.0")
+        collected_ts = []
+        for i, ts in enumerate(reader):
+            collected_ts.append(ts.positions)
+        for array  in collected_ts:
+            assert_allclose(array, collected_ts[0])
 
     @pytest.mark.parametrize('order', ('fac', 'fca', 'afc', 'acf', 'caf', 'cfa'))
     def test_timeseries_shape(self, reader, order):

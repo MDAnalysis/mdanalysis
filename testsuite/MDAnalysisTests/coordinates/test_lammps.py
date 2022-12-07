@@ -268,7 +268,7 @@ class TestLAMMPSDCDReader(RefLAMMPSDataDCD):
         assert_equal(u.trajectory.n_frames, self.n_frames)
 
     def test_dimensions(self, u):
-        mean_dimensions = np.mean([ts.dimensions for ts in u.trajectory],
+        mean_dimensions = np.mean([ts.dimensions.copy() for ts in u.trajectory],
                                   axis=0)
         assert_allclose(mean_dimensions, self.mean_dimensions)
 
