@@ -1849,10 +1849,10 @@ class Masses(AtomAttr):
         """
         atomgroup = group.atoms
         eig_vals = atomgroup.gyration_moments(wrap=wrap, unwrap=unwrap, compound=compound)
-        try:
+        if len(eig_vals.shape) > 1:
             shape = 27.0 * np.prod(eig_vals - np.mean(eig_vals, axis=1), axis=1
                                    ) / np.power(np.sum(eig_vals, axis=1), 3)
-        except:
+        else:
             shape = 27.0 * np.prod(eig_vals - np.mean(eig_vals)
                                    ) / np.power(np.sum(eig_vals), 3)
 
@@ -1894,7 +1894,7 @@ class Masses(AtomAttr):
         """
         atomgroup = group.atoms
         eig_vals = atomgroup.gyration_moments(wrap=wrap, unwrap=unwrap, compound=compound)
-        if len(eig_vals.shape()) > 1:
+        if len(eig_vals.shape) > 1:
             shape = (3.0 / 2.0) * (np.sum((eig_vals - np.mean(eig_vals, axis=1))**2, axis=1) /
                                    np.sum(eig_vals, axis=1)**2)
         else:
