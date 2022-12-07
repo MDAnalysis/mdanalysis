@@ -47,6 +47,8 @@ Enhancements
   * Added benchmarks for bonds topology attribute (Issue #3785, PR #3806)
 
 Changes
+ * Minimum numpy version for python 3.10 and Windows has been raised to 1.22.3
+   (PR #3903)
  * Auxiliary; determination of representative frames: The default value for
    cutoff is now None, not -1. Negative values are now turned
    to None. (PR #3749)
