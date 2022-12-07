@@ -28,7 +28,7 @@ requires = [
 name = "MDAnalysis"
 dynamic = ['version',]
 license = {file = "LICENSE"}
-readmer = "README.rst"
+readme = "README.rst"
 description = "An object-oriented toolkit to analyze molecular dynamics trajectories."
 authors = [
     {name = 'MDAnalysis Development Team', email = 'mdanalysis@numfocus.org'}
