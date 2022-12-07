@@ -1036,14 +1036,10 @@ def sequence_alignment(mobile, reference, match_score=2, mismatch_penalty=-1,
     AlignmentTuple = collections.namedtuple(
         "Alignment",
         ["seqA", "seqB", "score", "start", "end"])
-    # extract sequences (there's no obvious way to get the character
-    # representation with gaps by other means from the new
-    # Bio.Align.PairwiseAlignment instance)
-    seqA, _, seqB, _ = topalignment.format().split("\n")
-
     # start/stop are not particularly meaningful and there's no obvious way to
     # get the old pairwise2 start/stop from the new PairwiseAligner output.
-    return AlignmentTuple(seqA, seqB, topalignment.score,
+    return AlignmentTuple(topalignment[0], topalignment[1],
+                          topalignment.score,
                           0, max(reference.n_residues, mobile.n_residues))
 
 def fasta2select(fastafilename, is_aligned=False,
