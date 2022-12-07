@@ -64,7 +64,7 @@ class PeriodicKDTree(object):
 
     """
 
-    def __init__(self, box: npt.ArrayLike = None, leafsize: int = 10) -> None:
+    def __init__(self, box: Optional[npt.ArrayLike] = None, leafsize: int = 10) -> None:
         """
 
         Parameters
