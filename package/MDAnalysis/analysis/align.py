@@ -1003,6 +1003,28 @@ def sequence_alignment(mobile, reference, match_score=2, mismatch_penalty=-1,
         Tuple of top sequence matching output `('Sequence A', 'Sequence B', score,
         begin, end)`
 
+    Notes
+    -----
+    If you prefer to work directly with :mod:`Bio.Align` objects then you can
+    run your alignment with :class:`Bio.Alig.PairwiseAligner` as ::
+
+      import Bio.Align.PairwiseAligner
+
+      aligner = Bio.Align.PairwiseAligner(
+         mode="global",
+         match_score=match_score,
+         mismatch_score=mismatch_penalty,
+         open_gap_score=gap_penalty,
+         extend_gap_score=gapextension_penalty)
+      aln = aligner.align(reference.residues.sequence(format="Seq"),
+                          mobile.residues.sequence(format="Seq"))
+
+      # choose top alignment with highest score
+      topalignment = aln[0]
+
+    The ``topalignment`` is a :class:`Bio.Align.PairwiseAlignment` instance
+    that can be used in your bioinformatics workflows.
+
     See Also
     --------
     BioPython documentation for `PairwiseAligner`_. Alternatively, use
@@ -1041,6 +1063,7 @@ def sequence_alignment(mobile, reference, match_score=2, mismatch_penalty=-1,
     return AlignmentTuple(topalignment[0], topalignment[1],
                           topalignment.score,
                           0, max(reference.n_residues, mobile.n_residues))
+
 
 def fasta2select(fastafilename, is_aligned=False,
                  ref_resids=None, target_resids=None,
