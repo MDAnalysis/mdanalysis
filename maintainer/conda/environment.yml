@@ -28,7 +28,6 @@ dependencies:
   - tqdm>=4.43.0
   - sphinxcontrib-bibtex
   - sphinx_rtd_theme
-  - pyyaml>=3.02
   - pip:
       - duecredit
       - parmed
