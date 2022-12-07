@@ -40,7 +40,7 @@ jobs:
           PYTHON_VERSION: '3.10'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
-          NUMPY_MIN: '1.21.6'
+          NUMPY_MIN: '1.22.3'
           imageName: 'windows-2019'
         Win-Python38-64bit-full-wheel:
           PYTHON_VERSION: '3.8'
@@ -74,7 +74,7 @@ jobs:
   # "manually"
   - powershell: |
       cd package
-      python -m pip -vv install .
+      python -m pip -v install .
       cd ..
     displayName: 'Build MDAnalysis (wheel)'
     condition: and(succeeded(), eq(variables['BUILD_TYPE'], 'wheel'))
@@ -116,6 +116,7 @@ jobs:
       networkx
       parmed
       tidynamics>=1.0.0
+      rdkit>=2020.03.1
     displayName: 'Install additional dependencies for 64-bit tests'
     condition: and(succeeded(), eq(variables['PYTHON_ARCH'], 'x64'))
   - powershell: |
@@ -127,9 +128,6 @@ jobs:
       cd ..
     displayName: 'Build MDAnalysis'
     condition: and(succeeded(), eq(variables['BUILD_TYPE'], 'normal'))
-  - script: >-
-      pip list
-    displayName: 'list of installed python packages'
   - powershell: |
       cd testsuite
       pytest MDAnalysisTests --disable-pytest-warnings -n 2 -rsx --cov=MDAnalysis
