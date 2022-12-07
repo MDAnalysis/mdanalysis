@@ -995,6 +995,7 @@ class TestUnwrapFlag(object):
                       [-211.8997285, 7059.07470427, -91.32156884],
                       [-721.50785456, -91.32156884, 6509.31735029]]),
         'asphericity': np.array([0.135, 0.047, 0.094]),
+        'shape_parameter': np.array([-0.112, -0.004,  0.02]),
     }
 
     ref_Unwrap_residues = {
@@ -1010,6 +1011,7 @@ class TestUnwrapFlag(object):
                                        [-1330.617, 19256.178, 3354.832],
                                        [2925.883,  3354.832, 8989.946]]),
         'asphericity': np.array([0.61 , 0.701, 0.381]),
+        'shape_parameter': np.array([-0.461,  0.35 ,  0.311]),
     }
 
     ref_noUnwrap = {
@@ -1019,6 +1021,7 @@ class TestUnwrapFlag(object):
                                        [0.0, 98.6542, 0.0],
                                        [0.0, 0.0, 98.65421327]]),
         'asphericity': 1.0,
+        'shape_parameter': 1.0,
     }
 
     ref_Unwrap = {
@@ -1028,6 +1031,7 @@ class TestUnwrapFlag(object):
                                        [0.0, 132.673, 0.0],
                                        [0.0, 0.0, 132.673]]),
         'asphericity': 1.0,
+        'shape_parameter': 1.0,
     }
 
     @pytest.fixture(params=[False, True])  # params indicate shuffling
@@ -1054,7 +1058,8 @@ class TestUnwrapFlag(object):
     @pytest.mark.parametrize('method_name', ('center_of_geometry',
                                              'center_of_mass',
                                              'moment_of_inertia',
-                                             'asphericity'))
+                                             'asphericity',
+                                             'shape_parameter'))
     def test_residues(self, ag, unwrap, ref, method_name):
         method = getattr(ag, method_name)
         if unwrap:
