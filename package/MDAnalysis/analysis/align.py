@@ -187,13 +187,14 @@ normal users.
 import os.path
 import warnings
 import logging
+import collections
 
 import numpy as np
 
 import Bio.SeqIO
 import Bio.AlignIO
+import Bio.Align
 import Bio.Align.Applications
-import Bio.pairwise2
 
 import MDAnalysis as mda
 import MDAnalysis.lib.qcprot as qcp
@@ -973,7 +974,7 @@ def sequence_alignment(mobile, reference, match_score=2, mismatch_penalty=-1,
 
     The residues in `reference` and `mobile` will be globally aligned.
     The global alignment uses the Needleman-Wunsch algorithm as
-    implemented in :mod:`Bio.pairwise2`. The parameters of the dynamic
+    implemented in :mod:`Bio.Align.PairwiseAligner`. The parameters of the dynamic
     programming algorithm can be tuned with the keywords. The defaults
     should be suitable for two similar sequences. For sequences with
     low sequence identity, more specialized tools such as clustalw,
@@ -1004,22 +1005,46 @@ def sequence_alignment(mobile, reference, match_score=2, mismatch_penalty=-1,
 
     See Also
     --------
-    BioPython documentation for `pairwise2`_. Alternatively, use
+    BioPython documentation for `PairwiseAligner`_. Alternatively, use
     :func:`fasta2select` with :program:`clustalw2` and the option
     ``is_aligned=False``.
 
-    .. _`pairwise2`: http://biopython.org/DIST/docs/api/Bio.pairwise2-module.html
+
+    .. _`PairwiseAligner`:
+       https://biopython.org/docs/latest/api/Bio.Align.html#Bio.Align.PairwiseAligner
+
 
     .. versionadded:: 0.10.0
 
-    """
-    aln = Bio.pairwise2.align.globalms(
-        reference.residues.sequence(format="string"),
-        mobile.residues.sequence(format="string"),
-        match_score, mismatch_penalty, gap_penalty, gapextension_penalty)
-    # choose top alignment
-    return aln[0]
+    .. versionchanged:: 2.4.0
+       Replace use of deprecated :func:`Bio.pairwise2.align.globalms` with
+       :class:`Bio.Align.PairwiseAligner`.
 
+    """
+    aligner = Bio.Align.PairwiseAligner(
+        mode="global",
+        match_score=match_score,
+        mismatch_score=mismatch_penalty,
+        open_gap_score=gap_penalty,
+        extend_gap_score=gapextension_penalty)
+    aln = aligner.align(reference.residues.sequence(format="Seq"),
+                        mobile.residues.sequence(format="Seq"))
+    # choose top alignment with highest score
+    topalignment = aln[0]
+
+    # reconstruct the results tuple that used to be of type Bio.pairwise2.Alignment
+    AlignmentTuple = collections.namedtuple(
+        "Alignment",
+        ["seqA", "seqB", "score", "start", "end"])
+    # extract sequences (there's no obvious way to get the character
+    # representation with gaps by other means from the new
+    # Bio.Align.PairwiseAlignment instance)
+    seqA, _, seqB, _ = topalignment.format().split("\n")
+
+    # start/stop are not particularly meaningful and there's no obvious way to
+    # get the old pairwise2 start/stop from the new PairwiseAligner output.
+    return AlignmentTuple(seqA, seqB, topalignment.score,
+                          0, max(reference.n_residues, mobile.n_residues))
 
 def fasta2select(fastafilename, is_aligned=False,
                  ref_resids=None, target_resids=None,
