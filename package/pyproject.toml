@@ -28,25 +28,29 @@ requires = [
 name = "MDAnalysis"
 dynamic = ['version',]
 license = {file = "LICENSE"}
+readmer = "README.rst"
+description = "An object-oriented toolkit to analyze molecular dynamics trajectories."
 authors = [
     {name = 'MDAnalysis Development Team', email = 'mdanalysis@numfocus.org'}
 ]
 maintainers = [
     {name = 'MDAnalysis Core Developers', email = 'mdanalysis@numfocus.org'}
 ]
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 dependencies = [
-    'numpy>=1.18.0',
+    'numpy>=1.20.0',
     'biopython>=1.71',
-    'networkx>=1.0',
+    'networkx>=2.0',
     'GridDataFormats>=0.4.0',
     'mmtf-python>=1.0.0',
     'joblib>=0.12',
-    'scipy>=1.0.0',
+    'scipy>=1.5.0',
     'matplotlib>=1.5.1',
     'tqdm>=4.43.0',
     'threadpoolctl',
-    'packaging'
+    'packaging',
+    'fasteners',
+    'gsd>=1.9.3',
 ]
 keywords = [
     "python", "science", "chemistry", "biophysics", "molecular-dynamics",
@@ -62,17 +66,39 @@ classifiers = [
     'Operating System :: MacOS :: MacOS X',
     'Operating System :: Microsoft :: Windows',
     'Programming Language :: Python',
-    'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.7',
     'Programming Language :: Python :: 3.8',
     'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
     'Programming Language :: C',
     'Topic :: Scientific/Engineering',
     'Topic :: Scientific/Engineering :: Bio-Informatics',
     'Topic :: Scientific/Engineering :: Chemistry',
     'Topic :: Software Development :: Libraries :: Python Modules',
 ]
+
+[project.optional-dependencies]
+extra_formats = [
+    "netCDF4>=1.0",
+    "h5py>=2.10",
+    "chemfiles>=0.10",
+    "pyedr>=0.7.0",
+]
+analysis = [
+    "seaborn",
+    "scikit-learn",
+    "tidynamics>=1.0.0",
+]
+doc = [
+    "sphinx",
+    "sphinx-sitemap",
+    "sphinx_rtd_theme",
+    "msmb_theme==1.2.0",
+    "sphinxcontrib-bibtex",
+    "pybtex",
+    "pybtex-docutils",
+]
+
 
 [project.urls]
 Documentation = 'https://docs.mdanalysis.org/'
