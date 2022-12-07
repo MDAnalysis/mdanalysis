@@ -1,14 +1,14 @@
 name: GH Actions Cron CI
 on:
   schedule:
-    # once a week at midnight on Sunday
-    - cron: "0 3 * * 0"
+    # 3 am Tuesdays and Fridays
+    - cron: "0 3 * * 2,5"
 
 concurrency:
   # Probably overly cautious group naming.
   # Commits to develop/master will cancel each other, but PRs will only cancel
   # commits within the same PR
-  group: "${{ github.ref }}-${{ github.head_ref }}"
+  group: "${{ github.ref }}-${{ github.head_ref }}-${{ github.workflow }}"
   cancel-in-progress: true
 
 defaults:
@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: setup_os
       uses: ./.github/actions/setup-os
@@ -73,7 +73,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: setup_os
       uses: ./.github/actions/setup-os
@@ -115,33 +115,33 @@ jobs:
   pip-only:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
-
+    strategy:
+        fail-fast: false
+        matrix:
+          python-version: ["3.10", "3.11"]
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: setup_os
       uses: ./.github/actions/setup-os
       with:
         os-type: "ubuntu"
 
-    - name: setup_miniconda
-      uses: conda-incubator/setup-miniconda@v2
+    - uses: actions/setup-python@v4
       with:
-        python-version: 3.9
-        auto-update-conda: true
-        add-pip-as-python-dependency: true
-        architecture: x64
+        python-version: ${{ matrix.python-version }}
 
-    - name: install_minimum_pip
+    - name: pip install mdanalysis
       run: |
-        pip install numpy Cython pytest-xdist
+        cd package && pip install .
 
-    - name: build_srcs
-      uses: ./.github/actions/build-src
-      with:
-        build-hole: false
-        build-tests: true
-        build-docs: false
+    - name: pip install mdanalysistests
+      run: |
+        cd testsuite && pip install .
+
+    - name: install_pip_extras
+      run: |
+        pip install pytest-xdist
 
     - name: run_tests
       run: |

@@ -27,6 +27,7 @@ import subprocess
 import errno
 from collections import defaultdict
 from io import StringIO
+import warnings
 
 import numpy as np
 from numpy.testing import (
@@ -601,6 +602,14 @@ class TestInMemoryUniverse(object):
                      (3341, 78, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
 
+    def test_transfer_to_memory_kwargs(self):
+        u = mda.Universe(PSF, DCD)
+        u.transfer_to_memory(example_kwarg=True)
+        assert(u.trajectory._kwargs['example_kwarg'])
+
+    def test_in_memory_kwargs(self):
+        u = mda.Universe(PSF, DCD, in_memory=True, example_kwarg=True)
+        assert(u.trajectory._kwargs['example_kwarg'])
 
 class TestCustomReaders(object):
     """
@@ -1252,8 +1261,17 @@ class TestEmpty(object):
                         1, 1, 1, 1, 1])
 
         with pytest.warns(UserWarning):
-            u = mda.Universe.empty(n_atoms=10, n_residues=2, n_segments=1,
+            u = mda.Universe.empty(n_atoms=10, n_residues=2, n_segments=2,
                                    atom_resindex=res)
+
+    def test_no_trivial_warning(self):
+        """
+        Make sure that no warning is raised about atom_resindex and
+        residue_segindex when n_residues or n_segments is equal to 1.
+        """
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
+            u = mda.Universe.empty(n_atoms=10, n_residues=1, n_segments=1)
 
     def test_trajectory(self):
         u = mda.Universe.empty(10, trajectory=True)

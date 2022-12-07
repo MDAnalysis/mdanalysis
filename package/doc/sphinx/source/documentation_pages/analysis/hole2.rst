@@ -8,9 +8,10 @@
 
 .. versionadded:: 1.0.0
 
-This module provides an updated interface for the HOLE_ suite of tools [Smart1993]_
-[Smart1996]_ to analyse an ion channel pore or transporter pathway [Stelzl2014]_
-as a function of time or arbitrary order parameters. It replaces :mod:`MDAnalysis.analysis.hole`.
+This module provides an updated interface for the HOLE_ suite of tools
+:cite:p:`Smart1993,Smart1996` to analyse an ion channel pore or transporter
+pathway :cite:p:`Stelzl2014` as a function of time or arbitrary order
+parameters. It replaces :mod:`MDAnalysis.analysis.hole`.
 
 HOLE_ must be installed separately and can be obtained in binary form
 from http://www.holeprogram.org/ or as source from
@@ -20,7 +21,7 @@ under the Apache v2.0 license.)
 Module
 ------
 
-.. automodule:: MDAnalysis.analysis.hole2.hole
+.. automodule:: MDAnalysis.analysis.hole2
 		
 
 

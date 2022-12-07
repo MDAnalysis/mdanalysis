@@ -34,6 +34,7 @@ import errno
 from numpy.testing import (
     assert_almost_equal,
     assert_equal,
+    assert_allclose,
 )
 
 import MDAnalysis as mda
@@ -403,7 +404,15 @@ class TestHoleAnalysis(BaseTestHole):
         binned, bins = hole.bin_radii(bins=100)
         mean = np.array(list(map(np.mean, binned)))
         stds = np.array(list(map(np.std, binned)))
-        midpoints = 0.5 * bins[1:] + bins[:-1]
+        midpoints = 0.5 * (bins[1:] + bins[:-1])
+        
+        binwidths = np.diff(bins)
+        binwidth = binwidths[0]
+        assert_allclose(binwidths, binwidth)  # just making sure that we have equidistant bins
+
+        difference_right = bins[1:] - midpoints
+        assert_allclose(difference_right, binwidth/2)
+
         ylow = list(mean-(2*stds))
         yhigh = list(mean+(2*stds))
 
@@ -459,6 +468,13 @@ class TestHoleAnalysis(BaseTestHole):
             radius = np.where(profile.radius > 2.5, np.nan, profile.radius)
             assert_almost_equal(z, radius)
             assert line.get_label() == str(frame)
+
+    def test_none_filename(self, tmpdir):
+        universe_none_filename = mda.Universe(PDB_HOLE, in_memory=True)
+        universe_none_filename.trajectory.filename = None
+        with tmpdir.as_cwd():
+            with hole2.HoleAnalysis(universe_none_filename) as h:
+                h.run()
 
 
 class TestHoleAnalysisLong(BaseTestHole):

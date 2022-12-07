@@ -1014,7 +1014,7 @@ class GroupBase(_MutableBase):
             If `compound` is not one of ``'group'``, ``'segments'``,
             ``'residues'``, ``'molecules'``, or ``'fragments'``.
         ValueError
-            If both 'pbc' and 'unwrap' set to true.
+            If both 'wrap' and 'unwrap' set to true.
         ~MDAnalysis.exceptions.NoDataError
             If `compound` is ``'molecule'`` but the topology doesn't
             contain molecule information (molnums) or if `compound` is
@@ -1106,12 +1106,14 @@ class GroupBase(_MutableBase):
     @_pbc_to_wrap
     @check_wrap_and_unwrap
     def center_of_geometry(self, wrap=False, unwrap=False, compound='group'):
-        """Center of geometry of (compounds of) the group.
+        r"""Center of geometry of (compounds of) the group
 
-        Computes the center of geometry (a.k.a. centroid) of
-        :class:`Atoms<Atom>` in the group. Centers of geometry per
-        :class:`Residue`, :class:`Segment`, molecule, or fragment can be
-        obtained by setting the `compound` parameter accordingly.
+        .. math::
+            \boldsymbol R = \frac{\sum_i \boldsymbol r_i}{\sum_i 1}
+
+        where :math:`\boldsymbol r_i` of :class:`Atoms<Atom>` :math:`i`.
+        Centers of geometry per :class:`Residue` or per :class:`Segment` can
+        be obtained by setting the `compound` parameter accordingly.
 
         Parameters
         ----------
@@ -1521,7 +1523,7 @@ class GroupBase(_MutableBase):
         box : array_like
             Box dimensions, can be either orthogonal or triclinic information.
             Cell dimensions must be in an identical to format to those returned
-            by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,
+            by :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`,
             ``[lx, ly, lz, alpha, beta, gamma]``. If ``None``, uses these
             timestep dimensions.
         inplace : bool
@@ -1543,7 +1545,7 @@ class GroupBase(_MutableBase):
            x_i' = x_i - \left\lfloor\frac{x_i}{L_i}\right\rfloor
 
         The default is to take unit cell information from the underlying
-        :class:`~MDAnalysis.coordinates.base.Timestep` instance. The optional
+        :class:`~MDAnalysis.coordinates.timestep.Timestep` instance. The optional
         argument `box` can be used to provide alternative unit cell information
         (in the MDAnalysis standard format
         ``[Lx, Ly, Lz, alpha, beta, gamma]``).
@@ -1586,7 +1588,7 @@ class GroupBase(_MutableBase):
         box : array_like, optional
             The unitcell dimensions of the system, which can be orthogonal or
             triclinic and must be provided in the same format as returned by
-            :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+            :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
             ``[lx, ly, lz, alpha, beta, gamma]``.
             If ``None``, uses the
             dimensions of the current time step.
@@ -1641,9 +1643,9 @@ class GroupBase(_MutableBase):
 
 
         `box` allows a unit cell to be given for the transformation. If not
-        specified, the :attr:`~MDAnalysis.coordinates.base.Timestep.dimensions`
+        specified, the :attr:`~MDAnalysis.coordinates.timestep.Timestep.dimensions`
         information from the current
-        :class:`~MDAnalysis.coordinates.base.Timestep` will be used.
+        :class:`~MDAnalysis.coordinates.timestep.Timestep` will be used.
 
         .. note::
             :meth:`AtomGroup.wrap` is currently faster than
@@ -1712,14 +1714,14 @@ class GroupBase(_MutableBase):
 
             # compute and apply required shift:
             if ctr == 'com':
-                ctrpos = atoms.center_of_mass(pbc=False, compound=comp)
+                ctrpos = atoms.center_of_mass(wrap=False, compound=comp)
                 if np.any(np.isnan(ctrpos)):
                     specifier = 'the' if comp == 'group' else 'one of the'
                     raise ValueError("Cannot use compound='{0}' with "
                                      "center='com' because {1} {0}\'s total "
                                      "mass is zero.".format(comp, specifier))
             else:  # ctr == 'cog'
-                ctrpos = atoms.center_of_geometry(pbc=False, compound=comp)
+                ctrpos = atoms.center_of_geometry(wrap=False, compound=comp)
             ctrpos = ctrpos.astype(np.float32, copy=False)
             target = distances.apply_PBC(ctrpos, box)
             shifts = target - ctrpos
@@ -2766,9 +2768,9 @@ class AtomGroup(GroupBase):
         Raises
         ------
         ~MDAnalysis.exceptions.NoDataError
-            If the underlying :class:`~MDAnalysis.coordinates.base.Timestep`
+            If the underlying :class:`~MDAnalysis.coordinates.timestep.Timestep`
             does not contain
-            :attr:`~MDAnalysis.coordinates.base.Timestep.positions`.
+            :attr:`~MDAnalysis.coordinates.timestep.Timestep.positions`.
         """
         return self.universe.trajectory.ts.positions[self.ix]
 
@@ -2794,9 +2796,9 @@ class AtomGroup(GroupBase):
         Raises
         ------
         ~MDAnalysis.exceptions.NoDataError
-            If the underlying :class:`~MDAnalysis.coordinates.base.Timestep`
+            If the underlying :class:`~MDAnalysis.coordinates.timestep.Timestep`
             does not contain
-            :attr:`~MDAnalysis.coordinates.base.Timestep.velocities`.
+            :attr:`~MDAnalysis.coordinates.timestep.Timestep.velocities`.
         """
         ts = self.universe.trajectory.ts
         return np.array(ts.velocities[self.ix])
@@ -2823,8 +2825,8 @@ class AtomGroup(GroupBase):
         Raises
         ------
         ~MDAnalysis.exceptions.NoDataError
-            If the :class:`~MDAnalysis.coordinates.base.Timestep` does not
-            contain :attr:`~MDAnalysis.coordinates.base.Timestep.forces`.
+            If the :class:`~MDAnalysis.coordinates.timestep.Timestep` does not
+            contain :attr:`~MDAnalysis.coordinates.timestep.Timestep.forces`.
         """
         ts = self.universe.trajectory.ts
         return ts.forces[self.ix]
@@ -2838,7 +2840,7 @@ class AtomGroup(GroupBase):
     def ts(self):
         """Temporary Timestep that contains the selection coordinates.
 
-        A :class:`~MDAnalysis.coordinates.base.Timestep` instance,
+        A :class:`~MDAnalysis.coordinates.timestep.Timestep` instance,
         which can be passed to a trajectory writer.
 
         If :attr:`~AtomGroup.ts` is modified then these modifications
@@ -2847,7 +2849,7 @@ class AtomGroup(GroupBase):
         :attr:`~MDAnalysis.core.universe.Universe.trajectory` frame changes).
 
         It is not possible to assign a new
-        :class:`~MDAnalysis.coordinates.base.Timestep` to the
+        :class:`~MDAnalysis.coordinates.timestep.Timestep` to the
         :attr:`AtomGroup.ts` attribute; change attributes of the object.
         """
         trj_ts = self.universe.trajectory.ts  # original time step
@@ -2859,7 +2861,7 @@ class AtomGroup(GroupBase):
 
     def select_atoms(self, sel, *othersel, periodic=True, rtol=1e-05,
                      atol=1e-08, updating=False, sorted=True,
-                     rdkit_kwargs=None, **selgroups):
+                     rdkit_kwargs=None, smarts_kwargs=None, **selgroups):
         """Select atoms from within this Group using a selection string.
 
         Returns an :class:`AtomGroup` sorted according to their index in the
@@ -2892,6 +2894,10 @@ class AtomGroup(GroupBase):
           Arguments passed to the
           :class:`~MDAnalysis.converters.RDKit.RDKitConverter` when using
           selection based on SMARTS queries
+        smarts_kwargs : dict (optional)
+          Arguments passed internally to RDKit's `GetSubstructMatches
+          <https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol.GetSubstructMatches>`_.
+
         **selgroups : keyword arguments of str: AtomGroup (optional)
           when using the "group" keyword in selections, groups are defined by
           passing them as keyword arguments.  See section on **preexisting
@@ -3010,12 +3016,35 @@ class AtomGroup(GroupBase):
             smarts *SMARTS-query*
                 select atoms using Daylight's SMARTS queries, e.g. ``smarts
                 [#7;R]`` to find nitrogen atoms in rings. Requires RDKit.
-                All matches (max 1000) are combined as a unique match
+                All matches are combined as a single unique match. The `smarts`
+                selection accepts two sets of key word arguments from
+                `select_atoms()`: the ``rdkit_kwargs`` are passed internally to
+                `RDKitConverter.convert()` and the ``smarts_kwargs`` are passed to
+                RDKit's `GetSubstructMatches
+                <https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol.GetSubstructMatches>`_.
+                By default, the `useChirality` kwarg in ``rdkit_kwargs`` is set to true
+                and maxMatches in ``smarts_kwargs`` is
+                ``max(1000, 10 * n_atoms)``, where ``n_atoms`` is either
+                ``len(AtomGroup)`` or ``len(Universe.atoms)``, whichever is
+                applicable. Note that the number of matches can occasionally
+                exceed the default value of maxMatches, causing too few atoms
+                to be returned. If this occurs, a warning will be issued. The
+                problem can be fixed by increasing the value of maxMatches.
+                This behavior may be updated in the future.
+
+                >>> universe.select_atoms("C", smarts_kwargs={"maxMatches": 100})
+                <AtomGroup with 100 atoms>
+
             chiral *R | S*
                 select a particular stereocenter. e.g. ``name C and chirality
                 S`` to select only S-chiral carbon atoms.  Only ``R`` and
                 ``S`` will be possible options but other values will not raise
                 an error.
+
+            formalcharge *formal-charge*
+                select atoms based on their formal charge, e.g.
+                ``name O and formalcharge -1`` to select all oxygens with a
+                negative 1 formal charge.
 
         **Boolean**
 
@@ -3052,6 +3081,9 @@ class AtomGroup(GroupBase):
             sphlayer *inner radius* *outer radius* *selection*
                 Similar to sphzone, but also excludes atoms that are within
                 *inner radius* of the selection COG
+            isolayer *inner radius* *outer radius* *selection*
+                Similar to sphlayer, but will find layer around all reference
+                layer, creating an iso-surface.
             cyzone *externalRadius* *zMax* *zMin* *selection*
                 selects all atoms within a cylindric zone centered in the
                 center of geometry (COG) of a given selection,
@@ -3166,6 +3198,9 @@ class AtomGroup(GroupBase):
             Added the *smarts* selection. Added `atol` and `rtol` keywords
             to select float values. Added the ``sort`` keyword. Added
             `rdkit_kwargs` to pass parameters to the RDKitConverter.
+        .. versionchanged:: 2.2.0
+            Added `smarts_kwargs` to pass parameters to the RDKit
+            GetSubstructMatch for *smarts* selection.
         """
 
         if not sel:
@@ -3185,7 +3220,8 @@ class AtomGroup(GroupBase):
                                                    periodic=periodic,
                                                    atol=atol, rtol=rtol,
                                                    sorted=sorted,
-                                                   rdkit_kwargs=rdkit_kwargs)
+                                                   rdkit_kwargs=rdkit_kwargs,
+                                                   smarts_kwargs=smarts_kwargs)
                             for s in sel_strs))
         if updating:
             atomgrp = UpdatingAtomGroup(self, selections, sel_strs)
@@ -4146,9 +4182,9 @@ class Atom(ComponentBase):
         Raises
         ------
         ~MDAnalysis.exceptions.NoDataError
-            If the underlying :class:`~MDAnalysis.coordinates.base.Timestep`
+            If the underlying :class:`~MDAnalysis.coordinates.timestep.Timestep`
             does not contain
-            :attr:`~MDAnalysis.coordinates.base.Timestep.positions`.
+            :attr:`~MDAnalysis.coordinates.timestep.Timestep.positions`.
         """
         return self.universe.trajectory.ts.positions[self.ix].copy()
 
@@ -4169,9 +4205,9 @@ class Atom(ComponentBase):
         Raises
         ------
         ~MDAnalysis.exceptions.NoDataError
-            If the underlying :class:`~MDAnalysis.coordinates.base.Timestep`
+            If the underlying :class:`~MDAnalysis.coordinates.timestep.Timestep`
             does not contain
-            :attr:`~MDAnalysis.coordinates.base.Timestep.velocities`.
+            :attr:`~MDAnalysis.coordinates.timestep.Timestep.velocities`.
         """
         ts = self.universe.trajectory.ts
         return ts.velocities[self.ix].copy()
@@ -4194,9 +4230,9 @@ class Atom(ComponentBase):
         Raises
         ------
         ~MDAnalysis.exceptions.NoDataError
-            If the underlying :class:`~MDAnalysis.coordinates.base.Timestep`
+            If the underlying :class:`~MDAnalysis.coordinates.timestep.Timestep`
             does not contain
-            :attr:`~MDAnalysis.coordinates.base.Timestep.forces`.
+            :attr:`~MDAnalysis.coordinates.timestep.Timestep.forces`.
         """
         ts = self.universe.trajectory.ts
         return ts.forces[self.ix].copy()

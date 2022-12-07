@@ -129,7 +129,7 @@ import numpy as np
 
 from ..core.groups import requires
 from ..lib import util, mdamath, distances
-from ..lib.util import cached
+from ..lib.util import cached, store_init_arguments
 from . import DCD
 from .. import units
 from ..topology.LAMMPSParser import DATAParser
@@ -178,6 +178,7 @@ class DCDReader(DCD.DCDReader):
     format = 'LAMMPS'
     flavor = 'LAMMPS'
 
+    @store_init_arguments
     def __init__(self, dcdfilename, **kwargs):
         self.units = {'time': 'fs', 'length': 'Angstrom'}  # must be instance level
         self.units['time'] = kwargs.pop('timeunit', self.units['time'])
@@ -201,6 +202,7 @@ class DATAReader(base.SingleFrameReaderBase):
     format = 'DATA'
     units = {'time': None, 'length': 'Angstrom', 'velocity': 'Angstrom/fs'}
 
+    @store_init_arguments
     def __init__(self, filename, **kwargs):
         self.n_atoms = kwargs.pop('n_atoms', None)
         if self.n_atoms is None:  # this should be done by parsing DATA first
@@ -450,25 +452,51 @@ class DATAWriter(base.WriterBase):
 
 
 class DumpReader(base.ReaderBase):
-    """Reads the default `LAMMPS dump format`_
+    """Reads the default `LAMMPS dump format 
+    <https://docs.lammps.org/dump.html>`__
 
-    Supports coordinates in the LAMMPS "unscaled" (x,y,z), "scaled" (xs,ys,zs),
-    "unwrapped" (xu,yu,zu) and "scaled_unwrapped" (xsu,ysu,zsu) coordinate
-    conventions (see https://docs.lammps.org/dump.html for more details).
-    If `lammps_coordinate_convention='auto'` (default),
-    one will be guessed. Guessing checks whether the coordinates fit each convention in the order "unscaled",
-    "scaled", "unwrapped", "scaled_unwrapped" and whichever set of coordinates
-    is detected first will be used. If coordinates are given in the scaled
-    coordinate convention (xs,ys,zs) or scaled unwrapped coordinate convention
-    (xsu,ysu,zsu) they will automatically be converted from their
-    scaled/fractional representation to their real values.
+    Supports coordinates in various LAMMPS coordinate conventions and both 
+    orthogonal and triclinic simulation box dimensions (for more details see 
+    `documentation <https://docs.lammps.org/Howto_triclinic.html>`__). In 
+    either case, MDAnalysis will always use ``(*A*, *B*, *C*, *alpha*, *beta*,
+    *gamma*)`` to represent the unit cell. Lengths *A*, *B*, *C* are in the 
+    MDAnalysis length unit (Å), and angles are in degrees.
 
-    Supports both orthogonal and triclinic simulation box dimensions (for more
-    details see https://docs.lammps.org/Howto_triclinic.html). In either case,
-    MDAnalysis will always use ``(*A*, *B*, *C*, *alpha*, *beta*, *gamma*)``
-    to represent the unit cell. Lengths *A*, *B*, *C* are in the MDAnalysis
-    length unit (Å), and angles are in degrees.
+    Parameters
+    ----------
+    filename : str
+        Filename of LAMMPS dump file
+    lammps_coordinate_convention : str (optional) default="auto"
+        Convention used in coordinates, can be one of the following according
+        to the `LAMMPS documentation <https://docs.lammps.org/dump.html>`__:
 
+         - "auto" - Detect coordinate type from file column header. If auto 
+           detection is used, the guessing checks whether the coordinates
+           fit each convention in the order "unscaled", "scaled", "unwrapped", 
+           "scaled_unwrapped" and whichever set of coordinates is detected 
+           first will be used.
+         - "scaled" - Coordinates wrapped in box and scaled by box length (see
+            note below), i.e., xs, ys, zs
+         - "scaled_unwrapped" - Coordinates unwrapped and scaled by box length,
+           (see note below) i.e., xsu, ysu, zsu
+         - "unscaled" - Coordinates wrapped in box, i.e., x, y, z
+         - "unwrapped" - Coordinates unwrapped, i.e., xu, yu, zu
+
+        If coordinates are given in the scaled coordinate convention (xs,ys,zs)
+        or scaled unwrapped coordinate convention (xsu,ysu,zsu) they will 
+        automatically be converted from their scaled/fractional representation
+        to their real values.
+    unwrap_images : bool (optional) default=False
+        If `True` and the dump file contains image flags, the coordinates 
+        will be unwrapped. See `read_data 
+        <https://docs.lammps.org/read_data.html>`__  in the lammps 
+        documentation for more information.
+    **kwargs
+       Other keyword arguments used in :class:`~MDAnalysis.coordinates.base.ReaderBase`
+
+    .. versionchanged:: 2.4.0
+       Now imports velocities and forces, translates the box to the origin,
+       and optionally unwraps trajectories with image flags upon loading.
     .. versionchanged:: 2.2.0
        Triclinic simulation boxes are supported.
        (Issue `#3383 <https://github.com/MDAnalysis/mdanalysis/issues/3383>`__)
@@ -486,7 +514,10 @@ class DumpReader(base.ReaderBase):
         "scaled_unwrapped": ["xsu", "ysu", "zsu"]
     }
 
-    def __init__(self, filename, lammps_coordinate_convention="auto",
+    @store_init_arguments
+    def __init__(self, filename, 
+                 lammps_coordinate_convention="auto",
+                 unwrap_images=False,
                  **kwargs):
         super(DumpReader, self).__init__(filename, **kwargs)
 
@@ -499,6 +530,8 @@ class DumpReader(base.ReaderBase):
                              f"'{lammps_coordinate_convention}'"
                              " is not a valid option. "
                              f"Please choose one of {option_string}")
+
+        self._unwrap = unwrap_images
 
         self._cache = {}
 
@@ -603,9 +636,27 @@ class DumpReader(base.ReaderBase):
         convention_to_col_ix = {}
         for cv_name, cv_col_names in self._coordtype_column_names.items():
             try:
-                convention_to_col_ix[cv_name] = [attr_to_col_ix[x] for x in cv_col_names]
+                convention_to_col_ix[cv_name] = [attr_to_col_ix[x] 
+                    for x in cv_col_names]
             except KeyError:
                 pass
+
+        if self._unwrap:
+            try:
+                image_cols = [attr_to_col_ix[x] for x in ["ix", "iy", "iz"]]
+            except:
+                raise ValueError("Trajectory must have image flag in order "
+                                 "to unwrap.")
+
+        self._has_vels = all(x in attr_to_col_ix for x in ["vx", "vy", "vz"])
+        if self._has_vels:
+            ts.has_velocities = True
+            vel_cols = [attr_to_col_ix[x] for x in ["vx", "vy", "vz"]]
+        self._has_forces = all(x in attr_to_col_ix for x in ["fx", "fy", "fz"])
+        if self._has_forces:
+            ts.has_forces = True
+            force_cols = [attr_to_col_ix[x] for x in ["fx", "fy", "fz"]]
+
         # this should only trigger on first read of "ATOM" card, after which it
         # is fixed to the guessed value. Auto proceeds unscaled -> scaled
         # -> unwrapped -> scaled_unwrapped
@@ -617,22 +668,46 @@ class DumpReader(base.ReaderBase):
             except IndexError:
                 raise ValueError("No coordinate information detected")
         elif not self.lammps_coordinate_convention in convention_to_col_ix:
-            raise ValueError(f"No coordinates following convention {self.lammps_coordinate_convention} found in timestep")
+            raise ValueError(f"No coordinates following convention "
+                             "{self.lammps_coordinate_convention} found in "
+                             "timestep")
 
         coord_cols = convention_to_col_ix[self.lammps_coordinate_convention]
+        if self._unwrap:
+            coord_cols.extend(image_cols)
 
         ids = "id" in attr_to_col_ix
         for i in range(self.n_atoms):
             fields = f.readline().split()
             if ids:
                 indices[i] = fields[attr_to_col_ix["id"]]
-            ts.positions[i] = [fields[dim] for dim in coord_cols]
+            coords = np.array([fields[dim] for dim in coord_cols], 
+                              dtype=np.float32)
+
+            if self._unwrap:
+                images = coords[3:]
+                coords = coords[:3]
+                coords += images * ts.dimensions[:3]
+            else:
+                coords = coords[:3]
+            ts.positions[i] = coords
+
+            if self._has_vels:
+                ts.velocities[i] = [fields[dim] for dim in vel_cols]
+            if self._has_forces:
+                ts.forces[i] = [fields[dim] for dim in force_cols]
 
         order = np.argsort(indices)
         ts.positions = ts.positions[order]
+        if self._has_vels:
+            ts.velocities = ts.velocities[order]
+        if self._has_forces:
+            ts.forces = ts.forces[order]
         if (self.lammps_coordinate_convention.startswith("scaled")):
             # if coordinates are given in scaled format, undo that
             ts.positions = distances.transform_StoR(ts.positions,
                                                     ts.dimensions)
+        # Transform to origin after transformation of scaled variables
+        ts.positions -= np.array([xlo, ylo, zlo])[None,:]
 
         return ts
