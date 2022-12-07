@@ -39,6 +39,7 @@ Fixes
     (e.g. bonds, angles) (PR #3779).
 
 Enhancements
+  * MDAnalysis now follows PEP621 (PR #3528)
   * Improve C content of libxdr Cython, add `read_direct` methods to read 
     coordinates, velocities and forces directly into memoryviews of `Timestep`
     attributes, make `TRR` timestep have positions, velocities and forces on
