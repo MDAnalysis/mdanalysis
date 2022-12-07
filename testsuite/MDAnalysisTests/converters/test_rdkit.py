@@ -255,9 +255,9 @@ class TestRDKitConverter(object):
             uo2.atoms.convert_to("RDKIT")
 
     def test_error_no_hydrogen_implicit(self, uo2):
-        with pytest.warns(None) as record:
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
             uo2.atoms.convert_to.rdkit(NoImplicit=False)
-        assert len(record) == 0
 
     def test_warning_no_hydrogen_force(self, uo2):
         with pytest.warns(UserWarning,
@@ -396,7 +396,8 @@ class TestRDKitConverter(object):
         u = mda.Universe(mol)
         with pytest.warns(UserWarning, match="Could not sanitize molecule"):
             u.atoms.convert_to.rdkit(NoImplicit=False)
-        with pytest.warns(None) as record:
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
             u.atoms.convert_to.rdkit()
         if record:
             assert all("Could not sanitize molecule" not in str(w.message)
