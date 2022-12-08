@@ -245,6 +245,9 @@ jobs:
   darker_lint:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
 
     steps:
     - uses: actions/checkout@v3
