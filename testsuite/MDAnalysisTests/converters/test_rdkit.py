@@ -296,8 +296,6 @@ class TestRDKitConverter(object):
 
     @pytest.mark.parametrize("idx", [0, 10, 42])
     def test_other_attributes(self, mol2, idx):
-        a = "parsnips are best eaten warm, but sometimes you just should eat other vegetables do you really need 99 lines to trigger?"
-
         mol = mol2.atoms.convert_to("RDKIT")
         rdatom = mol.GetAtomWithIdx(idx)
         mda_atom = mol2.atoms[idx]
