@@ -289,13 +289,14 @@
 <span class="kn">import</span> <span class="nn">os.path</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">collections</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">import</span> <span class="nn">Bio.SeqIO</span>
 <span class="kn">import</span> <span class="nn">Bio.AlignIO</span>
+<span class="kn">import</span> <span class="nn">Bio.Align</span>
 <span class="kn">import</span> <span class="nn">Bio.Align.Applications</span>
-<span class="kn">import</span> <span class="nn">Bio.pairwise2</span>
 
 <span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
 <span class="kn">import</span> <span class="nn">MDAnalysis.lib.qcprot</span> <span class="k">as</span> <span class="nn">qcp</span>
@@ -303,6 +304,7 @@
 <span class="kn">import</span> <span class="nn">MDAnalysis.analysis.rms</span> <span class="k">as</span> <span class="nn">rms</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.coordinates.memory</span> <span class="kn">import</span> <span class="n">MemoryReader</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">get_weights</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">deprecate</span>   <span class="c1"># remove 3.0</span>
 
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span>
 
@@ -1069,13 +1071,16 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">rmsd</span></div>
 
 
-<div class="viewcode-block" id="sequence_alignment"><a class="viewcode-back" href="../../../documentation_pages/analysis/align.html#MDAnalysis.analysis.align.sequence_alignment">[docs]</a><span class="k">def</span> <span class="nf">sequence_alignment</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">match_score</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">mismatch_penalty</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+<span class="nd">@deprecate</span><span class="p">(</span><span class="n">release</span><span class="o">=</span><span class="s2">&quot;2.4.0&quot;</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="s2">&quot;3.0&quot;</span><span class="p">,</span>
+           <span class="n">message</span><span class="o">=</span><span class="s2">&quot;See the documentation under Notes on how to directly use&quot;</span>
+                   <span class="s2">&quot;Bio.Align.PairwiseAligner with ResidueGroups.&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">sequence_alignment</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">match_score</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">mismatch_penalty</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
                        <span class="n">gap_penalty</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">gapextension_penalty</span><span class="o">=-</span><span class="mf">0.1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Generate a global sequence alignment between two residue groups.</span>
 
 <span class="sd">    The residues in `reference` and `mobile` will be globally aligned.</span>
 <span class="sd">    The global alignment uses the Needleman-Wunsch algorithm as</span>
-<span class="sd">    implemented in :mod:`Bio.pairwise2`. The parameters of the dynamic</span>
+<span class="sd">    implemented in :mod:`Bio.Align.PairwiseAligner`. The parameters of the dynamic</span>
 <span class="sd">    programming algorithm can be tuned with the keywords. The defaults</span>
 <span class="sd">    should be suitable for two similar sequences. For sequences with</span>
 <span class="sd">    low sequence identity, more specialized tools such as clustalw,</span>
@@ -1104,23 +1109,67 @@
 <span class="sd">        Tuple of top sequence matching output `(&#39;Sequence A&#39;, &#39;Sequence B&#39;, score,</span>
 <span class="sd">        begin, end)`</span>
 
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    If you prefer to work directly with :mod:`Bio.Align` objects then you can</span>
+<span class="sd">    run your alignment with :class:`Bio.Alig.PairwiseAligner` as ::</span>
+
+<span class="sd">      import Bio.Align.PairwiseAligner</span>
+
+<span class="sd">      aligner = Bio.Align.PairwiseAligner(</span>
+<span class="sd">         mode=&quot;global&quot;,</span>
+<span class="sd">         match_score=match_score,</span>
+<span class="sd">         mismatch_score=mismatch_penalty,</span>
+<span class="sd">         open_gap_score=gap_penalty,</span>
+<span class="sd">         extend_gap_score=gapextension_penalty)</span>
+<span class="sd">      aln = aligner.align(reference.residues.sequence(format=&quot;Seq&quot;),</span>
+<span class="sd">                          mobile.residues.sequence(format=&quot;Seq&quot;))</span>
+
+<span class="sd">      # choose top alignment with highest score</span>
+<span class="sd">      topalignment = aln[0]</span>
+
+<span class="sd">    The ``topalignment`` is a :class:`Bio.Align.PairwiseAlignment` instance</span>
+<span class="sd">    that can be used in your bioinformatics workflows.</span>
+
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
-<span class="sd">    BioPython documentation for `pairwise2`_. Alternatively, use</span>
+<span class="sd">    BioPython documentation for `PairwiseAligner`_. Alternatively, use</span>
 <span class="sd">    :func:`fasta2select` with :program:`clustalw2` and the option</span>
 <span class="sd">    ``is_aligned=False``.</span>
 
-<span class="sd">    .. _`pairwise2`: http://biopython.org/DIST/docs/api/Bio.pairwise2-module.html</span>
+
+<span class="sd">    .. _`PairwiseAligner`:</span>
+<span class="sd">       https://biopython.org/docs/latest/api/Bio.Align.html#Bio.Align.PairwiseAligner</span>
+
 
 <span class="sd">    .. versionadded:: 0.10.0</span>
 
+<span class="sd">    .. versionchanged:: 2.4.0</span>
+<span class="sd">       Replace use of deprecated :func:`Bio.pairwise2.align.globalms` with</span>
+<span class="sd">       :class:`Bio.Align.PairwiseAligner`.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">aln</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">pairwise2</span><span class="o">.</span><span class="n">align</span><span class="o">.</span><span class="n">globalms</span><span class="p">(</span>
-        <span class="n">reference</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">sequence</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;string&quot;</span><span class="p">),</span>
-        <span class="n">mobile</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">sequence</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;string&quot;</span><span class="p">),</span>
-        <span class="n">match_score</span><span class="p">,</span> <span class="n">mismatch_penalty</span><span class="p">,</span> <span class="n">gap_penalty</span><span class="p">,</span> <span class="n">gapextension_penalty</span><span class="p">)</span>
-    <span class="c1"># choose top alignment</span>
-    <span class="k">return</span> <span class="n">aln</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+    <span class="n">aligner</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">Align</span><span class="o">.</span><span class="n">PairwiseAligner</span><span class="p">(</span>
+        <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;global&quot;</span><span class="p">,</span>
+        <span class="n">match_score</span><span class="o">=</span><span class="n">match_score</span><span class="p">,</span>
+        <span class="n">mismatch_score</span><span class="o">=</span><span class="n">mismatch_penalty</span><span class="p">,</span>
+        <span class="n">open_gap_score</span><span class="o">=</span><span class="n">gap_penalty</span><span class="p">,</span>
+        <span class="n">extend_gap_score</span><span class="o">=</span><span class="n">gapextension_penalty</span><span class="p">)</span>
+    <span class="n">aln</span> <span class="o">=</span> <span class="n">aligner</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="n">reference</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">sequence</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;Seq&quot;</span><span class="p">),</span>
+                        <span class="n">mobile</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">sequence</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;Seq&quot;</span><span class="p">))</span>
+    <span class="c1"># choose top alignment with highest score</span>
+    <span class="n">topalignment</span> <span class="o">=</span> <span class="n">aln</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># reconstruct the results tuple that used to be of type Bio.pairwise2.Alignment</span>
+    <span class="n">AlignmentTuple</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+        <span class="s2">&quot;Alignment&quot;</span><span class="p">,</span>
+        <span class="p">[</span><span class="s2">&quot;seqA&quot;</span><span class="p">,</span> <span class="s2">&quot;seqB&quot;</span><span class="p">,</span> <span class="s2">&quot;score&quot;</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">])</span>
+    <span class="c1"># start/stop are not particularly meaningful and there&#39;s no obvious way to</span>
+    <span class="c1"># get the old pairwise2 start/stop from the new PairwiseAligner output.</span>
+    <span class="k">return</span> <span class="n">AlignmentTuple</span><span class="p">(</span><span class="n">topalignment</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">topalignment</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                          <span class="n">topalignment</span><span class="o">.</span><span class="n">score</span><span class="p">,</span>
+                          <span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">reference</span><span class="o">.</span><span class="n">n_residues</span><span class="p">,</span> <span class="n">mobile</span><span class="o">.</span><span class="n">n_residues</span><span class="p">))</span>
+
 
 
 <div class="viewcode-block" id="fasta2select"><a class="viewcode-back" href="../../../documentation_pages/analysis/align.html#MDAnalysis.analysis.align.fasta2select">[docs]</a><span class="k">def</span> <span class="nf">fasta2select</span><span class="p">(</span><span class="n">fastafilename</span><span class="p">,</span> <span class="n">is_aligned</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
