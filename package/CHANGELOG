@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, BFedder, aya9aladdin,
-         jaclark5, jfennick, lilyminium
+         jaclark5, jfennick, lilyminium, orbeckst
 
  * 2.4.0
 
@@ -70,6 +70,9 @@ Enhancements
   * Added isolayer selection method (Issue #3845)
 
 Changes
+ * Replaced deprecated Bio.pairwise2 with Bio.align.PairwiseAligner in
+   MDAnalysis.analysis.align.sequence_alignment (Issue #3950)
+ * Increased minimal version of biopython to 1.80 (Issue #3950)
  * Moved `libmdanalysis` cython header to `lib`(Issue #3912, PR #3913)
  * Auxiliary; determination of representative frames: The default value for
    cutoff is now None, not -1. Negative values are now turned
@@ -86,10 +89,11 @@ Changes
   * adding element attribute to TXYZParser if all atom names are valid element symbols (PR #3826)
 
 Deprecations
+  * Deprecated analysis.align.sequence_alignment() for removal in 3.0 (#3950)
   * Add deprecation warning for `timestep` copying in DCDReader
     (Issue #3889, PR #3888)
   * Add deprecation warning for inclusive stop indexing in
-    MemoryReader.timeseries (#PR 3894)
+    MemoryReader.timeseries (PR #3894)
 
 
 08/29/22 IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli, miss77jun, rzhao271,
