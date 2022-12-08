@@ -1636,7 +1636,7 @@ def calc_dihedrals(coords1: Union[np.ndarray, 'AtomGroup'],
         Array containing the dihedral angles formed by each quadruplet of
         coordinates. Values are returned in radians (rad). If four single
         coordinates were supplied, the dihedral angle is returned as a single
-        number instead of an array.
+        number instead of an array. Range of the dihedral angle is (:math:`-\pi`, :math:`\pi`)
 
 
     .. versionadded:: 0.8
@@ -1644,7 +1644,7 @@ def calc_dihedrals(coords1: Union[np.ndarray, 'AtomGroup'],
        Added optional box argument to account for periodic boundaries in
        calculation
     .. versionchanged:: 0.11.0
-       Renamed from calc_torsions to calc_dihedrals
+       Renamed from calc_torsions to calc_dihedral
     .. versionchanged:: 0.13.0
        Added *backend* keyword.
     .. versionchanged:: 0.19.0
