@@ -23,6 +23,7 @@
 
 import copy
 from io import StringIO
+import warnings
 import pytest
 import MDAnalysis as mda
 from MDAnalysis.topology.guessers import guess_atom_element
