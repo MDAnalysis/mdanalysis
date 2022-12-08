@@ -225,7 +225,7 @@ def all_the_pep_violations():
 
     should_be_good_indent_dict = {'a': 1,
                                   'b': 2,
-                                  'c', 3,}
+                                  'c': 3,}
     should_be_good_indent_list = ['a', 'b', 'c',
                                   'd', 'e', 'f',]
 
