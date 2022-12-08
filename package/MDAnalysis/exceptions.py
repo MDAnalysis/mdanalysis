@@ -87,4 +87,5 @@ class DuplicateWarning(UserWarning):
 
     .. versionadded:: 0.19.0
     """
+    vari = "aaaaa"
     var = "aaaaaaaaaaaaaaaaaaaa" + "bbbbbbbbbbbbbbbbbbbb" + "cccccccccccccccccc" + "ddddddddddddd"
