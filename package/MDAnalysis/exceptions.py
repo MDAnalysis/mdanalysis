@@ -83,8 +83,8 @@ class DuplicateWarning(UserWarning):
     :class:`Atoms<MDAnalysis.core.groups.Atom>` /
     :class:`Residues<MDAnalysis.core.groups.Residue>` /
     :class:`Segments<MDAnalysis.core.groups.Segment>`.
-    What if I write a line that's longer than 79 characters? Surely this will trigger a violation? I really hope so.
 
 
     .. versionadded:: 0.19.0
     """
+    var = "aaaaaaaaaaaaaaaaaaaa" + "bbbbbbbbbbbbbbbbbbbb" + "cccccccccccccccccc" + "ddddddddddddd"
