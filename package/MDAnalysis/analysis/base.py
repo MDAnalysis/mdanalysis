@@ -220,8 +220,59 @@ class Results(UserDict):
         self.data = state
 
 
+def all_the_pep_violations():
+    a = "I blame parsnips, should have made mashed carrots instead it's obviously the better root veg"
+
+    should_be_good_indent_dict = {'a': 1,
+                                  'b': 2,
+                                  'c', 3,}
+    should_be_good_indent_list = ['a', 'b', 'c',
+                                  'd', 'e', 'f',]
+
+    should_be_bad_indent_dict = {'a': 1,
+                                'b': 2,
+                                   'c': 3}
+
+    should_be_bad_indent_list = ['a',
+            'b',
+            'c',
+            'd',
+    ]
+
+    explicit_continuation = "foooooo" \
+                            "bar"
+
+    implicit_continuation = ("fooooo"
+                             "bar")
+
+    var = 1 # not enough empty spaces before comment
+
+    if not var is None:
+        print("this should trigger a PEP8 violation?")
+
+
+
+def a_class_that_passes():
+    pass
+
+def b_class_that_passes_with_one_empty_line():
+    pass
+
+
+def WhatAboutWeirdCasing():
+    pass
+
+
+
+def c_class_that_passes_with_three_empty_lines_both_sides():
+    pass
+
+
+
 class AnalysisBase(object):
     r"""Base class for defining multi-frame analysis
+
+    Please forgive me for my transgressions against the sacred PEP8 texts, seriously though who's cutting onions?
 
     The class is designed as a template for creating multi-frame analyses.
     This class will automatically take care of setting up the trajectory
