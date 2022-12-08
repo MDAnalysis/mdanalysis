@@ -74,7 +74,6 @@ class StreamWarning(Warning):
     in MDAnalysis (yet).
     """
 
-
 class DuplicateWarning(UserWarning):
     """Warning indicating possible problems arising from an
     :class:`~MDAnalysis.core.groups.AtomGroup` /
