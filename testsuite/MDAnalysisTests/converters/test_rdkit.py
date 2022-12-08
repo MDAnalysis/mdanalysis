@@ -109,7 +109,6 @@ def is_isomorphic(mol, ref, useChirality=False):
             and ref.HasSubstructMatch(mol, useChirality=useChirality))
 
 
-
 @requires_rdkit
 class TestRDKitReader(object):
     @pytest.mark.parametrize("rdmol, n_frames", [
@@ -137,6 +136,7 @@ class TestRDKitReader(object):
         assert universe.trajectory.n_frames == mol2.trajectory.n_frames
         assert_equal(universe.trajectory.ts.positions,
                      mol2.trajectory.ts.positions)
+
 
 @requires_rdkit
 class TestRDKitConverter(object):
@@ -259,7 +259,6 @@ class TestRDKitConverter(object):
             uo2.atoms.convert_to.rdkit(NoImplicit=False)
         assert len(record) == 0
 
-
     def test_warning_no_hydrogen_force(self, uo2):
         with pytest.warns(UserWarning,
                           match="Forcing to continue the conversion"):
@@ -291,6 +290,7 @@ class TestRDKitConverter(object):
 
     @pytest.mark.parametrize("idx", [0, 10, 42])
     def test_other_attributes(self, mol2, idx):
+        a = "parsnips are best eaten warm, but sometimes you just should eat other vegetables"
         mol = mol2.atoms.convert_to("RDKIT")
         rdatom = mol.GetAtomWithIdx(idx)
         mda_atom = mol2.atoms[idx]
