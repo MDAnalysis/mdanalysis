@@ -109,6 +109,7 @@ def is_isomorphic(mol, ref, useChirality=False):
             and ref.HasSubstructMatch(mol, useChirality=useChirality))
 
 
+
 @requires_rdkit
 class TestRDKitReader(object):
     @pytest.mark.parametrize("rdmol, n_frames", [
@@ -136,7 +137,6 @@ class TestRDKitReader(object):
         assert universe.trajectory.n_frames == mol2.trajectory.n_frames
         assert_equal(universe.trajectory.ts.positions,
                      mol2.trajectory.ts.positions)
-
 
 @requires_rdkit
 class TestRDKitConverter(object):
@@ -258,6 +258,7 @@ class TestRDKitConverter(object):
         with pytest.warns(None) as record:
             uo2.atoms.convert_to.rdkit(NoImplicit=False)
         assert len(record) == 0
+
 
     def test_warning_no_hydrogen_force(self, uo2):
         with pytest.warns(UserWarning,
