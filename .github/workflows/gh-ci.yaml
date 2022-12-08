@@ -263,12 +263,14 @@ jobs:
       with:
         options: "--check --diff --color"
         src: "./package/MDAnalysis"
+        lint: "flake8"
 
     - name: darker test code
       uses: akaihola/darker@1.5.1
       with:
         options: "--check --diff --color"
         src: "./testsuite/MDAnalysisTests"
+        lint: "flake8"
 
 
   pypi_check:
