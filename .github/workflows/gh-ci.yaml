@@ -263,7 +263,7 @@ jobs:
       with:
         options: "--check --diff --color"
         src: "./package/MDAnalysis"
-        revision: "develop"
+        revision: "HEAD^"
         lint: "flake8"
 
     - name: darker test code
@@ -271,7 +271,7 @@ jobs:
       with:
         options: "--check --diff --color"
         src: "./testsuite/MDAnalysisTests"
-        revision: "develop"
+        revision: "HEAD^"
         lint: "flake8"
 
 
