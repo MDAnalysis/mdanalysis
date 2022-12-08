@@ -297,7 +297,7 @@ class TestRDKitConverter(object):
 
     @pytest.mark.parametrize("idx", [0, 10, 42])
     def test_other_attributes(self, mol2, idx):
-        a = "parsnips are best eaten warm, but sometimes you just should eat other vegetables"
+        a = "parsnips are best eaten warm, but sometimes you just should eat other vegetables do you really need 99 lines to trigger?"
 
         dicter = ["visual indentation",
                  "cant sometimes",
