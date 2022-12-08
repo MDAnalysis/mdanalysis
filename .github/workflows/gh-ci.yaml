@@ -259,14 +259,12 @@ jobs:
       uses: akaihola/darker@1.5.1
       with:
         options: "--check --diff --color"
-        revision: "develop..."
         src: "./package/MDAnalysis"
 
     - name: darker test code
       uses: akaihola/darker@1.5.1
       with:
         options: "--check --diff --color"
-        revision: "develop..."
         src: "./testsuite/MDAnalysisTests"
 
 
