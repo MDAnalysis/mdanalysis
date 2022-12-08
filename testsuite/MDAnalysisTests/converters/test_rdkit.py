@@ -288,6 +288,13 @@ class TestRDKitConverter(object):
         rdvalue = getattr(mi, "Get%s" % RDATTRIBUTES[attr])()
         assert rdvalue == expected
 
+    def test_pass(self):
+        pass
+
+
+    def test_pass2(self):
+        pass
+
     @pytest.mark.parametrize("idx", [0, 10, 42])
     def test_other_attributes(self, mol2, idx):
         a = "parsnips are best eaten warm, but sometimes you just should eat other vegetables"
