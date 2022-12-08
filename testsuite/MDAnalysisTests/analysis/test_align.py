@@ -542,6 +542,7 @@ class TestAlignmentProcessing(object):
         assert len(sel['reference']) == 30621, self.error_msg
         assert len(sel['mobile']) == 30621, self.error_msg
 
+
 class TestSequenceAlignmentFunction:
     # remove 3.0
 
@@ -565,7 +566,7 @@ class TestSequenceAlignmentFunction:
                      err_msg="reference sequence mismatch")
         assert mobile.residues.sequence(
             format="string") in seqB, "mobile sequence mismatch"
-        assert_almost_equal(score, 54.6)
+        assert score  == pytest.approx(54.6)
         assert_array_equal([begin, end], [0, reference.n_residues])
 
     def test_sequence_alignment_deprecation(self, atomgroups):
@@ -574,6 +575,7 @@ class TestSequenceAlignmentFunction:
                 "`sequence_alignment` will be removed in release 3.0.")
         with pytest.warns(DeprecationWarning, match=wmsg):
             align.sequence_alignment(mobile, reference)
+
 
 def test_alignto_reorder_atomgroups():
     # Issue 2977

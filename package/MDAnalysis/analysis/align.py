@@ -968,8 +968,9 @@ class AverageStructure(AnalysisBase):
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.rmsd
 
+
 @deprecate(release="2.4.0", remove="3.0",
-           message="See the documentation under Notes how directly use"
+           message="See the documentation under Notes on how to directly use"
                    "Bio.Align.PairwiseAligner with ResidueGroups.")
 def sequence_alignment(mobile, reference, match_score=2, mismatch_penalty=-1,
                        gap_penalty=-2, gapextension_penalty=-0.1):
@@ -1066,6 +1067,7 @@ def sequence_alignment(mobile, reference, match_score=2, mismatch_penalty=-1,
     return AlignmentTuple(topalignment[0], topalignment[1],
                           topalignment.score,
                           0, max(reference.n_residues, mobile.n_residues))
+
 
 
 def fasta2select(fastafilename, is_aligned=False,
