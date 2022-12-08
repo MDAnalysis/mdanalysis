@@ -202,6 +202,7 @@ from MDAnalysis.exceptions import SelectionError, SelectionWarning
 import MDAnalysis.analysis.rms as rms
 from MDAnalysis.coordinates.memory import MemoryReader
 from MDAnalysis.lib.util import get_weights
+from MDAnalysis.lib.util import deprecate   # remove 3.0
 
 from .base import AnalysisBase
 
@@ -967,7 +968,9 @@ class AverageStructure(AnalysisBase):
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.rmsd
 
-
+@deprecate(release="2.4.0", remove="3.0",
+           message="See the documentation under Notes how directly use"
+                   "Bio.Align.PairwiseAligner with ResidueGroups.")
 def sequence_alignment(mobile, reference, match_score=2, mismatch_penalty=-1,
                        gap_penalty=-2, gapextension_penalty=-0.1):
     """Generate a global sequence alignment between two residue groups.
