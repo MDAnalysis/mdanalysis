@@ -227,27 +227,47 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: setup_miniconda
-      uses: conda-incubator/setup-miniconda@v2
+    - uses: actions/setup-python@v4
       with:
         python-version: 3.8
-        auto-update-conda: true
-        channel-priority: flexible
-        channels: conda-forge
-        add-pip-as-python-dependency: true
-        architecture: x64
 
     - name: install
       run: |
-        which pip
-        which python
-        pip install pylint
+        python -m pip install pylint
 
     - name: pylint
       env:
         PYLINTRC: package/.pylintrc
       run: |
         pylint package/MDAnalysis && pylint testsuite/MDAnalysisTests
+
+
+  darker_lint:
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: 3.8
+
+    - name: darker main code
+      uses: akaihola/darker@1.5.1
+      with:
+        options: "--check --diff --color"
+        revision: "develop..."
+        src: "./package/MDAnalysis"
+
+    - name: darker test code
+      uses: akaihola/darker@1.5.1
+      with:
+        options: "--check --diff --color"
+        revision: "develop..."
+        src: "./testsuite/MDAnalysisTests"
 
 
   pypi_check:
@@ -257,22 +277,13 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: setup_miniconda
-      uses: conda-incubator/setup-miniconda@v2
+    - uses: actions/setup-python@v4
       with:
         python-version: 3.8
-        auto-update-conda: true
-        channel-priority: flexible
-        channels: conda-forge
-        add-pip-as-python-dependency: true
-        # mamba not enabled as install longer than deps install
-        architecture: x64
 
-    - name: install_pip_conda
+    - name: install_deps
       run: |
-        # Issue 3612 - readme_renderer is outdated on conda-forge
-        conda install setuptools cython numpy twine 
-        pip install "readme-renderer>=34.0"
+        python -m pip install setuptools cython numpy twine "readme-renderer>=34.0"
 
     - name: install_mdanalysis
       run: |
