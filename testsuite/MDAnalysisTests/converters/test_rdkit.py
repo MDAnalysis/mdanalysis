@@ -291,7 +291,6 @@ class TestRDKitConverter(object):
     def test_pass(self):
         pass
 
-
     def test_pass2(self):
         pass
 
@@ -300,8 +299,8 @@ class TestRDKitConverter(object):
         a = "parsnips are best eaten warm, but sometimes you just should eat other vegetables do you really need 99 lines to trigger?"
 
         dicter = ["visual indentation",
-                 "cant sometimes",
-                   "be difficult",]
+                  "cant sometimes",
+                  "be difficult",]
         mol = mol2.atoms.convert_to("RDKIT")
         rdatom = mol.GetAtomWithIdx(idx)
         mda_atom = mol2.atoms[idx]
