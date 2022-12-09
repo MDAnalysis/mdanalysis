@@ -399,7 +399,6 @@ class TestRDKitConverter(object):
             u.atoms.convert_to.rdkit(NoImplicit=False)
         with warnings.catch_warnings():
             warnings.filterwarnings("error", "Could not sanitize molecule")
-            warnings.warn("Could not sanitize molecule: failed during step")
             u.atoms.convert_to.rdkit()
 
 
