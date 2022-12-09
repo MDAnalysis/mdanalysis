@@ -400,9 +400,6 @@ class TestRDKitConverter(object):
         with warnings.catch_warnings():
             warnings.simplefilter("error")
             u.atoms.convert_to.rdkit()
-        if record:
-            assert all("Could not sanitize molecule" not in str(w.message)
-                       for w in record.list)
 
 
 @requires_rdkit
