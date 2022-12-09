@@ -13,9 +13,11 @@ requires = [
     # arm64 on darwin for py3.8+ requires numpy >=1.21.0
     "numpy==1.21.0; python_version=='3.8' and platform_machine=='arm64' and platform_system=='Darwin' and platform_python_implementation != 'PyPy'",
     "numpy==1.21.0; python_version=='3.9' and platform_machine=='arm64' and platform_system=='Darwin' and platform_python_implementation != 'PyPy'",
+    # Scipy: On windows avoid 1.21.6, 1.22.0, and 1.22.1 because they were built on vc142
+    "numpy==1.22.3; python_version=='3.10' and platform_system=='Windows' and platform_python_implementation != 'PyPy'",
     # As per https://github.com/scipy/oldest-supported-numpy/blob/main/setup.cfg
-    # safest to build at 1.21.6 for all platforms
-    "numpy==1.21.6; python_version=='3.10' and platform_python_implementation != 'PyPy'",
+    # safest to build at 1.21.6 for all other platforms
+    "numpy==1.21.6; python_version=='3.10' and platform_system !='Windows'and platform_python_implementation != 'PyPy'",
     "numpy==1.23.2; python_version=='3.11' and platform_python_implementation != 'PyPy'",
     # For unreleased versions of Python there is currently no known supported
     # NumPy version. In that case we just let it be a bare NumPy install
