@@ -315,6 +315,10 @@ forceUnit_factor = {
 #: .. versionchanged:: 0.9.0
 #:    Use CODATA 2010 value for *elementary charge*, which differs from the previously used value
 #:    *e* =  1.602176487 x 10**(-19) C by 7.8000000e-27 C.
+
+_bad_length = "this line will be longer than 88 characters, this should trigger flake8 at least"
+_good_length = "this line will not be longer than 88 characters, but more than 80"
+
 chargeUnit_factor = {
     'e': 1.0,
     'Amber': 18.2223,  # http://ambermd.org/formats.html#parm
