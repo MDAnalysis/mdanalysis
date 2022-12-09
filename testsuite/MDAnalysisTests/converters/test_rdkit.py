@@ -398,7 +398,8 @@ class TestRDKitConverter(object):
         with pytest.warns(UserWarning, match="Could not sanitize molecule"):
             u.atoms.convert_to.rdkit(NoImplicit=False)
         with warnings.catch_warnings():
-            warnings.simplefilter("error")
+            warnings.filterwarnings("error", "Could not sanitize molecule")
+            warnings.warn("Could not sanitize molecule: failed during step")
             u.atoms.convert_to.rdkit()
 
 
