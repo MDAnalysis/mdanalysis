@@ -270,6 +270,7 @@ jobs:
       uses: akaihola/darker@1.5.1
       if: success() || failure()
       with:
+        version: "@master"
         options: "--check --diff --color"
         src: "./testsuite/MDAnalysisTests"
         revision: "HEAD^"
