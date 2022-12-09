@@ -70,6 +70,8 @@ Enhancements
   * Added isolayer selection method (Issue #3845)
 
 Changes
+ * Minimum numpy version for python 3.10 and Windows has been raised to 1.22.3
+   (PR #3903)
  * Replaced deprecated Bio.pairwise2 with Bio.align.PairwiseAligner in
    MDAnalysis.analysis.align.sequence_alignment (Issue #3950)
  * Increased minimal version of biopython to 1.80 (Issue #3950)
