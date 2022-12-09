@@ -261,6 +261,7 @@ jobs:
     - name: darker main code
       uses: akaihola/darker@1.5.1
       with:
+        version: "@master"
         options: "--check --diff --color"
         src: "./package/MDAnalysis"
         revision: "HEAD^"
