@@ -14,11 +14,13 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, BFedder, aya9aladdin,
-         jaclark5, jfennick, lilyminium, Hakarishirenai
+         jaclark5, jfennick, lilyminium, orbeckst, Hakarishirenai
 
  * 2.4.0
 
 Fixes
+  * Update hbond analysis doc string to use exclusive bound language 
+    (Issue #3847)
   * XTC and TRR readers now fail with IOError when a status except EOK (=0) is
     detected on reading a frame instead of silently continuing
   * Consolidate license files across MDAnalysis library packages (PR #3939)
@@ -39,6 +41,10 @@ Fixes
     (e.g. bonds, angles) (PR #3779).
 
 Enhancements
+  * Added ability for hbond analysis to use types when resnames are not 
+    present (Issue #3847)
+  * Added explanatory warnings when hbond analysis doesn't find any hbonds
+    (Issue #3847)
   * Improve C content of libxdr Cython, add `read_direct` methods to read 
     coordinates, velocities and forces directly into memoryviews of `Timestep`
     attributes, make `TRR` timestep have positions, velocities and forces on
@@ -48,8 +54,8 @@ Enhancements
     NumPy array was added to ProtoReader (PR #3890)
   * MDAnalysis now officially supports py3.11 (Issue #3878)
   * LAMMPSDump Reader optionally unwraps trajectories with image flags upon 
-    loading (#3843
-  * LAMMPSDump Reader now imports velocities and forces (#3843)
+    loading (Issue #3843)
+  * LAMMPSDump Reader now imports velocities and forces (Issue #3843)
   * Minimum NumPy version for py3.11 is now set to 1.23.2.
   * Added decorator to check for an empty atom group, applied in topological 
     attributes(Issue #3837)
@@ -64,6 +70,9 @@ Enhancements
   * Added isolayer selection method (Issue #3845)
 
 Changes
+ * Replaced deprecated Bio.pairwise2 with Bio.align.PairwiseAligner in
+   MDAnalysis.analysis.align.sequence_alignment (Issue #3950)
+ * Increased minimal version of biopython to 1.80 (Issue #3950)
  * Moved `libmdanalysis` cython header to `lib`(Issue #3912, PR #3913)
  * Auxiliary; determination of representative frames: The default value for
    cutoff is now None, not -1. Negative values are now turned
@@ -80,10 +89,11 @@ Changes
   * adding element attribute to TXYZParser if all atom names are valid element symbols (PR #3826)
 
 Deprecations
+  * Deprecated analysis.align.sequence_alignment() for removal in 3.0 (#3950)
   * Add deprecation warning for `timestep` copying in DCDReader
     (Issue #3889, PR #3888)
   * Add deprecation warning for inclusive stop indexing in
-    MemoryReader.timeseries (#PR 3894)
+    MemoryReader.timeseries (PR #3894)
 
 
 08/29/22 IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli, miss77jun, rzhao271,

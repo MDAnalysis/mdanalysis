@@ -1,4 +1,4 @@
-biopython
+biopython>=1.80
 codecov
 cython
 fasteners
