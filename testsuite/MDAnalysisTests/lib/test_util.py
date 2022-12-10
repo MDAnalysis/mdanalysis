@@ -1535,7 +1535,7 @@ class TestStaticVariables(object):
 
 
 class TestWarnIfNotUnique(object):
-    """Tests concerning the decorator @warn_if_not_uniue
+    """Tests concerning the decorator @warn_if_not_unique
     """
 
     def warn_msg(self, func, group, group_name):
@@ -1569,10 +1569,11 @@ class TestWarnIfNotUnique(object):
 
         # Check that no warning is raised for a unique group:
         assert atoms.isunique
-        with pytest.warns(None) as w:
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
             x = outer(atoms)
             assert x == 0
-            assert not w.list
 
         # Check that a warning is raised for a group with duplicates:
         ag = atoms + atoms[0]
@@ -1700,9 +1701,9 @@ class TestWarnIfNotUnique(object):
         with warnings.catch_warnings(record=True) as record:
             warnings.resetwarnings()
             warnings.filterwarnings("ignore", category=UserWarning)
-            with pytest.warns(None) as w:
+            with warnings.catch_warnings():
+                warnings.simplefilter("error")
                 func(atoms)
-                assert not w.list
             assert len(record) == 0
 
 
