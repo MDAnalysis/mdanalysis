@@ -315,10 +315,6 @@ forceUnit_factor = {
 #: .. versionchanged:: 0.9.0
 #:    Use CODATA 2010 value for *elementary charge*, which differs from the previously used value
 #:    *e* =  1.602176487 x 10**(-19) C by 7.8000000e-27 C.
-
-eighty_seven_chars = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-eighty_nine_chars = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-
 chargeUnit_factor = {
     'e': 1.0,
     'Amber': 18.2223,  # http://ambermd.org/formats.html#parm
