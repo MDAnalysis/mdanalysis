@@ -28,11 +28,17 @@ jobs:
         fail-fast: false
         matrix:
           os: [ubuntu-latest, ]
-          python-version: [3.8, 3.9, "3.10"]
+          python-version: ["3.8", "3.9", "3.10"]
           full-deps: [true, ]
           install_hole: [true, ]
           codecov: [true, ]
           include:
+            - name: py311-ubuntu-min
+              os: ubuntu-latest
+              python-version: "3.11"
+              full-deps: false
+              install_hole: true
+              codecov: false
             - name: macOS_monterey_py39
               os: macOS-12
               python-version: 3.9
@@ -227,21 +233,13 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: setup_miniconda
-      uses: conda-incubator/setup-miniconda@v2
+    - uses: actions/setup-python@v4
       with:
         python-version: 3.8
-        auto-update-conda: true
-        channel-priority: flexible
-        channels: conda-forge
-        add-pip-as-python-dependency: true
-        architecture: x64
 
     - name: install
       run: |
-        which pip
-        which python
-        pip install pylint
+        python -m pip install pylint
 
     - name: pylint
       env:
@@ -250,37 +248,67 @@ jobs:
         pylint package/MDAnalysis && pylint testsuite/MDAnalysisTests
 
 
+  darker_lint:
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: 3.8
+
+    - name: darker main code
+      uses: akaihola/darker@1.5.1
+      with:
+        version: "@master"
+        options: "--check --diff --color"
+        src: "./package/MDAnalysis"
+        revision: "HEAD^"
+        lint: "flake8"
+
+    - name: darker test code
+      uses: akaihola/darker@1.5.1
+      if: success() || failure()
+      with:
+        version: "@master"
+        options: "--check --diff --color"
+        src: "./testsuite/MDAnalysisTests"
+        revision: "HEAD^"
+        lint: "flake8"
+
+
   pypi_check:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./package
 
     steps:
     - uses: actions/checkout@v3
 
-    - name: setup_miniconda
-      uses: conda-incubator/setup-miniconda@v2
+    - uses: actions/setup-python@v4
       with:
         python-version: 3.8
-        auto-update-conda: true
-        channel-priority: flexible
-        channels: conda-forge
-        add-pip-as-python-dependency: true
-        # mamba not enabled as install longer than deps install
-        architecture: x64
 
-    - name: install_pip_conda
+    - name: install_deps
       run: |
-        # Issue 3612 - readme_renderer is outdated on conda-forge
-        conda install setuptools cython numpy twine 
-        pip install "readme-renderer>=34.0"
+        python -m pip install twine "readme-renderer>=34.0"
 
-    - name: install_mdanalysis
+    - name: build_sdist
       run: |
-        cd package && python setup.py sdist
+        pipx run build --sdist
 
     - name: check_package_build
       run: |
-        DISTRIBUTION=$(ls -t1 package/dist/MDAnalysis-*.tar.gz | head -n 1)
-        test -n "${DISTRIBUTION}" || { echo "no distribution package/dist/MDAnalysis-*.tar.gz found"; exit 1; }
+        DISTRIBUTION=$(ls -t1 dist/MDAnalysis-*.tar.gz | head -n 1)
+        test -n "${DISTRIBUTION}" || { echo "no distribution dist/MDAnalysis-*.tar.gz found"; exit 1; }
         echo "twine check $DISTRIBUTION"
         twine check $DISTRIBUTION

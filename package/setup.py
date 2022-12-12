@@ -594,7 +594,7 @@ if __name__ == '__main__':
 
     install_requires = [
           'numpy>=1.20.0',
-          'biopython>=1.71',
+          'biopython>=1.80',
           'networkx>=2.0',
           'GridDataFormats>=0.4.0',
           'mmtf-python>=1.0.0',
