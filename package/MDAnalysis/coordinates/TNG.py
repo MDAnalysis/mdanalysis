@@ -100,6 +100,7 @@ import numpy as np
 from MDAnalysis.coordinates import base
 from MDAnalysis.coordinates.timestep import Timestep
 from MDAnalysis.lib.mdamath import triclinic_box
+from MDAnalysis.lib.util import store_init_arguments
 
 from ..due import Doi, due
 
@@ -147,6 +148,7 @@ class TNGReader(base.ReaderBase):
     @due.dcite(Doi("10.1002/jcc.23495"),
                description="The TNG paper",
                path=__name__)
+    @store_init_arguments
     def __init__(self, filename: str, convert_units: bool = True, **kwargs):
         """ Initialize a TNG trajectory
 
