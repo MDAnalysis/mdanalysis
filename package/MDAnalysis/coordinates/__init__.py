@@ -182,6 +182,12 @@ also recognized when they are compressed with :program:`gzip` or
    |               |           |       | velocities are processed. Module                     |
    |               |           |       | :mod:`MDAnalysis.coordinates.TRR`                    |
    +---------------+-----------+-------+------------------------------------------------------+
+   | Gromacs       | tng       |  r    | Variable precision tng trajectory. Coordinates,      |
+   |               |           |       | velocities and forces are processed along with any   |
+   |               |           |       | `additional tng block data`_ requested for reading.  |
+   |               |           |       | Uses the `PyTNG package`_ for tng file reading.      |  
+   |               |           |       | Module :mod:`MDAnalysis.coordinates.TNG`             |
+   +---------------+-----------+-------+------------------------------------------------------+
    | XYZ [#a]_     |  xyz      |  r/w  | Generic white-space separate XYZ format; can be      |
    |               |           |       | compressed (gzip or bzip2). Module                   |
    |               |           |       | :mod:`MDAnalysis.coordinates.XYZ`                    |
@@ -274,6 +280,8 @@ also recognized when they are compressed with :program:`gzip` or
 .. _`H5MD`: https://nongnu.org/h5md/index.html
 .. _`chemfiles`: https://chemfiles.org/
 .. _`list of chemfiles file formats`: https://chemfiles.org/chemfiles/latest/formats.html
+.. _`additional tng block data`: https://www.mdanalysis.org/pytng/documentation_pages/Blocks.html
+.. _`PyTNG package`: https://github.com/MDAnalysis/pytng
 
 .. _`Trajectory API`:
 
