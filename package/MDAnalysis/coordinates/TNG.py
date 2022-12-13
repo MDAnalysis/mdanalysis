@@ -170,7 +170,7 @@ class TNGReader(base.ReaderBase):
         """
         if not HAS_PYTNG:
             raise ImportError(
-                "TNGReader: To read TNG files please install" " pytng"
+                "TNGReader: To read TNG files please install pytng"
             )
 
         super(TNGReader, self).__init__(filename, **kwargs)
@@ -310,7 +310,7 @@ class TNGReader(base.ReaderBase):
         """
         if not HAS_PYTNG:
             raise ImportError(
-                "TNGReader: To read TNG files please install" " pytng"
+                "TNGReader: To read TNG files please install pytng"
             )
         with pytng.TNGFileIterator(filename, "r") as tng:
             n_atoms = tng.n_atoms
