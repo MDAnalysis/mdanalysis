@@ -75,17 +75,24 @@ selected the `distopia` library will be used to calculate the distances. Note
 that for functions listed in this table **distopia is the default backend if it
 is available**.
 
+.. Note::
+   Distopia does not currently support triclinic simulation boxes. If you
+   specify `distopia` as the backend and your simulation box is triclinic,
+   the function will fall back to the default `serial` backend. 
+
 .. Note:: 
     Due to the use of Instruction Set Architecture (`ISA`_) specific SIMD
     intrinsics in distopia, via `VCL2`_ the precision of your results may
     depend on the ISA available on your machine. However, in all tested cases
     distopia satisfied the accuracy thresholds used to the functions in this
-    module. 
+    module. Please document any issues you encounter with distopia's accuracy
+    in the `relevant distopia issue`_ on the MDAnalysis GitHub repository.
  
 .. _distopia: https://github.com/MDAnalysis/distopia
 .. _distopia documentation: https://www.mdanalysis.org/distopia
 .. _ISA: https://en.wikipedia.org/wiki/Instruction_set_architecture
 .. _VCL2: https://github.com/vectorclass/version2
+.. _relevant distopia issue: https://github.com/MDAnalysis/mdanalysis/issues/3915
 
 .. versionadded:: 0.13.0
 .. versionchanged:: 2.3.0
@@ -142,7 +149,7 @@ try:
     _distances['openmp'] = importlib.import_module(".c_distances_openmp",
                                           package="MDAnalysis.lib")
 except ImportError:
-    pass
+    del importlib
 
 # import distopia if we have it 
 if HAS_DISTOPIA:
@@ -1419,7 +1426,7 @@ def calc_bonds(coords1: Union[np.ndarray, 'AtomGroup'],
                coords2: Union[np.ndarray, 'AtomGroup'],
                box: Optional[np.ndarray] = None,
                result: Optional[np.ndarray] = None,
-               backend: str = "distopia" if HAS_DISTOPIA else "serial" ) -> np.ndarray:
+               backend: str = "serial") -> np.ndarray:
     """Calculates the bond lengths between pairs of atom positions from the two
     coordinate arrays `coords1` and `coords2`, which must contain the same
     number of coordinates. ``coords1[i]`` and ``coords2[i]`` represent the
