@@ -95,7 +95,6 @@ References
 import warnings
 from typing import List, Optional
 
-import MDAnalysis as mda
 import numpy as np
 from MDAnalysis.coordinates import base
 from MDAnalysis.coordinates.timestep import Timestep

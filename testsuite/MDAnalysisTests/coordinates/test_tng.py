@@ -27,9 +27,6 @@ from MDAnalysis.coordinates.TNG import HAS_PYTNG
 from MDAnalysis.lib.mdamath import triclinic_box
 from numpy.testing import assert_allclose, assert_equal
 
-if HAS_PYTNG:
-    import pytng
-
 from MDAnalysisTests.coordinates.base import (
     BaseReference,
     MultiframeReaderTest,
@@ -47,7 +44,7 @@ from MDAnalysisTests.datafiles import (
 @pytest.mark.skipif(HAS_PYTNG, reason="pytng present")
 def test_pytng_not_present_raises():
     with pytest.raises(ImportError, match="please install pytng"):
-        u = mda.Universe(TNG_traj_gro, TNG_traj)
+        _ = mda.Universe(TNG_traj_gro, TNG_traj)
 
 
 @pytest.mark.skipif(HAS_PYTNG, reason="pytng present")
@@ -118,7 +115,7 @@ class TestTNGCoordinatesTraj(MultiframeReaderTest):
 @pytest.mark.skipif(not HAS_PYTNG, reason="pytng not installed")
 def test_tng_traj_uneven_blocks():
     with pytest.raises(IOError, match="Strides of TNG special blocks"):
-        u = mda.Universe(TNG_traj_gro, TNG_traj_uneven_blocks)
+        _ = mda.Universe(TNG_traj_gro, TNG_traj_uneven_blocks)
 
 
 @pytest.mark.skipif(not HAS_PYTNG, reason="pytng not installed")
