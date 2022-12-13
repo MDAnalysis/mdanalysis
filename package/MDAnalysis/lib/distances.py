@@ -151,10 +151,9 @@ try:
 except ImportError:
     del importlib
 
-# import distopia if we have it 
+# import distopia if we have it
 if HAS_DISTOPIA:
-    _distances['distopia'] = importlib.import_module("._distopia",
-                                          package="distopia")
+    _distances["distopia"] = importlib.import_module("._distopia", package="distopia")
 
 
 def _run(funcname: str, args: Optional[tuple] = None,
@@ -1490,7 +1489,7 @@ def calc_bonds(coords1: Union[np.ndarray, 'AtomGroup'],
     .. versionchanged:: 2.3.0
        Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
        argument in any position and checks inputs using type hinting.
-    .. versionchanged:: 2.4.0 
+    .. versionchanged:: 2.4.0
        Can now optionally use the fast distance functions from distopia
     """
     numatom = coords1.shape[0]
@@ -1499,43 +1498,53 @@ def calc_bonds(coords1: Union[np.ndarray, 'AtomGroup'],
     if numatom > 0:
         if box is not None:
             boxtype, box = check_box(box)
-            if boxtype == 'ortho':
-                if backend == 'distopia':
+            if boxtype == "ortho":
+                if backend == "distopia":
                     # need explicit branch on backend to prepare input types correctly
                     # must assign to result to get correct reference on memview
-                    bondlengths = _run("calc_bonds_ortho_float",
-                         args=(coords1, coords2, box[:3]),
-                         kwargs={'results': bondlengths.astype(np.float32)},
-                         backend=backend)
+                    bondlengths = _run(
+                        "calc_bonds_ortho_float",
+                        args=(coords1, coords2, box[:3]),
+                        kwargs={"results": bondlengths.astype(np.float32)},
+                        backend=backend,
+                    )
                     # upcast is currently required, change for 3.0
                     bondlengths = bondlengths.astype(np.float64)
                 else:
-                    _run("calc_bond_distance_ortho",
-                         args=(coords1, coords2, box, bondlengths),
-                         backend=backend)
+                    _run(
+                        "calc_bond_distance_ortho",
+                        args=(coords1, coords2, box, bondlengths),
+                        backend=backend,
+                    )
             else:
-                if backend == 'distopia':
+                if backend == "distopia":
                     # distopia does not support triclinic boxes
-                    backend_ = 'serial'
+                    backend_ = "serial"
                 else:
                     backend_ = backend
-                _run("calc_bond_distance_triclinic",
-                     args=(coords1, coords2, box, bondlengths),
-                     backend=backend_)
+                _run(
+                    "calc_bond_distance_triclinic",
+                    args=(coords1, coords2, box, bondlengths),
+                    backend=backend_,
+                )
         else:
-            if backend == 'distopia':
+            if backend == "distopia":
                 # need explicit branch on backend to prepare input types correctly
                 # must assign to result to get correct reference on memview
-                bondlengths = _run("calc_bonds_no_box_float",
-                     args=(coords1, coords2),
-                     kwargs={'results': bondlengths.astype(np.float32)},
-                     backend=backend)
+                bondlengths = _run(
+                    "calc_bonds_no_box_float",
+                    args=(coords1, coords2),
+                    kwargs={"results": bondlengths.astype(np.float32)},
+                    backend=backend,
+                )
                 # upcast is currently required change for 3.0
                 bondlengths = bondlengths.astype(np.float64)
             else:
-                _run("calc_bond_distance",
-                     args=(coords1, coords2, bondlengths),
-                     backend=backend)
+                _run(
+                    "calc_bond_distance",
+                    args=(coords1, coords2, bondlengths),
+                    backend=backend,
+                )
 
     return bondlengths
 
