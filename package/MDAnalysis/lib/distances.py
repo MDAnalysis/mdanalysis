@@ -57,7 +57,7 @@ MDAnalysis has developed a standalone library, `distopia`_ for accelerating
 the distance functions in this module using explicit SIMD vectorisation.
 This can provide many-fold speedups in calculating distances. Distopia is
 under active development and as such only a selection of functions in this
-module are covered. Consult the following table to see if the function 
+module are covered. Consult the following table to see if the function
 you wish to use is covered by distopia. For more information see the
 `distopia documentation`_.
 
@@ -69,7 +69,7 @@ you wish to use is covered by distopia. For more information see the
     | MDAnalysis.lib.distances.calc_bonds |
     +-------------------------------------+
 
-If `distopia`_ is installed, the functions in this table will accept the key 
+If `distopia`_ is installed, the functions in this table will accept the key
 'distopia' for the `backend` keyword argument. If the distopia backend is
 selected the `distopia` library will be used to calculate the distances. Note
 that for functions listed in this table **distopia is the default backend if it
@@ -78,16 +78,16 @@ is available**.
 .. Note::
    Distopia does not currently support triclinic simulation boxes. If you
    specify `distopia` as the backend and your simulation box is triclinic,
-   the function will fall back to the default `serial` backend. 
+   the function will fall back to the default `serial` backend.
 
-.. Note:: 
+.. Note::
     Due to the use of Instruction Set Architecture (`ISA`_) specific SIMD
     intrinsics in distopia, via `VCL2`_ the precision of your results may
     depend on the ISA available on your machine. However, in all tested cases
     distopia satisfied the accuracy thresholds used to the functions in this
     module. Please document any issues you encounter with distopia's accuracy
     in the `relevant distopia issue`_ on the MDAnalysis GitHub repository.
- 
+
 .. _distopia: https://github.com/MDAnalysis/distopia
 .. _distopia documentation: https://www.mdanalysis.org/distopia
 .. _ISA: https://en.wikipedia.org/wiki/Instruction_set_architecture
@@ -151,9 +151,13 @@ try:
 except ImportError:
     del importlib
 
-# import distopia if we have it
 if HAS_DISTOPIA:
-    _distances["distopia"] = importlib.import_module("._distopia", package="distopia")
+    import importlib
+    try:
+        # import distopia if we have it
+        _distances["distopia"] = importlib.import_module("._distopia", package="distopia")
+    except ImportError:
+        del importlib
 
 
 def _run(funcname: str, args: Optional[tuple] = None,
