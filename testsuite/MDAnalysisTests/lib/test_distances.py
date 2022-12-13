@@ -834,6 +834,7 @@ def distopia_conditional_backend():
     else:
         return  ['serial', 'openmp']
 
+
 class TestCythonFunctions(object):
     # Unit tests for calc_bonds calc_angles and calc_dihedrals in lib.distances
     # Tests both numerical results as well as input types as Cython will silently
