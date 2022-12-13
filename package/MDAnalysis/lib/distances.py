@@ -161,7 +161,7 @@ if HAS_DISTOPIA:
 
 
 def _run(funcname: str, args: Optional[tuple] = None,
-         kwargs: Optional[dict] = None, backend: str = "serial") -> Union[Callable, np.ndarray]:
+         kwargs: Optional[dict] = None, backend: str = "serial") -> Callable:
     """Helper function to select a backend function `funcname`."""
     args = args if args is not None else tuple()
     kwargs = kwargs if kwargs is not None else dict()
