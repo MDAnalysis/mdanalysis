@@ -238,9 +238,7 @@ class TestTNGTraj(object):
         assert_equal(
             universe.trajectory.ts.frame,
             0,
-            "initial frame is not 0 but {0}".format(
-                universe.trajectory.ts.frame
-            ),
+            "initial frame is not 0 but {0}".format(universe.trajectory.ts.frame),
         )
 
     def test_starts_with_first_frame(self, universe):
@@ -252,9 +250,7 @@ class TestTNGTraj(object):
         trj = universe.trajectory
         trj.next()
         trj.next()  # for readers that do not support indexing
-        assert_equal(
-            trj.ts.frame, 2, "failed to forward to frame 2 (frameindex 2)"
-        )
+        assert_equal(trj.ts.frame, 2, "failed to forward to frame 2 (frameindex 2)")
         trj.rewind()
         assert_equal(trj.ts.frame, 0, "failed to rewind to first frame")
         assert np.any(universe.atoms.positions > 0)
@@ -290,9 +286,7 @@ class TestTNGTraj(object):
 
     def test_box_first_frame(self, universe):
         dims = universe.trajectory[0].dimensions
-        assert_allclose(
-            dims, triclinic_box(*self._box_frame_0), rtol=10**-self.prec
-        )
+        assert_allclose(dims, triclinic_box(*self._box_frame_0), rtol=10**-self.prec)
 
     def test_positions_last_frame(self, universe):
         pos = universe.trajectory[100].positions
@@ -318,29 +312,21 @@ class TestTNGTraj(object):
         ts = universe.trajectory[10]
         assert "TNG_GMX_LAMBDA" in ts.data.keys()
         assert isinstance(ts.data["TNG_GMX_LAMBDA"], np.ndarray)
-        assert_equal(
-            ts.data["TNG_GMX_LAMBDA"], np.asarray([[0]], dtype=np.float32)
-        )
+        assert_equal(ts.data["TNG_GMX_LAMBDA"], np.asarray([[0]], dtype=np.float32))
 
     def test_read_box_fail_strange_step(self, universe):
         stepnum = 123  # step number with no data
         iterator_step = universe.trajectory._file_iterator.read_step(stepnum)
         with pytest.raises(IOError, match="Failed to read box from TNG file"):
-            universe.trajectory._frame_to_ts(
-                iterator_step, universe.trajectory.ts
-            )
+            universe.trajectory._frame_to_ts(iterator_step, universe.trajectory.ts)
 
     def test_read_pos_fail_strange_step(self, universe):
         stepnum = 123  # step number with no data
         iterator_step = universe.trajectory._file_iterator.read_step(stepnum)
         # set _has_box to False to trigger position reading error
         universe.trajectory._has_box = False
-        with pytest.raises(
-            IOError, match="Failed to read positions from TNG file"
-        ):
-            universe.trajectory._frame_to_ts(
-                iterator_step, universe.trajectory.ts
-            )
+        with pytest.raises(IOError, match="Failed to read positions from TNG file"):
+            universe.trajectory._frame_to_ts(iterator_step, universe.trajectory.ts)
 
     def test_additional_block_read_fails(self, universe):
         stepnum = 123  # step number with no data
@@ -352,9 +338,7 @@ class TestTNGTraj(object):
         with pytest.raises(
             IOError, match="Failed to read additional block TNG_GMX_LAMBDA"
         ):
-            universe.trajectory._frame_to_ts(
-                iterator_step, universe.trajectory.ts
-            )
+            universe.trajectory._frame_to_ts(iterator_step, universe.trajectory.ts)
 
     def test_parse_n_atoms(self, universe):
         assert universe.trajectory.parse_n_atoms(TNG_traj) == self._n_atoms
@@ -408,12 +392,8 @@ class TestTNGTraj_vels_forces(object):
         # set _has_* attrs to False to trigger velocities reading error
         universe.trajectory._has_box = False
         universe.trajectory._has_positions = False
-        with pytest.raises(
-            IOError, match="Failed to read velocities from TNG file"
-        ):
-            universe.trajectory._frame_to_ts(
-                iterator_step, universe.trajectory.ts
-            )
+        with pytest.raises(IOError, match="Failed to read velocities from TNG file"):
+            universe.trajectory._frame_to_ts(iterator_step, universe.trajectory.ts)
 
     def test_read_force_fail_strange_step(self, universe):
         stepnum = 123  # step number with no data
@@ -422,12 +402,8 @@ class TestTNGTraj_vels_forces(object):
         universe.trajectory._has_box = False
         universe.trajectory._has_positions = False
         universe.trajectory._has_velocities = False
-        with pytest.raises(
-            IOError, match="Failed to read forces from TNG file"
-        ):
-            universe.trajectory._frame_to_ts(
-                iterator_step, universe.trajectory.ts
-            )
+        with pytest.raises(IOError, match="Failed to read forces from TNG file"):
+            universe.trajectory._frame_to_ts(iterator_step, universe.trajectory.ts)
 
 
 @pytest.mark.skipif(not HAS_PYTNG, reason="pytng not installed")
