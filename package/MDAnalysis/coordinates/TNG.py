@@ -107,10 +107,10 @@ from ..due import Doi, due
 try:
     import pytng
 except ImportError:
-    #: Indicates whether pytng is found.
+    # Indicates whether pytng is found.
     HAS_PYTNG = False
 else:
-    #: Indicates whether pytng is found.
+    # Indicates whether pytng is found.
     HAS_PYTNG = True
 
 
