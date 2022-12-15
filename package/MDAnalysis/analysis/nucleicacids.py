@@ -45,7 +45,7 @@ For applications see :cite:p:`b-Denning2011,b-Denning2012`.
     Denning2012
 
 Distances
-_________
+---------
 
 .. autoclass:: NucPairDist
     :members:
@@ -60,6 +60,7 @@ _________
 """
 
 from typing import List, Dict
+import warnings
 
 import numpy as np
 
@@ -67,6 +68,28 @@ import MDAnalysis as mda
 from .distances import calc_bonds
 from .base import AnalysisBase, Results
 from MDAnalysis.core.groups import Residue
+
+
+# Remove in 2.5.0
+class DeprecatedResults(Results):
+    def _try_deprecated(self, attr):
+        """
+        If key is int, try to replicate deprecated results storage behaviour.
+        """
+        if isinstance(attr, int):
+            wmsg = ("Accessing results via selection indices is deprecated "
+                    "and will be removed in MDAnalysis 2.5.0")
+            warnings.warn(wmsg)
+            return self['pair_distances'][:, attr]
+        else:
+            return self[attr]
+
+    def __getattr__(self, attr):
+        try:
+            return _try_deprecated(attr)
+        except KeyError as err:
+            raise AttributeError("'Results' object has no "
+                                 f"attribute '{attr}'") from err
 
 
 class NucPairDist(AnalysisBase):
@@ -79,7 +102,7 @@ class NucPairDist(AnalysisBase):
     :class:`~MDAnalysis.core.groups.AtomGroup`.
 
     Parameters
-    __________
+    ----------
     selection1: List[AtomGroup]
         list of :class:`~MDAnalysis.core.groups.AtomGroup` containing an atom
         of each nucleic acid being analyzed.
@@ -90,14 +113,14 @@ class NucPairDist(AnalysisBase):
         arguments for :class:`~MDAnalysis.analysis.base.AnalysisBase`
 
     Attributes
-    __________
+    ----------
         results: numpy.ndarray
             first index is selection second index is time
         results.times: numpy.ndarray
             times used in analysis
 
     Raises
-    ______
+    ------
 
     ValueError
         if the selections given are not the same length
@@ -127,7 +150,7 @@ class NucPairDist(AnalysisBase):
             self._s1 += selection1[i]
             self._s2 += selection2[i]
 
-        self.results = Results()
+        self.results = DeprecatedResults()
 
     def _prepare(self) -> None:
         self._res_dict = {k: [] for k in range(self._n_sel)}
@@ -154,7 +177,7 @@ class WatsonCrickDist(NucPairDist):
     their index in the lists given as arguments.
 
     Parameters
-    __________
+    ----------
     strand1: List[Residue]
         First list of bases
     strand2: List[Residue]
@@ -184,14 +207,14 @@ class WatsonCrickDist(NucPairDist):
         arguments for :class:`~MDAnalysis.analysis.base.AnalysisBase`
 
     Attributes
-    __________
+    ----------
         results: numpy.ndarray
             first index is selection second index is time
         results.times: numpy.ndarray
             times used in analysis
 
     Raises
-    ______
+    ------
     ValueError
         if the residues given are not amino acids
     ValueError
