@@ -158,7 +158,7 @@ def check_allowed_filetypes(readers, allowed):
         raise NotImplementedError("ChainReader: continuous=True only "
                                   f"supported for formats: {allowed}.\nFeel"
                                   " free to contribute an additional file "
-                                  "type test to expand this list."
+                                  "type test to expand this list.")
 
 
 class ChainReader(base.ProtoReader):
