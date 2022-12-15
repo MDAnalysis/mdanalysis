@@ -43,6 +43,8 @@ Fixes
 Enhancements
   * LAMMPSDump Reader use of `continuous` option to stitch trajectories
     (Issue #3546)
+  * Added a reader for GROMACS TNG files based on PyTNG (PR #3765,
+    Issue #3237, partially addressing Issue #865) 
   * Added ability for hbond analysis to use types when resnames are not 
     present (Issue #3847)
   * Added explanatory warnings when hbond analysis doesn't find any hbonds

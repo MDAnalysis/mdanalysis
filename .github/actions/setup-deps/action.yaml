@@ -61,6 +61,8 @@ inputs:
     default: 'netcdf4'
   openmm:
     default: 'openmm'
+  pytng:
+    default: 'pytng>=0.2.3'
   rdkit:
     default: 'rdkit>=2020.03.1'
   scikit-learn:
@@ -115,6 +117,7 @@ runs:
           ${{ inputs.joblib }}
           ${{ inputs.netcdf4 }}
           ${{ inputs.openmm }}
+          ${{ inputs.pytng }}
           ${{ inputs.rdkit }}
           ${{ inputs.scikit-learn }}
           ${{ inputs.seaborn }}
