@@ -85,7 +85,7 @@ class DeprecatedResults(Results):
             else:
                 wmsg = ("Accessing results via selection indices is "
                         "deprecated and will be removed in MDAnalysis 2.5.0")
-                warnings.warn(wmsg)
+                warnings.warn(wmsg, DeprecationWarning)
                 return item
         raise KeyError(key)
 
