@@ -78,6 +78,8 @@ inputs:
     default: 'pytest-cov'
   pytest-xdist:
     default: 'pytest-xdist'
+  trove-classifiers:
+    default: 'trove-classifiers'
   # pip-install optional dependencies
   duecredit:
     default: 'duecredit'
@@ -145,6 +147,7 @@ runs:
           ${{ inputs.coverage }}
           ${{ inputs.pytest-cov }}
           ${{ inputs.pytest-xdist }}
+          ${{ inputs.trove-classifiers }}
         PIP_OPT_DEPS: |
           ${{ inputs.duecredit }}
           ${{ inputs.parmed }}
