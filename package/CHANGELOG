@@ -93,6 +93,9 @@ Changes
   * adding element attribute to TXYZParser if all atom names are valid element symbols (PR #3826)
 
 Deprecations
+  * Direct indexing of results in analysis.nucleicacids' NucPairDist
+    and WatsonCrickDist classes is deprecated and will be removed in 2.5.0.
+    Please use `results.pair_distances` instead (Issue #3744)
   * Deprecated analysis.align.sequence_alignment() for removal in 3.0 (#3950)
   * Add deprecation warning for `timestep` copying in DCDReader
     (Issue #3889, PR #3888)

@@ -41,5 +41,12 @@ def test_wc_dist(u):
     WC = WatsonCrickDist(strand1, strand2)
     WC.run()
 
-    assert_allclose(WC.results[0][0], 4.3874702, atol=1e-3)
-    assert_allclose(WC.results[1][0], 4.1716404, atol=1e-3)
+    assert_allclose(WC.results.pair_distances[0, 0], 4.3874702, atol=1e-3)
+    assert_allclose(WC.results.pair_distances[0, 1], 4.1716404, atol=1e-3)
+
+    wmsg = ("Accessing results via selection indices is "
+            "deprecated and will be removed in MDAnalysis 2.5.0")
+
+    with pytest.warns(match=wmsg):
+        for i in range(len(strand1)):
+            assert_allclose(WC.results.pair_distances[:, i], WC.results[i][0])
