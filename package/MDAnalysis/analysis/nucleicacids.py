@@ -150,21 +150,19 @@ class NucPairDist(AnalysisBase):
             self._s1 += selection1[i]
             self._s2 += selection2[i]
 
-        self.results = DeprecatedResults()
+        self.results = Results()
 
     def _prepare(self) -> None:
         self._res_dict = {k: [] for k in range(self._n_sel)}
-        self._times = []
 
     def _single_frame(self) -> None:
         dist: np.ndarray = calc_bonds(self._s1.positions, self._s2.positions)
 
         for i in range(self._n_sel):
             self._res_dict[i].append(dist[i])
-            self._times.append(self._ts.time)
 
     def _conclude(self) -> None:
-        self.results['times'] = np.array(self._times)
+        self.results['times'] = np.array(self.times)
         for i in range(self._n_sel):
             self.results[i] = np.array(self._res_dict[i])
 
