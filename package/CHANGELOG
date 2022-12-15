@@ -43,6 +43,8 @@ Fixes
 Enhancements
   * Add distopia distance calculation library bindings as a selectable backend
     for `calc_bonds` in `MDA.lib.distances`. (Issue #3783, PR #3914)
+  * Added a reader for GROMACS TNG files based on PyTNG (PR #3765,
+    Issue #3237, partially addressing Issue #865) 
   * Added ability for hbond analysis to use types when resnames are not 
     present (Issue #3847)
   * Added explanatory warnings when hbond analysis doesn't find any hbonds
