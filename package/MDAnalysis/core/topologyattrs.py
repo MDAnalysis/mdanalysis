@@ -2108,8 +2108,6 @@ class Charges(AtomAttr):
 
         Parameters
         ----------
-        group : obj
-            AtomGroup
         wrap : bool, optional
             If ``True`` and `compound` is ``'group'``, move all atoms to the
             primary unit cell before calculation.
@@ -2206,7 +2204,7 @@ class Charges(AtomAttr):
         .. math::
             \mu = |\boldsymbol{\mu}| = \sqrt{ \sum_{i=1}^{D} \mu^2 }
 
-        Where :math:`D` is the number of dimensions.
+        Where :math:`D` is the number of dimensions, in this case 3.
 
         Computes the dipole moment of :class:`Atoms<Atom>` in the group.
         Dipole per :class:`Residue`, :class:`Segment`, molecule, or
@@ -2219,8 +2217,6 @@ class Charges(AtomAttr):
 
         Parameters
         ----------
-        group : obj
-            AtomGroup
         wrap : bool, optional
             If ``True`` and `compound` is ``'group'``, move all atoms to the
             primary unit cell before calculation.
@@ -2305,8 +2301,6 @@ class Charges(AtomAttr):
 
         Parameters
         ----------
-        group : obj
-            AtomGroup
         wrap : bool, optional
             If ``True`` and `compound` is ``'group'``, move all atoms to the
             primary unit cell before calculation.
@@ -2341,7 +2335,7 @@ class Charges(AtomAttr):
         .. versionadded:: 2.4.0
         """
 
-        def __quadrupole(recenteredpos, charges):
+        def __quadrupole_tensor(recenteredpos, charges):
             """ Calculate the traceless quadrupole tensor
             """
             if len(charges.shape) > 1:
@@ -2384,7 +2378,7 @@ class Charges(AtomAttr):
                 ) - ref)
             else:
                 recenteredpos = (atomgroup.positions - ref)
-            quad_tensor = __quadrupole(recenteredpos, charges)
+            quad_tensor = __quadrupole_tensor(recenteredpos, charges)
         else:
             (atom_masks, compound_masks,
              n_compounds) = atomgroup._split_by_compound_indices(compound)
@@ -2400,7 +2394,7 @@ class Charges(AtomAttr):
             quad_tensor = np.empty((n_compounds, 3, 3), dtype=np.float64)
             for compound_mask, atom_mask in zip(compound_masks, atom_masks):
                 quad_tensor[compound_mask, :, :] = [
-                    __quadrupole(coords[mask] - ref[compound_mask][i],
+                    __quadrupole_tensor(coords[mask] - ref[compound_mask][i],
                                  chgs[mask][:, None])
                     for i, mask in enumerate(atom_mask)
                 ]
@@ -2429,8 +2423,6 @@ class Charges(AtomAttr):
 
         Parameters
         ----------
-        group : obj
-            AtomGroup
         wrap : bool, optional
             If ``True`` and `compound` is ``'group'``, move all atoms to the
             primary unit cell before calculation.
@@ -2467,15 +2459,15 @@ class Charges(AtomAttr):
 
         atomgroup = group.atoms
 
-        def __quadrupole(tensor):
+        def __quadrupole_moment(tensor):
             return np.sqrt(2 * np.tensordot(tensor, tensor) / 3)
 
         quad_tensor = atomgroup.quadrupole_tensor(**kwargs)
 
         if len(quad_tensor.shape) == 2:
-            quad_moment = __quadrupole(quad_tensor)
+            quad_moment = __quadrupole_moment(quad_tensor)
         else:
-            quad_moment = np.array([__quadrupole(x) for x in quad_tensor])
+            quad_moment = np.array([__quadrupole_moment(x) for x in quad_tensor])
 
         return quad_moment
 
