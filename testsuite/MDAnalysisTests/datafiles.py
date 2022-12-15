@@ -127,6 +127,10 @@ __all__ = [
     "TRIC",
     "XTC_multi_frame",
     "TRR_multi_frame",
+    "TNG_traj",  # TNG trajectory from GROMACS physical validation testsuite, longish trajectory
+    "TNG_traj_gro",  # topology for argon_npt_compressed_traj
+    "TNG_traj_uneven_blocks",  # TNG trajectory with pos and vel deposited on different strides
+    "TNG_traj_vels_forces",  # similar to above but with velocities and forces
     "merge_protein", "merge_ligand", "merge_water",
     "mol2_molecules", "mol2_molecule", "mol2_broken_molecule",
     "mol2_zinc", "mol2_comments_header", "mol2_ligand", "mol2_sodium_ion",
@@ -168,6 +172,7 @@ __all__ = [
     "Martini_membrane_gro", # for testing the leaflet finder
     "COORDINATES_XTC",
     "COORDINATES_TRR",
+    "COORDINATES_TNG",
     "COORDINATES_H5MD",
     "COORDINATES_DCD",
     "COORDINATES_TOPOLOGY",
@@ -261,6 +266,7 @@ COORDINATES_XYZ_BZ2 = resource_filename(
     __name__, 'data/coordinates/test.xyz.bz2')
 COORDINATES_XTC = resource_filename(__name__, 'data/coordinates/test.xtc')
 COORDINATES_TRR = resource_filename(__name__, 'data/coordinates/test.trr')
+COORDINATES_TNG = resource_filename(__name__, 'data/coordinates/test.tng')
 COORDINATES_H5MD = resource_filename(__name__, 'data/coordinates/test.h5md')
 COORDINATES_DCD = resource_filename(__name__, 'data/coordinates/test.dcd')
 COORDINATES_TOPOLOGY = resource_filename(__name__, 'data/coordinates/test_topology.pdb')
@@ -336,7 +342,10 @@ XTC_multi_frame = resource_filename(
 TRR_multi_frame = resource_filename(
     __name__, 'data/trr_test_only_10_frame_10_atoms.trr'
 )
-
+TNG_traj = resource_filename(__name__, 'data/argon_npt_compressed.tng')
+TNG_traj_gro = resource_filename(__name__, 'data/argon_npt_compressed.gro.gz')
+TNG_traj_uneven_blocks = resource_filename(__name__, 'data/argon_npt_compressed_uneven.tng')
+TNG_traj_vels_forces = resource_filename(__name__, 'data/argon_npt_compressed_vels_forces.tng')
 PDB_xvf = resource_filename(__name__, 'data/cobrotoxin.pdb')
 TPR_xvf = resource_filename(__name__, 'data/cobrotoxin.tpr')
 TRR_xvf = resource_filename(__name__, 'data/cobrotoxin.trr')
