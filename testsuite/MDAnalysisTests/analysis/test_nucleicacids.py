@@ -47,6 +47,6 @@ def test_wc_dist(u):
     wmsg = ("Accessing results via selection indices is "
             "deprecated and will be removed in MDAnalysis 2.5.0")
 
-    with pytest.warns(match=wmsg):
+    with pytest.deprecated_call(match=wmsg):
         for i in range(len(strand1)):
             assert_allclose(WC.results.pair_distances[:, i], WC.results[i][0])
