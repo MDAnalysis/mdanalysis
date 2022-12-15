@@ -594,7 +594,7 @@ if __name__ == '__main__':
 
     install_requires = [
           'numpy>=1.20.0',
-          'biopython>=1.71',
+          'biopython>=1.80',
           'networkx>=2.0',
           'GridDataFormats>=0.4.0',
           'mmtf-python>=1.0.0',
@@ -652,6 +652,7 @@ if __name__ == '__main__':
               'extra_formats': [   # additional file formats
                   'netCDF4>=1.0',  # for fast AMBER writing, also needs HDF5
                   'h5py>=2.10',    # H5MD
+                  'pytng>=0.2.3',  # TNG
                   'chemfiles>=0.10',  # multiple formats supported by chemfiles
                   'pyedr>=0.7.0',  # EDR files for the EDR AuxReader
                   ],

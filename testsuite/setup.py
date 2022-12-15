@@ -180,6 +180,7 @@ if __name__ == '__main__':
                          'data/*.top',
                          'data/*.sdf',
                          'data/*.edr',
+                         'data/*.tng',
                         ],
           },
           python_requires='>=3.8',
