@@ -180,7 +180,7 @@ the test data files:</p>
 <section id="ramachandran-analysis">
 <h3><span class="section-number">4.7.1.3.1.2. </span>Ramachandran analysis<a class="headerlink" href="#ramachandran-analysis" title="Permalink to this heading"></a></h3>
 <p>The <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Ramachandran" title="MDAnalysis.analysis.dihedrals.Ramachandran"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ramachandran</span></code></a> class allows for the
-quick calculation of classical Ramachandran plots <span id="id1">[<a class="reference internal" href="#id43" title="G.N. Ramachandran, C. Ramakrishnan, and V. Sasisekharan. Stereochemistry of polypeptide chain configurations. Journal of Molecular Biology, 7(1):95-99, 1963. URL: https://www.sciencedirect.com/science/article/pii/S0022283663800236, doi:https://doi.org/10.1016/S0022-2836(63)80023-6.">Ramachandran1963</a>]</span> in
+quick calculation of classical Ramachandran plots <span id="id1">[<a class="reference internal" href="#id44" title="G.N. Ramachandran, C. Ramakrishnan, and V. Sasisekharan. Stereochemistry of polypeptide chain configurations. Journal of Molecular Biology, 7(1):95-99, 1963. URL: https://www.sciencedirect.com/science/article/pii/S0022283663800236, doi:https://doi.org/10.1016/S0022-2836(63)80023-6.">Ramachandran1963</a>]</span> in
 the backbone <span class="math notranslate nohighlight">\(phi\)</span> and <span class="math notranslate nohighlight">\(psi\)</span> angles. Unlike the
 <code class="xref py py-class docutils literal notranslate"><span class="pre">Dihedral</span></code> class which takes a list of
 <cite>atomgroups</cite>, this class only needs a list of residues or atoms from those
@@ -199,12 +199,12 @@ residues. The previous example can repeated with:</p>
 </pre></div>
 </div>
 <p>as shown in the example <a class="reference internal" href="#figure-ramachandran"><span class="std std-ref">Ramachandran plot figure</span></a>.</p>
-<figure class="align-default" id="id70">
+<figure class="align-default" id="id71">
 <span id="figure-ramachandran"></span><a class="reference internal image-reference" href="../../_images/rama_demo_plot.png"><img alt="Ramachandran plot" src="../../_images/rama_demo_plot.png" style="width: 240.0px; height: 240.0px;" /></a>
 <figcaption>
 <p><span class="caption-text">Ramachandran plot for residues 5 to 10 of AdK, sampled from the AdK test
 trajectory (XTC). The contours in the background are the “allowed region”
-and the “marginally allowed” regions.</span><a class="headerlink" href="#id70" title="Permalink to this image"></a></p>
+and the “marginally allowed” regions.</span><a class="headerlink" href="#id71" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
 <p>To plot the data yourself, the angles can be accessed using
@@ -226,12 +226,12 @@ and <span class="math notranslate nohighlight">\(chi_2\)</span> angles) can be c
 only needing a list of residues; see the <a class="reference internal" href="#figure-janin"><span class="std std-ref">Janin plot figure</span></a> as an example.</p>
 <p>The data for the angles can be accessed in the attribute
 <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Janin.results.angles" title="MDAnalysis.analysis.dihedrals.Janin.results.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Janin.results.angles</span></code></a>.</p>
-<figure class="align-default" id="id71">
+<figure class="align-default" id="id72">
 <span id="figure-janin"></span><a class="reference internal image-reference" href="../../_images/janin_demo_plot.png"><img alt="Janin plot" src="../../_images/janin_demo_plot.png" style="width: 240.0px; height: 240.0px;" /></a>
 <figcaption>
 <p><span class="caption-text">Janin plot for all residues of AdK, sampled from the AdK test trajectory
 (XTC). The contours in the background are the “allowed region” and the
-“marginally allowed” regions for all possible residues.</span><a class="headerlink" href="#id71" title="Permalink to this image"></a></p>
+“marginally allowed” regions for all possible residues.</span><a class="headerlink" href="#id72" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
 <div class="admonition note">
@@ -254,7 +254,7 @@ and <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Janin.plo
 (<a class="reference internal" href="data.html#MDAnalysis.analysis.data.filenames.Rama_ref" title="MDAnalysis.analysis.data.filenames.Rama_ref"><code class="xref py py-data docutils literal notranslate"><span class="pre">Rama_ref</span></code></a>) and Janin reference data
 (<a class="reference internal" href="data.html#MDAnalysis.analysis.data.filenames.Janin_ref" title="MDAnalysis.analysis.data.filenames.Janin_ref"><code class="xref py py-data docutils literal notranslate"><span class="pre">Janin_ref</span></code></a>) were made using data
 obtained from a large selection of 500 PDB files, and were analyzed using these
-classes <span id="id3">[<a class="reference internal" href="#id42" title="Henry Mull and Oliver Beckstein. Technical Report: SPIDAL Summer REU 2018 Dihedral Analysis in MDAnalysis. 8 2018. URL: https://figshare.com/articles/journal_contribution/Technical_Report_SPIDAL_Summer_REU_2018_Dihedral_Analysis_in_MDAnalysis/6957296, doi:10.6084/m9.figshare.6957296.v1.">Mull2018</a>]</span>. The allowed and marginally allowed regions of the
+classes <span id="id3">[<a class="reference internal" href="#id43" title="Henry Mull and Oliver Beckstein. Technical Report: SPIDAL Summer REU 2018 Dihedral Analysis in MDAnalysis. 8 2018. URL: https://figshare.com/articles/journal_contribution/Technical_Report_SPIDAL_Summer_REU_2018_Dihedral_Analysis_in_MDAnalysis/6957296, doi:10.6084/m9.figshare.6957296.v1.">Mull2018</a>]</span>. The allowed and marginally allowed regions of the
 Ramachandran reference plot have cutoffs set to include 90% and 99% of the data
 points, and the Janin reference plot has cutoffs for 90% and 98% of the data
 points. The list of PDB files used for the reference plots was taken from
@@ -604,13 +604,13 @@ frame indices in the <cite>frames</cite> keyword argument.</p>
 <p class="rubric">References</p>
 <div class="docutils container" id="id6">
 <dl class="citation">
-<dt class="label" id="id43"><span class="brackets"><a class="fn-backref" href="#id1">Ramachandran1963</a></span></dt>
+<dt class="label" id="id44"><span class="brackets"><a class="fn-backref" href="#id1">Ramachandran1963</a></span></dt>
 <dd><p>G.N. Ramachandran, C. Ramakrishnan, and V. Sasisekharan. Stereochemistry of polypeptide chain configurations. <em>Journal of Molecular Biology</em>, 7(1):95–99, 1963. URL: <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/S0022283663800236">https://www.sciencedirect.com/science/article/pii/S0022283663800236</a>, <a class="reference external" href="https://doi.org/https://doi.org/10.1016/S0022-2836(63)80023-6">doi:https://doi.org/10.1016/S0022-2836(63)80023-6</a>.</p>
 </dd>
 <dt class="label" id="id31"><span class="brackets">Janin1978</span><span class="fn-backref">(<a href="#id2">1</a>,<a href="#id5">2</a>)</span></dt>
 <dd><p>Joël Janin, Shoshanna Wodak, Michael Levitt, and Bernard Maigret. Conformation of amino acid side-chains in proteins. <em>Journal of Molecular Biology</em>, 125(3):357–386, 1978. URL: <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/0022283678904084">https://www.sciencedirect.com/science/article/pii/0022283678904084</a>, <a class="reference external" href="https://doi.org/https://doi.org/10.1016/0022-2836(78)90408-4">doi:https://doi.org/10.1016/0022-2836(78)90408-4</a>.</p>
 </dd>
-<dt class="label" id="id42"><span class="brackets"><a class="fn-backref" href="#id3">Mull2018</a></span></dt>
+<dt class="label" id="id43"><span class="brackets"><a class="fn-backref" href="#id3">Mull2018</a></span></dt>
 <dd><p>Henry Mull and Oliver Beckstein. Technical Report: SPIDAL Summer REU 2018 Dihedral Analysis in MDAnalysis. 8 2018. URL: <a class="reference external" href="https://figshare.com/articles/journal_contribution/Technical_Report_SPIDAL_Summer_REU_2018_Dihedral_Analysis_in_MDAnalysis/6957296">https://figshare.com/articles/journal_contribution/Technical_Report_SPIDAL_Summer_REU_2018_Dihedral_Analysis_in_MDAnalysis/6957296</a>, <a class="reference external" href="https://doi.org/10.6084/m9.figshare.6957296.v1">doi:10.6084/m9.figshare.6957296.v1</a>.</p>
 </dd>
 <dt class="label" id="id36"><span class="brackets"><a class="fn-backref" href="#id4">Lovell2003</a></span></dt>

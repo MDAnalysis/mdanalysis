@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>6.32. Serialization of Coordinate Readers &mdash; MDAnalysis 2.4.0-dev0 documentation</title>
+  <title>6.18. TNG trajectory files — MDAnalysis.coordinates.TNG &mdash; MDAnalysis 2.4.0-dev0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
@@ -26,8 +26,8 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="6.33. ChainReader — MDAnalysis.coordinates.chain" href="chain.html" />
-    <link rel="prev" title="6.31. Common functions for coordinate reading — MDAnalysis.coordinates.core" href="core.html" /> 
+    <link rel="next" title="6.19. AMBER trajectories — MDAnalysis.coordinates.TRJ" href="TRJ.html" />
+    <link rel="prev" title="6.17. PQR file format — MDAnalysis.coordinates.PQR" href="PQR.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -82,8 +82,21 @@
 <li class="toctree-l2"><a class="reference internal" href="PQR.html">6.17. PQR file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PQR</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="PQR.html#MDAnalysis.coordinates.PQR.PQRReader"><code class="docutils literal notranslate"><span class="pre">PQRReader</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="PQR.html#MDAnalysis.coordinates.PQR.PQRWriter"><code class="docutils literal notranslate"><span class="pre">PQRWriter</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="TNG.html">6.18. TNG trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TNG</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="TNG.html#MDAnalysis.coordinates.TNG.TNGReader"><code class="docutils literal notranslate"><span class="pre">TNGReader</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">6.18. TNG trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TNG</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#current-limitations">6.18.1. Current Limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#MDAnalysis.coordinates.TNG.TNGReader"><code class="docutils literal notranslate"><span class="pre">TNGReader</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.coordinates.TNG.TNGReader.Writer"><code class="docutils literal notranslate"><span class="pre">TNGReader.Writer()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.coordinates.TNG.TNGReader.additional_blocks"><code class="docutils literal notranslate"><span class="pre">TNGReader.additional_blocks</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.coordinates.TNG.TNGReader.blocks"><code class="docutils literal notranslate"><span class="pre">TNGReader.blocks</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.coordinates.TNG.TNGReader.close"><code class="docutils literal notranslate"><span class="pre">TNGReader.close()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.coordinates.TNG.TNGReader.n_frames"><code class="docutils literal notranslate"><span class="pre">TNGReader.n_frames</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.coordinates.TNG.TNGReader.parse_n_atoms"><code class="docutils literal notranslate"><span class="pre">TNGReader.parse_n_atoms()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.coordinates.TNG.TNGReader.special_blocks"><code class="docutils literal notranslate"><span class="pre">TNGReader.special_blocks</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#MDAnalysis.coordinates.TNG.TNGReader.units"><code class="docutils literal notranslate"><span class="pre">TNGReader.units</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="TRJ.html">6.19. AMBER trajectories — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRJ</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="TRR.html">6.20. TRR trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRR</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="TRR.html#MDAnalysis.coordinates.TRR.TRRReader"><code class="docutils literal notranslate"><span class="pre">TRRReader</span></code></a></li>
@@ -103,22 +116,7 @@
 <li class="toctree-l2"><a class="reference internal" href="timestep.html">6.29. Timestep Class — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="base.html">6.30. Base classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="core.html">6.31. Common functions for coordinate reading — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">6.32. Serialization of Coordinate Readers</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#how-to-serialize-a-new-reader">6.32.1. How to serialize a new reader</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#file-access">6.32.1.1. File Access</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#to-seek-or-not-to-seek">6.32.1.2. To seek or not to seek</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#miscellaneous">6.32.1.3. Miscellaneous</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#tests">6.32.2. Tests</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#singleframereader-test">6.32.2.1. _SingleFrameReader Test</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#basereadertest-and-multiframereadertest">6.32.2.2. BaseReaderTest and MultiframeReaderTest</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#file-handler-test">6.32.2.3. File handler Test</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#currently-implemented-picklable-io-formats">6.32.3. Currently implemented picklable IO Formats</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="pickle_readers.html">6.32. Serialization of Coordinate Readers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chain.html">6.33. ChainReader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="XDR.html">6.34. XDR based trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="XDR.html#MDAnalysis.coordinates.XDR.XDRBaseReader"><code class="docutils literal notranslate"><span class="pre">XDRBaseReader</span></code></a></li>
@@ -164,9 +162,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home"></a></li>
           <li class="breadcrumb-item"><a href="../coordinates_modules.html"><span class="section-number">6. </span>Coordinates modules</a></li>
-      <li class="breadcrumb-item active"><span class="section-number">6.32. </span>Serialization of Coordinate Readers</li>
+      <li class="breadcrumb-item active"><span class="section-number">6.18. </span>TNG trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TNG</span></code></li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../_sources/documentation_pages/coordinates/pickle_readers.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/documentation_pages/coordinates/TNG.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -174,102 +172,188 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="serialization-of-coordinate-readers">
-<span id="serialization"></span><h1><span class="section-number">6.32. </span>Serialization of Coordinate Readers<a class="headerlink" href="#serialization-of-coordinate-readers" title="Permalink to this heading"></a></h1>
-<p>To achieve a working implementation of parallelism, this document illustrates
-the basic idea of how different coordinate readers are being serialized in MDAnalysis,
-and what developers should do to serialize a new reader.</p>
-<p>To make sure every Trajectory reader can be successfully
-serialized, we implement picklable I/O classes (see <a class="reference internal" href="#implemented-fileio"><span class="std std-ref">Currently implemented picklable IO Formats</span></a>).
-When the file is pickled, filename and other necessary attributes of the open
-file handle are saved. On unpickling, the file is opened by filename.
-This means that for a successful unpickle, the original file still has to
-be accessible with its filename. To retain the current frame of the trajectory,
-<code class="xref py py-func docutils literal notranslate"><span class="pre">_read_frame(previous</span> <span class="pre">frame)()</span></code> will be called during unpickling.</p>
-<section id="how-to-serialize-a-new-reader">
-<span id="id1"></span><h2><span class="section-number">6.32.1. </span>How to serialize a new reader<a class="headerlink" href="#how-to-serialize-a-new-reader" title="Permalink to this heading"></a></h2>
-<section id="file-access">
-<h3><span class="section-number">6.32.1.1. </span>File Access<a class="headerlink" href="#file-access" title="Permalink to this heading"></a></h3>
-<p>If the new reader uses <code class="xref py py-func docutils literal notranslate"><span class="pre">util.anyopen()</span></code>
-(e.g. <a class="reference internal" href="PDB.html#MDAnalysis.coordinates.PDB.PDBReader" title="MDAnalysis.coordinates.PDB.PDBReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDB.PDBReader</span></code></a>),
-the reading handler can be pickled without modification.
-If the new reader uses I/O classes from other package
-(e.g. <a class="reference internal" href="GSD.html#MDAnalysis.coordinates.GSD.GSDReader" title="MDAnalysis.coordinates.GSD.GSDReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GSD.GSDReader</span></code></a>),
-and cannot be pickled natively, create a new picklable class inherited from
-the file class in that package
-(e.g. <a class="reference internal" href="GSD.html#MDAnalysis.coordinates.GSD.GSDPicklable" title="MDAnalysis.coordinates.GSD.GSDPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GSD.GSDPicklable</span></code></a>),
-adding <code class="xref py py-func docutils literal notranslate"><span class="pre">__getstate__()</span></code>,
-<code class="xref py py-func docutils literal notranslate"><span class="pre">__setstate__()</span></code> functions (or <code class="xref py py-func docutils literal notranslate"><span class="pre">__reduce__()</span></code> if needed. Consult the
-pickle <a class="reference external" href="https://docs.python.org/3/library/pickle.html">documentation</a> of python)
-to allow file handler serialization.</p>
-</section>
-<section id="to-seek-or-not-to-seek">
-<h3><span class="section-number">6.32.1.2. </span>To seek or not to seek<a class="headerlink" href="#to-seek-or-not-to-seek" title="Permalink to this heading"></a></h3>
-<p>Some I/O classes support <code class="xref py py-func docutils literal notranslate"><span class="pre">seek()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">tell()</span></code> functions to allow the file
-to be pickled with an offset. It is normally not needed for MDAnalysis with
-random access. But if error occurs during testing, find a way to make the offset work.
-Maybe this I/O class supports frame indexing? Maybe the file handler inside this I/O
-class supports offset?</p>
-<p>For example, in <a class="reference internal" href="TRZ.html#MDAnalysis.coordinates.TRZ.TRZReader" title="MDAnalysis.coordinates.TRZ.TRZReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRZ.TRZReader</span></code></a>,
-<code class="xref py py-func docutils literal notranslate"><span class="pre">_read_frame()</span></code> is implemented by <code class="xref py py-func docutils literal notranslate"><span class="pre">_seek()</span></code> ing the file into
-its previous frame and <code class="xref py py-func docutils literal notranslate"><span class="pre">_read_next_timestep()</span></code>, so the offset of the file is crucial
-for such machinery to work.</p>
-</section>
-<section id="miscellaneous">
-<h3><span class="section-number">6.32.1.3. </span>Miscellaneous<a class="headerlink" href="#miscellaneous" title="Permalink to this heading"></a></h3>
-<p>If pickle still fails due to some unpicklable attributes, try to find a way
-to pickle those, or write custom <code class="xref py py-func docutils literal notranslate"><span class="pre">__getstate__()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">__setstate__()</span></code>
-methods for the reader.</p>
-<p>If the new reader is written in Cython, read <code class="xref py py-class docutils literal notranslate"><span class="pre">lib.formats.libmdaxdr</span></code> and
-<code class="xref py py-class docutils literal notranslate"><span class="pre">lib.formats.libdcd</span></code> files as references.</p>
+  <span class="target" id="module-MDAnalysis.coordinates.TNG"></span><section id="tng-trajectory-files-mdanalysis-coordinates-tng">
+<h1><span class="section-number">6.18. </span>TNG trajectory files — <a class="reference internal" href="#module-MDAnalysis.coordinates.TNG" title="MDAnalysis.coordinates.TNG"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TNG</span></code></a><a class="headerlink" href="#tng-trajectory-files-mdanalysis-coordinates-tng" title="Permalink to this heading"></a></h1>
+<p>The TNG format <span id="id1">[<a class="reference internal" href="#id36" title="Magnus Lundborg, Rossen Apostolov, Daniel Spångberg, Anders Gärdenäs, David van der Spoel, and Erik Lindahl. An efficient and extensible format, library, and api for binary trajectory data from molecular simulations. Journal of Computational Chemistry, 35(3):260-269, 2014. URL: https://onlinelibrary.wiley.com/doi/abs/10.1002/jcc.23495, doi:https://doi.org/10.1002/jcc.23495.">Lundborg2014</a>]</span> is a format used in <a class="reference external" href="https://www.gromacs.org/">GROMACS</a> for
+storage of trajectory and topology information. The TNG format allows a wide
+range of compression algorithms and unlike the compressed XTC format can also
+store velocities and forces in addition to positions.</p>
+<p>The classes in this module are based on the <a class="reference external" href="https://github.com/MDAnalysis/pytng">pytng</a> package for reading TNG
+files. The reader is directed to the <a class="reference external" href="https://www.mdanalysis.org/pytng/">pytng documentation</a> for further reading
+about how pytng works under the hood. Pytng is an optional dependency and must
+be installed to use this Reader. Use of the reader without pytng installed will
+raise an <cite>ImportError</cite>. The variable <cite>HAS_PYTNG</cite> indicates whether this module
+has pytng availble.</p>
+<p>In addition to particle-dependent trajectory information like positions,
+forces and velocities, the TNG format can store trajectory metadata and
+other arbitrary time dependent data. Additional information can range from
+the virial and pressure components to the molecular topology of the system.
+This is enabled by a block based system in which binary flags indicate the
+presence or absence of various data blocks. The structure of a TNG file is
+provided  in the <a class="reference external" href="https://gitlab.com/hugomacdermott/tng/-/blob/master/Trajectoryformatspecification.mk">TNG specification</a>. The TNG paper <span id="id2">[<a class="reference internal" href="#id36" title="Magnus Lundborg, Rossen Apostolov, Daniel Spångberg, Anders Gärdenäs, David van der Spoel, and Erik Lindahl. An efficient and extensible format, library, and api for binary trajectory data from molecular simulations. Journal of Computational Chemistry, 35(3):260-269, 2014. URL: https://onlinelibrary.wiley.com/doi/abs/10.1002/jcc.23495, doi:https://doi.org/10.1002/jcc.23495.">Lundborg2014</a>]</span> and
+the <a class="reference external" href="https://www.mdanalysis.org/pytng/">pytng documentation</a> are also good resources. The user is encouraged to
+read the full list of <a class="reference external" href="https://www.mdanalysis.org/pytng/documentation_pages/Blocks.html">TNG blocks</a> to understand the full power of the TNG
+format.</p>
+<section id="current-limitations">
+<h2><span class="section-number">6.18.1. </span>Current Limitations<a class="headerlink" href="#current-limitations" title="Permalink to this heading"></a></h2>
+<p>Currently there is only a Reader for TNG files and no Writer. This will depend
+on upstream changes in pytng. Additionally, it is not currently possible to
+read the molecular topology from a TNG file.</p>
+<p>There are also some limitations to reading TNG files with pytng.
+Currently we do not allow data to be read <em>off stride</em>. In essence this
+means that all of the critical trajectory data (positions, box, velocities
+(if present), forces (if present)) must share the same stride in trajectory
+integrator steps. These critical blocks in the TNG file are henceforth called
+<em>special blocks</em>. Optional blocks (all blocks that are not special blocks)
+will not be read if they do not share an integrator step with, or are not
+divisible by the shared integrator step of the special blocks.</p>
+<p class="rubric">References</p>
+<div class="docutils container" id="id3">
+<dl class="citation">
+<dt class="label" id="id36"><span class="brackets">Lundborg2014</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id2">2</a>,<a href="#id68">3</a>)</span></dt>
+<dd><p>Magnus Lundborg, Rossen Apostolov, Daniel Spångberg, Anders Gärdenäs, David van der Spoel, and Erik Lindahl. An efficient and extensible format, library, and api for binary trajectory data from molecular simulations. <em>Journal of Computational Chemistry</em>, 35(3):260–269, 2014. URL: <a class="reference external" href="https://onlinelibrary.wiley.com/doi/abs/10.1002/jcc.23495">https://onlinelibrary.wiley.com/doi/abs/10.1002/jcc.23495</a>, <a class="reference external" href="https://doi.org/https://doi.org/10.1002/jcc.23495">doi:https://doi.org/10.1002/jcc.23495</a>.</p>
+</dd>
+</dl>
+</div>
 </section>
 </section>
-<section id="tests">
-<span id="test-pickle"></span><h2><span class="section-number">6.32.2. </span>Tests<a class="headerlink" href="#tests" title="Permalink to this heading"></a></h2>
-<section id="singleframereader-test">
-<h3><span class="section-number">6.32.2.1. </span>_SingleFrameReader Test<a class="headerlink" href="#singleframereader-test" title="Permalink to this heading"></a></h3>
-<p>If the new reader is a single-frame reader, the basic test should normally
-inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">_SingleFrameReader</span></code>, where the pickliablity is tested.</p>
-</section>
-<section id="basereadertest-and-multiframereadertest">
-<h3><span class="section-number">6.32.2.2. </span>BaseReaderTest and MultiframeReaderTest<a class="headerlink" href="#basereadertest-and-multiframereadertest" title="Permalink to this heading"></a></h3>
-<p>If the test for the new reader uses <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseReaderTest</span></code> or
-<code class="xref py py-class docutils literal notranslate"><span class="pre">MultiframeReaderTest</span></code>, whether the current timestep information is
-saved (the former), whether its relative position is maintained,
-i.e. next() reads the right next timestep, and whether its last timestep
-can be pickled, are already tested.</p>
-</section>
-<section id="file-handler-test">
-<h3><span class="section-number">6.32.2.3. </span>File handler Test<a class="headerlink" href="#file-handler-test" title="Permalink to this heading"></a></h3>
-<p>If the new reader accesses the file with <code class="xref py py-func docutils literal notranslate"><span class="pre">util.anyopen()</span></code>, add necessary
-tests inside <code class="docutils literal notranslate"><span class="pre">parallelism/test_multiprocessing.py</span></code> for the reader.</p>
-<p>If the new reader accessed the file with a new picklable I/O class,
-add necessary tests inside <code class="docutils literal notranslate"><span class="pre">utils/test_pickleio.py</span></code> for the I/O class,
-<code class="docutils literal notranslate"><span class="pre">parallelism/test_multiprocessing.py</span></code> for the reader.</p>
-</section>
-</section>
-<section id="currently-implemented-picklable-io-formats">
-<span id="implemented-fileio"></span><h2><span class="section-number">6.32.3. </span>Currently implemented picklable IO Formats<a class="headerlink" href="#currently-implemented-picklable-io-formats" title="Permalink to this heading"></a></h2>
-<ul class="simple">
-<li><p><a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.FileIOPicklable" title="MDAnalysis.lib.picklable_file_io.FileIOPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.FileIOPicklable</span></code></a></p></li>
-<li><p><a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.BufferIOPicklable" title="MDAnalysis.lib.picklable_file_io.BufferIOPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.BufferIOPicklable</span></code></a></p></li>
-<li><p><a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.TextIOPicklable" title="MDAnalysis.lib.picklable_file_io.TextIOPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.TextIOPicklable</span></code></a></p></li>
-<li><p><a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.BZ2Picklable" title="MDAnalysis.lib.picklable_file_io.BZ2Picklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.BZ2Picklable</span></code></a></p></li>
-<li><p><a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.GzipPicklable" title="MDAnalysis.lib.picklable_file_io.GzipPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.GzipPicklable</span></code></a></p></li>
-<li><p><a class="reference internal" href="GSD.html#MDAnalysis.coordinates.GSD.GSDPicklable" title="MDAnalysis.coordinates.GSD.GSDPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GSD.GSDPicklable</span></code></a></p></li>
-<li><p><a class="reference internal" href="TRJ.html#MDAnalysis.coordinates.TRJ.NCDFPicklable" title="MDAnalysis.coordinates.TRJ.NCDFPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRJ.NCDFPicklable</span></code></a></p></li>
-<li><p><a class="reference internal" href="chemfiles.html#MDAnalysis.coordinates.chemfiles.ChemfilesPicklable" title="MDAnalysis.coordinates.chemfiles.ChemfilesPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles.ChemfilesPicklable</span></code></a></p></li>
-<li><p><a class="reference internal" href="H5MD.html#MDAnalysis.coordinates.H5MD.H5PYPicklable" title="MDAnalysis.coordinates.H5MD.H5PYPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.H5MD.H5PYPicklable</span></code></a></p></li>
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.TNG.TNGReader">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.TNG.</span></span><span class="sig-name descname"><span class="pre">TNGReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TNG.html#TNGReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TNG.TNGReader" title="Permalink to this definition"></a></dt>
+<dd><p>Reader for the TNG format</p>
+<p>The TNG format <span id="id68">[<a class="reference internal" href="#id36" title="Magnus Lundborg, Rossen Apostolov, Daniel Spångberg, Anders Gärdenäs, David van der Spoel, and Erik Lindahl. An efficient and extensible format, library, and api for binary trajectory data from molecular simulations. Journal of Computational Chemistry, 35(3):260-269, 2014. URL: https://onlinelibrary.wiley.com/doi/abs/10.1002/jcc.23495, doi:https://doi.org/10.1002/jcc.23495.">Lundborg2014</a>]</span> is a format used in <a class="reference external" href="https://www.gromacs.org/">GROMACS</a> for
+storage of trajectory and topology information. This reader is are based on
+the <a class="reference external" href="https://github.com/MDAnalysis/pytng">pytng</a> package for reading TNG files. The reader is directed to the
+<a class="reference external" href="https://www.mdanalysis.org/pytng/">pytng documentation</a> and <a class="reference external" href="https://gitlab.com/hugomacdermott/tng/-/blob/master/Trajectoryformatspecification.mk">TNG specification</a> for further reading.</p>
+<p>The TNG format allows a wide range of compression
+algorithms and unlike the compressed XTC format can also store velocities
+and forces in addition to positions.</p>
+<p>The contents of the <em>special blocks</em> (positions, box, velocities, forces)
+are read into the timestep if present. Additional blocks are read into the
+<cite>ts.data</cite> dictionary if they are available at the current frame.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.4.0.</span></p>
+</div>
+<p>Initialize a TNG trajectory</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – filename of the trajectory</p></li>
+<li><p><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – convert into MDAnalysis units</p></li>
 </ul>
-</section>
-</section>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.TNG.TNGReader.Writer">
+<span class="sig-name descname"><span class="pre">Writer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TNG.html#TNGReader.Writer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TNG.TNGReader.Writer" title="Permalink to this definition"></a></dt>
+<dd><p>Writer for TNG files</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.11)"><strong>NotImplementedError</strong></a> – Currently there is not writer for TNG files pending implementation
+    upstream in pytng.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.TNG.TNGReader.additional_blocks">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">additional_blocks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#MDAnalysis.coordinates.TNG.TNGReader.additional_blocks" title="Permalink to this definition"></a></dt>
+<dd><p>list of the additional (non-special) blocks that are being read from
+the trajectory. This may be exclude some blocks present in the file if
+they do not fall on the same trajectory stride as the positions and
+velocities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>additional_blocks</strong> – The additional block names in the TNG trajectory</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.TNG.TNGReader.blocks">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">blocks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#MDAnalysis.coordinates.TNG.TNGReader.blocks" title="Permalink to this definition"></a></dt>
+<dd><p>list of the blocks that are in the file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>blocks</strong> – The block names present in the TNG trajectory</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.TNG.TNGReader.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TNG.html#TNGReader.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TNG.TNGReader.close" title="Permalink to this definition"></a></dt>
+<dd><p>close the reader</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.TNG.TNGReader.n_frames">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_frames</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></em><a class="headerlink" href="#MDAnalysis.coordinates.TNG.TNGReader.n_frames" title="Permalink to this definition"></a></dt>
+<dd><p>number of frames in trajectory</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>n_frames</strong> – The number of data containing frames in the trajectory</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.TNG.TNGReader.parse_n_atoms">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_n_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TNG.html#TNGReader.parse_n_atoms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TNG.TNGReader.parse_n_atoms" title="Permalink to this definition"></a></dt>
+<dd><p>parse the number of atoms in the TNG trajectory file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The name of the TNG file</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>n_atoms</strong> – The number of atoms in the TNG file</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.TNG.TNGReader.special_blocks">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">special_blocks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#MDAnalysis.coordinates.TNG.TNGReader.special_blocks" title="Permalink to this definition"></a></dt>
+<dd><p>list of the special blocks that are in the file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>special_blocks</strong> – The special block names (positions, box, velocities, forces)
+present in the TNG trajectory</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.TNG.TNGReader.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'force':</span> <span class="pre">'kJ/(mol*nm)',</span> <span class="pre">'length':</span> <span class="pre">'nm',</span> <span class="pre">'time':</span> <span class="pre">'second',</span> <span class="pre">'velocity':</span> <span class="pre">'nm/ps'}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.TNG.TNGReader.units" title="Permalink to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
+</dd></dl>
+
+</dd></dl>
+
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="core.html" class="btn btn-neutral float-left" title="6.31. Common functions for coordinate reading — MDAnalysis.coordinates.core" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="chain.html" class="btn btn-neutral float-right" title="6.33. ChainReader — MDAnalysis.coordinates.chain" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="PQR.html" class="btn btn-neutral float-left" title="6.17. PQR file format — MDAnalysis.coordinates.PQR" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="TRJ.html" class="btn btn-neutral float-right" title="6.19. AMBER trajectories — MDAnalysis.coordinates.TRJ" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
