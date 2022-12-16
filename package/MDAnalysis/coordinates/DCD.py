@@ -164,8 +164,10 @@ class DCDReader(base.ReaderBase):
         self.ts.dt = dt
         warnings.warn("DCDReader currently makes independent timesteps"
                       " by copying self.ts while other readers update"
-                      " self.ts inplace. This behaviour will be changed in"
-                      " 3.0 to be the same as other readers",
+                      " self.ts inplace. This behavior will be changed in"
+                      " 3.0 to be the same as other readers. Read more at"
+                      " https://github.com/MDAnalysis/mdanalysis/issues/3889"
+                      " to learn if this change in behavior might affect you.",
                        category=DeprecationWarning)
 
     @staticmethod
