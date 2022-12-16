@@ -266,8 +266,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;DCDReader currently makes independent timesteps&quot;</span>
                       <span class="s2">&quot; by copying self.ts while other readers update&quot;</span>
-                      <span class="s2">&quot; self.ts inplace. This behaviour will be changed in&quot;</span>
-                      <span class="s2">&quot; 3.0 to be the same as other readers&quot;</span><span class="p">,</span>
+                      <span class="s2">&quot; self.ts inplace. This behavior will be changed in&quot;</span>
+                      <span class="s2">&quot; 3.0 to be the same as other readers. Read more at&quot;</span>
+                      <span class="s2">&quot; https://github.com/MDAnalysis/mdanalysis/issues/3889&quot;</span>
+                      <span class="s2">&quot; to learn if this change in behavior might affect you.&quot;</span><span class="p">,</span>
                        <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DCDReader.parse_n_atoms"><a class="viewcode-back" href="../../../documentation_pages/coordinates/LAMMPS.html#MDAnalysis.coordinates.DCD.DCDReader.parse_n_atoms">[docs]</a>    <span class="nd">@staticmethod</span>
