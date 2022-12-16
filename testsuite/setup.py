@@ -181,6 +181,8 @@ if __name__ == '__main__':
                          'data/*.sdf',
                          'data/*.edr',
                          'data/*.tng',
+                         'data/*.pdbx',
+                         'data/*.txt',
                         ],
           },
           python_requires='>=3.8',
