@@ -1,2 +1,0 @@
-.. automodule:: MDAnalysis.auxiliary.XVG
-
