@@ -188,6 +188,7 @@ class NucPairDist(AnalysisBase):
         self._res_array[self._frame_index, :] = dist
 
     def _conclude(self) -> None:
+        # Remove 2.5.0
         self.results['times'] = np.array(self.times)
         self.results['pair_distances'] = self._res_array
 
