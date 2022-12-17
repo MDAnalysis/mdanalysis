@@ -13,17 +13,12 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay
+12/17/22 IAlibay
 
- * 2.5.0
+ * 2.4.1
 
 Fixes
-
-Enhancements
-
-Changes
-
-Deprecations
+* Fixes pyproject.toml minimum pin for biopython
 
 
 12/16/22 IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, BFedder, aya9aladdin,
