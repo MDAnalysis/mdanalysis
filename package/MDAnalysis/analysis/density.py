@@ -463,7 +463,7 @@ class DensityAnalysis(AnalysisBase):
         bins = BINS['Nbins']
         # create empty grid with the right dimensions (and get the edges)
         grid, edges = np.histogramdd(np.zeros((1, 3)), bins=bins,
-                                     range=arange, normed=False)
+                                     range=arange, density=False)
         grid *= 0.0
         self._grid = grid
         self._edges = edges
