@@ -38,29 +38,16 @@ jobs:
       with:
         os-type: "ubuntu"
 
-    - name: setup_miniconda
-      uses: conda-incubator/setup-miniconda@v2
+    - uses: actions/setup-python@v4
       with:
-        python-version: 3.9
-        auto-update-conda: true
-        channel-priority: flexible
-        channels: conda-forge, bioconda
-        mamba-version: "*"
-        add-pip-as-python-dependency: true
-        architecture: x64
+        python-version: ${{ matrix.python-version }}
 
     - name: install_dev_versions
       run: |
         python -m pip install -i https://pypi.anaconda.org/scipy-wheels-nightly/simple numpy
         python -m pip install -i https://pypi.anaconda.org/scipy-wheels-nightly/simple scipy
 
-    - name: install_other_deps
-      uses: ./.github/actions/setup-deps
-      with:
-        mamba: true
-        numpy: ""
-        scipy: ""
-
+      # Intentionally going with setup.py builds so we can build with latest
     - name: build_srcs
       uses: ./.github/actions/build-src
       with:
@@ -68,10 +55,10 @@ jobs:
         build-tests: true
         build-docs: false
 
-    - name: check_install
+    - name: check_and_postinstall
       run: |
+        python -m pip install pytest-xdist
         python -m pip list
-        mamba list
 
     - name: run_tests
       run: |
