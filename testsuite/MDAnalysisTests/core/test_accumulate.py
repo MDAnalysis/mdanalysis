@@ -45,8 +45,8 @@ class TestAccumulate(object):
 
     def test_accumulate_different_func(self, group):
         assert_almost_equal(
-             group.accumulate("masses", function=np.prod),
-             np.prod(group.atoms.masses))
+            group.accumulate("masses", function=np.prod),
+            np.prod(group.atoms.masses))
 
     @pytest.mark.parametrize('name, compound', (('resindices', 'residues'),
                                                 ('segindices', 'segments'),

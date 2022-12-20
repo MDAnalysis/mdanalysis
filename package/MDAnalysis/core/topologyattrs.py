@@ -89,12 +89,12 @@ def _check_length(func):
 
     """
     _SINGLE_VALUE_ERROR = ("Setting {cls} {attrname} with wrong sized input. "
-                            "Must use single value, length of supplied values: {lenvalues}.")
+                           "Must use single value, length of supplied values: {lenvalues}.")
     # Eg "Setting Residue resid with wrong sized input. Must use single value, length of supplied
     # values: 2."
 
     _GROUP_VALUE_ERROR = ("Setting {group} {attrname} with wrong sized array. "
-                           "Length {group}: {lengroup}, length of supplied values: {lenvalues}.")
+                          "Length {group}: {lengroup}, length of supplied values: {lenvalues}.")
 
     # Eg "Setting AtomGroup masses with wrong sized array. Length AtomGroup: 100, length of
     # supplied values: 50."
@@ -115,13 +115,13 @@ def _check_length(func):
         if isinstance(group, ComponentBase):
             if not val_len == 0:
                 raise ValueError(_SINGLE_VALUE_ERROR.format(
-                     cls=group.__class__.__name__, attrname=attr.singular,
-                     lenvalues=val_len))
+                    cls=group.__class__.__name__, attrname=attr.singular,
+                    lenvalues=val_len))
         else:
             if not (val_len == 0 or val_len == len(group)):
                 raise ValueError(_GROUP_VALUE_ERROR.format(
-                     group=group.__class__.__name__, attrname=attr.attrname,
-                     lengroup=len(group), lenvalues=val_len))
+                    group=group.__class__.__name__, attrname=attr.attrname,
+                    lengroup=len(group), lenvalues=val_len))
         # if everything went OK, continue with the function
         return func(attr, group, values)
 
@@ -173,8 +173,8 @@ def _wronglevel_error(attr, group):
     # eg "Cannot set masses from Residue.  'Use Residue.atoms.masses = '"
 
     return NotImplementedError(err_msg.format(
-         attr=attrname, cls=group.__class__.__name__, correct=correct,
-     ))
+        attr=attrname, cls=group.__class__.__name__, correct=correct,
+    ))
 
 
 def _build_stub(method_name, method, attribute_name):
@@ -204,13 +204,13 @@ def _build_stub(method_name, method, attribute_name):
     """
     def stub_method(self, *args, **kwargs):
         message = (
-             '{class_name}.{method_name}() '
-             'not available; this requires {attribute_name}'
-         ).format(
-             class_name=self.__class__.__name__,
-             method_name=method_name,
-             attribute_name=attribute_name,
-         )
+            '{class_name}.{method_name}() '
+            'not available; this requires {attribute_name}'
+        ).format(
+            class_name=self.__class__.__name__,
+            method_name=method_name,
+            attribute_name=attribute_name,
+        )
         raise NoDataError(message)
 
     annotation = textwrap.dedent("""\
@@ -225,10 +225,10 @@ def _build_stub(method_name, method, attribute_name):
     # subsequent lines are. We want to dedent the whole docstring.
     first_line, other_lines = method.__doc__.split('\n', 1)
     stub_method.__doc__ = (
-         first_line + '\n'
-         + textwrap.dedent(other_lines)
-         + '\n\n' + annotation
-     )
+        first_line + '\n'
+        + textwrap.dedent(other_lines)
+        + '\n\n' + annotation
+    )
     stub_method.__name__ = method_name
     stub_method.__signature__ = inspect_signature(method)
     return stub_method
@@ -361,7 +361,7 @@ class _TopologyAttrMeta(type):
                 per_obj = classdict.get("per_object", bases[0].per_object)
                 try:
                     selection.gen_selection_class(singular, attrname,
-                                                   dtype, per_obj)
+                                                  dtype, per_obj)
                 except ValueError:
                     msg = ("A selection keyword could not be "
                            "automatically generated for the "
@@ -603,7 +603,7 @@ class Segindices(TopologyAttr):
     singular = 'segindex'
     dtype = int
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
-                       Atom, Residue, Segment]
+                      Atom, Residue, Segment]
 
     def __init__(self):
         self._guessed = False
@@ -885,7 +885,7 @@ class Atomnames(AtomStringAttr):
 
         keep_prev = [sum(r.atoms.names == c_name) == 1 for r in prev]
         keep_res = [all(sum(r.atoms.names == n) == 1 for n in ncac_names)
-                     for r in residues]
+                    for r in residues]
         keep = np.array(keep_prev) & np.array(keep_res)
         keep[invalid] = False
         results = np.zeros_like(residues, dtype=object)
@@ -1001,7 +1001,7 @@ class Atomnames(AtomStringAttr):
         return nxres
 
     transplants[ResidueGroup].append(('_get_next_residues_by_resid',
-                                       _get_next_residues_by_resid))
+                                      _get_next_residues_by_resid))
 
     def _get_prev_residues_by_resid(residues):
         """Select list of Residues corresponding to the previous resid for each
@@ -1036,7 +1036,7 @@ class Atomnames(AtomStringAttr):
         return pvres
 
     transplants[ResidueGroup].append(('_get_prev_residues_by_resid',
-                                       _get_prev_residues_by_resid))
+                                      _get_prev_residues_by_resid))
 
     def psi_selections(residues, c_name='C', n_name='N', ca_name='CA'):
         """Select list of AtomGroups corresponding to the psi protein
@@ -1069,7 +1069,7 @@ class Atomnames(AtomStringAttr):
 
         keep_nxt = [sum(r.atoms.names == n_name) == 1 for r in nxt]
         keep_res = [all(sum(r.atoms.names == n) == 1 for n in ncac_names)
-                     for r in residues]
+                    for r in residues]
         keep = np.array(keep_nxt) & np.array(keep_res)
         nxt = nxt[keep]
         residues = residues[keep]
@@ -1267,7 +1267,7 @@ class Atomnames(AtomStringAttr):
         results = np.array([None]*len(residues))
         names = [n_name, ca_name, cb_name, cg_name]
         keep = [all(sum(r.atoms.names == n) == 1 for n in names)
-                 for r in residues]
+                for r in residues]
         keepix = np.where(keep)[0]
         residues = residues[keep]
 
@@ -1411,11 +1411,12 @@ class Tempfactors(AtomAttr):
 
     transplants[Atom].append(
         ('bfactor', property(bfactor, bfactor_setter, None,
-                              bfactor.__doc__)))
+                             bfactor.__doc__)))
+
     for group in (AtomGroup, Residue, ResidueGroup, Segment, SegmentGroup):
         transplants[group].append(
-             ("bfactors", property(bfactors, bfactors_setter, None,
-                                   bfactors.__doc__)))
+            ("bfactors", property(bfactors, bfactors_setter, None,
+                                  bfactors.__doc__)))
 
 
 class Masses(AtomAttr):
@@ -1423,7 +1424,7 @@ class Masses(AtomAttr):
     singular = 'mass'
     per_object = 'atom'
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
-                       Atom, Residue, Segment]
+                      Atom, Residue, Segment]
     transplants = defaultdict(list)
     dtype = np.float64
 
@@ -1541,7 +1542,7 @@ class Masses(AtomAttr):
                             unwrap=unwrap)
 
     transplants[GroupBase].append(
-         ('center_of_mass', center_of_mass))
+        ('center_of_mass', center_of_mass))
 
     @warn_if_not_unique
     @check_atomgroup_not_empty
@@ -1578,7 +1579,7 @@ class Masses(AtomAttr):
         return group.accumulate("masses", compound=compound)
 
     transplants[GroupBase].append(
-         ('total_mass', total_mass))
+        ('total_mass', total_mass))
 
     @warn_if_not_unique
     @_pbc_to_wrap
@@ -1648,10 +1649,10 @@ class Masses(AtomAttr):
         atomgroup = group.atoms
 
         com = atomgroup.center_of_mass(
-             wrap=wrap, unwrap=unwrap, compound=compound)
+            wrap=wrap, unwrap=unwrap, compound=compound)
         if compound != 'group':
             com = (com * group.masses[:, None]
-                    ).sum(axis=0) / group.masses.sum()
+                   ).sum(axis=0) / group.masses.sum()
 
         if wrap:
             pos = atomgroup.pack_into_box(inplace=False) - com
@@ -1686,7 +1687,8 @@ class Masses(AtomAttr):
 
         return tens
 
-    transplants[GroupBase].append(('moment_of_inertia', moment_of_inertia))
+    transplants[GroupBase].append(
+        ('moment_of_inertia', moment_of_inertia))
 
     @warn_if_not_unique
     @_pbc_to_wrap
@@ -1722,7 +1724,7 @@ class Masses(AtomAttr):
         return np.sqrt(rog_sq)
 
     transplants[GroupBase].append(
-         ('radius_of_gyration', radius_of_gyration))
+        ('radius_of_gyration', radius_of_gyration))
 
     @warn_if_not_unique
     @_pbc_to_wrap
@@ -1763,12 +1765,12 @@ class Masses(AtomAttr):
         tensor /= atomgroup.total_mass()
         eig_vals = np.linalg.eigvalsh(tensor)
         shape = 27.0 * np.prod(eig_vals - np.mean(eig_vals)
-                                ) / np.power(np.sum(eig_vals), 3)
+                               ) / np.power(np.sum(eig_vals), 3)
 
         return shape
 
     transplants[GroupBase].append(
-         ('shape_parameter', shape_parameter))
+        ('shape_parameter', shape_parameter))
 
     @warn_if_not_unique
     @_pbc_to_wrap
@@ -1803,10 +1805,10 @@ class Masses(AtomAttr):
         masses = atomgroup.masses
 
         com = atomgroup.center_of_mass(
-             wrap=wrap, unwrap=unwrap, compound=compound)
+            wrap=wrap, unwrap=unwrap, compound=compound)
         if compound != 'group':
             com = (com * group.masses[:, None]
-                    ).sum(axis=0) / group.masses.sum()
+                   ).sum(axis=0) / group.masses.sum()
 
         if wrap:
             recenteredpos = (atomgroup.pack_into_box(inplace=False) - com)
@@ -1818,17 +1820,17 @@ class Masses(AtomAttr):
         tensor = np.zeros((3, 3))
         for x in range(recenteredpos.shape[0]):
             tensor += masses[x] * np.outer(recenteredpos[x],
-                                            recenteredpos[x])
+                                           recenteredpos[x])
 
         tensor /= atomgroup.total_mass()
         eig_vals = np.linalg.eigvalsh(tensor)
         shape = (3.0 / 2.0) * (np.sum((eig_vals - np.mean(eig_vals))**2) /
-                                np.sum(eig_vals)**2)
+                               np.sum(eig_vals)**2)
 
         return shape
 
     transplants[GroupBase].append(
-         ('asphericity', asphericity))
+        ('asphericity', asphericity))
 
     @warn_if_not_unique
     @_pbc_to_wrap
@@ -1880,7 +1882,7 @@ class Masses(AtomAttr):
         return e_vec
 
     transplants[GroupBase].append(
-         ('principal_axes', principal_axes))
+        ('principal_axes', principal_axes))
 
     def align_principal_axis(group, axis, vector):
         """Align principal axis with index `axis` with `vector`.
@@ -1918,7 +1920,7 @@ class Charges(AtomAttr):
     singular = 'charge'
     per_object = 'atom'
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
-                       Atom, Residue, Segment]
+                      Atom, Residue, Segment]
     transplants = defaultdict(list)
     dtype = float
 
@@ -2056,7 +2058,7 @@ class Charges(AtomAttr):
         return group.accumulate("charges", compound=compound)
 
     transplants[GroupBase].append(
-         ('total_charge', total_charge))
+        ('total_charge', total_charge))
 
     @warn_if_not_unique
     @_pbc_to_wrap
@@ -2747,7 +2749,7 @@ class Resnames(ResidueStringAttr):
                 format, ", ".join(formats)))
         try:
             sequence = "".join([convert_aa_code(r)
-                                 for r in self.residues.resnames])
+                                for r in self.residues.resnames])
         except KeyError as err:
             errmsg = (f"AtomGroup contains a residue name '{err.message}' that"
                       f" does not have a IUPAC protein 1-letter character")
@@ -2760,7 +2762,7 @@ class Resnames(ResidueStringAttr):
         return Bio.SeqRecord.SeqRecord(seq, **kwargs)
 
     transplants[ResidueGroup].append(
-         ('sequence', sequence))
+        ('sequence', sequence))
 
 
 # TODO: update docs to property doc
@@ -2809,7 +2811,7 @@ class SegmentAttr(TopologyAttr):
     attrname = 'segmentattrs'
     singular = 'segmentattr'
     target_classes = [AtomGroup, ResidueGroup,
-                       SegmentGroup, Atom, Residue, Segment]
+                      SegmentGroup, Atom, Residue, Segment]
     per_object = 'segment'
 
     def get_atoms(self, ag):
@@ -2873,8 +2875,8 @@ def _check_connection_values(func):
     @functools.wraps(func)
     def wrapper(self, values, *args, **kwargs):
         if not all(len(x) == self._n_atoms
-                    and all(isinstance(y, (int, np.integer)) for y in x)
-                    for x in values):
+                   and all(isinstance(y, (int, np.integer)) for y in x)
+                   for x in values):
             raise ValueError(("{} must be an iterable of tuples with {}"
                               " atom indices").format(self.attrname,
                                                       self._n_atoms))
@@ -2940,9 +2942,9 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
     def copy(self):
         """Return a deepcopy of this attribute"""
         return self.__class__(copy.copy(self.values),
-                               copy.copy(self.types),
-                               copy.copy(self._guessed),
-                               copy.copy(self.order))
+                              copy.copy(self.types),
+                              copy.copy(self._guessed),
+                              copy.copy(self.order))
 
     def __len__(self):
         return len(self._bondDict)
@@ -2954,7 +2956,7 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
         bd = defaultdict(list)
 
         for b, t, g, o in zip(self.values, self.types,
-                               self._guessed, self.order):
+                              self._guessed, self.order):
             for a in b:
                 bd[a].append((b, t, g, o))
         return bd
@@ -2974,7 +2976,7 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
         """
         try:
             unique_bonds = set(itertools.chain(
-                 *[self._bondDict[a] for a in ag.ix]))
+                *[self._bondDict[a] for a in ag.ix]))
         except TypeError:
             # maybe we got passed an Atom
             unique_bonds = self._bondDict[ag.ix]
@@ -2985,10 +2987,10 @@ class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
         guessed = guessed.ravel()
         order = order.ravel()
         return TopologyGroup(bond_idx, ag.universe,
-                              self.singular[:-1],
-                              types,
-                              guessed,
-                              order)
+                             self.singular[:-1],
+                             types,
+                             guessed,
+                             order)
 
     @_check_connection_values
     def _add_bonds(self, values, types=None, guessed=True, order=None):
@@ -3067,8 +3069,8 @@ class Bonds(_Connection):
         return self.universe.atoms[idx]
 
     transplants[Atom].append(
-         ('bonded_atoms', property(bonded_atoms, None, None,
-                                   bonded_atoms.__doc__)))
+        ('bonded_atoms', property(bonded_atoms, None, None,
+                                  bonded_atoms.__doc__)))
 
     def fragindex(self):
         """The index (ID) of the
@@ -3141,7 +3143,7 @@ class Bonds(_Connection):
         """
         fragdict = self.universe._fragdict
         return tuple(sorted(set(fragdict[aix].fragment for aix in self.ix),
-                             key=lambda x: x[0].ix))
+                            key=lambda x: x[0].ix))
 
     def n_fragments(self):
         """The number of unique
@@ -3156,15 +3158,15 @@ class Bonds(_Connection):
 
     transplants[Atom].append(
         ('fragment', property(fragment, None, None,
-                               fragment.__doc__)))
+                              fragment.__doc__)))
 
     transplants[Atom].append(
         ('fragindex', property(fragindex, None, None,
-                                fragindex.__doc__)))
+                               fragindex.__doc__)))
 
     transplants[AtomGroup].append(
         ('fragments', property(fragments, None, None,
-                                fragments.__doc__)))
+                               fragments.__doc__)))
 
     transplants[AtomGroup].append(
         ('fragindices', property(fragindices, None, None,
