@@ -42,10 +42,11 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: install_dev_versions
+    - name: install_deps
       run: |
         python -m pip install -i https://pypi.anaconda.org/scipy-wheels-nightly/simple numpy
         python -m pip install -i https://pypi.anaconda.org/scipy-wheels-nightly/simple scipy
+        python -m pip install cython packaging setuptools
 
       # Intentionally going with setup.py builds so we can build with latest
     - name: build_srcs
