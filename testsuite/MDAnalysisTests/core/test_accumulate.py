@@ -41,12 +41,12 @@ class TestAccumulate(object):
         return getattr(u, request.param)
 
     def test_accumulate_str_attribute(self, group):
-        assert_almost_equal(group.accumulate("masses"),
-                            np.sum(group.atoms.masses))
+        assert_almost_equal(group.accumulate("masses"), np.sum(group.atoms.masses))
 
     def test_accumulate_different_func(self, group):
-        assert_almost_equal(group.accumulate("masses", function=np.prod),
-                            np.prod(group.atoms.masses))
+        assert_almost_equal(
+             group.accumulate("masses", function=np.prod),
+             np.prod(group.atoms.masses))
 
     @pytest.mark.parametrize('name, compound', (('resindices', 'residues'),
                                                 ('segindices', 'segments'),
@@ -96,13 +96,8 @@ class TestAccumulate(object):
     def test_accumulate_array_attribute_compounds(self, name, compound, level):
         u = UnWrapUniverse()
         group = getattr(u, level)
-        ref = [
-            np.ones((len(a), 2, 5)).sum(axis=0)
-            for a in group.atoms.groupby(name).values()
-        ]
-        assert_equal(
-            group.accumulate(np.ones((len(group.atoms), 2, 5)),
-                             compound=compound), ref)
+        ref = [np.ones((len(a), 2, 5)).sum(axis=0) for a in group.atoms.groupby(name).values()]
+        assert_equal(group.accumulate(np.ones((len(group.atoms), 2, 5)), compound=compound), ref)
 
 
 class TestTotals(object):
@@ -128,7 +123,8 @@ class TestTotals(object):
     @pytest.mark.filterwarnings(  # Prevents regression of issue #2990
         "error:"
         "Using a non-tuple sequence for multidimensional indexing is deprecated:"
-        "FutureWarning")
+        "FutureWarning"
+    )
     def test_total_charge_duplicates(self, group):
         group2 = group + group[0]
         ref = group.total_charge() + group[0].charge
@@ -149,7 +145,8 @@ class TestTotals(object):
     @pytest.mark.filterwarnings(  # Prevents regression of issue #2990
         "error:"
         "Using a non-tuple sequence for multidimensional indexing is deprecated:"
-        "FutureWarning")
+        "FutureWarning"
+    )
     def test_total_mass_duplicates(self, group):
         group2 = group + group[0]
         ref = group.total_mass() + group2[0].mass
