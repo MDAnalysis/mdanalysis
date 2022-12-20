@@ -1,5 +1,9 @@
 name: GH Actions Cron CI
 on:
+  pull_request:
+    branches:
+      - develop
+      - master
   schedule:
     # 3 am Tuesdays and Fridays
     - cron: "0 3 * * 2,5"
@@ -45,8 +49,8 @@ jobs:
 
     - name: install_dev_versions
       run: |
-        pip install -i https://pypi.anaconda.org/scipy-wheels-nightly/simple numpy
-        pip install -i https://pypi.anaconda.org/scipy-wheels-nightly/simple scipy
+        python -m pip install -i https://pypi.anaconda.org/scipy-wheels-nightly/simple numpy
+        python -m pip install -i https://pypi.anaconda.org/scipy-wheels-nightly/simple scipy
 
     - name: install_other_deps
       uses: ./.github/actions/setup-deps
@@ -61,6 +65,11 @@ jobs:
         build-hole: true
         build-tests: true
         build-docs: false
+
+    - name: check_install
+      run: |
+        python -m pip list
+        mamba list
 
     - name: run_tests
       run: |
