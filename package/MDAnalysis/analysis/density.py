@@ -473,7 +473,7 @@ class DensityAnalysis(AnalysisBase):
     def _single_frame(self):
         h, _ = np.histogramdd(self._atomgroup.positions,
                               bins=self._bins, range=self._arange,
-                              normed=False)
+                              density=False)
         # reduce (proposed change #2542 to match the parallel version in pmda.density)
         # return self._reduce(self._grid, h)
         #
@@ -644,7 +644,7 @@ class Density(Grid):
 
     If the input histogram consists of counts per cell then the
     :meth:`Density.make_density` method converts the grid to a physical density. For
-    a probability density, divide it by :meth:`Density.grid.sum` or use ``normed=True``
+    a probability density, divide it by :meth:`Density.grid.sum` or use ``density=True``
     right away in :func:`~numpy.histogramdd`.
 
     The user *should* set the *parameters* keyword (see docs for the
