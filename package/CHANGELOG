@@ -18,14 +18,21 @@ The rules for this file:
  * 2.5.0
 
 Fixes
-  * np.histogramdd calls in :class:`DensityAnalysis` now pass the `density`
-    argument rather than the numpy 1.24 removed `density` (PR #3976)
 
 Enhancements
 
 Changes
 
 Deprecations
+
+
+12/21/22 IAlibay
+
+ * 2.4.2
+
+Fixes
+  * np.histogramdd calls in :class:`DensityAnalysis` now pass the `density`
+    argument rather than the NumPy 1.24 removed `density` (PR #3976)
 
 
 12/17/22 IAlibay
