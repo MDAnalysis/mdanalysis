@@ -28,9 +28,8 @@ requires = [
 
 [project]
 name = "MDAnalysis"
-dynamic = ['version',]
+dynamic = ['version', 'readme']
 license = {file = "LICENSE"}
-readme = "README.rst"
 description = "An object-oriented toolkit to analyze molecular dynamics trajectories."
 authors = [
     {name = 'MDAnalysis Development Team', email = 'mdanalysis@numfocus.org'}
@@ -41,7 +40,7 @@ maintainers = [
 requires-python = ">=3.8"
 dependencies = [
     'numpy>=1.20.0',
-    'biopython>=1.71',
+    'biopython>=1.80',
     'networkx>=2.0',
     'GridDataFormats>=0.4.0',
     'mmtf-python>=1.0.0',
@@ -85,6 +84,7 @@ extra_formats = [
     "h5py>=2.10",
     "chemfiles>=0.10",
     "pyedr>=0.7.0",
+    "pytng>=0.2.3",
 ]
 analysis = [
     "seaborn",

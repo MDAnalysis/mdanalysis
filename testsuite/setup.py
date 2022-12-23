@@ -87,7 +87,7 @@ if sys.version_info[:2] < (3, 8):
 
 if __name__ == '__main__':
     # this must be in-sync with MDAnalysis
-    RELEASE = "2.4.0-dev0"
+    RELEASE = "2.5.0-dev0"
     with open("README") as summary:
         LONG_DESCRIPTION = summary.read()
 
@@ -181,6 +181,8 @@ if __name__ == '__main__':
                          'data/*.sdf',
                          'data/*.edr',
                          'data/*.tng',
+                         'data/*.pdbx',
+                         'data/*.txt',
                         ],
           },
           python_requires='>=3.8',
