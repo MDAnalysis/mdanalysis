@@ -104,7 +104,7 @@ jobs:
   - script: >-
       python -m pip install numpy==$(NUMPY_MIN)
     displayName: 'pin to older NumPy (wheel test and 32bit)'
-    condition: and(succeeded(), not(variables['NUMPY_MIN'], ''))
+    condition: and(succeeded(), ne(variables['NUMPY_MIN'], ''))
   - script: >-
       python -m pip install
       biopython
