@@ -25,6 +25,7 @@ jobs:
           PYTHON_VERSION: '3.8'
           PYTHON_ARCH: 'x86'
           BUILD_TYPE: 'normal'
+          NUMPY_MIN: '1.20.0'
           imageName: 'windows-2019'
         Win-Python38-64bit-full:
           PYTHON_VERSION: '3.8'
@@ -102,8 +103,8 @@ jobs:
   # to check the ABI compatibility of our wheels
   - script: >-
       python -m pip install numpy==$(NUMPY_MIN)
-    displayName: 'pin to older NumPy (wheel test)'
-    condition: and(succeeded(), eq(variables['BUILD_TYPE'], 'wheel'))
+    displayName: 'pin to older NumPy (wheel test and 32bit)'
+    condition: and(succeeded(), not(variables['NUMPY_MIN'], ''))
   - script: >-
       python -m pip install
       biopython
@@ -120,6 +121,9 @@ jobs:
       rdkit>=2020.03.1
     displayName: 'Install additional dependencies for 64-bit tests'
     condition: and(succeeded(), eq(variables['PYTHON_ARCH'], 'x64'))
+  - script: >-
+      pip list
+    displayName: 'List of installed dependencies'
   - powershell: |
       cd package
       python setup.py install
