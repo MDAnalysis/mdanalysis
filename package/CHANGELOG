@@ -32,7 +32,7 @@ Deprecations
 
 Fixes
   * np.histogramdd calls in :class:`DensityAnalysis` now pass the `density`
-    argument rather than the NumPy 1.24 removed `density` (PR #3976)
+    argument rather than the NumPy 1.24 removed `normed` (PR #3976)
 
 
 12/17/22 IAlibay
