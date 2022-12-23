@@ -604,7 +604,7 @@ issues when writing OpenDX files</a> and issue
 ensure that the DX file is written in a format suitable for <a class="reference external" href="http://www.pymol.org/">PyMOL</a>.</p>
 <p>If the input histogram consists of counts per cell then the
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density.make_density" title="MDAnalysis.analysis.density.Density.make_density"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Density.make_density()</span></code></a> method converts the grid to a physical density. For
-a probability density, divide it by <code class="xref py py-meth docutils literal notranslate"><span class="pre">Density.grid.sum()</span></code> or use <code class="docutils literal notranslate"><span class="pre">normed=True</span></code>
+a probability density, divide it by <code class="xref py py-meth docutils literal notranslate"><span class="pre">Density.grid.sum()</span></code> or use <code class="docutils literal notranslate"><span class="pre">density=True</span></code>
 right away in <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v1.24)"><code class="xref py py-func docutils literal notranslate"><span class="pre">histogramdd()</span></code></a>.</p>
 <p>The user <em>should</em> set the <em>parameters</em> keyword (see docs for the
 constructor); in particular, if the data are already a density, one must

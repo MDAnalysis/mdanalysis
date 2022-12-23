@@ -565,7 +565,7 @@
         <span class="n">bins</span> <span class="o">=</span> <span class="n">BINS</span><span class="p">[</span><span class="s1">&#39;Nbins&#39;</span><span class="p">]</span>
         <span class="c1"># create empty grid with the right dimensions (and get the edges)</span>
         <span class="n">grid</span><span class="p">,</span> <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogramdd</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span>
-                                     <span class="nb">range</span><span class="o">=</span><span class="n">arange</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                                     <span class="nb">range</span><span class="o">=</span><span class="n">arange</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">grid</span> <span class="o">*=</span> <span class="mf">0.0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span> <span class="o">=</span> <span class="n">grid</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_edges</span> <span class="o">=</span> <span class="n">edges</span>
@@ -575,7 +575,7 @@
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">h</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogramdd</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_atomgroup</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
                               <span class="n">bins</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_bins</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_arange</span><span class="p">,</span>
-                              <span class="n">normed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                              <span class="n">density</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="c1"># reduce (proposed change #2542 to match the parallel version in pmda.density)</span>
         <span class="c1"># return self._reduce(self._grid, h)</span>
         <span class="c1">#</span>
@@ -746,7 +746,7 @@
 
 <span class="sd">    If the input histogram consists of counts per cell then the</span>
 <span class="sd">    :meth:`Density.make_density` method converts the grid to a physical density. For</span>
-<span class="sd">    a probability density, divide it by :meth:`Density.grid.sum` or use ``normed=True``</span>
+<span class="sd">    a probability density, divide it by :meth:`Density.grid.sum` or use ``density=True``</span>
 <span class="sd">    right away in :func:`~numpy.histogramdd`.</span>
 
 <span class="sd">    The user *should* set the *parameters* keyword (see docs for the</span>
