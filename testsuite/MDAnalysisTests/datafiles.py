@@ -142,6 +142,7 @@ __all__ = [
     "LAMMPShyd", "LAMMPShyd2",
     "LAMMPSdata_deletedatoms",  # with deleted atoms
     "LAMMPSdata_triclinic", # lammpsdata file to test triclinic dimension parsing, albite with most atoms deleted
+    "LAMMPSdata_PairIJ", # lammps datafile with a PairIJ Coeffs section
     "LAMMPSDUMP",
     "LAMMPSDUMP_long",  # lammpsdump file with a few zeros sprinkled in the first column first frame
     "LAMMPSDUMP_allcoords",  # lammpsdump file with all coordinate conventions (x,xs,xu,xsu) present, from LAMMPS rdf example
@@ -513,6 +514,7 @@ LAMMPShyd = resource_filename(__name__, "data/lammps/hydrogen-class1.data")
 LAMMPShyd2 = resource_filename(__name__, "data/lammps/hydrogen-class1.data2")
 LAMMPSdata_deletedatoms = resource_filename(__name__, 'data/lammps/deletedatoms.data')
 LAMMPSdata_triclinic = resource_filename(__name__, "data/lammps/albite_triclinic.data")
+LAMMPSdata_PairIJ = resource_filename(__name__, "data/lammps/pairij_coeffs.data.bz2")
 LAMMPSDUMP = resource_filename(__name__, "data/lammps/wat.lammpstrj.bz2")
 LAMMPSDUMP_long = resource_filename(__name__, "data/lammps/wat.lammpstrj_long.bz2")
 LAMMPSDUMP_allcoords = resource_filename(__name__, "data/lammps/spce_all_coords.lammpstrj.bz2")
