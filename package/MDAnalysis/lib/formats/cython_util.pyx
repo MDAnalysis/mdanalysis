@@ -110,7 +110,7 @@ cdef cnp.ndarray ptr_to_ndarray(void* data_ptr, cnp.int64_t[:] dim, int data_typ
     array_wrapper = ArrayWrapper()
     array_wrapper.set_data(<void*> data_ptr, <int*> &dim[0], dim.size, data_type)
 
-    cdef cnp.ndarray ndarray = np.array(array_wrapper, copy=False)
+    cdef cnp.ndarray ndarray = cnp.array(array_wrapper, copy=False)
     # Assign our object to the 'base' of the ndarray object
     ndarray.base = <PyObject*> array_wrapper
     # Increment the reference count, as the above assignement was done in

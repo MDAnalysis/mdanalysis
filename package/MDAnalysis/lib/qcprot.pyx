@@ -308,7 +308,7 @@ def CalcRMSDRotationalMatrix(cnp.ndarray[cnp.float64_t, ndim=2] ref,
        Array size changed from 3xN to Nx3.
     """
     cdef double E0
-    cdef cnp.ndarray[cnp.float64_t, ndim=1] A = np.zeros(9, dtype=np.float64)
+    cdef cnp.ndarray[cnp.float64_t, ndim=1] A = cnp.zeros(9, dtype=cnp.float64)
 
     E0 = InnerProduct(A, conf, ref, N, weights)
     return FastCalcRMSDAndRotation(rot, A, E0, N)
@@ -346,7 +346,7 @@ def FastCalcRMSDAndRotation(cnp.ndarray[cnp.float64_t, ndim=1] rot,
     cdef double SxzpSzx, SyzpSzy, SxypSyx, SyzmSzy,
     cdef double SxzmSzx, SxymSyx, SxxpSyy, SxxmSyy
 
-    cdef cnp.ndarray[cnp.float64_t, ndim=1] C = np.zeros(4,)
+    cdef cnp.ndarray[cnp.float64_t, ndim=1] C = cnp.zeros(4,)
     cdef unsigned int i
     cdef double mxEigenV
     cdef double oldg = 0.0

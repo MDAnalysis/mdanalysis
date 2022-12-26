@@ -73,10 +73,10 @@ def unique_int_1d(cnp.intp_t[:] values):
     cdef int i = 0
     cdef int j = 0
     cdef int n_values = values.shape[0]
-    cdef cnp.intp_t[:] result = np.empty(n_values, dtype=np.intp)
+    cdef cnp.intp_t[:] result = cnp.empty(n_values, dtype=cnp.intp)
 
     if n_values == 0:
-        return np.array(result)
+        return cnp.array(result)
 
     result[0] = values[0]
     for i in range(1, n_values):
@@ -87,9 +87,9 @@ def unique_int_1d(cnp.intp_t[:] values):
             is_monotonic = False
     result = result[:j + 1]
     if not is_monotonic:
-        result = unique_int_1d(np.sort(result))
+        result = unique_int_1d(cnp.sort(result))
 
-    return np.array(result)
+    return cnp.array(result)
 
 
 @cython.boundscheck(False)
@@ -133,7 +133,7 @@ def _in2d(cnp.intp_t[:, :] arr1, cnp.intp_t[:, :] arr2):
         p = pair[cnp.intp_t, cnp.intp_t](arr2[i, 0], arr2[i, 1])
         hits.insert(p)
 
-    out = np.empty(arr1.shape[0], dtype=np.uint8)
+    out = cnp.empty(arr1.shape[0], dtype=cnp.uint8)
     cdef unsigned char[::1] results = out
     for i in range(arr1.shape[0]):
         p = pair[cnp.intp_t, cnp.intp_t](arr1[i, 0], arr1[i, 1])
@@ -265,7 +265,7 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
 
     # Nothing to do for less than 2 atoms
     if natoms < 2:
-        return np.array(oldpos)
+        return cnp.array(oldpos)
 
     for i in range(natoms):
         ix_to_rel[ix_view[i]] = i
@@ -301,7 +301,7 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
             if not is_unwrapped:
                 break
         if is_unwrapped:
-            return np.array(oldpos)
+            return cnp.array(oldpos)
         for i in range(3):
             inverse_box[i] = 1.0 / box[i]
     else:
@@ -324,7 +324,7 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
             bonding[atom].insert(other)
             bonding[other].insert(atom)
 
-    newpos = np.zeros((oldpos.shape[0], 3), dtype=np.float32)
+    newpos = cnp.zeros((oldpos.shape[0], 3), dtype=cnp.float32)
 
     refpoints = intset()  # Who is safe to use as reference point?
     done = intset()  # Who have I already searched around?
@@ -366,7 +366,7 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
         raise ValueError("AtomGroup was not contiguous from bonds, process failed")
     if inplace:
         atomgroup.positions = newpos
-    return np.array(newpos)
+    return cnp.array(newpos)
 
 
 @cython.boundscheck(False)
@@ -431,7 +431,7 @@ cpdef cnp.ndarray _sarrus_det_multiple(cnp.float64_t[:, :, ::1] m):
     cdef cnp.intp_t i
     cdef cnp.float64_t[:] det
     n = m.shape[0]
-    det = np.empty(n, dtype=np.float64)
+    det = cnp.empty(n, dtype=cnp.float64)
     for i in range(n):
         det[i] = m[i, 0, 0] * m[i, 1, 1] * m[i, 2, 2]
         det[i] -= m[i, 0, 0] * m[i, 1, 2] * m[i, 2, 1]
@@ -439,7 +439,7 @@ cpdef cnp.ndarray _sarrus_det_multiple(cnp.float64_t[:, :, ::1] m):
         det[i] -= m[i, 0, 1] * m[i, 1, 0] * m[i, 2, 2]
         det[i] += m[i, 0, 2] * m[i, 1, 0] * m[i, 2, 1]
         det[i] -= m[i, 0, 2] * m[i, 1, 1] * m[i, 2, 0]
-    return np.array(det)
+    return cnp.array(det)
 
 
 @cython.boundscheck(False)
@@ -473,8 +473,8 @@ def find_fragments(atoms, bondlist):
     cdef cnp.int64_t[:] atoms_view
     cdef cnp.int32_t[:, :] bonds_view
 
-    atoms_view = np.asarray(atoms, dtype=np.int64)
-    bonds_view = np.asarray(bondlist, dtype=np.int32)
+    atoms_view = cnp.asarray(atoms, dtype=cnp.int64)
+    bonds_view = cnp.asarray(bondlist, dtype=cnp.int32)
 
     # grab record of which atoms I have to process
     # ie set of all nodes
@@ -513,6 +513,6 @@ def find_fragments(atoms, bondlist):
                         frag_todo.insert(b)
 
         # Add fragment to output
-        frags.append(np.asarray(this_frag))
+        frags.append(cnp.asarray(this_frag))
 
     return frags

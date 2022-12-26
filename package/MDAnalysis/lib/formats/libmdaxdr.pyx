@@ -99,7 +99,7 @@ from collections import namedtuple
 cnp.import_array()
 
 ctypedef float DTYPE_T
-DTYPE = np.float32
+DTYPE = cnp.float32
 cdef int DIMS = 3
 cdef int HASX = 1
 cdef int HASV = 2
@@ -424,7 +424,7 @@ cdef class TRRFile(_XDRFile):
     def calc_offsets(self):
         """read byte offsets from TRR file directly"""
         if not self.is_open:
-            return np.array([])
+            return cnp.array([])
         cdef int n_frames = 0
         cdef int est_nframes = 0
         cdef int64_t* offsets = NULL
@@ -438,10 +438,10 @@ cdef class TRRFile(_XDRFile):
         # memory leaks.
         cdef cnp.npy_intp[1] dim
         dim[0] = 1
-        cdef cnp.ndarray[cnp.int64_t, ndim=1] dims = np.PyArray_EMPTY(1, dim, np.NPY_INT64, 0)
+        cdef cnp.ndarray[cnp.int64_t, ndim=1] dims = cnp.PyArray_EMPTY(1, dim, cnp.NPY_INT64, 0)
         dims[0] = est_nframes
         # this handles freeing the allocated memory correctly.
-        cdef cnp.ndarray nd_offsets = ptr_to_ndarray(<void*> offsets, dims, np.NPY_INT64)
+        cdef cnp.ndarray nd_offsets = ptr_to_ndarray(<void*> offsets, dims, cnp.NPY_INT64)
         return nd_offsets[:n_frames]
 
     def read(self):
@@ -483,10 +483,10 @@ cdef class TRRFile(_XDRFile):
         unitcell_dim[0] = DIMS
         unitcell_dim[1] = DIMS
 
-        cdef cnp.ndarray[cnp.float32_t, ndim=2] xyz = np.PyArray_EMPTY(2, dim, np.NPY_FLOAT32, 0)
-        cdef cnp.ndarray[cnp.float32_t, ndim=2] velocity = np.PyArray_EMPTY(2, dim, np.NPY_FLOAT32, 0)
-        cdef cnp.ndarray[cnp.float32_t, ndim=2] forces = np.PyArray_EMPTY(2, dim, np.NPY_FLOAT32, 0)
-        cdef cnp.ndarray[cnp.float32_t, ndim=2] box = np.PyArray_EMPTY(2, unitcell_dim, np.NPY_FLOAT32, 0)
+        cdef cnp.ndarray[cnp.float32_t, ndim=2] xyz = cnp.PyArray_EMPTY(2, dim, cnp.NPY_FLOAT32, 0)
+        cdef cnp.ndarray[cnp.float32_t, ndim=2] velocity = cnp.PyArray_EMPTY(2, dim, cnp.NPY_FLOAT32, 0)
+        cdef cnp.ndarray[cnp.float32_t, ndim=2] forces = cnp.PyArray_EMPTY(2, dim, cnp.NPY_FLOAT32, 0)
+        cdef cnp.ndarray[cnp.float32_t, ndim=2] box = cnp.PyArray_EMPTY(2, unitcell_dim, cnp.NPY_FLOAT32, 0)
 
         return_code = read_trr(self.xfp, self.n_atoms, <int*> &step,
                                       &time, &lmbda, <matrix>box.data,
@@ -564,7 +564,7 @@ cdef class TRRFile(_XDRFile):
         unitcell_dim[1] = DIMS
 
 
-        cdef cnp.ndarray[cnp.float32_t, ndim=2] box = np.PyArray_EMPTY(2, unitcell_dim, np.NPY_FLOAT32, 0)
+        cdef cnp.ndarray[cnp.float32_t, ndim=2] box = cnp.PyArray_EMPTY(2, unitcell_dim, cnp.NPY_FLOAT32, 0)
 
         return_code = read_trr(self.xfp, self.n_atoms, <int*> &step,
                                       &time, &lmbda, <matrix>box.data,
@@ -637,20 +637,20 @@ cdef class TRRFile(_XDRFile):
         cdef cnp.ndarray forces_helper
 
         if xyz is not None:
-            xyz = np.asarray(xyz)
-            xyz_helper = np.ascontiguousarray(xyz, dtype=DTYPE)
+            xyz = cnp.asarray(xyz)
+            xyz_helper = cnp.ascontiguousarray(xyz, dtype=DTYPE)
             xyz_ptr = <float*>xyz_helper.data
         if velocity is not None:
-            velocity = np.asarray(velocity)
-            velocity_helper = np.ascontiguousarray(velocity, dtype=DTYPE)
+            velocity = cnp.asarray(velocity)
+            velocity_helper = cnp.ascontiguousarray(velocity, dtype=DTYPE)
             velocity_ptr = <float*>velocity_helper.data
         if forces is not None:
-            forces = np.asarray(forces)
-            forces_helper = np.ascontiguousarray(forces, dtype=DTYPE)
+            forces = cnp.asarray(forces)
+            forces_helper = cnp.ascontiguousarray(forces, dtype=DTYPE)
             forces_ptr = <float*>forces_helper.data
 
-        box = np.asarray(box)
-        cdef cnp.ndarray box_helper = np.ascontiguousarray(box, dtype=DTYPE)
+        box = cnp.asarray(box)
+        cdef cnp.ndarray box_helper = cnp.ascontiguousarray(box, dtype=DTYPE)
         cdef float* box_ptr = <float*>box_helper.data
 
         if self.current_frame == 0:
@@ -727,7 +727,7 @@ cdef class XTCFile(_XDRFile):
     def calc_offsets(self):
         """Calculate offsets from XTC file directly"""
         if not self.is_open:
-            return np.array([])
+            return cnp.array([])
         cdef int n_frames = 0
         cdef int est_nframes = 0
         cdef int64_t* offsets = NULL
@@ -741,10 +741,10 @@ cdef class XTCFile(_XDRFile):
         # memory leaks.
         cdef cnp.npy_intp[1] dim
         dim[0] = 1
-        cdef cnp.ndarray[cnp.int64_t, ndim=1] dims = np.PyArray_EMPTY(1, dim, np.NPY_INT64, 0)
+        cdef cnp.ndarray[cnp.int64_t, ndim=1] dims = cnp.PyArray_EMPTY(1, dim, cnp.NPY_INT64, 0)
         dims[0] = est_nframes
         # this handles freeing the allocated memory correctly.
-        cdef cnp.ndarray nd_offsets = ptr_to_ndarray(<void*> offsets, dims, np.NPY_INT64)
+        cdef cnp.ndarray nd_offsets = ptr_to_ndarray(<void*> offsets, dims, cnp.NPY_INT64)
         return nd_offsets[:n_frames]
 
     def read(self):
@@ -784,8 +784,8 @@ cdef class XTCFile(_XDRFile):
         unitcell_dim[0] = DIMS
         unitcell_dim[1] = DIMS
 
-        cdef cnp.ndarray[cnp.float32_t, ndim=2] xyz = np.PyArray_EMPTY(2, dim, np.NPY_FLOAT32, 0)
-        cdef cnp.ndarray[cnp.float32_t, ndim=2] box = np.PyArray_EMPTY(2, unitcell_dim, np.NPY_FLOAT32, 0)
+        cdef cnp.ndarray[cnp.float32_t, ndim=2] xyz = cnp.PyArray_EMPTY(2, dim, cnp.NPY_FLOAT32, 0)
+        cdef cnp.ndarray[cnp.float32_t, ndim=2] box = cnp.PyArray_EMPTY(2, unitcell_dim, cnp.NPY_FLOAT32, 0)
 
         return_code = read_xtc(self.xfp, self.n_atoms, <int*> &step,
                                       &time, <matrix>box.data,
@@ -843,7 +843,7 @@ cdef class XTCFile(_XDRFile):
         unitcell_dim[0] = DIMS
         unitcell_dim[1] = DIMS
 
-        cdef cnp.ndarray[cnp.float32_t, ndim=2] box = np.PyArray_EMPTY(2, unitcell_dim, np.NPY_FLOAT32, 0)
+        cdef cnp.ndarray[cnp.float32_t, ndim=2] box = cnp.PyArray_EMPTY(2, unitcell_dim, cnp.NPY_FLOAT32, 0)
 
 
         return_code = read_xtc(self.xfp, self.n_atoms, <int*> &step,
@@ -893,11 +893,11 @@ cdef class XTCFile(_XDRFile):
             raise IOError('File opened in mode: {}. Writing only allow '
                           'in mode "w"'.format('self.mode'))
 
-        xyz = np.asarray(xyz, dtype=np.float32)
-        box = np.asarray(box, dtype=np.float32)
+        xyz = cnp.asarray(xyz, dtype=cnp.float32)
+        box = cnp.asarray(box, dtype=cnp.float32)
 
-        cdef DTYPE_T[:, ::1] xyz_view = np.PyArray_GETCONTIGUOUS(xyz)
-        cdef DTYPE_T[:, ::1] box_view = np.PyArray_GETCONTIGUOUS(box)
+        cdef DTYPE_T[:, ::1] xyz_view = cnp.PyArray_GETCONTIGUOUS(xyz)
+        cdef DTYPE_T[:, ::1] box_view = cnp.PyArray_GETCONTIGUOUS(box)
 
         if self.current_frame == 0:
             self.n_atoms = xyz.shape[0]
