@@ -257,7 +257,7 @@ cdef class Timestep:
            Added the `dtype` attribute hardcoded to :class:`~numpy.float32`.
         """
         # hardcoded
-        self._dtype = cnp.float32
+        self._dtype = np.float32
 
         self.data = {}
 
