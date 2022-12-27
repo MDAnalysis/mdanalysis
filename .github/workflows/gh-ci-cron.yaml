@@ -57,7 +57,8 @@ jobs:
       # overwrite installs by picking up nightly wheels
     - name: nightly_wheels
       run: |
-        pip install --pre -U -i https://pypi.anaconda.org/scipy-wheels-nightly/simple scipy numpy h5py matplotlib
+        pip install --pre -U -i https://pypi.anaconda.org/scipy-wheels-nightly/simple scipy h5py matplotlib
+        #pip install --pre -U -i https://pypi.anaconda.org/scipy-wheels-nightly/simple scipy numpy h5py matplotlib
 
 
     - name: check_deps
