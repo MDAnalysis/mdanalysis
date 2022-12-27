@@ -40,11 +40,11 @@ jobs:
 
     - uses: conda-incubator/setup-miniconda@v2
       with:
-        python-version: 3.9
+        python-version: 3.10
         miniforge-variant: Mambaforge
         miniforge-version: latest
         channel-priority: strict
-        channels: scipy-wheels-nightly, conda-forge, bioconda
+        channels: conda-forge, bioconda
         add-pip-as-python-dependency: true
         architecture: x64
 
@@ -53,6 +53,17 @@ jobs:
       with:
         mamba: true
         full-deps: true
+
+      # overwrite installs by picking up nightly wheels
+    - name: nightly_wheels
+      run: |
+        pip install -i https://pypi.anaconda.org/scipy-wheels-nightly/simple scipy numpy h5py matplotlib
+
+
+    - name: check_deps
+      run: |
+        mamba list
+        pip list
 
       # Intentionally going with setup.py builds so we can build with latest
     - name: build_srcs
