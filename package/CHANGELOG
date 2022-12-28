@@ -13,11 +13,13 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay
+??/??/?? IAlibay mglagolev
 
  * 2.5.0
 
 Fixes
+  * Add 'PairIJ Coeffs' to the list of sections in LAMMPSParser.py
+    (Issue #3336)
 
 Enhancements
 
@@ -49,8 +51,6 @@ Fixes
  * 2.4.0
 
 Fixes
-  * Add 'PairIJ Coeffs' to the list of sections in LAMMPSParser.py
-    (Issue #3336)
   * Update hbond analysis doc string to use exclusive bound language 
     (Issue #3847)
   * XTC and TRR readers now fail with IOError when a status except EOK (=0) is

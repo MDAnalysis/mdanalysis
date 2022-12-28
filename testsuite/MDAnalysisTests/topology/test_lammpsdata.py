@@ -179,10 +179,13 @@ class TestLAMMPSDeletedAtoms(LammpsBase):
                                [12.6588821411, 51.4160842896, 20.5548400879]],
                               dtype=np.float32))
 
+
 class TestLammpsDataPairIJ(LammpsBase):
     """Tests the reading of lammps .data topology file with a
        PairIJ Coeffs section
     """
+    expected_attrs = ['types', 'resids', 'masses',
+                      'bonds', 'angles', 'dihedrals']
     ref_filename = LAMMPSdata_PairIJ
     expected_n_atoms = 800
     expected_n_atom_types = 2
@@ -193,7 +196,7 @@ class TestLammpsDataPairIJ(LammpsBase):
     ref_angle = (722, 723, 724)
     ref_n_dihedrals = 385
     ref_dihedral = (722, 723, 724, 725)
-    ref_n_impropers = 0
+
 
 LAMMPS_NORESID = """\
 LAMMPS data file via write_data, version 11 Aug 2017, timestep = 0
