@@ -43,6 +43,7 @@ table on :ref:`table-baseunits`.
    =========== ============== ===============================================
    length       Å              :math:`10^{-10}` m
    time         ps             :math:`10^{-12}` s
+   mass         u              :math:`1.660538921 \times 10^{-27}` kg
    energy       kJ/mol         :math:`1.66053892103219 \times 10^{-21}` J
    charge       :math:`e`      :math:`1.602176565 \times 10^{-19}` As
    force        kJ/(mol·Å)     :math:`1.66053892103219 \times 10^{-11}` J/m
@@ -327,6 +328,7 @@ chargeUnit_factor = {
 conversion_factor = {
     'length': lengthUnit_factor,
     'density': densityUnit_factor,
+    'mass': massUnit_factor,
     'time': timeUnit_factor,
     'charge': chargeUnit_factor,
     'speed': speedUnit_factor,
@@ -346,6 +348,7 @@ for utype, ufactor in conversion_factor.items():
 #: Lookup table for base units in MDAnalysis by unit type.
 MDANALYSIS_BASE_UNITS = {"length": "A",
                          "time": "ps",
+                         "mass": "u",
                          "energy": "kJ/mol",
                          "charge": "e",
                          "force": "kJ/(mol*A)",

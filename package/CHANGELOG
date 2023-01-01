@@ -26,6 +26,14 @@ Changes
 Deprecations
 
 
+01/01/23 1e9abhi1e10
+
+ * 2.5.0
+
+Fixes
+  * mass unit not listed in 'Base units' table
+
+
 12/21/22 IAlibay
 
  * 2.4.2

@@ -135,6 +135,7 @@ class TestBaseUnits:
         # We want to know if base units are added or altered.
         ref = {"length": "A",
                "time": "ps",
+               "mass": "u",
                "energy": "kJ/mol",
                "charge": "e",
                "force": "kJ/(mol*A)",
