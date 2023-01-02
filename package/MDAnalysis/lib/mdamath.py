@@ -92,8 +92,7 @@ def norm(v: npt.ArrayLike) -> float:
     return np.sqrt(np.dot(v, v))
 
 
-# typing: numpy
-def normal(vec1: npt.ArrayLike, vec2: npt.ArrayLike) -> np.ndarray:
+def normal(vec1: npt.ArrayLike, vec2: npt.ArrayLike) -> npt.NDArray:
     r"""Returns the unit vector normal to two vectors.
 
     .. math::
@@ -105,7 +104,7 @@ def normal(vec1: npt.ArrayLike, vec2: npt.ArrayLike) -> np.ndarray:
     .. versionchanged:: 0.11.0
        Moved into lib.mdamath
     """
-    normal = np.cross(vec1, vec2)
+    normal: npt.NDArray = np.cross(vec1, vec2)
     n = norm(normal)
     if n == 0.0:
         return normal  # returns [0,0,0] instead of [nan,nan,nan]
@@ -113,8 +112,7 @@ def normal(vec1: npt.ArrayLike, vec2: npt.ArrayLike) -> np.ndarray:
     return normal / n
 
 
-# typing: numpy
-def pdot(a: npt.ArrayLike, b: npt.ArrayLike) -> np.ndarray:
+def pdot(a: npt.NDArray, b: npt.NDArray) -> npt.NDArray:
     """Pairwise dot product.
 
     ``a`` must be the same shape as ``b``.
@@ -131,8 +129,7 @@ def pdot(a: npt.ArrayLike, b: npt.ArrayLike) -> np.ndarray:
     return np.einsum('ij,ij->i', a, b)
 
 
-# typing: numpy
-def pnorm(a: npt.ArrayLike) -> np.ndarray:
+def pnorm(a: npt.NDArray) -> npt.NDArray:
     """Euclidean norm of each vector in a matrix
 
     Parameters
@@ -199,8 +196,7 @@ def dihedral(ab: npt.ArrayLike, bc: npt.ArrayLike, cd: npt.ArrayLike) -> float:
     return (x if stp(ab, bc, cd) <= 0.0 else -x)
 
 
-# typing: numpy
-def sarrus_det(matrix: np.ndarray) -> Union[float, np.ndarray]:
+def sarrus_det(matrix: npt.NDArray) -> Union[float, npt.NDArray]:
     """Computes the determinant of a 3x3 matrix according to the
     `rule of Sarrus`_.
 
@@ -245,8 +241,7 @@ def sarrus_det(matrix: np.ndarray) -> Union[float, np.ndarray]:
     return _sarrus_det_multiple(m.reshape((-1, 3, 3))).reshape(shape[:-2])
 
 
-# typing: numpy
-def triclinic_box(x: npt.ArrayLike, y: npt.ArrayLike, z: npt.ArrayLike) -> np.ndarray:
+def triclinic_box(x: npt.ArrayLike, y: npt.ArrayLike, z: npt.ArrayLike) -> npt.NDArray:
     """Convert the three triclinic box vectors to
     ``[lx, ly, lz, alpha, beta, gamma]``.
 
@@ -308,8 +303,7 @@ def triclinic_box(x: npt.ArrayLike, y: npt.ArrayLike, z: npt.ArrayLike) -> np.nd
     return np.zeros(6, dtype=np.float32)
 
 
-# typing: numpy
-def triclinic_vectors(dimensions: npt.ArrayLike, dtype: npt.DTypeLike = np.float32) -> np.ndarray:
+def triclinic_vectors(dimensions: npt.ArrayLike, dtype: npt.DTypeLike = np.float32) -> npt.NDArray:
     """Convert ``[lx, ly, lz, alpha, beta, gamma]`` to a triclinic matrix
     representation.
 
