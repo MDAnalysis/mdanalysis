@@ -22,6 +22,9 @@ Fixes
 Enhancements
 
 Changes
+  * As per NEP29 the minimum supported NumPy version has been raised to 1.21
+    (note: in practice later versions of NumPy may be used depending on your
+     architecture, operating system, or Python version) (PR #3983)
 
 Deprecations
 
