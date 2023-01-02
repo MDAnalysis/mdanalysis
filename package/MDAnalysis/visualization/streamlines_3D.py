@@ -284,7 +284,6 @@ def per_core_work(start_frame_coord_array, end_frame_coord_array, dictionary_cub
                 cube['centroid_of_particles_first_frame'] = centroid_particles_in_cube
             else:  # empty cube
                 cube['centroid_of_particles_first_frame'] = None
-                raise ValueError("I've encountered THE branch")
             cube_counter += 1
 
     def update_dictionary_end_frame(array_simulation_particle_coordinates, dictionary_cube_data_this_core):
