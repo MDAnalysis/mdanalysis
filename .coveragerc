@@ -7,6 +7,7 @@ omit =
     */legacy/*
     */due.py
 concurrency = thread, multiprocessing
+sigterm = True
 parallel = True
 
 [report]
