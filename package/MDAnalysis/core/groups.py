@@ -929,9 +929,6 @@ class GroupBase(_MutableBase):
                              " or 'fragments'.".format(compound))
         return compound_indices
 
-    # This function implements its own custom caching, under _cache and with
-    # central validation under universe._cache['valid'], but independently of
-    # the @cached decorator.
     def _split_by_compound_indices(self, compound, stable_sort=False):
         """Splits a group's compounds into groups of equal compound size.
 
@@ -987,22 +984,6 @@ class GroupBase(_MutableBase):
         # Should we include here the grouping for 'group', which is essentially
         # a non-split?
 
-        # The local cache key must avoid collision with existing cache names,
-        # but the Universe one needn't.
-        local_cache_key = f'{compound}_splits'
-        self._check_universe_cache_validity(local_cache_key,
-                                            universe_key=compound)
-        try:
-            masks, is_stable = self._cache[local_cache_key]
-            # Cached masks come tupled with a bool indicating whether they
-            # originate from a stable sort of compound indices.
-            # Stably sorted is stricter; if it's not requested then any mask
-            # will do
-            if not stable_sort or (stable_sort and is_stable):
-                return masks
-        except KeyError:
-            pass
-
         compound_indices = self._get_compound_indices(compound)
         compound_sizes = np.bincount(compound_indices)
         size_per_atom = compound_sizes[compound_indices]
@@ -1038,10 +1019,7 @@ class GroupBase(_MutableBase):
                 atom_masks.append(np.where(size_per_atom == compound_size)[0]
                                    .reshape(-1, compound_size))
 
-        masks = (atom_masks, compound_masks, len(compound_sizes))
-        self._cache[local_cache_key] = (masks, stable_sort
-                                        or not needs_sorting)
-        return masks
+        return atom_masks, compound_masks, len(compound_sizes)
 
     @warn_if_not_unique
     @_pbc_to_wrap
@@ -1150,12 +1128,6 @@ class GroupBase(_MutableBase):
             weights = weights.astype(dtype, copy=False)
             return (coords * weights[:, None]).sum(axis=0) / weights.sum()
 
-        # Since unwrapping needs a stable sort, we ask for it here already so
-        # it stays in cache and we save time a couple lines ahead.
-        (atom_masks,
-         compound_masks,
-         n_compounds) = self._split_by_compound_indices(comp,
-                                                        stable_sort=unwrap)
         # Unwrap Atoms
         if unwrap:
             coords = atoms.unwrap(compound=comp, reference=None, inplace=False)
@@ -1166,6 +1138,9 @@ class GroupBase(_MutableBase):
         else:
             weights = weights.astype(dtype, copy=False)
 
+        (atom_masks,
+         compound_masks,
+         n_compounds) = self._split_by_compound_indices(comp)
         # Allocate output array:
         centers = np.empty((n_compounds, 3), dtype=dtype)
         # Compute centers per compound for each compound size:
