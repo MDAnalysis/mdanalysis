@@ -37,8 +37,10 @@ import numpy as np
 from ..analysis import align
 from ..lib.transformations import euler_from_matrix, euler_matrix
 
+from .base import TransformationBase
 
-class fit_translation(object):
+
+class fit_translation(TransformationBase):
     """Translates a given AtomGroup so that its center of geometry/mass matches
     the respective center of the given reference. A plane can be given by the
     user using the option `plane`, and will result in the removal of
@@ -82,10 +84,17 @@ class fit_translation(object):
 
 
     .. versionchanged:: 2.0.0
-        The transformation was changed from a function/closure to a class
-        with ``__call__``.
+       The transformation was changed from a function/closure to a class
+       with ``__call__``.
+    .. versionchanged:: 2.0.0
+       The transformation was changed to inherit from the base class for
+       limiting threads and checking if it can be used in parallel analysis.
     """
-    def __init__(self, ag, reference, plane=None, weights=None):
+    def __init__(self, ag, reference, plane=None, weights=None,
+                 max_threads=None, parallelizable=True):
+        super().__init__(max_threads=max_threads,
+                         parallelizable=parallelizable)
+
         self.ag = ag
         self.reference = reference
         self.plane = plane
@@ -117,7 +126,7 @@ class fit_translation(object):
         self.weights = align.get_weights(self.ref.atoms, weights=self.weights)
         self.ref_com = self.ref.center(self.weights)
 
-    def __call__(self, ts):
+    def _transform(self, ts):
         mobile_com = np.asarray(self.mobile.atoms.center(self.weights),
                                 np.float32)
         vector = self.ref_com - mobile_com
@@ -128,7 +137,7 @@ class fit_translation(object):
         return ts
 
 
-class fit_rot_trans(object):
+class fit_rot_trans(TransformationBase):
     """Perform a spatial superposition by minimizing the RMSD.
 
     Spatially align the group of atoms `ag` to `reference` by doing a RMSD
@@ -139,6 +148,11 @@ class fit_rot_trans(object):
     so that only translations and rotations in that particular plane are
     removed. This is useful for protein-membrane systems to where the membrane
     must remain in the same orientation.
+
+    Note
+    ----
+    ``max_threads`` is set to 1 for this transformation
+    with which it performs better.
 
     Example
     -------
@@ -174,8 +188,20 @@ class fit_rot_trans(object):
     Returns
     -------
     MDAnalysis.coordinates.base.Timestep
+
+
+    .. versionchanged:: 2.0.0
+       The transformation was changed from a function/closure to a class
+       with ``__call__``.
+    .. versionchanged:: 2.0.0
+       The transformation was changed to inherit from the base class for
+       limiting threads and checking if it can be used in parallel analysis.
     """
-    def __init__(self, ag, reference, plane=None, weights=None):
+    def __init__(self, ag, reference, plane=None, weights=None,
+                 max_threads=1, parallelizable=True):
+        super().__init__(max_threads=max_threads,
+                         parallelizable=parallelizable)
+
         self.ag = ag
         self.reference = reference
         self.plane = plane
@@ -207,7 +233,7 @@ class fit_rot_trans(object):
         self.ref_com = self.ref.center(self.weights)
         self.ref_coordinates = self.ref.atoms.positions - self.ref_com
 
-    def __call__(self, ts):
+    def _transform(self, ts):
         mobile_com = self.mobile.atoms.center(self.weights)
         mobile_coordinates = self.mobile.atoms.positions - mobile_com
         rotation, dump = align.rotation_matrix(mobile_coordinates,

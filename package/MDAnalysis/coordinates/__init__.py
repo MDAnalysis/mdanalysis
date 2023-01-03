@@ -43,10 +43,10 @@ object-oriented interface is one of the key capabilities of MDAnalysis.
 Readers
 -------
 
-All Readers are based on a :class:`ProtoReader` class that defines a common
-:ref:`Trajectory API` and allows other code to interface with all trajectory
-formats in the same way, independent of the details of the trajectory format
-itself.
+All Readers are based on a :class:`~MDAnalysis.coordinates.base.ProtoReader`
+class that defines a common :ref:`Trajectory API` and allows other code to
+interface with all trajectory formats in the same way, independent of the
+details of the trajectory format itself.
 
 The :class:`~MDAnalysis.core.universe.Universe` contains the API entry point
 attribute :attr:`Universe.trajectory` that points to the actual
@@ -263,7 +263,7 @@ also recognized when they are compressed with :program:`gzip` or
    | `chemfiles`_  | CHEMFILES |  r/w  | interface to `chemfiles`_, see the `list of chemfiles|
    | library       |           |       | file formats`_ and                                   |
    |               |           |       | :mod:`MDAnalysis.coordinates.chemfiles`              |
-   +---------------+-----------+-------+------------------------------------------------------+   
+   +---------------+-----------+-------+------------------------------------------------------+
 
 .. [#a] This format can also be used to provide basic *topology*
    information (i.e. the list of atoms); it is possible to create a
@@ -275,7 +275,7 @@ also recognized when they are compressed with :program:`gzip` or
 .. _`chemfiles`: https://chemfiles.org/
 .. _`list of chemfiles file formats`: https://chemfiles.org/chemfiles/latest/formats.html
 
-.. _Trajectory API:
+.. _`Trajectory API`:
 
 Trajectory API
 --------------
@@ -396,9 +396,7 @@ Attributes
       Boolean of whether force data is available
   ``dimensions``
       system box dimensions (`x, y, z, alpha, beta, gamma`)
-      (typically implemented as a property because it needs to translate whatever is in the
-      underlying :class:`~MDAnalysis.coordinates.base.Timestep._unitcell` attribute. Also
-      comes with a setter that takes a MDAnalysis box so that one can do ::
+      Also comes with a setter that takes a MDAnalysis box so that one can do ::
 
           Timestep.dimensions = [A, B, C, alpha, beta, gamma]
 
@@ -443,8 +441,22 @@ but instead should use the attribute above.
 Trajectory Reader class
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Trajectory readers are derived from :class:`MDAnalysis.coordinates.base.ReaderBase`.
-Typically, many methods and attributes are overriden.
+Trajectory readers are derived from
+:class:`MDAnalysis.coordinates.base.ReaderBase` (or from
+:class:`MDAnalysis.coordinates.base.ProtoReader` if they do not required
+:meth:`Reader.__del__` method). A special case are *SingleFrame readers* for
+formats that contain only a single coordinate frame. These readers are derived
+from a subclass of :class:`~MDAnalysis.coordinates.base.ProtoReader` named
+:class:`MDAnalysis.coordinates.base.SingleFrameReaderBase`.
+
+Typically, many methods and attributes are overriden but the ones listed below
+*must* be implemented.
+
+.. SeeAlso::
+
+   See the section on :ref:`ReadersBase` in :mod:`MDAnalysis.coordinates.base`
+   for implementation details.
+
 
 Methods
 .......
@@ -472,6 +484,13 @@ The following methods must be implemented in a Reader class.
 
         for ts in trajectory:
             print(ts.frame)
+
+     Readers will automatically rewind the trajectory to before the initial
+     frame (often by re-opening the file) before starting the iteration. *Multi
+     frame readers* (see :ref:`ReadersBase`) will also rewind the trajectory
+     *after* the iteration so that the current trajectory frame is set to the
+     first trajectory frame. *Single frame readers* do not explicitly rewind
+     after iteration but simply remain on the one frame in the trajectory.
 
  ``close()``
      close the file and cease I/O
@@ -531,10 +550,11 @@ deal with missing methods gracefully.
      a trajectory.
 
      The performance of the ``__getitem__()`` method depends on the underlying
-     trajectory reader and if it can implement random access to frames. In many
-     cases this is not easily (or reliably) implementable and thus one is
-     restricted to sequential iteration.
+     trajectory reader and if it can implement random access to frames. All
+     readers in MDAnalysis should support random access.
 
+     For external custom readers this may not be easily (or reliably)
+     implementable and thus one is restricted to sequential iteration.
      If the Reader is not able to provide random access to frames then it
      should raise :exc:`TypeError` on indexing. It is possible to partially
      implement ``__getitem__`` (as done on
@@ -545,7 +565,7 @@ deal with missing methods gracefully.
 
      When indexed with a slice, a sequence of indices, or a mask of booleans,
      the return value is an instance of :class:`FrameIteratorSliced` or
-     :class:`FrameIteratorIndices`.
+     :class:`FrameIteratorIndices`. See :ref:`FrameIterators` for more details.
 
  ``parse_n_atoms(filename, **kwargs)``
      Provide the number of atoms in the trajectory file, allowing the Reader
@@ -639,12 +659,23 @@ or::
 
    w.write(AtomGroup)  # write a selection of Atoms from Universe
 
+.. SeeAlso::
+
+   See the section on :ref:`WritersBase` in :mod:`MDAnalysis.coordinates.base`
+   for implementation details.
 
 Methods
 .......
 
- ``__init__(filename,n_atoms[,start[,step[,delta[,remarks]]]])``
-     opens *filename* and writes header if required by format
+ ``__init__(filename, n_atoms, **kwargs)``
+
+     Set-up the reader. This *may* open file *filename* and *may*
+     write content to it such as headers immediately but the writer is
+     allowed to delay I/O up to the first call of ``write()``.
+
+     Any ``**kwargs`` that are not processed by the writer must be
+     silently ignored.
+
  ``write(obj)``
      write Timestep data in *obj*
  ``convert_dimensions_to_unitcell(timestep)``
@@ -660,8 +691,6 @@ Attributes
 
  ``filename``
      name of the trajectory file
- ``start, stop, step``
-     first and last frame number (0-based) and step
  ``units``
      dictionary with keys *time*, *length*, *speed*, *force* and the
      appropriate unit (e.g. 'AKMA' and 'Angstrom' for Charmm dcds, 'ps' and
@@ -732,7 +761,6 @@ from . import GRO
 from . import INPCRD
 from . import LAMMPS
 from . import MOL2
-from . import ParmEd
 from . import PDB
 from . import PDBQT
 from . import PQR
@@ -749,4 +777,3 @@ from . import GSD
 from . import null
 from . import NAMDBIN
 from . import FHIAIMS
-from . import RDKit

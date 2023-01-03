@@ -20,8 +20,8 @@ under the Apache v2.0 license.)
 Module
 ------
 
-.. automodule:: MDAnalysis.analysis.hole2.hole
-    :members:
+.. automodule:: MDAnalysis.analysis.hole2
+		
 
 
 Utility functions and templates

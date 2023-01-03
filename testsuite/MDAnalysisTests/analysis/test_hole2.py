@@ -25,6 +25,7 @@ import glob
 import os
 import sys
 import textwrap
+import re
 
 import numpy as np
 import matplotlib
@@ -41,7 +42,7 @@ from MDAnalysis.analysis.hole2.utils import check_and_fix_long_filename
 from MDAnalysis.exceptions import ApplicationError
 from MDAnalysisTests.datafiles import PDB_HOLE, MULTIPDB_HOLE, DCD
 from MDAnalysisTests import executable_not_found
-
+from MDAnalysis.analysis.hole2.templates import exe_err
 
 def rlimits_missing():
     # return True if resources module not accesible (ie setting of rlimits)
@@ -252,18 +253,56 @@ class BaseTestHole(object):
 
     @pytest.fixture()
     def profiles(self, hole, frames):
-        return [hole.profiles[f] for f in frames]
+        return [hole.results.profiles[f] for f in frames]
+
+    @pytest.mark.parametrize("attrname", ["sphpdbs", "outfiles", "profiles"])
+    def test_deprecated_warning(self, hole, attrname):
+        wmsg = (f"The `{attrname}` attribute was deprecated in "
+                "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
+                f"Please use `results.{attrname}` instead.")
+        with pytest.warns(DeprecationWarning, match=wmsg):
+            value = getattr(hole, attrname)
+            assert value is hole.results[attrname]
+
+
+@pytest.mark.skipif(executable_not_found('hole'),
+                    reason="Test skipped because HOLE not found")
+class TestOSError:
+
+    @pytest.fixture()
+    def universe(self):
+        return mda.Universe(MULTIPDB_HOLE)
+
+    def test_hole_method_oserror(self):
+        errmsg = exe_err.format(name='dummy_path', kw='executable')
+        with pytest.raises(OSError, match=errmsg):
+            h = hole2.hole(PDB_HOLE, executable='dummy_path')
+
+    def test_hole_oserror(self, universe):
+        errmsg = exe_err.format(name='dummy_path', kw='executable')
+        with pytest.raises(OSError, match=errmsg):
+            h = hole2.HoleAnalysis(universe, executable='dummy_path')
+
+    def test_sos_triangle_oserror(self, universe):
+        errmsg = exe_err.format(name='dummy_path', kw='sos_triangle')
+        with pytest.raises(OSError, match=errmsg):
+            h = hole2.HoleAnalysis(universe, sos_triangle='dummy_path')
+
+    def test_sph_process_oserror(self, universe):
+        errmsg = exe_err.format(name='dummy_path', kw='sph_process')
+        with pytest.raises(OSError, match=errmsg):
+            h = hole2.HoleAnalysis(universe, sph_process='dummy_path')
 
 
 class TestHoleAnalysis(BaseTestHole):
 
     def test_correct_profile_values(self, hole, frames):
-        assert_equal(sorted(hole.profiles.keys()), frames,
-                     err_msg="hole.profiles.keys() should contain the frame numbers")
+        assert_equal(sorted(hole.results.profiles.keys()), frames,
+                     err_msg="hole.results.profiles.keys() should contain the frame numbers")
         assert_equal(list(hole.frames), frames,
                      err_msg="hole.frames should contain the frame numbers")
         data = np.transpose([(len(p), p.rxn_coord.mean(), p.radius.min())
-                             for p in hole.profiles.values()])
+                             for p in hole.results.profiles.values()])
         assert_equal(data[0], [401, 399], err_msg="incorrect profile lengths")
         assert_almost_equal(data[1], [1.98767,  0.0878],
                             err_msg="wrong mean HOLE rxn_coord")
@@ -296,6 +335,28 @@ class TestHoleAnalysis(BaseTestHole):
         vmd_file = tmpdir.join('hole.vmd')
         assert len(glob.glob(str(vmd_file))) == 1
 
+    @pytest.mark.parametrize("start,stop,step", [
+        (1, 9, 2), (1, None, 3), (5, -2, None)])
+    def test_nonzero_start_surface(self, universe, tmpdir,
+                                   start, stop, step,
+                                   surface="hole.vmd"):
+        # Issue 3476
+        with tmpdir.as_cwd():
+            h = hole2.HoleAnalysis(universe)
+            h.run(start=start, stop=stop, step=step)
+            h.create_vmd_surface(filename=surface)
+
+            found_frame_indices = []
+            with open(surface) as s:
+                for line in s:
+                    m = re.match(r"set triangles\((?P<frame>\d+)\)", line)
+                    if m:
+                        found_frame_indices.append(m.group('frame'))
+            found_frame_indices = np.array(found_frame_indices, dtype=int)
+        assert_equal(found_frame_indices,
+                     np.arange(len(universe.trajectory[start:stop:step])),
+                     err_msg="wrong frame indices in VMD surface file")
+
     def test_output_level(self, tmpdir, universe):
         with tmpdir.as_cwd():
             with pytest.warns(UserWarning, match='needs to be < 3'):
@@ -305,7 +366,7 @@ class TestHoleAnalysis(BaseTestHole):
                       stop=self.stop, random_seed=self.random_seed)
 
             # no profiles
-            assert len(h.profiles) == 0
+            assert len(h.results.profiles) == 0
 
     def test_cpoint_geometry(self, tmpdir, universe):
         protein = universe.select_atoms('protein')
@@ -381,7 +442,7 @@ class TestHoleAnalysis(BaseTestHole):
             assert_almost_equal(np.unique(y), [frame])
             assert_almost_equal(z, profile.radius)
             assert line.get_label() == str(frame)
-        
+
     @pytest.mark.skipif(sys.version_info < (3, 1),
                         reason="get_data_3d requires 3.1 or higher")
     def test_plot3D_rmax(self, hole, frames, profiles):
@@ -399,35 +460,12 @@ class TestHoleAnalysis(BaseTestHole):
             assert_almost_equal(z, radius)
             assert line.get_label() == str(frame)
 
-    @pytest.mark.skipif(sys.version_info > (3, 1),
-                        reason="get_data_3d requires 3.1 or higher")
-    def test_plot3D(self, hole, frames, profiles):
-        ax = hole.plot3D(frames=None, r_max=None)
-        err_msg = "HoleAnalysis.plot3D() did not produce an Axes3D instance"
-        assert isinstance(ax, mpl_toolkits.mplot3d.Axes3D), err_msg
-        lines = ax.get_lines()[:]
-        assert len(lines) == hole.n_frames
-
-        for line, frame, profile in zip(lines, frames, profiles):
-            x, y = line.get_data()
-            assert_almost_equal(x, profile.rxn_coord)
-            assert_almost_equal(np.unique(y), [frame])
-            assert line.get_label() == str(frame)
-
-    @pytest.mark.skipif(sys.version_info > (3, 1),
-                        reason="get_data_3d requires 3.1 or higher")
-    def test_plot3D_rmax(self, hole, frames, profiles):
-        ax = hole.plot3D(r_max=2.5)
-        err_msg = "HoleAnalysis.plot3D(rmax=float) did not produce an Axes3D instance"
-        assert isinstance(ax, mpl_toolkits.mplot3d.Axes3D), err_msg
-
-        lines = ax.get_lines()[:]
-
-        for line, frame, profile in zip(lines, frames, profiles):
-            x, y = line.get_data()
-            assert_almost_equal(x, profile.rxn_coord)
-            assert_almost_equal(np.unique(y), [frame])
-            assert line.get_label() == str(frame)
+    def test_none_filename(self, tmpdir):
+        universe_none_filename = mda.Universe(PDB_HOLE, in_memory=True)
+        universe_none_filename.trajectory.filename = None
+        with tmpdir.as_cwd():
+            with hole2.HoleAnalysis(universe_none_filename) as h:
+                h.run()
 
 
 class TestHoleAnalysisLong(BaseTestHole):
@@ -446,7 +484,7 @@ class TestHoleAnalysisLong(BaseTestHole):
 
     def test_gather(self, hole):
         gd = hole.gather(flat=False)
-        for i, p in enumerate(hole.profiles.values()):
+        for i, p in enumerate(hole.results.profiles.values()):
             assert_almost_equal(p.rxn_coord, gd['rxn_coord'][i])
             assert_almost_equal(p.radius, gd['radius'][i])
             assert_almost_equal(p.cen_line_D, gd['cen_line_D'][i])
@@ -454,7 +492,7 @@ class TestHoleAnalysisLong(BaseTestHole):
     def test_gather_flat(self, hole):
         gd = hole.gather(flat=True)
         i = 0
-        for p in hole.profiles.values():
+        for p in hole.results.profiles.values():
             j = i+len(p.rxn_coord)
             assert_almost_equal(p.rxn_coord, gd['rxn_coord'][i:j])
             assert_almost_equal(p.radius, gd['radius'][i:j])
@@ -464,7 +502,7 @@ class TestHoleAnalysisLong(BaseTestHole):
 
     def test_min_radius(self, hole):
         rad = hole.min_radius()
-        for (f1, p), (f2, r) in zip(hole.profiles.items(), rad):
+        for (f1, p), (f2, r) in zip(hole.results.profiles.items(), rad):
             assert_equal(f1, f2)
             assert_almost_equal(min(p.radius), r)
 
@@ -477,7 +515,8 @@ class TestHoleAnalysisLong(BaseTestHole):
             assert key == rmsd
 
         idx = np.argsort(op)
-        arr = np.array(list(hole.profiles.values()), dtype=object)
+        arr = np.array(list(hole.results.profiles.values()), dtype=object)
+
         for op_prof, arr_prof in zip(profiles.values(), arr[idx]):
             assert op_prof is arr_prof
 
@@ -493,7 +532,8 @@ class TestHoleAnalysisLong(BaseTestHole):
             assert key == rmsd
 
         idx = np.argsort(op)
-        arr = np.array(list(hole.profiles.values()), dtype=object)
+        arr = np.array(list(hole.results.profiles.values()), dtype=object)
+
         for op_prof, arr_prof in zip(profiles.values(), arr[idx]):
             assert op_prof is arr_prof
 
@@ -516,7 +556,8 @@ class TestHoleAnalysisLong(BaseTestHole):
             assert key == rmsd
 
         idx = np.argsort(op[:n_frames])
-        values = list(hole.profiles.values())[:n_frames]
+        values = list(hole.results.profiles.values())[:n_frames]
+
         arr = np.array(values, dtype=object)
         for op_prof, arr_prof in zip(profiles.values(), arr[idx]):
             assert op_prof is arr_prof
@@ -532,7 +573,7 @@ class TestHoleAnalysisLong(BaseTestHole):
         assert len(radii) == (len(bins)-1)
 
         # check first frame profile
-        first = hole.profiles[0]
+        first = hole.results.profiles[0]
         for row in first:
             coord = row.rxn_coord
             rad = row.radius
@@ -545,7 +586,7 @@ class TestHoleAnalysisLong(BaseTestHole):
 
     @pytest.mark.parametrize('midpoint', [1.5, 1.8, 2.0, 2.5])
     def test_bin_radii_range(self, hole, midpoint):
-        radii, bins = hole.bin_radii(bins=100, 
+        radii, bins = hole.bin_radii(bins=100,
                                      range=(midpoint, midpoint))
         dct = hole.gather(flat=True)
         coords = dct['rxn_coord']
@@ -558,7 +599,7 @@ class TestHoleAnalysisLong(BaseTestHole):
         assert len(radii) == (len(bins)-1)
 
         # check first frame profile
-        first = hole.profiles[0]
+        first = hole.results.profiles[0]
         for row in first:
             coord = row.rxn_coord
             rad = row.radius
@@ -580,7 +621,7 @@ class TestHoleAnalysisLong(BaseTestHole):
         assert_almost_equal(e_bins, r_bins)
         for e, r in zip(e_radii, r_radii):
             assert_almost_equal(e, r)
-        
+
     def test_histogram_radii(self, hole):
         means, _ = hole.histogram_radii(aggregator=np.mean,
                                         bins=100)
@@ -619,7 +660,7 @@ class TestHoleAnalysisLong(BaseTestHole):
         assert_almost_equal(x, opx)
         assert_almost_equal(y, opy)
 
-    @pytest.mark.skipif(sys.version_info < (3, 1), 
+    @pytest.mark.skipif(sys.version_info < (3, 1),
                         reason="get_data_3d requires 3.1 or higher")
     def test_plot3D_order_parameters(self, hole, order_parameter_keys_values):
         opx = np.array(list(order_parameter_keys_values[0]))
@@ -637,7 +678,7 @@ class TestHoleAnalysisLong(BaseTestHole):
             assert_almost_equal(np.unique(y), np.array([opx_]))
             assert_almost_equal(z, profile.radius)
 
-    @pytest.mark.skipif(sys.version_info > (3, 1), 
+    @pytest.mark.skipif(sys.version_info > (3, 1),
                         reason="get_data_3d requires 3.1 or higher")
     def test_plot3D_order_parameters(self, hole, order_parameter_keys_values):
         opx = np.array(list(order_parameter_keys_values[0]))

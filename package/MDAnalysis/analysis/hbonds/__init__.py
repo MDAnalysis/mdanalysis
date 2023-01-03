@@ -22,9 +22,7 @@
 #
 
 __all__ = [
-    'HydrogenBondAnalysis',
     'HydrogenBondAutoCorrel', 'find_hydrogen_donors',
 ]
 
-from .hbond_analysis import HydrogenBondAnalysis
 from .hbond_autocorrel import HydrogenBondAutoCorrel, find_hydrogen_donors

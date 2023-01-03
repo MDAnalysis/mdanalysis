@@ -73,6 +73,8 @@ from libc.stdio cimport SEEK_SET, SEEK_CUR, SEEK_END
 from libc.stdint cimport uintptr_t
 from libc.stdlib cimport free
 
+np.import_array()
+
 _whence_vals = {"FIO_SEEK_SET": SEEK_SET,
                 "FIO_SEEK_CUR": SEEK_CUR,
                 "FIO_SEEK_END": SEEK_END}

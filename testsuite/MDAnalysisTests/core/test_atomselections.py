@@ -210,6 +210,10 @@ class TestSelectionsCHARMM(object):
         sel = universe.select_atoms(selstr)
         assert_equal(len(sel), 88)
 
+    def test_empty_cylayer(self, universe):
+        empty = universe.select_atoms('cylayer 4.0 6.0 10 -10 name NOT_A_NAME')
+        assert_equal(len(empty), 0)
+
     @pytest.mark.parametrize('selstr', [
         'cyzone 6.0 10 -10 bynum 1281',
         'cyzone 6.0 10 -10 index 1280'
@@ -217,6 +221,10 @@ class TestSelectionsCHARMM(object):
     def test_cyzone(self, universe, selstr):
         sel = universe.select_atoms(selstr)
         assert_equal(len(sel), 166)
+
+    def test_empty_cyzone(self, universe):
+        empty = universe.select_atoms('cyzone 6.0 10 -10 name NOT_A_NAME')
+        assert_equal(len(empty), 0)
 
     def test_point(self, universe):
         ag = universe.select_atoms('point 5.0 5.0 5.0 3.5')
@@ -567,6 +575,29 @@ class TestSelectionRDKit(object):
         with pytest.raises(ValueError, match="not a valid SMARTS"):
             u2.select_atoms("smarts foo")
 
+    def test_passing_rdkit_kwargs_to_converter(self):
+        u = mda.Universe.from_smiles("O=C=O")
+        sel = u.select_atoms("smarts [$(O=C)]", rdkit_kwargs=dict(force=True))
+        assert sel.n_atoms == 2
+
+    def test_passing_max_matches_to_converter(self, u2):
+        with pytest.warns(UserWarning, match="Your smarts-based") as wsmg:
+            sel = u2.select_atoms("smarts C", smarts_kwargs=dict(maxMatches=2))
+            sel2 = u2.select_atoms(
+                    "smarts C", smarts_kwargs=dict(maxMatches=1000))
+            assert sel.n_atoms == 2
+            assert sel2.n_atoms == 3
+
+        sel3 = u2.select_atoms("smarts c")
+        assert sel3.n_atoms == 4
+
+    def test_passing_use_chirality_to_converter(self):
+        u = mda.Universe.from_smiles("CC[C@H](C)O")
+        sel3 = u.select_atoms("byres smarts CC[C@@H](C)O")
+        assert sel3.n_atoms == 0
+        sel4 = u.select_atoms("byres smarts CC[C@@H](C)O", smarts_kwargs={"useChirality": False})
+        assert sel4.n_atoms == 15
+
 
 class TestSelectionsNucleicAcids(object):
     @pytest.fixture(scope='class')
@@ -770,6 +801,10 @@ class TestTriclinicSelections(object):
 
         assert idx == set(ag.indices)
 
+    def test_empty_sphlayer(self, u):
+        empty = u.select_atoms('sphlayer 2.4 6.0 name NOT_A_NAME')
+        assert len(empty) == 0
+
     def test_sphzone(self, u):
         r1 = u.select_atoms('resid 1')
         cog = r1.center_of_geometry().reshape(1, 3)
@@ -780,6 +815,10 @@ class TestTriclinicSelections(object):
         idx = set(np.where(d < 5.0)[0])
 
         assert idx == set(ag.indices)
+
+    def test_empty_sphzone(self, u):
+        empty = u.select_atoms('sphzone 5.0 name NOT_A_NAME')
+        assert len(empty) == 0
 
     def test_point_1(self, u):
         # The example selection
@@ -981,6 +1020,7 @@ class TestSelectionErrors(object):
         'mass 1.0:',
         'mass :3.0',
         'mass 1-',
+        'chirality ',
     ])
     def test_selection_fail(self, selstr, universe):
         with pytest.raises(SelectionError):
@@ -1347,3 +1387,73 @@ def test_error_selection_for_strange_dtype():
     with pytest.raises(ValueError, match="No base class defined for dtype"):
         MDAnalysis.core.selection.gen_selection_class("star", "stars",
                                                       dict, "atom")
+
+
+@pytest.mark.parametrize("sel, ix", [
+    ("name N", [5, 335, 451]),
+    ("resname GLU", [5, 6, 7, 8, 335, 451]),
+])
+def test_default_selection_on_ordered_unique_group(u_pdb_icodes, sel, ix):
+    # manually ordered unique atomgroup => sorted by index
+    base_ag = u_pdb_icodes.atoms[[335, 5, 451, 8, 7, 6]]
+    ag = base_ag.select_atoms(sel)
+    assert_equal(ag.ix, ix)
+
+
+@pytest.mark.parametrize("sel, sort, ix", [
+    ("name N", True, [5, 335, 451]),
+    ("name N", False, [335, 5, 451]),
+    ("resname GLU", True, [5, 6, 7, 8, 335, 451]),
+    ("resname GLU", False, [335, 5, 451, 8, 7, 6]),
+])
+def test_unique_selection_on_ordered_unique_group(u_pdb_icodes, sel, sort, ix):
+    # manually ordered unique atomgroup
+    base_ag = u_pdb_icodes.atoms[[335, 5, 451, 8, 7, 6]]
+    ag = base_ag.select_atoms(sel, sorted=sort)
+    assert_equal(ag.ix, ix)
+
+
+@pytest.mark.parametrize("sel, sort, ix", [
+    ("name N", True, [5, 335, 451]),
+    ("name N", False, [335, 5, 451]),
+    ("resname GLU", True, [5, 6, 7, 8, 335, 451]),
+    ("resname GLU", False, [335, 5, 451, 8, 7, 6]),
+])
+def test_unique_selection_on_ordered_group(u_pdb_icodes, sel, sort, ix):
+    # manually ordered duplicate atomgroup
+    base_ag = u_pdb_icodes.atoms[[335, 5, 451, 8, 5, 5, 7, 6, 451]]
+    ag = base_ag.select_atoms(sel, sorted=sort)
+    assert_equal(ag.ix, ix)
+
+
+@pytest.mark.parametrize('smi,chirality', [
+    ('C[C@@H](C(=O)O)N', 'S'),
+    ('C[C@H](C(=O)O)N', 'R'),
+])
+def test_chirality(smi, chirality):
+    Chem = pytest.importorskip('rdkit.Chem', reason='requires rdkit')
+
+    m = Chem.MolFromSmiles(smi)
+    u = mda.Universe(m)
+
+    assert hasattr(u.atoms, 'chiralities')
+
+    assert u.atoms[0].chirality == ''
+    assert u.atoms[1].chirality == chirality
+
+    assert_equal(u.atoms[:3].chiralities, np.array(['', chirality, ''], dtype='U1'))
+
+
+@pytest.mark.parametrize('sel,size', [
+    ('R', 1), ('S', 1), ('R S', 2), ('S R', 2),
+])
+def test_chirality_selection(sel, size):
+    # 2 centers, one R one S
+    Chem = pytest.importorskip('rdkit.Chem', reason='requires rdkit')
+
+    m = Chem.MolFromSmiles('CC[C@H](C)[C@H](C(=O)O)N')
+    u = mda.Universe(m)
+
+    ag = u.select_atoms('chirality {}'.format(sel))
+
+    assert len(ag) == size

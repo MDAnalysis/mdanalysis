@@ -47,7 +47,8 @@ from MDAnalysisTests.datafiles import (
     TRZ_psf, TRZ,
     two_water_gro,
     TPR_xvf, TRR_xvf,
-    GRO
+    GRO, GRO_MEMPROT,
+    TPR
 )
 from MDAnalysisTests import make_Universe, no_deprecated_call
 from MDAnalysisTests.core.util import UnWrapUniverse
@@ -478,19 +479,19 @@ class TestCenter(object):
             group = group.segments
 
         # get the expected results
-        center = group.center(weights=None, pbc=False,
+        center = group.center(weights=None, wrap=False,
                               compound=compound, unwrap=True)
 
         ref_center = u.center(compound=compound)
         assert_almost_equal(ref_center, center, decimal=4)
 
-    def test_center_unwrap_pbc_true_group(self):
+    def test_center_unwrap_wrap_true_group(self):
         u = UnWrapUniverse(is_triclinic=False)
         # select group appropriate for compound:
         group = u.atoms[39:47]  # molecule 12
         with pytest.raises(ValueError):
             group.center(weights=None, compound='group',
-                         unwrap=True, pbc=True)
+                         unwrap=True, wrap=True)
 
 
 class TestSplit(object):
@@ -603,7 +604,7 @@ class TestAtomGroupProperties(object):
         with pytest.raises(KeyError):
             _ = ag._cache['unique_restore_mask']
         # access unique property:
-        uag = ag.unique
+        uag = ag.asunique()
         # assert restore mask cache is still empty since ag is unique:
         with pytest.raises(KeyError):
             _ = ag._cache['unique_restore_mask']
@@ -705,6 +706,16 @@ class TestDihedralSelections(object):
     @pytest.fixture(scope='module')
     def PSFDCD():
         return mda.Universe(PSF, DCD)
+
+    @staticmethod
+    @pytest.fixture()
+    def TPR():
+        return mda.Universe(TPR)
+
+    @staticmethod
+    @pytest.fixture()
+    def memprot():
+        return mda.Universe(GRO_MEMPROT)
 
     @staticmethod
     @pytest.fixture(scope='class')
@@ -861,6 +872,37 @@ class TestDihedralSelections(object):
         rgsel = resgroup.chi1_selections()
         rssel = [r.chi1_selection() for r in resgroup]
         assert_equal(rgsel, rssel)
+
+    @pytest.mark.parametrize("resname", ["CYSH", "ILE", "SER", "THR", "VAL"])
+    def test_chi1_selection_non_cg_gromacs(self, resname, TPR):
+        resgroup = TPR.select_atoms(f"resname {resname}").residues
+        # get middle one
+        res = resgroup[len(resgroup) // 2]
+        assert res.chi1_selection() is not None
+
+    @pytest.mark.parametrize("resname", ["CYS", "ILE", "SER", "THR", "VAL"])
+    def test_chi1_selection_non_cg_charmm(self, resname, PSFDCD):
+        resgroup = PSFDCD.select_atoms(f"resname {resname}").residues
+        # get middle one
+        res = resgroup[len(resgroup) // 2]
+        assert res.chi1_selection() is not None
+
+    @pytest.mark.parametrize("resname", ["ARG", "ASP", "CYS", "GLN", "GLU",
+                                         "HIS", "ILE", "LEU", "LYS", "MET",
+                                         "PHE", "PRO", "SER", "THR", "TRP",
+                                         "TYR", "VAL"])
+    def test_chi1_selection_all_res(self, resname, memprot):
+        resgroup = memprot.select_atoms(f"resname {resname}").residues
+        # get middle one
+        res = resgroup[len(resgroup) // 2]
+        assert res.chi1_selection() is not None
+
+    @pytest.mark.parametrize("resname", ["ALA", "GLY"])
+    def test_no_chi1(self, resname, TPR):
+        resgroup = TPR.select_atoms(f"resname {resname}").residues
+        # get middle one
+        res = resgroup[len(resgroup) // 2]
+        assert res.chi1_selection() is None
 
     def test_phi_sel_fail(self, GRO):
         sel = GRO.residues[0].phi_selection()
@@ -1089,7 +1131,7 @@ class TestPBCFlag(object):
         universe = mda.Universe(TRZ_psf, TRZ)
         return universe.residues[0:3]
 
-    @pytest.mark.parametrize('pbc, ref', ((True, ref_PBC),
+    @pytest.mark.parametrize('wrap, ref', ((True, ref_PBC),
                                           (False, ref_noPBC)))
     @pytest.mark.parametrize('method_name', ('center_of_geometry',
                                              'center_of_mass',
@@ -1100,12 +1142,12 @@ class TestPBCFlag(object):
                                              'bbox',
                                              'bsphere',
                                              'principal_axes'))
-    def test_pbc(self, ag, pbc, ref, method_name):
+    def test_wrap(self, ag, wrap, ref, method_name):
         method = getattr(ag, method_name)
-        if pbc:
-            result = method(pbc=True)
+        if wrap:
+            result = method(wrap=True)
         else:
-            # Test no-pbc as the default behaviour
+            # Test no-wrap as the default behaviour
             result = method()
 
         if method_name == 'bsphere':
@@ -1224,7 +1266,7 @@ class TestAtomGroup(object):
                                                 ('segids', 'segments')))
     def test_center_compounds(self, ag, name, compound, method_name):
         ref = [getattr(a, method_name)() for a in ag.groupby(name).values()]
-        vals = getattr(ag, method_name)(pbc=False, compound=compound)
+        vals = getattr(ag, method_name)(wrap=False, compound=compound)
         assert_almost_equal(vals, ref, decimal=5)
 
     @pytest.mark.parametrize('method_name', ('center_of_geometry',
@@ -1237,9 +1279,7 @@ class TestAtomGroup(object):
         ag.dimensions = [50, 50, 50, 90, 90, 90]
         ref = [getattr(a, method_name)(unwrap=unwrap)
                for a in ag.groupby(name).values()]
-        ref = distances.apply_PBC(np.asarray(ref, dtype=np.float32),
-                                  ag.dimensions)
-        vals = getattr(ag, method_name)(pbc=True, compound=compound,
+        vals = getattr(ag, method_name)(compound=compound,
                                         unwrap=unwrap)
         assert_almost_equal(vals, ref, decimal=5)
 
@@ -1251,7 +1291,7 @@ class TestAtomGroup(object):
                                       compound, method_name):
         ref = [getattr(a, method_name)()
                for a in ag_molfrg.groupby(name).values()]
-        vals = getattr(ag_molfrg, method_name)(pbc=False, compound=compound)
+        vals = getattr(ag_molfrg, method_name)(wrap=False, compound=compound)
         assert_almost_equal(vals, ref, decimal=5)
 
     @pytest.mark.parametrize('method_name', ('center_of_geometry',
@@ -1264,9 +1304,7 @@ class TestAtomGroup(object):
         ag_molfrg.dimensions = [50, 50, 50, 90, 90, 90]
         ref = [getattr(a, method_name)(unwrap=unwrap)
                for a in ag_molfrg.groupby(name).values()]
-        ref = distances.apply_PBC(np.asarray(ref, dtype=np.float32),
-                                  ag_molfrg.dimensions)
-        vals = getattr(ag_molfrg, method_name)(pbc=True, compound=compound,
+        vals = getattr(ag_molfrg, method_name)(compound=compound,
                                                unwrap=unwrap)
         assert_almost_equal(vals, ref, decimal=5)
 
@@ -1284,11 +1322,11 @@ class TestAtomGroup(object):
                                          np.array([2.0])))
     @pytest.mark.parametrize('compound', ('group', 'residues', 'segments',
                                           'molecules', 'fragments'))
-    @pytest.mark.parametrize('pbc', (False, True))
-    def test_center_compounds_single(self, ag_molfrg, pbc, weights, compound):
+    @pytest.mark.parametrize('wrap', (False, True))
+    def test_center_compounds_single(self, ag_molfrg, wrap, weights, compound):
         at = ag_molfrg[0]
         if weights is None or weights[0] != 0.0:
-            if pbc:
+            if wrap:
                 ref = distances.apply_PBC(at.position, ag_molfrg.dimensions)
                 ref = ref.astype(np.float64)
             else:
@@ -1298,24 +1336,24 @@ class TestAtomGroup(object):
         if compound != 'group':
             ref = ref.reshape((1, 3))
         ag_s = mda.AtomGroup([at])
-        assert_equal(ref, ag_s.center(weights, pbc=pbc, compound=compound))
+        assert_equal(ref, ag_s.center(weights, wrap=wrap, compound=compound))
 
-    @pytest.mark.parametrize('pbc', (False, True))
+    @pytest.mark.parametrize('wrap', (False, True))
     @pytest.mark.parametrize('weights', (None, np.array([])))
     @pytest.mark.parametrize('compound', ('group', 'residues', 'segments',
                                           'molecules', 'fragments'))
-    def test_center_compounds_empty(self, ag_molfrg, pbc, weights, compound):
+    def test_center_compounds_empty(self, ag_molfrg, wrap, weights, compound):
         ref = np.empty((0, 3), dtype=np.float64)
         ag_e = mda.AtomGroup([], ag_molfrg.universe)
-        assert_equal(ref, ag_e.center(weights, pbc=pbc, compound=compound))
+        assert_equal(ref, ag_e.center(weights, wrap=wrap, compound=compound))
 
-    @pytest.mark.parametrize('pbc', (False, True))
+    @pytest.mark.parametrize('wrap', (False, True))
     @pytest.mark.parametrize('name, compound', (('', 'group'),
                                                 ('resids', 'residues'),
                                                 ('segids', 'segments'),
                                                 ('molnums', 'molecules'),
                                                 ('fragindices', 'fragments')))
-    def test_center_compounds_zero_weights(self, ag_molfrg, pbc, name,
+    def test_center_compounds_zero_weights(self, ag_molfrg, wrap, name,
                                            compound):
         if compound == 'group':
             ref = np.full((3,), np.nan)
@@ -1323,7 +1361,7 @@ class TestAtomGroup(object):
             n_compounds = len(ag_molfrg.groupby(name))
             ref = np.full((n_compounds, 3), np.nan, dtype=np.float64)
         weights = np.zeros(len(ag_molfrg))
-        assert_equal(ref, ag_molfrg.center(weights, pbc=pbc,
+        assert_equal(ref, ag_molfrg.center(weights, wrap=wrap,
                                            compound=compound))
 
     def test_coordinates(self, ag):
@@ -1674,3 +1712,80 @@ class TestAtomGroupTimestep(object):
                                 ag.ts.velocities,
                                 self.prec,
                                 err_msg="Partial timestep coordinates wrong")
+
+
+class TestAtomGroupSort(object):
+    """Tests the AtomGroup.sort attribute"""
+
+    @pytest.fixture()
+    def universe(self):
+        u = mda.Universe.empty(
+            n_atoms=7,
+            n_residues=3,
+            n_segments=2,
+            atom_resindex=np.array([0, 0, 0, 1, 1, 1, 2]),
+            residue_segindex=np.array([0, 0, 1]),
+            trajectory=True,
+            velocities=True,
+            forces=True
+        )
+        attributes = ["id", "charge", "mass", "tempfactor"]
+
+        for i in (attributes):
+            u.add_TopologyAttr(i, [6, 5, 4, 3, 2, 1, 0])
+
+        u.add_TopologyAttr('resid', [2, 1, 0])
+        u.add_TopologyAttr('segid', [1, 0])
+        u.add_TopologyAttr('bonds', [(0, 1)])
+
+        return u
+
+    @pytest.fixture()
+    def ag(self, universe):
+        ag = universe.atoms
+        ag.positions = (-np.arange(21)).reshape(7, 3)
+        return ag
+
+    test_ids = [
+       "ix",
+       "ids",
+       "resids",
+       "segids",
+       "charges",
+       "masses",
+       "tempfactors"
+    ]
+
+    test_data = [
+        ("ix", np.array([0, 1, 2, 3, 4, 5, 6])),
+        ("ids", np.array([6, 5, 4, 3, 2, 1, 0])),
+        ("resids", np.array([6, 3, 4, 5, 0, 1, 2])),
+        ("segids", np.array([6, 0, 1, 2, 3, 4, 5])),
+        ("charges", np.array([6, 5, 4, 3, 2, 1, 0])),
+        ("masses", np.array([6, 5, 4, 3, 2, 1, 0])),
+        ("tempfactors", np.array([6, 5, 4, 3, 2, 1, 0])),
+    ]
+
+    @pytest.mark.parametrize("inputs, expected", test_data, ids=test_ids)
+    def test_sort(self, ag, inputs, expected):
+        agsort = ag.sort(inputs)
+        assert np.array_equal(expected, agsort.ix)
+
+    def test_sort_bonds(self, ag):
+        with pytest.raises(ValueError, match=r"The array returned by the "
+                           "attribute"):
+            ag.sort("bonds")
+
+    def test_sort_positions_2D(self, ag):
+        with pytest.raises(ValueError, match=r"The function assigned to"):
+            ag.sort("positions", keyfunc=lambda x: x)
+
+    def test_sort_position_no_keyfunc(self, ag):
+        with pytest.raises(NameError, match=r"The .* attribute returns a "
+                           "multidimensional array. In order to sort it, "):
+            ag.sort("positions")
+
+    def test_sort_position(self, ag):
+        ref = [6, 5, 4, 3, 2, 1, 0]
+        agsort = ag.sort("positions", keyfunc=lambda x: x[:, 1])
+        assert np.array_equal(ref, agsort.ix)

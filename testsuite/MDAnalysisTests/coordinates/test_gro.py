@@ -20,13 +20,15 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from io import StringIO
+
 import MDAnalysis as mda
 import numpy as np
 from MDAnalysis.coordinates.GRO import GROReader, GROWriter
 from MDAnalysis.transformations import translate
 from MDAnalysisTests import make_Universe
 from MDAnalysisTests.coordinates.base import (
-    BaseReference, BaseReaderTest, BaseWriterTest, BaseTimestepTest,
+    BaseReference, BaseReaderTest, BaseWriterTest,
 )
 from MDAnalysisTests.coordinates.reference import RefAdK
 from MDAnalysisTests.datafiles import (
@@ -37,6 +39,7 @@ from MDAnalysisTests.datafiles import (
     GRO_large,
     two_water_gro_multiframe,
     GRO_huge_box,
+    PDB_closed,
 )
 from numpy.testing import (
     assert_almost_equal,
@@ -477,26 +480,6 @@ class TestGrowriterReindex(object):
                 line = grofile.readline()
             assert line.startswith('    2CL      CL    1')
 
-class TestGROTimestep(BaseTimestepTest):
-    Timestep = mda.coordinates.GRO.Timestep
-    name = "GRO"
-    has_box = True
-    set_box = True
-    unitcell = np.array([10., 11., 12.,
-                         0., 0., 0.,
-                         0., 0., 0.])
-    uni_args = (GRO,)
-
-    def test_unitcell_set2(self, ts):
-        box = np.array([80.017, 80.017, 80.017, 60.00, 60.00, 90.00],
-                       dtype=np.float32)
-
-        ref = np.array([80.00515747, 80.00515747, 56.57218552,  # v1x, v2y, v3z
-                        0., 0.,  # v1y v1z
-                        0., 0.,  # v2x v2y
-                        40.00257874, 40.00257874], dtype=np.float32)  # v3x, v3y
-        ts.dimensions = box
-        assert_almost_equal(ts._unitcell, ref, decimal=2)
 
 def test_multiframe_gro():
     u = mda.Universe(two_water_gro_multiframe)
@@ -505,8 +488,44 @@ def test_multiframe_gro():
     assert len(u.trajectory) == 1
     assert_equal(u.dimensions, np.array([100, 100, 100, 90, 90, 90], dtype=np.float32))
 
+
 def test_huge_box_gro():
     u = mda.Universe(GRO_huge_box)
 
     assert_equal(u.dimensions, np.array([4.e+05, 4.e+05, 4.e+05, 90, 90, 90],
                                         dtype=np.float32))
+
+
+gro_no_dims = """\
+Single Atom no dims GRO
+1
+    1SOL     OW    1   1.000   1.000   1.000
+"""
+
+
+@pytest.mark.parametrize('dims', [1, 2, 4, 5, 6, 7, 8])
+def test_bad_box(dims):
+    cell = '   '.join([str(float(i)) for i in range(dims)])
+    grofile = gro_no_dims + cell
+
+    errmsg = "GRO unitcell has neither 3 nor 9 entries."
+    with pytest.raises(ValueError, match=errmsg):
+        u = mda.Universe(StringIO(grofile), format='gro')
+
+
+def test_gro_empty_box_write_read(tmpdir):
+    # Issue #3305 - ensure that read/write deals with None dimensions the same
+    u = mda.Universe(PDB_closed)
+
+    # Check lack of dimensions
+    assert u.dimensions is None
+
+    with tmpdir.as_cwd():
+        wmsg = " setting unit cell to zeroed box"
+        with pytest.warns(UserWarning, match=wmsg):
+            u.atoms.write('test.gro')
+
+        wmsg = "treating as missing unit cell"
+        with pytest.warns(UserWarning, match=wmsg):
+            u2 = mda.Universe('test.gro')
+        assert u2.dimensions is None

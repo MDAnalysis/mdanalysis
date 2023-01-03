@@ -1,1 +1,1 @@
-.. automodule:: MDAnalysis.analysis.hbonds.hbond_autocorrel
+.. automodule:: MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel
