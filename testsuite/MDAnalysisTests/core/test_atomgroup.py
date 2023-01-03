@@ -23,6 +23,7 @@
 from glob import glob
 import itertools
 from os import path
+import pickle
 
 import numpy as np
 
@@ -1789,3 +1790,17 @@ class TestAtomGroupSort(object):
         ref = [6, 5, 4, 3, 2, 1, 0]
         agsort = ag.sort("positions", keyfunc=lambda x: x[:, 1])
         assert np.array_equal(ref, agsort.ix)
+
+
+class TestAtomGroupPickle(object):
+    """Test AtomGroup pickling support."""
+
+    @pytest.fixture()
+    def universe(self):
+        return mda.Universe(PSF, DCD)
+
+    @pytest.mark.parametrize("selection", ("name CA", "segid 4AKE"))
+    def test_atomgroup_pickle(self, universe, selection):
+        sel = universe.select_atoms(selection)
+        atm = pickle.loads(pickle.dumps(sel))
+        assert_almost_equal(sel.positions, atm.positions)
