@@ -13,13 +13,16 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay
+??/??/?? IAlibay, pgbarletta
 
  * 2.5.0
 
 Fixes
 
 Enhancements
+
+* Add pickling support for Atom, Residue, Segment, ResidueGroup 
+    and SegmentGroup. (PR #3953)
 
 Changes
 
