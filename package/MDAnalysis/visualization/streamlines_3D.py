@@ -472,12 +472,14 @@ def generate_streamlines_3d(topology_file_path, trajectory_file_path, grid_spaci
                                                                                               start_frame, end_frame)
     #step 4: per process work using the above grid data split
     pool = multiprocessing.Pool(num_cores)
-    for sub_dictionary_of_cube_data in list_dictionaries_for_cores:
-        pool.apply_async(per_core_work, args=(
-            start_frame_coord_array, end_frame_coord_array, sub_dictionary_of_cube_data, MDA_selection, start_frame,
-            end_frame), callback=log_result_to_parent)
-    pool.close()
-    pool.join()
+    try:
+        for sub_dictionary_of_cube_data in list_dictionaries_for_cores:
+            pool.apply_async(per_core_work, args=(
+                start_frame_coord_array, end_frame_coord_array, sub_dictionary_of_cube_data, MDA_selection, start_frame,
+                end_frame), callback=log_result_to_parent)
+    finally:
+        pool.close()
+        pool.join()
     #so, at this stage the parent process now has a single dictionary with all the cube objects updated from all
     # available cores
     #the 3D streamplot (i.e, mayavi flow() function) will require separate 3D np arrays for dx,dy,dz
