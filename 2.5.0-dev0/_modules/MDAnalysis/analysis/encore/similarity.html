@@ -1,25 +1,45 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>MDAnalysis.analysis.encore.similarity &mdash; MDAnalysis 2.5.0-dev0 documentation</title>
-      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../../../_static/mdanalysis-logo.ico"/>
+  
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
         <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-        <script src="../../../../_static/jquery.js"></script>
-        <script src="../../../../_static/underscore.js"></script>
-        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../../_static/doctools.js"></script>
         <script src="../../../../_static/sphinx_highlight.js"></script>
         <script src="../../../../_static/js/versions.js"></script>
-    <script src="../../../../_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 2.5.0-dev0 documentation"
           href="../../../../_static/opensearch.xml"/>
@@ -27,17 +47,33 @@
     <link rel="search" title="Search" href="../../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-            <a href="../../../../index.html">
-            <img src="../../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> MDAnalysis
+          
+
+          
           </a>
+
+          
+            
+            
               <div class="version">
                 2.5.0-dev0
               </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -45,7 +81,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/topology.html">2. The topology system</a></li>
@@ -75,30 +122,69 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/references.html">17. References</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../index.html">MDAnalysis</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../../index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">MDAnalysis.analysis.encore.similarity</li>
+    
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.analysis.encore.similarity</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <h1>Source code for MDAnalysis.analysis.encore.similarity</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
 <span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
@@ -306,7 +392,7 @@
 
 
 <div class="viewcode-block" id="discrete_kullback_leibler_divergence"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.discrete_kullback_leibler_divergence">[docs]</a><span class="k">def</span> <span class="nf">discrete_kullback_leibler_divergence</span><span class="p">(</span><span class="n">pA</span><span class="p">,</span> <span class="n">pB</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Kullback-Leibler divergence between discrete probability distribution.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Kullback-Leibler divergence between discrete probability distribution.</span>
 <span class="sd">    Notice that since this measure is not symmetric ::</span>
 <span class="sd">    :math:`d_{KL}(p_A,p_B) != d_{KL}(p_B,p_A)`</span>
 
@@ -331,7 +417,7 @@
 
 <span class="c1"># discrete dJS</span>
 <div class="viewcode-block" id="discrete_jensen_shannon_divergence"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.discrete_jensen_shannon_divergence">[docs]</a><span class="k">def</span> <span class="nf">discrete_jensen_shannon_divergence</span><span class="p">(</span><span class="n">pA</span><span class="p">,</span> <span class="n">pB</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Jensen-Shannon divergence between discrete probability distributions.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Jensen-Shannon divergence between discrete probability distributions.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -357,7 +443,7 @@
                                  <span class="n">sigma2</span><span class="p">,</span>
                                  <span class="n">x1</span><span class="p">,</span>
                                  <span class="n">x2</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the harmonic ensemble similarity measure</span>
 <span class="sd">    as defined in :cite:p:`b-Tiberti2015`.</span>
 
@@ -405,7 +491,7 @@
 
 <div class="viewcode-block" id="clustering_ensemble_similarity"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.clustering_ensemble_similarity">[docs]</a><span class="k">def</span> <span class="nf">clustering_ensemble_similarity</span><span class="p">(</span><span class="n">cc</span><span class="p">,</span> <span class="n">ens1</span><span class="p">,</span> <span class="n">ens1_id</span><span class="p">,</span> <span class="n">ens2</span><span class="p">,</span> <span class="n">ens2_id</span><span class="p">,</span>
                                    <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Clustering ensemble similarity: calculate the probability densities from</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Clustering ensemble similarity: calculate the probability densities from</span>
 <span class="sd">     the clusters and calculate discrete Jensen-Shannon divergence.</span>
 
 <span class="sd">    Parameters</span>
@@ -457,7 +543,7 @@
 
 <div class="viewcode-block" id="cumulative_clustering_ensemble_similarity"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.cumulative_clustering_ensemble_similarity">[docs]</a><span class="k">def</span> <span class="nf">cumulative_clustering_ensemble_similarity</span><span class="p">(</span><span class="n">cc</span><span class="p">,</span> <span class="n">ens1_id</span><span class="p">,</span> <span class="n">ens2_id</span><span class="p">,</span>
                                               <span class="n">ens1_id_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ens2_id_min</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate clustering ensemble similarity between joined ensembles.</span>
 <span class="sd">    This means that, after clustering has been performed, some ensembles are</span>
 <span class="sd">    merged and the dJS is calculated between the probability distributions of</span>
@@ -513,7 +599,7 @@
 
 <div class="viewcode-block" id="gen_kde_pdfs"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.gen_kde_pdfs">[docs]</a><span class="k">def</span> <span class="nf">gen_kde_pdfs</span><span class="p">(</span><span class="n">embedded_space</span><span class="p">,</span> <span class="n">ensemble_assignment</span><span class="p">,</span> <span class="n">nensembles</span><span class="p">,</span>
                  <span class="n">nsamples</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate Kernel Density Estimates (KDE) from embedded spaces and</span>
 <span class="sd">    elaborate the coordinates for later use.</span>
 
@@ -575,7 +661,7 @@
 <div class="viewcode-block" id="dimred_ensemble_similarity"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.dimred_ensemble_similarity">[docs]</a><span class="k">def</span> <span class="nf">dimred_ensemble_similarity</span><span class="p">(</span><span class="n">kde1</span><span class="p">,</span> <span class="n">resamples1</span><span class="p">,</span> <span class="n">kde2</span><span class="p">,</span> <span class="n">resamples2</span><span class="p">,</span>
                                <span class="n">ln_P1_exp_P1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ln_P2_exp_P2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                <span class="n">ln_P1P2_exp_P1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ln_P1P2_exp_P2</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the Jensen-Shannon divergence according the Dimensionality</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the Jensen-Shannon divergence according the Dimensionality</span>
 <span class="sd">    reduction method.</span>
 
 <span class="sd">    In this case, we have continuous probability densities, this we need to</span>
@@ -661,7 +747,7 @@
 
 <div class="viewcode-block" id="cumulative_gen_kde_pdfs"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.cumulative_gen_kde_pdfs">[docs]</a><span class="k">def</span> <span class="nf">cumulative_gen_kde_pdfs</span><span class="p">(</span><span class="n">embedded_space</span><span class="p">,</span> <span class="n">ensemble_assignment</span><span class="p">,</span> <span class="n">nensembles</span><span class="p">,</span>
                             <span class="n">nsamples</span><span class="p">,</span> <span class="n">ens_id_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ens_id_max</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate Kernel Density Estimates (KDE) from embedded spaces and</span>
 <span class="sd">    elaborate the coordinates for later use. However, consider more than</span>
 <span class="sd">    one ensemble as the space on which the KDE will be generated. In</span>
@@ -735,7 +821,7 @@
 
 <div class="viewcode-block" id="write_output"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.write_output">[docs]</a><span class="k">def</span> <span class="nf">write_output</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">base_fname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
                  <span class="n">extension</span><span class="o">=</span><span class="s2">&quot;dat&quot;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Write output matrix with a nice format, to stdout and optionally a file.</span>
 
 <span class="sd">    Parameters</span>
@@ -770,7 +856,7 @@
 <div class="viewcode-block" id="prepare_ensembles_for_convergence_increasing_window"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.prepare_ensembles_for_convergence_increasing_window">[docs]</a><span class="k">def</span> <span class="nf">prepare_ensembles_for_convergence_increasing_window</span><span class="p">(</span><span class="n">ensemble</span><span class="p">,</span>
                                                         <span class="n">window_size</span><span class="p">,</span>
                                                         <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate ensembles to be fed to ces_convergence or dres_convergence</span>
 <span class="sd">    from a single ensemble. Basically, the different slices the algorithm</span>
 <span class="sd">    needs are generated here.</span>
@@ -829,7 +915,7 @@
         <span class="n">estimate_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">bootstrapping_samples</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
         <span class="n">calc_diagonal</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculates the Harmonic Ensemble Similarity (HES) between ensembles.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculates the Harmonic Ensemble Similarity (HES) between ensembles.</span>
 
 <span class="sd">    The HES is calculated with the symmetrized version of Kullback-Leibler</span>
 <span class="sd">    divergence as described in :cite:p:`b-Tiberti2015`.</span>
@@ -1067,7 +1153,7 @@
         <span class="n">ncores</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">calc_diagonal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">allow_collapsed_result</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    Calculates the Clustering Ensemble Similarity (CES) between ensembles</span>
 <span class="sd">    using the Jensen-Shannon divergence as described in</span>
@@ -1334,7 +1420,7 @@
          <span class="n">ncores</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
          <span class="n">calc_diagonal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
          <span class="n">allow_collapsed_result</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    Calculates the Dimensional Reduction Ensemble Similarity (DRES) between</span>
 <span class="sd">    ensembles using the Jensen-Shannon divergence as described in</span>
@@ -1600,7 +1686,7 @@
                         <span class="n">damping</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
                         <span class="n">add_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
                     <span class="n">ncores</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Use the CES to evaluate the convergence of the ensemble/trajectory.</span>
 <span class="sd">    CES will be calculated between the whole trajectory contained in an</span>
 <span class="sd">    ensemble and windows of such trajectory of increasing sizes, so that</span>
@@ -1705,7 +1791,7 @@
                             <span class="p">),</span>
                      <span class="n">nsamples</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
                      <span class="n">ncores</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Use the DRES to evaluate the convergence of the ensemble/trajectory.</span>
 <span class="sd">    DRES will be calculated between the whole trajectory contained in an</span>
 <span class="sd">    ensemble and windows of such trajectory of increasing sizes, so that</span>
@@ -1816,16 +1902,18 @@
 </pre></div>
 
            </div>
+           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
-  </div>
+    <p>
+        &#169; Copyright 2005-2023, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.
 
-  
+    </p>
+  </div>
  
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
@@ -1838,7 +1926,9 @@
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
   <script>
     var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
@@ -1858,11 +1948,18 @@
         </dl>
 
     </div>
-</div><script>
+</div>
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

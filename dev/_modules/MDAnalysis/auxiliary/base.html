@@ -1,25 +1,45 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>MDAnalysis.auxiliary.base &mdash; MDAnalysis 2.5.0-dev0 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script src="../../../_static/js/versions.js"></script>
-    <script src="../../../_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 2.5.0-dev0 documentation"
           href="../../../_static/opensearch.xml"/>
@@ -27,17 +47,33 @@
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-            <a href="../../../index.html">
-            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> MDAnalysis
+          
+
+          
           </a>
+
+          
+            
+            
               <div class="version">
                 2.5.0-dev0
               </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -45,7 +81,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
@@ -75,30 +122,69 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">MDAnalysis</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">MDAnalysis.auxiliary.base</li>
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.auxiliary.base</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <h1>Source code for MDAnalysis.auxiliary.base</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
 <span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
@@ -171,7 +257,7 @@
 
 
 <div class="viewcode-block" id="AuxStep"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxStep">[docs]</a><span class="k">class</span> <span class="nc">AuxStep</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base class for auxiliary timesteps.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for auxiliary timesteps.</span>
 
 <span class="sd">    Stores the auxiliary data for the current auxiliary step. On creation,</span>
 <span class="sd">    ``step`` is set to -1.</span>
@@ -229,7 +315,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Time in ps of current auxiliary step (as float).</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Time in ps of current auxiliary step (as float).</span>
 
 <span class="sd">        Read from the set of auxiliary data read each step if time selection</span>
 <span class="sd">        is enabled and a valid ``time_selector`` is specified; otherwise</span>
@@ -247,7 +333,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Auxiliary values of interest for the current step (as ndarray).</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Auxiliary values of interest for the current step (as ndarray).</span>
 
 <span class="sd">        Read from the full set of data read for each step if data selection is</span>
 <span class="sd">        enabled and a valid ``data_selector`` is specified; otherwise</span>
@@ -260,7 +346,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_time_selector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; &#39;Key&#39; to select time from the full set of data read in each step.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; &#39;Key&#39; to select time from the full set of data read in each step.</span>
 
 <span class="sd">        Will be passed to ``_select_time()``, defined separately for each</span>
 <span class="sd">        auxiliary format, when returning the time of the current step.</span>
@@ -294,7 +380,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_data_selector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; &#39;Key&#39; to select values of interest from full set of auxiliary data.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; &#39;Key&#39; to select values of interest from full set of auxiliary data.</span>
 <span class="sd">        These are the values that will be stored in ``data`` (and</span>
 <span class="sd">        ``frame_data`` and ``frame_rep``).</span>
 
@@ -330,7 +416,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_data_selector_</span> <span class="o">=</span> <span class="n">new</span>
 
     <span class="k">def</span> <span class="nf">_empty_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Create an &#39;empty&#39; ``data``-like placeholder.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Create an &#39;empty&#39; ``data``-like placeholder.</span>
 
 <span class="sd">        Returns an ndarray in the format of ``data`` with all values set to</span>
 <span class="sd">        np.nan; to use at the &#39;representative value&#39; when no auxiliary steps</span>
@@ -346,7 +432,7 @@
 
 
 <div class="viewcode-block" id="AuxReader"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader">[docs]</a><span class="k">class</span> <span class="nc">AuxReader</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">_AuxReaderMeta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Base class for auxiliary readers.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Base class for auxiliary readers.</span>
 
 <span class="sd">    Allows iteration over a set of data from a trajectory, additional</span>
 <span class="sd">    (&#39;auxiliary&#39;) to the regular positions/velocities/etc. This auxiliary</span>
@@ -428,36 +514,36 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Copy not implemented for AuxReader&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Number of steps in auxiliary data. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Number of steps in auxiliary data. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span>
 
 <div class="viewcode-block" id="AuxReader.next"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader.next">[docs]</a>    <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Move to next step of auxiliary data. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Move to next step of auxiliary data. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_step</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Move to next step of auxiliary data. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Move to next step of auxiliary data. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Iterate over all auxiliary steps. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Iterate over all auxiliary steps. &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_restart</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="nf">_restart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Reset back to start; calling next() should read first step. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reset back to start; calling next() should read first step. &quot;&quot;&quot;</span>
         <span class="c1"># Overwrite as appropriate</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 
 <div class="viewcode-block" id="AuxReader.rewind"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader.rewind">[docs]</a>    <span class="k">def</span> <span class="nf">rewind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return to and read first step. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return to and read first step. &quot;&quot;&quot;</span>
         <span class="c1"># Overwrite as appropriate</span>
         <span class="c1">#  could also use _go_to_step(0)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_restart</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_step</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="nf">_read_next_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Move to next step and update auxstep.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Move to next step and update auxstep.</span>
 
 <span class="sd">        Should return the AuxStep instance corresponding to the next step.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -466,7 +552,7 @@
             <span class="s2">&quot;BUG: Override _read_next_step() in auxiliary reader!&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="AuxReader.update_ts"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader.update_ts">[docs]</a>    <span class="k">def</span> <span class="nf">update_ts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Read auxiliary steps corresponding to and update the trajectory</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Read auxiliary steps corresponding to and update the trajectory</span>
 <span class="sd">        timestep *ts*.</span>
 
 <span class="sd">        Calls :meth:`read_ts`, then updates *ts* with the representative value.</span>
@@ -503,7 +589,7 @@
         <span class="k">return</span> <span class="n">ts</span></div>
 
 <div class="viewcode-block" id="AuxReader.read_ts"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader.read_ts">[docs]</a>    <span class="k">def</span> <span class="nf">read_ts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Read auxiliary steps corresponding to the trajectory timestep *ts*.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Read auxiliary steps corresponding to the trajectory timestep *ts*.</span>
 
 <span class="sd">        Read the auxiliary steps &#39;assigned&#39; to *ts* (the steps that are within</span>
 <span class="sd">        ``ts.dt/2`` of of the trajectory timestep/frame - ie. closer to *ts*</span>
@@ -556,7 +642,7 @@
                          <span class="n">aux_spec</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                          <span class="nb">format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                          <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Attaches the data specified in `aux_spec` to the `coord_parent`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Attaches the data specified in `aux_spec` to the `coord_parent`</span>
 
 <span class="sd">        This method is called from within</span>
 <span class="sd">        :meth:`MDAnalysis.coordinates.base.ReaderBase.add_auxiliary()`.</span>
@@ -644,7 +730,7 @@
                                   <span class="s2">&quot;in auxiliary reader!&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="AuxReader.step_to_frame"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader.step_to_frame">[docs]</a>    <span class="k">def</span> <span class="nf">step_to_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">return_time_diff</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Calculate closest trajectory frame for auxiliary step *step*.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Calculate closest trajectory frame for auxiliary step *step*.</span>
 
 <span class="sd">        Calculated given dt, time and frame from *ts*::</span>
 
@@ -694,7 +780,7 @@
             <span class="k">return</span> <span class="n">frame_index</span><span class="p">,</span> <span class="n">time_diff</span></div>
 
 <div class="viewcode-block" id="AuxReader.move_to_ts"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader.move_to_ts">[docs]</a>    <span class="k">def</span> <span class="nf">move_to_ts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Position auxiliary reader just before trajectory timestep *ts*.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Position auxiliary reader just before trajectory timestep *ts*.</span>
 
 <span class="sd">        Calling ``next()`` should read the first auxiliary step &#39;assigned&#39; to</span>
 <span class="sd">        the trajectory timestep *ts* or, if no auxiliary steps are</span>
@@ -726,7 +812,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_go_to_step</span><span class="p">(</span><span class="n">step</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="AuxReader.next_nonempty_frame"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader.next_nonempty_frame">[docs]</a>    <span class="k">def</span> <span class="nf">next_nonempty_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Find the next trajectory frame for which a representative auxiliary</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Find the next trajectory frame for which a representative auxiliary</span>
 <span class="sd">        value can be calculated.</span>
 
 <span class="sd">        That is, the next trajectory frame to which one or more auxiliary steps</span>
@@ -763,7 +849,7 @@
         <span class="k">return</span> <span class="kc">None</span></div>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return the AuxStep corresponding to the *i*-th auxiliary step(s)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return the AuxStep corresponding to the *i*-th auxiliary step(s)</span>
 <span class="sd">        (0-based). Negative numbers are counted from the end.</span>
 
 <span class="sd">        *i* may be an integer (in which case the corresponding AuxStep is</span>
@@ -826,7 +912,7 @@
             <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_go_to_step</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_go_to_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Move to and read i-th auxiliary step. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Move to and read i-th auxiliary step. &quot;&quot;&quot;</span>
         <span class="c1"># Need to define in each auxiliary reader</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
             <span class="s2">&quot;BUG: Override _go_to_step() in auxiliary reader!&quot;</span><span class="p">)</span>
@@ -835,7 +921,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">frame_data</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">def</span> <span class="nf">_add_step_to_frame_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts_time</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Update ``frame_data`` with values for the current step.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Update ``frame_data`` with values for the current step.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -847,7 +933,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">frame_data</span><span class="p">[</span><span class="n">time_diff</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">data</span>
 
 <div class="viewcode-block" id="AuxReader.calc_representative"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader.calc_representative">[docs]</a>    <span class="k">def</span> <span class="nf">calc_representative</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Calculate representative auxiliary value(s) from the data in</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Calculate representative auxiliary value(s) from the data in</span>
 <span class="sd">        *frame_data*.</span>
 
 <span class="sd">        Currently implemented options for calculating representative value are:</span>
@@ -918,7 +1004,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">n_steps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Total number of steps in the auxiliary data. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Total number of steps in the auxiliary data. &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_steps</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
@@ -926,7 +1012,7 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_steps</span>
 
 <div class="viewcode-block" id="AuxReader.step_to_time"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader.step_to_time">[docs]</a>    <span class="k">def</span> <span class="nf">step_to_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return time of auxiliary step *i*.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return time of auxiliary step *i*.</span>
 
 <span class="sd">        Calculated using ``dt`` and ``initial_time`` if ``constant_dt`` is True;</span>
 <span class="sd">        otherwise from the list of times as read from the auxiliary data for</span>
@@ -961,7 +1047,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">represent_ts_as</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Method by which &#39;representative&#39; timestep values of auxiliary data</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Method by which &#39;representative&#39; timestep values of auxiliary data</span>
 <span class="sd">        will be calculated.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_represent_ts_as</span>
@@ -979,7 +1065,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 <div class="viewcode-block" id="AuxReader.get_description"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader.get_description">[docs]</a>    <span class="k">def</span> <span class="nf">get_description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get the values of the parameters necessary for replicating the</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the values of the parameters necessary for replicating the</span>
 <span class="sd">        AuxReader.</span>
 
 <span class="sd">        An AuxReader can be duplicated using</span>
@@ -1012,29 +1098,29 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Number of the current auxiliary step (as stored in ``auxstep``;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of the current auxiliary step (as stored in ``auxstep``;</span>
 <span class="sd">        0-based).&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">step</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Time of current auxiliary step (as stored in ``auxstep``; in ps)&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Time of current auxiliary step (as stored in ``auxstep``; in ps)&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">time</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Change in time between auxiliary steps (as stored in ``auxstep``;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Change in time between auxiliary steps (as stored in ``auxstep``;</span>
 <span class="sd">        in ps)&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_dt</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">initial_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Time of first auxiliary step (as stored in ``auxstep``; in ps)&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Time of first auxiliary step (as stored in ``auxstep``; in ps)&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_initial_time</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">time_selector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Key to select &#39;time&#39; value from the full set of data read for each step.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Key to select &#39;time&#39; value from the full set of data read for each step.</span>
 <span class="sd">        As stored in ``austep``.</span>
 
 <span class="sd">        Type differs between auxiliary formats, depending how the data for each</span>
@@ -1060,7 +1146,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">data_selector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Key(s) to select auxiliary data values of interest from the full set</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Key(s) to select auxiliary data values of interest from the full set</span>
 <span class="sd">        of data read for each step (as stored in ``auxstep``).</span>
 
 <span class="sd">        Type differs between auxiliary formats, depending how the data for each</span>
@@ -1079,7 +1165,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">constant_dt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; True if ``dt`` is constant throughout the auxiliary (as stored in</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; True if ``dt`` is constant throughout the auxiliary (as stored in</span>
 <span class="sd">        ``auxstep``) &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_constant_dt</span>
 
@@ -1089,7 +1175,7 @@
 
 
 <div class="viewcode-block" id="AuxFileReader"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxFileReader">[docs]</a><span class="k">class</span> <span class="nc">AuxFileReader</span><span class="p">(</span><span class="n">AuxReader</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Base class for auxiliary readers that read from file.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Base class for auxiliary readers that read from file.</span>
 
 <span class="sd">    Extends AuxReader with attributes and methods particular to reading</span>
 <span class="sd">    auxiliary data from an open file, for use when auxiliary files may be too</span>
@@ -1119,26 +1205,26 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">AuxFileReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="AuxFileReader.close"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxFileReader.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Close *auxfile*. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Close *auxfile*. &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxfile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">auxfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">auxfile</span> <span class="o">=</span> <span class="kc">None</span></div>
 
     <span class="k">def</span> <span class="nf">_restart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Reposition to just before first step. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reposition to just before first step. &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">auxfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 
     <span class="k">def</span> <span class="nf">_reopen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Close and then reopen *auxfile*. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Close and then reopen *auxfile*. &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">auxfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">auxfile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_auxdata</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 
     <span class="k">def</span> <span class="nf">_go_to_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Move to and read i-th auxiliary step.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Move to and read i-th auxiliary step.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1166,16 +1252,18 @@
 </pre></div>
 
            </div>
+           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
-  </div>
+    <p>
+        &#169; Copyright 2005-2023, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.
 
-  
+    </p>
+  </div>
  
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
@@ -1188,7 +1276,9 @@
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
   <script>
     var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
@@ -1208,11 +1298,18 @@
         </dl>
 
     </div>
-</div><script>
+</div>
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

@@ -1,25 +1,45 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>MDAnalysis.core.universe &mdash; MDAnalysis 2.5.0-dev0 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script src="../../../_static/js/versions.js"></script>
-    <script src="../../../_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 2.5.0-dev0 documentation"
           href="../../../_static/opensearch.xml"/>
@@ -27,17 +47,33 @@
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-            <a href="../../../index.html">
-            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> MDAnalysis
+          
+
+          
           </a>
+
+          
+            
+            
               <div class="version">
                 2.5.0-dev0
               </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -45,7 +81,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
@@ -75,30 +122,69 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">MDAnalysis</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">MDAnalysis.core.universe</li>
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.core.universe</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <h1>Source code for MDAnalysis.core.universe</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-</span>
 <span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
@@ -277,7 +363,7 @@
 
 
 <div class="viewcode-block" id="Universe"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe">[docs]</a><span class="k">class</span> <span class="nc">Universe</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;The MDAnalysis Universe contains all the information describing the system.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The MDAnalysis Universe contains all the information describing the system.</span>
 
 <span class="sd">    The system always requires a *topology file* --- in the simplest case just</span>
 <span class="sd">    a list of atoms. This can be a CHARMM/NAMD PSF file or a simple coordinate</span>
@@ -476,7 +562,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">guess_bonds</span><span class="p">(</span><span class="n">vdwradii</span><span class="o">=</span><span class="n">vdwradii</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Universe.copy"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return an independent copy of this Universe&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return an independent copy of this Universe&quot;&quot;&quot;</span>
         <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
         <span class="n">new</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">new</span></div>
@@ -485,7 +571,7 @@
     <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="n">n_residues</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_segments</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
               <span class="n">atom_resindex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">residue_segindex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
               <span class="n">trajectory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">velocities</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">forces</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create a blank Universe</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a blank Universe</span>
 
 <span class="sd">        Useful for building a Universe without requiring existing files,</span>
 <span class="sd">        for example for system building.</span>
@@ -589,7 +675,7 @@
 
 <div class="viewcode-block" id="Universe.load_new"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.load_new">[docs]</a>    <span class="k">def</span> <span class="nf">load_new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">in_memory_step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Load coordinates from `filename`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load coordinates from `filename`.</span>
 
 <span class="sd">        The file format of `filename` is autodetected from the file name suffix</span>
 <span class="sd">        or can be explicitly set with the `format` keyword. A sequence of files</span>
@@ -684,7 +770,7 @@
 
 <div class="viewcode-block" id="Universe.transfer_to_memory"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.transfer_to_memory">[docs]</a>    <span class="k">def</span> <span class="nf">transfer_to_memory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                            <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Transfer the trajectory to in memory representation.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Transfer the trajectory to in memory representation.</span>
 
 <span class="sd">        Replaces the current trajectory reader object with one of type</span>
 <span class="sd">        :class:`MDAnalysis.coordinates.memory.MemoryReader` to support in-place</span>
@@ -754,7 +840,7 @@
     <span class="c1"># In python3-only we&#39;d be able to explicitly define this function with</span>
     <span class="c1"># something like (sel, *othersels, updating=False, **selgroups)</span>
 <div class="viewcode-block" id="Universe.select_atoms"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.select_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Select atoms.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select atoms.</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
@@ -764,7 +850,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Bonds between atoms.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Bonds between atoms.</span>
 
 <span class="sd">        :meta private:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -772,7 +858,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">angles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Angles between atoms.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Angles between atoms.</span>
 
 <span class="sd">        :meta private:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -780,7 +866,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Dihedral angles between atoms.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Dihedral angles between atoms.</span>
 
 <span class="sd">        :meta private:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -788,7 +874,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">impropers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Improper dihedral angles between atoms.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Improper dihedral angles between atoms.</span>
 
 <span class="sd">        :meta private:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -804,7 +890,7 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_unpickle_U</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">traj</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Special method used by __reduce__ to deserialise a Universe&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Special method used by __reduce__ to deserialise a Universe&quot;&quot;&quot;</span>
         <span class="c1">#  top is a Topology obj at this point, but Universe can handle that.</span>
         <span class="n">u</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">top</span><span class="p">)</span>
         <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">=</span> <span class="n">traj</span>
@@ -821,7 +907,7 @@
     <span class="c1"># Properties</span>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Current dimensions of the unitcell.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Current dimensions of the unitcell.</span>
 
 <span class="sd">        :meta private:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -829,7 +915,7 @@
 
     <span class="nd">@dimensions</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set dimensions if the Timestep allows this</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set dimensions if the Timestep allows this</span>
 
 <span class="sd">        .. versionadded:: 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -838,7 +924,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">coord</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Reference to current timestep and coordinates of universe.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reference to current timestep and coordinates of universe.</span>
 
 <span class="sd">        The raw trajectory coordinates are :attr:`Universe.coord.positions`,</span>
 <span class="sd">        represented as a :class:`numpy.float32` array.</span>
@@ -858,12 +944,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;keyword arguments used to initialize this universe&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;keyword arguments used to initialize this universe&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Reference to trajectory reader object containing trajectory data.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reference to trajectory reader object containing trajectory data.</span>
 
 <span class="sd">        :meta private:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -878,7 +964,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span> <span class="o">=</span> <span class="n">value</span>
 
 <div class="viewcode-block" id="Universe.add_TopologyAttr"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_TopologyAttr">[docs]</a>    <span class="k">def</span> <span class="nf">add_TopologyAttr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topologyattr</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add a new topology attribute to the Universe</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a new topology attribute to the Universe</span>
 
 <span class="sd">        Adding a TopologyAttribute to the Universe makes it available to</span>
 <span class="sd">        all AtomGroups etc throughout the Universe.</span>
@@ -939,7 +1025,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_process_attr</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Universe.del_TopologyAttr"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.del_TopologyAttr">[docs]</a>    <span class="k">def</span> <span class="nf">del_TopologyAttr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topologyattr</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Remove a topology attribute from the Universe</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove a topology attribute from the Universe</span>
 
 <span class="sd">        Removing a TopologyAttribute from the Universe makes it unavailable to</span>
 <span class="sd">        all AtomGroups etc throughout the Universe.</span>
@@ -995,7 +1081,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_unprocess_attr</span><span class="p">(</span><span class="n">topattr</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_process_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Squeeze a topologyattr for its information</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Squeeze a topologyattr for its information</span>
 
 <span class="sd">        Grabs:</span>
 <span class="sd">         - Group properties (attribute access)</span>
@@ -1029,7 +1115,7 @@
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">funcname</span><span class="p">,</span> <span class="n">meth</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_unprocess_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Undo all the stuff in _process_attr.</span>
 
 <span class="sd">        If the topology attribute is not present, nothing happens</span>
@@ -1047,7 +1133,7 @@
                 <span class="nb">delattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_class_bases</span><span class="p">[</span><span class="bp">cls</span><span class="p">],</span> <span class="n">funcname</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Universe.add_Residue"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_Residue">[docs]</a>    <span class="k">def</span> <span class="nf">add_Residue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">segment</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">attrs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add a new Residue to this Universe</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a new Residue to this Universe</span>
 
 <span class="sd">        New Residues will not contain any Atoms, but can be assigned to Atoms</span>
 <span class="sd">        as per usual.  If the Universe contains multiple segments, this must</span>
@@ -1097,7 +1183,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">residx</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="Universe.add_Segment"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_Segment">[docs]</a>    <span class="k">def</span> <span class="nf">add_Segment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">attrs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add a new Segment to this Universe</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a new Segment to this Universe</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1124,7 +1210,7 @@
 
     <span class="k">def</span> <span class="nf">_add_topology_objects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">object_type</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                            <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add new TopologyObjects to this Universe</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add new TopologyObjects to this Universe</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1181,7 +1267,7 @@
         <span class="n">attr</span><span class="o">.</span><span class="n">_add_bonds</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="n">types</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="n">guessed</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Universe.add_bonds"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_bonds">[docs]</a>    <span class="k">def</span> <span class="nf">add_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add new Bonds to this Universe.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add new Bonds to this Universe.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1234,7 +1320,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;_valid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;fragindices&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Universe.add_angles"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_angles">[docs]</a>    <span class="k">def</span> <span class="nf">add_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add new Angles to this Universe.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add new Angles to this Universe.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1255,7 +1341,7 @@
                                  <span class="n">guessed</span><span class="o">=</span><span class="n">guessed</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Universe.add_dihedrals"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_dihedrals">[docs]</a>    <span class="k">def</span> <span class="nf">add_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add new Dihedrals to this Universe.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add new Dihedrals to this Universe.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1277,7 +1363,7 @@
                                  <span class="n">guessed</span><span class="o">=</span><span class="n">guessed</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Universe.add_impropers"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_impropers">[docs]</a>    <span class="k">def</span> <span class="nf">add_impropers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add new Impropers to this Universe.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add new Impropers to this Universe.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1299,7 +1385,7 @@
                                  <span class="n">guessed</span><span class="o">=</span><span class="n">guessed</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_delete_topology_objects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">object_type</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Delete TopologyObjects from this Universe</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete TopologyObjects from this Universe</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1331,7 +1417,7 @@
         <span class="n">attr</span><span class="o">.</span><span class="n">_delete_bonds</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Universe.delete_bonds"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.delete_bonds">[docs]</a>    <span class="k">def</span> <span class="nf">delete_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Delete Bonds from this Universe.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete Bonds from this Universe.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1374,7 +1460,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;_valid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;fragindices&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Universe.delete_angles"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.delete_angles">[docs]</a>    <span class="k">def</span> <span class="nf">delete_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Delete Angles from this Universe.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete Angles from this Universe.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1390,7 +1476,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_delete_topology_objects</span><span class="p">(</span><span class="s1">&#39;angles&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Universe.delete_dihedrals"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.delete_dihedrals">[docs]</a>    <span class="k">def</span> <span class="nf">delete_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Delete Dihedrals from this Universe.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete Dihedrals from this Universe.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1406,7 +1492,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_delete_topology_objects</span><span class="p">(</span><span class="s1">&#39;dihedrals&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Universe.delete_impropers"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.delete_impropers">[docs]</a>    <span class="k">def</span> <span class="nf">delete_impropers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Delete Impropers from this Universe.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete Impropers from this Universe.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1433,7 +1519,7 @@
     <span class="nd">@property</span>
     <span class="nd">@cached</span><span class="p">(</span><span class="s1">&#39;fragments&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_fragdict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        .. versionadded:: 0.9.0</span>
 <span class="sd">        .. versionchanged:: 0.16.0</span>
 <span class="sd">           Fragment atoms are sorted by their index, and framgents are sorted</span>
@@ -1463,7 +1549,7 @@
     <span class="k">def</span> <span class="nf">from_smiles</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">smiles</span><span class="p">,</span> <span class="n">sanitize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">addHs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                     <span class="n">generate_coordinates</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">numConfs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                     <span class="n">rdkit_kwargs</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create a Universe from a SMILES string with rdkit</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a Universe from a SMILES string with rdkit</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1543,7 +1629,7 @@
 
 
 <div class="viewcode-block" id="Merge"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Merge">[docs]</a><span class="k">def</span> <span class="nf">Merge</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Create a new new :class:`Universe` from one or more</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a new new :class:`Universe` from one or more</span>
 <span class="sd">    :class:`~MDAnalysis.core.groups.AtomGroup` instances.</span>
 
 <span class="sd">    Parameters</span>
@@ -1734,16 +1820,18 @@
 </pre></div>
 
            </div>
+           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
-  </div>
+    <p>
+        &#169; Copyright 2005-2023, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.
 
-  
+    </p>
+  </div>
  
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
@@ -1756,7 +1844,9 @@
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
   <script>
     var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
@@ -1776,11 +1866,18 @@
         </dl>
 
     </div>
-</div><script>
+</div>
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

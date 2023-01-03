@@ -1,26 +1,46 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>4.2.6.1.3. Dimensionality reduction &mdash; MDAnalysis 2.5.0-dev0 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script src="../../../_static/js/versions.js"></script>
-    <script src="../../../_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 2.5.0-dev0 documentation"
           href="../../../_static/opensearch.xml"/>
@@ -30,17 +50,33 @@
     <link rel="prev" title="4.2.6.1.2. Clustering" href="clustering.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-            <a href="../../../index.html">
-            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> MDAnalysis
+          
+
+          
           </a>
+
+          
+            
+            
               <div class="version">
                 2.5.0-dev0
               </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -48,7 +84,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../topology.html">2. The topology system</a></li>
@@ -109,40 +156,83 @@
 <li class="toctree-l1"><a class="reference internal" href="../../references.html">17. References</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">MDAnalysis</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="../../analysis_modules.html"><span class="section-number">4. </span>Analysis modules</a></li>
-          <li class="breadcrumb-item"><a href="../encore.html"><span class="section-number">4.2.6. </span>ENCORE Ensemble Similarity Calculations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a></li>
-      <li class="breadcrumb-item active"><span class="section-number">4.2.6.1.3. </span>Dimensionality reduction</li>
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../analysis_modules.html"><span class="section-number">4. </span>Analysis modules</a> &raquo;</li>
+        
+          <li><a href="../encore.html"><span class="section-number">4.2.6. </span>ENCORE Ensemble Similarity Calculations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a> &raquo;</li>
+        
+      <li><span class="section-number">4.2.6.1.3. </span>Dimensionality reduction</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
+          
             <a href="../../../_sources/documentation_pages/analysis/encore/dimensionality_reduction.rst.txt" rel="nofollow"> View page source</a>
+          
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <section id="module-MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality">
-<span id="dimensionality-reduction"></span><h1><span class="section-number">4.2.6.1.3. </span>Dimensionality reduction<a class="headerlink" href="#module-MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality" title="Permalink to this heading"></a></h1>
+<span id="dimensionality-reduction"></span><h1><span class="section-number">4.2.6.1.3. </span>Dimensionality reduction<a class="headerlink" href="#module-MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality" title="Permalink to this heading">¶</a></h1>
 <section id="dimensionality-reduction-frontend-mdanalysis-analysis-encore-dimensionality-reduction-reduce-dimensionality">
-<h2><span class="section-number">4.2.6.1.3.1. </span>dimensionality reduction frontend — <a class="reference internal" href="#module-MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality" title="MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality</span></code></a><a class="headerlink" href="#dimensionality-reduction-frontend-mdanalysis-analysis-encore-dimensionality-reduction-reduce-dimensionality" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.2.6.1.3.1. </span>dimensionality reduction frontend — <a class="reference internal" href="#module-MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality" title="MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality</span></code></a><a class="headerlink" href="#dimensionality-reduction-frontend-mdanalysis-analysis-encore-dimensionality-reduction-reduce-dimensionality" title="Permalink to this heading">¶</a></h2>
 <p>The module defines a function serving as front-end for various dimensionality
 reduction algorithms, wrapping them to allow them to be used interchangably.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Author</dt>
+<dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Matteo Tiberti, Wouter Boomsma, Tone Bengtsen</p>
 </dd>
 </dl>
@@ -152,7 +242,7 @@ reduction algorithms, wrapping them to allow them to be used interchangably.</p>
 </section>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality.reduce_dimensionality">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality.</span></span><span class="sig-name descname"><span class="pre">reduce_dimensionality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ensembles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method=&lt;MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.StochasticProximityEmbeddingNative</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select='name</span> <span class="pre">CA'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_matrix=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_collapsed_result=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncores=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/dimensionality_reduction/reduce_dimensionality.html#reduce_dimensionality"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality.reduce_dimensionality" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality.</span></span><span class="sig-name descname"><span class="pre">reduce_dimensionality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ensembles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method=&lt;MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.StochasticProximityEmbeddingNative</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select='name</span> <span class="pre">CA'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_matrix=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_collapsed_result=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncores=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/dimensionality_reduction/reduce_dimensionality.html#reduce_dimensionality"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality.reduce_dimensionality" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reduce dimensions in frames from one or more ensembles, using one or more
 dimensionality reduction methods. The function optionally takes
 pre-calculated distances matrices as an argument. Note that not all
@@ -160,7 +250,7 @@ dimensionality reduction procedure can work directly on distance matrices,
 so the distance matrices might be ignored for particular choices of
 method.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ensembles</strong> (<em>MDAnalysis.Universe</em><em>, or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><em>list thereof</em>) – The function takes either a single Universe object, a list of Universe
 objects or a list of lists of Universe objects. If given a single
@@ -187,7 +277,7 @@ into just the value (default = True).</p></li>
 <li><p><strong>ncores</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – Maximum number of cores to be used (default is 1).</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><em>list of coordinate arrays in the reduced dimensions (or potentially a single</em></p></li>
 <li><p><em>coordinate array object if allow_collapsed_result is set to True)</em></p></li>
@@ -241,12 +331,12 @@ of the default dimensionality reduction method</p>
 </dd></dl>
 
 <span class="target" id="module-MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod"></span><section id="dimensionality-reduction-frontend-mdanalysis-analysis-encore-clustering-dimensionalityreductionmethod">
-<h2><span class="section-number">4.2.6.1.3.2. </span>dimensionality reduction frontend — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.clustering.DimensionalityReductionMethod</span></code><a class="headerlink" href="#dimensionality-reduction-frontend-mdanalysis-analysis-encore-clustering-dimensionalityreductionmethod" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.2.6.1.3.2. </span>dimensionality reduction frontend — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.clustering.DimensionalityReductionMethod</span></code><a class="headerlink" href="#dimensionality-reduction-frontend-mdanalysis-analysis-encore-clustering-dimensionalityreductionmethod" title="Permalink to this heading">¶</a></h2>
 <p>The module defines classes for interfacing to various dimensionality reduction
 algorithms. One has been implemented natively, and will always be available,
 while others are available only if scikit-learn is installed</p>
 <dl class="field-list simple">
-<dt class="field-odd">Author</dt>
+<dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Matteo Tiberti, Wouter Boomsma, Tone Bengtsen</p>
 </dd>
 </dl>
@@ -256,17 +346,17 @@ while others are available only if scikit-learn is installed</p>
 </section>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.DimensionalityReductionMethod">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.</span></span><span class="sig-name descname"><span class="pre">DimensionalityReductionMethod</span></span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/dimensionality_reduction/DimensionalityReductionMethod.html#DimensionalityReductionMethod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.DimensionalityReductionMethod" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.</span></span><span class="sig-name descname"><span class="pre">DimensionalityReductionMethod</span></span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/dimensionality_reduction/DimensionalityReductionMethod.html#DimensionalityReductionMethod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.DimensionalityReductionMethod" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for any Dimensionality Reduction Method</p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.PrincipalComponentAnalysis">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.</span></span><span class="sig-name descname"><span class="pre">PrincipalComponentAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/dimensionality_reduction/DimensionalityReductionMethod.html#PrincipalComponentAnalysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.PrincipalComponentAnalysis" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.</span></span><span class="sig-name descname"><span class="pre">PrincipalComponentAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/dimensionality_reduction/DimensionalityReductionMethod.html#PrincipalComponentAnalysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.PrincipalComponentAnalysis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interface to the PCA dimensionality reduction method implemented in
 sklearn.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>dimension</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Number of dimensions to which the conformational space will be
 reduced to (default is 3).</p>
 </dd>
@@ -275,10 +365,10 @@ reduced to (default is 3).</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.StochasticProximityEmbeddingNative">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.</span></span><span class="sig-name descname"><span class="pre">StochasticProximityEmbeddingNative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_lam</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_lam</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncycle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nstep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/dimensionality_reduction/DimensionalityReductionMethod.html#StochasticProximityEmbeddingNative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.StochasticProximityEmbeddingNative" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.</span></span><span class="sig-name descname"><span class="pre">StochasticProximityEmbeddingNative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_lam</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_lam</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncycle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nstep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/dimensionality_reduction/DimensionalityReductionMethod.html#StochasticProximityEmbeddingNative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.StochasticProximityEmbeddingNative" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interface to the natively implemented Affinity propagation procedure.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dimension</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Number of dimensions to which the conformational space will be
 reduced to (default is 3).</p></li>
@@ -293,19 +383,19 @@ cycle, lambda is updated.</p></li>
 </dd></dl>
 
 <section id="dimensionality-reduction-algorithms">
-<h2><span class="section-number">4.2.6.1.3.3. </span>Dimensionality reduction algorithms<a class="headerlink" href="#dimensionality-reduction-algorithms" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.2.6.1.3.3. </span>Dimensionality reduction algorithms<a class="headerlink" href="#dimensionality-reduction-algorithms" title="Permalink to this heading">¶</a></h2>
 <p>The following dimensionality reduction algorithms are always natively
 available:</p>
 <span class="target" id="module-MDAnalysis.analysis.encore.dimensionality_reduction.stochasticproxembed"></span><p>Cython wrapper for the C implementation of the Stochastic Proximity Embedding
 dimensionality reduction algorithm.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Author</dt>
+<dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Matteo Tiberti, Wouter Boomsma</p>
 </dd>
 </dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.dimensionality_reduction.stochasticproxembed.StochasticProximityEmbedding">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.dimensionality_reduction.stochasticproxembed.</span></span><span class="sig-name descname"><span class="pre">StochasticProximityEmbedding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">rco</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">maxlam</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">minlam</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">ncycle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">nstep</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">stressfreq</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.encore.dimensionality_reduction.stochasticproxembed.StochasticProximityEmbedding" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.dimensionality_reduction.stochasticproxembed.</span></span><span class="sig-name descname"><span class="pre">StochasticProximityEmbedding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">rco</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">maxlam</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double</span> <span class="pre">minlam</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">ncycle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">nstep</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">stressfreq</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.encore.dimensionality_reduction.stochasticproxembed.StochasticProximityEmbedding" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stochastic proximity embedding dimensionality reduction algorithm. The
 algorithm implemented here is described in this paper:</p>
 <p>Dmitrii N. Rassokhin, Dimitris K. Agrafiotis
@@ -313,7 +403,7 @@ A modified update rule for stochastic proximity embedding
 Journal of Molecular Graphics and Modelling 22 (2003) 133–140</p>
 <p>This class is a Cython wrapper for a C implementation (see spe.c)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>s</strong> (<em>encore.utils.TriangularMatrix object</em>) – Triangular matrix containing the distance values for each pair of
 elements in the original space.</p></li>
@@ -326,7 +416,7 @@ of each cycle, the lerning parameter lambda is updated.</p></li>
 <li><p><strong>nstep</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – number of coordinate update steps for each cycle</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>space</strong> (<em>(float, numpy.array)</em>) – float is the final stress obtained; the array are the coordinates of
 the elements in the embedded space</p></li>
@@ -342,19 +432,22 @@ the elements in the embedded space</p></li>
 
 
            </div>
+           
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="clustering.html" class="btn btn-neutral float-left" title="4.2.6.1.2. Clustering" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="confdistmatrix.html" class="btn btn-neutral float-right" title="4.2.6.1.4. Distance Matrix calculation — MDAnalysis.analysis.ensemble.confdistmatrix" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="clustering.html" class="btn btn-neutral float-left" title="4.2.6.1.2. Clustering" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
-  </div>
+    <p>
+        &#169; Copyright 2005-2023, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.
 
-  
+    </p>
+  </div>
  
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
@@ -367,7 +460,9 @@ the elements in the embedded space</p></li>
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
   <script>
     var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
@@ -387,11 +482,18 @@ the elements in the embedded space</p></li>
         </dl>
 
     </div>
-</div><script>
+</div>
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

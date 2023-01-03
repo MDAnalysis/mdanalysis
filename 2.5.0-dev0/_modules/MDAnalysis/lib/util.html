@@ -1,25 +1,45 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>MDAnalysis.lib.util &mdash; MDAnalysis 2.5.0-dev0 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script src="../../../_static/js/versions.js"></script>
-    <script src="../../../_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 2.5.0-dev0 documentation"
           href="../../../_static/opensearch.xml"/>
@@ -27,17 +47,33 @@
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-            <a href="../../../index.html">
-            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> MDAnalysis
+          
+
+          
           </a>
+
+          
+            
+            
               <div class="version">
                 2.5.0-dev0
               </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -45,7 +81,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
@@ -75,30 +122,69 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">MDAnalysis</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">MDAnalysis.lib.util</li>
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.lib.util</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <h1>Source code for MDAnalysis.lib.util</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
 <span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
@@ -341,7 +427,7 @@
 
 
 <div class="viewcode-block" id="filename"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.filename">[docs]</a><span class="k">def</span> <span class="nf">filename</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return a new name that has suffix attached; replaces other extensions.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a new name that has suffix attached; replaces other extensions.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -375,7 +461,7 @@
 
 <div class="viewcode-block" id="openany"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.openany">[docs]</a><span class="nd">@contextmanager</span>
 <span class="k">def</span> <span class="nf">openany</span><span class="p">(</span><span class="n">datasource</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rt&#39;</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Context manager for :func:`anyopen`.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Context manager for :func:`anyopen`.</span>
 
 <span class="sd">    Open the `datasource` and close it when the context of the :keyword:`with`</span>
 <span class="sd">    statement exits.</span>
@@ -425,7 +511,7 @@
 
 
 <div class="viewcode-block" id="anyopen"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.anyopen">[docs]</a><span class="k">def</span> <span class="nf">anyopen</span><span class="p">(</span><span class="n">datasource</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rt&#39;</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Open datasource (gzipped, bzipped, uncompressed) and return a stream.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Open datasource (gzipped, bzipped, uncompressed) and return a stream.</span>
 
 <span class="sd">    `datasource` can be a filename or a stream (see :func:`isstream`). By</span>
 <span class="sd">    default, a stream is reset to its start if possible (via</span>
@@ -530,7 +616,7 @@
 
 
 <span class="k">def</span> <span class="nf">_get_stream</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">openfunction</span><span class="o">=</span><span class="nb">open</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return open stream if *filename* can be opened with *openfunction* or else ``None``.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return open stream if *filename* can be opened with *openfunction* or else ``None``.&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">stream</span> <span class="o">=</span> <span class="n">openfunction</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">IOError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">)</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
@@ -557,7 +643,7 @@
 
 
 <div class="viewcode-block" id="greedy_splitext"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.greedy_splitext">[docs]</a><span class="k">def</span> <span class="nf">greedy_splitext</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Split extension in path *p* at the left-most separator.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Split extension in path *p* at the left-most separator.</span>
 
 <span class="sd">    Extensions are taken to be separated from the filename with the</span>
 <span class="sd">    separator :data:`os.extsep` (as used by :func:`os.path.splitext`).</span>
@@ -591,12 +677,12 @@
 
 
 <div class="viewcode-block" id="hasmethod"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.hasmethod">[docs]</a><span class="k">def</span> <span class="nf">hasmethod</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return ``True`` if object *obj* contains the method *m*.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return ``True`` if object *obj* contains the method *m*.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span> <span class="ow">and</span> <span class="n">callable</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">m</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="isstream"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.isstream">[docs]</a><span class="k">def</span> <span class="nf">isstream</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Detect if `obj` is a stream.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Detect if `obj` is a stream.</span>
 
 <span class="sd">    We consider anything a stream that has the methods</span>
 
@@ -640,7 +726,7 @@
 
 
 <div class="viewcode-block" id="which"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.which">[docs]</a><span class="k">def</span> <span class="nf">which</span><span class="p">(</span><span class="n">program</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Determine full path of executable `program` on :envvar:`PATH`.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Determine full path of executable `program` on :envvar:`PATH`.</span>
 
 <span class="sd">    (Jay at http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python)</span>
 
@@ -674,7 +760,7 @@
 
 <div class="viewcode-block" id="NamedStream"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream">[docs]</a><span class="nd">@functools</span><span class="o">.</span><span class="n">total_ordering</span>
 <span class="k">class</span> <span class="nc">NamedStream</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">IOBase</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Stream that also provides a (fake) name.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stream that also provides a (fake) name.</span>
 
 <span class="sd">    By wrapping a stream `stream` in this class, it can be passed to</span>
 <span class="sd">    code that uses inspection of the filename to make decisions. For</span>
@@ -730,7 +816,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stream</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">close</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize the :class:`NamedStream` from a `stream` and give it a `name`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the :class:`NamedStream` from a `stream` and give it a `name`.</span>
 
 <span class="sd">        The constructor attempts to rewind the stream to the beginning unless</span>
 <span class="sd">        the keyword `reset` is set to ``False``. If rewinding fails, a</span>
@@ -773,7 +859,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 
 <div class="viewcode-block" id="NamedStream.reset"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Move to the beginning of the stream&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Move to the beginning of the stream&quot;&quot;&quot;</span>
         <span class="c1"># try to rewind</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>  <span class="c1"># e.g. StreamIO</span>
@@ -818,7 +904,7 @@
     <span class="c1"># override more IOBase methods, as these are provided by IOBase and are not</span>
     <span class="c1"># caught with __getattr__ (ugly...)</span>
 <div class="viewcode-block" id="NamedStream.close"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Reset or close the stream.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset or close the stream.</span>
 
 <span class="sd">        If :attr:`NamedStream.close_stream` is set to ``False`` (the default)</span>
 <span class="sd">        then this method will *not close the stream* and only :meth:`reset` it.</span>
@@ -843,19 +929,19 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Always closes the stream.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Always closes the stream.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">closed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;``True`` if stream is closed.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;``True`` if stream is closed.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">closed</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">closed</span>
 
 <div class="viewcode-block" id="NamedStream.seek"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.seek">[docs]</a>    <span class="k">def</span> <span class="nf">seek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">whence</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">SEEK_SET</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Change the stream position to the given byte `offset` .</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Change the stream position to the given byte `offset` .</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -884,14 +970,14 @@
             <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">whence</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="NamedStream.tell"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.tell">[docs]</a>    <span class="k">def</span> <span class="nf">tell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the current stream position.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the current stream position.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="NamedStream.truncate"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.truncate">[docs]</a>    <span class="k">def</span> <span class="nf">truncate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">size</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Truncate the stream&#39;s size to `size`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Truncate the stream&#39;s size to `size`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -906,7 +992,7 @@
             <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">truncate</span><span class="p">(</span><span class="o">*</span><span class="n">size</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="NamedStream.seekable"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.seekable">[docs]</a>    <span class="k">def</span> <span class="nf">seekable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return ``True`` if the stream supports random access.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return ``True`` if the stream supports random access.</span>
 
 <span class="sd">        If ``False``, :meth:`seek`, :meth:`tell` and :meth:`truncate` will</span>
 <span class="sd">        raise :exc:`IOError`.</span>
@@ -918,7 +1004,7 @@
             <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">seekable</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="NamedStream.readable"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.readable">[docs]</a>    <span class="k">def</span> <span class="nf">readable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return ``True`` if the stream can be read from.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return ``True`` if the stream can be read from.</span>
 
 <span class="sd">        If ``False``, :meth:`read` will raise :exc:`IOError`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -928,7 +1014,7 @@
             <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">readable</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="NamedStream.writable"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.writable">[docs]</a>    <span class="k">def</span> <span class="nf">writable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return ``True`` if the stream can be written to.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return ``True`` if the stream can be written to.</span>
 
 <span class="sd">        If ``False``, :meth:`write` will raise :exc:`IOError`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -938,7 +1024,7 @@
             <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">writable</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="NamedStream.flush"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.flush">[docs]</a>    <span class="k">def</span> <span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Flush the write buffers of the stream if applicable.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Flush the write buffers of the stream if applicable.</span>
 
 <span class="sd">        This does nothing for read-only and non-blocking streams. For file</span>
 <span class="sd">        objects one also needs to call :func:`os.fsync` to write contents to</span>
@@ -950,7 +1036,7 @@
             <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="NamedStream.fileno"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.fileno">[docs]</a>    <span class="k">def</span> <span class="nf">fileno</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the underlying file descriptor (an integer) of the stream if it exists.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the underlying file descriptor (an integer) of the stream if it exists.</span>
 
 <span class="sd">        An :exc:`IOError` is raised if the IO object does not use a file descriptor.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1006,7 +1092,7 @@
 
 
 <div class="viewcode-block" id="realpath"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.realpath">[docs]</a><span class="k">def</span> <span class="nf">realpath</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Join all args and return the real path, rooted at ``/``.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Join all args and return the real path, rooted at ``/``.</span>
 
 <span class="sd">    Expands &#39;~&#39;, &#39;~user&#39;, and environment variables such as :envvar:`$HOME`.</span>
 
@@ -1018,7 +1104,7 @@
 
 
 <div class="viewcode-block" id="get_ext"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.get_ext">[docs]</a><span class="k">def</span> <span class="nf">get_ext</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return the lower-cased extension of `filename` without a leading dot.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the lower-cased extension of `filename` without a leading dot.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1038,7 +1124,7 @@
 
 
 <div class="viewcode-block" id="check_compressed_format"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.check_compressed_format">[docs]</a><span class="k">def</span> <span class="nf">check_compressed_format</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">ext</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Check if this is a supported gzipped/bzip2ed file format and return UPPERCASE format.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if this is a supported gzipped/bzip2ed file format and return UPPERCASE format.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1072,7 +1158,7 @@
 
 
 <div class="viewcode-block" id="format_from_filename_extension"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.format_from_filename_extension">[docs]</a><span class="k">def</span> <span class="nf">format_from_filename_extension</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Guess file format from the file extension.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Guess file format from the file extension.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1099,7 +1185,7 @@
 
 
 <div class="viewcode-block" id="guess_format"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.guess_format">[docs]</a><span class="k">def</span> <span class="nf">guess_format</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return the format of `filename`</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the format of `filename`</span>
 
 <span class="sd">    The current heuristic simply looks at the filename extension and can work</span>
 <span class="sd">    around compressed format extensions.</span>
@@ -1146,7 +1232,7 @@
 
 
 <div class="viewcode-block" id="iterable"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.iterable">[docs]</a><span class="k">def</span> <span class="nf">iterable</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns ``True`` if `obj` can be iterated over and is *not* a  string</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns ``True`` if `obj` can be iterated over and is *not* a  string</span>
 <span class="sd">    nor a :class:`NamedStream`&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">NamedStream</span><span class="p">)):</span>
         <span class="k">return</span> <span class="kc">False</span>  <span class="c1"># avoid iterating over characters of a string</span>
@@ -1161,7 +1247,7 @@
 
 
 <div class="viewcode-block" id="asiterable"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.asiterable">[docs]</a><span class="k">def</span> <span class="nf">asiterable</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns `obj` so that it can be iterated over.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns `obj` so that it can be iterated over.</span>
 
 <span class="sd">    A string is *not* detected as and iterable and is wrapped into a :class:`list`</span>
 <span class="sd">    with a single element.</span>
@@ -1186,12 +1272,12 @@
 
 
 <span class="k">def</span> <span class="nf">strip</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Convert `s` to a string and return it white-space stripped.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert `s` to a string and return it white-space stripped.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
 
 <span class="k">class</span> <span class="nc">FixedcolumnEntry</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Represent an entry at specific fixed columns.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represent an entry at specific fixed columns.</span>
 
 <span class="sd">    Reads from line[start:stop] and converts according to</span>
 <span class="sd">    typespecifier.</span>
@@ -1199,7 +1285,7 @@
     <span class="n">convertors</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;I&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="n">strip</span><span class="p">}</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">typespecifier</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        start : int</span>
@@ -1218,7 +1304,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">convertor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convertors</span><span class="p">[</span><span class="n">typespecifier</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read the entry from `line` and convert to appropriate type.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read the entry from `line` and convert to appropriate type.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">convertor</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">])</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
@@ -1227,7 +1313,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Length of the field in columns (stop - start)&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Length of the field in columns (stop - start)&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1235,7 +1321,7 @@
 
 
 <div class="viewcode-block" id="FORTRANReader"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.FORTRANReader">[docs]</a><span class="k">class</span> <span class="nc">FORTRANReader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;FORTRANReader provides a method to parse FORTRAN formatted lines in a file.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;FORTRANReader provides a method to parse FORTRAN formatted lines in a file.</span>
 
 <span class="sd">    The contents of lines in a file can be parsed according to FORTRAN format</span>
 <span class="sd">    edit descriptors (see `Fortran Formats`_ for the syntax).</span>
@@ -1252,7 +1338,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fmt</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set up the reader with the FORTRAN format string.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up the reader with the FORTRAN format string.</span>
 
 <span class="sd">        The string `fmt` should look like &#39;2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10&#39;.</span>
 
@@ -1285,7 +1371,7 @@
                 <span class="n">start</span> <span class="o">+=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;totallength&#39;</span><span class="p">]</span>
 
 <div class="viewcode-block" id="FORTRANReader.read"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.FORTRANReader.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parse `line` according to the format string and return list of values.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse `line` according to the format string and return list of values.</span>
 
 <span class="sd">        Values are converted to Python types according to the format specifier.</span>
 
@@ -1310,7 +1396,7 @@
         <span class="k">return</span> <span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="FORTRANReader.number_of_matches"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.FORTRANReader.number_of_matches">[docs]</a>    <span class="k">def</span> <span class="nf">number_of_matches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return how many format entries could be populated with legal values.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return how many format entries could be populated with legal values.&quot;&quot;&quot;</span>
         <span class="c1"># not optimal, I suppose...</span>
         <span class="n">matches</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="p">:</span>
@@ -1322,7 +1408,7 @@
         <span class="k">return</span> <span class="n">matches</span></div>
 
 <div class="viewcode-block" id="FORTRANReader.parse_FORTRAN_format"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.FORTRANReader.parse_FORTRAN_format">[docs]</a>    <span class="k">def</span> <span class="nf">parse_FORTRAN_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edit_descriptor</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parse the descriptor.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse the descriptor.</span>
 
 
 <span class="sd">        Parameters</span>
@@ -1371,7 +1457,7 @@
         <span class="k">return</span> <span class="n">d</span></div>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns number of entries.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns number of entries.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1379,7 +1465,7 @@
 
 
 <div class="viewcode-block" id="fixedwidth_bins"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.fixedwidth_bins">[docs]</a><span class="k">def</span> <span class="nf">fixedwidth_bins</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return bins of width `delta` that cover `xmin`, `xmax` (or a larger range).</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return bins of width `delta` that cover `xmin`, `xmax` (or a larger range).</span>
 
 <span class="sd">    The bin parameters are computed such that the bin size `delta` is</span>
 <span class="sd">    guaranteed. In order to achieve this, the range `[xmin, xmax]` can be</span>
@@ -1423,7 +1509,7 @@
     <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;Nbins&#39;</span><span class="p">:</span> <span class="n">N</span><span class="p">,</span> <span class="s1">&#39;delta&#39;</span><span class="p">:</span> <span class="n">_delta</span><span class="p">,</span> <span class="s1">&#39;min&#39;</span><span class="p">:</span> <span class="n">_xmin</span> <span class="o">-</span> <span class="n">dx</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">:</span> <span class="n">_xmax</span> <span class="o">+</span> <span class="n">dx</span><span class="p">}</span></div>
 
 <div class="viewcode-block" id="get_weights"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.get_weights">[docs]</a><span class="k">def</span> <span class="nf">get_weights</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Check that a `weights` argument is compatible with `atoms`.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check that a `weights` argument is compatible with `atoms`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1512,7 +1598,7 @@
 
 
 <div class="viewcode-block" id="convert_aa_code"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.convert_aa_code">[docs]</a><span class="k">def</span> <span class="nf">convert_aa_code</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Converts between 3-letter and 1-letter amino acid codes.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts between 3-letter and 1-letter amino acid codes.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1565,7 +1651,7 @@
 
 <span class="c1"># from GromacsWrapper cbook.IndexBuilder</span>
 <div class="viewcode-block" id="parse_residue"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.parse_residue">[docs]</a><span class="k">def</span> <span class="nf">parse_residue</span><span class="p">(</span><span class="n">residue</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Process residue string.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Process residue string.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1607,7 +1693,7 @@
 
 
 <div class="viewcode-block" id="conv_float"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.conv_float">[docs]</a><span class="k">def</span> <span class="nf">conv_float</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Convert an object `s` to float if possible.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert an object `s` to float if possible.</span>
 
 <span class="sd">    Function to be passed into :func:`map` or a list comprehension. If</span>
 <span class="sd">    the argument can be interpreted as a float it is converted,</span>
@@ -1627,7 +1713,7 @@
 
 
 <div class="viewcode-block" id="cached"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.cached">[docs]</a><span class="k">def</span> <span class="nf">cached</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">universe_validation</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Cache a property within a class.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Cache a property within a class.</span>
 
 <span class="sd">    Requires the Class to have a cache dict :attr:`_cache` and, with</span>
 <span class="sd">    `universe_validation`, a :attr:`universe` with a cache dict :attr:`_cache`.</span>
@@ -1700,7 +1786,7 @@
 
 
 <div class="viewcode-block" id="unique_rows"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.unique_rows">[docs]</a><span class="k">def</span> <span class="nf">unique_rows</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return the unique rows of an array.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the unique rows of an array.</span>
 
 <span class="sd">    Arguments</span>
 <span class="sd">    ---------</span>
@@ -1756,7 +1842,7 @@
 
 
 <div class="viewcode-block" id="blocks_of"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.blocks_of">[docs]</a><span class="k">def</span> <span class="nf">blocks_of</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Extract a view of ``(n, m)`` blocks along the diagonal of the array `a`.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract a view of ``(n, m)`` blocks along the diagonal of the array `a`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1827,7 +1913,7 @@
 
 
 <div class="viewcode-block" id="group_same_or_consecutive_integers"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.group_same_or_consecutive_integers">[docs]</a><span class="k">def</span> <span class="nf">group_same_or_consecutive_integers</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Split an array of integers into a list of same or consecutive</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Split an array of integers into a list of same or consecutive</span>
 <span class="sd">    sequences.</span>
 
 <span class="sd">    Parameters</span>
@@ -1847,7 +1933,7 @@
 
 
 <div class="viewcode-block" id="Namespace"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.Namespace">[docs]</a><span class="k">class</span> <span class="nc">Namespace</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Class to allow storing attributes in new namespace. &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to allow storing attributes in new namespace. &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="c1"># a.this causes a __getattr__ call for key = &#39;this&#39;</span>
@@ -1877,7 +1963,7 @@
 
 
 <div class="viewcode-block" id="ltruncate_int"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.ltruncate_int">[docs]</a><span class="k">def</span> <span class="nf">ltruncate_int</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ndigits</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Truncate an integer, retaining least significant digits</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Truncate an integer, retaining least significant digits</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1902,7 +1988,7 @@
 
 
 <div class="viewcode-block" id="flatten_dict"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.flatten_dict">[docs]</a><span class="k">def</span> <span class="nf">flatten_dict</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">parent_key</span><span class="o">=</span><span class="nb">tuple</span><span class="p">()):</span>
-    <span class="sd">&quot;&quot;&quot;Flatten a nested dict `d` into a shallow dict with tuples as keys.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Flatten a nested dict `d` into a shallow dict with tuples as keys.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1934,7 +2020,7 @@
 
 
 <div class="viewcode-block" id="static_variables"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.static_variables">[docs]</a><span class="k">def</span> <span class="nf">static_variables</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Decorator equipping functions or methods with static variables.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator equipping functions or methods with static variables.</span>
 
 <span class="sd">    Static variables are declared and initialized by supplying keyword arguments</span>
 <span class="sd">    and initial values to the decorator.</span>
@@ -1980,7 +2066,7 @@
 
 <div class="viewcode-block" id="warn_if_not_unique"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.warn_if_not_unique">[docs]</a><span class="nd">@static_variables</span><span class="p">(</span><span class="n">warned</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">warn_if_not_unique</span><span class="p">(</span><span class="n">groupmethod</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Decorator triggering a :class:`~MDAnalysis.exceptions.DuplicateWarning`</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator triggering a :class:`~MDAnalysis.exceptions.DuplicateWarning`</span>
 <span class="sd">    if the underlying group is not unique.</span>
 
 <span class="sd">    Assures that during execution of the decorated method only the first of</span>
@@ -2035,7 +2121,7 @@
 
 
 <div class="viewcode-block" id="check_coords"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.check_coords">[docs]</a><span class="k">def</span> <span class="nf">check_coords</span><span class="p">(</span><span class="o">*</span><span class="n">coord_names</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Decorator for automated coordinate array checking.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator for automated coordinate array checking.</span>
 
 <span class="sd">    This decorator is intended for use especially in</span>
 <span class="sd">    :mod:`MDAnalysis.lib.distances`.</span>
@@ -2270,7 +2356,7 @@
 
 
 <div class="viewcode-block" id="check_atomgroup_not_empty"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.check_atomgroup_not_empty">[docs]</a><span class="k">def</span> <span class="nf">check_atomgroup_not_empty</span><span class="p">(</span><span class="n">groupmethod</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Decorator triggering a ``ValueError`` if the underlying group is empty.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator triggering a ``ValueError`` if the underlying group is empty.</span>
 
 <span class="sd">    Avoids downstream errors in computing properties of empty atomgroups. </span>
 
@@ -2309,7 +2395,7 @@
 
 
 <div class="viewcode-block" id="_Deprecate"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util._Deprecate">[docs]</a><span class="k">class</span> <span class="nc">_Deprecate</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Decorator class to deprecate old functions.</span>
 
 <span class="sd">    Refer to `deprecate` for details.</span>
@@ -2334,7 +2420,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Decorator call.  Refer to ``decorate``.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -2366,7 +2452,7 @@
             <span class="n">warn_message</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">message</span>
 
         <span class="k">def</span> <span class="nf">newfunc</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot;This function is deprecated.&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;This function is deprecated.&quot;&quot;&quot;</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">warn_message</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
 
@@ -2384,10 +2470,10 @@
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="n">doc</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
-        <span class="n">deprecation_text</span> <span class="o">=</span> <span class="n">dedent_docstring</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span><span class="se">\n\n</span><span class="s2"></span>
-<span class="s2">        .. deprecated:: </span><span class="si">{0}</span><span class="s2"></span>
-<span class="s2">           </span><span class="si">{1}</span><span class="s2"></span>
-<span class="s2">           </span><span class="si">{2}</span><span class="s2"></span>
+        <span class="n">deprecation_text</span> <span class="o">=</span> <span class="n">dedent_docstring</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span><span class="se">\n\n</span>
+<span class="s2">        .. deprecated:: </span><span class="si">{0}</span>
+<span class="s2">           </span><span class="si">{1}</span>
+<span class="s2">           </span><span class="si">{2}</span>
 <span class="s2">        &quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">release</span><span class="p">,</span>
                    <span class="n">message</span> <span class="k">if</span> <span class="n">message</span> <span class="k">else</span> <span class="n">depdoc</span><span class="p">,</span>
                    <span class="n">remove_text</span><span class="p">))</span>
@@ -2405,7 +2491,7 @@
 
 
 <div class="viewcode-block" id="deprecate"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.deprecate">[docs]</a><span class="k">def</span> <span class="nf">deprecate</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Issues a DeprecationWarning, adds warning to `old_name`&#39;s</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Issues a DeprecationWarning, adds warning to `old_name`&#39;s</span>
 <span class="sd">    docstring, rebinds ``old_name.__name__`` and returns the new</span>
 <span class="sd">    function object.</span>
 
@@ -2502,7 +2588,7 @@
 
 
 <div class="viewcode-block" id="dedent_docstring"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.dedent_docstring">[docs]</a><span class="k">def</span> <span class="nf">dedent_docstring</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Dedent typical python doc string.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dedent typical python doc string.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -2531,7 +2617,7 @@
 
 
 <div class="viewcode-block" id="check_box"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.check_box">[docs]</a><span class="k">def</span> <span class="nf">check_box</span><span class="p">(</span><span class="n">box</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Take a box input and deduce what type of system it represents based on</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Take a box input and deduce what type of system it represents based on</span>
 <span class="sd">    the shape of the array and whether all angles are 90 degrees.</span>
 
 <span class="sd">    Parameters</span>
@@ -2587,7 +2673,7 @@
 
 
 <div class="viewcode-block" id="store_init_arguments"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.store_init_arguments">[docs]</a><span class="k">def</span> <span class="nf">store_init_arguments</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Decorator to store arguments passed to the init method of a class.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator to store arguments passed to the init method of a class.</span>
 
 <span class="sd">    Arguments are stored as a dictionary in ``cls._kwargs``.</span>
 
@@ -2626,16 +2712,18 @@
 </pre></div>
 
            </div>
+           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
-  </div>
+    <p>
+        &#169; Copyright 2005-2023, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.
 
-  
+    </p>
+  </div>
  
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
@@ -2648,7 +2736,9 @@
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
   <script>
     var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
@@ -2668,11 +2758,18 @@
         </dl>
 
     </div>
-</div><script>
+</div>
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

@@ -1,25 +1,45 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>MDAnalysis.analysis.psa &mdash; MDAnalysis 2.5.0-dev0 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script src="../../../_static/js/versions.js"></script>
-    <script src="../../../_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 2.5.0-dev0 documentation"
           href="../../../_static/opensearch.xml"/>
@@ -27,17 +47,33 @@
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-            <a href="../../../index.html">
-            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> MDAnalysis
+          
+
+          
           </a>
+
+          
+            
+            
               <div class="version">
                 2.5.0-dev0
               </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -45,7 +81,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
@@ -75,30 +122,69 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">MDAnalysis</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">MDAnalysis.analysis.psa</li>
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.analysis.psa</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <h1>Source code for MDAnalysis.analysis.psa</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
 <span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
@@ -335,7 +421,7 @@
 
 
 <div class="viewcode-block" id="get_path_metric_func"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.get_path_metric_func">[docs]</a><span class="k">def</span> <span class="nf">get_path_metric_func</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Selects a path metric function by name.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Selects a path metric function by name.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -358,12 +444,12 @@
         <span class="k">return</span> <span class="n">path_metrics</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
     <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">key</span><span class="p">:</span>
         <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Path metric &quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&quot; not found. Valid selections: &#39;</span>
-                  <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">path_metrics</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                  <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">path_metrics</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span></div>
 
 
 <div class="viewcode-block" id="sqnorm"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.sqnorm">[docs]</a><span class="k">def</span> <span class="nf">sqnorm</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Compute the sum of squares of elements along specified axes.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the sum of squares of elements along specified axes.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -385,7 +471,7 @@
 
 
 <div class="viewcode-block" id="get_msd_matrix"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.get_msd_matrix">[docs]</a><span class="k">def</span> <span class="nf">get_msd_matrix</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Generate the matrix of pairwise mean-squared deviations between paths.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Generate the matrix of pairwise mean-squared deviations between paths.</span>
 
 <span class="sd">    The MSDs between all pairs of points in `P` and `Q` are</span>
 <span class="sd">    calculated, each pair having a point from `P` and a point from</span>
@@ -422,7 +508,7 @@
 
 
 <span class="k">def</span> <span class="nf">reshaper</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Flatten path when appropriate to facilitate calculations</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Flatten path when appropriate to facilitate calculations</span>
 <span class="sd">    requiring two dimensional input.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -430,7 +516,7 @@
     <span class="k">return</span> <span class="n">path</span>
 
 <div class="viewcode-block" id="get_coord_axes"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.get_coord_axes">[docs]</a><span class="k">def</span> <span class="nf">get_coord_axes</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return the number of atoms and the axes corresponding to atoms</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the number of atoms and the axes corresponding to atoms</span>
 <span class="sd">    and coordinates for a given path.</span>
 
 <span class="sd">    The `path` is assumed to be a :class:`numpy.ndarray` where the 0th axis</span>
@@ -471,7 +557,7 @@
 
 
 <div class="viewcode-block" id="hausdorff"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.hausdorff">[docs]</a><span class="k">def</span> <span class="nf">hausdorff</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">Q</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the symmetric Hausdorff distance between two paths.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the symmetric Hausdorff distance between two paths.</span>
 
 <span class="sd">    The metric used is RMSD, as opposed to the more conventional L2</span>
 <span class="sd">    (Euclidean) norm, because this is convenient for i.e., comparing</span>
@@ -546,7 +632,7 @@
 
 
 <div class="viewcode-block" id="hausdorff_wavg"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.hausdorff_wavg">[docs]</a><span class="k">def</span> <span class="nf">hausdorff_wavg</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">Q</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the weighted average Hausdorff distance between two paths.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the weighted average Hausdorff distance between two paths.</span>
 
 <span class="sd">    *P* (*Q*) is a :class:`numpy.ndarray` of :math:`N_p` (:math:`N_q`) time</span>
 <span class="sd">    steps, :math:`N` atoms, and :math:`3N` coordinates (e.g.,</span>
@@ -603,7 +689,7 @@
 
 
 <div class="viewcode-block" id="hausdorff_avg"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.hausdorff_avg">[docs]</a><span class="k">def</span> <span class="nf">hausdorff_avg</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">Q</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the average Hausdorff distance between two paths.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the average Hausdorff distance between two paths.</span>
 
 <span class="sd">    *P* (*Q*) is a :class:`numpy.ndarray` of :math:`N_p` (:math:`N_q`) time</span>
 <span class="sd">    steps, :math:`N` atoms, and :math:`3N` coordinates (e.g.,</span>
@@ -658,7 +744,7 @@
 
 
 <div class="viewcode-block" id="hausdorff_neighbors"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.hausdorff_neighbors">[docs]</a><span class="k">def</span> <span class="nf">hausdorff_neighbors</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">Q</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Find the Hausdorff neighbors of two paths.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Find the Hausdorff neighbors of two paths.</span>
 
 <span class="sd">    *P* (*Q*) is a :class:`numpy.ndarray` of :math:`N_p` (:math:`N_q`) time</span>
 <span class="sd">    steps, :math:`N` atoms, and :math:`3N` coordinates (e.g.,</span>
@@ -701,7 +787,7 @@
 
 
 <div class="viewcode-block" id="discrete_frechet"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.discrete_frechet">[docs]</a><span class="k">def</span> <span class="nf">discrete_frechet</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">Q</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the discrete Fréchet distance between two paths.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the discrete Fréchet distance between two paths.</span>
 
 <span class="sd">    *P* (*Q*) is a :class:`numpy.ndarray` of :math:`N_p` (:math:`N_q`) time</span>
 <span class="sd">    steps, :math:`N` atoms, and :math:`3N` coordinates (e.g.,</span>
@@ -772,7 +858,7 @@
     <span class="n">ca</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">Np</span><span class="p">,</span> <span class="n">Nq</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">c</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Compute the coupling distance for two partial paths formed by *P* and</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the coupling distance for two partial paths formed by *P* and</span>
 <span class="sd">        *Q*, where both begin at frame 0 and end (inclusive) at the respective</span>
 <span class="sd">        frame indices :math:`i-1` and :math:`j-1`. The partial path of *P* (*Q*)</span>
 <span class="sd">        up to frame *i* (*j*) is formed by the slicing ``P[0:i]`` (``Q[0:j]``).</span>
@@ -810,7 +896,7 @@
 
 
 <div class="viewcode-block" id="dist_mat_to_vec"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.dist_mat_to_vec">[docs]</a><span class="k">def</span> <span class="nf">dist_mat_to_vec</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Convert distance matrix indices (in the upper triangle) to the index of</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert distance matrix indices (in the upper triangle) to the index of</span>
 <span class="sd">    the corresponding distance vector.</span>
 
 <span class="sd">    This is a convenience function to locate distance matrix elements (and the</span>
@@ -860,7 +946,7 @@
 
 
 <div class="viewcode-block" id="Path"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.Path">[docs]</a><span class="k">class</span> <span class="nc">Path</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Represent a path based on a :class:`~MDAnalysis.core.universe.Universe`.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represent a path based on a :class:`~MDAnalysis.core.universe.Universe`.</span>
 
 <span class="sd">    Pre-process a :class:`Universe` object: (1) fit the trajectory to a</span>
 <span class="sd">    reference structure, (2) convert fitted time series to a</span>
@@ -877,7 +963,7 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;name CA&#39;</span><span class="p">,</span>
                  <span class="n">path_select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">ref_frame</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Setting up trajectory alignment and fitted path generation.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Setting up trajectory alignment and fitted path generation.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -925,7 +1011,7 @@
 <div class="viewcode-block" id="Path.fit_to_reference"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.Path.fit_to_reference">[docs]</a>    <span class="k">def</span> <span class="nf">fit_to_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">postfix</span><span class="o">=</span><span class="s1">&#39;_fit&#39;</span><span class="p">,</span>
                          <span class="n">rmsdfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">targetdir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">curdir</span><span class="p">,</span>
                          <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Align each trajectory frame to the reference structure</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Align each trajectory frame to the reference structure</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -981,7 +1067,7 @@
         <span class="k">return</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">newtrj_name</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Path.to_path"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.Path.to_path">[docs]</a>    <span class="k">def</span> <span class="nf">to_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fitted</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Generates a coordinate time series from the fitted universe</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Generates a coordinate time series from the fitted universe</span>
 <span class="sd">        trajectory.</span>
 
 <span class="sd">        Given a selection of *N* atoms from *select*, the atomic positions for</span>
@@ -1035,7 +1121,7 @@
 <div class="viewcode-block" id="Path.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.Path.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">postfix</span><span class="o">=</span><span class="s1">&#39;_fit&#39;</span><span class="p">,</span> <span class="n">rmsdfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">targetdir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">curdir</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
             <span class="n">flat</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Generate a path from a trajectory and reference structure.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Generate a path from a trajectory and reference structure.</span>
 
 <span class="sd">        As part of the path generation, the trajectory can be superimposed</span>
 <span class="sd">        (&quot;aligned&quot;) to a reference structure if specified.</span>
@@ -1103,7 +1189,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">newtrj_name</span></div>
 
 <div class="viewcode-block" id="Path.get_num_atoms"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.Path.get_num_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">get_num_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the number of atoms used to construct the :class:`Path`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the number of atoms used to construct the :class:`Path`.</span>
 
 <span class="sd">        Must run :meth:`Path.to_path` prior to calling this method.</span>
 
@@ -1120,7 +1206,7 @@
 
 
 <div class="viewcode-block" id="PSAPair"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAPair">[docs]</a><span class="k">class</span> <span class="nc">PSAPair</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Generate nearest neighbor and Hausdorff pair information between a pair</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate nearest neighbor and Hausdorff pair information between a pair</span>
 <span class="sd">    of paths from an all-pairs comparison generated by :class:`PSA`.</span>
 
 <span class="sd">    The nearest neighbors for each path of a pair of paths is generated by</span>
@@ -1146,7 +1232,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">npaths</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set up a :class:`PSAPair` for a pair of paths that are part of a</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up a :class:`PSAPair` for a pair of paths that are part of a</span>
 <span class="sd">        :class:`PSA` comparison of *npaths* total paths.</span>
 
 <span class="sd">        Each unique pair of paths compared using :class:`PSA` is related by</span>
@@ -1187,7 +1273,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">hausdorff_pair</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;frames&#39;</span> <span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="s1">&#39;distance&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">_dvec_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Convert distance matrix indices (in the upper triangle) to the index</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert distance matrix indices (in the upper triangle) to the index</span>
 <span class="sd">        of the corresponding distance vector.</span>
 
 <span class="sd">        This is a convenience function to locate distance matrix elements (and</span>
@@ -1210,7 +1296,7 @@
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">npaths</span><span class="o">*</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="n">j</span> <span class="o">-</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
 
     <span class="k">def</span> <span class="nf">compute_nearest_neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span><span class="n">Q</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Generates Hausdorff nearest neighbor lists of *frames* (by index) and</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generates Hausdorff nearest neighbor lists of *frames* (by index) and</span>
 <span class="sd">        *distances* for *this* pair of paths corresponding to distance matrix</span>
 <span class="sd">        indices (*i*,*j*).</span>
 
@@ -1237,7 +1323,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">nearest_neighbors</span><span class="p">[</span><span class="s1">&#39;distances&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hn</span><span class="p">[</span><span class="s1">&#39;distances&#39;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">find_hausdorff_pair</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Find the Hausdorff pair (of frames) for *this* pair of paths.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Find the Hausdorff pair (of frames) for *this* pair of paths.</span>
 
 <span class="sd">        :meth:`PSAPair.find_hausdorff_pair` requires that</span>
 <span class="sd">        `:meth:`PSAPair.compute_nearest_neighbors` be called first to</span>
@@ -1264,7 +1350,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">hausdorff_pair</span><span class="p">[</span><span class="s1">&#39;distance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_nn_dist_Q</span>
 
     <span class="k">def</span> <span class="nf">get_nearest_neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">distances</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns the nearest neighbor frame indices, distances, or both, for</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the nearest neighbor frame indices, distances, or both, for</span>
 <span class="sd">        each path in *this* :class:`PSAPair`.</span>
 
 <span class="sd">        :meth:`PSAPair.get_nearest_neighbors` requires that the nearest</span>
@@ -1309,7 +1395,7 @@
                               <span class="s1">&#39; cannot both be set to False.&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_hausdorff_pair</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns the Hausdorff pair of frames indices, the Hausdorff distance,</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the Hausdorff pair of frames indices, the Hausdorff distance,</span>
 <span class="sd">        or both, for the paths in *this* :class:`PSAPair`.</span>
 
 <span class="sd">        :meth:`PSAPair.get_hausdorff_pair` requires that the Hausdorff pair</span>
@@ -1352,7 +1438,7 @@
 
 
 <div class="viewcode-block" id="PSAnalysis"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis">[docs]</a><span class="k">class</span> <span class="nc">PSAnalysis</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Perform Path Similarity Analysis (PSA) on a set of trajectories.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Perform Path Similarity Analysis (PSA) on a set of trajectories.</span>
 
 <span class="sd">    The analysis is performed with :meth:`PSAnalysis.run` and stores the result</span>
 <span class="sd">    in the :class:`numpy.ndarray` distance matrix :attr:`PSAnalysis.D`.</span>
@@ -1368,7 +1454,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universes</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;name CA&#39;</span><span class="p">,</span>
                  <span class="n">ref_frame</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">path_select</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">targetdir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">curdir</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Setting up Path Similarity Analysis.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Setting up Path Similarity Analysis.</span>
 
 <span class="sd">        The mutual similarity between all unique pairs of trajectories</span>
 <span class="sd">        are computed using a selected path metric.</span>
@@ -1484,7 +1570,7 @@
 
 <div class="viewcode-block" id="PSAnalysis.generate_paths"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.generate_paths">[docs]</a>    <span class="k">def</span> <span class="nf">generate_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">infix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                        <span class="n">tol_mass</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ref_frame</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">store</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Generate paths, aligning each to reference structure if necessary.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate paths, aligning each to reference structure if necessary.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1571,7 +1657,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">save_paths</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PSAnalysis.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Perform path similarity analysis on the trajectories to compute</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform path similarity analysis on the trajectories to compute</span>
 <span class="sd">        the distance matrix.</span>
 
 <span class="sd">        A number of parameters can be changed from the defaults. The</span>
@@ -1615,7 +1701,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">D</span> <span class="o">=</span> <span class="n">D</span></div>
 
 <div class="viewcode-block" id="PSAnalysis.run_pairs_analysis"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.run_pairs_analysis">[docs]</a>    <span class="k">def</span> <span class="nf">run_pairs_analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Perform PSA Hausdorff (nearest neighbor) pairs analysis on all unique</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform PSA Hausdorff (nearest neighbor) pairs analysis on all unique</span>
 <span class="sd">        pairs of paths in :attr:`PSAnalysis.paths`.</span>
 
 <span class="sd">        Partial results can be stored in separate lists, where each list is</span>
@@ -1673,7 +1759,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">D</span> <span class="o">=</span> <span class="n">D</span></div>
 
 <div class="viewcode-block" id="PSAnalysis.save_paths"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.save_paths">[docs]</a>    <span class="k">def</span> <span class="nf">save_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Save fitted :attr:`PSAnalysis.paths` to numpy compressed npz files.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save fitted :attr:`PSAnalysis.paths` to numpy compressed npz files.</span>
 
 <span class="sd">        The data are saved with :func:`numpy.savez_compressed` in the directory</span>
 <span class="sd">        specified by :attr:`PSAnalysis.targetdir`.</span>
@@ -1709,7 +1795,7 @@
         <span class="k">return</span> <span class="n">filename</span></div>
 
 <div class="viewcode-block" id="PSAnalysis.load"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Load fitted paths specified by &#39;psa_path-names.pkl&#39; in</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load fitted paths specified by &#39;psa_path-names.pkl&#39; in</span>
 <span class="sd">        :attr:`PSAnalysis.targetdir`.</span>
 
 <span class="sd">        All filenames are determined by :class:`PSAnalysis`.</span>
@@ -1730,7 +1816,7 @@
 
 <div class="viewcode-block" id="PSAnalysis.plot"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">linkage</span><span class="o">=</span><span class="s1">&#39;ward&#39;</span><span class="p">,</span> <span class="n">count_sort</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
              <span class="n">distance_sort</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="mf">4.5</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">12</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Plot a clustered distance matrix.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot a clustered distance matrix.</span>
 
 <span class="sd">        Usese method *linkage* and plots the corresponding dendrogram. Rows</span>
 <span class="sd">        (and columns) are identified using the list of strings specified by</span>
@@ -1851,7 +1937,7 @@
 <div class="viewcode-block" id="PSAnalysis.plot_annotated_heatmap"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.plot_annotated_heatmap">[docs]</a>    <span class="k">def</span> <span class="nf">plot_annotated_heatmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">linkage</span><span class="o">=</span><span class="s1">&#39;ward&#39;</span><span class="p">,</span>             \
                                <span class="n">count_sort</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">distance_sort</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>           \
                                <span class="n">figsize</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">annot_size</span><span class="o">=</span><span class="mf">6.5</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Plot a clustered distance matrix.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot a clustered distance matrix.</span>
 
 <span class="sd">        Uses method `linkage` and plots annotated distances in the matrix. Rows</span>
 <span class="sd">        (and columns) are identified using the list of strings specified by</span>
@@ -1905,7 +1991,7 @@
             <span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-                <span class="sd">&quot;&quot;&quot;ERROR --- The seaborn package cannot be found!</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;ERROR --- The seaborn package cannot be found!</span>
 
 <span class="sd">                The seaborn API could not be imported. Please install it first.</span>
 <span class="sd">                You can try installing with pip directly from the</span>
@@ -1973,7 +2059,7 @@
                                <span class="n">labels</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;Path 1&#39;</span><span class="p">,</span> <span class="s1">&#39;Path 2&#39;</span><span class="p">),</span> <span class="n">figsize</span><span class="o">=</span><span class="mf">4.5</span><span class="p">,</span>        \
                                <span class="n">multiplot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">aspect_ratio</span><span class="o">=</span><span class="mf">1.75</span><span class="p">,</span>              \
                                <span class="n">labelsize</span><span class="o">=</span><span class="mi">12</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Plot nearest neighbor distances as a function of normalized frame</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot nearest neighbor distances as a function of normalized frame</span>
 <span class="sd">        number.</span>
 
 <span class="sd">        The frame number is mapped to the interval *[0, 1]*.</span>
@@ -2019,7 +2105,7 @@
             <span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-                <span class="sd">&quot;&quot;&quot;ERROR --- The seaborn package cannot be found!</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;ERROR --- The seaborn package cannot be found!</span>
 
 <span class="sd">                The seaborn API could not be imported. Please install it first.</span>
 <span class="sd">                You can try installing with pip directly from the</span>
@@ -2075,7 +2161,7 @@
 <div class="viewcode-block" id="PSAnalysis.cluster"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.cluster">[docs]</a>    <span class="k">def</span> <span class="nf">cluster</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dist_mat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;ward&#39;</span><span class="p">,</span> <span class="n">count_sort</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>           \
                 <span class="n">distance_sort</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">no_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">no_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>             \
                 <span class="n">color_threshold</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Cluster trajectories and optionally plot the dendrogram.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Cluster trajectories and optionally plot the dendrogram.</span>
 
 <span class="sd">        This method is used by :meth:`PSAnalysis.plot` to generate a heatmap-</span>
 <span class="sd">        dendrogram combination plot. By default, the distance matrix,</span>
@@ -2137,7 +2223,7 @@
         <span class="k">return</span> <span class="n">Z</span><span class="p">,</span> <span class="n">dgram</span></div>
 
     <span class="k">def</span> <span class="nf">_get_plot_obj_locs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Find and return coordinates for dendrogram, heat map, and colorbar.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find and return coordinates for dendrogram, heat map, and colorbar.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -2164,7 +2250,7 @@
         <span class="k">return</span> <span class="n">dgram_loc</span><span class="p">,</span> <span class="n">hmap_loc</span><span class="p">,</span> <span class="n">cbar_loc</span>
 
 <div class="viewcode-block" id="PSAnalysis.get_num_atoms"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.get_num_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">get_num_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the number of atoms used to construct the :class:`Path` instances in</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the number of atoms used to construct the :class:`Path` instances in</span>
 <span class="sd">        :class:`PSA`.</span>
 
 <span class="sd">        Returns</span>
@@ -2183,7 +2269,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">natoms</span></div>
 
 <div class="viewcode-block" id="PSAnalysis.get_num_paths"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.get_num_paths">[docs]</a>    <span class="k">def</span> <span class="nf">get_num_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the number of paths in :class:`PSA`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the number of paths in :class:`PSA`.</span>
 
 <span class="sd">        Note</span>
 <span class="sd">        ----</span>
@@ -2200,7 +2286,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">npaths</span></div>
 
 <div class="viewcode-block" id="PSAnalysis.get_paths"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.get_paths">[docs]</a>    <span class="k">def</span> <span class="nf">get_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the paths in :class:`PSA`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the paths in :class:`PSA`.</span>
 
 <span class="sd">        Note</span>
 <span class="sd">        ----</span>
@@ -2219,7 +2305,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">paths</span></div>
 
 <div class="viewcode-block" id="PSAnalysis.get_pairwise_distances"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.get_pairwise_distances">[docs]</a>    <span class="k">def</span> <span class="nf">get_pairwise_distances</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vectorform</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">checks</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the distance matrix (or vector) of pairwise path distances.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the distance matrix (or vector) of pairwise path distances.</span>
 
 <span class="sd">        Note</span>
 <span class="sd">        ----</span>
@@ -2250,7 +2336,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">psa_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The list of :class:`PSAPair` instances for each pair of paths.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The list of :class:`PSAPair` instances for each pair of paths.</span>
 
 <span class="sd">        :attr:`psa_pairs` is a list of all :class:`PSAPair` objects (in</span>
 <span class="sd">        distance vector order). The elements of a :class:`PSAPair` are pairs of</span>
@@ -2279,7 +2365,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">hausdorff_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The Hausdorff pair for each (unique) pairs of paths.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The Hausdorff pair for each (unique) pairs of paths.</span>
 
 <span class="sd">        This attribute contains a list of Hausdorff pair information (in</span>
 <span class="sd">        distance vector order), where each element is a dictionary containing</span>
@@ -2302,7 +2388,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">nearest_neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The nearest neighbors for each (unique) pair of paths.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The nearest neighbors for each (unique) pair of paths.</span>
 
 <span class="sd">        This attribute contains a list of nearest neighbor information (in</span>
 <span class="sd">        distance vector order), where each element is a dictionary containing</span>
@@ -2324,16 +2410,18 @@
 </pre></div>
 
            </div>
+           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
-  </div>
+    <p>
+        &#169; Copyright 2005-2023, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.
 
-  
+    </p>
+  </div>
  
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
@@ -2346,7 +2434,9 @@
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
   <script>
     var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
@@ -2366,11 +2456,18 @@
         </dl>
 
     </div>
-</div><script>
+</div>
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

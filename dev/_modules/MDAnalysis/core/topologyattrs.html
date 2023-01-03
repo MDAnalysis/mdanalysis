@@ -1,25 +1,45 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>MDAnalysis.core.topologyattrs &mdash; MDAnalysis 2.5.0-dev0 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script src="../../../_static/js/versions.js"></script>
-    <script src="../../../_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 2.5.0-dev0 documentation"
           href="../../../_static/opensearch.xml"/>
@@ -27,17 +47,33 @@
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-            <a href="../../../index.html">
-            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> MDAnalysis
+          
+
+          
           </a>
+
+          
+            
+            
               <div class="version">
                 2.5.0-dev0
               </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -45,7 +81,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
@@ -75,30 +122,69 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">MDAnalysis</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">MDAnalysis.core.topologyattrs</li>
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.core.topologyattrs</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <h1>Source code for MDAnalysis.core.topologyattrs</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
 <span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8</span>
@@ -162,7 +248,7 @@
 
 
 <span class="k">def</span> <span class="nf">_check_length</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Wrapper which checks the length of inputs to set_X</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrapper which checks the length of inputs to set_X</span>
 
 <span class="sd">    Eg:</span>
 
@@ -220,7 +306,7 @@
 
 
 <span class="k">def</span> <span class="nf">_wronglevel_error</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Generate an error for setting attr at wrong level</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate an error for setting attr at wrong level</span>
 
 <span class="sd">    attr : TopologyAttr that was accessed</span>
 <span class="sd">    group : Offending Component/Group</span>
@@ -269,7 +355,7 @@
 
 
 <span class="k">def</span> <span class="nf">_build_stub</span><span class="p">(</span><span class="n">method_name</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">attribute_name</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Build a stub for a transplanted method.</span>
 
 <span class="sd">    A transplanted stub is a dummy method that gets attached to a core class</span>
@@ -326,7 +412,7 @@
 
 
 <span class="k">def</span> <span class="nf">_attach_transplant_stubs</span><span class="p">(</span><span class="n">attribute_name</span><span class="p">,</span> <span class="n">topology_attribute_class</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Transplant a stub for every method that will be transplanted from a</span>
 <span class="sd">    topology attribute.</span>
 
@@ -378,7 +464,7 @@
 <span class="k">def</span> <span class="nf">deprecate_bfactor_warning</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Bfactor alias with warning</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">BFACTOR_WARNING</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
@@ -387,7 +473,7 @@
 
 
 <span class="k">class</span> <span class="nc">_TopologyAttrMeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Register TopologyAttrs on class creation</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Register TopologyAttrs on class creation</span>
 
 <span class="sd">    Each topology attribute is added to the top-level dictionaries</span>
 <span class="sd">    for various record purposes. The class itself is added to</span>
@@ -469,7 +555,7 @@
 
 
 <div class="viewcode-block" id="TopologyAttr"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr">[docs]</a><span class="k">class</span> <span class="nc">TopologyAttr</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_TopologyAttrMeta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base class for Topology attributes.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for Topology attributes.</span>
 
 <span class="sd">    Note</span>
 <span class="sd">    ----</span>
@@ -513,7 +599,7 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">n_residues</span><span class="p">,</span> <span class="n">n_segments</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Populate an initial empty data structure for this Attribute</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Populate an initial empty data structure for this Attribute</span>
 
 <span class="sd">        The only provided parameters are the &quot;shape&quot; of the Universe</span>
 
@@ -524,7 +610,7 @@
 <div class="viewcode-block" id="TopologyAttr.from_blank"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr.from_blank">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_blank</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_residues</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_segments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">values</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create a blank version of this TopologyAttribute</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a blank version of this TopologyAttribute</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -545,15 +631,15 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">values</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TopologyAttr.copy"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a deepcopy of this attribute&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a deepcopy of this attribute&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">guessed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_guessed</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Length of the TopologyAttr at its intrinsic level.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Length of the TopologyAttr at its intrinsic level.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Accepts an AtomGroup, ResidueGroup or SegmentGroup&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Accepts an AtomGroup, ResidueGroup or SegmentGroup&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="p">(</span><span class="n">Atom</span><span class="p">,</span> <span class="n">AtomGroup</span><span class="p">)):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_atoms</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="p">(</span><span class="n">Residue</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">)):</span>
@@ -571,45 +657,45 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_guessed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Bool of if the source of this information is a guess&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Bool of if the source of this information is a guess&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_guessed</span>
 
     <span class="k">def</span> <span class="nf">_add_new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newval</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Resize TopologyAttr to one larger, with *newval* as the new value</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resize TopologyAttr to one larger, with *newval* as the new value</span>
 
 <span class="sd">        .. versionadded:: 2.1.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">newval</span><span class="p">])])</span>
 
 <div class="viewcode-block" id="TopologyAttr.get_atoms"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr.get_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">get_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get atom attributes for a given AtomGroup&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get atom attributes for a given AtomGroup&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="n">NoDataError</span></div>
 
 <div class="viewcode-block" id="TopologyAttr.set_atoms"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr.set_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">set_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set atom attributes for a given AtomGroup&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set atom attributes for a given AtomGroup&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 <div class="viewcode-block" id="TopologyAttr.get_residues"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr.get_residues">[docs]</a>    <span class="k">def</span> <span class="nf">get_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rg</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get residue attributes for a given ResidueGroup&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get residue attributes for a given ResidueGroup&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="n">NoDataError</span></div>
 
 <div class="viewcode-block" id="TopologyAttr.set_residues"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr.set_residues">[docs]</a>    <span class="k">def</span> <span class="nf">set_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rg</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set residue attributes for a given ResidueGroup&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set residue attributes for a given ResidueGroup&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 <div class="viewcode-block" id="TopologyAttr.get_segments"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr.get_segments">[docs]</a>    <span class="k">def</span> <span class="nf">get_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sg</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get segment attributes for a given SegmentGroup&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get segment attributes for a given SegmentGroup&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="n">NoDataError</span></div>
 
 <div class="viewcode-block" id="TopologyAttr.set_segments"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr.set_segments">[docs]</a>    <span class="k">def</span> <span class="nf">set_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sg</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set segmentattributes for a given SegmentGroup&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set segmentattributes for a given SegmentGroup&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
 
 
 <span class="c1"># core attributes</span>
 
 <div class="viewcode-block" id="Atomindices"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomindices">[docs]</a><span class="k">class</span> <span class="nc">Atomindices</span><span class="p">(</span><span class="n">TopologyAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Globally unique indices for each atom in the group.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Globally unique indices for each atom in the group.</span>
 
 <span class="sd">    If the group is an AtomGroup, then this gives the index for each atom in</span>
 <span class="sd">    the group. This is the unambiguous identifier for each atom in the</span>
@@ -642,7 +728,7 @@
 
 
 <div class="viewcode-block" id="Resindices"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Resindices">[docs]</a><span class="k">class</span> <span class="nc">Resindices</span><span class="p">(</span><span class="n">TopologyAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Globally unique resindices for each residue in the group.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Globally unique resindices for each residue in the group.</span>
 
 <span class="sd">    If the group is an AtomGroup, then this gives the resindex for each atom in</span>
 <span class="sd">    the group. This unambiguously determines each atom&#39;s residue membership.</span>
@@ -675,7 +761,7 @@
 
 
 <div class="viewcode-block" id="Segindices"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Segindices">[docs]</a><span class="k">class</span> <span class="nc">Segindices</span><span class="p">(</span><span class="n">TopologyAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Globally unique segindices for each segment in the group.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Globally unique segindices for each segment in the group.</span>
 
 <span class="sd">    If the group is an AtomGroup, then this gives the segindex for each atom in</span>
 <span class="sd">    the group. This unambiguously determines each atom&#39;s segment membership.</span>
@@ -712,7 +798,7 @@
 <span class="c1"># atom attributes</span>
 
 <div class="viewcode-block" id="AtomAttr"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.AtomAttr">[docs]</a><span class="k">class</span> <span class="nc">AtomAttr</span><span class="p">(</span><span class="n">TopologyAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base class for atom attributes.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for atom attributes.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;atomattrs&#39;</span>
@@ -727,7 +813,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ag</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span></div>
 
 <div class="viewcode-block" id="AtomAttr.get_residues"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.AtomAttr.get_residues">[docs]</a>    <span class="k">def</span> <span class="nf">get_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rg</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;By default, the values for each atom present in the set of residues</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;By default, the values for each atom present in the set of residues</span>
 <span class="sd">        are returned in a single array. This behavior can be overriden in child</span>
 <span class="sd">        attributes.</span>
 
@@ -739,7 +825,7 @@
         <span class="k">raise</span> <span class="n">_wronglevel_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rg</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="AtomAttr.get_segments"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.AtomAttr.get_segments">[docs]</a>    <span class="k">def</span> <span class="nf">get_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sg</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;By default, the values for each atom present in the set of residues</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;By default, the values for each atom present in the set of residues</span>
 <span class="sd">        are returned in a single array. This behavior can be overriden in child</span>
 <span class="sd">        attributes.</span>
 
@@ -753,7 +839,7 @@
 
 <span class="c1"># TODO: update docs to property doc</span>
 <div class="viewcode-block" id="Atomids"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomids">[docs]</a><span class="k">class</span> <span class="nc">Atomids</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;ID for each atom.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ID for each atom.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;ids&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;id&#39;</span>
@@ -766,7 +852,7 @@
 
 
 <span class="k">class</span> <span class="nc">_StringInternerMixin</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;String interning pattern</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;String interning pattern</span>
 
 <span class="sd">    Used for faster matching of strings (see _ProtoStringSelection)</span>
 
@@ -806,7 +892,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_add_new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newval</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Append new value to the TopologyAttr</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Append new value to the TopologyAttr</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -869,7 +955,7 @@
 
 <span class="c1"># TODO: update docs to property doc</span>
 <div class="viewcode-block" id="Atomnames"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomnames">[docs]</a><span class="k">class</span> <span class="nc">Atomnames</span><span class="p">(</span><span class="n">AtomStringAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Name for each atom.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Name for each atom.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;names&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;name&#39;</span>
@@ -878,7 +964,7 @@
     <span class="n">transplants</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Atomnames.phi_selection"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomnames.phi_selection">[docs]</a>    <span class="k">def</span> <span class="nf">phi_selection</span><span class="p">(</span><span class="n">residue</span><span class="p">,</span> <span class="n">c_name</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">n_name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">ca_name</span><span class="o">=</span><span class="s1">&#39;CA&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Select AtomGroup corresponding to the phi protein backbone dihedral</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select AtomGroup corresponding to the phi protein backbone dihedral</span>
 <span class="sd">        C&#39;-N-CA-C.</span>
 
 <span class="sd">        Parameters</span>
@@ -926,7 +1012,7 @@
     <span class="n">transplants</span><span class="p">[</span><span class="n">Residue</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;phi_selection&#39;</span><span class="p">,</span> <span class="n">phi_selection</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Atomnames.phi_selections"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomnames.phi_selections">[docs]</a>    <span class="k">def</span> <span class="nf">phi_selections</span><span class="p">(</span><span class="n">residues</span><span class="p">,</span> <span class="n">c_name</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">n_name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">ca_name</span><span class="o">=</span><span class="s1">&#39;CA&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Select list of AtomGroups corresponding to the phi protein</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select list of AtomGroups corresponding to the phi protein</span>
 <span class="sd">        backbone dihedral C&#39;-N-CA-C.</span>
 
 <span class="sd">        Parameters</span>
@@ -988,7 +1074,7 @@
     <span class="n">transplants</span><span class="p">[</span><span class="n">ResidueGroup</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;phi_selections&#39;</span><span class="p">,</span> <span class="n">phi_selections</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Atomnames.psi_selection"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomnames.psi_selection">[docs]</a>    <span class="k">def</span> <span class="nf">psi_selection</span><span class="p">(</span><span class="n">residue</span><span class="p">,</span> <span class="n">c_name</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">n_name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">ca_name</span><span class="o">=</span><span class="s1">&#39;CA&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Select AtomGroup corresponding to the psi protein backbone dihedral</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select AtomGroup corresponding to the psi protein backbone dihedral</span>
 <span class="sd">        N-CA-C-N&#39;.</span>
 
 <span class="sd">        Parameters</span>
@@ -1045,7 +1131,7 @@
     <span class="n">transplants</span><span class="p">[</span><span class="n">Residue</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;psi_selection&#39;</span><span class="p">,</span> <span class="n">psi_selection</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_get_next_residues_by_resid</span><span class="p">(</span><span class="n">residues</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Select list of Residues corresponding to the next resid for each</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select list of Residues corresponding to the next resid for each</span>
 <span class="sd">        residue in `residues`.</span>
 
 <span class="sd">        Returns</span>
@@ -1088,7 +1174,7 @@
                                       <span class="n">_get_next_residues_by_resid</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_get_prev_residues_by_resid</span><span class="p">(</span><span class="n">residues</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Select list of Residues corresponding to the previous resid for each</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select list of Residues corresponding to the previous resid for each</span>
 <span class="sd">        residue in `residues`.</span>
 
 <span class="sd">        Returns</span>
@@ -1123,7 +1209,7 @@
                                       <span class="n">_get_prev_residues_by_resid</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Atomnames.psi_selections"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomnames.psi_selections">[docs]</a>    <span class="k">def</span> <span class="nf">psi_selections</span><span class="p">(</span><span class="n">residues</span><span class="p">,</span> <span class="n">c_name</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">n_name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">ca_name</span><span class="o">=</span><span class="s1">&#39;CA&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Select list of AtomGroups corresponding to the psi protein</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select list of AtomGroups corresponding to the psi protein</span>
 <span class="sd">        backbone dihedral N-CA-C-N&#39;.</span>
 
 <span class="sd">        Parameters</span>
@@ -1169,7 +1255,7 @@
     <span class="n">transplants</span><span class="p">[</span><span class="n">ResidueGroup</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;psi_selections&#39;</span><span class="p">,</span> <span class="n">psi_selections</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Atomnames.omega_selection"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomnames.omega_selection">[docs]</a>    <span class="k">def</span> <span class="nf">omega_selection</span><span class="p">(</span><span class="n">residue</span><span class="p">,</span> <span class="n">c_name</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">n_name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">ca_name</span><span class="o">=</span><span class="s1">&#39;CA&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Select AtomGroup corresponding to the omega protein backbone dihedral</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select AtomGroup corresponding to the omega protein backbone dihedral</span>
 <span class="sd">        CA-C-N&#39;-CA&#39;.</span>
 
 <span class="sd">        omega describes the -C-N- peptide bond. Typically, it is trans (180</span>
@@ -1227,7 +1313,7 @@
     <span class="n">transplants</span><span class="p">[</span><span class="n">Residue</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;omega_selection&#39;</span><span class="p">,</span> <span class="n">omega_selection</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Atomnames.omega_selections"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomnames.omega_selections">[docs]</a>    <span class="k">def</span> <span class="nf">omega_selections</span><span class="p">(</span><span class="n">residues</span><span class="p">,</span> <span class="n">c_name</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">n_name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">ca_name</span><span class="o">=</span><span class="s1">&#39;CA&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Select list of AtomGroups corresponding to the omega protein</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select list of AtomGroups corresponding to the omega protein</span>
 <span class="sd">        backbone dihedral CA-C-N&#39;-CA&#39;.</span>
 
 <span class="sd">        omega describes the -C-N- peptide bond. Typically, it is trans (180</span>
@@ -1281,7 +1367,7 @@
 
 <div class="viewcode-block" id="Atomnames.chi1_selection"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomnames.chi1_selection">[docs]</a>    <span class="k">def</span> <span class="nf">chi1_selection</span><span class="p">(</span><span class="n">residue</span><span class="p">,</span> <span class="n">n_name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">ca_name</span><span class="o">=</span><span class="s1">&#39;CA&#39;</span><span class="p">,</span> <span class="n">cb_name</span><span class="o">=</span><span class="s1">&#39;CB&#39;</span><span class="p">,</span>
                        <span class="n">cg_name</span><span class="o">=</span><span class="s1">&#39;CG CG1 OG OG1 SG&#39;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Select AtomGroup corresponding to the chi1 sidechain dihedral ``N-CA-CB-*G.``</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Select AtomGroup corresponding to the chi1 sidechain dihedral ``N-CA-CB-*G.``</span>
 <span class="sd">        The gamma atom is taken to be the heavy atom in the gamma position. If more than one</span>
 <span class="sd">        heavy atom is present (e.g. CG1 and CG2), the one with the lower number is used (CG1).</span>
 
@@ -1326,7 +1412,7 @@
 
 <div class="viewcode-block" id="Atomnames.chi1_selections"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomnames.chi1_selections">[docs]</a>    <span class="k">def</span> <span class="nf">chi1_selections</span><span class="p">(</span><span class="n">residues</span><span class="p">,</span> <span class="n">n_name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">ca_name</span><span class="o">=</span><span class="s1">&#39;CA&#39;</span><span class="p">,</span> <span class="n">cb_name</span><span class="o">=</span><span class="s1">&#39;CB&#39;</span><span class="p">,</span>
                         <span class="n">cg_name</span><span class="o">=</span><span class="s1">&#39;CG&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Select list of AtomGroups corresponding to the chi1 sidechain dihedral</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select list of AtomGroups corresponding to the chi1 sidechain dihedral</span>
 <span class="sd">        N-CA-CB-CG.</span>
 
 <span class="sd">        Parameters</span>
@@ -1365,7 +1451,7 @@
 
 <span class="c1"># TODO: update docs to property doc</span>
 <div class="viewcode-block" id="Atomtypes"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomtypes">[docs]</a><span class="k">class</span> <span class="nc">Atomtypes</span><span class="p">(</span><span class="n">AtomStringAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Type for each atom&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Type for each atom&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;types&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;type&#39;</span>
     <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
@@ -1374,7 +1460,7 @@
 
 <span class="c1"># TODO: update docs to property doc</span>
 <div class="viewcode-block" id="Elements"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Elements">[docs]</a><span class="k">class</span> <span class="nc">Elements</span><span class="p">(</span><span class="n">AtomStringAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Element for each atom&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Element for each atom&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;elements&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;element&#39;</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="nb">object</span>
@@ -1386,7 +1472,7 @@
 
 <span class="c1"># TODO: update docs to property doc</span>
 <div class="viewcode-block" id="Radii"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Radii">[docs]</a><span class="k">class</span> <span class="nc">Radii</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Radii for each atom&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Radii for each atom&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;radii&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;radius&#39;</span>
     <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
@@ -1398,7 +1484,7 @@
 
 
 <div class="viewcode-block" id="RecordTypes"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.RecordTypes">[docs]</a><span class="k">class</span> <span class="nc">RecordTypes</span><span class="p">(</span><span class="n">AtomStringAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;For PDB-like formats, indicates if ATOM or HETATM</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;For PDB-like formats, indicates if ATOM or HETATM</span>
 
 <span class="sd">    Defaults to &#39;ATOM&#39;</span>
 
@@ -1416,7 +1502,7 @@
 
 
 <div class="viewcode-block" id="ChainIDs"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.ChainIDs">[docs]</a><span class="k">class</span> <span class="nc">ChainIDs</span><span class="p">(</span><span class="n">AtomStringAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;ChainID per atom</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ChainID per atom</span>
 
 <span class="sd">    Note</span>
 <span class="sd">    ----</span>
@@ -1429,7 +1515,7 @@
 
 
 <div class="viewcode-block" id="Tempfactors"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Tempfactors">[docs]</a><span class="k">class</span> <span class="nc">Tempfactors</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Tempfactor for atoms&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Tempfactor for atoms&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;tempfactors&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;tempfactor&#39;</span>
     <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
@@ -1443,7 +1529,7 @@
     <span class="c1"># TODO: remove bfactors in 3.0</span>
 <div class="viewcode-block" id="Tempfactors.bfactor"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Tempfactors.bfactor">[docs]</a>    <span class="nd">@deprecate_bfactor_warning</span>
     <span class="k">def</span> <span class="nf">bfactor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Alias for tempfactor</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for tempfactor</span>
 
 <span class="sd">        The bfactor topology attribute is only</span>
 <span class="sd">        provided as an alias to the tempfactor</span>
@@ -1461,7 +1547,7 @@
 
 <div class="viewcode-block" id="Tempfactors.bfactor_setter"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Tempfactors.bfactor_setter">[docs]</a>    <span class="nd">@deprecate_bfactor_warning</span>
     <span class="k">def</span> <span class="nf">bfactor_setter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Tempfactor alias property for atom</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tempfactor alias property for atom</span>
 
 <span class="sd">        .. versionadded:: 2.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1469,7 +1555,7 @@
 
 <div class="viewcode-block" id="Tempfactors.bfactors"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Tempfactors.bfactors">[docs]</a>    <span class="nd">@deprecate_bfactor_warning</span>
     <span class="k">def</span> <span class="nf">bfactors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Alias for tempfactors</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for tempfactors</span>
 
 <span class="sd">        The bfactor topology attribute is only</span>
 <span class="sd">        provided as an alias to the tempfactor</span>
@@ -1487,7 +1573,7 @@
 
 <div class="viewcode-block" id="Tempfactors.bfactors_setter"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Tempfactors.bfactors_setter">[docs]</a>    <span class="nd">@deprecate_bfactor_warning</span>
     <span class="k">def</span> <span class="nf">bfactors_setter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Tempfactor alias property for groups of atoms</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tempfactor alias property for groups of atoms</span>
 
 <span class="sd">        .. versionadded:: 2.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1557,7 +1643,7 @@
     <span class="nd">@check_wrap_and_unwrap</span>
     <span class="nd">@check_atomgroup_not_empty</span>
     <span class="k">def</span> <span class="nf">center_of_mass</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Center of mass of (compounds of) the group</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Center of mass of (compounds of) the group</span>
 
 <span class="sd">        .. math::</span>
 <span class="sd">            \boldsymbol R = \frac{\sum_i m_i \boldsymbol r_i}{\sum m_i}</span>
@@ -1631,7 +1717,7 @@
 <div class="viewcode-block" id="Masses.total_mass"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.total_mass">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
     <span class="nd">@check_atomgroup_not_empty</span>
     <span class="k">def</span> <span class="nf">total_mass</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Total mass of (compounds of) the group.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Total mass of (compounds of) the group.</span>
 
 <span class="sd">        Computes the total mass of :class:`Atoms&lt;Atom&gt;` in the group.</span>
 <span class="sd">        Total masses per :class:`Residue`, :class:`Segment`, molecule, or</span>
@@ -1670,7 +1756,7 @@
     <span class="nd">@check_wrap_and_unwrap</span>
     <span class="nd">@check_atomgroup_not_empty</span>
     <span class="k">def</span> <span class="nf">moment_of_inertia</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s2">&quot;group&quot;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Moment of inertia tensor relative to center of mass.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Moment of inertia tensor relative to center of mass.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1778,7 +1864,7 @@
     <span class="nd">@_pbc_to_wrap</span>
     <span class="nd">@check_atomgroup_not_empty</span>
     <span class="k">def</span> <span class="nf">radius_of_gyration</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Radius of gyration.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Radius of gyration.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1814,7 +1900,7 @@
     <span class="nd">@_pbc_to_wrap</span>
     <span class="nd">@check_atomgroup_not_empty</span>
     <span class="k">def</span> <span class="nf">shape_parameter</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Shape parameter.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Shape parameter.</span>
 
 <span class="sd">        See [Dima2004a]_ for background information.</span>
 
@@ -1861,7 +1947,7 @@
     <span class="nd">@check_wrap_and_unwrap</span>
     <span class="nd">@check_atomgroup_not_empty</span>
     <span class="k">def</span> <span class="nf">asphericity</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Asphericity.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Asphericity.</span>
 
 <span class="sd">        See [Dima2004b]_ for background information.</span>
 
@@ -1920,7 +2006,7 @@
     <span class="nd">@_pbc_to_wrap</span>
     <span class="nd">@check_atomgroup_not_empty</span>
     <span class="k">def</span> <span class="nf">principal_axes</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Calculate the principal axes from the moment of inertia.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the principal axes from the moment of inertia.</span>
 
 <span class="sd">        e1,e2,e3 = AtomGroup.principal_axes()</span>
 
@@ -1969,7 +2055,7 @@
         <span class="p">(</span><span class="s1">&#39;principal_axes&#39;</span><span class="p">,</span> <span class="n">principal_axes</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Masses.align_principal_axis"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.align_principal_axis">[docs]</a>    <span class="k">def</span> <span class="nf">align_principal_axis</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">vector</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Align principal axis with index `axis` with `vector`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Align principal axis with index `axis` with `vector`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -2041,7 +2127,7 @@
     <span class="nd">@check_wrap_and_unwrap</span>
     <span class="nd">@check_atomgroup_not_empty</span>
     <span class="k">def</span> <span class="nf">center_of_charge</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Center of (absolute) charge of (compounds of) the group</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Center of (absolute) charge of (compounds of) the group</span>
 
 <span class="sd">        .. math::</span>
 <span class="sd">            \boldsymbol R = \frac{\sum_i \vert q_i \vert \boldsymbol r_i}</span>
@@ -2109,7 +2195,7 @@
 <div class="viewcode-block" id="Charges.total_charge"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Charges.total_charge">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
     <span class="nd">@check_atomgroup_not_empty</span>
     <span class="k">def</span> <span class="nf">total_charge</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Total charge of (compounds of) the group.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Total charge of (compounds of) the group.</span>
 
 <span class="sd">        Computes the total charge of :class:`Atoms&lt;Atom&gt;` in the group.</span>
 <span class="sd">        Total charges per :class:`Residue`, :class:`Segment`, molecule, or</span>
@@ -2145,7 +2231,7 @@
 
 
 <div class="viewcode-block" id="FormalCharges"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.FormalCharges">[docs]</a><span class="k">class</span> <span class="nc">FormalCharges</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Formal charge on each atom&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Formal charge on each atom&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;formalcharges&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;formalcharge&#39;</span>
     <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
@@ -2170,7 +2256,7 @@
 
 <span class="c1"># TODO: update docs to property doc</span>
 <div class="viewcode-block" id="AltLocs"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.AltLocs">[docs]</a><span class="k">class</span> <span class="nc">AltLocs</span><span class="p">(</span><span class="n">AtomStringAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;AltLocs for each atom&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;AltLocs for each atom&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;altLocs&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;altLoc&#39;</span>
     <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
@@ -2182,7 +2268,7 @@
 
 
 <div class="viewcode-block" id="GBScreens"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.GBScreens">[docs]</a><span class="k">class</span> <span class="nc">GBScreens</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Generalized Born screening factor&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generalized Born screening factor&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;gbscreens&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;gbscreen&#39;</span>
     <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
@@ -2194,7 +2280,7 @@
 
 
 <div class="viewcode-block" id="SolventRadii"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.SolventRadii">[docs]</a><span class="k">class</span> <span class="nc">SolventRadii</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Intrinsic solvation radius&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Intrinsic solvation radius&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;solventradii&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;solventradius&#39;</span>
     <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
@@ -2206,7 +2292,7 @@
 
 
 <div class="viewcode-block" id="NonbondedIndices"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.NonbondedIndices">[docs]</a><span class="k">class</span> <span class="nc">NonbondedIndices</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Nonbonded index (AMBER)&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Nonbonded index (AMBER)&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;nbindices&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;nbindex&#39;</span>
     <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
@@ -2218,7 +2304,7 @@
 
 
 <div class="viewcode-block" id="RMins"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.RMins">[docs]</a><span class="k">class</span> <span class="nc">RMins</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;The Rmin/2 LJ parameter&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The Rmin/2 LJ parameter&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;rmins&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;rmin&#39;</span>
     <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
@@ -2230,7 +2316,7 @@
 
 
 <div class="viewcode-block" id="Epsilons"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Epsilons">[docs]</a><span class="k">class</span> <span class="nc">Epsilons</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;The epsilon LJ parameter&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The epsilon LJ parameter&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;epsilons&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;epsilon&#39;</span>
     <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
@@ -2242,7 +2328,7 @@
 
 
 <div class="viewcode-block" id="RMin14s"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.RMin14s">[docs]</a><span class="k">class</span> <span class="nc">RMin14s</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;The Rmin/2 LJ parameter for 1-4 interactions&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The Rmin/2 LJ parameter for 1-4 interactions&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;rmin14s&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;rmin14&#39;</span>
     <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
@@ -2254,7 +2340,7 @@
 
 
 <div class="viewcode-block" id="Epsilon14s"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Epsilon14s">[docs]</a><span class="k">class</span> <span class="nc">Epsilon14s</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;The epsilon LJ parameter for 1-4 interactions&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The epsilon LJ parameter for 1-4 interactions&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;epsilon14s&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;epsilon14&#39;</span>
     <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
@@ -2266,7 +2352,7 @@
 
 
 <div class="viewcode-block" id="Aromaticities"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Aromaticities">[docs]</a><span class="k">class</span> <span class="nc">Aromaticities</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Aromaticity&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Aromaticity&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s2">&quot;aromaticities&quot;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s2">&quot;aromaticity&quot;</span>
     <span class="n">per_object</span> <span class="o">=</span> <span class="s2">&quot;atom&quot;</span>
@@ -2278,7 +2364,7 @@
 
 
 <div class="viewcode-block" id="RSChirality"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.RSChirality">[docs]</a><span class="k">class</span> <span class="nc">RSChirality</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;R/S chirality&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;R/S chirality&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;chiralities&#39;</span>
     <span class="n">singular</span><span class="o">=</span> <span class="s1">&#39;chirality&#39;</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="s1">&#39;U1&#39;</span></div>
@@ -2305,7 +2391,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">rg</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span></div>
 
 <div class="viewcode-block" id="ResidueAttr.get_segments"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.ResidueAttr.get_segments">[docs]</a>    <span class="k">def</span> <span class="nf">get_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sg</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;By default, the values for each residue present in the set of</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;By default, the values for each residue present in the set of</span>
 <span class="sd">        segments are returned in a single array. This behavior can be overriden</span>
 <span class="sd">        in child attributes.</span>
 
@@ -2331,7 +2417,7 @@
 
 <span class="c1"># TODO: update docs to property doc</span>
 <div class="viewcode-block" id="Resids"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Resids">[docs]</a><span class="k">class</span> <span class="nc">Resids</span><span class="p">(</span><span class="n">ResidueAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Residue ID&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Residue ID&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;resids&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;resid&#39;</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="nb">int</span>
@@ -2353,7 +2439,7 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;&#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nr</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Resnames.sequence"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Resnames.sequence">[docs]</a>    <span class="k">def</span> <span class="nf">sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns the amino acid sequence.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the amino acid sequence.</span>
 
 <span class="sd">        The format of the sequence is selected with the keyword *format*:</span>
 
@@ -2462,14 +2548,14 @@
 
 
 <div class="viewcode-block" id="ICodes"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.ICodes">[docs]</a><span class="k">class</span> <span class="nc">ICodes</span><span class="p">(</span><span class="n">ResidueStringAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Insertion code for Atoms&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Insertion code for Atoms&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;icodes&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;icode&#39;</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="nb">object</span></div>
 
 
 <div class="viewcode-block" id="Moltypes"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Moltypes">[docs]</a><span class="k">class</span> <span class="nc">Moltypes</span><span class="p">(</span><span class="n">ResidueStringAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Name of the molecule type</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Name of the molecule type</span>
 
 <span class="sd">    Two molecules that share a molecule type share a common template topology.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -2479,7 +2565,7 @@
 
 
 <div class="viewcode-block" id="Molnums"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Molnums">[docs]</a><span class="k">class</span> <span class="nc">Molnums</span><span class="p">(</span><span class="n">ResidueAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Index of molecule from 0</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Index of molecule from 0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;molnums&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;molnum&#39;</span>
@@ -2489,7 +2575,7 @@
 
 
 <div class="viewcode-block" id="SegmentAttr"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.SegmentAttr">[docs]</a><span class="k">class</span> <span class="nc">SegmentAttr</span><span class="p">(</span><span class="n">TopologyAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base class for segment attributes.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for segment attributes.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;segmentattrs&#39;</span>
@@ -2545,7 +2631,7 @@
 
 
 <span class="k">def</span> <span class="nf">_check_connection_values</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Checks values passed to _Connection methods for:</span>
 <span class="sd">     - appropriate number of atom indices</span>
 <span class="sd">     - coerces them to tuples of ints (for hashing)</span>
@@ -2573,7 +2659,7 @@
 
 
 <span class="k">class</span> <span class="nc">_ConnectionTopologyAttrMeta</span><span class="p">(</span><span class="n">_TopologyAttrMeta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Specific metaclass for atom-connectivity topology attributes.</span>
 
 <span class="sd">    This class adds an ``intra_{attrname}`` property to groups</span>
@@ -2586,7 +2672,7 @@
 
         <span class="k">if</span> <span class="n">attrname</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">def</span> <span class="nf">intra_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">):</span>
-                <span class="sd">&quot;&quot;&quot;Get connections only within this AtomGroup</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;Get connections only within this AtomGroup</span>
 <span class="sd">                &quot;&quot;&quot;</span>
                 <span class="k">return</span> <span class="n">ag</span><span class="o">.</span><span class="n">get_connections</span><span class="p">(</span><span class="n">attrname</span><span class="p">,</span> <span class="n">outside</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
@@ -2596,7 +2682,7 @@
 
 
 <span class="k">class</span> <span class="nc">_Connection</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_ConnectionTopologyAttrMeta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base class for connectivity between atoms</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for connectivity between atoms</span>
 
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">        Added type checking to atom index values.</span>
@@ -2619,7 +2705,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a deepcopy of this attribute&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a deepcopy of this attribute&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">),</span>
                               <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">types</span><span class="p">),</span>
                               <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_guessed</span><span class="p">),</span>
@@ -2631,7 +2717,7 @@
     <span class="nd">@property</span>
     <span class="nd">@cached</span><span class="p">(</span><span class="s1">&#39;bd&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_bondDict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Lazily built mapping of atoms:bonds&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Lazily built mapping of atoms:bonds&quot;&quot;&quot;</span>
         <span class="n">bd</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">o</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">types</span><span class="p">,</span>
@@ -2644,7 +2730,7 @@
         <span class="k">return</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Cannot set bond information&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get connection values where the atom indices are in</span>
 <span class="sd">        the given atomgroup.</span>
 
@@ -2695,7 +2781,7 @@
 
     <span class="nd">@_check_connection_values</span>
     <span class="k">def</span> <span class="nf">_delete_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        .. versionadded:: 1.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -2724,7 +2810,7 @@
 
 
 <div class="viewcode-block" id="Bonds"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Bonds">[docs]</a><span class="k">class</span> <span class="nc">Bonds</span><span class="p">(</span><span class="n">_Connection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Bonds between two atoms</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Bonds between two atoms</span>
 
 <span class="sd">    Must be initialised by a list of zero based tuples.</span>
 <span class="sd">    These indices refer to the atom indices.</span>
@@ -2741,7 +2827,7 @@
     <span class="n">_n_atoms</span> <span class="o">=</span> <span class="mi">2</span>
 
 <div class="viewcode-block" id="Bonds.bonded_atoms"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Bonds.bonded_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">bonded_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;An :class:`~MDAnalysis.core.groups.AtomGroup` of all</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;An :class:`~MDAnalysis.core.groups.AtomGroup` of all</span>
 <span class="sd">        :class:`Atoms&lt;MDAnalysis.core.groups.Atom&gt;` bonded to this</span>
 <span class="sd">        :class:`~MDAnalysis.core.groups.Atom`.&quot;&quot;&quot;</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">b</span><span class="o">.</span><span class="n">partner</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span><span class="p">]</span>
@@ -2752,7 +2838,7 @@
                                   <span class="n">bonded_atoms</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)))</span>
 
 <div class="viewcode-block" id="Bonds.fragindex"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Bonds.fragindex">[docs]</a>    <span class="k">def</span> <span class="nf">fragindex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The index (ID) of the</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The index (ID) of the</span>
 <span class="sd">        :class:`~MDAnalysis.core.topologyattrs.Bonds.fragment` this</span>
 <span class="sd">        :class:`~MDAnalysis.core.groups.Atom` is part of.</span>
 
@@ -2763,7 +2849,7 @@
 
 <div class="viewcode-block" id="Bonds.fragindices"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Bonds.fragindices">[docs]</a>    <span class="nd">@cached</span><span class="p">(</span><span class="s1">&#39;fragindices&#39;</span><span class="p">,</span> <span class="n">universe_validation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">fragindices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;The</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;The</span>
 <span class="sd">        :class:`fragment indices&lt;MDAnalysis.core.topologyattrs.Bonds.fragindex&gt;`</span>
 <span class="sd">        of all :class:`Atoms&lt;MDAnalysis.core.groups.Atom&gt;` in this</span>
 <span class="sd">        :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
@@ -2779,7 +2865,7 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">fragdict</span><span class="p">[</span><span class="n">aix</span><span class="p">]</span><span class="o">.</span><span class="n">ix</span> <span class="k">for</span> <span class="n">aix</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Bonds.fragment"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Bonds.fragment">[docs]</a>    <span class="k">def</span> <span class="nf">fragment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;An :class:`~MDAnalysis.core.groups.AtomGroup` representing the</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;An :class:`~MDAnalysis.core.groups.AtomGroup` representing the</span>
 <span class="sd">        fragment this :class:`~MDAnalysis.core.groups.Atom` is part of.</span>
 
 <span class="sd">        A fragment is a</span>
@@ -2797,7 +2883,7 @@
 
 <div class="viewcode-block" id="Bonds.fragments"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Bonds.fragments">[docs]</a>    <span class="nd">@cached</span><span class="p">(</span><span class="s1">&#39;fragments&#39;</span><span class="p">,</span> <span class="n">universe_validation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read-only :class:`tuple` of</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read-only :class:`tuple` of</span>
 <span class="sd">        :class:`fragments&lt;MDAnalysis.core.topologyattrs.Bonds.fragment&gt;`.</span>
 
 <span class="sd">        Contains all fragments that</span>
@@ -2825,7 +2911,7 @@
                             <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">ix</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Bonds.n_fragments"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Bonds.n_fragments">[docs]</a>    <span class="k">def</span> <span class="nf">n_fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The number of unique</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The number of unique</span>
 <span class="sd">        :class:`~MDAnalysis.core.topologyattrs.Bonds.fragments` the</span>
 <span class="sd">        :class:`Atoms&lt;MDAnalysis.core.groups.Atom&gt;` of this</span>
 <span class="sd">        :class:`~MDAnalysis.core.groups.AtomGroup` are part of.</span>
@@ -2857,7 +2943,7 @@
 
 
 <div class="viewcode-block" id="UreyBradleys"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.UreyBradleys">[docs]</a><span class="k">class</span> <span class="nc">UreyBradleys</span><span class="p">(</span><span class="n">_Connection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Angles between two atoms</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Angles between two atoms</span>
 
 <span class="sd">    Initialise with a list of 2 long tuples</span>
 
@@ -2872,7 +2958,7 @@
 
 
 <div class="viewcode-block" id="Angles"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Angles">[docs]</a><span class="k">class</span> <span class="nc">Angles</span><span class="p">(</span><span class="n">_Connection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Angles between three atoms</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Angles between three atoms</span>
 
 <span class="sd">    Initialise with a list of 3 long tuples</span>
 <span class="sd">    E.g.,  `[(0, 1, 2), (1, 2, 3), (2, 3, 4)]`</span>
@@ -2886,7 +2972,7 @@
 
 
 <div class="viewcode-block" id="Dihedrals"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Dihedrals">[docs]</a><span class="k">class</span> <span class="nc">Dihedrals</span><span class="p">(</span><span class="n">_Connection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A connection between four sequential atoms&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A connection between four sequential atoms&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;dihedrals&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;dihedrals&#39;</span>
     <span class="n">transplants</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
@@ -2894,7 +2980,7 @@
 
 
 <div class="viewcode-block" id="Impropers"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Impropers">[docs]</a><span class="k">class</span> <span class="nc">Impropers</span><span class="p">(</span><span class="n">_Connection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;An imaginary dihedral between four atoms&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An imaginary dihedral between four atoms&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;impropers&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;impropers&#39;</span>
     <span class="n">transplants</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
@@ -2902,7 +2988,7 @@
 
 
 <div class="viewcode-block" id="CMaps"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.CMaps">[docs]</a><span class="k">class</span> <span class="nc">CMaps</span><span class="p">(</span><span class="n">_Connection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A connection between five atoms</span>
 <span class="sd">    .. versionadded:: 1.0.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -2913,16 +2999,18 @@
 </pre></div>
 
            </div>
+           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
-  </div>
+    <p>
+        &#169; Copyright 2005-2023, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.
 
-  
+    </p>
+  </div>
  
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
@@ -2935,7 +3023,9 @@
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
   <script>
     var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
@@ -2955,11 +3045,18 @@
         </dl>
 
     </div>
-</div><script>
+</div>
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

@@ -1,27 +1,47 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>4.8.2. Linear Density — MDAnalysis.analysis.lineardensity &mdash; MDAnalysis 2.5.0-dev0 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
-    <script src="../../_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 2.5.0-dev0 documentation"
           href="../../_static/opensearch.xml"/>
@@ -31,17 +51,33 @@
     <link rel="prev" title="4.8.1. Generating densities from trajectories — MDAnalysis.analysis.density" href="density.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-            <a href="../../index.html">
-            <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> MDAnalysis
+          
+
+          
           </a>
+
+          
+            
+            
               <div class="version">
                 2.5.0-dev0
               </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -49,7 +85,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
@@ -120,43 +167,85 @@
 <li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">MDAnalysis</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="../analysis_modules.html"><span class="section-number">4. </span>Analysis modules</a></li>
-      <li class="breadcrumb-item active"><span class="section-number">4.8.2. </span>Linear Density — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.lineardensity</span></code></li>
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../analysis_modules.html"><span class="section-number">4. </span>Analysis modules</a> &raquo;</li>
+        
+      <li><span class="section-number">4.8.2. </span>Linear Density — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.lineardensity</span></code></li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
+          
             <a href="../../_sources/documentation_pages/analysis/lineardensity.rst.txt" rel="nofollow"> View page source</a>
+          
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <span class="target" id="module-MDAnalysis.analysis.lineardensity"></span><section id="linear-density-mdanalysis-analysis-lineardensity">
-<h1><span class="section-number">4.8.2. </span>Linear Density — <a class="reference internal" href="#module-MDAnalysis.analysis.lineardensity" title="MDAnalysis.analysis.lineardensity"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.lineardensity</span></code></a><a class="headerlink" href="#linear-density-mdanalysis-analysis-lineardensity" title="Permalink to this heading"></a></h1>
+<h1><span class="section-number">4.8.2. </span>Linear Density — <a class="reference internal" href="#module-MDAnalysis.analysis.lineardensity" title="MDAnalysis.analysis.lineardensity"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.lineardensity</span></code></a><a class="headerlink" href="#linear-density-mdanalysis-analysis-lineardensity" title="Permalink to this heading">¶</a></h1>
 <p>A tool to compute mass and charge density profiles along the three
 cartesian axes [xyz] of the simulation cell. Works only for orthorombic,
 fixed volume cells (thus for simulations in canonical NVT ensemble).</p>
 </section>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.lineardensity.</span></span><span class="sig-name descname"><span class="pre">LinearDensity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">select</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grouping</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'atoms'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.25</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/lineardensity.html#LinearDensity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.lineardensity.</span></span><span class="sig-name descname"><span class="pre">LinearDensity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">select</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grouping</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'atoms'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.25</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/lineardensity.html#LinearDensity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Linear density profile</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>select</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – any atomgroup</p></li>
 <li><p><strong>grouping</strong> (<em>str {'atoms'</em><em>, </em><em>'residues'</em><em>, </em><em>'segments'</em><em>, </em><em>'fragments'}</em>) – Density profiles will be computed either on the atom positions (in
@@ -171,10 +260,10 @@ profile (smaller –&gt; higher resolution)</p></li>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.dim">
-<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">dim</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.dim" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">dim</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.dim" title="Permalink to this definition">¶</a></dt>
 <dd><p>index of the [xyz] axes</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
 </dd>
 </dl>
@@ -182,10 +271,10 @@ profile (smaller –&gt; higher resolution)</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.mass_density">
-<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">mass_density</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.mass_density" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">mass_density</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.mass_density" title="Permalink to this definition">¶</a></dt>
 <dd><p>mass density in <span class="math notranslate nohighlight">\(g \cdot cm^{-3}\)</span> in [xyz] direction</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -193,10 +282,10 @@ profile (smaller –&gt; higher resolution)</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.mass_density_stddev">
-<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">mass_density_stddev</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.mass_density_stddev" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">mass_density_stddev</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.mass_density_stddev" title="Permalink to this definition">¶</a></dt>
 <dd><p>standard deviation of the mass density in [xyz] direction</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -204,11 +293,11 @@ profile (smaller –&gt; higher resolution)</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.charge_density">
-<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">charge_density</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.charge_density" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">charge_density</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.charge_density" title="Permalink to this definition">¶</a></dt>
 <dd><p>charge density in <span class="math notranslate nohighlight">\(\mathrm{e} \cdot mol \cdot cm^{-3}\)</span> in
 [xyz] direction</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -216,10 +305,10 @@ profile (smaller –&gt; higher resolution)</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.charge_density_stddev">
-<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">charge_density_stddev</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.charge_density_stddev" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">charge_density_stddev</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.charge_density_stddev" title="Permalink to this definition">¶</a></dt>
 <dd><p>standard deviation of the charge density in [xyz] direction</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -227,14 +316,14 @@ profile (smaller –&gt; higher resolution)</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.pos">
-<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">pos</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.pos" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">pos</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.pos" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.x.mass_density</span></code> attribute.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.2.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.x.mass_density</span></code> instead.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -242,14 +331,14 @@ profile (smaller –&gt; higher resolution)</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.pos_std">
-<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">pos_std</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.pos_std" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">pos_std</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.pos_std" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.x.mass_density_stddev</span></code> attribute.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.2.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.x.mass_density_stddev</span></code> instead.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -257,14 +346,14 @@ profile (smaller –&gt; higher resolution)</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.char">
-<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">char</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.char" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">char</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.char" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.x.charge_density</span></code> attribute.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.2.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.x.charge_density</span></code> instead.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -272,14 +361,14 @@ profile (smaller –&gt; higher resolution)</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.char_std">
-<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">char_std</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.char_std" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">char_std</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.char_std" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.x.charge_density_stddev</span></code> attribute.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.2.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.x.charge_density_stddev</span></code> instead.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -287,10 +376,10 @@ profile (smaller –&gt; higher resolution)</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.slice_volume">
-<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">slice_volume</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.slice_volume" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">slice_volume</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.slice_volume" title="Permalink to this definition">¶</a></dt>
 <dd><p>volume of bin in [xyz] direction</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
 </dd>
 </dl>
@@ -298,11 +387,11 @@ profile (smaller –&gt; higher resolution)</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.hist_bin_edges">
-<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">hist_bin_edges</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.hist_bin_edges" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">hist_bin_edges</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.hist_bin_edges" title="Permalink to this definition">¶</a></dt>
 <dd><p>edges of histogram bins for mass/charge densities, useful for, e.g.,
 plotting of histogram data.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -310,9 +399,9 @@ plotting of histogram data.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.Note">
-<span class="sig-name descname"><span class="pre">Note</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.Note" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">Note</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.Note" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>These density units are likely to be changed in the future.</p>
 </dd>
 </dl>
@@ -378,7 +467,7 @@ and <a class="reference internal" href="#MDAnalysis.analysis.lineardensity.Linea
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.Results">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.lineardensity.</span></span><span class="sig-name descname"><span class="pre">Results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/lineardensity.html#Results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.Results" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.lineardensity.</span></span><span class="sig-name descname"><span class="pre">Results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/lineardensity.html#Results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.Results" title="Permalink to this definition">¶</a></dt>
 <dd><p>From version 3.0.0 onwards, some entries in Results will be renamed. See
 the docstring for LinearDensity for details. The Results class is defined
 here to implement deprecation warnings for the user.</p>
@@ -387,19 +476,22 @@ here to implement deprecation warnings for the user.</p>
 
 
            </div>
+           
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="density.html" class="btn btn-neutral float-left" title="4.8.1. Generating densities from trajectories — MDAnalysis.analysis.density" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="waterdynamics.html" class="btn btn-neutral float-right" title="4.8.3. Water dynamics analysis — MDAnalysis.analysis.waterdynamics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="density.html" class="btn btn-neutral float-left" title="4.8.1. Generating densities from trajectories — MDAnalysis.analysis.density" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
-  </div>
+    <p>
+        &#169; Copyright 2005-2023, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.
 
-  
+    </p>
+  </div>
  
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
@@ -412,7 +504,9 @@ here to implement deprecation warnings for the user.</p>
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
   <script>
     var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
@@ -432,11 +526,18 @@ here to implement deprecation warnings for the user.</p>
         </dl>
 
     </div>
-</div><script>
+</div>
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

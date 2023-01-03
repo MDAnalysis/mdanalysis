@@ -1,25 +1,45 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>MDAnalysis.lib.transformations &mdash; MDAnalysis 2.5.0-dev0 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script src="../../../_static/js/versions.js"></script>
-    <script src="../../../_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 2.5.0-dev0 documentation"
           href="../../../_static/opensearch.xml"/>
@@ -27,17 +47,33 @@
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-            <a href="../../../index.html">
-            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> MDAnalysis
+          
+
+          
           </a>
+
+          
+            
+            
               <div class="version">
                 2.5.0-dev0
               </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -45,7 +81,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
@@ -75,30 +122,69 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">MDAnalysis</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">MDAnalysis.lib.transformations</li>
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.lib.transformations</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <h1>Source code for MDAnalysis.lib.transformations</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-</span>
 <span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
@@ -275,7 +361,7 @@
 <span class="kn">from</span> <span class="nn">.mdamath</span> <span class="kn">import</span> <span class="n">angle</span> <span class="k">as</span> <span class="n">vecangle</span>
 
 <span class="k">def</span> <span class="nf">identity_matrix</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Return 4x4 identity/unit matrix.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return 4x4 identity/unit matrix.</span>
 
 <span class="sd">    &gt;&gt;&gt; I = identity_matrix()</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(I, np.dot(I, I))</span>
@@ -290,7 +376,7 @@
 
 
 <span class="k">def</span> <span class="nf">translation_matrix</span><span class="p">(</span><span class="n">direction</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return matrix to translate by direction vector.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return matrix to translate by direction vector.</span>
 
 <span class="sd">    &gt;&gt;&gt; v = np.random.random(3) - 0.5</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(v, translation_matrix(v)[:3, 3])</span>
@@ -303,7 +389,7 @@
 
 
 <div class="viewcode-block" id="translation_from_matrix"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.translation_from_matrix">[docs]</a><span class="k">def</span> <span class="nf">translation_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return translation vector from translation matrix.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return translation vector from translation matrix.</span>
 
 <span class="sd">    &gt;&gt;&gt; v0 = np.random.random(3) - 0.5</span>
 <span class="sd">    &gt;&gt;&gt; v1 = translation_from_matrix(translation_matrix(v0))</span>
@@ -315,7 +401,7 @@
 
 
 <span class="k">def</span> <span class="nf">reflection_matrix</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">normal</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return matrix to mirror at plane defined by point and normal vector.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return matrix to mirror at plane defined by point and normal vector.</span>
 
 <span class="sd">    &gt;&gt;&gt; v0 = np.random.random(4) - 0.5</span>
 <span class="sd">    &gt;&gt;&gt; v0[3] = 1.0</span>
@@ -341,7 +427,7 @@
 
 
 <div class="viewcode-block" id="reflection_from_matrix"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.reflection_from_matrix">[docs]</a><span class="k">def</span> <span class="nf">reflection_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return mirror plane point and normal vector from reflection matrix.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return mirror plane point and normal vector from reflection matrix.</span>
 
 <span class="sd">    &gt;&gt;&gt; v0 = np.random.random(3) - 0.5</span>
 <span class="sd">    &gt;&gt;&gt; v1 = np.random.random(3) - 0.5</span>
@@ -370,7 +456,7 @@
 
 
 <span class="k">def</span> <span class="nf">rotation_matrix</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">point</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return matrix to rotate about axis defined by point and direction.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return matrix to rotate about axis defined by point and direction.</span>
 
 <span class="sd">    &gt;&gt;&gt; R = rotation_matrix(math.pi/2.0, [0, 0, 1], [1, 0, 0])</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(np.dot(R, [0, 0, 0, 1]), [ 1., -1.,  0.,  1.])</span>
@@ -419,7 +505,7 @@
 
 
 <div class="viewcode-block" id="rotation_from_matrix"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.rotation_from_matrix">[docs]</a><span class="k">def</span> <span class="nf">rotation_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return rotation angle and axis from rotation matrix.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return rotation angle and axis from rotation matrix.</span>
 
 <span class="sd">    &gt;&gt;&gt; angle = (random.random() - 0.5) * (2*math.pi)</span>
 <span class="sd">    &gt;&gt;&gt; direc = np.random.random(3) - 0.5</span>
@@ -459,7 +545,7 @@
 
 
 <span class="k">def</span> <span class="nf">scale_matrix</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return matrix to scale by factor around origin in direction.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return matrix to scale by factor around origin in direction.</span>
 
 <span class="sd">    Use factor -1 for point symmetry.</span>
 
@@ -497,7 +583,7 @@
 
 
 <div class="viewcode-block" id="scale_from_matrix"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.scale_from_matrix">[docs]</a><span class="k">def</span> <span class="nf">scale_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return scaling factor, origin and direction from scaling matrix.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return scaling factor, origin and direction from scaling matrix.</span>
 
 <span class="sd">    &gt;&gt;&gt; factor = random.random() * 10 - 5</span>
 <span class="sd">    &gt;&gt;&gt; origin = np.random.random(3) - 0.5</span>
@@ -539,7 +625,7 @@
 
 <span class="k">def</span> <span class="nf">projection_matrix</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">normal</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                       <span class="n">perspective</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pseudo</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return matrix to project onto plane defined by point and normal.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return matrix to project onto plane defined by point and normal.</span>
 
 <span class="sd">    Using either perspective point, projection direction, or none of both.</span>
 
@@ -600,7 +686,7 @@
 
 
 <div class="viewcode-block" id="projection_from_matrix"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.projection_from_matrix">[docs]</a><span class="k">def</span> <span class="nf">projection_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">pseudo</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return projection plane and perspective point from projection matrix.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return projection plane and perspective point from projection matrix.</span>
 
 <span class="sd">    Return values are same as arguments for projection_matrix function:</span>
 <span class="sd">    point, normal, direction, perspective, and pseudo.</span>
@@ -673,7 +759,7 @@
 
 
 <span class="k">def</span> <span class="nf">clip_matrix</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">bottom</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">near</span><span class="p">,</span> <span class="n">far</span><span class="p">,</span> <span class="n">perspective</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return matrix to obtain normalized device coordinates from frustrum.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return matrix to obtain normalized device coordinates from frustrum.</span>
 
 <span class="sd">    The frustrum bounds are axis-aligned along x (left, right),</span>
 <span class="sd">    y (bottom, top) and z (near, far).</span>
@@ -727,7 +813,7 @@
 
 
 <span class="k">def</span> <span class="nf">shear_matrix</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">normal</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return matrix to shear by angle along direction vector on shear plane.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return matrix to shear by angle along direction vector on shear plane.</span>
 
 <span class="sd">    The shear plane is defined by a point and normal vector. The direction</span>
 <span class="sd">    vector must be orthogonal to the plane&#39;s normal vector.</span>
@@ -758,7 +844,7 @@
 
 
 <div class="viewcode-block" id="shear_from_matrix"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.shear_from_matrix">[docs]</a><span class="k">def</span> <span class="nf">shear_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return shear angle, direction and plane from shear matrix.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return shear angle, direction and plane from shear matrix.</span>
 
 <span class="sd">    &gt;&gt;&gt; angle = (random.random() - 0.5) * 4*math.pi</span>
 <span class="sd">    &gt;&gt;&gt; direct = np.random.random(3) - 0.5</span>
@@ -803,7 +889,7 @@
 
 
 <div class="viewcode-block" id="decompose_matrix"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.decompose_matrix">[docs]</a><span class="k">def</span> <span class="nf">decompose_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return sequence of transformations from transformation matrix.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return sequence of transformations from transformation matrix.</span>
 
 <span class="sd">    matrix : array_like</span>
 <span class="sd">        Non-degenerative homogeneous transformation matrix</span>
@@ -890,7 +976,7 @@
 
 <div class="viewcode-block" id="compose_matrix"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.compose_matrix">[docs]</a><span class="k">def</span> <span class="nf">compose_matrix</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shear</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">angles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">translate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">perspective</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return transformation matrix from sequence of transformations.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return transformation matrix from sequence of transformations.</span>
 
 <span class="sd">    This is the inverse of the decompose_matrix function.</span>
 
@@ -942,7 +1028,7 @@
 
 
 <span class="k">def</span> <span class="nf">orthogonalization_matrix</span><span class="p">(</span><span class="n">lengths</span><span class="p">,</span> <span class="n">angles</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return orthogonalization matrix for crystallographic cell coordinates.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return orthogonalization matrix for crystallographic cell coordinates.</span>
 
 <span class="sd">    Angles are expected in degrees.</span>
 
@@ -971,7 +1057,7 @@
 
 
 <span class="k">def</span> <span class="nf">superimposition_matrix</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="n">scaling</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">usesvd</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return matrix to transform given vector set into second vector set.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return matrix to transform given vector set into second vector set.</span>
 
 <span class="sd">    `v0` and `v1` are shape `(3, *)` or `(4, *)` arrays of at least 3 vectors.</span>
 
@@ -1073,7 +1159,7 @@
 
 
 <span class="k">def</span> <span class="nf">euler_matrix</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span> <span class="n">aj</span><span class="p">,</span> <span class="n">ak</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s1">&#39;sxyz&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return homogeneous rotation matrix from Euler angles and axis sequence.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return homogeneous rotation matrix from Euler angles and axis sequence.</span>
 
 <span class="sd">    ai, aj, ak : Euler&#39;s roll, pitch and yaw angles</span>
 <span class="sd">    axes : One of 24 axis sequences as string or encoded tuple</span>
@@ -1136,7 +1222,7 @@
 
 
 <span class="k">def</span> <span class="nf">euler_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s1">&#39;sxyz&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return Euler angles from rotation matrix for specified axis sequence.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return Euler angles from rotation matrix for specified axis sequence.</span>
 
 <span class="sd">    axes : One of 24 axis sequences as string or encoded tuple</span>
 
@@ -1194,7 +1280,7 @@
 
 
 <div class="viewcode-block" id="euler_from_quaternion"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.euler_from_quaternion">[docs]</a><span class="k">def</span> <span class="nf">euler_from_quaternion</span><span class="p">(</span><span class="n">quaternion</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s1">&#39;sxyz&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return Euler angles from quaternion for specified axis sequence.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return Euler angles from quaternion for specified axis sequence.</span>
 
 <span class="sd">    &gt;&gt;&gt; angles = euler_from_quaternion([0.99810947, 0.06146124, 0, 0])</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(angles, [0.123, 0, 0])</span>
@@ -1205,7 +1291,7 @@
 
 
 <span class="k">def</span> <span class="nf">quaternion_from_euler</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span> <span class="n">aj</span><span class="p">,</span> <span class="n">ak</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s1">&#39;sxyz&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return quaternion from Euler angles and axis sequence.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return quaternion from Euler angles and axis sequence.</span>
 
 <span class="sd">    ai, aj, ak : Euler&#39;s roll, pitch and yaw angles</span>
 <span class="sd">    axes : One of 24 axis sequences as string or encoded tuple</span>
@@ -1262,7 +1348,7 @@
 
 
 <span class="k">def</span> <span class="nf">quaternion_about_axis</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return quaternion for rotation about axis.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return quaternion for rotation about axis.</span>
 
 <span class="sd">    &gt;&gt;&gt; q = quaternion_about_axis(0.123, (1, 0, 0))</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(q, [0.99810947, 0.06146124, 0, 0])</span>
@@ -1281,7 +1367,7 @@
 
 
 <span class="k">def</span> <span class="nf">quaternion_matrix</span><span class="p">(</span><span class="n">quaternion</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return homogeneous rotation matrix from quaternion.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return homogeneous rotation matrix from quaternion.</span>
 
 <span class="sd">    &gt;&gt;&gt; M = quaternion_matrix([0.99810947, 0.06146124, 0, 0])</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(M, rotation_matrix(0.123, (1, 0, 0)))</span>
@@ -1310,7 +1396,7 @@
 
 
 <span class="k">def</span> <span class="nf">quaternion_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">isprecise</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return quaternion from rotation matrix.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return quaternion from rotation matrix.</span>
 
 <span class="sd">    If isprecise=True, the input matrix is assumed to be a precise rotation</span>
 <span class="sd">    matrix and a faster algorithm is used.</span>
@@ -1389,7 +1475,7 @@
 
 
 <span class="k">def</span> <span class="nf">quaternion_multiply</span><span class="p">(</span><span class="n">quaternion1</span><span class="p">,</span> <span class="n">quaternion0</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return multiplication of two quaternions.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return multiplication of two quaternions.</span>
 
 <span class="sd">    &gt;&gt;&gt; q = quaternion_multiply([4, 1, -2, 3], [8, -5, 6, 7])</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(q, [28, -44, -14, 48])</span>
@@ -1407,7 +1493,7 @@
 
 
 <span class="k">def</span> <span class="nf">quaternion_conjugate</span><span class="p">(</span><span class="n">quaternion</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return conjugate of quaternion.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return conjugate of quaternion.</span>
 
 <span class="sd">    &gt;&gt;&gt; q0 = random_quaternion()</span>
 <span class="sd">    &gt;&gt;&gt; q1 = quaternion_conjugate(q0)</span>
@@ -1422,7 +1508,7 @@
 
 
 <span class="k">def</span> <span class="nf">quaternion_inverse</span><span class="p">(</span><span class="n">quaternion</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return inverse of quaternion.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return inverse of quaternion.</span>
 
 <span class="sd">    &gt;&gt;&gt; q0 = random_quaternion()</span>
 <span class="sd">    &gt;&gt;&gt; q1 = quaternion_inverse(q0)</span>
@@ -1434,7 +1520,7 @@
 
 
 <div class="viewcode-block" id="quaternion_real"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.quaternion_real">[docs]</a><span class="k">def</span> <span class="nf">quaternion_real</span><span class="p">(</span><span class="n">quaternion</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return real part of quaternion.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return real part of quaternion.</span>
 
 <span class="sd">    &gt;&gt;&gt; quaternion_real([3.0, 0.0, 1.0, 2.0])</span>
 <span class="sd">    3.0</span>
@@ -1444,7 +1530,7 @@
 
 
 <div class="viewcode-block" id="quaternion_imag"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.quaternion_imag">[docs]</a><span class="k">def</span> <span class="nf">quaternion_imag</span><span class="p">(</span><span class="n">quaternion</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return imaginary part of quaternion.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return imaginary part of quaternion.</span>
 
 <span class="sd">    &gt;&gt;&gt; quaternion_imag([3.0, 0.0, 1.0, 2.0])</span>
 <span class="sd">    [0.0, 1.0, 2.0]</span>
@@ -1454,7 +1540,7 @@
 
 
 <span class="k">def</span> <span class="nf">quaternion_slerp</span><span class="p">(</span><span class="n">quat0</span><span class="p">,</span> <span class="n">quat1</span><span class="p">,</span> <span class="n">fraction</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">shortestpath</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return spherical linear interpolation between two quaternions.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return spherical linear interpolation between two quaternions.</span>
 
 <span class="sd">    &gt;&gt;&gt; q0 = random_quaternion()</span>
 <span class="sd">    &gt;&gt;&gt; q1 = random_quaternion()</span>
@@ -1495,7 +1581,7 @@
 
 
 <span class="k">def</span> <span class="nf">random_quaternion</span><span class="p">(</span><span class="n">rand</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return uniform random unit quaternion.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return uniform random unit quaternion.</span>
 
 <span class="sd">    rand: array like or None</span>
 <span class="sd">        Three independent random variables that are uniformly distributed</span>
@@ -1527,7 +1613,7 @@
 
 
 <span class="k">def</span> <span class="nf">random_rotation_matrix</span><span class="p">(</span><span class="n">rand</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return uniform random rotation matrix.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return uniform random rotation matrix.</span>
 
 <span class="sd">    rnd: array like</span>
 <span class="sd">        Three independent random variables that are uniformly distributed</span>
@@ -1542,7 +1628,7 @@
 
 
 <div class="viewcode-block" id="Arcball"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball">[docs]</a><span class="k">class</span> <span class="nc">Arcball</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Virtual Trackball Control.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Virtual Trackball Control.</span>
 
 <span class="sd">    &gt;&gt;&gt; ball = Arcball()</span>
 <span class="sd">    &gt;&gt;&gt; ball = Arcball(initial=np.identity(4))</span>
@@ -1566,7 +1652,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize virtual trackball control.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize virtual trackball control.</span>
 
 <span class="sd">        initial : quaternion or rotation matrix</span>
 
@@ -1593,7 +1679,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_qnow</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qpre</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qdown</span>
 
 <div class="viewcode-block" id="Arcball.place"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball.place">[docs]</a>    <span class="k">def</span> <span class="nf">place</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Place Arcball, e.g. when window size changes.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Place Arcball, e.g. when window size changes.</span>
 
 <span class="sd">        center : sequence[2]</span>
 <span class="sd">            Window coordinates of trackball center.</span>
@@ -1606,22 +1692,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="Arcball.setaxes"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball.setaxes">[docs]</a>    <span class="k">def</span> <span class="nf">setaxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">axes</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set axes to constrain rotations.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set axes to constrain rotations.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">unit_vector</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span> <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="Arcball.setconstrain"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball.setconstrain">[docs]</a>    <span class="k">def</span> <span class="nf">setconstrain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">constrain</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set state of constrain to axis mode.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set state of constrain to axis mode.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_constrain</span> <span class="o">=</span> <span class="n">constrain</span> <span class="ow">is</span> <span class="kc">True</span></div>
 
 <div class="viewcode-block" id="Arcball.getconstrain"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball.getconstrain">[docs]</a>    <span class="k">def</span> <span class="nf">getconstrain</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return state of constrain to axis mode.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return state of constrain to axis mode.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_constrain</span></div>
 
 <div class="viewcode-block" id="Arcball.down"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball.down">[docs]</a>    <span class="k">def</span> <span class="nf">down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set initial cursor window coordinates and pick constrain-axis.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set initial cursor window coordinates and pick constrain-axis.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_vdown</span> <span class="o">=</span> <span class="n">arcball_map_to_sphere</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_center</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_radius</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_qdown</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qpre</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qnow</span>
 
@@ -1632,7 +1718,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_axis</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="Arcball.drag"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball.drag">[docs]</a>    <span class="k">def</span> <span class="nf">drag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Update current cursor window coordinates.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update current cursor window coordinates.&quot;&quot;&quot;</span>
         <span class="n">vnow</span> <span class="o">=</span> <span class="n">arcball_map_to_sphere</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_center</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_radius</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1648,17 +1734,17 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_qnow</span> <span class="o">=</span> <span class="n">quaternion_multiply</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qdown</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Arcball.next"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball.next">[docs]</a>    <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">acceleration</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Continue rotation in direction of last drag.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Continue rotation in direction of last drag.&quot;&quot;&quot;</span>
         <span class="n">q</span> <span class="o">=</span> <span class="n">quaternion_slerp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_qpre</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qnow</span><span class="p">,</span> <span class="mf">2.0</span> <span class="o">+</span> <span class="n">acceleration</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_qpre</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qnow</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qnow</span><span class="p">,</span> <span class="n">q</span></div>
 
 <div class="viewcode-block" id="Arcball.matrix"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball.matrix">[docs]</a>    <span class="k">def</span> <span class="nf">matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return homogeneous rotation matrix.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return homogeneous rotation matrix.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">quaternion_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_qnow</span><span class="p">)</span></div></div>
 
 
 <span class="k">def</span> <span class="nf">arcball_map_to_sphere</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return unit sphere coordinates from window coordinates.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return unit sphere coordinates from window coordinates.&quot;&quot;&quot;</span>
     <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
         <span class="p">(</span>
             <span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">radius</span><span class="p">,</span>
@@ -1675,7 +1761,7 @@
 
 
 <span class="k">def</span> <span class="nf">arcball_constrain_to_axis</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return sphere point perpendicular to axis.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return sphere point perpendicular to axis.&quot;&quot;&quot;</span>
     <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">v</span> <span class="o">-=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>  <span class="c1"># on plane</span>
@@ -1691,7 +1777,7 @@
 
 
 <div class="viewcode-block" id="arcball_nearest_axis"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.arcball_nearest_axis">[docs]</a><span class="k">def</span> <span class="nf">arcball_nearest_axis</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">axes</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return axis, which arc is nearest to point.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return axis, which arc is nearest to point.&quot;&quot;&quot;</span>
     <span class="n">point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">nearest</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">mx</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
@@ -1724,7 +1810,7 @@
 
 
 <span class="k">def</span> <span class="nf">vector_norm</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return length, i.e. eucledian norm, of ndarray along axis.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return length, i.e. eucledian norm, of ndarray along axis.</span>
 
 <span class="sd">    &gt;&gt;&gt; v = np.random.random(3)</span>
 <span class="sd">    &gt;&gt;&gt; n = vector_norm(v)</span>
@@ -1763,7 +1849,7 @@
 
 
 <span class="k">def</span> <span class="nf">unit_vector</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return ndarray normalized by length, i.e. eucledian norm, along axis.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return ndarray normalized by length, i.e. eucledian norm, along axis.</span>
 
 <span class="sd">    &gt;&gt;&gt; v0 = np.random.random(3)</span>
 <span class="sd">    &gt;&gt;&gt; v1 = unit_vector(v0)</span>
@@ -1807,7 +1893,7 @@
 
 
 <span class="k">def</span> <span class="nf">random_vector</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return array of random doubles in the half-open interval [0.0, 1.0).</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return array of random doubles in the half-open interval [0.0, 1.0).</span>
 
 <span class="sd">    &gt;&gt;&gt; v = random_vector(10000)</span>
 <span class="sd">    &gt;&gt;&gt; np.all(v &gt;= 0.0) and np.all(v &lt; 1.0)</span>
@@ -1822,7 +1908,7 @@
 
 
 <span class="k">def</span> <span class="nf">inverse_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return inverse of square transformation matrix.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return inverse of square transformation matrix.</span>
 
 <span class="sd">    &gt;&gt;&gt; M0 = random_rotation_matrix()</span>
 <span class="sd">    &gt;&gt;&gt; M1 = inverse_matrix(M0.T)</span>
@@ -1838,7 +1924,7 @@
 
 
 <div class="viewcode-block" id="concatenate_matrices"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.concatenate_matrices">[docs]</a><span class="k">def</span> <span class="nf">concatenate_matrices</span><span class="p">(</span><span class="o">*</span><span class="n">matrices</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return concatenation of series of transformation matrices.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return concatenation of series of transformation matrices.</span>
 
 <span class="sd">    &gt;&gt;&gt; M = np.random.rand(16).reshape((4, 4)) - 0.5</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(M, concatenate_matrices(M))</span>
@@ -1854,7 +1940,7 @@
 
 
 <span class="k">def</span> <span class="nf">is_same_transform</span><span class="p">(</span><span class="n">matrix0</span><span class="p">,</span> <span class="n">matrix1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return True if two matrices perform same transformation.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True if two matrices perform same transformation.</span>
 
 <span class="sd">    &gt;&gt;&gt; is_same_transform(np.identity(4), np.identity(4))</span>
 <span class="sd">    True</span>
@@ -1870,7 +1956,7 @@
 
 
 <span class="k">def</span> <span class="nf">_import_module</span><span class="p">(</span><span class="n">module_name</span><span class="p">,</span> <span class="n">warn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;_py_&#39;</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="s1">&#39;_&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Try import all public attributes from module into global namespace.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Try import all public attributes from module into global namespace.</span>
 
 <span class="sd">    Existing attributes with name clashes are renamed with prefix.</span>
 <span class="sd">    Attributes starting with underscore are ignored by default.</span>
@@ -1902,7 +1988,7 @@
 <span class="c1"># orbeckst --- some simple geometry</span>
 
 <div class="viewcode-block" id="rotaxis"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.rotaxis">[docs]</a><span class="k">def</span> <span class="nf">rotaxis</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return the rotation axis to rotate vector a into b.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the rotation axis to rotate vector a into b.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1933,16 +2019,18 @@
 </pre></div>
 
            </div>
+           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
-  </div>
+    <p>
+        &#169; Copyright 2005-2023, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.
 
-  
+    </p>
+  </div>
  
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
@@ -1955,7 +2043,9 @@
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
   <script>
     var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
@@ -1975,11 +2065,18 @@
         </dl>
 
     </div>
-</div><script>
+</div>
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

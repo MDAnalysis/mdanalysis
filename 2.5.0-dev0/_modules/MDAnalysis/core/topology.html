@@ -1,25 +1,45 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>MDAnalysis.core.topology &mdash; MDAnalysis 2.5.0-dev0 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script src="../../../_static/js/versions.js"></script>
-    <script src="../../../_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 2.5.0-dev0 documentation"
           href="../../../_static/opensearch.xml"/>
@@ -27,17 +47,33 @@
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-            <a href="../../../index.html">
-            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> MDAnalysis
+          
+
+          
           </a>
+
+          
+            
+            
               <div class="version">
                 2.5.0-dev0
               </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -45,7 +81,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
@@ -75,30 +122,69 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">MDAnalysis</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">MDAnalysis.core.topology</li>
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.core.topology</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <h1>Source code for MDAnalysis.core.topology</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
 <span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8</span>
@@ -168,7 +254,7 @@
 
 
 <div class="viewcode-block" id="make_downshift_arrays"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.make_downshift_arrays">[docs]</a><span class="k">def</span> <span class="nf">make_downshift_arrays</span><span class="p">(</span><span class="n">upshift</span><span class="p">,</span> <span class="n">nparents</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;From an upwards translation table, create the opposite direction</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;From an upwards translation table, create the opposite direction</span>
 
 <span class="sd">    Turns a many to one mapping (eg atoms to residues) to a one to many mapping</span>
 <span class="sd">    (residues to atoms)</span>
@@ -237,7 +323,7 @@
 
 
 <div class="viewcode-block" id="TransTable"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable">[docs]</a><span class="k">class</span> <span class="nc">TransTable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Membership tables with methods to translate indices across levels.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Membership tables with methods to translate indices across levels.</span>
 
 <span class="sd">    There are three levels; Atom, Residue and Segment.  Each Atom **must**</span>
 <span class="sd">    belong in a Residue, each Residue **must** belong to a Segment.</span>
@@ -307,7 +393,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_SR</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="TransTable.copy"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a deepcopy of this Transtable&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a deepcopy of this Transtable&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_residues</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_segments</span><span class="p">,</span>
                               <span class="n">atom_resindex</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_AR</span><span class="p">,</span> <span class="n">residue_segindex</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_RS</span><span class="p">)</span></div>
 
@@ -327,14 +413,14 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The shape of the table, ``(n_atoms, n_residues, n_segments)``.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The shape of the table, ``(n_atoms, n_residues, n_segments)``.</span>
 
 <span class="sd">        :meta private:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_residues</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_segments</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TransTable.atoms2residues"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.atoms2residues">[docs]</a>    <span class="k">def</span> <span class="nf">atoms2residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aix</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get residue indices for each atom.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get residue indices for each atom.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -350,7 +436,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_AR</span><span class="p">[</span><span class="n">aix</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="TransTable.residues2atoms_1d"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.residues2atoms_1d">[docs]</a>    <span class="k">def</span> <span class="nf">residues2atoms_1d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rix</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get atom indices collectively represented by given residue indices.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get atom indices collectively represented by given residue indices.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -371,7 +457,7 @@
             <span class="k">return</span> <span class="n">RA</span><span class="p">[</span><span class="n">rix</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TransTable.residues2atoms_2d"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.residues2atoms_2d">[docs]</a>    <span class="k">def</span> <span class="nf">residues2atoms_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rix</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get atom indices represented by each residue index.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get atom indices represented by each residue index.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -393,7 +479,7 @@
             <span class="k">return</span> <span class="p">[</span><span class="n">RA</span><span class="p">[</span><span class="n">rix</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()]</span>  <span class="c1"># why would this be singular for 2d?</span></div>
 
 <div class="viewcode-block" id="TransTable.residues2segments"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.residues2segments">[docs]</a>    <span class="k">def</span> <span class="nf">residues2segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rix</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get segment indices for each residue.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get segment indices for each residue.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -409,7 +495,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_RS</span><span class="p">[</span><span class="n">rix</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="TransTable.segments2residues_1d"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.segments2residues_1d">[docs]</a>    <span class="k">def</span> <span class="nf">segments2residues_1d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">six</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get residue indices collectively represented by given segment indices</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get residue indices collectively represented by given segment indices</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -430,7 +516,7 @@
             <span class="k">return</span> <span class="n">SR</span><span class="p">[</span><span class="n">six</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TransTable.segments2residues_2d"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.segments2residues_2d">[docs]</a>    <span class="k">def</span> <span class="nf">segments2residues_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">six</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get residue indices represented by each segment index.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get residue indices represented by each segment index.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -453,7 +539,7 @@
 
     <span class="c1"># Compound moves, does 2 translations</span>
 <div class="viewcode-block" id="TransTable.atoms2segments"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.atoms2segments">[docs]</a>    <span class="k">def</span> <span class="nf">atoms2segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aix</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get segment indices for each atom.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get segment indices for each atom.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -470,7 +556,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">residues2segments</span><span class="p">(</span><span class="n">rix</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TransTable.segments2atoms_1d"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.segments2atoms_1d">[docs]</a>    <span class="k">def</span> <span class="nf">segments2atoms_1d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">six</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get atom indices collectively represented by given segment indices.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get atom indices collectively represented by given segment indices.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -487,7 +573,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">residues2atoms_1d</span><span class="p">(</span><span class="n">rix</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TransTable.segments2atoms_2d"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.segments2atoms_2d">[docs]</a>    <span class="k">def</span> <span class="nf">segments2atoms_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">six</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get atom indices represented by each segment index.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get atom indices represented by each segment index.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -508,12 +594,12 @@
 
     <span class="c1"># Move between different groups.</span>
 <div class="viewcode-block" id="TransTable.move_atom"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.move_atom">[docs]</a>    <span class="k">def</span> <span class="nf">move_atom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aix</span><span class="p">,</span> <span class="n">rix</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Move aix to be in rix&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Move aix to be in rix&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_AR</span><span class="p">[</span><span class="n">aix</span><span class="p">]</span> <span class="o">=</span> <span class="n">rix</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_RA</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="TransTable.move_residue"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.move_residue">[docs]</a>    <span class="k">def</span> <span class="nf">move_residue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rix</span><span class="p">,</span> <span class="n">six</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Move rix to be in six&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Move rix to be in six&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_RS</span><span class="p">[</span><span class="n">rix</span><span class="p">]</span> <span class="o">=</span> <span class="n">six</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_SR</span> <span class="o">=</span> <span class="kc">None</span></div>
 
@@ -541,7 +627,7 @@
 
 
 <div class="viewcode-block" id="Topology"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.Topology">[docs]</a><span class="k">class</span> <span class="nc">Topology</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;In-memory, array-based topology database.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In-memory, array-based topology database.</span>
 
 <span class="sd">    The topology model of MDanalysis features atoms, which must each be a</span>
 <span class="sd">    member of one residue. Each residue, in turn, must be a member of one</span>
@@ -555,7 +641,7 @@
                  <span class="n">attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">atom_resindex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">residue_segindex</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        n_atoms : int</span>
@@ -587,7 +673,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Topology.copy"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.Topology.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a deepcopy of this Topology&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a deepcopy of this Topology&quot;&quot;&quot;</span>
         <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="c1"># copy the tt</span>
         <span class="n">new</span><span class="o">.</span><span class="n">tt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -611,7 +697,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">n_segments</span>
 
 <div class="viewcode-block" id="Topology.add_TopologyAttr"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.Topology.add_TopologyAttr">[docs]</a>    <span class="k">def</span> <span class="nf">add_TopologyAttr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topologyattr</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add a new TopologyAttr to the Topology.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a new TopologyAttr to the Topology.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -623,7 +709,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">topologyattr</span><span class="o">.</span><span class="n">attrname</span><span class="p">,</span> <span class="n">topologyattr</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Topology.del_TopologyAttr"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.Topology.del_TopologyAttr">[docs]</a>    <span class="k">def</span> <span class="nf">del_TopologyAttr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topologyattr</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Remove a TopologyAttr from the Topology.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove a TopologyAttr from the Topology.</span>
 
 <span class="sd">        If it is not present, nothing happens.</span>
 
@@ -639,20 +725,20 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">guessed_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;A list of the guessed attributes in this topology&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A list of the guessed attributes in this topology&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">is_guessed</span>
                       <span class="k">if</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">is_guessed</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Container</span><span class="p">))</span>
                       <span class="k">else</span> <span class="kc">True</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">is_guessed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">read_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;A list of the attributes read from the topology&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A list of the attributes read from the topology&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">is_guessed</span>
                       <span class="k">if</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">is_guessed</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Container</span><span class="p">))</span>
                       <span class="k">else</span> <span class="kc">False</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">is_guessed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Topology.add_Residue"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.Topology.add_Residue">[docs]</a>    <span class="k">def</span> <span class="nf">add_Residue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">segment</span><span class="p">,</span> <span class="o">**</span><span class="n">new_attrs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        residx of the new Residue</span>
@@ -690,7 +776,7 @@
         <span class="k">return</span> <span class="n">residx</span></div>
 
 <div class="viewcode-block" id="Topology.add_Segment"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.Topology.add_Segment">[docs]</a>    <span class="k">def</span> <span class="nf">add_Segment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">new_attrs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Adds a new Segment to the Topology</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a new Segment to the Topology</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -734,16 +820,18 @@
 </pre></div>
 
            </div>
+           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
-  </div>
+    <p>
+        &#169; Copyright 2005-2023, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.
 
-  
+    </p>
+  </div>
  
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
@@ -756,7 +844,9 @@
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
   <script>
     var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
@@ -776,11 +866,18 @@
         </dl>
 
     </div>
-</div><script>
+</div>
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

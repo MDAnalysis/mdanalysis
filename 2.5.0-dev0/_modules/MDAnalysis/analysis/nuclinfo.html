@@ -1,25 +1,45 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>MDAnalysis.analysis.nuclinfo &mdash; MDAnalysis 2.5.0-dev0 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script src="../../../_static/js/versions.js"></script>
-    <script src="../../../_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 2.5.0-dev0 documentation"
           href="../../../_static/opensearch.xml"/>
@@ -27,17 +47,33 @@
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-            <a href="../../../index.html">
-            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> MDAnalysis
+          
+
+          
           </a>
+
+          
+            
+            
               <div class="version">
                 2.5.0-dev0
               </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -45,7 +81,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
@@ -75,30 +122,69 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">MDAnalysis</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">MDAnalysis.analysis.nuclinfo</li>
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.analysis.nuclinfo</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <h1>Source code for MDAnalysis.analysis.nuclinfo</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
 <span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
@@ -208,7 +294,7 @@
 
 
 <div class="viewcode-block" id="wc_pair"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.wc_pair">[docs]</a><span class="k">def</span> <span class="nf">wc_pair</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">bp</span><span class="p">,</span> <span class="n">seg1</span><span class="o">=</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">,</span> <span class="n">seg2</span><span class="o">=</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Watson-Crick basepair distance for residue `i` with residue `bp`.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Watson-Crick basepair distance for residue `i` with residue `bp`.</span>
 
 <span class="sd">    The distance of the nitrogen atoms in a Watson-Crick hydrogen bond is</span>
 <span class="sd">    computed.</span>
@@ -251,7 +337,7 @@
 
 
 <div class="viewcode-block" id="minor_pair"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.minor_pair">[docs]</a><span class="k">def</span> <span class="nf">minor_pair</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">bp</span><span class="p">,</span> <span class="n">seg1</span><span class="o">=</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">,</span> <span class="n">seg2</span><span class="o">=</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Minor-Groove basepair distance for residue `i` with residue `bp`.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Minor-Groove basepair distance for residue `i` with residue `bp`.</span>
 
 <span class="sd">    The distance of the nitrogen and oxygen atoms in a Minor-groove hydrogen</span>
 <span class="sd">    bond is computed.</span>
@@ -293,7 +379,7 @@
 
 
 <div class="viewcode-block" id="major_pair"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.major_pair">[docs]</a><span class="k">def</span> <span class="nf">major_pair</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">bp</span><span class="p">,</span> <span class="n">seg1</span><span class="o">=</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">,</span> <span class="n">seg2</span><span class="o">=</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Major-Groove basepair distance for residue `i` with residue `bp`.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Major-Groove basepair distance for residue `i` with residue `bp`.</span>
 
 <span class="sd">    The distance of the nitrogen and oxygen atoms in a Major-groove hydrogen</span>
 <span class="sd">    bond is computed.</span>
@@ -342,7 +428,7 @@
 
 
 <div class="viewcode-block" id="phase_cp"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.phase_cp">[docs]</a><span class="k">def</span> <span class="nf">phase_cp</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Pseudo-angle describing the phase of the ribose pucker for residue `i` using the CP method.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pseudo-angle describing the phase of the ribose pucker for residue `i` using the CP method.</span>
 
 <span class="sd">    The angle is computed by the positions of atoms in the ribose ring.</span>
 
@@ -413,7 +499,7 @@
 
 
 <div class="viewcode-block" id="phase_as"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.phase_as">[docs]</a><span class="k">def</span> <span class="nf">phase_as</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Pseudo-angle describing the phase of the ribose pucker for residue `i` using the AS method</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pseudo-angle describing the phase of the ribose pucker for residue `i` using the AS method</span>
 
 <span class="sd">    The angle is computed by the position vector of atoms in the ribose ring.</span>
 
@@ -482,7 +568,7 @@
 
 
 <div class="viewcode-block" id="tors"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.tors">[docs]</a><span class="k">def</span> <span class="nf">tors</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Calculation of nucleic backbone dihedral angles.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculation of nucleic backbone dihedral angles.</span>
 
 <span class="sd">    The dihedral angles are alpha, beta, gamma, delta, epsilon, zeta, chi.</span>
 
@@ -561,7 +647,7 @@
 
 
 <div class="viewcode-block" id="tors_alpha"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.tors_alpha">[docs]</a><span class="k">def</span> <span class="nf">tors_alpha</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;alpha backbone dihedral</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;alpha backbone dihedral</span>
 
 <span class="sd">    The dihedral is computed based on position atoms for resid `i`.</span>
 
@@ -591,7 +677,7 @@
 
 
 <div class="viewcode-block" id="tors_beta"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.tors_beta">[docs]</a><span class="k">def</span> <span class="nf">tors_beta</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;beta  backbone dihedral</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;beta  backbone dihedral</span>
 
 <span class="sd">    The dihedral is computed based on position atoms for resid `i`.</span>
 
@@ -621,7 +707,7 @@
 
 
 <div class="viewcode-block" id="tors_gamma"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.tors_gamma">[docs]</a><span class="k">def</span> <span class="nf">tors_gamma</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Gamma backbone dihedral</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Gamma backbone dihedral</span>
 
 <span class="sd">    The dihedral is computed based on position atoms for resid `i`.</span>
 
@@ -651,7 +737,7 @@
 
 
 <div class="viewcode-block" id="tors_delta"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.tors_delta">[docs]</a><span class="k">def</span> <span class="nf">tors_delta</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;delta backbone dihedral</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;delta backbone dihedral</span>
 
 <span class="sd">    The dihedral is computed based on position atoms for resid `i`.</span>
 
@@ -681,7 +767,7 @@
 
 
 <div class="viewcode-block" id="tors_eps"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.tors_eps">[docs]</a><span class="k">def</span> <span class="nf">tors_eps</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Epsilon backbone dihedral</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Epsilon backbone dihedral</span>
 
 <span class="sd">    The dihedral is computed based on position atoms for resid `i`.</span>
 
@@ -711,7 +797,7 @@
 
 
 <div class="viewcode-block" id="tors_zeta"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.tors_zeta">[docs]</a><span class="k">def</span> <span class="nf">tors_zeta</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Zeta backbone dihedral</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Zeta backbone dihedral</span>
 
 <span class="sd">    The dihedral is computed based on position atoms for resid `i`.</span>
 
@@ -741,7 +827,7 @@
 
 
 <div class="viewcode-block" id="tors_chi"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.tors_chi">[docs]</a><span class="k">def</span> <span class="nf">tors_chi</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;chi nucleic acid dihedral</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;chi nucleic acid dihedral</span>
 
 <span class="sd">     The dihedral is computed based on position atoms for resid `i`.</span>
 
@@ -776,7 +862,7 @@
 
 
 <div class="viewcode-block" id="hydroxyl"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.hydroxyl">[docs]</a><span class="k">def</span> <span class="nf">hydroxyl</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">seg</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;2-hydroxyl dihedral. Useful only for RNA calculations.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;2-hydroxyl dihedral. Useful only for RNA calculations.</span>
 
 <span class="sd">     .. Note:: This dihedral calculation will only work if using atom</span>
 <span class="sd">               names as documented by charmm force field parameters,</span>
@@ -816,7 +902,7 @@
 
 <div class="viewcode-block" id="pseudo_dihe_baseflip"><a class="viewcode-back" href="../../../documentation_pages/analysis/nuclinfo.html#MDAnalysis.analysis.nuclinfo.pseudo_dihe_baseflip">[docs]</a><span class="k">def</span> <span class="nf">pseudo_dihe_baseflip</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">bp1</span><span class="p">,</span> <span class="n">bp2</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span>
                          <span class="n">seg1</span><span class="o">=</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">,</span> <span class="n">seg2</span><span class="o">=</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">,</span> <span class="n">seg3</span><span class="o">=</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;pseudo dihedral for flipped bases. Useful only for nucleic acid base flipping</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;pseudo dihedral for flipped bases. Useful only for nucleic acid base flipping</span>
 
 <span class="sd">    The dihedral is computed based on position atoms for resid `i`</span>
 
@@ -864,16 +950,18 @@
 </pre></div>
 
            </div>
+           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
-  </div>
+    <p>
+        &#169; Copyright 2005-2023, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.
 
-  
+    </p>
+  </div>
  
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
@@ -886,7 +974,9 @@
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
   <script>
     var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
@@ -906,11 +996,18 @@
         </dl>
 
     </div>
-</div><script>
+</div>
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

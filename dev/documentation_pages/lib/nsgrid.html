@@ -1,27 +1,47 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>13.2.4. Neighbor search library — MDAnalysis.lib.nsgrid &mdash; MDAnalysis 2.5.0-dev0 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
-    <script src="../../_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 2.5.0-dev0 documentation"
           href="../../_static/opensearch.xml"/>
@@ -31,17 +51,33 @@
     <link rel="prev" title="13.2.3. Neighbor Search wrapper for MDAnalysis — MDAnalysis.lib.NeighborSearch" href="NeighborSearch.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-            <a href="../../index.html">
-            <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> MDAnalysis
+          
+
+          
           </a>
+
+          
+            
+            
               <div class="version">
                 2.5.0-dev0
               </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -49,7 +85,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
@@ -139,35 +186,77 @@
 <li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">MDAnalysis</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="../lib_modules.html"><span class="section-number">13. </span>Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-      <li class="breadcrumb-item active"><span class="section-number">13.2.4. </span>Neighbor search library — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid</span></code></li>
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../lib_modules.html"><span class="section-number">13. </span>Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a> &raquo;</li>
+        
+      <li><span class="section-number">13.2.4. </span>Neighbor search library — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid</span></code></li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
+          
             <a href="../../_sources/documentation_pages/lib/nsgrid.rst.txt" rel="nofollow"> View page source</a>
+          
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <span class="target" id="module-MDAnalysis.lib.nsgrid"></span><section id="neighbor-search-library-mdanalysis-lib-nsgrid">
-<h1><span class="section-number">13.2.4. </span>Neighbor search library — <a class="reference internal" href="#module-MDAnalysis.lib.nsgrid" title="MDAnalysis.lib.nsgrid"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a><a class="headerlink" href="#neighbor-search-library-mdanalysis-lib-nsgrid" title="Permalink to this heading"></a></h1>
+<h1><span class="section-number">13.2.4. </span>Neighbor search library — <a class="reference internal" href="#module-MDAnalysis.lib.nsgrid" title="MDAnalysis.lib.nsgrid"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a><a class="headerlink" href="#neighbor-search-library-mdanalysis-lib-nsgrid" title="Permalink to this heading">¶</a></h1>
 <section id="about-the-code">
-<h2><span class="section-number">13.2.4.1. </span>About the code<a class="headerlink" href="#about-the-code" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">13.2.4.1. </span>About the code<a class="headerlink" href="#about-the-code" title="Permalink to this heading">¶</a></h2>
 <p>This Neighbor search library is a serialized Cython version greatly
 inspired by the NS grid search implemented in
 <a class="reference external" href="http://www.gromacs.org/">GROMACS</a> .</p>
@@ -178,10 +267,10 @@ was used as reference to write this file.</p>
 <p>GROMACS 4.x code is released under the GNU Public Licence v2.</p>
 </section>
 <section id="about-the-algorithm">
-<h2><span class="section-number">13.2.4.2. </span>About the algorithm<a class="headerlink" href="#about-the-algorithm" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">13.2.4.2. </span>About the algorithm<a class="headerlink" href="#about-the-algorithm" title="Permalink to this heading">¶</a></h2>
 <p>The neighbor search implemented here is based on
 <a class="reference external" href="https://en.wikipedia.org/wiki/Cell_lists">cell lists</a> which allow
-computation of pairs <a class="footnote-reference brackets" href="#id2" id="id1">1</a> with a cost of <span class="math notranslate nohighlight">\(O(N)\)</span>, instead
+computation of pairs <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> with a cost of <span class="math notranslate nohighlight">\(O(N)\)</span>, instead
 of <span class="math notranslate nohighlight">\(O(N^2)\)</span>. The basic algorithm is described in
 Appendix F,  Page 552 of
 <code class="docutils literal notranslate"><span class="pre">Understanding</span> <span class="pre">Molecular</span> <span class="pre">Dynamics:</span> <span class="pre">From</span> <span class="pre">Algorithm</span> <span class="pre">to</span> <span class="pre">Applications</span></code> by Frenkel and Smit.</p>
@@ -192,11 +281,12 @@ domain followed by distance evaluations within the identified cell and
 neighboring cells only. Care must be taken to ensure that <cite>cellsize</cite> is
 greater than the desired search distance, otherwise all of the neighbours might
 not reflect in the results.</p>
-<dl class="footnote brackets">
-<dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
-<dd><p>a pair correspond to two particles that are considered as neighbors .</p>
-</dd>
-</dl>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id2" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>a pair correspond to two particles that are considered as neighbors .</p>
+</aside>
+</aside>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.19.0.</span></p>
 </div>
@@ -209,12 +299,12 @@ a 32 bit signed integer.</p>
 </div>
 </section>
 <section id="classes">
-<h2><span class="section-number">13.2.4.3. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">13.2.4.3. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading">¶</a></h2>
 </section>
 </section>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.lib.nsgrid.FastNS">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.nsgrid.</span></span><span class="sig-name descname"><span class="pre">FastNS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.FastNS" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.nsgrid.</span></span><span class="sig-name descname"><span class="pre">FastNS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.FastNS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Grid based search between positions</p>
 <p>Minimum image convention is used for distance evaluations
 if pbc is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
@@ -227,7 +317,7 @@ to construct a pseudo box. Subsequently, the origin should also be
 shifted to <code class="docutils literal notranslate"><span class="pre">[xmin,</span> <span class="pre">ymin,</span> <span class="pre">zmin]</span></code>. These arguments must be provided
 to the function.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Desired cutoff distance</p></li>
 <li><p><strong>coords</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>numpy.ndarray</em></a>) – atom coordinates of shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">3)</span></code> for <code class="docutils literal notranslate"><span class="pre">N</span></code> atoms.
@@ -271,7 +361,7 @@ for <code class="docutils literal notranslate"><span class="pre">box</span></cod
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.nsgrid.FastNS.search">
-<span class="sig-name descname"><span class="pre">search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float[:</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">:]</span> <span class="pre">search_coords</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.FastNS.search" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float[:</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">:]</span> <span class="pre">search_coords</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.FastNS.search" title="Permalink to this definition">¶</a></dt>
 <dd><p>Search a group of atoms against initialized coordinates</p>
 <p>Creates a new grid with the query atoms and searches
 against the initialized coordinates. The search is exclusive
@@ -281,16 +371,16 @@ neighbors.</p>
 <p>PBC-aware/non PBC-aware calculations are automatically enabled during
 the instantiation of :class:FastNS.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>search_coords</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>numpy.ndarray</em></a>) – Query coordinates of shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">3)</span></code> where
 <code class="docutils literal notranslate"><span class="pre">N</span></code> is the number of queries</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>results</strong> – An <a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults" title="MDAnalysis.lib.nsgrid.NSResults"><code class="xref py py-class docutils literal notranslate"><span class="pre">NSResults</span></code></a> object holding neighbor search results, which
 can be accessed by its methods <a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults.get_pairs" title="MDAnalysis.lib.nsgrid.NSResults.get_pairs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_pairs()</span></code></a> and
 <a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults.get_pair_distances" title="MDAnalysis.lib.nsgrid.NSResults.get_pair_distances"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_pair_distances()</span></code></a>.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults" title="MDAnalysis.lib.nsgrid.NSResults">NSResults</a></p>
 </dd>
 </dl>
@@ -304,19 +394,19 @@ if any of the query coordinates lies outside the <cite>box</cite> supplied to
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.nsgrid.FastNS.self_search">
-<span class="sig-name descname"><span class="pre">self_search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.FastNS.self_search" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">self_search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.FastNS.self_search" title="Permalink to this definition">¶</a></dt>
 <dd><p>Searches all the pairs within the initialized coordinates</p>
 <p>All the pairs among the initialized coordinates are registered
 in hald the time. Although the algorithm is still the same, but
 the distance checks can be reduced to half in this particular case
 as every pair need not be evaluated twice.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>results</strong> – An <a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults" title="MDAnalysis.lib.nsgrid.NSResults"><code class="xref py py-class docutils literal notranslate"><span class="pre">NSResults</span></code></a> object holding neighbor search results, which
 can be accessed by its methods <a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults.get_pairs" title="MDAnalysis.lib.nsgrid.NSResults.get_pairs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_pairs()</span></code></a> and
 <a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults.get_pair_distances" title="MDAnalysis.lib.nsgrid.NSResults.get_pair_distances"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_pair_distances()</span></code></a>.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults" title="MDAnalysis.lib.nsgrid.NSResults">NSResults</a></p>
 </dd>
 </dl>
@@ -326,14 +416,14 @@ can be accessed by its methods <a class="reference internal" href="#MDAnalysis.l
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.lib.nsgrid.NSResults">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.nsgrid.</span></span><span class="sig-name descname"><span class="pre">NSResults</span></span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.NSResults" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.nsgrid.</span></span><span class="sig-name descname"><span class="pre">NSResults</span></span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.NSResults" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class to store the results</p>
 <p>All outputs from <a class="reference internal" href="#MDAnalysis.lib.nsgrid.FastNS" title="MDAnalysis.lib.nsgrid.FastNS"><code class="xref py py-class docutils literal notranslate"><span class="pre">FastNS</span></code></a> are stored in an instance of this class.
 All methods of <a class="reference internal" href="#MDAnalysis.lib.nsgrid.FastNS" title="MDAnalysis.lib.nsgrid.FastNS"><code class="xref py py-class docutils literal notranslate"><span class="pre">FastNS</span></code></a> return an instance of this class, which can
 be used to  generate the desired results on demand.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.nsgrid.NSResults.get_pair_distances">
-<span class="sig-name descname"><span class="pre">get_pair_distances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.NSResults.get_pair_distances" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_pair_distances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.NSResults.get_pair_distances" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns all the distances corresponding to each pair of neighbors</p>
 <p>Returns an array of shape <code class="docutils literal notranslate"><span class="pre">N</span></code> where N is the number of pairs
 among the query atoms and initial atoms within a specified distance.
@@ -341,11 +431,11 @@ Every element <code class="docutils literal notranslate"><span class="pre">[i]</
 <code class="docutils literal notranslate"><span class="pre">pairs[i,</span> <span class="pre">0]</span></code> and <code class="docutils literal notranslate"><span class="pre">pairs[i,</span> <span class="pre">1]</span></code>, where pairs is the array
 obtained from <code class="docutils literal notranslate"><span class="pre">get_pairs()</span></code></p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>distances</strong> – distances between pairs of query and initial
 atom coordinates of shape <code class="docutils literal notranslate"><span class="pre">N</span></code></p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -357,7 +447,7 @@ atom coordinates of shape <code class="docutils literal notranslate"><span class
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.nsgrid.NSResults.get_pairs">
-<span class="sig-name descname"><span class="pre">get_pairs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.NSResults.get_pairs" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_pairs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.NSResults.get_pairs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns all the pairs within the desired cutoff distance</p>
 <p>Returns an array of shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">2)</span></code>, where N is the number of pairs
 between <code class="docutils literal notranslate"><span class="pre">reference</span></code> and <code class="docutils literal notranslate"><span class="pre">configuration</span></code> within the specified distance.
@@ -366,11 +456,11 @@ atom positions such that <code class="docutils literal notranslate"><span class=
 atoms while <code class="docutils literal notranslate"><span class="pre">configuration</span></code> coontains the position of group of
 atoms used to search against  the query atoms.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>pairs</strong> – pairs of atom indices of neighbors from query
 and initial atom coordinates of shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">2)</span></code></p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -381,19 +471,22 @@ and initial atom coordinates of shape <code class="docutils literal notranslate"
 
 
            </div>
+           
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="NeighborSearch.html" class="btn btn-neutral float-left" title="13.2.3. Neighbor Search wrapper for MDAnalysis — MDAnalysis.lib.NeighborSearch" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="pkdtree.html" class="btn btn-neutral float-right" title="13.2.5. PeriodicKDTree — MDAnalysis.lib.pkdtree" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="NeighborSearch.html" class="btn btn-neutral float-left" title="13.2.3. Neighbor Search wrapper for MDAnalysis — MDAnalysis.lib.NeighborSearch" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
-  </div>
+    <p>
+        &#169; Copyright 2005-2023, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.
 
-  
+    </p>
+  </div>
  
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
@@ -406,7 +499,9 @@ and initial atom coordinates of shape <code class="docutils literal notranslate"
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
   <script>
     var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
@@ -426,11 +521,18 @@ and initial atom coordinates of shape <code class="docutils literal notranslate"
         </dl>
 
     </div>
-</div><script>
+</div>
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

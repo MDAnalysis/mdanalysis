@@ -1,25 +1,45 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>MDAnalysis.core.selection &mdash; MDAnalysis 2.5.0-dev0 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script src="../../../_static/js/versions.js"></script>
-    <script src="../../../_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 2.5.0-dev0 documentation"
           href="../../../_static/opensearch.xml"/>
@@ -27,17 +47,33 @@
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-            <a href="../../../index.html">
-            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> MDAnalysis
+          
+
+          
           </a>
+
+          
+            
+            
               <div class="version">
                 2.5.0-dev0
               </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -45,7 +81,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
@@ -75,30 +122,69 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">MDAnalysis</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">MDAnalysis.core.selection</li>
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.core.selection</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <h1>Source code for MDAnalysis.core.selection</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-</span>
 <span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
@@ -167,7 +253,7 @@
 <span class="n">RANGE_PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;\s*(?:[:-]| to )\s*&quot;</span>
 
 <div class="viewcode-block" id="is_keyword"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.is_keyword">[docs]</a><span class="k">def</span> <span class="nf">is_keyword</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Is val a selection keyword?</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Is val a selection keyword?</span>
 
 <span class="sd">    Returns False on any of the following strings:</span>
 <span class="sd">      - keys in SELECTIONDICT (tokens from Selection objects)</span>
@@ -182,7 +268,7 @@
 
 
 <div class="viewcode-block" id="grab_not_keywords"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.grab_not_keywords">[docs]</a><span class="k">def</span> <span class="nf">grab_not_keywords</span><span class="p">(</span><span class="n">tokens</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Pop tokens from the left until you hit a keyword</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pop tokens from the left until you hit a keyword</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -218,7 +304,7 @@
 
 
 <div class="viewcode-block" id="join_separated_values"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.join_separated_values">[docs]</a><span class="k">def</span> <span class="nf">join_separated_values</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Join range values that are separated by whitespace</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Join range values that are separated by whitespace</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -312,7 +398,7 @@
         <span class="k">return</span> <span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
 
 <div class="viewcode-block" id="return_empty_on_apply"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.return_empty_on_apply">[docs]</a><span class="k">def</span> <span class="nf">return_empty_on_apply</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Decorator to return empty AtomGroups from the apply() function</span>
 <span class="sd">    without evaluating it</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -381,7 +467,7 @@
 
 
 <div class="viewcode-block" id="ByResSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.ByResSelection">[docs]</a><span class="k">class</span> <span class="nc">ByResSelection</span><span class="p">(</span><span class="n">UnarySelection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Selects all atoms that are in the same segment and residue as selection</span>
 
 <span class="sd">    .. versionchanged:: 1.0.0</span>
@@ -710,7 +796,7 @@
 
 
 <div class="viewcode-block" id="SingleCharSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SingleCharSelection">[docs]</a><span class="k">class</span> <span class="nc">SingleCharSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;for when an attribute is just a single character, eg RSChirality</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;for when an attribute is just a single character, eg RSChirality</span>
 
 <span class="sd">    .. versionadded:: 2.1.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -732,7 +818,7 @@
 
 
 <span class="k">class</span> <span class="nc">_ProtoStringSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Selections based on text attributes</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Selections based on text attributes</span>
 
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">        Supports multiple wildcards, based on fnmatch</span>
@@ -763,7 +849,7 @@
 
 
 <div class="viewcode-block" id="AromaticSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.AromaticSelection">[docs]</a><span class="k">class</span> <span class="nc">AromaticSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Select aromatic atoms.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Select aromatic atoms.</span>
 
 <span class="sd">    Aromaticity is available in the `aromaticities` attribute and is made</span>
 <span class="sd">    available through RDKit&quot;&quot;&quot;</span>
@@ -775,7 +861,7 @@
 
 
 <div class="viewcode-block" id="SmartsSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SmartsSelection">[docs]</a><span class="k">class</span> <span class="nc">SmartsSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Select atoms based on SMARTS queries.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Select atoms based on SMARTS queries.</span>
 
 <span class="sd">    Uses RDKit to run the query and converts the result to MDAnalysis.</span>
 <span class="sd">    Supports chirality.</span>
@@ -850,7 +936,7 @@
 
 
 <div class="viewcode-block" id="ResidSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.ResidSelection">[docs]</a><span class="k">class</span> <span class="nc">ResidSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Select atoms based on numerical fields</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Select atoms based on numerical fields</span>
 
 <span class="sd">    Allows the use of &#39;:&#39;, &#39;-&#39; and &#39;to&#39; to specify a range of values</span>
 <span class="sd">    For example</span>
@@ -978,7 +1064,7 @@
 
 
 <div class="viewcode-block" id="BoolSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.BoolSelection">[docs]</a><span class="k">class</span> <span class="nc">BoolSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Selection for boolean values&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Selection for boolean values&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">)</span>
@@ -1008,7 +1094,7 @@
 
 
 <div class="viewcode-block" id="RangeSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.RangeSelection">[docs]</a><span class="k">class</span> <span class="nc">RangeSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Range selection for int values&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Range selection for int values&quot;&quot;&quot;</span>
 
     <span class="n">value_offset</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">pattern</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">INT_PATTERN</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="n">RANGE_PATTERN</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">INT_PATTERN</span><span class="si">}</span><span class="s2">)&quot;</span>
@@ -1062,7 +1148,7 @@
 
 
 <div class="viewcode-block" id="FloatRangeSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.FloatRangeSelection">[docs]</a><span class="k">class</span> <span class="nc">FloatRangeSelection</span><span class="p">(</span><span class="n">RangeSelection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Range selection for float values&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Range selection for float values&quot;&quot;&quot;</span>
 
     <span class="n">pattern</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">FLOAT_PATTERN</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="n">RANGE_PATTERN</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">FLOAT_PATTERN</span><span class="si">}</span><span class="s2">)&quot;</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="nb">float</span>
@@ -1102,7 +1188,7 @@
 
 
 <div class="viewcode-block" id="ProteinSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.ProteinSelection">[docs]</a><span class="k">class</span> <span class="nc">ProteinSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Consists of all residues with  recognized residue names.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Consists of all residues with  recognized residue names.</span>
 
 <span class="sd">    Recognized residue names in :attr:`ProteinSelection.prot_res`.</span>
 
@@ -1159,7 +1245,7 @@
 
 
 <div class="viewcode-block" id="NucleicSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.NucleicSelection">[docs]</a><span class="k">class</span> <span class="nc">NucleicSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;All atoms in nucleic acid residues with recognized residue names.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;All atoms in nucleic acid residues with recognized residue names.</span>
 
 <span class="sd">    Recognized residue names:</span>
 
@@ -1197,7 +1283,7 @@
 
 
 <div class="viewcode-block" id="BackboneSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.BackboneSelection">[docs]</a><span class="k">class</span> <span class="nc">BackboneSelection</span><span class="p">(</span><span class="n">ProteinSelection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A BackboneSelection contains all atoms with name &#39;N&#39;, &#39;CA&#39;, &#39;C&#39;, &#39;O&#39;.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A BackboneSelection contains all atoms with name &#39;N&#39;, &#39;CA&#39;, &#39;C&#39;, &#39;O&#39;.</span>
 
 <span class="sd">    This excludes OT* on C-termini</span>
 <span class="sd">    (which are included by, eg VMD&#39;s backbone selection).</span>
@@ -1230,7 +1316,7 @@
 
 
 <div class="viewcode-block" id="NucleicBackboneSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.NucleicBackboneSelection">[docs]</a><span class="k">class</span> <span class="nc">NucleicBackboneSelection</span><span class="p">(</span><span class="n">NucleicSelection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Contains all atoms with name &quot;P&quot;, &quot;C5&#39;&quot;, C3&#39;&quot;, &quot;O3&#39;&quot;, &quot;O5&#39;&quot;.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Contains all atoms with name &quot;P&quot;, &quot;C5&#39;&quot;, C3&#39;&quot;, &quot;O3&#39;&quot;, &quot;O5&#39;&quot;.</span>
 
 <span class="sd">    These atoms are only recognized if they are in a residue matched</span>
 <span class="sd">    by the :class:`NucleicSelection`.</span>
@@ -1263,7 +1349,7 @@
 
 
 <div class="viewcode-block" id="BaseSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.BaseSelection">[docs]</a><span class="k">class</span> <span class="nc">BaseSelection</span><span class="p">(</span><span class="n">NucleicSelection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Selection of atoms in nucleobases.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Selection of atoms in nucleobases.</span>
 
 <span class="sd">    Recognized atom names (from CHARMM):</span>
 
@@ -1301,7 +1387,7 @@
 
 
 <div class="viewcode-block" id="NucleicSugarSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.NucleicSugarSelection">[docs]</a><span class="k">class</span> <span class="nc">NucleicSugarSelection</span><span class="p">(</span><span class="n">NucleicSelection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Contains all atoms with name C1&#39;, C2&#39;, C3&#39;, C4&#39;, O2&#39;, O4&#39;, O3&#39;.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Contains all atoms with name C1&#39;, C2&#39;, C3&#39;, C4&#39;, O2&#39;, O4&#39;, O3&#39;.</span>
 
 
 <span class="sd">    .. versionchanged:: 1.0.1</span>
@@ -1331,7 +1417,7 @@
 
 
 <div class="viewcode-block" id="PropertySelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.PropertySelection">[docs]</a><span class="k">class</span> <span class="nc">PropertySelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Some of the possible properties:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Some of the possible properties:</span>
 <span class="sd">    x, y, z, radius, mass,</span>
 
 <span class="sd">    .. versionchanged:: 2.0.0</span>
@@ -1365,7 +1451,7 @@
              <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="s2">&quot;positions&quot;</span><span class="p">}</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Possible splitting around operator:</span>
 
 <span class="sd">        prop x &lt; 5</span>
@@ -1456,7 +1542,7 @@
 
 
 <div class="viewcode-block" id="SameSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SameSelection">[docs]</a><span class="k">class</span> <span class="nc">SameSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Selects all atoms that have the same subkeyword value as any atom in selection</span>
 
 <span class="sd">    .. versionchanged:: 1.0.0</span>
@@ -1535,7 +1621,7 @@
 
 
 <div class="viewcode-block" id="SelectionParser"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SelectionParser">[docs]</a><span class="k">class</span> <span class="nc">SelectionParser</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A small parser for selection expressions.  Demonstration of</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A small parser for selection expressions.  Demonstration of</span>
 <span class="sd">    recursive descent parsing using Precedence climbing (see</span>
 <span class="sd">    http://www.engr.mun.ca/~theo/Misc/exp_parsing.htm).  Transforms</span>
 <span class="sd">    expressions into nested Selection tree.</span>
@@ -1562,7 +1648,7 @@
         <span class="k">return</span> <span class="bp">self</span>
 
 <div class="viewcode-block" id="SelectionParser.expect"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SelectionParser.expect">[docs]</a>    <span class="k">def</span> <span class="nf">expect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Anticipate and remove a given token&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Anticipate and remove a given token&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">token</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1572,7 +1658,7 @@
 
 <div class="viewcode-block" id="SelectionParser.parse"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SelectionParser.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selectstr</span><span class="p">,</span> <span class="n">selgroups</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-08</span><span class="p">,</span>
               <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rdkit_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">smarts_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create a Selection object from a string.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a Selection object from a string.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1673,7 +1759,7 @@
 
 
 <div class="viewcode-block" id="gen_selection_class"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.gen_selection_class">[docs]</a><span class="k">def</span> <span class="nf">gen_selection_class</span><span class="p">(</span><span class="n">singular</span><span class="p">,</span> <span class="n">attrname</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">per_object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Selection class factory for arbitrary TopologyAttrs.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Selection class factory for arbitrary TopologyAttrs.</span>
 
 <span class="sd">    Normally this should not be used except within the codebase</span>
 <span class="sd">    or by developers; it is called by the metaclass</span>
@@ -1766,16 +1852,18 @@
 </pre></div>
 
            </div>
+           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
-  </div>
+    <p>
+        &#169; Copyright 2005-2023, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.
 
-  
+    </p>
+  </div>
  
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
@@ -1788,7 +1876,9 @@
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
   <script>
     var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
@@ -1808,11 +1898,18 @@
         </dl>
 
     </div>
-</div><script>
+</div>
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

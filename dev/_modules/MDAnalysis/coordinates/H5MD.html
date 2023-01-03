@@ -1,25 +1,45 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>MDAnalysis.coordinates.H5MD &mdash; MDAnalysis 2.5.0-dev0 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script src="../../../_static/js/versions.js"></script>
-    <script src="../../../_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 2.5.0-dev0 documentation"
           href="../../../_static/opensearch.xml"/>
@@ -27,17 +47,33 @@
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-            <a href="../../../index.html">
-            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> MDAnalysis
+          
+
+          
           </a>
+
+          
+            
+            
               <div class="version">
                 2.5.0-dev0
               </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -45,7 +81,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
@@ -75,30 +122,69 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">MDAnalysis</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">MDAnalysis.coordinates.H5MD</li>
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.coordinates.H5MD</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <h1>Source code for MDAnalysis.coordinates.H5MD</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
 <span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
@@ -334,7 +420,7 @@
 
 
 <div class="viewcode-block" id="H5MDReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5MDReader">[docs]</a><span class="k">class</span> <span class="nc">H5MDReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Reader for the H5MD format.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Reader for the H5MD format.</span>
 
 <span class="sd">    See `h5md documentation &lt;https://nongnu.org/h5md/h5md.html&gt;`_</span>
 <span class="sd">    for a detailed overview of the H5MD file format.</span>
@@ -496,7 +582,7 @@
                  <span class="n">driver</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">comm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        filename : str or :class:`h5py.File`</span>
@@ -582,7 +668,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_set_translated_units</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;converts units from H5MD to MDAnalysis notation</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;converts units from H5MD to MDAnalysis notation</span>
 <span class="sd">        and fills units dictionary&quot;&quot;&quot;</span>
 
         <span class="c1"># need this dictionary to associate &#39;position&#39;: &#39;length&#39;</span>
@@ -597,7 +683,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_check_units</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_translate_h5md_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">unit</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;stores the translated unit string into the units dictionary&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;stores the translated unit string into the units dictionary&quot;&quot;&quot;</span>
 
         <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> unit &#39;</span><span class="si">{}</span><span class="s2">&#39; is not recognized by H5MDReader. Please raise&quot;</span>
         <span class="s2">&quot; an issue in https://github.com/MDAnalysis/mdanalysis/issues&quot;</span>
@@ -647,7 +733,7 @@
                                            <span class="s1">&#39;unit&#39;</span><span class="p">]))</span> <span class="kn">from</span> <span class="bp">None</span>
 
     <span class="k">def</span> <span class="nf">_check_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">unit</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Raises error if no units are provided from H5MD file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Raises error if no units are provided from H5MD file</span>
 <span class="sd">        and convert_units=True&quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
@@ -668,7 +754,7 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_format_hint</span><span class="p">(</span><span class="n">thing</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Can this Reader read *thing*&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Can this Reader read *thing*&quot;&quot;&quot;</span>
         <span class="c1"># nb, filename strings can still get passed through if</span>
         <span class="c1"># format=&#39;H5MD&#39; is used</span>
         <span class="k">return</span> <span class="n">HAS_H5PY</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">thing</span><span class="p">,</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">)</span>
@@ -687,7 +773,7 @@
                               <span class="s2">&quot;You must include a topology file.&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="H5MDReader.open_trajectory"><a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5MDReader.open_trajectory">[docs]</a>    <span class="k">def</span> <span class="nf">open_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;opens the trajectory file using h5py library&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;opens the trajectory file using h5py library&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span>
@@ -712,13 +798,13 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">n_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;number of frames in trajectory&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;number of frames in trajectory&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_particle_group</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;reads data from h5md file and copies to current timestep&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;reads data from h5md file and copies to current timestep&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
@@ -762,7 +848,7 @@
         <span class="k">return</span> <span class="n">ts</span>
 
     <span class="k">def</span> <span class="nf">_copy_to_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;assigns values to keys in data dictionary&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;assigns values to keys in data dictionary&quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="s1">&#39;observables&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="p">[</span><span class="s1">&#39;observables&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
@@ -784,7 +870,7 @@
                     <span class="k">break</span>
 
     <span class="k">def</span> <span class="nf">_read_dataset_into_ts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;reads position, velocity, or force dataset array at current frame</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;reads position, velocity, or force dataset array at current frame</span>
 <span class="sd">        into corresponding ts attribute&quot;&quot;&quot;</span>
 
         <span class="n">n_atoms_now</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_particle_group</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s1">/value&#39;</span><span class="p">][</span>
@@ -801,7 +887,7 @@
                              <span class="n">attribute</span><span class="p">,</span> <span class="n">source_sel</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">s_</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="p">,</span> <span class="p">:])</span>
 
     <span class="k">def</span> <span class="nf">_convert_units</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;converts time, position, velocity, and force values if they</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;converts time, position, velocity, and force values if they</span>
 <span class="sd">        are not given in MDAnalysis standard units</span>
 
 <span class="sd">        See https://userguide.mdanalysis.org/1.0.0/units.html</span>
@@ -822,15 +908,15 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">convert_forces_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">forces</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_read_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;read next frame in trajectory&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;read next frame in trajectory&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 
 <div class="viewcode-block" id="H5MDReader.close"><a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5MDReader.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;close reader&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;close reader&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="H5MDReader._reopen"><a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5MDReader._reopen">[docs]</a>    <span class="k">def</span> <span class="nf">_reopen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;reopen trajectory</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;reopen trajectory</span>
 
 <span class="sd">        Note</span>
 <span class="sd">        ----</span>
@@ -850,7 +936,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">open_trajectory</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="H5MDReader.Writer"><a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5MDReader.Writer">[docs]</a>    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return writer for trajectory format</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return writer for trajectory format</span>
 
 <span class="sd">        Note</span>
 <span class="sd">        ----</span>
@@ -885,7 +971,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">has_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;``True`` if &#39;position&#39; group is in trajectory.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;``True`` if &#39;position&#39; group is in trajectory.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">]</span>
 
     <span class="nd">@has_positions</span><span class="o">.</span><span class="n">setter</span>
@@ -894,7 +980,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">has_velocities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;``True`` if &#39;velocity&#39; group is in trajectory.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;``True`` if &#39;velocity&#39; group is in trajectory.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span>
 
     <span class="nd">@has_velocities</span><span class="o">.</span><span class="n">setter</span>
@@ -903,7 +989,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">has_forces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;``True`` if &#39;force&#39; group is in trajectory.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;``True`` if &#39;force&#39; group is in trajectory.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has</span><span class="p">[</span><span class="s1">&#39;force&#39;</span><span class="p">]</span>
 
     <span class="nd">@has_forces</span><span class="o">.</span><span class="n">setter</span>
@@ -923,7 +1009,7 @@
 
 
 <div class="viewcode-block" id="H5MDWriter"><a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5MDWriter">[docs]</a><span class="k">class</span> <span class="nc">H5MDWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">WriterBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Writer for `H5MD`_ format (version 1.1).</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Writer for `H5MD`_ format (version 1.1).</span>
 
 <span class="sd">    H5MD trajectories are automatically recognised by the</span>
 <span class="sd">    file extension &quot;.h5md&quot;.</span>
@@ -1206,7 +1292,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">creator_version</span> <span class="o">=</span> <span class="n">creator_version</span>
 
     <span class="k">def</span> <span class="nf">_write_next_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Write information associated with ``ag`` at current frame</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write information associated with ``ag`` at current frame</span>
 <span class="sd">        into trajectory</span>
 
 <span class="sd">        Parameters</span>
@@ -1238,7 +1324,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_next_timestep</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_determine_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;determine which units the file will be written with</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;determine which units the file will be written with</span>
 
 <span class="sd">        By default, it fills the :attr:`self.units` dictionary by copying the</span>
 <span class="sd">        units dictionary of the parent file. Because H5MD files have no</span>
@@ -1275,7 +1361,7 @@
                                  <span class="s2">&quot;with no units, set ``convert_units=False``.&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_open_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Opens file with `H5PY`_ library and fills in metadata from kwargs.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Opens file with `H5PY`_ library and fills in metadata from kwargs.</span>
 
 <span class="sd">        :attr:`self.h5md_file` becomes file handle that links to root level.</span>
 
@@ -1297,7 +1383,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">h5md_file</span><span class="p">[</span><span class="s1">&#39;h5md/creator&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">creator_version</span>
 
     <span class="k">def</span> <span class="nf">_initialize_hdf5_datasets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;initializes all datasets that will be written to by</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;initializes all datasets that will be written to by</span>
 <span class="sd">        :meth:`_write_next_timestep`</span>
 
 <span class="sd">        Note</span>
@@ -1375,7 +1461,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_create_observables_dataset</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">_create_step_and_time_datasets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;helper function to initialize a dataset for step and time</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;helper function to initialize a dataset for step and time</span>
 
 <span class="sd">        Hunts down first available location to create the step and time</span>
 <span class="sd">        datasets. This should only be called if the trajectory has no</span>
@@ -1407,7 +1493,7 @@
                 <span class="k">break</span>
 
     <span class="k">def</span> <span class="nf">_create_trajectory_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;helper function to initialize a dataset for</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;helper function to initialize a dataset for</span>
 <span class="sd">        position, velocity, and force&quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1433,7 +1519,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_traj</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s1">/time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time</span>
 
     <span class="k">def</span> <span class="nf">_create_observables_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;helper function to initialize a dataset for each observable&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;helper function to initialize a dataset for each observable&quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_obsv</span><span class="o">.</span><span class="n">require_group</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
         <span class="c1"># guarantee ints and floats have a shape ()</span>
@@ -1448,7 +1534,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_obsv</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s1">/time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time</span>
 
     <span class="k">def</span> <span class="nf">_set_attr_unit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dset</span><span class="p">,</span> <span class="n">unit</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;helper function to set a &#39;unit&#39; attribute for an HDF5 dataset&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;helper function to set a &#39;unit&#39; attribute for an HDF5 dataset&quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="n">unit</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
@@ -1456,7 +1542,7 @@
         <span class="n">dset</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unit_translation_dict</span><span class="p">[</span><span class="n">unit</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="n">unit</span><span class="p">]]</span>
 
     <span class="k">def</span> <span class="nf">_write_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Write coordinates and unitcell information to H5MD file.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write coordinates and unitcell information to H5MD file.</span>
 
 <span class="sd">        Do not call this method directly; instead use</span>
 <span class="sd">        :meth:`write` because some essential setup is done</span>
@@ -1524,7 +1610,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_counter</span> <span class="o">+=</span> <span class="mi">1</span>
 
     <span class="k">def</span> <span class="nf">_convert_dataset_with_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;convert values in the dataset arrays with self.units dictionary&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;convert values in the dataset arrays with self.units dictionary&quot;&quot;&quot;</span>
 
         <span class="c1"># Note: simply doing convert_pos_to_native(self._pos[-1]) does not</span>
         <span class="c1"># actually change the values in the dataset, so assignment required</span>
@@ -1544,22 +1630,22 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">has_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;``True`` if writer is writing positions from Timestep.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;``True`` if writer is writing positions from Timestep.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">has_velocities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;``True`` if writer is writing velocities from Timestep.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;``True`` if writer is writing velocities from Timestep.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">has_forces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;``True`` if writer is writing forces from Timestep.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;``True`` if writer is writing forces from Timestep.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has</span><span class="p">[</span><span class="s1">&#39;force&#39;</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="H5PYPicklable"><a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5PYPicklable">[docs]</a><span class="k">class</span> <span class="nc">H5PYPicklable</span><span class="p">(</span><span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;H5PY file object (read-only) that can be pickled.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;H5PY file object (read-only) that can be pickled.</span>
 
 <span class="sd">    This class provides a file-like object (as returned by</span>
 <span class="sd">    :class:`h5py.File`) that,</span>
@@ -1628,21 +1714,23 @@
                       <span class="n">driver</span><span class="o">=</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;driver&#39;</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">__getnewargs__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Override the h5py getnewargs to skip its error message&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Override the h5py getnewargs to skip its error message&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">()</span></div>
 </pre></div>
 
            </div>
+           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2022, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
-  </div>
+    <p>
+        &#169; Copyright 2005-2023, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.
 
-  
+    </p>
+  </div>
  
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
@@ -1655,7 +1743,9 @@
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
   <script>
     var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
@@ -1675,11 +1765,18 @@
         </dl>
 
     </div>
-</div><script>
+</div>
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
