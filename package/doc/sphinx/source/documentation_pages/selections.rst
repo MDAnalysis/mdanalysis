@@ -186,6 +186,11 @@ chiral *R | S*
     to select only S-chiral carbon atoms.  Only ``R`` and ``S`` will be
     possible options but other values will not raise an error.
 
+formalcharge *formal-charge*
+    select atoms based on their formal charge, e.g.
+    ``name O and formalcharge -1`` to select all oxygens with a
+    negative 1 formal charge.
+
 Pattern matching
 ----------------
 
@@ -239,6 +244,16 @@ sphzone *externalRadius* *selection*
     geometry (COG) of a given selection, e.g. ``sphzone 6.0 ( protein and (
     resid 130 or resid 80 ) )`` selects the center of geometry of protein,
     resid 130, resid 80 and creates a sphere of radius 6.0 around the COG.
+
+isolayer *inner radius* *outer radius* *selection*
+    Similar to sphlayer, but will find layer around all referenced atoms. 
+    For example, if the atom types for a polymer backbone were chosen, then
+    an isolayer parallel to the backbone will be generated. As another 
+    example, if a set of ions were chosen as a reference to isolate the second 
+    hydration layer, then they will all be included in the same group.
+    However, in the instance that a molecule is in the second hydration layer 
+    of one ion and the first hydration layer of another, those atoms will not
+    be included.
 
 cylayer *innerRadius* *externalRadius* *zMax* *zMin* *selection*
     selects all atoms within a cylindric layer centered in the center of

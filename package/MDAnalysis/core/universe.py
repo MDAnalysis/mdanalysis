@@ -262,7 +262,7 @@ class Universe(object):
     dimensions : numpy.ndarray
         system dimensions (simulation unit cell, if set in the
         trajectory) at the *current time step*
-        (see :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`).
+        (see :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`).
         The unit cell can be set for the current time step (but the change is
         not permanent unless written to a file).
     atoms : AtomGroup
@@ -445,13 +445,13 @@ class Universe(object):
             n_residues = 0
             n_segments = 0
 
-        if atom_resindex is None:
+        if atom_resindex is None and n_residues > 1:
             warnings.warn(
                 'Residues specified but no atom_resindex given.  '
                 'All atoms will be placed in first Residue.',
                 UserWarning)
 
-        if residue_segindex is None:
+        if residue_segindex is None and n_segments > 1:
             warnings.warn(
                 'Segments specified but no segment_resindex given.  '
                 'All residues will be placed in first Segment',
@@ -541,6 +541,8 @@ class Universe(object):
         .. versionchanged:: 0.17.0
            Now returns a :class:`Universe` instead of the tuple of file/array
            and detected file type.
+        .. versionchanged:: 2.4.0
+           Passes through kwargs if `in_memory=True`.
 
         """
         # filename==None happens when only a topology is provided
@@ -574,12 +576,12 @@ class Universe(object):
                                  trj_n_atoms=self.trajectory.n_atoms))
 
         if in_memory:
-            self.transfer_to_memory(step=in_memory_step)
+            self.transfer_to_memory(step=in_memory_step, **kwargs)
 
         return self
 
     def transfer_to_memory(self, start=None, stop=None, step=None,
-                           verbose=False):
+                           verbose=False, **kwargs):
         """Transfer the trajectory to in memory representation.
 
         Replaces the current trajectory reader object with one of type
@@ -600,6 +602,8 @@ class Universe(object):
 
 
         .. versionadded:: 0.16.0
+        .. versionchanged:: 2.4.0
+           Passes through kwargs to MemoryReader
         """
         from ..coordinates.memory import MemoryReader
 
@@ -641,8 +645,7 @@ class Universe(object):
                 dt=self.trajectory.ts.dt * step,
                 filename=self.trajectory.filename,
                 velocities=velocities,
-                forces=forces,
-            )
+                forces=forces, **kwargs)
 
     # python 2 doesn't allow an efficient splitting of kwargs in function
     # argument signatures.
@@ -739,7 +742,7 @@ class Universe(object):
         represented as a :class:`numpy.float32` array.
 
         Because :attr:`coord` is a reference to a
-        :class:`~MDAnalysis.coordinates.base.Timestep`, it changes its contents
+        :class:`~MDAnalysis.coordinates.timestep.Timestep`, it changes its contents
         while one is stepping through the trajectory.
 
         .. Note::

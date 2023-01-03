@@ -123,13 +123,13 @@ Timesteps
 ---------
 
 Both Readers and Writers use Timesteps as their working object.  A
-:class:`~MDAnalysis.coordinates.base.Timestep` represents all data for a given
+:class:`~MDAnalysis.coordinates.Timestep` represents all data for a given
 frame in a trajectory.  The data inside a
-:class:`~MDAnalysis.coordinates.base.Timestep` is often accessed indirectly
+:class:`~MDAnalysis.coordinates.Timestep` is often accessed indirectly
 through a :class:`~MDAnalysis.core.groups.AtomGroup` but it is also possible to
 manipulate Timesteps directly.
 
-The current :class:`~MDAnalysis.coordinates.base.Timestep` can be accessed
+The current :class:`~MDAnalysis.coordinates.Timestep` can be accessed
 through the :attr:`~MDAnalysis.coordinates.base.ProtoReader.ts` attribute of
 the trajectory attached to the active
 :class:`~MDAnalysis.core.universe.Universe`::
@@ -181,6 +181,12 @@ also recognized when they are compressed with :program:`gzip` or
    | Gromacs       | trr       |  r/w  | Full precision trr trajectory. Coordinates and       |
    |               |           |       | velocities are processed. Module                     |
    |               |           |       | :mod:`MDAnalysis.coordinates.TRR`                    |
+   +---------------+-----------+-------+------------------------------------------------------+
+   | Gromacs       | tng       |  r    | Variable precision tng trajectory. Coordinates,      |
+   |               |           |       | velocities and forces are processed along with any   |
+   |               |           |       | `additional tng block data`_ requested for reading.  |
+   |               |           |       | Uses the `PyTNG package`_ for tng file reading.      |  
+   |               |           |       | Module :mod:`MDAnalysis.coordinates.TNG`             |
    +---------------+-----------+-------+------------------------------------------------------+
    | XYZ [#a]_     |  xyz      |  r/w  | Generic white-space separate XYZ format; can be      |
    |               |           |       | compressed (gzip or bzip2). Module                   |
@@ -274,6 +280,8 @@ also recognized when they are compressed with :program:`gzip` or
 .. _`H5MD`: https://nongnu.org/h5md/index.html
 .. _`chemfiles`: https://chemfiles.org/
 .. _`list of chemfiles file formats`: https://chemfiles.org/chemfiles/latest/formats.html
+.. _`additional tng block data`: https://www.mdanalysis.org/pytng/documentation_pages/Blocks.html
+.. _`PyTNG package`: https://github.com/MDAnalysis/pytng
 
 .. _`Trajectory API`:
 
@@ -328,7 +336,7 @@ A Timestep instance holds data for the current frame. It is updated whenever a
 new frame of the trajectory is read.
 
 Timestep classes are derived from
-:class:`MDAnalysis.coordinates.base.Timestep`, which is the primary
+:class:`MDAnalysis.coordinates.timestep.Timestep`, which is the primary
 implementation example (and used directly for the DCDReader).
 
 The discussion on this format is detailed in `Issue 250`_
@@ -429,7 +437,7 @@ but instead should use the attribute above.
   ``_unitcell``
       native unit cell description; the format depends on the
       underlying trajectory format. A user should use the
-      :class:`~MDAnalysis.coordinates.base.Timestep.dimensions`
+      :class:`~MDAnalysis.coordinates.Timestep.dimensions`
       attribute to access the data in a canonical format instead of
       accessing :class:`Timestep._unitcell` directly.
 
@@ -596,8 +604,8 @@ Attributes
  ``n_frames``
      total number of frames (if known) -- ``None`` if not known
  ``ts``
-     the :class:`~base.Timestep` object; typically customized for each
-     trajectory format and derived from :class:`base.Timestep`.
+     the :class:`~timestep.Timestep` object; typically customized for each
+     trajectory format and derived from :class:`timestep.Timestep`.
  ``units``
      dictionary with keys *time*, *length*, *speed*, *force* and the
      appropriate unit (e.g. 'AKMA' and 'Angstrom' for Charmm dcds, 'ps' and
@@ -743,12 +751,13 @@ Methods
 
    Trajectory and Frame writers can be used in almost exactly the same
    manner with the one difference that Frame writers cannot deal with
-   raw :class:`~MDAnalysis.coordinates.base.Timestep` objects.
+   raw :class:`~MDAnalysis.coordinates.Timestep` objects.
 
 """
-__all__ = ['reader', 'writer']
+__all__ = ['reader', 'writer', 'timestep']
 
 from . import base
+from . import timestep
 from .core import reader, writer
 from . import chain
 from . import chemfiles
@@ -777,3 +786,4 @@ from . import GSD
 from . import null
 from . import NAMDBIN
 from . import FHIAIMS
+from . import TNG

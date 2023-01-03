@@ -4,13 +4,111 @@ requires = [
     "Cython>=0.28",
     "packaging",
     # lowest NumPy we can use for a given Python,
-    # except for more exotic platforms (linux/Mac ARM flavors)
-    "numpy==1.19; python_version=='3.8' and (platform_machine!='arm64' or platform_system!='Darwin') and platform_machine!='aarch64'",
-    "numpy==1.19.3; python_version=='3.9' and (platform_machine!='arm64' or platform_system!='Darwin') and platform_machine!='aarch64'",
-    "numpy==1.21.4; python_version=='3.10' and platform_python_implementation != 'PyPy'",
+    # In part adapted from: https://github.com/scipy/oldest-supported-numpy/blob/main/setup.cfg
+    # except for more exotic platform (Mac Arm flavors)
+    # aarch64, AIX, s390x all support < 1.20 so we can safely pin to this
+    # Note: MDA does not build with PyPy so we do not support it in the build system
+    "numpy==1.20.0; python_version=='3.8' and (platform_machine!='arm64' or platform_system!='Darwin') and platform_python_implementation != 'PyPy'",
+    "numpy==1.20.0; python_version=='3.9' and (platform_machine!='arm64' or platform_system!='Darwin') and platform_python_implementation != 'PyPy'",
+    # arm64 on darwin for py3.8+ requires numpy >=1.21.0
+    "numpy==1.21.0; python_version=='3.8' and platform_machine=='arm64' and platform_system=='Darwin' and platform_python_implementation != 'PyPy'",
+    "numpy==1.21.0; python_version=='3.9' and platform_machine=='arm64' and platform_system=='Darwin' and platform_python_implementation != 'PyPy'",
+    # Scipy: On windows avoid 1.21.6, 1.22.0, and 1.22.1 because they were built on vc142
+    "numpy==1.22.3; python_version=='3.10' and platform_system=='Windows' and platform_python_implementation != 'PyPy'",
+    # As per https://github.com/scipy/oldest-supported-numpy/blob/main/setup.cfg
+    # safest to build at 1.21.6 for all other platforms
+    "numpy==1.21.6; python_version=='3.10' and platform_system !='Windows'and platform_python_implementation != 'PyPy'",
+    "numpy==1.23.2; python_version=='3.11' and platform_python_implementation != 'PyPy'",
+    # For unreleased versions of Python there is currently no known supported
+    # NumPy version. In that case we just let it be a bare NumPy install
+    "numpy<2.0; python_version>='3.12'",
     "setuptools",
     "wheel",
-    # arm64 on Darwin supports Python 3.8 and above and requires numpy>=1.20.0
-    "numpy==1.20.0; python_version=='3.8' and platform_machine=='arm64' and platform_system=='Darwin'",
-    "numpy==1.20.0; python_version=='3.9' and platform_machine=='arm64' and platform_system=='Darwin'",
 ]
+
+[project]
+name = "MDAnalysis"
+dynamic = ['version', 'readme']
+license = {file = "LICENSE"}
+description = "An object-oriented toolkit to analyze molecular dynamics trajectories."
+authors = [
+    {name = 'MDAnalysis Development Team', email = 'mdanalysis@numfocus.org'}
+]
+maintainers = [
+    {name = 'MDAnalysis Core Developers', email = 'mdanalysis@numfocus.org'}
+]
+requires-python = ">=3.8"
+dependencies = [
+    'numpy>=1.20.0',
+    'biopython>=1.80',
+    'networkx>=2.0',
+    'GridDataFormats>=0.4.0',
+    'mmtf-python>=1.0.0',
+    'joblib>=0.12',
+    'scipy>=1.5.0',
+    'matplotlib>=1.5.1',
+    'tqdm>=4.43.0',
+    'threadpoolctl',
+    'packaging',
+    'fasteners',
+    'gsd>=1.9.3',
+]
+keywords = [
+    "python", "science", "chemistry", "biophysics", "molecular-dynamics",
+    "computational-chemistry", "molecular-simulation", "analysis",
+    "trajectory-analysis",
+]
+classifiers = [
+    'Development Status :: 6 - Mature',
+    'Environment :: Console',
+    'Intended Audience :: Science/Research',
+    'License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)',
+    'Operating System :: POSIX',
+    'Operating System :: MacOS :: MacOS X',
+    'Operating System :: Microsoft :: Windows',
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: C',
+    'Topic :: Scientific/Engineering',
+    'Topic :: Scientific/Engineering :: Bio-Informatics',
+    'Topic :: Scientific/Engineering :: Chemistry',
+    'Topic :: Software Development :: Libraries :: Python Modules',
+]
+
+[project.optional-dependencies]
+extra_formats = [
+    "netCDF4>=1.0",
+    "h5py>=2.10",
+    "chemfiles>=0.10",
+    "pyedr>=0.7.0",
+    "pytng>=0.2.3",
+]
+analysis = [
+    "seaborn",
+    "scikit-learn",
+    "tidynamics>=1.0.0",
+]
+doc = [
+    "sphinx",
+    "sphinx-sitemap",
+    "sphinx_rtd_theme",
+    "msmb_theme==1.2.0",
+    "sphinxcontrib-bibtex",
+    "pybtex",
+    "pybtex-docutils",
+]
+
+
+[project.urls]
+Documentation = 'https://docs.mdanalysis.org/'
+"User Guide" = 'https://userguide.mdanalysis.org/'
+"Issue Tracker" = 'https://github.com/mdanalysis/mdanalysis/issues'
+"User Group" = 'https://groups.google.com/g/mdnalysis-discussion/'
+Discord = 'https://discord.com/channels/807348386012987462/'
+Blog = 'https://www.mdanalysis.org/blog/'
+Twitter = 'https://twitter.com/mdanalysis'
+Source = 'https://github.com/mdanalysis/mdanalysis'
+

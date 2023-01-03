@@ -446,7 +446,7 @@ class PCA(AnalysisBase):
         -------
         function
             The resulting function f(ts) takes as input a
-            :class:`~MDAnalysis.coordinates.base.Timestep` ts,
+            :class:`~MDAnalysis.coordinates.timestep.Timestep` ts,
             and returns ts with the projected structure
 
             .. warning::
@@ -612,6 +612,31 @@ class PCA(AnalysisBase):
             0 indicates that they are mutually orthogonal, whereas 1 indicates
             that they are identical.
 
+        Examples
+        --------
+
+        .. testsetup::
+
+            >>> import MDAnalysis as mda
+            >>> import MDAnalysis.analysis.pca as pca
+            >>> from MDAnalysis.tests.datafiles import PSF, DCD
+            >>> u = mda.Universe(PSF, DCD)
+
+
+        You can compare the RMSIP between different intervals of the same trajectory.
+        For example, to compare similarity within the top three principal components:
+
+        .. doctest::
+
+            >>> first_interval = pca.PCA(u, select="backbone").run(start=0, stop=25)
+            >>> second_interval = pca.PCA(u, select="backbone").run(start=25, stop=50)
+            >>> last_interval = pca.PCA(u, select="backbone").run(start=75)
+            >>> first_interval.rmsip(second_interval, n_components=3)
+            0.38147609331128324
+            >>> first_interval.rmsip(last_interval, n_components=3)
+            0.17478244043688052
+
+
         See also
         --------
         :func:`~MDAnalysis.analysis.pca.rmsip`
@@ -625,7 +650,7 @@ class PCA(AnalysisBase):
             raise ValueError('Call run() on the PCA before using rmsip')
 
         try:
-            b = other.p_components
+            b = other.results.p_components
         except AttributeError:
             if isinstance(other, type(self)):
                 raise ValueError(
@@ -680,7 +705,7 @@ class PCA(AnalysisBase):
                 'Call run() on the PCA before using cumulative_overlap')
 
         try:
-            b = other.p_components
+            b = other.results.p_components
         except AttributeError:
             if isinstance(other, type(self)):
                 raise ValueError(
@@ -697,7 +722,7 @@ def cosine_content(pca_space, i):
     The cosine content of pca projections can be used as an indicator if a
     simulation is converged. Values close to 1 are an indicator that the
     simulation isn't converged. For values below 0.7 no statement can be made.
-    If you use this function please cite [BerkHess1]_.
+    If you use this function please cite :cite:p:`BerkHess2002`.
 
 
     Parameters
@@ -715,8 +740,12 @@ def cosine_content(pca_space, i):
 
     References
     ----------
-    .. [BerkHess1] Berk Hess. Convergence of sampling in protein simulations.
-                   Phys. Rev. E 65, 031910 (2002).
+    .. bibliography::
+        :filter: False
+        :style: MDA
+
+        BerkHess2002
+
     """
 
     t = np.arange(len(pca_space))
@@ -745,8 +774,12 @@ def rmsip(a, b, n_components=None):
     ----------
     a : array, shape (n_components, n_features)
         The first subspace. Must have the same number of features as ``b``.
+        If you are using the results of :class:`~MDAnalysis.analysis.pca.PCA`,
+        this is the TRANSPOSE of ``p_components`` (i.e. ``p_components.T``).
     b : array, shape (n_components, n_features)
         The second subspace. Must have the same number of features as ``a``.
+        If you are using the results of :class:`~MDAnalysis.analysis.pca.PCA`,
+        this is the TRANSPOSE of ``p_components`` (i.e. ``p_components.T``).
     n_components : int or tuple of ints, optional
         number of components to compute for the inner products.
         ``None`` computes all of them.
@@ -757,6 +790,35 @@ def rmsip(a, b, n_components=None):
         Root mean square inner product of the selected subspaces.
         0 indicates that they are mutually orthogonal, whereas 1 indicates
         that they are identical.
+
+
+    Examples
+    --------
+
+    .. testsetup::
+
+        >>> import MDAnalysis as mda
+        >>> import MDAnalysis.analysis.pca as pca
+        >>> from MDAnalysis.tests.datafiles import PSF, DCD
+        >>> u = mda.Universe(PSF, DCD)
+
+
+    You can compare the RMSIP between different intervals of the same trajectory.
+    For example, to compare similarity within the top three principal components:
+
+    .. doctest::
+
+        >>> first_interval = pca.PCA(u, select="backbone").run(start=0, stop=25)
+        >>> second_interval = pca.PCA(u, select="backbone").run(start=25, stop=50)
+        >>> last_interval = pca.PCA(u, select="backbone").run(start=75)
+        >>> pca.rmsip(first_interval.results.p_components.T,
+        ...           second_interval.results.p_components.T,
+        ...           n_components=3)
+        0.38147609331128324
+        >>> pca.rmsip(first_interval.results.p_components.T,
+        ...           last_interval.results.p_components.T,
+        ...           n_components=3)
+        0.17478244043688052
 
 
     .. versionadded:: 1.0.0

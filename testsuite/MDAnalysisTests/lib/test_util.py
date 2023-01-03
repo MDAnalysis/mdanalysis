@@ -40,12 +40,12 @@ import MDAnalysis as mda
 import MDAnalysis.lib.util as util
 import MDAnalysis.lib.mdamath as mdamath
 from MDAnalysis.lib.util import (cached, static_variables, warn_if_not_unique,
-                                 check_coords, store_init_arguments,)
+                                 check_coords, store_init_arguments, 
+                                 check_atomgroup_not_empty,)
 from MDAnalysis.core.topologyattrs import Bonds
 from MDAnalysis.exceptions import NoDataError, DuplicateWarning
-
-
-from MDAnalysisTests.datafiles import (
+from MDAnalysis.core.groups import AtomGroup
+from MDAnalysisTests.datafiles import (PSF, DCD,
     Make_Whole, TPR, GRO, fullerene, two_water_gro,
 )
 
@@ -1501,7 +1501,7 @@ class TestStaticVariables(object):
 
 
 class TestWarnIfNotUnique(object):
-    """Tests concerning the decorator @warn_if_not_uniue
+    """Tests concerning the decorator @warn_if_not_unique
     """
 
     def warn_msg(self, func, group, group_name):
@@ -1535,10 +1535,11 @@ class TestWarnIfNotUnique(object):
 
         # Check that no warning is raised for a unique group:
         assert atoms.isunique
-        with pytest.warns(None) as w:
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
             x = outer(atoms)
             assert x == 0
-            assert not w.list
 
         # Check that a warning is raised for a group with duplicates:
         ag = atoms + atoms[0]
@@ -1666,9 +1667,9 @@ class TestWarnIfNotUnique(object):
         with warnings.catch_warnings(record=True) as record:
             warnings.resetwarnings()
             warnings.filterwarnings("ignore", category=UserWarning)
-            with pytest.warns(None) as w:
+            with warnings.catch_warnings():
+                warnings.simplefilter("error")
                 func(atoms)
-                assert not w.list
             assert len(record) == 0
 
 
@@ -1703,6 +1704,59 @@ class TestCheckCoords(object):
         # check that check_lenghts_match is True by default:
         with pytest.raises(ValueError):
             res = func(a_in, b_in2)
+
+    @pytest.fixture()
+    def atomgroup(self):
+        u = mda.Universe(PSF, DCD)
+        return u.atoms
+
+    # check atomgroup handling with every option except allow_atomgroup
+    @pytest.mark.parametrize('enforce_copy', [True, False])
+    @pytest.mark.parametrize('enforce_dtype', [True, False])
+    @pytest.mark.parametrize('allow_single', [True, False])
+    @pytest.mark.parametrize('convert_single', [True, False])
+    @pytest.mark.parametrize('reduce_result_if_single', [True, False])
+    @pytest.mark.parametrize('check_lengths_match', [True, False])
+    def test_atomgroup(self, atomgroup, enforce_copy, enforce_dtype,
+                       allow_single, convert_single, reduce_result_if_single,
+                       check_lengths_match):
+        ag1 = atomgroup
+        ag2 = atomgroup
+
+        @check_coords('ag1', 'ag2', enforce_copy=enforce_copy,
+                      enforce_dtype=enforce_dtype, allow_single=allow_single,
+                      convert_single=convert_single,
+                      reduce_result_if_single=reduce_result_if_single,
+                      check_lengths_match=check_lengths_match,
+                      allow_atomgroup=True)
+        def func(ag1, ag2):
+            assert_allclose(ag1, ag2)
+            assert isinstance(ag1, np.ndarray)
+            assert isinstance(ag2, np.ndarray)
+            assert ag1.dtype == ag2.dtype == np.float32
+            return ag1 + ag2
+
+        res = func(ag1, ag2)
+
+        assert_allclose(res, atomgroup.positions*2)
+
+    def test_atomgroup_not_allowed(self, atomgroup):
+
+        @check_coords('ag1', allow_atomgroup=False)
+        def func(ag1):
+            return ag1
+
+        with pytest.raises(TypeError, match="allow_atomgroup is False"):
+            _ = func(atomgroup)
+
+    def test_atomgroup_not_allowed_default(self, atomgroup):
+
+        @check_coords('ag1')
+        def func_default(ag1):
+            return ag1
+
+        with pytest.raises(TypeError, match="allow_atomgroup is False"):
+            _ = func_default(atomgroup)
 
     def test_enforce_copy(self):
 
@@ -1801,6 +1855,21 @@ class TestCheckCoords(object):
         # Assert arrays are just passed through:
         assert res_a is a_2d
         assert res_b is b_2d
+
+    def test_atomgroup_mismatched_lengths(self):
+        u = mda.Universe(PSF, DCD)
+        ag1 = u.select_atoms("index 0 to 10")
+        ag2 = u.atoms
+
+        @check_coords('ag1', 'ag2', check_lengths_match=True,
+                      allow_atomgroup=True)
+        def func(ag1, ag2):
+
+            return ag1, ag2
+
+        with pytest.raises(ValueError, match="must contain the same number of "
+                           "coordinates"):
+            _, _ = func(ag1, ag2)
 
     def test_invalid_input(self):
 

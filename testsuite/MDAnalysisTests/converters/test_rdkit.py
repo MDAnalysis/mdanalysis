@@ -23,12 +23,12 @@
 
 import copy
 from io import StringIO
+import warnings
 import pytest
 import MDAnalysis as mda
 from MDAnalysis.topology.guessers import guess_atom_element
 import numpy as np
-from numpy.testing import (assert_equal,
-                           assert_almost_equal)
+from numpy.testing import (assert_allclose, assert_equal)
 
 from MDAnalysisTests.datafiles import mol2_molecule, PDB_full, GRO, PDB_helix
 from MDAnalysisTests.util import import_not_available
@@ -66,15 +66,18 @@ class TestRequiresRDKit(object):
 
 @requires_rdkit
 class MolFactory:
+    @staticmethod
     def mol2_mol():
         return Chem.MolFromMol2File(mol2_molecule, removeHs=False)
 
+    @staticmethod
     def smiles_mol():
         mol = Chem.MolFromSmiles("CN1C=NC2=C1C(=O)N(C(=O)N2C)C")
         mol = Chem.AddHs(mol)
         cids = AllChem.EmbedMultipleConfs(mol, numConfs=3)
         return mol
 
+    @staticmethod
     def dummy_product():
         mol = Chem.RWMol()
         atom = Chem.Atom(1)
@@ -83,6 +86,7 @@ class MolFactory:
         mol.AddAtom(atom)
         return mol
 
+    @staticmethod
     def dummy_reactant():
         mol = Chem.RWMol()
         atom = Chem.Atom(1)
@@ -216,7 +220,11 @@ class TestRDKitConverter(object):
         assert_equal(u.atoms.bonds, u2.atoms.bonds)
         assert_equal(u.atoms.elements, u2.atoms.elements)
         assert_equal(u.atoms.names, u2.atoms.names)
-        assert_almost_equal(u.atoms.positions, u2.atoms.positions, decimal=7)
+        assert_allclose(
+            u.atoms.positions,
+            u2.atoms.positions,
+            rtol=0,
+            atol=1e-7)
 
     def test_raise_requires_elements(self):
         u = mda.Universe(mol2_molecule)
@@ -248,9 +256,9 @@ class TestRDKitConverter(object):
             uo2.atoms.convert_to("RDKIT")
 
     def test_error_no_hydrogen_implicit(self, uo2):
-        with pytest.warns(None) as record:
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
             uo2.atoms.convert_to.rdkit(NoImplicit=False)
-        assert len(record) == 0
 
     def test_warning_no_hydrogen_force(self, uo2):
         with pytest.warns(UserWarning,
@@ -304,7 +312,7 @@ class TestRDKitConverter(object):
     def test_assign_coordinates(self, pdb):
         mol = pdb.atoms.convert_to.rdkit(NoImplicit=False)
         positions = mol.GetConformer().GetPositions()
-        assert_almost_equal(positions, pdb.atoms.positions)
+        assert_allclose(positions, pdb.atoms.positions)
 
     def test_assign_stereochemistry(self, mol2):
         umol = mol2.atoms.convert_to("RDKIT")
@@ -317,7 +325,7 @@ class TestRDKitConverter(object):
         for ts in u.trajectory:
             mol = u.atoms.convert_to("RDKIT")
             positions = mol.GetConformer().GetPositions()
-            assert_almost_equal(positions, ts.positions)
+            assert_allclose(positions, ts.positions)
 
     def test_nan_coords(self):
         u = mda.Universe.from_smiles("CCO")
@@ -389,11 +397,9 @@ class TestRDKitConverter(object):
         u = mda.Universe(mol)
         with pytest.warns(UserWarning, match="Could not sanitize molecule"):
             u.atoms.convert_to.rdkit(NoImplicit=False)
-        with pytest.warns(None) as record:
+        with warnings.catch_warnings():
+            warnings.filterwarnings("error", "Could not sanitize molecule")
             u.atoms.convert_to.rdkit()
-        if record:
-            assert all("Could not sanitize molecule" not in str(w.message)
-                       for w in record.list)
 
 
 @requires_rdkit

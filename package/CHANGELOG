@@ -15,21 +15,164 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/?? IAlibay, PicoCentauri, manuel.nuno.melo
 
+ * 2.5.0
+
+Fixes
+
+Enhancements
+
+Changes
+
+Deprecations
+
+
+12/21/22 IAlibay
+
+ * 2.4.2
+
+Fixes
+  * np.histogramdd calls in :class:`DensityAnalysis` now pass the `density`
+    argument rather than the NumPy 1.24 removed `normed` (PR #3976)
+
+
+12/17/22 IAlibay
+
+ * 2.4.1
+
+Fixes
+* Fixes pyproject.toml minimum pin for biopython
+
+
+12/16/22 IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, BFedder, aya9aladdin,
+         jaclark5, jfennick, lilyminium, orbeckst, Hakarishirenai
+
+ * 2.4.0
+
+Fixes
+  * Update hbond analysis doc string to use exclusive bound language 
+    (Issue #3847)
+  * XTC and TRR readers now fail with IOError when a status except EOK (=0) is
+    detected on reading a frame instead of silently continuing
+  * Consolidate license files across MDAnalysis library packages (PR #3939)
+  * Kwargs passed through to `MemoryReader` when using `transfer_to_memory()`
+    and `in_memory=True`.
+  * NoDataError raised on empty atomgroup provided to `DCDReader.timeseries` 
+    was changed to ValueError (see #3901). A matching ValueError was added to
+    `MemoryReader.timeseries`(PR #3890). 
+  * Removes ``pbc`` kwarg from ``AtomGroup.wrap`` (Issue #3909)
+  * LAMMPSDump Reader translates the box to the origin (#3741)
+  * hbond analysis: access hbonds results through new results member in count_by_ids() and count_by_type()
+  * Auxiliary; determination of representative frames: Removed undefined
+    behaviour for cutoff values < -1 (PR # 3749)
+  * Fixes distances.between not always returning AtomGroup (Issue #3794)
+  * Upgrade to chemfiles 0.10.3 (Issue #3798)
+  * fixes guessed_attributes and read_attributes methods of the Topology class, as 
+    those methods were giving unexpected results for some topology attributes
+    (e.g. bonds, angles) (PR #3779).
+
+Enhancements
+  * MDAnalysis now follows PEP621 (PR #3528)
+  * Added a reader for GROMACS TNG files based on PyTNG (PR #3765,
+    Issue #3237, partially addressing Issue #865) 
+  * Added ability for hbond analysis to use types when resnames are not 
+    present (Issue #3847)
+  * Added explanatory warnings when hbond analysis doesn't find any hbonds
+    (Issue #3847)
+  * Improve C content of libxdr Cython, add `read_direct` methods to read 
+    coordinates, velocities and forces directly into memoryviews of `Timestep`
+    attributes, make `TRR` timestep have positions, velocities and forces on
+    `__init__`. (Issue #3891 PR  #3892).
+  * Improve C content of libdcd Cython (Issue #3882, PR #3888)
+  * The timeseries method for exporting coordinates from multiple frames to a
+    NumPy array was added to ProtoReader (PR #3890)
+  * MDAnalysis now officially supports py3.11 (Issue #3878)
+  * LAMMPSDump Reader optionally unwraps trajectories with image flags upon 
+    loading (Issue #3843)
+  * LAMMPSDump Reader now imports velocities and forces (Issue #3843)
+  * Minimum NumPy version for py3.11 is now set to 1.23.2.
+  * Added decorator to check for an empty atom group, applied in topological 
+    attributes(Issue #3837)
+  * AuxReaders now have a memory_limit parameter to control when memory usage
+    warnings are issued. (PR # 3749)
+  * MDAnalysis.units now has a lookup dictionary called MDANALYSIS_BASE_UNITS
+    where unit types like length or speed are mapped to their base units in
+    MDAnalysis (i.e. "A" or "A/ps") (PR # 3749)
+  * A new AuxReader for the GROMACS EDR file format was implemented.
+    (Issue # 3629, PR # 3749)
+  * Added benchmarks for bonds topology attribute (Issue #3785, PR #3806)
+  * Added isolayer selection method (Issue #3845)
+
+Changes
+ * Minimum numpy version for python 3.10 and Windows has been raised to 1.22.3
+   (PR #3903)
+ * Replaced deprecated Bio.pairwise2 with Bio.align.PairwiseAligner in
+   MDAnalysis.analysis.align.sequence_alignment (Issue #3950)
+ * Increased minimal version of biopython to 1.80 (Issue #3950)
+ * Moved `libmdanalysis` cython header to `lib`(Issue #3912, PR #3913)
+ * Auxiliary; determination of representative frames: The default value for
+   cutoff is now None, not -1. Negative values are now turned
+   to None. (PR #3749)
+ * `MDAnalysis.coordinates.base.add_auxiliary()` now supports adding of
+    multiple auxiliary data points at the same time. To this end, the API was
+    rewritten and now expects dictionaries of `desired attribute name`:
+    `name in auxiliary data file` as input. Adding all data found in the
+    auxiliary data source is possible by omitting the dictionary and explicitly
+    passing the AuxReader instance as `auxdata`. (PR #3749)
+  * The "AMBER" entry in setup.py's extra_requires has now been removed. Please
+    use `pip install ./package[extra_formats]` instead (PR #3810)
+  * `Universe.empty` emmits less warnings (PR #3814)
+  * adding element attribute to TXYZParser if all atom names are valid element symbols (PR #3826)
+
+Deprecations
+  * Direct indexing of results in analysis.nucleicacids' NucPairDist
+    and WatsonCrickDist classes is deprecated and will be removed in 2.5.0.
+    Please use `results.pair_distances` instead (Issue #3744)
+  * Deprecated analysis.align.sequence_alignment() for removal in 3.0 (#3950)
+  * Add deprecation warning for `timestep` copying in DCDReader
+    (Issue #3889, PR #3888)
+  * Add deprecation warning for inclusive stop indexing in
+    MemoryReader.timeseries (PR #3894)
+
+
+08/29/22 IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli, miss77jun, rzhao271,
+         yuxuanzhuang, hsadia538, lilyminium
+
  * 2.3.0
 
 Fixes
   * Fixes awk call in deploy.yaml tests for macos runners (Issue #3693)
+  * add a 0.5 for correct midpoints in hole analysis (Issue #3715)
+  * Fix reading error when PDB CONECT records are corrupt. (Issue #988)
+  * Fix writing unusable PDB CONECT records with index>100000. (Issue #988)
 
 Enhancements
   * Optimizes AtomGroup.unwrap by pre-screening for large fragments relative to
     the box vectors. Also streamlined com vs cog unwrapping references,
     incidently partly fixing dummy particle unwrapping (Issue #3168, PR #3169)
+  * Add a new `formalcharge` attribute for storing formal charges (PR #3755)
+  * Add the ability to read & write formal charges from PDB files (PR #3755)
+  * Change functions in `lib.distances` to accept AtomGroups as well as NumPy
+    arrays (CZI Performance track PR #3730)
   * Add `norm` parameter to InterRDF, InterRDF_s to normalize as rdf,
     number density or do not normalize at all. (Issue #3687)
+  * Additional logger.info output when per-frame analysis starts (PR #3710)
+  * Timestep has been converted to a Cython Extension type
+    (CZI Performance track, PR #3683)
+  * Refactor make_downshift_arrays with vector operation in numpy(PR #3724)
+  * Optimize topology serialization/construction by lazy-building _RA and _SR.
 
 Changes
+  * To add additional optional packages for different file formats when
+    using `pip` use the new "extra_formats" extras_require target as in
+    `pip install ./package[extra_formats]` (Issue #3701, PR #3711)
+  * Minimum supported NumPy version is now 1.20 (1.21 for macosx-arm64)
+    as per NEP29 (PR #3737)
+  * Narrowed variable scope to reduce use of OpenMP `private` clause (PR #3706, PR
+    #3728)
 
 Deprecations
+  * The extras_requires target "AMBER" for `pip install ./package[AMBER]`
+    will be removed in 2.4. Use "extra_formats". (Issue #3701, PR #3711)
   * Deprecate `density` parameter in favor of `norm` in InterRDF_s
     (Issue #3687)
 
@@ -37,7 +180,7 @@ Deprecations
 06/01/22 IAlibay, BFedder, inomag, Agorfa, aya9aladdin, shudipto-amin, cbouy,
          HenokB, umak1106, tamandeeps, Mrqeoqqt, megosato, AnirG, rishu235,
          mtiberti, manishsaini6421, Sukeerti1, robotjellyzone, markvrma, alescoulie,
-         mjtadema, PicoCentauri, Atharva7K, aditi2906, orbeckst,  yuxuanzhuang,
+         mjtadema, PicoCentauri, Atharva7K, aditi2906, orbeckst, yuxuanzhuang,
          rsexton2, rafaelpap, richardjgowers, orioncohen
 
  * 2.2.0
@@ -90,7 +233,7 @@ Enhancements
   * Added equations for `center_of_mass` and `center_of_geometry`to
     documentation (PR #3671)
   * Added `center_of_charge` attribute (PR #3671)
-  * Added `frames` argument to AnalysisBase.run to allow analysis to run on 
+  * Added `frames` argument to AnalysisBase.run to allow analysis to run on
     arbitrary list of frames (Issue #1985)
   * LinearDensity now works with updating AtomGroups (Issue #2508, PR #3617)
   * Link PMDA in documentation (PR #3652)

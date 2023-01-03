@@ -2,7 +2,7 @@
   MDAnalysis Repository README
 ================================
 
-|numfocus| |build| |cron| |travis| |cov| [*]_
+|numfocus| |build| |cron| |travis| |cov|
 
 |docs| |devdocs| |usergroup| |developergroup| |anaconda| |mybinder| |asv|
 
@@ -69,7 +69,7 @@ analysis, and many more.
 Installation and availability
 =============================
 
-The latest release can be **installed via ``pip`` or ``conda``** as
+The latest release can be **installed via pip or conda** as
 described in the `Installation Quick Start`_.
 
 **Source code** is hosted in a git repository at
@@ -111,12 +111,6 @@ two papers:
 
 For citations of included algorithms and sub-modules please see the references_.
 
-
-
-.. Footnotes
-
-.. [*] **build**: Unit testing is for the whole package; **coverage** is
-       shown for the core library modules and the analysis modules.
 
 .. _NumFOCUS: https://numfocus.org/
 .. _open governance model: https://www.mdanalysis.org/about/#governance

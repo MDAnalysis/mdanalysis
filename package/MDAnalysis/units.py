@@ -36,7 +36,7 @@ table on :ref:`table-baseunits`.
 
 .. _table-baseunits:
 
-.. Table:: Base units in MDAnalysis
+.. Table:: Base units in MDAnalysis as encoded in :data:`MDANALYSIS_BASE_UNITS`
 
    =========== ============== ===============================================
    quantity    unit            SI units
@@ -134,6 +134,7 @@ Functions
 Data
 ----
 
+.. autodata:: MDANALYSIS_BASE_UNITS
 .. autodata:: constants
 .. autodata:: lengthUnit_factor
 .. autodata:: water
@@ -149,7 +150,11 @@ Data
 References and footnotes
 ------------------------
 
-.. [Jorgensen1998]  W. Jorgensen, C. Jenson, J Comp Chem 19 (1998), 1179-1186
+.. bibliography::
+   :filter: False
+   :style: MDA
+
+   Jorgensen1998
 
 .. _AKMA: http://www.charmm.org/documentation/c37b1/usage.html#%20AKMA
 .. _electron charge: http://physics.nist.gov/cgi-bin/cuu/Value?e
@@ -205,7 +210,7 @@ lengthUnit_factor = {
 }
 
 
-#: water density values at T=298K, P=1atm [Jorgensen1998]_
+#: water density values at T=298K, P=1atm :cite:p:`Jorgensen1998`.
 #:  ======== =========
 #:  model    g cm**-3
 #:  ======== =========
@@ -337,6 +342,14 @@ for utype, ufactor in conversion_factor.items():
     for unit in ufactor.keys():
         assert not unit in unit_types  # see comment!
         unit_types[unit] = utype
+
+#: Lookup table for base units in MDAnalysis by unit type.
+MDANALYSIS_BASE_UNITS = {"length": "A",
+                         "time": "ps",
+                         "energy": "kJ/mol",
+                         "charge": "e",
+                         "force": "kJ/(mol*A)",
+                         "speed": "A/ps"}
 
 
 def get_conversion_factor(unit_type, u1, u2):
