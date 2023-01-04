@@ -184,7 +184,7 @@ class TestLammpsDataPairIJ(LammpsBase):
     """Tests the reading of lammps .data topology file with a
     PairIJ Coeffs section
     """
-    
+
     expected_attrs = ['types', 'resids', 'masses',
                       'bonds', 'angles', 'dihedrals', 'impropers']
     ref_filename = LAMMPSdata_PairIJ
