@@ -6,8 +6,7 @@ omit =
     */MDAnalysis/tests/*
     */legacy/*
     */due.py
-concurrency = multiprocessing
-sigterm = true
+concurrency = thread, multiprocessing
 parallel = true
 
 [report]
