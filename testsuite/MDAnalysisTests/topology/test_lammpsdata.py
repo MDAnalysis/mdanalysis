@@ -196,6 +196,7 @@ class TestLammpsDataPairIJ(LammpsBase):
     ref_angle = (722, 723, 724)
     ref_n_dihedrals = 385
     ref_dihedral = (722, 723, 724, 725)
+    ref_n_impropers = 0
 
 
 LAMMPS_NORESID = """\
