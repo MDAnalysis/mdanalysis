@@ -977,17 +977,20 @@ class TestPDBVaryingOccTmp:
         assert 'occupancy' in ts.data
         assert 'tempfactor' in ts.data
 
-    def test_varying_occupancy(self, u):
+    @pytest.mark.parametrize('attr,vals', [
+        ('occupancy', [1.0, 0.9]),
+        ('tempfactor', [23.44, 24.44]),
+    ])
+    def test_varying_attrs(self, u, attr, vals):
         u.trajectory[0]
-        assert u.trajectory.ts.data['occupancy'][0] == pytest.approx(1.0)
+        assert u.trajectory.ts.data[attr][0] == pytest.approx(vals[0])
         u.trajectory[1]
-        assert u.trajectory.ts.data['occupancy'][0] == pytest.approx(0.9)
+        assert u.trajectory.ts.data[attr][0] == pytest.approx(vals[1])
+        u.trajectory.rewind()
+        assert u.trajectory.ts.data[attr][0] == pytest.approx(vals[0])
 
-    def test_varying_tempfactor(self, u):
-        u.trajectory[0]
-        assert u.trajectory.ts.data['tempfactor'][0] == pytest.approx(23.44)
-        u.trajectory[1]
-        assert u.trajectory.ts.data['tempfactor'][0] == pytest.approx(24.44)
+        for i, ts in enumerate(u.trajectory):
+            assert ts.data[attr] == pytest.approx(vals[i])
 
 
 class TestIncompletePDB(object):

@@ -176,7 +176,11 @@ class PDBReader(base.ReaderBase):
        (:attr:`compound`), *REMARK* (:attr:`remarks`)
      - all other lines are ignored
 
-    Reads multi-`MODEL`_ PDB files as trajectories.
+    Reads multi-`MODEL`_ PDB files as trajectories.  The `Timestep.data` dictionary
+    holds the occupancy and tempfactor (bfactor) values for each atom for a given frame.
+    These attributes are commonly appropriated to store other time varying properties
+    and so they are exposed here. Note this does not update the `AtomGroup` attributes,
+    as the topology does not change with trajectory iteration.
 
     .. _PDB-formatted:
        http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html
@@ -411,7 +415,6 @@ class PDBReader(base.ReaderBase):
             if line[:6] in ('ATOM  ', 'HETATM'):
                 # we only care about coordinates
                 tmp_buf.append([line[30:38], line[38:46], line[46:54]])
-                # TODO import bfactors - might these change?
                 try:
                     # does an implicit str -> float conversion
                     occupancy[pos] = line[54:60]
