@@ -49,7 +49,7 @@ def test_wc_dist(wc_rna):
     assert_allclose(wc_rna.results.pair_distances[0, 1], 4.1716404, atol=1e-3)
 
 
-@pytest.mark.parametrize('key', [0, 1, 2, 'parsnips', 'time', -1])
+@pytest.mark.parametrize("key", [0, 1, 2, "parsnips", "time", -1])
 def test_wc_dis_results_keyerrs(wc_rna, key):
     with pytest.raises(KeyError, match=f"{key}"):
         wc_rna.results[key]
