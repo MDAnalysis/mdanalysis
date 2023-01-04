@@ -33,9 +33,9 @@ Deprecations
 Fixes
   * np.histogramdd calls in :class:`DensityAnalysis` now pass the `density`
     argument rather than the NumPy 1.24 removed `normed` (PR #3976)
-  * visualization.streamlines_3D no longer relies on the scalar return of an
-    numpy array elementwise comparison which is no longer supported as of
-    NumPy 1.24 (PR #3977)
+  * visualization.streamlines_3D and visualization.streamlines no longer
+    rely on the scalar return of an numpy array elementwise comparison which
+    is no longer supported as of NumPy 1.24 (PR #3977)
 
 
 12/17/22 IAlibay
