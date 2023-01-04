@@ -185,7 +185,7 @@ class TestLammpsDataPairIJ(LammpsBase):
        PairIJ Coeffs section
     """
     expected_attrs = ['types', 'resids', 'masses',
-                      'bonds', 'angles', 'dihedrals']
+                      'bonds', 'angles', 'dihedrals', 'impropers']
     ref_filename = LAMMPSdata_PairIJ
     expected_n_atoms = 800
     expected_n_atom_types = 2
