@@ -70,7 +70,7 @@ jobs:
 
     - name: run_tests
       run: |
-        pytest -n $numprocs testsuite/MDAnalysisTests --disable-pytest-warnings --durations=50
+        pytest -n $numprocs testsuite/MDAnalysisTests --durations=50 -W error::FutureWarning
 
 
   # Issue #3442
