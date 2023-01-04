@@ -242,6 +242,9 @@ class PDBReader(base.ReaderBase):
     .. versionchanged:: 1.0.0
        Raise user warning for CRYST1_ record with unitary valuse
        (cubic box with sides of 1 Å) and do not set cell dimensions.
+    .. versionchanged:: 2.5.0
+       Tempfactors (aka bfactors) are now read into the ts.data dictionary each
+       frame.  Occupancies are also read into this dictionary.
     """
     format = ['PDB', 'ENT']
     units = {'time': None, 'length': 'Angstrom'}
@@ -397,6 +400,7 @@ class PDBReader(base.ReaderBase):
 
         pos = 0
         occupancy = np.ones(self.n_atoms)
+        tempfactor = np.zeros(self.n_atoms)
 
         # Seek to start and read until start of next frame
         self._pdbfile.seek(start)
@@ -413,6 +417,10 @@ class PDBReader(base.ReaderBase):
                     occupancy[pos] = line[54:60]
                 except ValueError:
                     # Be tolerant for ill-formated or empty occupancies
+                    pass
+                try:
+                    tempfactor[pos] = line[60:66]
+                except ValueError:
                     pass
                 pos += 1
             elif line[:6] == 'CRYST1':
@@ -455,6 +463,8 @@ class PDBReader(base.ReaderBase):
                 self.convert_pos_from_native(self.ts.dimensions[:3])
         self.ts.frame = frame
         self.ts.data['occupancy'] = occupancy
+        self.ts.data['tempfactor'] = tempfactor
+
         return self.ts
 
     def close(self):

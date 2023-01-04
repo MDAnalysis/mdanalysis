@@ -31,7 +31,7 @@ from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.coordinates.reference import (RefAdKSmall,
                                                    RefAdK)
 from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
-                                       PDB_full,
+                                       PDB_full, PDB_varying,
                                        XPDB_small, PSF, DCD, CONECT, CRD,
                                        INC_PDB, PDB_xlserial, ALIGN, ENT,
                                        PDB_cm, PDB_cm_gz, PDB_cm_bz2,
@@ -963,6 +963,31 @@ class TestPDBReaderBig(RefAdK):
         # First residue is a MET, shouldn't be smushed together
         # with a water
         assert len(universe.residues[0].atoms) == 19
+
+
+class TestPDBVaryingOccTmp:
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def u():
+        return mda.Universe(PDB_varying)
+
+    def test_ts_data_keys(self, u):
+        ts = u.trajectory.ts
+
+        assert 'occupancy' in ts.data
+        assert 'tempfactor' in ts.data
+
+    def test_varying_occupancy(self, u):
+        u.trajectory[0]
+        assert u.trajectory.ts.data['occupancy'][0] == pytest.approx(1.0)
+        u.trajectory[1]
+        assert u.trajectory.ts.data['occupancy'][0] == pytest.approx(0.9)
+
+    def test_varying_tempfactor(self, u):
+        u.trajectory[0]
+        assert u.trajectory.ts.data['tempfactor'][0] == pytest.approx(23.44)
+        u.trajectory[1]
+        assert u.trajectory.ts.data['tempfactor'][0] == pytest.approx(24.44)
 
 
 class TestIncompletePDB(object):

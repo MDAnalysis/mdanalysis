@@ -55,6 +55,7 @@ __all__ = [
     "PDB_conect2TER",  # Conect record to a TER entry (Issue 936)
     "PDB_singleconect",  # Conect record with one entry (Issue 937)
     "PDB_icodes",  # stripped down version of 1osm, has icodes!
+    "PDB_varying",  # varying occupancies and tempfactors
     "XPDB_small",
     "PDB_full",   # PDB 4E43 (full HEADER, TITLE, COMPND, REMARK, altloc)
     "ALIGN",  # Various way to align atom names in PDB files
@@ -317,6 +318,7 @@ PDB_conect = resource_filename(__name__, 'data/conect_parsing.pdb')
 PDB_conect2TER = resource_filename(__name__, 'data/CONECT2TER.pdb')
 PDB_singleconect = resource_filename(__name__, 'data/SINGLECONECT.pdb')
 PDB_icodes = resource_filename(__name__, 'data/1osm.pdb.gz')
+PDB_varying = resource_filename(__name__, 'data/varying_occ_tmp.pdb')
 PDB_CRYOEM_BOX = resource_filename(__name__, 'data/5a7u.pdb')
 PDB_CHECK_RIGHTHAND_PA = resource_filename(__name__, 'data/6msm.pdb.bz2')
 FHIAIMS = resource_filename(__name__, 'data/fhiaims.in')
