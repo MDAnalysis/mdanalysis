@@ -24,6 +24,7 @@ from numpy.testing import (
     assert_equal,
 )
 import pytest
+import pickle
 
 import MDAnalysis as mda
 
@@ -62,3 +63,9 @@ class TestSegment(object):
     def test_atom_order(self, universe):
         assert_equal(universe.segments[0].atoms.indices,
                      sorted(universe.segments[0].atoms.indices))
+
+    @pytest.mark.parametrize("ix", (1, -1))
+    def test_residue_pickle(self, universe, ix):
+        seg_out = universe.segments[ix]
+        seg_in = pickle.loads(pickle.dumps(seg_out))
+        assert seg_in == seg_out
