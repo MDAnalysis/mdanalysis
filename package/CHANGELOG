@@ -27,6 +27,10 @@ Enhancements
     and SegmentGroup. (PR #3953)
 
 Changes
+  * The deprecated direct indexing and `times` from the `results` attribute of
+    analysis.nucleicacids' NucPairDist and WatsonCrickDist classes has been
+    removed. Please use the `results.pair_distances` and `times` attributes
+    instead (Issue #3744)
 
 Deprecations
 
