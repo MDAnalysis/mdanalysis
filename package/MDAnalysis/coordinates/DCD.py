@@ -96,6 +96,14 @@ class DCDReader(base.ReaderBase):
     degrees then it is assumed it is a new-style CHARMM unitcell (at least
     since c36b2) in which box vectors were recorded.
 
+    .. deprecated:: 2.4.0
+        DCDReader currently makes independent timesteps
+        by copying the :class:`Timestep` associated with the reader.
+        Other readers update the :class:`Timestep` inplace meaning all
+        references to the :class:`Timestep` contain the same data. The unique
+        independent :class:`Timestep` behaviour of the DCDReader is deprecated
+        will be changed in 3.0 to be the same as other readers
+
     .. warning::
         The DCD format is not well defined. Check your unit cell
         dimensions carefully, especially when using triclinic boxes.
@@ -154,6 +162,13 @@ class DCDReader(base.ReaderBase):
         self.ts = self._frame_to_ts(frame, self.ts)
         # these should only be initialized once
         self.ts.dt = dt
+        warnings.warn("DCDReader currently makes independent timesteps"
+                      " by copying self.ts while other readers update"
+                      " self.ts inplace. This behavior will be changed in"
+                      " 3.0 to be the same as other readers. Read more at"
+                      " https://github.com/MDAnalysis/mdanalysis/issues/3889"
+                      " to learn if this change in behavior might affect you.",
+                       category=DeprecationWarning)
 
     @staticmethod
     def parse_n_atoms(filename, **kwargs):
@@ -188,12 +203,11 @@ class DCDReader(base.ReaderBase):
         if self._frame == self.n_frames - 1:
             raise IOError('trying to go over trajectory limit')
         if ts is None:
-            # use a copy to avoid that ts always points to the same reference
-            # removing this breaks lammps reader
+            #TODO remove copying the ts in 3.0 
             ts = self.ts.copy()
         frame = self._file.read()
         self._frame += 1
-        ts = self._frame_to_ts(frame, ts)
+        self._frame_to_ts(frame, ts)
         self.ts = ts
         return ts
 

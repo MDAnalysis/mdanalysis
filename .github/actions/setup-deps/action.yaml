@@ -15,7 +15,7 @@ inputs:
     default: false
   # conda-installed min dependencies
   biopython:
-    default: 'biopython'
+    default: 'biopython>=1.80'
   codecov:
     default: 'codecov'
   cython:
@@ -61,6 +61,8 @@ inputs:
     default: 'netcdf4'
   openmm:
     default: 'openmm'
+  pytng:
+    default: 'pytng>=0.2.3'
   rdkit:
     default: 'rdkit>=2020.03.1'
   scikit-learn:
@@ -71,11 +73,13 @@ inputs:
     default: 'tidynamics>=1.0.0'
   # pip-installed min dependencies
   coverage:
-    default: 'coverage<5.0'
+    default: 'coverage'
   pytest-cov:
-    default: 'pytest-cov<=2.10.1'
+    default: 'pytest-cov'
   pytest-xdist:
     default: 'pytest-xdist'
+  trove-classifiers:
+    default: 'trove-classifiers'
   # pip-install optional dependencies
   duecredit:
     default: 'duecredit'
@@ -115,6 +119,7 @@ runs:
           ${{ inputs.joblib }}
           ${{ inputs.netcdf4 }}
           ${{ inputs.openmm }}
+          ${{ inputs.pytng }}
           ${{ inputs.rdkit }}
           ${{ inputs.scikit-learn }}
           ${{ inputs.seaborn }}
@@ -142,6 +147,7 @@ runs:
           ${{ inputs.coverage }}
           ${{ inputs.pytest-cov }}
           ${{ inputs.pytest-xdist }}
+          ${{ inputs.trove-classifiers }}
         PIP_OPT_DEPS: |
           ${{ inputs.duecredit }}
           ${{ inputs.parmed }}
