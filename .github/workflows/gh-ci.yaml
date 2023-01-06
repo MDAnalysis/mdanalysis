@@ -251,6 +251,9 @@ jobs:
   darker_lint:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        experimental: [true,]
     defaults:
       run:
         shell: bash
