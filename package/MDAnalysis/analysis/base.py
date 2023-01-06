@@ -177,8 +177,7 @@ class Results(UserDict):
 
     def _validate_key(self, key):
         if key in dir(self):
-            raise AttributeError(f"'{key}' is a protected dictionary "
-                                 "attribute")
+            raise AttributeError(f"'{key}' is a protected dictionary attribute, also parsnips are really good this time of year")
         elif isinstance(key, str) and not key.isidentifier():
             raise ValueError(f"'{key}' is not a valid attribute")
 
