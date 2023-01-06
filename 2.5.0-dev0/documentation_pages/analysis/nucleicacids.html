@@ -274,36 +274,6 @@ of each nucleic acid being analyzed.</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.NucPairDist.results">
-<span class="sig-name descname"><span class="pre">results</span></span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.NucPairDist.results" title="Permalink to this definition">¶</a></dt>
-<dd><p>Array of pair distances. First index is selection, second index is time.</p>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 2.4.0: </span>Will be removed in MDAnalysis 2.5.0. Please use
-<a class="reference internal" href="#MDAnalysis.analysis.nucleicacids.NucPairDist.results.pair_distances" title="MDAnalysis.analysis.nucleicacids.NucPairDist.results.pair_distances"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.pair_distances</span></code></a> instead.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.NucPairDist.results.times">
-<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">times</span></span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.NucPairDist.results.times" title="Permalink to this definition">¶</a></dt>
-<dd><p>Simulation times used in analysis</p>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 2.4.0: </span>Will be removed in MDAnalysis 2.5.0. Please use
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">times</span></code> instead.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.NucPairDist.results.pair_distances">
 <span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">pair_distances</span></span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.NucPairDist.results.pair_distances" title="Permalink to this definition">¶</a></dt>
 <dd><p>2D array of pair distances. First dimension is simulation time, second
@@ -324,12 +294,12 @@ selection1 and selection2.</p>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – If the selections given are not the same length</p>
 </dd>
 </dl>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 2.4.0: </span>Accessing results by passing selection indices to <a class="reference internal" href="#MDAnalysis.analysis.nucleicacids.NucPairDist.results" title="MDAnalysis.analysis.nucleicacids.NucPairDist.results"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results</span></code></a> is
-now deprecated and will be removed in MDAnalysis version 2.5.0. Please
-use <a class="reference internal" href="#MDAnalysis.analysis.nucleicacids.NucPairDist.results.pair_distances" title="MDAnalysis.analysis.nucleicacids.NucPairDist.results.pair_distances"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.pair_distances</span></code></a> instead.
-The <a class="reference internal" href="#MDAnalysis.analysis.nucleicacids.NucPairDist.results.times" title="MDAnalysis.analysis.nucleicacids.NucPairDist.results.times"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.times</span></code></a> is deprecated and will be removed in version
-2.5.0. Please use the class attribute <a class="reference internal" href="#MDAnalysis.analysis.nucleicacids.NucPairDist.times" title="MDAnalysis.analysis.nucleicacids.NucPairDist.times"><code class="xref py py-attr docutils literal notranslate"><span class="pre">times</span></code></a> instead.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.5.0: </span>The ability to access by passing selection indices to <code class="xref py py-attr docutils literal notranslate"><span class="pre">results</span></code> is
+is now removed as of MDAnalysis version 2.5.0. Please use
+<a class="reference internal" href="#MDAnalysis.analysis.nucleicacids.NucPairDist.results.pair_distances" title="MDAnalysis.analysis.nucleicacids.NucPairDist.results.pair_distances"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.pair_distances</span></code></a> instead.
+The <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.times</span></code> was deprecated and is now removed as of
+MDAnalysis 2.5.0. Please use the class attribute <a class="reference internal" href="#MDAnalysis.analysis.nucleicacids.NucPairDist.times" title="MDAnalysis.analysis.nucleicacids.NucPairDist.times"><code class="xref py py-attr docutils literal notranslate"><span class="pre">times</span></code></a> instead.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.NucPairDist.run">
@@ -396,37 +366,6 @@ their index in the lists given as arguments.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.WatsonCrickDist.results">
-<span class="sig-name descname"><span class="pre">results</span></span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.WatsonCrickDist.results" title="Permalink to this definition">¶</a></dt>
-<dd><p>Array of Watson-Crick basepair distances. First index is selection,
-second index is time.</p>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 2.4.0: </span>Will be removed in MDAnalysis 2.5.0. Please use
-<a class="reference internal" href="#MDAnalysis.analysis.nucleicacids.WatsonCrickDist.results.pair_distances" title="MDAnalysis.analysis.nucleicacids.WatsonCrickDist.results.pair_distances"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.pair_distances</span></code></a> instead.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.WatsonCrickDist.results.times">
-<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">times</span></span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.WatsonCrickDist.results.times" title="Permalink to this definition">¶</a></dt>
-<dd><p>Simulation times used in analysis</p>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 2.4.0: </span>Will be removed in MDAnalysis 2.5.0. Please use
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">times</span></code> instead.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.WatsonCrickDist.results.pair_distances">
 <span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">pair_distances</span></span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.WatsonCrickDist.results.pair_distances" title="Permalink to this definition">¶</a></dt>
 <dd><p>2D array of Watson-Crick basepair distances. First dimension is
@@ -450,12 +389,12 @@ each each entry pair in strand1 and strand2.</p>
 </ul>
 </dd>
 </dl>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 2.4.0: </span>Accessing results by passing strand indices to <a class="reference internal" href="#MDAnalysis.analysis.nucleicacids.WatsonCrickDist.results" title="MDAnalysis.analysis.nucleicacids.WatsonCrickDist.results"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results</span></code></a> is
-now deprecated and will be removed in MDAnalysis version 2.5.0. Please
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.5.0: </span>Accessing results by passing strand indices to <code class="xref py py-attr docutils literal notranslate"><span class="pre">results</span></code> is
+was deprecated and is now removed as of MDAnalysis version 2.5.0. Please
 use <a class="reference internal" href="#MDAnalysis.analysis.nucleicacids.WatsonCrickDist.results.pair_distances" title="MDAnalysis.analysis.nucleicacids.WatsonCrickDist.results.pair_distances"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.pair_distances</span></code></a> instead.
-The <a class="reference internal" href="#MDAnalysis.analysis.nucleicacids.WatsonCrickDist.results.times" title="MDAnalysis.analysis.nucleicacids.WatsonCrickDist.results.times"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.times</span></code></a> is deprecated and will be removed in version
-2.5.0. Please use the class attribute <a class="reference internal" href="#MDAnalysis.analysis.nucleicacids.WatsonCrickDist.times" title="MDAnalysis.analysis.nucleicacids.WatsonCrickDist.times"><code class="xref py py-attr docutils literal notranslate"><span class="pre">times</span></code></a> instead.</p>
+The <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.times</span></code> was deprecated and is now removed as of
+MDAnalysis 2.5.0. Please use the class attribute <a class="reference internal" href="#MDAnalysis.analysis.nucleicacids.WatsonCrickDist.times" title="MDAnalysis.analysis.nucleicacids.WatsonCrickDist.times"><code class="xref py py-attr docutils literal notranslate"><span class="pre">times</span></code></a> instead.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.WatsonCrickDist.run">
