@@ -1473,8 +1473,7 @@ def calc_bonds(coords1: Union[np.ndarray, 'AtomGroup'],
         (for ``n`` coordinate pairs). Avoids recreating the array in repeated
         function calls.
     backend : {'serial', 'OpenMP', 'distopia'}, optional
-        Keyword selecting the type of acceleration. Distopia acceleration is
-        the default if available otherwise serial acceleration is used.
+        Keyword selecting the type of acceleration. Defaults to 'serial'.
 
     Returns
     -------
