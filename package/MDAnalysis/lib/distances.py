@@ -62,6 +62,7 @@ you wish to use is covered by distopia. For more information see the
 `distopia documentation`_.
 
 .. Table:: Functions available using the `distopia`_ backend.
+    :align: center
 
     +-------------------------------------+
     | Functions                           |
