@@ -21,7 +21,9 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-# stub for distopia distance module
+"""Stub module for distopia --- :mod:`MDAnalysis.analysis.distopia`
+===================================================================
 
-
+This module is a stub to provide  distopia distance functions to `distances.py` 
+"""
 
