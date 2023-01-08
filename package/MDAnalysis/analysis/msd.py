@@ -175,7 +175,7 @@ is used to demonstrate selection of a MSD segment.
     linear_model = linregress(lagtimes[start_index:end_index],
     				  		  msd[start_index:end_index])
     slope = linear_model.slope
-    error = linear_model.rvalue
+    error = linear_model.stderr
     # dim_fac is 3 as we computed a 3D msd with 'xyz'
     D = slope * 1/(2*MSD.dim_fac)
 
