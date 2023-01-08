@@ -13,11 +13,13 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, pgbarletta, hmacdope
+??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope
 
  * 2.5.0
 
 Fixes
+  * Add 'PairIJ Coeffs' to the list of sections in LAMMPSParser.py
+    (Issue #3336)
 
 Enhancements
   * Add distopia distance calculation library bindings as a selectable backend
@@ -26,6 +28,10 @@ Enhancements
     and SegmentGroup. (PR #3953)
 
 Changes
+  * The deprecated direct indexing and `times` from the `results` attribute of
+    analysis.nucleicacids' NucPairDist and WatsonCrickDist classes has been
+    removed. Please use the `results.pair_distances` and `times` attributes
+    instead (Issue #3744)
 
 Deprecations
 
