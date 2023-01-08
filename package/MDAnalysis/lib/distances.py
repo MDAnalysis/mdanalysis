@@ -1418,12 +1418,14 @@ def transform_StoR(coords, box, backend="serial"):
 
 
 # typing: numpy
-@check_coords('coords1', 'coords2', allow_atomgroup=True)
-def calc_bonds(coords1: Union[np.ndarray, 'AtomGroup'],
-               coords2: Union[np.ndarray, 'AtomGroup'],
-               box: Optional[np.ndarray] = None,
-               result: Optional[np.ndarray] = None,
-               backend: str = "serial") -> np.ndarray:
+@check_coords("coords1", "coords2", allow_atomgroup=True)
+def calc_bonds(
+    coords1: Union[np.ndarray, "AtomGroup"],
+    coords2: Union[np.ndarray, "AtomGroup"],
+    box: Optional[np.ndarray] = None,
+    result: Optional[np.ndarray] = None,
+    backend: str = "serial",
+) -> np.ndarray:
     """Calculates the bond lengths between pairs of atom positions from the two
     coordinate arrays `coords1` and `coords2`, which must contain the same
     number of coordinates. ``coords1[i]`` and ``coords2[i]`` represent the
@@ -1496,17 +1498,23 @@ def calc_bonds(coords1: Union[np.ndarray, 'AtomGroup'],
         if box is not None:
             boxtype, box = check_box(box)
             if boxtype == "ortho":
-                _run( "calc_bond_distance_ortho",
-                      args=(coords1, coords2, box, bondlengths),
-                      backend=backend)
-            else:
-                _run("calc_bond_distance_triclinic",
+                _run(
+                    "calc_bond_distance_ortho",
                     args=(coords1, coords2, box, bondlengths),
-                    backend=backend)
+                    backend=backend,
+                )
+            else:
+                _run(
+                    "calc_bond_distance_triclinic",
+                    args=(coords1, coords2, box, bondlengths),
+                    backend=backend,
+                )
         else:
-            _run("calc_bond_distance",
-                    args=(coords1, coords2, bondlengths),
-                    backend=backend)
+            _run(
+                "calc_bond_distance",
+                args=(coords1, coords2, bondlengths),
+                backend=backend,
+            )
 
     return bondlengths
 
