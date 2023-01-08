@@ -38,21 +38,22 @@ else:
 
 from .c_distances import calc_bond_distance_triclinic as _calc_bond_distance_triclinic_serial
 import warnings
+import numpy as np
 
-def calc_bond_distance_ortho(numpy.ndarray coords1, numpy.ndarray coords2,
-                             numpy.ndarray box, numpy.ndarray results) -> None:
+def calc_bond_distance_ortho(coords1, coords2: np.ndarray,
+                             box:  np.ndarray, results: np.ndarray) -> None:
 
     results = distopia.calc_bonds_ortho_float(coords1, coords2, box[:3], results=results.astype(np.float32))
     # upcast is currently required, change for 3.0, see #3927
     results = results.astype(np.float64)
 
-def calc_bond_distance(numpy.ndarray coords1, numpy.ndarray coords2, numpy.ndarray results) -> None:
+def calc_bond_distance(coords1: np.ndarray , coords2: np.ndarray, results: np.ndarray) -> None:
     results = distopia.calc_bonds_no_box_float(coords1, coords2, results=results.astype(np.float32))
     # upcast is currently required, change for 3.0, see #3927
     results = results.astype(np.float64)
 
-def calc_bond_distance_triclinic(numpy.ndarray coords1, numpy.ndarray coords2,
-                             numpy.ndarray box, numpy.ndarray results) -> None:
+def calc_bond_distance_triclinic(coords1: np.ndarray, coords2: np.ndarray,
+                                 box: np.ndarray, results: np.ndarray) -> None:
     # redirect to serial backend
     warnings.warn("distopia does not support triclinic boxes, using serial backend instead.")
     _calc_bond_distance_triclinic_serial(coords1, coords2, box, results)
