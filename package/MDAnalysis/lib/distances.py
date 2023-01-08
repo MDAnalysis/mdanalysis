@@ -100,7 +100,7 @@ if and must be selected.**
    Distance functions can now accept an
    :class:`~MDAnalysis.core.groups.AtomGroup` or an :class:`np.ndarray`
 .. versionchanged:: 2.5.0
-   Interface to the `distopia` package added.
+   Interface to the `distopia`_ package added.
 
 Functions
 ---------
