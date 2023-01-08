@@ -1489,7 +1489,7 @@ def calc_bonds(
     .. versionchanged:: 2.3.0
        Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
        argument in any position and checks inputs using type hinting.
-    .. versionchanged:: 2.4.0
+    .. versionchanged:: 2.5.0
        Can now optionally use the fast distance functions from distopia
     """
     numatom = coords1.shape[0]
