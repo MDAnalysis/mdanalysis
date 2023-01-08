@@ -148,8 +148,9 @@ except ImportError:
 
 if HAS_DISTOPIA:
     try:
-        _distances['distopia'] = importlib.import_module("._distopia",
-                                                package="MDAnalysis.lib")
+        _distances['distopia'] = importlib.import_module(
++            "._distopia", package="MDAnalysis.lib"
++       )
     except ImportError:
         pass
 del importlib
@@ -1473,10 +1474,10 @@ def calc_bonds(
 
     Returns
     -------
-    bondlengths : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n,)``) or numpy.float64
-        Array containing the bond lengths between each pair of coordinates. If
-        two single coordinates were supplied, their distance is returned as a
-        single number instead of an array.
+    bondlengths : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n,)``) or
+        numpy.float64 Array containing the bond lengths between each pair of
+        coordinates. If two single coordinates were supplied, their distance is
+        returned as a single number instead of an array.
 
 
     .. versionadded:: 0.8
