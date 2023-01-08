@@ -363,7 +363,7 @@
 <span class="sd">    linear_model = linregress(lagtimes[start_index:end_index],</span>
 <span class="sd">    				  		  msd[start_index:end_index])</span>
 <span class="sd">    slope = linear_model.slope</span>
-<span class="sd">    error = linear_model.rvalue</span>
+<span class="sd">    error = linear_model.stderr</span>
 <span class="sd">    # dim_fac is 3 as we computed a 3D msd with &#39;xyz&#39;</span>
 <span class="sd">    D = slope * 1/(2*MSD.dim_fac)</span>
 
