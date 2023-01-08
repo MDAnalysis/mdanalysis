@@ -147,12 +147,8 @@ except ImportError:
     pass
 
 if HAS_DISTOPIA:
-    try:
-        _distances["distopia"] = importlib.import_module(
-            "._distopia", package="MDAnalysis.lib"
-        )
-    except ImportError:
-        pass
+    _distances["distopia"] = importlib.import_module("._distopia",
+                             package="MDAnalysis.lib")
 del importlib
 
 def _run(funcname: str, args: Optional[tuple] = None,
