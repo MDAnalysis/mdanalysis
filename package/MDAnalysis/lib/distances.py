@@ -64,11 +64,11 @@ you wish to use is covered by distopia. For more information see the
 .. Table:: Functions available using the `distopia`_ backend.
     :align: center
 
-    +-------------------------------------+
-    | Functions                           |
-    +=====================================+
-    | MDAnalysis.lib.distances.calc_bonds |
-    +-------------------------------------+
+    +-------------------------------------+-----------------------------------+
+    | Functions                           | Notes                             |
+    +=====================================+===================================+
+    | MDAnalysis.lib.distances.calc_bonds | Doesn't support triclinic boxes   |
+    +-------------------------------------+-----------------------------------+
 
 If `distopia`_ is installed, the functions in this table will accept the key
 'distopia' for the `backend` keyword argument. If the distopia backend is
@@ -83,7 +83,7 @@ if and must be selected.**
 
 .. Note::
     Due to the use of Instruction Set Architecture (`ISA`_) specific SIMD
-    intrinsics in distopia, via `VCL2`_ the precision of your results may
+    intrinsics in distopia via `VCL2`_, the precision of your results may
     depend on the ISA available on your machine. However, in all tested cases
     distopia satisfied the accuracy thresholds used to the functions in this
     module. Please document any issues you encounter with distopia's accuracy
@@ -99,7 +99,7 @@ if and must be selected.**
 .. versionchanged:: 2.3.0
    Distance functions can now accept an
    :class:`~MDAnalysis.core.groups.AtomGroup` or an :class:`np.ndarray`
-.. versionchanged:: 2.4.0
+.. versionchanged:: 2.5.0
    Interface to the `distopia` package added.
 
 Functions
@@ -130,14 +130,8 @@ from .mdamath import triclinic_vectors
 from ._augment import augment_coordinates, undo_augment
 from .nsgrid import FastNS
 from .c_distances import _minimize_vectors_ortho, _minimize_vectors_triclinic
+from ._distopia import HAS_DISTOPIA
 
-
-try:
-    import distopia
-except ImportError:
-    HAS_DISTOPIA = False
-else:
-    HAS_DISTOPIA = True
 
 # hack to select backend with backend=<backend> kwarg. Note that
 # the cython parallel code (prange) in parallel.distances is
@@ -150,16 +144,15 @@ try:
     _distances['openmp'] = importlib.import_module(".c_distances_openmp",
                                           package="MDAnalysis.lib")
 except ImportError:
-    del importlib
+    pass
 
 if HAS_DISTOPIA:
-    import importlib
     try:
-        # import distopia if we have it
-        _distances["distopia"] = importlib.import_module("._distopia", package="distopia")
+        _distances['distopia'] = importlib.import_module("._distopia",
+                                                package="MDAnalysis.lib")
     except ImportError:
-        del importlib
-
+        pass
+del importlib
 
 def _run(funcname: str, args: Optional[tuple] = None,
          kwargs: Optional[dict] = None, backend: str = "serial") -> Callable:
@@ -1503,52 +1496,17 @@ def calc_bonds(coords1: Union[np.ndarray, 'AtomGroup'],
         if box is not None:
             boxtype, box = check_box(box)
             if boxtype == "ortho":
-                if backend == "distopia":
-                    # need explicit branch on backend to prepare input types correctly
-                    # must assign to result to get correct reference on memview
-                    bondlengths = _run(
-                        "calc_bonds_ortho_float",
-                        args=(coords1, coords2, box[:3]),
-                        kwargs={"results": bondlengths.astype(np.float32)},
-                        backend=backend,
-                    )
-                    # upcast is currently required, change for 3.0
-                    bondlengths = bondlengths.astype(np.float64)
-                else:
-                    _run(
-                        "calc_bond_distance_ortho",
-                        args=(coords1, coords2, box, bondlengths),
-                        backend=backend,
-                    )
+                _run( "calc_bond_distance_ortho",
+                      args=(coords1, coords2, box, bondlengths),
+                      backend=backend)
             else:
-                if backend == "distopia":
-                    # distopia does not support triclinic boxes
-                    backend_ = "serial"
-                else:
-                    backend_ = backend
-                _run(
-                    "calc_bond_distance_triclinic",
+                _run("calc_bond_distance_triclinic",
                     args=(coords1, coords2, box, bondlengths),
-                    backend=backend_,
-                )
+                    backend=backend)
         else:
-            if backend == "distopia":
-                # need explicit branch on backend to prepare input types correctly
-                # must assign to result to get correct reference on memview
-                bondlengths = _run(
-                    "calc_bonds_no_box_float",
-                    args=(coords1, coords2),
-                    kwargs={"results": bondlengths.astype(np.float32)},
-                    backend=backend,
-                )
-                # upcast is currently required change for 3.0
-                bondlengths = bondlengths.astype(np.float64)
-            else:
-                _run(
-                    "calc_bond_distance",
+            _run("calc_bond_distance",
                     args=(coords1, coords2, bondlengths),
-                    backend=backend,
-                )
+                    backend=backend)
 
     return bondlengths
 
