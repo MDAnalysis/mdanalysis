@@ -1499,6 +1499,8 @@ def calc_bonds(
         if box is not None:
             boxtype, box = check_box(box)
             if boxtype == "ortho":
+                if backend == 'distopia':
+                    bondlengths = bondlengths.astype(np.float32)
                 _run(
                     "calc_bond_distance_ortho",
                     args=(coords1, coords2, box, bondlengths),
@@ -1511,12 +1513,15 @@ def calc_bonds(
                     backend=backend,
                 )
         else:
+            if backend == 'distopia':
+                bondlengths = bondlengths.astype(np.float32)
             _run(
                 "calc_bond_distance",
                 args=(coords1, coords2, bondlengths),
                 backend=backend,
             )
-
+    if backend == 'distopia':
+        bondlengths = bondlengths.astype(np.float64)
     return bondlengths
 
 
