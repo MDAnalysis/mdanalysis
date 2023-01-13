@@ -32,7 +32,8 @@ jobs:
           channel-priority: flexible
           channels: conda-forge, bioconda
           add-pip-as-python-dependency: true
-          mamba-version: "*"
+          uses-mamba: true
+          miniforge-variant: Mambaforge
           architecture: x64
 
       - name: install_deps
