@@ -103,7 +103,7 @@ from .. import (_CONVERTERS,
 from ..lib import util
 from ..lib.util import (cached, warn_if_not_unique,
                         unique_int_1d, unique_int_1d_unsorted,
-                        int_array_is_sorted
+                        int_array_is_sorted, check_box
                         )
 from ..lib import distances
 from ..lib import transformations
@@ -456,6 +456,45 @@ def check_wrap_and_unwrap(function):
             raise ValueError("both 'wrap' and 'unwrap' can not be set to true")
         return function(group, *args, **kwargs)
     return wrapped
+
+
+def _get_unwrap_check_matrix(box):
+    boxtype, box = check_box(box)
+    if boxtype == 'ortho':
+        return None
+
+    # Case checking
+
+    # let's make this a positive bx box:
+    if box[1,0] < 0:
+        box[1:,0] *= -1
+
+    # (numpy warning/error handling per https://stackoverflow.com/a/33701974)
+    with np.errstate(divide='raise', invalid='raise'):
+        try:
+            bx_by, cx_cy = box[1:,0]/box[1:,1]
+            case_I = case_III = cx_cy > bx_by
+        except FloatingPointError:
+            case_I = box[2,0] > 0
+
+    if box[2,1] >= 0:  # cy>=0
+        if case_I:
+            l = box[2,0] - box[2,1]*bx_by
+            box[2,0] -= 2*l
+        # The alternative to this if is case II, which entails no
+        # symmetrization/shift
+    elif case_III:
+        l = box[2,1]*bx_by
+        box[2,0] -= 2*l
+        box[2,1] *= -1
+    else:  # case IV
+        box[2,:2] *= -1
+
+    P = np.array([[ box[0,0], -box[1,0],  box[2,0]],
+                  [        0,  box[1,1], -box[2,1]],
+                  [        0,         0,  box[2,2]]])
+
+    return np.array(np.linalg.inv(P), order='C')
 
 
 def _only_same_level(function):
@@ -1927,15 +1966,22 @@ class GroupBase(_MutableBase):
         # _split_by_compound_indices
         comp = compound.lower()
 
+        positions = unique_atoms.positions
+        unwrap_check_matrix = _get_unwrap_check_matrix(self.dimensions)
         # The 'group' needs no splitting:
         #  There is a lot of code duplication with the multi-compound split
         #  case below. Both code paths could be merged, but 'group' can be done
         #  unidimensionally whereas the general multi-compound case involves
         #  more indexing and is therefore slower. Leaving separate for now.
         if comp == 'group':
-            positions = unique_atoms.positions
             spread = positions.ptp(axis=0)
-            spread = distances.transform_RtoS(spread, self.dimensions)
+            if unwrap_check_matrix is None:
+                spread /= self.dimensions[:3]
+            else:
+                # The backend could be made more dynamically selectable
+                distances._run("coord_transform",
+                               args=(spread, unwrap_check_matrix),
+                               backend='serial')
             if np.any(spread > .5):
                 positions = mdamath.make_whole(unique_atoms, inplace=False)
             # Apply reference shift if required:
@@ -1962,7 +2008,6 @@ class GroupBase(_MutableBase):
             # regarding sorting.
             atom_masks = unique_atoms._split_by_compound_indices(comp,
                                               stable_sort=True)[0]
-            positions = unique_atoms.positions
             # We preselect where to spend the expensive unwrap effort by
             # vectorially calculating the spread of all the compounds of the
             # same size. If a compound doesn't spread over half a box vector,
@@ -1985,7 +2030,13 @@ class GroupBase(_MutableBase):
                 # and one for the masses, if doing COM.
                 pos = positions[atom_mask]
                 spreads = pos.ptp(axis=1)
-                spreads = distances.transform_RtoS(spreads, self.dimensions)
+                if unwrap_check_matrix is None:
+                    spreads /= self.dimensions[:3]
+                else:
+                    # The backend could be made more dynamically selectable
+                    distances._run("coord_transform",
+                                   args=(spreads, unwrap_check_matrix),
+                                   backend='serial')
                 to_unwrap = np.where(np.any(spreads > .5, axis=1))[0]
 
                 # i is the index to unwrap within the same-sized chunk of
