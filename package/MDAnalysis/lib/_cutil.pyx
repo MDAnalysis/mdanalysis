@@ -312,7 +312,8 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
     try:
         bonds = atomgroup.bonds.to_indices()
     except (AttributeError, NoDataError):
-        raise NoDataError("The atomgroup is required to have bonds")
+        raise NoDataError('The AtomGroup is required to have bonds '
+                          'for unwrapping')
     for i in range(bonds.shape[0]):
         atom = bonds[i, 0]
         other = bonds[i, 1]

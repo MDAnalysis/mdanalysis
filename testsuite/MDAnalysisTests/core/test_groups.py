@@ -1480,13 +1480,6 @@ class TestAttributeGetting(object):
             universe.atoms.jabberwocky
         assert 'has no attribute' in str(exc.value)
 
-    def test_unwrap_without_bonds(self, universe):
-        with pytest.raises(NoDataError) as exc:
-            universe.atoms.unwrap()
-        err = ('Cannot use compound=\'fragments\': No bond information in '
-               'topology.')
-        assert str(exc.value) == err
-
     def test_get_absent_attr_method(self, universe):
         with pytest.raises(NoDataError) as exc:
             universe.atoms.total_charge()

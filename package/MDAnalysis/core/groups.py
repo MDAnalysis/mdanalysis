@@ -1940,7 +1940,7 @@ class GroupBase(_MutableBase):
         """
         atoms = self.atoms
 
-        # An early check for bonds here turns out to incurr in a major
+        # An early check for bonds here turns out to incur in a major
         # performance penalty. It's better to let this fail in the make_whole
         # call because intermediate steps have negligible run-time.
         if not atoms:
