@@ -2006,8 +2006,9 @@ class GroupBase(_MutableBase):
             # When unwrapping and not shifting with a cog/com reference we
             # need to make sure that the first atom of each compound is stable
             # regarding sorting.
-            atom_masks = unique_atoms._split_by_compound_indices(comp,
-                                              stable_sort=True)[0]
+            atom_masks = unique_atoms._split_by_compound_indices(
+                                                        comp,
+                                                        stable_sort=True)[0]
             # We preselect where to spend the expensive unwrap effort by
             # vectorially calculating the spread of all the compounds of the
             # same size. If a compound doesn't spread over half a box vector,

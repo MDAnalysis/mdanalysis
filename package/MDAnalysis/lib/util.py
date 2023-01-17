@@ -1531,7 +1531,7 @@ def cached(key, universe_validation=False):
     ----------
     key : str
         The cache dictionary key under which to store/retrieve reslts.
-    universe_key : str or bool (optional)
+    universe_validation : str or bool (optional)
         The key of the validty dictionary under universe. If ``True``, the same
         string as `key` is used. If ``False``, no unverse validity check is
         done.

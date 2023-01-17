@@ -691,3 +691,20 @@ class Testcenter_of_charge():
         u.atoms.wrap
         coc = u.atoms[:2].center_of_charge(compound=compound, unwrap=True)
         assert_equal(coc.flatten(), [0, 0.5, 0])
+
+
+def test_molecule_cache_invalidation():
+    """A universe containing two molecules."""
+    universe = mda.Universe.empty(n_atoms=4,
+                                  n_residues=2,
+                                  n_segments=2,
+                                  atom_resindex=[0, 0, 1, 1],
+                                  residue_segindex=[0, 1])
+
+    # The actual cache validation mechanism is more complex, but it suffices
+    # here to put a placeholder object -- True, in this case -- in the validity
+    # dictionary.
+    universe._cache['_valid']['molecules'] = True
+    universe.add_TopologyAttr("molnums", [0, 1])
+    # Molecule caches should no longer be valid after setting molnums
+    assert 'molecules' not in universe._cache['_valid']

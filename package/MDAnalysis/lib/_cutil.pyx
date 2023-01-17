@@ -146,18 +146,6 @@ def _in2d(np.intp_t[:, :] arr1, np.intp_t[:, :] arr2):
     return out.astype(bool)
 
 
-cdef intset difference(intset a, intset b):
-    """a.difference(b)
-
-    Returns set of values in a which are not in b
-    """
-    cdef intset output
-    for val in a:
-        if b.count(val) != 1:
-            output.insert(val)
-    return output
-
-
 @cython.boundscheck(False)
 @cython.wraparound(False)
 def make_whole(atomgroup, reference_atom=None, inplace=True):
