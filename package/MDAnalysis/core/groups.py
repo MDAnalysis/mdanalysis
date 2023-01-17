@@ -120,6 +120,11 @@ def _unpickle(u, ix):
     return u.atoms[ix]
 
 
+# TODO 3.0: deprecate _unpickle in favor of _unpickle2.
+def _unpickle2(u, ix, cls):
+    return cls(ix, u)
+
+
 def _unpickle_uag(basepickle, selections, selstrs):
     bfunc, bargs = basepickle[0], basepickle[1:][0]
     basegroup = bfunc(*bargs)
@@ -2700,9 +2705,6 @@ class AtomGroup(GroupBase):
        Indexing an AtomGroup with ``None`` raises a ``TypeError``.
     """
 
-    def __reduce__(self):
-        return (_unpickle, (self.universe, self.ix))
-
     def __getattr__(self, attr):
         # special-case timestep info
         if attr in ('velocities', 'forces'):
@@ -2710,6 +2712,9 @@ class AtomGroup(GroupBase):
         elif attr == 'positions':
             raise NoDataError('This Universe has no coordinates')
         return super(AtomGroup, self).__getattr__(attr)
+
+    def __reduce__(self):
+        return (_unpickle, (self.universe, self.ix))
 
     @property
     def atoms(self):
@@ -3833,6 +3838,9 @@ class ResidueGroup(GroupBase):
        Indexing an ResidueGroup with ``None`` raises a ``TypeError``.
     """
 
+    def __reduce__(self):
+        return (_unpickle2, (self.universe, self.ix, ResidueGroup))
+
     @property
     def atoms(self):
         """An :class:`AtomGroup` of :class:`Atoms<Atom>` present in this
@@ -4028,6 +4036,9 @@ class SegmentGroup(GroupBase):
     .. versionchanged:: 2.1.0
        Indexing an SegmentGroup with ``None`` raises a ``TypeError``.
     """
+
+    def __reduce__(self):
+        return (_unpickle2, (self.universe, self.ix, SegmentGroup))
 
     @property
     def atoms(self):
@@ -4321,6 +4332,9 @@ class Atom(ComponentBase):
             me += ' and altLoc {}'.format(self.altLoc)
         return me + '>'
 
+    def __reduce__(self):
+        return (_unpickle2, (self.universe, self.ix, Atom))
+
     def __getattr__(self, attr):
         # special-case timestep info
         ts = {'velocity': 'velocities', 'force': 'forces'}
@@ -4446,6 +4460,9 @@ class Residue(ComponentBase):
 
         return me + '>'
 
+    def __reduce__(self):
+        return (_unpickle2, (self.universe, self.ix, Residue))
+
     @property
     def atoms(self):
         """An :class:`AtomGroup` of :class:`Atoms<Atom>` present in this
@@ -4498,6 +4515,9 @@ class Segment(ComponentBase):
         if hasattr(self, 'segid'):
             me += ' {}'.format(self.segid)
         return me + '>'
+
+    def __reduce__(self):
+        return (_unpickle2, (self.universe, self.ix, Segment))
 
     @property
     def atoms(self):
