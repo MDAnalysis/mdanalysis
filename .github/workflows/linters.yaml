@@ -1,0 +1,113 @@
+name: "linters"
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+
+concurrency:
+  # Probably overly cautious group naming.
+  # Commits to develop/master will cancel each other, but PRs will only cancel
+  # commits within the same PR
+  group: "${{ github.ref }}-${{ github.head_ref }}-${{ github.workflow }}"
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash -l {0}
+
+jobs:
+  darker_lint:
+    if: |
+      "github.repository == 'MDAnalysis/mdanalysis'" &&
+      "github.event_name != 'pull_request'"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: 3.8
+
+    - name: darker main code
+      uses: akaihola/darker@1.5.1
+      with:
+        version: "@master"
+        options: "--check --diff --color"
+        src: "./package/MDAnalysis"
+        revision: "HEAD^"
+        lint: "flake8"
+
+    - name: darker test code
+      uses: akaihola/darker@1.5.1
+      if: success() || failure()
+      with:
+        version: "@master"
+        options: "--check --diff --color"
+        src: "./testsuite/MDAnalysisTests"
+        revision: "HEAD^"
+        lint: "flake8"
+
+
+  pylint_check:
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: 3.8
+
+    - name: install
+      run: |
+        python -m pip install pylint
+
+    - name: pylint
+      env:
+        PYLINTRC: package/.pylintrc
+      run: |
+        pylint package/MDAnalysis && pylint testsuite/MDAnalysisTests
+
+
+  mypy :
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: setup_miniconda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          python-version: 3.8
+          auto-update-conda: true
+          channel-priority: flexible
+          channels: conda-forge, bioconda
+          add-pip-as-python-dependency: true
+          uses-mamba: true
+          miniforge-variant: Mambaforge
+          architecture: x64
+
+      - name: install_deps
+        uses: ./.github/actions/setup-deps
+        with:
+          mamba: true
+          full-deps: true
+          numpy: numpy=1.20.0
+
+      - name: install
+        run: |
+          python -m pip install mypy
+
+      - name: "Run mypy"
+        run: |
+          mypy package/MDAnalysis/
