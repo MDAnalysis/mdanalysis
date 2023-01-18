@@ -21,8 +21,8 @@ defaults:
 jobs:
   darker_lint:
     if: |
-      "github.repository == 'MDAnalysis/mdanalysis'" &&
-      "github.event_name != 'pull_request'"
+      github.repository == 'MDAnalysis/mdanalysis' &&
+      github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     defaults:
       run:
