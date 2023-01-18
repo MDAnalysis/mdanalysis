@@ -175,7 +175,7 @@ jobs:
       if: github.event_name == 'pull_request'
       continue-on-error: true
       run: |
-        cd package && build-sphinx -b doctest --keep-going ./docs ./docs/html
+        cd package && sphinx-build -b doctest --keep-going ./docs ./docs/html
 
     - name: deploy_docs
       if: github.event_name != 'pull_request'
