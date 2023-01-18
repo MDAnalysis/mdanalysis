@@ -3,11 +3,9 @@ on:
   push:
     branches:
       - develop
-      - master
   pull_request:
     branches:
       - develop
-      - master
 
 concurrency:
   # Probably overly cautious group naming.
@@ -91,7 +89,8 @@ jobs:
         channel-priority: flexible
         channels: conda-forge, bioconda
         add-pip-as-python-dependency: true
-        mamba-version: "*"
+        uses-mamba: true
+        miniforge-variant: Mambaforge
         architecture: x64
 
     - name: install_deps
@@ -155,7 +154,8 @@ jobs:
         channels: conda-forge, bioconda
         add-pip-as-python-dependency: true
         architecture: x64
-        mamba-version: "*"
+        uses-mamba: true
+        miniforge-variant: Mambaforge
 
     - name: install_deps
       uses: ./.github/actions/setup-deps
