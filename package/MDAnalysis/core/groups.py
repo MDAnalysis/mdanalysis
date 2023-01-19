@@ -468,8 +468,7 @@ def _get_unwrap_check_matrix(box):
     if boxtype == 'ortho':
         return None
 
-    # Case checking
-
+    ## Case checking
     # let's make this a positive bx box:
     if box[1,0] < 0:
         box[1:,0] *= -1
@@ -497,7 +496,7 @@ def _get_unwrap_check_matrix(box):
 
     P = np.array([[ box[0,0], -box[1,0],  box[2,0]],
                   [        0,  box[1,1], -box[2,1]],
-                  [        0,         0,  box[2,2]]])
+                  [        0,         0,  box[2,2]]], dtype=np.float64)
 
     return np.array(np.linalg.inv(P), order='C')
 
@@ -1979,7 +1978,7 @@ class GroupBase(_MutableBase):
         #  unidimensionally whereas the general multi-compound case involves
         #  more indexing and is therefore slower. Leaving separate for now.
         if comp == 'group':
-            spread = positions.ptp(axis=0)
+            spread = positions.ptp(axis=0).astype(np.float32)
             if unwrap_check_matrix is None:
                 spread /= self.dimensions[:3]
             else:
@@ -2035,7 +2034,7 @@ class GroupBase(_MutableBase):
                 # at the end; for the atoms, one per AtomGroup to unwrap; and
                 # and one for the masses, if doing COM.
                 pos = positions[atom_mask]
-                spreads = pos.ptp(axis=1)
+                spreads = pos.ptp(axis=1).astype(np.float32)
                 if unwrap_check_matrix is None:
                     spreads /= self.dimensions[:3]
                 else:

@@ -833,6 +833,11 @@ class Universe(object):
                     n_residues=self._topology.n_residues,
                     n_segments=self._topology.n_segments,
                     values=values)
+
+        if topologyattr.attrname == 'molnums':
+            # AtomGroup-level caches involving molnums are no longer valid
+            self._cache['_valid'].pop('molecules', None)
+
         self._topology.add_TopologyAttr(topologyattr)
         self._process_attr(topologyattr)
 
