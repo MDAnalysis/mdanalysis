@@ -170,7 +170,7 @@ class TestMultipole(object):
                 0.019,
                 0.019,
                 0.019,
-                0.019,  # methane [:5] 
+                0.019,  # methane [:5]
                 -0.003,
                 0.001,
                 0.001,
