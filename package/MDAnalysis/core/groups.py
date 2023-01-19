@@ -494,11 +494,15 @@ def _get_unwrap_check_matrix(box):
     else:  # case IV
         box[2,:2] *= -1
 
-    P = np.array([[ box[0,0], -box[1,0],  box[2,0]],
-                  [        0,  box[1,1], -box[2,1]],
-                  [        0,         0,  box[2,2]]], dtype=np.float64)
 
-    return np.array(np.linalg.inv(P), order='C')
+    # Already in the right transposition so we can use its inverse directly
+    # with the c_distances coord_transform call.
+    P = np.array([[  box[0,0],         0,         0],
+                  [ -box[1,0],  box[1,1],         0],
+                  [  box[2,0], -box[2,1],  box[2,2]]], dtype=np.float64)
+
+    # This also already in C-order, for coord_transform compatibility
+    return np.linalg.inv(P)
 
 
 def _only_same_level(function):
@@ -1983,8 +1987,8 @@ class GroupBase(_MutableBase):
                 spread /= self.dimensions[:3]
             else:
                 # The backend could be made more dynamically selectable
-                distances._run("coord_transform",
-                               args=(spread, unwrap_check_matrix),
+                distances._run('coord_transform',
+                               args=(spread[None,:], unwrap_check_matrix),
                                backend='serial')
             if np.any(spread > .5):
                 positions = mdamath.make_whole(unique_atoms, inplace=False)
@@ -2039,7 +2043,7 @@ class GroupBase(_MutableBase):
                     spreads /= self.dimensions[:3]
                 else:
                     # The backend could be made more dynamically selectable
-                    distances._run("coord_transform",
+                    distances._run('coord_transform',
                                    args=(spreads, unwrap_check_matrix),
                                    backend='serial')
                 to_unwrap = np.where(np.any(spreads > .5, axis=1))[0]
