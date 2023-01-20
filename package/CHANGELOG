@@ -13,7 +13,8 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo
+??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo,
+         PicoCentauri
 
  * 2.5.0
 
@@ -24,6 +25,9 @@ Fixes
     (Issue #3336)
 
 Enhancements
+  * Optimizes AtomGroup.unwrap by pre-screening for large fragments relative to
+    the box vectors. Also streamlined com vs cog unwrapping references,
+    incidently partly fixing dummy particle unwrapping. (Issue #3168, PR #3169)
   * Add pickling support for Atom, Residue, Segment, ResidueGroup 
     and SegmentGroup. (PR #3953)
 

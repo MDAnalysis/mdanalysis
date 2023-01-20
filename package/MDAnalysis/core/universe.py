@@ -833,6 +833,11 @@ class Universe(object):
                     n_residues=self._topology.n_residues,
                     n_segments=self._topology.n_segments,
                     values=values)
+
+        if topologyattr.attrname == 'molnums':
+            # AtomGroup-level caches involving molnums are no longer valid
+            self._cache['_valid'].pop('molecules', None)
+
         self._topology.add_TopologyAttr(topologyattr)
         self._process_attr(topologyattr)
 
@@ -1128,8 +1133,7 @@ class Universe(object):
                                  guessed=guessed, order=order)
         # Invalidate bond-related caches
         self._cache.pop('fragments', None)
-        self._cache['_valid'].pop('fragments', None)
-        self._cache['_valid'].pop('fragindices', None)
+        self._cache['_valid'].pop('bonds', None)
 
     def add_angles(self, values, types=None, guessed=False):
         """Add new Angles to this Universe.
@@ -1268,8 +1272,7 @@ class Universe(object):
         self._delete_topology_objects('bonds', values)
         # Invalidate bond-related caches
         self._cache.pop('fragments', None)
-        self._cache['_valid'].pop('fragments', None)
-        self._cache['_valid'].pop('fragindices', None)
+        self._cache['_valid'].pop('bonds', None)
 
     def delete_angles(self, values):
         """Delete Angles from this Universe.

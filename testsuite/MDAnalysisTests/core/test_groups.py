@@ -33,7 +33,7 @@ import warnings
 
 import MDAnalysis as mda
 from MDAnalysis.exceptions import NoDataError
-from MDAnalysisTests import make_Universe, no_deprecated_call
+from MDAnalysisTests import make_Universe
 from MDAnalysisTests.datafiles import PSF, DCD, TPR
 from MDAnalysis.core import groups
 
@@ -1480,13 +1480,6 @@ class TestAttributeGetting(object):
             universe.atoms.jabberwocky
         assert 'has no attribute' in str(exc.value)
 
-    def test_unwrap_without_bonds(self, universe):
-        with pytest.raises(NoDataError) as exc:
-            universe.atoms.unwrap()
-        err = ('AtomGroup.unwrap() not available; '
-               'this requires Bonds')
-        assert str(exc.value) == err
-
     def test_get_absent_attr_method(self, universe):
         with pytest.raises(NoDataError) as exc:
             universe.atoms.total_charge()
@@ -1573,7 +1566,7 @@ class TestInitGroup(object):
 class TestDecorator(object):
     @groups._pbc_to_wrap
     @groups.check_wrap_and_unwrap
-    def dummy_funtion(cls, compound="group", wrap=True, unwrap=True):
+    def dummy_function(cls, compound="group", wrap=True, unwrap=True):
         return 0
 
     @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
@@ -1588,14 +1581,15 @@ class TestDecorator(object):
                 # function's signature. This is done on purpose to test the
                 # deprecation. We need to tell the linter.
                 # pylint: disable-next=unexpected-keyword-arg
-                self.dummy_funtion(compound=compound, pbc=pbc, unwrap=unwrap)
+                self.dummy_function(compound=compound, pbc=pbc, unwrap=unwrap)
         else:
             with pytest.warns(DeprecationWarning):
                 # We call a deprecated argument that does not appear in the
                 # function's signature. This is done on purpose to test the
                 # deprecation. We need to tell the linter.
                 # pylint: disable-next=unexpected-keyword-arg
-                assert self.dummy_funtion(compound=compound, pbc=pbc, unwrap=unwrap) == 0
+                assert_equal(self.dummy_function(compound=compound, pbc=pbc,
+                                                 unwrap=unwrap), 0)
 
     @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
                                           'group', 'segments'))
@@ -1605,9 +1599,10 @@ class TestDecorator(object):
 
         if wrap and unwrap:
             with pytest.raises(ValueError):
-                self.dummy_funtion(compound=compound, wrap=wrap, unwrap=unwrap)
+                self.dummy_function(compound=compound, wrap=wrap, unwrap=unwrap)
         else:
-            assert self.dummy_funtion(compound=compound, wrap=wrap, unwrap=unwrap) == 0
+            assert_equal(self.dummy_function(compound=compound, wrap=wrap,
+                                             unwrap=unwrap), 0)
 
 
 @pytest.fixture()

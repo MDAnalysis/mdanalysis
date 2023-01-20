@@ -360,6 +360,48 @@ class TestUnwrap(object):
         assert_array_equal(group.atoms.positions, orig_pos)
 
 
+class TestUnwrapBoxTypes():
+    """Creates boxes of different cases regarding unwrap checking
+
+    Just the angles are stored. Assumes la = lb = lc = 10.
+    """
+    box_types_angles_pos_bx = {
+        'case_I':   [ 60.,  60.,  60.],
+        'case_II':  [ 80., 120.,  60.],
+        'case_III': [120., 120.,  60.],
+        'case_IV':  [ 80.,  60.,  60.]}
+
+    # Negative bx angles chosen so that they correspond to the boxes
+    # above with b and c mirrored over the yz plane
+    box_types_angles_neg_bx = {
+        'case_I':   [ 60., 120., 120.],
+        'case_II':  [ 80.,  60., 120.],
+        'case_III': [120.,  60., 120.],
+        'case_IV':  [ 80., 120., 120.]}
+
+    box_types_angles = {'positive': box_types_angles_pos_bx,
+                        'negative': box_types_angles_neg_bx}
+
+    box_types_Pinvs = {
+        'case_I':   [0.1, 0.0577, 0.1155, 0.0408, 0.0408, 0.1225],
+        'case_II':  [0.1, 0.0577, 0.1155, 0.1095, 0.0790, 0.1399],
+        'case_III': [0.1, 0.0577, 0.1155, 0.0408, 0.0408, 0.1225],
+        'case_IV':  [0.1, 0.0577, 0.1155, 0.0639, 0.0118, 0.1161]}
+
+    @pytest.mark.parametrize('case', ('case_I',
+                                      'case_II',
+                                      'case_III',
+                                      'case_IV'))
+    @pytest.mark.parametrize('bx_type', ('positive', 'negative'))
+    def test_box_unwrap_check(self, case, bx_type):
+        box_angles = self.box_types_angles[bx_type][case]
+        P_inv = mda.core.groups._get_unwrap_check_matrix([10., 10., 10.]
+                                                         + box_angles)
+        target = np.zeros((3, 3), dtype=np.float64)
+        target[np.tril_indices(3)] = self.box_types_Pinvs[case]
+        assert_almost_equal(P_inv, target, decimal=4)
+
+
 def test_uncontiguous():
     """Real-life case of fragment sparsity that triggers Issue 3352
     """

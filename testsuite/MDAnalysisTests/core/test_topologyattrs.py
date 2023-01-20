@@ -41,7 +41,7 @@ from MDAnalysis.exceptions import NoDataError
 
 
 class DummyGroup(object):
-    """Designed to mock an Group
+    """Designed to mock a Group
 
     initiate with indices, these are then available as ._ix
     """
@@ -690,4 +690,34 @@ class Testcenter_of_charge():
     def test_coc_unwrap(self, u, compound):
         u.atoms.wrap
         coc = u.atoms[:2].center_of_charge(compound=compound, unwrap=True)
-        assert_equal(coc.flatten(), [0, -0.5, 0])
+        assert_equal(coc.flatten(), [0, 0.5, 0])
+
+
+class TestMoleculeCacheInvalidation():
+    """Checks for cache validity after changes to the molecules/molnums attr.
+
+    The actual cache validation mechanism is more complex, but it suffices here
+    to put a placeholder object -- True, in this case -- in the validity
+    dictionary, and later checking for it after changes to the attr.
+    """
+    @pytest.fixture
+    def universe(self):
+        """A universe containing two molecules."""
+        universe = mda.Universe.empty(n_atoms=6,
+                                      n_residues=3,
+                                      n_segments=2,
+                                      atom_resindex=[0, 0, 1, 1, 2, 2],
+                                      residue_segindex=[0, 0, 1])
+        return universe
+
+    def test_molecule_set_cache_invalidation(self, universe):
+        universe._cache['_valid']['molecules'] = True
+        universe.add_TopologyAttr("molnums", [0, 0, 1])
+        assert 'molecules' not in universe._cache['_valid']
+
+    def test_molecule_change_cache_invalidation(self, universe):
+        universe.add_TopologyAttr("molnums", [0, 0, 1])
+        universe._cache['_valid']['molecules'] = True
+        universe.residues.molnums = [0, 1, 1]
+        # Molecule caches should no longer be valid after setting molnums
+        assert 'molecules' not in universe._cache['_valid']

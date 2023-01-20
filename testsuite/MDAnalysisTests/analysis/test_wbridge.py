@@ -286,7 +286,7 @@ class TestWaterBridgeAnalysis(object):
         return wb
 
     def test_nodata(self, universe_DA):
-        '''Test if the funtions can run when there is no data.
+        '''Test if the functions can run when there is no data.
         This is achieved by not runing the run() first.'''
         wb = WaterBridgeAnalysis(universe_DA, 'protein and (resid 1)',
                                  'protein and (resid 4)', order=0)
