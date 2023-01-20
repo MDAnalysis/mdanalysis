@@ -13,18 +13,18 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope
+??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo
 
  * 2.5.0
 
 Fixes
+  * Fix test clobbering in lib/test_util.py (PR #4000)
   * Fix MSD docs to use the correct error metric in example (Issue #3991)
   * Add 'PairIJ Coeffs' to the list of sections in LAMMPSParser.py
     (Issue #3336)
 
 Enhancements
-
-* Add pickling support for Atom, Residue, Segment, ResidueGroup 
+  * Add pickling support for Atom, Residue, Segment, ResidueGroup 
     and SegmentGroup. (PR #3953)
 
 Changes
