@@ -347,8 +347,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">ckdt</span> <span class="o">=</span> <span class="n">cKDTree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coords</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">leafsize</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_built</span> <span class="o">=</span> <span class="kc">True</span></div>
 
-    <span class="c1">#  typing: numpy</span>
-<div class="viewcode-block" id="PeriodicKDTree.search"><a class="viewcode-back" href="../../../documentation_pages/lib/pkdtree.html#MDAnalysis.lib.pkdtree.PeriodicKDTree.search">[docs]</a>    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">centers</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">radius</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<div class="viewcode-block" id="PeriodicKDTree.search"><a class="viewcode-back" href="../../../documentation_pages/lib/pkdtree.html#MDAnalysis.lib.pkdtree.PeriodicKDTree.search">[docs]</a>    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">centers</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">radius</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Search all points within radius from centers and their periodic images.</span>
 
 <span class="sd">        All the centers coordinates are wrapped around the central cell</span>
@@ -398,8 +397,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">unique_int_1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_indices</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span></div>
 
-    <span class="c1"># typing: numpy</span>
-<div class="viewcode-block" id="PeriodicKDTree.get_indices"><a class="viewcode-back" href="../../../documentation_pages/lib/pkdtree.html#MDAnalysis.lib.pkdtree.PeriodicKDTree.get_indices">[docs]</a>    <span class="k">def</span> <span class="nf">get_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<div class="viewcode-block" id="PeriodicKDTree.get_indices"><a class="viewcode-back" href="../../../documentation_pages/lib/pkdtree.html#MDAnalysis.lib.pkdtree.PeriodicKDTree.get_indices">[docs]</a>    <span class="k">def</span> <span class="nf">get_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the neighbors from the last query.</span>
 
 <span class="sd">        Returns</span>
@@ -409,8 +407,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span></div>
 
-    <span class="c1"># typing: numpy</span>
-<div class="viewcode-block" id="PeriodicKDTree.search_pairs"><a class="viewcode-back" href="../../../documentation_pages/lib/pkdtree.html#MDAnalysis.lib.pkdtree.PeriodicKDTree.search_pairs">[docs]</a>    <span class="k">def</span> <span class="nf">search_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radius</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<div class="viewcode-block" id="PeriodicKDTree.search_pairs"><a class="viewcode-back" href="../../../documentation_pages/lib/pkdtree.html#MDAnalysis.lib.pkdtree.PeriodicKDTree.search_pairs">[docs]</a>    <span class="k">def</span> <span class="nf">search_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radius</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Search all the pairs within a specified radius</span>
 
 <span class="sd">        Parameters</span>
