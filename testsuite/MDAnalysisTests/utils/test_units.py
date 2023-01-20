@@ -125,3 +125,21 @@ class TestConversion(object):
         A = nm * 10.
         with pytest.raises(ValueError):
             units.convert(A, 'A', 'ps')
+
+
+class TestBaseUnits:
+    @staticmethod
+    @pytest.fixture
+    def ref():
+        # This is a copy of the dictionary we expect.
+        # We want to know if base units are added or altered.
+        ref = {"length": "A",
+               "time": "ps",
+               "energy": "kJ/mol",
+               "charge": "e",
+               "force": "kJ/(mol*A)",
+               "speed": "A/ps"}
+        return ref
+
+    def test_MDANALYSIS_BASE_UNITS_correct(self, ref):
+        assert ref == units.MDANALYSIS_BASE_UNITS

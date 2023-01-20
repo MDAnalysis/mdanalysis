@@ -1,8 +1,8 @@
 name: GH Actions Cron CI
 on:
   schedule:
-    # once a week at midnight on Sunday
-    - cron: "0 3 * * 0"
+    # 3 am Tuesdays and Fridays
+    - cron: "0 3 * * 2,5"
 
 concurrency:
   # Probably overly cautious group naming.
@@ -35,26 +35,32 @@ jobs:
     - name: setup_miniconda
       uses: conda-incubator/setup-miniconda@v2
       with:
-        python-version: 3.9
-        auto-update-conda: true
-        channel-priority: flexible
+        python-version: "3.10"
+        miniforge-variant: Mambaforge
+        miniforge-version: latest
+        channel-priority: strict
         channels: conda-forge, bioconda
-        mamba-version: "*"
         add-pip-as-python-dependency: true
         architecture: x64
 
-    - name: install_dev_versions
-      run: |
-        pip install -i https://pypi.anaconda.org/scipy-wheels-nightly/simple numpy
-        pip install -i https://pypi.anaconda.org/scipy-wheels-nightly/simple scipy
-
-    - name: install_other_deps
+    - name: install_deps
       uses: ./.github/actions/setup-deps
       with:
         mamba: true
-        numpy: ""
-        scipy: ""
+        full-deps: true
 
+      # overwrite installs by picking up nightly wheels
+    - name: nightly_wheels
+      run: |
+        pip install --pre -U -i https://pypi.anaconda.org/scipy-wheels-nightly/simple scipy numpy h5py matplotlib
+
+
+    - name: list_deps
+      run: |
+        mamba list
+        pip list
+
+      # Intentionally going with setup.py builds so we can build with latest
     - name: build_srcs
       uses: ./.github/actions/build-src
       with:
@@ -64,7 +70,7 @@ jobs:
 
     - name: run_tests
       run: |
-        pytest -n $numprocs testsuite/MDAnalysisTests --disable-pytest-warnings --durations=50
+        pytest -n $numprocs testsuite/MDAnalysisTests --durations=50 -W error::FutureWarning
 
 
   # Issue #3442
@@ -87,7 +93,8 @@ jobs:
         auto-update-conda: true
         channel-priority: flexible
         channels: conda-forge, bioconda
-        mamba-version: "*"
+        use-mamba: true
+        miniforge-variant: Mambaforge
         add-pip-as-python-dependency: true
         architecture: x64
 
@@ -115,7 +122,10 @@ jobs:
   pip-only:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
-
+    strategy:
+        fail-fast: false
+        matrix:
+          python-version: ["3.10", "3.11"]
     steps:
     - uses: actions/checkout@v3
 
@@ -124,24 +134,21 @@ jobs:
       with:
         os-type: "ubuntu"
 
-    - name: setup_miniconda
-      uses: conda-incubator/setup-miniconda@v2
+    - uses: actions/setup-python@v4
       with:
-        python-version: 3.9
-        auto-update-conda: true
-        add-pip-as-python-dependency: true
-        architecture: x64
+        python-version: ${{ matrix.python-version }}
 
-    - name: install_minimum_pip
+    - name: pip install mdanalysis
       run: |
-        pip install numpy Cython pytest-xdist
+        cd package && pip install .
 
-    - name: build_srcs
-      uses: ./.github/actions/build-src
-      with:
-        build-hole: false
-        build-tests: true
-        build-docs: false
+    - name: pip install mdanalysistests
+      run: |
+        cd testsuite && pip install .
+
+    - name: install_pip_extras
+      run: |
+        pip install pytest-xdist
 
     - name: run_tests
       run: |

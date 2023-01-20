@@ -14,4 +14,4 @@ alignment between auxiliary and trajectory data.
    auxiliary/base
    auxiliary/core
    auxiliary/XVG
-
+   auxiliary/EDR

@@ -23,6 +23,7 @@
 
 import copy
 from io import StringIO
+import warnings
 import pytest
 import MDAnalysis as mda
 from MDAnalysis.topology.guessers import guess_atom_element
@@ -65,15 +66,18 @@ class TestRequiresRDKit(object):
 
 @requires_rdkit
 class MolFactory:
+    @staticmethod
     def mol2_mol():
         return Chem.MolFromMol2File(mol2_molecule, removeHs=False)
 
+    @staticmethod
     def smiles_mol():
         mol = Chem.MolFromSmiles("CN1C=NC2=C1C(=O)N(C(=O)N2C)C")
         mol = Chem.AddHs(mol)
         cids = AllChem.EmbedMultipleConfs(mol, numConfs=3)
         return mol
 
+    @staticmethod
     def dummy_product():
         mol = Chem.RWMol()
         atom = Chem.Atom(1)
@@ -82,6 +86,7 @@ class MolFactory:
         mol.AddAtom(atom)
         return mol
 
+    @staticmethod
     def dummy_reactant():
         mol = Chem.RWMol()
         atom = Chem.Atom(1)
@@ -251,9 +256,9 @@ class TestRDKitConverter(object):
             uo2.atoms.convert_to("RDKIT")
 
     def test_error_no_hydrogen_implicit(self, uo2):
-        with pytest.warns(None) as record:
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
             uo2.atoms.convert_to.rdkit(NoImplicit=False)
-        assert len(record) == 0
 
     def test_warning_no_hydrogen_force(self, uo2):
         with pytest.warns(UserWarning,
@@ -392,11 +397,9 @@ class TestRDKitConverter(object):
         u = mda.Universe(mol)
         with pytest.warns(UserWarning, match="Could not sanitize molecule"):
             u.atoms.convert_to.rdkit(NoImplicit=False)
-        with pytest.warns(None) as record:
+        with warnings.catch_warnings():
+            warnings.filterwarnings("error", "Could not sanitize molecule")
             u.atoms.convert_to.rdkit()
-        if record:
-            assert all("Could not sanitize molecule" not in str(w.message)
-                       for w in record.list)
 
 
 @requires_rdkit

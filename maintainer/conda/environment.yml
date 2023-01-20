@@ -19,6 +19,7 @@ dependencies:
   - numpy>=1.20
   - pytest
   - python==3.8
+  - pytng>=0.2.3
   - scikit-learn
   - scipy
   - pip
@@ -33,3 +34,4 @@ dependencies:
       - msmb_theme==1.2.0
       - sphinx-sitemap==1.0.2
       - packaging
+      - pyedr>=0.7.0

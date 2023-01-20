@@ -127,10 +127,10 @@ import numbers
 import copy
 import warnings
 import weakref
+from typing import Union, Optional, List, Dict
 
 from .timestep import Timestep
 from . import core
-from .. import NoDataError
 from .. import (
     _READERS, _READER_HINTS,
     _SINGLEFRAME_WRITERS,
@@ -140,7 +140,10 @@ from .. import (
 from .. import units
 from ..auxiliary.base import AuxReader
 from ..auxiliary.core import auxreader
+from ..auxiliary.core import get_auxreader_for
+from ..auxiliary import _AUXREADERS
 from ..lib.util import asiterable, Namespace, store_init_arguments
+from ..lib.util import NamedStream
 
 
 class FrameIteratorBase(object):
@@ -699,7 +702,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             self.rewind()
             raise StopIteration from None
         else:
-            for auxname in self.aux_list:
+            for auxname, reader in self._auxs.items():
                 ts = self._auxs[auxname].update_ts(ts)
 
             ts = self._apply_transformations(ts)
@@ -980,14 +983,91 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             nframes=self.n_frames,
             natoms=self.n_atoms
         ))
+    
+    def timeseries(self, asel: Optional['AtomGroup']=None,
+                   start: Optional[int]=None, stop: Optional[int]=None,
+                   step: Optional[int]=None,
+                   order: Optional[str]='fac') -> np.ndarray:
+        """Return a subset of coordinate data for an AtomGroup
 
-    def add_auxiliary(self, auxname, auxdata, format=None, **kwargs):
+        Parameters
+        ----------
+        asel : AtomGroup (optional)
+            The :class:`~MDAnalysis.core.groups.AtomGroup` to read the
+            coordinates from. Defaults to ``None``, in which case the full set
+            of coordinate data is returned.
+        start :  int (optional)
+            Begin reading the trajectory at frame index `start` (where 0 is the
+            index of the first frame in the trajectory); the default
+            ``None`` starts at the beginning.
+        stop : int (optional)
+            End reading the trajectory at frame index `stop`-1, i.e, `stop` is
+            excluded. The trajectory is read to the end with the default
+            ``None``.
+        step : int (optional)
+            Step size for reading; the default ``None`` is equivalent to 1 and
+            means to read every frame.
+        order : str (optional)
+            the order/shape of the return data array, corresponding
+            to (a)tom, (f)rame, (c)oordinates all six combinations
+            of 'a', 'f', 'c' are allowed ie "fac" - return array
+            where the shape is (frame, number of atoms,
+            coordinates)
+
+        See Also
+        --------
+        :class:`MDAnalysis.coordinates.memory`
+
+
+        .. versionadded:: 2.4.0
+        """
+        start, stop, step = self.check_slice_indices(start, stop, step)
+        nframes = len(range(start, stop, step))
+
+        if asel is not None:
+            if len(asel) == 0:
+                raise ValueError(
+                    "Timeseries requires at least one atom to analyze")
+            atom_numbers = asel.indices
+            natoms = len(atom_numbers)
+        else:
+            natoms = self.n_atoms
+            atom_numbers = np.arange(natoms)
+
+        # allocate output array in 'fac' order
+        coordinates = np.empty((nframes, natoms, 3), dtype=np.float32)
+        for i, ts in enumerate(self[start:stop:step]):
+            coordinates[i, :] = ts.positions[atom_numbers]
+
+        # switch axes around
+        default_order = 'fac'
+        if order != default_order:
+            try:
+                newidx = [default_order.index(i) for i in order]
+            except ValueError:
+                raise ValueError(f"Unrecognized order key in {order}, "
+                                 "must be permutation of 'fac'")
+
+            try:
+                coordinates = np.moveaxis(coordinates, newidx, [0, 1, 2])
+            except ValueError:
+                errmsg = ("Repeated or missing keys passed to argument "
+                          f"`order`: {order}, each key must be used once")
+                raise ValueError(errmsg)
+        return coordinates
+
+# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
+    def add_auxiliary(self,
+                      aux_spec: Union[str, Dict[str, str]] = None,
+                      auxdata: Union[str, AuxReader] = None,
+                      format: str = None,
+                      **kwargs) -> None:
         """Add auxiliary data to be read alongside trajectory.
 
-        Auxiliary data may be any data timeseries from the trajectory additional
-        to that read in by the trajectory reader. *auxdata* can be an
-        :class:`~MDAnalysis.auxiliary.base.AuxReader` instance, or the data
-        itself as e.g. a filename; in the latter case an appropriate
+        Auxiliary data may be any data timeseries from the trajectory
+        additional to that read in by the trajectory reader. *auxdata* can
+        be an :class:`~MDAnalysis.auxiliary.base.AuxReader` instance, or the
+        data itself as e.g. a filename; in the latter case an appropriate
         :class:`~MDAnalysis.auxiliary.base.AuxReader` is guessed from the
         data/file format. An appropriate `format` may also be directly provided
         as a key word argument.
@@ -999,14 +1079,40 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
 
         The representative value(s) of the auxiliary data for each timestep (as
         calculated by the :class:`~MDAnalysis.auxiliary.base.AuxReader`) are
-        stored in the current timestep in the ``ts.aux`` namespace under *auxname*;
-        e.g. to add additional pull force data stored in pull-force.xvg::
+        stored in the current timestep in the ``ts.aux`` namespace under
+        *aux_spec*; e.g. to add additional pull force data stored in
+        pull-force.xvg::
 
             u = MDAnalysis.Universe(PDB, XTC)
             u.trajectory.add_auxiliary('pull', 'pull-force.xvg')
 
         The representative value for the current timestep may then be accessed
         as ``u.trajectory.ts.aux.pull`` or ``u.trajectory.ts.aux['pull']``.
+
+
+        The following applies to energy readers like the
+        :class:`~MDAnalysis.auxiliary.EDR.EDRReader`.
+
+        All data that is present in the (energy) file can be added by omitting
+        `aux_spec` like so::
+
+            u.trajectory.add_auxiliary(auxdata="ener.edr")
+
+        *aux_spec* is expected to be a dictionary that maps the desired
+        attribute name in the ``ts.aux`` namespace to the precise data to be
+        added as identified by a :attr:`data_selector`::
+
+            term_dict = {"temp": "Temperature", "epot": "Potential"}
+            u.trajectory.add_auxiliary(term_dict, "ener.edr")
+
+        Adding this data can be useful, for example, to filter trajectory
+        frames based on non-coordinate data like the potential energy of each
+        time step. Trajectory slicing allows working on a subset of frames::
+
+            selected_frames = np.array([ts.frame for ts in u.trajectory
+                                        if ts.aux.epot < some_threshold])
+            subset = u.trajectory[selected_frames]
+
 
         See Also
         --------
@@ -1017,16 +1123,16 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         Auxiliary data is assumed to be time-ordered, with no duplicates. See
         the :ref:`Auxiliary API`.
         """
-        if auxname in self.aux_list:
-            raise ValueError("Auxiliary data with name {name} already "
-                             "exists".format(name=auxname))
-        if isinstance(auxdata, AuxReader):
-            aux = auxdata
-            aux.auxname = auxname
+        if auxdata is None:
+            raise ValueError("No input `auxdata` specified, but it needs "
+                             "to be provided.")
+        if type(auxdata) not in list(_AUXREADERS.values()):
+            # i.e. if auxdata is a file, not an instance of an AuxReader
+            reader_type = get_auxreader_for(auxdata)
+            auxreader = reader_type(auxdata)
         else:
-            aux = auxreader(auxdata, format=format, auxname=auxname, **kwargs)
-        self._auxs[auxname] = aux
-        self.ts = aux.update_ts(self.ts)
+            auxreader = auxdata
+        auxreader.attach_auxiliary(self, aux_spec, format, **kwargs)
 
     def remove_auxiliary(self, auxname):
         """Clear data and close the :class:`~MDAnalysis.auxiliary.base.AuxReader`
@@ -1352,7 +1458,10 @@ class ReaderBase(ProtoReader):
     def __init__(self, filename, convert_units=True, **kwargs):
         super(ReaderBase, self).__init__()
 
-        self.filename = filename
+        if isinstance(filename, NamedStream):
+            self.filename = filename
+        else:
+            self.filename = str(filename)
         self.convert_units = convert_units
 
         ts_kwargs = {}
