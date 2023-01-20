@@ -93,7 +93,8 @@ jobs:
         auto-update-conda: true
         channel-priority: flexible
         channels: conda-forge, bioconda
-        mamba-version: "*"
+        use-mamba: true
+        miniforge-variant: Mambaforge
         add-pip-as-python-dependency: true
         architecture: x64
 
