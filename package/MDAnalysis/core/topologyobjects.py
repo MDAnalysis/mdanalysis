@@ -445,7 +445,9 @@ class TopologyDict(object):
             except KeyError:
                 self.dict[btype] = [b]
 
-        self._removeDupes()
+        print(list(self.dict[btype].keys())[0], isinstance(list(self.dict[btype].keys())[0], tuple))
+        if isinstance(list(self.dict[btype].keys())[0], tuple):
+            self._removeDupes()
 
     def _removeDupes(self):
         """Sorts through contents and makes sure that there are
@@ -457,7 +459,7 @@ class TopologyDict(object):
         # that entry else make a new entry
         for k in self.dict:
             if not k[::-1] in newdict:
-                newdict[k[::-1]] = self.dict[k]
+                newdict[k] = self.dict[k]
             else:
                 newdict[k[::-1]] += self.dict[k]
 
