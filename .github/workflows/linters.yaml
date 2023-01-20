@@ -102,7 +102,7 @@ jobs:
         with:
           mamba: true
           full-deps: true
-          numpy: numpy=1.20.0
+          numpy: numpy=1.21.0
 
       - name: install
         run: |

@@ -28,6 +28,9 @@ Enhancements
     and SegmentGroup. (PR #3953)
 
 Changes
+  * As per NEP29 the minimum supported NumPy version has been raised to 1.21
+    (note: in practice later versions of NumPy may be used depending on your
+     architecture, operating system, or Python version) (PR #3983)
   * The deprecated direct indexing and `times` from the `results` attribute of
     analysis.nucleicacids' NucPairDist and WatsonCrickDist classes has been
     removed. Please use the `results.pair_distances` and `times` attributes
