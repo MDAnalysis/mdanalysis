@@ -457,7 +457,7 @@ class TopologyDict(object):
         # that entry else make a new entry
         for k in self.dict:
             if not k[::-1] in newdict:
-                newdict[k] = self.dict[k]
+                newdict[k[::-1]] = self.dict[k]
             else:
                 newdict[k[::-1]] += self.dict[k]
 

@@ -361,7 +361,6 @@ class DATAWriter(base.WriterBase):
         if any([triv[1][0], triv[2][0], triv[2][1]]):
             self.f.write('{xy:f} {xz:f} {yz:f} xy xz yz\n'.format(
                 xy=triv[1][0], xz=triv[2][0], yz=triv[2][1]))
-        self.f.write('\n')
 
     @requires('types', 'masses')
     def write(self, selection, frame=None):
