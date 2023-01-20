@@ -24,8 +24,10 @@ Fixes
     (Issue #3336)
 
 Enhancements
-
-* Add pickling support for Atom, Residue, Segment, ResidueGroup 
+  * Optimizes AtomGroup.unwrap by pre-screening for large fragments relative to
+    the box vectors. Also streamlined com vs cog unwrapping references,
+    incidently partly fixing dummy particle unwrapping. (Issue #3168, PR #3169)
+  * Add pickling support for Atom, Residue, Segment, ResidueGroup 
     and SegmentGroup. (PR #3953)
 
 Changes
@@ -160,9 +162,6 @@ Fixes
   * Fix writing unusable PDB CONECT records with index>100000. (Issue #988)
 
 Enhancements
-  * Optimizes AtomGroup.unwrap by pre-screening for large fragments relative to
-    the box vectors. Also streamlined com vs cog unwrapping references,
-    incidently partly fixing dummy particle unwrapping (Issue #3168, PR #3169)
   * Add a new `formalcharge` attribute for storing formal charges (PR #3755)
   * Add the ability to read & write formal charges from PDB files (PR #3755)
   * Change functions in `lib.distances` to accept AtomGroups as well as NumPy

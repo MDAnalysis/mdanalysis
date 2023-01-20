@@ -923,7 +923,7 @@ class GroupBase(_MutableBase):
             Whether the cache was valid or not (in which case it has been
             cleared).
 
-        .. versionadded:: 2.0.0
+        .. versionadded:: 2.5.0
         """
 
         if universe_key is None:
