@@ -696,10 +696,6 @@ class Class_with_Caches(object):
         self.ref4 = 4.0
         self.ref5 = 5.0
         self.ref6 = 6.0
-        # For universe-validated caches
-        # One-line lambda-like class
-        self.universe = type('Universe', (), dict())()
-        self.universe._cache = {'_valid': {}}
 
     @cached('val1')
     def val1(self):

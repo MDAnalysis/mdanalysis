@@ -222,7 +222,6 @@ class AtomGroupUnwrapBench(object):
         self.ag.unwrap()
 
 
-
 class AtomGroupAttrsBench(object):
     """Benchmarks for the various MDAnalysis
     atomgroup attributes.

@@ -394,10 +394,10 @@ class TestUnwrapBoxTypes():
                                       'case_IV'))
     @pytest.mark.parametrize('bx_type', ('positive', 'negative'))
     def test_box_unwrap_check(self, case, bx_type):
-        box_angles  = self.box_types_angles[bx_type][case]
+        box_angles = self.box_types_angles[bx_type][case]
         P_inv = mda.core.groups._get_unwrap_check_matrix([10., 10., 10.]
                                                          + box_angles)
-        target = np.zeros((3,3), dtype=np.float64)
+        target = np.zeros((3, 3), dtype=np.float64)
         target[np.tril_indices(3)] = self.box_types_Pinvs[case]
         assert_almost_equal(P_inv, target, decimal=4)
 

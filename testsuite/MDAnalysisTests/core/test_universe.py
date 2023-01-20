@@ -57,6 +57,7 @@ from MDAnalysis.transformations import translate
 from MDAnalysisTests import assert_nowarns
 from MDAnalysis.exceptions import NoDataError
 from MDAnalysis.core.topologyattrs import AtomStringAttr
+from MDAnalysis.lib.util import cached
 
 
 class IOErrorParser(TopologyReaderBase):
@@ -1346,3 +1347,51 @@ class TestOnlyTopology:
             u = mda.Universe(t)
 
         assert len(u.atoms) == 10
+
+
+class TestUniverseCacheInvalidation:
+    # Universe-based cache validity is only valid for GroupBase subclasses
+    class SubclassedAG(mda.core.AtomGroup):
+        refbase = 0.
+        refval_a = 1.
+        refval_b = 2.
+        # Property decorator and universally-validated cache
+        @property
+        @cached('testval', universe_validation=True)
+        def val_a(self):
+            return self.refbase + 1.
+        @property
+        @cached('testval2', universe_validation='testkey')
+        def val_b(self):
+            return self.refbase + 2.
+    
+    @pytest.fixture
+    def group(self):
+        u = mda.Universe(two_water_gro)
+        testgroup = self.SubclassedAG(u.atoms[:2])
+        return testgroup
+
+    @pytest.mark.parametrize(
+        'attr,key,u_key,ref', (
+            ('val_a', 'testval', 'testval', 'refval_a'),
+            ('val_b', 'testval2', 'testkey', 'refval_b')))
+    def test_default_key(self, group, attr, key, u_key, ref):
+        universe = group.universe
+        assert not hasattr(group, '_cache_key')
+        assert key not in group._cache
+        assert u_key not in universe._cache['_valid']
+    
+        ret = getattr(group, attr)  # Trigger caching
+        assert getattr(group, attr) == getattr(group, ref)
+        assert ret is getattr(group, attr)
+        assert key in group._cache
+        assert u_key in universe._cache['_valid']
+        assert group._cache_key in universe._cache['_valid'][u_key]
+        assert group._cache[key] is ret
+    
+        # Invalidate cache at universe level
+        universe._cache['_valid'].pop(u_key, None)
+        ret2 = getattr(group, attr)
+        assert ret2 is getattr(group, attr)
+        assert ret2 is not ret
+ 
