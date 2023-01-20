@@ -303,7 +303,8 @@ def triclinic_box(x: npt.ArrayLike, y: npt.ArrayLike, z: npt.ArrayLike) -> npt.N
     return np.zeros(6, dtype=np.float32)
 
 
-def triclinic_vectors(dimensions: npt.ArrayLike, dtype: npt.DTypeLike = np.float32) -> npt.NDArray:
+def triclinic_vectors(dimensions: npt.ArrayLike,
+                      dtype: npt.DTypeLike = np.float32) -> npt.NDArray:
     """Convert ``[lx, ly, lz, alpha, beta, gamma]`` to a triclinic matrix
     representation.
 
