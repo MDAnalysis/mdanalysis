@@ -445,7 +445,8 @@ class TopologyDict(object):
             except KeyError:
                 self.dict[btype] = [b]
 
-        self._removeDupes()
+        if self.dict and isinstance(list(self.dict.keys())[0], tuple):
+            self._removeDupes()
 
     def _removeDupes(self):
         """Sorts through contents and makes sure that there are
