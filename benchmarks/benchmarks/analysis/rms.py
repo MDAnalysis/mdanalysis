@@ -100,4 +100,4 @@ class RmsfTrajBench(object):
         """Benchmark RMSF.run() method, which parses
         over the entire trajectory.
         """
-        self.RMSF_inst.timeseries(step=step)
+        self.RMSF_inst.run(step=step)

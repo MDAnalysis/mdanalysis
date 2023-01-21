@@ -45,4 +45,4 @@ class SimpleRdfBench(object):
         """Benchmark a full trajectory parse
         by MDAnalysis.analysis.rdf.InterRDF
         """
-        self.rdf.timeseries()
+        self.rdf.run()
