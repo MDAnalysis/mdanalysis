@@ -85,7 +85,7 @@ If you use the helix analysis algorithm HELANAL_ in
 
 .. _HELANAL: http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html
 
-If you use the GNM trajectory analysis code in
+If you use the GNM  code in
 :mod:`MDAnalysis.analysis.gnm` please cite [Hall2007b]_.
 
 .. [Hall2007b] Benjamin A. Hall, Samantha L. Kaye, Andy Pang, Rafael Perera, and
