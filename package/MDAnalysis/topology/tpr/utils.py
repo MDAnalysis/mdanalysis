@@ -327,7 +327,7 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
         # segment is made to correspond to the molblock as in gromacs, the
         # naming is kind of arbitrary
         molblock = mtop.moltypes[mb.molb_type].name.decode('utf-8')
-        segid = f"seg_{i}_{molblock}"
+        segid = molblock[14:] if molblock[:14] == "Protein_chain_" else molblock
         for j in range(mb.molb_nmol):
             mt = mtop.moltypes[mb.molb_type]  # mt: molecule type
             for atomkind in mt.atomkinds:
