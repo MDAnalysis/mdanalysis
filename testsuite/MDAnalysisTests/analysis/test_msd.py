@@ -61,7 +61,7 @@ def random_walk_u():
 def msd(u, SELECTION):
     # non fft msd
     m = MSD(u, SELECTION, msd_type='xyz', fft=False)
-    m.timeseries()
+    m.run()
     return m
 
 
@@ -80,7 +80,7 @@ def test_notidynamics(u, SELECTION):
     with pytest.raises(ImportError, match="tidynamics was not found"):
         u = mda.Universe(PSF, DCD)
         msd = MSD(u, SELECTION)
-        msd.timeseries()
+        msd.run()
 
 
 def characteristic_poly(n, d):
@@ -121,7 +121,7 @@ class TestMSDSimple(object):
         # testing the "simple" algorithm on constant velocity trajectory
         # should fit the polynomial y=dim_factor*x**2
         m_simple = MSD(step_traj, 'all', msd_type=dim, fft=False)
-        m_simple.timeseries()
+        m_simple.run()
         poly = characteristic_poly(NSTEP, dim_factor)
         assert_almost_equal(m_simple.results.timeseries, poly, decimal=4)
 
@@ -134,7 +134,7 @@ class TestMSDSimple(object):
         # testing the "simple" algorithm on constant velocity trajectory
         # test start stop step is working correctly
         m_simple = MSD(step_traj, 'all', msd_type=dim, fft=False)
-        m_simple.timeseries(start=10, stop=1000, step=10)
+        m_simple.run(start=10, stop=1000, step=10)
         poly = characteristic_poly(NSTEP, dim_factor)
         # polynomial must take offset start into account
         assert_almost_equal(m_simple.results.timeseries, poly[0:990:10],
@@ -143,7 +143,7 @@ class TestMSDSimple(object):
     def test_random_walk_u_simple(self, random_walk_u):
         # regress against random_walk test data
         msd_rw = MSD(random_walk_u, 'all', msd_type='xyz', fft=False)
-        msd_rw.timeseries()
+        msd_rw.run()
         norm = np.linalg.norm(msd_rw.results.timeseries)
         val = 3932.39927487146
         assert_almost_equal(norm, val, decimal=5)
@@ -157,7 +157,7 @@ class TestMSDFFT(object):
     def msd_fft(self, u, SELECTION):
         # fft msd
         m = MSD(u, SELECTION, msd_type='xyz', fft=True)
-        m.timeseries()
+        m.run()
         return m
 
     def test_fft_vs_simple_default(self, msd, msd_fft):
@@ -176,10 +176,10 @@ class TestMSDFFT(object):
     def test_fft_vs_simple_all_dims(self, u, SELECTION, dim):
         # check fft and simple give same result for each dimensionality
         m_simple = MSD(u, SELECTION, msd_type=dim, fft=False)
-        m_simple.timeseries()
+        m_simple.run()
         timeseries_simple = m_simple.results.timeseries
         m_fft = MSD(u, SELECTION, msd_type=dim, fft=True)
-        m_fft.timeseries()
+        m_fft.run()
         timeseries_fft = m_fft.results.timeseries
         assert_almost_equal(timeseries_simple, timeseries_fft, decimal=4)
 
@@ -188,10 +188,10 @@ class TestMSDFFT(object):
         # check fft and simple give same result for each particle in each
         # dimension
         m_simple = MSD(u, SELECTION, msd_type=dim, fft=False)
-        m_simple.timeseries()
+        m_simple.run()
         per_particle_simple = m_simple.results.msds_by_particle
         m_fft = MSD(u, SELECTION, msd_type=dim, fft=True)
-        m_fft.timeseries()
+        m_fft.run()
         per_particle_fft = m_fft.results.msds_by_particle
         assert_almost_equal(per_particle_simple, per_particle_fft, decimal=4)
 
@@ -206,7 +206,7 @@ class TestMSDFFT(object):
         # primarily due to roundoff in fft(ifft()) calls.
         # relative accuracy expected to be around ~1e-12
         m_simple = MSD(step_traj, 'all', msd_type=dim, fft=True)
-        m_simple.timeseries()
+        m_simple.run()
         poly = characteristic_poly(NSTEP, dim_factor)
         # this was relaxed from decimal=4 for numpy=1.13 test
         assert_almost_equal(m_simple.results.timeseries, poly, decimal=3)
@@ -220,7 +220,7 @@ class TestMSDFFT(object):
         # testing the fft algorithm on constant velocity trajectory
         # test start stop step is working correctly
         m_simple = MSD(step_traj, 'all', msd_type=dim, fft=True)
-        m_simple.timeseries(start=10, stop=1000, step=10)
+        m_simple.run(start=10, stop=1000, step=10)
         poly = characteristic_poly(NSTEP, dim_factor)
         # polynomial must take offset start into account
         assert_almost_equal(m_simple.results.timeseries, poly[0:990:10],
@@ -229,7 +229,7 @@ class TestMSDFFT(object):
     def test_random_walk_u_fft(self, random_walk_u):
         # regress against random_walk test data
         msd_rw = MSD(random_walk_u, 'all', msd_type='xyz', fft=True)
-        msd_rw.timeseries()
+        msd_rw.run()
         norm = np.linalg.norm(msd_rw.results.timeseries)
         val = 3932.39927487146
         assert_almost_equal(norm, val, decimal=5)

@@ -522,7 +522,7 @@ class AnalysisFromFunction(AnalysisBase):
     def _single_frame(self):
         self.results.timeseries.append(self.function(*self.args,
                                                      **self.kwargs))
-
+    
     def _conclude(self):
         self.results.frames = self.frames
         self.results.times = self.times

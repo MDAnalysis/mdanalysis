@@ -366,15 +366,21 @@ class EinsteinMSD(AnalysisBase):
 
         self.dim_fac = len(self._dim)
 
-    def _single_frame(self):
+    
         r""" Constructs array of positions for MSD calculation.
 
         """
         # shape of position array set here, use span in last dimension
         # from this point on
+        # creating new function _single_frame_byReader for calling _single_frame 
+        # by reader.timeseries() method
+    def _single_frame_byReader(self):
+        self.reader.timeseries.append(self.function(*self.args,
+                                                     **self.kwargs))
+    def _single_frame_byReader(self):
         self._position_array[self._frame_index] = (
             self.ag.positions[:, self._dim])
-
+                
     def _conclude(self):
         if self.fft:
             self._conclude_fft()

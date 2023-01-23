@@ -72,10 +72,10 @@ class RmsdTrajBench(object):
                                   weights=weights)
 
     def time_RMSD(self, select, weights):
-        """Benchmark RMSD.timeseries() method, which parses
+        """Benchmark RMSD.run() method, which parses
         over the entire trajectory.
         """
-        self.RMSD_inst.timeseries()
+        self.RMSD_inst.run()
 
 
 class RmsfTrajBench(object):
