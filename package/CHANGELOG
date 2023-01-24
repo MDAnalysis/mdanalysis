@@ -87,6 +87,8 @@ Fixes
     (e.g. bonds, angles) (PR #3779).
 
 Enhancements
+  * Added dipole and quadrupole moment topology methods to AtomGroup
+    (Issue #3841, PR #3842)
   * MDAnalysis now follows PEP621 (PR #3528)
   * Added a reader for GROMACS TNG files based on PyTNG (PR #3765,
     Issue #3237, partially addressing Issue #865) 
