@@ -1227,6 +1227,123 @@ duplicate elements</p>
 <dd><p>Obtain a copy of the dimensions of the currently loaded Timestep</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.core.groups.AtomGroup.dipole_moment">
+<span class="sig-name descname"><span class="pre">dipole_moment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.dipole_moment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dipole moment of the group or compounds in a group.</p>
+<div class="math notranslate nohighlight">
+\[\mu = |\boldsymbol{\mu}| = \sqrt{ \sum_{i=1}^{D} \mu^2 }\]</div>
+<p>Where <span class="math notranslate nohighlight">\(D\)</span> is the number of dimensions, in this case 3.</p>
+<p>Computes the dipole moment of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
+Dipole per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly.</p>
+<p>Note that when there is a net charge, the magnitude of the dipole
+moment is dependent on the <cite>center</cite> chosen.
+See <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.dipole_vector" title="MDAnalysis.core.groups.AtomGroup.dipole_vector"><code class="xref py py-meth docutils literal notranslate"><span class="pre">dipole_vector()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+primary unit cell before calculation.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is not <code class="docutils literal notranslate"><span class="pre">group</span></code>, the
+centers of mass of each compound will be calculated without moving
+any atoms to keep the compounds intact.</p></li>
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers.</p></li>
+<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, a single dipole vector returns. Otherwise, an
+array of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or
+fragment will be returned as an array of position vectors, i.e.
+a 2d array.
+Note that, in any case, <em>only</em> the positions of
+<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> <em>belonging to the group</em> will be taken into
+account.</p></li>
+<li><p><strong>center</strong> (<em>{'mass'</em><em>, </em><em>'charge'}</em><em>, </em><em>optional</em>) – Choose whether the dipole vector is calculated at the center of
+“mass” or the center of “charge”, default is “mass”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dipole moment(s) of (compounds of) the group in <span class="math notranslate nohighlight">\(eÅ\)</span>.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
+value. Otherwise, the output will be a 1d array of shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
+where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.4.0.</span></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This requires the underlying topology to have charges. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.core.groups.AtomGroup.dipole_vector">
+<span class="sig-name descname"><span class="pre">dipole_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mass'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.dipole_vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dipole vector of the group.</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol{\mu} = \sum_{i=1}^{N} q_{i} ( \mathbf{r}_{i} -
+\mathbf{r}_{COM} )\]</div>
+<p>Computes the dipole vector of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
+Dipole vector per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly.</p>
+<p>Note that the magnitude of the dipole moment is independent of the
+<code class="docutils literal notranslate"><span class="pre">center</span></code> chosen unless the species has a net charge. In the case of
+a charged group the dipole moment can be later adjusted  with:</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol{\mu}_{COC} = \boldsymbol{\mu}_{COM} +
+q_{ag}\mathbf{r}_{COM} - q_{ag}\boldsymbol{r}_{COC}\]</div>
+<p>Where <span class="math notranslate nohighlight">\(\mathbf{r}_{COM}\)</span> is the center of mass and
+<span class="math notranslate nohighlight">\(\mathbf{r}_{COC}\)</span> is the center of charge.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+primary unit cell before calculation.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is not <code class="docutils literal notranslate"><span class="pre">group</span></code>, the
+centers of mass of each compound will be calculated without moving
+any atoms to keep the compounds intact.</p></li>
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers.</p></li>
+<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, a single dipole vector returns. Otherwise, an
+array of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or
+fragment will be returned as an array of position vectors, i.e.
+a 2d array.
+Note that, in any case, <em>only</em> the positions of
+<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> <em>belonging to the group</em> will be taken into
+account.</p></li>
+<li><p><strong>center</strong> (<em>{'mass'</em><em>, </em><em>'charge'}</em><em>, </em><em>optional</em>) – Choose whether the dipole vector is calculated at the center of
+“mass” or the center of “charge”, default is “mass”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dipole vector(s) of (compounds of) the group in <span class="math notranslate nohighlight">\(eÅ\)</span>.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
+value. Otherwise, the output will be a 1d array of shape <code class="docutils literal notranslate"><span class="pre">(n,3)</span></code>
+where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.4.0.</span></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This requires the underlying topology to have charges. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.AtomGroup.forces">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">forces</span></span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.forces" title="Permalink to this definition">¶</a></dt>
@@ -1825,6 +1942,128 @@ is deprecated and will be removed in version 3.0.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.core.groups.AtomGroup.quadrupole_moment">
+<span class="sig-name descname"><span class="pre">quadrupole_moment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.quadrupole_moment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quadrupole moment of the group according to <span id="id2">[<a class="reference internal" href="topologyattrs.html#id2" title="C. G. Gray, Keith E. Gubbins, and C. G. Joslin. Theory of molecular fluids. Number 9 in The International series of monographs on chemistry. Oxford University Press, Oxford ; New York, 1984. ISBN 978-0-19-855602-2.">Gray1984</a>]</span>.</p>
+<div class="math notranslate nohighlight">
+\[Q = \sqrt{\frac{2}{3}{\hat{\mathsf{Q}}}:{\hat{\mathsf{Q}}}}\]</div>
+<p>where the quadrupole moment is calculated from the tensor double
+contraction of the traceless quadropole tensor <span class="math notranslate nohighlight">\(\hat{\mathsf{Q}}\)</span></p>
+<p>Computes the quadrupole moment of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
+Quadrupole per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly.</p>
+<p>Note that when there is an unsymmetrical plane in the molecule or
+group, the magnitude of the quadrupole moment is dependant on the
+<code class="docutils literal notranslate"><span class="pre">center</span></code> chosen and cannot be translated.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+primary unit cell before calculation.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is not <code class="docutils literal notranslate"><span class="pre">group</span></code>, the
+centers of mass of each compound will be calculated without moving
+any atoms to keep the compounds intact.</p></li>
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers.</p></li>
+<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, a single quadrupole value returns. Otherwise, an
+array of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or
+fragment will be returned as an array of position vectors, i.e.
+a 1d array.
+Note that, in any case, <em>only</em> the positions of
+<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> <em>belonging to the group</em> will be taken into
+account.</p></li>
+<li><p><strong>center</strong> (<em>{'mass'</em><em>, </em><em>'charge'}</em><em>, </em><em>optional</em>) – Choose whether the dipole vector is calculated at the center of
+“mass” or the center of “charge”, default is “mass”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Quadrupole moment(s) of (compounds of) the group in <span class="math notranslate nohighlight">\(eÅ^2\)</span>.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
+value. Otherwise, the output will be a 1d array of shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
+where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.4.0.</span></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This requires the underlying topology to have charges. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.core.groups.AtomGroup.quadrupole_tensor">
+<span class="sig-name descname"><span class="pre">quadrupole_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mass'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.quadrupole_tensor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Traceless quadrupole tensor of the group or compounds.</p>
+<p>This tensor is first computed as the outer product of vectors from
+a reference point to some atom, and multiplied by the atomic charge.
+The tensor of each atom is then summed to produce the quadrupole
+tensor of the group:</p>
+<div class="math notranslate nohighlight">
+\[\mathsf{Q} = \sum_{i=1}^{N} q_{i} ( \mathbf{r}_{i} -
+\mathbf{r}_{COM} ) \otimes ( \mathbf{r}_{i} - \mathbf{r}_{COM} )\]</div>
+<p>The traceless quadrupole tensor, <span class="math notranslate nohighlight">\(\hat{\mathsf{Q}}\)</span>, is then
+taken from:</p>
+<div class="math notranslate nohighlight">
+\[\hat{\mathsf{Q}} = \frac{3}{2} \mathsf{Q} - \frac{1}{2}
+tr(\mathsf{Q})\]</div>
+<p>Computes the quadrupole tensor of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
+Tensor per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly.</p>
+<p>Note that when there is an unsymmetrical plane in the molecule or
+group, the magnitude of the quadrupole tensor is dependent on the
+<code class="docutils literal notranslate"><span class="pre">center</span></code> (e.g., <span class="math notranslate nohighlight">\(\mathbf{r}_{COM}\)</span>) chosen and cannot be translated.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+primary unit cell before calculation.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is not <code class="docutils literal notranslate"><span class="pre">group</span></code>, the
+centers of mass of each compound will be calculated without moving
+any atoms to keep the compounds intact.</p></li>
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers.</p></li>
+<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, a single quadrupole value returns. Otherwise, an
+array of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or
+fragment will be returned as an array of position vectors, i.e.
+a 1d array.
+Note that, in any case, <em>only</em> the positions of
+<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> <em>belonging to the group</em> will be taken into
+account.</p></li>
+<li><p><strong>center</strong> (<em>{'mass'</em><em>, </em><em>'charge'}</em><em>, </em><em>optional</em>) – Choose whether the dipole vector is calculated at the center of
+“mass” or the center of “charge”, default is “mass”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Quadrupole tensor(s) of (compounds of) the group in <span class="math notranslate nohighlight">\(eÅ^2\)</span>.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
+tensor of shape <code class="docutils literal notranslate"><span class="pre">(3,3)</span></code>. Otherwise, the output will be a 1d array
+of shape <code class="docutils literal notranslate"><span class="pre">(n,3,3)</span></code> where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.4.0.</span></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This requires the underlying topology to have charges. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.AtomGroup.radius_of_gyration">
 <span class="sig-name descname"><span class="pre">radius_of_gyration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.radius_of_gyration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Radius of gyration.</p>
@@ -2282,7 +2521,7 @@ GetSubstructMatch for <em>smarts</em> selection.</p>
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.AtomGroup.shape_parameter">
 <span class="sig-name descname"><span class="pre">shape_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.shape_parameter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shape parameter.</p>
-<p>See <a class="reference internal" href="../references.html#dima2004a" id="id3"><span>[Dima2004a]</span></a> for background information.</p>
+<p>See <a class="reference internal" href="../references.html#dima2004a" id="id4"><span>[Dima2004a]</span></a> for background information.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
@@ -3052,7 +3291,7 @@ shape (without the first dimension).</p>
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.ResidueGroup.asphericity">
 <span class="sig-name descname"><span class="pre">asphericity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.asphericity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Asphericity.</p>
-<p>See <a class="reference internal" href="../references.html#dima2004b" id="id4"><span>[Dima2004b]</span></a> for background information.</p>
+<p>See <a class="reference internal" href="../references.html#dima2004b" id="id5"><span>[Dima2004b]</span></a> for background information.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -3669,6 +3908,123 @@ duplicate elements</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.core.groups.ResidueGroup.dipole_moment">
+<span class="sig-name descname"><span class="pre">dipole_moment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.dipole_moment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dipole moment of the group or compounds in a group.</p>
+<div class="math notranslate nohighlight">
+\[\mu = |\boldsymbol{\mu}| = \sqrt{ \sum_{i=1}^{D} \mu^2 }\]</div>
+<p>Where <span class="math notranslate nohighlight">\(D\)</span> is the number of dimensions, in this case 3.</p>
+<p>Computes the dipole moment of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
+Dipole per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly.</p>
+<p>Note that when there is a net charge, the magnitude of the dipole
+moment is dependent on the <cite>center</cite> chosen.
+See <a class="reference internal" href="#MDAnalysis.core.groups.ResidueGroup.dipole_vector" title="MDAnalysis.core.groups.ResidueGroup.dipole_vector"><code class="xref py py-meth docutils literal notranslate"><span class="pre">dipole_vector()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+primary unit cell before calculation.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is not <code class="docutils literal notranslate"><span class="pre">group</span></code>, the
+centers of mass of each compound will be calculated without moving
+any atoms to keep the compounds intact.</p></li>
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers.</p></li>
+<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, a single dipole vector returns. Otherwise, an
+array of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or
+fragment will be returned as an array of position vectors, i.e.
+a 2d array.
+Note that, in any case, <em>only</em> the positions of
+<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> <em>belonging to the group</em> will be taken into
+account.</p></li>
+<li><p><strong>center</strong> (<em>{'mass'</em><em>, </em><em>'charge'}</em><em>, </em><em>optional</em>) – Choose whether the dipole vector is calculated at the center of
+“mass” or the center of “charge”, default is “mass”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dipole moment(s) of (compounds of) the group in <span class="math notranslate nohighlight">\(eÅ\)</span>.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
+value. Otherwise, the output will be a 1d array of shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
+where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.4.0.</span></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This requires the underlying topology to have charges. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.core.groups.ResidueGroup.dipole_vector">
+<span class="sig-name descname"><span class="pre">dipole_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mass'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.dipole_vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dipole vector of the group.</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol{\mu} = \sum_{i=1}^{N} q_{i} ( \mathbf{r}_{i} -
+\mathbf{r}_{COM} )\]</div>
+<p>Computes the dipole vector of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
+Dipole vector per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly.</p>
+<p>Note that the magnitude of the dipole moment is independent of the
+<code class="docutils literal notranslate"><span class="pre">center</span></code> chosen unless the species has a net charge. In the case of
+a charged group the dipole moment can be later adjusted  with:</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol{\mu}_{COC} = \boldsymbol{\mu}_{COM} +
+q_{ag}\mathbf{r}_{COM} - q_{ag}\boldsymbol{r}_{COC}\]</div>
+<p>Where <span class="math notranslate nohighlight">\(\mathbf{r}_{COM}\)</span> is the center of mass and
+<span class="math notranslate nohighlight">\(\mathbf{r}_{COC}\)</span> is the center of charge.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+primary unit cell before calculation.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is not <code class="docutils literal notranslate"><span class="pre">group</span></code>, the
+centers of mass of each compound will be calculated without moving
+any atoms to keep the compounds intact.</p></li>
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers.</p></li>
+<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, a single dipole vector returns. Otherwise, an
+array of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or
+fragment will be returned as an array of position vectors, i.e.
+a 2d array.
+Note that, in any case, <em>only</em> the positions of
+<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> <em>belonging to the group</em> will be taken into
+account.</p></li>
+<li><p><strong>center</strong> (<em>{'mass'</em><em>, </em><em>'charge'}</em><em>, </em><em>optional</em>) – Choose whether the dipole vector is calculated at the center of
+“mass” or the center of “charge”, default is “mass”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dipole vector(s) of (compounds of) the group in <span class="math notranslate nohighlight">\(eÅ\)</span>.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
+value. Otherwise, the output will be a 1d array of shape <code class="docutils literal notranslate"><span class="pre">(n,3)</span></code>
+where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.4.0.</span></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This requires the underlying topology to have charges. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.ResidueGroup.get_connections">
 <span class="sig-name descname"><span class="pre">get_connections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outside</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.get_connections" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get bonded connections between atoms as a
@@ -4200,6 +4556,128 @@ list is <code class="docutils literal notranslate"><span class="pre">None</span>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.core.groups.ResidueGroup.quadrupole_moment">
+<span class="sig-name descname"><span class="pre">quadrupole_moment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.quadrupole_moment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quadrupole moment of the group according to <span id="id6">[<a class="reference internal" href="topologyattrs.html#id2" title="C. G. Gray, Keith E. Gubbins, and C. G. Joslin. Theory of molecular fluids. Number 9 in The International series of monographs on chemistry. Oxford University Press, Oxford ; New York, 1984. ISBN 978-0-19-855602-2.">Gray1984</a>]</span>.</p>
+<div class="math notranslate nohighlight">
+\[Q = \sqrt{\frac{2}{3}{\hat{\mathsf{Q}}}:{\hat{\mathsf{Q}}}}\]</div>
+<p>where the quadrupole moment is calculated from the tensor double
+contraction of the traceless quadropole tensor <span class="math notranslate nohighlight">\(\hat{\mathsf{Q}}\)</span></p>
+<p>Computes the quadrupole moment of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
+Quadrupole per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly.</p>
+<p>Note that when there is an unsymmetrical plane in the molecule or
+group, the magnitude of the quadrupole moment is dependant on the
+<code class="docutils literal notranslate"><span class="pre">center</span></code> chosen and cannot be translated.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+primary unit cell before calculation.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is not <code class="docutils literal notranslate"><span class="pre">group</span></code>, the
+centers of mass of each compound will be calculated without moving
+any atoms to keep the compounds intact.</p></li>
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers.</p></li>
+<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, a single quadrupole value returns. Otherwise, an
+array of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or
+fragment will be returned as an array of position vectors, i.e.
+a 1d array.
+Note that, in any case, <em>only</em> the positions of
+<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> <em>belonging to the group</em> will be taken into
+account.</p></li>
+<li><p><strong>center</strong> (<em>{'mass'</em><em>, </em><em>'charge'}</em><em>, </em><em>optional</em>) – Choose whether the dipole vector is calculated at the center of
+“mass” or the center of “charge”, default is “mass”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Quadrupole moment(s) of (compounds of) the group in <span class="math notranslate nohighlight">\(eÅ^2\)</span>.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
+value. Otherwise, the output will be a 1d array of shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
+where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.4.0.</span></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This requires the underlying topology to have charges. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.core.groups.ResidueGroup.quadrupole_tensor">
+<span class="sig-name descname"><span class="pre">quadrupole_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mass'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.quadrupole_tensor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Traceless quadrupole tensor of the group or compounds.</p>
+<p>This tensor is first computed as the outer product of vectors from
+a reference point to some atom, and multiplied by the atomic charge.
+The tensor of each atom is then summed to produce the quadrupole
+tensor of the group:</p>
+<div class="math notranslate nohighlight">
+\[\mathsf{Q} = \sum_{i=1}^{N} q_{i} ( \mathbf{r}_{i} -
+\mathbf{r}_{COM} ) \otimes ( \mathbf{r}_{i} - \mathbf{r}_{COM} )\]</div>
+<p>The traceless quadrupole tensor, <span class="math notranslate nohighlight">\(\hat{\mathsf{Q}}\)</span>, is then
+taken from:</p>
+<div class="math notranslate nohighlight">
+\[\hat{\mathsf{Q}} = \frac{3}{2} \mathsf{Q} - \frac{1}{2}
+tr(\mathsf{Q})\]</div>
+<p>Computes the quadrupole tensor of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
+Tensor per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly.</p>
+<p>Note that when there is an unsymmetrical plane in the molecule or
+group, the magnitude of the quadrupole tensor is dependent on the
+<code class="docutils literal notranslate"><span class="pre">center</span></code> (e.g., <span class="math notranslate nohighlight">\(\mathbf{r}_{COM}\)</span>) chosen and cannot be translated.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+primary unit cell before calculation.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is not <code class="docutils literal notranslate"><span class="pre">group</span></code>, the
+centers of mass of each compound will be calculated without moving
+any atoms to keep the compounds intact.</p></li>
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers.</p></li>
+<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, a single quadrupole value returns. Otherwise, an
+array of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or
+fragment will be returned as an array of position vectors, i.e.
+a 1d array.
+Note that, in any case, <em>only</em> the positions of
+<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> <em>belonging to the group</em> will be taken into
+account.</p></li>
+<li><p><strong>center</strong> (<em>{'mass'</em><em>, </em><em>'charge'}</em><em>, </em><em>optional</em>) – Choose whether the dipole vector is calculated at the center of
+“mass” or the center of “charge”, default is “mass”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Quadrupole tensor(s) of (compounds of) the group in <span class="math notranslate nohighlight">\(eÅ^2\)</span>.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
+tensor of shape <code class="docutils literal notranslate"><span class="pre">(3,3)</span></code>. Otherwise, the output will be a 1d array
+of shape <code class="docutils literal notranslate"><span class="pre">(n,3,3)</span></code> where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.4.0.</span></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This requires the underlying topology to have charges. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.ResidueGroup.radius_of_gyration">
 <span class="sig-name descname"><span class="pre">radius_of_gyration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.radius_of_gyration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Radius of gyration.</p>
@@ -4410,7 +4888,7 @@ class:<cite>Bio.SeqRecord.SeqRecord</cite>.</p></li>
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.ResidueGroup.shape_parameter">
 <span class="sig-name descname"><span class="pre">shape_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.shape_parameter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shape parameter.</p>
-<p>See <a class="reference internal" href="../references.html#dima2004a" id="id5"><span>[Dima2004a]</span></a> for background information.</p>
+<p>See <a class="reference internal" href="../references.html#dima2004a" id="id7"><span>[Dima2004a]</span></a> for background information.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
@@ -5010,7 +5488,7 @@ shape (without the first dimension).</p>
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.SegmentGroup.asphericity">
 <span class="sig-name descname"><span class="pre">asphericity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.asphericity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Asphericity.</p>
-<p>See <a class="reference internal" href="../references.html#dima2004b" id="id6"><span>[Dima2004b]</span></a> for background information.</p>
+<p>See <a class="reference internal" href="../references.html#dima2004b" id="id8"><span>[Dima2004b]</span></a> for background information.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -5598,6 +6076,123 @@ duplicate elements</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.core.groups.SegmentGroup.dipole_moment">
+<span class="sig-name descname"><span class="pre">dipole_moment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.dipole_moment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dipole moment of the group or compounds in a group.</p>
+<div class="math notranslate nohighlight">
+\[\mu = |\boldsymbol{\mu}| = \sqrt{ \sum_{i=1}^{D} \mu^2 }\]</div>
+<p>Where <span class="math notranslate nohighlight">\(D\)</span> is the number of dimensions, in this case 3.</p>
+<p>Computes the dipole moment of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
+Dipole per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly.</p>
+<p>Note that when there is a net charge, the magnitude of the dipole
+moment is dependent on the <cite>center</cite> chosen.
+See <a class="reference internal" href="#MDAnalysis.core.groups.SegmentGroup.dipole_vector" title="MDAnalysis.core.groups.SegmentGroup.dipole_vector"><code class="xref py py-meth docutils literal notranslate"><span class="pre">dipole_vector()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+primary unit cell before calculation.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is not <code class="docutils literal notranslate"><span class="pre">group</span></code>, the
+centers of mass of each compound will be calculated without moving
+any atoms to keep the compounds intact.</p></li>
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers.</p></li>
+<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, a single dipole vector returns. Otherwise, an
+array of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or
+fragment will be returned as an array of position vectors, i.e.
+a 2d array.
+Note that, in any case, <em>only</em> the positions of
+<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> <em>belonging to the group</em> will be taken into
+account.</p></li>
+<li><p><strong>center</strong> (<em>{'mass'</em><em>, </em><em>'charge'}</em><em>, </em><em>optional</em>) – Choose whether the dipole vector is calculated at the center of
+“mass” or the center of “charge”, default is “mass”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dipole moment(s) of (compounds of) the group in <span class="math notranslate nohighlight">\(eÅ\)</span>.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
+value. Otherwise, the output will be a 1d array of shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
+where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.4.0.</span></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This requires the underlying topology to have charges. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.core.groups.SegmentGroup.dipole_vector">
+<span class="sig-name descname"><span class="pre">dipole_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mass'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.dipole_vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dipole vector of the group.</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol{\mu} = \sum_{i=1}^{N} q_{i} ( \mathbf{r}_{i} -
+\mathbf{r}_{COM} )\]</div>
+<p>Computes the dipole vector of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
+Dipole vector per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly.</p>
+<p>Note that the magnitude of the dipole moment is independent of the
+<code class="docutils literal notranslate"><span class="pre">center</span></code> chosen unless the species has a net charge. In the case of
+a charged group the dipole moment can be later adjusted  with:</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol{\mu}_{COC} = \boldsymbol{\mu}_{COM} +
+q_{ag}\mathbf{r}_{COM} - q_{ag}\boldsymbol{r}_{COC}\]</div>
+<p>Where <span class="math notranslate nohighlight">\(\mathbf{r}_{COM}\)</span> is the center of mass and
+<span class="math notranslate nohighlight">\(\mathbf{r}_{COC}\)</span> is the center of charge.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+primary unit cell before calculation.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is not <code class="docutils literal notranslate"><span class="pre">group</span></code>, the
+centers of mass of each compound will be calculated without moving
+any atoms to keep the compounds intact.</p></li>
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers.</p></li>
+<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, a single dipole vector returns. Otherwise, an
+array of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or
+fragment will be returned as an array of position vectors, i.e.
+a 2d array.
+Note that, in any case, <em>only</em> the positions of
+<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> <em>belonging to the group</em> will be taken into
+account.</p></li>
+<li><p><strong>center</strong> (<em>{'mass'</em><em>, </em><em>'charge'}</em><em>, </em><em>optional</em>) – Choose whether the dipole vector is calculated at the center of
+“mass” or the center of “charge”, default is “mass”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dipole vector(s) of (compounds of) the group in <span class="math notranslate nohighlight">\(eÅ\)</span>.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
+value. Otherwise, the output will be a 1d array of shape <code class="docutils literal notranslate"><span class="pre">(n,3)</span></code>
+where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.4.0.</span></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This requires the underlying topology to have charges. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.SegmentGroup.get_connections">
 <span class="sig-name descname"><span class="pre">get_connections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outside</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.get_connections" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get bonded connections between atoms as a
@@ -6037,6 +6632,128 @@ is deprecated and will be removed in version 3.0.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.core.groups.SegmentGroup.quadrupole_moment">
+<span class="sig-name descname"><span class="pre">quadrupole_moment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.quadrupole_moment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quadrupole moment of the group according to <span id="id9">[<a class="reference internal" href="topologyattrs.html#id2" title="C. G. Gray, Keith E. Gubbins, and C. G. Joslin. Theory of molecular fluids. Number 9 in The International series of monographs on chemistry. Oxford University Press, Oxford ; New York, 1984. ISBN 978-0-19-855602-2.">Gray1984</a>]</span>.</p>
+<div class="math notranslate nohighlight">
+\[Q = \sqrt{\frac{2}{3}{\hat{\mathsf{Q}}}:{\hat{\mathsf{Q}}}}\]</div>
+<p>where the quadrupole moment is calculated from the tensor double
+contraction of the traceless quadropole tensor <span class="math notranslate nohighlight">\(\hat{\mathsf{Q}}\)</span></p>
+<p>Computes the quadrupole moment of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
+Quadrupole per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly.</p>
+<p>Note that when there is an unsymmetrical plane in the molecule or
+group, the magnitude of the quadrupole moment is dependant on the
+<code class="docutils literal notranslate"><span class="pre">center</span></code> chosen and cannot be translated.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+primary unit cell before calculation.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is not <code class="docutils literal notranslate"><span class="pre">group</span></code>, the
+centers of mass of each compound will be calculated without moving
+any atoms to keep the compounds intact.</p></li>
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers.</p></li>
+<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, a single quadrupole value returns. Otherwise, an
+array of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or
+fragment will be returned as an array of position vectors, i.e.
+a 1d array.
+Note that, in any case, <em>only</em> the positions of
+<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> <em>belonging to the group</em> will be taken into
+account.</p></li>
+<li><p><strong>center</strong> (<em>{'mass'</em><em>, </em><em>'charge'}</em><em>, </em><em>optional</em>) – Choose whether the dipole vector is calculated at the center of
+“mass” or the center of “charge”, default is “mass”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Quadrupole moment(s) of (compounds of) the group in <span class="math notranslate nohighlight">\(eÅ^2\)</span>.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
+value. Otherwise, the output will be a 1d array of shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
+where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.4.0.</span></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This requires the underlying topology to have charges. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.core.groups.SegmentGroup.quadrupole_tensor">
+<span class="sig-name descname"><span class="pre">quadrupole_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mass'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.quadrupole_tensor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Traceless quadrupole tensor of the group or compounds.</p>
+<p>This tensor is first computed as the outer product of vectors from
+a reference point to some atom, and multiplied by the atomic charge.
+The tensor of each atom is then summed to produce the quadrupole
+tensor of the group:</p>
+<div class="math notranslate nohighlight">
+\[\mathsf{Q} = \sum_{i=1}^{N} q_{i} ( \mathbf{r}_{i} -
+\mathbf{r}_{COM} ) \otimes ( \mathbf{r}_{i} - \mathbf{r}_{COM} )\]</div>
+<p>The traceless quadrupole tensor, <span class="math notranslate nohighlight">\(\hat{\mathsf{Q}}\)</span>, is then
+taken from:</p>
+<div class="math notranslate nohighlight">
+\[\hat{\mathsf{Q}} = \frac{3}{2} \mathsf{Q} - \frac{1}{2}
+tr(\mathsf{Q})\]</div>
+<p>Computes the quadrupole tensor of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
+Tensor per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly.</p>
+<p>Note that when there is an unsymmetrical plane in the molecule or
+group, the magnitude of the quadrupole tensor is dependent on the
+<code class="docutils literal notranslate"><span class="pre">center</span></code> (e.g., <span class="math notranslate nohighlight">\(\mathbf{r}_{COM}\)</span>) chosen and cannot be translated.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+primary unit cell before calculation.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is not <code class="docutils literal notranslate"><span class="pre">group</span></code>, the
+centers of mass of each compound will be calculated without moving
+any atoms to keep the compounds intact.</p></li>
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers.</p></li>
+<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, a single quadrupole value returns. Otherwise, an
+array of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or
+fragment will be returned as an array of position vectors, i.e.
+a 1d array.
+Note that, in any case, <em>only</em> the positions of
+<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> <em>belonging to the group</em> will be taken into
+account.</p></li>
+<li><p><strong>center</strong> (<em>{'mass'</em><em>, </em><em>'charge'}</em><em>, </em><em>optional</em>) – Choose whether the dipole vector is calculated at the center of
+“mass” or the center of “charge”, default is “mass”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Quadrupole tensor(s) of (compounds of) the group in <span class="math notranslate nohighlight">\(eÅ^2\)</span>.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
+tensor of shape <code class="docutils literal notranslate"><span class="pre">(3,3)</span></code>. Otherwise, the output will be a 1d array
+of shape <code class="docutils literal notranslate"><span class="pre">(n,3,3)</span></code> where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.4.0.</span></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This requires the underlying topology to have charges. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.SegmentGroup.radius_of_gyration">
 <span class="sig-name descname"><span class="pre">radius_of_gyration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.radius_of_gyration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Radius of gyration.</p>
@@ -6161,7 +6878,7 @@ not affect any code but only speed up calculations.</p>
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.SegmentGroup.shape_parameter">
 <span class="sig-name descname"><span class="pre">shape_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.shape_parameter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shape parameter.</p>
-<p>See <a class="reference internal" href="../references.html#dima2004a" id="id7"><span>[Dima2004a]</span></a> for background information.</p>
+<p>See <a class="reference internal" href="../references.html#dima2004a" id="id10"><span>[Dima2004a]</span></a> for background information.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before

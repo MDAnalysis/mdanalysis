@@ -242,7 +242,7 @@
 </div>
 <p>The module contains code to calculate the geometric similarity of trajectories
 using path metrics such as the Hausdorff or Fréchet distances
-<span id="id1">[<a class="reference internal" href="#id42" title="Sean L. Seyler, Avishek Kumar, M. F. Thorpe, and Oliver Beckstein. Path similarity analysis: a method for quantifying macromolecular pathways. PLOS Computational Biology, 11(10):1-37, 10 2015. doi:10.1371/journal.pcbi.1004568.">Seyler2015</a>]</span>. The path metrics are functions of two paths and return a
+<span id="id1">[<a class="reference internal" href="#id43" title="Sean L. Seyler, Avishek Kumar, M. F. Thorpe, and Oliver Beckstein. Path similarity analysis: a method for quantifying macromolecular pathways. PLOS Computational Biology, 11(10):1-37, 10 2015. doi:10.1371/journal.pcbi.1004568.">Seyler2015</a>]</span>. The path metrics are functions of two paths and return a
 nonnegative number, i.e., a distance. Two paths are identical if their distance
 is zero, and large distances indicate dissimilarity. Each path metric is a
 function of the individual points (e.g., coordinate snapshots) that comprise
@@ -269,9 +269,9 @@ map-dendrogram plots from hierarchical clustering.</p>
 </div>
 <p class="rubric">References</p>
 <div class="docutils container" id="id2">
-<div class="citation" id="id42" role="doc-biblioentry">
+<div class="citation" id="id43" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span>Seyler2015<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id133">2</a>,<a role="doc-backlink" href="#id134">3</a>,<a role="doc-backlink" href="#id135">4</a>)</span>
+<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id135">2</a>,<a role="doc-backlink" href="#id136">3</a>,<a role="doc-backlink" href="#id137">4</a>)</span>
 <p>Sean L. Seyler, Avishek Kumar, M. F. Thorpe, and Oliver Beckstein. Path similarity analysis: a method for quantifying macromolecular pathways. <em>PLOS Computational Biology</em>, 11(10):1–37, 10 2015. <a class="reference external" href="https://doi.org/10.1371/journal.pcbi.1004568">doi:10.1371/journal.pcbi.1004568</a>.</p>
 </div>
 </div>
@@ -429,13 +429,13 @@ either shape <span class="math notranslate nohighlight">\(N_p \times N \times 3\
 </div>
 <p class="rubric">Notes</p>
 <p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.directed_hausdorff.html#scipy.spatial.distance.directed_hausdorff" title="(in SciPy v1.10.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.spatial.distance.directed_hausdorff()</span></code></a> is an optimized
-implementation of the early break algorithm of <span id="id67">[<a class="reference internal" href="#id112" title="Abdel Aziz Taha and Allan Hanbury. An efficient algorithm for calculating the exact hausdorff distance. IEEE Transactions on Pattern Analysis and Machine Intelligence, 37(11):2153-2163, 2015. doi:10.1109/TPAMI.2015.2408351.">Taha2015</a>]</span>; the
+implementation of the early break algorithm of <span id="id68">[<a class="reference internal" href="#id114" title="Abdel Aziz Taha and Allan Hanbury. An efficient algorithm for calculating the exact hausdorff distance. IEEE Transactions on Pattern Analysis and Machine Intelligence, 37(11):2153-2163, 2015. doi:10.1109/TPAMI.2015.2408351.">Taha2015</a>]</span>; the
 latter code is used here to calculate the symmetric Hausdorff
 distance with an RMSD metric</p>
 <p class="rubric">References</p>
-<div class="docutils container" id="id68">
-<div class="citation" id="id112" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id67">Taha2015</a><span class="fn-bracket">]</span></span>
+<div class="docutils container" id="id69">
+<div class="citation" id="id114" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id68">Taha2015</a><span class="fn-bracket">]</span></span>
 <p>Abdel Aziz Taha and Allan Hanbury. An efficient algorithm for calculating the exact hausdorff distance. <em>IEEE Transactions on Pattern Analysis and Machine Intelligence</em>, 37(11):2153–2163, 2015. <a class="reference external" href="https://doi.org/10.1109/TPAMI.2015.2408351">doi:10.1109/TPAMI.2015.2408351</a>.</p>
 </div>
 </div>
@@ -488,7 +488,7 @@ measure that gives equal weight to <em>P</em> and <em>Q</em>.</p>
 </div>
 <p class="rubric">Notes</p>
 <p>The weighted average Hausdorff distance is not a true metric (it does not
-obey the triangle inequality); see <span id="id133">[<a class="reference internal" href="#id42" title="Sean L. Seyler, Avishek Kumar, M. F. Thorpe, and Oliver Beckstein. Path similarity analysis: a method for quantifying macromolecular pathways. PLOS Computational Biology, 11(10):1-37, 10 2015. doi:10.1371/journal.pcbi.1004568.">Seyler2015</a>]</span> for further
+obey the triangle inequality); see <span id="id135">[<a class="reference internal" href="#id43" title="Sean L. Seyler, Avishek Kumar, M. F. Thorpe, and Oliver Beckstein. Path similarity analysis: a method for quantifying macromolecular pathways. PLOS Computational Biology, 11(10):1-37, 10 2015. doi:10.1371/journal.pcbi.1004568.">Seyler2015</a>]</span> for further
 details.</p>
 </dd></dl>
 
@@ -537,7 +537,7 @@ average Hausdorff gives equal weight to both paths.</p>
 </div>
 <p class="rubric">Notes</p>
 <p>The average Hausdorff distance is not a true metric (it does not obey the
-triangle inequality); see <span id="id134">[<a class="reference internal" href="#id42" title="Sean L. Seyler, Avishek Kumar, M. F. Thorpe, and Oliver Beckstein. Path similarity analysis: a method for quantifying macromolecular pathways. PLOS Computational Biology, 11(10):1-37, 10 2015. doi:10.1371/journal.pcbi.1004568.">Seyler2015</a>]</span> for further details.</p>
+triangle inequality); see <span id="id136">[<a class="reference internal" href="#id43" title="Sean L. Seyler, Avishek Kumar, M. F. Thorpe, and Oliver Beckstein. Path similarity analysis: a method for quantifying macromolecular pathways. PLOS Computational Biology, 11(10):1-37, 10 2015. doi:10.1371/journal.pcbi.1004568.">Seyler2015</a>]</span> for further details.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -571,7 +571,7 @@ distances for <cite>P</cite> and <cite>Q</cite>, respectively</p>
 <li><p>Hausdorff neighbors are those points on the two paths that are separated by
 the Hausdorff distance. They are the farthest nearest neighbors and are
 maximally different in the sense of the Hausdorff distance
-<span id="id135">[<a class="reference internal" href="#id42" title="Sean L. Seyler, Avishek Kumar, M. F. Thorpe, and Oliver Beckstein. Path similarity analysis: a method for quantifying macromolecular pathways. PLOS Computational Biology, 11(10):1-37, 10 2015. doi:10.1371/journal.pcbi.1004568.">Seyler2015</a>]</span>.</p></li>
+<span id="id137">[<a class="reference internal" href="#id43" title="Sean L. Seyler, Avishek Kumar, M. F. Thorpe, and Oliver Beckstein. Path similarity analysis: a method for quantifying macromolecular pathways. PLOS Computational Biology, 11(10):1-37, 10 2015. doi:10.1371/journal.pcbi.1004568.">Seyler2015</a>]</span>.</p></li>
 <li><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.directed_hausdorff.html#scipy.spatial.distance.directed_hausdorff" title="(in SciPy v1.10.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.spatial.distance.directed_hausdorff()</span></code></a> can also provide the
 hausdorff neighbors.</p></li>
 </ul>
@@ -621,25 +621,25 @@ trajectory.</p>
 it is sensitive to the direction of the path.</p>
 <p class="rubric">Notes</p>
 <p>The discrete Fréchet metric is an approximation to the continuous Fréchet
-metric <span id="id136">[<a class="reference internal" href="#id156" title="M. Maurice Frèchet. Sur quelques points du calcul fonctionnel. Rendiconti del Circolo Matematico di Palermo (1884-1940), 22(1):1–72, 1906. doi:10.1007/BF03018603.">Frèchet1906</a>, <a class="reference internal" href="#id141" title="Helmut Alt and Michael Godau. Computing the frechet distance between two polygonal curves. International Journal of Computational Geometry &amp; Applications, 05(01n02):75-91, 1995. doi:10.1142/S0218195995000064.">Alt1995</a>]</span>. The calculation of the continuous
+metric <span id="id138">[<a class="reference internal" href="#id159" title="M. Maurice Frèchet. Sur quelques points du calcul fonctionnel. Rendiconti del Circolo Matematico di Palermo (1884-1940), 22(1):1–72, 1906. doi:10.1007/BF03018603.">Frèchet1906</a>, <a class="reference internal" href="#id144" title="Helmut Alt and Michael Godau. Computing the frechet distance between two polygonal curves. International Journal of Computational Geometry &amp; Applications, 05(01n02):75-91, 1995. doi:10.1142/S0218195995000064.">Alt1995</a>]</span>. The calculation of the continuous
 Fréchet distance is implemented with the dynamic programming algorithm of
-<span id="id137">[<a class="reference internal" href="#id152" title="Thomas Eiter and Heikki Mannila. Computing discrete frechet distance. 05 1994.">Eiter1994</a>, <a class="reference internal" href="#id153" title="Thomas Eiter and Heikki Mannila. Distance measures for point sets and their computation. Acta Informatica, 34(2):109–133, 1997. doi:10.1007/s002360050075.">Eiter1997</a>]</span>.</p>
+<span id="id139">[<a class="reference internal" href="#id155" title="Thomas Eiter and Heikki Mannila. Computing discrete frechet distance. 05 1994.">Eiter1994</a>, <a class="reference internal" href="#id156" title="Thomas Eiter and Heikki Mannila. Distance measures for point sets and their computation. Acta Informatica, 34(2):109–133, 1997. doi:10.1007/s002360050075.">Eiter1997</a>]</span>.</p>
 <p class="rubric">References</p>
-<div class="docutils container" id="id138">
-<div class="citation" id="id156" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id136">Frèchet1906</a><span class="fn-bracket">]</span></span>
+<div class="docutils container" id="id140">
+<div class="citation" id="id159" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id138">Frèchet1906</a><span class="fn-bracket">]</span></span>
 <p>M. Maurice Frèchet. Sur quelques points du calcul fonctionnel. <em>Rendiconti del Circolo Matematico di Palermo (1884-1940)</em>, 22(1):1–72, 1906. <a class="reference external" href="https://doi.org/10.1007/BF03018603">doi:10.1007/BF03018603</a>.</p>
 </div>
-<div class="citation" id="id141" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id136">Alt1995</a><span class="fn-bracket">]</span></span>
+<div class="citation" id="id144" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id138">Alt1995</a><span class="fn-bracket">]</span></span>
 <p>Helmut Alt and Michael Godau. Computing the frechet distance between two polygonal curves. <em>International Journal of Computational Geometry &amp; Applications</em>, 05(01n02):75–91, 1995. <a class="reference external" href="https://doi.org/10.1142/S0218195995000064">doi:10.1142/S0218195995000064</a>.</p>
 </div>
-<div class="citation" id="id152" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id137">Eiter1994</a><span class="fn-bracket">]</span></span>
+<div class="citation" id="id155" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id139">Eiter1994</a><span class="fn-bracket">]</span></span>
 <p>Thomas Eiter and Heikki Mannila. Computing discrete frechet distance. 05 1994.</p>
 </div>
-<div class="citation" id="id153" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id137">Eiter1997</a><span class="fn-bracket">]</span></span>
+<div class="citation" id="id156" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id139">Eiter1997</a><span class="fn-bracket">]</span></span>
 <p>Thomas Eiter and Heikki Mannila. Distance measures for point sets and their computation. <em>Acta Informatica</em>, 34(2):109–133, 1997. <a class="reference external" href="https://doi.org/10.1007/s002360050075">doi:10.1007/s002360050075</a>.</p>
 </div>
 </div>

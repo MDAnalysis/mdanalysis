@@ -218,6 +218,16 @@
 
 <span class="sd">TopologyAttrs are used to contain attributes such as atom names or resids.</span>
 <span class="sd">These are usually read by the TopologyParser.</span>
+
+<span class="sd">References</span>
+<span class="sd">----------</span>
+
+<span class="sd">.. bibliography::</span>
+<span class="sd">    :filter: False</span>
+<span class="sd">    :style: MDA</span>
+
+<span class="sd">    Gray1984</span>
+
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
@@ -273,6 +283,7 @@
 
     <span class="n">_GROUP_VALUE_ERROR</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Setting </span><span class="si">{group}</span><span class="s2"> </span><span class="si">{attrname}</span><span class="s2"> with wrong sized array. &quot;</span>
                           <span class="s2">&quot;Length </span><span class="si">{group}</span><span class="s2">: </span><span class="si">{lengroup}</span><span class="s2">, length of supplied values: </span><span class="si">{lenvalues}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
     <span class="c1"># Eg &quot;Setting AtomGroup masses with wrong sized array. Length AtomGroup: 100, length of</span>
     <span class="c1"># supplied values: 50.&quot;</span>
 
@@ -469,6 +480,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">BFACTOR_WARNING</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">wrapper</span>
 
 
@@ -492,6 +504,7 @@
 <span class="sd">    :func:`MDAnalysis.core.selection.gen_selection_class`</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">):</span>
         <span class="nb">type</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">)</span>
         <span class="n">attrname</span> <span class="o">=</span> <span class="n">classdict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;attrname&#39;</span><span class="p">)</span>
@@ -694,6 +707,7 @@
 
 <span class="c1"># core attributes</span>
 
+
 <div class="viewcode-block" id="Atomindices"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomindices">[docs]</a><span class="k">class</span> <span class="nc">Atomindices</span><span class="p">(</span><span class="n">TopologyAttr</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Globally unique indices for each atom in the group.</span>
 
@@ -797,6 +811,7 @@
 
 <span class="c1"># atom attributes</span>
 
+
 <div class="viewcode-block" id="AtomAttr"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.AtomAttr">[docs]</a><span class="k">class</span> <span class="nc">AtomAttr</span><span class="p">(</span><span class="n">TopologyAttr</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for atom attributes.</span>
 
@@ -868,6 +883,7 @@
 <span class="sd">    .. versionadded:: 2.1.0</span>
 <span class="sd">       Mashed together the different implementations to keep it DRY.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vals</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_guessed</span> <span class="o">=</span> <span class="n">guessed</span>
 
@@ -941,9 +957,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span><span class="p">,</span> <span class="n">newnames</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span><span class="p">]</span>
 
+
 <span class="c1"># woe betide anyone who switches this inheritance order</span>
 <span class="c1"># Mixin needs to be first (L to R) to get correct __init__ and set_atoms</span>
 <div class="viewcode-block" id="AtomStringAttr"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.AtomStringAttr">[docs]</a><span class="k">class</span> <span class="nc">AtomStringAttr</span><span class="p">(</span><span class="n">_StringInternerMixin</span><span class="p">,</span> <span class="n">AtomAttr</span><span class="p">):</span>
+
 <div class="viewcode-block" id="AtomStringAttr.set_atoms"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.AtomStringAttr.set_atoms">[docs]</a>    <span class="nd">@_check_length</span>
     <span class="k">def</span> <span class="nf">set_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_X</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
@@ -2189,6 +2207,7 @@
                             <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">,</span>
                             <span class="n">unwrap</span><span class="o">=</span><span class="n">unwrap</span><span class="p">)</span></div>
 
+
     <span class="n">transplants</span><span class="p">[</span><span class="n">GroupBase</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
         <span class="p">(</span><span class="s1">&#39;center_of_charge&#39;</span><span class="p">,</span> <span class="n">center_of_charge</span><span class="p">))</span>
 
@@ -2227,7 +2246,404 @@
         <span class="k">return</span> <span class="n">group</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="s2">&quot;charges&quot;</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">)</span></div>
 
     <span class="n">transplants</span><span class="p">[</span><span class="n">GroupBase</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-        <span class="p">(</span><span class="s1">&#39;total_charge&#39;</span><span class="p">,</span> <span class="n">total_charge</span><span class="p">))</span></div>
+        <span class="p">(</span><span class="s1">&#39;total_charge&#39;</span><span class="p">,</span> <span class="n">total_charge</span><span class="p">))</span>
+
+<div class="viewcode-block" id="Charges.dipole_vector"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Charges.dipole_vector">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
+    <span class="nd">@_pbc_to_wrap</span>
+    <span class="nd">@check_wrap_and_unwrap</span>
+    <span class="k">def</span> <span class="nf">dipole_vector</span><span class="p">(</span><span class="n">group</span><span class="p">,</span>
+                      <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                      <span class="n">unwrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                      <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">,</span>
+                      <span class="n">center</span><span class="o">=</span><span class="s2">&quot;mass&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dipole vector of the group.</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            \boldsymbol{\mu} = \sum_{i=1}^{N} q_{i} ( \mathbf{r}_{i} - </span>
+<span class="sd">            \mathbf{r}_{COM} )</span>
+
+<span class="sd">        Computes the dipole vector of :class:`Atoms&lt;Atom&gt;` in the group.</span>
+<span class="sd">        Dipole vector per :class:`Residue`, :class:`Segment`, molecule, or</span>
+<span class="sd">        fragment can be obtained by setting the `compound` parameter</span>
+<span class="sd">        accordingly.</span>
+
+<span class="sd">        Note that the magnitude of the dipole moment is independent of the</span>
+<span class="sd">        ``center`` chosen unless the species has a net charge. In the case of</span>
+<span class="sd">        a charged group the dipole moment can be later adjusted  with:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            \boldsymbol{\mu}_{COC} = \boldsymbol{\mu}_{COM} + </span>
+<span class="sd">            q_{ag}\mathbf{r}_{COM} - q_{ag}\boldsymbol{r}_{COC}</span>
+
+<span class="sd">        Where :math:`\mathbf{r}_{COM}` is the center of mass and </span>
+<span class="sd">        :math:`\mathbf{r}_{COC}` is the center of charge.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        wrap : bool, optional</span>
+<span class="sd">            If ``True`` and `compound` is ``&#39;group&#39;``, move all atoms to the</span>
+<span class="sd">            primary unit cell before calculation.</span>
+<span class="sd">            If ``True`` and `compound` is not ``group``, the</span>
+<span class="sd">            centers of mass of each compound will be calculated without moving</span>
+<span class="sd">            any atoms to keep the compounds intact.</span>
+<span class="sd">        unwrap : bool, optional</span>
+<span class="sd">            If ``True``, compounds will be unwrapped before computing their</span>
+<span class="sd">            centers.</span>
+<span class="sd">        compound : {&#39;group&#39;, &#39;segments&#39;, &#39;residues&#39;, &#39;molecules&#39;, \</span>
+<span class="sd">                    &#39;fragments&#39;}, optional</span>
+<span class="sd">            If ``&#39;group&#39;``, a single dipole vector returns. Otherwise, an</span>
+<span class="sd">            array of each :class:`Segment`, :class:`Residue`, molecule, or</span>
+<span class="sd">            fragment will be returned as an array of position vectors, i.e.</span>
+<span class="sd">            a 2d array.</span>
+<span class="sd">            Note that, in any case, *only* the positions of</span>
+<span class="sd">            :class:`Atoms&lt;Atom&gt;` *belonging to the group* will be taken into</span>
+<span class="sd">            account.</span>
+<span class="sd">        center : {&#39;mass&#39;, &#39;charge&#39;}, optional</span>
+<span class="sd">            Choose whether the dipole vector is calculated at the center of </span>
+<span class="sd">            &quot;mass&quot; or the center of &quot;charge&quot;, default is &quot;mass&quot;.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            Dipole vector(s) of (compounds of) the group in :math:`eÅ`.</span>
+<span class="sd">            If `compound` was set to ``&#39;group&#39;``, the output will be a single</span>
+<span class="sd">            value. Otherwise, the output will be a 1d array of shape ``(n,3)``</span>
+<span class="sd">            where ``n`` is the number of compounds.</span>
+
+
+<span class="sd">        .. versionadded:: 2.4.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">compound</span> <span class="o">=</span> <span class="n">compound</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="n">atomgroup</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">atoms</span>
+        <span class="n">charges</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">charges</span>
+
+        <span class="k">if</span> <span class="n">center</span> <span class="o">==</span> <span class="s2">&quot;mass&quot;</span><span class="p">:</span>
+            <span class="n">masses</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">masses</span>
+            <span class="n">ref</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">wrap</span><span class="o">=</span><span class="n">wrap</span><span class="p">,</span>
+                                           <span class="n">unwrap</span><span class="o">=</span><span class="n">unwrap</span><span class="p">,</span>
+                                           <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">center</span> <span class="o">==</span> <span class="s2">&quot;charge&quot;</span><span class="p">:</span>
+            <span class="n">ref</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">center_of_charge</span><span class="p">(</span><span class="n">wrap</span><span class="o">=</span><span class="n">wrap</span><span class="p">,</span>
+                                             <span class="n">unwrap</span><span class="o">=</span><span class="n">unwrap</span><span class="p">,</span>
+                                             <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">choices</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;mass&quot;</span><span class="p">,</span> <span class="s2">&quot;charge&quot;</span><span class="p">]</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;The dipole center, </span><span class="si">{</span><span class="n">center</span><span class="si">}</span><span class="s2">, is not supported. Choose&quot;</span>
+                <span class="s2">&quot; one of: </span><span class="si">{choices}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">compound</span> <span class="o">==</span> <span class="s1">&#39;group&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">wrap</span><span class="p">:</span>
+                <span class="n">recenteredpos</span> <span class="o">=</span> <span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">pack_into_box</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-</span> <span class="n">ref</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unwrap</span><span class="p">:</span>
+                <span class="n">recenteredpos</span> <span class="o">=</span> <span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">unwrap</span><span class="p">(</span>
+                    <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">,</span>
+                    <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="p">)</span> <span class="o">-</span> <span class="n">ref</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">recenteredpos</span> <span class="o">=</span> <span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="n">ref</span><span class="p">)</span>
+            <span class="n">dipole_vector</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">recenteredpos</span> <span class="o">*</span> <span class="n">charges</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span>
+                                   <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">atom_masks</span><span class="p">,</span> <span class="n">compound_masks</span><span class="p">,</span>
+             <span class="n">n_compounds</span><span class="p">)</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">_split_by_compound_indices</span><span class="p">(</span><span class="n">compound</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">unwrap</span><span class="p">:</span>
+                <span class="n">coords</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">unwrap</span><span class="p">(</span><span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">,</span>
+                                          <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                          <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">coords</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">positions</span>
+            <span class="n">chgs</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">charges</span>
+
+            <span class="n">dipole_vector</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">n_compounds</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">compound_mask</span><span class="p">,</span> <span class="n">atom_mask</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">compound_masks</span><span class="p">,</span> <span class="n">atom_masks</span><span class="p">):</span>
+                <span class="n">dipole_vector</span><span class="p">[</span><span class="n">compound_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="n">atom_mask</span><span class="p">]</span> <span class="o">-</span> <span class="n">ref</span><span class="p">[</span><span class="n">compound_mask</span><span class="p">][:,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">:])</span> <span class="o">*</span>
+                    <span class="n">chgs</span><span class="p">[</span><span class="n">atom_mask</span><span class="p">][:,</span> <span class="p">:,</span> <span class="kc">None</span><span class="p">],</span>
+                    <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">dipole_vector</span></div>
+
+    <span class="n">transplants</span><span class="p">[</span><span class="n">GroupBase</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;dipole_vector&#39;</span><span class="p">,</span> <span class="n">dipole_vector</span><span class="p">))</span>
+
+<div class="viewcode-block" id="Charges.dipole_moment"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Charges.dipole_moment">[docs]</a>    <span class="k">def</span> <span class="nf">dipole_moment</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dipole moment of the group or compounds in a group.</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            \mu = |\boldsymbol{\mu}| = \sqrt{ \sum_{i=1}^{D} \mu^2 }</span>
+
+<span class="sd">        Where :math:`D` is the number of dimensions, in this case 3.</span>
+
+<span class="sd">        Computes the dipole moment of :class:`Atoms&lt;Atom&gt;` in the group.</span>
+<span class="sd">        Dipole per :class:`Residue`, :class:`Segment`, molecule, or</span>
+<span class="sd">        fragment can be obtained by setting the `compound` parameter</span>
+<span class="sd">        accordingly.</span>
+
+<span class="sd">        Note that when there is a net charge, the magnitude of the dipole </span>
+<span class="sd">        moment is dependent on the `center` chosen. </span>
+<span class="sd">        See :meth:`~dipole_vector`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        wrap : bool, optional</span>
+<span class="sd">            If ``True`` and `compound` is ``&#39;group&#39;``, move all atoms to the</span>
+<span class="sd">            primary unit cell before calculation.</span>
+<span class="sd">            If ``True`` and `compound` is not ``group``, the</span>
+<span class="sd">            centers of mass of each compound will be calculated without moving</span>
+<span class="sd">            any atoms to keep the compounds intact.</span>
+<span class="sd">        unwrap : bool, optional</span>
+<span class="sd">            If ``True``, compounds will be unwrapped before computing their</span>
+<span class="sd">            centers.</span>
+<span class="sd">        compound : {&#39;group&#39;, &#39;segments&#39;, &#39;residues&#39;, &#39;molecules&#39;, \</span>
+<span class="sd">                    &#39;fragments&#39;}, optional</span>
+<span class="sd">            If ``&#39;group&#39;``, a single dipole vector returns. Otherwise, an</span>
+<span class="sd">            array of each :class:`Segment`, :class:`Residue`, molecule, or</span>
+<span class="sd">            fragment will be returned as an array of position vectors, i.e.</span>
+<span class="sd">            a 2d array.</span>
+<span class="sd">            Note that, in any case, *only* the positions of</span>
+<span class="sd">            :class:`Atoms&lt;Atom&gt;` *belonging to the group* will be taken into</span>
+<span class="sd">            account.</span>
+<span class="sd">        center : {&#39;mass&#39;, &#39;charge&#39;}, optional</span>
+<span class="sd">            Choose whether the dipole vector is calculated at the center of </span>
+<span class="sd">            &quot;mass&quot; or the center of &quot;charge&quot;, default is &quot;mass&quot;.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            Dipole moment(s) of (compounds of) the group in :math:`eÅ`.</span>
+<span class="sd">            If `compound` was set to ``&#39;group&#39;``, the output will be a single</span>
+<span class="sd">            value. Otherwise, the output will be a 1d array of shape ``(n,)``</span>
+<span class="sd">            where ``n`` is the number of compounds.</span>
+
+
+<span class="sd">        .. versionadded:: 2.4.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">atomgroup</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">atoms</span>
+
+        <span class="n">dipole_vector</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">dipole_vector</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dipole_vector</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">dipole_moment</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dipole_vector</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dipole_moment</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dipole_vector</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">dipole_moment</span></div>
+
+    <span class="n">transplants</span><span class="p">[</span><span class="n">GroupBase</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;dipole_moment&#39;</span><span class="p">,</span> <span class="n">dipole_moment</span><span class="p">))</span>
+
+<div class="viewcode-block" id="Charges.quadrupole_tensor"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Charges.quadrupole_tensor">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
+    <span class="nd">@_pbc_to_wrap</span>
+    <span class="nd">@check_wrap_and_unwrap</span>
+    <span class="k">def</span> <span class="nf">quadrupole_tensor</span><span class="p">(</span><span class="n">group</span><span class="p">,</span>
+                          <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                          <span class="n">unwrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                          <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">,</span>
+                          <span class="n">center</span><span class="o">=</span><span class="s2">&quot;mass&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Traceless quadrupole tensor of the group or compounds.</span>
+
+<span class="sd">        This tensor is first computed as the outer product of vectors from</span>
+<span class="sd">        a reference point to some atom, and multiplied by the atomic charge.</span>
+<span class="sd">        The tensor of each atom is then summed to produce the quadrupole</span>
+<span class="sd">        tensor of the group:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            \mathsf{Q} = \sum_{i=1}^{N} q_{i} ( \mathbf{r}_{i} - </span>
+<span class="sd">            \mathbf{r}_{COM} ) \otimes ( \mathbf{r}_{i} - \mathbf{r}_{COM} )</span>
+
+<span class="sd">        The traceless quadrupole tensor, :math:`\hat{\mathsf{Q}}`, is then</span>
+<span class="sd">        taken from:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            \hat{\mathsf{Q}} = \frac{3}{2} \mathsf{Q} - \frac{1}{2} </span>
+<span class="sd">            tr(\mathsf{Q})</span>
+
+<span class="sd">        Computes the quadrupole tensor of :class:`Atoms&lt;Atom&gt;` in the group.</span>
+<span class="sd">        Tensor per :class:`Residue`, :class:`Segment`, molecule, or</span>
+<span class="sd">        fragment can be obtained by setting the `compound` parameter</span>
+<span class="sd">        accordingly.</span>
+
+<span class="sd">        Note that when there is an unsymmetrical plane in the molecule or </span>
+<span class="sd">        group, the magnitude of the quadrupole tensor is dependent on the </span>
+<span class="sd">        ``center`` (e.g., :math:`\mathbf{r}_{COM}`) chosen and cannot be translated.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        wrap : bool, optional</span>
+<span class="sd">            If ``True`` and `compound` is ``&#39;group&#39;``, move all atoms to the</span>
+<span class="sd">            primary unit cell before calculation.</span>
+<span class="sd">            If ``True`` and `compound` is not ``group``, the</span>
+<span class="sd">            centers of mass of each compound will be calculated without moving</span>
+<span class="sd">            any atoms to keep the compounds intact.</span>
+<span class="sd">        unwrap : bool, optional</span>
+<span class="sd">            If ``True``, compounds will be unwrapped before computing their</span>
+<span class="sd">            centers.</span>
+<span class="sd">        compound : {&#39;group&#39;, &#39;segments&#39;, &#39;residues&#39;, &#39;molecules&#39;, \</span>
+<span class="sd">                    &#39;fragments&#39;}, optional</span>
+<span class="sd">            If ``&#39;group&#39;``, a single quadrupole value returns. Otherwise, an</span>
+<span class="sd">            array of each :class:`Segment`, :class:`Residue`, molecule, or</span>
+<span class="sd">            fragment will be returned as an array of position vectors, i.e.</span>
+<span class="sd">            a 1d array.</span>
+<span class="sd">            Note that, in any case, *only* the positions of</span>
+<span class="sd">            :class:`Atoms&lt;Atom&gt;` *belonging to the group* will be taken into</span>
+<span class="sd">            account.</span>
+<span class="sd">        center : {&#39;mass&#39;, &#39;charge&#39;}, optional</span>
+<span class="sd">            Choose whether the dipole vector is calculated at the center of </span>
+<span class="sd">            &quot;mass&quot; or the center of &quot;charge&quot;, default is &quot;mass&quot;.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            Quadrupole tensor(s) of (compounds of) the group in :math:`eÅ^2`.</span>
+<span class="sd">            If `compound` was set to ``&#39;group&#39;``, the output will be a single</span>
+<span class="sd">            tensor of shape ``(3,3)``. Otherwise, the output will be a 1d array </span>
+<span class="sd">            of shape ``(n,3,3)`` where ``n`` is the number of compounds.</span>
+
+
+<span class="sd">        .. versionadded:: 2.4.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">__quadrupole_tensor</span><span class="p">(</span><span class="n">recenteredpos</span><span class="p">,</span> <span class="n">charges</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot; Calculate the traceless quadrupole tensor</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">charges</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">charges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">charges</span><span class="p">)</span>
+            <span class="n">tensor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span>
+                <span class="s2">&quot;ki,kj-&gt;ij&quot;</span><span class="p">,</span>
+                <span class="n">recenteredpos</span><span class="p">,</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,i-&gt;ij&quot;</span><span class="p">,</span> <span class="n">recenteredpos</span><span class="p">,</span> <span class="n">charges</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">tensor</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+
+        <span class="n">compound</span> <span class="o">=</span> <span class="n">compound</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="n">atomgroup</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">atoms</span>
+        <span class="n">charges</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">charges</span>
+
+        <span class="k">if</span> <span class="n">center</span> <span class="o">==</span> <span class="s2">&quot;mass&quot;</span><span class="p">:</span>
+            <span class="n">masses</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">masses</span>
+            <span class="n">ref</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">wrap</span><span class="o">=</span><span class="n">wrap</span><span class="p">,</span>
+                                           <span class="n">unwrap</span><span class="o">=</span><span class="n">unwrap</span><span class="p">,</span>
+                                           <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">center</span> <span class="o">==</span> <span class="s2">&quot;charge&quot;</span><span class="p">:</span>
+            <span class="n">ref</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">center_of_charge</span><span class="p">(</span><span class="n">wrap</span><span class="o">=</span><span class="n">wrap</span><span class="p">,</span>
+                                             <span class="n">unwrap</span><span class="o">=</span><span class="n">unwrap</span><span class="p">,</span>
+                                             <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">choices</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;mass&quot;</span><span class="p">,</span> <span class="s2">&quot;charge&quot;</span><span class="p">]</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;The quadrupole center, </span><span class="si">{</span><span class="n">center</span><span class="si">}</span><span class="s2">, is not supported. Choose&quot;</span>
+                <span class="s2">&quot; one of: </span><span class="si">{choices}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">compound</span> <span class="o">==</span> <span class="s1">&#39;group&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">wrap</span><span class="p">:</span>
+                <span class="n">recenteredpos</span> <span class="o">=</span> <span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">pack_into_box</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-</span> <span class="n">ref</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">unwrap</span><span class="p">:</span>
+                <span class="n">recenteredpos</span> <span class="o">=</span> <span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">unwrap</span><span class="p">(</span>
+                    <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">,</span>
+                    <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="p">)</span> <span class="o">-</span> <span class="n">ref</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">recenteredpos</span> <span class="o">=</span> <span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="n">ref</span><span class="p">)</span>
+            <span class="n">quad_tensor</span> <span class="o">=</span> <span class="n">__quadrupole_tensor</span><span class="p">(</span><span class="n">recenteredpos</span><span class="p">,</span> <span class="n">charges</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">atom_masks</span><span class="p">,</span> <span class="n">compound_masks</span><span class="p">,</span>
+             <span class="n">n_compounds</span><span class="p">)</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">_split_by_compound_indices</span><span class="p">(</span><span class="n">compound</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">unwrap</span><span class="p">:</span>
+                <span class="n">coords</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">unwrap</span><span class="p">(</span><span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">,</span>
+                                          <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                          <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">coords</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">positions</span>
+            <span class="n">chgs</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">charges</span>
+
+            <span class="n">quad_tensor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">n_compounds</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">compound_mask</span><span class="p">,</span> <span class="n">atom_mask</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">compound_masks</span><span class="p">,</span> <span class="n">atom_masks</span><span class="p">):</span>
+                <span class="n">quad_tensor</span><span class="p">[</span><span class="n">compound_mask</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">__quadrupole_tensor</span><span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">-</span> <span class="n">ref</span><span class="p">[</span><span class="n">compound_mask</span><span class="p">][</span><span class="n">i</span><span class="p">],</span>
+                                 <span class="n">chgs</span><span class="p">[</span><span class="n">mask</span><span class="p">][:,</span> <span class="kc">None</span><span class="p">])</span>
+                    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">mask</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">atom_mask</span><span class="p">)</span>
+                <span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">quad_tensor</span></div>
+
+    <span class="n">transplants</span><span class="p">[</span><span class="n">GroupBase</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;quadrupole_tensor&#39;</span><span class="p">,</span> <span class="n">quadrupole_tensor</span><span class="p">))</span>
+
+<div class="viewcode-block" id="Charges.quadrupole_moment"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Charges.quadrupole_moment">[docs]</a>    <span class="k">def</span> <span class="nf">quadrupole_moment</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Quadrupole moment of the group according to :cite:p:`Gray1984`.</span>
+<span class="sd">         </span>
+<span class="sd">        .. math::</span>
+<span class="sd">            Q = \sqrt{\frac{2}{3}{\hat{\mathsf{Q}}}:{\hat{\mathsf{Q}}}}</span>
+
+<span class="sd">        where the quadrupole moment is calculated from the tensor double </span>
+<span class="sd">        contraction of the traceless quadropole tensor :math:`\hat{\mathsf{Q}}`</span>
+
+<span class="sd">        Computes the quadrupole moment of :class:`Atoms&lt;Atom&gt;` in the group.</span>
+<span class="sd">        Quadrupole per :class:`Residue`, :class:`Segment`, molecule, or</span>
+<span class="sd">        fragment can be obtained by setting the `compound` parameter</span>
+<span class="sd">        accordingly.</span>
+
+<span class="sd">        Note that when there is an unsymmetrical plane in the molecule or </span>
+<span class="sd">        group, the magnitude of the quadrupole moment is dependant on the </span>
+<span class="sd">        ``center`` chosen and cannot be translated.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        wrap : bool, optional</span>
+<span class="sd">            If ``True`` and `compound` is ``&#39;group&#39;``, move all atoms to the</span>
+<span class="sd">            primary unit cell before calculation.</span>
+<span class="sd">            If ``True`` and `compound` is not ``group``, the</span>
+<span class="sd">            centers of mass of each compound will be calculated without moving</span>
+<span class="sd">            any atoms to keep the compounds intact.</span>
+<span class="sd">        unwrap : bool, optional</span>
+<span class="sd">            If ``True``, compounds will be unwrapped before computing their</span>
+<span class="sd">            centers.</span>
+<span class="sd">        compound : {&#39;group&#39;, &#39;segments&#39;, &#39;residues&#39;, &#39;molecules&#39;, \</span>
+<span class="sd">                    &#39;fragments&#39;}, optional</span>
+<span class="sd">            If ``&#39;group&#39;``, a single quadrupole value returns. Otherwise, an</span>
+<span class="sd">            array of each :class:`Segment`, :class:`Residue`, molecule, or</span>
+<span class="sd">            fragment will be returned as an array of position vectors, i.e.</span>
+<span class="sd">            a 1d array.</span>
+<span class="sd">            Note that, in any case, *only* the positions of</span>
+<span class="sd">            :class:`Atoms&lt;Atom&gt;` *belonging to the group* will be taken into</span>
+<span class="sd">            account.</span>
+<span class="sd">        center : {&#39;mass&#39;, &#39;charge&#39;}, optional</span>
+<span class="sd">            Choose whether the dipole vector is calculated at the center of </span>
+<span class="sd">            &quot;mass&quot; or the center of &quot;charge&quot;, default is &quot;mass&quot;.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            Quadrupole moment(s) of (compounds of) the group in :math:`eÅ^2`.</span>
+<span class="sd">            If `compound` was set to ``&#39;group&#39;``, the output will be a single</span>
+<span class="sd">            value. Otherwise, the output will be a 1d array of shape ``(n,)``</span>
+<span class="sd">            where ``n`` is the number of compounds.</span>
+
+
+<span class="sd">        .. versionadded:: 2.4.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">atomgroup</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">atoms</span>
+
+        <span class="k">def</span> <span class="nf">__quadrupole_moment</span><span class="p">(</span><span class="n">tensor</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">tensordot</span><span class="p">(</span><span class="n">tensor</span><span class="p">,</span> <span class="n">tensor</span><span class="p">)</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span>
+
+        <span class="n">quad_tensor</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">quadrupole_tensor</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">quad_tensor</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">quad_moment</span> <span class="o">=</span> <span class="n">__quadrupole_moment</span><span class="p">(</span><span class="n">quad_tensor</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">quad_moment</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">__quadrupole_moment</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">quad_tensor</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">quad_moment</span></div>
+
+    <span class="n">transplants</span><span class="p">[</span><span class="n">GroupBase</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;quadrupole_moment&#39;</span><span class="p">,</span> <span class="n">quadrupole_moment</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="FormalCharges"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.FormalCharges">[docs]</a><span class="k">class</span> <span class="nc">FormalCharges</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
@@ -2406,6 +2822,7 @@
 <span class="c1"># woe betide anyone who switches this inheritance order</span>
 <span class="c1"># Mixin needs to be first (L to R) to get correct __init__ and set_atoms</span>
 <div class="viewcode-block" id="ResidueStringAttr"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.ResidueStringAttr">[docs]</a><span class="k">class</span> <span class="nc">ResidueStringAttr</span><span class="p">(</span><span class="n">_StringInternerMixin</span><span class="p">,</span> <span class="n">ResidueAttr</span><span class="p">):</span>
+
 <div class="viewcode-block" id="ResidueStringAttr.set_residues"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.ResidueStringAttr.set_residues">[docs]</a>    <span class="nd">@_check_length</span>
     <span class="k">def</span> <span class="nf">set_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_X</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
@@ -2571,6 +2988,7 @@
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;molnum&#39;</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">intp</span></div>
 
+
 <span class="c1"># segment attributes</span>
 
 
@@ -2609,6 +3027,7 @@
 <span class="c1"># woe betide anyone who switches this inheritance order</span>
 <span class="c1"># Mixin needs to be first (L to R) to get correct __init__ and set_atoms</span>
 <div class="viewcode-block" id="SegmentStringAttr"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.SegmentStringAttr">[docs]</a><span class="k">class</span> <span class="nc">SegmentStringAttr</span><span class="p">(</span><span class="n">_StringInternerMixin</span><span class="p">,</span> <span class="n">SegmentAttr</span><span class="p">):</span>
+
 <div class="viewcode-block" id="SegmentStringAttr.set_segments"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.SegmentStringAttr.set_segments">[docs]</a>    <span class="nd">@_check_length</span>
     <span class="k">def</span> <span class="nf">set_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_X</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
@@ -2640,6 +3059,7 @@
 <span class="sd">    .. versionadded:: 1.0.0</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span>
@@ -2655,6 +3075,7 @@
             <span class="n">clean</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clean</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">wrapper</span>
 
 
@@ -2665,12 +3086,14 @@
 <span class="sd">    This class adds an ``intra_{attrname}`` property to groups</span>
 <span class="sd">    to return only the connections within the atoms in the group.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">)</span>
 
         <span class="n">attrname</span> <span class="o">=</span> <span class="n">classdict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;attrname&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">attrname</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
             <span class="k">def</span> <span class="nf">intra_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">):</span>
 <span class="w">                </span><span class="sd">&quot;&quot;&quot;Get connections only within this AtomGroup</span>
 <span class="sd">                &quot;&quot;&quot;</span>
