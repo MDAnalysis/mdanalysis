@@ -90,6 +90,7 @@ class TNGReference(BaseReference):
         return ts
 
 
+@pytest.mark.filterwarnings("ignore:Stride of block")
 @pytest.mark.skipif(not HAS_PYTNG, reason="pytng not installed")
 class TestTNGCoordinatesTraj(MultiframeReaderTest):
     @staticmethod
