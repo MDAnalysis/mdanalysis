@@ -59,6 +59,14 @@ the topology readers.
 
    topology/base
    topology/core
-   topology/guessers
    topology/tables
-   topology/tpr_util
+   topology/tpr_util  
+
+Guessing unknown Topology info
+==============================
+
+.. toctree::
+   :maxdepth: 1 
+
+   topology/guessers
+
