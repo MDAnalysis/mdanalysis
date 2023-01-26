@@ -30,6 +30,16 @@ parsers.
 
 TopologyAttrs are used to contain attributes such as atom names or resids.
 These are usually read by the TopologyParser.
+
+References
+----------
+
+.. bibliography::
+    :filter: False
+    :style: MDA
+
+    Gray1984
+
 """
 
 from collections import defaultdict
@@ -85,6 +95,7 @@ def _check_length(func):
 
     _GROUP_VALUE_ERROR = ("Setting {group} {attrname} with wrong sized array. "
                           "Length {group}: {lengroup}, length of supplied values: {lenvalues}.")
+
     # Eg "Setting AtomGroup masses with wrong sized array. Length AtomGroup: 100, length of
     # supplied values: 50."
 
@@ -281,6 +292,7 @@ def deprecate_bfactor_warning(func):
         """
         warnings.warn(BFACTOR_WARNING, DeprecationWarning)
         return func(*args, **kwargs)
+
     return wrapper
 
 
@@ -304,6 +316,7 @@ class _TopologyAttrMeta(type):
     :func:`MDAnalysis.core.selection.gen_selection_class`
 
     """
+
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
         attrname = classdict.get('attrname')
@@ -506,6 +519,7 @@ class TopologyAttr(object, metaclass=_TopologyAttrMeta):
 
 # core attributes
 
+
 class Atomindices(TopologyAttr):
     """Globally unique indices for each atom in the group.
 
@@ -609,6 +623,7 @@ class Segindices(TopologyAttr):
 
 # atom attributes
 
+
 class AtomAttr(TopologyAttr):
     """Base class for atom attributes.
 
@@ -680,6 +695,7 @@ class _StringInternerMixin:
     .. versionadded:: 2.1.0
        Mashed together the different implementations to keep it DRY.
     """
+
     def __init__(self, vals, guessed=False):
         self._guessed = guessed
 
@@ -753,9 +769,11 @@ class _StringInternerMixin:
             self.name_lookup = np.concatenate([self.name_lookup, newnames])
         self.values = self.name_lookup[self.nmidx]
 
+
 # woe betide anyone who switches this inheritance order
 # Mixin needs to be first (L to R) to get correct __init__ and set_atoms
 class AtomStringAttr(_StringInternerMixin, AtomAttr):
+
     @_check_length
     def set_atoms(self, ag, values):
         return self._set_X(ag, values)
@@ -2001,6 +2019,7 @@ class Charges(AtomAttr):
                             compound=compound,
                             unwrap=unwrap)
 
+
     transplants[GroupBase].append(
         ('center_of_charge', center_of_charge))
 
@@ -2040,6 +2059,403 @@ class Charges(AtomAttr):
 
     transplants[GroupBase].append(
         ('total_charge', total_charge))
+
+    @warn_if_not_unique
+    @_pbc_to_wrap
+    @check_wrap_and_unwrap
+    def dipole_vector(group,
+                      wrap=False,
+                      unwrap=False,
+                      compound='group',
+                      center="mass"):
+        r"""Dipole vector of the group.
+
+        .. math::
+            \boldsymbol{\mu} = \sum_{i=1}^{N} q_{i} ( \mathbf{r}_{i} - 
+            \mathbf{r}_{COM} )
+
+        Computes the dipole vector of :class:`Atoms<Atom>` in the group.
+        Dipole vector per :class:`Residue`, :class:`Segment`, molecule, or
+        fragment can be obtained by setting the `compound` parameter
+        accordingly.
+
+        Note that the magnitude of the dipole moment is independent of the
+        ``center`` chosen unless the species has a net charge. In the case of
+        a charged group the dipole moment can be later adjusted  with:
+
+        .. math::
+            \boldsymbol{\mu}_{COC} = \boldsymbol{\mu}_{COM} + 
+            q_{ag}\mathbf{r}_{COM} - q_{ag}\boldsymbol{r}_{COC}
+
+        Where :math:`\mathbf{r}_{COM}` is the center of mass and 
+        :math:`\mathbf{r}_{COC}` is the center of charge.
+
+        Parameters
+        ----------
+        wrap : bool, optional
+            If ``True`` and `compound` is ``'group'``, move all atoms to the
+            primary unit cell before calculation.
+            If ``True`` and `compound` is not ``group``, the
+            centers of mass of each compound will be calculated without moving
+            any atoms to keep the compounds intact.
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their
+            centers.
+        compound : {'group', 'segments', 'residues', 'molecules', \
+                    'fragments'}, optional
+            If ``'group'``, a single dipole vector returns. Otherwise, an
+            array of each :class:`Segment`, :class:`Residue`, molecule, or
+            fragment will be returned as an array of position vectors, i.e.
+            a 2d array.
+            Note that, in any case, *only* the positions of
+            :class:`Atoms<Atom>` *belonging to the group* will be taken into
+            account.
+        center : {'mass', 'charge'}, optional
+            Choose whether the dipole vector is calculated at the center of 
+            "mass" or the center of "charge", default is "mass".
+
+        Returns
+        -------
+        numpy.ndarray
+            Dipole vector(s) of (compounds of) the group in :math:`eÅ`.
+            If `compound` was set to ``'group'``, the output will be a single
+            value. Otherwise, the output will be a 1d array of shape ``(n,3)``
+            where ``n`` is the number of compounds.
+
+
+        .. versionadded:: 2.4.0
+        """
+
+        compound = compound.lower()
+
+        atomgroup = group.atoms
+        charges = atomgroup.charges
+
+        if center == "mass":
+            masses = atomgroup.masses
+            ref = atomgroup.center_of_mass(wrap=wrap,
+                                           unwrap=unwrap,
+                                           compound=compound)
+        elif center == "charge":
+            ref = atomgroup.center_of_charge(wrap=wrap,
+                                             unwrap=unwrap,
+                                             compound=compound)
+        else:
+            choices = ["mass", "charge"]
+            raise ValueError(
+                f"The dipole center, {center}, is not supported. Choose"
+                " one of: {choices}")
+
+        if compound == 'group':
+            if wrap:
+                recenteredpos = (atomgroup.pack_into_box(inplace=False) - ref)
+            elif unwrap:
+                recenteredpos = (atomgroup.unwrap(
+                    inplace=False,
+                    compound=compound,
+                    reference=None,
+                ) - ref)
+            else:
+                recenteredpos = (atomgroup.positions - ref)
+            dipole_vector = np.sum(recenteredpos * charges[:, np.newaxis],
+                                   axis=0)
+        else:
+            (atom_masks, compound_masks,
+             n_compounds) = atomgroup._split_by_compound_indices(compound)
+
+            if unwrap:
+                coords = atomgroup.unwrap(compound=compound,
+                                          reference=None,
+                                          inplace=False)
+            else:
+                coords = atomgroup.positions
+            chgs = atomgroup.charges
+
+            dipole_vector = np.empty((n_compounds, 3), dtype=np.float64)
+            for compound_mask, atom_mask in zip(compound_masks, atom_masks):
+                dipole_vector[compound_mask] = np.sum(
+                    (coords[atom_mask] - ref[compound_mask][:, None, :]) *
+                    chgs[atom_mask][:, :, None],
+                    axis=1)
+
+        return dipole_vector
+
+    transplants[GroupBase].append(('dipole_vector', dipole_vector))
+
+    def dipole_moment(group, **kwargs):
+        r"""Dipole moment of the group or compounds in a group.
+
+        .. math::
+            \mu = |\boldsymbol{\mu}| = \sqrt{ \sum_{i=1}^{D} \mu^2 }
+
+        Where :math:`D` is the number of dimensions, in this case 3.
+
+        Computes the dipole moment of :class:`Atoms<Atom>` in the group.
+        Dipole per :class:`Residue`, :class:`Segment`, molecule, or
+        fragment can be obtained by setting the `compound` parameter
+        accordingly.
+
+        Note that when there is a net charge, the magnitude of the dipole 
+        moment is dependent on the `center` chosen. 
+        See :meth:`~dipole_vector`.
+
+        Parameters
+        ----------
+        wrap : bool, optional
+            If ``True`` and `compound` is ``'group'``, move all atoms to the
+            primary unit cell before calculation.
+            If ``True`` and `compound` is not ``group``, the
+            centers of mass of each compound will be calculated without moving
+            any atoms to keep the compounds intact.
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their
+            centers.
+        compound : {'group', 'segments', 'residues', 'molecules', \
+                    'fragments'}, optional
+            If ``'group'``, a single dipole vector returns. Otherwise, an
+            array of each :class:`Segment`, :class:`Residue`, molecule, or
+            fragment will be returned as an array of position vectors, i.e.
+            a 2d array.
+            Note that, in any case, *only* the positions of
+            :class:`Atoms<Atom>` *belonging to the group* will be taken into
+            account.
+        center : {'mass', 'charge'}, optional
+            Choose whether the dipole vector is calculated at the center of 
+            "mass" or the center of "charge", default is "mass".
+
+        Returns
+        -------
+        numpy.ndarray
+            Dipole moment(s) of (compounds of) the group in :math:`eÅ`.
+            If `compound` was set to ``'group'``, the output will be a single
+            value. Otherwise, the output will be a 1d array of shape ``(n,)``
+            where ``n`` is the number of compounds.
+
+
+        .. versionadded:: 2.4.0
+        """
+
+        atomgroup = group.atoms
+
+        dipole_vector = atomgroup.dipole_vector(**kwargs)
+
+        if len(dipole_vector.shape) > 1:
+            dipole_moment = np.sqrt(np.sum(dipole_vector**2, axis=1))
+        else:
+            dipole_moment = np.sqrt(np.sum(dipole_vector**2))
+
+        return dipole_moment
+
+    transplants[GroupBase].append(('dipole_moment', dipole_moment))
+
+    @warn_if_not_unique
+    @_pbc_to_wrap
+    @check_wrap_and_unwrap
+    def quadrupole_tensor(group,
+                          wrap=False,
+                          unwrap=False,
+                          compound='group',
+                          center="mass"):
+        r"""Traceless quadrupole tensor of the group or compounds.
+
+        This tensor is first computed as the outer product of vectors from
+        a reference point to some atom, and multiplied by the atomic charge.
+        The tensor of each atom is then summed to produce the quadrupole
+        tensor of the group:
+
+        .. math::
+            \mathsf{Q} = \sum_{i=1}^{N} q_{i} ( \mathbf{r}_{i} - 
+            \mathbf{r}_{COM} ) \otimes ( \mathbf{r}_{i} - \mathbf{r}_{COM} )
+
+        The traceless quadrupole tensor, :math:`\hat{\mathsf{Q}}`, is then
+        taken from:
+
+        .. math::
+            \hat{\mathsf{Q}} = \frac{3}{2} \mathsf{Q} - \frac{1}{2} 
+            tr(\mathsf{Q})
+
+        Computes the quadrupole tensor of :class:`Atoms<Atom>` in the group.
+        Tensor per :class:`Residue`, :class:`Segment`, molecule, or
+        fragment can be obtained by setting the `compound` parameter
+        accordingly.
+
+        Note that when there is an unsymmetrical plane in the molecule or 
+        group, the magnitude of the quadrupole tensor is dependent on the 
+        ``center`` (e.g., :math:`\mathbf{r}_{COM}`) chosen and cannot be translated.
+
+        Parameters
+        ----------
+        wrap : bool, optional
+            If ``True`` and `compound` is ``'group'``, move all atoms to the
+            primary unit cell before calculation.
+            If ``True`` and `compound` is not ``group``, the
+            centers of mass of each compound will be calculated without moving
+            any atoms to keep the compounds intact.
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their
+            centers.
+        compound : {'group', 'segments', 'residues', 'molecules', \
+                    'fragments'}, optional
+            If ``'group'``, a single quadrupole value returns. Otherwise, an
+            array of each :class:`Segment`, :class:`Residue`, molecule, or
+            fragment will be returned as an array of position vectors, i.e.
+            a 1d array.
+            Note that, in any case, *only* the positions of
+            :class:`Atoms<Atom>` *belonging to the group* will be taken into
+            account.
+        center : {'mass', 'charge'}, optional
+            Choose whether the dipole vector is calculated at the center of 
+            "mass" or the center of "charge", default is "mass".
+
+        Returns
+        -------
+        numpy.ndarray
+            Quadrupole tensor(s) of (compounds of) the group in :math:`eÅ^2`.
+            If `compound` was set to ``'group'``, the output will be a single
+            tensor of shape ``(3,3)``. Otherwise, the output will be a 1d array 
+            of shape ``(n,3,3)`` where ``n`` is the number of compounds.
+
+
+        .. versionadded:: 2.4.0
+        """
+
+        def __quadrupole_tensor(recenteredpos, charges):
+            """ Calculate the traceless quadrupole tensor
+            """
+            if len(charges.shape) > 1:
+                charges = np.squeeze(charges)
+            tensor = np.einsum(
+                "ki,kj->ij",
+                recenteredpos,
+                np.einsum("ij,i->ij", recenteredpos, charges),
+            )
+            return 3 * tensor / 2 - np.identity(3) * np.trace(tensor) / 2
+
+        compound = compound.lower()
+
+        atomgroup = group.atoms
+        charges = atomgroup.charges
+
+        if center == "mass":
+            masses = atomgroup.masses
+            ref = atomgroup.center_of_mass(wrap=wrap,
+                                           unwrap=unwrap,
+                                           compound=compound)
+        elif center == "charge":
+            ref = atomgroup.center_of_charge(wrap=wrap,
+                                             unwrap=unwrap,
+                                             compound=compound)
+        else:
+            choices = ["mass", "charge"]
+            raise ValueError(
+                f"The quadrupole center, {center}, is not supported. Choose"
+                " one of: {choices}")
+
+        if compound == 'group':
+            if wrap:
+                recenteredpos = (atomgroup.pack_into_box(inplace=False) - ref)
+            elif unwrap:
+                recenteredpos = (atomgroup.unwrap(
+                    inplace=False,
+                    compound=compound,
+                    reference=None,
+                ) - ref)
+            else:
+                recenteredpos = (atomgroup.positions - ref)
+            quad_tensor = __quadrupole_tensor(recenteredpos, charges)
+        else:
+            (atom_masks, compound_masks,
+             n_compounds) = atomgroup._split_by_compound_indices(compound)
+
+            if unwrap:
+                coords = atomgroup.unwrap(compound=compound,
+                                          reference=None,
+                                          inplace=False)
+            else:
+                coords = atomgroup.positions
+            chgs = atomgroup.charges
+
+            quad_tensor = np.empty((n_compounds, 3, 3), dtype=np.float64)
+            for compound_mask, atom_mask in zip(compound_masks, atom_masks):
+                quad_tensor[compound_mask, :, :] = [
+                    __quadrupole_tensor(coords[mask] - ref[compound_mask][i],
+                                 chgs[mask][:, None])
+                    for i, mask in enumerate(atom_mask)
+                ]
+
+        return quad_tensor
+
+    transplants[GroupBase].append(('quadrupole_tensor', quadrupole_tensor))
+
+    def quadrupole_moment(group, **kwargs):
+        r"""Quadrupole moment of the group according to :cite:p:`Gray1984`.
+         
+        .. math::
+            Q = \sqrt{\frac{2}{3}{\hat{\mathsf{Q}}}:{\hat{\mathsf{Q}}}}
+
+        where the quadrupole moment is calculated from the tensor double 
+        contraction of the traceless quadropole tensor :math:`\hat{\mathsf{Q}}`
+
+        Computes the quadrupole moment of :class:`Atoms<Atom>` in the group.
+        Quadrupole per :class:`Residue`, :class:`Segment`, molecule, or
+        fragment can be obtained by setting the `compound` parameter
+        accordingly.
+
+        Note that when there is an unsymmetrical plane in the molecule or 
+        group, the magnitude of the quadrupole moment is dependant on the 
+        ``center`` chosen and cannot be translated.
+
+        Parameters
+        ----------
+        wrap : bool, optional
+            If ``True`` and `compound` is ``'group'``, move all atoms to the
+            primary unit cell before calculation.
+            If ``True`` and `compound` is not ``group``, the
+            centers of mass of each compound will be calculated without moving
+            any atoms to keep the compounds intact.
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their
+            centers.
+        compound : {'group', 'segments', 'residues', 'molecules', \
+                    'fragments'}, optional
+            If ``'group'``, a single quadrupole value returns. Otherwise, an
+            array of each :class:`Segment`, :class:`Residue`, molecule, or
+            fragment will be returned as an array of position vectors, i.e.
+            a 1d array.
+            Note that, in any case, *only* the positions of
+            :class:`Atoms<Atom>` *belonging to the group* will be taken into
+            account.
+        center : {'mass', 'charge'}, optional
+            Choose whether the dipole vector is calculated at the center of 
+            "mass" or the center of "charge", default is "mass".
+
+        Returns
+        -------
+        numpy.ndarray
+            Quadrupole moment(s) of (compounds of) the group in :math:`eÅ^2`.
+            If `compound` was set to ``'group'``, the output will be a single
+            value. Otherwise, the output will be a 1d array of shape ``(n,)``
+            where ``n`` is the number of compounds.
+
+
+        .. versionadded:: 2.4.0
+        """
+
+        atomgroup = group.atoms
+
+        def __quadrupole_moment(tensor):
+            return np.sqrt(2 * np.tensordot(tensor, tensor) / 3)
+
+        quad_tensor = atomgroup.quadrupole_tensor(**kwargs)
+
+        if len(quad_tensor.shape) == 2:
+            quad_moment = __quadrupole_moment(quad_tensor)
+        else:
+            quad_moment = np.array([__quadrupole_moment(x) for x in quad_tensor])
+
+        return quad_moment
+
+    transplants[GroupBase].append(('quadrupole_moment', quadrupole_moment))
 
 
 class FormalCharges(AtomAttr):
@@ -2218,6 +2634,7 @@ class ResidueAttr(TopologyAttr):
 # woe betide anyone who switches this inheritance order
 # Mixin needs to be first (L to R) to get correct __init__ and set_atoms
 class ResidueStringAttr(_StringInternerMixin, ResidueAttr):
+
     @_check_length
     def set_residues(self, ag, values):
         return self._set_X(ag, values)
@@ -2383,6 +2800,7 @@ class Molnums(ResidueAttr):
     singular = 'molnum'
     dtype = np.intp
 
+
 # segment attributes
 
 
@@ -2421,6 +2839,7 @@ class SegmentAttr(TopologyAttr):
 # woe betide anyone who switches this inheritance order
 # Mixin needs to be first (L to R) to get correct __init__ and set_atoms
 class SegmentStringAttr(_StringInternerMixin, SegmentAttr):
+
     @_check_length
     def set_segments(self, ag, values):
         return self._set_X(ag, values)
@@ -2452,6 +2871,7 @@ def _check_connection_values(func):
     .. versionadded:: 1.0.0
 
     """
+
     @functools.wraps(func)
     def wrapper(self, values, *args, **kwargs):
         if not all(len(x) == self._n_atoms
@@ -2467,6 +2887,7 @@ def _check_connection_values(func):
             clean.append(tuple(v))
 
         return func(self, clean, *args, **kwargs)
+
     return wrapper
 
 
@@ -2477,12 +2898,14 @@ class _ConnectionTopologyAttrMeta(_TopologyAttrMeta):
     This class adds an ``intra_{attrname}`` property to groups
     to return only the connections within the atoms in the group.
     """
+
     def __init__(cls, name, bases, classdict):
         super().__init__(name, bases, classdict)
 
         attrname = classdict.get('attrname')
 
         if attrname is not None:
+
             def intra_connection(self, ag):
                 """Get connections only within this AtomGroup
                 """

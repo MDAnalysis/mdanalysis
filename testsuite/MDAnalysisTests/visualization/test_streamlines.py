@@ -21,6 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import numpy as np
+from numpy.testing import assert_allclose
 import MDAnalysis
 from MDAnalysis.visualization import (streamlines,
                                       streamlines_3D)
@@ -82,6 +83,29 @@ def test_streamplot_2D(membrane_xtc, univ, tmpdir):
 
     with open(plot_outpath, 'rb'):
         pass
+
+
+def test_streamplot_2D_zero_return(membrane_xtc, univ, tmpdir):
+    # simple roundtrip test to ensure that
+    # zeroed arrays are returned by the 2D streamplot
+    # code when called with an empty selection
+    u1, v1, avg, std = streamlines.generate_streamlines(topology_file_path=Martini_membrane_gro,
+                                                        trajectory_file_path=membrane_xtc,
+                                                        grid_spacing=20,
+                                                        MDA_selection='name POX',
+                                                        start_frame=1,
+                                                        end_frame=2,
+                                                        xmin=univ.atoms.positions[...,0].min(),
+                                                        xmax=univ.atoms.positions[...,0].max(),
+                                                        ymin=univ.atoms.positions[...,1].min(),
+                                                        ymax=univ.atoms.positions[...,1].max(),
+                                                        maximum_delta_magnitude=2.0,
+                                                        num_cores=1)
+    assert_allclose(u1, np.zeros((5, 5)))
+    assert_allclose(v1, np.zeros((5, 5)))
+    assert avg == approx(0.0)
+    assert std == approx(0.0)
+
 
 def test_streamplot_3D(membrane_xtc, univ, tmpdir):
     # because mayavi is too heavy of a dependency
