@@ -41,10 +41,10 @@ cnp.import_array()
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def PureRMSD(cnp.ndarray[cnp.float64_t, ndim=2] coordsi,
-             cnp.ndarray[cnp.float64_t, ndim=2] coordsj,
+def PureRMSD(np.ndarray[np.float64_t, ndim=2] coordsi,
+             np.ndarray[np.float64_t, ndim=2] coordsj,
              int atomsn,
-             cnp.ndarray[cnp.float64_t, ndim=1] masses,
+             np.ndarray[np.float64_t, ndim=1] masses,
              double summasses):
 
     cdef  int k
