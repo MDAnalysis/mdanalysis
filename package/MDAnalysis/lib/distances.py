@@ -1411,24 +1411,12 @@ def transform_StoR(coords, box, backend="serial"):
     return coords
 
 
-<<<<<<< HEAD
-# typing: numpy
-@check_coords("coords1", "coords2", allow_atomgroup=True)
-def calc_bonds(
-    coords1: Union[np.ndarray, "AtomGroup"],
-    coords2: Union[np.ndarray, "AtomGroup"],
-    box: Optional[np.ndarray] = None,
-    result: Optional[np.ndarray] = None,
-    backend: str = "serial",
-) -> np.ndarray:
-=======
 @check_coords('coords1', 'coords2', allow_atomgroup=True)
 def calc_bonds(coords1: Union[npt.NDArray, 'AtomGroup'],
                coords2: Union[npt.NDArray, 'AtomGroup'],
                box: Optional[npt.NDArray] = None,
                result: Optional[npt.NDArray] = None,
                backend: str = "serial") -> npt.NDArray:
->>>>>>> upstream/develop
     """Calculates the bond lengths between pairs of atom positions from the two
     coordinate arrays `coords1` and `coords2`, which must contain the same
     number of coordinates. ``coords1[i]`` and ``coords2[i]`` represent the
