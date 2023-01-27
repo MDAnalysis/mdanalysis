@@ -13,21 +13,24 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope
+??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo
 
  * 2.5.0
 
 Fixes
+  * Fix test clobbering in lib/test_util.py (PR #4000)
   * Fix MSD docs to use the correct error metric in example (Issue #3991)
   * Add 'PairIJ Coeffs' to the list of sections in LAMMPSParser.py
     (Issue #3336)
 
 Enhancements
-
-* Add pickling support for Atom, Residue, Segment, ResidueGroup 
+  * Add pickling support for Atom, Residue, Segment, ResidueGroup 
     and SegmentGroup. (PR #3953)
 
 Changes
+  * As per NEP29 the minimum supported NumPy version has been raised to 1.21
+    (note: in practice later versions of NumPy may be used depending on your
+     architecture, operating system, or Python version) (PR #3983)
   * The deprecated direct indexing and `times` from the `results` attribute of
     analysis.nucleicacids' NucPairDist and WatsonCrickDist classes has been
     removed. Please use the `results.pair_distances` and `times` attributes
@@ -84,6 +87,8 @@ Fixes
     (e.g. bonds, angles) (PR #3779).
 
 Enhancements
+  * Added dipole and quadrupole moment topology methods to AtomGroup
+    (Issue #3841, PR #3842)
   * MDAnalysis now follows PEP621 (PR #3528)
   * Added a reader for GROMACS TNG files based on PyTNG (PR #3765,
     Issue #3237, partially addressing Issue #865) 

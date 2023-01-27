@@ -2,7 +2,7 @@
   MDAnalysis Repository README
 ================================
 
-|numfocus| |build| |cron| |travis| |cov|
+|numfocus| |build| |cron| |travis| |linters| |cov|
 
 |docs| |devdocs| |usergroup| |developergroup| |anaconda| |mybinder| |asv|
 
@@ -175,6 +175,10 @@ For citations of included algorithms and sub-modules please see the references_.
 .. |travis| image:: https://img.shields.io/travis/MDAnalysis/mdanalysis/develop?label=Travis%20CI
    :alt: Travis CI Build Status
    :target: https://travis-ci.com/MDAnalysis/mdanalysis
+
+.. |linters| image:: https://github.com/MDAnalysis/mdanalysis/actions/workflows/linters.yaml/badge.svg
+   :alt: Github Actions Linters Status
+   :target: https://github.com/MDAnalysis/mdanalysis/actions/workflows/linters.yaml
 
 .. |cov|   image:: https://codecov.io/gh/MDAnalysis/mdanalysis/branch/develop/graph/badge.svg
    :alt: Coverage Status

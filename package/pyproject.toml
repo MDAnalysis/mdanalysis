@@ -6,10 +6,10 @@ requires = [
     # lowest NumPy we can use for a given Python,
     # In part adapted from: https://github.com/scipy/oldest-supported-numpy/blob/main/setup.cfg
     # except for more exotic platform (Mac Arm flavors)
-    # aarch64, AIX, s390x all support < 1.20 so we can safely pin to this
+    # aarch64, AIX, s390x all support < 1.21 so we can safely pin to this
     # Note: MDA does not build with PyPy so we do not support it in the build system
-    "numpy==1.20.0; python_version=='3.8' and (platform_machine!='arm64' or platform_system!='Darwin') and platform_python_implementation != 'PyPy'",
-    "numpy==1.20.0; python_version=='3.9' and (platform_machine!='arm64' or platform_system!='Darwin') and platform_python_implementation != 'PyPy'",
+    "numpy==1.21.0; python_version=='3.8' and (platform_machine!='arm64' or platform_system!='Darwin') and platform_python_implementation != 'PyPy'",
+    "numpy==1.21.0; python_version=='3.9' and (platform_machine!='arm64' or platform_system!='Darwin') and platform_python_implementation != 'PyPy'",
     # arm64 on darwin for py3.8+ requires numpy >=1.21.0
     "numpy==1.21.0; python_version=='3.8' and platform_machine=='arm64' and platform_system=='Darwin' and platform_python_implementation != 'PyPy'",
     "numpy==1.21.0; python_version=='3.9' and platform_machine=='arm64' and platform_system=='Darwin' and platform_python_implementation != 'PyPy'",
@@ -39,7 +39,7 @@ maintainers = [
 ]
 requires-python = ">=3.8"
 dependencies = [
-    'numpy>=1.20.0',
+    'numpy>=1.21.0',
     'biopython>=1.80',
     'networkx>=2.0',
     'GridDataFormats>=0.4.0',
