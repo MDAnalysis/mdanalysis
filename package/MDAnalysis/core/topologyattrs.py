@@ -1762,7 +1762,7 @@ class Masses(AtomAttr):
             value. Otherwise, the output will be a 1d array of shape ``(n,3)``
             where ``n`` is the number of compounds.
 
-        .. versionadded:: 2.4.0
+        .. versionadded:: 2.5.0
         """
 
         def __gyration(recenteredpos, masses):
@@ -1844,7 +1844,7 @@ class Masses(AtomAttr):
            Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
            is deprecated and will be removed in version 3.0.
            Superfluous kwargs were removed.
-        .. versionchanged:: 2.4.0
+        .. versionchanged:: 2.5.0
            Added use of gyration_moments for per residue quantities
         """
         atomgroup = group.atoms
@@ -1889,7 +1889,7 @@ class Masses(AtomAttr):
         .. versionchanged:: 2.1.0
            Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
            is deprecated and will be removed in version 3.0.
-        .. versionchanged:: 2.4.0
+        .. versionchanged:: 2.5.0
            Added use of gyration_moments for per residue quantities
         """
         atomgroup = group.atoms
