@@ -107,7 +107,7 @@ MDAnalysis.
 
       .. versionadded:: 0.11.0
          Added as optional to :class:`Timestep`
-
+  
    .. autoattribute:: dtype
    .. autoattribute:: dimensions
    .. autoattribute:: triclinic_dimensions
@@ -127,10 +127,21 @@ MDAnalysis.
 """
 
 
-from ..lib.util import Namespace
+from ..lib.util import asiterable, Namespace
+from ..auxiliary.core import auxreader
+from ..auxiliary.base import AuxReader
+from .. import units
+from .. import (
+    _READERS, _READER_HINTS,
+    _SINGLEFRAME_WRITERS,
+    _MULTIFRAME_WRITERS,
+    _CONVERTERS
+)
 from ..exceptions import NoDataError
 from . import core
-from libc.stdint cimport uint64_t
+from libcpp cimport bool
+from libc.stdint cimport int64_t, uint64_t
+import cython
 import weakref
 import warnings
 import copy
@@ -524,6 +535,8 @@ cdef class Timestep:
         """Set the unitcell for this Timestep as defined by triclinic vectors
         .. versionadded:: 0.11.0
         """
+        cdef int flag = 0
+
         if new_dimensions is None:
             self.dimensions = None
         else:

@@ -49,7 +49,7 @@ ctypedef cset[int] intset
 ctypedef cmap[int, intset] intmap
 
 
-@cython.boundscheck(False)  # turn off bounds-checking for entire function
+@cython.boundscheck(False) # turn off bounds-checking for entire function
 @cython.wraparound(False)  # turn off negative index wrapping for entire function
 def unique_int_1d(np.intp_t[:] values):
     """Find the unique elements of a 1D array of integers.
@@ -260,7 +260,7 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
     # map of global indices to local indices
     ix_view = atomgroup.ix[:]
     natoms = atomgroup.ix.shape[0]
-
+    
     oldpos = atomgroup.positions
 
     # Nothing to do for less than 2 atoms
@@ -274,7 +274,7 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
         ref = 0
     else:
         # Sanity check
-        if reference_atom not in atomgroup:
+        if not reference_atom in atomgroup:
             raise ValueError("Reference atom not in atomgroup")
         ref = ix_to_rel[reference_atom.ix]
 
@@ -408,7 +408,6 @@ cdef float _norm(float * a):
         result += a[n]*a[n]
     return sqrt(result)
 
-
 @cython.boundscheck(False)
 @cython.wraparound(False)
 cpdef np.float64_t _sarrus_det_single(np.float64_t[:, ::1] m):
@@ -421,7 +420,6 @@ cpdef np.float64_t _sarrus_det_single(np.float64_t[:, ::1] m):
     det += m[0, 2] * m[1, 0] * m[2, 1]
     det -= m[0, 2] * m[1, 1] * m[2, 0]
     return det
-
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -440,7 +438,6 @@ cpdef np.ndarray _sarrus_det_multiple(np.float64_t[:, :, ::1] m):
         det[i] += m[i, 0, 2] * m[i, 1, 0] * m[i, 2, 1]
         det[i] -= m[i, 0, 2] * m[i, 1, 1] * m[i, 2, 0]
     return np.array(det)
-
 
 @cython.boundscheck(False)
 @cython.wraparound(False)

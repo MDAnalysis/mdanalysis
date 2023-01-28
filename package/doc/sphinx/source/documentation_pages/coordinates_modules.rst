@@ -35,7 +35,6 @@ provide the format in the keyword argument *format* to
    coordinates/PDB
    coordinates/PDBQT
    coordinates/PQR
-   coordinates/TNG
    coordinates/TRJ
    coordinates/TRR
    coordinates/TRZ

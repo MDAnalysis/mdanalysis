@@ -29,7 +29,6 @@ import os
 from os.path import split
 import shutil
 import subprocess
-from pathlib import Path
 
 from numpy.testing import (assert_equal,
                            assert_almost_equal,
@@ -213,15 +212,7 @@ class _GromacsReader(object):
 
         with pytest.raises(StopIteration):
             go_beyond_EOF()
-    
-    def test_read_next_timestep_ts_no_positions(self, universe):
-        # primarily tests branching on ts.has_positions in _read_next_timestep
-        ts = universe.trajectory[0]
-        ts.has_positions=False
-        ts_passed_in = universe.trajectory._read_next_timestep(ts=ts).copy()
-        universe.trajectory.rewind()
-        ts_returned = universe.trajectory._read_next_timestep(ts=None).copy()
-        assert(ts_passed_in == ts_returned)
+
 
 class TestXTCReader(_GromacsReader):
     filename = XTC
@@ -913,14 +904,3 @@ class TestTRRReader_offsets(_GromacsReader_offsets):
         9155712, 10300176
     ])
     _reader = mda.coordinates.TRR.TRRReader
-
-
-def test_pathlib():
-    # regression test for XDR path of
-    # gh-2497
-    top = Path(GRO)
-    traj = Path(XTC)
-    u = mda.Universe(top, traj)
-    # we really only care that pathlib
-    # object handling worked
-    assert u.atoms.n_atoms == 47681

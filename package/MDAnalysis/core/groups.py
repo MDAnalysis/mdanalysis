@@ -119,11 +119,6 @@ def _unpickle(u, ix):
     return u.atoms[ix]
 
 
-# TODO 3.0: deprecate _unpickle in favor of _unpickle2.
-def _unpickle2(u, ix, cls):
-    return cls(ix, u)
-
-
 def _unpickle_uag(basepickle, selections, selstrs):
     bfunc, bargs = basepickle[0], basepickle[1:][0]
     basegroup = bfunc(*bargs)
@@ -1019,7 +1014,7 @@ class GroupBase(_MutableBase):
             If `compound` is not one of ``'group'``, ``'segments'``,
             ``'residues'``, ``'molecules'``, or ``'fragments'``.
         ValueError
-            If both 'wrap' and 'unwrap' set to true.
+            If both 'pbc' and 'unwrap' set to true.
         ~MDAnalysis.exceptions.NoDataError
             If `compound` is ``'molecule'`` but the topology doesn't
             contain molecule information (molnums) or if `compound` is
@@ -1719,14 +1714,14 @@ class GroupBase(_MutableBase):
 
             # compute and apply required shift:
             if ctr == 'com':
-                ctrpos = atoms.center_of_mass(wrap=False, compound=comp)
+                ctrpos = atoms.center_of_mass(pbc=False, compound=comp)
                 if np.any(np.isnan(ctrpos)):
                     specifier = 'the' if comp == 'group' else 'one of the'
                     raise ValueError("Cannot use compound='{0}' with "
                                      "center='com' because {1} {0}\'s total "
                                      "mass is zero.".format(comp, specifier))
             else:  # ctr == 'cog'
-                ctrpos = atoms.center_of_geometry(wrap=False, compound=comp)
+                ctrpos = atoms.center_of_geometry(pbc=False, compound=comp)
             ctrpos = ctrpos.astype(np.float32, copy=False)
             target = distances.apply_PBC(ctrpos, box)
             shifts = target - ctrpos
@@ -2530,6 +2525,9 @@ class AtomGroup(GroupBase):
        Indexing an AtomGroup with ``None`` raises a ``TypeError``.
     """
 
+    def __reduce__(self):
+        return (_unpickle, (self.universe, self.ix))
+
     def __getattr__(self, attr):
         # special-case timestep info
         if attr in ('velocities', 'forces'):
@@ -2537,9 +2535,6 @@ class AtomGroup(GroupBase):
         elif attr == 'positions':
             raise NoDataError('This Universe has no coordinates')
         return super(AtomGroup, self).__getattr__(attr)
-
-    def __reduce__(self):
-        return (_unpickle, (self.universe, self.ix))
 
     @property
     def atoms(self):
@@ -3662,9 +3657,6 @@ class ResidueGroup(GroupBase):
        Indexing an ResidueGroup with ``None`` raises a ``TypeError``.
     """
 
-    def __reduce__(self):
-        return (_unpickle2, (self.universe, self.ix, ResidueGroup))
-
     @property
     def atoms(self):
         """An :class:`AtomGroup` of :class:`Atoms<Atom>` present in this
@@ -3857,9 +3849,6 @@ class SegmentGroup(GroupBase):
     .. versionchanged:: 2.1.0
        Indexing an SegmentGroup with ``None`` raises a ``TypeError``.
     """
-
-    def __reduce__(self):
-        return (_unpickle2, (self.universe, self.ix, SegmentGroup))
 
     @property
     def atoms(self):
@@ -4153,9 +4142,6 @@ class Atom(ComponentBase):
             me += ' and altLoc {}'.format(self.altLoc)
         return me + '>'
 
-    def __reduce__(self):
-        return (_unpickle2, (self.universe, self.ix, Atom))
-
     def __getattr__(self, attr):
         # special-case timestep info
         ts = {'velocity': 'velocities', 'force': 'forces'}
@@ -4278,9 +4264,6 @@ class Residue(ComponentBase):
 
         return me + '>'
 
-    def __reduce__(self):
-        return (_unpickle2, (self.universe, self.ix, Residue))
-
     @property
     def atoms(self):
         """An :class:`AtomGroup` of :class:`Atoms<Atom>` present in this
@@ -4330,9 +4313,6 @@ class Segment(ComponentBase):
         if hasattr(self, 'segid'):
             me += ' {}'.format(self.segid)
         return me + '>'
-
-    def __reduce__(self):
-        return (_unpickle2, (self.universe, self.ix, Segment))
 
     @property
     def atoms(self):

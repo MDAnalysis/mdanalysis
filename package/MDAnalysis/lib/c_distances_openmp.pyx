@@ -74,7 +74,6 @@ def calc_distance_array(numpy.ndarray ref, numpy.ndarray conf,
                          <coordinate*> conf.data, confnum,
                          <double*> result.data)
 
-
 def calc_distance_array_ortho(numpy.ndarray ref, numpy.ndarray conf,
                               numpy.ndarray box, numpy.ndarray result):
     cdef uint64_t confnum, refnum
@@ -84,7 +83,6 @@ def calc_distance_array_ortho(numpy.ndarray ref, numpy.ndarray conf,
     _calc_distance_array_ortho(<coordinate*> ref.data, refnum,
                                <coordinate*> conf.data, confnum,
                                <float*> box.data, <double*> result.data)
-
 
 def calc_distance_array_triclinic(numpy.ndarray ref, numpy.ndarray conf,
                                   numpy.ndarray box, numpy.ndarray result):
@@ -96,14 +94,12 @@ def calc_distance_array_triclinic(numpy.ndarray ref, numpy.ndarray conf,
                                    <coordinate*> conf.data, confnum,
                                    <float*> box.data, <double*> result.data)
 
-
 def calc_self_distance_array(numpy.ndarray ref, numpy.ndarray result):
     cdef uint64_t refnum
     refnum = ref.shape[0]
 
     _calc_self_distance_array(<coordinate*> ref.data, refnum,
                               <double*> result.data)
-
 
 def calc_self_distance_array_ortho(numpy.ndarray ref, numpy.ndarray box,
                                    numpy.ndarray result):
@@ -112,7 +108,6 @@ def calc_self_distance_array_ortho(numpy.ndarray ref, numpy.ndarray box,
 
     _calc_self_distance_array_ortho(<coordinate*> ref.data, refnum,
                                     <float*> box.data, <double*> result.data)
-
 
 def calc_self_distance_array_triclinic(numpy.ndarray ref, numpy.ndarray box,
                                        numpy.ndarray result):
@@ -123,13 +118,11 @@ def calc_self_distance_array_triclinic(numpy.ndarray ref, numpy.ndarray box,
                                         <float*> box.data,
                                         <double*> result.data)
 
-
 def coord_transform(numpy.ndarray coords, numpy.ndarray box):
     cdef uint64_t numcoords
     numcoords = coords.shape[0]
 
     _coord_transform(<coordinate*> coords.data, numcoords, <double*> box.data)
-
 
 def calc_bond_distance(numpy.ndarray coords1, numpy.ndarray coords2,
                        numpy.ndarray results):
@@ -138,7 +131,6 @@ def calc_bond_distance(numpy.ndarray coords1, numpy.ndarray coords2,
 
     _calc_bond_distance(<coordinate*> coords1.data, <coordinate*> coords2.data,
                         numcoords, <double*> results.data)
-
 
 def calc_bond_distance_ortho(numpy.ndarray coords1,
                              numpy.ndarray coords2,
@@ -151,7 +143,6 @@ def calc_bond_distance_ortho(numpy.ndarray coords1,
                               <coordinate*> coords2.data, numcoords,
                               <float*> box.data, <double*> results.data)
 
-
 def calc_bond_distance_triclinic(numpy.ndarray coords1, numpy.ndarray coords2,
                                  numpy.ndarray box, numpy.ndarray results):
     cdef uint64_t numcoords
@@ -161,7 +152,6 @@ def calc_bond_distance_triclinic(numpy.ndarray coords1, numpy.ndarray coords2,
                                   <coordinate*> coords2.data, numcoords,
                                   <float*> box.data, <double*> results.data)
 
-
 def calc_angle(numpy.ndarray coords1, numpy.ndarray coords2,
                numpy.ndarray coords3, numpy.ndarray results):
     cdef uint64_t numcoords
@@ -169,7 +159,6 @@ def calc_angle(numpy.ndarray coords1, numpy.ndarray coords2,
 
     _calc_angle(<coordinate*> coords1.data, <coordinate*> coords2.data,
                 <coordinate*> coords3.data, numcoords, <double*> results.data)
-
 
 def calc_angle_ortho(numpy.ndarray coords1, numpy.ndarray coords2,
                      numpy.ndarray coords3, numpy.ndarray box,
@@ -180,7 +169,6 @@ def calc_angle_ortho(numpy.ndarray coords1, numpy.ndarray coords2,
     _calc_angle_ortho(<coordinate*> coords1.data, <coordinate*> coords2.data,
                       <coordinate*> coords3.data, numcoords, <float*> box.data,
                       <double*> results.data)
-
 
 def calc_angle_triclinic(numpy.ndarray coords1, numpy.ndarray coords2,
                          numpy.ndarray coords3, numpy.ndarray box,
@@ -193,7 +181,6 @@ def calc_angle_triclinic(numpy.ndarray coords1, numpy.ndarray coords2,
                           <coordinate*> coords3.data, numcoords,
                           <float*> box.data, <double*> results.data)
 
-
 def calc_dihedral(numpy.ndarray coords1, numpy.ndarray coords2,
                   numpy.ndarray coords3, numpy.ndarray coords4,
                   numpy.ndarray results):
@@ -204,7 +191,6 @@ def calc_dihedral(numpy.ndarray coords1, numpy.ndarray coords2,
                    <coordinate*> coords3.data, <coordinate*> coords4.data,
                    numcoords, <double*> results.data)
 
-
 def calc_dihedral_ortho(numpy.ndarray coords1, numpy.ndarray coords2,
                         numpy.ndarray coords3, numpy.ndarray coords4,
                         numpy.ndarray box, numpy.ndarray results):
@@ -213,8 +199,7 @@ def calc_dihedral_ortho(numpy.ndarray coords1, numpy.ndarray coords2,
 
     _calc_dihedral_ortho(<coordinate*> coords1.data, <coordinate*> coords2.data,
                          <coordinate*> coords3.data, <coordinate*> coords4.data,
-                         numcoords, <float*> box.data, <double*> results.data)
-
+                        numcoords, <float*> box.data, <double*> results.data)
 
 def calc_dihedral_triclinic(numpy.ndarray coords1, numpy.ndarray coords2,
                             numpy.ndarray coords3, numpy.ndarray coords4,
@@ -228,13 +213,11 @@ def calc_dihedral_triclinic(numpy.ndarray coords1, numpy.ndarray coords2,
                              <coordinate*> coords4.data, numcoords,
                              <float*> box.data, <double*> results.data)
 
-
 def ortho_pbc(numpy.ndarray coords, numpy.ndarray box):
     cdef uint64_t numcoords
     numcoords = coords.shape[0]
 
     _ortho_pbc(<coordinate*> coords.data, numcoords, <float*> box.data)
-
 
 def triclinic_pbc(numpy.ndarray coords, numpy.ndarray box):
     cdef uint64_t numcoords

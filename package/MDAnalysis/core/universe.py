@@ -567,8 +567,6 @@ class Universe(object):
         .. versionchanged:: 0.17.0
            Now returns a :class:`Universe` instead of the tuple of file/array
            and detected file type.
-        .. versionchanged:: 2.4.0
-           Passes through kwargs if `in_memory=True`.
 
         """
         # filename==None happens when only a topology is provided
@@ -602,12 +600,12 @@ class Universe(object):
                                  trj_n_atoms=self.trajectory.n_atoms))
 
         if in_memory:
-            self.transfer_to_memory(step=in_memory_step, **kwargs)
+            self.transfer_to_memory(step=in_memory_step)
 
         return self
 
     def transfer_to_memory(self, start=None, stop=None, step=None,
-                           verbose=False, **kwargs):
+                           verbose=False):
         """Transfer the trajectory to in memory representation.
 
         Replaces the current trajectory reader object with one of type
@@ -628,8 +626,6 @@ class Universe(object):
 
 
         .. versionadded:: 0.16.0
-        .. versionchanged:: 2.4.0
-           Passes through kwargs to MemoryReader
         """
         from ..coordinates.memory import MemoryReader
 
@@ -671,7 +667,8 @@ class Universe(object):
                 dt=self.trajectory.ts.dt * step,
                 filename=self.trajectory.filename,
                 velocities=velocities,
-                forces=forces, **kwargs)
+                forces=forces,
+            )
 
     # python 2 doesn't allow an efficient splitting of kwargs in function
     # argument signatures.

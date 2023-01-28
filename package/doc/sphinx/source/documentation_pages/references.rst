@@ -1,5 +1,5 @@
 .. -*- coding: utf-8 -*-
-.. note: make sure that no lines accidentally start with a single character
+.. note: make sure that no lines accidentaly start with a single character
 ..       followed by a period: reST interprets it as an enumerated list and
 ..       messes up the formatting
 

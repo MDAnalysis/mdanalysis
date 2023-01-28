@@ -33,23 +33,13 @@ def u():
     return mda.Universe(RNA_PSF, RNA_PDB)
 
 
-@pytest.fixture(scope='module')
-def wc_rna(u):
+def test_wc_dist(u):
     strand: mda.AtomGroup = u.select_atoms("segid RNAA")
     strand1 = [strand.residues[0], strand.residues[21]]
     strand2 = [strand.residues[1], strand.residues[22]]
 
     WC = WatsonCrickDist(strand1, strand2)
     WC.run()
-    return WC
 
-
-def test_wc_dist(wc_rna):
-    assert_allclose(wc_rna.results.pair_distances[0, 0], 4.3874702, atol=1e-3)
-    assert_allclose(wc_rna.results.pair_distances[0, 1], 4.1716404, atol=1e-3)
-
-
-@pytest.mark.parametrize("key", [0, 1, 2, "parsnips", "time", -1])
-def test_wc_dis_results_keyerrs(wc_rna, key):
-    with pytest.raises(KeyError, match=f"{key}"):
-        wc_rna.results[key]
+    assert_allclose(WC.results[0][0], 4.3874702, atol=1e-3)
+    assert_allclose(WC.results[1][0], 4.1716404, atol=1e-3)

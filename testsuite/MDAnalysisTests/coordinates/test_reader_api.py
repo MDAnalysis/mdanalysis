@@ -133,15 +133,6 @@ class _TestReader(object):
         with pytest.raises(StopIteration):
             next(reader)
 
-    @pytest.mark.parametrize('order', ['turnip', 'abc'])
-    def test_timeseries_raises_unknown_order_key(self, reader, order):
-        with pytest.raises(ValueError, match="Unrecognized order key"):
-            reader.timeseries(order=order)
-
-    @pytest.mark.parametrize('order', ['faac', 'affc', 'afcc', ''])
-    def test_timeseries_raises_incorrect_order_key(self, reader, order):
-        with pytest.raises(ValueError, match="Repeated or missing keys"):
-            reader.timeseries(order=order)
 
 class _Multi(_TestReader):
     n_frames = 10

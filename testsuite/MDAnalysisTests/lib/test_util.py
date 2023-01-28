@@ -938,11 +938,19 @@ def test_check_weights_ok(atoms, weights, result):
                          [42,
                           "geometry",
                           np.array(1.0),
-                          np.array([12.0, 1.0, 12.0, 1.0]),
-                          [12.0, 1.0],
-                          np.array([[12.0, 1.0, 12.0]]),
-                          np.array([[12.0, 1.0, 12.0], [12.0, 1.0, 12.0]]),
                           ])
+def test_check_weights_raises_ValueError(atoms, weights):
+    with pytest.raises(ValueError):
+        util.get_weights(atoms, weights)
+
+
+@pytest.mark.parametrize('weights',
+                         [
+                             np.array([12.0, 1.0, 12.0, 1.0]),
+                             [12.0, 1.0],
+                             np.array([[12.0, 1.0, 12.0]]),
+                             np.array([[12.0, 1.0, 12.0], [12.0, 1.0, 12.0]]),
+                         ])
 def test_check_weights_raises_ValueError(atoms, weights):
     with pytest.raises(ValueError):
         util.get_weights(atoms, weights)
@@ -1527,7 +1535,7 @@ class TestStaticVariables(object):
 
 
 class TestWarnIfNotUnique(object):
-    """Tests concerning the decorator @warn_if_not_unique
+    """Tests concerning the decorator @warn_if_not_uniue
     """
 
     def warn_msg(self, func, group, group_name):
@@ -1561,11 +1569,10 @@ class TestWarnIfNotUnique(object):
 
         # Check that no warning is raised for a unique group:
         assert atoms.isunique
-
-        with warnings.catch_warnings():
-            warnings.simplefilter("error")
+        with pytest.warns(None) as w:
             x = outer(atoms)
             assert x == 0
+            assert not w.list
 
         # Check that a warning is raised for a group with duplicates:
         ag = atoms + atoms[0]
@@ -1693,9 +1700,9 @@ class TestWarnIfNotUnique(object):
         with warnings.catch_warnings(record=True) as record:
             warnings.resetwarnings()
             warnings.filterwarnings("ignore", category=UserWarning)
-            with warnings.catch_warnings():
-                warnings.simplefilter("error")
+            with pytest.warns(None) as w:
                 func(atoms)
+                assert not w.list
             assert len(record) == 0
 
 

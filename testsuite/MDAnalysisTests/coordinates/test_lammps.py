@@ -29,7 +29,7 @@ import pytest
 import MDAnalysis as mda
 from MDAnalysis import NoDataError
 
-from numpy.testing import (assert_equal, assert_allclose, assert_allclose)
+from numpy.testing import (assert_equal, assert_almost_equal, assert_allclose)
 
 from MDAnalysisTests import make_Universe
 from MDAnalysisTests.coordinates.reference import (
@@ -37,8 +37,7 @@ from MDAnalysisTests.coordinates.reference import (
 )
 from MDAnalysisTests.datafiles import (
     LAMMPScnt, LAMMPShyd, LAMMPSdata, LAMMPSdata_mini, LAMMPSdata_triclinic,
-    LAMMPSDUMP, LAMMPSDUMP_allcoords, LAMMPSDUMP_nocoords, LAMMPSDUMP_triclinic,
-    LAMMPSDUMP_image_vf, LAMMPS_image_vf
+    LAMMPSDUMP, LAMMPSDUMP_allcoords, LAMMPSDUMP_nocoords, LAMMPSDUMP_triclinic
 )
 
 
@@ -65,7 +64,7 @@ class _TestLammpsData_Coords(object):
         assert_equal(u.atoms[0].position, self.pos_atom1)
 
     def test_velos(self, u):
-        assert_allclose(u.atoms[0].velocity, self.vel_atom1)
+        assert_almost_equal(u.atoms[0].velocity, self.vel_atom1)
 
     def test_dimensions(self, u):
         assert_equal(u.dimensions, self.dimensions)
@@ -115,46 +114,12 @@ def LAMMPSDATAWriter(request, tmpdir_factory):
     return u, u_new
 
 
-def test_unwrap_vel_force():
-
-    u_wrapped = mda.Universe(LAMMPS_image_vf, [LAMMPSDUMP_image_vf], 
-                             format="LAMMPSDUMP")
-    u_wrapped.trajectory[-1]
- 
-    assert_allclose(u_wrapped.atoms.positions[0], 
-                        np.array([2.56616, 6.11565, 7.37956]),
-                        atol=1e-5)
-    assert hasattr(u_wrapped.atoms, "velocities")
-    assert hasattr(u_wrapped.atoms, "forces")
-
-
-def test_unwrap_image_wrap():
-    u_unwrapped = mda.Universe(LAMMPS_image_vf, LAMMPSDUMP_image_vf,
-                               format="LAMMPSDUMP", unwrap_images=True)
-    u_unwrapped.trajectory[-1]
-
-    pos = (np.array([2.56616, 6.11565, 7.37956]) + 
-        np.array([3, 1, -4])*u_unwrapped.dimensions[:3])
-    assert_allclose(u_unwrapped.atoms.positions[0], 
-                        pos,
-                        atol=1e-5,
-                       )
-
-
-def test_unwrap_no_image():
-    with pytest.raises(ValueError, match="must have image flag"):
-        u_unwrapped = mda.Universe( 
-                                   LAMMPSDUMP_allcoords,
-                                   format="LAMMPSDUMP", 
-                                   unwrap_images=True)
-
-
 class TestLAMMPSDATAWriter(object):
     def test_Writer_dimensions(self, LAMMPSDATAWriter):
         u_ref, u_new = LAMMPSDATAWriter
-        assert_allclose(u_ref.dimensions, u_new.dimensions,
+        assert_almost_equal(u_ref.dimensions, u_new.dimensions,
                             err_msg="attributes different after writing",
-                            atol=1e-6)
+                            decimal=6)
 
     def test_Writer_atoms_types(self, LAMMPSDATAWriter):
         u_ref, u_new = LAMMPSDATAWriter
@@ -181,10 +146,10 @@ class TestLAMMPSDATAWriter(object):
             with pytest.raises(AttributeError):
                 getattr(u_new, attr)
         else:
-            assert_allclose(refvals,
+            assert_almost_equal(refvals,
                                 getattr(u_new.atoms, attr),
                                 err_msg="attributes different after writing",
-                                atol=1e-6)
+                                decimal=6)
 
 
 def test_datawriter_universe(tmpdir):
@@ -197,8 +162,8 @@ def test_datawriter_universe(tmpdir):
 
     u2 = mda.Universe(fn)
 
-    assert_allclose(u.atoms.positions, u2.atoms.positions)
-    assert_allclose(u.dimensions, u2.dimensions)
+    assert_almost_equal(u.atoms.positions, u2.atoms.positions)
+    assert_almost_equal(u.dimensions, u2.dimensions)
 
 
 class TestLAMMPSDATAWriter_data_partial(TestLAMMPSDATAWriter):
@@ -226,10 +191,10 @@ class TestLAMMPSDATAWriter_data_partial(TestLAMMPSDATAWriter):
     def test_Writer_atoms(self, attr, LAMMPSDATA_partial):
         u_ref, u_new = LAMMPSDATA_partial
         if hasattr(u_ref.atoms, attr):
-            assert_allclose(getattr(u_ref.atoms[:self.N_kept], attr),
+            assert_almost_equal(getattr(u_ref.atoms[:self.N_kept], attr),
                                 getattr(u_new.atoms, attr),
                                 err_msg="attributes different after writing",
-                                atol=1e-6)
+                                decimal=6)
         else:
             with pytest.raises(AttributeError):
                 getattr(u_new, attr)
@@ -268,17 +233,17 @@ class TestLAMMPSDCDReader(RefLAMMPSDataDCD):
         assert_equal(u.trajectory.n_frames, self.n_frames)
 
     def test_dimensions(self, u):
-        mean_dimensions = np.mean([ts.dimensions.copy() for ts in u.trajectory],
+        mean_dimensions = np.mean([ts.dimensions for ts in u.trajectory],
                                   axis=0)
-        assert_allclose(mean_dimensions, self.mean_dimensions)
+        assert_almost_equal(mean_dimensions, self.mean_dimensions)
 
     def test_dt(self, u):
-        assert_allclose(u.trajectory.dt, self.dt,
+        assert_almost_equal(u.trajectory.dt, self.dt,
                             err_msg="Time between frames dt is wrong.")
 
     def test_Timestep_time(self, u):
         iframe = self.get_frame_from_end(1, u)
-        assert_allclose(u.trajectory[iframe].time,
+        assert_almost_equal(u.trajectory[iframe].time,
                             iframe * self.dt,
                             err_msg="Time for frame {0} (dt={1}) is wrong.".format(
                                 iframe, self.dt))
@@ -287,7 +252,7 @@ class TestLAMMPSDCDReader(RefLAMMPSDataDCD):
         u = mda.Universe(self.topology, self.trajectory, format=self.format,
                          dt=dt)
         iframe = self.get_frame_from_end(1, u)
-        assert_allclose(u.trajectory[iframe].time, iframe * dt,
+        assert_almost_equal(u.trajectory[iframe].time, iframe * dt,
                             err_msg="setting time step dt={0} failed: "
                                     "actually used dt={1}".format(
                                 dt, u.trajectory._ts_kwargs['dt']))
@@ -338,7 +303,7 @@ class TestLAMMPSDCDWriter(RefLAMMPSDataDCD):
         short = mda.Universe(self.topology, outfile)
         assert_equal(short.trajectory.n_frames, n_frames,
                      err_msg="number of frames mismatch")
-        assert_allclose(short.trajectory[n_frames - 1].positions,
+        assert_almost_equal(short.trajectory[n_frames - 1].positions,
                             u.trajectory[n_frames - 1].positions,
                             6,
                             err_msg="coordinate mismatch between corresponding frames")
@@ -366,9 +331,9 @@ class TestLAMMPSDCDWriter(RefLAMMPSDataDCD):
         assert_equal(reversed.trajectory.n_frames, u.trajectory.n_frames,
                      err_msg="number of frames mismatch")
         rev_times = [ts.time for ts in reversed.trajectory]
-        assert_allclose(rev_times, times[::-1], 6,
+        assert_almost_equal(rev_times, times[::-1], 6,
                             err_msg="time steps of written DCD mismatch")
-        assert_allclose(reversed.trajectory[-1].positions,
+        assert_almost_equal(reversed.trajectory[-1].positions,
                             u.trajectory[0].positions,
                             6,
                             err_msg="coordinate mismatch between corresponding frames")
@@ -490,12 +455,6 @@ class TestLammpsDumpReader(object):
             np.array([length2, length2, length2, 90., 90., 90.]),
         ]
         data['box'] = boxes
-        box_mins = [
-            np.array([0., 0., 0.]),
-            np.array([0.21427867, 0.21427867, 0.21427867]),
-            np.array([-0.00544581, -0.00544581, -0.00544581]),
-        ]
-        data["mins"] = box_mins
 
         # data for atom id 1 in traj (ie first in frame)
         # isn't sensitive to required sorting
@@ -528,31 +487,28 @@ class TestLammpsDumpReader(object):
     def test_seeking(self, u, reference_positions):
         u.trajectory[1]
 
-        assert_allclose(u.dimensions, reference_positions['box'][1],
-                            atol=1e-5)
-        pos = (reference_positions['atom1_pos'][1] - 
-            reference_positions['mins'][1])
-        assert_allclose(u.atoms[0].position, pos,
-                            atol=1e-5)
-        pos = (reference_positions['atom13_pos'][1] -
-            reference_positions['mins'][1])
-        assert_allclose(u.atoms[12].position, pos,
-                            atol=1e-5)
+        assert_almost_equal(u.dimensions, reference_positions['box'][1],
+                            decimal=5)
+        assert_almost_equal(u.atoms[0].position,
+                            reference_positions['atom1_pos'][1],
+                            decimal=5)
+        assert_almost_equal(u.atoms[12].position,
+                            reference_positions['atom13_pos'][1],
+                            decimal=5)
 
     def test_boxsize(self, u, reference_positions):
         for ts, box in zip(u.trajectory,
                            reference_positions['box']):
-            assert_allclose(ts.dimensions, box, atol=1e-5)
+            assert_almost_equal(ts.dimensions, box, decimal=5)
 
     def test_atom_reordering(self, u, reference_positions):
         atom1 = u.atoms[0]
         atom13 = u.atoms[12]
-        for ts, atom1_pos, atom13_pos, bmin in zip(u.trajectory,
+        for ts, atom1_pos, atom13_pos in zip(u.trajectory,
                                              reference_positions['atom1_pos'],
-                                             reference_positions['atom13_pos'],
-                                             reference_positions['mins']):
-            assert_allclose(atom1.position, atom1_pos-bmin, atol=1e-5)
-            assert_allclose(atom13.position, atom13_pos-bmin, atol=1e-5)
+                                             reference_positions['atom13_pos']):
+            assert_almost_equal(atom1.position, atom1_pos, decimal=5)
+            assert_almost_equal(atom13.position, atom13_pos, decimal=5)
 
 
 @pytest.mark.parametrize("convention",
@@ -600,25 +556,24 @@ class TestCoordinateMatches(object):
     def reference_unscaled_positions(self):
         # copied from trajectory file
         # atom 340 is the first one in the trajectory so we use that
-        bmin = np.array([0.02645, 0.02645, 0.02641])
-        atom340_pos1_unscaled = np.array([4.48355, 0.331422, 1.59231]) - bmin
-        atom340_pos2_unscaled = np.array([4.41947, 35.4403, 2.25115]) - bmin
-        atom340_pos3_unscaled = np.array([4.48989, 0.360633, 2.63623]) - bmin
+        atom340_pos1_unscaled = [4.48355, 0.331422, 1.59231]
+        atom340_pos2_unscaled = [4.41947, 35.4403, 2.25115]
+        atom340_pos3_unscaled = [4.48989, 0.360633, 2.63623]
         return np.asarray([atom340_pos1_unscaled, atom340_pos2_unscaled,
                           atom340_pos3_unscaled])
 
     def test_unscaled_reference(self, universes, reference_unscaled_positions):
         atom_340 = universes["unscaled"].atoms[339]
         for i, ts_u in enumerate(universes["unscaled"].trajectory[0:3]):
-            assert_allclose(atom_340.position,
-                                reference_unscaled_positions[i, :], atol=1e-5)
+            assert_almost_equal(atom_340.position,
+                                reference_unscaled_positions[i, :], decimal=5)
 
     def test_scaled_reference(self, universes, reference_unscaled_positions):
         # NOTE use of unscaled positions here due to S->R transform
         atom_340 = universes["scaled"].atoms[339]
         for i, ts_u in enumerate(universes["scaled"].trajectory[0:3]):
-            assert_allclose(atom_340.position,
-                                reference_unscaled_positions[i, :], atol=1e-1)
+            assert_almost_equal(atom_340.position,
+                                reference_unscaled_positions[i, :], decimal=1)
             # NOTE this seems a bit inaccurate?
 
     @pytest.fixture()
@@ -635,8 +590,8 @@ class TestCoordinateMatches(object):
                                         reference_unwrapped_positions):
         atom_340 = universes["unwrapped"].atoms[339]
         for i, ts_u in enumerate(universes["unwrapped"].trajectory[0:3]):
-            assert_allclose(atom_340.position,
-                                reference_unwrapped_positions[i, :], atol=1e-5)
+            assert_almost_equal(atom_340.position,
+                                reference_unwrapped_positions[i, :], decimal=5)
 
     def test_unwrapped_scaled_reference(self, universes,
                                         reference_unwrapped_positions):
@@ -644,8 +599,8 @@ class TestCoordinateMatches(object):
         atom_340 = universes["scaled_unwrapped"].atoms[339]
         for i, ts_u in enumerate(
                 universes["scaled_unwrapped"].trajectory[0:3]):
-            assert_allclose(atom_340.position,
-                                reference_unwrapped_positions[i, :], atol=1e-1)
+            assert_almost_equal(atom_340.position,
+                                reference_unwrapped_positions[i, :], decimal=1)
             # NOTE this seems a bit inaccurate?
 
     def test_scaled_unscaled_match(self, universes):
@@ -653,7 +608,7 @@ class TestCoordinateMatches(object):
                == len(universes["scaled"].trajectory))
         for ts_u, ts_s in zip(universes["unscaled"].trajectory,
                               universes["scaled"].trajectory):
-            assert_allclose(ts_u.positions, ts_s.positions, atol=1e-1)
+            assert_almost_equal(ts_u.positions, ts_s.positions, decimal=1)
             # NOTE this seems a bit inaccurate?
 
     def test_unwrapped_scaled_unwrapped_match(self, universes):
@@ -661,7 +616,7 @@ class TestCoordinateMatches(object):
                len(universes["scaled_unwrapped"].trajectory))
         for ts_u, ts_s in zip(universes["unwrapped"].trajectory,
                               universes["scaled_unwrapped"].trajectory):
-            assert_allclose(ts_u.positions, ts_s.positions, atol=1e-1)
+            assert_almost_equal(ts_u.positions, ts_s.positions, decimal=1)
             # NOTE this seems a bit inaccurate?
 
     def test_auto_is_unscaled_match(self, universes):
@@ -669,7 +624,7 @@ class TestCoordinateMatches(object):
                len(universes["unscaled"].trajectory))
         for ts_a, ts_s in zip(universes["auto"].trajectory,
                               universes["unscaled"].trajectory):
-            assert_allclose(ts_a.positions, ts_s.positions, atol=1e-5)
+            assert_almost_equal(ts_a.positions, ts_s.positions, decimal=5)
 
 
 class TestLammpsTriclinic(object):

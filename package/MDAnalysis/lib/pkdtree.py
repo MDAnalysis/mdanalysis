@@ -64,7 +64,7 @@ class PeriodicKDTree(object):
 
     """
 
-    def __init__(self, box: Optional[npt.ArrayLike] = None, leafsize: int = 10) -> None:
+    def __init__(self, box: npt.ArrayLike = None, leafsize: int = 10) -> None:
         """
 
         Parameters
@@ -159,7 +159,8 @@ class PeriodicKDTree(object):
             self.ckdt = cKDTree(self.coords, self.leafsize)
         self._built = True
 
-    def search(self, centers: npt.ArrayLike, radius: float) -> npt.NDArray:
+    #  typing: numpy
+    def search(self, centers: npt.ArrayLike, radius: float) -> np.ndarray:
         """Search all points within radius from centers and their periodic images.
 
         All the centers coordinates are wrapped around the central cell
@@ -209,7 +210,8 @@ class PeriodicKDTree(object):
         self._indices = np.asarray(unique_int_1d(self._indices))
         return self._indices
 
-    def get_indices(self) -> npt.NDArray:
+    # typing: numpy
+    def get_indices(self) -> np.ndarray:
         """Return the neighbors from the last query.
 
         Returns
@@ -219,7 +221,8 @@ class PeriodicKDTree(object):
         """
         return self._indices
 
-    def search_pairs(self, radius: float) -> npt.NDArray:
+    # typing: numpy
+    def search_pairs(self, radius: float) -> np.ndarray:
         """Search all the pairs within a specified radius
 
         Parameters

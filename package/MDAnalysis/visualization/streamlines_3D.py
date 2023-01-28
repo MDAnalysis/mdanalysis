@@ -61,9 +61,7 @@ import scipy.spatial.distance
 
 import MDAnalysis
 
-
-def determine_container_limits(topology_file_path, trajectory_file_path,
-                               buffer_value):
+def determine_container_limits(topology_file_path, trajectory_file_path, buffer_value):
     """Calculate the extent of the atom coordinates + buffer.
 
     A function for the parent process which should take the input trajectory
@@ -283,7 +281,7 @@ def per_core_work(start_frame_coord_array, end_frame_coord_array, dictionary_cub
                                                            axis=0)
                 cube['centroid_of_particles_first_frame'] = centroid_particles_in_cube
             else:  # empty cube
-                cube['centroid_of_particles_first_frame'] = None
+                cube['centroid_of_particles_first_frame'] = 'empty'
             cube_counter += 1
 
     def update_dictionary_end_frame(array_simulation_particle_coordinates, dictionary_cube_data_this_core):
@@ -291,7 +289,7 @@ def per_core_work(start_frame_coord_array, end_frame_coord_array, dictionary_cub
         cube_counter = 0
         for key, cube in dictionary_cube_data_this_core.items():
             # if there were no particles in the cube in the first frame, then set dx,dy,dz each to 0
-            if cube['centroid_of_particles_first_frame'] is None:
+            if cube['centroid_of_particles_first_frame'] == 'empty':
                 cube['dx'] = 0
                 cube['dy'] = 0
                 cube['dz'] = 0

@@ -96,7 +96,7 @@ DEF ZZ = 8
 # grids than this, integer overflow will occur.
 DEF MAX_GRID_DIM = 1290
 
-ctypedef float coordinate[3]
+ctypedef float coordinate[3];
 
 cdef extern from "calc_distances.h" nogil:
     void _minimum_image_ortho_lazy(double* x, float* box, float* half_box)
@@ -312,7 +312,7 @@ cdef class FastNS(object):
 
         for i in range(3):
             self.dimensions[i] = box[i]
-            self.half_dimensions[i] = 0.5 * box[i]
+            self.half_dimensions[i] = 0.5 * box[i];
             self.inverse_dimensions[i] = 1.0 / box[i]
         self.dimensions[3] = box[3]
         self.dimensions[4] = box[4]
@@ -533,7 +533,7 @@ cdef class FastNS(object):
         cdef int xi, yi, zi
         cdef int cellcoord[3]
         cdef float tmpcoord[3]
-
+        
         cdef NSResults results = NSResults()
         cdef double d2, cutoff2
 
@@ -596,6 +596,8 @@ cdef class FastNS(object):
         """
         cdef int cx, cy, cz, ox, oy, oz
         cdef int ci, cj, i, j, nj
+        cdef int cellindex, cellindex_probe
+        cdef int xi, yi, zi
         cdef NSResults results = NSResults()
         cdef double d2
         cdef double cutoff2 = self.cutoff * self.cutoff

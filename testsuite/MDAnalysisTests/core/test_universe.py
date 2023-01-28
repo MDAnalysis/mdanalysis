@@ -639,14 +639,6 @@ class TestInMemoryUniverse(object):
                      (3341, 78, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
 
-    def test_transfer_to_memory_kwargs(self):
-        u = mda.Universe(PSF, DCD)
-        u.transfer_to_memory(example_kwarg=True)
-        assert(u.trajectory._kwargs['example_kwarg'])
-
-    def test_in_memory_kwargs(self):
-        u = mda.Universe(PSF, DCD, in_memory=True, example_kwarg=True)
-        assert(u.trajectory._kwargs['example_kwarg'])
 
 class TestCustomReaders(object):
     """

@@ -87,7 +87,7 @@ if sys.version_info[:2] < (3, 8):
 
 if __name__ == '__main__':
     # this must be in-sync with MDAnalysis
-    RELEASE = "2.5.0-dev0"
+    RELEASE = "2.4.0-dev0"
     with open("README") as summary:
         LONG_DESCRIPTION = summary.read()
 
@@ -95,7 +95,7 @@ if __name__ == '__main__':
         'Development Status :: 6 - Mature',
         'Environment :: Console',
         'Intended Audience :: Science/Research',
-        'License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)',
+        'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
         'Operating System :: POSIX',
         'Operating System :: MacOS :: MacOS X',
         'Operating System :: Microsoft :: Windows ',
@@ -104,7 +104,6 @@ if __name__ == '__main__':
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
-        'Programming Language :: Python :: 3.11',
         'Programming Language :: C',
         'Topic :: Scientific/Engineering',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
@@ -129,7 +128,7 @@ if __name__ == '__main__':
                         'Issue Tracker': 'https://github.com/mdanalysis/mdanalysis/issues',
                         'Source': 'https://github.com/mdanalysis/mdanalysis',
                         },
-          license='GPL-2.0-or-later',
+          license='GPL 2',
           classifiers=CLASSIFIERS,
           packages=find_packages(),
           package_dir={'MDAnalysisTests': 'MDAnalysisTests',
@@ -179,10 +178,6 @@ if __name__ == '__main__':
                          'data/*.in',
                          'data/*.top',
                          'data/*.sdf',
-                         'data/*.edr',
-                         'data/*.tng',
-                         'data/*.pdbx',
-                         'data/*.txt',
                         ],
           },
           python_requires='>=3.8',
