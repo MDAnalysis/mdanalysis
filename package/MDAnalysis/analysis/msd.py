@@ -382,8 +382,9 @@ class EinsteinMSD(AnalysisBase):
 
         """
         lagtimes = np.arange(1, self.n_frames)
-        positions = self._position_array.astype(np.float64)
         for lag in lagtimes:
+            self._position_array[lag] = (self.ag.positions[:, self._dim])
+            positions = self._position_array.astype(np.float64)
             disp = positions[:-lag, :, :] - positions[lag:, :, :]
             sqdist = np.square(disp).sum(axis=-1)
             self.results.msds_by_particle[lag, :] = np.mean(sqdist, axis=0)
