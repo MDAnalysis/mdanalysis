@@ -45,7 +45,7 @@ For applications see :cite:p:`b-Denning2011,b-Denning2012`.
     Denning2012
 
 Distances
-_________
+---------
 
 .. autoclass:: NucPairDist
     :members:
@@ -60,6 +60,7 @@ _________
 """
 
 from typing import List, Dict
+import warnings
 
 import numpy as np
 
@@ -79,30 +80,42 @@ class NucPairDist(AnalysisBase):
     :class:`~MDAnalysis.core.groups.AtomGroup`.
 
     Parameters
-    __________
+    ----------
     selection1: List[AtomGroup]
-        list of :class:`~MDAnalysis.core.groups.AtomGroup` containing an atom
+        List of :class:`~MDAnalysis.core.groups.AtomGroup` containing an atom
         of each nucleic acid being analyzed.
-    selection1: List[AtomGroup]
-        list of :class:`~MDAnalysis.core.groups.AtomGroup` containing an atom
+    selection2: List[AtomGroup]
+        List of :class:`~MDAnalysis.core.groups.AtomGroup` containing an atom
         of each nucleic acid being analyzed.
     kwargs: dict
-        arguments for :class:`~MDAnalysis.analysis.base.AnalysisBase`
+        Arguments for :class:`~MDAnalysis.analysis.base.AnalysisBase`
 
     Attributes
-    __________
-        results: numpy.ndarray
-            first index is selection second index is time
-        results.times: numpy.ndarray
-            times used in analysis
+    ----------
+    times: numpy.ndarray
+        Simulation times for analysis.
+    results.pair_distances: numpy.ndarray
+        2D array of pair distances. First dimension is simulation time, second
+        dimension contains the pair distances for each each entry pair in
+        selection1 and selection2.
+
+        .. versionadded:: 2.4.0
+
 
     Raises
-    ______
+    ------
 
     ValueError
-        if the selections given are not the same length
+        If the selections given are not the same length
 
-        """
+
+    .. versionchanged:: 2.5.0
+       The ability to access by passing selection indices to :attr:`results` is
+       is now removed as of MDAnalysis version 2.5.0. Please use
+       :attr:`results.pair_distances` instead.
+       The :attr:`results.times` was deprecated and is now removed as of
+       MDAnalysis 2.5.0. Please use the class attribute :attr:`times` instead.
+    """
 
     _s1: mda.AtomGroup
     _s2: mda.AtomGroup
@@ -127,23 +140,15 @@ class NucPairDist(AnalysisBase):
             self._s1 += selection1[i]
             self._s2 += selection2[i]
 
-        self.results = Results()
-
     def _prepare(self) -> None:
-        self._res_dict = {k: [] for k in range(self._n_sel)}
-        self._times = []
+        self._res_array: np.ndarray = np.zeros([self.n_frames, self._n_sel])
 
     def _single_frame(self) -> None:
         dist: np.ndarray = calc_bonds(self._s1.positions, self._s2.positions)
-
-        for i in range(self._n_sel):
-            self._res_dict[i].append(dist[i])
-            self._times.append(self._ts.time)
+        self._res_array[self._frame_index, :] = dist
 
     def _conclude(self) -> None:
-        self.results['times'] = np.array(self._times)
-        for i in range(self._n_sel):
-            self.results[i] = np.array(self._res_dict[i])
+        self.results['pair_distances'] = self._res_array
 
 
 class WatsonCrickDist(NucPairDist):
@@ -154,49 +159,54 @@ class WatsonCrickDist(NucPairDist):
     their index in the lists given as arguments.
 
     Parameters
-    __________
+    ----------
     strand1: List[Residue]
         First list of bases
     strand2: List[Residue]
         Second list of bases
     n1_name: str (optional)
-        Name of Nitrogen 1 of nucleic acids
-        by default assigned to N1
+        Name of Nitrogen 1 of nucleic acids, by default assigned to N1
     n3_name: str (optional)
-        Name of Nitrogen 3 of nucleic acids
-        by default assigned to N3
+        Name of Nitrogen 3 of nucleic acids, by default assigned to N3
     g_name: str (optional)
-        Name of Guanine in topology
-        by default assigned to G
+        Name of Guanine in topology, by default assigned to G
     a_name: str (optional)
-        Name of Adenine in topology
-        by default assigned to G
+        Name of Adenine in topology, by default assigned to A
     u_name: str (optional)
-        Name of Uracil in topology
-        by default assigned to U
+        Name of Uracil in topology, by default assigned to U
     t_name: str (optional)
-        Name of Thymine in topology
-        by default assigned to T
+        Name of Thymine in topology, by default assigned to T
     c_name: str (optional)
-        Name of Cytosine in topology
-        by default assigned to C
+        Name of Cytosine in topology, by default assigned to C
     **kwargs: dict
         arguments for :class:`~MDAnalysis.analysis.base.AnalysisBase`
 
     Attributes
-    __________
-        results: numpy.ndarray
-            first index is selection second index is time
-        results.times: numpy.ndarray
-            times used in analysis
+    ----------
+    times: numpy.ndarray
+        Simulation times for analysis.
+    results.pair_distances: numpy.ndarray
+        2D array of Watson-Crick basepair distances. First dimension is
+        simulation time, second dimension contains the pair distances for
+        each each entry pair in strand1 and strand2.
+
+        .. versionadded:: 2.4.0
+
 
     Raises
-    ______
+    ------
     ValueError
-        if the residues given are not amino acids
+        If the residues given are not amino acids
     ValueError
-        if the selections given are not the same length
+        If the selections given are not the same length
 
+
+    .. versionchanged:: 2.5.0
+       Accessing results by passing strand indices to :attr:`results` is
+       was deprecated and is now removed as of MDAnalysis version 2.5.0. Please
+       use :attr:`results.pair_distances` instead.
+       The :attr:`results.times` was deprecated and is now removed as of
+       MDAnalysis 2.5.0. Please use the class attribute :attr:`times` instead.
     """
 
     def __init__(self, strand1: List[Residue], strand2: List[Residue],

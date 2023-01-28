@@ -3,9 +3,10 @@ macos_instance:
 
 task:
   script: |
-    brew install python@3.10
-    /opt/homebrew/opt/python@3.10/bin/python3 -m venv ~/py_310
-    source ~/py_310/bin/activate
+    brew update
+    brew install python@3.11
+    /opt/homebrew/opt/python@3.11/libexec/bin/python3 -m venv ~/py_311
+    source ~/py_311/bin/activate
     cd package
     python -m pip install .
     cd ../testsuite

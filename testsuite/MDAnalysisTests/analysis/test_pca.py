@@ -196,7 +196,7 @@ def test_project_compare_projections(u_fresh):
     project1 = pca.project_single_frame(1)
 
     u_fresh.trajectory[0]
-    coord0 = project0(u_fresh.trajectory.ts).positions
+    coord0 = project0(u_fresh.trajectory.ts).positions.copy()
     u_fresh.trajectory[0]
     coord1 = project1(u_fresh.trajectory.ts).positions
     assert not np.allclose(coord0, coord1, rtol=1e-05)
