@@ -118,6 +118,7 @@ SECTIONS = set([
     'Impropers',
     'Pair',
     'Pair LJCoeffs',
+    'PairIJ Coeffs',
     'Bond Coeffs',
     'Angle Coeffs',
     'Dihedral Coeffs',

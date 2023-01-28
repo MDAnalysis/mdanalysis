@@ -25,8 +25,8 @@ jobs:
           PYTHON_VERSION: '3.8'
           PYTHON_ARCH: 'x86'
           BUILD_TYPE: 'normal'
+          NUMPY_MIN: '1.21.0'
           imageName: 'windows-2019'
-          PIP_PRE_EXTRAS: 'scipy==1.9.1'
         Win-Python38-64bit-full:
           PYTHON_VERSION: '3.8'
           PYTHON_ARCH: 'x64'
@@ -37,29 +37,29 @@ jobs:
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'normal'
           imageName: 'windows-2019'
-        Win-Python39-64bit-full-wheel:
-          PYTHON_VERSION: '3.9'
+        Win-Python310-64bit-full-wheel:
+          PYTHON_VERSION: '3.10'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
-          NUMPY_MIN: '1.20.0'
+          NUMPY_MIN: '1.22.3'
           imageName: 'windows-2019'
         Win-Python38-64bit-full-wheel:
           PYTHON_VERSION: '3.8'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
-          NUMPY_MIN: '1.20.0'
+          NUMPY_MIN: '1.21.0'
           imageName: 'windows-2019'
-        Linux-Python39-64bit-full-wheel:
-          PYTHON_VERSION: '3.9'
+        Linux-Python310-64bit-full-wheel:
+          PYTHON_VERSION: '3.10'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
-          NUMPY_MIN: '1.20.0'
+          NUMPY_MIN: '1.21.6'
           imageName: 'ubuntu-latest'
         Linux-Python38-64bit-full-wheel:
           PYTHON_VERSION: '3.8'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
-          NUMPY_MIN: '1.20.0'
+          NUMPY_MIN: '1.21.0'
           imageName: 'ubuntu-latest'
   pool:
     vmImage: $(imageName)
@@ -75,17 +75,14 @@ jobs:
   # "manually"
   - powershell: |
       cd package
-      python -m pip install .
+      python -m pip -v install .
       cd ..
     displayName: 'Build MDAnalysis (wheel)'
     condition: and(succeeded(), eq(variables['BUILD_TYPE'], 'wheel'))
   - script: python -m pip install --upgrade pip setuptools wheel
     displayName: 'Install tools'
-  - script: python -m pip install $(PIP_PRE_EXTRAS)
-    displayName: 'Pre-deps extras'
-    condition: ne(variables['PIP_PRE_EXTRAS'], '')
   - script: >-
-      python -m pip install --only-binary=h5py
+      python -m pip install --only-binary=h5py,scipy
       cython
       hypothesis
       matplotlib
@@ -95,7 +92,6 @@ jobs:
       pytest-cov
       pytest-xdist
       scikit-learn
-      scipy
       h5py>=2.10
       tqdm
       threadpoolctl
@@ -107,9 +103,8 @@ jobs:
   # to check the ABI compatibility of our wheels
   - script: >-
       python -m pip install numpy==$(NUMPY_MIN)
-    displayName: 'pin to older NumPy (wheel test)'
-    condition: and(succeeded(), eq(variables['BUILD_TYPE'], 'wheel'))
-  # TODO: recent rdkit is not on PyPI
+    displayName: 'pin to older NumPy (wheel test and 32bit)'
+    condition: and(succeeded(), ne(variables['NUMPY_MIN'], ''))
   - script: >-
       python -m pip install
       biopython
@@ -121,9 +116,14 @@ jobs:
       mmtf-python
       networkx
       parmed
+      pytng>=0.2.3
       tidynamics>=1.0.0
+      rdkit>=2020.03.1
     displayName: 'Install additional dependencies for 64-bit tests'
     condition: and(succeeded(), eq(variables['PYTHON_ARCH'], 'x64'))
+  - script: >-
+      pip list
+    displayName: 'List of installed dependencies'
   - powershell: |
       cd package
       python setup.py install

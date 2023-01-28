@@ -13,13 +13,71 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, BFedder, aya9aladdin,
-         jaclark5
+??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo
+
+ * 2.5.0
+
+Fixes
+  * Fix test clobbering in lib/test_util.py (PR #4000)
+  * Fix MSD docs to use the correct error metric in example (Issue #3991)
+  * Add 'PairIJ Coeffs' to the list of sections in LAMMPSParser.py
+    (Issue #3336)
+
+Enhancements
+  * Add pickling support for Atom, Residue, Segment, ResidueGroup 
+    and SegmentGroup. (PR #3953)
+
+Changes
+  * As per NEP29 the minimum supported NumPy version has been raised to 1.21
+    (note: in practice later versions of NumPy may be used depending on your
+     architecture, operating system, or Python version) (PR #3983)
+  * The deprecated direct indexing and `times` from the `results` attribute of
+    analysis.nucleicacids' NucPairDist and WatsonCrickDist classes has been
+    removed. Please use the `results.pair_distances` and `times` attributes
+    instead (Issue #3744)
+
+Deprecations
+
+
+01/04/23 IAlibay
+
+ * 2.4.2
+
+Fixes
+  * np.histogramdd calls in :class:`DensityAnalysis` now pass the `density`
+    argument rather than the NumPy 1.24 removed `normed` (PR #3976)
+  * visualization.streamlines_3D and visualization.streamlines no longer
+    rely on the scalar return of an numpy array elementwise comparison which
+    is no longer supported as of NumPy 1.25 (PR #3977)
+
+
+12/17/22 IAlibay
+
+ * 2.4.1
+
+Fixes
+* Fixes pyproject.toml minimum pin for biopython
+
+
+12/16/22 IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, BFedder, aya9aladdin,
+         jaclark5, jfennick, lilyminium, orbeckst, Hakarishirenai
 
  * 2.4.0
 
 Fixes
-  * Added isolayer selection method (Issue #3845)
+  * Update hbond analysis doc string to use exclusive bound language 
+    (Issue #3847)
+  * XTC and TRR readers now fail with IOError when a status except EOK (=0) is
+    detected on reading a frame instead of silently continuing
+  * Consolidate license files across MDAnalysis library packages (PR #3939)
+  * Kwargs passed through to `MemoryReader` when using `transfer_to_memory()`
+    and `in_memory=True`.
+  * NoDataError raised on empty atomgroup provided to `DCDReader.timeseries` 
+    was changed to ValueError (see #3901). A matching ValueError was added to
+    `MemoryReader.timeseries`(PR #3890). 
+  * Removes ``pbc`` kwarg from ``AtomGroup.wrap`` (Issue #3909)
+  * LAMMPSDump Reader translates the box to the origin (#3741)
+  * hbond analysis: access hbonds results through new results member in count_by_ids() and count_by_type()
   * Auxiliary; determination of representative frames: Removed undefined
     behaviour for cutoff values < -1 (PR # 3749)
   * Fixes distances.between not always returning AtomGroup (Issue #3794)
@@ -28,9 +86,28 @@ Fixes
     those methods were giving unexpected results for some topology attributes
     (e.g. bonds, angles) (PR #3779).
 
-
-
 Enhancements
+  * Added dipole and quadrupole moment topology methods to AtomGroup
+    (Issue #3841, PR #3842)
+  * MDAnalysis now follows PEP621 (PR #3528)
+  * Added a reader for GROMACS TNG files based on PyTNG (PR #3765,
+    Issue #3237, partially addressing Issue #865) 
+  * Added ability for hbond analysis to use types when resnames are not 
+    present (Issue #3847)
+  * Added explanatory warnings when hbond analysis doesn't find any hbonds
+    (Issue #3847)
+  * Improve C content of libxdr Cython, add `read_direct` methods to read 
+    coordinates, velocities and forces directly into memoryviews of `Timestep`
+    attributes, make `TRR` timestep have positions, velocities and forces on
+    `__init__`. (Issue #3891 PR  #3892).
+  * Improve C content of libdcd Cython (Issue #3882, PR #3888)
+  * The timeseries method for exporting coordinates from multiple frames to a
+    NumPy array was added to ProtoReader (PR #3890)
+  * MDAnalysis now officially supports py3.11 (Issue #3878)
+  * LAMMPSDump Reader optionally unwraps trajectories with image flags upon 
+    loading (Issue #3843)
+  * LAMMPSDump Reader now imports velocities and forces (Issue #3843)
+  * Minimum NumPy version for py3.11 is now set to 1.23.2.
   * Added decorator to check for an empty atom group, applied in topological 
     attributes(Issue #3837)
   * AuxReaders now have a memory_limit parameter to control when memory usage
@@ -41,9 +118,15 @@ Enhancements
   * A new AuxReader for the GROMACS EDR file format was implemented.
     (Issue # 3629, PR # 3749)
   * Added benchmarks for bonds topology attribute (Issue #3785, PR #3806)
-
+  * Added isolayer selection method (Issue #3845)
 
 Changes
+ * Minimum numpy version for python 3.10 and Windows has been raised to 1.22.3
+   (PR #3903)
+ * Replaced deprecated Bio.pairwise2 with Bio.align.PairwiseAligner in
+   MDAnalysis.analysis.align.sequence_alignment (Issue #3950)
+ * Increased minimal version of biopython to 1.80 (Issue #3950)
+ * Moved `libmdanalysis` cython header to `lib`(Issue #3912, PR #3913)
  * Auxiliary; determination of representative frames: The default value for
    cutoff is now None, not -1. Negative values are now turned
    to None. (PR #3749)
@@ -59,6 +142,14 @@ Changes
   * adding element attribute to TXYZParser if all atom names are valid element symbols (PR #3826)
 
 Deprecations
+  * Direct indexing of results in analysis.nucleicacids' NucPairDist
+    and WatsonCrickDist classes is deprecated and will be removed in 2.5.0.
+    Please use `results.pair_distances` instead (Issue #3744)
+  * Deprecated analysis.align.sequence_alignment() for removal in 3.0 (#3950)
+  * Add deprecation warning for `timestep` copying in DCDReader
+    (Issue #3889, PR #3888)
+  * Add deprecation warning for inclusive stop indexing in
+    MemoryReader.timeseries (PR #3894)
 
 
 08/29/22 IAlibay, PicoCentauri, orbeckst, hmacdope, rmeli, miss77jun, rzhao271,
