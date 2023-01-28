@@ -367,13 +367,9 @@ class EinsteinMSD(AnalysisBase):
         self.dim_fac = len(self._dim)
 
     def _single_frame(self):
-        r""" Constructs array of positions for MSD calculation.
+        r""" derpecating.
 
         """
-        # shape of position array set here, use span in last dimension
-        # from this point on
-        self._position_array[self._frame_index] = (
-            self.ag.positions[:, self._dim])
 
     def _conclude(self):
         if self.fft:
@@ -410,8 +406,9 @@ class EinsteinMSD(AnalysisBase):
 
                 or set fft=False""")
 
-        positions = self._position_array.astype(np.float64)
         for n in range(self.n_particles):
+            self._position_array[n] = (self.ag.positions[:, self._dim])
+            positions = self._position_array.astype(np.float64)
             self.results.msds_by_particle[:, n] = tidynamics.msd(
                 positions[:, n, :])
         self.results.timeseries = self.results.msds_by_particle.mean(axis=1)
