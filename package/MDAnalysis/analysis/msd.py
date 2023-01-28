@@ -381,7 +381,7 @@ class EinsteinMSD(AnalysisBase):
         """
         lagtimes = np.arange(1, self.n_frames)
         for lag in lagtimes:
-            self._position_array[lag] =  self.ag.positions[:, self._dim]
+            self._position_array[lag] = self.ag.positions[:, self._dim]
             positions = self._position_array.astype(np.float64)
             disp = positions[:-lag, :, :] - positions[lag:, :, :]
             sqdist = np.square(disp).sum(axis=-1)
@@ -406,7 +406,7 @@ class EinsteinMSD(AnalysisBase):
                 or set fft=False""")
 
         for n in range(self.n_particles):
-            self._position_array[n] =  self.ag.positions[:, self._dim]
+            self._position_array[n] = self.ag.positions[:, self._dim]
             positions = self._position_array.astype(np.float64)
             self.results.msds_by_particle[:, n] = tidynamics.msd(
                 positions[:, n, :])
