@@ -344,8 +344,7 @@ class EinsteinMSD(AnalysisBase):
         # these need to be zeroed prior to each run() call
         self.results.msds_by_particle = np.zeros((self.n_frames,
                                                   self.n_particles))
-        self._position_array = np.zeros(
-            (self.n_frames, self.n_particles, self.dim_fac))
+        self._position_array = self._trajectory.timeseries()
         # self.results.timeseries not set here
 
     def _parse_msd_type(self):
@@ -367,8 +366,8 @@ class EinsteinMSD(AnalysisBase):
         self.dim_fac = len(self._dim)
 
     def _single_frame(self):
-        r""" derpecating."""
-
+        r"""depreciating."""
+    
     def _conclude(self):
         if self.fft:
             self._conclude_fft()
@@ -380,9 +379,8 @@ class EinsteinMSD(AnalysisBase):
 
         """
         lagtimes = np.arange(1, self.n_frames)
+        positions = self._position_array.astype(np.float64)
         for lag in lagtimes:
-            self._position_array[lag] = self.ag.positions[:, self._dim]
-            positions = self._position_array.astype(np.float64)
             disp = positions[:-lag, :, :] - positions[lag:, :, :]
             sqdist = np.square(disp).sum(axis=-1)
             self.results.msds_by_particle[lag, :] = np.mean(sqdist, axis=0)
@@ -405,9 +403,8 @@ class EinsteinMSD(AnalysisBase):
 
                 or set fft=False""")
 
+        positions = self._position_array.astype(np.float64)
         for n in range(self.n_particles):
-            self._position_array[n] = self.ag.positions[:, self._dim]
-            positions = self._position_array.astype(np.float64)
             self.results.msds_by_particle[:, n] = tidynamics.msd(
                 positions[:, n, :])
         self.results.timeseries = self.results.msds_by_particle.mean(axis=1)
