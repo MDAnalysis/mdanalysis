@@ -123,7 +123,7 @@ class TestParmedParserPSF(BaseTestParmedParser):
     # No atomic numbers set by parmed == no elements
     expected_elems = (np.array(
         ['N', 'H', 'C', 'H', 'C', 'H', 'H', 'C', 'H', 'C', 'H', 'H', 'H', 'C',
-         'H', 'H', 'H', 'C', 'O', 'N',], dtype=object)
+         'H', 'H', 'H', 'C', 'O', 'N',], dtype=object),)
 
     def test_bonds_atom_counts(self, universe):
         assert len(universe.atoms[[0]].bonds) == 4
