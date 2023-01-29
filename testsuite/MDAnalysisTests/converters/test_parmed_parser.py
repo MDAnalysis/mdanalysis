@@ -119,7 +119,7 @@ class TestParmedParserPSF(BaseTestParmedParser):
     expected_n_dihedrals = 8921
     expected_n_impropers = 541
     expected_n_cmaps = 212
-    elems_ranges = ((110, 139),)
+    elems_ranges = ((100, 120),)
     # No atomic numbers set by parmed == no elements
     expected_elems = (np.array(
         ['N', 'H', 'C', 'H', 'C', 'H', 'H', 'C', 'H', 'C', 'H', 'H', 'H', 'C',
