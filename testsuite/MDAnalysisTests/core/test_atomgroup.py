@@ -23,6 +23,7 @@
 from glob import glob
 import itertools
 from os import path
+import pickle
 
 import numpy as np
 
@@ -125,11 +126,12 @@ class TestAtomGroupWriting(object):
     def test_write_frames(self, u, tmpdir, frames):
         destination = str(tmpdir / 'test.dcd')
         selection = u.trajectory[frames]
-        ref_positions = np.stack([ts.positions for ts in selection])
+        ref_positions = np.stack([ts.positions.copy() for ts in selection])
         u.atoms.write(destination, frames=frames)
 
-        u_new = mda.Universe(destination, to_guess=())
-        new_positions = np.stack([ts.positions for ts in u_new.trajectory])
+
+        u_new = mda.Universe(destination)
+        new_positions = np.stack([ts.positions.copy() for ts in u_new.trajectory])
 
         assert_array_almost_equal(new_positions, ref_positions)
 
@@ -141,11 +143,12 @@ class TestAtomGroupWriting(object):
     def test_write_frame_iterator(self, u, tmpdir, frames):
         destination = str(tmpdir / 'test.dcd')
         selection = u.trajectory[frames]
-        ref_positions = np.stack([ts.positions for ts in selection])
+        ref_positions = np.stack([ts.positions.copy() for ts in selection])
         u.atoms.write(destination, frames=selection)
 
-        u_new = mda.Universe(destination, to_guess=())
-        new_positions = np.stack([ts.positions for ts in u_new.trajectory])
+
+        u_new = mda.Universe(destination)
+        new_positions = np.stack([ts.positions.copy() for ts in u_new.trajectory])
 
         assert_array_almost_equal(new_positions, ref_positions)
 
@@ -164,9 +167,10 @@ class TestAtomGroupWriting(object):
     def test_write_frames_all(self, u, tmpdir, compression):
         destination = str(tmpdir / 'test.dcd' + compression)
         u.atoms.write(destination, frames='all')
-        u_new = mda.Universe(destination, to_guess=())
-        ref_positions = np.stack([ts.positions for ts in u.trajectory])
-        new_positions = np.stack([ts.positions for ts in u_new.trajectory])
+
+        u_new = mda.Universe(destination)
+        ref_positions = np.stack([ts.positions.copy() for ts in u.trajectory])
+        new_positions = np.stack([ts.positions.copy() for ts in u_new.trajectory])
         assert_array_almost_equal(new_positions, ref_positions)
 
     @pytest.mark.parametrize('frames', ('invalid', 8, True, False, 3.2))
@@ -1789,3 +1793,17 @@ class TestAtomGroupSort(object):
         ref = [6, 5, 4, 3, 2, 1, 0]
         agsort = ag.sort("positions", keyfunc=lambda x: x[:, 1])
         assert np.array_equal(ref, agsort.ix)
+
+
+class TestAtomGroupPickle(object):
+    """Test AtomGroup pickling support."""
+
+    @pytest.fixture()
+    def universe(self):
+        return mda.Universe(PSF, DCD)
+
+    @pytest.mark.parametrize("selection", ("name CA", "segid 4AKE"))
+    def test_atomgroup_pickle(self, universe, selection):
+        sel = universe.select_atoms(selection)
+        atm = pickle.loads(pickle.dumps(sel))
+        assert_almost_equal(sel.positions, atm.positions)
