@@ -225,14 +225,14 @@ class AnalysisCollection(object):
     Class for running a collection of analysis classes on a single trajectory.
 
     Running a collection of analysis with ``AnalysisCollection`` can result in
-    a speedup compared to running the individual object since here we only 
+    a speedup compared to running the individual object since here we only
     perform the trajectory looping once.
 
     The class assumes that each analysis is a child of
     :class:`MDAnalysis.analysis.base.AnalysisBase`. Additionally,
     the trajectory of all ``analysis_objects`` must be same.
 
-    By default it is ensured that all analyisis objects use the 
+    By default it is ensured that all analyisis objects use the
     *same original* timestep and not an altered one from a previous analysis
     object. This behaviour can be changed with the ``reset_timestep`` parameter
     of the :meth:`MDAnalysis.analysis.base.AnalysisCollection.run` method.
@@ -262,12 +262,12 @@ class AnalysisCollection(object):
         u = mda.Universe(TPR, XTC)
 
         # Select atoms
-        O = u.select_atoms('name O')
-        H = u.select_atoms('name H')
+        ag_O = u.select_atoms("name O")
+        ag_H = u.select_atoms("name H")
 
         # Create individual analysis objects
-        rdf_OO = InterRDF(O, O)
-        rdf_OH = InterRDF(O, H)
+        rdf_OO = InterRDF(ag_O, ag_O)
+        rdf_OH = InterRDF(ag_H, ag_H)
 
         # Create collection for common trajectory
         collection = AnalysisCollection(rdf_OO, rdf_OH)
@@ -281,19 +281,28 @@ class AnalysisCollection(object):
 
     .. versionadded:: 2.5.0
     """
+
     def __init__(self, *analysis_objects):
         for analysis_object in analysis_objects:
             if analysis_objects[0]._trajectory != analysis_object._trajectory:
-                raise ValueError("`analysis_objects` do not have the same "
-                                 "trajectory.")
+                raise ValueError("`analysis_objects` do not have the same trajectory.")
             if not isinstance(analysis_object, AnalysisBase):
-                raise AttributeError(f"Analysis object {analysis_object} is "
-                                      "not a child of `AnalysisBase`.")
+                raise AttributeError(
+                    f"Analysis object {analysis_object} is "
+                    "not a child of `AnalysisBase`."
+                )
 
         self._analysis_objects = analysis_objects
 
-    def run(self, start=None, stop=None, step=None, frames=None,
-            verbose=None, reset_timestep=True):
+    def run(
+        self,
+        start=None,
+        stop=None,
+        step=None,
+        frames=None,
+        verbose=None,
+        reset_timestep=True,
+    ):
         """Perform the calculation
 
         Parameters
@@ -320,30 +329,32 @@ class AnalysisCollection(object):
 
         # Ensure compatibility with API of version 0.15.0
         if not hasattr(self, "_analysis_objects"):
-            self._analysis_objects = (self, )
+            self._analysis_objects = (self,)
 
         logger.info("Choosing frames to analyze")
         # if verbose unchanged, use class default
-        verbose = getattr(self, '_verbose',
-                          False) if verbose is None else verbose
+        verbose = getattr(self, "_verbose", False) if verbose is None else verbose
 
         logger.info("Starting preparation")
 
         for analysis_object in self._analysis_objects:
-            analysis_object._setup_frames(analysis_object._trajectory,
-                                          start=start,
-                                          stop=stop,
-                                          step=step,
-                                          frames=frames)
+            analysis_object._setup_frames(
+                analysis_object._trajectory,
+                start=start,
+                stop=stop,
+                step=step,
+                frames=frames,
+            )
             analysis_object._prepare()
 
-        logger.info("Starting analysis loop over"
-                    f"{self._analysis_objects[0].n_frames} trajectory frames")
+        logger.info(
+            f"Starting analysis loop over {self._analysis_objects[0].n_frames} "
+            "trajectory frames."
+        )
 
-        for i, ts in enumerate(ProgressBar(
-                self._analysis_objects[0]._sliced_trajectory,
-                verbose=verbose)):
-
+        for i, ts in enumerate(
+            ProgressBar(self._analysis_objects[0]._sliced_trajectory, verbose=verbose)
+        ):
             if reset_timestep:
                 ts_original = ts.copy()
 
@@ -564,11 +575,9 @@ class AnalysisBase(AnalysisCollection):
             frame indices in the `frames` keyword argument.
 
         """
-        return super(AnalysisBase, self).run(start=start,
-                                             stop=stop,
-                                             step=step,
-                                             frames=frames,
-                                             verbose=verbose)
+        return super(AnalysisBase, self).run(
+            start=start, stop=stop, step=step, frames=frames, verbose=verbose
+        )
 
 
 class AnalysisFromFunction(AnalysisBase):

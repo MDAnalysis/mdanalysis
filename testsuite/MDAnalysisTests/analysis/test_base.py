@@ -154,11 +154,11 @@ class TestAnalysisCollection:
         return mda.Universe(TPR, XTC)
 
     def test_run(self, universe):
-        O = universe.select_atoms('name O')
-        H = universe.select_atoms('name H')
+        ag_O = universe.select_atoms("name O")
+        ag_H = universe.select_atoms("name H")
 
-        rdf_OO = InterRDF(O, O)
-        rdf_OH = InterRDF(O, H)
+        rdf_OO = InterRDF(ag_O, ag_O)
+        rdf_OH = InterRDF(ag_O, ag_H)
 
         collection = base.AnalysisCollection(rdf_OO, rdf_OH)
         collection.run(start=0, stop=100, step=10)
@@ -168,9 +168,9 @@ class TestAnalysisCollection:
 
     @pytest.mark.parametrize("reset_timestep", [True, False])
     def test_trajectory_manipulation(self, universe, reset_timestep):
-
         class CustomAnalysis(base.AnalysisBase):
             """Custom class that is shifting positions in every step by 10."""
+
             def __init__(self, trajectory):
                 self._trajectory = trajectory
 
@@ -179,7 +179,7 @@ class TestAnalysisCollection:
 
             def _single_frame(self):
                 self._ts.positions += 10
-                self.ref_pos = self._ts.positions.copy()[0,0]
+                self.ref_pos = self._ts.positions.copy()[0, 0]
 
         ana_1 = CustomAnalysis(universe.trajectory)
         ana_2 = CustomAnalysis(universe.trajectory)
@@ -191,7 +191,7 @@ class TestAnalysisCollection:
         if reset_timestep:
             assert ana_2.ref_pos == ana_1.ref_pos
         else:
-            assert_allclose(ana_2.ref_pos, ana_1.ref_pos + 10.)
+            assert_allclose(ana_2.ref_pos, ana_1.ref_pos + 10)
 
     def test_no_trajectory_manipulation(self):
         pass
@@ -200,8 +200,9 @@ class TestAnalysisCollection:
         v = mda.Universe(TPR, XTC)
 
         with pytest.raises(ValueError, match="`analysis_objects` do not have the same"):
-            base.AnalysisCollection(InterRDF(universe.atoms, universe.atoms),
-                                    InterRDF(v.atoms, v.atoms))
+            base.AnalysisCollection(
+                InterRDF(universe.atoms, universe.atoms), InterRDF(v.atoms, v.atoms)
+            )
 
     def test_no_base_child(self, universe):
         class CustomAnalysis:
@@ -260,7 +261,7 @@ def test_start_stop_step(u, run_kwargs, frames):
     assert an.n_frames == len(frames)
     assert_equal(an.found_frames, frames)
     assert_equal(an.frames, frames, err_msg=FRAMES_ERR)
-    assert_allclose(an.times, frames+1, rtol=1e-4, err_msg=TIMES_ERR)
+    assert_allclose(an.times, frames + 1, rtol=1e-4, err_msg=TIMES_ERR)
 
 
 @pytest.mark.parametrize('run_kwargs, frames', [
@@ -317,7 +318,7 @@ def test_frames_times():
     assert an.n_frames == len(frames)
     assert_equal(an.found_frames, frames)
     assert_equal(an.frames, frames, err_msg=FRAMES_ERR)
-    assert_allclose(an.times, frames*100, rtol=1e-4, err_msg=TIMES_ERR)
+    assert_allclose(an.times, frames * 100, rtol=1e-4, err_msg=TIMES_ERR)
 
 
 def test_verbose(u):
