@@ -246,6 +246,7 @@ def rmsd(a, b, weights=None, center=False, superposition=False):
     >>> rmsd(A, B, center=True)
     6.838544558398293
 
+
     .. versionchanged: 0.8.1
        *center* keyword added
     .. versionchanged: 0.14.0
