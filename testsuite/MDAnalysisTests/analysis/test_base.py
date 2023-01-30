@@ -193,9 +193,6 @@ class TestAnalysisCollection:
         else:
             assert_allclose(ana_2.ref_pos, ana_1.ref_pos + 10)
 
-    def test_no_trajectory_manipulation(self):
-        pass
-
     def test_inconsistent_trajectory(self, universe):
         v = mda.Universe(TPR, XTC)
 

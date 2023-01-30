@@ -230,11 +230,11 @@ class AnalysisCollection(object):
 
     The class assumes that each analysis is a child of
     :class:`MDAnalysis.analysis.base.AnalysisBase`. Additionally,
-    the trajectory of all ``analysis_objects`` must be same.
+    the trajectory of all ``analysis_objects`` must be the same.
 
-    By default it is ensured that all analyisis objects use the
+    By default, it is ensured that all analysis objects use the
     *same original* timestep and not an altered one from a previous analysis
-    object. This behaviour can be changed with the ``reset_timestep`` parameter
+    object. This behavior can be changed with the ``reset_timestep`` parameter
     of the :meth:`MDAnalysis.analysis.base.AnalysisCollection.run` method.
 
     Parameters
@@ -245,7 +245,7 @@ class AnalysisCollection(object):
     Raises
     ------
     AttributeError
-        If the provided ``analysis_objects`` do not have the same trajectory.
+        If all the provided ``analysis_objects`` do not have the same trajectory.
     AttributeError
         If an ``analysis_object`` is not a child of
         :class:`MDAnalysis.analysis.base.AnalysisBase`.
@@ -269,17 +269,19 @@ class AnalysisCollection(object):
         rdf_OO = InterRDF(ag_O, ag_O)
         rdf_OH = InterRDF(ag_H, ag_H)
 
-        # Create collection for common trajectory
+        # Create a collection for common trajectory
         collection = AnalysisCollection(rdf_OO, rdf_OH)
 
         # Run the collected analysis
         collection.run(start=0, end=100, step=10)
 
-        # Results are stored in indivial objects
+        # Results are stored in individual objects
         print(rdf_OO.results)
         print(rdf_OH.results)
 
+
     .. versionadded:: 2.5.0
+
     """
 
     def __init__(self, *analysis_objects):
@@ -314,13 +316,13 @@ class AnalysisCollection(object):
         step : int, optional
             number of frames to skip between each analysed frame
         frames : array_like, optional
-            array of integers or booleans to slice trajectory; ``frames`` can
-            only be used *instead* of ``start``, ``stop``, and ``step``. Setting
-            *both* `frames` and at least one of ``start``, ``stop``, ``step`` to a
-            non-default value will raise a :exc:``ValueError``.
+            array of integers or booleans to slice trajectory; `frames` can
+            only be used *instead* of `start`, `stop`, and `step`. Setting
+            *both* `frames` and at least one of `start`, `stop`, `step` to a
+            non-default value will raise a :exc:`ValueError`.
         verbose : bool, optional
             Turn on verbosity
-        reset_timestep : bool
+        reset_timestep : bool, optional
             Reset the timestep object after for each ``analysis_object``.
             Setting this to ``False`` can be useful if an ``analysis_object``
             is performing a trajectory manipulation which is also useful for the
@@ -490,8 +492,10 @@ class AnalysisBase(AnalysisCollection):
         step : int, optional
             number of frames to skip between each analysed frame
         frames : array_like, optional
-            array of integers or booleans to slice trajectory; cannot be
-            combined with `start`, `stop`, `step`
+            array of integers or booleans to slice trajectory; `frames` can
+            only be used *instead* of `start`, `stop`, and `step`. Setting
+            *both* `frames` and at least one of `start`, `stop`, `step` to a
+            non-default value will raise a :exc:`ValueError`.
 
             .. versionadded:: 2.2.0
 
@@ -559,10 +563,10 @@ class AnalysisBase(AnalysisCollection):
         step : int, optional
             number of frames to skip between each analysed frame
         frames : array_like, optional
-            array of integers or booleans to slice trajectory; ``frames`` can
-            only be used *instead* of ``start``, ``stop``, and ``step``. Setting
-            *both* `frames` and at least one of ``start``, ``stop``, ``step`` to a
-            non-default value will raise a :exc:``ValueError``.
+            array of integers or booleans to slice trajectory; `frames` can
+            only be used *instead* of `start`, `stop`, and `step`. Setting
+            *both* `frames` and at least one of `start`, `stop`, `step` to a
+            non-default value will raise a :exc:`ValueError`.
 
             .. versionadded:: 2.2.0
 

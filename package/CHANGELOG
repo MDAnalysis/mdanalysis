@@ -34,7 +34,7 @@ Fixes
     (Issue #3336)
 
 Enhancements
-  * Add a `AnalayisCollection` class to perform multiple analysis on the same
+  * Add an `AnalayisCollection` class to perform multiple analysis on the same
     trajectory (#3569, PR #4017).
   * Added AtomGroup TopologyAttr to calculate gyration moments (Issue #3904,
     PR #3905)
