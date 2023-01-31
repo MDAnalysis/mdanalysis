@@ -113,6 +113,7 @@ __all__ = [
     "PQR_icodes",  # PQR v2 with icodes
     "PDBQT_input",  # PDBQT
     "PDBQT_querypdb",
+    "PDB_multipole",
     "FASTA",  # sequence alignment, Issue 112 + 113
     "HELANAL_BENDING_MATRIX",  # HELANAL test (from PSF+DCD (AdK) helix 8)
     "HELANAL_BENDING_MATRIX_SUBSET", # As above, slice of frames 10 to 79
@@ -284,6 +285,7 @@ DCD2 = resource_filename(__name__, 'data/adk_dims2.dcd')
 
 PSF_NAMD = resource_filename(__name__, 'data/namd_cgenff.psf')
 PDB_NAMD = resource_filename(__name__, 'data/namd_cgenff.pdb')
+PDB_multipole = resource_filename(__name__, 'data/water_methane_acetic-acid_ammonia.pdb')
 PSF_NAMD_TRICLINIC = resource_filename(__name__, 'data/SiN_tric_namd.psf')
 DCD_NAMD_TRICLINIC = resource_filename(__name__, 'data/SiN_tric_namd.dcd')
 PSF_NAMD_GBIS = resource_filename(__name__, 'data/adk_closed_NAMD.psf')
