@@ -157,8 +157,12 @@ Versions prior to Gromacs 4.0.x are not supported.
 __author__ = "Zhuyi Xue"
 __copyright__ = "GNU Public Licence, v2"
 
-import xdrlib
+import warnings
 
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore",category=DeprecationWarning)
+    import xdrlib
+    
 from . import guessers
 from ..lib.util import openany
 from .tpr import utils as tpr_utils
