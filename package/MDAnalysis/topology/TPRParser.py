@@ -162,7 +162,7 @@ import warnings
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     import xdrlib
-    
+
 from . import guessers
 from ..lib.util import openany
 from .tpr import utils as tpr_utils
