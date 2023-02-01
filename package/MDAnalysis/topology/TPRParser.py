@@ -160,7 +160,7 @@ __copyright__ = "GNU Public Licence, v2"
 import warnings
 
 with warnings.catch_warnings():
-    warnings.filterwarnings("ignore",category=DeprecationWarning)
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
     import xdrlib
     
 from . import guessers
