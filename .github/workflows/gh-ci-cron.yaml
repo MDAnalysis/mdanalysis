@@ -54,7 +54,6 @@ jobs:
       run: |
         pip install --pre -U -i https://pypi.anaconda.org/scipy-wheels-nightly/simple scipy numpy h5py matplotlib
 
-
     - name: list_deps
       run: |
         mamba list
