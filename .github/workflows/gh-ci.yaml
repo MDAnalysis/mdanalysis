@@ -3,11 +3,9 @@ on:
   push:
     branches:
       - develop
-      - master
   pull_request:
     branches:
       - develop
-      - master
 
 concurrency:
   # Probably overly cautious group naming.
@@ -63,7 +61,7 @@ jobs:
               full-deps: false
               install_hole: false
               codecov: false
-              numpy: numpy=1.20.0
+              numpy: numpy=1.21.0
             - name: asv_check
               os: ubuntu-latest
               python-version: 3.8
@@ -91,7 +89,8 @@ jobs:
         channel-priority: flexible
         channels: conda-forge, bioconda
         add-pip-as-python-dependency: true
-        mamba-version: "*"
+        use-mamba: true
+        miniforge-variant: Mambaforge
         architecture: x64
 
     - name: install_deps
@@ -155,7 +154,8 @@ jobs:
         channels: conda-forge, bioconda
         add-pip-as-python-dependency: true
         architecture: x64
-        mamba-version: "*"
+        use-mamba: true
+        miniforge-variant: Mambaforge
 
     - name: install_deps
       uses: ./.github/actions/setup-deps
@@ -170,6 +170,12 @@ jobs:
         build-hole: false
         build-tests: false
         build-docs: true
+
+    - name: doctests
+      if: github.event_name == 'pull_request'
+      continue-on-error: true
+      run: |
+        cd package && sphinx-build -b doctest --keep-going ./doc/sphinx/source ./doc/html
 
     - name: deploy_docs
       if: github.event_name != 'pull_request'
@@ -226,67 +232,31 @@ jobs:
         git push -q upstream HEAD:gh-pages
 
 
-  pylint_check:
-    if: "github.repository == 'MDAnalysis/mdanalysis'"
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: setup_miniconda
-      uses: conda-incubator/setup-miniconda@v2
-      with:
-        python-version: 3.8
-        auto-update-conda: true
-        channel-priority: flexible
-        channels: conda-forge
-        add-pip-as-python-dependency: true
-        architecture: x64
-
-    - name: install
-      run: |
-        which pip
-        which python
-        pip install pylint
-
-    - name: pylint
-      env:
-        PYLINTRC: package/.pylintrc
-      run: |
-        pylint package/MDAnalysis && pylint testsuite/MDAnalysisTests
-
-
   pypi_check:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./package
 
     steps:
     - uses: actions/checkout@v3
 
-    - name: setup_miniconda
-      uses: conda-incubator/setup-miniconda@v2
+    - uses: actions/setup-python@v4
       with:
         python-version: 3.8
-        auto-update-conda: true
-        channel-priority: flexible
-        channels: conda-forge
-        add-pip-as-python-dependency: true
-        # mamba not enabled as install longer than deps install
-        architecture: x64
 
-    - name: install_pip_conda
+    - name: install_deps
       run: |
-        # Issue 3612 - readme_renderer is outdated on conda-forge
-        conda install setuptools cython numpy twine 
-        pip install "readme-renderer>=34.0"
+        python -m pip install twine "readme-renderer>=34.0"
 
-    - name: install_mdanalysis
+    - name: build_sdist
       run: |
-        cd package && python setup.py sdist
+        pipx run build --sdist
 
     - name: check_package_build
       run: |
-        DISTRIBUTION=$(ls -t1 package/dist/MDAnalysis-*.tar.gz | head -n 1)
-        test -n "${DISTRIBUTION}" || { echo "no distribution package/dist/MDAnalysis-*.tar.gz found"; exit 1; }
+        DISTRIBUTION=$(ls -t1 dist/MDAnalysis-*.tar.gz | head -n 1)
+        test -n "${DISTRIBUTION}" || { echo "no distribution dist/MDAnalysis-*.tar.gz found"; exit 1; }
         echo "twine check $DISTRIBUTION"
         twine check $DISTRIBUTION

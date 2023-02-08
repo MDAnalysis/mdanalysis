@@ -113,6 +113,7 @@ __all__ = [
     "PQR_icodes",  # PQR v2 with icodes
     "PDBQT_input",  # PDBQT
     "PDBQT_querypdb",
+    "PDB_multipole",
     "FASTA",  # sequence alignment, Issue 112 + 113
     "HELANAL_BENDING_MATRIX",  # HELANAL test (from PSF+DCD (AdK) helix 8)
     "HELANAL_BENDING_MATRIX_SUBSET", # As above, slice of frames 10 to 79
@@ -127,6 +128,10 @@ __all__ = [
     "TRIC",
     "XTC_multi_frame",
     "TRR_multi_frame",
+    "TNG_traj",  # TNG trajectory from GROMACS physical validation testsuite, longish trajectory
+    "TNG_traj_gro",  # topology for argon_npt_compressed_traj
+    "TNG_traj_uneven_blocks",  # TNG trajectory with pos and vel deposited on different strides
+    "TNG_traj_vels_forces",  # similar to above but with velocities and forces
     "merge_protein", "merge_ligand", "merge_water",
     "mol2_molecules", "mol2_molecule", "mol2_broken_molecule",
     "mol2_zinc", "mol2_comments_header", "mol2_ligand", "mol2_sodium_ion",
@@ -138,6 +143,7 @@ __all__ = [
     "LAMMPShyd", "LAMMPShyd2",
     "LAMMPSdata_deletedatoms",  # with deleted atoms
     "LAMMPSdata_triclinic", # lammpsdata file to test triclinic dimension parsing, albite with most atoms deleted
+    "LAMMPSdata_PairIJ",  # lammps datafile with a PairIJ Coeffs section
     "LAMMPSDUMP",
     "LAMMPSDUMP_long",  # lammpsdump file with a few zeros sprinkled in the first column first frame
     "LAMMPSDUMP_allcoords",  # lammpsdump file with all coordinate conventions (x,xs,xu,xsu) present, from LAMMPS rdf example
@@ -168,6 +174,7 @@ __all__ = [
     "Martini_membrane_gro", # for testing the leaflet finder
     "COORDINATES_XTC",
     "COORDINATES_TRR",
+    "COORDINATES_TNG",
     "COORDINATES_H5MD",
     "COORDINATES_DCD",
     "COORDINATES_TOPOLOGY",
@@ -261,6 +268,7 @@ COORDINATES_XYZ_BZ2 = resource_filename(
     __name__, 'data/coordinates/test.xyz.bz2')
 COORDINATES_XTC = resource_filename(__name__, 'data/coordinates/test.xtc')
 COORDINATES_TRR = resource_filename(__name__, 'data/coordinates/test.trr')
+COORDINATES_TNG = resource_filename(__name__, 'data/coordinates/test.tng')
 COORDINATES_H5MD = resource_filename(__name__, 'data/coordinates/test.h5md')
 COORDINATES_DCD = resource_filename(__name__, 'data/coordinates/test.dcd')
 COORDINATES_TOPOLOGY = resource_filename(__name__, 'data/coordinates/test_topology.pdb')
@@ -277,6 +285,7 @@ DCD2 = resource_filename(__name__, 'data/adk_dims2.dcd')
 
 PSF_NAMD = resource_filename(__name__, 'data/namd_cgenff.psf')
 PDB_NAMD = resource_filename(__name__, 'data/namd_cgenff.pdb')
+PDB_multipole = resource_filename(__name__, 'data/water_methane_acetic-acid_ammonia.pdb')
 PSF_NAMD_TRICLINIC = resource_filename(__name__, 'data/SiN_tric_namd.psf')
 DCD_NAMD_TRICLINIC = resource_filename(__name__, 'data/SiN_tric_namd.dcd')
 PSF_NAMD_GBIS = resource_filename(__name__, 'data/adk_closed_NAMD.psf')
@@ -336,7 +345,10 @@ XTC_multi_frame = resource_filename(
 TRR_multi_frame = resource_filename(
     __name__, 'data/trr_test_only_10_frame_10_atoms.trr'
 )
-
+TNG_traj = resource_filename(__name__, 'data/argon_npt_compressed.tng')
+TNG_traj_gro = resource_filename(__name__, 'data/argon_npt_compressed.gro.gz')
+TNG_traj_uneven_blocks = resource_filename(__name__, 'data/argon_npt_compressed_uneven.tng')
+TNG_traj_vels_forces = resource_filename(__name__, 'data/argon_npt_compressed_vels_forces.tng')
 PDB_xvf = resource_filename(__name__, 'data/cobrotoxin.pdb')
 TPR_xvf = resource_filename(__name__, 'data/cobrotoxin.tpr')
 TRR_xvf = resource_filename(__name__, 'data/cobrotoxin.trr')
@@ -504,6 +516,7 @@ LAMMPShyd = resource_filename(__name__, "data/lammps/hydrogen-class1.data")
 LAMMPShyd2 = resource_filename(__name__, "data/lammps/hydrogen-class1.data2")
 LAMMPSdata_deletedatoms = resource_filename(__name__, 'data/lammps/deletedatoms.data')
 LAMMPSdata_triclinic = resource_filename(__name__, "data/lammps/albite_triclinic.data")
+LAMMPSdata_PairIJ = resource_filename(__name__, "data/lammps/pairij_coeffs.data.bz2")
 LAMMPSDUMP = resource_filename(__name__, "data/lammps/wat.lammpstrj.bz2")
 LAMMPSDUMP_long = resource_filename(__name__, "data/lammps/wat.lammpstrj_long.bz2")
 LAMMPSDUMP_allcoords = resource_filename(__name__, "data/lammps/spce_all_coords.lammpstrj.bz2")

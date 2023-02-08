@@ -13,8 +13,56 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, BFedder, aya9aladdin,
-         jaclark5, jfennick, lilyminium, orbeckst
+??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae
+
+ * 2.5.0
+
+Fixes
+  * Fix element parsing from PSF files tests read via Parmed (Issue #4015)
+  * Fix test clobbering in lib/test_util.py (PR #4000)
+  * Fix MSD docs to use the correct error metric in example (Issue #3991)
+  * Add 'PairIJ Coeffs' to the list of sections in LAMMPSParser.py
+    (Issue #3336)
+
+Enhancements
+  * Nongaussian parameter available from msd.run(fft=False), (Issue #3895)
+  * Add pickling support for Atom, Residue, Segment, ResidueGroup 
+    and SegmentGroup. (PR #3953)
+
+Changes
+  * As per NEP29 the minimum supported NumPy version has been raised to 1.21
+    (note: in practice later versions of NumPy may be used depending on your
+     architecture, operating system, or Python version) (PR #3983)
+  * The deprecated direct indexing and `times` from the `results` attribute of
+    analysis.nucleicacids' NucPairDist and WatsonCrickDist classes has been
+    removed. Please use the `results.pair_distances` and `times` attributes
+    instead (Issue #3744)
+
+Deprecations
+
+
+01/04/23 IAlibay
+
+ * 2.4.2
+
+Fixes
+  * np.histogramdd calls in :class:`DensityAnalysis` now pass the `density`
+    argument rather than the NumPy 1.24 removed `normed` (PR #3976)
+  * visualization.streamlines_3D and visualization.streamlines no longer
+    rely on the scalar return of an numpy array elementwise comparison which
+    is no longer supported as of NumPy 1.25 (PR #3977)
+
+
+12/17/22 IAlibay
+
+ * 2.4.1
+
+Fixes
+* Fixes pyproject.toml minimum pin for biopython
+
+
+12/16/22 IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, BFedder, aya9aladdin,
+         jaclark5, jfennick, lilyminium, orbeckst, Hakarishirenai
 
  * 2.4.0
 
@@ -41,7 +89,11 @@ Fixes
     (e.g. bonds, angles) (PR #3779).
 
 Enhancements
-  * Nongaussian parameter available from msd.run(fft=False), (Issue #3895)
+  * Added dipole and quadrupole moment topology methods to AtomGroup
+    (Issue #3841, PR #3842)
+  * MDAnalysis now follows PEP621 (PR #3528)
+  * Added a reader for GROMACS TNG files based on PyTNG (PR #3765,
+    Issue #3237, partially addressing Issue #865) 
   * Added ability for hbond analysis to use types when resnames are not 
     present (Issue #3847)
   * Added explanatory warnings when hbond analysis doesn't find any hbonds
@@ -92,6 +144,9 @@ Changes
   * adding element attribute to TXYZParser if all atom names are valid element symbols (PR #3826)
 
 Deprecations
+  * Direct indexing of results in analysis.nucleicacids' NucPairDist
+    and WatsonCrickDist classes is deprecated and will be removed in 2.5.0.
+    Please use `results.pair_distances` instead (Issue #3744)
   * Deprecated analysis.align.sequence_alignment() for removal in 3.0 (#3950)
   * Add deprecation warning for `timestep` copying in DCDReader
     (Issue #3889, PR #3888)
