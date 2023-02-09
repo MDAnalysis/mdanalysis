@@ -18,6 +18,8 @@ The rules for this file:
  * 2.5.0
 
 Fixes
+  * Allows shape_parameter and asphericity to yield per residue quantities
+    (Issue #3002, PR #3905)
   * Fix element parsing from PSF files tests read via Parmed (Issue #4015)
   * Fix test clobbering in lib/test_util.py (PR #4000)
   * Fix MSD docs to use the correct error metric in example (Issue #3991)
@@ -25,6 +27,8 @@ Fixes
     (Issue #3336)
 
 Enhancements
+  * Added AtomGroup TopologyAttr to calculate gyration moments (Issue #3904,
+    PR #3905)
   * Add pickling support for Atom, Residue, Segment, ResidueGroup 
     and SegmentGroup. (PR #3953)
 
