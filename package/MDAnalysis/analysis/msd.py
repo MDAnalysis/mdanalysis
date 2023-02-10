@@ -346,7 +346,8 @@ class EinsteinMSD(AnalysisBase):
                                                   self.n_particles))
         self._position_array = np.zeros(
             (self.n_frames, self.n_particles, self.dim_fac))
-        # self.results.timeseries not set here
+        # set the position array here to remove _single_frame from msd.py 
+        self.results.timeseries = self._position_array
 
     def _parse_msd_type(self):
         r""" Sets up the desired dimensionality of the MSD.
@@ -365,21 +366,6 @@ class EinsteinMSD(AnalysisBase):
                 'xy, xz, yz, x, y, z'.format(self.msd_type))
 
         self.dim_fac = len(self._dim)
-
-    
-        r""" Constructs array of positions for MSD calculation.
-
-        """
-        # shape of position array set here, use span in last dimension
-        # from this point on
-        # creating new function _single_frame_byReader for calling _single_frame 
-        # by reader.timeseries() method
-    def _single_frame_byReader(self):
-        self.reader.timeseries.append(self.function(*self.args,
-                                                     **self.kwargs))
-    def _single_frame_byReader(self):
-        self._position_array[self._frame_index] = (
-            self.ag.positions[:, self._dim])
                 
     def _conclude(self):
         if self.fft:
