@@ -245,7 +245,8 @@ def rotation_matrix(a, b, weights=None):
     `R` can be used as an argument for
     :meth:`MDAnalysis.core.groups.AtomGroup.rotate` to generate a rotated
     selection, e.g. ::
-
+    >>> A = mda.Universe('topol.tpr','traj.trr')
+    >>> B = mda.Universe('topol.tpr','traj.trr')
     >>> R = rotation_matrix(A.select_atoms('backbone').positions,
     >>>                     B.select_atoms('backbone').positions)[0]
     >>> A.atoms.rotate(R)
