@@ -88,7 +88,7 @@ def make_downshift_arrays(upshift, nparents):
     --------
 
     To find the residue to atom mappings for a given atom to residue mapping:
-    
+
     >>> import numpy as np
     >>> import MDAnalysis as mda
     >>> from MDAnalysis.core.topology import make_downshift_arrays
