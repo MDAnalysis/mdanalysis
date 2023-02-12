@@ -1,47 +1,25 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>4.7.2.1. Radial Distribution Functions — MDAnalysis.analysis.rdf &mdash; MDAnalysis 2.5.0-dev0 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 2.5.0-dev0 documentation"
           href="../../_static/opensearch.xml"/>
@@ -51,52 +29,29 @@
     <link rel="prev" title="4.7.1.3. Dihedral angles analysis — MDAnalysis.analysis.dihedrals" href="dihedrals.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-          
 
           
-            <a href="../../index.html" class="icon icon-home"> MDAnalysis
           
-
-          
+          <a href="../../index.html">
+            
+              <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
           </a>
-
-          
-            
-            
               <div class="version">
                 2.5.0-dev0
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
@@ -158,75 +113,33 @@
 <li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">MDAnalysis</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../analysis_modules.html"><span class="section-number">4. </span>Analysis modules</a> &raquo;</li>
-        
-      <li><span class="section-number">4.7.2.1. </span>Radial Distribution Functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rdf</span></code></li>
-    
-    
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../analysis_modules.html"><span class="section-number">4. </span>Analysis modules</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">4.7.2.1. </span>Radial Distribution Functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rdf</span></code></li>
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../../_sources/documentation_pages/analysis/rdf.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <span class="target" id="module-MDAnalysis.analysis.rdf"></span><section id="radial-distribution-functions-mdanalysis-analysis-rdf">
-<h1><span class="section-number">4.7.2.1. </span>Radial Distribution Functions — <a class="reference internal" href="#module-MDAnalysis.analysis.rdf" title="MDAnalysis.analysis.rdf"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rdf</span></code></a><a class="headerlink" href="#radial-distribution-functions-mdanalysis-analysis-rdf" title="Permalink to this heading">¶</a></h1>
+<h1><span class="section-number">4.7.2.1. </span>Radial Distribution Functions — <a class="reference internal" href="#module-MDAnalysis.analysis.rdf" title="MDAnalysis.analysis.rdf"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rdf</span></code></a><a class="headerlink" href="#radial-distribution-functions-mdanalysis-analysis-rdf" title="Permalink to this heading"></a></h1>
 <p>This module contains two classes to calculate radial
 <a class="reference external" href="https://en.wikipedia.org/wiki/Pair_distribution_function">pair distribution functions</a> (<a class="reference external" href="https://en.wikipedia.org/wiki/Radial_distribution_function">radial distribution functions</a> or “RDF”).
 The RDF <span class="math notranslate nohighlight">\(g_{ab}(r)\)</span> between types of particles <span class="math notranslate nohighlight">\(a\)</span> and <span class="math notranslate nohighlight">\(b\)</span> is</p>
@@ -254,7 +167,7 @@ in a shell at distance <span class="math notranslate nohighlight">\(r\)</span> a
 </section>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rdf.InterRDF">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.rdf.</span></span><span class="sig-name descname"><span class="pre">InterRDF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">g2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">75</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">15.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rdf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclusion_block</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rdf.html#InterRDF"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.rdf.</span></span><span class="sig-name descname"><span class="pre">InterRDF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">g2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">75</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">15.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rdf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclusion_block</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rdf.html#InterRDF"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF" title="Permalink to this definition"></a></dt>
 <dd><p>Radial distribution function</p>
 <p><a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF" title="MDAnalysis.analysis.rdf.InterRDF"><code class="xref py py-class docutils literal notranslate"><span class="pre">InterRDF</span></code></a> is a tool to calculate average radial distribution
 functions between two groups of atoms. Suppose we have two AtomGroups <code class="docutils literal notranslate"><span class="pre">A</span></code>
@@ -293,7 +206,7 @@ particles occurences in each spherical shell.</p>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rdf.InterRDF.results.bins">
-<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">bins</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.results.bins" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">bins</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.results.bins" title="Permalink to this definition"></a></dt>
 <dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the centers of the <cite>nbins</cite> histogram
 bins.</p>
 <div class="versionadded">
@@ -308,7 +221,7 @@ bins.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rdf.InterRDF.bins">
-<span class="sig-name descname"><span class="pre">bins</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.bins" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">bins</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.bins" title="Permalink to this definition"></a></dt>
 <dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.results.bins" title="MDAnalysis.analysis.rdf.InterRDF.results.bins"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.bins</span></code></a> attribute.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.0.0: </span>This attribute will be removed in 3.0.0.
@@ -323,7 +236,7 @@ Use <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.result
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rdf.InterRDF.results.edges">
-<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">edges</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.results.edges" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">edges</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.results.edges" title="Permalink to this definition"></a></dt>
 <dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the <cite>nbins + 1</cite> edges of the histogram
 bins.</p>
 <blockquote>
@@ -340,7 +253,7 @@ bins.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rdf.InterRDF.edges">
-<span class="sig-name descname"><span class="pre">edges</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.edges" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">edges</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.edges" title="Permalink to this definition"></a></dt>
 <dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.results.edges" title="MDAnalysis.analysis.rdf.InterRDF.results.edges"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.edges</span></code></a> attribute.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.0.0: </span>This attribute will be removed in 3.0.0.
@@ -355,7 +268,7 @@ Use <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.result
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rdf.InterRDF.results.rdf">
-<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">rdf</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.results.rdf" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">rdf</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.results.rdf" title="Permalink to this definition"></a></dt>
 <dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the <a class="reference internal" href="#equation-gab"><span class="std std-ref">radial distribution
 function</span></a> values for the <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.bins</span></code>.</p>
 <blockquote>
@@ -372,7 +285,7 @@ function</span></a> values for the <code class="xref py py-attr docutils literal
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rdf.InterRDF.rdf">
-<span class="sig-name descname"><span class="pre">rdf</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.rdf" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">rdf</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.rdf" title="Permalink to this definition"></a></dt>
 <dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.results.rdf" title="MDAnalysis.analysis.rdf.InterRDF.results.rdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rdf</span></code></a> attribute.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.0.0: </span>This attribute will be removed in 3.0.0.
@@ -387,7 +300,7 @@ Use <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.result
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rdf.InterRDF.results.count">
-<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">count</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.results.count" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">count</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.results.count" title="Permalink to this definition"></a></dt>
 <dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> representing the radial histogram, i.e.,
 the raw counts, for all <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.bins</span></code>.</p>
 <blockquote>
@@ -404,7 +317,7 @@ the raw counts, for all <code class="xref py py-attr docutils literal notranslat
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rdf.InterRDF.count">
-<span class="sig-name descname"><span class="pre">count</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.count" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">count</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.count" title="Permalink to this definition"></a></dt>
 <dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.results.count" title="MDAnalysis.analysis.rdf.InterRDF.results.count"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.count</span></code></a> attribute.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.0.0: </span>This attribute will be removed in 3.0.0.
@@ -448,7 +361,7 @@ of the <cite>results</cite> attribute of
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rdf.InterRDF_s">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.rdf.</span></span><span class="sig-name descname"><span class="pre">InterRDF_s</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">75</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">15.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rdf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rdf.html#InterRDF_s"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.rdf.</span></span><span class="sig-name descname"><span class="pre">InterRDF_s</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">75</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">15.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rdf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rdf.html#InterRDF_s"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s" title="Permalink to this definition"></a></dt>
 <dd><p>Site-specific radial distribution function</p>
 <p>Calculates site-specific radial distribution
 functions. Instead of two groups of atoms it takes as input a list of
@@ -500,7 +413,7 @@ documented.</p>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rdf.InterRDF_s.results.bins">
-<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">bins</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.bins" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">bins</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.bins" title="Permalink to this definition"></a></dt>
 <dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the centers of the <cite>nbins</cite> histogram
 bins; all individual site-specific RDFs have the same bins.</p>
 <div class="versionadded">
@@ -515,7 +428,7 @@ bins; all individual site-specific RDFs have the same bins.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rdf.InterRDF_s.bins">
-<span class="sig-name descname"><span class="pre">bins</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.bins" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">bins</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.bins" title="Permalink to this definition"></a></dt>
 <dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.bins" title="MDAnalysis.analysis.rdf.InterRDF_s.results.bins"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.bins</span></code></a> attribute.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.0.0: </span>This attribute will be removed in 3.0.0.
@@ -530,7 +443,7 @@ Use <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.resu
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rdf.InterRDF_s.results.edges">
-<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">edges</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.edges" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">edges</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.edges" title="Permalink to this definition"></a></dt>
 <dd><p>array of the <code class="docutils literal notranslate"><span class="pre">nbins</span> <span class="pre">+</span> <span class="pre">1</span></code> edges of the histogram
 bins; all individual site-specific RDFs have the same bins.</p>
 <div class="versionadded">
@@ -545,7 +458,7 @@ bins; all individual site-specific RDFs have the same bins.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rdf.InterRDF_s.edges">
-<span class="sig-name descname"><span class="pre">edges</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.edges" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">edges</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.edges" title="Permalink to this definition"></a></dt>
 <dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.edges" title="MDAnalysis.analysis.rdf.InterRDF_s.results.edges"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.edges</span></code></a> attribute.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.0.0: </span>This attribute will be removed in 3.0.0.
@@ -560,7 +473,7 @@ Use <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.resu
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rdf.InterRDF_s.results.rdf">
-<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">rdf</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.rdf" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">rdf</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.rdf" title="Permalink to this definition"></a></dt>
 <dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of the site-specific <a class="reference internal" href="#equation-gab"><span class="std std-ref">radial distribution
 functions</span></a> if <cite>norm=’rdf’</cite> or <a class="reference internal" href="#equation-nab"><span class="std std-ref">density
 functions</span></a> for the <code class="xref py py-attr docutils literal notranslate"><span class="pre">bins</span></code>
@@ -582,7 +495,7 @@ and <code class="docutils literal notranslate"><span class="pre">B[2]</span></co
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rdf.InterRDF_s.rdf">
-<span class="sig-name descname"><span class="pre">rdf</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.rdf" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">rdf</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.rdf" title="Permalink to this definition"></a></dt>
 <dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.rdf" title="MDAnalysis.analysis.rdf.InterRDF_s.results.rdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rdf</span></code></a> attribute.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.0.0: </span>This attribute will be removed in 3.0.0.
@@ -597,7 +510,7 @@ Use <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.resu
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rdf.InterRDF_s.results.count">
-<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">count</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.count" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">count</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.count" title="Permalink to this definition"></a></dt>
 <dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of the site-specific radial histograms, i.e., the
 raw counts, for all <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.bins</span></code>. The data have the same
 structure as <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rdf</span></code> except that the arrays contain
@@ -614,7 +527,7 @@ the raw counts.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rdf.InterRDF_s.count">
-<span class="sig-name descname"><span class="pre">count</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.count" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">count</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.count" title="Permalink to this definition"></a></dt>
 <dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.count" title="MDAnalysis.analysis.rdf.InterRDF_s.results.count"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.count</span></code></a> attribute.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.0.0: </span>This attribute will be removed in 3.0.0.
@@ -629,7 +542,7 @@ Use <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.resu
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rdf.InterRDF_s.results.cdf">
-<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">cdf</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.cdf" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">cdf</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.cdf" title="Permalink to this definition"></a></dt>
 <dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of the site-specific <a class="reference internal" href="#equation-countab"><span class="std std-ref">cumulative
 counts</span></a>, for all <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.bins</span></code>. The data
 have the same structure as <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rdf</span></code> except that the arrays
@@ -647,7 +560,7 @@ contain the cumulative counts.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rdf.InterRDF_s.cdf">
-<span class="sig-name descname"><span class="pre">cdf</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.cdf" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">cdf</span></span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.cdf" title="Permalink to this definition"></a></dt>
 <dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.cdf" title="MDAnalysis.analysis.rdf.InterRDF_s.results.cdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.cdf</span></code></a> attribute.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.0.0: </span>This attribute will be removed in 3.0.0.
@@ -719,7 +632,7 @@ of <code class="xref py py-class docutils literal notranslate"><span class="pre"
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.rdf.InterRDF_s.get_cdf">
-<span class="sig-name descname"><span class="pre">get_cdf</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rdf.html#InterRDF_s.get_cdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.get_cdf" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_cdf</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rdf.html#InterRDF_s.get_cdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.get_cdf" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate the cumulative counts for all sites.</p>
 <p>This is the <a class="reference internal" href="#equation-countab"><span class="std std-ref">cumulative count</span></a> within a given
 radius, i.e., <span class="math notranslate nohighlight">\(N_{ab}(r)\)</span>.</p>
@@ -740,22 +653,19 @@ radius, i.e., <span class="math notranslate nohighlight">\(N_{ab}(r)\)</span>.</
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="msd.html" class="btn btn-neutral float-right" title="4.7.2.2. Mean Squared Displacement — MDAnalysis.analysis.msd" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="dihedrals.html" class="btn btn-neutral float-left" title="4.7.1.3. Dihedral angles analysis — MDAnalysis.analysis.dihedrals" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="msd.html" class="btn btn-neutral float-right" title="4.7.2.2. Mean Squared Displacement — MDAnalysis.analysis.msd" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2005-2023, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Mikhail Glagolev, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.
-
-    </p>
+    <p>&#169; Copyright 2005-2023, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Mikhail Glagolev, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
   </div>
+
+  
  
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
@@ -768,9 +678,7 @@ radius, i.e., <span class="math notranslate nohighlight">\(N_{ab}(r)\)</span>.</
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
   <script>
     var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
@@ -790,18 +698,11 @@ radius, i.e., <span class="math notranslate nohighlight">\(N_{ab}(r)\)</span>.</
         </dl>
 
     </div>
-</div>
-
-  <script type="text/javascript">
+</div><script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

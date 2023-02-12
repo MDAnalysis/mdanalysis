@@ -1,46 +1,24 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>4.5.1. Nucleic acid analysis — MDAnalysis.analysis.nuclinfo &mdash; MDAnalysis 2.5.0-dev0 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script src="../../_static/js/versions.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 2.5.0-dev0 documentation"
           href="../../_static/opensearch.xml"/>
@@ -50,52 +28,29 @@
     <link rel="prev" title="4.4.2. Leaflet identification — MDAnalysis.analysis.leaflet" href="leaflet.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-          
 
           
-            <a href="../../index.html" class="icon icon-home"> MDAnalysis
           
-
-          
+          <a href="../../index.html">
+            
+              <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
           </a>
-
-          
-            
-            
               <div class="version">
                 2.5.0-dev0
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
@@ -147,75 +102,33 @@
 <li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">MDAnalysis</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../analysis_modules.html"><span class="section-number">4. </span>Analysis modules</a> &raquo;</li>
-        
-      <li><span class="section-number">4.5.1. </span>Nucleic acid analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.nuclinfo</span></code></li>
-    
-    
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../analysis_modules.html"><span class="section-number">4. </span>Analysis modules</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">4.5.1. </span>Nucleic acid analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.nuclinfo</span></code></li>
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../../_sources/documentation_pages/analysis/nuclinfo.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <span class="target" id="module-MDAnalysis.analysis.nuclinfo"></span><section id="nucleic-acid-analysis-mdanalysis-analysis-nuclinfo">
-<h1><span class="section-number">4.5.1. </span>Nucleic acid analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.nuclinfo" title="MDAnalysis.analysis.nuclinfo"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.nuclinfo</span></code></a><a class="headerlink" href="#nucleic-acid-analysis-mdanalysis-analysis-nuclinfo" title="Permalink to this heading">¶</a></h1>
+<h1><span class="section-number">4.5.1. </span>Nucleic acid analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.nuclinfo" title="MDAnalysis.analysis.nuclinfo"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.nuclinfo</span></code></a><a class="headerlink" href="#nucleic-acid-analysis-mdanalysis-analysis-nuclinfo" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Elizabeth Denning</p>
@@ -254,10 +167,10 @@ nucleic acids and atom names.</p>
 </div>
 </div>
 <section id="distances">
-<h2><span class="section-number">4.5.1.1. </span>Distances<a class="headerlink" href="#distances" title="Permalink to this heading">¶</a></h2>
+<h2><span class="section-number">4.5.1.1. </span>Distances<a class="headerlink" href="#distances" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.nuclinfo.wc_pair">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nuclinfo.</span></span><span class="sig-name descname"><span class="pre">wc_pair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SYSTEM'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SYSTEM'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#wc_pair"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.wc_pair" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nuclinfo.</span></span><span class="sig-name descname"><span class="pre">wc_pair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SYSTEM'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SYSTEM'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#wc_pair"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.wc_pair" title="Permalink to this definition"></a></dt>
 <dd><p>Watson-Crick basepair distance for residue <cite>i</cite> with residue <cite>bp</cite>.</p>
 <p>The distance of the nitrogen atoms in a Watson-Crick hydrogen bond is
 computed.</p>
@@ -287,7 +200,7 @@ computed.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.nuclinfo.minor_pair">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nuclinfo.</span></span><span class="sig-name descname"><span class="pre">minor_pair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SYSTEM'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SYSTEM'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#minor_pair"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.minor_pair" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nuclinfo.</span></span><span class="sig-name descname"><span class="pre">minor_pair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SYSTEM'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SYSTEM'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#minor_pair"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.minor_pair" title="Permalink to this definition"></a></dt>
 <dd><p>Minor-Groove basepair distance for residue <cite>i</cite> with residue <cite>bp</cite>.</p>
 <p>The distance of the nitrogen and oxygen atoms in a Minor-groove hydrogen
 bond is computed.</p>
@@ -317,7 +230,7 @@ bond is computed.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.nuclinfo.major_pair">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nuclinfo.</span></span><span class="sig-name descname"><span class="pre">major_pair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SYSTEM'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SYSTEM'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#major_pair"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.major_pair" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nuclinfo.</span></span><span class="sig-name descname"><span class="pre">major_pair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SYSTEM'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SYSTEM'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#major_pair"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.major_pair" title="Permalink to this definition"></a></dt>
 <dd><p>Major-Groove basepair distance for residue <cite>i</cite> with residue <cite>bp</cite>.</p>
 <p>The distance of the nitrogen and oxygen atoms in a Major-groove hydrogen
 bond is computed.</p>
@@ -347,10 +260,10 @@ bond is computed.</p>
 
 </section>
 <section id="phases">
-<h2><span class="section-number">4.5.1.2. </span>Phases<a class="headerlink" href="#phases" title="Permalink to this heading">¶</a></h2>
+<h2><span class="section-number">4.5.1.2. </span>Phases<a class="headerlink" href="#phases" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.nuclinfo.phase_cp">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nuclinfo.</span></span><span class="sig-name descname"><span class="pre">phase_cp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#phase_cp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.phase_cp" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nuclinfo.</span></span><span class="sig-name descname"><span class="pre">phase_cp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#phase_cp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.phase_cp" title="Permalink to this definition"></a></dt>
 <dd><p>Pseudo-angle describing the phase of the ribose pucker for residue <cite>i</cite> using the CP method.</p>
 <p>The angle is computed by the positions of atoms in the ribose ring.</p>
 <dl class="field-list simple">
@@ -375,7 +288,7 @@ bond is computed.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.nuclinfo.phase_as">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nuclinfo.</span></span><span class="sig-name descname"><span class="pre">phase_as</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#phase_as"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.phase_as" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nuclinfo.</span></span><span class="sig-name descname"><span class="pre">phase_as</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#phase_as"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.phase_as" title="Permalink to this definition"></a></dt>
 <dd><p>Pseudo-angle describing the phase of the ribose pucker for residue <cite>i</cite> using the AS method</p>
 <p>The angle is computed by the position vector of atoms in the ribose ring.</p>
 <dl class="field-list simple">
@@ -400,10 +313,10 @@ bond is computed.</p>
 
 </section>
 <section id="dihedral-angles">
-<h2><span class="section-number">4.5.1.3. </span>Dihedral angles<a class="headerlink" href="#dihedral-angles" title="Permalink to this heading">¶</a></h2>
+<h2><span class="section-number">4.5.1.3. </span>Dihedral angles<a class="headerlink" href="#dihedral-angles" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.nuclinfo.tors">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nuclinfo.</span></span><span class="sig-name descname"><span class="pre">tors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nuclinfo.</span></span><span class="sig-name descname"><span class="pre">tors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors" title="Permalink to this definition"></a></dt>
 <dd><p>Calculation of nucleic backbone dihedral angles.</p>
 <p>The dihedral angles are alpha, beta, gamma, delta, epsilon, zeta, chi.</p>
 <p>The dihedral is computed based on position of atoms for resid <cite>i</cite>.</p>
@@ -431,7 +344,7 @@ bond is computed.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.nuclinfo.tors_alpha">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nuclinfo.</span></span><span class="sig-name descname"><span class="pre">tors_alpha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors_alpha"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors_alpha" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nuclinfo.</span></span><span class="sig-name descname"><span class="pre">tors_alpha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors_alpha"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors_alpha" title="Permalink to this definition"></a></dt>
 <dd><p>alpha backbone dihedral</p>
 <p>The dihedral is computed based on position atoms for resid <cite>i</cite>.</p>
 <dl class="field-list simple">
@@ -456,7 +369,7 @@ bond is computed.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.nuclinfo.tors_beta">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nuclinfo.</span></span><span class="sig-name descname"><span class="pre">tors_beta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors_beta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors_beta" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nuclinfo.</span></span><span class="sig-name descname"><span class="pre">tors_beta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors_beta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors_beta" title="Permalink to this definition"></a></dt>
 <dd><p>beta  backbone dihedral</p>
 <p>The dihedral is computed based on position atoms for resid <cite>i</cite>.</p>
 <dl class="field-list simple">
@@ -481,7 +394,7 @@ bond is computed.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.nuclinfo.tors_gamma">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nuclinfo.</span></span><span class="sig-name descname"><span class="pre">tors_gamma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors_gamma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors_gamma" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nuclinfo.</span></span><span class="sig-name descname"><span class="pre">tors_gamma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors_gamma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors_gamma" title="Permalink to this definition"></a></dt>
 <dd><p>Gamma backbone dihedral</p>
 <p>The dihedral is computed based on position atoms for resid <cite>i</cite>.</p>
 <dl class="field-list simple">
@@ -506,7 +419,7 @@ bond is computed.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.nuclinfo.tors_delta">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nuclinfo.</span></span><span class="sig-name descname"><span class="pre">tors_delta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors_delta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors_delta" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nuclinfo.</span></span><span class="sig-name descname"><span class="pre">tors_delta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors_delta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors_delta" title="Permalink to this definition"></a></dt>
 <dd><p>delta backbone dihedral</p>
 <p>The dihedral is computed based on position atoms for resid <cite>i</cite>.</p>
 <dl class="field-list simple">
@@ -531,7 +444,7 @@ bond is computed.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.nuclinfo.tors_eps">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nuclinfo.</span></span><span class="sig-name descname"><span class="pre">tors_eps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors_eps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors_eps" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nuclinfo.</span></span><span class="sig-name descname"><span class="pre">tors_eps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors_eps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors_eps" title="Permalink to this definition"></a></dt>
 <dd><p>Epsilon backbone dihedral</p>
 <p>The dihedral is computed based on position atoms for resid <cite>i</cite>.</p>
 <dl class="field-list simple">
@@ -556,7 +469,7 @@ bond is computed.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.nuclinfo.tors_zeta">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nuclinfo.</span></span><span class="sig-name descname"><span class="pre">tors_zeta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors_zeta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors_zeta" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nuclinfo.</span></span><span class="sig-name descname"><span class="pre">tors_zeta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors_zeta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors_zeta" title="Permalink to this definition"></a></dt>
 <dd><p>Zeta backbone dihedral</p>
 <p>The dihedral is computed based on position atoms for resid <cite>i</cite>.</p>
 <dl class="field-list simple">
@@ -581,7 +494,7 @@ bond is computed.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.nuclinfo.tors_chi">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nuclinfo.</span></span><span class="sig-name descname"><span class="pre">tors_chi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors_chi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors_chi" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nuclinfo.</span></span><span class="sig-name descname"><span class="pre">tors_chi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors_chi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors_chi" title="Permalink to this definition"></a></dt>
 <dd><p>chi nucleic acid dihedral</p>
 <blockquote>
 <div><p>The dihedral is computed based on position atoms for resid <cite>i</cite>.</p>
@@ -608,7 +521,7 @@ bond is computed.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.nuclinfo.hydroxyl">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nuclinfo.</span></span><span class="sig-name descname"><span class="pre">hydroxyl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#hydroxyl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.hydroxyl" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nuclinfo.</span></span><span class="sig-name descname"><span class="pre">hydroxyl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#hydroxyl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.hydroxyl" title="Permalink to this definition"></a></dt>
 <dd><p>2-hydroxyl dihedral. Useful only for RNA calculations.</p>
 <blockquote>
 <div><div class="admonition note">
@@ -640,7 +553,7 @@ namely “C1’, C2’, O2’, H2’”.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.nuclinfo.pseudo_dihe_baseflip">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nuclinfo.</span></span><span class="sig-name descname"><span class="pre">pseudo_dihe_baseflip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bp1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bp2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SYSTEM'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SYSTEM'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg3</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SYSTEM'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#pseudo_dihe_baseflip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.pseudo_dihe_baseflip" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.nuclinfo.</span></span><span class="sig-name descname"><span class="pre">pseudo_dihe_baseflip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bp1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bp2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SYSTEM'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SYSTEM'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg3</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SYSTEM'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#pseudo_dihe_baseflip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.pseudo_dihe_baseflip" title="Permalink to this definition"></a></dt>
 <dd><p>pseudo dihedral for flipped bases. Useful only for nucleic acid base flipping</p>
 <p>The dihedral is computed based on position atoms for resid <cite>i</cite></p>
 <div class="admonition note">
@@ -678,22 +591,19 @@ trajectory</p></li>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="nucleicacids.html" class="btn btn-neutral float-right" title="4.5.2. Updated nucleic acid analysis — MDAnalysis.analysis.nucleicacids" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="leaflet.html" class="btn btn-neutral float-left" title="4.4.2. Leaflet identification — MDAnalysis.analysis.leaflet" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="nucleicacids.html" class="btn btn-neutral float-right" title="4.5.2. Updated nucleic acid analysis — MDAnalysis.analysis.nucleicacids" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2005-2023, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Mikhail Glagolev, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.
-
-    </p>
+    <p>&#169; Copyright 2005-2023, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Mikhail Glagolev, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
   </div>
+
+  
  
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
@@ -706,9 +616,7 @@ trajectory</p></li>
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
   <script>
     var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
@@ -728,18 +636,11 @@ trajectory</p></li>
         </dl>
 
     </div>
-</div>
-
-  <script type="text/javascript">
+</div><script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

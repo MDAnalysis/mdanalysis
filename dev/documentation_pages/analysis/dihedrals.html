@@ -1,47 +1,25 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>4.7.1.3. Dihedral angles analysis — MDAnalysis.analysis.dihedrals &mdash; MDAnalysis 2.5.0-dev0 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 2.5.0-dev0 documentation"
           href="../../_static/opensearch.xml"/>
@@ -51,52 +29,29 @@
     <link rel="prev" title="4.7.1.2. HELANAL — analysis of protein helices" href="helix_analysis.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-          
 
           
-            <a href="../../index.html" class="icon icon-home"> MDAnalysis
           
-
-          
+          <a href="../../index.html">
+            
+              <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
           </a>
-
-          
-            
-            
               <div class="version">
                 2.5.0-dev0
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
@@ -148,75 +103,33 @@
 <li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">MDAnalysis</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../analysis_modules.html"><span class="section-number">4. </span>Analysis modules</a> &raquo;</li>
-        
-      <li><span class="section-number">4.7.1.3. </span>Dihedral angles analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals</span></code></li>
-    
-    
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../analysis_modules.html"><span class="section-number">4. </span>Analysis modules</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">4.7.1.3. </span>Dihedral angles analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals</span></code></li>
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../../_sources/documentation_pages/analysis/dihedrals.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <span class="target" id="module-MDAnalysis.analysis.dihedrals"></span><section id="dihedral-angles-analysis-mdanalysis-analysis-dihedrals">
-<h1><span class="section-number">4.7.1.3. </span>Dihedral angles analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.dihedrals" title="MDAnalysis.analysis.dihedrals"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals</span></code></a><a class="headerlink" href="#dihedral-angles-analysis-mdanalysis-analysis-dihedrals" title="Permalink to this heading">¶</a></h1>
+<h1><span class="section-number">4.7.1.3. </span>Dihedral angles analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.dihedrals" title="MDAnalysis.analysis.dihedrals"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals</span></code></a><a class="headerlink" href="#dihedral-angles-analysis-mdanalysis-analysis-dihedrals" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Henry Mull</p>
@@ -246,9 +159,9 @@ These plots are best used as references, but they also allow for user customizat
 </dl>
 </div>
 <section id="example-applications">
-<h2><span class="section-number">4.7.1.3.1. </span>Example applications<a class="headerlink" href="#example-applications" title="Permalink to this heading">¶</a></h2>
+<h2><span class="section-number">4.7.1.3.1. </span>Example applications<a class="headerlink" href="#example-applications" title="Permalink to this heading"></a></h2>
 <section id="general-dihedral-analysis">
-<h3><span class="section-number">4.7.1.3.1.1. </span>General dihedral analysis<a class="headerlink" href="#general-dihedral-analysis" title="Permalink to this heading">¶</a></h3>
+<h3><span class="section-number">4.7.1.3.1.1. </span>General dihedral analysis<a class="headerlink" href="#general-dihedral-analysis" title="Permalink to this heading"></a></h3>
 <p>The <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Dihedral" title="MDAnalysis.analysis.dihedrals.Dihedral"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dihedral</span></code></a> class is useful for calculating
 angles for many dihedrals of interest. For example, we can find the phi angles
 for residues 5-10 of adenylate kinase (AdK). The trajectory is included within
@@ -267,7 +180,7 @@ the test data files:</p>
 <p>The angles can then be accessed with <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Dihedral.results.angles" title="MDAnalysis.analysis.dihedrals.Dihedral.results.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Dihedral.results.angles</span></code></a>.</p>
 </section>
 <section id="ramachandran-analysis">
-<h3><span class="section-number">4.7.1.3.1.2. </span>Ramachandran analysis<a class="headerlink" href="#ramachandran-analysis" title="Permalink to this heading">¶</a></h3>
+<h3><span class="section-number">4.7.1.3.1.2. </span>Ramachandran analysis<a class="headerlink" href="#ramachandran-analysis" title="Permalink to this heading"></a></h3>
 <p>The <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Ramachandran" title="MDAnalysis.analysis.dihedrals.Ramachandran"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ramachandran</span></code></a> class allows for the
 quick calculation of classical Ramachandran plots <span id="id1">[<a class="reference internal" href="#id45" title="G.N. Ramachandran, C. Ramakrishnan, and V. Sasisekharan. Stereochemistry of polypeptide chain configurations. Journal of Molecular Biology, 7(1):95-99, 1963. URL: https://www.sciencedirect.com/science/article/pii/S0022283663800236, doi:https://doi.org/10.1016/S0022-2836(63)80023-6.">Ramachandran1963</a>]</span> in
 the backbone <span class="math notranslate nohighlight">\(phi\)</span> and <span class="math notranslate nohighlight">\(psi\)</span> angles. Unlike the
@@ -293,7 +206,7 @@ residues. The previous example can repeated with:</p>
 <figcaption>
 <p><span class="caption-text">Ramachandran plot for residues 5 to 10 of AdK, sampled from the AdK test
 trajectory (XTC). The contours in the background are the “allowed region”
-and the “marginally allowed” regions.</span><a class="headerlink" href="#id72" title="Permalink to this image">¶</a></p>
+and the “marginally allowed” regions.</span><a class="headerlink" href="#id72" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
 <p>To plot the data yourself, the angles can be accessed using
@@ -308,7 +221,7 @@ only one <cite>altloc</cite> for the atoms with more than one (<code class="docu
 </div>
 </section>
 <section id="janin-analysis">
-<h3><span class="section-number">4.7.1.3.1.3. </span>Janin analysis<a class="headerlink" href="#janin-analysis" title="Permalink to this heading">¶</a></h3>
+<h3><span class="section-number">4.7.1.3.1.3. </span>Janin analysis<a class="headerlink" href="#janin-analysis" title="Permalink to this heading"></a></h3>
 <p>Janin plots <span id="id2">[<a class="reference internal" href="#id32" title="Joël Janin, Shoshanna Wodak, Michael Levitt, and Bernard Maigret. Conformation of amino acid side-chains in proteins. Journal of Molecular Biology, 125(3):357-386, 1978. URL: https://www.sciencedirect.com/science/article/pii/0022283678904084, doi:https://doi.org/10.1016/0022-2836(78)90408-4.">Janin1978</a>]</span> for side chain conformations (<span class="math notranslate nohighlight">\(\chi_1\)</span>
 and <span class="math notranslate nohighlight">\(chi_2\)</span> angles) can be created with the
 <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Janin" title="MDAnalysis.analysis.dihedrals.Janin"><code class="xref py py-class docutils literal notranslate"><span class="pre">Janin</span></code></a> class. It works in the same way,
@@ -320,7 +233,7 @@ only needing a list of residues; see the <a class="reference internal" href="#fi
 <figcaption>
 <p><span class="caption-text">Janin plot for all residues of AdK, sampled from the AdK test trajectory
 (XTC). The contours in the background are the “allowed region” and the
-“marginally allowed” regions for all possible residues.</span><a class="headerlink" href="#id73" title="Permalink to this image">¶</a></p>
+“marginally allowed” regions for all possible residues.</span><a class="headerlink" href="#id73" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
 <div class="admonition note">
@@ -336,7 +249,7 @@ message <em>Too many or too few atoms selected</em> is raised.</p>
 </div>
 </section>
 <section id="reference-plots">
-<h3><span class="section-number">4.7.1.3.1.4. </span>Reference plots<a class="headerlink" href="#reference-plots" title="Permalink to this heading">¶</a></h3>
+<h3><span class="section-number">4.7.1.3.1.4. </span>Reference plots<a class="headerlink" href="#reference-plots" title="Permalink to this heading"></a></h3>
 <p>Reference plots can be added to the axes for both the Ramachandran and Janin
 classes using the kwarg <code class="docutils literal notranslate"><span class="pre">ref=True</span></code> for the <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Ramachandran.plot" title="MDAnalysis.analysis.dihedrals.Ramachandran.plot"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Ramachandran.plot()</span></code></a>
 and <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Janin.plot" title="MDAnalysis.analysis.dihedrals.Janin.plot"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Janin.plot()</span></code></a> methods. The Ramachandran reference data
@@ -352,10 +265,10 @@ points. The list of PDB files used for the reference plots was taken from
 </section>
 </section>
 <section id="analysis-classes">
-<h2><span class="section-number">4.7.1.3.2. </span>Analysis Classes<a class="headerlink" href="#analysis-classes" title="Permalink to this heading">¶</a></h2>
+<h2><span class="section-number">4.7.1.3.2. </span>Analysis Classes<a class="headerlink" href="#analysis-classes" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dihedrals.Dihedral">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.dihedrals.</span></span><span class="sig-name descname"><span class="pre">Dihedral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomgroups</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/dihedrals.html#Dihedral"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Dihedral" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.dihedrals.</span></span><span class="sig-name descname"><span class="pre">Dihedral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomgroups</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/dihedrals.html#Dihedral"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Dihedral" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate dihedral angles for specified atomgroups.</p>
 <p>Dihedral angles will be calculated for each atomgroup that is given for
 each step in the trajectory. Each <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>
@@ -381,7 +294,7 @@ the dihedral angles are calculated</p>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dihedrals.Dihedral.results.angles">
-<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">angles</span></span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Dihedral.results.angles" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">angles</span></span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Dihedral.results.angles" title="Permalink to this definition"></a></dt>
 <dd><p>Contains the time steps of the angles for each atomgroup in the list as
 an <code class="docutils literal notranslate"><span class="pre">n_frames×len(atomgroups)</span></code> <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> with content
 <code class="docutils literal notranslate"><span class="pre">[[angle</span> <span class="pre">1,</span> <span class="pre">angle</span> <span class="pre">2,</span> <span class="pre">...],</span> <span class="pre">[time</span> <span class="pre">step</span> <span class="pre">2],</span> <span class="pre">...]</span></code>.</p>
@@ -392,7 +305,7 @@ an <code class="docutils literal notranslate"><span class="pre">n_frames×len(at
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dihedrals.Dihedral.angles">
-<span class="sig-name descname"><span class="pre">angles</span></span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Dihedral.angles" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">angles</span></span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Dihedral.angles" title="Permalink to this definition"></a></dt>
 <dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Dihedral.results.angles" title="MDAnalysis.analysis.dihedrals.Dihedral.results.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.angles</span></code></a> attribute.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.0.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
@@ -402,7 +315,7 @@ an <code class="docutils literal notranslate"><span class="pre">n_frames×len(at
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dihedrals.Dihedral.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Dihedral.run" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Dihedral.run" title="Permalink to this definition"></a></dt>
 <dd><p>Perform the calculation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -432,7 +345,7 @@ frame indices in the <cite>frames</cite> keyword argument.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dihedrals.Ramachandran">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.dihedrals.</span></span><span class="sig-name descname"><span class="pre">Ramachandran</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomgroup</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'C'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'N'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ca_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CA'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_protein</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/dihedrals.html#Ramachandran"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Ramachandran" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.dihedrals.</span></span><span class="sig-name descname"><span class="pre">Ramachandran</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomgroup</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'C'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'N'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ca_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CA'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_protein</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/dihedrals.html#Ramachandran"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Ramachandran" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate <span class="math notranslate nohighlight">\(\phi\)</span> and <span class="math notranslate nohighlight">\(\psi\)</span> dihedral angles of selected
 residues.</p>
 <p><span class="math notranslate nohighlight">\(\phi\)</span> and <span class="math notranslate nohighlight">\(\psi\)</span> angles will be calculated for each residue
@@ -492,7 +405,7 @@ selection cannot be made, that residue will be removed from the analysis.</p>
 </div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dihedrals.Ramachandran.results.angles">
-<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">angles</span></span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Ramachandran.results.angles" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">angles</span></span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Ramachandran.results.angles" title="Permalink to this definition"></a></dt>
 <dd><p>Contains the time steps of the <span class="math notranslate nohighlight">\(\phi\)</span> and <span class="math notranslate nohighlight">\(\psi\)</span> angles for
 each residue as an <code class="docutils literal notranslate"><span class="pre">n_frames×n_residues×2</span></code> <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> with
 content <code class="docutils literal notranslate"><span class="pre">[[[phi,</span> <span class="pre">psi],</span> <span class="pre">[residue</span> <span class="pre">2],</span> <span class="pre">...],</span> <span class="pre">[time</span> <span class="pre">step</span> <span class="pre">2],</span> <span class="pre">...]</span></code>.</p>
@@ -503,7 +416,7 @@ content <code class="docutils literal notranslate"><span class="pre">[[[phi,</sp
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dihedrals.Ramachandran.angles">
-<span class="sig-name descname"><span class="pre">angles</span></span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Ramachandran.angles" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">angles</span></span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Ramachandran.angles" title="Permalink to this definition"></a></dt>
 <dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Ramachandran.results.angles" title="MDAnalysis.analysis.dihedrals.Ramachandran.results.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.angles</span></code></a> attribute.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.0.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
@@ -513,7 +426,7 @@ content <code class="docutils literal notranslate"><span class="pre">[[[phi,</sp
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dihedrals.Ramachandran.plot">
-<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/dihedrals.html#Ramachandran.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Ramachandran.plot" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/dihedrals.html#Ramachandran.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Ramachandran.plot" title="Permalink to this definition"></a></dt>
 <dd><p>Plots data into standard Ramachandran plot.</p>
 <p>Each time step in <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Ramachandran.results.angles" title="MDAnalysis.analysis.dihedrals.Ramachandran.results.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Ramachandran.results.angles</span></code></a> is plotted onto
 the same graph.</p>
@@ -538,7 +451,7 @@ marginally allowed regions</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dihedrals.Ramachandran.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Ramachandran.run" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Ramachandran.run" title="Permalink to this definition"></a></dt>
 <dd><p>Perform the calculation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -568,7 +481,7 @@ frame indices in the <cite>frames</cite> keyword argument.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dihedrals.Janin">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.dihedrals.</span></span><span class="sig-name descname"><span class="pre">Janin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomgroup</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_remove</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'resname</span> <span class="pre">ALA</span> <span class="pre">CYS*</span> <span class="pre">GLY</span> <span class="pre">PRO</span> <span class="pre">SER</span> <span class="pre">THR</span> <span class="pre">VAL'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_protein</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'protein'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/dihedrals.html#Janin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Janin" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.dihedrals.</span></span><span class="sig-name descname"><span class="pre">Janin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomgroup</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_remove</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'resname</span> <span class="pre">ALA</span> <span class="pre">CYS*</span> <span class="pre">GLY</span> <span class="pre">PRO</span> <span class="pre">SER</span> <span class="pre">THR</span> <span class="pre">VAL'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_protein</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'protein'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/dihedrals.html#Janin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Janin" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate <span class="math notranslate nohighlight">\(\chi_1\)</span> and <span class="math notranslate nohighlight">\(\chi_2\)</span> dihedral angles of selected
 residues.</p>
 <p><span class="math notranslate nohighlight">\(\chi_1\)</span> and <span class="math notranslate nohighlight">\(\chi_2\)</span> angles will be calculated for each residue
@@ -616,7 +529,7 @@ them</p></li>
 </div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dihedrals.Janin.results.angles">
-<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">angles</span></span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Janin.results.angles" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">angles</span></span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Janin.results.angles" title="Permalink to this definition"></a></dt>
 <dd><p>Contains the time steps of the <span class="math notranslate nohighlight">\(\chi_1\)</span> and <span class="math notranslate nohighlight">\(\chi_2\)</span> angles
 for each residue as an <code class="docutils literal notranslate"><span class="pre">n_frames×n_residues×2</span></code> <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>
 with content <code class="docutils literal notranslate"><span class="pre">[[[chi1,</span> <span class="pre">chi2],</span> <span class="pre">[residue</span> <span class="pre">2],</span> <span class="pre">...],</span> <span class="pre">[time</span> <span class="pre">step</span> <span class="pre">2],</span> <span class="pre">...]</span></code>.</p>
@@ -627,7 +540,7 @@ with content <code class="docutils literal notranslate"><span class="pre">[[[chi
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dihedrals.Janin.angles">
-<span class="sig-name descname"><span class="pre">angles</span></span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Janin.angles" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">angles</span></span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Janin.angles" title="Permalink to this definition"></a></dt>
 <dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Janin.results.angles" title="MDAnalysis.analysis.dihedrals.Janin.results.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.angles</span></code></a> attribute.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.0.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
@@ -637,7 +550,7 @@ with content <code class="docutils literal notranslate"><span class="pre">[[[chi
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dihedrals.Janin.plot">
-<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/dihedrals.html#Janin.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Janin.plot" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/dihedrals.html#Janin.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Janin.plot" title="Permalink to this definition"></a></dt>
 <dd><p>Plots data into standard Janin plot.</p>
 <p>Each time step in <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Janin.results.angles" title="MDAnalysis.analysis.dihedrals.Janin.results.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Janin.results.angles</span></code></a> is plotted onto the
 same graph.</p>
@@ -662,7 +575,7 @@ allowed regions</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dihedrals.Janin.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Janin.run" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Janin.run" title="Permalink to this definition"></a></dt>
 <dd><p>Perform the calculation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -716,22 +629,19 @@ frame indices in the <cite>frames</cite> keyword argument.</p>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="rdf.html" class="btn btn-neutral float-right" title="4.7.2.1. Radial Distribution Functions — MDAnalysis.analysis.rdf" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="helix_analysis.html" class="btn btn-neutral float-left" title="4.7.1.2. HELANAL — analysis of protein helices" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="rdf.html" class="btn btn-neutral float-right" title="4.7.2.1. Radial Distribution Functions — MDAnalysis.analysis.rdf" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2005-2023, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Mikhail Glagolev, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.
-
-    </p>
+    <p>&#169; Copyright 2005-2023, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Mikhail Glagolev, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
   </div>
+
+  
  
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
@@ -744,9 +654,7 @@ frame indices in the <cite>frames</cite> keyword argument.</p>
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
   <script>
     var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
@@ -766,18 +674,11 @@ frame indices in the <cite>frames</cite> keyword argument.</p>
         </dl>
 
     </div>
-</div>
-
-  <script type="text/javascript">
+</div><script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

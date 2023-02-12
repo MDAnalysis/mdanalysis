@@ -1,47 +1,25 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>4.2.6.1.1. Ensemble Similarity Calculations — MDAnalysis.analysis.encore.similarity &mdash; MDAnalysis 2.5.0-dev0 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../../_static/js/versions.js"></script>
-    
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-
-    
+    <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 2.5.0-dev0 documentation"
           href="../../../_static/opensearch.xml"/>
@@ -51,52 +29,29 @@
     <link rel="prev" title="4.2.6. ENCORE Ensemble Similarity Calculations — MDAnalysis.analysis.encore" href="../encore.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-          
 
           
-            <a href="../../../index.html" class="icon icon-home"> MDAnalysis
           
-
-          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
           </a>
-
-          
-            
-            
               <div class="version">
                 2.5.0-dev0
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../topology.html">2. The topology system</a></li>
@@ -157,77 +112,34 @@
 <li class="toctree-l1"><a class="reference internal" href="../../references.html">17. References</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">MDAnalysis</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../../analysis_modules.html"><span class="section-number">4. </span>Analysis modules</a> &raquo;</li>
-        
-          <li><a href="../encore.html"><span class="section-number">4.2.6. </span>ENCORE Ensemble Similarity Calculations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a> &raquo;</li>
-        
-      <li><span class="section-number">4.2.6.1.1. </span>Ensemble Similarity Calculations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.similarity</span></code></li>
-    
-    
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../analysis_modules.html"><span class="section-number">4. </span>Analysis modules</a></li>
+          <li class="breadcrumb-item"><a href="../encore.html"><span class="section-number">4.2.6. </span>ENCORE Ensemble Similarity Calculations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">4.2.6.1.1. </span>Ensemble Similarity Calculations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.similarity</span></code></li>
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../../../_sources/documentation_pages/analysis/encore/similarity.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <span class="target" id="module-MDAnalysis.analysis.encore.similarity"></span><section id="ensemble-similarity-calculations-mdanalysis-analysis-encore-similarity">
-<h1><span class="section-number">4.2.6.1.1. </span>Ensemble Similarity Calculations — <a class="reference internal" href="#module-MDAnalysis.analysis.encore.similarity" title="MDAnalysis.analysis.encore.similarity"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.similarity</span></code></a><a class="headerlink" href="#ensemble-similarity-calculations-mdanalysis-analysis-encore-similarity" title="Permalink to this heading">¶</a></h1>
+<h1><span class="section-number">4.2.6.1.1. </span>Ensemble Similarity Calculations — <a class="reference internal" href="#module-MDAnalysis.analysis.encore.similarity" title="MDAnalysis.analysis.encore.similarity"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.similarity</span></code></a><a class="headerlink" href="#ensemble-similarity-calculations-mdanalysis-analysis-encore-similarity" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Matteo Tiberti, Wouter Boomsma, Tone Bengtsen</p>
@@ -353,7 +265,7 @@ ln(2), which indicates no similarity between the ensembles and a lower bound
 of 0.0 signifying two identical ensembles. In contrast, the <a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.hes" title="MDAnalysis.analysis.encore.similarity.hes"><code class="xref py py-func docutils literal notranslate"><span class="pre">hes()</span></code></a> function uses
 a symmetrized version of the Kullback-Leibler divergence, which is unbounded.</p>
 <section id="functions-for-ensemble-comparisons">
-<h2><span class="section-number">4.2.6.1.1.1. </span>Functions for ensemble comparisons<a class="headerlink" href="#functions-for-ensemble-comparisons" title="Permalink to this heading">¶</a></h2>
+<h2><span class="section-number">4.2.6.1.1.1. </span>Functions for ensemble comparisons<a class="headerlink" href="#functions-for-ensemble-comparisons" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">hes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ensembles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'name</span> <span class="pre">CA'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cov_estimator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'shrinkage'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mass'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimate_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bootstrapping_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_diagonal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#hes"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
@@ -642,12 +554,12 @@ instances of the same method  class:</p>
 
 </section>
 <section id="function-reference">
-<h2><span class="section-number">4.2.6.1.1.2. </span>Function reference<a class="headerlink" href="#function-reference" title="Permalink to this heading">¶</a></h2>
+<h2><span class="section-number">4.2.6.1.1.2. </span>Function reference<a class="headerlink" href="#function-reference" title="Permalink to this heading"></a></h2>
 </section>
 </section>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.similarity.ces">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">ces</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ensembles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select='name</span> <span class="pre">CA'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clustering_method=&lt;MDAnalysis.analysis.encore.clustering.ClusteringMethod.AffinityPropagationNative</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_matrix=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimate_error=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bootstrapping_samples=10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncores=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_diagonal=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_collapsed_result=True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#ces"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.ces" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">ces</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ensembles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select='name</span> <span class="pre">CA'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clustering_method=&lt;MDAnalysis.analysis.encore.clustering.ClusteringMethod.AffinityPropagationNative</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_matrix=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimate_error=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bootstrapping_samples=10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncores=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_diagonal=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_collapsed_result=True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#ces"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.ces" title="Permalink to this definition"></a></dt>
 <dd><p>Calculates the Clustering Ensemble Similarity (CES) between ensembles
 using the Jensen-Shannon divergence as described in
 <span id="id73">[<a class="reference internal" href="#id51" title="Matteo Tiberti, Elena Papaleo, Tone Bengtsen, Wouter Boomsma, and Kresten Lindorff-Larsen. Encore: software for quantitative ensemble comparison. PLOS Computational Biology, 11(10):1-16, 10 2015. doi:10.1371/journal.pcbi.1004415.">ᵇTiberti2015</a>]</span>.</p>
@@ -741,7 +653,7 @@ instances of the same clustering class:</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.similarity.ces_convergence">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">ces_convergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_ensemble</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select='name</span> <span class="pre">CA'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clustering_method=&lt;MDAnalysis.analysis.encore.clustering.ClusteringMethod.AffinityPropagationNative</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncores=1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#ces_convergence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.ces_convergence" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">ces_convergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_ensemble</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select='name</span> <span class="pre">CA'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clustering_method=&lt;MDAnalysis.analysis.encore.clustering.ClusteringMethod.AffinityPropagationNative</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncores=1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#ces_convergence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.ces_convergence" title="Permalink to this definition"></a></dt>
 <dd><p>Use the CES to evaluate the convergence of the ensemble/trajectory.
 CES will be calculated between the whole trajectory contained in an
 ensemble and windows of such trajectory of increasing sizes, so that
@@ -795,7 +707,7 @@ splitting the trajectory into a window_size of 10 frames :</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.similarity.clustering_ensemble_similarity">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">clustering_ensemble_similarity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ens1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ens1_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ens2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ens2_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'name</span> <span class="pre">CA'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#clustering_ensemble_similarity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.clustering_ensemble_similarity" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">clustering_ensemble_similarity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ens1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ens1_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ens2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ens2_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'name</span> <span class="pre">CA'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#clustering_ensemble_similarity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.clustering_ensemble_similarity" title="Permalink to this definition"></a></dt>
 <dd><dl class="simple">
 <dt>Clustering ensemble similarity: calculate the probability densities from</dt><dd><p>the clusters and calculate discrete Jensen-Shannon divergence.</p>
 </dd>
@@ -824,7 +736,7 @@ the clustering ensemble similarity method</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.similarity.cumulative_clustering_ensemble_similarity">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">cumulative_clustering_ensemble_similarity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ens1_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ens2_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ens1_id_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ens2_id_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#cumulative_clustering_ensemble_similarity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.cumulative_clustering_ensemble_similarity" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">cumulative_clustering_ensemble_similarity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ens1_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ens2_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ens1_id_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ens2_id_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#cumulative_clustering_ensemble_similarity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.cumulative_clustering_ensemble_similarity" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate clustering ensemble similarity between joined ensembles.
 This means that, after clustering has been performed, some ensembles are
 merged and the dJS is calculated between the probability distributions of
@@ -855,7 +767,7 @@ calculated by the clustering ensemble similarity method</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.similarity.cumulative_gen_kde_pdfs">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">cumulative_gen_kde_pdfs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedded_space</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensemble_assignment</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nensembles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsamples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ens_id_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ens_id_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#cumulative_gen_kde_pdfs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.cumulative_gen_kde_pdfs" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">cumulative_gen_kde_pdfs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedded_space</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensemble_assignment</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nensembles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsamples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ens_id_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ens_id_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#cumulative_gen_kde_pdfs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.cumulative_gen_kde_pdfs" title="Permalink to this definition"></a></dt>
 <dd><p>Generate Kernel Density Estimates (KDE) from embedded spaces and
 elaborate the coordinates for later use. However, consider more than
 one ensemble as the space on which the KDE will be generated. In
@@ -894,7 +806,7 @@ embedded space belonging to a certain ensemble</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.similarity.dimred_ensemble_similarity">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">dimred_ensemble_similarity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kde1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resamples1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kde2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resamples2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ln_P1_exp_P1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ln_P2_exp_P2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ln_P1P2_exp_P1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ln_P1P2_exp_P2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#dimred_ensemble_similarity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.dimred_ensemble_similarity" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">dimred_ensemble_similarity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kde1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resamples1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kde2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resamples2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ln_P1_exp_P1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ln_P2_exp_P2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ln_P1P2_exp_P1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ln_P1P2_exp_P2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#dimred_ensemble_similarity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.dimred_ensemble_similarity" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate the Jensen-Shannon divergence according the Dimensionality
 reduction method.</p>
 <p>In this case, we have continuous probability densities, this we need to
@@ -944,7 +856,7 @@ reduction method</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.similarity.discrete_jensen_shannon_divergence">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">discrete_jensen_shannon_divergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pA</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pB</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#discrete_jensen_shannon_divergence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.discrete_jensen_shannon_divergence" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">discrete_jensen_shannon_divergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pA</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pB</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#discrete_jensen_shannon_divergence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.discrete_jensen_shannon_divergence" title="Permalink to this definition"></a></dt>
 <dd><p>Jensen-Shannon divergence between discrete probability distributions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -964,7 +876,7 @@ reduction method</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.similarity.discrete_kullback_leibler_divergence">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">discrete_kullback_leibler_divergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pA</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pB</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#discrete_kullback_leibler_divergence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.discrete_kullback_leibler_divergence" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">discrete_kullback_leibler_divergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pA</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pB</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#discrete_kullback_leibler_divergence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.discrete_kullback_leibler_divergence" title="Permalink to this definition"></a></dt>
 <dd><p>Kullback-Leibler divergence between discrete probability distribution.
 Notice that since this measure is not symmetric ::
 <span class="math notranslate nohighlight">\(d_{KL}(p_A,p_B) != d_{KL}(p_B,p_A)\)</span></p>
@@ -986,7 +898,7 @@ Notice that since this measure is not symmetric ::
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.similarity.dres">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">dres</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ensembles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select='name</span> <span class="pre">CA'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimensionality_reduction_method=&lt;MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.StochasticProximityEmbeddingNative</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_matrix=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsamples=1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimate_error=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bootstrapping_samples=100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncores=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_diagonal=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_collapsed_result=True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#dres"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.dres" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">dres</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ensembles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select='name</span> <span class="pre">CA'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimensionality_reduction_method=&lt;MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.StochasticProximityEmbeddingNative</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_matrix=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsamples=1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimate_error=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bootstrapping_samples=100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncores=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_diagonal=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_collapsed_result=True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#dres"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.dres" title="Permalink to this definition"></a></dt>
 <dd><p>Calculates the Dimensional Reduction Ensemble Similarity (DRES) between
 ensembles using the Jensen-Shannon divergence as described in
 <span id="id74">[<a class="reference internal" href="#id51" title="Matteo Tiberti, Elena Papaleo, Tone Bengtsen, Wouter Boomsma, and Kresten Lindorff-Larsen. Encore: software for quantitative ensemble comparison. PLOS Computational Biology, 11(10):1-16, 10 2015. doi:10.1371/journal.pcbi.1004415.">ᵇTiberti2015</a>]</span>.</p>
@@ -1086,7 +998,7 @@ instances of the same method  class:</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.similarity.dres_convergence">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">dres_convergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_ensemble</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select='name</span> <span class="pre">CA'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimensionality_reduction_method=&lt;MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.StochasticProximityEmbeddingNative</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsamples=1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncores=1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#dres_convergence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.dres_convergence" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">dres_convergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_ensemble</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select='name</span> <span class="pre">CA'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimensionality_reduction_method=&lt;MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.StochasticProximityEmbeddingNative</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsamples=1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncores=1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#dres_convergence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.dres_convergence" title="Permalink to this definition"></a></dt>
 <dd><p>Use the DRES to evaluate the convergence of the ensemble/trajectory.
 DRES will be calculated between the whole trajectory contained in an
 ensemble and windows of such trajectory of increasing sizes, so that
@@ -1145,7 +1057,7 @@ space, and therefore of convergence.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.similarity.gen_kde_pdfs">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">gen_kde_pdfs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedded_space</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensemble_assignment</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nensembles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsamples</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#gen_kde_pdfs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.gen_kde_pdfs" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">gen_kde_pdfs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedded_space</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensemble_assignment</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nensembles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsamples</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#gen_kde_pdfs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.gen_kde_pdfs" title="Permalink to this definition"></a></dt>
 <dd><p>Generate Kernel Density Estimates (KDE) from embedded spaces and
 elaborate the coordinates for later use.</p>
 <dl class="field-list simple">
@@ -1177,7 +1089,7 @@ embedded space belonging to a certain ensemble</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.similarity.harmonic_ensemble_similarity">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">harmonic_ensemble_similarity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigma1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#harmonic_ensemble_similarity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.harmonic_ensemble_similarity" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">harmonic_ensemble_similarity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigma1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#harmonic_ensemble_similarity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.harmonic_ensemble_similarity" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate the harmonic ensemble similarity measure
 as defined in <span id="id75">[<a class="reference internal" href="#id51" title="Matteo Tiberti, Elena Papaleo, Tone Bengtsen, Wouter Boomsma, and Kresten Lindorff-Larsen. Encore: software for quantitative ensemble comparison. PLOS Computational Biology, 11(10):1-16, 10 2015. doi:10.1371/journal.pcbi.1004415.">ᵇTiberti2015</a>]</span>.</p>
 <dl class="field-list simple">
@@ -1202,7 +1114,7 @@ ensemble.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.similarity.hes">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">hes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ensembles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'name</span> <span class="pre">CA'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cov_estimator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'shrinkage'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mass'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimate_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bootstrapping_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_diagonal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#hes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.hes" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">hes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ensembles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'name</span> <span class="pre">CA'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cov_estimator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'shrinkage'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mass'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimate_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bootstrapping_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc_diagonal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#hes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.hes" title="Permalink to this definition"></a></dt>
 <dd><p>Calculates the Harmonic Ensemble Similarity (HES) between ensembles.</p>
 <p>The HES is calculated with the symmetrized version of Kullback-Leibler
 divergence as described in <span id="id76">[<a class="reference internal" href="#id51" title="Matteo Tiberti, Elena Papaleo, Tone Bengtsen, Wouter Boomsma, and Kresten Lindorff-Larsen. Encore: software for quantitative ensemble comparison. PLOS Computational Biology, 11(10):1-16, 10 2015. doi:10.1371/journal.pcbi.1004415.">ᵇTiberti2015</a>]</span>.</p>
@@ -1294,7 +1206,7 @@ the details of the calculation instead, in the form of a dictionary</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.similarity.prepare_ensembles_for_convergence_increasing_window">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">prepare_ensembles_for_convergence_increasing_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ensemble</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'name</span> <span class="pre">CA'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#prepare_ensembles_for_convergence_increasing_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.prepare_ensembles_for_convergence_increasing_window" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">prepare_ensembles_for_convergence_increasing_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ensemble</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'name</span> <span class="pre">CA'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#prepare_ensembles_for_convergence_increasing_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.prepare_ensembles_for_convergence_increasing_window" title="Permalink to this definition"></a></dt>
 <dd><p>Generate ensembles to be fed to ces_convergence or dres_convergence
 from a single ensemble. Basically, the different slices the algorithm
 needs are generated here.</p>
@@ -1320,7 +1232,7 @@ is not exactly divisible by window_size.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.similarity.write_output">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">write_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_fname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dat'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#write_output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.write_output" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.similarity.</span></span><span class="sig-name descname"><span class="pre">write_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_fname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dat'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#write_output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.write_output" title="Permalink to this definition"></a></dt>
 <dd><p>Write output matrix with a nice format, to stdout and optionally a file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1340,22 +1252,19 @@ file name</p></li>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="clustering.html" class="btn btn-neutral float-right" title="4.2.6.1.2. Clustering" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../encore.html" class="btn btn-neutral float-left" title="4.2.6. ENCORE Ensemble Similarity Calculations — MDAnalysis.analysis.encore" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="clustering.html" class="btn btn-neutral float-right" title="4.2.6.1.2. Clustering" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2005-2023, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Mikhail Glagolev, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.
-
-    </p>
+    <p>&#169; Copyright 2005-2023, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Mikhail Glagolev, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
   </div>
+
+  
  
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
@@ -1368,9 +1277,7 @@ file name</p></li>
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
   <script>
     var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
@@ -1390,18 +1297,11 @@ file name</p></li>
         </dl>
 
     </div>
-</div>
-
-  <script type="text/javascript">
+</div><script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

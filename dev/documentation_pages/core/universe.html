@@ -1,46 +1,24 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>11.2.1. Core object: Universe — MDAnalysis.core.universe &mdash; MDAnalysis 2.5.0-dev0 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script src="../../_static/js/versions.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 2.5.0-dev0 documentation"
           href="../../_static/opensearch.xml"/>
@@ -50,52 +28,29 @@
     <link rel="prev" title="11.1. Core functions of MDAnalysis" href="init.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-          
 
           
-            <a href="../../index.html" class="icon icon-home"> MDAnalysis
           
-
-          
+          <a href="../../index.html">
+            
+              <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
           </a>
-
-          
-            
-            
               <div class="version">
                 2.5.0-dev0
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
@@ -139,75 +94,33 @@
 <li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">MDAnalysis</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../core_modules.html"><span class="section-number">11. </span>Core modules</a> &raquo;</li>
-        
-      <li><span class="section-number">11.2.1. </span>Core object: Universe — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></li>
-    
-    
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../core_modules.html"><span class="section-number">11. </span>Core modules</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">11.2.1. </span>Core object: Universe — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></li>
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../../_sources/documentation_pages/core/universe.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <span class="target" id="module-MDAnalysis.core.universe"></span><section id="core-object-universe-mdanalysis-core-universe">
-<h1><span class="section-number">11.2.1. </span>Core object: Universe — <a class="reference internal" href="#module-MDAnalysis.core.universe" title="MDAnalysis.core.universe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></a><a class="headerlink" href="#core-object-universe-mdanalysis-core-universe" title="Permalink to this heading">¶</a></h1>
+<h1><span class="section-number">11.2.1. </span>Core object: Universe — <a class="reference internal" href="#module-MDAnalysis.core.universe" title="MDAnalysis.core.universe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></a><a class="headerlink" href="#core-object-universe-mdanalysis-core-universe" title="Permalink to this heading"></a></h1>
 <p>The <a class="reference internal" href="#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> class ties a topology
 and a trajectory together. Almost all code in MDAnalysis starts with a
 <code class="docutils literal notranslate"><span class="pre">Universe</span></code>.</p>
@@ -221,10 +134,10 @@ construct a <code class="docutils literal notranslate"><span class="pre">Univers
 <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> instances with the
 <a class="reference internal" href="#MDAnalysis.core.universe.Merge" title="MDAnalysis.core.universe.Merge"><code class="xref py py-func docutils literal notranslate"><span class="pre">Merge()</span></code></a> function.</p>
 <section id="classes">
-<h2><span class="section-number">11.2.1.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading">¶</a></h2>
+<h2><span class="section-number">11.2.1.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.universe.</span></span><span class="sig-name descname"><span class="pre">Universe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topology</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">coordinates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_coordinates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topology_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transformations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guess_bonds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vdwradii</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_memory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_memory_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.universe.</span></span><span class="sig-name descname"><span class="pre">Universe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topology</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">coordinates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_coordinates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topology_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transformations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guess_bonds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vdwradii</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_memory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_memory_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe" title="Permalink to this definition"></a></dt>
 <dd><p>The MDAnalysis Universe contains all the information describing the system.</p>
 <p>The system always requires a <em>topology file</em> — in the simplest case just
 a list of atoms. This can be a CHARMM/NAMD PSF file or a simple coordinate
@@ -294,7 +207,7 @@ trajectory.</p></li>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.trajectory">
-<span class="sig-name descname"><span class="pre">trajectory</span></span><a class="headerlink" href="#MDAnalysis.core.universe.Universe.trajectory" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">trajectory</span></span><a class="headerlink" href="#MDAnalysis.core.universe.Universe.trajectory" title="Permalink to this definition"></a></dt>
 <dd><p>currently loaded trajectory reader; readers are described in
 <a class="reference internal" href="../coordinates_modules.html#coordinates"><span class="std std-ref">Coordinates modules</span></a></p>
 <dl class="field-list simple">
@@ -306,7 +219,7 @@ trajectory.</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.dimensions">
-<span class="sig-name descname"><span class="pre">dimensions</span></span><a class="headerlink" href="#MDAnalysis.core.universe.Universe.dimensions" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">dimensions</span></span><a class="headerlink" href="#MDAnalysis.core.universe.Universe.dimensions" title="Permalink to this definition"></a></dt>
 <dd><p>system dimensions (simulation unit cell, if set in the
 trajectory) at the <em>current time step</em>
 (see <a class="reference internal" href="../coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep.dimensions" title="MDAnalysis.coordinates.timestep.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep.Timestep.dimensions</span></code></a>).
@@ -321,7 +234,7 @@ not permanent unless written to a file).</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.atoms">
-<span class="sig-name descname"><span class="pre">atoms</span></span><a class="headerlink" href="#MDAnalysis.core.universe.Universe.atoms" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">atoms</span></span><a class="headerlink" href="#MDAnalysis.core.universe.Universe.atoms" title="Permalink to this definition"></a></dt>
 <dd><p>all particles (<a class="reference internal" href="groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a>) in the system,
 as read from the <cite>topology</cite> file</p>
 <dl class="field-list simple">
@@ -333,7 +246,7 @@ as read from the <cite>topology</cite> file</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.residues">
-<span class="sig-name descname"><span class="pre">residues</span></span><a class="headerlink" href="#MDAnalysis.core.universe.Universe.residues" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">residues</span></span><a class="headerlink" href="#MDAnalysis.core.universe.Universe.residues" title="Permalink to this definition"></a></dt>
 <dd><p>all residues (<a class="reference internal" href="groups.html#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>) in the system</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -344,7 +257,7 @@ as read from the <cite>topology</cite> file</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.segments">
-<span class="sig-name descname"><span class="pre">segments</span></span><a class="headerlink" href="#MDAnalysis.core.universe.Universe.segments" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">segments</span></span><a class="headerlink" href="#MDAnalysis.core.universe.Universe.segments" title="Permalink to this definition"></a></dt>
 <dd><p>all segments (<a class="reference internal" href="groups.html#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>) in the system</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -355,7 +268,7 @@ as read from the <cite>topology</cite> file</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.bonds">
-<span class="sig-name descname"><span class="pre">bonds</span></span><a class="headerlink" href="#MDAnalysis.core.universe.Universe.bonds" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">bonds</span></span><a class="headerlink" href="#MDAnalysis.core.universe.Universe.bonds" title="Permalink to this definition"></a></dt>
 <dd><p>all bonds (if defined in the <cite>topology</cite>) as provided by
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">Universe.atoms.bonds</span></code></p>
 <dl class="field-list simple">
@@ -367,7 +280,7 @@ as read from the <cite>topology</cite> file</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.angles">
-<span class="sig-name descname"><span class="pre">angles</span></span><a class="headerlink" href="#MDAnalysis.core.universe.Universe.angles" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">angles</span></span><a class="headerlink" href="#MDAnalysis.core.universe.Universe.angles" title="Permalink to this definition"></a></dt>
 <dd><p>all angles (if defined in the <cite>topology</cite>), same as
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">Universe.atoms.angles</span></code></p>
 <dl class="field-list simple">
@@ -379,7 +292,7 @@ as read from the <cite>topology</cite> file</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.dihedrals">
-<span class="sig-name descname"><span class="pre">dihedrals</span></span><a class="headerlink" href="#MDAnalysis.core.universe.Universe.dihedrals" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">dihedrals</span></span><a class="headerlink" href="#MDAnalysis.core.universe.Universe.dihedrals" title="Permalink to this definition"></a></dt>
 <dd><p>all dihedral angles (if defined in the <cite>topology</cite>), same as
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">Universe.atoms.dihedrals</span></code></p>
 <dl class="field-list simple">
@@ -391,7 +304,7 @@ as read from the <cite>topology</cite> file</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.impropers">
-<span class="sig-name descname"><span class="pre">impropers</span></span><a class="headerlink" href="#MDAnalysis.core.universe.Universe.impropers" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">impropers</span></span><a class="headerlink" href="#MDAnalysis.core.universe.Universe.impropers" title="Permalink to this definition"></a></dt>
 <dd><p>all improper dihedral angles (if defined in the <cite>topology</cite>), same as
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">Universe.atoms.impropers</span></code></p>
 <dl class="field-list simple">
@@ -428,7 +341,7 @@ Removed instant selectors.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.add_Residue">
-<span class="sig-name descname"><span class="pre">add_Residue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">segment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">attrs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.add_Residue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.add_Residue" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">add_Residue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">segment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">attrs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.add_Residue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.add_Residue" title="Permalink to this definition"></a></dt>
 <dd><p>Add a new Residue to this Universe</p>
 <p>New Residues will not contain any Atoms, but can be assigned to Atoms
 as per usual.  If the Universe contains multiple segments, this must
@@ -462,7 +375,7 @@ specified</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.add_Segment">
-<span class="sig-name descname"><span class="pre">add_Segment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">attrs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.add_Segment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.add_Segment" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">add_Segment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">attrs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.add_Segment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.add_Segment" title="Permalink to this definition"></a></dt>
 <dd><p>Add a new Segment to this Universe</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -480,7 +393,7 @@ Segment</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.add_TopologyAttr">
-<span class="sig-name descname"><span class="pre">add_TopologyAttr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topologyattr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.add_TopologyAttr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.add_TopologyAttr" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">add_TopologyAttr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topologyattr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.add_TopologyAttr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.add_TopologyAttr" title="Permalink to this definition"></a></dt>
 <dd><p>Add a new topology attribute to the Universe</p>
 <p>Adding a TopologyAttribute to the Universe makes it available to
 all AtomGroups etc throughout the Universe.</p>
@@ -519,7 +432,7 @@ they will be aliases of the same attribute.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.add_angles">
-<span class="sig-name descname"><span class="pre">add_angles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guessed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.add_angles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.add_angles" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">add_angles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guessed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.add_angles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.add_angles" title="Permalink to this definition"></a></dt>
 <dd><p>Add new Angles to this Universe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -539,7 +452,7 @@ they <em>must</em> be from the same Universe.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.add_bonds">
-<span class="sig-name descname"><span class="pre">add_bonds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guessed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.add_bonds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.add_bonds" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">add_bonds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guessed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.add_bonds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.add_bonds" title="Permalink to this definition"></a></dt>
 <dd><p>Add new Bonds to this Universe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -584,7 +497,7 @@ them to indices first.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.add_dihedrals">
-<span class="sig-name descname"><span class="pre">add_dihedrals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guessed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.add_dihedrals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.add_dihedrals" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">add_dihedrals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guessed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.add_dihedrals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.add_dihedrals" title="Permalink to this definition"></a></dt>
 <dd><p>Add new Dihedrals to this Universe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -606,7 +519,7 @@ they <em>must</em> be from the same Universe.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.add_impropers">
-<span class="sig-name descname"><span class="pre">add_impropers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guessed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.add_impropers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.add_impropers" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">add_impropers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guessed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.add_impropers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.add_impropers" title="Permalink to this definition"></a></dt>
 <dd><p>Add new Impropers to this Universe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -628,7 +541,7 @@ they <em>must</em> be from the same Universe.</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.coord">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">coord</span></span><a class="headerlink" href="#MDAnalysis.core.universe.Universe.coord" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">coord</span></span><a class="headerlink" href="#MDAnalysis.core.universe.Universe.coord" title="Permalink to this definition"></a></dt>
 <dd><p>Reference to current timestep and coordinates of universe.</p>
 <p>The raw trajectory coordinates are <code class="xref py py-attr docutils literal notranslate"><span class="pre">Universe.coord.positions</span></code>,
 represented as a <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.float32</span></code> array.</p>
@@ -645,13 +558,13 @@ the Universe as a numpy array: <code class="xref py py-meth docutils literal not
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.copy">
-<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.copy" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.copy" title="Permalink to this definition"></a></dt>
 <dd><p>Return an independent copy of this Universe</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.del_TopologyAttr">
-<span class="sig-name descname"><span class="pre">del_TopologyAttr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topologyattr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.del_TopologyAttr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.del_TopologyAttr" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">del_TopologyAttr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topologyattr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.del_TopologyAttr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.del_TopologyAttr" title="Permalink to this definition"></a></dt>
 <dd><p>Remove a topology attribute from the Universe</p>
 <p>Removing a TopologyAttribute from the Universe makes it unavailable to
 all AtomGroups etc throughout the Universe.</p>
@@ -675,7 +588,7 @@ topology attribute.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.delete_angles">
-<span class="sig-name descname"><span class="pre">delete_angles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.delete_angles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.delete_angles" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">delete_angles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.delete_angles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.delete_angles" title="Permalink to this definition"></a></dt>
 <dd><p>Delete Angles from this Universe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -692,7 +605,7 @@ they <em>must</em> be from the same Universe.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.delete_bonds">
-<span class="sig-name descname"><span class="pre">delete_bonds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.delete_bonds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.delete_bonds" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">delete_bonds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.delete_bonds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.delete_bonds" title="Permalink to this definition"></a></dt>
 <dd><p>Delete Bonds from this Universe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -728,7 +641,7 @@ delete bonds from another Universe, convert them to indices first.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.delete_dihedrals">
-<span class="sig-name descname"><span class="pre">delete_dihedrals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.delete_dihedrals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.delete_dihedrals" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">delete_dihedrals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.delete_dihedrals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.delete_dihedrals" title="Permalink to this definition"></a></dt>
 <dd><p>Delete Dihedrals from this Universe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -745,7 +658,7 @@ they <em>must</em> be from the same Universe.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.delete_impropers">
-<span class="sig-name descname"><span class="pre">delete_impropers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.delete_impropers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.delete_impropers" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">delete_impropers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.delete_impropers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.delete_impropers" title="Permalink to this definition"></a></dt>
 <dd><p>Delete Impropers from this Universe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -762,7 +675,7 @@ they <em>must</em> be from the same Universe.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.empty">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">empty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_residues</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_segments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atom_resindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residue_segindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trajectory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forces</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.empty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.empty" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">empty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_residues</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_segments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atom_resindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residue_segindex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trajectory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forces</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.empty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.empty" title="Permalink to this definition"></a></dt>
 <dd><p>Create a blank Universe</p>
 <p>Useful for building a Universe without requiring existing files,
 for example for system building.</p>
@@ -819,7 +732,7 @@ positions for the atoms and a mass attribute:</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.from_smiles">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_smiles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">smiles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sanitize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addHs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generate_coordinates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numConfs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rdkit_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.from_smiles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.from_smiles" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_smiles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">smiles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sanitize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addHs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generate_coordinates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numConfs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rdkit_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.from_smiles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.from_smiles" title="Permalink to this definition"></a></dt>
 <dd><p>Create a Universe from a SMILES string with rdkit</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -869,13 +782,13 @@ the input SMILES string; coordinates are included if
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.kwargs">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kwargs</span></span><a class="headerlink" href="#MDAnalysis.core.universe.Universe.kwargs" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kwargs</span></span><a class="headerlink" href="#MDAnalysis.core.universe.Universe.kwargs" title="Permalink to this definition"></a></dt>
 <dd><p>keyword arguments used to initialize this universe</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.load_new">
-<span class="sig-name descname"><span class="pre">load_new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_memory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_memory_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.load_new"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.load_new" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">load_new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_memory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_memory_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.load_new"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.load_new" title="Permalink to this definition"></a></dt>
 <dd><p>Load coordinates from <cite>filename</cite>.</p>
 <p>The file format of <cite>filename</cite> is autodetected from the file name suffix
 or can be explicitly set with the <cite>format</cite> keyword. A sequence of files
@@ -934,7 +847,7 @@ and detected file type.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.models">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">models</span></span><a class="headerlink" href="#MDAnalysis.core.universe.Universe.models" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">models</span></span><a class="headerlink" href="#MDAnalysis.core.universe.Universe.models" title="Permalink to this definition"></a></dt>
 <dd><p>Models in this Universe.</p>
 <p>The MMTF format can define various models for a given structure. The
 topology (eg residue identity) can change between different models,
@@ -953,7 +866,7 @@ resulting in a different number of atoms in each model.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.select_atoms">
-<span class="sig-name descname"><span class="pre">select_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.select_atoms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.select_atoms" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">select_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.select_atoms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.select_atoms" title="Permalink to this definition"></a></dt>
 <dd><p>Select atoms.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -963,7 +876,7 @@ resulting in a different number of atoms in each model.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.transfer_to_memory">
-<span class="sig-name descname"><span class="pre">transfer_to_memory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.transfer_to_memory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.transfer_to_memory" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">transfer_to_memory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.transfer_to_memory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.transfer_to_memory" title="Permalink to this definition"></a></dt>
 <dd><p>Transfer the trajectory to in memory representation.</p>
 <p>Replaces the current trajectory reader object with one of type
 <a class="reference internal" href="../coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory.MemoryReader</span></code></a> to support in-place
@@ -991,10 +904,10 @@ set to True. Default value is False.</p></li>
 
 </section>
 <section id="functions">
-<h2><span class="section-number">11.2.1.2. </span>Functions<a class="headerlink" href="#functions" title="Permalink to this heading">¶</a></h2>
+<h2><span class="section-number">11.2.1.2. </span>Functions<a class="headerlink" href="#functions" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Merge">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.universe.</span></span><span class="sig-name descname"><span class="pre">Merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Merge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Merge" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.universe.</span></span><span class="sig-name descname"><span class="pre">Merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Merge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Merge" title="Permalink to this definition"></a></dt>
 <dd><p>Create a new new <a class="reference internal" href="#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> from one or more
 <a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> instances.</p>
 <dl class="field-list simple">
@@ -1057,22 +970,19 @@ of them together:</p>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="groups.html" class="btn btn-neutral float-right" title="11.2.2. Core objects: Containers — MDAnalysis.core.groups" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="init.html" class="btn btn-neutral float-left" title="11.1. Core functions of MDAnalysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="groups.html" class="btn btn-neutral float-right" title="11.2.2. Core objects: Containers — MDAnalysis.core.groups" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2005-2023, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Mikhail Glagolev, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.
-
-    </p>
+    <p>&#169; Copyright 2005-2023, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Mikhail Glagolev, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
   </div>
+
+  
  
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
@@ -1085,9 +995,7 @@ of them together:</p>
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
   <script>
     var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
@@ -1107,18 +1015,11 @@ of them together:</p>
         </dl>
 
     </div>
-</div>
-
-  <script type="text/javascript">
+</div><script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>
