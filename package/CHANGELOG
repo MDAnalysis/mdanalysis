@@ -19,6 +19,11 @@ The rules for this file:
  * 2.5.0
 
 Fixes
+  * Fixed `ChainReader.__repr__` with `MemoryReader` sub-readers (Issue #3349,
+    PR #3344)
+  * Fixed inconsistency where `ChainReader` transformations were applied before
+    the reader's `Timestep` was set to the current one (Issue #3343, PR #3344)
+  * Fixed missing array flatten preventing PCA from running when mean positions  
   * Fix element parsing from PSF files tests read via Parmed (Issue #4015)
   * Fix test clobbering in lib/test_util.py (PR #4000)
   * Fix MSD docs to use the correct error metric in example (Issue #3991)
@@ -31,6 +36,8 @@ Enhancements
     and SegmentGroup. (PR #3953)
 
 Changes
+  * The `ChainReader` now applies transformations at its level, instead of
+    deferring to each sub-reader (Issue #3343, PR #3344)
   * As per NEP29 the minimum supported NumPy version has been raised to 1.21
     (note: in practice later versions of NumPy may be used depending on your
      architecture, operating system, or Python version) (PR #3983)
@@ -366,7 +373,7 @@ Fixes
   * Fixed missing array flatten preventing PCA from running when mean positions
     provided and bugs causing tests to incorrectly pass (Issue #2728, PR #3296)
   * DL_POLY HISTORY file may contain unit cell dimensions even if there are
-    no periodic boundary conditions (imcom=0) (Issue #3314, PR #3312).
+    no periodic boundary conditions (imcom=0) (Issue #3314, PR #3312)
   * New RDKitConverter cache system to fix issue #2958 (PR #2942)
   * Fixed OpenMM converter documentation not showing up in the Converters
     section (Issue #3262, PR #2882)
