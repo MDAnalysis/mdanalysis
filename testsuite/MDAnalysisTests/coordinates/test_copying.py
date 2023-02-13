@@ -287,7 +287,7 @@ def test_positions_share_memory(original_and_copy):
 def test_copy_with_auxiliary_no_pyedr():
     # Check that AuxReaders are copied when reader is copied
     u = mda.Universe(XYZ_mini)
-    u.trajectory.add_auxiliary('myaux', AUX_XVG)
+    u.trajectory.add_auxiliary("myaux", AUX_XVG)
     reader = u.trajectory
     copy = reader.copy()
     for auxname in reader._auxs:
