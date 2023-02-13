@@ -193,6 +193,9 @@
 
 <span class="sd">    To find the residue to atom mappings for a given atom to residue mapping:</span>
 
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; import MDAnalysis as mda</span>
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.core.topology import make_downshift_arrays</span>
 <span class="sd">    &gt;&gt;&gt; atom2res = np.array([0, 1, 0, 2, 2, 0, 2])</span>
 <span class="sd">    &gt;&gt;&gt; make_downshift_arrays(atom2res, 3)</span>
 <span class="sd">    array([array([0, 2, 5]), array([1]), array([3, 4, 6]), None], dtype=object)</span>
