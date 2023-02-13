@@ -27,6 +27,7 @@ import subprocess
 import errno
 from collections import defaultdict
 from io import StringIO
+import warnings
 
 import numpy as np
 from numpy.testing import (
@@ -55,7 +56,7 @@ from MDAnalysis.topology.base import TopologyReaderBase
 from MDAnalysis.transformations import translate
 from MDAnalysisTests import assert_nowarns
 from MDAnalysis.exceptions import NoDataError
-from MDAnalysis.core.topologyattrs import _AtomStringAttr
+from MDAnalysis.core.topologyattrs import AtomStringAttr
 
 
 class IOErrorParser(TopologyReaderBase):
@@ -601,6 +602,14 @@ class TestInMemoryUniverse(object):
                      (3341, 78, 3),
                      err_msg="Unexpected shape of trajectory timeseries")
 
+    def test_transfer_to_memory_kwargs(self):
+        u = mda.Universe(PSF, DCD)
+        u.transfer_to_memory(example_kwarg=True)
+        assert(u.trajectory._kwargs['example_kwarg'])
+
+    def test_in_memory_kwargs(self):
+        u = mda.Universe(PSF, DCD, in_memory=True, example_kwarg=True)
+        assert(u.trajectory._kwargs['example_kwarg'])
 
 class TestCustomReaders(object):
     """
@@ -780,7 +789,7 @@ class TestDelTopologyAttr(object):
             ag.resnames
 
     def test_del_func_from_universe(self, universe):
-        class RootVegetable(_AtomStringAttr):
+        class RootVegetable(AtomStringAttr):
             attrname = "tubers"
             singular = "tuber"
             transplants = defaultdict(list)
@@ -1252,8 +1261,17 @@ class TestEmpty(object):
                         1, 1, 1, 1, 1])
 
         with pytest.warns(UserWarning):
-            u = mda.Universe.empty(n_atoms=10, n_residues=2, n_segments=1,
+            u = mda.Universe.empty(n_atoms=10, n_residues=2, n_segments=2,
                                    atom_resindex=res)
+
+    def test_no_trivial_warning(self):
+        """
+        Make sure that no warning is raised about atom_resindex and
+        residue_segindex when n_residues or n_segments is equal to 1.
+        """
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
+            u = mda.Universe.empty(n_atoms=10, n_residues=1, n_segments=1)
 
     def test_trajectory(self):
         u = mda.Universe.empty(10, trajectory=True)
@@ -1296,11 +1314,35 @@ class TestEmpty(object):
 
 def test_deprecate_b_tempfactors():
     u = mda.Universe(PDB)
-    with pytest.warns(DeprecationWarning, match="alias"):
-        u.add_TopologyAttr("bfactors")
+    values = np.arange(len(u.atoms))
+    with pytest.warns(DeprecationWarning, match="use the tempfactor"):
+        u.add_TopologyAttr("bfactors", values)
+    assert_array_equal(u.atoms.tempfactors, values)
 
 
-def test_deprecate_temp_bfactors():
-    u = mda.Universe(MMTF)
-    with pytest.warns(DeprecationWarning, match="alias"):
-        u.add_TopologyAttr("tempfactors")
+class Thingy:
+    def __init__(self, val):
+        self.v = val
+
+
+class ThingyParser(TopologyReaderBase):
+    format='THINGY'
+
+    @staticmethod
+    def _format_hint(thing):
+        return isinstance(thing, Thingy)
+
+    def parse(self, **kwargs):
+        return mda.core.topology.Topology(n_atoms=10)
+
+
+class TestOnlyTopology:
+    def test_only_top(self):
+        # issue 3443
+        t = Thingy(20)
+
+        with pytest.warns(UserWarning,
+                          match="No coordinate reader found for"):
+            u = mda.Universe(t)
+
+        assert len(u.atoms) == 10

@@ -1,6 +1,7 @@
-biopython
+biopython>=1.80
 codecov
 cython
+fasteners
 griddataformats
 gsd
 hypothesis
@@ -10,9 +11,9 @@ mmtf-python
 msmb_theme==1.2.0
 netcdf4
 networkx
-numpy>=1.16.0
+numpy>=1.21.0
+packaging
 parmed
-psutil
 pytest
 scikit-learn
 scipy

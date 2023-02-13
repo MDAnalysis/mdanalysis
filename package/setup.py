@@ -46,6 +46,7 @@ Google groups forbids any name that contains the string `anal'.)
 from setuptools import setup, Extension, find_packages
 from distutils.ccompiler import new_compiler
 from distutils.sysconfig import customize_compiler
+from packaging.version import Version
 import codecs
 import os
 import sys
@@ -56,37 +57,30 @@ import warnings
 import platform
 
 # Make sure I have the right Python version.
-if sys.version_info[:2] < (3, 6):
-    print('MDAnalysis requires Python 3.6 or better. Python {0:d}.{1:d} detected'.format(*
+if sys.version_info[:2] < (3, 8):
+    print('MDAnalysis requires Python 3.8 or better. Python {0:d}.{1:d} detected'.format(*
           sys.version_info[:2]))
     print('Please upgrade your version of Python.')
     sys.exit(-1)
 
-if sys.version_info[0] < 3:
-    import ConfigParser as configparser
-else:
-    import configparser
-
-if sys.version_info[0] >= 3:
-    from subprocess import getoutput
-else:
-    from commands import getoutput
+import configparser
+from subprocess import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "2.0.0-dev0"
+RELEASE = "2.5.0-dev0"
 
 is_release = 'dev' not in RELEASE
 
 # Handle cython modules
 try:
     # cython has to be >=0.16 <0.28 to support cython.parallel
+    # minimum cython version now set to 0.28 to match pyproject.toml
     import Cython
     from Cython.Build import cythonize
     cython_found = True
-    from distutils.version import LooseVersion
 
-    required_version = "0.16"
-    if not LooseVersion(Cython.__version__) >= LooseVersion(required_version):
+    required_version = "0.28"
+    if not Version(Cython.__version__) >= Version(required_version):
         # We don't necessarily die here. Maybe we already have
         #  the cythonized '.c' files.
         print("Cython version {0} was found but won't be used: version {1} "
@@ -189,7 +183,7 @@ def get_numpy_include():
         import numpy as np
     except ImportError:
         print('*** package "numpy" not found ***')
-        print('MDAnalysis requires a version of NumPy (>=1.16.0), even for setup.')
+        print('MDAnalysis requires a version of NumPy (>=1.21.0), even for setup.')
         print('Please get it from http://numpy.scipy.org/ or install it through '
               'your package manager.')
         sys.exit(-1)
@@ -272,6 +266,7 @@ def extensions(config):
     # usually (except coming from release tarball) cython files must be generated
     use_cython = config.get('use_cython', default=cython_found)
     use_openmp = config.get('use_openmp', default=True)
+    annotate_cython = config.get('annotate_cython', default=False)
 
     extra_compile_args = ['-std=c99', '-ffast-math', '-O3', '-funroll-loops',
                           '-fsigned-zeros'] # see #2722
@@ -279,12 +274,6 @@ def extensions(config):
     if config.get('debug_cflags', default=False):
         extra_compile_args.extend(['-Wall', '-pedantic'])
         define_macros.extend([('DEBUG', '1')])
-
-    # allow using architecture specific instructions. This allows people to
-    # build optimized versions of MDAnalysis.
-    arch = config.get('march', default=False)
-    if arch:
-        extra_compile_args.append('-march={}'.format(arch))
 
     # encore is sensitive to floating point accuracy, especially on non-x86
     # to avoid reducing optimisations on everything, we make a set of compile
@@ -295,6 +284,14 @@ def extensions(config):
     else:
         encore_compile_args.append('-O3')
 
+    # allow using custom c/c++ flags and architecture specific instructions.
+    # This allows people to build optimized versions of MDAnalysis.
+    # Do here so not included in encore
+    extra_cflags = config.get('extra_cflags', default=False)
+    if extra_cflags:
+        flags = extra_cflags.split()
+        extra_compile_args.extend(flags)
+
     cpp_extra_compile_args = [a for a in extra_compile_args if 'std' not in a]
     cpp_extra_compile_args.append('-std=c++11')
     cpp_extra_link_args=[]
@@ -303,7 +300,7 @@ def extensions(config):
         cpp_extra_compile_args.append('-stdlib=libc++')
         cpp_extra_compile_args.append('-mmacosx-version-min=10.9')
         cpp_extra_link_args.append('-stdlib=libc++')
-        cpp_extra_link_args.append('-mmacosx-version-min=10.7')
+        cpp_extra_link_args.append('-mmacosx-version-min=10.9')
 
     # Needed for large-file seeking under 32bit systems (for xtc/trr indexing
     # and access).
@@ -409,6 +406,13 @@ def extensions(config):
                          define_macros=define_macros,
                          extra_compile_args=cpp_extra_compile_args,
                          extra_link_args= cpp_extra_link_args)
+    timestep = MDAExtension('MDAnalysis.coordinates.timestep',
+                         sources=['MDAnalysis/coordinates/timestep' + cpp_source_suffix],
+                         language='c++',
+                         include_dirs=include_dirs,
+                         define_macros=define_macros,
+                         extra_compile_args=cpp_extra_compile_args,
+                         extra_link_args= cpp_extra_link_args)
 
 
     encore_utils = MDAExtension('MDAnalysis.analysis.encore.cutils',
@@ -439,13 +443,14 @@ def extensions(config):
                              extra_link_args= cpp_extra_link_args)
     pre_exts = [libdcd, distances, distances_omp, qcprot,
                 transformation, libmdaxdr, util, encore_utils,
-                ap_clustering, spe_dimred, cutil, augment, nsgrid]
+                ap_clustering, spe_dimred, cutil, augment, nsgrid, timestep]
 
 
     cython_generated = []
     if use_cython:
         extensions = cythonize(
             pre_exts,
+            annotate=annotate_cython,
             compiler_directives={'linetrace': cython_linetrace,
                                  'embedsignature': False,
                                  'language_level': '3'},
@@ -568,16 +573,16 @@ if __name__ == '__main__':
         'Development Status :: 6 - Mature',
         'Environment :: Console',
         'Intended Audience :: Science/Research',
-        'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
+        'License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)',
         'Operating System :: POSIX',
         'Operating System :: MacOS :: MacOS X',
         'Operating System :: Microsoft :: Windows ',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
         'Programming Language :: C',
         'Topic :: Scientific/Engineering',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
@@ -588,27 +593,24 @@ if __name__ == '__main__':
     exts, cythonfiles = extensions(config)
 
     install_requires = [
-          'numpy>=1.16.0',
-          'biopython>=1.71',
-          'networkx>=1.0',
+          'numpy>=1.21.0',
+          'biopython>=1.80',
+          'networkx>=2.0',
           'GridDataFormats>=0.4.0',
           'mmtf-python>=1.0.0',
           'joblib>=0.12',
-          'scipy>=1.0.0',
+          'scipy>=1.5.0',
           'matplotlib>=1.5.1',
           'tqdm>=4.43.0',
           'threadpoolctl',
+          'packaging',
+          'fasteners',
+          'gsd>=1.9.3',
     ]
-
-    if not os.name == 'nt':
-        install_requires.append('gsd>=1.4.0')
-    else:
-        install_requires.append('gsd>=1.9.3')
 
     setup(name='MDAnalysis',
           version=RELEASE,
-          description=('An object-oriented toolkit to analyze molecular dynamics '
-                       'trajectories generated by CHARMM, Gromacs, NAMD, LAMMPS, or Amber.'),
+          description='An object-oriented toolkit to analyze molecular dynamics trajectories.',
           long_description=LONG_DESCRIPTION,
           long_description_content_type='text/x-rst',
           author='MDAnalysis Development Team',
@@ -626,7 +628,7 @@ if __name__ == '__main__':
                         'Twitter': 'https://twitter.com/mdanalysis',
                         'Source': 'https://github.com/mdanalysis/mdanalysis',
                         },
-          license='GPL 2',
+          license='GPL-2.0-or-later',
           classifiers=CLASSIFIERS,
           provides=['MDAnalysis'],
           packages=find_packages(),
@@ -635,25 +637,30 @@ if __name__ == '__main__':
                         ],
           },
           ext_modules=exts,
-          python_requires='>=3.6',
+          python_requires='>=3.8',
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           setup_requires=[
-              'numpy>=1.16.0',
+              'numpy>=1.21.0',
+              'packaging',
           ],
           install_requires=install_requires,
           # extras can be difficult to install through setuptools and/or
           # you might prefer to use the version available through your
           # packaging system
           extras_require={
-              'AMBER': [
+              'extra_formats': [   # additional file formats
                   'netCDF4>=1.0',  # for fast AMBER writing, also needs HDF5
-              ],
+                  'h5py>=2.10',    # H5MD
+                  'pytng>=0.2.3',  # TNG
+                  'chemfiles>=0.10',  # multiple formats supported by chemfiles
+                  'pyedr>=0.7.0',  # EDR files for the EDR AuxReader
+                  ],
               'analysis': [
                   'seaborn',  # for annotated heat map and nearest neighbor
                               # plotting in PSA
-                  'sklearn',  # For clustering and dimensionality reduction
-                              # functionality in encore
+                  'scikit-learn',  # For clustering and dimensionality
+                                   # reduction functionality in encore
                   'tidynamics>=1.0.0', # For MSD analysis method
               ],
           },

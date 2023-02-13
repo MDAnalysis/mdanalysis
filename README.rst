@@ -2,9 +2,9 @@
   MDAnalysis Repository README
 ================================
 
-|numfocus| |build| |travis| |cov| [*]_
+|numfocus| |build| |cron| |travis| |linters| |cov|
 
-|docs| |devdocs| |usergroup| |developergroup| |anaconda| |mybinder|
+|docs| |devdocs| |usergroup| |developergroup| |anaconda| |mybinder| |asv|
 
 MDAnalysis_ is a Python library for the analysis of computer simulations of many-body systems at the molecular scale, spanning use cases from interactions of drugs with proteins to novel materials. It is widely used in the scientific community and is written by scientists for scientists. 
 
@@ -69,7 +69,7 @@ analysis, and many more.
 Installation and availability
 =============================
 
-The latest release can be **installed via ``pip`` or ``conda``** as
+The latest release can be **installed via pip or conda** as
 described in the `Installation Quick Start`_.
 
 **Source code** is hosted in a git repository at
@@ -111,12 +111,6 @@ two papers:
 
 For citations of included algorithms and sub-modules please see the references_.
 
-
-
-.. Footnotes
-
-.. [*] **build**: Unit testing is for the whole package; **coverage** is
-       shown for the core library modules and the analysis modules.
 
 .. _NumFOCUS: https://numfocus.org/
 .. _open governance model: https://www.mdanalysis.org/about/#governance
@@ -174,9 +168,17 @@ For citations of included algorithms and sub-modules please see the references_.
    :alt: Github Actions Build Status
    :target: https://github.com/MDAnalysis/mdanalysis/actions/workflows/gh-ci.yaml
 
+.. |cron| image:: https://github.com/MDAnalysis/mdanalysis/actions/workflows/gh-ci-cron.yaml/badge.svg
+   :alt: Github Actions Cron Job Status
+   :target: https://github.com/MDAnalysis/mdanalysis/actions/workflows/gh-ci-cron.yaml
+
 .. |travis| image:: https://img.shields.io/travis/MDAnalysis/mdanalysis/develop?label=Travis%20CI
    :alt: Travis CI Build Status
    :target: https://travis-ci.com/MDAnalysis/mdanalysis
+
+.. |linters| image:: https://github.com/MDAnalysis/mdanalysis/actions/workflows/linters.yaml/badge.svg
+   :alt: Github Actions Linters Status
+   :target: https://github.com/MDAnalysis/mdanalysis/actions/workflows/linters.yaml
 
 .. |cov|   image:: https://codecov.io/gh/MDAnalysis/mdanalysis/branch/develop/graph/badge.svg
    :alt: Coverage Status
@@ -189,6 +191,10 @@ For citations of included algorithms and sub-modules please see the references_.
 .. |mybinder| image:: https://mybinder.org/badge.svg
    :alt: My Binder
    :target: https://mybinder.org/v2/gh/MDAnalysis/binder-notebook/master
+   
+.. |asv| image:: https://img.shields.io/badge/benchmarked%20by-asv-blue.svg
+   :alt: ASV Benchmarks
+   :target:  https://www.mdanalysis.org/benchmarks/
 
 .. |powered_by_MDA| image:: https://img.shields.io/badge/Powered%20by-MDAnalysis-orange.svg?logoWidth=15&logo=data:image/x-icon;base64,AAABAAEAEBAAAAEAIAAoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJD+XwCY/fEAkf3uAJf97wGT/a+HfHaoiIWE7n9/f+6Hh4fvgICAjwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACT/yYAlP//AJ///wCg//8JjvOchXly1oaGhv+Ghob/j4+P/39/f3IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJH8aQCY/8wAkv2kfY+elJ6al/yVlZX7iIiI8H9/f7h/f38UAAAAAAAAAAAAAAAAAAAAAAAAAAB/f38egYF/noqAebF8gYaagnx3oFpUUtZpaWr/WFhY8zo6OmT///8BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgICAn46Ojv+Hh4b/jouJ/4iGhfcAAADnAAAA/wAAAP8AAADIAAAAAwCj/zIAnf2VAJD/PAAAAAAAAAAAAAAAAICAgNGHh4f/gICA/4SEhP+Xl5f/AwMD/wAAAP8AAAD/AAAA/wAAAB8Aov9/ALr//wCS/Z0AAAAAAAAAAAAAAACBgYGOjo6O/4mJif+Pj4//iYmJ/wAAAOAAAAD+AAAA/wAAAP8AAABhAP7+FgCi/38Axf4fAAAAAAAAAAAAAAAAiIiID4GBgYKCgoKogoB+fYSEgZhgYGDZXl5e/m9vb/9ISEjpEBAQxw8AAFQAAAAAAAAANQAAADcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjo6Mb5iYmP+cnJz/jY2N95CQkO4pKSn/AAAA7gAAAP0AAAD7AAAAhgAAAAEAAAAAAAAAAACL/gsAkv2uAJX/QQAAAAB9fX3egoKC/4CAgP+NjY3/c3Nz+wAAAP8AAAD/AAAA/wAAAPUAAAAcAAAAAAAAAAAAnP4NAJL9rgCR/0YAAAAAfX19w4ODg/98fHz/i4uL/4qKivwAAAD/AAAA/wAAAP8AAAD1AAAAGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALGxsVyqqqr/mpqa/6mpqf9KSUn/AAAA5QAAAPkAAAD5AAAAhQAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADkUFBSuZ2dn/3V1df8uLi7bAAAATgBGfyQAAAA2AAAAMwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB0AAADoAAAA/wAAAP8AAAD/AAAAWgC3/2AAnv3eAJ/+dgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA9AAAA/wAAAP8AAAD/AAAA/wAKDzEAnP3WAKn//wCS/OgAf/8MAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIQAAANwAAADtAAAA7QAAAMAAABUMAJn9gwCe/e0Aj/2LAP//AQAAAAAAAAAA
    :alt: Powered by MDAnalysis

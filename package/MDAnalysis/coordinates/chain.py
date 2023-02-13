@@ -50,8 +50,9 @@ import copy
 import numpy as np
 
 from ..lib import util
-from ..lib.util import asiterable
-from . import base, memory
+from ..lib.util import asiterable, store_init_arguments
+from . import base
+from . import memory
 from . import core
 
 
@@ -222,6 +223,7 @@ class ChainReader(base.ProtoReader):
     """
     format = 'CHAIN'
 
+    @store_init_arguments
     def __init__(self, filenames, skip=1, dt=None, continuous=False, **kwargs):
         """Set up the chain reader.
 
@@ -457,7 +459,7 @@ class ChainReader(base.ProtoReader):
         return self.active_reader.convert_pos_to_native(x)
 
     def copy(self):
-        new = self.__class__(copy.copy(self.filenames))
+        new = self.__class__(**self._kwargs)
         # seek the new reader to the same frame we started with
         new[self.ts.frame]
         # then copy over the current Timestep in case it has
@@ -562,7 +564,7 @@ class ChainReader(base.ProtoReader):
 
     def _read_frame(self, frame):
         """Position trajectory at frame index `frame` and
-        return :class:`~MDAnalysis.coordinates.base.Timestep`.
+        return :class:`~MDAnalysis.coordinates.timestep.Timestep`.
 
         The frame is translated to the corresponding reader and local
         frame index and the :class:`Timestep` instance in

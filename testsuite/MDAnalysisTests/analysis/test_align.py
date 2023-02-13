@@ -31,12 +31,13 @@ import pytest
 from MDAnalysis import SelectionError, SelectionWarning
 from MDAnalysisTests import executable_not_found
 from MDAnalysisTests.datafiles import (PSF, DCD, CRD, FASTA, ALIGN_BOUND,
-                                       ALIGN_UNBOUND)
+                                       ALIGN_UNBOUND, PDB_helix)
 from numpy.testing import (
     assert_almost_equal,
     assert_equal,
     assert_array_equal,
     assert_array_almost_equal,
+    assert_allclose,
 )
 
 #Function for Parametrizing conditional raising
@@ -541,18 +542,45 @@ class TestAlignmentProcessing(object):
         assert len(sel['reference']) == 30621, self.error_msg
         assert len(sel['mobile']) == 30621, self.error_msg
 
-def test_sequence_alignment():
-    u = mda.Universe(PSF)
-    reference = u.atoms
-    mobile = u.select_atoms("resid 122-159")
-    aln = align.sequence_alignment(mobile, reference)
 
-    assert len(aln) == 5, "return value has wrong tuple size"
+class TestSequenceAlignmentFunction:
+    # remove 3.0
 
-    seqA, seqB, score, begin, end = aln
-    assert_equal(seqA, reference.residues.sequence(format="string"),
-                 err_msg="reference sequence mismatch")
-    assert mobile.residues.sequence(
-        format="string") in seqB, "mobile sequence mismatch"
-    assert_almost_equal(score, 54.6)
-    assert_array_equal([begin, end], [0, reference.n_residues])
+    @staticmethod
+    @pytest.fixture
+    def atomgroups():
+        universe = mda.Universe(PSF)
+        reference = universe.atoms
+        mobile = universe.select_atoms("resid 122-159")
+        return reference, mobile
+
+    @pytest.mark.filterwarnings("ignore:`sequence_alignment` is deprecated!")
+    def test_sequence_alignment(self, atomgroups):
+        reference, mobile = atomgroups
+        aln = align.sequence_alignment(mobile, reference)
+
+        assert len(aln) == 5, "return value has wrong tuple size"
+
+        seqA, seqB, score, begin, end = aln
+        assert_equal(seqA, reference.residues.sequence(format="string"),
+                     err_msg="reference sequence mismatch")
+        assert mobile.residues.sequence(
+            format="string") in seqB, "mobile sequence mismatch"
+        assert score  == pytest.approx(54.6)
+        assert_array_equal([begin, end], [0, reference.n_residues])
+
+    def test_sequence_alignment_deprecation(self, atomgroups):
+        reference, mobile = atomgroups
+        wmsg = ("`sequence_alignment` is deprecated!\n"
+                "`sequence_alignment` will be removed in release 3.0.")
+        with pytest.warns(DeprecationWarning, match=wmsg):
+            align.sequence_alignment(mobile, reference)
+
+
+def test_alignto_reorder_atomgroups():
+    # Issue 2977
+    u = mda.Universe(PDB_helix)
+    mobile = u.atoms[:4]
+    ref = u.atoms[[3, 2, 1, 0]]
+    rmsd = align.alignto(mobile, ref, select='bynum 1-4')
+    assert_allclose(rmsd, (0.0, 0.0))

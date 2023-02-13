@@ -83,6 +83,7 @@ from ..core.topologyattrs import (
     Resnums,
     Segids,
     Tempfactors,
+    FormalCharges,
 )
 
 
@@ -155,10 +156,10 @@ def hy36decode(width, s):
 class PDBParser(TopologyReaderBase):
     """Parser that obtains a list of atoms from a standard PDB file.
 
-    Creates the following Attributes:
+    Creates the following Attributes (if present):
      - names
      - chainids
-     - bfactors
+     - tempfactors
      - occupancies
      - record_types (ATOM/HETATM)
      - resids
@@ -166,6 +167,7 @@ class PDBParser(TopologyReaderBase):
      - segids
      - elements
      - bonds
+     - formalcharges
 
     Guesses the following Attributes:
      - masses
@@ -184,6 +186,14 @@ class PDBParser(TopologyReaderBase):
        Bonds attribute is not added if no bonds are present in PDB file.
        If elements are invalid or partially missing, empty elements records
        are now assigned (Issue #2422).
+       Aliased ``bfactors`` topologyattribute to ``tempfactors``.
+       ``bfactors`` is deprecated and will be removed in 3.0 (Issue #1901)
+    .. versionchanged:: 2.3.0
+       Formal charges are now read from PDB files if present. No formalcharge
+       attribute is created if no formal charges are present in the PDB file.
+       Any formal charges not set are assumed to have a value of 0.
+       Raise `UserWarning` instead `RuntimeError`
+       when CONECT records are corrupt.
     """
     format = ['PDB', 'ENT']
 
@@ -200,6 +210,9 @@ class PDBParser(TopologyReaderBase):
             bonds = self._parsebonds(top.ids.values)
         except AttributeError:
             warnings.warn("Invalid atom serials were present, "
+                          "bonds will not be parsed")
+        except RuntimeError:
+            warnings.warn("CONECT records was corrupt, "
                           "bonds will not be parsed")
         else:
             # Issue 2832: don't append Bonds if there are no bonds
@@ -220,12 +233,11 @@ class PDBParser(TopologyReaderBase):
         icodes = []
         tempfactors = []
         occupancies = []
-
         resids = []
         resnames = []
-
         segids = []
         elements = []
+        formalcharges = []
 
         self._wrapped_serials = False  # did serials go over 100k?
         last_wrapped_serial = 100000  # if serials wrap, start from here
@@ -258,6 +270,7 @@ class PDBParser(TopologyReaderBase):
                 resnames.append(line[17:21].strip())
                 chainids.append(line[21:22].strip())
                 elements.append(line[76:78].strip())
+                formalcharges.append(line[78:80].strip())
 
                 # Resids are optional
                 try:
@@ -332,6 +345,30 @@ class PDBParser(TopologyReaderBase):
                     warnings.warn(wmsg)
                     validated_elements.append('')
             attrs.append(Elements(np.array(validated_elements, dtype=object)))
+
+        if any(formalcharges):
+            for i, entry in enumerate(formalcharges):
+                if not entry == '':
+                    if entry == '0':
+                        # Technically a lack of charge shouldn't be in the PDB
+                        # but MDA has a few files that specifically have 0
+                        # entries, indicating that some folks interpret 0 as
+                        # an allowed entry
+                        formalcharges[i] = 0
+                    elif ('+' in entry) or ('-' in entry):
+                        try:
+                            formalcharges[i] = int(entry[::-1])
+                        except ValueError:
+                            errmsg = (f"Unknown formal charge {entry} "
+                                      "encountered")
+                            raise ValueError(errmsg)
+                    else:
+                        errmsg = (f"Formal charge {entry} is unrecognized")
+                        raise ValueError(errmsg)
+                else:
+                    formalcharges[i] = 0
+            attrs.append(
+                    FormalCharges(np.array(formalcharges, dtype=int)))
 
         masses = guess_masses(atomtypes)
         attrs.append(Masses(masses, guessed=True))

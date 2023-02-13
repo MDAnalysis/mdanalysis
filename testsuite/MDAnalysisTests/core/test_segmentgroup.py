@@ -20,10 +20,9 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from numpy.testing import (
-    assert_equal,
-)
+from numpy.testing import assert_equal
 import pytest
+import pickle
 
 import MDAnalysis as mda
 
@@ -109,3 +108,15 @@ def test_set_segids_many():
 def test_atom_order(universe):
     assert_equal(universe.segments.atoms.indices,
                  sorted(universe.segments.atoms.indices))
+
+
+def test_segmentgroup_pickle():
+    u = mda.Universe.empty(10)
+    u.add_Segment(segid="X")
+    u.add_Segment(segid="Y")
+    u.add_Segment(segid="Z")
+    segids = ["A", "X", "Y", "Z"]
+    u.add_TopologyAttr("segids", values=["A", "X", "Y", "Z"])
+    seg_group = mda.SegmentGroup((1, 3), u)
+    seg = pickle.loads(pickle.dumps(seg_group))
+    assert_equal(seg.universe.segments.segids, segids)

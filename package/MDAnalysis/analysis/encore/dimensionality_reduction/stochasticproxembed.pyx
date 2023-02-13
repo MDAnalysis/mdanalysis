@@ -32,6 +32,7 @@ import logging
 import numpy
 cimport numpy
 
+numpy.import_array()
 cimport cython
 
 cdef extern from "spe.h":

@@ -1,8 +1,12 @@
+.. module:: MDAnalysis.converters
 
+.. _`Converter modules`:
 
 **************************
 Converter modules
 **************************
+
+.. versionadded:: 2.0.0
 
 The :mod:`MDAnalysis.converters` module contains the Converter classes that
 MDAnalysis uses to convert MDAnalysis  structures to and from other Python

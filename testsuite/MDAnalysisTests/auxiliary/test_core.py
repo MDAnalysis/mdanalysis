@@ -22,6 +22,7 @@
 #
 
 import MDAnalysis as mda
+from MDAnalysis.auxiliary.base import AuxReader
 
 import pytest
 
@@ -39,3 +40,21 @@ def test_get_auxreader_for_wrong_auxdata():
 def test_get_auxreader_for_wrong_format():
     with pytest.raises(ValueError, match="Unknown auxiliary data format"):
         mda.auxiliary.core.get_auxreader_for(format="none")
+
+
+def test_notimplemented_read_next_timestep():
+    with pytest.raises(NotImplementedError, match="BUG: Override "
+                       "_read_next_step()"):
+        reader = mda.auxiliary.base.AuxReader()
+
+
+class No_Memory_Usage(AuxReader):
+    def _read_next_step(self):
+        pass
+
+
+def test_notimplemented_memory_usage():
+    with pytest.raises(NotImplementedError, match="BUG: Override "
+                       "_memory_usage()"):
+        reader = No_Memory_Usage()
+        reader._memory_usage()

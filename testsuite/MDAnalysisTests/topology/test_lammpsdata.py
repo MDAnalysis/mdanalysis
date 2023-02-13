@@ -35,6 +35,8 @@ from MDAnalysis.tests.datafiles import (
     LAMMPShyd2,
     LAMMPSdata_deletedatoms,
     LAMMPSDUMP,
+    LAMMPSDUMP_long,
+    LAMMPSdata_PairIJ,
 )
 
 
@@ -178,6 +180,26 @@ class TestLAMMPSDeletedAtoms(LammpsBase):
                               dtype=np.float32))
 
 
+class TestLammpsDataPairIJ(LammpsBase):
+    """Tests the reading of lammps .data topology file with a
+    PairIJ Coeffs section
+    """
+
+    expected_attrs = ['types', 'resids', 'masses',
+                      'bonds', 'angles', 'dihedrals', 'impropers']
+    ref_filename = LAMMPSdata_PairIJ
+    expected_n_atoms = 800
+    expected_n_atom_types = 2
+    expected_n_residues = 1
+    ref_n_bonds = 799
+    ref_bond = (397, 398)
+    ref_n_angles = 390
+    ref_angle = (722, 723, 724)
+    ref_n_dihedrals = 385
+    ref_dihedral = (722, 723, 724, 725)
+    ref_n_impropers = 0
+
+
 LAMMPS_NORESID = """\
 LAMMPS data file via write_data, version 11 Aug 2017, timestep = 0
 
@@ -268,3 +290,9 @@ class TestDumpParser(ParserBase):
         u = mda.Universe(self.ref_filename, format='LAMMPSDUMP')
         # the 4th in file has id==13, but should have been sorted
         assert u.atoms[3].id == 4
+
+# this tests that topology can still be constructed if non-standard or uneven
+# column present.
+class TestDumpParserLong(TestDumpParser):
+
+    ref_filename = LAMMPSDUMP_long
