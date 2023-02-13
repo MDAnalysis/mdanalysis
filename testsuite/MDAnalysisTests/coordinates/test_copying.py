@@ -299,7 +299,7 @@ def test_copy_with_auxiliary_no_pyedr():
 def test_copy_with_auxiliary_pyedr():
     # Check that AuxReaders are copied when reader is copied
     u = mda.Universe(XYZ_mini)
-    u.trajectory.add_auxiliary('myaux', AUX_XVG)
+    u.trajectory.add_auxiliary("myaux", AUX_XVG)
     u.trajectory.add_auxiliary({"1": "Bond", "2": "Angle"}, AUX_EDR)
 
     reader = u.trajectory
