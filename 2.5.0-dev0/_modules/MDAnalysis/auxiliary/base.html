@@ -149,6 +149,7 @@
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -348,7 +349,7 @@
 
 
 <div class="viewcode-block" id="AuxReader"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader">[docs]</a><span class="k">class</span> <span class="nc">AuxReader</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">_AuxReaderMeta</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Base class for auxiliary readers.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for auxiliary readers.</span>
 
 <span class="sd">    Allows iteration over a set of data from a trajectory, additional</span>
 <span class="sd">    (&#39;auxiliary&#39;) to the regular positions/velocities/etc. This auxiliary</span>
@@ -359,6 +360,10 @@
 <span class="sd">    .. versionchanged:: 2.4.0</span>
 <span class="sd">        Behaviour of ``cutoff`` changed, default parameter which specifies</span>
 <span class="sd">        not cutoff is set is now None, not -1.</span>
+
+<span class="sd">    .. versionchanged:: 2.4.0</span>
+<span class="sd">        :class:`AuxReader` instances now have a :meth:`copy` method which</span>
+<span class="sd">        creates a deep copy of the instance.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -426,8 +431,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_time</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">rewind</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Copy not implemented for AuxReader&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="AuxReader.copy"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a deep copy of the AuxReader&quot;&quot;&quot;</span>
+        <span class="n">orig_dict</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">new_reader</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">orig_dict</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">new_reader</span></div>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Number of steps in auxiliary data. &quot;&quot;&quot;</span>
@@ -625,7 +633,10 @@
             <span class="c1"># This is necessary so all attributes can be iterated over</span>
             <span class="n">aux</span> <span class="o">=</span> <span class="n">auxreader</span><span class="p">(</span><span class="o">**</span><span class="n">description_kwargs</span><span class="p">)</span>
             <span class="n">aux</span><span class="o">.</span><span class="n">auxname</span> <span class="o">=</span> <span class="n">auxname</span>
-            <span class="n">aux</span><span class="o">.</span><span class="n">data_selector</span> <span class="o">=</span> <span class="n">aux_spec</span><span class="p">[</span><span class="n">auxname</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">aux</span><span class="o">.</span><span class="n">data_selector</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># When calling ReaderBase.copy(), aux_spec information is lost</span>
+                <span class="c1"># but data_selector is retained</span>
+                <span class="n">aux</span><span class="o">.</span><span class="n">data_selector</span> <span class="o">=</span> <span class="n">aux_spec</span><span class="p">[</span><span class="n">auxname</span><span class="p">]</span>
             <span class="n">coord_parent</span><span class="o">.</span><span class="n">_auxs</span><span class="p">[</span><span class="n">auxname</span><span class="p">]</span> <span class="o">=</span> <span class="n">aux</span>
             <span class="n">coord_parent</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="n">aux</span><span class="o">.</span><span class="n">update_ts</span><span class="p">(</span><span class="n">coord_parent</span><span class="o">.</span><span class="n">ts</span><span class="p">)</span>
 

@@ -77,6 +77,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.auxiliary.base.AuxReader.attach_auxiliary"><code class="docutils literal notranslate"><span class="pre">AuxReader.attach_auxiliary()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.auxiliary.base.AuxReader.calc_representative"><code class="docutils literal notranslate"><span class="pre">AuxReader.calc_representative()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.auxiliary.base.AuxReader.constant_dt"><code class="docutils literal notranslate"><span class="pre">AuxReader.constant_dt</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.auxiliary.base.AuxReader.copy"><code class="docutils literal notranslate"><span class="pre">AuxReader.copy()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.auxiliary.base.AuxReader.data_selector"><code class="docutils literal notranslate"><span class="pre">AuxReader.data_selector</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.auxiliary.base.AuxReader.dt"><code class="docutils literal notranslate"><span class="pre">AuxReader.dt</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#MDAnalysis.auxiliary.base.AuxReader.get_description"><code class="docutils literal notranslate"><span class="pre">AuxReader.get_description()</span></code></a></li>
@@ -233,6 +234,10 @@ data may be stored in e.g. an array or a separate file.</p>
 <p><span class="versionmodified changed">Changed in version 2.4.0: </span>Behaviour of <code class="docutils literal notranslate"><span class="pre">cutoff</span></code> changed, default parameter which specifies
 not cutoff is set is now None, not -1.</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.4.0: </span><a class="reference internal" href="#MDAnalysis.auxiliary.base.AuxReader" title="MDAnalysis.auxiliary.base.AuxReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">AuxReader</span></code></a> instances now have a <a class="reference internal" href="#MDAnalysis.auxiliary.base.AuxReader.copy" title="MDAnalysis.auxiliary.base.AuxReader.copy"><code class="xref py py-meth docutils literal notranslate"><span class="pre">copy()</span></code></a> method which
+creates a deep copy of the instance.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -349,6 +354,12 @@ within the cutoff, representative values are set to <code class="docutils litera
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">constant_dt</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.constant_dt" title="Permalink to this definition"></a></dt>
 <dd><p>True if <code class="docutils literal notranslate"><span class="pre">dt</span></code> is constant throughout the auxiliary (as stored in
 <code class="docutils literal notranslate"><span class="pre">auxstep</span></code>)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.auxiliary.base.AuxReader.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/base.html#AuxReader.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.copy" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a deep copy of the AuxReader</p>
 </dd></dl>
 
 <dl class="py property">
