@@ -29,6 +29,7 @@ ATOMIC_RADI = {
     "HG": 1.550,
 }
 
+
 def atomic_radi(e):
     """van der Waals radii""" 
     DEFAULT_ATOMIC_RADI = 2. 
@@ -54,19 +55,22 @@ class SASA(AnalysisBase):
         self._atom_neighbours = KDTree(ag.positions, 10)
         self._n_points = n_points
         self._sphere = self._compute_sphere()
-        self._twice_max_radi =  (max(list(ATOMIC_RADI.values())) + probe_radius) * 2
+        self._twice_max_radi = (max(list(ATOMIC_RADI.values())) + probe_radius) * 2
         self._probe_radius = probe_radius
 
 
     def _compute_sphere(self):
-        """ Fibonacci lattice to evently distribute points in the sphere.
-        """
-        golden_ratio = (1 + 5**0.5)/2
+        """Fibonacci lattice to evently distribute points in the sphere."""
+        golden_ratio = (1 + 5**0.5) / 2
         i = arange(0, self._n_points)
-        theta = 2 *pi * i / golden_ratio
-        phi = arccos(1 - 2*(i+0.5)/ self._n_points)
-        x_points, y_points, z_points = cos(theta) * sin(phi), sin(theta) * sin(phi), cos(phi)   
-        return np.transpose(np.array([x_points,y_points,z_points]))
+        theta = 2 * pi * i / golden_ratio
+        phi = arccos(1 - 2 * (i + 0.5) / self._n_points)
+        x_points, y_points, z_points = (
+            cos(theta) * sin(phi),
+            sin(theta) * sin(phi),
+            cos(phi),
+        )
+        return np.transpose(np.array([x_points, y_points, z_points]))
 
 
     def _compute(self):
@@ -77,8 +81,9 @@ class SASA(AnalysisBase):
             raddi = r_w + self._probe_radius
             # translate and transform the sphere to the centroid
             sphere = np.array(self._sphere, copy=True) * raddi + atom.position
-            neighbours = self._atom_neighbours.query_ball_point(atom.position, self._twice_max_radi)
-
+            neighbours = self._atom_neighbours.query_ball_point(
+                atom.position, self._twice_max_radi
+            )
             kdt_sphere = KDTree(sphere, 10)
             intersect = set()
             for n in neighbours:
@@ -87,7 +92,7 @@ class SASA(AnalysisBase):
                 n_raddi = atomic_radi(self._ag.atoms[n].type) + self._probe_radius
                 cut = kdt_sphere.query_ball_point(self._ag.atoms[n].position, n_raddi)
                 intersect |= set(cut)
-  
+
             points = self._n_points - len(intersect)
             total_surface_area = raddi * raddi * 4 * np.pi
             area_per_point = total_surface_area / self._n_points
@@ -96,6 +101,5 @@ class SASA(AnalysisBase):
 
 
     def atoms(self):
-        """ returns accessible surface area in A**2 for 
-        """
+        """ returns accessible surface area in A**2"""
         return self._compute()
