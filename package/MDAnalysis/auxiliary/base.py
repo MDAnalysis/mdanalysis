@@ -245,7 +245,7 @@ class AuxStep(object):
 
 
 class AuxReader(metaclass=_AuxReaderMeta):
-    """ Base class for auxiliary readers.
+    """Base class for auxiliary readers.
 
     Allows iteration over a set of data from a trajectory, additional
     ('auxiliary') to the regular positions/velocities/etc. This auxiliary
