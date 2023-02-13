@@ -347,7 +347,7 @@ class EinsteinMSD(AnalysisBase):
         self._position_array = np.zeros(
             (self.n_frames, self.n_particles, self.dim_fac))
         # set the position array here to remove _single_frame from msd.py 
-        self.results.timeseries = self._position_array
+        self.results.timeseries = np.zeroes((self.n_frames, self.n_particles, self.dim_fac))
 
     def _parse_msd_type(self):
         r""" Sets up the desired dimensionality of the MSD.
