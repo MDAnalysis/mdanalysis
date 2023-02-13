@@ -87,7 +87,7 @@ class SASA(AnalysisBase):
                 n_raddi = atomic_radi(self._ag.atoms[n].type) + self._probe_radius
                 cut = kdt_sphere.query_ball_point(self._ag.atoms[n].position, n_raddi)
                 intersect |= set(cut)
-        
+  
             points = self._n_points - len(intersect)
             total_surface_area = raddi * raddi * 4 * np.pi
             area_per_point = total_surface_area / self._n_points
