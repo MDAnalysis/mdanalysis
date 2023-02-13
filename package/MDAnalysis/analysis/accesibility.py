@@ -36,9 +36,19 @@ def atomic_radi(e):
     return ATOMIC_RADI[e]  if e in ATOMIC_RADI  else DEFAULT_ATOMIC_RADI
         
 class SASA(AnalysisBase):
-
-        
+    r""" Calculation of solvent accesible surface areas using Shrake-Rupley "rolling ball'
+         algorithm 
+    """
     def __init__(self, ag, n_points=100, probe_radius=1.40, **kwargs):
+        """Parameters
+        ----------
+        ag : AtomGroup
+            Atom group used for the calculation.
+        n_points: int (optional)
+            Number of points used for the estimation of the atom surface area
+        probe_radius: double ( optional )
+            Radius of the probe atom, by default watter radious
+        """
         super(SASA, self).__init__(ag.universe.trajectory, **kwargs)
         self._ag = ag
         self._atom_neighbours = KDTree(ag.positions, 10)
