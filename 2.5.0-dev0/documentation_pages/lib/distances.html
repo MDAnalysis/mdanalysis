@@ -70,7 +70,8 @@
 <li class="toctree-l2 current"><a class="reference internal" href="../lib_modules.html#list-of-modules">13.2. List of modules</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">13.2.1. Fast distance array computation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#selection-of-acceleration-backend">13.2.1.1. Selection of acceleration (“backend”)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#functions">13.2.1.2. Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#use-of-the-distopia-library">13.2.1.2. Use of the distopia library</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#functions">13.2.1.3. Functions</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#low-level-modules-for-mdanalysis-lib-distances">13.2.2. Low-level modules for <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a><ul>
@@ -194,6 +195,49 @@ with OpenMP</p></td>
 </tr>
 </tbody>
 </table>
+</section>
+<section id="use-of-the-distopia-library">
+<h2><span class="section-number">13.2.1.2. </span>Use of the distopia library<a class="headerlink" href="#use-of-the-distopia-library" title="Permalink to this heading"></a></h2>
+<p>MDAnalysis has developed a standalone library, <a class="reference external" href="https://github.com/MDAnalysis/distopia">distopia</a> for accelerating
+the distance functions in this module using explicit SIMD vectorisation.
+This can provide many-fold speedups in calculating distances. Distopia is
+under active development and as such only a selection of functions in this
+module are covered. Consult the following table to see if the function
+you wish to use is covered by distopia. For more information see the
+<a class="reference external" href="https://www.mdanalysis.org/distopia">distopia documentation</a>.</p>
+<table class="docutils align-center" id="id2">
+<caption><span class="caption-text">Functions available using the <a class="reference external" href="https://github.com/MDAnalysis/distopia">distopia</a> backend.</span><a class="headerlink" href="#id2" title="Permalink to this table"></a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Functions</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>MDAnalysis.lib.distances.calc_bonds</p></td>
+<td><p>Doesn’t support triclinic boxes</p></td>
+</tr>
+</tbody>
+</table>
+<p>If <a class="reference external" href="https://github.com/MDAnalysis/distopia">distopia</a> is installed, the functions in this table will accept the key
+‘distopia’ for the <cite>backend</cite> keyword argument. If the distopia backend is
+selected the <cite>distopia</cite> library will be used to calculate the distances. Note
+that for functions listed in this table <strong>distopia is not the default backend
+if and must be selected.</strong></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Distopia does not currently support triclinic simulation boxes. If you
+specify <cite>distopia</cite> as the backend and your simulation box is triclinic,
+the function will fall back to the default <cite>serial</cite> backend.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Due to the use of Instruction Set Architecture (<a class="reference external" href="https://en.wikipedia.org/wiki/Instruction_set_architecture">ISA</a>) specific SIMD
+intrinsics in distopia via <a class="reference external" href="https://github.com/vectorclass/version2">VCL2</a>, the precision of your results may
+depend on the ISA available on your machine. However, in all tested cases
+distopia satisfied the accuracy thresholds used to the functions in this
+module. Please document any issues you encounter with distopia’s accuracy
+in the <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/3915">relevant distopia issue</a> on the MDAnalysis GitHub repository.</p>
+</div>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.13.0.</span></p>
 </div>
@@ -201,9 +245,12 @@ with OpenMP</p></td>
 <p><span class="versionmodified changed">Changed in version 2.3.0: </span>Distance functions can now accept an
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> or an <code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code></p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.5.0: </span>Interface to the <a class="reference external" href="https://github.com/MDAnalysis/distopia">distopia</a> package added.</p>
+</div>
 </section>
 <section id="functions">
-<h2><span class="section-number">13.2.1.2. </span>Functions<a class="headerlink" href="#functions" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">13.2.1.3. </span>Functions<a class="headerlink" href="#functions" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.distances.distance_array">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.distances.</span></span><span class="sig-name descname"><span class="pre">distance_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><span class="pre">dtype</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ScalarType</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><span class="pre">AtomGroup</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">configuration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><span class="pre">dtype</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ScalarType</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><span class="pre">AtomGroup</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><span class="pre">dtype</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ScalarType</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><span class="pre">dtype</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ScalarType</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'serial'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><span class="pre">dtype</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ScalarType</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/MDAnalysis/lib/distances.html#distance_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.distances.distance_array" title="Permalink to this definition"></a></dt>
@@ -507,16 +554,16 @@ triclinic and must be provided in the same format as returned by
 <li><p><strong>result</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – Preallocated result array of dtype <code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code> and shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
 (for <code class="docutils literal notranslate"><span class="pre">n</span></code> coordinate pairs). Avoids recreating the array in repeated
 function calls.</p></li>
-<li><p><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</p></li>
+<li><p><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'</em><em>, </em><em>'distopia'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration. Defaults to ‘serial’.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>bondlengths</strong> – Array containing the bond lengths between each pair of coordinates. If
-two single coordinates were supplied, their distance is returned as a
-single number instead of an array.</p>
+<dd class="field-even"><p><strong>bondlengths</strong> – numpy.float64 Array containing the bond lengths between each pair of
+coordinates. If two single coordinates were supplied, their distance is
+returned as a single number instead of an array.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>numpy.ndarray (<code class="docutils literal notranslate"><span class="pre">dtype=numpy.float64</span></code>, <code class="docutils literal notranslate"><span class="pre">shape=(n,)</span></code>) or numpy.float64</p>
+<dd class="field-odd"><p>numpy.ndarray (<code class="docutils literal notranslate"><span class="pre">dtype=numpy.float64</span></code>, <code class="docutils literal notranslate"><span class="pre">shape=(n,)</span></code>) or</p>
 </dd>
 </dl>
 <div class="versionadded">
@@ -532,6 +579,9 @@ Now also accepts single coordinates as input.</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 2.3.0: </span>Can now accept an <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> as an
 argument in any position and checks inputs using type hinting.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.5.0: </span>Can now optionally use the fast distance functions from distopia</p>
 </div>
 </dd></dl>
 

@@ -154,10 +154,57 @@
 <span class="sd">                                        with OpenMP</span>
 <span class="sd">   ========== ========================= ======================================</span>
 
+<span class="sd">Use of the distopia library</span>
+<span class="sd">---------------------------</span>
+
+<span class="sd">MDAnalysis has developed a standalone library, `distopia`_ for accelerating</span>
+<span class="sd">the distance functions in this module using explicit SIMD vectorisation.</span>
+<span class="sd">This can provide many-fold speedups in calculating distances. Distopia is</span>
+<span class="sd">under active development and as such only a selection of functions in this</span>
+<span class="sd">module are covered. Consult the following table to see if the function</span>
+<span class="sd">you wish to use is covered by distopia. For more information see the</span>
+<span class="sd">`distopia documentation`_.</span>
+
+<span class="sd">.. Table:: Functions available using the `distopia`_ backend.</span>
+<span class="sd">    :align: center</span>
+
+<span class="sd">    +-------------------------------------+-----------------------------------+</span>
+<span class="sd">    | Functions                           | Notes                             |</span>
+<span class="sd">    +=====================================+===================================+</span>
+<span class="sd">    | MDAnalysis.lib.distances.calc_bonds | Doesn&#39;t support triclinic boxes   |</span>
+<span class="sd">    +-------------------------------------+-----------------------------------+</span>
+
+<span class="sd">If `distopia`_ is installed, the functions in this table will accept the key</span>
+<span class="sd">&#39;distopia&#39; for the `backend` keyword argument. If the distopia backend is</span>
+<span class="sd">selected the `distopia` library will be used to calculate the distances. Note</span>
+<span class="sd">that for functions listed in this table **distopia is not the default backend</span>
+<span class="sd">if and must be selected.**</span>
+
+<span class="sd">.. Note::</span>
+<span class="sd">   Distopia does not currently support triclinic simulation boxes. If you</span>
+<span class="sd">   specify `distopia` as the backend and your simulation box is triclinic,</span>
+<span class="sd">   the function will fall back to the default `serial` backend.</span>
+
+<span class="sd">.. Note::</span>
+<span class="sd">    Due to the use of Instruction Set Architecture (`ISA`_) specific SIMD</span>
+<span class="sd">    intrinsics in distopia via `VCL2`_, the precision of your results may</span>
+<span class="sd">    depend on the ISA available on your machine. However, in all tested cases</span>
+<span class="sd">    distopia satisfied the accuracy thresholds used to the functions in this</span>
+<span class="sd">    module. Please document any issues you encounter with distopia&#39;s accuracy</span>
+<span class="sd">    in the `relevant distopia issue`_ on the MDAnalysis GitHub repository.</span>
+
+<span class="sd">.. _distopia: https://github.com/MDAnalysis/distopia</span>
+<span class="sd">.. _distopia documentation: https://www.mdanalysis.org/distopia</span>
+<span class="sd">.. _ISA: https://en.wikipedia.org/wiki/Instruction_set_architecture</span>
+<span class="sd">.. _VCL2: https://github.com/vectorclass/version2</span>
+<span class="sd">.. _relevant distopia issue: https://github.com/MDAnalysis/mdanalysis/issues/3915</span>
+
 <span class="sd">.. versionadded:: 0.13.0</span>
 <span class="sd">.. versionchanged:: 2.3.0</span>
 <span class="sd">   Distance functions can now accept an</span>
 <span class="sd">   :class:`~MDAnalysis.core.groups.AtomGroup` or an :class:`np.ndarray`</span>
+<span class="sd">.. versionchanged:: 2.5.0</span>
+<span class="sd">   Interface to the `distopia`_ package added.</span>
 
 <span class="sd">Functions</span>
 <span class="sd">---------</span>
@@ -187,6 +234,7 @@
 <span class="kn">from</span> <span class="nn">._augment</span> <span class="kn">import</span> <span class="n">augment_coordinates</span><span class="p">,</span> <span class="n">undo_augment</span>
 <span class="kn">from</span> <span class="nn">.nsgrid</span> <span class="kn">import</span> <span class="n">FastNS</span>
 <span class="kn">from</span> <span class="nn">.c_distances</span> <span class="kn">import</span> <span class="n">_minimize_vectors_ortho</span><span class="p">,</span> <span class="n">_minimize_vectors_triclinic</span>
+<span class="kn">from</span> <span class="nn">._distopia</span> <span class="kn">import</span> <span class="n">HAS_DISTOPIA</span>
 
 
 <span class="c1"># hack to select backend with backend=&lt;backend&gt; kwarg. Note that</span>
@@ -201,8 +249,11 @@
                                           <span class="n">package</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.lib&quot;</span><span class="p">)</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="k">pass</span>
-<span class="k">del</span> <span class="n">importlib</span>
 
+<span class="k">if</span> <span class="n">HAS_DISTOPIA</span><span class="p">:</span>
+    <span class="n">_distances</span><span class="p">[</span><span class="s2">&quot;distopia&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="s2">&quot;._distopia&quot;</span><span class="p">,</span>
+                             <span class="n">package</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.lib&quot;</span><span class="p">)</span>
+<span class="k">del</span> <span class="n">importlib</span>
 
 <span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="n">funcname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
          <span class="n">kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;serial&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
@@ -1512,15 +1563,15 @@
 <span class="sd">        Preallocated result array of dtype ``numpy.float64`` and shape ``(n,)``</span>
 <span class="sd">        (for ``n`` coordinate pairs). Avoids recreating the array in repeated</span>
 <span class="sd">        function calls.</span>
-<span class="sd">    backend : {&#39;serial&#39;, &#39;OpenMP&#39;}, optional</span>
-<span class="sd">        Keyword selecting the type of acceleration.</span>
+<span class="sd">    backend : {&#39;serial&#39;, &#39;OpenMP&#39;, &#39;distopia&#39;}, optional</span>
+<span class="sd">        Keyword selecting the type of acceleration. Defaults to &#39;serial&#39;.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    bondlengths : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n,)``) or numpy.float64</span>
-<span class="sd">        Array containing the bond lengths between each pair of coordinates. If</span>
-<span class="sd">        two single coordinates were supplied, their distance is returned as a</span>
-<span class="sd">        single number instead of an array.</span>
+<span class="sd">    bondlengths : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n,)``) or</span>
+<span class="sd">        numpy.float64 Array containing the bond lengths between each pair of</span>
+<span class="sd">        coordinates. If two single coordinates were supplied, their distance is</span>
+<span class="sd">        returned as a single number instead of an array.</span>
 
 
 <span class="sd">    .. versionadded:: 0.8</span>
@@ -1532,6 +1583,8 @@
 <span class="sd">    .. versionchanged:: 2.3.0</span>
 <span class="sd">       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an</span>
 <span class="sd">       argument in any position and checks inputs using type hinting.</span>
+<span class="sd">    .. versionchanged:: 2.5.0</span>
+<span class="sd">       Can now optionally use the fast distance functions from distopia</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">numatom</span> <span class="o">=</span> <span class="n">coords1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">bondlengths</span> <span class="o">=</span> <span class="n">_check_result_array</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="p">(</span><span class="n">numatom</span><span class="p">,))</span>
@@ -1539,19 +1592,30 @@
     <span class="k">if</span> <span class="n">numatom</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">boxtype</span><span class="p">,</span> <span class="n">box</span> <span class="o">=</span> <span class="n">check_box</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">boxtype</span> <span class="o">==</span> <span class="s1">&#39;ortho&#39;</span><span class="p">:</span>
-                <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_bond_distance_ortho&quot;</span><span class="p">,</span>
-                     <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">bondlengths</span><span class="p">),</span>
-                     <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">boxtype</span> <span class="o">==</span> <span class="s2">&quot;ortho&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s1">&#39;distopia&#39;</span><span class="p">:</span>
+                    <span class="n">bondlengths</span> <span class="o">=</span> <span class="n">bondlengths</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+                <span class="n">_run</span><span class="p">(</span>
+                    <span class="s2">&quot;calc_bond_distance_ortho&quot;</span><span class="p">,</span>
+                    <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">bondlengths</span><span class="p">),</span>
+                    <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span>
+                <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_bond_distance_triclinic&quot;</span><span class="p">,</span>
-                     <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">bondlengths</span><span class="p">),</span>
-                     <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+                <span class="n">_run</span><span class="p">(</span>
+                    <span class="s2">&quot;calc_bond_distance_triclinic&quot;</span><span class="p">,</span>
+                    <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">bondlengths</span><span class="p">),</span>
+                    <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span>
+                <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_bond_distance&quot;</span><span class="p">,</span>
-                 <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">bondlengths</span><span class="p">),</span>
-                 <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
-
+            <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s1">&#39;distopia&#39;</span><span class="p">:</span>
+                <span class="n">bondlengths</span> <span class="o">=</span> <span class="n">bondlengths</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="n">_run</span><span class="p">(</span>
+                <span class="s2">&quot;calc_bond_distance&quot;</span><span class="p">,</span>
+                <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">bondlengths</span><span class="p">),</span>
+                <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span>
+            <span class="p">)</span>
+    <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s1">&#39;distopia&#39;</span><span class="p">:</span>
+        <span class="n">bondlengths</span> <span class="o">=</span> <span class="n">bondlengths</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">bondlengths</span></div>
 
 
