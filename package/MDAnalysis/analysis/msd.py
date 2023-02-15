@@ -346,6 +346,7 @@ class EinsteinMSD(AnalysisBase):
                                                   self.n_particles))
         self._position_array = np.zeros(
             (self.n_frames, self.n_particles, self.dim_fac))
+        ts = u.trajectory.ts
         ts.positions
 
     def _parse_msd_type(self):
