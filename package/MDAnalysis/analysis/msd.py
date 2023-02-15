@@ -316,7 +316,7 @@ class EinsteinMSD(AnalysisBase):
         fft : bool
             If ``True``, uses a fast FFT based algorithm for computation of
             the MSD. Otherwise, use the simple "windowed" algorithm.
-            The tidynamics package is required for `fft=True`.
+            The tidynamics package is required for `fft=True`.  
         """
         if isinstance(u, groups.UpdatingAtomGroup):
             raise TypeError("UpdatingAtomGroups are not valid for MSD "
@@ -346,8 +346,8 @@ class EinsteinMSD(AnalysisBase):
                                                   self.n_particles))
         self._position_array = np.zeros(
             (self.n_frames, self.n_particles, self.dim_fac))
-        ts = u.trajectory.ts
-        ts.positions
+        self._position_array = self._trajectory.timeseries(select='all', 
+                                                msd_type='xyz', fft=True)
 
     def _parse_msd_type(self):
         r""" Sets up the desired dimensionality of the MSD.
