@@ -374,7 +374,7 @@ class EinsteinMSD(AnalysisBase):
         """
         # shape of position array set here, use span in last dimension
         # from this point on
-        self._position_array[self._frame_index] = (
+        self._position_array[:, self._frame_index] = (
                  self.ag.positions[:, self._dim])
 
     def _conclude(self):
