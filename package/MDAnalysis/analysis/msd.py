@@ -344,11 +344,10 @@ class EinsteinMSD(AnalysisBase):
         # these need to be zeroed prior to each run() call
         self.results.msds_by_particle = np.zeros((self.n_frames,
                                                   self.n_particles))
-        # self._position_array = np.zeros(
-        #     (self.n_frames, self.n_particles, self.dim_fac))
         # self.results.timeseries not set here
         self._position_array = np.zeros(
             self._trajectory.timeseries().shape)
+        self._position_array = np.transpose(self._position_array, (1, 0, 2))
 
     def _parse_msd_type(self):
         r""" Sets up the desired dimensionality of the MSD.
@@ -374,7 +373,7 @@ class EinsteinMSD(AnalysisBase):
         """
         # shape of position array set here, use span in last dimension
         # from this point on
-        self._position_array[:, self._frame_index] = (
+        self._position_array[self._frame_index] = (
                  self.ag.positions[:, self._dim])
 
     def _conclude(self):
