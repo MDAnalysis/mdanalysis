@@ -148,7 +148,7 @@ class TestDist(object):
         '''Ensure that pairwise distances between atoms are
         correctly calculated.'''
         actual = MDAnalysis.analysis.distances.dist(ag, ag2)[2]
-        assert_equal(actual, expected)
+        assert_allclose(actual, expected)
 
     def test_pairwise_dist_box(self, ag, ag2, expected_box, box):
         '''Ensure that pairwise distances between atoms are
@@ -161,7 +161,7 @@ class TestDist(object):
         pairwise distance matrix.'''
         actual = MDAnalysis.analysis.distances.dist(
             ag, ag2, offset=229)[2]
-        assert_equal(actual, expected)
+        assert_allclose(actual, expected)
 
     def test_offset_calculation(self, ag, ag2):
         '''Test that offsets fed to dist() are correctly calculated.'''

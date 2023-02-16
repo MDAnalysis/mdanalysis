@@ -45,6 +45,7 @@ import math
 import warnings
 from typing import Union, Optional, Dict
 from collections import defaultdict
+import pickle
 
 import numpy as np
 
@@ -244,7 +245,7 @@ class AuxStep(object):
 
 
 class AuxReader(metaclass=_AuxReaderMeta):
-    """ Base class for auxiliary readers.
+    """Base class for auxiliary readers.
 
     Allows iteration over a set of data from a trajectory, additional
     ('auxiliary') to the regular positions/velocities/etc. This auxiliary
@@ -255,6 +256,10 @@ class AuxReader(metaclass=_AuxReaderMeta):
     .. versionchanged:: 2.4.0
         Behaviour of ``cutoff`` changed, default parameter which specifies
         not cutoff is set is now None, not -1.
+
+    .. versionchanged:: 2.4.0
+        :class:`AuxReader` instances now have a :meth:`copy` method which
+        creates a deep copy of the instance.
 
     Parameters
     ----------
@@ -323,7 +328,10 @@ class AuxReader(metaclass=_AuxReaderMeta):
             self.rewind()
 
     def copy(self):
-        raise NotImplementedError("Copy not implemented for AuxReader")
+        """Returns a deep copy of the AuxReader"""
+        orig_dict = pickle.dumps(self)
+        new_reader = pickle.loads(orig_dict)
+        return new_reader
 
     def __len__(self):
         """ Number of steps in auxiliary data. """
@@ -521,7 +529,10 @@ class AuxReader(metaclass=_AuxReaderMeta):
             # This is necessary so all attributes can be iterated over
             aux = auxreader(**description_kwargs)
             aux.auxname = auxname
-            aux.data_selector = aux_spec[auxname]
+            if aux.data_selector is None:
+                # When calling ReaderBase.copy(), aux_spec information is lost
+                # but data_selector is retained
+                aux.data_selector = aux_spec[auxname]
             coord_parent._auxs[auxname] = aux
             coord_parent.ts = aux.update_ts(coord_parent.ts)
 
