@@ -196,7 +196,7 @@ class TestAnalysisCollection:
     def test_inconsistent_trajectory(self, universe):
         v = mda.Universe(TPR, XTC)
 
-        with pytest.raises(ValueError, match="`analysis_objects` do not have the same"):
+        with pytest.raises(ValueError, match="`analysis_instances` do not have the"):
             base.AnalysisCollection(
                 InterRDF(universe.atoms, universe.atoms), InterRDF(v.atoms, v.atoms)
             )
@@ -207,7 +207,7 @@ class TestAnalysisCollection:
                 self._trajectory = trajectory
 
         # Create collection for common trajectory loop with inconsistent trajectory
-        with pytest.raises(AttributeError, match="not a child of `AnalysisBa"):
+        with pytest.raises(AttributeError, match="not a child of `AnalysisBase`"):
             base.AnalysisCollection(CustomAnalysis(universe.trajectory))
 
 

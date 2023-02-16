@@ -89,6 +89,10 @@ root-mean-square distance analysis in the following way:
    plt.xlabel("time (ps)")
    plt.ylabel("RMSD (Å)")
 
+If you want to run two or more different analyses on the same trajectory you
+can also efficently combine them using the
+:class:`MDAnalysis.analysis.base.AnalysisCollection` class.
+
 
 Writing new analysis tools
 --------------------------
@@ -224,28 +228,32 @@ class AnalysisCollection(object):
     """
     Class for running a collection of analysis classes on a single trajectory.
 
-    Running a collection of analysis with ``AnalysisCollection`` can result in
-    a speedup compared to running the individual object since here we only
-    perform the trajectory looping once.
+    Running a collection of analyses with ``AnalysisCollection`` can result in
+    a speedup compared to running the individual analyses since the trajectory
+    loop ins only performed once.
 
     The class assumes that each analysis is a child of
-    :class:`MDAnalysis.analysis.base.AnalysisBase`. Additionally,
-    the trajectory of all ``analysis_objects`` must be the same.
+    :class:`MDAnalysis.analysis.base.AnalysisBase`. Additionally, the
+    trajectory of all `analysis_instances` must be the same.
 
-    By default, it is ensured that all analysis objects use the
+    By default, it is ensured that all analysis instances use the
     *same original* timestep and not an altered one from a previous analysis
-    object. This behavior can be changed with the ``reset_timestep`` parameter
+    object. This behavior can be changed with the `reset_timestep` parameter
     of the :meth:`MDAnalysis.analysis.base.AnalysisCollection.run` method.
+    Changing the default behaviour of `reset_timestep` might be useful to
+    avoid that subsequent analysis instances have to perform the same
+    transformation on the timestep.
 
     Parameters
     ----------
-    *analysis_objects : tuple
+    *analysis_instances : tuple
         List of analysis classes to run on the same trajectory.
 
     Raises
     ------
     AttributeError
-        If all the provided ``analysis_objects`` do not have the same trajectory.
+        If all the provided ``analysis_instances`` do not work on the same
+        trajectory.
     AttributeError
         If an ``analysis_object`` is not a child of
         :class:`MDAnalysis.analysis.base.AnalysisBase`.
@@ -265,7 +273,7 @@ class AnalysisCollection(object):
         ag_O = u.select_atoms("name O")
         ag_H = u.select_atoms("name H")
 
-        # Create individual analysis objects
+        # Create individual analysis instances
         rdf_OO = InterRDF(ag_O, ag_O)
         rdf_OH = InterRDF(ag_H, ag_H)
 
@@ -273,9 +281,9 @@ class AnalysisCollection(object):
         collection = AnalysisCollection(rdf_OO, rdf_OH)
 
         # Run the collected analysis
-        collection.run(start=0, end=100, step=10)
+        collection.run(start=0, stop=100, step=10)
 
-        # Results are stored in individual objects
+        # Results are stored in the individual instances
         print(rdf_OO.results)
         print(rdf_OH.results)
 
@@ -284,17 +292,19 @@ class AnalysisCollection(object):
 
     """
 
-    def __init__(self, *analysis_objects):
-        for analysis_object in analysis_objects:
-            if analysis_objects[0]._trajectory != analysis_object._trajectory:
-                raise ValueError("`analysis_objects` do not have the same trajectory.")
+    def __init__(self, *analysis_instances):
+        for analysis_object in analysis_instances:
+            if analysis_instances[0]._trajectory != analysis_object._trajectory:
+                raise ValueError(
+                    "`analysis_instances` do not have the same trajectory."
+                )
             if not isinstance(analysis_object, AnalysisBase):
                 raise AttributeError(
                     f"Analysis object {analysis_object} is "
                     "not a child of `AnalysisBase`."
                 )
 
-        self._analysis_objects = analysis_objects
+        self._analysis_instances = analysis_instances
 
     def run(
         self,
@@ -326,12 +336,12 @@ class AnalysisCollection(object):
             Reset the timestep object after for each ``analysis_object``.
             Setting this to ``False`` can be useful if an ``analysis_object``
             is performing a trajectory manipulation which is also useful for the
-            subsequent ``analysis_objects`` e.g. unwrapping of molecules.
+            subsequent ``analysis_instances`` e.g. unwrapping of molecules.
         """
 
         # Ensure compatibility with API of version 0.15.0
-        if not hasattr(self, "_analysis_objects"):
-            self._analysis_objects = (self,)
+        if not hasattr(self, "_analysis_instances"):
+            self._analysis_instances = (self,)
 
         logger.info("Choosing frames to analyze")
         # if verbose unchanged, use class default
@@ -339,7 +349,7 @@ class AnalysisCollection(object):
 
         logger.info("Starting preparation")
 
-        for analysis_object in self._analysis_objects:
+        for analysis_object in self._analysis_instances:
             analysis_object._setup_frames(
                 analysis_object._trajectory,
                 start=start,
@@ -350,21 +360,26 @@ class AnalysisCollection(object):
             analysis_object._prepare()
 
         logger.info(
-            f"Starting analysis loop over {self._analysis_objects[0].n_frames} "
+            f"Starting analysis loop over {self._analysis_instances[0].n_frames} "
             "trajectory frames."
         )
 
         for i, ts in enumerate(
-            ProgressBar(self._analysis_objects[0]._sliced_trajectory, verbose=verbose)
+            ProgressBar(self._analysis_instances[0]._sliced_trajectory, verbose=verbose)
         ):
             if reset_timestep:
                 ts_original = ts.copy()
 
-            for analysis_object in self._analysis_objects:
+            for analysis_object in self._analysis_instances:
+                # Set attributes before calling `_single_frame()`. Setting
+                # these attributes explicitly is mandatory so that each
+                # instance can access the information of the current timestep.
                 analysis_object._frame_index = i
                 analysis_object._ts = ts
                 analysis_object.frames[i] = ts.frame
                 analysis_object.times[i] = ts.time
+
+                # Call the actual analysis of each instance.
                 analysis_object._single_frame()
 
                 if reset_timestep:
@@ -372,7 +387,7 @@ class AnalysisCollection(object):
 
         logger.info("Finishing up")
 
-        for analysis_object in self._analysis_objects:
+        for analysis_object in self._analysis_instances:
             analysis_object._conclude()
 
         return self
