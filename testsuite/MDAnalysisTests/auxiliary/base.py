@@ -408,6 +408,11 @@ class BaseAuxReaderTest(object):
 
         assert reader.constant_dt == constant
 
+    def test_copy(self, reader):
+        new_reader = reader.copy()
+        assert reader == new_reader
+        assert reader is not new_reader
+
 
 def assert_auxstep_equal(A, B):
     if not isinstance(A, mda.auxiliary.base.AuxStep):
