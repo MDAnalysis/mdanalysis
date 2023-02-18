@@ -1,2 +1,2 @@
-.. automodule:: MDAnalysis.analysis.rst
+.. automodule:: MDAnalysis.analysis.accesibility
 
