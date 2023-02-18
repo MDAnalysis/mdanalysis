@@ -36,3 +36,8 @@ class TestSASA(object):
         sasa = SASA(universe.atoms)
         atoms_accesible_area = sasa.atoms()
         assert len(atoms_accesible_area) == len(universe.atoms)
+
+    def test_len_atom_area_gt_0(self, universe):
+        sasa = SASA(universe.atoms)
+        atoms_accesible_area = sasa.atoms()
+        assert all(map(lambda x: x >= 0, atoms_accesible_area))
