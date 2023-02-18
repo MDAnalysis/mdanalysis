@@ -463,6 +463,7 @@ class TestEDRReader(BaseAuxReaderTest):
         assert reader.unit_dict == ref_units
 
 
+@pytest.mark.skipif(not HAS_PYEDR, reason="pyedr not installed")
 def test_single_frame_input_file():
     """Previously, EDRReader could not handle EDR input files with only one
        frame. See Issue #3999."""
