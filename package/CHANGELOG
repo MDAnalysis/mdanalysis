@@ -13,8 +13,9 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae
 
+??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae, 
+         ooprathamm, MeetB7, BFedder
  * 2.5.0
 
 Fixes
@@ -25,6 +26,9 @@ Fixes
     (Issue #3336)
 
 Enhancements
+  * Add distopia distance calculation library bindings as a selectable backend
+    for `calc_bonds` in `MDA.lib.distances`. (Issue #3783, PR #3914)
+  * AuxReaders are now pickle-able and copy-able (Issue #1785, PR #3887)
   * Add pickling support for Atom, Residue, Segment, ResidueGroup 
     and SegmentGroup. (PR #3953)
 
