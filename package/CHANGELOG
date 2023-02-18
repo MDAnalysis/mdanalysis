@@ -31,6 +31,8 @@ Enhancements
   * AuxReaders are now pickle-able and copy-able (Issue #1785, PR #3887)
   * Add pickling support for Atom, Residue, Segment, ResidueGroup 
     and SegmentGroup. (PR #3953)
+  * Add calculation for the solvant accessible area, using Shrake-Rupley
+    algorithm (PR #4025)
 
 Changes
   * As per NEP29 the minimum supported NumPy version has been raised to 1.21
