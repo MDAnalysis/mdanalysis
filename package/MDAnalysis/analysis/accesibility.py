@@ -31,15 +31,16 @@ ATOMIC_RADI = {
 
 
 def atomic_radi(e):
-    """van der Waals radii""" 
-    DEFAULT_ATOMIC_RADI = 2. 
-    return ATOMIC_RADI[e]  if e in ATOMIC_RADI  else DEFAULT_ATOMIC_RADI
+    """van der Waals radii"""
+    DEFAULT_ATOMIC_RADI = 2.0
+    return ATOMIC_RADI[e] if e in ATOMIC_RADI else DEFAULT_ATOMIC_RADI
 
 
 class SASA(AnalysisBase):
-    r""" Calculation of solvent accesible surface areas using Shrake-Rupley "rolling ball'
-         algorithm 
+    r"""Calculation of solvent accesible surface areas using Shrake-Rupley
+    'rolling ball' algorithm
     """
+
     def __init__(self, ag, n_points=100, probe_radius=1.40, **kwargs):
         """Parameters
         ----------
@@ -58,7 +59,6 @@ class SASA(AnalysisBase):
         self._twice_max_radi = (max(list(ATOMIC_RADI.values())) + probe_radius) * 2
         self._probe_radius = probe_radius
 
-
     def _compute_sphere(self):
         """Fibonacci lattice to evently distribute points in the sphere."""
         golden_ratio = (1 + 5**0.5) / 2
@@ -71,7 +71,6 @@ class SASA(AnalysisBase):
             cos(phi),
         )
         return np.transpose(np.array([x_points, y_points, z_points]))
-
 
     def _compute(self):
         asas = np.zeros(len(self._ag.atoms), dtype=np.double)
@@ -99,7 +98,6 @@ class SASA(AnalysisBase):
             asas[atom.index] = points * area_per_point
         return asas
 
-
     def atoms(self):
-        """ returns accessible surface area in A**2"""
+        """returns accessible surface area in A**2"""
         return self._compute()
