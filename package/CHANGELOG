@@ -26,6 +26,8 @@ Fixes
     (Issue #3336)
 
 Enhancements
+  * Add a nojump transformation, which unwraps trajectories so that particle
+    paths are continuous. (Issue #3703, PR #4031)
   * Add distopia distance calculation library bindings as a selectable backend
     for `calc_bonds` in `MDA.lib.distances`. (Issue #3783, PR #3914)
   * AuxReaders are now pickle-able and copy-able (Issue #1785, PR #3887)
