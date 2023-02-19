@@ -304,7 +304,8 @@ class EinsteinMSD(AnalysisBase):
     .. versionadded:: 2.0.0
     """
 
-   def __init__(self, u, _trajectory, select='all', msd_type='xyz',fft=True, start=0, stop=None, step=1, **kwargs):
+   def __init__(self, u, _trajectory, select='all', msd_type='xyz',fft=True, 
+                start=0, stop=None, step=1, **kwargs):
         r"""
         Parameters
         ----------
@@ -319,7 +320,7 @@ class EinsteinMSD(AnalysisBase):
             If ``True``, uses a fast FFT based algorithm for computation of
             the MSD. Otherwise, use the simple "windowed" algorithm.
             The tidynamics package is required for `fft=True`.
-        start/stop/step : integer
+        start/stop/step : int
             Initialising start , stop , step here as 0 , None and 1
             respectively.
         """
