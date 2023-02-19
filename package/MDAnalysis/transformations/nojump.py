@@ -67,7 +67,7 @@ class NoJump(TransformationBase):
 
     """
 
-    def __init__(self,
+    def __init__(self, check_continuity=True,
                  max_threads=None,
                  #NoJump transforms are inherently unparallelizable, since 
                  #it depends on the previous frame's unwrapped coordinates
@@ -77,24 +77,34 @@ class NoJump(TransformationBase):
         self.Lprevinverse = np.eye(3)
         self.prevwrap = None
         self.prev = None
+        self.old_frame = 0
+        self.check_c = check_continuity
 
     def _transform(self, ts):
-        if (self.prev == None):
+        if (self.prev is None):
             self.prev = ts.positions.copy()
             self.prevwrap = ts.positions.copy()
             self.Lprevinverse = np.linalg.inv(ts.triclinic_dimensions)
+            self.old_frame = ts.frame
             return ts
+        if self.check_c and np.abs(self.old_frame - ts.frame) != 1:
+            warnings.warn("NoJump transform is only accurate when positions"
+                          "do not move by more than half a box length."
+                          "Currently jumping between frames with a step of more than 1."
+                          "This might be fine, but depending on the trajectory stride,"
+                          "this might be inaccurate.",
+                          Warning)
         #Remember that @ is a shorthand for matrix multiplication.
         #np.matmul(a, b) is equivalent to a @ b
         alpha = ts.triclinic_dimensions @ self.Lprevinverse
         Linverse = np.linalg.inv(ts.triclinic_dimensions)
         current = ts.positions.copy()
-        ts.positions = alpha @ self.prev 
-                + current - alpha @ self.prevwrap
-                - ts.triclinic_dimensions @ np.round(Linverse @ current
-                    - self.Lprevinverse @ prevwrap)
+        ts.positions = (alpha @ self.prev.T).T 
+        ts.positions += current - (alpha @ self.prevwrap.T).T 
+        ts.positions -= (ts.triclinic_dimensions @ np.round(Linverse @ current.T - self.Lprevinverse @ self.prevwrap.T)).T
         self.Lprevinverse = Linverse
         self.prevwrap = current
         self.prev = ts.positions.copy()
+        self.old_frame = ts.frame
 
         return ts
