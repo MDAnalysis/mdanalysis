@@ -304,8 +304,7 @@ class EinsteinMSD(AnalysisBase):
     .. versionadded:: 2.0.0
     """
 
-   def __init__(self, u, _trajectory, select='all', msd_type='xyz',  
-                fft=True, start=0, stop=None, step=1, **kwargs):
+   def __init__(self, u, _trajectory, select='all', msd_type='xyz',fft=True, start=0, stop=None, step=1, **kwargs):
         r"""
         Parameters
         ----------
