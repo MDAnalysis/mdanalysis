@@ -302,7 +302,8 @@ class EinsteinMSD(AnalysisBase):
     .. versionadded:: 2.0.0
     """
 
-    def __init__(self, u, select='all', msd_type='xyz', fft=True, **kwargs):
+    def __init__(self, u, _trajectory, select='all', msd_type='xyz',  
+                fft=True, start=0, stop=None, step=1, **kwargs):
         r"""
         Parameters
         ----------
@@ -326,9 +327,15 @@ class EinsteinMSD(AnalysisBase):
 
         # args
         self.select = select
+        self._trajectory = None
         self.msd_type = msd_type
         self._parse_msd_type()
         self.fft = fft
+
+        # instances 
+        self.start = start
+        self.stop = stop
+        self.step = step
 
         # local
         self.ag = u.select_atoms(self.select)
@@ -339,15 +346,16 @@ class EinsteinMSD(AnalysisBase):
         self.results.msds_by_particle = None
         self.results.timeseries = None
 
-    def _prepare(self):
+    def _prepare(self, start=None, stop=None, step=None):
         # self.n_frames only available here
         # these need to be zeroed prior to each run() call
         self.results.msds_by_particle = np.zeros((self.n_frames,
                                                   self.n_particles))
         self._position_array = np.zeros(
             (self.n_frames, self.n_particles, self.dim_fac))
-        self._position_array = self._trajectory.timeseries(select='all', 
-                                                msd_type='xyz', fft=True)
+        self._position_array = self._trajectory.timeseries(
+            select='all', msd_type='xyz', fft=True,
+            start=self.start, stop=self.stop, step=self.step)
 
     def _parse_msd_type(self):
         r""" Sets up the desired dimensionality of the MSD.
@@ -369,9 +377,9 @@ class EinsteinMSD(AnalysisBase):
                 
     def _conclude(self):
         if self.fft:
-            self._conclude_fft()
+            self._conclude_fft(self._position_array)
         else:
-            self._conclude_simple()
+            self._conclude_simple(self._position_array)
 
     def _conclude_simple(self):
         r""" Calculates the MSD via the simple "windowed" algorithm.
