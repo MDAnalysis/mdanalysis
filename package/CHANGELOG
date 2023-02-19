@@ -14,7 +14,8 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae, 
-         ooprathamm, MeetB7, BFedder
+         ooprathamm, MeetB7, BFedder, richardjgowers
+
  * 2.5.0
 
 Fixes
@@ -30,10 +31,10 @@ Enhancements
   * AuxReaders are now pickle-able and copy-able (Issue #1785, PR #3887)
   * Add pickling support for Atom, Residue, Segment, ResidueGroup 
     and SegmentGroup. (PR #3953)
-* PDBReader now populates ts.data['tempfactor'] with the tempfactor for
-  each atom *for each frame*.  Note, this does not affect the topology (i.e.
-  `AtomGroup.tempfactors` is not dynamically updated. (Issue #3825)
-* Add pickling support for Atom, Residue, Segment, ResidueGroup
+  * PDBReader now populates ts.data['tempfactor'] with the tempfactor for
+    each atom *for each frame*.  Note, this does not affect the topology (i.e.
+    `AtomGroup.tempfactors` is not dynamically updated. (Issue #3825)
+  * Add pickling support for Atom, Residue, Segment, ResidueGroup
     and SegmentGroup. (PR #3953)
 
 Changes
