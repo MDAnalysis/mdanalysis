@@ -250,6 +250,8 @@ import logging
 from ..due import due, Doi
 from .base import AnalysisBase
 from ..core import groups
+import mdtraj as md
+from mdtraj import Trajectory
 
 logger = logging.getLogger('MDAnalysis.analysis.msd')
 
@@ -302,7 +304,8 @@ class EinsteinMSD(AnalysisBase):
     .. versionadded:: 2.0.0
     """
 
-    def __init__(self, u, _trajectory, select='all', msd_type='xyz',  
+    def __init__(self, u, _trajectory, select='all', msd_type='xyz',
+     
                 fft=True, start=0, stop=None, step=1, **kwargs):
         r"""
         Parameters
@@ -317,7 +320,10 @@ class EinsteinMSD(AnalysisBase):
         fft : bool
             If ``True``, uses a fast FFT based algorithm for computation of
             the MSD. Otherwise, use the simple "windowed" algorithm.
-            The tidynamics package is required for `fft=True`.  
+            The tidynamics package is required for `fft=True`. 
+        start/stop/step : integer
+            Initialising start , stop , step here as 0 , None and 1
+            respectively. 
         """
         if isinstance(u, groups.UpdatingAtomGroup):
             raise TypeError("UpdatingAtomGroups are not valid for MSD "
@@ -327,7 +333,7 @@ class EinsteinMSD(AnalysisBase):
 
         # args
         self.select = select
-        self._trajectory = None
+        self._trajectory = _trajectory
         self.msd_type = msd_type
         self._parse_msd_type()
         self.fft = fft
@@ -353,6 +359,7 @@ class EinsteinMSD(AnalysisBase):
                                                   self.n_particles))
         self._position_array = np.zeros(
             (self.n_frames, self.n_particles, self.dim_fac))
+        # collecting trajectory coordniates via timeseries
         self._position_array = self._trajectory.timeseries(
             select='all', msd_type='xyz', fft=True,
             start=self.start, stop=self.stop, step=self.step)
