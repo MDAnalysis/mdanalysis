@@ -405,6 +405,7 @@ class PDBReader(base.ReaderBase):
         pos = 0
         occupancy = np.ones(self.n_atoms)
         tempfactor = np.zeros(self.n_atoms)
+        saw_tempfactor = False
 
         # Seek to start and read until start of next frame
         self._pdbfile.seek(start)
@@ -425,6 +426,8 @@ class PDBReader(base.ReaderBase):
                     tempfactor[pos] = line[60:66]
                 except ValueError:
                     pass
+                else:
+                    saw_tempfactor = True
                 pos += 1
             elif line[:6] == 'CRYST1':
                 # does an implicit str -> float conversion
@@ -466,7 +469,8 @@ class PDBReader(base.ReaderBase):
                 self.convert_pos_from_native(self.ts.dimensions[:3])
         self.ts.frame = frame
         self.ts.data['occupancy'] = occupancy
-        self.ts.data['tempfactor'] = tempfactor
+        if saw_tempfactor:
+            self.ts.data['tempfactor'] = tempfactor
 
         return self.ts
 
