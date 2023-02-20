@@ -59,7 +59,7 @@ class NoJump(TransformationBase):
             print(ts.positions)
 
     In this case, ``ts.positions`` will return the NoJump unwrapped trajectory.
-    To reverse the process, wrap the coordinates again. 
+    To reverse the process, wrap the coordinates again.
 
     Returns
     -------
@@ -81,19 +81,21 @@ class NoJump(TransformationBase):
         self.check_c = check_continuity
 
     def _transform(self, ts):
-        if (self.prev is None):
+        if self.prev is None:
             self.prev = ts.positions @ np.linalg.inv(ts.triclinic_dimensions)
             self.old_frame = ts.frame
             return ts
         if self.check_c and np.abs(self.old_frame - ts.frame) != 1:
-            warnings.warn("NoJump transform is only accurate when positions"
-                          "do not move by more than half a box length."
-                          "Currently jumping between frames with a step of more than 1."
-                          "This might be fine, but depending on the trajectory stride,"
-                          "this might be inaccurate.",
-                          Warning)
-        #Remember that @ is a shorthand for matrix multiplication.
-        #np.matmul(a, b) is equivalent to a @ b
+            warnings.warn(
+                "NoJump transform is only accurate when positions"
+                "do not move by more than half a box length."
+                "Currently jumping between frames with a step of more than 1."
+                "This might be fine, but depending on the trajectory stride,"
+                "this might be inaccurate.",
+                Warning,
+            )
+        # Remember that @ is a shorthand for matrix multiplication.
+        # np.matmul(a, b) is equivalent to a @ b
         L = ts.triclinic_dimensions
         Linverse = np.linalg.inv(L)
         #Convert into reduced coordinate space

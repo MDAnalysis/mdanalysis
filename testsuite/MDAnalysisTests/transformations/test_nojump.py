@@ -34,8 +34,8 @@ def test_nojump_fwd(nojump_universes):
     Test if the nojump transform is returning the correct
     values when iterating forwards over the sample trajectory.
     '''
-    ref_matrix_fwd1 = np.asarray([9.159101  -6.2827725  5.156695])
-    ref_matrix_fwd2 = np.asarray([5.455143  -9.155944   6.155884])  
+    ref_matrix_fwd1 = np.asarray([9.159101,  -6.2827725,  5.156695])
+    ref_matrix_fwd2 = np.asarray([5.455143 , -9.155944 ,  6.155884])  
     size = (nojump_universes.trajectory.ts.positions.shape[0], 
             nojump_universes.trajectory.ts.positions.shape[1], 
             len(nojump_universes.trajectory))
