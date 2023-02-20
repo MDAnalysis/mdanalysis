@@ -41,9 +41,9 @@ def test_nojump_fwd(nojump_universes):
         nojump_universes.trajectory.ts.positions.shape[1],
         len(nojump_universes.trajectory),
     )
-    parr = np.empty(size)  
+    parr = np.empty(size)
     for ts in nojump_universes.trajectory:
-        parr[...,ts.frame] = ts.positions.copy()
+        parr[..., ts.frame] = ts.positions.copy()
     # Atoms 166 and 362 happen to move alot.
     assert_array_almost_equal(ref_matrix_fwd1, parr[166,:,-1], decimal=5)
-    assert_array_almost_equal(ref_matrix_fwd2, parr[362,:,-1], decimal=5) 
+    assert_array_almost_equal(ref_matrix_fwd2, parr[362,:,-1], decimal=5)

@@ -109,7 +109,7 @@ class NoJump(TransformationBase):
         # Convert back into real space
         ts.positions = newpositions @ L
         # Set things we need to save for the next frame.
-        self.prev = newpositions # Note that this is in reduced coordinate space.
+        self.prev = newpositions  # Note that this is in reduced coordinate space.
         self.old_frame = ts.frame
 
         return ts
