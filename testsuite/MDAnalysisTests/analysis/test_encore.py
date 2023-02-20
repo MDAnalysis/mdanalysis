@@ -152,7 +152,7 @@ inconsistent results")
         err_msg = (
             "Calculated RMSD values differ from "
             "the reference implementation")
-        for i, rmsd in enumerate(reference.rmsd):
+        for i, rmsd in enumerate(reference.results.rmsd):
             assert_almost_equal(conf_dist_matrix[0, i], rmsd[2], 3, err_msg)
 
     def test_rmsd_matrix_with_superimposition_custom_weights(self, ens1):
@@ -211,7 +211,7 @@ inconsistent results")
         rmsfs2 = rms.RMSF(aligned_ensemble2.select_atoms('name *'))
         rmsfs2.run()
 
-        assert sum(rmsfs1.rmsf) > sum(rmsfs2.rmsf),"Ensemble aligned on all " \
+        assert sum(rmsfs1.results.rmsf) > sum(rmsfs2.results.rmsf),"Ensemble aligned on all " \
                                                    "atoms should have lower full-atom RMSF than ensemble aligned on only CAs."
 
     def test_ensemble_superimposition_to_reference_non_weighted(self):
@@ -230,7 +230,7 @@ inconsistent results")
         rmsfs2 = rms.RMSF(aligned_ensemble2.select_atoms('name *'))
         rmsfs2.run()
 
-        assert sum(rmsfs1.rmsf) > sum(rmsfs2.rmsf), "Ensemble aligned on all " \
+        assert sum(rmsfs1.results.rmsf) > sum(rmsfs2.results.rmsf), "Ensemble aligned on all " \
                                                     "atoms should have lower full-atom RMSF than ensemble aligned on only CAs."
 
     def test_covariance_matrix(self, ens1):
