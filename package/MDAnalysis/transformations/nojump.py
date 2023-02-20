@@ -22,11 +22,11 @@
 #
 
 """\
-No Jump Trajectory Unwrapping --- :mod:`MDAnalysis.transformations.nojump` 
+No Jump Trajectory Unwrapping --- :mod:`MDAnalysis.transformations.nojump`
 =======================================================================================
 
 Unwraps the trajectory such that atoms never move more than half a periodic box length.
-The algorithm used is based on Kulke & Vermaas 2022, 10.1021/acs.jctc.2c00327
+The algorithm used is based on :cite:p:`Kulke2022`.
 
 .. autoclass:: NoJump
 
@@ -36,14 +36,16 @@ import warnings
 
 from .base import TransformationBase
 
+@due.dcite(Doi("10.1021/acs.jctc.2c00327"),
+               description="Works through the orthogonal case, "
+               "and proposes the non-orthogonal appraoch.", path=__name__)
 
 class NoJump(TransformationBase):
     """
     Returns transformed coordinates for the given timestep so that an atom
     does not move more than half the periodic box size, and will not jump
-    across the periodic boundary. The algorithm used is based on Kulke &
-    Vermaas 2022, 10.1021/acs.jctc.2c00327, equation B8 for non-orthogonal
-    systems.
+    across the periodic boundary. The algorithm used is based on :cite:p:`Kulke2022`, 
+    equation B6 for non-orthogonal systems.
 
     Example
     -------
@@ -64,6 +66,14 @@ class NoJump(TransformationBase):
     Returns
     -------
     MDAnalysis.coordinates.timestep.Timestep
+
+    References
+    ----------
+    .. bibliography::
+        :filter: False
+        :style: MDA
+
+        Kulke2022
 
     """
 
