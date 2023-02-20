@@ -35,10 +35,8 @@ import numpy as np
 import warnings
 
 from .base import TransformationBase
+from ..due import due, Doi
 
-@due.dcite(Doi("10.1021/acs.jctc.2c00327"),
-               description="Works through the orthogonal case, "
-               "and proposes the non-orthogonal appraoch.", path=__name__)
 
 class NoJump(TransformationBase):
     """
@@ -76,6 +74,10 @@ class NoJump(TransformationBase):
         Kulke2022
 
     """
+
+    @due.dcite(Doi("10.1021/acs.jctc.2c00327"),
+               description="Works through the orthogonal case, "
+               "and proposes the non-orthogonal approach.", path=__name__)
 
     def __init__(
         self,
