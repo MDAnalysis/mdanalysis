@@ -359,7 +359,7 @@ class EinsteinMSD(AnalysisBase):
         self._position_array = np.zeros(
             (self.n_frames, self.n_particles, self.dim_fac))
         # collecting trajectory coordniates via timeseries
-        self._position_array = self._trajectory.timeseries(
+        self._position_array = self.u.trajectory.timeseries(
             select='all', msd_type='xyz', fft=True,
             start=self.start, stop=self.stop, step=self.step)
 
