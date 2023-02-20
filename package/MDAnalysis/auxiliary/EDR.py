@@ -362,7 +362,6 @@ class EDRReader(base.AuxReader):
         StopIteration
             When end of auxiliary data set is reached.
         """
-        SINGLE_FRAME = self.n_steps == 1
         auxstep = self.auxstep
         new_step = self.step + 1
         if new_step < self.n_steps:
@@ -372,7 +371,7 @@ class EDRReader(base.AuxReader):
             return auxstep
         else:
             self.rewind()
-            if not SINGLE_FRAME:
+            if self.n_steps > 1:
                 raise StopIteration
 
     def _go_to_step(self, i: int) -> EDRStep:
