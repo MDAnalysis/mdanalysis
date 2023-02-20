@@ -98,18 +98,18 @@ class NoJump(TransformationBase):
         # np.matmul(a, b) is equivalent to a @ b
         L = ts.triclinic_dimensions
         Linverse = np.linalg.inv(L)
-        #Convert into reduced coordinate space
+        # Convert into reduced coordinate space
         fcurrent = ts.positions @ Linverse
-        fprev = self.prev #Previous unwrapped coordinates in reduced box coordinates.
-        #Calculate the new positions in reduced coordinate space (Equation B6 from
-        #10.1021/acs.jctc.2c00327). As it turns out, the displacement term can
-        #be moved inside the round function in this coordinate space, as the
-        #difference between wrapped and unwrapped coordinates is an integer.
+        fprev = self.prev  # Previous unwrapped coordinates in reduced box coordinates.
+        # Calculate the new positions in reduced coordinate space (Equation B6 from
+        # 10.1021/acs.jctc.2c00327). As it turns out, the displacement term can
+        # be moved inside the round function in this coordinate space, as the
+        # difference between wrapped and unwrapped coordinates is an integer.
         newpositions = fcurrent - np.round(fcurrent - fprev)
-        #Convert back into real space
+        # Convert back into real space
         ts.positions = newpositions @ L
-        #Set things we need to save.
-        self.prev = newpositions #Note that this is in reduced coordinate space.
+        # Set things we need to save for the next frame.
+        self.prev = newpositions # Note that this is in reduced coordinate space.
         self.old_frame = ts.frame
 
         return ts
