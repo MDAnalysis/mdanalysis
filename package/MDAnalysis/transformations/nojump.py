@@ -41,7 +41,7 @@ class NoJump(TransformationBase):
     """
     Returns transformed coordinates for the given timestep so that an atom
     does not move more than half the periodic box size, and will not jump
-    across the periodic boundary. The algorithm used is based on Kulke & 
+    across the periodic boundary. The algorithm used is based on Kulke &
     Vermaas 2022, 10.1021/acs.jctc.2c00327, equation B8 for non-orthogonal
     systems.
 
@@ -54,12 +54,12 @@ class NoJump(TransformationBase):
     .. code-block:: python
 
         transformation = NoJump()
-        u.trajectory.add_transformations(transformation)   
+        u.trajectory.add_transformations(transformation)
         for ts in u.trajectory:
             print(ts.positions)
 
     In this case, ``ts.positions`` will return the NoJump unwrapped trajectory.
-    To reverse the process, wrap the coordinates again.   
+    To reverse the process, wrap the coordinates again. 
 
     Returns
     -------
@@ -67,13 +67,15 @@ class NoJump(TransformationBase):
 
     """
 
-    def __init__(self, check_continuity=True,
-                 max_threads=None,
-                 #NoJump transforms are inherently unparallelizable, since 
-                 #it depends on the previous frame's unwrapped coordinates
-                 parallelizable=False):
-        super().__init__(max_threads=max_threads,
-                         parallelizable=parallelizable)
+    def __init__(
+        self,
+        check_continuity=True,
+        max_threads=None,
+        # NoJump transforms are inherently unparallelizable, since
+        # it depends on the previous frame's unwrapped coordinates
+        parallelizable=False,
+    ):
+        super().__init__(max_threads=max_threads, parallelizable=parallelizable)
         self.prev = None
         self.old_frame = 0
         self.check_c = check_continuity
