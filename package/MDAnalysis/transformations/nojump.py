@@ -74,17 +74,13 @@ class NoJump(TransformationBase):
                  parallelizable=False):
         super().__init__(max_threads=max_threads,
                          parallelizable=parallelizable)
-        self.Lprevinverse = np.eye(3)
-        self.prevwrap = None
         self.prev = None
         self.old_frame = 0
         self.check_c = check_continuity
 
     def _transform(self, ts):
         if (self.prev is None):
-            self.prev = ts.positions.copy()
-            self.prevwrap = ts.positions.copy()
-            self.Lprevinverse = np.linalg.inv(ts.triclinic_dimensions)
+            self.prev = ts.positions @ np.linalg.inv(ts.triclinic_dimensions)
             self.old_frame = ts.frame
             return ts
         if self.check_c and np.abs(self.old_frame - ts.frame) != 1:
@@ -96,15 +92,20 @@ class NoJump(TransformationBase):
                           Warning)
         #Remember that @ is a shorthand for matrix multiplication.
         #np.matmul(a, b) is equivalent to a @ b
-        alpha = ts.triclinic_dimensions @ self.Lprevinverse
-        Linverse = np.linalg.inv(ts.triclinic_dimensions)
-        current = ts.positions.copy()
-        ts.positions = (alpha @ self.prev.T).T 
-        ts.positions += current - (alpha @ self.prevwrap.T).T 
-        ts.positions -= (ts.triclinic_dimensions @ np.round(Linverse @ current.T - self.Lprevinverse @ self.prevwrap.T)).T
-        self.Lprevinverse = Linverse
-        self.prevwrap = current
-        self.prev = ts.positions.copy()
+        L = ts.triclinic_dimensions
+        Linverse = np.linalg.inv(L)
+        #Convert into reduced coordinate space
+        fcurrent = ts.positions @ Linverse
+        fprev = self.prev #Previous unwrapped coordinates in reduced box coordinates.
+        #Calculate the new positions in reduced coordinate space (Equation B6 from
+        #10.1021/acs.jctc.2c00327). As it turns out, the displacement term can
+        #be moved inside the round function in this coordinate space, as the
+        #difference between wrapped and unwrapped coordinates is an integer.
+        newpositions = fcurrent - np.round(fcurrent - fprev)
+        #Convert back into real space
+        ts.positions = newpositions @ L
+        #Set things we need to save.
+        self.prev = newpositions #Note that this is in reduced coordinate space.
         self.old_frame = ts.frame
 
         return ts
