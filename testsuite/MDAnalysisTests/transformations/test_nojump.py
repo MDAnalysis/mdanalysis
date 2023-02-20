@@ -35,7 +35,7 @@ def test_nojump_fwd(nojump_universes):
     values when iterating forwards over the sample trajectory.
     """
     ref_matrix_fwd1 = np.asarray([-3.42261, 11.28495, -1.37211])
-    ref_matrix_fwd2 = np.asarray([5.455143, -9.155944, 6.155884])
+    ref_matrix_fwd2 = np.asarray([3.674243, -8.725193, -0.07884017])
     size = (
         nojump_universes.trajectory.ts.positions.shape[0],
         nojump_universes.trajectory.ts.positions.shape[1],
