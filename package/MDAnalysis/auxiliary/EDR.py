@@ -362,7 +362,7 @@ class EDRReader(base.AuxReader):
         StopIteration
             When end of auxiliary data set is reached.
         """
-        SINGLE_FRAME = True if self.n_steps == 1 else False
+        SINGLE_FRAME = self.n_steps == 1
         auxstep = self.auxstep
         new_step = self.step + 1
         if new_step < self.n_steps:
