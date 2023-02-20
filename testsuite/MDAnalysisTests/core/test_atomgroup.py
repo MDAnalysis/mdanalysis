@@ -130,7 +130,7 @@ class TestAtomGroupWriting(object):
         u.atoms.write(destination, frames=frames)
 
 
-        u_new = mda.Universe(destination)
+        u_new = mda.Universe(destination, to_guess=())
         new_positions = np.stack([ts.positions.copy() for ts in u_new.trajectory])
 
         assert_array_almost_equal(new_positions, ref_positions)
@@ -147,7 +147,7 @@ class TestAtomGroupWriting(object):
         u.atoms.write(destination, frames=selection)
 
 
-        u_new = mda.Universe(destination)
+        u_new = mda.Universe(destination, to_guess=())
         new_positions = np.stack([ts.positions.copy() for ts in u_new.trajectory])
 
         assert_array_almost_equal(new_positions, ref_positions)
@@ -168,7 +168,7 @@ class TestAtomGroupWriting(object):
         destination = str(tmpdir / 'test.dcd' + compression)
         u.atoms.write(destination, frames='all')
 
-        u_new = mda.Universe(destination)
+        u_new = mda.Universe(destination, to_guess=())
         ref_positions = np.stack([ts.positions.copy() for ts in u.trajectory])
         new_positions = np.stack([ts.positions.copy() for ts in u_new.trajectory])
         assert_array_almost_equal(new_positions, ref_positions)
