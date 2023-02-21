@@ -45,7 +45,7 @@ class NoJump(TransformationBase):
     """
     Returns transformed coordinates for the given timestep so that an atom
     does not move more than half the periodic box size, and will move
-    across periodic boundary edges. The algorithm used is based on :cite:p:`Kulke2022`, 
+    across periodic boundary edges. The algorithm used is based on :cite:p:`Kulke2022`,
     equation B6 for non-orthogonal systems.
 
     Example
@@ -78,10 +78,12 @@ class NoJump(TransformationBase):
 
     """
 
-    @due.dcite(Doi("10.1021/acs.jctc.2c00327"),
-               description="Works through the orthogonal case for unwrapping, "
-               "and proposes the non-orthogonal approach.", path=__name__)
-
+    @due.dcite(
+        Doi("10.1021/acs.jctc.2c00327"),
+        description="Works through the orthogonal case for unwrapping, "
+        "and proposes the non-orthogonal approach.",
+        path=__name__,
+    )
     def __init__(
         self,
         check_continuity=True,
@@ -93,7 +95,7 @@ class NoJump(TransformationBase):
         super().__init__(max_threads=max_threads, parallelizable=parallelizable)
         self.prev = None
         self.old_frame = 0
-        self.older_frame = 'A'
+        self.older_frame = "A"
         self.check_c = check_continuity
 
     def _transform(self, ts):
@@ -101,7 +103,11 @@ class NoJump(TransformationBase):
             self.prev = ts.positions @ np.linalg.inv(ts.triclinic_dimensions)
             self.old_frame = ts.frame
             return ts
-        if self.check_c and self.older_frame != 'A' and (self.old_frame - self.older_frame) != (ts.frame - self.old_frame):
+        if (
+            self.check_c
+            and self.older_frame != "A"
+            and (self.old_frame - self.older_frame) != (ts.frame - self.old_frame)
+        ):
             warnings.warn(
                 "NoJump detected that the interval between frames is unequal."
                 "We are resetting the reference frame to the current timestep.",
@@ -109,7 +115,7 @@ class NoJump(TransformationBase):
             )
             self.prev = ts.positions @ np.linalg.inv(ts.triclinic_dimensions)
             self.old_frame = ts.frame
-            self.older_frame = 'A'
+            self.older_frame = "A"
             return ts
         if self.check_c and np.abs(self.old_frame - ts.frame) != 1:
             warnings.warn(
