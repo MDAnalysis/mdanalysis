@@ -198,8 +198,8 @@ Thank you!
    ./documentation_pages/visualization_modules
    ./documentation_pages/lib_modules
    ./documentation_pages/version
-   ./documentation_pages/units 
-   ./documentation_pages/exceptions_modules
+   ./documentation_pages/units
+   ./documentation_pages/exceptions
    ./documentation_pages/references
 	
 
