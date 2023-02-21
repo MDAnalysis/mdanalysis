@@ -90,12 +90,23 @@ class NoJump(TransformationBase):
         super().__init__(max_threads=max_threads, parallelizable=parallelizable)
         self.prev = None
         self.old_frame = 0
+        self.older_frame = 'A'
         self.check_c = check_continuity
 
     def _transform(self, ts):
         if self.prev is None:
             self.prev = ts.positions @ np.linalg.inv(ts.triclinic_dimensions)
             self.old_frame = ts.frame
+            return ts
+        if self.check_c and self.older_frame != 'A' and (self.old_frame - self.older_frame) != (ts.frame - self.old_frame):
+            warnings.warn(
+                "NoJump detected that the interval between frames is unequal."
+                "We are resetting the reference frame to the current timestep.",
+                UserWarning,
+            )
+            self.prev = ts.positions @ np.linalg.inv(ts.triclinic_dimensions)
+            self.old_frame = ts.frame
+            self.older_frame = 'A'
             return ts
         if self.check_c and np.abs(self.old_frame - ts.frame) != 1:
             warnings.warn(
@@ -122,6 +133,7 @@ class NoJump(TransformationBase):
         ts.positions = newpositions @ L
         # Set things we need to save for the next frame.
         self.prev = newpositions  # Note that this is in reduced coordinate space.
+        self.older_frame = self.old_frame
         self.old_frame = ts.frame
 
         return ts
