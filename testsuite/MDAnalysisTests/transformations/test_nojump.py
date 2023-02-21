@@ -81,11 +81,10 @@ def test_nojump_constantvel(nojump_constantvel_universe):
     """
     ref, towrap = nojump_constantvel_universe
     dim = np.asarray([5, 5, 5, 54, 60, 90], np.float32)
-    towrap.trajectory.add_transformations(
-        workflow=[
+    workflow=[
             mda.transformations.boxdimensions.set_dimensions(dim),
             wrap(towrap.atoms),
             NoJump(),
         ]
-    )
+    towrap.trajectory.add_transformations(*workflow)
     assert_allclose(towrap.trajectory.timeseries(), ref.trajectory.timeseries())
