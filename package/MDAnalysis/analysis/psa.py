@@ -531,7 +531,7 @@ def hausdorff_avg(P, Q):
 
     Example
     -------
-     
+
      >>> import MDAnalysis as mda
      >>> from MDAnalysis.tests.datafiles import PSF, DCD
      >>> from MDAnalysis.analysis import psa
