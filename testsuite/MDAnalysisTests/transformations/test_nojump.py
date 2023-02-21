@@ -31,7 +31,7 @@ def nojump_constantvel_universe():
     Natom = 1
     Nframe = 100
     coordinates = np.empty((Nframe,  # number of frames
-                            u.atoms.n_atoms,
+                            Natom,
                             3))
     coordinates[:,0,0] = np.linspace(0,45,Nframe)
     coordinates[:,0,1] = np.linspace(-19,15,Nframe)[::-1]
