@@ -291,6 +291,21 @@ class TestPSAnalysis(object):
         assert_almost_equal(hausd_pairs_dists2,
                             dists[self.iu1],
                             decimal=6, err_msg=err_msg)
+    
+    def test_get_num_atoms_no_path_data(self, tmpdir):
+        """Test that ValueError is raised when no path data i.e. user did not
+        run generate_paths() in class PSAnalysis"""
+        match_exp = "No path data"
+        with pytest.raises(ValueError, match=match_exp):
+            universe1 = mda.Universe(PSF, DCD)
+            universe2 = mda.Universe(PSF, DCD2)
+            universe_rev = mda.Universe(PSF, DCD)
+
+            psa = PSA.PSAnalysis([universe1, universe2, universe_rev],
+                                 path_select='name CA',
+                                 targetdir=str(tmpdir))
+            psa.get_num_atoms()
+
 
 class TestPSAExceptions(object):
     '''Tests for exceptions that should be raised
@@ -500,3 +515,15 @@ class DiscreteFrechetDistance(object):
         expected = 4.5
         actual = PSA.discrete_frechet(path_1, path_2)
         assert_almost_equal(actual, expected)
+
+
+def test_get_num_atoms_path_no_path_data():
+    """Test that ValueError is raised when no path data i.e. user did not
+    run generate_paths() in class Path"""
+    match_exp = "No path data"
+    with pytest.raises(ValueError, match=match_exp):
+        universe1 = mda.Universe(PSF, DCD)
+        universe_rev = mda.Universe(PSF, DCD)
+
+        path = PSA.Path(universe1, universe_rev)
+        path.get_num_atoms()
