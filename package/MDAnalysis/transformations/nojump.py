@@ -76,7 +76,7 @@ class NoJump(TransformationBase):
     """
 
     @due.dcite(Doi("10.1021/acs.jctc.2c00327"),
-               description="Works through the orthogonal case, "
+               description="Works through the orthogonal case for unwrapping, "
                "and proposes the non-orthogonal approach.", path=__name__)
 
     def __init__(
@@ -104,7 +104,7 @@ class NoJump(TransformationBase):
                 "Currently jumping between frames with a step of more than 1."
                 "This might be fine, but depending on the trajectory stride,"
                 "this might be inaccurate.",
-                Warning,
+                UserWarning,
             )
         # Remember that @ is a shorthand for matrix multiplication.
         # np.matmul(a, b) is equivalent to a @ b
