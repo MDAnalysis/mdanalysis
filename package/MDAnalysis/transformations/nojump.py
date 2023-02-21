@@ -26,6 +26,9 @@ No Jump Trajectory Unwrapping --- :mod:`MDAnalysis.transformations.nojump`
 =======================================================================================
 
 Unwraps the trajectory such that atoms never move more than half a periodic box length.
+The consequence of this is that particles will diffuse across periodic boundaries when
+needed. This unwrapping method is suitable as a preprocessing step to calculate
+molecular diffusion.
 The algorithm used is based on :cite:p:`Kulke2022`.
 
 .. autoclass:: NoJump
@@ -41,8 +44,8 @@ from ..due import due, Doi
 class NoJump(TransformationBase):
     """
     Returns transformed coordinates for the given timestep so that an atom
-    does not move more than half the periodic box size, and will not jump
-    across the periodic boundary. The algorithm used is based on :cite:p:`Kulke2022`, 
+    does not move more than half the periodic box size, and will move
+    across periodic boundary edges. The algorithm used is based on :cite:p:`Kulke2022`, 
     equation B6 for non-orthogonal systems.
 
     Example
