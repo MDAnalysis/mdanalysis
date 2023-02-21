@@ -1,8 +1,6 @@
-###
-
 import numpy as np
 import pytest
-from numpy.testing import assert_array_almost_equal
+from numpy.testing import assert_allclose
 
 import MDAnalysis as mda
 from MDAnalysis.transformations import NoJump
@@ -10,48 +8,47 @@ from MDAnalysisTests import datafiles as data
 
 
 @pytest.fixture()
-def nojump_universes():
+def nojump_universe():
     """
     Create the universe objects for the tests.
     """
-    u = mda.Universe(data.PSF_TRICLINIC, data.DCD_TRICLINIC)
-    transformation = NoJump()
-    u.trajectory.add_transformations(transformation)
+    u = mda.Universe.empty(N, trajectory=True)
+    coordinates = np.empty((100,  # number of frames
+                            u.atoms.n_atoms,
+                            3))
+    coordinates[::3,0] = 0 * np.ones(3)
+    coordinates[1::3,0] = 0.3 * np.ones(3)
+    coordinates[2::3,0] = 0.6 * np.ones(3)
+    u.load_new(coordinates, order='fac')
     return u
 
 
-@pytest.fixture()
-def nojump_universes_nocheck():
-    """
-    Create the universe objects for the tests.
-    Do not check for continunity
-    """
-    u = mda.Universe(data.PSF_TRICLINIC, data.DCD_TRICLINIC)
-    transformation = NoJump(check_continuity=False)
-    u.trajectory.add_transformations(transformation)
-    return u
-
-
-def test_nojump_fwd(nojump_universes):
+def test_nojump_orthogonal_fwd(nojump_universe):
     """
     Test if the nojump transform is returning the correct
     values when iterating forwards over the sample trajectory.
     """
-    # These were determined based on determining what the TRICLINIC system
-    # would return on a validated version that worked on triclinic and
-    # orthogonal systems for a small water trajectory.
-    # These are specific to atoms 166 and 362, which moved the most in the
-    # trajectory.
-    ref_matrix_fwd1 = np.asarray([-3.42261, 11.28495, -1.37211])
-    ref_matrix_fwd2 = np.asarray([3.674243, -8.725193, -0.07884017])
-    size = (
-        nojump_universes.trajectory.ts.positions.shape[0],
-        nojump_universes.trajectory.ts.positions.shape[1],
-        len(nojump_universes.trajectory),
-    )
-    parr = np.empty(size)
-    for ts in nojump_universes.trajectory:
-        parr[..., ts.frame] = ts.positions.copy()
-    # Atoms 166 and 362 happen to move alot.
-    assert_array_almost_equal(ref_matrix_fwd1, parr[166, :, -1], decimal=5)
-    assert_array_almost_equal(ref_matrix_fwd2, parr[362, :, -1], decimal=5)
+    u = nojump_universe
+    dim = np.asarray([1, 1, 1, 90, 90, 90], np.float32)
+    workflow = [mda.transformations.boxdimensions.set_dimensions(dim), NoJump()]
+    u.add_transformations(*workflow)
+    transformed_coordinates = u.trajectory.timeseries()[0]
+    # Step is 1 unit every 3 steps. After 99 steps from the origin,
+    # we'll end up at 33.
+    assert_allclose(transformed_coordinates[99], 33 * np.ones(3))
+
+
+def test_nojump_nonorthogonal_fwd(nojump_universes_nonorthogonal):
+    """
+    Test if the nojump transform is returning the correct
+    values when iterating forwards over the sample trajectory.
+    """
+    u = nojump_universe
+    dim = np.asarray([1, 1, 1, 90, 60, 90], np.float32)
+    workflow = [mda.transformations.boxdimensions.set_dimensions(dim), NoJump()]
+    u.add_transformations(*workflow)
+    transformed_coordinates = u.trajectory.timeseries()[0]
+    # Step is 1 unit every 3 steps. After 99 steps from the origin,
+    # we'll end up at 33. However, since the unit cell is non-orthogonal,
+    # we'll end up at a distorted place.
+    assert_allclose(transformed_coordinates[99], 33 * np.array([0.5, 1, np.sqrt(3)/2]))
