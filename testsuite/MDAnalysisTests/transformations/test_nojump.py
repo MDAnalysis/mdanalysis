@@ -66,7 +66,7 @@ def test_nojump_nonorthogonal_fwd(nojump_universe):
     u = nojump_universe
     dim = np.asarray([1, 1, 1, 90, 60, 90], np.float32)
     workflow = [mda.transformations.boxdimensions.set_dimensions(dim), NoJump()]
-    u.add_transformations(*workflow)
+    u.trajectory.add_transformations(*workflow)
     transformed_coordinates = u.trajectory.timeseries()[0]
     # Step is 1 unit every 3 steps. After 99 steps from the origin,
     # we'll end up at 33. However, since the unit cell is non-orthogonal,
@@ -80,6 +80,6 @@ def test_nojump_constantvel(nojump_constantvel_universe):
     """
     ref, towrap = nojump_constantvel_universe
     dim = np.asarray([5, 5, 5, 54, 60, 90], np.float32)
-    towrap.add_transformations(workflow = [mda.transformations.boxdimensions.set_dimensions(dim), wrap(towrap.atoms), NoJump()])
-    assert_allclose(towrap.trajectory.ts.positions, ref.trajectory.ts.positions)
+    towrap.trajectory.add_transformations(workflow = [mda.transformations.boxdimensions.set_dimensions(dim), wrap(towrap.atoms), NoJump()])
+    assert_allclose(towrap.trajectory.timeseries(), ref.trajectory.timeseries())
     
