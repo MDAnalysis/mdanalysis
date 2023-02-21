@@ -629,6 +629,7 @@ def discrete_frechet(P, Q):
     -------
     Calculate the discrete Fréchet distance between two halves of a
     trajectory.
+
      >>> import MDAnalysis as mda
      >>> import numpy as np
      >>> from MDAnalysis.tests.datafiles import PSF, DCD
