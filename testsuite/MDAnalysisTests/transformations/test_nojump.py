@@ -28,9 +28,9 @@ def nojump_constantvel_universe():
     Natom = 1
     Nframe = 100
     coordinates = np.empty((Nframe, Natom, 3))  # number of frames
-    coordinates[:, 0, 0] = np.linspace(0,45,Nframe)
-    coordinates[:, 0, 1] = np.linspace(0,15,Nframe)
-    coordinates[:, 0, 2] = np.linspace(0,10,Nframe)
+    coordinates[:, 0, 0] = np.linspace(0, 45, Nframe)
+    coordinates[:, 0, 1] = np.linspace(0, 15, Nframe)
+    coordinates[:, 0, 2] = np.linspace(0, 10, Nframe)
     reference = mda.Universe.empty(Natom, trajectory=True)
     reference.load_new(coordinates, order="fac")
     towrap = mda.Universe.empty(Natom, trajectory=True)
@@ -81,11 +81,11 @@ def test_nojump_constantvel(nojump_constantvel_universe):
     """
     ref, towrap = nojump_constantvel_universe
     dim = np.asarray([5, 5, 5, 54, 60, 90], np.float32)
-    workflow=[
-            mda.transformations.boxdimensions.set_dimensions(dim),
-            wrap(towrap.atoms),
-            NoJump(),
-        ]
+    workflow = [
+        mda.transformations.boxdimensions.set_dimensions(dim),
+        wrap(towrap.atoms),
+        NoJump(),
+    ]
     towrap.trajectory.add_transformations(*workflow)
     assert_allclose(
         towrap.trajectory.timeseries(),
