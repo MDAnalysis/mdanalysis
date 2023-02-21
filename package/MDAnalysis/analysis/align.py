@@ -248,7 +248,7 @@ def rotation_matrix(a, b, weights=None):
     >>> A = mda.Universe('topol.tpr','traj.trr')
     >>> B = mda.Universe('topol.tpr','traj.trr')
     >>> R = rotation_matrix(A.select_atoms('backbone').positions,
-    >>>                     B.select_atoms('backbone').positions)[0]
+    ...                     B.select_atoms('backbone').positions)[0]
     >>> A.atoms.rotate(R)
     >>> A.atoms.write("rotated.pdb")
 
