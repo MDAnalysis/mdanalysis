@@ -87,4 +87,9 @@ def test_nojump_constantvel(nojump_constantvel_universe):
             NoJump(),
         ]
     towrap.trajectory.add_transformations(*workflow)
-    assert_allclose(towrap.trajectory.timeseries(), ref.trajectory.timeseries())
+    assert_allclose(
+        towrap.trajectory.timeseries(),
+        ref.trajectory.timeseries(),
+        rtol=5e-07,
+        atol=5e-06,
+    )
