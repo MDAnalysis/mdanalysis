@@ -51,7 +51,7 @@ def test_nojump_orthogonal_fwd(nojump_universe):
     u = nojump_universe
     dim = np.asarray([1, 1, 1, 90, 90, 90], np.float32)
     workflow = [mda.transformations.boxdimensions.set_dimensions(dim), NoJump()]
-    u.add_transformations(*workflow)
+    u.trajectory.add_transformations(*workflow)
     transformed_coordinates = u.trajectory.timeseries()[0]
     # Step is 1 unit every 3 steps. After 99 steps from the origin,
     # we'll end up at 33.
