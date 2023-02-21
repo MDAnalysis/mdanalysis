@@ -35,10 +35,10 @@ def test_nojump_orthogonal_fwd(nojump_universe):
     transformed_coordinates = u.trajectory.timeseries()[0]
     # Step is 1 unit every 3 steps. After 99 steps from the origin,
     # we'll end up at 33.
-    assert_allclose(transformed_coordinates[99], 33 * np.ones(3))
+    assert_allclose(transformed_coordinates[::3], np.outer(np.arange(33.5),np.ones(3)))
 
 
-def test_nojump_nonorthogonal_fwd(nojump_universes_nonorthogonal):
+def test_nojump_nonorthogonal_fwd(nojump_universe):
     """
     Test if the nojump transform is returning the correct
     values when iterating forwards over the sample trajectory.
@@ -51,4 +51,4 @@ def test_nojump_nonorthogonal_fwd(nojump_universes_nonorthogonal):
     # Step is 1 unit every 3 steps. After 99 steps from the origin,
     # we'll end up at 33. However, since the unit cell is non-orthogonal,
     # we'll end up at a distorted place.
-    assert_allclose(transformed_coordinates[99], 33 * np.array([0.5, 1, np.sqrt(3)/2]))
+    assert_allclose(transformed_coordinates[::3], np.outer(np.arange(33.5),np.array([0.5, 1, np.sqrt(3)/2])))
