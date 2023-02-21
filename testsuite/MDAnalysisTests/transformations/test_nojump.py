@@ -12,7 +12,7 @@ def nojump_universe():
     """
     Create the universe objects for the tests.
     """
-    u = mda.Universe.empty(N, trajectory=True)
+    u = mda.Universe.empty(1, trajectory=True)
     coordinates = np.empty((100,  # number of frames
                             u.atoms.n_atoms,
                             3))
@@ -21,6 +21,26 @@ def nojump_universe():
     coordinates[2::3,0] = 2 * np.ones(3) / 3
     u.load_new(coordinates, order='fac')
     return u
+
+
+@pytest.fixture()
+def nojump_constantvel_universe():
+    """
+    Create the universe objects for the tests.
+    """
+    Natom = 1
+    Nframe = 100
+    coordinates = np.empty((Nframe,  # number of frames
+                            u.atoms.n_atoms,
+                            3))
+    coordinates[:,0,0] = np.linspace(0,45,Nframe)
+    coordinates[:,0,1] = np.linspace(-19,15,Nframe)[::-1]
+    coordinates[:,0,2] = np.linspace(-10,10,Nframe)
+    reference = mda.Universe.empty(Natom, trajectory=True)
+    reference.load_new(coordinates, order='fac')
+    towrap = mda.Universe.empty(Natom, trajectory=True)
+    towrap.load_new(coordinates, order='fac')
+    return reference, towrap
 
 
 def test_nojump_orthogonal_fwd(nojump_universe):
@@ -52,3 +72,13 @@ def test_nojump_nonorthogonal_fwd(nojump_universe):
     # we'll end up at 33. However, since the unit cell is non-orthogonal,
     # we'll end up at a distorted place.
     assert_allclose(transformed_coordinates[::3], np.outer(np.arange(33.5),np.array([0.5, 1, np.sqrt(3)/2])))
+
+def test_nojump_constantvel(nojump_constantvel_universe):
+    """
+    Test if the nojump transform is returning the correct
+    values when iterating forwards over the sample trajectory.
+    """
+    ref, towrap = nojump_constantvel_universe
+    towrap.add_transformations(workflow = [mda.transformations.boxdimensions.set_dimensions(dim), wrap(towrap.atoms), NoJump()])
+    assert_allclose(towrap.trajectory.ts.positions, ref.trajectory.ts.positions)
+    
