@@ -79,6 +79,7 @@ def test_nojump_constantvel(nojump_constantvel_universe):
     values when iterating forwards over the sample trajectory.
     """
     ref, towrap = nojump_constantvel_universe
+    dim = np.asarray([5, 5, 5, 54, 60, 90], np.float32)
     towrap.add_transformations(workflow = [mda.transformations.boxdimensions.set_dimensions(dim), wrap(towrap.atoms), NoJump()])
     assert_allclose(towrap.trajectory.ts.positions, ref.trajectory.ts.positions)
     
