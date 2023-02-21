@@ -16,9 +16,9 @@ def nojump_universe():
     coordinates = np.empty((100,  # number of frames
                             u.atoms.n_atoms,
                             3))
-    coordinates[::3,0] = 0 * np.ones(3)
-    coordinates[1::3,0] = 0.3 * np.ones(3)
-    coordinates[2::3,0] = 0.6 * np.ones(3)
+    coordinates[::3,0] = 0 * np.ones(3) / 3
+    coordinates[1::3,0] = 1 * np.ones(3) / 3
+    coordinates[2::3,0] = 2 * np.ones(3) / 3
     u.load_new(coordinates, order='fac')
     return u
 
@@ -35,7 +35,7 @@ def test_nojump_orthogonal_fwd(nojump_universe):
     transformed_coordinates = u.trajectory.timeseries()[0]
     # Step is 1 unit every 3 steps. After 99 steps from the origin,
     # we'll end up at 33.
-    assert_allclose(transformed_coordinates[::3], np.outer(np.arange(33.5),np.ones(3)))
+    assert_allclose(transformed_coordinates, np.outer(np.linspace(0,33,100),np.ones(3)))
 
 
 def test_nojump_nonorthogonal_fwd(nojump_universe):
