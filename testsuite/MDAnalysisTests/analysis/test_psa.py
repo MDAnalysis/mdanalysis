@@ -307,7 +307,7 @@ class TestPSAExceptions(object):
         did not run PSAnalysis.generate_paths()"""
         match_exp = "No path data"
         with pytest.raises(ValueError, match=match_exp):
-            psa = PSA.PSAnalysis([universe_no_path, universe_no_path, 
+            psa = PSA.PSAnalysis([universe_no_path, universe_no_path,
                                   universe_no_path],
                                  path_select='name CA',
                                  targetdir=str(tmpdir))
@@ -326,7 +326,7 @@ class TestPSAExceptions(object):
         did not run PSAnalysis.generate_paths()"""
         match_exp = "No path data"
         with pytest.raises(ValueError, match=match_exp):
-            psa = PSA.PSAnalysis([universe_no_path, universe_no_path, 
+            psa = PSA.PSAnalysis([universe_no_path, universe_no_path,
                                   universe_no_path],
                                  path_select='name CA',
                                  targetdir=str(tmpdir))
