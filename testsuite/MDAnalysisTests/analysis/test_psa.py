@@ -294,7 +294,7 @@ class TestPSAnalysis(object):
 
     def test_get_num_atoms_no_path_data(self, tmpdir):
         """Test that ValueError is raised when no path data i.e. user did not
-        run generate_paths() in class PSAnalysis"""
+        run PSAnalysis.generate_paths()"""
         match_exp = "No path data"
         with pytest.raises(ValueError, match=match_exp):
             universe1 = mda.Universe(PSF, DCD)
@@ -519,7 +519,7 @@ class DiscreteFrechetDistance(object):
 
 def test_get_num_atoms_path_no_path_data():
     """Test that ValueError is raised when no path data i.e. user did not
-    run generate_paths() in class Path"""
+    run Path.to_path()"""
     match_exp = "No path data"
     with pytest.raises(ValueError, match=match_exp):
         universe1 = mda.Universe(PSF, DCD)
