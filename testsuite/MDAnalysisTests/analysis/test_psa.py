@@ -291,7 +291,7 @@ class TestPSAnalysis(object):
         assert_almost_equal(hausd_pairs_dists2,
                             dists[self.iu1],
                             decimal=6, err_msg=err_msg)
-    
+
     def test_get_num_atoms_no_path_data(self, tmpdir):
         """Test that ValueError is raised when no path data i.e. user did not
         run generate_paths() in class PSAnalysis"""
