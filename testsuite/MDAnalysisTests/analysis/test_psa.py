@@ -292,24 +292,56 @@ class TestPSAnalysis(object):
                             dists[self.iu1],
                             decimal=6, err_msg=err_msg)
 
-    def test_get_num_atoms_no_path_data(self, tmpdir):
-        """Test that ValueError is raised when no path data i.e. user did not
-        run PSAnalysis.generate_paths()"""
-        match_exp = "No path data"
-        with pytest.raises(ValueError, match=match_exp):
-            universe1 = mda.Universe(PSF, DCD)
-            universe2 = mda.Universe(PSF, DCD2)
-            universe_rev = mda.Universe(PSF, DCD)
-
-            psa = PSA.PSAnalysis([universe1, universe2, universe_rev],
-                                 path_select='name CA',
-                                 targetdir=str(tmpdir))
-            psa.get_num_atoms()
-
 
 class TestPSAExceptions(object):
     '''Tests for exceptions that should be raised
     or caught by code in the psa module.'''
+
+    @pytest.fixture()
+    def universe_no_path(self):
+        universe1 = mda.Universe(PSF, DCD)
+        return universe1
+
+    def test_get_num_atoms_psa_no_path_data(self, universe_no_path, tmpdir):
+        """Test that ValueError is raised when no path data i.e. user
+        did not run PSAnalysis.generate_paths()"""
+        match_exp = "No path data"
+        with pytest.raises(ValueError, match=match_exp):
+            psa = PSA.PSAnalysis([universe_no_path, universe_no_path, 
+                                  universe_no_path],
+                                 path_select='name CA',
+                                 targetdir=str(tmpdir))
+            psa.get_num_atoms()
+
+    def test_get_num_atoms_path_no_path_data(self, universe_no_path):
+        """Test that ValueError is raised when no path data i.e. user
+        did not run Path.to_path()"""
+        match_exp = "No path data"
+        with pytest.raises(ValueError, match=match_exp):
+            path = PSA.Path(universe_no_path, universe_no_path)
+            path.get_num_atoms()
+
+    def test_get_num_paths_psa_no_path_data(self, universe_no_path, tmpdir):
+        """Test that ValueError is raised when no path data i.e. user
+        did not run PSAnalysis.generate_paths()"""
+        match_exp = "No path data"
+        with pytest.raises(ValueError, match=match_exp):
+            psa = PSA.PSAnalysis([universe_no_path, universe_no_path, 
+                                  universe_no_path],
+                                 path_select='name CA',
+                                 targetdir=str(tmpdir))
+            psa.get_num_paths()
+
+    def test_get_paths_psa_no_path_data(self, universe_no_path, tmpdir):
+        """Test that ValueError is raised when no path data i.e. user
+        did not run PSAnalysis.generate_paths()"""
+        match_exp = "No path data"
+        with pytest.raises(ValueError, match=match_exp):
+            psa = PSA.PSAnalysis([universe_no_path, universe_no_path,
+                                  universe_no_path],
+                                 path_select='name CA',
+                                 targetdir=str(tmpdir))
+            psa.get_paths()
 
     def test_get_path_metric_func_bad_key(self):
         '''Test that KeyError is caught by
@@ -515,15 +547,3 @@ class DiscreteFrechetDistance(object):
         expected = 4.5
         actual = PSA.discrete_frechet(path_1, path_2)
         assert_almost_equal(actual, expected)
-
-
-def test_get_num_atoms_path_no_path_data():
-    """Test that ValueError is raised when no path data i.e. user did not
-    run Path.to_path()"""
-    match_exp = "No path data"
-    with pytest.raises(ValueError, match=match_exp):
-        universe1 = mda.Universe(PSF, DCD)
-        universe_rev = mda.Universe(PSF, DCD)
-
-        path = PSA.Path(universe1, universe_rev)
-        path.get_num_atoms()
