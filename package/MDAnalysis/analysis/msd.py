@@ -302,7 +302,7 @@ class EinsteinMSD(AnalysisBase):
     .. versionadded:: 2.0.0
     """
 
-    def __init__(self, u, trajectory, select='all', msd_type='xyz',
+    def __init__(self, u, _trajectory, select='all', msd_type='xyz',
                 fft=True, start=10, stop=1000, step=10, **kwargs):
         r"""
         Parameters
@@ -330,7 +330,7 @@ class EinsteinMSD(AnalysisBase):
 
         # args
         self.select = select
-        self.trajectory = trajectory
+        self._trajectory = _trajectory
         self.msd_type = msd_type
         self._parse_msd_type()
         self.fft = fft
@@ -355,7 +355,7 @@ class EinsteinMSD(AnalysisBase):
         self.results.msds_by_particle = np.zeros((self.n_frames,
                                                   self.n_particles))
         # collecting trajectory coordniates via timeseries
-        self._position_array = self.u.trajectory.timeseries(
+        self._position_array = self._trajectory.timeseries(
             select='all', msd_type='xyz', fft=True,
             start=start, stop=stop, step=step)
 
