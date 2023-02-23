@@ -398,8 +398,10 @@ def hausdorff(P, Q):
     -------
     Calculate the Hausdorff distance between two halves of a trajectory:
 
+     >>> import numpy
      >>> from MDAnalysis import Universe
      >>> from MDAnalysis.tests.datafiles import PSF, DCD
+     >>> from MDAnalysis.analysis.psf import hausdorff
      >>> u = Universe(PSF,DCD)
      >>> mid = len(u.trajectory)/2
      >>> ca = u.select_atoms('name CA')
@@ -413,7 +415,6 @@ def hausdorff(P, Q):
      4.7786639840135905
      >>> hausdorff(P,Q[::-1]) # hausdorff distance w/ reversed 2nd trajectory
      4.7786639840135905
-
 
     Notes
     -----
@@ -471,8 +472,10 @@ def hausdorff_wavg(P, Q):
     Example
     -------
 
+     >>> import numpy
      >>> from MDAnalysis import Universe
      >>> from MDAnalysis.tests.datafiles import PSF, DCD
+     >>> from MDAnalysis.analysis import hausdorff_wavg
      >>> u = Universe(PSF,DCD)
      >>> mid = len(u.trajectory)/2
      >>> ca = u.select_atoms('name CA')
@@ -528,7 +531,10 @@ def hausdorff_avg(P, Q):
     Example
     -------
 
+     >>> import numpy
+     >>> from MDAnalysis.core import Universe
      >>> from MDAnalysis.tests.datafiles import PSF, DCD
+     >>> from MDAnalysis.util import hausdorff_avg
      >>> u = Universe(PSF,DCD)
      >>> mid = len(u.trajectory)/2
      >>> ca = u.select_atoms('name CA')
@@ -542,7 +548,6 @@ def hausdorff_avg(P, Q):
      2.5669646575869005
      >>> hausdorff_avg(P,Q[::-1]) # hausdorff distance w/ reversed 2nd trajectory
      2.5669646575869005
-
 
     Notes
     -----
@@ -624,13 +629,17 @@ def discrete_frechet(P, Q):
     Calculate the discrete Fréchet distance between two halves of a
     trajectory.
 
+     >>> import numpy 
+     >>> from MDAnalysis.core import Universe
+     >>> from MDAnalysis.tests.datafiles import PSF, DCD
+     >>> from MDAnalysis.util import discrete_frechet
      >>> u = Universe(PSF,DCD)
      >>> mid = len(u.trajectory)/2
      >>> ca = u.select_atoms('name CA')
-     >>> P = np.array([
+     >>> P = numpy.array([
      ...                ca.positions for _ in u.trajectory[:mid:]
      ...              ]) # first half of trajectory
-     >>> Q = np.array([
+     >>> Q = numpy.array([
      ...                ca.positions for _ in u.trajectory[mid::]
      ...              ]) # second half of trajectory
      >>> discrete_frechet(P,Q)
