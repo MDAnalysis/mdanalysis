@@ -398,6 +398,7 @@ def hausdorff(P, Q):
     -------
     Calculate the Hausdorff distance between two halves of a trajectory:
 
+     >>> from MDAnalysis import Universe
      >>> from MDAnalysis.tests.datafiles import PSF, DCD
      >>> u = Universe(PSF,DCD)
      >>> mid = len(u.trajectory)/2
