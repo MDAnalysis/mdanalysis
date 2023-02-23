@@ -93,3 +93,55 @@ def test_nojump_constantvel(nojump_constantvel_universe):
         rtol=5e-07,
         atol=5e-06,
     )
+
+
+def test_nojump_constantvel_skip(nojump_constantvel_universe):
+    """
+    Test if the nojump transform is returning the correct
+    values when iterating forwards over the sample trajectory,
+    skipping by 2.
+    """
+    ref, towrap = nojump_constantvel_universe
+    dim = np.asarray([5, 5, 5, 54, 60, 90], np.float32)
+    workflow = [
+        mda.transformations.boxdimensions.set_dimensions(dim),
+        wrap(towrap.atoms),
+        NoJump(),
+    ]
+    towrap.trajectory.add_transformations(*workflow)
+    for r, c in zip(
+        [ts for ts in ref.trajectory[::2]],
+        [ts for ts in towrap.trajectory[::2]],
+    ):
+        assert_allclose(
+            r.trajectory.ts.positions,
+            c.trajectory.ts.positions,
+            rtol=5e-07,
+            atol=5e-06,
+        )
+
+
+def test_nojump_constantvel_jumparound(nojump_constantvel_universe):
+    """
+    Test if the nojump transform is returning the correct
+    values when iterating forwards over the sample trajectory,
+    skipping by 2.
+    """
+    ref, towrap = nojump_constantvel_universe
+    dim = np.asarray([5, 5, 5, 54, 60, 90], np.float32)
+    workflow = [
+        mda.transformations.boxdimensions.set_dimensions(dim),
+        wrap(towrap.atoms),
+        NoJump(),
+    ]
+    towrap.trajectory.add_transformations(*workflow)
+    for r, c in zip(
+        [ts for ts in ref.trajectory[0,1,3,5,4]],
+        [ts for ts in towrap.trajectory[0,1,3,5,4]],
+    ):
+        assert_allclose(
+            r.trajectory.ts.positions,
+            c.trajectory.ts.positions,
+            rtol=5e-07,
+            atol=5e-06,
+        )
