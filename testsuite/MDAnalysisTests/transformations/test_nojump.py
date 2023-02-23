@@ -136,8 +136,8 @@ def test_nojump_constantvel_jumparound(nojump_constantvel_universe):
     ]
     towrap.trajectory.add_transformations(*workflow)
     for r, c in zip(
-        [ts for ts in ref.trajectory[0,1,3,5,4]],
-        [ts for ts in towrap.trajectory[0,1,3,5,4]],
+        [ts for ts in ref.trajectory[[0,1,3,5,4]]],
+        [ts for ts in towrap.trajectory[[0,1,3,5,4]]],
     ):
         assert_allclose(
             r.positions,
