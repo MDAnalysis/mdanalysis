@@ -114,8 +114,8 @@ def test_nojump_constantvel_skip(nojump_constantvel_universe):
         [ts for ts in towrap.trajectory[::2]],
     ):
         assert_allclose(
-            r.trajectory.ts.positions,
-            c.trajectory.ts.positions,
+            r.positions,
+            c.positions,
             rtol=5e-07,
             atol=5e-06,
         )
@@ -140,8 +140,8 @@ def test_nojump_constantvel_jumparound(nojump_constantvel_universe):
         [ts for ts in towrap.trajectory[0,1,3,5,4]],
     ):
         assert_allclose(
-            r.trajectory.ts.positions,
-            c.trajectory.ts.positions,
+            r.positions,
+            c.positions,
             rtol=5e-07,
             atol=5e-06,
         )
