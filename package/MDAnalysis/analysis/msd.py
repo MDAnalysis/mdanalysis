@@ -250,8 +250,6 @@ import logging
 from ..due import due, Doi
 from .base import AnalysisBase
 from ..core import groups
-import mdtraj as md
-from mdtraj import Trajectory
 
 logger = logging.getLogger('MDAnalysis.analysis.msd')
 
@@ -319,10 +317,10 @@ class EinsteinMSD(AnalysisBase):
         fft : bool
             If ``True``, uses a fast FFT based algorithm for computation of
             the MSD. Otherwise, use the simple "windowed" algorithm.
-            The tidynamics package is required for `fft=True`. 
-        start/stop/step : integer
+            The tidynamics package is required for `fft=True`.
+        start/stop/step : int
             Initialising start , stop , step here as 0 , None and 1
-            respectively. 
+            respectively.
         """
         if isinstance(u, groups.UpdatingAtomGroup):
             raise TypeError("UpdatingAtomGroups are not valid for MSD "
