@@ -1348,7 +1348,8 @@ def dres(ensembles,
         >>> ens2 = Universe(PSF,DCD2)
         >>> DRES, details = encore.dres([ens1,ens2])
         >>> PCA_method = encore.PrincipalComponentAnalysis(dimension=2)
-        >>> DRES, details = encore.dres([ens1,ens2], dimensionality_reduction_method=PCA_method)
+        >>> DRES, details = encore.dres([ens1,ens2],
+        ...                             dimensionality_reduction_method=PCA_method)
 
     In addition to the quantitative similarity estimate, the dimensional
     reduction can easily be visualized, see the ``Example`` section in
