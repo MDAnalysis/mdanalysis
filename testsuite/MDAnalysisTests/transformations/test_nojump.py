@@ -125,7 +125,7 @@ def test_nojump_constantvel_jumparound(nojump_universes_fromfile):
         u = nojump_universes_fromfile
         u.trajectory[0]
         u.trajectory[1]
-        u.trajectory[99]
+        u.trajectory[9]
 
 
 def test_missing_dimensions(nojump_universe):
