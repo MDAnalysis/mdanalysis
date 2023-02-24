@@ -39,6 +39,7 @@ import warnings
 
 from .base import TransformationBase
 from ..due import due, Doi
+from ..exceptions import NoDataError
 
 
 class NoJump(TransformationBase):
@@ -129,7 +130,11 @@ class NoJump(TransformationBase):
         # Remember that @ is a shorthand for matrix multiplication.
         # np.matmul(a, b) is equivalent to a @ b
         L = ts.triclinic_dimensions
-        Linverse = np.linalg.inv(L)
+        try:
+            Linverse = np.linalg.inv(L)
+        except np.linalg.LinAlgError:
+            msg = "Periodic box dimensions are not invertible at step %d." % ts.frame
+            raise NoDataError(msg)
         # Convert into reduced coordinate space
         fcurrent = ts.positions @ Linverse
         fprev = self.prev  # Previous unwrapped coordinates in reduced box coordinates.
