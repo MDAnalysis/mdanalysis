@@ -11,7 +11,7 @@ def nojump_universes_fromfile():
     '''
     Create the universe objects for the tests.
     '''
-    u = MDAnalysis.Universe(data.PSF_TRICLINIC, data.DCD_TRICLINIC)
+    u = mda.Universe(data.PSF_TRICLINIC, data.DCD_TRICLINIC)
     transformation = NoJump()
     u.trajectory.add_transformations(transformation)
     return u
