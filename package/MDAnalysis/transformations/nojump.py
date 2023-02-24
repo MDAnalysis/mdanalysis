@@ -101,7 +101,12 @@ class NoJump(TransformationBase):
 
     def _transform(self, ts):
         if self.prev is None:
-            self.prev = ts.positions @ np.linalg.inv(ts.triclinic_dimensions)
+            try:
+                Linverse = np.linalg.inv(ts.triclinic_dimensions)
+            except np.linalg.LinAlgError:
+                msg = "Periodic box dimensions are not invertible at step %d." % ts.frame
+                raise NoDataError(msg)
+            self.prev = ts.positions @ Linverse
             self.old_frame = ts.frame
             return ts
         if (

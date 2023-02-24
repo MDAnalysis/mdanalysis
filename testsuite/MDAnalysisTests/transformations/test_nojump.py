@@ -114,7 +114,7 @@ def test_nojump_constantvel_skip(nojump_universes_fromfile):
     with pytest.warns(UserWarning):
         u = nojump_universes_fromfile
         u.trajectory[0]
-        u.trajectory[99] #Exercises the warning.
+        u.trajectory[9] #Exercises the warning.
 
 
 def test_nojump_constantvel_jumparound(nojump_universes_fromfile):
