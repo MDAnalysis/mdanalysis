@@ -128,9 +128,18 @@ def test_nojump_constantvel_jumparound(nojump_universes_fromfile):
         u.trajectory[9]
 
 
+def test_missing_dimensions_init(nojump_universe):
+    with pytest.raises(mda.exceptions.NoDataError):
+        u = nojump_universe
+        workflow = [NoJump()]
+        u.trajectory.add_transformations(*workflow)
+        transformed_coordinates = u.trajectory.timeseries()[0]
+
+
 def test_missing_dimensions(nojump_universe):
     with pytest.raises(mda.exceptions.NoDataError):
         u = nojump_universe
+        u.dimensions = [73, 73, 73, 90, 90, 90]
         workflow = [NoJump()]
         u.trajectory.add_transformations(*workflow)
         transformed_coordinates = u.trajectory.timeseries()[0]
