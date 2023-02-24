@@ -166,22 +166,20 @@
 
 <span class="sd">The examples show how to use ENCORE to calculate a similarity measurement</span>
 <span class="sd">of two simple ensembles. The ensembles are obtained from the MDAnalysis</span>
-<span class="sd">test suite for two different simulations of the protein AdK. To run the</span>
-<span class="sd">examples first execute: ::</span>
+<span class="sd">test suite for two different simulations of the protein AdK.</span>
+
+<span class="sd">To calculate the Harmonic Ensemble Similarity (:func:`hes`)</span>
+<span class="sd">two ensemble objects are first created and then used for calculation:</span>
 
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis import Universe</span>
 <span class="sd">    &gt;&gt;&gt; import MDAnalysis.analysis.encore as encore</span>
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.tests.datafiles import PSF, DCD, DCD2</span>
-
-<span class="sd">To calculate the Harmonic Ensemble Similarity (:func:`hes`)</span>
-<span class="sd">two ensemble objects are first created and then used for calculation: ::</span>
-
 <span class="sd">    &gt;&gt;&gt; ens1 = Universe(PSF, DCD)</span>
 <span class="sd">    &gt;&gt;&gt; ens2 = Universe(PSF, DCD2)</span>
 <span class="sd">    &gt;&gt;&gt; HES, details = encore.hes([ens1, ens2])</span>
 <span class="sd">    &gt;&gt;&gt; print(HES)</span>
-<span class="sd">    [[        0.        ,  38279683.95892926],</span>
-<span class="sd">    [ 38279683.95892926,         0.        ]]</span>
+<span class="sd">    [[       0.         38279540.04524205]</span>
+<span class="sd">     [38279540.04524205        0.        ]]</span>
 
 <span class="sd">HES can assume any non-negative value, i.e. no upper bound exists and the</span>
 <span class="sd">measurement can therefore be used as an absolute scale.</span>
@@ -191,48 +189,49 @@
 <span class="sd">turn require a similarity matrix between the frames the ensembles are made</span>
 <span class="sd">of. The similarity matrix is derived from a distance matrix (By default a RMSD</span>
 <span class="sd">matrix; a full RMSD matrix between each pairs of elements needs to be computed).</span>
-<span class="sd">The RMSD matrix is automatically calculated. ::</span>
+<span class="sd">The RMSD matrix is automatically calculated:</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis import Universe</span>
+<span class="sd">    &gt;&gt;&gt; import MDAnalysis.analysis.encore as encore</span>
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.tests.datafiles import PSF, DCD, DCD2</span>
 <span class="sd">    &gt;&gt;&gt; ens1 = Universe(PSF, DCD)</span>
 <span class="sd">    &gt;&gt;&gt; ens2 = Universe(PSF, DCD2)</span>
 <span class="sd">    &gt;&gt;&gt; CES, details = encore.ces([ens1, ens2])</span>
 <span class="sd">    &gt;&gt;&gt; print(CES)</span>
-<span class="sd">    [[ 0.          0.68070702]</span>
-<span class="sd">    [ 0.68070702  0.        ]]</span>
+<span class="sd">    [[0.         0.68070702]</span>
+<span class="sd">     [0.68070702 0.        ]]</span>
 
-<span class="sd">However, we may want to reuse the RMSD matrix in other calculations e.g.</span>
-<span class="sd">running CES with different parameters or running DRES. In this</span>
-<span class="sd">case we first compute the RMSD matrix alone:</span>
-
-<span class="sd">    &gt;&gt;&gt; rmsd_matrix = encore.get_distance_matrix(</span>
-<span class="sd">                                    encore.utils.merge_universes([ens1, ens2]),</span>
-<span class="sd">                                    save_matrix=&quot;rmsd.npz&quot;)</span>
-
-<span class="sd">In the above example the RMSD matrix was also saved in rmsd.npz on disk, and</span>
-<span class="sd">so can be loaded and re-used at later times, instead of being recomputed:</span>
-
-<span class="sd">    &gt;&gt;&gt; rmsd_matrix = encore.get_distance_matrix(</span>
-<span class="sd">                                    encore.utils.merge_universes([ens1, ens2]),</span>
-<span class="sd">                                    load_matrix=&quot;rmsd.npz&quot;)</span>
-
-
-<span class="sd">For instance, the rmsd_matrix object can be re-used as input for the</span>
+<span class="sd">The RMSD matrix can also be separately calculated to reuse it, e.g. for running</span>
+<span class="sd">CES with different parameters or running the</span>
 <span class="sd">Dimensional Reduction Ensemble Similarity (:func:`dres`) method.</span>
 <span class="sd">DRES is based on the estimation of the probability density in</span>
 <span class="sd">a dimensionally-reduced conformational space of the ensembles, obtained from</span>
 <span class="sd">the original space using either the Stochastic Proximity Embedding algorithm or</span>
 <span class="sd">the Principal Component Analysis.</span>
-<span class="sd">As the algorithms require the distance matrix calculated on the original space,</span>
-<span class="sd">we can reuse the previously-calculated RMSD matrix.</span>
 <span class="sd">In the following example the dimensions are reduced to 3 using the</span>
-<span class="sd">saved RMSD matrix and the default SPE dimensional reduction method.   : ::</span>
+<span class="sd">RMSD matrix and the default SPE dimensional reduction method:</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis import Universe</span>
+<span class="sd">    &gt;&gt;&gt; import MDAnalysis.analysis.encore as encore</span>
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.tests.datafiles import PSF, DCD, DCD2</span>
+<span class="sd">    &gt;&gt;&gt; ens1 = Universe(PSF, DCD)</span>
+<span class="sd">    &gt;&gt;&gt; ens2 = Universe(PSF, DCD2)</span>
+<span class="sd">    &gt;&gt;&gt; rmsd_matrix = encore.get_distance_matrix(</span>
+<span class="sd">    ...                             encore.utils.merge_universes([ens1, ens2]))</span>
 <span class="sd">    &gt;&gt;&gt; DRES,details = encore.dres([ens1, ens2],</span>
-<span class="sd">                                   distance_matrix = rmsd_matrix)</span>
-<span class="sd">    &gt;&gt;&gt; print(DRES)</span>
-<span class="sd">    [[ 0.        ,   0.67453198]</span>
-<span class="sd">     [  0.67453198,  0.        ]]</span>
+<span class="sd">    ...                             distance_matrix = rmsd_matrix)</span>
 
+<span class="sd">The RMSD matrix can also be saved on disk with the option ``save_matrix``: ::</span>
+
+<span class="sd">    rmsd_matrix = encore.get_distance_matrix(</span>
+<span class="sd">                                    encore.utils.merge_universes([ens1, ens2]),</span>
+<span class="sd">                                    save_matrix=&quot;rmsd.npz&quot;)</span>
+
+<span class="sd">It can then be loaded and reused at a later time instead of being recalculated: ::</span>
+
+<span class="sd">    rmsd_matrix = encore.get_distance_matrix(</span>
+<span class="sd">                                    encore.utils.merge_universes([ens1, ens2]),</span>
+<span class="sd">                                    load_matrix=&quot;rmsd.npz&quot;)</span>
 
 <span class="sd">In addition to the quantitative similarity estimate, the dimensional reduction</span>
 <span class="sd">can easily be visualized, see the ``Example`` section in</span>
@@ -892,35 +891,39 @@
 <span class="sd">    To calculate the Harmonic Ensemble similarity, two ensembles are created</span>
 <span class="sd">    as Universe objects from a topology file and two trajectories. The</span>
 <span class="sd">    topology- and trajectory files used are obtained from the MDAnalysis</span>
-<span class="sd">    test suite for two different simulations of the protein AdK. To run the</span>
-<span class="sd">    examples see the module `Examples`_ for how to import the files: ::</span>
-
-<span class="sd">        &gt;&gt;&gt; ens1 = Universe(PSF, DCD)</span>
-<span class="sd">        &gt;&gt;&gt; ens2 = Universe(PSF, DCD2)</span>
-<span class="sd">        &gt;&gt;&gt; HES, details = encore.hes([ens1, ens2])</span>
-<span class="sd">        &gt;&gt;&gt; print(HES)</span>
-<span class="sd">        [[        0.          38279683.95892926]</span>
-<span class="sd">         [ 38279683.95892926         0.        ]]</span>
-
-
+<span class="sd">    test suite for two different simulations of the protein AdK.</span>
 <span class="sd">    You can use the ``align=True`` option to align the ensembles first. This will</span>
 <span class="sd">    align everything to the current timestep in the first ensemble. Note that</span>
 <span class="sd">    this changes the ``ens1`` and ``ens2`` objects:</span>
 
+<span class="sd">        &gt;&gt;&gt; from MDAnalysis import Universe</span>
+<span class="sd">        &gt;&gt;&gt; import MDAnalysis.analysis.encore as encore</span>
+<span class="sd">        &gt;&gt;&gt; from MDAnalysis.tests.datafiles import PSF, DCD, DCD2</span>
+<span class="sd">        &gt;&gt;&gt; ens1 = Universe(PSF, DCD)</span>
+<span class="sd">        &gt;&gt;&gt; ens2 = Universe(PSF, DCD2)</span>
+<span class="sd">        &gt;&gt;&gt; HES, details = encore.hes([ens1, ens2])</span>
+<span class="sd">        &gt;&gt;&gt; print(HES)</span>
+<span class="sd">        [[       0.         38279540.04524205]</span>
+<span class="sd">         [38279540.04524205        0.        ]]</span>
 <span class="sd">        &gt;&gt;&gt; print(encore.hes([ens1, ens2], align=True)[0])</span>
-<span class="sd">        [[    0.          6880.34140106]</span>
-<span class="sd">        [ 6880.34140106     0.        ]]</span>
+<span class="sd">        [[   0.         6889.89729056]</span>
+<span class="sd">         [6889.89729056    0.        ]]</span>
 
 <span class="sd">    Alternatively, for greater flexibility in how the alignment should be done</span>
 <span class="sd">    you can call use an :class:`~MDAnalysis.analysis.align.AlignTraj` object</span>
 <span class="sd">    manually:</span>
 
+<span class="sd">        &gt;&gt;&gt; from MDAnalysis import Universe</span>
+<span class="sd">        &gt;&gt;&gt; import MDAnalysis.analysis.encore as encore</span>
+<span class="sd">        &gt;&gt;&gt; from MDAnalysis.tests.datafiles import PSF, DCD, DCD2</span>
 <span class="sd">        &gt;&gt;&gt; from MDAnalysis.analysis import align</span>
-<span class="sd">        &gt;&gt;&gt; align.AlignTraj(ens1, ens1, select=&quot;name CA&quot;, in_memory=True).run()</span>
-<span class="sd">        &gt;&gt;&gt; align.AlignTraj(ens2, ens1, select=&quot;name CA&quot;, in_memory=True).run()</span>
+<span class="sd">        &gt;&gt;&gt; ens1 = Universe(PSF, DCD)</span>
+<span class="sd">        &gt;&gt;&gt; ens2 = Universe(PSF, DCD2)</span>
+<span class="sd">        &gt;&gt;&gt; _ = align.AlignTraj(ens1, ens1, select=&quot;name CA&quot;, in_memory=True).run()</span>
+<span class="sd">        &gt;&gt;&gt; _ = align.AlignTraj(ens2, ens1, select=&quot;name CA&quot;, in_memory=True).run()</span>
 <span class="sd">        &gt;&gt;&gt; print(encore.hes([ens1, ens2])[0])</span>
-<span class="sd">        [[    0.          7032.19607004]</span>
-<span class="sd">         [ 7032.19607004     0.        ]]</span>
+<span class="sd">        [[   0.         6889.89729056]</span>
+<span class="sd">         [6889.89729056    0.        ]]</span>
 
 
 <span class="sd">    .. versionchanged:: 1.0.0</span>
@@ -1150,31 +1153,32 @@
 <span class="sd">    To calculate the Clustering Ensemble similarity, two ensembles are</span>
 <span class="sd">    created as Universe object using a topology file and two trajectories. The</span>
 <span class="sd">    topology- and trajectory files used are obtained from the MDAnalysis</span>
-<span class="sd">    test suite for two different simulations of the protein AdK. To run the</span>
-<span class="sd">    examples see the module `Examples`_ for how to import the files.</span>
-<span class="sd">    Here the simplest case of just two instances of :class:`Universe` is illustrated: ::</span>
+<span class="sd">    test suite for two different simulations of the protein AdK.</span>
+<span class="sd">    To use a different clustering method, set the parameter clustering_method</span>
+<span class="sd">    (Note that the sklearn module must be installed). Likewise, different parameters</span>
+<span class="sd">    for the same clustering method can be explored by adding different</span>
+<span class="sd">    instances of the same clustering class.</span>
+<span class="sd">    Here the simplest case of just two instances of :class:`Universe` is illustrated:</span>
 
+<span class="sd">        &gt;&gt;&gt; from MDAnalysis import Universe</span>
+<span class="sd">        &gt;&gt;&gt; import MDAnalysis.analysis.encore as encore</span>
+<span class="sd">        &gt;&gt;&gt; from MDAnalysis.tests.datafiles import PSF, DCD, DCD2</span>
 <span class="sd">        &gt;&gt;&gt; ens1 = Universe(PSF, DCD)</span>
 <span class="sd">        &gt;&gt;&gt; ens2 = Universe(PSF, DCD2)</span>
 <span class="sd">        &gt;&gt;&gt; CES, details = encore.ces([ens1,ens2])</span>
 <span class="sd">        &gt;&gt;&gt; print(CES)</span>
-<span class="sd">        [[ 0.          0.68070702]</span>
-<span class="sd">         [ 0.68070702  0.        ]]</span>
-
-<span class="sd">    To use a different clustering method, set the parameter clustering_method</span>
-<span class="sd">    (Note that the sklearn module must be installed). Likewise,  different parameters</span>
-<span class="sd">    for the same clustering method can be explored by adding different</span>
-<span class="sd">    instances of the same clustering class: ::</span>
-
+<span class="sd">        [[0.         0.68070702]</span>
+<span class="sd">         [0.68070702 0.        ]]</span>
 <span class="sd">        &gt;&gt;&gt; CES, details = encore.ces([ens1,ens2],</span>
-<span class="sd">                                      clustering_method = [encore.DBSCAN(eps=0.45),</span>
-<span class="sd">                                                           encore.DBSCAN(eps=0.50)])</span>
+<span class="sd">        ...                           clustering_method = [encore.DBSCAN(eps=0.45),</span>
+<span class="sd">        ...                                                encore.DBSCAN(eps=0.50)])</span>
 <span class="sd">        &gt;&gt;&gt; print(&quot;eps=0.45: &quot;, CES[0])</span>
-<span class="sd">        eps=0.45:  [[ 0.          0.20447236]</span>
-<span class="sd">        [ 0.20447236  0.        ]]</span>
+<span class="sd">        eps=0.45:  [[0.         0.20447236]</span>
+<span class="sd">         [0.20447236 0.        ]]</span>
+
 <span class="sd">        &gt;&gt;&gt; print(&quot;eps=0.5: &quot;, CES[1])</span>
-<span class="sd">        eps=0.5:  [[ 0.          0.25331629]</span>
-<span class="sd">        [ 0.25331629  0.        ]]&quot;</span>
+<span class="sd">        eps=0.5:  [[0.         0.25331629]</span>
+<span class="sd">         [0.25331629 0.        ]]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1424,33 +1428,27 @@
 <span class="sd">    To calculate the Dimensional Reduction Ensemble similarity, two ensembles</span>
 <span class="sd">    are created as Universe objects from a topology file and two trajectories.</span>
 <span class="sd">    The topology- and trajectory files used are obtained from the MDAnalysis</span>
-<span class="sd">    test suite for two different simulations of the protein AdK. To run the</span>
-<span class="sd">    examples see the module `Examples`_ for how to import the files.</span>
+<span class="sd">    test suite for two different simulations of the protein AdK.</span>
+<span class="sd">    To use a different dimensional reduction methods, simply set the</span>
+<span class="sd">    parameter dimensionality_reduction_method. Likewise, different parameters</span>
+<span class="sd">    for the same clustering method can be explored by adding different</span>
+<span class="sd">    instances of the same method  class.</span>
 <span class="sd">    Here the simplest case of comparing just two instances of :class:`Universe` is</span>
-<span class="sd">    illustrated: ::</span>
+<span class="sd">    illustrated:</span>
 
+<span class="sd">        &gt;&gt;&gt; from MDAnalysis import Universe</span>
+<span class="sd">        &gt;&gt;&gt; import MDAnalysis.analysis.encore as encore</span>
+<span class="sd">        &gt;&gt;&gt; from MDAnalysis.tests.datafiles import PSF, DCD, DCD2</span>
 <span class="sd">        &gt;&gt;&gt; ens1 = Universe(PSF,DCD)</span>
 <span class="sd">        &gt;&gt;&gt; ens2 = Universe(PSF,DCD2)</span>
 <span class="sd">        &gt;&gt;&gt; DRES, details = encore.dres([ens1,ens2])</span>
-<span class="sd">        &gt;&gt;&gt; print(DRES)</span>
-<span class="sd">        [[ 0.          0.67996043]</span>
-<span class="sd">         [ 0.67996043  0.        ]]</span>
+<span class="sd">        &gt;&gt;&gt; PCA_method = encore.PrincipalComponentAnalysis(dimension=2)</span>
+<span class="sd">        &gt;&gt;&gt; DRES, details = encore.dres([ens1,ens2],</span>
+<span class="sd">        ...                             dimensionality_reduction_method=PCA_method)</span>
 
 <span class="sd">    In addition to the quantitative similarity estimate, the dimensional</span>
 <span class="sd">    reduction can easily be visualized, see the ``Example`` section in</span>
 <span class="sd">    :mod:`MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality``</span>
-
-
-<span class="sd">    To use a different dimensional reduction methods, simply set the</span>
-<span class="sd">    parameter dimensionality_reduction_method. Likewise, different parameters</span>
-<span class="sd">    for the same clustering method can be explored by adding different</span>
-<span class="sd">    instances of the same method  class: ::</span>
-
-<span class="sd">        &gt;&gt;&gt; DRES, details = encore.dres([ens1,ens2],</span>
-<span class="sd">                                        dimensionality_reduction_method = encore.PrincipalComponentAnalysis(dimension=2))</span>
-<span class="sd">        &gt;&gt;&gt; print(DRES)</span>
-<span class="sd">        [[ 0.          0.69314718]</span>
-<span class="sd">         [ 0.69314718  0.        ]]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1638,25 +1636,24 @@
 <span class="sd">    similarity method a Universe object is created from a topology file and the</span>
 <span class="sd">    trajectory. The topology- and trajectory files used are obtained from the</span>
 <span class="sd">    MDAnalysis test suite for two different simulations of the protein AdK.</span>
-<span class="sd">    To run the examples see the module `Examples`_ for how to import the files.</span>
 <span class="sd">    Here the simplest case of evaluating the convergence is illustrated by</span>
-<span class="sd">    splitting the trajectory into a window_size of 10 frames : ::</span>
+<span class="sd">    splitting the trajectory into a window_size of 10 frames:</span>
 
-
+<span class="sd">        &gt;&gt;&gt; from MDAnalysis import Universe</span>
+<span class="sd">        &gt;&gt;&gt; import MDAnalysis.analysis.encore as encore</span>
+<span class="sd">        &gt;&gt;&gt; from MDAnalysis.tests.datafiles import PSF, DCD, DCD2</span>
 <span class="sd">        &gt;&gt;&gt; ens1 = Universe(PSF,DCD)</span>
 <span class="sd">        &gt;&gt;&gt; ces_conv = encore.ces_convergence(ens1, 10)</span>
 <span class="sd">        &gt;&gt;&gt; print(ces_conv)</span>
-<span class="sd">        [[ 0.48194205]</span>
-<span class="sd">        [ 0.40284672]</span>
-<span class="sd">        [ 0.31699026]</span>
-<span class="sd">        [ 0.25220447]</span>
-<span class="sd">        [ 0.19829817]</span>
-<span class="sd">        [ 0.14642725]</span>
-<span class="sd">        [ 0.09911411]</span>
-<span class="sd">        [ 0.05667391]</span>
-<span class="sd">        [ 0.        ]]</span>
-
-
+<span class="sd">        [[0.48194205]</span>
+<span class="sd">         [0.40284672]</span>
+<span class="sd">         [0.31699026]</span>
+<span class="sd">         [0.25220447]</span>
+<span class="sd">         [0.19829817]</span>
+<span class="sd">         [0.14642725]</span>
+<span class="sd">         [0.09911411]</span>
+<span class="sd">         [0.05667391]</span>
+<span class="sd">         [0.        ]]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1747,23 +1744,14 @@
 <span class="sd">    method, a Universe object is created from a topology file and the</span>
 <span class="sd">    trajectory. The topology- and trajectory files used are obtained from the</span>
 <span class="sd">    MDAnalysis test suite for two different simulations of the protein AdK.</span>
-<span class="sd">    To run the examples see the module `Examples`_ for how to import the files.</span>
 <span class="sd">    Here the simplest case of evaluating the convergence is illustrated by</span>
-<span class="sd">    splitting the trajectory into a window_size of 10 frames : ::</span>
+<span class="sd">    splitting the trajectory into a window_size of 10 frames:</span>
 
-
+<span class="sd">        &gt;&gt;&gt; from MDAnalysis import Universe</span>
+<span class="sd">        &gt;&gt;&gt; import MDAnalysis.analysis.encore as encore</span>
+<span class="sd">        &gt;&gt;&gt; from MDAnalysis.tests.datafiles import PSF, DCD, DCD2</span>
 <span class="sd">        &gt;&gt;&gt; ens1 = Universe(PSF,DCD)</span>
 <span class="sd">        &gt;&gt;&gt; dres_conv = encore.dres_convergence(ens1, 10)</span>
-<span class="sd">        &gt;&gt;&gt; print(dres_conv)</span>
-<span class="sd">        [[ 0.5295528 ]</span>
-<span class="sd">         [ 0.40716539]</span>
-<span class="sd">         [ 0.31158669]</span>
-<span class="sd">         [ 0.25314041]</span>
-<span class="sd">         [ 0.20447271]</span>
-<span class="sd">         [ 0.13212364]</span>
-<span class="sd">         [ 0.06979114]</span>
-<span class="sd">         [ 0.05214759]</span>
-<span class="sd">         [ 0.        ]]</span>
 
 <span class="sd">    Here, the rate at which the values reach zero will be indicative of how</span>
 <span class="sd">    much the trajectory keeps on resampling the same ares of the conformational</span>

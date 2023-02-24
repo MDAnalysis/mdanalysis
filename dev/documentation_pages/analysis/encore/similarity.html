@@ -172,21 +172,18 @@ between ensembles implemented in individual functions:</p>
 <p class="rubric" id="examples">Examples</p>
 <p>The examples show how to use ENCORE to calculate a similarity measurement
 of two simple ensembles. The ensembles are obtained from the MDAnalysis
-test suite for two different simulations of the protein AdK. To run the
-examples first execute:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">Universe</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis.analysis.encore</span> <span class="k">as</span> <span class="nn">encore</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">,</span> <span class="n">DCD2</span>
-</pre></div>
-</div>
+test suite for two different simulations of the protein AdK.</p>
 <p>To calculate the Harmonic Ensemble Similarity (<a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.hes" title="MDAnalysis.analysis.encore.similarity.hes"><code class="xref py py-func docutils literal notranslate"><span class="pre">hes()</span></code></a>)
 two ensemble objects are first created and then used for calculation:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">Universe</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis.analysis.encore</span> <span class="k">as</span> <span class="nn">encore</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">,</span> <span class="n">DCD2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ens2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">HES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">HES</span><span class="p">)</span>
-<span class="go">[[        0.        ,  38279683.95892926],</span>
-<span class="go">[ 38279683.95892926,         0.        ]]</span>
+<span class="go">[[       0.         38279540.04524205]</span>
+<span class="go"> [38279540.04524205        0.        ]]</span>
 </pre></div>
 </div>
 <p>HES can assume any non-negative value, i.e. no upper bound exists and the
@@ -196,45 +193,48 @@ is computationally more expensive. It is based on clustering algorithms that in
 turn require a similarity matrix between the frames the ensembles are made
 of. The similarity matrix is derived from a distance matrix (By default a RMSD
 matrix; a full RMSD matrix between each pairs of elements needs to be computed).
-The RMSD matrix is automatically calculated.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+The RMSD matrix is automatically calculated:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">Universe</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis.analysis.encore</span> <span class="k">as</span> <span class="nn">encore</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">,</span> <span class="n">DCD2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ens2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">CES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">ces</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">CES</span><span class="p">)</span>
-<span class="go">[[ 0.          0.68070702]</span>
-<span class="go">[ 0.68070702  0.        ]]</span>
+<span class="go">[[0.         0.68070702]</span>
+<span class="go"> [0.68070702 0.        ]]</span>
 </pre></div>
 </div>
-<p>However, we may want to reuse the RMSD matrix in other calculations e.g.
-running CES with different parameters or running DRES. In this
-case we first compute the RMSD matrix alone:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rmsd_matrix</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">get_distance_matrix</span><span class="p">(</span>
-<span class="go">                                encore.utils.merge_universes([ens1, ens2]),</span>
-<span class="go">                                save_matrix=&quot;rmsd.npz&quot;)</span>
-</pre></div>
-</div>
-<p>In the above example the RMSD matrix was also saved in rmsd.npz on disk, and
-so can be loaded and re-used at later times, instead of being recomputed:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rmsd_matrix</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">get_distance_matrix</span><span class="p">(</span>
-<span class="go">                                encore.utils.merge_universes([ens1, ens2]),</span>
-<span class="go">                                load_matrix=&quot;rmsd.npz&quot;)</span>
-</pre></div>
-</div>
-<p>For instance, the rmsd_matrix object can be re-used as input for the
+<p>The RMSD matrix can also be separately calculated to reuse it, e.g. for running
+CES with different parameters or running the
 Dimensional Reduction Ensemble Similarity (<a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.dres" title="MDAnalysis.analysis.encore.similarity.dres"><code class="xref py py-func docutils literal notranslate"><span class="pre">dres()</span></code></a>) method.
 DRES is based on the estimation of the probability density in
 a dimensionally-reduced conformational space of the ensembles, obtained from
 the original space using either the Stochastic Proximity Embedding algorithm or
 the Principal Component Analysis.
-As the algorithms require the distance matrix calculated on the original space,
-we can reuse the previously-calculated RMSD matrix.
 In the following example the dimensions are reduced to 3 using the
-saved RMSD matrix and the default SPE dimensional reduction method.   :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">DRES</span><span class="p">,</span><span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">dres</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">],</span>
-<span class="go">                               distance_matrix = rmsd_matrix)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">DRES</span><span class="p">)</span>
-<span class="go">[[ 0.        ,   0.67453198]</span>
-<span class="go"> [  0.67453198,  0.        ]]</span>
+RMSD matrix and the default SPE dimensional reduction method:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">Universe</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis.analysis.encore</span> <span class="k">as</span> <span class="nn">encore</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">,</span> <span class="n">DCD2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ens2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rmsd_matrix</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">get_distance_matrix</span><span class="p">(</span>
+<span class="gp">... </span>                            <span class="n">encore</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">merge_universes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">DRES</span><span class="p">,</span><span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">dres</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">],</span>
+<span class="gp">... </span>                            <span class="n">distance_matrix</span> <span class="o">=</span> <span class="n">rmsd_matrix</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The RMSD matrix can also be saved on disk with the option <code class="docutils literal notranslate"><span class="pre">save_matrix</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">rmsd_matrix</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">get_distance_matrix</span><span class="p">(</span>
+                                <span class="n">encore</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">merge_universes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">]),</span>
+                                <span class="n">save_matrix</span><span class="o">=</span><span class="s2">&quot;rmsd.npz&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It can then be loaded and reused at a later time instead of being recalculated:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">rmsd_matrix</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">get_distance_matrix</span><span class="p">(</span>
+                                <span class="n">encore</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">merge_universes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">]),</span>
+                                <span class="n">load_matrix</span><span class="o">=</span><span class="s2">&quot;rmsd.npz&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>In addition to the quantitative similarity estimate, the dimensional reduction
@@ -309,33 +309,38 @@ the ensembles first (see example below).</p>
 <p>To calculate the Harmonic Ensemble similarity, two ensembles are created
 as Universe objects from a topology file and two trajectories. The
 topology- and trajectory files used are obtained from the MDAnalysis
-test suite for two different simulations of the protein AdK. To run the
-examples see the module <a class="reference internal" href="#examples">Examples</a> for how to import the files:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+test suite for two different simulations of the protein AdK.
+You can use the <code class="docutils literal notranslate"><span class="pre">align=True</span></code> option to align the ensembles first. This will
+align everything to the current timestep in the first ensemble. Note that
+this changes the <code class="docutils literal notranslate"><span class="pre">ens1</span></code> and <code class="docutils literal notranslate"><span class="pre">ens2</span></code> objects:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">Universe</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis.analysis.encore</span> <span class="k">as</span> <span class="nn">encore</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">,</span> <span class="n">DCD2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ens2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">HES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">HES</span><span class="p">)</span>
-<span class="go">[[        0.          38279683.95892926]</span>
-<span class="go"> [ 38279683.95892926         0.        ]]</span>
-</pre></div>
-</div>
-<p>You can use the <code class="docutils literal notranslate"><span class="pre">align=True</span></code> option to align the ensembles first. This will
-align everything to the current timestep in the first ensemble. Note that
-this changes the <code class="docutils literal notranslate"><span class="pre">ens1</span></code> and <code class="docutils literal notranslate"><span class="pre">ens2</span></code> objects:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">],</span> <span class="n">align</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-<span class="go">[[    0.          6880.34140106]</span>
-<span class="go">[ 6880.34140106     0.        ]]</span>
+<span class="go">[[       0.         38279540.04524205]</span>
+<span class="go"> [38279540.04524205        0.        ]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">],</span> <span class="n">align</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">[[   0.         6889.89729056]</span>
+<span class="go"> [6889.89729056    0.        ]]</span>
 </pre></div>
 </div>
 <p>Alternatively, for greater flexibility in how the alignment should be done
 you can call use an <a class="reference internal" href="../align.html#MDAnalysis.analysis.align.AlignTraj" title="MDAnalysis.analysis.align.AlignTraj"><code class="xref py py-class docutils literal notranslate"><span class="pre">AlignTraj</span></code></a> object
 manually:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">align</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">align</span><span class="o">.</span><span class="n">AlignTraj</span><span class="p">(</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens1</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">align</span><span class="o">.</span><span class="n">AlignTraj</span><span class="p">(</span><span class="n">ens2</span><span class="p">,</span> <span class="n">ens1</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">Universe</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis.analysis.encore</span> <span class="k">as</span> <span class="nn">encore</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">,</span> <span class="n">DCD2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">align</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ens2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">align</span><span class="o">.</span><span class="n">AlignTraj</span><span class="p">(</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens1</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">align</span><span class="o">.</span><span class="n">AlignTraj</span><span class="p">(</span><span class="n">ens2</span><span class="p">,</span> <span class="n">ens1</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
-<span class="go">[[    0.          7032.19607004]</span>
-<span class="go"> [ 7032.19607004     0.        ]]</span>
+<span class="go">[[   0.         6889.89729056]</span>
+<span class="go"> [6889.89729056    0.        ]]</span>
 </pre></div>
 </div>
 <div class="versionchanged">
@@ -410,30 +415,32 @@ ensemble are finally compared using the Jensen-Shannon divergence measure.</p>
 <p>To calculate the Clustering Ensemble similarity, two ensembles are
 created as Universe object using a topology file and two trajectories. The
 topology- and trajectory files used are obtained from the MDAnalysis
-test suite for two different simulations of the protein AdK. To run the
-examples see the module <a class="reference internal" href="#examples">Examples</a> for how to import the files.
+test suite for two different simulations of the protein AdK.
+To use a different clustering method, set the parameter clustering_method
+(Note that the sklearn module must be installed). Likewise, different parameters
+for the same clustering method can be explored by adding different
+instances of the same clustering class.
 Here the simplest case of just two instances of <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code> is illustrated:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">Universe</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis.analysis.encore</span> <span class="k">as</span> <span class="nn">encore</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">,</span> <span class="n">DCD2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ens2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">CES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">ces</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">CES</span><span class="p">)</span>
-<span class="go">[[ 0.          0.68070702]</span>
-<span class="go"> [ 0.68070702  0.        ]]</span>
+<span class="go">[[0.         0.68070702]</span>
+<span class="go"> [0.68070702 0.        ]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">ces</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">],</span>
+<span class="gp">... </span>                          <span class="n">clustering_method</span> <span class="o">=</span> <span class="p">[</span><span class="n">encore</span><span class="o">.</span><span class="n">DBSCAN</span><span class="p">(</span><span class="n">eps</span><span class="o">=</span><span class="mf">0.45</span><span class="p">),</span>
+<span class="gp">... </span>                                               <span class="n">encore</span><span class="o">.</span><span class="n">DBSCAN</span><span class="p">(</span><span class="n">eps</span><span class="o">=</span><span class="mf">0.50</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;eps=0.45: &quot;</span><span class="p">,</span> <span class="n">CES</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">eps=0.45:  [[0.         0.20447236]</span>
+<span class="go"> [0.20447236 0.        ]]</span>
 </pre></div>
 </div>
-<p>To use a different clustering method, set the parameter clustering_method
-(Note that the sklearn module must be installed). Likewise,  different parameters
-for the same clustering method can be explored by adding different
-instances of the same clustering class:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">ces</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">],</span>
-<span class="go">                              clustering_method = [encore.DBSCAN(eps=0.45),</span>
-<span class="go">                                                   encore.DBSCAN(eps=0.50)])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;eps=0.45: &quot;</span><span class="p">,</span> <span class="n">CES</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="go">eps=0.45:  [[ 0.          0.20447236]</span>
-<span class="go">[ 0.20447236  0.        ]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;eps=0.5: &quot;</span><span class="p">,</span> <span class="n">CES</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="go">eps=0.5:  [[ 0.          0.25331629]</span>
-<span class="go">[ 0.25331629  0.        ]]&quot;</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;eps=0.5: &quot;</span><span class="p">,</span> <span class="n">CES</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="go">eps=0.5:  [[0.         0.25331629]</span>
+<span class="go"> [0.25331629 0.        ]]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -510,32 +517,27 @@ differences have to be expected.</p>
 <p>To calculate the Dimensional Reduction Ensemble similarity, two ensembles
 are created as Universe objects from a topology file and two trajectories.
 The topology- and trajectory files used are obtained from the MDAnalysis
-test suite for two different simulations of the protein AdK. To run the
-examples see the module <a class="reference internal" href="#examples">Examples</a> for how to import the files.
+test suite for two different simulations of the protein AdK.
+To use a different dimensional reduction methods, simply set the
+parameter dimensionality_reduction_method. Likewise, different parameters
+for the same clustering method can be explored by adding different
+instances of the same method  class.
 Here the simplest case of comparing just two instances of <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code> is
 illustrated:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">Universe</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis.analysis.encore</span> <span class="k">as</span> <span class="nn">encore</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">,</span> <span class="n">DCD2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ens2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">DRES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">dres</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">DRES</span><span class="p">)</span>
-<span class="go">[[ 0.          0.67996043]</span>
-<span class="go"> [ 0.67996043  0.        ]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">PCA_method</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">PrincipalComponentAnalysis</span><span class="p">(</span><span class="n">dimension</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">DRES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">dres</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">],</span>
+<span class="gp">... </span>                            <span class="n">dimensionality_reduction_method</span><span class="o">=</span><span class="n">PCA_method</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>In addition to the quantitative similarity estimate, the dimensional
 reduction can easily be visualized, see the <code class="docutils literal notranslate"><span class="pre">Example</span></code> section in
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality`</span></code></p>
-<p>To use a different dimensional reduction methods, simply set the
-parameter dimensionality_reduction_method. Likewise, different parameters
-for the same clustering method can be explored by adding different
-instances of the same method  class:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">DRES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">dres</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">],</span>
-<span class="go">                                dimensionality_reduction_method = encore.PrincipalComponentAnalysis(dimension=2))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">DRES</span><span class="p">)</span>
-<span class="go">[[ 0.          0.69314718]</span>
-<span class="go"> [ 0.69314718  0.        ]]</span>
-</pre></div>
-</div>
 </dd></dl>
 
 </section>
@@ -609,30 +611,32 @@ ensemble are finally compared using the Jensen-Shannon divergence measure.</p>
 <p>To calculate the Clustering Ensemble similarity, two ensembles are
 created as Universe object using a topology file and two trajectories. The
 topology- and trajectory files used are obtained from the MDAnalysis
-test suite for two different simulations of the protein AdK. To run the
-examples see the module <a class="reference internal" href="#examples">Examples</a> for how to import the files.
+test suite for two different simulations of the protein AdK.
+To use a different clustering method, set the parameter clustering_method
+(Note that the sklearn module must be installed). Likewise, different parameters
+for the same clustering method can be explored by adding different
+instances of the same clustering class.
 Here the simplest case of just two instances of <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code> is illustrated:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">Universe</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis.analysis.encore</span> <span class="k">as</span> <span class="nn">encore</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">,</span> <span class="n">DCD2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ens2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">CES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">ces</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">CES</span><span class="p">)</span>
-<span class="go">[[ 0.          0.68070702]</span>
-<span class="go"> [ 0.68070702  0.        ]]</span>
+<span class="go">[[0.         0.68070702]</span>
+<span class="go"> [0.68070702 0.        ]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">ces</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">],</span>
+<span class="gp">... </span>                          <span class="n">clustering_method</span> <span class="o">=</span> <span class="p">[</span><span class="n">encore</span><span class="o">.</span><span class="n">DBSCAN</span><span class="p">(</span><span class="n">eps</span><span class="o">=</span><span class="mf">0.45</span><span class="p">),</span>
+<span class="gp">... </span>                                               <span class="n">encore</span><span class="o">.</span><span class="n">DBSCAN</span><span class="p">(</span><span class="n">eps</span><span class="o">=</span><span class="mf">0.50</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;eps=0.45: &quot;</span><span class="p">,</span> <span class="n">CES</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">eps=0.45:  [[0.         0.20447236]</span>
+<span class="go"> [0.20447236 0.        ]]</span>
 </pre></div>
 </div>
-<p>To use a different clustering method, set the parameter clustering_method
-(Note that the sklearn module must be installed). Likewise,  different parameters
-for the same clustering method can be explored by adding different
-instances of the same clustering class:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">ces</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">],</span>
-<span class="go">                              clustering_method = [encore.DBSCAN(eps=0.45),</span>
-<span class="go">                                                   encore.DBSCAN(eps=0.50)])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;eps=0.45: &quot;</span><span class="p">,</span> <span class="n">CES</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="go">eps=0.45:  [[ 0.          0.20447236]</span>
-<span class="go">[ 0.20447236  0.        ]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;eps=0.5: &quot;</span><span class="p">,</span> <span class="n">CES</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="go">eps=0.5:  [[ 0.          0.25331629]</span>
-<span class="go">[ 0.25331629  0.        ]]&quot;</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;eps=0.5: &quot;</span><span class="p">,</span> <span class="n">CES</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="go">eps=0.5:  [[0.         0.25331629]</span>
+<span class="go"> [0.25331629 0.        ]]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -672,21 +676,23 @@ clustering class.</p></li>
 similarity method a Universe object is created from a topology file and the
 trajectory. The topology- and trajectory files used are obtained from the
 MDAnalysis test suite for two different simulations of the protein AdK.
-To run the examples see the module <a class="reference internal" href="#examples">Examples</a> for how to import the files.
 Here the simplest case of evaluating the convergence is illustrated by
-splitting the trajectory into a window_size of 10 frames :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
+splitting the trajectory into a window_size of 10 frames:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">Universe</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis.analysis.encore</span> <span class="k">as</span> <span class="nn">encore</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">,</span> <span class="n">DCD2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ces_conv</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">ces_convergence</span><span class="p">(</span><span class="n">ens1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ces_conv</span><span class="p">)</span>
-<span class="go">[[ 0.48194205]</span>
-<span class="go">[ 0.40284672]</span>
-<span class="go">[ 0.31699026]</span>
-<span class="go">[ 0.25220447]</span>
-<span class="go">[ 0.19829817]</span>
-<span class="go">[ 0.14642725]</span>
-<span class="go">[ 0.09911411]</span>
-<span class="go">[ 0.05667391]</span>
-<span class="go">[ 0.        ]]</span>
+<span class="go">[[0.48194205]</span>
+<span class="go"> [0.40284672]</span>
+<span class="go"> [0.31699026]</span>
+<span class="go"> [0.25220447]</span>
+<span class="go"> [0.19829817]</span>
+<span class="go"> [0.14642725]</span>
+<span class="go"> [0.09911411]</span>
+<span class="go"> [0.05667391]</span>
+<span class="go"> [0.        ]]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -954,32 +960,27 @@ differences have to be expected.</p>
 <p>To calculate the Dimensional Reduction Ensemble similarity, two ensembles
 are created as Universe objects from a topology file and two trajectories.
 The topology- and trajectory files used are obtained from the MDAnalysis
-test suite for two different simulations of the protein AdK. To run the
-examples see the module <a class="reference internal" href="#examples">Examples</a> for how to import the files.
+test suite for two different simulations of the protein AdK.
+To use a different dimensional reduction methods, simply set the
+parameter dimensionality_reduction_method. Likewise, different parameters
+for the same clustering method can be explored by adding different
+instances of the same method  class.
 Here the simplest case of comparing just two instances of <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code> is
 illustrated:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">Universe</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis.analysis.encore</span> <span class="k">as</span> <span class="nn">encore</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">,</span> <span class="n">DCD2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ens2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">DRES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">dres</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">DRES</span><span class="p">)</span>
-<span class="go">[[ 0.          0.67996043]</span>
-<span class="go"> [ 0.67996043  0.        ]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">PCA_method</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">PrincipalComponentAnalysis</span><span class="p">(</span><span class="n">dimension</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">DRES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">dres</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">],</span>
+<span class="gp">... </span>                            <span class="n">dimensionality_reduction_method</span><span class="o">=</span><span class="n">PCA_method</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>In addition to the quantitative similarity estimate, the dimensional
 reduction can easily be visualized, see the <code class="docutils literal notranslate"><span class="pre">Example</span></code> section in
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality`</span></code></p>
-<p>To use a different dimensional reduction methods, simply set the
-parameter dimensionality_reduction_method. Likewise, different parameters
-for the same clustering method can be explored by adding different
-instances of the same method  class:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">DRES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">dres</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">],</span>
-<span class="go">                                dimensionality_reduction_method = encore.PrincipalComponentAnalysis(dimension=2))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">DRES</span><span class="p">)</span>
-<span class="go">[[ 0.          0.69314718]</span>
-<span class="go"> [ 0.69314718  0.        ]]</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py function">
@@ -1019,21 +1020,13 @@ This is akin to the nsamples parameter of dres().</p></li>
 method, a Universe object is created from a topology file and the
 trajectory. The topology- and trajectory files used are obtained from the
 MDAnalysis test suite for two different simulations of the protein AdK.
-To run the examples see the module <a class="reference internal" href="#examples">Examples</a> for how to import the files.
 Here the simplest case of evaluating the convergence is illustrated by
-splitting the trajectory into a window_size of 10 frames :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
+splitting the trajectory into a window_size of 10 frames:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">Universe</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis.analysis.encore</span> <span class="k">as</span> <span class="nn">encore</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">,</span> <span class="n">DCD2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dres_conv</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">dres_convergence</span><span class="p">(</span><span class="n">ens1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">dres_conv</span><span class="p">)</span>
-<span class="go">[[ 0.5295528 ]</span>
-<span class="go"> [ 0.40716539]</span>
-<span class="go"> [ 0.31158669]</span>
-<span class="go"> [ 0.25314041]</span>
-<span class="go"> [ 0.20447271]</span>
-<span class="go"> [ 0.13212364]</span>
-<span class="go"> [ 0.06979114]</span>
-<span class="go"> [ 0.05214759]</span>
-<span class="go"> [ 0.        ]]</span>
 </pre></div>
 </div>
 <p>Here, the rate at which the values reach zero will be indicative of how
@@ -1155,33 +1148,38 @@ the ensembles first (see example below).</p>
 <p>To calculate the Harmonic Ensemble similarity, two ensembles are created
 as Universe objects from a topology file and two trajectories. The
 topology- and trajectory files used are obtained from the MDAnalysis
-test suite for two different simulations of the protein AdK. To run the
-examples see the module <a class="reference internal" href="#examples">Examples</a> for how to import the files:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+test suite for two different simulations of the protein AdK.
+You can use the <code class="docutils literal notranslate"><span class="pre">align=True</span></code> option to align the ensembles first. This will
+align everything to the current timestep in the first ensemble. Note that
+this changes the <code class="docutils literal notranslate"><span class="pre">ens1</span></code> and <code class="docutils literal notranslate"><span class="pre">ens2</span></code> objects:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">Universe</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis.analysis.encore</span> <span class="k">as</span> <span class="nn">encore</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">,</span> <span class="n">DCD2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ens2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">HES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">HES</span><span class="p">)</span>
-<span class="go">[[        0.          38279683.95892926]</span>
-<span class="go"> [ 38279683.95892926         0.        ]]</span>
-</pre></div>
-</div>
-<p>You can use the <code class="docutils literal notranslate"><span class="pre">align=True</span></code> option to align the ensembles first. This will
-align everything to the current timestep in the first ensemble. Note that
-this changes the <code class="docutils literal notranslate"><span class="pre">ens1</span></code> and <code class="docutils literal notranslate"><span class="pre">ens2</span></code> objects:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">],</span> <span class="n">align</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-<span class="go">[[    0.          6880.34140106]</span>
-<span class="go">[ 6880.34140106     0.        ]]</span>
+<span class="go">[[       0.         38279540.04524205]</span>
+<span class="go"> [38279540.04524205        0.        ]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">],</span> <span class="n">align</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">[[   0.         6889.89729056]</span>
+<span class="go"> [6889.89729056    0.        ]]</span>
 </pre></div>
 </div>
 <p>Alternatively, for greater flexibility in how the alignment should be done
 you can call use an <a class="reference internal" href="../align.html#MDAnalysis.analysis.align.AlignTraj" title="MDAnalysis.analysis.align.AlignTraj"><code class="xref py py-class docutils literal notranslate"><span class="pre">AlignTraj</span></code></a> object
 manually:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">align</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">align</span><span class="o">.</span><span class="n">AlignTraj</span><span class="p">(</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens1</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">align</span><span class="o">.</span><span class="n">AlignTraj</span><span class="p">(</span><span class="n">ens2</span><span class="p">,</span> <span class="n">ens1</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">Universe</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis.analysis.encore</span> <span class="k">as</span> <span class="nn">encore</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">,</span> <span class="n">DCD2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">align</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ens2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">align</span><span class="o">.</span><span class="n">AlignTraj</span><span class="p">(</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens1</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">align</span><span class="o">.</span><span class="n">AlignTraj</span><span class="p">(</span><span class="n">ens2</span><span class="p">,</span> <span class="n">ens1</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
-<span class="go">[[    0.          7032.19607004]</span>
-<span class="go"> [ 7032.19607004     0.        ]]</span>
+<span class="go">[[   0.         6889.89729056]</span>
+<span class="go"> [6889.89729056    0.        ]]</span>
 </pre></div>
 </div>
 <div class="versionchanged">
