@@ -4,6 +4,7 @@ from numpy.testing import assert_allclose
 
 import MDAnalysis as mda
 from MDAnalysis.transformations import NoJump, wrap
+from MDAnalysisTests import datafiles as data
 
 
 @pytest.fixture()
