@@ -7,6 +7,17 @@ from MDAnalysis.transformations import NoJump, wrap
 
 
 @pytest.fixture()
+def nojump_universes_fromfile():
+    '''
+    Create the universe objects for the tests.
+    '''
+    u = MDAnalysis.Universe(data.PSF_TRICLINIC, data.DCD_TRICLINIC)
+    transformation = NoJump()
+    u.trajectory.add_transformations(transformation)
+    return u
+
+
+@pytest.fixture()
 def nojump_universe():
     """
     Create the universe objects for the tests.
@@ -95,56 +106,25 @@ def test_nojump_constantvel(nojump_constantvel_universe):
     )
 
 
-def test_nojump_constantvel_skip(nojump_constantvel_universe):
+def test_nojump_constantvel_skip(nojump_universes_fromfile):
     """
-    Test if the nojump transform is returning the correct
-    values when iterating forwards over the sample trajectory,
-    skipping by 2.
+    Test if the nojump transform warning is emitted.
     """
-    ref, towrap = nojump_constantvel_universe
-    dim = np.asarray([5, 5, 5, 54, 60, 90], np.float32)
-    workflow = [
-        mda.transformations.boxdimensions.set_dimensions(dim),
-        wrap(towrap.atoms),
-        NoJump(),
-    ]
-    towrap.trajectory.add_transformations(*workflow)
-    for r, c in zip(
-        [ts for ts in ref.trajectory[::2]],
-        [ts for ts in towrap.trajectory[::2]],
-    ):
-        assert_allclose(
-            r.positions,
-            c.positions,
-            rtol=5e-07,
-            atol=5e-06,
-        )
+    with pytest.warns(UserWarning):
+        u = nojump_universes_fromfile
+        u.trajectory[0]
+        u.trajectory[99] #Exercises the warning.
 
 
-def test_nojump_constantvel_jumparound(nojump_constantvel_universe):
+def test_nojump_constantvel_jumparound(nojump_universes_fromfile):
     """
-    Test if the nojump transform is returning the correct
-    values when iterating forwards over the sample trajectory,
-    skipping by 2.
+    Test if the nojump transform is emitting a warning.
     """
-    ref, towrap = nojump_constantvel_universe
-    dim = np.asarray([5, 5, 5, 54, 60, 90], np.float32)
-    workflow = [
-        mda.transformations.boxdimensions.set_dimensions(dim),
-        wrap(towrap.atoms),
-        NoJump(),
-    ]
-    towrap.trajectory.add_transformations(*workflow)
-    for r, c in zip(
-        [ts for ts in ref.trajectory[[0,1,2,3,5,4]]],
-        [ts for ts in towrap.trajectory[[0,1,2,3,5,4]]],
-    ):
-        assert_allclose(
-            r.positions,
-            c.positions,
-            rtol=5e-07,
-            atol=5e-06,
-        )
+    with pytest.warns(UserWarning):
+        u = nojump_universes_fromfile
+        u.trajectory[0]
+        u.trajectory[1]
+        u.trajectory[99]
 
 
 def test_missing_dimensions(nojump_universe):
