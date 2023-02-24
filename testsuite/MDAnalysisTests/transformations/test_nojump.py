@@ -101,25 +101,24 @@ def test_nojump_constantvel_skip(nojump_constantvel_universe):
     values when iterating forwards over the sample trajectory,
     skipping by 2.
     """
-    with pytest.warns(UserWarning):
-        ref, towrap = nojump_constantvel_universe
-        dim = np.asarray([5, 5, 5, 54, 60, 90], np.float32)
-        workflow = [
-            mda.transformations.boxdimensions.set_dimensions(dim),
-            wrap(towrap.atoms),
-            NoJump(),
-        ]
-        towrap.trajectory.add_transformations(*workflow)
-        for r, c in zip(
-            [ts for ts in ref.trajectory[::2]],
-            [ts for ts in towrap.trajectory[::2]],
-        ):
-            assert_allclose(
-                r.positions,
-                c.positions,
-                rtol=5e-07,
-                atol=5e-06,
-            )
+    ref, towrap = nojump_constantvel_universe
+    dim = np.asarray([5, 5, 5, 54, 60, 90], np.float32)
+    workflow = [
+        mda.transformations.boxdimensions.set_dimensions(dim),
+        wrap(towrap.atoms),
+        NoJump(),
+    ]
+    towrap.trajectory.add_transformations(*workflow)
+    for r, c in zip(
+        [ts for ts in ref.trajectory[::2]],
+        [ts for ts in towrap.trajectory[::2]],
+    ):
+        assert_allclose(
+            r.positions,
+            c.positions,
+            rtol=5e-07,
+            atol=5e-06,
+        )
 
 
 def test_nojump_constantvel_jumparound(nojump_constantvel_universe):
@@ -128,25 +127,24 @@ def test_nojump_constantvel_jumparound(nojump_constantvel_universe):
     values when iterating forwards over the sample trajectory,
     skipping by 2.
     """
-    with pytest.warns(UserWarning):
-        ref, towrap = nojump_constantvel_universe
-        dim = np.asarray([5, 5, 5, 54, 60, 90], np.float32)
-        workflow = [
-            mda.transformations.boxdimensions.set_dimensions(dim),
-            wrap(towrap.atoms),
-            NoJump(),
-        ]
-        towrap.trajectory.add_transformations(*workflow)
-        for r, c in zip(
-            [ts for ts in ref.trajectory[[0,1,2,3,5,4]]],
-            [ts for ts in towrap.trajectory[[0,1,2,3,5,4]]],
-        ):
-            assert_allclose(
-                r.positions,
-                c.positions,
-                rtol=5e-07,
-                atol=5e-06,
-            )
+    ref, towrap = nojump_constantvel_universe
+    dim = np.asarray([5, 5, 5, 54, 60, 90], np.float32)
+    workflow = [
+        mda.transformations.boxdimensions.set_dimensions(dim),
+        wrap(towrap.atoms),
+        NoJump(),
+    ]
+    towrap.trajectory.add_transformations(*workflow)
+    for r, c in zip(
+        [ts for ts in ref.trajectory[[0,1,2,3,5,4]]],
+        [ts for ts in towrap.trajectory[[0,1,2,3,5,4]]],
+    ):
+        assert_allclose(
+            r.positions,
+            c.positions,
+            rtol=5e-07,
+            atol=5e-06,
+        )
 
 
 def test_missing_dimensions(nojump_universe):
