@@ -13,6 +13,18 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+24/02/23 Telomelonia
+
+ * 2.5.0
+
+Fixes
+  * Fix the code for docstring in rotation_matrix method in align.py 
+    which was giving NameError (Issue #3365)
+
+Changes
+  * Defined the universe for which NameError was raised. (PR #4023)
+  
+
 ??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae
 
  * 2.5.0
