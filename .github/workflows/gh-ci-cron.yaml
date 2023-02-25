@@ -35,7 +35,7 @@ jobs:
     - name: setup_miniconda
       uses: conda-incubator/setup-miniconda@v2
       with:
-        python-version: "3.10"
+        python-version: "3.11"
         miniforge-variant: Mambaforge
         miniforge-version: latest
         channel-priority: strict
@@ -88,7 +88,7 @@ jobs:
     - name: setup_miniconda
       uses: conda-incubator/setup-miniconda@v2
       with:
-        python-version: 3.9
+        python-version: 3.11
         auto-update-conda: true
         channel-priority: flexible
         channels: conda-forge, bioconda
