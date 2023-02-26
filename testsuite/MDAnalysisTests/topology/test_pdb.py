@@ -81,12 +81,12 @@ class PDBBase(ParserBase):
 
     @pytest.fixture
     def guessed_masses(self, top):
+        guesser = DefaultGuesser(None)
         if hasattr(top, 'elements'):
             atomtypes = top.elements.values
-            return DefaultGuesser(None).guess_masses(atoms=atomtypes)
+            return guesser.guess_masses(atoms=atomtypes)
         else:
-            return DefaultGuesser(None).guess_masses(atoms=DefaultGuesser(None).
-                                                     guess_types(atoms=top.names.values))
+            return guesser.guess_masses(atoms=guesser.guess_types(atoms=top.names.values))
 
 
 class TestPDBParser(PDBBase):

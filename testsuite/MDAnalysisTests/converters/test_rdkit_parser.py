@@ -24,7 +24,7 @@
 import warnings
 import pytest
 import numpy as np
-from numpy.testing import assert_equal, assert_allclose
+from numpy.testing import assert_equal
 
 import MDAnalysis as mda
 from MDAnalysisTests.topology.base import ParserBase
