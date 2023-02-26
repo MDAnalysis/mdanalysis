@@ -169,6 +169,10 @@ def test_missing_dimensions(nojump_universe):
 
 
 def test_notinvertible(nojump_universe):
+    """
+    Test if the nojump transform raises a NoDataError if the dimensions
+    are invalid for the periodic unit cell.
+    """
     with pytest.raises(mda.exceptions.NoDataError):
         u = nojump_universe
         u.dimensions = [0, 0, 0, 90, 90, 90]
