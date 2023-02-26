@@ -29,6 +29,7 @@ import pytest
 
 import MDAnalysis as mda
 from MDAnalysis.lib.distances import calc_bonds, calc_angles, calc_dihedrals
+from MDAnalysisTests.datafiles import LAMMPSdata_many_bonds
 from MDAnalysis.core.topologyobjects import (
     TopologyGroup, TopologyObject, TopologyDict,
     # TODO: the following items are not used
@@ -299,6 +300,16 @@ class TestTopologyGroup(object):
         tg1 = b_td[b]
         tg2 = b_td[b[::-1]]
         assert tg1 == tg2
+
+    def test_bond_no_reversal(self):
+        universe = mda.Universe(LAMMPSdata_many_bonds, format="DATA")
+        nbonds = 22
+        bondtypes = universe.atoms.bonds.types()
+        assert len(bondtypes) == nbonds
+
+        universe.atoms.bonds.topDict._removeDupes()
+        bondtypes = universe.atoms.bonds.types()
+        assert len(bondtypes) != nbonds
 
     def test_angles_types(self, PSFDCD):
         """TopologyDict for angles"""

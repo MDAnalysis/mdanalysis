@@ -141,6 +141,7 @@ __all__ = [
     "LAMMPSdata2", "LAMMPSdcd2",
     "LAMMPScnt", "LAMMPScnt2",  # triclinic box
     "LAMMPShyd", "LAMMPShyd2",
+    "LAMMPSdata_many_bonds",
     "LAMMPSdata_deletedatoms",  # with deleted atoms
     "LAMMPSdata_triclinic", # lammpsdata file to test triclinic dimension parsing, albite with most atoms deleted
     "LAMMPSdata_PairIJ",  # lammps datafile with a PairIJ Coeffs section
@@ -524,6 +525,7 @@ LAMMPSDUMP_nocoords = resource_filename(__name__, "data/lammps/spce_no_coords.la
 LAMMPSDUMP_triclinic = resource_filename(__name__, "data/lammps/albite_triclinic.dump")
 LAMMPSDUMP_image_vf = resource_filename(__name__, "data/lammps/image_vf.lammpstrj")
 LAMMPS_image_vf = resource_filename(__name__, "data/lammps/image_vf.data")
+LAMMPSdata_many_bonds = resource_filename(__name__, "data/lammps/a_lot_of_bond_types.data")
 
 unordered_res = resource_filename(__name__, "data/unordered_res.pdb")
 
