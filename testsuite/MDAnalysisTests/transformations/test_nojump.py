@@ -144,6 +144,10 @@ def test_nojump_constantvel_jumparound(nojump_universes_fromfile):
 
 
 def test_missing_dimensions_init(nojump_universe):
+    """
+    Test if the nojump transform raises a NoDataError if there is no
+    initial dimension for the periodic unit cell.
+    """
     with pytest.raises(mda.exceptions.NoDataError):
         u = nojump_universe
         workflow = [NoJump()]
@@ -152,6 +156,10 @@ def test_missing_dimensions_init(nojump_universe):
 
 
 def test_missing_dimensions(nojump_universe):
+    """
+    Test if the nojump transform raises a NoDataError if there is no
+    dimension for the periodic unit cell in a subsequent timestep.
+    """
     with pytest.raises(mda.exceptions.NoDataError):
         u = nojump_universe
         u.dimensions = [73, 73, 73, 90, 90, 90]
