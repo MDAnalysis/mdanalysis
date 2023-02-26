@@ -111,6 +111,7 @@ class LammpsBase(ParserBase):
         u = mda.Universe(filename, format='DATA')
         assert_allclose(u.atoms.masses, guessed_masses, rtol=1e-3, atol=0)
 
+
 class TestLammpsData(LammpsBase):
     """Tests the reading of lammps .data topology files.
 
@@ -278,6 +279,7 @@ def test_interpret_atom_style_missing():
                        match='atom_style string missing required.+?'):
         style = mda.topology.LAMMPSParser.DATAParser._interpret_atom_style(
             'id charge z y x')
+
 
 class TestDumpParser(ParserBase):
     expected_attrs = ['types', 'masses']

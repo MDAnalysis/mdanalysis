@@ -22,7 +22,7 @@
 #
 from numpy.testing import assert_equal
 import pytest
-from numpy.testing import assert_equal,  assert_allclose
+from numpy.testing import  assert_allclose
 
 import MDAnalysis as mda
 from MDAnalysis.guesser import DefaultGuesser

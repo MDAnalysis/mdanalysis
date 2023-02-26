@@ -43,6 +43,7 @@ class PSFBase(ParserBase):
                       'resids', 'resnames',
                       'segids',
                       'bonds', 'angles', 'dihedrals', 'impropers']
+
     @pytest.fixture
     def guessed_types(self, top):
         return top.types.values

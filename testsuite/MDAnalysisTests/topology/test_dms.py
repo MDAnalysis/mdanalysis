@@ -41,7 +41,6 @@ class TestDMSParser(ParserBase):
     def guessed_masses(self, top):
         return top.masses.values
 
-
     def test_number_of_bonds(self, top):
         assert len(top.bonds.values) == 3365
 

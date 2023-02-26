@@ -188,15 +188,16 @@ class OpenMMAppTopologyBase(OpenMMTopologyBase):
         for attr in self.guessed_attrs:
             assert hasattr(u.atoms, attr)
 
-    @pytest.mark.skipif(
-        not hasattr(top,'elements'),
-                    reason="OPENMMAPParser doesn't guess atom types when element attribute is read")
+    @pytest.mark.skipif(not hasattr(top,'elements'), 
+                        reason="OPENMMParser doesn't guess atom "
+                        "types when element attribute is read")
     def test_guessed_types(self, filename, guessed_types):
         u = mda.Universe(filename, topology_format="OPENMMAPP")
         assert_equal(u.atoms.types, guessed_types)
 
     @pytest.mark.skipif(hasattr(top, 'elements'),
-                        reason="OPENMMAPParser doesn't guess masses when element attribute is read")
+                        reason="OPENMMParser doesn't guess masses "
+                        "when element attribute is read")
     def test_guessed_masses(self, filename, guessed_masses):
         u = mda.Universe(filename, topology_format="OPENMMAPP")
         assert_allclose(u.atoms.masses, guessed_masses, rtol=1e-3, atol=0)
@@ -227,8 +228,8 @@ class TestOpenMMTopologyParserWithPartialElements(OpenMMTopologyBase):
             "set to 'X' and mass has been set to 0.0. "
             "If needed these can be guessed using "
             "universe.guess_TopologyAttributes(to_guess=['masses', 'types']). "
-            "(for MDAnalysis version 2.x this is done automatically, but it will be removed in "
-            "future versions).")
+            "(for MDAnalysis version 2.x this is done automatically,"
+            " but it will be removed in future versions).")
 
         with pytest.warns(UserWarning) as warnings:
             mda_top = self.parser(self.ref_filename).parse()
@@ -253,8 +254,8 @@ def test_no_elements_warn():
         "Elements attribute will not be populated. "
         "Atomtype attribute will be guessed using atom "
         "name and mass will be guessed using atomtype."
-        "for MDAnalysis version 2.x this is done automatically, but it will be removed in "
-        "future versions. "
+        "for MDAnalysis version 2.x this is done automatically, "
+        "but it will be removed in future versions. "
         "These can be guessed using "
         "universe.guess_TopologyAttributes(to_guess=['masses', 'types']) "
         "See MDAnalysis.guessers.")

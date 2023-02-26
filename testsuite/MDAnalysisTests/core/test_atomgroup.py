@@ -129,7 +129,6 @@ class TestAtomGroupWriting(object):
         ref_positions = np.stack([ts.positions.copy() for ts in selection])
         u.atoms.write(destination, frames=frames)
 
-
         u_new = mda.Universe(destination, to_guess=())
         new_positions = np.stack([ts.positions.copy() for ts in u_new.trajectory])
 
@@ -145,7 +144,6 @@ class TestAtomGroupWriting(object):
         selection = u.trajectory[frames]
         ref_positions = np.stack([ts.positions.copy() for ts in selection])
         u.atoms.write(destination, frames=selection)
-
 
         u_new = mda.Universe(destination, to_guess=())
         new_positions = np.stack([ts.positions.copy() for ts in u_new.trajectory])

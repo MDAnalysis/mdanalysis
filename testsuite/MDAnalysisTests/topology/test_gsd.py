@@ -85,6 +85,7 @@ class GSDBase(ParserBase):
         else:
             assert top.impropers.values == []
 
+
 class TestGSDParser(GSDBase):
     ref_filename = GSD
     expected_n_atoms = 5832

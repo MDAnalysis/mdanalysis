@@ -49,9 +49,11 @@ class TOPBase(ParserBase):
         "names", "types", "type_indices", "charges", "masses", "resnames",
         "bonds", "angles", "dihedrals", "impropers", "elements"
     ]
+
     @pytest.fixture
     def guessed_types(self, top):
         return top.types.values
+
     @pytest.fixture
     def guessed_masses(self, top):
         return top.masses.values

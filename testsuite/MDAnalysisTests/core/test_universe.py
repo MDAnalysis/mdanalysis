@@ -399,9 +399,9 @@ class TestGuessTopologyAttr(object):
             u.guess_TopologyAttributes(to_guess=['trash'])
 
     def test_guess_masses_before_types(self):
-            u = mda.Universe(PDB_small, to_guess=('masses', 'types'))
-            assert_equal(len(u.atoms.masses), 3341)
-            assert_equal(len(u.atoms.types), 3341)
+        u = mda.Universe(PDB_small, to_guess=('masses', 'types'))
+        assert_equal(len(u.atoms.masses), 3341)
+        assert_equal(len(u.atoms.types), 3341)
 
     def test_guessing_read_attributes(self):
         u = mda.Universe(PSF)

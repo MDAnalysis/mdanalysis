@@ -81,7 +81,6 @@ class ParserBase(object):
         for attr in top.attrs:
             assert attr.attrname in attrs, 'Unexpected attribute: {}'.format(attr.attrname)
 
-
     def test_size(self, top):
         """Check that the Topology is correctly sized"""
         assert top.n_atoms == self.expected_n_atoms, '{} atoms read, {} expected in {}'.format(

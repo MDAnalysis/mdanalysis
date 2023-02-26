@@ -45,6 +45,7 @@ class TestXPDBParser(ParserBase):
     def guessed_masses(self, top):
         if hasattr(top, 'elements'):
             atomtypes = top.elements.values
-            return DefaultGuesser(None).guess_masses(atoms=atomtypes) 
+            return DefaultGuesser(None).guess_masses(atoms=atomtypes)
         else:
-            return DefaultGuesser(None).guess_masses(atoms=DefaultGuesser(None).guess_types(atoms=top.names.values))
+            return DefaultGuesser(None).guess_masses(atoms=DefaultGuesser(None).
+                                                     guess_types(atoms=top.names.values))

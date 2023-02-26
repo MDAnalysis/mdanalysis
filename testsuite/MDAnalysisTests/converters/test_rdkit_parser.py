@@ -40,6 +40,7 @@ class RDKitParserBase(ParserBase):
                       'segids',
                       'bonds', 'types',
                      ]
+
     @pytest.fixture
     def guessed_types(self, top):
         return top.types.values
@@ -182,7 +183,6 @@ class TestRDKitParserPDB(RDKitParserBase):
 class TestRDKitParserSMILES(RDKitParserBase):
     ref_filename = "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"
 
-
     expected_n_atoms = 24
     expected_n_residues = 1
     expected_n_segments = 1
@@ -197,7 +197,6 @@ class TestRDKitParserSMILES(RDKitParserBase):
 
 class TestRDKitParserSDF(RDKitParserBase):
     ref_filename = SDF_molecule
-
 
     expected_n_atoms = 49
     expected_n_residues = 1
