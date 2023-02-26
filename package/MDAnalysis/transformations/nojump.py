@@ -100,12 +100,16 @@ class NoJump(TransformationBase):
         self.check_c = check_continuity
 
     def _transform(self, ts):
+        L = ts.triclinic_dimensions
+        if L is None:
+            msg = "Periodic box dimensions not provided at step %d." % ts.frame
+            raise NoDataError(msg)
+        try:
+            Linverse = np.linalg.inv(L)
+        except np.linalg.LinAlgError:
+            msg = "Periodic box dimensions are not invertible at step %d." % ts.frame
+            raise NoDataError(msg)
         if self.prev is None:
-            try:
-                Linverse = np.linalg.inv(ts.triclinic_dimensions)
-            except np.linalg.LinAlgError:
-                msg = "Periodic box dimensions are not invertible at step %d." % ts.frame
-                raise NoDataError(msg)
             self.prev = ts.positions @ Linverse
             self.old_frame = ts.frame
             return ts
@@ -119,7 +123,7 @@ class NoJump(TransformationBase):
                 "We are resetting the reference frame to the current timestep.",
                 UserWarning,
             )
-            self.prev = ts.positions @ np.linalg.inv(ts.triclinic_dimensions)
+            self.prev = ts.positions @ Linverse
             self.old_frame = ts.frame
             self.older_frame = "A"
             return ts
@@ -132,14 +136,6 @@ class NoJump(TransformationBase):
                 "this might be inaccurate.",
                 UserWarning,
             )
-        # Remember that @ is a shorthand for matrix multiplication.
-        # np.matmul(a, b) is equivalent to a @ b
-        L = ts.triclinic_dimensions
-        try:
-            Linverse = np.linalg.inv(L)
-        except np.linalg.LinAlgError:
-            msg = "Periodic box dimensions are not invertible at step %d." % ts.frame
-            raise NoDataError(msg)
         # Convert into reduced coordinate space
         fcurrent = ts.positions @ Linverse
         fprev = self.prev  # Previous unwrapped coordinates in reduced box coordinates.

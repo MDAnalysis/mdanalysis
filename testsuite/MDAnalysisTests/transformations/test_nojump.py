@@ -73,16 +73,31 @@ def test_nojump_nonorthogonal_fwd(nojump_universe):
     values when iterating forwards over the sample trajectory.
     """
     u = nojump_universe
+    # Set a non-orthogonal box dimension. The box below works out to be this cell:
+    # [[1.        0.        0.       ]
+    # [0.        1.        0.       ]
+    # [0.5       0.        0.8660254]]
     dim = np.asarray([1, 1, 1, 90, 60, 90], np.float32)
     workflow = [mda.transformations.boxdimensions.set_dimensions(dim), NoJump()]
     u.trajectory.add_transformations(*workflow)
     transformed_coordinates = u.trajectory.timeseries()[0]
-    # Step is 1 unit every 3 steps. After 99 steps from the origin,
-    # we'll end up at 33. However, since the unit cell is non-orthogonal,
-    # we'll end up at a distorted place.
+    # After the transformation, you should end up in a repeating pattern, since you are
+    # working in a hexagonal unit cell system. Since you jump every third timestep across
+    # a periodic boundary, the shift in each axis is saved. As a consequence, the correct
+    # jump every third step is just the original position + the size of the periodic cells.
     assert_allclose(
         transformed_coordinates[::3],
         np.outer(np.arange(33.5), np.array([0.5, 1, np.sqrt(3) / 2])),
+    )
+    assert_allclose(
+        transformed_coordinates[1::3],
+        np.outer(np.arange(32.5), np.array([0.5, 1, np.sqrt(3) / 2])) + 1 * np.ones(3) / 3,
+        rtol=1.2e-7
+    )
+    assert_allclose(
+        transformed_coordinates[2::3],
+        np.outer(np.arange(32.5), np.array([0.5, 1, np.sqrt(3) / 2])) + 2 * np.ones(3) / 3,
+        rtol=1.2e-7
     )
 
 
@@ -140,6 +155,15 @@ def test_missing_dimensions(nojump_universe):
     with pytest.raises(mda.exceptions.NoDataError):
         u = nojump_universe
         u.dimensions = [73, 73, 73, 90, 90, 90]
+        workflow = [NoJump()]
+        u.trajectory.add_transformations(*workflow)
+        transformed_coordinates = u.trajectory.timeseries()[0]
+
+
+def test_notinvertible(nojump_universe):
+    with pytest.raises(mda.exceptions.NoDataError):
+        u = nojump_universe
+        u.dimensions = [0, 0, 0, 90, 90, 90]
         workflow = [NoJump()]
         u.trajectory.add_transformations(*workflow)
         transformed_coordinates = u.trajectory.timeseries()[0]
