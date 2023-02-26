@@ -19,6 +19,7 @@ The rules for this file:
  * 2.5.0
 
 Fixes
+  * Fix get_writer format uninitialized (PR #4043)
   * Fix EDRReader failing when parsing single-frame EDR files (Issue #3999)
   * Fix element parsing from PSF files tests read via Parmed (Issue #4015)
   * Fix test clobbering in lib/test_util.py (PR #4000)
