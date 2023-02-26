@@ -57,6 +57,10 @@ class OpenMMTopologyBase(ParserBase):
         "types"
     ]
 
+    @pytest.fixture
+    def guessed_types(self, top):
+        return top.types.values
+
     expected_n_bonds = 0
 
     @pytest.fixture()
@@ -180,7 +184,7 @@ class OpenMMAppTopologyBase(OpenMMTopologyBase):
         for attr in self.guessed_attrs:
             assert hasattr(u.atoms, attr)
 
-    @pytest.mark.skipif(not hasattr(top,'elements'), 
+    @pytest.mark.skipif(not hasattr(top, 'elements'),
                         reason="OPENMMParser doesn't guess atom "
                         "types when element attribute is read")
     def test_guessed_types(self, filename, guessed_types):

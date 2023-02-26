@@ -48,4 +48,5 @@ class TestXPDBParser(ParserBase):
             atomtypes = top.elements.values
             return guesser.guess_masses(atoms=atomtypes)
         else:
-            return guesser.guess_masses(atoms=guesser.guess_types(atoms=top.names.values))
+            return guesser.guess_masses(atoms=guesser.
+                                        guess_types(atoms=top.names.values))
