@@ -302,45 +302,29 @@ class TestPSAExceptions(object):
         universe1 = mda.Universe(PSF, DCD)
         return universe1
 
-    def test_get_num_atoms_psa_no_path_data(self, universe_no_path, tmpdir):
-        """Test that ValueError is raised when no path data i.e. user
-        did not run PSAnalysis.generate_paths()"""
+    def test_no_path_data(self, universe_no_path, tmpdir):
+        """Test that ValueError is raised when no path data. Covers
+        get_num_atoms() in class Path and get_num_atoms(),
+        get_num_paths(), and get_paths() in class PSAnalysis"""
         match_exp = "No path data"
-        with pytest.raises(ValueError, match=match_exp):
-            psa = PSA.PSAnalysis([universe_no_path, universe_no_path,
-                                  universe_no_path],
-                                 path_select='name CA',
-                                 targetdir=str(tmpdir))
-            psa.get_num_atoms()
+        path = PSA.Path(universe_no_path, universe_no_path)
+        psa = PSA.PSAnalysis([universe_no_path, universe_no_path,
+                              universe_no_path],
+                             path_select='name CA',
+                             targetdir=str(tmpdir))
 
-    def test_get_num_atoms_path_no_path_data(self, universe_no_path):
-        """Test that ValueError is raised when no path data i.e. user
-        did not run Path.to_path()"""
-        match_exp = "No path data"
+        # Case where user did not run Path.to_path()
         with pytest.raises(ValueError, match=match_exp):
-            path = PSA.Path(universe_no_path, universe_no_path)
             path.get_num_atoms()
 
-    def test_get_num_paths_psa_no_path_data(self, universe_no_path, tmpdir):
-        """Test that ValueError is raised when no path data i.e. user
-        did not run PSAnalysis.generate_paths()"""
-        match_exp = "No path data"
+        # Cases where user did not run PSAnalysis.generate_paths()
         with pytest.raises(ValueError, match=match_exp):
-            psa = PSA.PSAnalysis([universe_no_path, universe_no_path,
-                                  universe_no_path],
-                                 path_select='name CA',
-                                 targetdir=str(tmpdir))
+            psa.get_num_atoms()
+
+        with pytest.raises(ValueError, match=match_exp):
             psa.get_num_paths()
 
-    def test_get_paths_psa_no_path_data(self, universe_no_path, tmpdir):
-        """Test that ValueError is raised when no path data i.e. user
-        did not run PSAnalysis.generate_paths()"""
-        match_exp = "No path data"
         with pytest.raises(ValueError, match=match_exp):
-            psa = PSA.PSAnalysis([universe_no_path, universe_no_path,
-                                  universe_no_path],
-                                 path_select='name CA',
-                                 targetdir=str(tmpdir))
             psa.get_paths()
 
     def test_get_path_metric_func_bad_key(self):
