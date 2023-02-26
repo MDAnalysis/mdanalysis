@@ -32,6 +32,7 @@ import MDAnalysis as mda
 
 from MDAnalysisTests.datafiles import (
     AUX_XVG,
+    AUX_EDR,
     CRD,
     DCD,
     DMS,
@@ -59,6 +60,7 @@ from MDAnalysisTests.datafiles import (
     XYZ_mini,
 )
 from MDAnalysis.coordinates.core import get_reader_for
+from MDAnalysis.auxiliary.EDR import HAS_PYEDR
 
 
 @pytest.fixture(params=[
@@ -281,12 +283,27 @@ def test_positions_share_memory(original_and_copy):
         assert_equal(original.ts.positions, copy.ts.positions)
 
 
-def test_auxiliary_NIE():
-    # Aux's not implemented, check for sane error message
+@pytest.mark.skipif(HAS_PYEDR, reason="pyedr present")
+def test_copy_with_auxiliary_no_pyedr():
+    # Check that AuxReaders are copied when reader is copied
     u = mda.Universe(XYZ_mini)
+    u.trajectory.add_auxiliary("myaux", AUX_XVG)
+    reader = u.trajectory
+    copy = reader.copy()
+    for auxname in reader._auxs:
+        assert reader._auxs[auxname] == copy._auxs[auxname]
+        assert reader._auxs[auxname] is not copy._auxs[auxname]
 
-    u.trajectory.add_auxiliary('myaux', AUX_XVG)
 
-    with pytest.raises(NotImplementedError) as e:
-        u.trajectory.copy()
-    assert 'Copy not implemented for AuxReader' in str(e.value)
+@pytest.mark.skipif(not HAS_PYEDR, reason="pyedr not installed")
+def test_copy_with_auxiliary_pyedr():
+    # Check that AuxReaders are copied when reader is copied
+    u = mda.Universe(XYZ_mini)
+    u.trajectory.add_auxiliary("myaux", AUX_XVG)
+    u.trajectory.add_auxiliary({"1": "Bond", "2": "Angle"}, AUX_EDR)
+
+    reader = u.trajectory
+    copy = reader.copy()
+    for auxname in reader._auxs:
+        assert reader._auxs[auxname] == copy._auxs[auxname]
+        assert reader._auxs[auxname] is not copy._auxs[auxname]

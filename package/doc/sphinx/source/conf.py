@@ -156,6 +156,9 @@ pygments_style = 'default'
 # to include decorated objects like __init__
 autoclass_content = 'both'
 
+# to prevent including of member entries in toctree
+toc_object_entries = False
+
 # -- Options for HTML output ---------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for

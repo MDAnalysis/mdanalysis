@@ -90,6 +90,8 @@ class TNGReference(BaseReference):
         return ts
 
 
+@pytest.mark.filterwarnings("ignore:Empty string")
+@pytest.mark.filterwarnings("ignore:Stride of block")
 @pytest.mark.skipif(not HAS_PYTNG, reason="pytng not installed")
 class TestTNGCoordinatesTraj(MultiframeReaderTest):
     @staticmethod
@@ -118,6 +120,7 @@ def test_tng_traj_uneven_blocks():
         _ = mda.Universe(TNG_traj_gro, TNG_traj_uneven_blocks)
 
 
+@pytest.mark.filterwarnings("ignore:Failed read for block")
 @pytest.mark.skipif(not HAS_PYTNG, reason="pytng not installed")
 class TestTNGTraj(object):
 
@@ -344,6 +347,7 @@ class TestTNGTraj(object):
         assert universe.trajectory.parse_n_atoms(TNG_traj) == self._n_atoms
 
 
+@pytest.mark.filterwarnings("ignore:Off stride read for block")
 @pytest.mark.skipif(not HAS_PYTNG, reason="pytng not installed")
 class TestTNGTraj_vels_forces(object):
 
