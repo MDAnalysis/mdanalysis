@@ -445,6 +445,7 @@ class TopologyDict(object):
             except KeyError:
                 self.dict[btype] = [b]
 
+        print("Initiating TopologyDict")
         if self.dict and isinstance(list(self.dict.keys())[0], tuple):
             self._removeDupes()
 
@@ -659,6 +660,7 @@ class TopologyGroup(object):
 
         .. versionadded 0.9.0
         """
+        print("Creating a TopologyDict Instance")
         return TopologyDict(self)
 
     def atomgroup_intersection(self, ag, **kwargs):
