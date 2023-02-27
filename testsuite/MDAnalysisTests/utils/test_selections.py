@@ -199,8 +199,9 @@ class TestSelectionWriter_Jmol(_SelectionWriter):
         assert_array_equal(indices, self.ref_indices,
                            err_msg="SPT indices were not written correctly")
 
-class TestSelections():
-    @patch.object(selections, '_SELECTION_WRITERS', {'FOO': "BAR"})
+
+class TestSelections:
+    @patch.object(selections, "_SELECTION_WRITERS", {"FOO": "BAR"})
     def test_get_writer_valid(self):
         writer = selections.get_writer(None, "FOO")
         assert writer == "BAR"
