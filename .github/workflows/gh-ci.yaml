@@ -162,7 +162,7 @@ jobs:
       uses: ./.github/actions/build-src
       with:
         build-hole: false
-        build-tests: false
+        build-tests: true
         build-docs: true
 
     - name: doctests
