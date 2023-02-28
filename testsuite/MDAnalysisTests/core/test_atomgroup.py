@@ -468,9 +468,9 @@ class TestCenter(object):
         u = UnWrapUniverse(is_triclinic=is_triclinic)
         # select group appropriate for compound:
         if compound == 'group':
-            group = u.atoms[39:47] # molecule 12
+            group = u.atoms[39:47]  # molecule 12
         elif compound == 'segments':
-            group = u.atoms[23:47] # molecules 10, 11, 12
+            group = u.atoms[23:47]  # molecules 10, 11, 12
         else:
             group = u.atoms
         # select topology level:
@@ -1133,7 +1133,7 @@ class TestPBCFlag(object):
         return universe.residues[0:3]
 
     @pytest.mark.parametrize('wrap, ref', ((True, ref_PBC),
-                                          (False, ref_noPBC)))
+                                           (False, ref_noPBC)))
     @pytest.mark.parametrize('method_name', ('center_of_geometry',
                                              'center_of_mass',
                                              'radius_of_gyration',
@@ -1195,7 +1195,7 @@ class TestAtomGroup(object):
 
     def test_getitem_slice(self, universe):
         assert_equal(universe.atoms[0:4].ix,
-                           universe.atoms.ix[:4])
+                     universe.atoms.ix[:4])
 
     def test_getitem_slice2(self, universe):
         assert_equal(universe.atoms[0:8:2].ix,
@@ -1333,7 +1333,7 @@ class TestAtomGroup(object):
             else:
                 ref = at.position.astype(np.float64)
         else:
-            ref = np.full((3,), np.nan,np.float64)
+            ref = np.full((3,), np.nan, np.float64)
         if compound != 'group':
             ref = ref.reshape((1, 3))
         ag_s = mda.AtomGroup([at])
@@ -1380,7 +1380,7 @@ class TestAtomGroup(object):
             ag.principal_axes(),
             np.array([[1.53389276e-03, 4.41386224e-02, 9.99024239e-01],
                       [1.20986911e-02, 9.98951474e-01, -4.41539838e-02],
-                      [-9.99925632e-01, 1.21546132e-02, 9.98264877e-04],]))
+                      [-9.99925632e-01, 1.21546132e-02, 9.98264877e-04], ]))
 
     def test_principal_axes_duplicates(self, ag):
         ag2 = ag + ag[0]
@@ -1457,7 +1457,7 @@ class TestAtomGroup(object):
 
     def test_charges(self, ag):
         assert_almost_equal(ag.charges[1000:2000:200],
-                                  np.array([-0.09, 0.09, -0.47, 0.51, 0.09]))
+                            np.array([-0.09, 0.09, -0.47, 0.51, 0.09]))
 
     def test_bad_add_AG(self, ag):
         def bad_add():
@@ -1498,7 +1498,7 @@ class TestAtomGroup(object):
         ag = universe.atoms[:10]
         box = np.zeros(9, dtype=np.float32).reshape(3, 3)
         with pytest.raises(ValueError):
-            ag.pack_into_box(box = box)
+            ag.pack_into_box(box=box)
 
     def test_packintobox_noshape(self, universe):
         ag = universe.atoms[:10]
@@ -1523,7 +1523,7 @@ class TestAtomGroup(object):
                                   [2.07735443, 0.99395466, 4.09301519],
                                   [1.35541916, 2.0690732, 4.67488003],
                                   [1.73236561, 4.90658951, 0.6880455]],
-                                  dtype=np.float32)
+                                 dtype=np.float32)
         ag.pack_into_box(box=box)
         assert_almost_equal(ag.positions, packed_coords)
         # Check with duplicates:
