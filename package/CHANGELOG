@@ -14,12 +14,20 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 
+26/02/2023 v-parmar 
+
+Fixes
+  * Fix tests should use results.rmsf to avoid DeprecationWarning (Issue #3695)
+  
+Changes
+  * Changed 'rmsd' attribute with 'results.rmsd' and 'rmsf' with 'results.rmsf' in test_encore.py file.
+  
+
 ??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae, 
          ooprathamm, MeetB7, BFedder
  * 2.5.0
 
 Fixes
-  * Fix tests should use results.rmsf to avoid DeprecationWarning (Issue #3695)
   * Fix element parsing from PSF files tests read via Parmed (Issue #4015)
   * Fix test clobbering in lib/test_util.py (PR #4000)
   * Fix MSD docs to use the correct error metric in example (Issue #3991)
