@@ -19,7 +19,6 @@ The rules for this file:
  * 2.5.0
 
 Fixes
-
   * Fix tests should use results.rmsf to avoid DeprecationWarning (Issue #3695)
   * Fix EDRReader failing when parsing single-frame EDR files (Issue #3999)
   * Fix element parsing from PSF files tests read via Parmed (Issue #4015)
