@@ -15,7 +15,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
   
 ??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae, 
-         ooprathamm, MeetB7, BFedder, v-parmar
+         ooprathamm, MeetB7, BFedder, v-parmar, MoSchaeffler
  * 2.5.0
 
 Fixes
@@ -26,6 +26,7 @@ Fixes
   * Fix MSD docs to use the correct error metric in example (Issue #3991)
   * Add 'PairIJ Coeffs' to the list of sections in LAMMPSParser.py
     (Issue #3336)
+  * Fix typo in hbond_analysis.py (Issue #4026)
 
 Enhancements
   * Add distopia distance calculation library bindings as a selectable backend
