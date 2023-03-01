@@ -445,7 +445,7 @@ def large_dcdfile(tmpdir):
     fsize = 3.8  # mb
     nreps_reqs = int(2100 // fsize)  # times to duplicate traj to hit 2.1Gb
 
-    newf = str(tmpdir / 'jabba.dcd')
+    newf = str(tmpdir / "jabba.dcd")
 
     u = mda.Universe(PSF, DCD)
 
@@ -459,8 +459,9 @@ def large_dcdfile(tmpdir):
     yield newf, nreps_reqs
 
 
-@pytest.mark.skipif(not os.environ.get('LARGEDCD', False),
-                    reason="Skipping large file test")
+@pytest.mark.skipif(
+    not os.environ.get("LARGEDCD", False), reason="Skipping large file test"
+)
 def test_large_dcdfile(large_dcdfile):
     DCD_large, nreps = large_dcdfile
 
