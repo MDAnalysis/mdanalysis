@@ -449,8 +449,6 @@ def large_dcdfile(tmpdir):
 
     u = mda.Universe(PSF, DCD)
 
-    print(nreps_reqs)
-
     with mda.Writer(newf, n_atoms=len(u.atoms)) as w:
         for _ in range(nreps_reqs):
             for ts in u.trajectory:
