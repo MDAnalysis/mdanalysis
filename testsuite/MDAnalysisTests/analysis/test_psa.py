@@ -313,17 +313,23 @@ class TestPSAExceptions(object):
                              path_select='name CA',
                              targetdir=str(tmpdir))
 
-        # Case where user did not run Path.to_path()
+        # Case in class Path where user did not run Path.to_path()
+        # before running get_num_atoms()
         with pytest.raises(ValueError, match=match_exp):
             path.get_num_atoms()
 
-        # Cases where user did not run PSAnalysis.generate_paths()
+        # Case 1 in class PSA where user did not run
+        # PSAnalysis.generate_paths() before running get_num_atoms()
         with pytest.raises(ValueError, match=match_exp):
             psa.get_num_atoms()
 
+        # Case 2 in class PSA where user did not run
+        # PSAnalysis.generate_paths() before running get_num_paths()
         with pytest.raises(ValueError, match=match_exp):
             psa.get_num_paths()
 
+        # Case 3 in class PSA where user did not run
+        # PSAnalysis.generate_paths() before running get_paths()
         with pytest.raises(ValueError, match=match_exp):
             psa.get_paths()
 
