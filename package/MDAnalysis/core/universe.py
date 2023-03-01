@@ -1439,6 +1439,34 @@ class Universe(object):
 
         return cls(mol, **kwargs)
 
+    @property
+    def info(self):
+        """
+        Print information about the Universe object.
+
+        - Number of atoms, residues, segments, bonds, angles, dihedrals, impropers.
+        - Periodic boundary conditions.
+        - Number of frames.
+        - Timestep.
+        - Time range.
+        - Trajectory format.
+
+        """
+        print("MDAnalysis Universe object")
+        print("==========================")
+        print(f"Number of atoms: {self.atoms.n_atoms}")
+        print(f"Number of residues: {self.residues.n_residues}")
+        print(f"Number of segments: {self.segments.n_segments}")
+        print(f"Number of bonds: {self.bonds.n_bonds}")
+        print(f"Number of angles: {self.angles.n_angles}")
+        print(f"Number of dihedrals: {self.dihedrals.n_dihedrals}")
+        print(f"Number of impropers: {self.impropers.n_impropers}")
+        print(f"Periodic boundary conditions: {self.dimensions}")
+        print(f"Trajectory information:")
+        print(f"  - Number of frames: {self.trajectory.n_frames}")
+        print(f"  - Timestep: {self.trajectory.dt:.3f} ps")
+        print(f"  - Time range: {self.trajectory.time[0]:.3f} ps to {self.trajectory.time[-1]:.3f} ps")
+        print(f"  - Trajectory format: {self.trajectory.filename}")
 
 def Merge(*args):
     """Create a new new :class:`Universe` from one or more
@@ -1629,3 +1657,4 @@ def Merge(*args):
         u = Universe(top)
 
     return u
+  
