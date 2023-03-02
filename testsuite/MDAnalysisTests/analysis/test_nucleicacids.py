@@ -23,7 +23,7 @@
 
 import MDAnalysis as mda
 import pytest
-from MDAnalysis.analysis.nucleicacids import WatsonCrickDist
+from MDAnalysis.analysis.nucleicacids import WatsonCrickDist,NucPairDist
 from MDAnalysisTests.datafiles import RNA_PSF, RNA_PDB
 from numpy.testing import assert_allclose
 
@@ -67,18 +67,11 @@ def test_wc_dist_invalid_residue_types(u):
 
 
 def test_selection_length_mismatch(u):
-    sel1 = u.select_atoms("resid 1-10")
-    sel2 = u.select_atoms("resid 1-5")
-
-    # get the number of atoms in each selection
-    n_atoms_sel1 = sel1.n_atoms
-    n_atoms_sel2 = sel2.n_atoms
-
-    # check if the selections have the same number of atoms
     with pytest.raises(ValueError, match="Selections must be same length"):
-        # raise ValueError if the selections are not of the same length
-        if n_atoms_sel1 != n_atoms_sel2:
-            raise ValueError("Selections must be same length")
+        sel1 = u.select_atoms("resid 1-10")
+        sel2 = u.select_atoms("resid 1-5")
+        # raises ValueError if the selections given are not the same length
+        WC = NucPairDist(sel1, sel2)
 
 
 @pytest.mark.parametrize("key", [0, 1, 2, "parsnips", "time", -1])
