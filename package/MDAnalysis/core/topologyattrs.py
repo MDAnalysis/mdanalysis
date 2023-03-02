@@ -1791,7 +1791,7 @@ class Masses(AtomAttr):
                                                   ) - com)
              else:
                  recenteredpos = (atomgroup.positions - com)
-             eig_vals = __gyration(recenteredpos, masses)
+             eig_vals = _gyration(recenteredpos, masses)
         else:
              (atom_masks, 
               compound_masks, 
@@ -1808,7 +1808,7 @@ class Masses(AtomAttr):
 
              eig_vals = np.empty((n_compounds, 3), dtype=np.float64)
              for compound_mask, atom_mask in zip(compound_masks, atom_masks):
-                 eig_vals[compound_mask, :] = [__gyration(
+                 eig_vals[compound_mask, :] = [_gyration(
                       coords[mask] - com[compound_mask][i],
                       masses[mask][:, None]
                      ) for i, mask in enumerate(atom_mask)]
