@@ -15,7 +15,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
   
 ??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae, 
-         ooprathamm, MeetB7, BFedder, v-parmar, MoSchaeffler, jaclark5
+         ooprathamm, MeetB7, BFedder, v-parmar, MoSchaeffler, jaclark5, jbarnoud
  * 2.5.0
 
 Fixes
@@ -32,6 +32,7 @@ Fixes
 Enhancements
   * Added AtomGroup TopologyAttr to calculate gyration moments (Issue #3904,
     PR #3905)
+  * Add support for TPR files produced by Gromacs 2023 (Issue #4047)
   * Add distopia distance calculation library bindings as a selectable backend
     for `calc_bonds` in `MDA.lib.distances`. (Issue #3783, PR #3914)
   * AuxReaders are now pickle-able and copy-able (Issue #1785, PR #3887)
