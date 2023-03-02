@@ -70,8 +70,9 @@ def test_selection_length_mismatch(u):
     with pytest.raises(ValueError, match="Selections must be same length"):
         sel1 = u.select_atoms("resid 1-10")
         sel2 = u.select_atoms("resid 1-5")
+        # computing nuclear pair distance
         # raises ValueError if the selections given are not the same length
-        WC = NucPairDist(sel1, sel2)
+        NucPairDist(sel1, sel2)
 
 
 @pytest.mark.parametrize("key", [0, 1, 2, "parsnips", "time", -1])
