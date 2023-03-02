@@ -163,8 +163,8 @@ or water-water hydrogen bonds::
   water_hydrogens_sel = "resname TIP3 and name H1 H2"
   water_acceptors_sel = "resname TIP3 and name OH2"
 
-  hbonds.hydrogens_sel = f"({protein_hydrogens_sel}) or ({water_hydrogens_sel}"
-  hbonds.acceptors_sel = f"({protein_acceptors_sel}) or ({water_acceptors_sel}"
+  hbonds.hydrogens_sel = f"({protein_hydrogens_sel}) or ({water_hydrogens_sel})"
+  hbonds.acceptors_sel = f"({protein_acceptors_sel}) or ({water_acceptors_sel})"
 
   hbonds.run()
 

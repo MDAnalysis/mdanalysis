@@ -13,14 +13,15 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-
+  
 ??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae, 
-         ooprathamm, MeetB7, BFedder
+         ooprathamm, MeetB7, BFedder, v-parmar, MoSchaeffler, jaclark5
  * 2.5.0
 
 Fixes
   * Allows shape_parameter and asphericity to yield per residue quantities
     (Issue #3002, PR #3905)
+  * Fix tests should use results.rmsf to avoid DeprecationWarning (Issue #3695)
   * Fix EDRReader failing when parsing single-frame EDR files (Issue #3999)
   * Fix element parsing from PSF files tests read via Parmed (Issue #4015)
   * Fix test clobbering in lib/test_util.py (PR #4000)
