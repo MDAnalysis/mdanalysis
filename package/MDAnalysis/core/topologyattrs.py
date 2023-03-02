@@ -1729,7 +1729,7 @@ class Masses(AtomAttr):
     @warn_if_not_unique
     @_pbc_to_wrap
     @check_atomgroup_not_empty
-    def gyration_moments(group, wrap=False, unwrap=None, compound='group'):
+    def gyration_moments(group, wrap=False, unwrap=False, compound='group'):
         r"""Moments of the gyration tensor.
 
         The moments are defined as the eigenvalues of the gyration
@@ -1737,10 +1737,10 @@ class Masses(AtomAttr):
 
         .. math::
         
-            \mathsf{T} = \frac{1}{N} \sum_{i=1}^{N} (\mathsf{r_{i}} - 
-                \mathsf{r_{COM}})(\mathsf{r_{i}} - \mathsf{r_{COM}})
+            \mathsf{T} = \frac{1}{N} \sum_{i=1}^{N} (\mathbf{r}_\mathrm{i} - 
+                \mathbf{r}_\mathrm{COM})(\mathbf{r}_\mathrm{i} - \mathbf{r}_\mathrm{COM})
 
-        Where :math:`r_{COM}` is the center of mass.
+        Where :math:`\mathbf{r}_\mathrm{COM}` is the center of mass.
 
         See [Dima2004a]_ for background information.
 
@@ -1759,13 +1759,14 @@ class Masses(AtomAttr):
         principle_moments_of_gyration : numpy.ndarray
             Gyration vector(s) of (compounds of) the group in :math:`Å^2`.
             If `compound` was set to ``'group'``, the output will be a single
-            value. Otherwise, the output will be a 1d array of shape ``(n,3)``
-            where ``n`` is the number of compounds.
+            vector of length 3. Otherwise, the output will be a 2D array of shape
+            ``(n,3)`` where ``n`` is the number of compounds.
+
 
         .. versionadded:: 2.5.0
         """
 
-        def __gyration(recenteredpos, masses):
+        def _gyration(recenteredpos, masses):
             if len(masses.shape) > 1:
                 masses = np.squeeze(masses)
             tensor = np.einsum( "ki,kj->ij",
@@ -1805,12 +1806,12 @@ class Masses(AtomAttr):
              else:
                  coords = atomgroup.positions
 
-             eig_vals = np.empty((n_compounds,3), dtype=np.float64)
+             eig_vals = np.empty((n_compounds, 3), dtype=np.float64)
              for compound_mask, atom_mask in zip(compound_masks, atom_masks):
-                 eig_vals[compound_mask,:] = [__gyration(
+                 eig_vals[compound_mask, :] = [__gyration(
                       coords[mask] - com[compound_mask][i],
-                      masses[mask][:,None]
-                     ) for i,mask in enumerate(atom_mask)]
+                      masses[mask][:, None]
+                     ) for i, mask in enumerate(atom_mask)]
 
         return eig_vals
 
@@ -1821,7 +1822,7 @@ class Masses(AtomAttr):
     @warn_if_not_unique
     @_pbc_to_wrap
     @check_atomgroup_not_empty
-    def shape_parameter(group, wrap=False, unwrap=None, compound='group'):
+    def shape_parameter(group, wrap=False, unwrap=False, compound='group'):
         """Shape parameter.
 
         See [Dima2004a]_ for background information.
@@ -1845,7 +1846,7 @@ class Masses(AtomAttr):
            is deprecated and will be removed in version 3.0.
            Superfluous kwargs were removed.
         .. versionchanged:: 2.5.0
-           Added use of gyration_moments for per residue quantities
+           Added calculation for any `compound` type
         """
         atomgroup = group.atoms
         eig_vals = atomgroup.gyration_moments(wrap=wrap, unwrap=unwrap, compound=compound)
@@ -1865,7 +1866,7 @@ class Masses(AtomAttr):
     @_pbc_to_wrap
     @check_wrap_and_unwrap
     @check_atomgroup_not_empty
-    def asphericity(group, wrap=False, unwrap=None, compound='group'):
+    def asphericity(group, wrap=False, unwrap=False, compound='group'):
         """Asphericity.
 
         See [Dima2004b]_ for background information.
@@ -1890,7 +1891,7 @@ class Masses(AtomAttr):
            Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
            is deprecated and will be removed in version 3.0.
         .. versionchanged:: 2.5.0
-           Added use of gyration_moments for per residue quantities
+           Added calculation for any `compound` type
         """
         atomgroup = group.atoms
         eig_vals = atomgroup.gyration_moments(wrap=wrap, unwrap=unwrap, compound=compound)
