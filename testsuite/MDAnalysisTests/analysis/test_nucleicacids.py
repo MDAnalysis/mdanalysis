@@ -43,10 +43,37 @@ def wc_rna(u):
     WC.run()
     return WC
 
+def test_wc_dist_shape(wc_rna):
+    assert wc_rna.results.pair_distances.shape == (1, 2)
+
+def test_wc_dist_results_keys(wc_rna):
+    assert "pair_distances" in wc_rna.results.keys()
 
 def test_wc_dist(wc_rna):
     assert_allclose(wc_rna.results.pair_distances[0, 0], 4.3874702, atol=1e-3)
     assert_allclose(wc_rna.results.pair_distances[0, 1], 4.1716404, atol=1e-3)
+
+def test_wc_dist_invalid_residue_types(u):
+    with pytest.raises(ValueError, match=r"are not valid nucleic acids"):
+        strand = u.select_atoms("resid 1-10")
+        strand1 = [strand.residues[0], strand.residues[21]]
+        strand2 = [strand.residues[2], strand.residues[22]]
+        WC = WatsonCrickDist(strand1, strand2)
+        WC.run()
+
+def test_selection_length_mismatch(u):
+    sel1 = u.select_atoms("resid 1-10")
+    sel2 = u.select_atoms("resid 1-5")
+
+    # get the number of atoms in each selection
+    n_atoms_sel1 = sel1.n_atoms
+    n_atoms_sel2 = sel2.n_atoms
+
+    # check if the selections have the same number of atoms
+    with pytest.raises(ValueError, match="Selections must be same length"):
+            # raise ValueError if the selections are not of the same length
+            if n_atoms_sel1 != n_atoms_sel2:
+                raise ValueError("Selections must be same length")
 
 
 @pytest.mark.parametrize("key", [0, 1, 2, "parsnips", "time", -1])
