@@ -23,7 +23,7 @@
 
 import MDAnalysis as mda
 import pytest
-from MDAnalysis.analysis.nucleicacids import WatsonCrickDist,NucPairDist
+from MDAnalysis.analysis.nucleicacids import WatsonCrickDist, NucPairDist
 from MDAnalysisTests.datafiles import RNA_PSF, RNA_PDB
 from numpy.testing import assert_allclose
 
