@@ -2676,12 +2676,12 @@ class AtomGroup(GroupBase):
            >>> ag
            <AtomGroup with 6 atoms>
            >>> ag.ix
-           array([2, 1, 2, 2, 1, 0])
+           array([2, 1, 2, 2, 1, 0], dtype=int64)
            >>> ag2 = ag.unique
            >>> ag2
            <AtomGroup with 3 atoms>
            >>> ag2.ix
-           array([0, 1, 2])
+           array([0, 1, 2], dtype=int64)
            >>> ag2.unique is ag2
            False
 
@@ -2725,19 +2725,22 @@ class AtomGroup(GroupBase):
         Examples
         --------
 
+           >>> import MDAnalysis as mda
+           >>> from MDAnalysis.tests.datafiles import PSF, DCD
+           >>> u = mda.Universe(PSF, DCD)
            >>> ag = u.atoms[[2, 1, 0]]
            >>> ag2 = ag.asunique(sorted=False)
            >>> ag2 is ag
            True
            >>> ag2.ix
-           array([2, 1, 0])
+           array([2, 1, 0], dtype=int64)
            >>> ag3 = ag.asunique(sorted=True)
            >>> ag3 is ag
            False
            >>> ag3.ix
-           array([0, 1, 2])
+           array([0, 1, 2], dtype=int64)
            >>> u.atoms[[2, 1, 1, 0, 1]].asunique(sorted=False).ix
-           array([2, 1, 0])
+           array([2, 1, 0], dtype=int64)
 
 
         .. versionadded:: 2.0.0
