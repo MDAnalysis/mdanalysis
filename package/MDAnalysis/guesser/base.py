@@ -39,6 +39,7 @@ import numpy as np
 from .. import _TOPOLOGY_ATTRS
 import logging
 from typing import Dict
+import copy
 
 logger = logging.getLogger("MDAnalysis.guesser.base")
 
@@ -72,7 +73,7 @@ class GuesserBase(metaclass=_GuesserMeta):
     Parameters
     ----------
     universe : Universe, optional
-        Supply a Universe to the Parser. This then become the source of atom
+        Supply a Universe to the Guesser. This then become the source of atom
         attributes to be used in guessing processes. (this is relevant to how
         the universe's guess_topologyAttributes API works.
         See :ref:`guess_TopologyAttributes <guess_TopologyAttributes>`).
@@ -92,6 +93,12 @@ class GuesserBase(metaclass=_GuesserMeta):
     def update_kwargs(self, **kwargs):
         self._kwargs.update(kwargs)
 
+    def copy(self):
+        """Return a copy of this Guesser"""
+        kwargs = copy.deepcopy(self._kwargs)
+        new = self.__class__(universe=None, **kwargs)
+        return new
+    
     def are_guessable(self, attrs_to_guess):
         """check if the passed atrributes can be guessed by the guesser class
 

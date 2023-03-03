@@ -345,7 +345,7 @@ class Universe(object):
         self.residues = None
         self.segments = None
         self.filename = None
-        self._context = context
+        self._context = get_guesser(context)
         self._kwargs = {
             'transformations': transformations,
             'guess_bonds': guess_bonds,
@@ -401,7 +401,9 @@ class Universe(object):
 
     def copy(self):
         """Return an independent copy of this Universe"""
-        new = self.__class__(self._topology.copy(), context=self._context)
+        context = self._context.copy()
+        new = self.__class__(self._topology.copy(),
+                             to_guess=(), context=context)
         new.trajectory = self.trajectory.copy()
         return new
 
@@ -727,10 +729,10 @@ class Universe(object):
             n_atoms=len(self.atoms))
 
     @classmethod
-    def _unpickle_U(cls, top, traj, context):
+    def _unpickle_U(cls, top, traj):
         """Special method used by __reduce__ to deserialise a Universe"""
         #  top is a Topology obj at this point, but Universe can handle that.
-        u = cls(top, to_guess=(), context=context)
+        u = cls(top, to_guess=())
         u.trajectory = traj
 
         return u
@@ -740,7 +742,7 @@ class Universe(object):
         #  transformation (that has AtomGroup inside). Use __reduce__ instead.
         #  Universe's two "legs" of top and traj both serialise themselves.
         return (self._unpickle_U, (self._topology,
-                                   self._trajectory, self._context))
+                                   self._trajectory))
 
     # Properties
     @property
