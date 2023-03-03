@@ -742,7 +742,7 @@ class Universe(object):
         #  transformation (that has AtomGroup inside). Use __reduce__ instead.
         #  Universe's two "legs" of top and traj both serialise themselves.
         return (self._unpickle_U, (self._topology,
-                                   self._trajectory, self._context))
+                                   self._trajectory, self._context.copy()))
 
     # Properties
     @property
