@@ -401,7 +401,7 @@ class Universe(object):
 
     def copy(self):
         """Return an independent copy of this Universe"""
-        new = self.__class__(self._topology.copy(), context=self._context)
+        new = self.__class__(self._topology.copy())
         new.trajectory = self.trajectory.copy()
         return new
 
