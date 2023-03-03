@@ -1454,19 +1454,40 @@ class Universe(object):
         """
         print("MDAnalysis Universe object")
         print("==========================")
-        print(f"Number of atoms: {self.atoms.n_atoms}")
-        print(f"Number of residues: {self.residues.n_residues}")
-        print(f"Number of segments: {self.segments.n_segments}")
-        print(f"Number of bonds: {self.bonds.n_bonds}")
-        print(f"Number of angles: {self.angles.n_angles}")
-        print(f"Number of dihedrals: {self.dihedrals.n_dihedrals}")
-        print(f"Number of impropers: {self.impropers.n_impropers}")
-        print(f"Periodic boundary conditions: {self.dimensions}")
-        print(f"Trajectory information:")
-        print(f"  - Number of frames: {self.trajectory.n_frames}")
-        print(f"  - Timestep: {self.trajectory.dt:.3f} ps")
-        print(f"  - Time range: {self.trajectory.time[0]:.3f} ps to {self.trajectory.time[-1]:.3f} ps")
-        print(f"  - Trajectory format: {self.trajectory.filename}")
+
+        # Defined a list of tuples containing the name of the property
+        # and the corresponding value to be printed
+
+        # Basic information
+        properties = [("- Number of atoms", self.atoms.n_atoms),
+                      ("- Number of residues", self.residues.n_residues),
+                      ("- Number of segments", self.segments.n_segments),
+                      ("- Periodic boundary conditions", self.dimensions)]
+        # topology information
+        try:
+            properties += [("- Number of bonds", len(self.bonds)),
+                           ("- Number of angles", len(self.angles)),
+                           ("- Number of dihedrals", len(self.dihedrals)),
+                           ("- Number of impropers", len(self.impropers))]
+        except NoDataError:
+            pass
+        # Print all properties using a for loop
+        for property_name, property_value in properties:
+            print(f"{property_name}: {property_value}")
+
+        print("Trajectory information:")
+        print(f" - Number of frames: {self.trajectory.n_frames}")
+        print(f" - Timestep: {self.trajectory.dt:.3f} ps")
+
+        # Check if the trajectory has time information
+        if len(self.trajectory) > 0:
+            print(f"Time range: {self.trajectory[0].time:.3f}"
+                  f" ps to {self.trajectory[-1].time:.3f} ps")
+        else:
+            print("  No time information available")
+
+        print(f"  Trajectory format: {self.trajectory}")
+
 
 def Merge(*args):
     """Create a new new :class:`Universe` from one or more
@@ -1657,4 +1678,3 @@ def Merge(*args):
         u = Universe(top)
 
     return u
-  
