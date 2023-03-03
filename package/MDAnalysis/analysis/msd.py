@@ -348,9 +348,7 @@ class EinsteinMSD(AnalysisBase):
         #     (self.n_frames, self.n_particles, self.dim_fac))
         # self.results.timeseries not set here
         start, stop, step = self._trajectory.check_slice_indices(self.start, self.stop, self.step)
-        self._position_array = self._trajectory.timeseries()
-        self._position_array = self._position_array[start: stop: step]
-        self._position_array = np.transpose(self._position_array, (1, 0, 2))
+        self._position_array = self._trajectory.timeseries(start=start, stop=stop+1, step=step, order='fac')
         self.results.timeseries = self._position_array
 
     def _parse_msd_type(self):
