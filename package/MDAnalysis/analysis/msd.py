@@ -348,11 +348,11 @@ class EinsteinMSD(AnalysisBase):
         #     (self.n_frames, self.n_particles, self.dim_fac))
         # self.results.timeseries not set here
         start, stop, step = self._trajectory.check_slice_indices(self.start, self.stop, self.step)
-        self._position_array = self._trajectory.timeseries(start=start, stop=stop+1, step=step, order='fac')
-        self.results.timeseries = self._position_array
+        self._position_array = self._trajectory.timeseries(start=start, stop=stop-1, step=step, order='fac')
+        # self.results.timeseries = self._position_array
 
     def _parse_msd_type(self):
-        r""" Sets up the desired dimensionality of the MSD.
+        """ Sets up the desired dimensionality of the MSD.
 
         """
         keys = {'x': [0], 'y': [1], 'z': [2], 'xy': [0, 1],
@@ -370,7 +370,7 @@ class EinsteinMSD(AnalysisBase):
         self.dim_fac = len(self._dim)
 
     def _single_frame(self):
-        r""" Constructs array of positions for MSD calculation.
+        """ Constructs array of positions for MSD calculation.
 
         """
         # shape of position array set here, use span in last dimension
