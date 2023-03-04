@@ -207,11 +207,16 @@ also recognized when they are compressed with :program:`gzip` or
    |               |           |       | Module :mod:`MDAnalysis.coordinates.TRJ`             |
    +---------------+-----------+-------+------------------------------------------------------+
    | AMBER         | inpcrd,   | r     | formatted (ASCII) coordinate/restart file            |
-   |               | restrt    |       | Module :mod:`MDAnalysis.coordinates.INPCRD`          |
+   |               | restrt,   |       | Module :mod:`MDAnalysis.coordinates.INPCRD`          |
+   |               | rst7      |       |                                                      |
    +---------------+-----------+-------+------------------------------------------------------+
    | AMBER         | ncdf, nc  |  r/w  | binary (NetCDF) trajectories are fully supported with|
    |               |           |       | optional `netcdf4-python`_ module (coordinates and   |
    |               |           |       | velocities). Module :mod:`MDAnalysis.coordinates.TRJ`|
+   +---------------+-----------+-------+------------------------------------------------------+
+   | AMBER         | ncrst,    |  r    | binary (NetCDF) restart file                         |
+   |               | ncrestrt, |       | Module :mod:`MDAnalysis.coordinates.INPCRD           |
+   |               | ncrst7    |       |                                                      |
    +---------------+-----------+-------+------------------------------------------------------+
    | Brookhaven    | pdb/ent   |  r/w  | a relaxed PDB format (as used in MD simulations)     |
    | [#a]_         |           |       | is read by default; Multiple frames (MODEL)          |

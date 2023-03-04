@@ -445,6 +445,8 @@ NCDFtruncoct =  resource_filename(__name__, 'data/Amber/tz2.truncoct.nc')
 PRMcs = resource_filename(__name__, 'data/Amber/chitosan.prmtop')
 
 PRMNCRST = resource_filename(__name__, 'data/Amber/ace_mbondi3.parm7')
+PRMNCRSTbox = resource_filename(__name__, 'data/Amber/ace_tip3p.parm7')
+NCRSTbox = resource_filename(__name__, 'data/Amber/ace_tip3p.ncrst')
 
 PRM_NCBOX = resource_filename(__name__, 'data/Amber/ace_tip3p.parm7')
 TRJ_NCBOX = resource_filename(__name__, 'data/Amber/ace_tip3p.nc')
