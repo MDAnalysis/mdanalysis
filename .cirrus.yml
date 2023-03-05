@@ -5,7 +5,7 @@ task:
   script: |
     brew update
     brew install python@3.11
-    /opt/homebrew/opt/python@3.11/libexec/bin/python3 -m venv ~/py_311
+    /opt/homebrew/bin/python3 -m venv ~/py_311
     source ~/py_311/bin/activate
     cd package
     python -m pip install .

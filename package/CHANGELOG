@@ -13,12 +13,14 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-
+  
 ??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae, 
-         ooprathamm, MeetB7, BFedder
+         ooprathamm, MeetB7, BFedder, v-parmar, MoSchaeffler, jbarnoud
  * 2.5.0
 
 Fixes
+  * Fix tests should use results.rmsf to avoid DeprecationWarning (Issue #3695)
+  * Fix EDRReader failing when parsing single-frame EDR files (Issue #3999)
   * Fix element parsing from PSF files tests read via Parmed (Issue #4015)
   * Fix test clobbering in lib/test_util.py (PR #4000)
   * Fix MSD docs to use the correct error metric in example (Issue #3991)
@@ -28,6 +30,7 @@ Fixes
 Enhancements
   * Add a nojump transformation, which unwraps trajectories so that particle
     paths are continuous. (Issue #3703, PR #4031)
+  * Add support for TPR files produced by Gromacs 2023 (Issue #4047)
   * Add distopia distance calculation library bindings as a selectable backend
     for `calc_bonds` in `MDA.lib.distances`. (Issue #3783, PR #3914)
   * AuxReaders are now pickle-able and copy-able (Issue #1785, PR #3887)

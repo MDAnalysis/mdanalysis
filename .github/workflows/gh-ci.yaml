@@ -26,17 +26,11 @@ jobs:
         fail-fast: false
         matrix:
           os: [ubuntu-latest, ]
-          python-version: ["3.8", "3.9", "3.10"]
+          python-version: ["3.8", "3.9", "3.10", "3.11"]
           full-deps: [true, ]
           install_hole: [true, ]
           codecov: [true, ]
           include:
-            - name: py311-ubuntu-min
-              os: ubuntu-latest
-              python-version: "3.11"
-              full-deps: false
-              install_hole: true
-              codecov: false
             - name: macOS_monterey_py39
               os: macOS-12
               python-version: 3.9
@@ -168,7 +162,7 @@ jobs:
       uses: ./.github/actions/build-src
       with:
         build-hole: false
-        build-tests: false
+        build-tests: true
         build-docs: true
 
     - name: doctests
