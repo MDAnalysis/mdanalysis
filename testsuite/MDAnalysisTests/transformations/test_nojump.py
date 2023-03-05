@@ -175,7 +175,7 @@ def test_notinvertible(nojump_universe):
     """
     with pytest.raises(mda.exceptions.NoDataError):
         u = nojump_universe
-        u.dimensions = [0, 0, 0, 90, 90, 90]
+        dim = [0, 0, 0, 90, 90, 90]
         workflow = [mda.transformations.boxdimensions.set_dimensions(dim),NoJump()]
         u.trajectory.add_transformations(*workflow)
         transformed_coordinates = u.trajectory.timeseries()[0]
