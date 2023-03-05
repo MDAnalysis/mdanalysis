@@ -216,7 +216,7 @@ classes for different packages. The
 the appropriate one, based on the file name extension in the <a class="reference internal" href="#supported-selection-exporters"><span class="std std-ref">Table of supported exporters and recognized file name extensions.</span></a>.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.selections.get_writer">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.selections.</span></span><span class="sig-name descname"><span class="pre">get_writer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defaultformat</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MDAnalysis/selections.html#get_writer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.selections.get_writer" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.selections.</span></span><span class="sig-name descname"><span class="pre">get_writer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">defaultformat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="selections/base.html#MDAnalysis.selections.base.SelectionWriterBase" title="MDAnalysis.selections.base.SelectionWriterBase"><span class="pre">SelectionWriterBase</span></a></span></span><a class="reference internal" href="../_modules/MDAnalysis/selections.html#get_writer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.selections.get_writer" title="Permalink to this definition"></a></dt>
 <dd><p>Return a SelectionWriter for <cite>filename</cite> or a <cite>defaultformat</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -226,7 +226,7 @@ the appropriate one, based on the file name extension in the <a class="reference
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>SelectionWriter</strong> – the writer <em>class</em> for the detected format</p>
+<dd class="field-even"><p><strong>SelectionWriterBase</strong> – the writer <em>class</em> for the detected format</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><cite>type</cite></p>
