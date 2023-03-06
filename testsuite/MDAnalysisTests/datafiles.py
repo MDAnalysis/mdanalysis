@@ -25,7 +25,7 @@
 Location of data files for the MDAnalysis unit tests
 ====================================================
 
-Real MD simulation data are stored in the ```` sub
+Real MD simulation data are stored in the ``data/`` sub
 directory. Use as ::
 
   from MDAnalysis.tests.datafiles import *
