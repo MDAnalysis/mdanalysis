@@ -81,13 +81,14 @@ __all__ = [
     "TPR450", "TPR451", "TPR452", "TPR453", "TPR454", "TPR455", "TPR455Double",
     "TPR460", "TPR461", "TPR502", "TPR504", "TPR505", "TPR510", "TPR2016",
     "TPR2018", "TPR2019B3", "TPR2020B2", "TPR2020", "TPR2020Double",
-    "TPR2021", "TPR2021Double", "TPR2022RC1",
+    "TPR2021", "TPR2021Double", "TPR2022RC1", "TPR2023",
     "TPR510_bonded", "TPR2016_bonded", "TPR2018_bonded", "TPR2019B3_bonded",
     "TPR2020B2_bonded", "TPR2020_bonded", "TPR2020_double_bonded",
     "TPR2021_bonded", "TPR2021_double_bonded", "TPR2022RC1_bonded",
-    "TPR334_bonded",
+    "TPR334_bonded", "TPR2023_bonded",
     "TPR_EXTRA_2021", "TPR_EXTRA_2020", "TPR_EXTRA_2018",
     "TPR_EXTRA_2016", "TPR_EXTRA_407", "TPR_EXTRA_2022RC1",
+    "TPR_EXTRA_2023",
     "PDB_sub_sol", "PDB_sub_dry",  # TRRReader sub selection
     "TRR_sub_sol",
     "XTC_sub_sol",
@@ -384,6 +385,7 @@ TPR2020B2 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2020-beta2.tpr')
 TPR2020 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2020.tpr')
 TPR2021 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2021.tpr')
 TPR2022RC1 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2022-rc1.tpr')
+TPR2023 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2023.tpr')
 # double precision
 TPR455Double = resource_filename(__name__, 'data/tprs/drew_gmx_4.5.5.double.tpr')
 TPR460 = resource_filename(__name__, 'data/tprs/ab42_gmx_4.6.tpr')
@@ -402,7 +404,9 @@ TPR2020_double_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_
 TPR2021_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2021.tpr')
 TPR2021_double_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2021_double.tpr')
 TPR2022RC1_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2022-rc1.tpr')
+TPR2023_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2023.tpr')
 # all interactions
+TPR_EXTRA_2023 = resource_filename(__name__, 'data/tprs/virtual_sites/extra-interactions-2023.tpr')
 TPR_EXTRA_2022RC1 = resource_filename(__name__, 'data/tprs/virtual_sites/extra-interactions-2022-rc1.tpr')
 TPR_EXTRA_2021 = resource_filename(__name__, 'data/tprs/virtual_sites/extra-interactions-2021.tpr')
 TPR_EXTRA_2020 = resource_filename(__name__, 'data/tprs/virtual_sites/extra-interactions-2020.tpr')
