@@ -350,7 +350,7 @@ class EinsteinMSD(AnalysisBase):
         start, stop, step = self._trajectory.check_slice_indices(
             self.start, self.stop, self.step)
         self._position_array = self._trajectory.timeseries(
-            start=start, stop=stop, step=step, order='fac')
+            start=start, stop=stop+1, step=step, order='fac')
         self._position_array = \
             self._position_array[:, :self.n_particles, :self.dim_fac]
 
