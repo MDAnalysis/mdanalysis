@@ -3270,20 +3270,29 @@ class AtomGroup(GroupBase):
         return [self[levelindices == index] for index in
                 unique_int_1d(levelindices)]
 
-    def guess_bonds(self, vdwradii=None, fudge_factor=0.55, lower_bound=0.0, **kwargs):
-        """Guess bonds that exist within this :class:`AtomGroup` and add them to
-        the underlying :attr:`~AtomGroup.universe`.
+    def guess_bonds(self, vdwradii=None, fudge_factor=0.55, lower_bound=0.1, **kwargs):
+        """Guess bonds, angles and dihedrals between the atoms in this :class:`AtomGroup` and
+        add them to the underlying :attr:`~AtomGroup.universe`.
 
         Parameters
         ----------
         vdwradii : dict, optional
             Dict relating atom types: vdw radii
 
+        fudge_factor : float, optional
+            The factor by which atoms must overlap eachother to be considered a
+            bond.  Larger values will increase the number of bonds found. [0.55]
+        lower_bound : float, optional
+            The minimum bond length. All bonds found shorter than this length will
+            be ignored. This is useful for parsing PDB with altloc records where
+            atoms with altloc A and B maybe very close together and there should be
+            no chemical bond between them. [0.1]
 
         See Also
         --------
         :func:`MDAnalysis.topology.guessers.guess_bonds`
-
+        :func:`MDAnalysis.topology.guessers.guess_angles`
+        :func:`MDAnalysis.topology.guessers.guess_dihedrals`
 
         .. versionadded:: 0.10.0
         .. versionchanged:: 0.20.2
