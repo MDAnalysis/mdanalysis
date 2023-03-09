@@ -3270,7 +3270,7 @@ class AtomGroup(GroupBase):
         return [self[levelindices == index] for index in
                 unique_int_1d(levelindices)]
 
-    def guess_bonds(self, vdwradii=None):
+    def guess_bonds(self, vdwradii=None, fudge_factor=0.55, lower_bound=0.0, **kwargs):
         """Guess bonds that exist within this :class:`AtomGroup` and add them to
         the underlying :attr:`~AtomGroup.universe`.
 
@@ -3303,7 +3303,8 @@ class AtomGroup(GroupBase):
 
         # indices of bonds
         b = guess_bonds(self.atoms, self.atoms.positions,
-                        vdwradii=vdwradii, box=self.dimensions)
+                        vdwradii=vdwradii, box=self.dimensions,
+                        fudge_factor=fudge_factor, lower_bound=lower_bound, **kwargs)
         bondattr = get_TopAttr(self.universe, 'bonds', Bonds)
         bondattr._add_bonds(b, guessed=True)
 
