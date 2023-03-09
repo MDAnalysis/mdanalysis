@@ -3302,9 +3302,13 @@ class AtomGroup(GroupBase):
                 return attr
 
         # indices of bonds
-        b = guess_bonds(self.atoms, self.atoms.positions,
-                        vdwradii=vdwradii, box=self.dimensions,
-                        fudge_factor=fudge_factor, lower_bound=lower_bound, **kwargs)
+        b = guess_bonds(self.atoms,
+                        self.atoms.positions,
+                        vdwradii=vdwradii,
+                        box=self.dimensions,
+                        fudge_factor=fudge_factor,
+                        lower_bound=lower_bound,
+                        **kwargs)
         bondattr = get_TopAttr(self.universe, 'bonds', Bonds)
         bondattr._add_bonds(b, guessed=True)
 
