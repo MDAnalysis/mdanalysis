@@ -292,9 +292,46 @@ class TestPSAnalysis(object):
                             dists[self.iu1],
                             decimal=6, err_msg=err_msg)
 
+
 class TestPSAExceptions(object):
     '''Tests for exceptions that should be raised
     or caught by code in the psa module.'''
+
+    @pytest.fixture()
+    def universe_no_path(self):
+        universe1 = mda.Universe(PSF, DCD)
+        return universe1
+
+    def test_no_path_data(self, universe_no_path, tmpdir):
+        """Test that ValueError is raised when no path data. Covers
+        get_num_atoms() in class Path and get_num_atoms(),
+        get_num_paths(), and get_paths() in class PSAnalysis"""
+        match_exp = "No path data"
+        path = PSA.Path(universe_no_path, universe_no_path)
+        psa = PSA.PSAnalysis([universe_no_path, universe_no_path,
+                              universe_no_path],
+                             path_select='name CA',
+                             targetdir=str(tmpdir))
+
+        # Case in class Path where user did not run Path.to_path()
+        # before running get_num_atoms()
+        with pytest.raises(ValueError, match=match_exp):
+            path.get_num_atoms()
+
+        # Case 1 in class PSA where user did not run
+        # PSAnalysis.generate_paths() before running get_num_atoms()
+        with pytest.raises(ValueError, match=match_exp):
+            psa.get_num_atoms()
+
+        # Case 2 in class PSA where user did not run
+        # PSAnalysis.generate_paths() before running get_num_paths()
+        with pytest.raises(ValueError, match=match_exp):
+            psa.get_num_paths()
+
+        # Case 3 in class PSA where user did not run
+        # PSAnalysis.generate_paths() before running get_paths()
+        with pytest.raises(ValueError, match=match_exp):
+            psa.get_paths()
 
     def test_get_path_metric_func_bad_key(self):
         '''Test that KeyError is caught by
