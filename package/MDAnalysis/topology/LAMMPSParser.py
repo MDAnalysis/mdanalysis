@@ -181,8 +181,8 @@ class DATAParser(TopologyReaderBase):
     see :ref:`atom_style_kwarg`.
 
     .. versionadded:: 0.9.0
-    .. versionchanged:: 2.4.0
-      removed mass guessing (guessing takes place now inside universe)
+    .. versionchanged:: 2.5.0
+      removed mass guessing (guessing takes place now inside the universe only)
 
     """
     format = 'DATA'

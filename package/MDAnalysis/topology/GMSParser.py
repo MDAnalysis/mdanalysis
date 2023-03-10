@@ -74,8 +74,8 @@ class GMSParser(TopologyReaderBase):
      - atomic charges
 
     .. versionadded:: 0.9.1
-    .. versionchanged:: 2.4.0
-      removed type and mass guessing (guessing takes place now inside universe)
+    .. versionchanged:: 2.5.0
+      removed type and mass guessing (guessing takes place now inside the universe only)
     """
     format = 'GMS'
 

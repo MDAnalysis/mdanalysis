@@ -325,7 +325,7 @@ class Universe(object):
         Universe now can be (un)pickled.
         ``topology`` and ``trajectory`` are reserved upon unpickle.
 
-    .. versionchanged:: 2.4.0
+    .. versionchanged:: 2.5.0
       added :ref:`guess_TopologyAttributes <guess_TopologyAttributes>` API
       guessing masses and atom types when topology
       is read from a registered parser

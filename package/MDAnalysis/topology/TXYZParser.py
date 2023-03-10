@@ -75,9 +75,9 @@ class TXYZParser(TopologyReaderBase):
     - Elements (if all atom names are element symbols)
 
     .. versionadded:: 0.17.0
-    .. versionchanged:: 2.4.0
+    .. versionchanged:: 2.5.0
        Adding the `Element` attribute if all names are valid element symbols.
-      removed mass guessing (guessing takes place now inside universe)
+      removed mass guessing (guessing takes place now inside the universe only)
 
     """
     format = ['TXYZ', 'ARC']

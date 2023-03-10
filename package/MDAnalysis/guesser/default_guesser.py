@@ -30,8 +30,7 @@ This class is a general purpose guesser that can be used with most topologies,
 but being generic make it the less accurate among all guessers.
 
 
-In general `guess_atom_X` returns the guessed value for a single value,
-while `guess_Xs` will work on an array of many atoms.
+
 
 
 Classes
@@ -56,7 +55,7 @@ from . import tables
 class DefaultGuesser(GuesserBase):
     """
     this guesser hold generic methods (not directed to specific context) for
-    guessing different topology attribute. it has the same methods that was
+    guessing different topology attribute. It has the same methods that was
     originally found in Topology.guesser.py. The attributes that can be
     guessed by this class are:
     masses
@@ -80,7 +79,7 @@ class DefaultGuesser(GuesserBase):
 
         u = mda.Universe(two_water_gro, context = 'default', to_guess=['bonds'])
 
-    .. versionadded:: 2.4.0
+    .. versionadded:: 2.5.0
 
     """
     context = 'default'
@@ -101,7 +100,7 @@ class DefaultGuesser(GuesserBase):
     def guess_masses(self, atoms=None, partial_guess=None):
         """Guess the mass of many atoms based upon their type.
         For guessing masses through Univese.guess_topologyAttribute():
-        First try to guess masses from atom elements, if not available,
+        First it try to guess masses from atom elements, if not available,
         try to guess masses from types and if not availaible, try to guess
         types.
 

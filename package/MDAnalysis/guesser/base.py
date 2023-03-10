@@ -59,7 +59,7 @@ class _GuesserMeta(type):
       class FooGuesser(GuesserBase):
           format = 'foo'
 
-    .. versionadded:: 2.4.0
+    .. versionadded:: 2.5.0
     """
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
@@ -80,7 +80,7 @@ class GuesserBase(metaclass=_GuesserMeta):
     **kwargs: to pass additional data to the guesser that can be used with
               different methos.
 
-    .. versionadded:: 2.4.0
+    .. versionadded:: 2.5.0
 
     """
     context = 'base'

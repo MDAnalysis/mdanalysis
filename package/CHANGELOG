@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo
+??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, aya9aladdin
 
  * 2.5.0
 
@@ -26,6 +26,9 @@ Fixes
 Enhancements
   * Add pickling support for Atom, Residue, Segment, ResidueGroup 
     and SegmentGroup. (PR #3953)
+  * Add a new guessing system through the universe's 
+    guess_topologyAttributes() API. (PR #3753)
+  * Add DefaultGuesser class as a context-free guesser
 
 Changes
   * As per NEP29 the minimum supported NumPy version has been raised to 1.21
@@ -35,6 +38,12 @@ Changes
     analysis.nucleicacids' NucPairDist and WatsonCrickDist classes has been
     removed. Please use the `results.pair_distances` and `times` attributes
     instead (Issue #3744)
+  * Removed type and mass guessing processes from all parsers, and transferred
+    Those guessing to takes place inside the universe through the new 
+    guess_topologyAttributes() API.
+  * Removed type guessing from RDKit converter
+  * Assigned type attribute to be equal to the element attribute, if type is
+    not provided for RDKit converter
 
 Deprecations
 

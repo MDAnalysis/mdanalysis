@@ -90,8 +90,8 @@ class DMSParser(TopologyReaderBase):
     .. _DESRES: http://www.deshawresearch.com
     .. _Desmond: http://www.deshawresearch.com/resources_desmond.html
     .. _DMS: http://www.deshawresearch.com/Desmond_Users_Guide-0.7.pdf
-    .. versionchanged:: 2.4.0
-      removed type guessing (guessing takes place now inside universe)
+    .. versionchanged:: 2.5.0
+      removed type guessing (guessing takes place now inside the universe only)
 
     """
     format = 'DMS'

@@ -89,6 +89,7 @@ class RDKitParser(TopologyReaderBase):
      - Atomnames
      - Aromaticities
      - Elements
+     -Types
      - Masses
      - Bonds
      - Resids
@@ -152,8 +153,10 @@ class RDKitParser(TopologyReaderBase):
     .. versionadded:: 2.0.0
     .. versionchanged:: 2.1.0
        Added R/S chirality support
-    .. versionchanged:: 2.4.0
-      removed type guessing (guessing takes place now inside universe)
+    .. versionchanged:: 2.5.0
+      removed type guessing (guessing takes place now inside universe only)
+      If atoms types is not provided, type attributed get the same values as
+      the element attribute
     """
     format = 'RDKIT'
 
