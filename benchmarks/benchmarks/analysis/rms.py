@@ -1,4 +1,5 @@
 import MDAnalysis
+import numpy as np
 
 try:
     from MDAnalysisTests.datafiles import PSF, DCD
@@ -15,7 +16,7 @@ class SimpleRmsBench(object):
     """
 
     params = ([100, 500, 2000],
-              [None, [1.0, 0.5]],
+              [None, [True]],
               [False, True],
               [False, True])
     param_names = ['num_atoms',
@@ -33,10 +34,13 @@ class SimpleRmsBench(object):
             self.A = self.u.atoms.positions.copy()[:num_atoms]
             self.u.trajectory[-1]
             self.B = self.u.atoms.positions.copy()[:num_atoms]
+            self.weights = [self.A.masses() / np.sum(self.A.masses(),self.B.masses() / np.sum(self.B.masses()))] if 'weights' in self.params[1] else None
+
         except:
             self.A = self.u.atoms.positions.copy()[:num_atoms]
             self.u.trajectory[-1]
             self.B = self.u.atoms.positions.copy()[:num_atoms]
+            self.weights = [self.A.masses() / np.sum(self.A.masses(),self.B.masses() / np.sum(self.B.masses()))] if 'weights' in self.params[1] else None
 
     def time_rmsd(self, num_atoms, weights, center, superposition):
         """Benchmark rmsd function using a setup similar to
@@ -45,7 +49,7 @@ class SimpleRmsBench(object):
         """
         rms.rmsd(a=self.A,
                  b=self.B,
-                 weights=weights,
+                 weights=self.weights,
                  center=center,
                  superposition=superposition)
 
