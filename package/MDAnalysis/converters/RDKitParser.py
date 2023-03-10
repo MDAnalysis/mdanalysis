@@ -89,7 +89,7 @@ class RDKitParser(TopologyReaderBase):
      - Atomnames
      - Aromaticities
      - Elements
-     -Types
+     - Types
      - Masses
      - Bonds
      - Resids
