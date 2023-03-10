@@ -157,6 +157,7 @@ class RDKitParser(TopologyReaderBase):
       removed type guessing (guessing takes place now inside universe only)
       If atoms types is not provided, type attributed get the same values as
       the element attribute
+
     """
     format = 'RDKIT'
 
