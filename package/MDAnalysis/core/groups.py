@@ -2672,6 +2672,9 @@ class AtomGroup(GroupBase):
         Examples
         --------
 
+           >>> import MDAnalysis as mda
+           >>> from MDAnalysis.tests.datafiles import PSF, DCD
+           >>> u = mda.Universe(PSF, DCD)
            >>> ag = u.atoms[[2, 1, 2, 2, 1, 0]]
            >>> ag
            <AtomGroup with 6 atoms>
