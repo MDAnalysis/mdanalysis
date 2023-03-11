@@ -49,7 +49,7 @@ def test_wc_dist_shape(wc_rna):
 
 
 def test_wc_dist_results_keys(wc_rna):
-    assert "pair_distances" in wc_rna.results.keys()
+    assert "pair_distances" in wc_rna.results
 
 
 def test_wc_dist(wc_rna):
