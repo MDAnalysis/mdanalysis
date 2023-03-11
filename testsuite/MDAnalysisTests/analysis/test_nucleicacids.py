@@ -58,20 +58,17 @@ def test_wc_dist(wc_rna):
 
 
 def test_wc_dist_invalid_residue_types(u):
+    strand = u.select_atoms("resid 1-10")
+    strand1 = [strand.residues[0], strand.residues[21]]
+    strand2 = [strand.residues[2], strand.residues[22]]
     with pytest.raises(ValueError, match="are not valid nucleic acids"):
-        strand = u.select_atoms("resid 1-10")
-        strand1 = [strand.residues[0], strand.residues[21]]
-        strand2 = [strand.residues[2], strand.residues[22]]
-        WC = WatsonCrickDist(strand1, strand2)
-        WC.run()
+        WC = WatsonCrickDist(strand1, strand2).run()
 
 
 def test_selection_length_mismatch(u):
+    sel1 = u.select_atoms("resid 1-10")
+    sel2 = u.select_atoms("resid 1-5")
     with pytest.raises(ValueError, match="Selections must be same length"):
-        sel1 = u.select_atoms("resid 1-10")
-        sel2 = u.select_atoms("resid 1-5")
-        # computing Atom Pair distance
-        # raises ValueError if the selections given are not the same length
         NucPairDist(sel1, sel2)
 
 
