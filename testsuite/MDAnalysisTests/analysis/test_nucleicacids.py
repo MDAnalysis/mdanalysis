@@ -62,7 +62,7 @@ def test_wc_dist_invalid_residue_types(u):
     strand1 = [strand.residues[0], strand.residues[21]]
     strand2 = [strand.residues[2], strand.residues[22]]
     with pytest.raises(ValueError, match="are not valid nucleic acids"):
-        WC = WatsonCrickDist(strand1, strand2).run()
+        WC = WatsonCrickDist(strand1, strand2) # noqa: F841
 
 
 def test_selection_length_mismatch(u):
