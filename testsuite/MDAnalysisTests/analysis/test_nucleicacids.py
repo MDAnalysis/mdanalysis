@@ -58,7 +58,7 @@ def test_wc_dist(wc_rna):
 
 
 def test_wc_dist_invalid_residue_types(u):
-    with pytest.raises(ValueError, match=r"are not valid nucleic acids"):
+    with pytest.raises(ValueError, match="are not valid nucleic acids"):
         strand = u.select_atoms("resid 1-10")
         strand1 = [strand.residues[0], strand.residues[21]]
         strand2 = [strand.residues[2], strand.residues[22]]
