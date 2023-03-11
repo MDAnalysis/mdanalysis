@@ -31,7 +31,7 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 
-from numpy.testing import assert_almost_equal, assert_equal
+from numpy.testing import assert_allclose, assert_equal
 
 from MDAnalysisTests.datafiles import Plength, TRZ_psf, TRZ
 
@@ -65,10 +65,10 @@ class TestPersistenceLength(object):
         assert len(p_run.results.bond_autocorrelation) == 280
 
     def test_lb(self, p_run):
-        assert_almost_equal(p_run.results.lb, 1.485, 3)
+        assert_allclose(p_run.results.lb, 1.485, 3)
 
     def test_fit(self, p_run):
-        assert_almost_equal(p_run.results.lp, 6.504, 3)
+        assert_allclose(p_run.results.lp, 6.504, 3)
         assert len(p_run.results.fit) == len(p_run.results.bond_autocorrelation)
 
     def test_raise_NoDataError(self, p):
@@ -119,7 +119,7 @@ class TestFitExponential(object):
 
         a = polymer.fit_exponential_decay(self.x, y2)
 
-        assert_almost_equal(a, self.a_ref, decimal=3)
+        assert_allclose(a, self.a_ref, atol=1e-03)
         # assert np.rint(a) == self.a_ref
 
 

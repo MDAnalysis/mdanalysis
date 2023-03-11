@@ -27,7 +27,7 @@ from MDAnalysisTests.datafiles import (
     waterPSF, waterDCD,
     XYZ_mini,
 )
-from numpy.testing import assert_almost_equal
+from numpy.testing import assert_allclose
 import numpy as np
 from unittest import mock
 from importlib import reload
@@ -65,7 +65,7 @@ class TestHydrogenBondAutocorrel(object):
         )
         hbond.run()
 
-        assert_almost_equal(
+        assert_allclose(
             hbond.solution['results'],
             np.array([ 1.        ,  0.92668623,  0.83137828,
                        0.74486804,  0.67741936,  0.60263932],
@@ -84,7 +84,7 @@ class TestHydrogenBondAutocorrel(object):
         )
         hbond.run()
 
-        assert_almost_equal(
+        assert_allclose(
             hbond.solution['results'],
             np.array([ 1.        ,  0.92668623,  0.83137828,
                        0.74486804,  0.67741936,  0.60263932],
@@ -102,7 +102,7 @@ class TestHydrogenBondAutocorrel(object):
         )
         hbond.run()
 
-        assert_almost_equal(
+        assert_allclose(
             hbond.solution['results'],
             np.array([ 1.        ,  0.92668623,  0.84310848,
                        0.79325515,  0.76392961,  0.72287393],
@@ -121,7 +121,7 @@ class TestHydrogenBondAutocorrel(object):
         )
         hbond.run()
 
-        assert_almost_equal(
+        assert_allclose(
             hbond.solution['results'],
             np.array([ 1.        ,  0.92668623,  0.83137828,
                        0.74486804,  0.67741936,  0.60263932],
@@ -140,7 +140,7 @@ class TestHydrogenBondAutocorrel(object):
         )
         hbond.run()
 
-        assert_almost_equal(
+        assert_allclose(
             hbond.solution['results'],
             np.array([ 1.        ,  0.92668623,  0.84310848,
                        0.79325515,  0.76392961,  0.72287393],
@@ -169,7 +169,7 @@ class TestHydrogenBondAutocorrel(object):
 
         hbond.solve()
 
-        assert_almost_equal(
+        assert_allclose(
             hbond.solution['fit'],
             np.array([0.75, 0.5, 0.1]),
         )
@@ -196,7 +196,7 @@ class TestHydrogenBondAutocorrel(object):
 
         hbond.solve()
 
-        assert_almost_equal(
+        assert_allclose(
             hbond.solution['fit'],
             np.array([0.33, 0.33, 5, 1, 0.1]),
         )

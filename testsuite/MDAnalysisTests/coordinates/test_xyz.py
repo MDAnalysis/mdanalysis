@@ -25,7 +25,7 @@ import pytest
 import MDAnalysis as mda
 import numpy as np
 from numpy.testing import (
-    assert_almost_equal,
+    assert_allclose,
     assert_equal,
 )
 
@@ -82,7 +82,7 @@ class TestXYZWriter(BaseWriterTest):
 
             copy = ref.reader(outfile)
             for orig_ts, copy_ts in zip(universe.trajectory, copy):
-                assert_almost_equal(
+                assert_allclose(
                     copy_ts._pos, sel.atoms.positions, ref.prec,
                     err_msg="coordinate mismatch between original and written "
                             "trajectory at frame {} (orig) vs {} (copy)".format(

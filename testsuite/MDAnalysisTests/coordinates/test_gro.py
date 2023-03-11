@@ -42,7 +42,7 @@ from MDAnalysisTests.datafiles import (
     PDB_closed,
 )
 from numpy.testing import (
-    assert_almost_equal,
+    assert_allclose,
     assert_equal,
 )
 import pytest
@@ -66,7 +66,7 @@ class TestGROReaderOld(RefAdK):
 
     def test_coordinates(self, universe):
         A10CA = universe.select_atoms('name CA')[10]
-        assert_almost_equal(A10CA.position,
+        assert_allclose(A10CA.position,
                             self.ref_coordinates['A10CA'],
                             self.prec,
                             err_msg="wrong coordinates for A10:CA")
@@ -78,7 +78,7 @@ class TestGROReaderOld(RefAdK):
         NTERM = universe.select_atoms('name N')[0]
         CTERM = universe.select_atoms('name C')[-1]
         d = mda.lib.mdamath.norm(NTERM.position - CTERM.position)
-        assert_almost_equal(d, self.ref_distances['endtoend'], self.prec - 1,
+        assert_allclose(d, self.ref_distances['endtoend'], self.prec - 1,
                             err_msg="distance between M1:N and G214:C")
 
     def test_selection(self, universe):
@@ -87,7 +87,7 @@ class TestGROReaderOld(RefAdK):
                      "Atom selection of last atoms in file")
 
     def test_unitcell(self, universe):
-        assert_almost_equal(
+        assert_allclose(
             universe.trajectory.ts.dimensions,
             self.ref_unitcell,
             self.prec,
@@ -106,7 +106,7 @@ class TestGROReaderNoConversionOld(RefAdK):
         # we loaded with convert_units=False
         A10CA = universe.select_atoms('name CA')[10]
         # coordinates in nm
-        assert_almost_equal(A10CA.position,
+        assert_allclose(A10CA.position,
                             RefAdK.ref_coordinates['A10CA'] / 10.0,
                             self.prec, err_msg="wrong native coordinates "
                                                "(in nm) for A10:CA")
@@ -122,19 +122,19 @@ class TestGROReaderNoConversionOld(RefAdK):
         CTERM = universe.select_atoms('name C')[-1]
         d = mda.lib.mdamath.norm(NTERM.position - CTERM.position)
         # coordinates in nm
-        assert_almost_equal(d, RefAdK.ref_distances['endtoend'] / 10.0,
+        assert_allclose(d, RefAdK.ref_distances['endtoend'] / 10.0,
                             self.prec - 1, err_msg="distance between M1:N "
                                                    "and G214:C")
 
     def test_unitcell(self, universe):
         # lengths in A : convert to nm
-        assert_almost_equal(
+        assert_allclose(
             universe.trajectory.ts.dimensions[:3],
             self.ref_unitcell[:3] / 10.0,
             self.prec,
             err_msg="unit cell A,B,C (rhombic dodecahedron)")
         # angles should not have changed
-        assert_almost_equal(
+        assert_allclose(
             universe.trajectory.ts.dimensions[3:],
             self.ref_unitcell[3:],
             self.prec,
@@ -142,7 +142,7 @@ class TestGROReaderNoConversionOld(RefAdK):
 
     def test_volume(self, universe):
         # ref lengths in A (which was originally converted from nm)
-        assert_almost_equal(
+        assert_allclose(
             universe.trajectory.ts.volume,
             self.ref_volume / 1000.,
             3,
@@ -201,7 +201,7 @@ class TestGROWriter(BaseWriterTest):
             u.atoms.write(outfile)
 
             u2 = mda.Universe(outfile)
-            assert_almost_equal(u.atoms.velocities,
+            assert_allclose(u.atoms.velocities,
                                 u2.atoms.velocities)
 
     def test_write_no_resnames(self, u_no_resnames, ref, tmpdir):

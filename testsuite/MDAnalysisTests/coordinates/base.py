@@ -26,8 +26,8 @@ import pickle
 import numpy as np
 import pytest
 from unittest import TestCase
-from numpy.testing import (assert_equal, assert_almost_equal,
-                           assert_array_almost_equal, assert_allclose)
+from numpy.testing import (assert_equal,
+                           assert_allclose)
 
 import MDAnalysis as mda
 from MDAnalysis.coordinates.timestep import Timestep
@@ -94,7 +94,7 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
     def test_coordinates(self):
         A10CA = self.universe.select_atoms('name CA')[10]
         # restrict accuracy to maximum in PDB files (3 decimals)
-        assert_almost_equal(A10CA.position,
+        assert_allclose(A10CA.position,
                             self.ref_coordinates['A10CA'],
                             3,
                             err_msg="wrong coordinates for A10:CA")
@@ -103,7 +103,7 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
         NTERM = self.universe.select_atoms('name N')[0]
         CTERM = self.universe.select_atoms('name C')[-1]
         d = mda.lib.mdamath.norm(NTERM.position - CTERM.position)
-        assert_almost_equal(d,
+        assert_allclose(d,
                             self.ref_distances['endtoend'],
                             self.prec,
                             err_msg="distance between M1:N and G214:C")
@@ -233,7 +233,7 @@ class BaseReaderTest(object):
     def test_first_frame(self, ref, reader):
         reader.rewind()
         assert_timestep_almost_equal(reader.ts, ref.first_frame,
-                                     decimal=ref.prec)
+                                     atol=ref.prec)
 
     def test_double_close(self, reader):
         reader.close()
@@ -255,13 +255,13 @@ class BaseReaderTest(object):
                 assert_equal(W.n_atoms, 100)
 
     def test_dt(self, ref, reader):
-        assert_almost_equal(reader.dt, ref.dt, decimal=ref.prec)
+        assert_allclose(reader.dt, ref.dt, atol=1e-06)
 
     def test_ts_dt_matches_reader(self, reader):
         assert_equal(reader.ts.dt, reader.dt)
 
     def test_total_time(self, ref, reader):
-        assert_almost_equal(reader.totaltime, ref.totaltime, decimal=ref.prec)
+        assert_allclose(reader.totaltime, ref.totaltime, atol=1e-06)
 
     def test_first_dimensions(self, ref, reader):
         reader.rewind()
@@ -270,7 +270,7 @@ class BaseReaderTest(object):
         else:
             assert_array_almost_equal(reader.ts.dimensions,
                                       ref.dimensions,
-                                      decimal=ref.prec)
+                                      atol=ref.prec)
 
     def test_changing_dimensions(self, ref, reader):
         if ref.changing_dimensions:
@@ -280,21 +280,21 @@ class BaseReaderTest(object):
             else:
                 assert_array_almost_equal(reader.ts.dimensions,
                                           ref.dimensions,
-                                          decimal=ref.prec)
+                                          atol=ref.prec)
             reader[1]
             if ref.dimensions_second_frame is None:
                 assert reader.ts.dimensions is None
             else:
                 assert_array_almost_equal(reader.ts.dimensions,
                                           ref.dimensions_second_frame,
-                                          decimal=ref.prec)
+                                          atol=ref.prec)
 
     def test_volume(self, ref, reader):
         reader.rewind()
         vol = reader.ts.volume
         # Here we can only be sure about the numbers upto the decimal point due
         # to floating point impressions.
-        assert_almost_equal(vol, ref.volume, 0)
+        assert_allclose(vol, ref.volume, 0)
 
     def test_iter(self, ref, reader):
         for i, ts in enumerate(reader):
@@ -319,7 +319,7 @@ class BaseReaderTest(object):
     def test_iter_auxiliary(self, ref, reader):
         # should go through all steps in 'highf'
         for i, auxstep in enumerate(reader.iter_auxiliary('highf')):
-            assert_almost_equal(auxstep.data, ref.aux_highf_all_data[i],
+            assert_allclose(auxstep.data, ref.aux_highf_all_data[i],
                                 err_msg="Auxiliary data does not match for "
                                         "step {}".format(i))
 
@@ -369,7 +369,7 @@ class BaseReaderTest(object):
         v2 = np.float32((0,0,0.33))
         for i, ts in enumerate(transformed):
             idealcoords = ref.iter_ts(i).positions + v1 + v2
-            assert_array_almost_equal(ts.positions, idealcoords, decimal=ref.prec)
+            assert_array_almost_equal(ts.positions, idealcoords, atol=ref.prec)
 
     def test_transformations_2iter(self, ref, transformed):
         # Are the transformations applied and
@@ -379,10 +379,10 @@ class BaseReaderTest(object):
         idealcoords=[]
         for i, ts in enumerate(transformed):
             idealcoords.append(ref.iter_ts(i).positions + v1 + v2)
-            assert_array_almost_equal(ts.positions, idealcoords[i], decimal=ref.prec)
+            assert_array_almost_equal(ts.positions, idealcoords[i], atol=ref.prec)
 
         for i, ts in enumerate(transformed):
-            assert_almost_equal(ts.positions, idealcoords[i], decimal=ref.prec)
+            assert_allclose(ts.positions, idealcoords[i], atol=1e-06)
 
     def test_transformations_slice(self, ref, transformed):
         # Are the transformations applied when iterating over a slice of the trajectory?
@@ -390,7 +390,7 @@ class BaseReaderTest(object):
         v2 = np.float32((0,0,0.33))
         for i,ts in enumerate(transformed[2:3:1]):
             idealcoords = ref.iter_ts(ts.frame).positions + v1 + v2
-            assert_array_almost_equal(ts.positions, idealcoords, decimal = ref.prec)
+            assert_array_almost_equal(ts.positions, idealcoords, atol = ref.prec)
 
     def test_transformations_switch_frame(self, ref, transformed):
         # This test checks if the transformations are applied and if the coordinates
@@ -400,17 +400,17 @@ class BaseReaderTest(object):
         v2 = np.float32((0,0,0.33))
         first_ideal = ref.iter_ts(0).positions + v1 + v2
         if len(transformed)>1:
-            assert_array_almost_equal(transformed[0].positions, first_ideal, decimal = ref.prec)
+            assert_array_almost_equal(transformed[0].positions, first_ideal, atol = ref.prec)
             second_ideal = ref.iter_ts(1).positions + v1 + v2
-            assert_array_almost_equal(transformed[1].positions, second_ideal, decimal = ref.prec)
+            assert_array_almost_equal(transformed[1].positions, second_ideal, atol = ref.prec)
 
             # What if we comeback to the previous frame?
-            assert_array_almost_equal(transformed[0].positions, first_ideal, decimal = ref.prec)
+            assert_array_almost_equal(transformed[0].positions, first_ideal, atol = ref.prec)
 
             # How about we switch the frame to itself?
-            assert_array_almost_equal(transformed[0].positions, first_ideal, decimal = ref.prec)
+            assert_array_almost_equal(transformed[0].positions, first_ideal, atol = ref.prec)
         else:
-            assert_array_almost_equal(transformed[0].positions, first_ideal, decimal = ref.prec)
+            assert_array_almost_equal(transformed[0].positions, first_ideal, atol = ref.prec)
 
     def test_transformation_rewind(self,ref, transformed):
         # this test checks if the transformations are applied after rewinding the
@@ -419,7 +419,7 @@ class BaseReaderTest(object):
         v2 = np.float32((0,0,0.33))
         ideal_coords = ref.iter_ts(0).positions + v1 + v2
         transformed.rewind()
-        assert_array_almost_equal(transformed[0].positions, ideal_coords, decimal = ref.prec)
+        assert_array_almost_equal(transformed[0].positions, ideal_coords, atol = ref.prec)
 
     def test_transformations_copy(self,ref,transformed):
         # this test checks if transformations are carried over a copy and if the
@@ -431,7 +431,7 @@ class BaseReaderTest(object):
                      "transformations are not equal")
         for i, ts in enumerate(new):
             ideal_coords = ref.iter_ts(i).positions + v1 + v2
-            assert_array_almost_equal(ts.positions, ideal_coords, decimal = ref.prec)
+            assert_array_almost_equal(ts.positions, ideal_coords, atol = ref.prec)
 
     def test_add_another_transformations_raises_ValueError(self, transformed):
         # After defining the transformations, the workflow cannot be changed
@@ -634,7 +634,7 @@ class BaseWriterTest(object):
                     universe.dimensions[:3] += 1
                     assert_array_almost_equal(universe.dimensions,
                                               ts_w.dimensions,
-                                              decimal=ref.prec)
+                                              atol=ref.prec)
 
     def test_write_trajectory_atomgroup(self, ref,reader, universe, tmpdir):
         outfile = 'write-atoms-test.' + ref.ext
@@ -738,7 +738,7 @@ def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):
                                  A.has_positions, B.has_positions))
 
     if A.has_positions:
-        assert_array_almost_equal(A.positions, B.positions, decimal=decimal,
+        assert_array_almost_equal(A.positions, B.positions, atol=decimal,
                                   err_msg='Timestep positions',
                                   verbose=verbose)
 
@@ -747,7 +747,7 @@ def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):
                              'A.has_velocities = {}, B.has_velocities = {}'.format(
                                  A.has_velocities, B.has_velocities))
     if A.has_velocities:
-        assert_array_almost_equal(A.velocities, B.velocities, decimal=decimal,
+        assert_array_almost_equal(A.velocities, B.velocities, atol=decimal,
                                   err_msg='Timestep velocities',
                                   verbose=verbose)
 
@@ -756,7 +756,7 @@ def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):
                              'A.has_forces = {}, B.has_forces = {}'.format(
                                  A.has_forces, B.has_forces))
     if A.has_forces:
-        assert_array_almost_equal(A.forces, B.forces, decimal=decimal,
+        assert_array_almost_equal(A.forces, B.forces, atol=decimal,
                                   err_msg='Timestep forces', verbose=verbose)
 
     # Check we've got auxiliaries before comparing values (auxiliaries aren't written

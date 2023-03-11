@@ -29,7 +29,7 @@ from scipy.io import netcdf_file
 import pytest
 from numpy.testing import (
     assert_equal,
-    assert_almost_equal
+    assert_allclose
 )
 from MDAnalysis.coordinates.TRJ import NCDFReader, NCDFWriter
 
@@ -62,8 +62,8 @@ class _NCDFReaderTest(_TRJReaderTest):
 
     def test_dt(self, universe):
         ref = 0.0
-        assert_almost_equal(ref, universe.trajectory.dt, self.prec)
-        assert_almost_equal(ref, universe.trajectory.ts.dt, self.prec)
+        assert_allclose(ref, universe.trajectory.dt, self.prec)
+        assert_allclose(ref, universe.trajectory.ts.dt, self.prec)
 
     def test_get_writer(self, universe):
         with universe.trajectory.Writer('out.ncdf') as w:
@@ -156,7 +156,7 @@ class TestNCDFReader2(object):
                            ], [-0.44717646, 18.61727142, 12.59919548],
                           [-0.60952115, 19.47885513, 11.22137547]],
                          dtype=np.float32)
-        assert_almost_equal(ref_1, u.atoms.positions[:3], self.prec)
+        assert_allclose(ref_1, u.atoms.positions[:3], self.prec)
 
     def test_positions_2(self, u):
         """Check positions on second frame"""
@@ -165,7 +165,7 @@ class TestNCDFReader2(object):
                            ], [-0.46643803, 18.60186768, 12.646698],
                           [-0.46567637, 19.49173927, 11.21922874]],
                          dtype=np.float32)
-        assert_almost_equal(ref_2, u.atoms.positions[:3], self.prec)
+        assert_allclose(ref_2, u.atoms.positions[:3], self.prec)
 
     def test_forces_1(self, u):
         """Check forces on first frame"""
@@ -174,7 +174,7 @@ class TestNCDFReader2(object):
                            ], [2.97547197, 29.84169388, 11.12069607],
                           [-15.93093777, 14.43616867, 30.25889015]],
                          dtype=np.float32)
-        assert_almost_equal(ref_1, u.atoms.forces[:3], self.prec)
+        assert_allclose(ref_1, u.atoms.forces[:3], self.prec)
 
     def test_forces_2(self, u):
         """Check forces on second frame"""
@@ -183,22 +183,22 @@ class TestNCDFReader2(object):
                            ], [-18.90058327, 27.20145798, 1.95245135],
                           [-31.08556366, 14.95863628, 41.10367966]],
                          dtype=np.float32)
-        assert_almost_equal(ref_2, u.atoms.forces[:3], self.prec)
+        assert_allclose(ref_2, u.atoms.forces[:3], self.prec)
 
     def test_time_1(self, u):
         """Check time on first frame"""
         ref = 35.02
-        assert_almost_equal(ref, u.trajectory[0].time, self.prec)
+        assert_allclose(ref, u.trajectory[0].time, self.prec)
 
     def test_time_2(self, u):
         """Check time on second frame"""
         ref = 35.04
-        assert_almost_equal(ref, u.trajectory[1].time, self.prec)
+        assert_allclose(ref, u.trajectory[1].time, self.prec)
 
     def test_dt(self, u):
         ref = 0.02
-        assert_almost_equal(ref, u.trajectory.dt, self.prec)
-        assert_almost_equal(ref, u.trajectory.ts.dt, self.prec)
+        assert_allclose(ref, u.trajectory.dt, self.prec)
+        assert_allclose(ref, u.trajectory.ts.dt, self.prec)
 
     def test_box(self, u):
         for ts in u.trajectory:
@@ -257,7 +257,7 @@ class TestNCDFReader3(object):
     @pytest.mark.parametrize('index,expected', ((0, 0), (8, 1)))
     def test_positions(self, universe, index, expected):
         universe.trajectory[index]
-        assert_almost_equal(self.coord_refs[expected],
+        assert_allclose(self.coord_refs[expected],
                             universe.atoms.positions[:3], self.prec)
 
     @pytest.mark.parametrize('index,expected', ((0, 0), (8, 1)))
@@ -267,7 +267,7 @@ class TestNCDFReader3(object):
         and converted the units from those stored in the NetCDF file.
         """
         universe.trajectory[index]
-        assert_almost_equal(self.frc_refs[expected] * 4.184,
+        assert_allclose(self.frc_refs[expected] * 4.184,
                             universe.atoms.forces[:3], self.prec)
 
     @pytest.mark.parametrize('index,expected', ((0, 0), (8, 1)))
@@ -277,12 +277,12 @@ class TestNCDFReader3(object):
         should change the values from Angstrom/AKMA time unit to Angstrom/ps.
         """
         universe.trajectory[index]
-        assert_almost_equal(self.vel_refs[expected] * 20.455,
+        assert_allclose(self.vel_refs[expected] * 20.455,
                             universe.atoms.velocities[:3], self.prec)
 
     @pytest.mark.parametrize('index,expected', ((0, 1.0), (8, 9.0)))
     def test_time(self, universe, index, expected):
-        assert_almost_equal(expected, universe.trajectory[index].time,
+        assert_allclose(expected, universe.trajectory[index].time,
                             self.prec)
 
     def test_nframes(self, universe):
@@ -290,13 +290,13 @@ class TestNCDFReader3(object):
 
     def test_dt(self, universe):
         ref = 1.0
-        assert_almost_equal(ref, universe.trajectory.dt, self.prec)
-        assert_almost_equal(ref, universe.trajectory.ts.dt, self.prec)
+        assert_allclose(ref, universe.trajectory.dt, self.prec)
+        assert_allclose(ref, universe.trajectory.ts.dt, self.prec)
 
     @pytest.mark.parametrize('index,expected', ((0, 0), (8, 1)))
     def test_box(self, universe, index, expected):
         universe.trajectory[index]
-        assert_almost_equal(self.box_refs[expected], universe.dimensions)
+        assert_allclose(self.box_refs[expected], universe.dimensions)
 
 
 class _NCDFGenerator(object):
@@ -465,7 +465,7 @@ class TestScaleFactorImplementation(_NCDFGenerator):
             self.create_ncdf(params)
             u = mda.Universe(params['filename'])
             for ts in u.trajectory:
-                assert_almost_equal(ts.positions[0], expected, self.prec)
+                assert_allclose(ts.positions[0], expected, self.prec)
 
     def test_scale_factor_velocities(self, tmpdir):
         mutation = {'scale_factor': 'velocities', 'scale_factor_value': 3.0}
@@ -475,7 +475,7 @@ class TestScaleFactorImplementation(_NCDFGenerator):
             self.create_ncdf(params)
             u = mda.Universe(params['filename'])
             for ts in u.trajectory:
-                assert_almost_equal(ts.velocities[0], expected, self.prec)
+                assert_allclose(ts.velocities[0], expected, self.prec)
 
     def test_scale_factor_forces(self, tmpdir):
         mutation = {'scale_factor': 'forces', 'scale_factor_value': 10.0}
@@ -485,7 +485,7 @@ class TestScaleFactorImplementation(_NCDFGenerator):
             self.create_ncdf(params)
             u = mda.Universe(params['filename'])
             for ts in u.trajectory:
-                assert_almost_equal(ts.forces[0], expected, self.prec)
+                assert_allclose(ts.forces[0], expected, self.prec)
 
     @pytest.mark.parametrize('mutation,expected', (
         ({'scale_factor': 'cell_lengths', 'scale_factor_value': 0.75},
@@ -499,7 +499,7 @@ class TestScaleFactorImplementation(_NCDFGenerator):
             self.create_ncdf(params)
             u = mda.Universe(params['filename'])
             for ts in u.trajectory:
-                assert_almost_equal(ts.dimensions, expected, self.prec)
+                assert_allclose(ts.dimensions, expected, self.prec)
 
     def test_scale_factor_not_float(self, tmpdir):
         mutation = {'scale_factor': 'coordinates',
@@ -699,17 +699,17 @@ class _NCDFWriterTest(object):
         # check that the trajectories are identical for each time step
         for orig_ts, written_ts in zip(universe.trajectory,
                                        uw.trajectory):
-            assert_almost_equal(written_ts._pos, orig_ts._pos, self.prec,
+            assert_allclose(written_ts._pos, orig_ts._pos, self.prec,
                                       err_msg="coordinate mismatch between "
                                               "original and written trajectory at "
                                               "frame %d (orig) vs %d (written)" % (
                                                   orig_ts.frame,
                                                   written_ts.frame))
             # not a good test because in the example trajectory all times are 0
-            assert_almost_equal(orig_ts.time, written_ts.time, self.prec,
+            assert_allclose(orig_ts.time, written_ts.time, self.prec,
                                 err_msg="Time for step {0} are not the "
                                         "same.".format(orig_ts.frame))
-            assert_almost_equal(written_ts.dimensions,
+            assert_allclose(written_ts.dimensions,
                                       orig_ts.dimensions,
                                       self.prec,
                                       err_msg="unitcells are not identical")
@@ -737,7 +737,7 @@ class _NCDFWriterTest(object):
                                      "variable '{0}'".format(k))
             else:
                 try:
-                    assert_almost_equal(v[:], v_new[:], self.prec,
+                    assert_allclose(v[:], v_new[:], self.prec,
                                               err_msg="Variable '{0}' not "
                                                       "written correctly".format(
                                                   k))
@@ -757,21 +757,21 @@ class _NCDFWriterTest(object):
 
         for orig_ts, written_ts in zip(trr.trajectory,
                                        uw.trajectory):
-            assert_almost_equal(written_ts._pos, orig_ts._pos, self.prec,
+            assert_allclose(written_ts._pos, orig_ts._pos, self.prec,
                                       err_msg="coordinate mismatch between "
                                               "original and written trajectory at "
                                               "frame {0} (orig) vs {1} (written)".format(
                                           orig_ts.frame, written_ts.frame))
-            assert_almost_equal(written_ts._velocities,
+            assert_allclose(written_ts._velocities,
                                       orig_ts._velocities, self.prec,
                                       err_msg="velocity mismatch between "
                                               "original and written trajectory at "
                                               "frame {0} (orig) vs {1} (written)".format(
                                           orig_ts.frame, written_ts.frame))
-            assert_almost_equal(orig_ts.time, written_ts.time, self.prec,
+            assert_allclose(orig_ts.time, written_ts.time, self.prec,
                                 err_msg="Time for step {0} are not the "
                                         "same.".format(orig_ts.frame))
-            assert_almost_equal(written_ts.dimensions,
+            assert_allclose(written_ts.dimensions,
                                       orig_ts.dimensions,
                                       self.prec,
                                       err_msg="unitcells are not identical")
@@ -790,16 +790,16 @@ class _NCDFWriterTest(object):
 
         for orig_ts, written_ts in zip(universe.trajectory,
                                        uw.trajectory):
-            assert_almost_equal(p.positions, pw.positions, self.prec,
+            assert_allclose(p.positions, pw.positions, self.prec,
                                       err_msg="coordinate mismatch between "
                                               "original and written trajectory at "
                                               "frame %d (orig) vs %d (written)" % (
                                                   orig_ts.frame,
                                                   written_ts.frame))
-            assert_almost_equal(orig_ts.time, written_ts.time, self.prec,
+            assert_allclose(orig_ts.time, written_ts.time, self.prec,
                                 err_msg="Time for step {0} are not the "
                                         "same.".format(orig_ts.frame))
-            assert_almost_equal(written_ts.dimensions,
+            assert_allclose(written_ts.dimensions,
                                       orig_ts.dimensions,
                                       self.prec,
                                       err_msg="unitcells are not identical")
@@ -860,26 +860,26 @@ class TestNCDFWriterVelsForces(object):
 
         # test that the two reference states differ
         for ts1, ts2 in zip(u1.trajectory, u2.trajectory):
-            assert_almost_equal(ts1._pos + 300, ts2._pos)
-            assert_almost_equal(ts1._velocities + 300, ts2._velocities)
-            assert_almost_equal(ts1._forces + 300, ts2._forces)
+            assert_allclose(ts1._pos + 300, ts2._pos)
+            assert_allclose(ts1._velocities + 300, ts2._velocities)
+            assert_allclose(ts1._forces + 300, ts2._forces)
 
         u = mda.Universe(self.top, outfile)
         # check the trajectory contents match reference universes
         for ts, ref_ts in zip(u.trajectory, [u1.trajectory.ts, u2.trajectory.ts]):
             if pos:
-                assert_almost_equal(ts._pos, ref_ts._pos, self.prec)
+                assert_allclose(ts._pos, ref_ts._pos, self.prec)
             else:
                 with pytest.raises(mda.NoDataError):
                     getattr(ts, 'positions')
             if vel:
-                assert_almost_equal(ts._velocities, ref_ts._velocities,
+                assert_allclose(ts._velocities, ref_ts._velocities,
                                     self.prec)
             else:
                 with pytest.raises(mda.NoDataError):
                     getattr(ts, 'velocities')
             if force:
-                assert_almost_equal(ts._forces, ref_ts._forces, self.prec)
+                assert_allclose(ts._forces, ref_ts._forces, self.prec)
             else:
                 with pytest.raises(mda.NoDataError):
                     getattr(ts, 'forces')
@@ -976,29 +976,29 @@ class TestNCDFWriterScaleFactors:
         assert sfactors1['forces'] == sfrcs
 
         # check that the stored values are indeed scaled
-        assert_almost_equal(universe.trajectory.time / stime,
+        assert_allclose(universe.trajectory.time / stime,
                             self.get_variable(outfile, 'time', 0), 4)
-        assert_almost_equal(universe.dimensions[:3] / slengths,
+        assert_allclose(universe.dimensions[:3] / slengths,
                             self.get_variable(outfile, 'cell_lengths', 0), 4)
-        assert_almost_equal(universe.dimensions[3:] / sangles,
+        assert_allclose(universe.dimensions[3:] / sangles,
                             self.get_variable(outfile, 'cell_angles', 0), 4)
-        assert_almost_equal(universe.atoms.positions / scoords,
+        assert_allclose(universe.atoms.positions / scoords,
                             self.get_variable(outfile, 'coordinates', 0), 4)
-        assert_almost_equal(universe.atoms.velocities / svels,
+        assert_allclose(universe.atoms.velocities / svels,
                             self.get_variable(outfile, 'velocities', 0), 4)
         # note: kJ/mol -> kcal/mol = 4.184 conversion
-        assert_almost_equal(universe.atoms.forces / (sfrcs * 4.184),
+        assert_allclose(universe.atoms.forces / (sfrcs * 4.184),
                             self.get_variable(outfile, 'forces', 0), 4)
 
         # check that the individual components were saved/read properly
         for ts1, ts3 in zip(universe.trajectory, universe3.trajectory):
-            assert_almost_equal(ts1.time, ts3.time)
-            assert_almost_equal(ts1.dimensions, ts3.dimensions)
-            assert_almost_equal(universe.atoms.positions,
+            assert_allclose(ts1.time, ts3.time)
+            assert_allclose(ts1.dimensions, ts3.dimensions)
+            assert_allclose(universe.atoms.positions,
                                 universe3.atoms.positions, 4)
-            assert_almost_equal(universe.atoms.velocities,
+            assert_allclose(universe.atoms.velocities,
                                 universe3.atoms.velocities, 4)
-            assert_almost_equal(universe.atoms.forces,
+            assert_allclose(universe.atoms.forces,
                                 universe3.atoms.forces, 4)
 
 

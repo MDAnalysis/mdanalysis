@@ -42,7 +42,7 @@ def test_posavging_fwd(posaveraging_universes):
     for ts in posaveraging_universes.trajectory:
         avgd[...,ts.frame] = ts.positions.copy()
         
-    assert_array_almost_equal(ref_matrix_fwd, avgd[1,:,-1], decimal=5)   
+    assert_array_almost_equal(ref_matrix_fwd, avgd[1,:,-1], atol=1e-05)   
 
 def test_posavging_bwd(posaveraging_universes):
     '''
@@ -56,7 +56,7 @@ def test_posavging_bwd(posaveraging_universes):
     back_avgd = np.empty(size)
     for ts in posaveraging_universes.trajectory[::-1]:
         back_avgd[...,9-ts.frame] = ts.positions.copy()
-    assert_array_almost_equal(ref_matrix_bwd, back_avgd[1,:,-1], decimal=5)
+    assert_array_almost_equal(ref_matrix_bwd, back_avgd[1,:,-1], atol=1e-05)
 
 def test_posavging_reset(posaveraging_universes):
     '''
@@ -69,7 +69,7 @@ def test_posavging_reset(posaveraging_universes):
     for ts in posaveraging_universes.trajectory:
         avgd[...,ts.frame] = ts.positions.copy()
     after_reset = ts.positions.copy()
-    assert_array_almost_equal(avgd[...,0], after_reset, decimal=5)
+    assert_array_almost_equal(avgd[...,0], after_reset, atol=1e-05)
 
 def test_posavging_specific(posaveraging_universes):
     '''
@@ -87,7 +87,7 @@ def test_posavging_specific(posaveraging_universes):
     for ts in posaveraging_universes.trajectory[fr_list]:
         specr_avgd[...,idx] = ts.positions.copy()
         idx += 1
-    assert_array_almost_equal(ref_matrix_specr, specr_avgd[1,:,-1], decimal=5) 
+    assert_array_almost_equal(ref_matrix_specr, specr_avgd[1,:,-1], atol=1e-05) 
     
 def test_posavging_specific_noreset(posaveraging_universes_noreset):
     '''
@@ -105,7 +105,7 @@ def test_posavging_specific_noreset(posaveraging_universes_noreset):
     for ts in posaveraging_universes_noreset.trajectory[fr_list]:
         specr_avgd[...,idx] = ts.positions.copy()
         idx += 1
-    assert_array_almost_equal(ref_matrix_specr, specr_avgd[1,:,-1], decimal=5) 
+    assert_array_almost_equal(ref_matrix_specr, specr_avgd[1,:,-1], atol=1e-05) 
     
 
 

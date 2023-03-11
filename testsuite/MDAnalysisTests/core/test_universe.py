@@ -32,7 +32,6 @@ import warnings
 import numpy as np
 from numpy.testing import (
     assert_allclose,
-    assert_almost_equal,
     assert_equal,
     assert_array_equal,
 )
@@ -291,7 +290,7 @@ class TestUniverseFromSmiles(object):
             [-0.41925883,  0.9689095 , -0.3415968 ],
             [ 0.03148226, -0.03256683,  1.1267245 ],
             [ 1.0077721 , -0.10363862, -0.41727486]]], dtype=np.float32)
-        assert_almost_equal(u.trajectory.coordinate_array, expected)
+        assert_allclose(u.trajectory.coordinate_array, expected)
 
 
 class TestUniverse(object):
@@ -333,7 +332,7 @@ class TestUniverse(object):
         ref = mda.Universe(PSF, PDB_small)
         u = mda.Universe(PDB_small)
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
-        assert_almost_equal(u.atoms.positions, ref.atoms.positions)
+        assert_allclose(u.atoms.positions, ref.atoms.positions)
 
     def test_load_multiple_list(self):
         # Universe(top, [trj, trj, ...])
@@ -372,14 +371,14 @@ class TestTransformations(object):
         u = mda.Universe(PSF,DCD, transformations=translate([10,10,10]))
         uref = mda.Universe(PSF,DCD)
         ref = translate([10,10,10])(uref.trajectory.ts)
-        assert_almost_equal(u.trajectory.ts.positions, ref, decimal=6)
+        assert_allclose(u.trajectory.ts.positions, ref, atol=1e-06)
 
     def test_list(self):
         workflow = [translate([10,10,0]), translate([0,0,10])]
         u = mda.Universe(PSF,DCD, transformations=workflow)
         uref = mda.Universe(PSF,DCD)
         ref = translate([10,10,10])(uref.trajectory.ts)
-        assert_almost_equal(u.trajectory.ts.positions, ref, decimal=6)
+        assert_allclose(u.trajectory.ts.positions, ref, atol=1e-06)
 
 class TestGuessMasses(object):
     """Tests the Mass Guesser in topology.guessers
@@ -580,7 +579,7 @@ class TestInMemoryUniverse(object):
         universe = MDAnalysis.Universe(PDB_small, DCD)
         dt = universe.trajectory.dt
         universe.transfer_to_memory(step=2)
-        assert_almost_equal(dt * 2, universe.trajectory.dt,
+        assert_allclose(dt * 2, universe.trajectory.dt,
                             err_msg="Unexpected in-memory timestep: "
                             + "dt not updated with step information")
 

@@ -26,8 +26,8 @@ import pytest
 import copy
 
 from numpy.testing import (assert_allclose, assert_equal,
-                           assert_array_almost_equal, assert_array_equal,
-                           assert_almost_equal)
+                           assert_array_equal,
+                           )
 
 import MDAnalysis
 from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import (
@@ -236,8 +236,8 @@ class TestHydrogenBondAnalysisIdeal(object):
         assert_equal(donor_index, 0)
         assert_equal(hydrogen_index, 2)
         assert_equal(acceptor_index, 3)
-        assert_almost_equal(da_dst, 2.5)
-        assert_almost_equal(angle, 180)
+        assert_allclose(da_dst, 2.5)
+        assert_allclose(angle, 180)
 
     def test_count_by_time(self, hydrogen_bonds):
         ref_times = np.array([0, 1, 2]) # u.trajectory.dt is 1

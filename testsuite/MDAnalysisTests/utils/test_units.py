@@ -23,7 +23,7 @@
 import pytest
 
 import numpy as np
-from numpy.testing import assert_equal, assert_almost_equal
+from numpy.testing import assert_equal,assert_allclose
 
 from MDAnalysis import units
 
@@ -57,14 +57,14 @@ class TestConstants(object):
 
     @pytest.mark.parametrize('name, value', constants_reference)
     def test_constant(self, name, value):
-        assert_almost_equal(units.constants[name], value)
+        assert_allclose(units.constants[name], value)
 
 
 class TestConversion(object):
     @staticmethod
     def _assert_almost_equal_convert(value, u1, u2, ref):
         val = units.convert(value, u1, u2)
-        assert_almost_equal(val, ref,
+        assert_allclose(val, ref,
                             err_msg="Conversion {0} --> {1} failed".format(u1, u2))
 
     nm = 12.34567

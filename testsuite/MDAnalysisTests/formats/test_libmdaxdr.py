@@ -24,8 +24,8 @@ import pickle
 
 import numpy as np
 
-from numpy.testing import (assert_almost_equal, assert_array_almost_equal,
-                           assert_array_equal, assert_equal)
+from numpy.testing import (assert_allclose,assert_array_equal,
+                           assert_equal)
 
 from MDAnalysis.lib.formats.libmdaxdr import TRRFile, XTCFile
 
@@ -136,10 +136,10 @@ class TestCommonAPI(object):
         assert old_reader.tell() == new_reader.tell()
 
         assert_equal(old_reader.offsets, new_reader.offsets)
-        assert_almost_equal(frame.x, new_frame.x)
-        assert_almost_equal(frame.box, new_frame.box)
+        assert_allclose(frame.x, new_frame.x)
+        assert_allclose(frame.box, new_frame.box)
         assert frame.step == new_frame.step
-        assert_almost_equal(frame.time, new_frame.time)
+        assert_allclose(frame.time, new_frame.time)
 
     def test_pickle(self, reader):
         mid = len(reader) // 2
@@ -258,13 +258,13 @@ def test_time(xdrfile, fname):
 def test_box_xtc(xtc):
     box = np.eye(3) * 20
     for frame in xtc:
-        assert_array_almost_equal(frame.box, box, decimal=3)
+        assert_array_almost_equal(frame.box, box, atol=1e-03)
 
 
 def test_xyz_xtc(xtc):
     ones = np.ones(30).reshape(10, 3)
     for i, frame in enumerate(xtc):
-        assert_array_almost_equal(frame.x, ones * i, decimal=3)
+        assert_array_almost_equal(frame.x, ones * i, atol=1e-03)
 
 
 def test_box_trr(trr):
@@ -293,7 +293,7 @@ def test_forces_trr(trr):
 
 def test_lmbda_trr(trr):
     for i, frame in enumerate(trr):
-        assert_almost_equal(frame.lmbda, .01 * i)
+        assert_allclose(frame.lmbda, .01 * i)
 
 
 @pytest.fixture
@@ -324,13 +324,13 @@ def test_written_prec_xtc(written_xtc):
 def test_written_box_xtc(written_xtc):
     box = np.eye(3) * 20
     for frame in written_xtc:
-        assert_array_almost_equal(frame.box, box, decimal=3)
+        assert_array_almost_equal(frame.box, box, atol=1e-03)
 
 
 def test_written_xyx_xtc(written_xtc):
     ones = np.ones(30).reshape(10, 3)
     for i, frame in enumerate(written_xtc):
-        assert_array_almost_equal(frame.x, ones * i, decimal=3)
+        assert_array_almost_equal(frame.x, ones * i, atol=1e-03)
 
 
 @pytest.mark.parametrize(

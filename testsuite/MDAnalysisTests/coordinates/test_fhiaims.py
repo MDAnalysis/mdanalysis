@@ -31,8 +31,7 @@ from MDAnalysisTests.coordinates.base import (
     _SingleFrameReader, BaseWriterTest)
 from MDAnalysisTests.datafiles import FHIAIMS
 from numpy.testing import (assert_equal,
-                           assert_array_almost_equal,
-                           assert_almost_equal)
+                           assert_allclose)
 
 
 @pytest.fixture(scope='module')
@@ -115,7 +114,7 @@ class TestFHIAIMSReader(object):
         return StringIO(buffer)
 
     def test_single_file(self, universe, universe_from_one_file):
-        assert_almost_equal(universe.atoms.positions, universe_from_one_file.atoms.positions,
+        assert_allclose(universe.atoms.positions, universe_from_one_file.atoms.positions,
                             self.prec, "FHIAIMSReader failed to load universe from single file")
 
     def test_uses_FHIAIMSReader(self, universe):
@@ -125,7 +124,7 @@ class TestFHIAIMSReader(object):
                           FHIAIMSReader), "failed to choose FHIAIMSReader"
 
     def test_dimensions(self, ref, universe):
-        assert_almost_equal(
+        assert_allclose(
             ref.dimensions, universe.dimensions,
             self.prec, "FHIAIMSReader failed to get unitcell dimensions")
 
@@ -136,7 +135,7 @@ class TestFHIAIMSReader(object):
 
     def test_fhiaims_positions(self, ref, universe):
         # first particle
-        assert_almost_equal(ref.pos_atom1,
+        assert_allclose(ref.pos_atom1,
                             universe.atoms.positions[0],
                             self.prec,
                             "FHIAIMSReader failed to read coordinates properly")
@@ -173,7 +172,7 @@ class TestFHIAIMSReader(object):
 
     def test_good_input_with_velocity(self, good_input_with_velocity):
         u = mda.Universe(good_input_with_velocity, format="FHIAIMS")
-        assert_almost_equal(u.atoms.velocities[0],
+        assert_allclose(u.atoms.velocities[0],
                             np.asarray([0.1, 0.1, 0.1]),
                             self.prec,
                             "FHIAIMSReader failed to read velocities properly")
@@ -183,7 +182,7 @@ class TestFHIAIMSReader(object):
         u_mixed = mda.Universe(good_input_mixed_units, format="FHIAIMS")
         print(u_natural.atoms.positions)
         print(u_mixed.atoms.positions)
-        assert_almost_equal(u_natural.atoms.positions,
+        assert_allclose(u_natural.atoms.positions,
                             u_mixed.atoms.positions,
                             self.prec,
                             "FHIAIMSReader failed to read positions in lattice units properly")
@@ -202,7 +201,7 @@ class TestFHIAIMSWriter(BaseWriterTest):
         """
         universe.atoms.write(outfile)
         u = mda.Universe(FHIAIMS, outfile)
-        assert_almost_equal(u.atoms.positions,
+        assert_allclose(u.atoms.positions,
                             universe.atoms.positions, self.prec,
                             err_msg="Writing FHIAIMS file with FHIAIMSWriter "
                                     "does not reproduce original coordinates")
@@ -213,7 +212,7 @@ class TestFHIAIMSWriter(BaseWriterTest):
         universe_in = mda.Universe(good_input_with_velocity, format="FHIAIMS")
         universe_in.atoms.write(outfile)
         u = mda.Universe(outfile)
-        assert_almost_equal(u.atoms.velocities,
+        assert_allclose(u.atoms.velocities,
                             universe_in.atoms.velocities, self.prec,
                             err_msg="Writing FHIAIMS file with FHIAIMSWriter "
                                     "does not reproduce original velocities")
@@ -235,6 +234,6 @@ class TestFHIAIMSWriter(BaseWriterTest):
                 assert line.endswith(
                     'H'), "Line written incorrectly with FHIAIMSWriter"
                 line = np.asarray(line.split()[1:-1], dtype=np.float32)
-                assert_almost_equal(line, [0.1, 0.2, 0.3], self.prec,
+                assert_allclose(line, [0.1, 0.2, 0.3], self.prec,
                                     err_msg="Writing FHIAIMS file with FHIAIMSWriter "
                                     "does not reproduce original positions")

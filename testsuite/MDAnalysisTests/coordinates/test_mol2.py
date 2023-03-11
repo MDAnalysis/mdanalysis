@@ -26,7 +26,7 @@ import os
 from numpy.testing import (
     assert_equal, assert_array_equal,
     assert_array_almost_equal, TestCase,
-    assert_almost_equal
+    assert_allclose
 )
 
 from MDAnalysisTests.datafiles import (
@@ -213,6 +213,6 @@ def test_mol2_universe_write(tmpdir):
 
         u2 = mda.Universe(outfile)
 
-        assert_almost_equal(u.atoms.positions, u2.atoms.positions)
+        assert_allclose(u.atoms.positions, u2.atoms.positions)
         # MDA does not current implement @<TRIPOS>CRYSIN reading
         assert u2.dimensions is None

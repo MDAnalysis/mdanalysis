@@ -23,7 +23,7 @@
 import os
 import pytest
 import numpy as np
-from numpy.testing import assert_almost_equal, assert_equal
+from numpy.testing import assert_allclose, assert_equal
 
 from MDAnalysis.lib._augment import augment_coordinates, undo_augment
 from MDAnalysis.lib.distances import apply_PBC, transform_StoR
@@ -91,7 +91,7 @@ def test_augment(b, q, res):
         cs = np.sort(cs, axis=0)
     else:
         cs = list()
-    assert_almost_equal(aug, cs, decimal=5)
+    assert_allclose(aug, cs, atol=1e-05)
 
 
 @pytest.mark.parametrize('b', (

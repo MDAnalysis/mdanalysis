@@ -23,7 +23,7 @@
 import numpy as np
 import pytest
 from numpy.testing import (
-    assert_almost_equal,
+    assert_allclose,
     assert_equal,
 )
 
@@ -184,9 +184,9 @@ class TestAtomGroupTrajAccess(object):
 
         ag.positions = new
 
-        assert_almost_equal(ag.positions, new, decimal=5)
-        assert_almost_equal(u.trajectory.ts.positions[[101, 107, 109]],
-                            new, decimal=5)
+        assert_allclose(ag.positions, new, atol=1e-05)
+        assert_allclose(u.trajectory.ts.positions[[101, 107, 109]],
+                            new, atol=1e-05)
 
     def test_atomgroup_velocities_setting(self, u, vel):
         ag = u.atoms[[101, 107, 109]]
@@ -198,9 +198,9 @@ class TestAtomGroupTrajAccess(object):
         if vel:
             ag.velocities = new
 
-            assert_almost_equal(ag.velocities, new, decimal=5)
-            assert_almost_equal(
-                u.trajectory.ts.velocities[[101, 107, 109]], new, decimal=5)
+            assert_allclose(ag.velocities, new, atol=1e-05)
+            assert_allclose(
+                u.trajectory.ts.velocities[[101, 107, 109]], new, atol=1e-05)
         else:
             with pytest.raises(NoDataError):
                 setattr(ag, 'velocities', new)
@@ -217,9 +217,9 @@ class TestAtomGroupTrajAccess(object):
         if force:
             ag.forces = new
 
-            assert_almost_equal(ag.forces, new, decimal=5)
-            assert_almost_equal(u.trajectory.ts.forces[[101, 107, 109]],
-                                new, decimal=5)
+            assert_allclose(ag.forces, new, atol=1e-05)
+            assert_allclose(u.trajectory.ts.forces[[101, 107, 109]],
+                                new, atol=1e-05)
         else:
             with pytest.raises(NoDataError):
                 setattr(ag, 'forces', new)
@@ -232,8 +232,8 @@ class TestAtomGroupTrajAccess(object):
 
         at.position = new
 
-        assert_almost_equal(at.position, new, decimal=5)
-        assert_almost_equal(u.trajectory.ts.positions[94], new, decimal=5)
+        assert_allclose(at.position, new, atol=1e-05)
+        assert_allclose(u.trajectory.ts.positions[94], new, atol=1e-05)
 
     def test_atom_velocity_setting(self, u, vel):
         at = u.atoms[94]
@@ -243,9 +243,9 @@ class TestAtomGroupTrajAccess(object):
         if vel:
             at.velocity = new
 
-            assert_almost_equal(at.velocity, new, decimal=5)
-            assert_almost_equal(u.trajectory.ts.velocities[94], new,
-                                decimal=5)
+            assert_allclose(at.velocity, new, atol=1e-05)
+            assert_allclose(u.trajectory.ts.velocities[94], new,
+                                atol=1e-05)
         else:
             with pytest.raises(NoDataError):
                 setattr(at, 'velocity', new)
@@ -260,9 +260,9 @@ class TestAtomGroupTrajAccess(object):
         if force:
             at.force = new
 
-            assert_almost_equal(at.force, new, decimal=5)
-            assert_almost_equal(u.trajectory.ts.forces[94], new,
-                                decimal=5)
+            assert_allclose(at.force, new, atol=1e-05)
+            assert_allclose(u.trajectory.ts.forces[94], new,
+                                atol=1e-05)
         else:
             with pytest.raises(NoDataError):
                 setattr(at, 'force', new)
@@ -342,26 +342,26 @@ class TestGROVelocities(object):
         u = MDAnalysis.Universe(GRO_velocity)
         all_atoms = u.select_atoms('all')
         # check for read-in and unit conversion for .gro file velocities for the entire AtomGroup:
-        assert_almost_equal(all_atoms.velocities, reference_velocities,
+        assert_allclose(all_atoms.velocities, reference_velocities,
                             self.prec,
                             err_msg="problem reading .gro file velocities")
         # likewise for each individual atom (to be robust--in case someone alters the individual atom property code):
-        assert_almost_equal(all_atoms[0].velocity, reference_velocities[0],
+        assert_allclose(all_atoms[0].velocity, reference_velocities[0],
                             self.prec,
                             err_msg="problem reading .gro file velocities")
-        assert_almost_equal(all_atoms[1].velocity, reference_velocities[1],
+        assert_allclose(all_atoms[1].velocity, reference_velocities[1],
                             self.prec,
                             err_msg="problem reading .gro file velocities")
-        assert_almost_equal(all_atoms[2].velocity, reference_velocities[2],
+        assert_allclose(all_atoms[2].velocity, reference_velocities[2],
                             self.prec,
                             err_msg="problem reading .gro file velocities")
-        assert_almost_equal(all_atoms[3].velocity, reference_velocities[3],
+        assert_allclose(all_atoms[3].velocity, reference_velocities[3],
                             self.prec,
                             err_msg="problem reading .gro file velocities")
-        assert_almost_equal(all_atoms[4].velocity, reference_velocities[4],
+        assert_allclose(all_atoms[4].velocity, reference_velocities[4],
                             self.prec,
                             err_msg="problem reading .gro file velocities")
-        assert_almost_equal(all_atoms[5].velocity, reference_velocities[5],
+        assert_allclose(all_atoms[5].velocity, reference_velocities[5],
                             self.prec,
                             err_msg="problem reading .gro file velocities")
 
@@ -385,7 +385,7 @@ class TestTRRForces(object):
         assert_equal(len(protein), 918)
         mean_F = np.mean(
             [protein.forces.mean(axis=0) for ts in universe.trajectory], axis=0)
-        assert_almost_equal(mean_F, reference_mean_protein_force, self.prec,
+        assert_allclose(mean_F, reference_mean_protein_force, self.prec,
                             err_msg="mean force on protein over whole trajectory does not match")
 
 
@@ -424,14 +424,14 @@ class TestAtomGroupVelocities(object):
             [2.57792854, 3.25411797, -0.75065529],
             [13.91627216, 30.17778587, -12.16669178]])
         v = ag.velocities
-        assert_almost_equal(v, ref_v,
+        assert_allclose(v, ref_v,
                             err_msg="velocities were not read correctly")
 
     def test_set_velocities(self, ag):
         ag = ag
         v = ag.velocities - 2.7271
         ag.velocities = v
-        assert_almost_equal(ag.velocities, v,
+        assert_allclose(ag.velocities, v,
                             err_msg="messages were not set to new value")
 
 
@@ -454,10 +454,10 @@ class TestAtomGroupForces(object):
         ag = universe.atoms[1:4]
         ref_v = np.arange(9).reshape(3, 3) * .01 + .03
         v = ag.forces
-        assert_almost_equal(v, ref_v, err_msg="forces were not read correctly")
+        assert_allclose(v, ref_v, err_msg="forces were not read correctly")
 
     def test_set_forces(self, ag):
         v = ag.forces - 2.7271
         ag.forces = v
-        assert_almost_equal(ag.forces, v,
+        assert_allclose(ag.forces, v,
                             err_msg="messages were not set to new value")

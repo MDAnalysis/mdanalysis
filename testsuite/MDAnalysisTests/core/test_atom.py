@@ -30,7 +30,7 @@ from MDAnalysisTests.datafiles import (
     PSF, DCD,
     XYZ_mini,
 )
-from numpy.testing import assert_almost_equal
+from numpy.testing import assert_allclose
 
 
 class TestAtom(object):
@@ -75,10 +75,10 @@ class TestAtom(object):
         known_pos = np.array([3.94543672, -12.4060812, -7.26820087], dtype=np.float32)
         a = atom
         # new position property (mutable)
-        assert_almost_equal(a.position, known_pos)
+        assert_allclose(a.position, known_pos)
         pos = a.position + 3.14
         a.position = pos
-        assert_almost_equal(a.position, pos)
+        assert_allclose(a.position, pos)
 
     def test_atom_selection(self, universe, atom):
         asel = universe.select_atoms('atom 4AKE 67 CG').atoms[0]

@@ -32,7 +32,6 @@ import matplotlib
 import mpl_toolkits.mplot3d
 import errno
 from numpy.testing import (
-    assert_almost_equal,
     assert_equal,
     assert_allclose,
 )
@@ -167,10 +166,10 @@ class TestHole(object):
         profile = values[0]
         assert_equal(len(profile), self.profile_length,
                      err_msg='Wrong number of points in HOLE profile')
-        assert_almost_equal(profile.rxn_coord.mean(),
+        assert_allclose(profile.rxn_coord.mean(),
                             self.rxn_coord_mean,
                             err_msg='Wrong mean HOLE rxn_coord')
-        assert_almost_equal(profile.radius.min(),
+        assert_allclose(profile.radius.min(),
                             self.radius_min,
                             err_msg='Wrong minimum HOLE radius')
 
@@ -305,15 +304,15 @@ class TestHoleAnalysis(BaseTestHole):
         data = np.transpose([(len(p), p.rxn_coord.mean(), p.radius.min())
                              for p in hole.results.profiles.values()])
         assert_equal(data[0], [401, 399], err_msg="incorrect profile lengths")
-        assert_almost_equal(data[1], [1.98767,  0.0878],
+        assert_allclose(data[1], [1.98767,  0.0878],
                             err_msg="wrong mean HOLE rxn_coord")
-        assert_almost_equal(data[2], [1.19819, 1.29628],
+        assert_allclose(data[2], [1.19819, 1.29628],
                             err_msg="wrong minimum radius")
 
     def test_min_radius(self, hole):
         values = np.array([[5., 1.19819],
                            [6., 1.29628]])
-        assert_almost_equal(hole.min_radius(), values,
+        assert_allclose(hole.min_radius(), values,
                             err_msg="min_radius() array not correct")
 
     def test_context_manager(self, universe, tmpdir):
@@ -385,7 +384,7 @@ class TestHoleAnalysis(BaseTestHole):
                 with open(file, 'r') as f:
                     line = f.read().split('CPOINT')[1].split('\n')[0]
                 arr = np.array(list(map(float, line.split())))
-                assert_almost_equal(arr, cog)
+                assert_allclose(arr, cog)
 
     # plotting
     def test_plot(self, hole, frames, profiles):
@@ -396,8 +395,8 @@ class TestHoleAnalysis(BaseTestHole):
         assert len(lines) == hole.n_frames
         for i, (line, frame, profile) in enumerate(zip(lines, frames, profiles)):
             x, y = line.get_data()
-            assert_almost_equal(x, profile.rxn_coord)
-            assert_almost_equal(y, profile.radius + i)
+            assert_allclose(x, profile.rxn_coord)
+            assert_allclose(y, profile.radius + i)
             assert line.get_label() == str(frame)
 
     def test_plot_mean_profile(self, hole, frames, profiles):
@@ -426,15 +425,15 @@ class TestHoleAnalysis(BaseTestHole):
                 poly.append(x)
         assert len(poly) == 1
         xp, yp = poly[0].get_paths()[0].vertices.T
-        assert_almost_equal(np.unique(xp), np.unique(midpoints))
-        assert_almost_equal(np.unique(yp), np.unique(ylow+yhigh))
+        assert_allclose(np.unique(xp), np.unique(midpoints))
+        assert_allclose(np.unique(yp), np.unique(ylow+yhigh))
 
         # test mean line
         lines = ax.get_lines()
         assert len(lines) == 1
         xl, yl = lines[0].get_data()
-        assert_almost_equal(xl, midpoints)
-        assert_almost_equal(yl, mean)
+        assert_allclose(xl, midpoints)
+        assert_allclose(yl, mean)
 
     @pytest.mark.skipif(sys.version_info < (3, 1),
                         reason="get_data_3d requires 3.1 or higher")
@@ -447,9 +446,9 @@ class TestHoleAnalysis(BaseTestHole):
 
         for line, frame, profile in zip(lines, frames, profiles):
             x, y, z = line.get_data_3d()
-            assert_almost_equal(x, profile.rxn_coord)
-            assert_almost_equal(np.unique(y), [frame])
-            assert_almost_equal(z, profile.radius)
+            assert_allclose(x, profile.rxn_coord)
+            assert_allclose(np.unique(y), [frame])
+            assert_allclose(z, profile.radius)
             assert line.get_label() == str(frame)
 
     @pytest.mark.skipif(sys.version_info < (3, 1),
@@ -463,10 +462,10 @@ class TestHoleAnalysis(BaseTestHole):
 
         for line, frame, profile in zip(lines, frames, profiles):
             x, y, z = line.get_data_3d()
-            assert_almost_equal(x, profile.rxn_coord)
-            assert_almost_equal(np.unique(y), [frame])
+            assert_allclose(x, profile.rxn_coord)
+            assert_allclose(np.unique(y), [frame])
             radius = np.where(profile.radius > 2.5, np.nan, profile.radius)
-            assert_almost_equal(z, radius)
+            assert_allclose(z, radius)
             assert line.get_label() == str(frame)
 
     def test_none_filename(self, tmpdir):
@@ -494,18 +493,18 @@ class TestHoleAnalysisLong(BaseTestHole):
     def test_gather(self, hole):
         gd = hole.gather(flat=False)
         for i, p in enumerate(hole.results.profiles.values()):
-            assert_almost_equal(p.rxn_coord, gd['rxn_coord'][i])
-            assert_almost_equal(p.radius, gd['radius'][i])
-            assert_almost_equal(p.cen_line_D, gd['cen_line_D'][i])
+            assert_allclose(p.rxn_coord, gd['rxn_coord'][i])
+            assert_allclose(p.radius, gd['radius'][i])
+            assert_allclose(p.cen_line_D, gd['cen_line_D'][i])
 
     def test_gather_flat(self, hole):
         gd = hole.gather(flat=True)
         i = 0
         for p in hole.results.profiles.values():
             j = i+len(p.rxn_coord)
-            assert_almost_equal(p.rxn_coord, gd['rxn_coord'][i:j])
-            assert_almost_equal(p.radius, gd['radius'][i:j])
-            assert_almost_equal(p.cen_line_D, gd['cen_line_D'][i:j])
+            assert_allclose(p.rxn_coord, gd['rxn_coord'][i:j])
+            assert_allclose(p.radius, gd['radius'][i:j])
+            assert_allclose(p.cen_line_D, gd['cen_line_D'][i:j])
             i = j
         assert_equal(i, len(gd['rxn_coord']))
 
@@ -513,7 +512,7 @@ class TestHoleAnalysisLong(BaseTestHole):
         rad = hole.min_radius()
         for (f1, p), (f2, r) in zip(hole.results.profiles.items(), rad):
             assert_equal(f1, f2)
-            assert_almost_equal(min(p.radius), r)
+            assert_allclose(min(p.radius), r)
 
     def test_over_order_parameters(self, hole):
         op = self.rmsd
@@ -577,8 +576,8 @@ class TestHoleAnalysisLong(BaseTestHole):
         coords = dct['rxn_coord']
 
         assert len(bins) == 101
-        assert_almost_equal(bins[0], coords.min())
-        assert_almost_equal(bins[-1], coords.max())
+        assert_allclose(bins[0], coords.min())
+        assert_allclose(bins[-1], coords.max())
         assert len(radii) == (len(bins)-1)
 
         # check first frame profile
@@ -603,8 +602,8 @@ class TestHoleAnalysisLong(BaseTestHole):
         assert len(bins) == 101
         low = midpoint - 0.5
         high = midpoint + 0.5
-        assert_almost_equal(bins[0], low)
-        assert_almost_equal(bins[-1], high)
+        assert_allclose(bins[0], low)
+        assert_allclose(bins[-1], high)
         assert len(radii) == (len(bins)-1)
 
         # check first frame profile
@@ -627,9 +626,9 @@ class TestHoleAnalysisLong(BaseTestHole):
         moved = brange[30:] + brange[10:30] + brange[:10]
         e_radii, e_bins = hole.bin_radii(bins=moved, range=(0.0, 0.0))
         r_radii, r_bins = hole.bin_radii(bins=100, range=(1.5, 1.5))
-        assert_almost_equal(e_bins, r_bins)
+        assert_allclose(e_bins, r_bins)
         for e, r in zip(e_radii, r_radii):
-            assert_almost_equal(e, r)
+            assert_allclose(e, r)
 
     def test_histogram_radii(self, hole):
         means, _ = hole.histogram_radii(aggregator=np.mean,
@@ -637,7 +636,7 @@ class TestHoleAnalysisLong(BaseTestHole):
         radii, _ = hole.bin_radii(bins=100)
         assert means.shape == (100,)
         for r, m in zip(radii, means):
-            assert_almost_equal(r.mean(), m)
+            assert_allclose(r.mean(), m)
 
     # plotting
 
@@ -649,8 +648,8 @@ class TestHoleAnalysisLong(BaseTestHole):
         assert len(lines) == 2
         for i, (line, frame, profile) in enumerate(zip(lines, frames[2:4], profiles[2:4])):
             x, y = line.get_data()
-            assert_almost_equal(x, profile.rxn_coord)
-            assert_almost_equal(y, profile.radius + i)
+            assert_allclose(x, profile.rxn_coord)
+            assert_allclose(y, profile.radius + i)
             assert line.get_label() == str(frame)
 
     @pytest.mark.parametrize('agg', [np.max, np.mean, np.std, np.min])
@@ -666,8 +665,8 @@ class TestHoleAnalysisLong(BaseTestHole):
         lines = ax.get_lines()
         assert len(lines) == 1
         x, y = lines[0].get_data()
-        assert_almost_equal(x, opx)
-        assert_almost_equal(y, opy)
+        assert_allclose(x, opx)
+        assert_allclose(y, opy)
 
     @pytest.mark.skipif(sys.version_info < (3, 1),
                         reason="get_data_3d requires 3.1 or higher")
@@ -683,9 +682,9 @@ class TestHoleAnalysisLong(BaseTestHole):
         assert len(lines) == hole.n_frames
         for line, opx_, profile in zip(lines, opx, profiles):
             x, y, z = line.get_data_3d()
-            assert_almost_equal(x, profile.rxn_coord)
-            assert_almost_equal(np.unique(y), np.array([opx_]))
-            assert_almost_equal(z, profile.radius)
+            assert_allclose(x, profile.rxn_coord)
+            assert_allclose(np.unique(y), np.array([opx_]))
+            assert_allclose(z, profile.radius)
 
     @pytest.mark.skipif(sys.version_info > (3, 1),
                         reason="get_data_3d requires 3.1 or higher")
@@ -701,8 +700,8 @@ class TestHoleAnalysisLong(BaseTestHole):
         assert len(lines) == hole.n_frames
         for line, opx_, profile in zip(lines, opx, profiles):
             x, y = line.get_data()
-            assert_almost_equal(x, profile.rxn_coord)
-            assert_almost_equal(np.unique(y), np.array([opx_]))
+            assert_allclose(x, profile.rxn_coord)
+            assert_allclose(np.unique(y), np.array([opx_]))
 
 @pytest.mark.skipif(executable_not_found("hole"),
                     reason="Test skipped because HOLE not found")

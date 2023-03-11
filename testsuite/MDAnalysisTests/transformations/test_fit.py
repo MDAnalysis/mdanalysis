@@ -107,7 +107,7 @@ def test_fit_translation_no_options(fit_universe):
     ref_u = fit_universe[1]
     fit_translation(test_u, ref_u)(test_u.trajectory.ts)
     # what happens when no options are passed?
-    assert_array_almost_equal(test_u.trajectory.ts.positions, ref_u.trajectory.ts.positions, decimal=6)
+    assert_array_almost_equal(test_u.trajectory.ts.positions, ref_u.trajectory.ts.positions, atol=1e-06)
 
 def test_fit_translation_residue_mismatch(fit_universe):
     test_u = fit_universe[0]
@@ -120,7 +120,7 @@ def test_fit_translation_com(fit_universe):
     ref_u = fit_universe[1]
     fit_translation(test_u, ref_u, weights="mass")(test_u.trajectory.ts)
     # what happens when the center o mass is used?
-    assert_array_almost_equal(test_u.trajectory.ts.positions, ref_u.trajectory.ts.positions, decimal=6)
+    assert_array_almost_equal(test_u.trajectory.ts.positions, ref_u.trajectory.ts.positions, atol=1e-06)
 
 
 @pytest.mark.parametrize('plane', (
@@ -139,7 +139,7 @@ def test_fit_translation_plane(fit_universe, plane):
     shiftz = np.asanyarray([0, 0, 0], np.float32)
     shiftz[idx] = -10
     ref_coordinates = ref_u.trajectory.ts.positions + shiftz
-    assert_array_almost_equal(test_u.trajectory.ts.positions, ref_coordinates, decimal=6)
+    assert_array_almost_equal(test_u.trajectory.ts.positions, ref_coordinates, atol=1e-06)
 
 
 def test_fit_translation_all_options(fit_universe):
@@ -150,7 +150,7 @@ def test_fit_translation_all_options(fit_universe):
     # the reference is 10 angstrom in the z coordinate above the test universe
     shiftz = np.asanyarray([0, 0, -10], np.float32)
     ref_coordinates = ref_u.trajectory.ts.positions + shiftz
-    assert_array_almost_equal(test_u.trajectory.ts.positions, ref_coordinates, decimal=6)
+    assert_array_almost_equal(test_u.trajectory.ts.positions, ref_coordinates, atol=1e-06)
 
 
 def test_fit_translation_transformations_api(fit_universe):
@@ -158,7 +158,7 @@ def test_fit_translation_transformations_api(fit_universe):
     ref_u = fit_universe[1]
     transform = fit_translation(test_u, ref_u)
     test_u.trajectory.add_transformations(transform)
-    assert_array_almost_equal(test_u.trajectory.ts.positions, ref_u.trajectory.ts.positions, decimal=6)
+    assert_array_almost_equal(test_u.trajectory.ts.positions, ref_u.trajectory.ts.positions, atol=1e-06)
 
 
 @pytest.mark.parametrize('universe', (
@@ -229,7 +229,7 @@ def test_fit_rot_trans_no_options(fit_universe):
     ref_u.trajectory.ts.positions = np.dot(ref_u.trajectory.ts.positions, R)
     ref_u.trajectory.ts.positions += ref_com
     fit_rot_trans(test_u, ref_u)(test_u.trajectory.ts)
-    assert_array_almost_equal(test_u.trajectory.ts.positions, ref_u.trajectory.ts.positions, decimal=3)
+    assert_array_almost_equal(test_u.trajectory.ts.positions, ref_u.trajectory.ts.positions, atol=1e-03)
 
 
 @pytest.mark.parametrize('plane', (
@@ -254,7 +254,7 @@ def test_fit_rot_trans_plane(fit_universe, plane):
     ref_com[idx] = mobile_com[idx]
     ref_u.trajectory.ts.positions += ref_com
     fit_rot_trans(test_u, ref_u, plane=plane)(test_u.trajectory.ts)
-    assert_array_almost_equal(test_u.trajectory.ts.positions[:,idx], ref_u.trajectory.ts.positions[:,idx], decimal=3)
+    assert_array_almost_equal(test_u.trajectory.ts.positions[:,idx], ref_u.trajectory.ts.positions[:,idx], atol=1e-03)
 
 
 def test_fit_rot_trans_transformations_api(fit_universe):
@@ -267,4 +267,4 @@ def test_fit_rot_trans_transformations_api(fit_universe):
     ref_u.trajectory.ts.positions += ref_com
     transform = fit_rot_trans(test_u, ref_u)
     test_u.trajectory.add_transformations(transform)
-    assert_array_almost_equal(test_u.trajectory.ts.positions, ref_u.trajectory.ts.positions, decimal=3)
+    assert_array_almost_equal(test_u.trajectory.ts.positions, ref_u.trajectory.ts.positions, atol=1e-03)

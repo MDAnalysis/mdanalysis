@@ -41,7 +41,7 @@ def test_boxdimensions_dims(boxdimensions_universe):
     new_dims = np.float32([2, 2, 2, 90, 90, 90])
     set_dimensions(new_dims)(boxdimensions_universe.trajectory.ts)
     assert_array_almost_equal(boxdimensions_universe.dimensions,
-                              new_dims, decimal=6)
+                              new_dims, atol=1e-06)
 
 
 @pytest.mark.parametrize('dim_vector_shapes', (
@@ -80,4 +80,4 @@ def test_dimensions_transformations_api(boxdimensions_universe):
     boxdimensions_universe.trajectory.add_transformations(transform)
     for ts in boxdimensions_universe.trajectory:
         assert_array_almost_equal(boxdimensions_universe.dimensions,
-                                  new_dims, decimal=6)
+                                  new_dims, atol=1e-06)

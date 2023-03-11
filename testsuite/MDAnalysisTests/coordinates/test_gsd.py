@@ -23,7 +23,7 @@
 import os
 
 import pytest
-from numpy.testing import assert_almost_equal
+from numpy.testing import assert_allclose
 
 import MDAnalysis as mda
 from MDAnalysis.coordinates.GSD import GSDReader
@@ -38,11 +38,11 @@ def GSD_U():
 def test_gsd_positions(GSD_U):
     # first frame first particle
     ts = GSD_U.trajectory[0]
-    assert_almost_equal(GSD_U.atoms.positions[0],
+    assert_allclose(GSD_U.atoms.positions[0],
                         [ -5.4000001 , -10.19999981, -10.19999981])
     # second frame first particle
     ts = GSD_U.trajectory[1]
-    assert_almost_equal(GSD_U.atoms.positions[0],
+    assert_allclose(GSD_U.atoms.positions[0],
                         [ -5.58348083,  -9.98546982, -10.17657185])
 
 
@@ -52,7 +52,7 @@ def test_gsd_n_frames(GSD_U):
 
 def test_gsd_dimensions(GSD_U):
     ts = GSD_U.trajectory[0]
-    assert_almost_equal(ts.dimensions,
+    assert_allclose(ts.dimensions,
                         [ 21.60000038,21.60000038,21.60000038,90.,90.,90.])
 
 

@@ -25,7 +25,7 @@ import numpy as np
 from numpy.testing import (
     assert_array_equal,
     assert_equal,
-    assert_almost_equal
+    assert_allclose
 )
 import pytest
 import operator
@@ -222,19 +222,19 @@ class TestEmptyAtomGroup(object):
 
     @pytest.mark.parametrize('ag', [u.residues[:1]])
     def test_passive_decorator(self, ag):
-        assert_almost_equal(ag.center_of_mass(), np.array([10.52567673,  9.49548312, -8.15335145]))
-        assert_almost_equal(ag.total_mass(), 133.209)
-        assert_almost_equal(ag.moment_of_inertia(), np.array([[ 657.514361 ,  104.9446833,  110.4782   ],
+        assert_allclose(ag.center_of_mass(), np.array([10.52567673,  9.49548312, -8.15335145]))
+        assert_allclose(ag.total_mass(), 133.209)
+        assert_allclose(ag.moment_of_inertia(), np.array([[ 657.514361 ,  104.9446833,  110.4782   ],
                                                               [ 104.9446833,  307.4360346, -199.1794289],
                                                               [ 110.4782   , -199.1794289,  570.2924896]]))
-        assert_almost_equal(ag.radius_of_gyration(), 2.400527938286)
-        assert_almost_equal(ag.shape_parameter(), 0.61460819)
-        assert_almost_equal(ag.asphericity(), 0.4892751412)
-        assert_almost_equal(ag.principal_axes(), np.array([[ 0.7574113, -0.113481 ,  0.643001 ],
+        assert_allclose(ag.radius_of_gyration(), 2.400527938286)
+        assert_allclose(ag.shape_parameter(), 0.61460819)
+        assert_allclose(ag.asphericity(), 0.4892751412)
+        assert_allclose(ag.principal_axes(), np.array([[ 0.7574113, -0.113481 ,  0.643001 ],
                                                            [ 0.5896252,  0.5419056, -0.5988993],
                                                            [-0.2804821,  0.8327427,  0.4773566]]))
-        assert_almost_equal(ag.center_of_charge(), np.array([11.0800112,  8.8885659, -8.9886632]))
-        assert_almost_equal(ag.total_charge(), 1)
+        assert_allclose(ag.center_of_charge(), np.array([11.0800112,  8.8885659, -8.9886632]))
+        assert_allclose(ag.total_charge(), 1)
 
     @pytest.mark.parametrize('ag', [mda.AtomGroup([],u)])
     def test_error_empty_group(self, ag):

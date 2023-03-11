@@ -25,7 +25,7 @@ import MDAnalysis.analysis.diffusionmap as diffusionmap
 import numpy as np
 import pytest
 from MDAnalysisTests.datafiles import PDB, XTC
-from numpy.testing import assert_array_almost_equal, assert_allclose
+from numpy.testing import assert_allclose
 
 
 @pytest.fixture(scope='module')

@@ -25,7 +25,7 @@ import os
 import pytest
 
 from numpy.testing import (
-    assert_almost_equal,
+    assert_allclose,
     assert_equal,
 )
 
@@ -44,12 +44,12 @@ class TestPQRReader(_SingleFrameReader):
         self.prec = 3
 
     def test_total_charge(self):
-        assert_almost_equal(
+        assert_allclose(
             self.universe.atoms.total_charge(), self.ref_charmm_totalcharge, 3,
             "Total charge (in CHARMM) does not match expected value.")
 
     def test_hydrogenCharges(self):
-        assert_almost_equal(self.universe.select_atoms('name H').charges,
+        assert_allclose(self.universe.select_atoms('name H').charges,
                             self.ref_charmm_Hcharges, 3,
                             "Charges for H atoms do not match.")
 
@@ -57,13 +57,13 @@ class TestPQRReader(_SingleFrameReader):
     # read with a PSF it is 's4AKE')
     def test_ArgCACharges(self):
         ag = self.universe.select_atoms('resname ARG and name CA')
-        assert_almost_equal(
+        assert_allclose(
             ag.charges, self.ref_charmm_ArgCAcharges,
             3, "Charges for CA atoms in Arg residues do not match.")
 
     def test_ProNCharges(self):
         ag = self.universe.select_atoms('resname PRO and name N')
-        assert_almost_equal(
+        assert_allclose(
             ag.charges, self.ref_charmm_ProNcharges, 3,
             "Charges for N atoms in Pro residues do not match.")
 
@@ -87,14 +87,14 @@ class TestPQRWriter(RefAdKSmall):
         universe.atoms.write(outfile)
         u = mda.Universe(outfile)
         assert_equal(u.segments.segids[0], 'SYSTEM')
-        assert_almost_equal(u.atoms.positions,
+        assert_allclose(u.atoms.positions,
                             universe.atoms.positions, self.prec,
                             err_msg="Writing PQR file with PQRWriter does "
                             "not reproduce original coordinates")
-        assert_almost_equal(u.atoms.charges, universe.atoms.charges,
+        assert_allclose(u.atoms.charges, universe.atoms.charges,
                             self.prec, err_msg="Writing PQR file with "
                             "PQRWriter does not reproduce original charges")
-        assert_almost_equal(u.atoms.radii, universe.atoms.radii,
+        assert_allclose(u.atoms.radii, universe.atoms.radii,
                             self.prec, err_msg="Writing PQR file with "
                             "PQRWriter does not reproduce original radii")
 
@@ -109,14 +109,14 @@ class TestPQRWriter(RefAdKSmall):
         universe.atoms.write(outfile)
         u = mda.Universe(outfile)
         assert_equal(u.segments.segids[0], 'A')
-        assert_almost_equal(u.atoms.positions,
+        assert_allclose(u.atoms.positions,
                             universe.atoms.positions, self.prec,
                             err_msg="Writing PQR file with PQRWriter does "
                             "not reproduce original coordinates")
-        assert_almost_equal(u.atoms.charges, universe.atoms.charges,
+        assert_allclose(u.atoms.charges, universe.atoms.charges,
                             self.prec, err_msg="Writing PQR file with "
                             "PQRWriter does not reproduce original charges")
-        assert_almost_equal(u.atoms.radii, universe.atoms.radii,
+        assert_allclose(u.atoms.radii, universe.atoms.radii,
                             self.prec, err_msg="Writing PQR file with "
                             "PQRWriter does not reproduce original radii")
 
@@ -133,7 +133,7 @@ class TestPQRWriter(RefAdKSmall):
         outfile = str(tmpdir.join('pqr-test.pqr'))
         universe.atoms.write(outfile)
         u = mda.Universe(outfile)
-        assert_almost_equal(
+        assert_allclose(
             u.atoms.total_charge(), self.ref_charmm_totalcharge, 3,
             "Total charge (in CHARMM) does not match expected value.")
 

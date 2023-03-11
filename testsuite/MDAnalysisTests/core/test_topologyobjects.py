@@ -22,7 +22,7 @@
 #
 import numpy as np
 from numpy.testing import (
-    assert_almost_equal,
+    assert_allclose,
     assert_equal,
 )
 import pytest
@@ -141,7 +141,7 @@ class TestTopologyObjects(object):
             b.partner(a3)
 
     def test_bondlength(self, b):
-        assert_almost_equal(b.length(), 1.7661301556941993, self.precision)
+        assert_allclose(b.length(), 1.7661301556941993, self.precision)
 
     def test_bondrepr(self, b):
         assert_equal(repr(b), '<Bond between: Atom 9, Atom 12>')
@@ -150,8 +150,8 @@ class TestTopologyObjects(object):
     def test_angle(self, PSFDCD):
         angle = PSFDCD.atoms[210].angles[0]
 
-        assert_almost_equal(angle.angle(), 107.20893, self.precision)
-        assert_almost_equal(angle.value(), 107.20893, self.precision)
+        assert_allclose(angle.angle(), 107.20893, self.precision)
+        assert_allclose(angle.value(), 107.20893, self.precision)
 
     def test_angle_repr(self, PSFDCD):
         angle = PSFDCD.atoms[[30, 10, 20]].angle
@@ -169,14 +169,14 @@ class TestTopologyObjects(object):
 
         angle.atoms.positions = coords
 
-        assert_almost_equal(angle.value(), 180.0, self.precision)
+        assert_allclose(angle.value(), 180.0, self.precision)
 
     # Dihedral class check
     def test_dihedral(self, PSFDCD):
         dihedral = PSFDCD.atoms[14].dihedrals[0]
 
-        assert_almost_equal(dihedral.dihedral(), 18.317778, self.precision)
-        assert_almost_equal(dihedral.value(), 18.317778, self.precision)
+        assert_allclose(dihedral.dihedral(), 18.317778, self.precision)
+        assert_allclose(dihedral.value(), 18.317778, self.precision)
 
     def test_dihedral_repr(self, PSFDCD):
         dihedral = PSFDCD.atoms[[4, 7, 8, 1]].dihedral
@@ -188,8 +188,8 @@ class TestTopologyObjects(object):
     def test_improper(self, PSFDCD):
         imp = PSFDCD.atoms[4].impropers[0]
 
-        assert_almost_equal(imp.improper(), -3.8370631, self.precision)
-        assert_almost_equal(imp.value(), -3.8370631, self.precision)
+        assert_allclose(imp.improper(), -3.8370631, self.precision)
+        assert_allclose(imp.value(), -3.8370631, self.precision)
 
     def test_improper_repr(self, PSFDCD):
         imp = PSFDCD.atoms[[4, 7, 8, 1]].improper
@@ -213,7 +213,7 @@ class TestTopologyObjects(object):
         assert ub.partner(PSFDCD.atoms[10]) == PSFDCD.atoms[30]
 
     def test_ureybradley_distance(self, b):
-        assert_almost_equal(b.atoms.ureybradley.distance(), b.length(), self.precision)
+        assert_allclose(b.atoms.ureybradley.distance(), b.length(), self.precision)
 
     def test_cmap_repr(self, PSFDCD):
         cmap = PSFDCD.atoms[[4, 7, 8, 1, 2]].cmap
@@ -740,7 +740,7 @@ def test_bond_length_pbc():
     # move an atom a box width in all dimensions
     u.atoms[0].position += u.dimensions[:3]
 
-    assert_almost_equal(ref, u.bonds[0].length(pbc=True), decimal=6)
+    assert_allclose(ref, u.bonds[0].length(pbc=True), atol=1e-06)
 
 def test_cross_universe_eq():
     u1 = mda.Universe(PSF)

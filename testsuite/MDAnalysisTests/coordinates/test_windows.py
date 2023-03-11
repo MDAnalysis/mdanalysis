@@ -32,7 +32,7 @@ line ending files.
 
 import numpy as np
 import pytest
-from numpy.testing import assert_almost_equal, assert_equal
+from numpy.testing import assert_allclose, assert_equal
 from MDAnalysisTests.datafiles import (
     WIN_PDB_multiframe,
     WIN_ARC,
@@ -113,11 +113,11 @@ class TestWinARC(object):
         assert len(WIN_ARC_U.trajectory) == 2
 
     def test_positions(self, WIN_ARC_U):
-        assert_almost_equal(WIN_ARC_U.atoms.positions[0],
+        assert_allclose(WIN_ARC_U.atoms.positions[0],
                             [-6.553398, -1.854369, 0.000000])
 
     def test_positions_2(self, WIN_ARC_U):
         WIN_ARC_U.trajectory[1]
 
-        assert_almost_equal(WIN_ARC_U.atoms.positions[0],
+        assert_allclose(WIN_ARC_U.atoms.positions[0],
                             [-0.231579, -0.350841, -0.037475])

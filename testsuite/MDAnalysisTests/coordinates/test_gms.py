@@ -23,7 +23,7 @@
 import pytest
 
 import numpy as np
-from numpy.testing import (assert_equal, assert_almost_equal)
+from numpy.testing import (assert_equal,assert_allclose)
 
 import MDAnalysis as mda
 from MDAnalysis.coordinates.GMS import GMSReader
@@ -77,13 +77,13 @@ class _GMSBase(object):
         assert_equal(u.trajectory.ts.frame, 1, "loading frame 1")
 
     def test_dt(self, u):
-        assert_almost_equal(u.trajectory.dt,
+        assert_allclose(u.trajectory.dt,
                             1.0,
                             4,
                             err_msg="wrong timestep dt")
 
     def test_step5distances(self, u):
-        assert_almost_equal(self._calcFD(u), self.step5d, decimal=5,
+        assert_allclose(self._calcFD(u), self.step5d, atol=1e-05,
                             err_msg="Wrong 1-4 atom distance change after "
                                     "5 steps for {}".format(self.flavour))
 

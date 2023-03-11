@@ -26,7 +26,7 @@ try:
 except ImportError:
     shares_memory = False
 
-from numpy.testing import assert_equal, assert_almost_equal
+from numpy.testing import assert_equal,assert_allclose
 import pytest
 import MDAnalysis as mda
 
@@ -265,7 +265,7 @@ def test_timestep_copied(ref_reader):
     new = ref_reader.copy()
 
     assert_equal(ref_reader.ts.positions, new.ts.positions)
-    assert_almost_equal(new.ts.dimensions, newbox, decimal=4)
+    assert_allclose(new.ts.dimensions, newbox, atol=1e-04)
     assert ref_reader.ts.positions.dtype == np.float32
     assert new.ts.positions.dtype == np.float32
 
