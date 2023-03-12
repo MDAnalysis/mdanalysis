@@ -65,8 +65,8 @@ jobs:
 
     - name: write-errors
       run: |
-        echo "run_id: ${{ vars.GITHUB_RUN_ID }}"
-        echo "job_id: ${{ vars.GITHUB_JOB }}"
+        echo "run_id: ${{ GITHUB_RUN_ID }}"
+        echo "job_id: ${{ GITHUB_JOB }}"
         echo "main_stat: ${{ steps.darker-main-code.outcome }}"
         echo "test_stat: ${{ steps.darker-test-code.outcome }}"
         #python maintainer/ci/darker-outcomes.py --run_id ${{ GITHUB_RUN_ID }} \
