@@ -33,20 +33,6 @@ parser = argparse.ArgumentParser(
 
 
 parser.add_argument(
-    "--run_id",
-    type=str,
-    help="Github action run id",
-)
-
-
-parser.add_argument(
-    "--job_id",
-    type=str,
-    help="Github action job id",
-)
-
-
-parser.add_argument(
     "--main_stat",
     type=bool,
     help="Status of main code linting",
@@ -63,5 +49,8 @@ parser.add_argument(
 if __name__ == "__main__":
     args = parser.parse_args()
 
+    run_id = os.environ['GITHUB_RUN_ID']
+    job_id = os.environ['GITHUB_JOB']
+
     print(f"Linting - code: {args.main_stat}, tests: {args.test_stat}, "
-          f"action: https://www.github.com/MDAnalysis/mdanalysis/actions/runs/{args.run_id}/jobs/{args.job_id}")
+          f"action: https://www.github.com/MDAnalysis/mdanalysis/actions/runs/{run_id}/jobs/{job_id}")
