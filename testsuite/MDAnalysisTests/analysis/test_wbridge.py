@@ -335,8 +335,12 @@ class TestWaterBridgeAnalysis(object):
     @pytest.mark.parametrize('distance_type', ["hydrogen", "heavy"])
     def test_donor_accepter_pbc(self, universe_DA_PBC, distance_type):
         '''Test zeroth order donor to acceptor hydrogen bonding in PBC conditions'''
-        wb = WaterBridgeAnalysis(universe_DA_PBC, 'protein and (resid 1)',
-            'protein and (resid 4)', order=0, pbc=True, distance_type=distance_type)
+        wb = WaterBridgeAnalysis(universe_DA_PBC,
+                                 'protein and (resid 1)',
+                                 'protein and (resid 4)',
+                                 order=0,
+                                 pbc=True,
+                                 distance_type=distance_type)
         wb.run(verbose=False)
         network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (1, 0, 2, None))
@@ -431,8 +435,10 @@ class TestWaterBridgeAnalysis(object):
         wb.run(verbose=False)
         assert_equal(wb.results.network[0], defaultdict(dict))
         # test second order
-        wb = WaterBridgeAnalysis(universe_AWWA, 'protein and (resid 1)',
-                                'protein and (resid 4)', order=2,
+        wb = WaterBridgeAnalysis(universe_AWWA,
+                                 'protein and (resid 1)',
+                                 'protein and (resid 4)',
+                                 order=2,
                                  distance_type=distance_type)
         wb.run(verbose=False)
         network = wb.results.network[0]

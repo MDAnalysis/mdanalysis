@@ -722,7 +722,6 @@ from ..base import AnalysisBase
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 from MDAnalysis.lib.distances import capped_distance, calc_angles
 from MDAnalysis import NoDataError, MissingDataWarning, SelectionError
-from MDAnalysis.lib import distances
 
 logger = logging.getLogger('MDAnalysis.analysis.WaterBridgeAnalysis')
 
@@ -769,7 +768,7 @@ class WaterBridgeAnalysis(AnalysisBase):
     #: N, O, P, and S. Any other heavy atoms are assumed to have hydrogens
     #: covalently bound at a maximum distance of 1.5 Å.
     r_cov = defaultdict(lambda: 1.5,  # default value
-                        N=1.31, O=1.31, P=1.58, S=1.55)
+                        N=1.31, O=1.31, P=1.58, S=1.55) # noqa: E741
 
     def __init__(self, universe, selection1='protein',
                  selection2='not resname SOL', water_selection='resname SOL',
