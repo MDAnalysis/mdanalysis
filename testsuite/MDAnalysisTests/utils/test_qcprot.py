@@ -40,7 +40,7 @@ import numpy as np
 
 import MDAnalysis.lib.qcprot as qcp
 
-from numpy.testing import assert_almost_equal, assert_array_almost_equal
+from numpy.testing import assert_allclose
 import MDAnalysis.analysis.rms as rms
 import pytest
 
@@ -134,13 +134,13 @@ def test_CalcRMSDRotationalMatrix():
     aligned_rmsd = rmsd(frag_br.T, frag_a)
     #print 'rmsd after applying rotation: ',rmsd
 
-    assert_almost_equal(aligned_rmsd, 0.719106, 6, "RMSD between fragments A and B does not match excpected value.")
+    assert_allclose(aligned_rmsd, 0.719106, 6, "RMSD between fragments A and B does not match excpected value.")
 
     expected_rot = np.array([
         [0.72216358, -0.52038257, -0.45572112],
         [0.69118937, 0.51700833, 0.50493528],
         [-0.0271479, -0.67963547, 0.73304748]])
-    assert_almost_equal(rot.reshape((3, 3)), expected_rot, 6,
+    assert_allclose(rot.reshape((3, 3)), expected_rot, 6,
                         "Rotation matrix for aliging B to A does not have expected values.")
 
 
@@ -151,7 +151,7 @@ def test_innerproduct(atoms_a, atoms_b):
 
     e = np.zeros(9, dtype=np.float64)
     g = qcp.InnerProduct(e, atoms_a, atoms_b, number_of_atoms, None)
-    assert_almost_equal(a, g)
+    assert_allclose(a, g)
     assert_array_almost_equal(b, e)
 
 
@@ -161,10 +161,10 @@ def test_RMSDmatrix(atoms_a, atoms_b):
     rmsd = qcp.CalcRMSDRotationalMatrix(atoms_a, atoms_b, number_of_atoms, rotation, None) # no weights
 
     rmsd_ref = 20.73219522556076
-    assert_almost_equal(rmsd_ref, rmsd)
+    assert_allclose(rmsd_ref, rmsd)
 
     rotation_ref = np.array([0.9977195, 0.02926979, 0.06082009, -.0310942, 0.9990878, 0.02926979, -0.05990789, -.0310942, 0.9977195])
-    assert_array_almost_equal(rotation, rotation_ref, 6)
+    assert_array_almost_equal(rotation, rotation_ref, 1e-06)
 
 
 def test_RMSDmatrix_simple(atoms_a, atoms_b):
@@ -173,10 +173,10 @@ def test_RMSDmatrix_simple(atoms_a, atoms_b):
     rmsd = qcp.CalcRMSDRotationalMatrix(atoms_a, atoms_b, number_of_atoms, rotation, None) # no weights
 
     rmsd_ref = 20.73219522556076
-    assert_almost_equal(rmsd_ref, rmsd)
+    assert_allclose(rmsd_ref, rmsd)
 
     rotation_ref = np.array([0.9977195, 0.02926979, 0.06082009, -.0310942, 0.9990878, 0.02926979, -0.05990789, -.0310942, 0.9977195])
-    assert_array_almost_equal(rotation, rotation_ref, 6)
+    assert_array_almost_equal(rotation, rotation_ref, 1e-06)
 
     
 def test_rmsd(atoms_a, atoms_b):
@@ -184,7 +184,7 @@ def test_rmsd(atoms_a, atoms_b):
     atoms_b_aligned = np.dot(atoms_b, rotation_m)
     rmsd = rms.rmsd(atoms_b_aligned, atoms_a)
     rmsd_ref = 20.73219522556076
-    assert_almost_equal(rmsd, rmsd_ref, 6)
+    assert_allclose(rmsd, rmsd_ref, 6)
 
 
 def test_weights(atoms_a, atoms_b):
@@ -194,6 +194,6 @@ def test_weights(atoms_a, atoms_b):
     rotation = np.zeros(9, dtype=np.float64)
     rmsd = qcp.CalcRMSDRotationalMatrix(atoms_a, atoms_b, no_of_atoms, rotation, weights)
 
-    assert_almost_equal(rmsd, 32.798779202159416)
+    assert_allclose(rmsd, 32.798779202159416)
     rotation_ref = np.array([0.99861395, .022982, .04735006, -.02409085, .99944556, .022982, -.04679564, -.02409085, .99861395])
-    np.testing.assert_almost_equal(rotation_ref, rotation)
+    np.testing.assert_allclose(rotation_ref, rotation)

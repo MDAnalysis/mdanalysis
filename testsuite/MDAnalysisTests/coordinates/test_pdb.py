@@ -40,8 +40,7 @@ from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        PDB_HOLE, mol2_molecule, PDB_charges,
                                        CONECT_ERROR,)
 from numpy.testing import (assert_equal,
-                           assert_array_almost_equal,
-                           assert_almost_equal)
+                           assert_allclose)
 
 IGNORE_NO_INFORMATION_WARNING = 'ignore:Found no information for attr:UserWarning'
 
@@ -72,7 +71,7 @@ class TestPDBReader(_SingleFrameReader):
         assert isinstance(self.universe.trajectory, PDBReader), "failed to choose PDBReader"
 
     def test_dimensions(self):
-        assert_almost_equal(
+        assert_allclose(
             self.universe.trajectory.ts.dimensions, RefAdKSmall.ref_unitcell,
             self.prec,
             "PDBReader failed to get unitcell dimensions from CRYST1")
@@ -259,7 +258,7 @@ class TestPDBWriter(object):
         "Test writing from a single frame PDB file to a PDB file." ""
         universe.atoms.write(outfile)
         u = mda.Universe(PSF, outfile)
-        assert_almost_equal(u.atoms.positions,
+        assert_allclose(u.atoms.positions,
                             universe.atoms.positions, self.prec,
                             err_msg="Writing PDB file with PDBWriter "
                                     "does not reproduce original coordinates")
@@ -334,7 +333,7 @@ class TestPDBWriter(object):
         assert_equal(u2.trajectory.n_frames,
                      1,
                      err_msg="Output PDB should only contain a single frame")
-        assert_almost_equal(u2.atoms.positions, u.atoms.positions,
+        assert_allclose(u2.atoms.positions, u.atoms.positions,
                             self.prec, err_msg="Written coordinates do not "
                                                "agree with original coordinates from frame %d" %
                                                u.trajectory.frame)
@@ -371,7 +370,7 @@ class TestPDBWriter(object):
             err_msg="Output PDB should only contain a single frame"
         )
 
-        assert_almost_equal(
+        assert_allclose(
             u.atoms.positions, uout.atoms.positions,
             self.prec,
             err_msg="Written coordinates do not "
@@ -497,7 +496,7 @@ class TestPDBWriter(object):
 
         assert len(u_hetatms) == len(written_atoms), \
             "mismatched HETATM number"
-        assert_almost_equal(u_hetatms.atoms.positions,
+        assert_allclose(u_hetatms.atoms.positions,
                             written_atoms.atoms.positions)
 
     def test_default_atom_record_type_written(self, universe5, tmpdir,
@@ -924,7 +923,7 @@ class TestPDBReaderBig(RefAdK):
 
     def test_coordinates(self, universe):
         A10CA = universe.select_atoms('name CA')[10]
-        assert_almost_equal(A10CA.position,
+        assert_allclose(A10CA.position,
                             self.ref_coordinates['A10CA'],
                             self.prec,
                             err_msg="wrong coordinates for A10:CA")
@@ -933,7 +932,7 @@ class TestPDBReaderBig(RefAdK):
         NTERM = universe.select_atoms('name N')[0]
         CTERM = universe.select_atoms('name C')[-1]
         d = mda.lib.mdamath.norm(NTERM.position - CTERM.position)
-        assert_almost_equal(d, self.ref_distances['endtoend'], self.prec,
+        assert_allclose(d, self.ref_distances['endtoend'], self.prec,
                             err_msg="wrong distance between M1:N and G214:C")
 
     def test_selection(self, universe):
@@ -949,7 +948,7 @@ class TestPDBReaderBig(RefAdK):
             err_msg="unit cell dimensions (rhombic dodecahedron), issue 60")
 
     def test_volume(self, universe):
-        assert_almost_equal(
+        assert_allclose(
             universe.coord.volume,
             self.ref_volume,
             0,
@@ -1143,24 +1142,24 @@ class TestCrystModelOrder(object):
 
         for ts, refbox, refpos in zip(
                 u.trajectory, self.boxsize, self.position):
-            assert_almost_equal(u.dimensions[0], refbox)
-            assert_almost_equal(u.atoms[0].position[0], refpos)
+            assert_allclose(u.dimensions[0], refbox)
+            assert_allclose(u.atoms[0].position[0], refpos)
 
     def test_seekaround(self, pdbfile):
         u = mda.Universe(pdbfile)
 
         for frame in [2, 0, 2, 1]:
             u.trajectory[frame]
-            assert_almost_equal(u.dimensions[0], self.boxsize[frame])
-            assert_almost_equal(u.atoms[0].position[0], self.position[frame])
+            assert_allclose(u.dimensions[0], self.boxsize[frame])
+            assert_allclose(u.atoms[0].position[0], self.position[frame])
 
     def test_rewind(self, pdbfile):
         u = mda.Universe(pdbfile)
 
         u.trajectory[2]
         u.trajectory.rewind()
-        assert_almost_equal(u.dimensions[0], self.boxsize[0])
-        assert_almost_equal(u.atoms[0].position[0], self.position[0])
+        assert_allclose(u.dimensions[0], self.boxsize[0])
+        assert_allclose(u.atoms[0].position[0], self.position[0])
 
 
 def test_standalone_pdb():

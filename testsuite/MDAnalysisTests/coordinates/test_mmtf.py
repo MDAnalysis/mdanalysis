@@ -23,7 +23,7 @@
 import pytest
 import numpy as np
 from numpy.testing import (
-    assert_almost_equal,
+    assert_allclose,
 )
 
 from MDAnalysisTests.datafiles import MMTF, MMTF_gz, MMTF_skinny2
@@ -40,12 +40,12 @@ class TestMMTFReader(object):
         assert r.ts.n_atoms == 512
 
     def test_read_positions(self, r):
-        assert_almost_equal(r.ts.positions[0],
+        assert_allclose(r.ts.positions[0],
                             np.array([-0.798, 12.632, 23.231]),
-                            decimal=4)
-        assert_almost_equal(r.ts.positions[-1],
+                            atol=1e-04)
+        assert_allclose(r.ts.positions[-1],
                             np.array([10.677, 15.517, 11.1]),
-                            decimal=4)
+                            atol=1e-04)
 
     def test_velocities(self, r):
         assert not r.ts.has_velocities
@@ -67,12 +67,12 @@ class TestMMTFReaderGZ(object):
         assert r.ts.n_atoms == 1140
 
     def test_read_positions(self, r):
-        assert_almost_equal(r.ts.positions[0],
+        assert_allclose(r.ts.positions[0],
                             np.array([38.428, 16.440, 28.841]),
-                            decimal=4)
-        assert_almost_equal(r.ts.positions[-1],
+                            atol=1e-04)
+        assert_allclose(r.ts.positions[-1],
                             np.array([36.684, 27.024, 20.468]),
-                            decimal=4)
+                            atol=1e-04)
 
     def test_velocities(self, r):
         assert not r.ts.has_velocities

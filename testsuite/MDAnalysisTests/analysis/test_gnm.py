@@ -26,7 +26,7 @@ from unittest.mock import patch
 import MDAnalysis as mda
 import MDAnalysis.analysis.gnm
 
-from numpy.testing import assert_almost_equal
+from numpy.testing import assert_allclose
 import numpy as np
 import pytest
 
@@ -44,8 +44,8 @@ def test_gnm(universe, tmpdir):
     gnm.run()
     result = gnm.results
     assert len(result.times) == 10
-    assert_almost_equal(gnm.results.times, np.arange(0, 1000, 100), decimal=4)
-    assert_almost_equal(gnm.results.eigenvalues,
+    assert_allclose(gnm.results.times, np.arange(0, 1000, 100), atol=1e-04)
+    assert_allclose(gnm.results.eigenvalues,
       [2.0287113e-15, 4.1471575e-15, 1.8539533e-15, 4.3810359e-15,
        3.9607304e-15, 4.1289113e-15, 2.5501084e-15, 4.0498182e-15,
        4.2058769e-15, 3.9839431e-15])
@@ -56,15 +56,15 @@ def test_gnm_run_step(universe):
     gnm.run(step=3)
     result = gnm.results
     assert len(result.times) == 4
-    assert_almost_equal(gnm.results.times, np.arange(0, 1200, 300), decimal=4)
-    assert_almost_equal(gnm.results.eigenvalues,
+    assert_allclose(gnm.results.times, np.arange(0, 1200, 300), atol=1e-04)
+    assert_allclose(gnm.results.eigenvalues,
       [2.0287113e-15, 4.3810359e-15, 2.5501084e-15, 3.9839431e-15])
 
 
 def test_generate_kirchoff(universe):
     gnm = mda.analysis.gnm.GNMAnalysis(universe)
     gen = gnm.generate_kirchoff()
-    assert_almost_equal(gen[0],
+    assert_allclose(gen[0],
       [7,-1,-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
        0, 0, 0, 0, 0,-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -93,10 +93,10 @@ def test_closeContactGNMAnalysis(universe):
     gnm.run(stop=2)
     result = gnm.results
     assert len(result.times) == 2
-    assert_almost_equal(gnm.results.times, (0,  100), decimal=4)
-    assert_almost_equal(gnm.results.eigenvalues, [0.1502614,  0.1426407])
+    assert_allclose(gnm.results.times, (0,  100), atol=1e-04)
+    assert_allclose(gnm.results.eigenvalues, [0.1502614,  0.1426407])
     gen = gnm.generate_kirchoff()
-    assert_almost_equal(gen[0],
+    assert_allclose(gen[0],
       [16.326744128018923, -2.716098853586913, -1.94736842105263, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
        0.0, 0.0, 0.0, 0.0, -0.05263157894736842, 0.0, 0.0, 0.0, -3.3541953679557905, 0.0, -1.4210526315789465, 0.0, 0.0, 0.0, 0.0,
        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -119,10 +119,10 @@ def test_closeContactGNMAnalysis_weights_None(universe):
     gnm.run(stop=2)
     result = gnm.results
     assert len(result.times) == 2
-    assert_almost_equal(gnm.results.times, (0, 100), decimal=4)
-    assert_almost_equal(gnm.results.eigenvalues, [2.4328739,  2.2967251])
+    assert_allclose(gnm.results.times, (0, 100), atol=1e-04)
+    assert_allclose(gnm.results.eigenvalues, [2.4328739,  2.2967251])
     gen = gnm.generate_kirchoff()
-    assert_almost_equal(gen[0],
+    assert_allclose(gen[0],
       [303.0, -58.0, -37.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0,
        0.0, 0.0, 0.0, -67.0, 0.0, -27.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,

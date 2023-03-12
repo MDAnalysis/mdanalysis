@@ -22,7 +22,7 @@
 #
 import pytest
 
-from numpy.testing import assert_allclose, assert_almost_equal
+from numpy.testing import assert_allclose
 
 import MDAnalysis as mda
 from MDAnalysis.analysis.rdf import InterRDF_s, InterRDF
@@ -111,13 +111,13 @@ def test_cdf(rdf):
 def test_density(u, sels, density, value):
     kwargs = {'density': density} if density is not None else {}
     rdf = InterRDF_s(u, sels, **kwargs).run()
-    assert_almost_equal(max(rdf.results.rdf[0][0][0]), value)
+    assert_allclose(max(rdf.results.rdf[0][0][0]), value)
     if not density:
         s1 = u.select_atoms('name ZND and resid 289')
         s2 = u.select_atoms(
                 'name OD1 and resid 51 and sphzone 5.0 (resid 289)')
         rdf_ref = InterRDF(s1, s2).run()
-        assert_almost_equal(rdf_ref.results.rdf, rdf.results.rdf[0][0][0])
+        assert_allclose(rdf_ref.results.rdf, rdf.results.rdf[0][0][0])
 
 
 def test_overwrite_norm(u, sels):
@@ -137,7 +137,7 @@ def test_norm(u, sels, norm, value):
         s2 = u.select_atoms(
                 'name OD1 and resid 51 and sphzone 5.0 (resid 289)')
         rdf_ref = InterRDF(s1, s2).run()
-        assert_almost_equal(rdf_ref.results.rdf, rdf.results.rdf[0][0][0])
+        assert_allclose(rdf_ref.results.rdf, rdf.results.rdf[0][0][0])
 
 
 @pytest.mark.parametrize("norm, norm_required", [

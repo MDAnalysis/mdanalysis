@@ -47,7 +47,7 @@ def test_translate_coords(translate_universes):
     vector = np.float32([1, 2, 3])
     ref.positions += vector
     trans = translate(vector)(trans_u.trajectory.ts)
-    assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
+    assert_array_almost_equal(trans.positions, ref.positions, atol=1e-06)
 
 
 @pytest.mark.parametrize('vector', (
@@ -73,7 +73,7 @@ def test_translate_transformations_api(translate_universes):
     vector = np.float32([1, 2, 3])
     ref.positions += vector
     trans_u.trajectory.add_transformations(translate(vector))
-    assert_array_almost_equal(trans_u.trajectory.ts.positions, ref.positions, decimal=6)
+    assert_array_almost_equal(trans_u.trajectory.ts.positions, ref.positions, atol=1e-06)
 
 
 def test_center_in_box_bad_ag(translate_universes):
@@ -141,7 +141,7 @@ def test_center_in_box_coords_no_options(translate_universes):
     ref.positions += box_center - ref_center
     ag = trans_u.residues[0].atoms
     trans = center_in_box(ag)(trans_u.trajectory.ts)
-    assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
+    assert_array_almost_equal(trans.positions, ref.positions, atol=1e-06)
 
 
 def test_center_in_box_coords_with_pbc(translate_universes):
@@ -155,7 +155,7 @@ def test_center_in_box_coords_with_pbc(translate_universes):
     ref_center = np.float32([75.6, 75.8, 76.])
     ref.positions += box_center - ref_center
     trans = center_in_box(ag, wrap=True)(trans_u.trajectory.ts)
-    assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
+    assert_array_almost_equal(trans.positions, ref.positions, atol=1e-06)
 
 
 def test_center_in_box_coords_with_mass(translate_universes):   
@@ -167,7 +167,7 @@ def test_center_in_box_coords_with_mass(translate_universes):
     ref_center = ag.center_of_mass()
     ref.positions += box_center - ref_center
     trans = center_in_box(ag, center="mass")(trans_u.trajectory.ts)
-    assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
+    assert_array_almost_equal(trans.positions, ref.positions, atol=1e-06)
 
 
 def test_center_in_box_coords_with_box(translate_universes):   
@@ -180,7 +180,7 @@ def test_center_in_box_coords_with_box(translate_universes):
     ref_center = np.float32([6, 7, 8])
     ref.positions += box_center - ref_center
     trans = center_in_box(ag, point=newpoint)(trans_u.trajectory.ts)
-    assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
+    assert_array_almost_equal(trans.positions, ref.positions, atol=1e-06)
 
 
 def test_center_in_box_coords_all_options(translate_universes):
@@ -194,7 +194,7 @@ def test_center_in_box_coords_all_options(translate_universes):
     ref_center = ag.center_of_mass(pbc=True)
     ref.positions += box_center - ref_center
     trans = center_in_box(ag, center='mass', wrap=True, point=newpoint)(trans_u.trajectory.ts)
-    assert_array_almost_equal(trans.positions, ref.positions, decimal=6)
+    assert_array_almost_equal(trans.positions, ref.positions, atol=1e-06)
 
 
 def test_center_transformations_api(translate_universes):
@@ -207,4 +207,4 @@ def test_center_transformations_api(translate_universes):
     ref.positions += box_center - ref_center
     ag = trans_u.residues[0].atoms
     trans_u.trajectory.add_transformations(center_in_box(ag))
-    assert_array_almost_equal(trans_u.trajectory.ts.positions, ref.positions, decimal=6)
+    assert_array_almost_equal(trans_u.trajectory.ts.positions, ref.positions, atol=1e-06)

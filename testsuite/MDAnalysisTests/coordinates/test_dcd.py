@@ -27,7 +27,7 @@ import MDAnalysis as mda
 from MDAnalysis.coordinates.DCD import DCDReader
 
 from numpy.testing import (assert_equal, assert_array_equal,
-                           assert_almost_equal, assert_array_almost_equal)
+                           assert_allclose,assert_almost_equal)
 
 from MDAnalysisTests.datafiles import (DCD, PSF, DCD_empty, PRMncdf, NCDF,
                                        COORDINATES_TOPOLOGY, COORDINATES_DCD,
@@ -83,8 +83,8 @@ class TestDCDReader(MultiframeReaderTest):
 
     def test_set_time(self):
         u = mda.Universe(PSF, DCD)
-        assert_almost_equal(u.trajectory.time, 1.0,
-                            decimal=5)
+        assert_allclose(u.trajectory.time, 1.0,
+                        atol=1e-05)
 
 
 @pytest.mark.parametrize('fstart', (0, 1, 2, 37, None))
@@ -97,14 +97,14 @@ def test_write_istart(universe_dcd, tmpdir, fstart):
         for ts in universe_dcd.trajectory:
             w.write(universe_dcd.atoms)
     u = mda.Universe(PSF, outfile)
-    assert_almost_equal(u.trajectory._file.header['istart'],
+    assert_allclose(u.trajectory._file.header['istart'],
                         istart if istart is not None else u.trajectory._file.header['nsavc'])
     # issue #1819
     times = [ts.time for ts in u.trajectory]
 
     fstart = fstart if fstart is not None else 1
     ref_times = (np.arange(universe_dcd.trajectory.n_frames) + fstart) * universe_dcd.trajectory.dt
-    assert_almost_equal(times, ref_times, decimal=5,
+    assert_allclose(times, ref_times, atol=1e-05,
                         err_msg="Times not identical after setting istart={}".format(istart))
 
 
@@ -131,7 +131,7 @@ def test_write_random_unitcell(tmpdir):
     for index, ts in enumerate(u2.trajectory):
         assert_array_almost_equal(u2.trajectory.dimensions,
                                   random_unitcells[index],
-                                  decimal=5)
+                                  atol=1e-05)
 
 
 def test_empty_dimension_warning(tmpdir):
@@ -242,11 +242,11 @@ def test_reader_set_dt():
     u = mda.Universe(PSF, DCD, dt=dt)
     dcdheader = u.trajectory._file.header
     fstart = dcdheader['istart'] / dcdheader['nsavc']
-    assert_almost_equal(u.trajectory[frame].time, (frame + fstart)*dt,
+    assert_allclose(u.trajectory[frame].time, (frame + fstart)*dt,
                         err_msg="setting time step dt={0} failed: "
                         "actually used dt={1}".format(
                             dt, u.trajectory._ts_kwargs['dt']))
-    assert_almost_equal(u.trajectory.dt, dt,
+    assert_allclose(u.trajectory.dt, dt,
                         err_msg="trajectory.dt does not match set dt")
 
 
@@ -269,7 +269,7 @@ def test_writer_dt(tmpdir, ext, decimal):
                         err_msg="Total time  mismatch for ext={}".format(ext))
     times = np.array([uw.trajectory.time for ts in uw.trajectory])
     frames = np.arange(1, uw.trajectory.n_frames + 1)  # traj starts at 1*dt
-    assert_array_almost_equal(times, frames * dt, decimal=decimal,
+    assert_array_almost_equal(times, frames * dt, atol=decimal,
                               err_msg="Times mismatch for ext={}".format(ext))
 
 @pytest.mark.parametrize("variable, default", (("istart", 0), ("nsavc", 1)))
@@ -310,7 +310,7 @@ def test_single_frame(universe_dcd, tmpdir):
         W.write(u.atoms)
     w = mda.Universe(PSF, outfile)
     assert w.trajectory.n_frames == 1
-    assert_almost_equal(w.atoms.positions,
+    assert_allclose(w.atoms.positions,
                         u.atoms.positions,
                         3,
                         err_msg="coordinates do not match")
@@ -377,7 +377,7 @@ def test_write_unitcell_triclinic(ref, tmpdir):
 
         w = mda.Universe(ref.topology, outfile)
         for ts_orig, ts_copy in zip(u.trajectory, w.trajectory):
-            assert_almost_equal(ts_orig.dimensions, ts_copy.dimensions, 4,
+            assert_allclose(ts_orig.dimensions, ts_copy.dimensions, 4,
                                 err_msg="DCD->DCD: unit cell dimensions wrong "
                                 "at frame {0}".format(ts_orig.frame))
 
@@ -397,7 +397,7 @@ def ncdf2dcd(tmpdir_factory):
 def test_ncdf2dcd_unitcell(ncdf2dcd):
     ncdf, dcd = ncdf2dcd
     for ts_ncdf, ts_dcd in zip(ncdf.trajectory, dcd.trajectory):
-        assert_almost_equal(ts_ncdf.dimensions,
+        assert_allclose(ts_ncdf.dimensions,
                             ts_dcd.dimensions,
                             3)
 
@@ -405,7 +405,7 @@ def test_ncdf2dcd_unitcell(ncdf2dcd):
 def test_ncdf2dcd_coords(ncdf2dcd):
     ncdf, dcd = ncdf2dcd
     for ts_ncdf, ts_dcd in zip(ncdf.trajectory, dcd.trajectory):
-        assert_almost_equal(ts_ncdf.positions,
+        assert_allclose(ts_ncdf.positions,
                             ts_dcd.positions,
                             3)
 
@@ -424,7 +424,7 @@ def test_ts_time(universe):
     ref_times = [(ts.frame + header['istart']/header['nsavc'])*ts.dt
                  for ts in u.trajectory]
     times = [ts.time for ts in u.trajectory]
-    assert_almost_equal(times, ref_times, decimal=5)
+    assert_allclose(times, ref_times, atol=1e-05)
 
 
 def test_pathlib():

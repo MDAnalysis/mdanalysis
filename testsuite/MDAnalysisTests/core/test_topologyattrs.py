@@ -27,7 +27,7 @@ import numpy as np
 
 from numpy.testing import (
     assert_equal,
-    assert_almost_equal,
+    assert_allclose,
 )
 import pytest
 from MDAnalysisTests.datafiles import PSF, DCD, PDB_CHECK_RIGHTHAND_PA, MMTF
@@ -258,7 +258,7 @@ class TestResidueAttr(TopologyAttrMixin):
     def test_set_residues_plural(self, attr):
         attr.set_residues(DummyGroup([3, 0, 1]),
                                np.array([23, 504, 2]))
-        assert_almost_equal(attr.get_residues(DummyGroup([3, 0, 1])),
+        assert_allclose(attr.get_residues(DummyGroup([3, 0, 1])),
                                   np.array([23, 504, 2]))
 
     def test_set_residues_VE(self, attr):
@@ -309,7 +309,7 @@ class TestResids(TestResidueAttr):
     def test_set_residues(self, attr):
         attr.set_residues(DummyGroup([3, 0, 1]),
                                np.array([23, 504, 27]))
-        assert_almost_equal(attr.get_residues(DummyGroup([3, 0, 1])),
+        assert_allclose(attr.get_residues(DummyGroup([3, 0, 1])),
                                   np.array([23, 504, 27]))
 
 
@@ -365,7 +365,7 @@ class TestAttr(object):
         return universe.atoms  # prototypical AtomGroup
 
     def test_principal_axes(self, ag):
-        assert_almost_equal(
+        assert_allclose(
             ag.principal_axes(),
             np.array([
                       [1.53389276e-03, 4.41386224e-02, 9.99024239e-01],
@@ -378,20 +378,20 @@ class TestAttr(object):
 
     def test_principal_axes_handedness(self, universe_pa):
         e_vec = universe_pa.atoms.principal_axes()
-        assert_almost_equal(np.dot(np.cross(e_vec[0], e_vec[1]), e_vec[2]), 1.0)
+        assert_allclose(np.dot(np.cross(e_vec[0], e_vec[1]), e_vec[2]), 1.0)
 
     def test_align_principal_axes_with_self(self, ag):
         pa = ag.principal_axes()
         ag.align_principal_axis(0, pa[0])
 
-        assert_almost_equal(ag.principal_axes(), pa)
+        assert_allclose(ag.principal_axes(), pa)
 
     def test_align_principal_axes_with_x(self, ag):
         ag.align_principal_axis(0, [1, 0, 0])
         # This is a very loose check that the difference is not more then 0.5.
         # This is OK here because the rounding error in the calculation really
         # is that big.
-        assert_almost_equal(np.abs(ag.principal_axes()), np.eye(3), decimal=1)
+        assert_allclose(np.abs(ag.principal_axes()), np.eye(3), atol=1e-01)
 
 
 class TestCrossLevelAttributeSetting(object):

@@ -31,8 +31,8 @@ import sys
 import copy
 
 import numpy as np
-from numpy.testing import (assert_equal, assert_almost_equal,
-                           assert_array_almost_equal, assert_array_equal,
+from numpy.testing import (assert_equal,
+                           assert_array_equal,
                            assert_allclose)
 from itertools import combinations_with_replacement as comb_wr
 
@@ -206,13 +206,13 @@ class TestGeometryFunctions(object):
         (2.3456e7 * e1, 3.4567e-6 * e1, 0.0)
     ])
     def test_angle_pi(self, x_axis, y_axis, value):
-        assert_almost_equal(mdamath.angle(x_axis, y_axis), value)
+        assert_allclose(mdamath.angle(x_axis, y_axis), value)
 
     @pytest.mark.parametrize('x', np.linspace(0, np.pi, 20))
     def test_angle_range(self, x):
         r = 1000.
         v = r * np.array([np.cos(x), np.sin(x), 0])
-        assert_almost_equal(mdamath.angle(self.e1, v), x, 6)
+        assert_allclose(mdamath.angle(self.e1, v), x, 1e-06)
 
     @pytest.mark.parametrize('vector, value', [
         (e3, 1),
@@ -226,7 +226,7 @@ class TestGeometryFunctions(object):
     def test_norm_range(self, x):
         r = 1000.
         v = r * np.array([np.cos(x), np.sin(x), 0])
-        assert_almost_equal(mdamath.norm(v), r, 6)
+        assert_allclose(mdamath.norm(v), r, 1e-6)
 
     @pytest.mark.parametrize('vec1, vec2, value', [
         (e1, e2, e3),
@@ -252,19 +252,19 @@ class TestGeometryFunctions(object):
         ab = self.e1
         bc = ab + self.e2
         cd = bc + self.e3
-        assert_almost_equal(mdamath.dihedral(ab, bc, cd), -np.pi / 2)
+        assert_allclose(mdamath.dihedral(ab, bc, cd), -np.pi / 2)
 
     def test_pdot(self):
         arr = np.random.rand(4, 3)
         matrix_dot = mdamath.pdot(arr, arr)
         list_dot = [np.dot(a, a) for a in arr]
-        assert_almost_equal(matrix_dot, list_dot)
+        assert_allclose(matrix_dot, list_dot)
 
     def test_pnorm(self):
         arr = np.random.rand(4, 3)
         matrix_norm = mdamath.pnorm(arr)
         list_norm = [np.linalg.norm(a) for a in arr]
-        assert_almost_equal(matrix_norm, list_norm)
+        assert_allclose(matrix_norm, list_norm)
 
 
 class TestMatrixOperations(object):
@@ -408,7 +408,7 @@ class TestMatrixOperations(object):
                     res = mdamath.triclinic_box(
                         *mdamath.triclinic_vectors(ref))
                     if not np.all(res == 0.0):
-                        assert_almost_equal(res, ref, 5)
+                        assert_allclose(res, ref, 5)
 
     @pytest.mark.parametrize('angles', ([70, 70, 70],
                                         [70, 70, 90],
@@ -438,9 +438,9 @@ class TestMatrixOperations(object):
                              comb_wr([-10, 0, 20, 70, 90, 120, 180], 3))
     def test_box_volume(self, lengths, angles):
         box = np.array(lengths + angles, dtype=np.float32)
-        assert_almost_equal(mdamath.box_volume(box),
+        assert_allclose(mdamath.box_volume(box),
                             np.linalg.det(self.ref_trivecs(box)),
-                            decimal=5)
+                            atol=1e-05)
 
     def test_sarrus_det(self):
         comb = comb_wr(np.linspace(-133.7, 133.7, num=5), 9)
@@ -448,13 +448,13 @@ class TestMatrixOperations(object):
         matrix = np.array(tuple(comb)).reshape((-1, 5, 3, 3))
         ref = np.linalg.det(matrix)
         res = mdamath.sarrus_det(matrix)
-        assert_almost_equal(res, ref, 7)
+        assert_allclose(res, ref, 7)
         assert ref.dtype == res.dtype == np.float64
         # test single matrices:
         matrix = matrix.reshape(-1, 3, 3)
         ref = ref.ravel()
         res = np.array([mdamath.sarrus_det(m) for m in matrix])
-        assert_almost_equal(res, ref, 7)
+        assert_allclose(res, ref, 7)
         assert ref.dtype == res.dtype == np.float64
 
     @pytest.mark.parametrize('shape', ((0,), (3, 2), (2, 3), (1, 1, 3, 1)))
@@ -592,13 +592,13 @@ class TestMakeWhole(object):
 
         assert_array_almost_equal(universe.atoms[:4].positions, refpos)
         assert_array_almost_equal(universe.atoms[4].position,
-                                  np.array([110.0, 50.0, 0.0]), decimal=self.prec)
+                                  np.array([110.0, 50.0, 0.0]), atol=self.prec)
         assert_array_almost_equal(universe.atoms[5].position,
-                                  np.array([110.0, 60.0, 0.0]), decimal=self.prec)
+                                  np.array([110.0, 60.0, 0.0]), atol=self.prec)
         assert_array_almost_equal(universe.atoms[6].position,
-                                  np.array([110.0, 40.0, 0.0]), decimal=self.prec)
+                                  np.array([110.0, 40.0, 0.0]), atol=self.prec)
         assert_array_almost_equal(universe.atoms[7].position,
-                                  np.array([120.0, 50.0, 0.0]), decimal=self.prec)
+                                  np.array([120.0, 50.0, 0.0]), atol=self.prec)
 
     def test_solve_2(self, universe, ag):
         # use but specify the center atom
@@ -609,13 +609,13 @@ class TestMakeWhole(object):
 
         assert_array_almost_equal(universe.atoms[4:8].positions, refpos)
         assert_array_almost_equal(universe.atoms[0].position,
-                                  np.array([-20.0, 50.0, 0.0]), decimal=self.prec)
+                                  np.array([-20.0, 50.0, 0.0]), atol=self.prec)
         assert_array_almost_equal(universe.atoms[1].position,
-                                  np.array([-10.0, 50.0, 0.0]), decimal=self.prec)
+                                  np.array([-10.0, 50.0, 0.0]), atol=self.prec)
         assert_array_almost_equal(universe.atoms[2].position,
-                                  np.array([-10.0, 60.0, 0.0]), decimal=self.prec)
+                                  np.array([-10.0, 60.0, 0.0]), atol=self.prec)
         assert_array_almost_equal(universe.atoms[3].position,
-                                  np.array([-10.0, 40.0, 0.0]), decimal=self.prec)
+                                  np.array([-10.0, 40.0, 0.0]), atol=self.prec)
 
     def test_solve_3(self, universe):
         # put in a chunk that doesn't need any work
@@ -676,7 +676,7 @@ class TestMakeWhole(object):
         mdamath.make_whole(u.atoms)
 
         assert_array_almost_equal(
-            u.atoms.bonds.values(), blengths, decimal=self.prec)
+            u.atoms.bonds.values(), blengths, atol=self.prec)
 
     def test_make_whole_multiple_molecules(self):
         u = mda.Universe(two_water_gro, guess_bonds=True)
@@ -1804,7 +1804,7 @@ class TestCheckCoords(object):
             assert d is not d_2d
             # Assert correct dtype conversion:
             assert d.dtype == np.float32
-            assert_almost_equal(d, d_2d, self.prec)
+            assert_allclose(d, d_2d, self.prec)
             # Assert all shapes are converted to (1, 3):
             assert a.shape == b.shape == c.shape == d.shape == (1, 3)
             return a + b + c + d
@@ -2153,7 +2153,7 @@ class TestCheckBox(object):
     def test_check_box_tri_vecs(self, box):
         boxtype, checked_box = util.check_box(box)
         assert boxtype == 'tri_vecs'
-        assert_almost_equal(checked_box, self.ref_tri_vecs, self.prec)
+        assert_allclose(checked_box, self.ref_tri_vecs, self.prec)
         assert checked_box.dtype == np.float32
         assert checked_box.flags['C_CONTIGUOUS']
 

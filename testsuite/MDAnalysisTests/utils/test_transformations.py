@@ -24,7 +24,7 @@ from itertools import permutations
 
 import numpy as np
 import pytest
-from numpy.testing import (assert_allclose, assert_equal, assert_almost_equal,
+from numpy.testing import (assert_allclose, assert_equal,
                            assert_array_equal)
 
 from MDAnalysis.lib import transformations as t
@@ -751,4 +751,4 @@ def test_rotaxis_different_vectors():
     for i, j, l in permutations(range(3)):
         x = t.rotaxis(re[i], re[j])
         # use abs since direction doesn't matter
-        assert_almost_equal(np.abs(np.dot(x, re[l])), 1)
+        assert_allclose(np.abs(np.dot(x, re[l])), 1)

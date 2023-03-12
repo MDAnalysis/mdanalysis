@@ -25,7 +25,7 @@ import pytest
 
 from numpy.testing import (
     assert_equal,
-    assert_almost_equal
+    assert_allclose
 )
 
 import MDAnalysis as mda
@@ -62,7 +62,7 @@ class _TRJReaderTest(object):
         protein = universe.select_atoms('protein')
         total = np.sum([protein.center_of_geometry() for ts in
                         universe.trajectory])
-        assert_almost_equal(total, self.ref_sum_centre_of_geometry, self.prec,
+        assert_allclose(total, self.ref_sum_centre_of_geometry, self.prec,
                             err_msg="sum of centers of geometry over the "
                                     "trajectory do not match")
 

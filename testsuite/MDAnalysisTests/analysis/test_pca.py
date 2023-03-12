@@ -26,8 +26,8 @@ from MDAnalysis.analysis import align
 from MDAnalysis.analysis.pca import (PCA, cosine_content,
                                      rmsip, cumulative_overlap)
 
-from numpy.testing import (assert_almost_equal, assert_equal,
-                           assert_array_almost_equal, assert_allclose,)
+from numpy.testing import (assert_equal,
+                           assert_allclose,)
 
 from MDAnalysisTests.datafiles import (PSF, DCD, RANDOM_WALK, RANDOM_WALK_TOPO,
                                        waterPSF, waterDCD)
@@ -77,10 +77,10 @@ def test_cov(pca, u):
 
 
 def test_cum_var(pca):
-    assert_almost_equal(pca.results.cumulated_variance[-1], 1)
+    assert_allclose(pca.results.cumulated_variance[-1], 1)
     cum_var = pca.results.cumulated_variance
     cum_var = np.sort(cum_var)
-    assert_almost_equal(pca.results.cumulated_variance, cum_var, 5)
+    assert_allclose(pca.results.cumulated_variance, cum_var, 5)
 
 
 def test_pcs(pca):
@@ -260,7 +260,7 @@ def test_cosine_content():
     pca_random = PCA(rand).run()
     dot = pca_random.transform(rand.atoms)
     content = cosine_content(dot, 0)
-    assert_almost_equal(content, .99, 1)
+    assert_allclose(content, .99, 1)
 
 
 def test_mean_shape(pca_aligned, u):
@@ -272,14 +272,14 @@ def test_mean_shape(pca_aligned, u):
 def test_calculate_mean(pca_aligned, u, u_aligned):
     ag = u_aligned.select_atoms(SELECTION)
     coords = u_aligned.trajectory.coordinate_array[:, ag.ix]
-    assert_almost_equal(pca_aligned.mean, coords.mean(
-        axis=0), decimal=5)
+    assert_allclose(pca_aligned.mean, coords.mean(
+        axis=0), atol=1e-05)
 
 
 def test_given_mean(pca, u):
     pca = PCA(u, select=SELECTION, align=False,
               mean=pca.mean).run()
-    assert_almost_equal(pca.cov, pca.cov, decimal=5)
+    assert_allclose(pca.cov, pca.cov, atol=1e-05)
 
 
 def test_wrong_num_given_mean(u):
@@ -290,22 +290,22 @@ def test_wrong_num_given_mean(u):
 
 def test_alignment(pca_aligned, u, u_aligned):
     pca_pre_align = PCA(u_aligned, select=SELECTION, align=False).run()
-    assert_almost_equal(pca_aligned.mean, pca_pre_align.mean)
-    assert_almost_equal(pca_aligned.cov, pca_pre_align.cov)
+    assert_allclose(pca_aligned.mean, pca_pre_align.mean)
+    assert_allclose(pca_aligned.cov, pca_pre_align.cov)
 
 
 def test_covariance_norm(pca_aligned, u):
-    assert_almost_equal(np.linalg.norm(pca_aligned.cov), 0.96799758, decimal=5)
+    assert_allclose(np.linalg.norm(pca_aligned.cov), 0.96799758, atol=1e-05)
 
 
 def test_pca_rmsip_self(pca):
-    assert_almost_equal(pca.rmsip(pca), 1.0)
+    assert_allclose(pca.rmsip(pca), 1.0)
 
 
 def test_rmsip_ortho(pca):
     value = rmsip(pca.results.p_components[:, :10].T,
                   pca.results.p_components[:, 10:20].T)
-    assert_almost_equal(value, 0.0)
+    assert_allclose(value, 0.0)
 
 
 def test_pytest_too_many_components(pca):
@@ -319,18 +319,18 @@ def test_asymmetric_rmsip(pca):
     b = pca.rmsip(pca, n_components=(4, 10))
 
     assert abs(a-b) > 0.1, 'RMSIP should be asymmetric'
-    assert_almost_equal(b, 1.0)
+    assert_allclose(b, 1.0)
 
 
 def test_pca_cumulative_overlap_self(pca):
     value = pca.cumulative_overlap(pca, i=1)
-    assert_almost_equal(value, 1.0)
+    assert_allclose(value, 1.0)
 
 
 def test_cumulative_overlap_ortho(pca):
     pcs = pca.results.p_components
     value = cumulative_overlap(pcs[:, 11].T, pcs.T, n_components=10)
-    assert_almost_equal(value, 0.0)
+    assert_allclose(value, 0.0)
 
 
 @pytest.mark.parametrize(

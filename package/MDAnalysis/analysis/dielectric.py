@@ -129,7 +129,7 @@ class DielectricConstant(AnalysisBase):
             raise NoDataError("No charges defined given atomgroup.")
 
         if not np.allclose(self.atomgroup.total_charge(compound='fragments'),
-                           0.0, atol=1E-5):
+                           0.0, atol=1e-5):
             raise NotImplementedError("Analysis for non-neutral systems or"
                                       " systems with free charges are not"
                                       " available.")

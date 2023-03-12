@@ -28,7 +28,7 @@ _TestTimestepInterface tests the Readers are correctly using Timesteps
 """
 import itertools
 import numpy as np
-from numpy.testing import assert_equal, assert_allclose, assert_array_almost_equal
+from numpy.testing import assert_equal, assert_allclose
 
 from MDAnalysis.lib.mdamath import triclinic_vectors
 import MDAnalysis as mda
@@ -390,7 +390,7 @@ class TestTimestep(object):
 
         if not ref_ts.dimensions is None:
             assert_array_almost_equal(ref_ts.dimensions, ts2.dimensions,
-                                      decimal=4)
+                                      atol=1e-04)
         else:
             assert ref_ts.dimensions == ts2.dimensions
 

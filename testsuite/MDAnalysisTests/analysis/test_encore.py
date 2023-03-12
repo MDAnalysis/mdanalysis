@@ -32,7 +32,7 @@ import warnings
 import platform
 
 import pytest
-from numpy.testing import assert_equal, assert_almost_equal
+from numpy.testing import assert_equal, assert_allclose, assert_almost_equal
 
 from MDAnalysisTests.datafiles import DCD, DCD2, PSF, TPR, XTC
 from MDAnalysisTests import block_import
@@ -153,7 +153,7 @@ inconsistent results")
             "Calculated RMSD values differ from "
             "the reference implementation")
         for i, rmsd in enumerate(reference.results.rmsd):
-            assert_almost_equal(conf_dist_matrix[0, i], rmsd[2], 3, err_msg)
+            assert_allclose(conf_dist_matrix[0, i], rmsd[2], atol=1e-03, err_msg=err_msg)
 
     def test_rmsd_matrix_with_superimposition_custom_weights(self, ens1):
         conf_dist_matrix = encore.confdistmatrix.conformational_distance_matrix(
@@ -173,7 +173,7 @@ inconsistent results")
             n_jobs=1)
 
         for i in range(conf_dist_matrix_custom.size):
-            assert_almost_equal(conf_dist_matrix_custom[0, i], conf_dist_matrix[0, i])
+            assert_allclose(conf_dist_matrix_custom[0, i], conf_dist_matrix[0, i])
 
     def test_rmsd_matrix_without_superimposition(self, ens1):
         selection_string = "name CA"
@@ -192,7 +192,7 @@ inconsistent results")
             n_jobs=1)
 
         print(repr(confdist_matrix.as_array()[0, :]))
-        assert_almost_equal(confdist_matrix.as_array()[0,:], reference_rmsd, decimal=3,
+        assert_allclose(confdist_matrix.as_array()[0,:], reference_rmsd, atol=1e-03,
                             err_msg="calculated RMSD values differ from reference")
 
     def test_ensemble_superimposition(self):
@@ -252,7 +252,7 @@ inconsistent results")
         covariance = encore.covariance.covariance_matrix(ens1,
                                                          select="name CA and resnum 1:3",
                                                          estimator=encore.covariance.shrinkage_covariance_estimator)
-        assert_almost_equal(covariance, reference_cov, decimal=4,
+        assert_allclose(covariance, reference_cov, atol=1e-04,
                             err_msg="Covariance matrix from covariance estimation not as expected")
 
     def test_covariance_matrix_with_reference(self, ens1):
@@ -271,16 +271,15 @@ inconsistent results")
                                                          select="name CA and resnum 1:3",
                                                          estimator=encore.covariance.shrinkage_covariance_estimator,
                                                          reference=ens1)
-        err_msg = (
-                "Covariance matrix from covariance estimation not as expected"
-                )
-        assert_almost_equal(covariance, reference_cov, 4, err_msg)
+
+
+        assert_allclose(covariance, reference_cov, 4, err_msg="Covariance matrix from covariance estimation not as expected")
 
     def test_hes_to_self(self, ens1):
         results, details = encore.hes([ens1, ens1])
         result_value = results[0, 1]
         expected_value = 0.
-        assert_almost_equal(result_value, expected_value,
+        assert_allclose(result_value, expected_value,
                             err_msg="Harmonic Ensemble Similarity to itself\
                                  not zero:{0:f}".format(result_value))
 
@@ -298,7 +297,7 @@ inconsistent results")
                                                              ens2.select_atoms('name CA').masses))
         result_value = results[0, 1]
         result_value_custom = results_custom[0, 1]
-        assert_almost_equal(result_value, result_value_custom)
+        assert_allclose(result_value, result_value_custom)
 
     def test_hes_align(self, ens1, ens2):
         # This test is massively sensitive!
@@ -306,7 +305,7 @@ inconsistent results")
         results, details = encore.hes([ens1, ens2], align=True)
         result_value = results[0,1]
         expected_value = 2047.05
-        assert_almost_equal(result_value, expected_value, decimal=-3,
+        assert_almost_equal(result_value, expected_value, atol=-3,
                             err_msg="Unexpected value for Harmonic Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
 
     def test_ces_to_self(self, ens1):
@@ -315,21 +314,21 @@ inconsistent results")
             clustering_method=encore.AffinityPropagationNative(preference = -3.0))
         result_value = results[0,1]
         expected_value = 0.
-        assert_almost_equal(result_value, expected_value,
+        assert_allclose(result_value, expected_value,
                             err_msg="ClusteringEnsemble Similarity to itself not zero: {0:f}".format(result_value))
 
     def test_ces(self, ens1, ens2):
         results, details = encore.ces([ens1, ens2])
         result_value = results[0,1]
         expected_value = 0.51
-        assert_almost_equal(result_value, expected_value, decimal=2,
+        assert_allclose(result_value, expected_value, atol=1e-02,
                             err_msg="Unexpected value for Cluster Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
 
     def test_dres_to_self(self, ens1):
         results, details = encore.dres([ens1, ens1])
         result_value = results[0,1]
         expected_value = 0.
-        assert_almost_equal(result_value, expected_value, decimal=2,
+        assert_allclose(result_value, expected_value, atol=1e-02,
                             err_msg="Dim. Reduction Ensemble Similarity to itself not zero: {0:f}".format(result_value))
 
     def test_dres(self, ens1, ens2):
@@ -348,14 +347,14 @@ inconsistent results")
                                        distance_matrix = distance_matrix)
         result_value = results[0,1]
         expected_value = 0.68
-        assert_almost_equal(result_value, expected_value, decimal=1,
+        assert_allclose(result_value, expected_value, atol=1e-01,
                             err_msg="Unexpected value for Dim. reduction Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
 
     def test_ces_convergence(self, ens1):
         expected_values = [0.3443593, 0.1941854, 0.06857104,  0.]
         results = encore.ces_convergence(ens1, 5)
         for i,ev in enumerate(expected_values):
-            assert_almost_equal(ev, results[i], decimal=2,
+            assert_allclose(ev, results[i], atol=1e-02,
                                 err_msg="Unexpected value for Clustering Ensemble similarity in convergence estimation")
 
     def test_dres_convergence(self, ens1):
@@ -365,7 +364,7 @@ inconsistent results")
         expected_values = [0.3, 0.]
         results = encore.dres_convergence(ens1, 10)
         try:
-            assert_almost_equal(results[:,0], expected_values, decimal=1)
+            assert_allclose(results[:,0], expected_values, atol=1e-01)
         except AssertionError:
             # Random test failure is very rare, but repeating the failed test
             # just once would only assert that the test passes with 50%
@@ -376,7 +375,7 @@ inconsistent results")
                           category=RuntimeWarning)
             for i in range(10):
                 results = encore.dres_convergence(ens1, 10)
-                assert_almost_equal(results[:,0], expected_values, decimal=1,
+                assert_allclose(results[:,0], expected_values, atol=1e-01,
                                     err_msg="Unexpected value for Dim. "
                                             "reduction Ensemble similarity in "
                                             "convergence estimation")
@@ -396,8 +395,8 @@ inconsistent results")
             "Unexpected standard deviation for bootstrapped samples in"
             " Harmonic Ensemble similarity"
         )
-        assert_almost_equal(average, expected_average, -2, err_msg)
-        assert_almost_equal(stdev, expected_stdev, -2, error_msg)
+        assert_allclose(average, expected_average, -2, err_msg)
+        assert_allclose(stdev, expected_stdev, -2, error_msg)
 
     def test_ces_error_estimation(self, ens1):
         expected_average = 0.03
@@ -410,9 +409,9 @@ inconsistent results")
         average = averages[0,1]
         stdev = stdevs[0,1]
 
-        assert_almost_equal(average, expected_average, decimal=1,
+        assert_allclose(average, expected_average, atol=1e-01,
                             err_msg="Unexpected average value for bootstrapped samples in Clustering Ensemble similarity")
-        assert_almost_equal(stdev, expected_stdev, decimal=0,
+        assert_allclose(stdev, expected_stdev, atol=0,
                             err_msg="Unexpected standard daviation  for bootstrapped samples in Clustering Ensemble similarity")
 
     def test_ces_error_estimation_ensemble_bootstrap(self, ens1):
@@ -434,7 +433,7 @@ inconsistent results")
         err_msg = (
             "Unexpected average value for bootstrapped samples in"
             " Clustering Ensemble similarity")
-        assert_almost_equal(
+        assert_allclose(
             average,
             expected_average,
             1,
@@ -443,7 +442,7 @@ inconsistent results")
             "Unexpected standard deviation for bootstrapped samples in"
             " Clustering Ensemble similarity"
             )
-        assert_almost_equal(
+        assert_allclose(
             stdev,
             expected_stdev,
             1,
@@ -820,7 +819,7 @@ class TestEncoreDimensionalityReduction(object):
             encore.reduce_dimensionality([ens1, ens2, ens1])
         coordinates_ens1 = coordinates[:,np.where(details["ensemble_membership"]==1)]
         coordinates_ens3 = coordinates[:,np.where(details["ensemble_membership"]==3)]
-        assert_almost_equal(coordinates_ens1, coordinates_ens3, decimal=0,
+        assert_allclose(coordinates_ens1, coordinates_ens3, atol=0,
                      err_msg="Unexpected result in dimensionality reduction: {0}".format(coordinates))
 
 

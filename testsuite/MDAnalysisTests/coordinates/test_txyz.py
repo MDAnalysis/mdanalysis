@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import pytest
-from numpy.testing import assert_almost_equal
+from numpy.testing import assert_allclose
 
 from MDAnalysisTests.datafiles import TXYZ, ARC, ARC_PBC
 
@@ -44,19 +44,19 @@ def ARC_PBC_U():
 
 
 def test_txyz_positions(TXYZ_U):
-    assert_almost_equal(TXYZ_U.atoms.positions[0],
+    assert_allclose(TXYZ_U.atoms.positions[0],
                         [-6.553398, -1.854369, 0.000000])
 
 
 def test_arc_positions(ARC_U):
-    assert_almost_equal(ARC_U.atoms.positions[0],
+    assert_allclose(ARC_U.atoms.positions[0],
                         [-6.553398, -1.854369, 0.000000])
 
 
 def test_arc_positions_frame_2(ARC_U):
     ARC_U.trajectory[1]
 
-    assert_almost_equal(ARC_U.atoms.positions[0],
+    assert_allclose(ARC_U.atoms.positions[0],
                         [-0.231579, -0.350841, -0.037475])
 
 
@@ -74,5 +74,5 @@ def test_pbc_boxsize(ARC_PBC_U):
                     [ 40.860761,  40.860761,  40.860761,  90.000000,  90.000000,  90.000000]]
 
     for ref_box, ts in zip(ref_dimensions, ARC_PBC_U.trajectory):
-        assert_almost_equal(ref_box, ts.dimensions, decimal=5)
+        assert_allclose(ref_box, ts.dimensions, atol=1e-05)
 

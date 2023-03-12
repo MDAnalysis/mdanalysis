@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import numpy as np
-from numpy.testing import (assert_raises, assert_almost_equal,
+from numpy.testing import (assert_raises,assert_allclose,
                            assert_array_equal)
 import pytest
 
@@ -35,7 +35,7 @@ class TestUnwrap(object):
     """Tests the functionality of *Group.unwrap() using the UnWrapUniverse,
     which is specifically designed for wrapping and unwrapping tests.
     """
-    precision = 5
+    precision = 1e-05
 
     @pytest.mark.parametrize('level', ('atoms', 'residues', 'segments'))
     @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
@@ -69,8 +69,8 @@ class TestUnwrap(object):
         unwrapped_pos = group.unwrap(compound=compound, reference=reference,
                                      inplace=False)
         # check for correct result:
-        assert_almost_equal(unwrapped_pos, ref_unwrapped_pos,
-                            decimal=self.precision)
+        assert_allclose(unwrapped_pos, ref_unwrapped_pos,
+                            atol=self.precision)
         # make sure atom positions are unchanged:
         assert_array_equal(group.atoms.positions, orig_pos)
         # now, do the unwrapping inplace:
@@ -110,8 +110,8 @@ class TestUnwrap(object):
         # wrap again:
         group.wrap()
         # make sure wrapped atom positions are as before:
-        assert_almost_equal(group.atoms.positions, orig_wrapped_pos,
-                            decimal=self.precision)
+        assert_allclose(group.atoms.positions, orig_wrapped_pos,
+                            atol=self.precision)
 
     @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
                                           'group', 'segments'))
@@ -129,8 +129,8 @@ class TestUnwrap(object):
         # first, do the unwrapping out-of-place:
         group.unwrap(compound=compound, reference=reference, inplace=True)
         # check for correct result:
-        assert_almost_equal(group.positions, ref_unwrapped_pos,
-                            decimal=self.precision)
+        assert_allclose(group.positions, ref_unwrapped_pos,
+                            atol=self.precision)
         # make sure the position of molecule 12's last atom is unchanged:
         assert_array_equal(u.atoms[46].position, orig_pos)
 
@@ -180,8 +180,8 @@ class TestUnwrap(object):
         # unwrap:
         group.unwrap(compound=compound, reference=reference, inplace=True)
         # check for correct result:
-        assert_almost_equal(group.atoms.positions, ref_unwrapped_pos,
-                            decimal=self.precision)
+        assert_allclose(group.atoms.positions, ref_unwrapped_pos,
+                            atol=self.precision)
         # check that the rest of the atoms are kept unmodified:
         assert_array_equal(rest.positions, orig_rest_pos)
 
@@ -204,16 +204,16 @@ class TestUnwrap(object):
         # get expected result:
         ref_unwrapped_pos = u.unwrapped_coords(compound, 'cog')[6:9]
         # check for correctness:
-        assert_almost_equal(unwrapped_pos_cog, ref_unwrapped_pos,
-                            decimal=self.precision)
+        assert_allclose(unwrapped_pos_cog, ref_unwrapped_pos,
+                            atol=self.precision)
         # unwrap with center of mass as reference:
         unwrapped_pos_com = group.unwrap(compound=compound, reference='com',
                                          inplace=False)
         # assert that the com result is shifted with respect to the cog result
         # by one box length in the x-direction:
         shift = np.array([10.0, 0.0, 0.0], dtype=np.float32)
-        assert_almost_equal(unwrapped_pos_cog, unwrapped_pos_com - shift,
-                            decimal=self.precision)
+        assert_allclose(unwrapped_pos_cog, unwrapped_pos_com - shift,
+                            atol=self.precision)
 
     @pytest.mark.parametrize('level', ('atoms', 'residues', 'segments'))
     @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
@@ -373,10 +373,10 @@ def test_uncontiguous():
     u.atoms.positions -= displacement_vec
     u.atoms.pack_into_box()
     # Let's make sure we really broke the fragment
-    assert_raises(AssertionError, assert_almost_equal,
+    assert_raises(AssertionError,
                   ref_pos, ag.positions+displacement_vec,
                   decimal=precision)
     # Ok, let's make it whole again and check that we're good
     u.atoms.unwrap()
-    assert_almost_equal(ref_pos, ag.positions+displacement_vec,
-                        decimal=precision)
+    assert_allclose(ref_pos, ag.positions+displacement_vec,
+                        atol=1e-05)

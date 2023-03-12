@@ -27,8 +27,10 @@ from hypothesis import example, given
 import hypothesis
 import numpy as np
 
-from numpy.testing import (assert_array_almost_equal, assert_equal,
-                           assert_array_equal, assert_almost_equal)
+from numpy.testing import (
+                           assert_equal,
+                           assert_array_equal,
+                           assert_allclose)
 
 from MDAnalysis.lib.formats.libdcd import DCDFile, DCD_IS_CHARMM, DCD_HAS_EXTRA_BLOCK
 
@@ -93,8 +95,8 @@ def _assert_compare_readers(old_reader, new_reader):
 
     assert old_reader.fname == new_reader.fname
     assert old_reader.tell() == new_reader.tell()
-    assert_almost_equal(frame.xyz, new_frame.xyz)
-    assert_almost_equal(frame.unitcell, new_frame.unitcell)
+    assert_allclose(frame.xyz, new_frame.xyz)
+    assert_allclose(frame.unitcell, new_frame.unitcell)
 
 
 def test_pickle(dcd):

@@ -25,7 +25,6 @@ import pytest
 from MDAnalysis.analysis import nuclinfo
 from MDAnalysisTests.datafiles import RNA_PSF, RNA_PDB
 from numpy.testing import (
-    assert_almost_equal,
     assert_allclose,
 )
 
@@ -41,7 +40,7 @@ def u():
 ))
 def test_wc_pair(u, i, bp, seg1, seg2, expected_value):
     val = nuclinfo.wc_pair(u, i, bp, seg1=seg1, seg2=seg2)
-    assert_almost_equal(val, expected_value, decimal=3)
+    assert_allclose(val, expected_value, atol=1e-03)
 
 
 @pytest.mark.parametrize('i, bp, seg1, seg2, expected_value', (
@@ -50,7 +49,7 @@ def test_wc_pair(u, i, bp, seg1, seg2, expected_value):
 ))
 def test_minor_pair(u, i, bp, seg1, seg2, expected_value):
     val = nuclinfo.minor_pair(u, i, bp, seg1=seg1, seg2=seg2)
-    assert_almost_equal(val, expected_value, decimal=3)
+    assert_allclose(val, expected_value, atol=1e-03)
 
 
 @pytest.mark.parametrize('i, bp, seg1, seg2, expected_value', (
@@ -59,7 +58,7 @@ def test_minor_pair(u, i, bp, seg1, seg2, expected_value):
 ))
 def test_major_pair(u, i, bp, seg1, seg2, expected_value):
     val = nuclinfo.major_pair(u, i, bp, seg1=seg1, seg2=seg2)
-    assert_almost_equal(val, expected_value, decimal=3)
+    assert_allclose(val, expected_value, atol=1e-03)
 
 
 @pytest.mark.parametrize('seg, i, expected_value', (
@@ -68,7 +67,7 @@ def test_major_pair(u, i, bp, seg1, seg2, expected_value):
 ))
 def test_phase_cp(u, seg, i, expected_value):
     val = nuclinfo.phase_cp(u, seg=seg, i=i)
-    assert_almost_equal(val, expected_value, decimal=3)
+    assert_allclose(val, expected_value, atol=1e-03)
 
 
 @pytest.mark.parametrize('seg, i, expected_value', (
@@ -77,7 +76,7 @@ def test_phase_cp(u, seg, i, expected_value):
 ))
 def test_phase_as(u, seg, i, expected_value):
     val = nuclinfo.phase_as(u, seg=seg, i=i)
-    assert_almost_equal(val, expected_value, decimal=3)
+    assert_allclose(val, expected_value, atol=1e-03)
 
 
 @pytest.mark.parametrize('seg, i, expected_value', (
@@ -97,7 +96,7 @@ def test_tors(u, seg, i, expected_value):
 ))
 def test_tors_alpha(u, seg, i, expected_value):
     val = nuclinfo.tors_alpha(u, seg=seg, i=i)
-    assert_almost_equal(val, expected_value, decimal=3)
+    assert_allclose(val, expected_value, atol=1e-03)
 
 
 @pytest.mark.parametrize('seg, i, expected_value', (
@@ -106,7 +105,7 @@ def test_tors_alpha(u, seg, i, expected_value):
 ))
 def test_tors_beta(u, seg, i, expected_value):
     val = nuclinfo.tors_beta(u, seg=seg, i=i)
-    assert_almost_equal(val, expected_value, decimal=3)
+    assert_allclose(val, expected_value, atol=1e-03)
 
 
 @pytest.mark.parametrize('seg, i, expected_value', (
@@ -115,7 +114,7 @@ def test_tors_beta(u, seg, i, expected_value):
 ))
 def test_tors_gamma(u, seg, i, expected_value):
     val = nuclinfo.tors_gamma(u, seg=seg, i=i)
-    assert_almost_equal(val, expected_value, decimal=3)
+    assert_allclose(val, expected_value, atol=1e-03)
 
 
 @pytest.mark.parametrize('seg, i, expected_value', (
@@ -124,7 +123,7 @@ def test_tors_gamma(u, seg, i, expected_value):
 ))
 def test_tors_delta(u, seg, i, expected_value):
     val = nuclinfo.tors_delta(u, seg=seg, i=i)
-    assert_almost_equal(val, expected_value, decimal=3)
+    assert_allclose(val, expected_value, atol=1e-03)
 
 
 @pytest.mark.parametrize('seg, i, expected_value', (
@@ -133,7 +132,7 @@ def test_tors_delta(u, seg, i, expected_value):
 ))
 def test_tors_eps(u, seg, i, expected_value):
     val = nuclinfo.tors_eps(u, seg=seg, i=i)
-    assert_almost_equal(val, expected_value, decimal=3)
+    assert_allclose(val, expected_value, atol=1e-03)
 
 
 @pytest.mark.parametrize('seg, i, expected_value', (
@@ -142,7 +141,7 @@ def test_tors_eps(u, seg, i, expected_value):
 ))
 def test_tors_zeta(u, seg, i, expected_value):
     val = nuclinfo.tors_zeta(u, seg=seg, i=i)
-    assert_almost_equal(val, expected_value, decimal=3)
+    assert_allclose(val, expected_value, atol=1e-03)
 
 
 @pytest.mark.parametrize('seg, i, expected_value', (
@@ -153,7 +152,7 @@ def test_tors_zeta(u, seg, i, expected_value):
 ))
 def test_tors_chi(u, seg, i, expected_value):
     val = nuclinfo.tors_chi(u, seg=seg, i=i)
-    assert_almost_equal(val, expected_value, decimal=3)
+    assert_allclose(val, expected_value, atol=1e-03)
 
 
 @pytest.mark.parametrize('seg, i, expected_value', (
@@ -164,7 +163,7 @@ def test_tors_chi(u, seg, i, expected_value):
 ))
 def test_hydroxyl(u, seg, i, expected_value):
     val = nuclinfo.hydroxyl(u, seg=seg, i=i)
-    assert_almost_equal(val, expected_value, decimal=3)
+    assert_allclose(val, expected_value, atol=1e-03)
 
 
 @pytest.mark.parametrize('bp1, bp2, i, seg1, seg2, seg3, expected_value', (
@@ -173,4 +172,4 @@ def test_hydroxyl(u, seg, i, expected_value):
 ))
 def test_pseudo_dihe_baseflip(u, bp1, bp2, i, seg1, seg2, seg3, expected_value):
     val = nuclinfo.pseudo_dihe_baseflip(u, bp1, bp2, i, seg1, seg2, seg3)
-    assert_almost_equal(val, expected_value, decimal=3)
+    assert_allclose(val, expected_value, atol=1e-03)

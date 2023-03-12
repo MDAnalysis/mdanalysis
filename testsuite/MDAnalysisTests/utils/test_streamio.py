@@ -26,7 +26,7 @@ from io import StringIO
 
 import pytest
 import numpy as np
-from numpy.testing import assert_equal, assert_almost_equal, assert_array_almost_equal
+from numpy.testing import assert_equal,assert_allclose
 
 
 import MDAnalysis
@@ -354,9 +354,9 @@ class TestStreamIO(RefAdKSmall):
     def test_PQRReader(self, streamData):
         u = MDAnalysis.Universe(streamData.as_NamedStream('PQR'))
         assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
-        assert_almost_equal(u.atoms.total_charge(), self.ref_charmm_totalcharge, 3,
+        assert_allclose(u.atoms.total_charge(), self.ref_charmm_totalcharge, 3,
                             "Total charge (in CHARMM) does not match expected value.")
-        assert_almost_equal(u.atoms.select_atoms('name H').charges, self.ref_charmm_Hcharges, 3,
+        assert_allclose(u.atoms.select_atoms('name H').charges, self.ref_charmm_Hcharges, 3,
                             "Charges for H atoms do not match.")
 
     def test_PDBQTReader(self, streamData):
@@ -371,10 +371,10 @@ class TestStreamIO(RefAdKSmall):
     def test_GROReader(self, streamData):
         u = MDAnalysis.Universe(streamData.as_NamedStream('GRO'))
         assert_equal(u.atoms.n_atoms, 6)
-        assert_almost_equal(u.atoms[3].position,
+        assert_allclose(u.atoms[3].position,
                             10. * np.array([1.275, 0.053, 0.622]), 3,  # manually convert nm -> A
                             err_msg="wrong coordinates for water 2 OW")
-        assert_almost_equal(u.atoms[3].velocity,
+        assert_allclose(u.atoms[3].velocity,
                             10. * np.array([0.2519, 0.3140, -0.1734]), 3,  # manually convert nm/ps -> A/ps
                             err_msg="wrong velocity for water 2 OW")
 
@@ -395,5 +395,5 @@ class TestStreamIO(RefAdKSmall):
         assert_equal(u.trajectory.frame, 1)  # !!!! ???
         u.trajectory.next()  # frame 2
         assert_equal(u.trajectory.frame, 2)
-        assert_almost_equal(u.atoms[2].position, np.array([0.45600, 18.48700, 16.26500]), 3,
+        assert_allclose(u.atoms[2].position, np.array([0.45600, 18.48700, 16.26500]), 3,
                             err_msg="wrong coordinates for atom CA at frame 2")

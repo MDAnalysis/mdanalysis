@@ -29,7 +29,7 @@ from MDAnalysisTests.datafiles import DCD, PSF
 from MDAnalysisTests.coordinates.base import (BaseReference,
                                               MultiframeReaderTest)
 from MDAnalysis.coordinates.memory import Timestep
-from numpy.testing import assert_equal, assert_almost_equal
+from numpy.testing import assert_equal,assert_allclose
 
 
 class MemoryReference(BaseReference):
@@ -195,7 +195,7 @@ class TestMemoryReader(MultiframeReaderTest):
         new_positions = np.ones_like(reader.ts.positions, dtype=np.float32)
         reader.ts.positions = new_positions
         reader[0]
-        assert_almost_equal(reader.ts.positions, new_positions)
+        assert_allclose(reader.ts.positions, new_positions)
 
     def test_timeseries_warns_deprecation(self, reader):
         with pytest.warns(DeprecationWarning, match="MemoryReader.timeseries "
@@ -340,7 +340,7 @@ class TestMemoryReaderModifications(object):
         ts = mr2.ts
         setattr(ts, attr, 7)
         # check the change worked
-        assert_almost_equal(getattr(ts, attr), 7)
+        assert_allclose(getattr(ts, attr), 7)
         assert ts.positions.shape == (self.n_atoms, 3)
         assert ts.velocities.shape == (self.n_atoms, 3)
         assert ts.forces.shape == (self.n_atoms, 3)
@@ -349,7 +349,7 @@ class TestMemoryReaderModifications(object):
         ts = mr2[2]
         ts = mr2[0]
         # check our old change is still there
-        assert_almost_equal(getattr(ts, attr), 7)
+        assert_allclose(getattr(ts, attr), 7)
 
     @pytest.mark.parametrize('attr', ['positions', 'velocities', 'forces', 'dimensions'])
     def test_attr_set(self, mr_universe, attr):
@@ -359,12 +359,12 @@ class TestMemoryReaderModifications(object):
 
         setattr(ts, attr, 7)
 
-        assert_almost_equal(getattr(ts, attr), 7)
+        assert_allclose(getattr(ts, attr), 7)
 
         ts = u.trajectory[2]
         ts = u.trajectory[0]
 
-        assert_almost_equal(getattr(ts, attr), 7)
+        assert_allclose(getattr(ts, attr), 7)
         assert u.atoms.positions.shape == (self.n_atoms, 3)
         assert u.atoms.velocities.shape == (self.n_atoms, 3)
         assert u.atoms.forces.shape == (self.n_atoms, 3)

@@ -26,7 +26,7 @@ import MDAnalysis as mda
 import MDAnalysis.analysis.psa as PSA
 
 from numpy.testing import (assert_array_less,
-                           assert_almost_equal, assert_equal)
+                           assert_allclose, assert_equal)
 import numpy as np
 import scipy
 import scipy.spatial
@@ -124,9 +124,9 @@ class TestPSAnalysis(object):
     def test_reversal_hausdorff(self, hausd_matrix):
         """Test whether Hausdorff distances are invariant to path reversal"""
         err_msg = "Hausdorff distances changed after path reversal"
-        assert_almost_equal(hausd_matrix[1,2],
-                            hausd_matrix[0,1],
-                            decimal=3, err_msg=err_msg)
+        assert_allclose(hausd_matrix[1,2],
+                        hausd_matrix[0,1],
+                        atol=1e-03, err_msg=err_msg)
 
     def test_reversal_frechet(self, frech_matrix):
         """Test whether Frechet distances are same/larger after path reversal"""
@@ -200,8 +200,8 @@ class TestPSAnalysis(object):
 
         for ipath, (observed, expected) in enumerate(zip(psa2.paths,
                                                          expected_paths)):
-            assert_almost_equal(observed, expected, decimal=6,
-                                err_msg=("loaded path {} does not agree with "
+            assert_allclose(observed, expected, atol=1e-06,
+                            err_msg=("loaded path {} does not agree with "
                                          "input").format(ipath))
 
     def test_load_nofile(self, psa):
@@ -265,8 +265,8 @@ class TestPSAnalysis(object):
         identical to those from standard Hausdorff metric"""
         err_msg = ("Some Hausdorff distances from pairs analysis vary "
                    "significantly from usual Hausdorff calculation")
-        assert_almost_equal(hausd_dists, hausd_pairs_dists,
-                            decimal=6, err_msg=err_msg)
+        assert_allclose(hausd_dists, hausd_pairs_dists,
+                        atol=1e-06, err_msg=err_msg)
 
     def test_distances_from_hausdorff_pairs_frames(self, psa):
         """Test whether actual distances between frames of Hausdorff
@@ -288,9 +288,9 @@ class TestPSAnalysis(object):
                 dists[i,j] = (PSA.sqnorm(psa.paths[i][p,:,:] -
                                          psa.paths[j][q,:,:]) /
                                          psa.natoms)**0.5
-        assert_almost_equal(hausd_pairs_dists2,
-                            dists[self.iu1],
-                            decimal=6, err_msg=err_msg)
+        assert_allclose(hausd_pairs_dists2,
+                        dists[self.iu1],
+                        atol=1e-06, err_msg=err_msg)
 
 
 class TestPSAExceptions(object):
@@ -425,7 +425,7 @@ class _BaseHausdorffDistance(object):
         forward = h(path_1, path_2)
         reverse = h(path_2, path_1)
         # lower precision on 32bit
-        assert_almost_equal(forward, reverse, decimal=15)
+        assert_allclose(forward, reverse, atol=1e-15)
 
     def test_hausdorff_value(self, path_1, path_2, h, expected):
         '''Test that the undirected Hausdorff
@@ -434,7 +434,7 @@ class _BaseHausdorffDistance(object):
         actual = h(path_1, path_2)
         # unless I pin down the random generator
         # seems unstable to use decimal > 2
-        assert_almost_equal(actual, expected, decimal=2)
+        assert_allclose(actual, expected, atol=1e-02)
 
 
 class TestHausdorffSymmetric(_BaseHausdorffDistance):
@@ -474,7 +474,7 @@ class TestWeightedAvgHausdorffSymmetric(_BaseHausdorffDistance):
         inflated_path_2 = np.concatenate((path_2, path_2))
         d_inner_inflation = h(inflated_path_1, path_2)
         d_outer_inflation = h(path_1, inflated_path_2)
-        assert_almost_equal(d_inner_inflation, d_outer_inflation)
+        assert_allclose(d_inner_inflation, d_outer_inflation)
 
 
 class TestAvgHausdorffSymmetric(_BaseHausdorffDistance):
@@ -536,4 +536,4 @@ class DiscreteFrechetDistance(object):
 
         expected = 4.5
         actual = PSA.discrete_frechet(path_1, path_2)
-        assert_almost_equal(actual, expected)
+        assert_allclose(actual, expected)

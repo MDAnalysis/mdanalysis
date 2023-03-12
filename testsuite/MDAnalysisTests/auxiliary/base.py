@@ -24,7 +24,7 @@ import MDAnalysis as mda
 import numpy as np
 import pytest
 from MDAnalysisTests.datafiles import (COORDINATES_XTC, COORDINATES_TOPOLOGY)
-from numpy.testing import assert_almost_equal, assert_equal
+from numpy.testing import assert_allclose, assert_equal
 
 
 def test_get_bad_auxreader_format_raises_ValueError():
@@ -271,7 +271,7 @@ class BaseAuxReaderTest(object):
         ts = ref.lower_freq_ts
         reader.update_ts(ts)
         # check the value set in ts is as we expect
-        assert_almost_equal(ts.aux.test, ref.lowf_closest_rep,
+        assert_allclose(ts.aux.test, ref.lowf_closest_rep,
                             err_msg="Representative value in ts.aux does not match")
 
     def test_represent_as_average(self, ref, reader):
@@ -282,7 +282,7 @@ class BaseAuxReaderTest(object):
         ts = ref.lower_freq_ts
         reader.update_ts(ts)
         # check the representative value set in ts is as expected
-        assert_almost_equal(ts.aux.test, ref.lowf_average_rep,
+        assert_allclose(ts.aux.test, ref.lowf_average_rep,
                             err_msg="Representative value does not match when "
                                     "using with option 'average'")
 
@@ -294,7 +294,7 @@ class BaseAuxReaderTest(object):
         ts = ref.lower_freq_ts
         reader.update_ts(ts)
         # check representative value set in ts is as expected
-        assert_almost_equal(ts.aux.test, ref.lowf_cutoff_average_rep,
+        assert_allclose(ts.aux.test, ref.lowf_cutoff_average_rep,
                             err_msg="Representative value does not match when "
                                     "applying cutoff")
 
@@ -302,7 +302,7 @@ class BaseAuxReaderTest(object):
         # try reading a timestep offset from auxiliary
         ts = ref.offset_ts
         reader.update_ts(ts)
-        assert_almost_equal(ts.aux.test, ref.offset_closest_rep,
+        assert_allclose(ts.aux.test, ref.offset_closest_rep,
                             err_msg="Representative value in ts.aux does not match")
 
     def test_represent_as_closest_with_cutoff(self, ref, reader):
@@ -313,7 +313,7 @@ class BaseAuxReaderTest(object):
         ts = ref.offset_ts
         reader.update_ts(ts)
         # check representative value set in ts is as expected
-        assert_almost_equal(ts.aux.test, ref.offset_cutoff_closest_rep,
+        assert_allclose(ts.aux.test, ref.offset_cutoff_closest_rep,
                             err_msg="Representative value does not match when "
                                     "applying cutoff")
 
@@ -321,7 +321,7 @@ class BaseAuxReaderTest(object):
         # try reading a timestep with higher frequency
         ts = ref.higher_freq_ts
         reader.update_ts(ts)
-        assert_almost_equal(ts.aux.test, ref.highf_rep,
+        assert_allclose(ts.aux.test, ref.highf_rep,
                             err_msg="Representative value in ts.aux does not match")
 
     def test_get_auxreader_for(self, ref, reader):
@@ -394,7 +394,7 @@ class BaseAuxReaderTest(object):
             frame, time_diff = reader.step_to_frame(idx, ts, return_time_diff=True)
 
             assert frame == idx
-            np.testing.assert_almost_equal(time_diff, idx * 0.1)
+            np.testing.assert_allclose(time_diff, idx * 0.1)
 
     def test_go_to_step_fail(self, reader):
 
@@ -427,7 +427,7 @@ def assert_auxstep_equal(A, B):
                              'B.time = {}'.format(A.time, B.time))
     if isinstance(A.data, dict):
         for term in A.data:
-            assert_almost_equal(A.data[term], B.data[term])
+            assert_allclose(A.data[term], B.data[term])
     else:
         if any(A.data != B.data):
             # e.g. XVGReader

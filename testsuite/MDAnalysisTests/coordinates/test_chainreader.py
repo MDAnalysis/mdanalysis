@@ -28,7 +28,7 @@ import os
 
 import pytest
 
-from numpy.testing import (assert_equal, assert_almost_equal)
+from numpy.testing import (assert_equal,assert_allclose)
 
 import MDAnalysis as mda
 from MDAnalysis.transformations import translate
@@ -115,7 +115,7 @@ class TestChainReader(object):
 
     def test_time(self, universe):
         universe.trajectory[30]  # index and frames 0-based
-        assert_almost_equal(
+        assert_allclose(
             universe.trajectory.time, 30.0, 5, err_msg="Wrong time of frame")
 
     def test_write_dcd(self, universe, tmpdir):
@@ -128,7 +128,7 @@ class TestChainReader(object):
         universe.trajectory.rewind()
         u = mda.Universe(PSF, outfile)
         for (ts_orig, ts_new) in zip(universe.trajectory, u.trajectory):
-            assert_almost_equal(
+            assert_allclose(
                 ts_orig._pos,
                 ts_new._pos,
                 self.prec,
@@ -143,12 +143,12 @@ class TestChainReader(object):
         for ts in transformed.trajectory:
             frame = ts.frame
             ref = universe.trajectory[frame].positions + vector
-            assert_almost_equal(ts.positions, ref, decimal = 6)
+            assert_allclose(ts.positions, ref, atol = 1e-06)
         # iterate again:
         for ts in transformed.trajectory:
             frame = ts.frame
             ref = universe.trajectory[frame].positions + vector
-            assert_almost_equal(ts.positions, ref, decimal = 6)
+            assert_allclose(ts.positions, ref, atol = 1e-06)
     
     def test_transform_slice(self, universe, transformed):
         vector = np.float32([10,10,10])
@@ -156,24 +156,24 @@ class TestChainReader(object):
         for ts in transformed.trajectory[5:17:3]:
             frame = ts.frame
             ref = universe.trajectory[frame].positions + vector
-            assert_almost_equal(ts.positions, ref, decimal = 6)
+            assert_allclose(ts.positions, ref, atol = 1e-06)
     
     def test_transform_switch(self, universe, transformed):
         vector = np.float32([10,10,10])
         # grab a frame:
         ref = universe.trajectory[2].positions + vector
-        assert_almost_equal(transformed.trajectory[2].positions, ref, decimal = 6)
+        assert_allclose(transformed.trajectory[2].positions, ref, atol = 1e-06)
         # now switch to another frame
         newref = universe.trajectory[10].positions + vector
-        assert_almost_equal(transformed.trajectory[10].positions, newref, decimal = 6)
+        assert_allclose(transformed.trajectory[10].positions, newref, atol = 1e-06)
         # what happens when we comeback to the previous frame?
-        assert_almost_equal(transformed.trajectory[2].positions, ref, decimal = 6)
+        assert_allclose(transformed.trajectory[2].positions, ref, atol = 1e-06)
     
     def test_transfrom_rewind(self, universe, transformed):
         vector = np.float32([10,10,10])
         ref = universe.trajectory[0].positions + vector
         transformed.trajectory.rewind()
-        assert_almost_equal(transformed.trajectory.ts.positions, ref, decimal = 6)
+        assert_allclose(transformed.trajectory.ts.positions, ref, atol = 1e-06)
 
 
 class TestChainReaderCommonDt(object):
@@ -190,7 +190,7 @@ class TestChainReaderCommonDt(object):
         # We test this for the beginning, middle and end of the trajectory.
         for frame_n in (0, trajectory.n_frames // 2, -1):
             trajectory[frame_n]
-            assert_almost_equal(
+            assert_allclose(
                 trajectory.time,
                 trajectory.frame * self.common_dt,
                 5,
@@ -309,7 +309,7 @@ class TestChainReaderContinuous(object):
         u = mda.Universe(utop._topology, fnames, continuous=True)
         assert u.trajectory.n_frames == seq_info.n_frames
         for i, ts in enumerate(u.trajectory):
-            assert_almost_equal(i, ts.time, decimal=4)
+            assert_allclose(i, ts.time, atol=1e-04)
             # check we have used the right trajectory
             assert seq_info.order[i] == int(ts.positions[0, 0])
 

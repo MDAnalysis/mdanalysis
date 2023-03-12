@@ -85,7 +85,7 @@ def test_wrap_no_options(wrap_universes):
     trans, ref = wrap_universes
     trans.dimensions = ref.dimensions
     wrap(trans.atoms)(trans.trajectory.ts)
-    assert_array_almost_equal(trans.trajectory.ts.positions, ref.trajectory.ts.positions, decimal=6)
+    assert_array_almost_equal(trans.trajectory.ts.positions, ref.trajectory.ts.positions, atol=1e-06)
 
 
 @pytest.mark.parametrize('compound', (
@@ -98,14 +98,14 @@ def test_wrap_with_compounds(compound_wrap_universes, compound):
     trans, ref= compound_wrap_universes
     ref.select_atoms("not resname SOL").wrap(compound=compound)
     wrap(trans.select_atoms("not resname SOL"), compound=compound)(trans.trajectory.ts)
-    assert_array_almost_equal(trans.trajectory.ts.positions, ref.trajectory.ts.positions, decimal=6)
+    assert_array_almost_equal(trans.trajectory.ts.positions, ref.trajectory.ts.positions, atol=1e-06)
 
 
 def test_wrap_api(wrap_universes):
     trans, ref = wrap_universes
     trans.dimensions = ref.dimensions
     trans.trajectory.add_transformations(wrap(trans.atoms))
-    assert_array_almost_equal(trans.trajectory.ts.positions, ref.trajectory.ts.positions, decimal=6)
+    assert_array_almost_equal(trans.trajectory.ts.positions, ref.trajectory.ts.positions, atol=1e-06)
 
 
 @pytest.mark.parametrize('ag', (
@@ -131,11 +131,11 @@ def test_unwrap(wrap_universes):
     ref, trans = wrap_universes
     # after rebuild the trans molecule it should match the reference
     unwrap(trans.atoms)(trans.trajectory.ts)
-    assert_array_almost_equal(trans.trajectory.ts.positions, ref.trajectory.ts.positions, decimal=6)
+    assert_array_almost_equal(trans.trajectory.ts.positions, ref.trajectory.ts.positions, atol=1e-06)
 
 
 def test_unwrap_api(wrap_universes):
     ref, trans = wrap_universes
     # after rebuild the trans molecule it should match the reference
     trans.trajectory.add_transformations(unwrap(trans.atoms))
-    assert_array_almost_equal(trans.trajectory.ts.positions, ref.trajectory.ts.positions, decimal=6)
+    assert_array_almost_equal(trans.trajectory.ts.positions, ref.trajectory.ts.positions, atol=1e-06)

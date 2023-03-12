@@ -22,7 +22,7 @@
 #
 import numpy as np
 import pickle
-from numpy.testing import assert_equal, assert_almost_equal
+from numpy.testing import assert_equal,assert_allclose
 import pytest
 
 import MDAnalysis as mda
@@ -287,4 +287,4 @@ class TestResidueGroup(object):
     def test_residuegroup_pickle(self, universe, selection):
         seg_res = universe.select_atoms(selection).residues
         seg = pickle.loads(pickle.dumps(seg_res))
-        assert_almost_equal(seg_res.atoms.positions, seg.atoms.positions)
+        assert_allclose(seg_res.atoms.positions, seg.atoms.positions)

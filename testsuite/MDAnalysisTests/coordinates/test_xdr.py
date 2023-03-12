@@ -32,7 +32,6 @@ import subprocess
 from pathlib import Path
 
 from numpy.testing import (assert_equal,
-                           assert_almost_equal,
                            assert_allclose)
 
 from MDAnalysisTests import make_Universe
@@ -132,7 +131,7 @@ class _GromacsReader(object):
         ca = universe.select_atoms('name CA and resid 122')
         # low precision match (2 decimals in A, 3 in nm) because the above are
         # the trr coords
-        assert_almost_equal(
+        assert_allclose(
             ca.positions,
             ca_Angstrom,
             2,
@@ -143,7 +142,7 @@ class _GromacsReader(object):
         """Test that xtc/trr unitcell is read correctly (Issue 34)"""
         universe.trajectory.rewind()
         uc = universe.coord.dimensions
-        assert_almost_equal(
+        assert_allclose(
             uc,
             self.ref_unitcell,
             self.prec,
@@ -153,21 +152,21 @@ class _GromacsReader(object):
         # need to reduce precision for test (nm**3 <--> A**3)
         universe.trajectory.rewind()
         vol = universe.coord.volume
-        assert_almost_equal(
+        assert_allclose(
             vol,
             self.ref_volume,
             0,
             err_msg="unit cell volume (rhombic dodecahedron)")
 
     def test_dt(self, universe):
-        assert_almost_equal(
+        assert_allclose(
             universe.trajectory.dt, 100.0, 4, err_msg="wrong timestep dt")
 
     def test_totaltime(self, universe):
         # test_totaltime(): need to reduce precision because dt is only precise
         # to ~4 decimals and accumulating the inaccuracy leads to even lower
         # precision in the totaltime (consequence of fixing Issue 64)
-        assert_almost_equal(
+        assert_allclose(
             universe.trajectory.totaltime,
             900.0,
             3,
@@ -179,7 +178,7 @@ class _GromacsReader(object):
 
     def test_time(self, universe):
         universe.trajectory[4]
-        assert_almost_equal(
+        assert_allclose(
             universe.trajectory.time, 400.0, 3, err_msg="wrong time of frame")
 
     def test_get_Writer(self, universe, tmpdir):
@@ -203,7 +202,7 @@ class _GromacsReader(object):
         assert_equal(u.trajectory.n_frames, 2)
         # prec = 6: TRR test fails; here I am generous and take self.prec =
         # 3...
-        assert_almost_equal(u.atoms.positions, universe.atoms.positions,
+        assert_allclose(u.atoms.positions, universe.atoms.positions,
                             self.prec)
 
     def test_EOFraisesStopIteration(self, universe):
@@ -265,14 +264,14 @@ class TestTRRReader(_GromacsReader):
         universe.trajectory.rewind()
         assert_equal(universe.coord.frame, 0, "failed to read frame 1")
 
-        assert_almost_equal(
+        assert_allclose(
             universe.trajectory.ts._velocities[[47675, 47676]],
             v_base,
             self.prec,
             err_msg="ts._velocities for indices 47675,47676 do not "
             "match known values")
 
-        assert_almost_equal(
+        assert_allclose(
             universe.atoms.velocities[[47675, 47676]],
             v_base,
             self.prec,
@@ -280,7 +279,7 @@ class TestTRRReader(_GromacsReader):
             "match known values")
 
         for index, v_known in zip([47675, 47676], v_base):
-            assert_almost_equal(
+            assert_allclose(
                 universe.atoms[index].velocity,
                 v_known,
                 self.prec,
@@ -307,7 +306,7 @@ class _XDRNoConversion(object):
         ca = universe.select_atoms('name CA and resid 122')
         # low precision match because we also look at the trr: only 3 decimals
         # in nm in xtc!
-        assert_almost_equal(
+        assert_allclose(
             ca.positions,
             ca_nm,
             3,
@@ -355,7 +354,7 @@ class _GromacsWriter(object):
 
         # check that the coordinates are identical for each time step
         for orig_ts, written_ts in zip(universe.trajectory, uw.trajectory):
-            assert_almost_equal(
+            assert_allclose(
                 written_ts._pos,
                 orig_ts._pos,
                 3,
@@ -403,7 +402,7 @@ class TestTRRWriter(_GromacsWriter):
 
         # check that the velocities are identical for each time step
         for orig_ts, written_ts in zip(universe.trajectory, uw.trajectory):
-            assert_almost_equal(
+            assert_allclose(
                 written_ts._velocities,
                 orig_ts._velocities,
                 3,
@@ -430,7 +429,7 @@ class TestTRRWriter(_GromacsWriter):
         # for the gaps (that we must make sure to raise exceptions on).
         for orig_ts, written_ts in zip(universe.trajectory, uw.trajectory):
             if ts.frame % 4 != 0:
-                assert_almost_equal(
+                assert_allclose(
                     written_ts.positions,
                     orig_ts.positions,
                     3,
@@ -443,7 +442,7 @@ class TestTRRWriter(_GromacsWriter):
                     getattr(written_ts, 'positions')
 
             if ts.frame % 2 != 0:
-                assert_almost_equal(
+                assert_allclose(
                     written_ts.velocities,
                     orig_ts.velocities,
                     3,
@@ -520,7 +519,7 @@ class _GromacsWriterIssue101(object):
         w = mda.Universe(filename, outfile)
         assert_equal(w.trajectory.n_frames, 1,
                      "single frame trajectory has wrong number of frames")
-        assert_almost_equal(
+        assert_allclose(
             w.atoms.positions,
             u.atoms.positions,
             self.prec,
@@ -556,7 +555,7 @@ class _GromacsWriterIssue117(object):
 
         # check that the coordinates are identical for each time step
         for orig_ts, written_ts in zip(universe.trajectory, uw.trajectory):
-            assert_almost_equal(
+            assert_allclose(
                 written_ts._pos,
                 orig_ts._pos,
                 self.prec,
@@ -582,7 +581,7 @@ def test_triclinic_box():
     unitcell = np.array([80.017, 55, 100.11, 60.00, 30.50, 90.00])
     box = mda.coordinates.core.triclinic_vectors(unitcell)
     new_unitcell = mda.coordinates.core.triclinic_box(box[0], box[1], box[2])
-    assert_almost_equal(
+    assert_allclose(
         new_unitcell,
         unitcell,
         3,
@@ -687,7 +686,7 @@ class TestTRRWriter_2(BaseWriterTest):
 
             reader = ref.reader(outfile)
             for i, ts in enumerate(reader):
-                assert_almost_equal(ts.data['lambda'], i / float(reader.n_frames))
+                assert_allclose(ts.data['lambda'], i / float(reader.n_frames))
 
 
 class _GromacsReader_offsets(object):
@@ -720,7 +719,7 @@ class _GromacsReader_offsets(object):
 
     def test_offsets(self, trajectory, traj):
         trajectory._read_offsets(store=True)
-        assert_almost_equal(
+        assert_allclose(
             trajectory._xdr.offsets,
             self.ref_offsets,
             err_msg="wrong frame offsets")
@@ -730,18 +729,18 @@ class _GromacsReader_offsets(object):
 
         assert isinstance(saved_offsets, dict), \
             "read_numpy_offsets did not return a dict"
-        assert_almost_equal(
+        assert_allclose(
             trajectory._xdr.offsets,
             saved_offsets['offsets'],
             err_msg="error saving frame offsets")
-        assert_almost_equal(
+        assert_allclose(
             self.ref_offsets,
             saved_offsets['offsets'],
             err_msg="saved frame offsets don't match "
             "the known ones")
 
         trajectory._load_offsets()
-        assert_almost_equal(
+        assert_allclose(
             trajectory._xdr.offsets,
             self.ref_offsets,
             err_msg="error loading frame offsets")
@@ -775,7 +774,7 @@ class _GromacsReader_offsets(object):
         with patch.object(np, "load") as np_load_mock:
             np_load_mock.side_effect = IOError
             trajectory._load_offsets()
-            assert_almost_equal(
+            assert_allclose(
                 trajectory._xdr.offsets,
                 self.ref_offsets,
                 err_msg="error loading frame offsets")
@@ -788,7 +787,7 @@ class _GromacsReader_offsets(object):
             np_load_mock.side_effect = ValueError
             with pytest.warns(UserWarning, match="Failed to load offsets"):
                 trajectory._load_offsets()
-            assert_almost_equal(
+            assert_allclose(
                 trajectory._xdr.offsets,
                 self.ref_offsets,
                 err_msg="error loading frame offsets")

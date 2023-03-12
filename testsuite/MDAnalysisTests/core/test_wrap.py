@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import numpy as np
-from numpy.testing import assert_almost_equal, assert_array_equal
+from numpy.testing import assert_allclose, assert_array_equal
 import pytest
 
 import MDAnalysis as mda
@@ -34,7 +34,7 @@ class TestWrap(object):
     which is specifically designed for wrapping and unwrapping tests.
     """
 
-    precision = 5
+    precision = 1e-05
 
     @pytest.mark.parametrize('level', ('atoms', 'residues', 'segments'))
     @pytest.mark.parametrize('compound', ('atoms', 'group', 'segments',
@@ -58,8 +58,8 @@ class TestWrap(object):
         wrapped_pos = group.wrap(compound=compound, center=center,
                                  inplace=False)
         # check for correct result:
-        assert_almost_equal(wrapped_pos, ref_wrapped_pos,
-                            decimal=self.precision)
+        assert_allclose(wrapped_pos, ref_wrapped_pos,
+                            atol=self.precision)
         # make sure atom positions are unchanged:
         assert_array_equal(group.atoms.positions, orig_pos)
         # now, do the wrapping inplace:
@@ -106,8 +106,8 @@ class TestWrap(object):
         # unwrap again:
         group.unwrap()
         # make sure unwrapped atom positions are as before:
-        assert_almost_equal(group.atoms.positions, orig_unwrapped_pos,
-                            decimal=self.precision)
+        assert_allclose(group.atoms.positions, orig_unwrapped_pos,
+                            atol=self.precision)
 
     @pytest.mark.parametrize('level', ('atoms', 'residues', 'segments'))
     @pytest.mark.parametrize('compound', ('atoms', 'group', 'segments',
@@ -144,8 +144,8 @@ class TestWrap(object):
         # first, do the wrapping out-of-place:
         group.wrap(compound=compound, center=center, inplace=True)
         # check for correct result:
-        assert_almost_equal(group.atoms.positions, ref_wrapped_pos,
-                            decimal=self.precision)
+        assert_allclose(group.atoms.positions, ref_wrapped_pos,
+                            atol=self.precision)
         # make sure the positions of the missing item are unchanged:
         assert_array_equal(missing.atoms.positions, orig_pos)
 
@@ -200,8 +200,8 @@ class TestWrap(object):
         # wrap:
         group.wrap(compound=compound, center=center, inplace=True)
         # check for correct result:
-        assert_almost_equal(group.atoms.positions, ref_wrapped_pos,
-                            decimal=self.precision)
+        assert_allclose(group.atoms.positions, ref_wrapped_pos,
+                            atol=self.precision)
         # check that the rest of the atoms are kept unmodified:
         assert_array_equal(rest.positions, orig_rest_pos)
 
@@ -224,8 +224,8 @@ class TestWrap(object):
         # get expected result:
         ref_wrapped_pos = u.wrapped_coords(compound, 'cog')[6:9]
         # check for correctness:
-        assert_almost_equal(wrapped_pos_cog, ref_wrapped_pos,
-                            decimal=self.precision)
+        assert_allclose(wrapped_pos_cog, ref_wrapped_pos,
+                            atol=self.precision)
         # wrap with center='com':
         wrapped_pos_com = group.wrap(compound=compound, center='com',
                                      inplace=False)
@@ -235,8 +235,8 @@ class TestWrap(object):
         if compound == 'atoms':
             # center argument must be ignored for compound='atoms':
             shift[0] = 0.0
-        assert_almost_equal(wrapped_pos_cog, wrapped_pos_com - shift,
-                            decimal=self.precision)
+        assert_allclose(wrapped_pos_cog, wrapped_pos_com - shift,
+                            atol=self.precision)
 
     @pytest.mark.parametrize('level', ('atoms', 'residues', 'segments'))
     @pytest.mark.parametrize('compound', ('atoms', 'group', 'segments',
@@ -262,8 +262,8 @@ class TestWrap(object):
             # wrap() must not care about masses if compound == 'atoms':
             group.wrap(compound=compound, center='com', inplace=True)
             ref_wrapped_pos = u.wrapped_coords(compound, 'com')
-            assert_almost_equal(group.atoms.positions, ref_wrapped_pos,
-                                decimal=self.precision)
+            assert_allclose(group.atoms.positions, ref_wrapped_pos,
+                                atol=self.precision)
         else:
             # try to wrap:
             with pytest.raises(ValueError):
@@ -289,8 +289,8 @@ class TestWrap(object):
             # wrap() must ignore the center argument if compound == 'atoms':
             group.wrap(compound=compound, center='com', inplace=True)
             ref_wrapped_pos = u.wrapped_coords(compound, 'com')
-            assert_almost_equal(group.atoms.positions, ref_wrapped_pos,
-                                decimal=self.precision)
+            assert_allclose(group.atoms.positions, ref_wrapped_pos,
+                                atol=self.precision)
         else:
             # try to wrap:
             with pytest.raises(ValueError):
@@ -333,8 +333,8 @@ class TestWrap(object):
             # wrap() must not care about mass presence if compound == 'atoms':
             group.wrap(compound=compound, center='com', inplace=True)
             ref_wrapped_pos = u.wrapped_coords(compound, 'com')
-            assert_almost_equal(group.atoms.positions, ref_wrapped_pos,
-                                decimal=self.precision)
+            assert_allclose(group.atoms.positions, ref_wrapped_pos,
+                                atol=self.precision)
         else:
             # store original positions:
             orig_pos = group.atoms.positions
@@ -369,8 +369,8 @@ class TestWrap(object):
             # must not care about bonds if compound != 'fragments'
             group.wrap(compound=compound, center=center, inplace=True)
             ref_wrapped_pos = u.wrapped_coords(compound, center)
-            assert_almost_equal(group.atoms.positions, ref_wrapped_pos,
-                                decimal=self.precision)
+            assert_allclose(group.atoms.positions, ref_wrapped_pos,
+                                atol=self.precision)
 
     @pytest.mark.parametrize('level', ('atoms', 'residues', 'segments'))
     @pytest.mark.parametrize('compound', ('atoms', 'group', 'segments',
@@ -397,13 +397,13 @@ class TestWrap(object):
             # must not care about molnums if compound != 'molecules'
             group.wrap(compound=compound, center=center, inplace=True)
             ref_wrapped_pos = u.wrapped_coords(compound, center)
-            assert_almost_equal(group.atoms.positions, ref_wrapped_pos,
-                                decimal=self.precision)
+            assert_allclose(group.atoms.positions, ref_wrapped_pos,
+                                atol=self.precision)
 
 class TestWrapTRZ(object):
     """Tests the functionality of AtomGroup.wrap() using a TRZ universe."""
 
-    precision = 5
+    precision = 1e-05
 
     @pytest.fixture()
     def u(self):
@@ -434,7 +434,7 @@ class TestWrapTRZ(object):
         rescom = ag.wrap(compound='atoms', center='com', inplace=False)
         assert_in_box(rescom, u.dimensions)
         rescog = ag.wrap(compound='atoms', center='cog', inplace=False)
-        assert_almost_equal(rescom, rescog, decimal=self.precision)
+        assert_allclose(rescom, rescog, atol=self.precision)
 
     @pytest.mark.parametrize('center', ('com', 'cog'))
     def test_wrap_group(self, u, center):

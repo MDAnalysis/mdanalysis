@@ -22,7 +22,7 @@
 #
 import pytest
 import numpy as np
-from numpy.testing import assert_equal, assert_almost_equal, assert_allclose
+from numpy.testing import assert_equal, assert_allclose
 import itertools
 from itertools import combinations_with_replacement as comb
 
@@ -241,7 +241,7 @@ class TestCappedDistances(object):
                 assert d_ref < 0.2
                 if min_cutoff is not None:
                     assert d_ref > min_cutoff
-                assert_almost_equal(d, d_ref, decimal=6)
+                assert_allclose(d, d_ref, atol=1e-06)
         else:
             for i, j in pairs:
                 d_ref = ref[i, j]
@@ -324,7 +324,7 @@ class TestDistanceArray(object):
         _, all, ref, _ = request.getfixturevalue(pos)
 
         d = distances.distance_array(ref, all, backend=backend)
-        assert_almost_equal(d, np.array([[
+        assert_allclose(d, np.array([[
             self._dist(points[0], reference[0]),
             self._dist(points[1], reference[0]),
             self._dist(points[2], reference[0]),
@@ -341,7 +341,7 @@ class TestDistanceArray(object):
         _, points_val, _, _ = request.getfixturevalue(pos1)
         d = distances.distance_array(ref_val, points_val,
                                      backend=backend)
-        assert_almost_equal(d, np.array([[
+        assert_allclose(d, np.array([[
             self._dist(points[0], reference[0]),
             self._dist(points[1], reference[0]),
             self._dist(points[2], reference[0]),
@@ -356,7 +356,7 @@ class TestDistanceArray(object):
 
         d = distances.distance_array(ref, all, box=box, backend=backend)
 
-        assert_almost_equal(d, np.array([[0., 0., 0., self._dist(points[3],
+        assert_allclose(d, np.array([[0., 0., 0., self._dist(points[3],
                             ref=[1, 1, 2])]]))
 
     # cycle through combinations of numpy array and AtomGroup
@@ -370,7 +370,7 @@ class TestDistanceArray(object):
         d = distances.distance_array(ref_val, points_val,
                                      box=box,
                                      backend=backend)
-        assert_almost_equal(
+        assert_allclose(
             d, np.array([[0., 0., 0., self._dist(points[3], ref=[1, 1, 2])]]))
 
     def test_PBC2(self, backend):
@@ -385,7 +385,7 @@ class TestDistanceArray(object):
         ref = mindist(a, b, box[:3])
         val = distances.distance_array(a, b, box=box, backend=backend)[0, 0]
 
-        assert_almost_equal(val, ref, decimal=6,
+        assert_allclose(val, ref, atol=1e-06,
                             err_msg="Issue 151 not correct (PBC in distance array)")
 
 def test_distance_array_overflow_exception():
@@ -446,9 +446,9 @@ class TestDistanceArrayDCD_TRIC(object):
         d = distances.distance_array(x0, x1, backend=backend)
         assert_equal(d.shape, (3341, 3341), "wrong shape (should be"
                      "(Natoms,Natoms))")
-        assert_almost_equal(d.min(), 0.11981228170520701, self.prec,
+        assert_allclose(d.min(), 0.11981228170520701, self.prec,
                             err_msg="wrong minimum distance value")
-        assert_almost_equal(d.max(), 53.572192429459619, self.prec,
+        assert_allclose(d.max(), 53.572192429459619, self.prec,
                             err_msg="wrong maximum distance value")
 
     def test_outarray(self, DCD_Universe, backend):
@@ -463,9 +463,9 @@ class TestDistanceArrayDCD_TRIC(object):
         distances.distance_array(x0, x1, result=d, backend=backend)
         assert_equal(d.shape, (natoms, natoms), "wrong shape, should be"
                      " (Natoms,Natoms) entries")
-        assert_almost_equal(d.min(), 0.11981228170520701, self.prec,
+        assert_allclose(d.min(), 0.11981228170520701, self.prec,
                             err_msg="wrong minimum distance value")
-        assert_almost_equal(d.max(), 53.572192429459619, self.prec,
+        assert_allclose(d.max(), 53.572192429459619, self.prec,
                             err_msg="wrong maximum distance value")
 
     def test_periodic(self, DCD_Universe, backend):
@@ -480,9 +480,9 @@ class TestDistanceArrayDCD_TRIC(object):
                                      backend=backend)
         assert_equal(d.shape, (3341, 3341), "should be square matrix with"
                      " Natoms entries")
-        assert_almost_equal(d.min(), 0.11981228170520701, self.prec,
+        assert_allclose(d.min(), 0.11981228170520701, self.prec,
                             err_msg="wrong minimum distance value with PBC")
-        assert_almost_equal(d.max(), 53.572192429459619, self.prec,
+        assert_allclose(d.max(), 53.572192429459619, self.prec,
                             err_msg="wrong maximum distance value with PBC")
 
     def test_atomgroup_simple(self, DCD_Universe, DCD_Universe2, backend):
@@ -499,9 +499,9 @@ class TestDistanceArrayDCD_TRIC(object):
         d = distances.distance_array(x0, x1, backend=backend)
         assert_equal(d.shape, (3341, 3341), "wrong shape (should be"
                      " (Natoms,Natoms))")
-        assert_almost_equal(d.min(), 0.11981228170520701, self.prec,
+        assert_allclose(d.min(), 0.11981228170520701, self.prec,
                             err_msg="wrong minimum distance value")
-        assert_almost_equal(d.max(), 53.572192429459619, self.prec,
+        assert_allclose(d.max(), 53.572192429459619, self.prec,
                             err_msg="wrong maximum distance value")
 
     # check no box and ortho box types and some slices
@@ -555,9 +555,9 @@ class TestSelfDistanceArrayDCD_TRIC(object):
         d = distances.self_distance_array(x0, backend=backend)
         N = 3341 * (3341 - 1) / 2
         assert_equal(d.shape, (N,), "wrong shape (should be (Natoms*(Natoms-1)/2,))")
-        assert_almost_equal(d.min(), 0.92905562402529318, self.prec,
+        assert_allclose(d.min(), 0.92905562402529318, self.prec,
                             err_msg="wrong minimum distance value")
-        assert_almost_equal(d.max(), 52.4702570624190590, self.prec,
+        assert_allclose(d.max(), 52.4702570624190590, self.prec,
                             err_msg="wrong maximum distance value")
 
     def test_outarray(self, DCD_Universe, backend):
@@ -570,9 +570,9 @@ class TestSelfDistanceArrayDCD_TRIC(object):
         d = np.zeros((N,), np.float64)
         distances.self_distance_array(x0, result=d, backend=backend)
         assert_equal(d.shape, (N,), "wrong shape (should be (Natoms*(Natoms-1)/2,))")
-        assert_almost_equal(d.min(), 0.92905562402529318, self.prec,
+        assert_allclose(d.min(), 0.92905562402529318, self.prec,
                             err_msg="wrong minimum distance value")
-        assert_almost_equal(d.max(), 52.4702570624190590, self.prec,
+        assert_allclose(d.max(), 52.4702570624190590, self.prec,
                             err_msg="wrong maximum distance value")
 
     def test_periodic(self, DCD_Universe, backend):
@@ -586,9 +586,9 @@ class TestSelfDistanceArrayDCD_TRIC(object):
         d = distances.self_distance_array(x0, box=U.coord.dimensions,
                                           backend=backend)
         assert_equal(d.shape, (N,), "wrong shape (should be (Natoms*(Natoms-1)/2,))")
-        assert_almost_equal(d.min(), 0.92905562402529318, self.prec,
+        assert_allclose(d.min(), 0.92905562402529318, self.prec,
                             err_msg="wrong minimum distance value with PBC")
-        assert_almost_equal(d.max(), 52.4702570624190590, self.prec,
+        assert_allclose(d.max(), 52.4702570624190590, self.prec,
                             err_msg="wrong maximum distance value with PBC")
 
     def test_atomgroup_simple(self, DCD_Universe, backend):
@@ -600,9 +600,9 @@ class TestSelfDistanceArrayDCD_TRIC(object):
         N = 3341 * (3341 - 1) / 2
         assert_equal(d.shape, (N,), "wrong shape (should be"
                      " (Natoms*(Natoms-1)/2,))")
-        assert_almost_equal(d.min(), 0.92905562402529318, self.prec,
+        assert_allclose(d.min(), 0.92905562402529318, self.prec,
                             err_msg="wrong minimum distance value")
-        assert_almost_equal(d.max(), 52.4702570624190590, self.prec,
+        assert_allclose(d.max(), 52.4702570624190590, self.prec,
                             err_msg="wrong maximum distance value")
 
     # check no box and ortho box types and some slices
@@ -695,15 +695,15 @@ class TestTriclinicDistances(object):
         R_mol2 = distances.transform_StoR(S_mol2, box, backend=backend)
         R_np2 = np.dot(S_mol2, tri_vec_box)
 
-        assert_almost_equal(R_mol1, R_np1, self.prec, err_msg="StoR transform failed for S_mol1")
-        assert_almost_equal(R_mol2, R_np2, self.prec, err_msg="StoR transform failed for S_mol2")
+        assert_allclose(R_mol1, R_np1, self.prec, err_msg="StoR transform failed for S_mol1")
+        assert_allclose(R_mol2, R_np2, self.prec, err_msg="StoR transform failed for S_mol2")
 
         # Round trip test
         S_test1 = distances.transform_RtoS(R_mol1, box, backend=backend)
         S_test2 = distances.transform_RtoS(R_mol2, box, backend=backend)
 
-        assert_almost_equal(S_test1, S_mol1, self.prec, err_msg="Round trip 1 failed in transform")
-        assert_almost_equal(S_test2, S_mol2, self.prec, err_msg="Round trip 2 failed in transform")
+        assert_allclose(S_test1, S_mol1, self.prec, err_msg="Round trip 1 failed in transform")
+        assert_allclose(S_test2, S_mol2, self.prec, err_msg="Round trip 2 failed in transform")
 
     def test_selfdist(self, S_mol, box, tri_vec_box, backend):
         S_mol1, S_mol2 = S_mol
@@ -723,7 +723,7 @@ class TestTriclinicDistances(object):
                 manual[distpos] = Rij  # and done, phew
                 distpos += 1
 
-        assert_almost_equal(dists, manual, self.prec,
+        assert_allclose(dists, manual, self.prec,
                             err_msg="self_distance_array failed with input 1")
 
         # Do it again for input 2 (has wider separation in points)
@@ -743,7 +743,7 @@ class TestTriclinicDistances(object):
                 manual[distpos] = Rij  # and done, phew
                 distpos += 1
 
-        assert_almost_equal(dists, manual, self.prec,
+        assert_allclose(dists, manual, self.prec,
                             err_msg="self_distance_array failed with input 2")
 
     def test_distarray(self, S_mol, tri_vec_box, box, backend):
@@ -765,7 +765,7 @@ class TestTriclinicDistances(object):
                 Rij = np.linalg.norm(Rij)  # find norm of Rij vector
                 manual[i][j] = Rij
 
-        assert_almost_equal(dists, manual, self.prec,
+        assert_allclose(dists, manual, self.prec,
                             err_msg="distance_array failed with box")
 
     def test_pbc_dist(self, S_mol, box, backend):
@@ -773,7 +773,7 @@ class TestTriclinicDistances(object):
         results = np.array([[37.629944]])
         dists = distances.distance_array(S_mol1, S_mol2, box=box, backend=backend)
 
-        assert_almost_equal(dists, results, self.prec,
+        assert_allclose(dists, results, self.prec,
                             err_msg="distance_array failed to retrieve PBC distance")
 
     def test_pbc_wrong_wassenaar_distance(self, backend):
@@ -783,7 +783,7 @@ class TestTriclinicDistances(object):
         point_a = a + b
         point_b = .5 * point_a
         dist = distances.distance_array(point_a, point_b, box=box, backend=backend)
-        assert_almost_equal(dist[0, 0], 1)
+        assert_allclose(dist[0, 0], 1)
         # check that our distance is different from the wassenaar distance as
         # expected.
         assert np.linalg.norm(point_a - point_b) != dist[0, 0]
@@ -897,17 +897,17 @@ class TestCythonFunctions(object):
         assert_equal(len(dists), 4, err_msg="calc_bonds results have wrong length")
         dists_pbc = distances.calc_bonds(a, b, box=box, backend=backend)
         #tests 0 length
-        assert_almost_equal(dists[0], 0.0, self.prec, err_msg="Zero length calc_bonds fail")
-        assert_almost_equal(dists[1], 1.7320508075688772, self.prec,
+        assert_allclose(dists[0], 0.0, self.prec, err_msg="Zero length calc_bonds fail")
+        assert_allclose(dists[1], 1.7320508075688772, self.prec,
                             err_msg="Standard length calc_bonds fail")  # arbitrary length check
         # PBC checks, 2 without, 2 with
-        assert_almost_equal(dists[2], 11.0, self.prec,
+        assert_allclose(dists[2], 11.0, self.prec,
                             err_msg="PBC check #1 w/o box")  # pbc check 1, subtract single box length
-        assert_almost_equal(dists_pbc[2], 1.0, self.prec,
+        assert_allclose(dists_pbc[2], 1.0, self.prec,
                             err_msg="PBC check #1 with box")
-        assert_almost_equal(dists[3], 104.26888318, self.prec,  # pbc check 2, subtract multiple box
+        assert_allclose(dists[3], 104.26888318, self.prec,  # pbc check 2, subtract multiple box
                             err_msg="PBC check #2 w/o box")  # lengths in all directions
-        assert_almost_equal(dists_pbc[3], 3.46410072, self.prec,
+        assert_allclose(dists_pbc[3], 3.46410072, self.prec,
                             err_msg="PBC check #w with box")
 
     @pytest.mark.parametrize("backend", distopia_conditional_backend())
@@ -937,7 +937,7 @@ class TestCythonFunctions(object):
         a, b, c, d = convert_position_dtype_if_ndarray(a, b, c, d, dtype)
         dists = distances.calc_bonds(a, b, box=triclinic_box, backend=backend)
         reference = np.array([0.0, 1.7320508, 1.4142136, 2.82842712])
-        assert_almost_equal(dists, reference, self.prec, err_msg="calc_bonds with triclinic box failed")
+        assert_allclose(dists, reference, self.prec, err_msg="calc_bonds with triclinic box failed")
 
     @pytest.mark.parametrize("shift", shifts)
     @pytest.mark.parametrize("periodic", [True, False])
@@ -957,7 +957,7 @@ class TestCythonFunctions(object):
 
         reference = 2.0 if periodic else np.linalg.norm(coords[0] - coords[1])
 
-        assert_almost_equal(result, reference, decimal=self.prec)
+        assert_allclose(result, reference, atol=self.prec)
 
     @pytest.mark.parametrize("dtype", (np.float32, np.float64))
     @pytest.mark.parametrize("pos", ["positions", "positions_atomgroups"])
@@ -968,13 +968,13 @@ class TestCythonFunctions(object):
         angles = distances.calc_angles(a, b, c, backend=backend)
         # Check calculated values
         assert_equal(len(angles), 4, err_msg="calc_angles results have wrong length")
-        #        assert_almost_equal(angles[0], 0.0, self.prec,
+        #        assert_allclose(angles[0], 0.0, self.prec,
         #                           err_msg="Zero length angle calculation failed") # What should this be?
-        assert_almost_equal(angles[1], np.pi, self.prec,
+        assert_allclose(angles[1], np.pi, self.prec,
                             err_msg="180 degree angle calculation failed")
-        assert_almost_equal(np.rad2deg(angles[2]), 90., self.prec,
+        assert_allclose(np.rad2deg(angles[2]), 90., self.prec,
                             err_msg="Ninety degree angle in calc_angles failed")
-        assert_almost_equal(angles[3], 0.098174833, self.prec,
+        assert_allclose(angles[3], 0.098174833, self.prec,
                             err_msg="Small angle failed in calc_angles")
 
     @pytest.mark.parametrize("backend", ["serial", "openmp"])
@@ -1020,7 +1020,7 @@ class TestCythonFunctions(object):
         box = box if periodic else None
         result = distances.calc_angles(a, b, c, box, backend=backend)
         reference = ref if periodic else manual_angle(a, b, c)
-        assert_almost_equal(result, reference, decimal=4)
+        assert_allclose(result, reference, atol=1e-04)
 
     @pytest.mark.parametrize("dtype", (np.float32, np.float64))
     @pytest.mark.parametrize("pos", ["positions", "positions_atomgroups"])
@@ -1033,8 +1033,8 @@ class TestCythonFunctions(object):
         assert_equal(len(dihedrals), 4, err_msg="calc_dihedrals results have wrong length")
         assert np.isnan(dihedrals[0]), "Zero length dihedral failed"
         assert np.isnan(dihedrals[1]), "Straight line dihedral failed"
-        assert_almost_equal(dihedrals[2], np.pi, self.prec, err_msg="180 degree dihedral failed")
-        assert_almost_equal(dihedrals[3], -0.50714064, self.prec,
+        assert_allclose(dihedrals[2], np.pi, self.prec, err_msg="180 degree dihedral failed")
+        assert_allclose(dihedrals[3], -0.50714064, self.prec,
                             err_msg="arbitrary dihedral angle failed")
 
     @pytest.mark.parametrize("backend", ["serial", "openmp"])
@@ -1122,7 +1122,7 @@ class TestCythonFunctions(object):
         box = box if periodic else None
         result = distances.calc_dihedrals(a, b, c, d, box, backend=backend)
         reference = ref if periodic else manual_dihedral(a, b, c, d)
-        assert_almost_equal(abs(result), abs(reference), decimal=4)
+        assert_allclose(abs(result), abs(reference), atol=1e-04)
 
     @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_numpy_compliance_bonds(self, positions, backend):
@@ -1131,7 +1131,7 @@ class TestCythonFunctions(object):
         bonds = distances.calc_bonds(a, b, backend=backend)
         bonds_numpy = np.array([mdamath.norm(y - x) for x, y in zip(a, b)])
 
-        assert_almost_equal(
+        assert_allclose(
             bonds,
             bonds_numpy,
             self.prec,
@@ -1147,7 +1147,7 @@ class TestCythonFunctions(object):
         vec2 = c - b
         angles_numpy = np.array([mdamath.angle(x, y) for x, y in zip(vec1, vec2)])
         # numpy 0 angle returns NaN rather than 0
-        assert_almost_equal(
+        assert_allclose(
             angles[1:],
             angles_numpy[1:],
             self.prec,
@@ -1163,7 +1163,7 @@ class TestCythonFunctions(object):
         bc = b - c
         cd = c - d
         dihedrals_numpy = np.array([mdamath.dihedral(x, y, z) for x, y, z in zip(ab, bc, cd)])
-        assert_almost_equal(dihedrals, dihedrals_numpy, self.prec,
+        assert_allclose(dihedrals, dihedrals_numpy, self.prec,
                             err_msg="Cython dihedrals didn't match numpy calculations")
 
 
@@ -1211,7 +1211,7 @@ class Test_apply_PBC(object):
         reference = (DCD_universe_pos -
                      np.floor(DCD_universe_pos / box[:3]) * box[:3])
 
-        assert_almost_equal(cyth2, reference, self.prec,
+        assert_allclose(cyth2, reference, self.prec,
                             err_msg="Ortho apply_PBC #2 failed comparison with np")
 
     @pytest.mark.parametrize('pos', ['Triclinic_universe_pos_box',
@@ -1235,14 +1235,14 @@ class Test_apply_PBC(object):
 
         reference = numpy_PBC(positions, box)
 
-        assert_almost_equal(cyth1, reference, decimal=4,
+        assert_allclose(cyth1, reference, atol=1e-04,
                             err_msg="Triclinic apply_PBC failed comparison with np")
 
         box = np.array([10, 7, 3, 45, 60, 90], dtype=np.float32)
         r = np.array([5.75, 0.36066014, 0.75], dtype=np.float32)
         r_in_cell = distances.apply_PBC(r, box)
 
-        assert_almost_equal([5.75, 7.3606596, 0.75], r_in_cell, self.prec)
+        assert_allclose([5.75, 7.3606596, 0.75], r_in_cell, self.prec)
 
     def test_coords_strictly_in_central_image_ortho(self, backend):
         box = np.array([10.1, 10.1, 10.1, 90.0, 90.0, 90.0], dtype=np.float32)
@@ -1325,7 +1325,7 @@ class TestPeriodicAngles(object):
         test4 = distances.calc_angles(a2, b2, c2, box=box, backend=backend)
 
         for val in [test1, test2, test3, test4]:
-            assert_almost_equal(ref, val, self.prec, err_msg="Min image in angle calculation failed")
+            assert_allclose(ref, val, self.prec, err_msg="Min image in angle calculation failed")
 
     def test_dihedrals(self, positions, backend):
         a, b, c, d, box = positions
@@ -1344,7 +1344,7 @@ class TestPeriodicAngles(object):
         test5 = distances.calc_dihedrals(a2, b2, c2, d2, box=box, backend=backend)
 
         for val in [test1, test2, test3, test4, test5]:
-            assert_almost_equal(ref, val, self.prec, err_msg="Min image in dihedral calculation failed")
+            assert_allclose(ref, val, self.prec, err_msg="Min image in dihedral calculation failed")
 
 class TestInputUnchanged(object):
     """Tests ensuring that the following functions in MDAnalysis.lib.distances

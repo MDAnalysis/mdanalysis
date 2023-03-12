@@ -24,7 +24,7 @@ import re
 
 import numpy as np
 import pytest
-from numpy.testing import assert_equal, assert_almost_equal, assert_allclose
+from numpy.testing import assert_equal, assert_allclose
 
 import MDAnalysis as mda
 from MDAnalysis.analysis import helix_analysis as hel
@@ -119,7 +119,7 @@ def test_local_screw_angles_plane_circle():
     screw = hel.local_screw_angles([1, 0, 0], [0, 1, 0], xyz)
     correct = np.zeros_like(angdeg)
     correct[(angdeg > 180)] = 180
-    assert_almost_equal(screw, correct)
+    assert_allclose(screw, correct)
 
 
 def test_local_screw_angles_ortho_circle():
@@ -138,7 +138,7 @@ def test_local_screw_angles_ortho_circle():
     correct[(angdeg < 180)] = 90
     correct[(angdeg > 180)] = -90
     correct[0] = correct[15] = 0
-    assert_almost_equal(screw, correct)
+    assert_allclose(screw, correct)
 
 
 def test_local_screw_angles_around_circle():
@@ -154,7 +154,7 @@ def test_local_screw_angles_around_circle():
     screw = hel.local_screw_angles([0, 1, 0], [1, 0, 0], xyz)
     angdeg[-14:] = -angdeg[1:15][::-1]
     angdeg[-15] = 180
-    assert_almost_equal(screw, angdeg)
+    assert_allclose(screw, angdeg)
 
 
 def test_local_screw_angles_around_circle_rising():
@@ -172,7 +172,7 @@ def test_local_screw_angles_around_circle_rising():
     screw = hel.local_screw_angles([0, 1, 0], [1, 0, 0], xyz)
     angdeg[-14:] = -angdeg[1:15][::-1]
     angdeg[-15] = 180
-    assert_almost_equal(screw, angdeg)
+    assert_allclose(screw, angdeg)
 
 
 def test_local_screw_angles_parallel_axes():
@@ -184,7 +184,7 @@ def test_local_screw_angles_parallel_axes():
     """
     xyz = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
     angles = hel.local_screw_angles([1, 0, 0], [-1, 0, 0], xyz)
-    assert_almost_equal(angles, [0, 90, 0])
+    assert_allclose(angles, [0, 90, 0])
 
 
 @pytest.fixture()
@@ -230,24 +230,24 @@ def zigzag():
 def test_helix_analysis_zigzag(zigzag, ref_axis, screw_angles):
     properties = hel.helix_analysis(zigzag.atoms.positions,
                                     ref_axis=ref_axis)
-    assert_almost_equal(properties['local_twists'], 180, decimal=4)
-    assert_almost_equal(properties['local_nres_per_turn'], 2, decimal=4)
-    assert_almost_equal(properties['global_axis'],
-                        [0, 0, -1], decimal=4)
+    assert_allclose(properties['local_twists'], 180, atol=1e-04)
+    assert_allclose(properties['local_nres_per_turn'], 2, atol=1e-04)
+    assert_allclose(properties['global_axis'],
+                        [0, 0, -1], atol=1e-04)
     # all 0 vectors
-    assert_almost_equal(properties['local_axes'], 0, decimal=4)
-    assert_almost_equal(properties['local_bends'], 0, decimal=4)
-    assert_almost_equal(properties['all_bends'], 0, decimal=4)
-    assert_almost_equal(properties['local_heights'], 0, decimal=4)
-    assert_almost_equal(properties['local_helix_directions'][0::2],
-                        [[-1, 0, 0]]*49, decimal=4)
-    assert_almost_equal(properties['local_helix_directions'][1::2],
-                        [[1, 0, 0]]*49, decimal=4)
+    assert_allclose(properties['local_axes'], 0, atol=1e-04)
+    assert_allclose(properties['local_bends'], 0, atol=1e-04)
+    assert_allclose(properties['all_bends'], 0, atol=1e-04)
+    assert_allclose(properties['local_heights'], 0, atol=1e-04)
+    assert_allclose(properties['local_helix_directions'][0::2],
+                        [[-1, 0, 0]]*49, atol=1e-04)
+    assert_allclose(properties['local_helix_directions'][1::2],
+                        [[1, 0, 0]]*49, atol=1e-04)
     origins = zigzag.atoms.positions[1:-1].copy()
     origins[:, 0] = 0
-    assert_almost_equal(properties['local_origins'], origins, decimal=4)
-    assert_almost_equal(properties['local_screw_angles'],
-                        screw_angles*49, decimal=4)
+    assert_allclose(properties['local_origins'], origins, atol=1e-04)
+    assert_allclose(properties['local_screw_angles'],
+                        screw_angles*49, atol=1e-04)
 
 
 def square_oct(n_rep=10):
@@ -280,18 +280,18 @@ def test_helix_analysis_square_oct():
                                     ref_axis=[0, 0, 1])
     twist_trans = [102.76438, 32.235607]
     twists = ([90]*2 + twist_trans + [45]*6 + twist_trans[::-1]) * n_rep
-    assert_almost_equal(properties['local_twists'], twists[:n_atoms-3],
-                        decimal=4)
+    assert_allclose(properties['local_twists'], twists[:n_atoms-3],
+                        atol=1e-04)
     res_trans = [3.503159, 11.167775]
     res = ([4]*2 + res_trans + [8]*6 + res_trans[::-1]) * n_rep
-    assert_almost_equal(properties['local_nres_per_turn'], res[:n_atoms-3],
-                        decimal=4)
-    assert_almost_equal(properties['global_axis'],
-                        [-1, 0, 0], decimal=3)
-    assert_almost_equal(properties['local_axes']-[1, 0, 0], 0, decimal=4)
-    assert_almost_equal(properties['local_bends'], 0, decimal=4)
-    assert_almost_equal(properties['all_bends'], 0, decimal=4)
-    assert_almost_equal(properties['local_heights'], 1, decimal=4)
+    assert_allclose(properties['local_nres_per_turn'], res[:n_atoms-3],
+                        atol=1e-04)
+    assert_allclose(properties['global_axis'],
+                        [-1, 0, 0], atol=1e-03)
+    assert_allclose(properties['local_axes']-[1, 0, 0], 0, atol=1e-04)
+    assert_allclose(properties['local_bends'], 0, atol=1e-04)
+    assert_allclose(properties['all_bends'], 0, atol=1e-04)
+    assert_allclose(properties['local_heights'], 1, atol=1e-04)
 
     loc_rot = [[0.,  0.,  1.],
                [0., -1.,  0.],
@@ -305,8 +305,8 @@ def test_helix_analysis_square_oct():
                [0.,  0., -1.],
                [0.,  0.70710677, -0.70710677],
                [0.,  0.97528684, -0.2209424]] * n_rep
-    assert_almost_equal(properties['local_helix_directions'],
-                        loc_rot[:n_atoms-2], decimal=4)
+    assert_allclose(properties['local_helix_directions'],
+                        loc_rot[:n_atoms-2], atol=1e-04)
 
     origins = u.atoms.positions.copy()[1:-1]
     origins[:, 1:] = ([[0.,   0.],  # square
@@ -321,8 +321,8 @@ def test_helix_analysis_square_oct():
                        [0.,   0.],
                        [-1.3141878,   1.3141878],  # octagon -> square
                        [0.34966463,   0.14732757]]*n_rep)[:len(origins)]
-    assert_almost_equal(properties['local_origins'], origins,
-                        decimal=4)
+    assert_allclose(properties['local_origins'], origins,
+                        atol=1e-04)
 
     # calculated to the x-y plane
     # all input vectors (loc_rot) are in y-z plane
@@ -332,8 +332,8 @@ def test_helix_analysis_square_oct():
              -102.764]*n_rep
 
     # not quite 0, comes out as 1.32e-06
-    assert_almost_equal(properties['local_screw_angles'], screw[:-2],
-                        decimal=3)
+    assert_allclose(properties['local_screw_angles'], screw[:-2],
+                        atol=1e-03)
 
 
 class TestHELANAL(object):
@@ -353,12 +353,12 @@ class TestHELANAL(object):
     def test_regression_summary(self, helanal):
         bends = helanal.results.summary['all_bends']
         old_helanal = read_bending_matrix(HELANAL_BENDING_MATRIX_SUBSET)
-        assert_almost_equal(np.triu(bends['mean'], 1), old_helanal['Mean'],
-                            decimal=1)
-        assert_almost_equal(np.triu(bends['sample_sd'], 1), old_helanal['SD'],
-                            decimal=1)
-        assert_almost_equal(np.triu(bends['abs_dev'], 1), old_helanal['ABDEV'],
-                            decimal=1)
+        assert_allclose(np.triu(bends['mean'], 1), old_helanal['Mean'],
+                            atol=1e-01)
+        assert_allclose(np.triu(bends['sample_sd'], 1), old_helanal['SD'],
+                            atol=1e-01)
+        assert_allclose(np.triu(bends['abs_dev'], 1), old_helanal['ABDEV'],
+                            atol=1e-01)
 
     def test_regression_values(self):
         u = mda.Universe(PDB_small)
@@ -375,8 +375,8 @@ class TestHELANAL(object):
                 calculated = ha.results[key][0]
 
             msg = 'Mismatch between calculated and reference {}'
-            assert_almost_equal(calculated, value,
-                                decimal=4,
+            assert_allclose(calculated, value,
+                                atol=1e-04,
                                 err_msg=msg.format(key))
 
     def test_multiple_selections(self, psf_ca):
@@ -464,23 +464,23 @@ class TestHELANAL(object):
     def test_helanal_zigzag(self, zigzag, ref_axis, screw_angles):
         ha = hel.HELANAL(zigzag, select="all", ref_axis=ref_axis,
                          flatten_single_helix=True).run()
-        assert_almost_equal(ha.results.local_twists, 180, decimal=4)
-        assert_almost_equal(ha.results.local_nres_per_turn, 2, decimal=4)
-        assert_almost_equal(ha.results.global_axis, [[0, 0, -1]], decimal=4)
+        assert_allclose(ha.results.local_twists, 180, atol=1e-04)
+        assert_allclose(ha.results.local_nres_per_turn, 2, atol=1e-04)
+        assert_allclose(ha.results.global_axis, [[0, 0, -1]], atol=1e-04)
         # all 0 vectors
-        assert_almost_equal(ha.results.local_axes, 0, decimal=4)
-        assert_almost_equal(ha.results.local_bends, 0, decimal=4)
-        assert_almost_equal(ha.results.all_bends, 0, decimal=4)
-        assert_almost_equal(ha.results.local_heights, 0, decimal=4)
-        assert_almost_equal(ha.results.local_helix_directions[0][0::2],
-                            [[-1, 0, 0]]*49, decimal=4)
-        assert_almost_equal(ha.results.local_helix_directions[0][1::2],
-                            [[1, 0, 0]]*49, decimal=4)
+        assert_allclose(ha.results.local_axes, 0, atol=1e-04)
+        assert_allclose(ha.results.local_bends, 0, atol=1e-04)
+        assert_allclose(ha.results.all_bends, 0, atol=1e-04)
+        assert_allclose(ha.results.local_heights, 0, atol=1e-04)
+        assert_allclose(ha.results.local_helix_directions[0][0::2],
+                            [[-1, 0, 0]]*49, atol=1e-04)
+        assert_allclose(ha.results.local_helix_directions[0][1::2],
+                            [[1, 0, 0]]*49, atol=1e-04)
         origins = zigzag.atoms.positions[1:-1].copy()
         origins[:, 0] = 0
-        assert_almost_equal(ha.results.local_origins[0], origins, decimal=4)
-        assert_almost_equal(ha.results.local_screw_angles[0],
-                            screw_angles*49, decimal=4)
+        assert_allclose(ha.results.local_origins[0], origins, atol=1e-04)
+        assert_allclose(ha.results.local_screw_angles[0],
+                            screw_angles*49, atol=1e-04)
 
 
 def test_vector_of_best_fit():
@@ -492,4 +492,4 @@ def test_vector_of_best_fit():
 
     vector = hel.vector_of_best_fit(data)
     cos = np.dot(vector, unit)
-    assert_almost_equal(abs(cos), 1.0, decimal=5)
+    assert_allclose(abs(cos), 1.0, atol=1e-05)

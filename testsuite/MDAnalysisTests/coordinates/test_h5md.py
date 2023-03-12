@@ -1,5 +1,5 @@
 import pytest
-from numpy.testing import assert_almost_equal, assert_equal, assert_allclose
+from numpy.testing import assert_equal, assert_allclose
 import numpy as np
 import sys
 import os
@@ -29,7 +29,7 @@ class H5MDReference(BaseReference):
         self.reader = mda.coordinates.H5MD.H5MDReader
         self.writer = mda.coordinates.H5MD.H5MDWriter
         self.ext = 'h5md'
-        self.prec = 3
+        self.prec = 1e-03
         self.changing_dimensions = True
 
         self.first_frame.velocities = self.first_frame.positions / 10
@@ -140,7 +140,7 @@ class TestH5MDWriterBaseAPI(BaseWriterTest):
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
 class TestH5MDReaderWithRealTrajectory(object):
 
-    prec = 3
+    prec = 1e-03
     ext = 'h5md'
 
     @pytest.fixture(scope='class')
@@ -160,78 +160,78 @@ class TestH5MDReaderWithRealTrajectory(object):
 
     def test_positions(self, universe):
         universe.trajectory[0]
-        assert_almost_equal(universe.atoms.positions[0],
+        assert_allclose(universe.atoms.positions[0],
                             [32.309906, 13.77798, 14.372463],
-                            decimal=self.prec)
-        assert_almost_equal(universe.atoms.positions[42],
+                            atol=self.prec)
+        assert_allclose(universe.atoms.positions[42],
                             [28.116928, 19.405945, 19.647358],
-                            decimal=self.prec)
-        assert_almost_equal(universe.atoms.positions[10000],
+                            atol=self.prec)
+        assert_allclose(universe.atoms.positions[10000],
                             [44.117805, 50.442093, 23.299038],
-                            decimal=self.prec)
+                            atol=self.prec)
 
         universe.trajectory[1]
-        assert_almost_equal(universe.atoms.positions[0],
+        assert_allclose(universe.atoms.positions[0],
                             [30.891968, 13.678971, 13.6000595],
-                            decimal=self.prec)
-        assert_almost_equal(universe.atoms.positions[42],
+                            atol=self.prec)
+        assert_allclose(universe.atoms.positions[42],
                             [27.163246, 19.846561, 19.3582],
-                            decimal=self.prec)
-        assert_almost_equal(universe.atoms.positions[10000],
+                            atol=self.prec)
+        assert_allclose(universe.atoms.positions[10000],
                             [45.869278, 5.0342298, 25.460655],
-                            decimal=self.prec)
+                            atol=self.prec)
         universe.trajectory[2]
-        assert_almost_equal(universe.atoms.positions[0],
+        assert_allclose(universe.atoms.positions[0],
                             [31.276512, 13.89617, 15.015897],
-                            decimal=self.prec)
-        assert_almost_equal(universe.atoms.positions[42],
+                            atol=self.prec)
+        assert_allclose(universe.atoms.positions[42],
                             [28.567991, 20.56532, 19.40814],
-                            decimal=self.prec)
-        assert_almost_equal(universe.atoms.positions[10000],
+                            atol=self.prec)
+        assert_allclose(universe.atoms.positions[10000],
                             [39.713223,  6.127234, 18.284992],
-                            decimal=self.prec)
+                            atol=self.prec)
 
     def test_h5md_velocities(self, universe):
         universe.trajectory[0]
-        assert_almost_equal(universe.atoms.velocities[0],
+        assert_allclose(universe.atoms.velocities[0],
                             [-2.697732, 0.613568, 0.14334752],
-                            decimal=self.prec)
+                            atol=self.prec)
         universe.trajectory[1]
-        assert_almost_equal(universe.atoms.velocities[42],
+        assert_allclose(universe.atoms.velocities[42],
                             [-6.8698354, 7.834235, -8.114698],
-                            decimal=self.prec)
+                            atol=self.prec)
         universe.trajectory[2]
-        assert_almost_equal(universe.atoms.velocities[10000],
+        assert_allclose(universe.atoms.velocities[10000],
                             [9.799492, 5.631466, 6.852126],
-                            decimal=self.prec)
+                            atol=self.prec)
 
     def test_h5md_forces(self, universe):
         universe.trajectory[0]
-        assert_almost_equal(universe.atoms.forces[0],
+        assert_allclose(universe.atoms.forces[0],
                             [20.071287, -155.2285, -96.72112],
-                            decimal=self.prec)
+                            atol=self.prec)
         universe.trajectory[1]
-        assert_almost_equal(universe.atoms.forces[42],
+        assert_allclose(universe.atoms.forces[42],
                             [-4.1959066, -31.31548, 22.663044],
-                            decimal=self.prec)
+                            atol=self.prec)
         universe.trajectory[2]
-        assert_almost_equal(universe.atoms.forces[10000],
+        assert_allclose(universe.atoms.forces[10000],
                             [-41.43743, 83.35207, 62.94751],
-                            decimal=self.prec)
+                            atol=self.prec)
 
     def test_h5md_dimensions(self, universe):
         universe.trajectory[0]
-        assert_almost_equal(universe.trajectory.ts.dimensions,
+        assert_allclose(universe.trajectory.ts.dimensions,
                             [52.763, 52.763, 52.763, 90., 90., 90.],
-                            decimal=self.prec)
+                            atol=self.prec)
         universe.trajectory[1]
-        assert_almost_equal(universe.trajectory.ts.dimensions,
+        assert_allclose(universe.trajectory.ts.dimensions,
                             [52.807877, 52.807877, 52.807877, 90., 90., 90.],
-                            decimal=self.prec)
+                            atol=self.prec)
         universe.trajectory[2]
-        assert_almost_equal(universe.trajectory.ts.dimensions,
+        assert_allclose(universe.trajectory.ts.dimensions,
                             [52.839806, 52.839806, 52.839806, 90., 90., 90.],
-                            decimal=self.prec)
+                            atol=self.prec)
 
     def test_h5md_data_step(self, universe):
         for ts, step in zip(universe.trajectory, (0, 25000, 50000)):
@@ -454,7 +454,7 @@ class TestH5MDReaderWithRealTrajectory(object):
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
 class TestH5MDWriterWithRealTrajectory(object):
 
-    prec = 3
+    prec = 1e-03
 
     @pytest.fixture()
     def universe(self):
@@ -576,22 +576,22 @@ class TestH5MDWriterWithRealTrajectory(object):
 
             # check the trajectory contents match reference universes
             for ts, ref_ts in zip(uw.trajectory, universe.trajectory):
-                assert_almost_equal(ts.dimensions, ref_ts.dimensions, self.prec)
+                assert_allclose(ts.dimensions, ref_ts.dimensions, self.prec)
                 if pos:
-                    assert_almost_equal(ts._pos, ref_ts._pos, self.prec)
+                    assert_allclose(ts._pos, ref_ts._pos, self.prec)
                 else:
                     with pytest.raises(NoDataError,
                                        match="This Timestep has no"):
                         getattr(ts, 'positions')
                 if vel:
-                    assert_almost_equal(ts._velocities, ref_ts._velocities,
+                    assert_allclose(ts._velocities, ref_ts._velocities,
                                         self.prec)
                 else:
                     with pytest.raises(NoDataError,
                                        match="This Timestep has no"):
                         getattr(ts, 'velocities')
                 if force:
-                    assert_almost_equal(ts._forces, ref_ts._forces, self.prec)
+                    assert_allclose(ts._forces, ref_ts._forces, self.prec)
                 else:
                     with pytest.raises(NoDataError,
                                        match="This Timestep has no"):
@@ -624,9 +624,9 @@ class TestH5MDWriterWithRealTrajectory(object):
 
         for orig_ts, written_ts in zip(universe.trajectory,
                                        uw.trajectory):
-            assert_almost_equal(ca.positions, caw.positions, self.prec)
-            assert_almost_equal(orig_ts.time, written_ts.time, self.prec)
-            assert_almost_equal(written_ts.dimensions,
+            assert_allclose(ca.positions, caw.positions, self.prec)
+            assert_allclose(orig_ts.time, written_ts.time, self.prec)
+            assert_allclose(written_ts.dimensions,
                                 orig_ts.dimensions,
                                 self.prec)
 
@@ -646,9 +646,9 @@ class TestH5MDWriterWithRealTrajectory(object):
         assert_equal(n_frames, len(uw.trajectory))
         for orig_ts, written_ts in zip(universe.trajectory,
                                        uw.trajectory):
-            assert_almost_equal(ca.positions, caw.positions, self.prec)
-            assert_almost_equal(orig_ts.time, written_ts.time, self.prec)
-            assert_almost_equal(written_ts.dimensions,
+            assert_allclose(ca.positions, caw.positions, self.prec)
+            assert_allclose(orig_ts.time, written_ts.time, self.prec)
+            assert_allclose(written_ts.dimensions,
                                 orig_ts.dimensions,
                                 self.prec)
 
