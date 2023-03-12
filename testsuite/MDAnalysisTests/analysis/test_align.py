@@ -205,9 +205,10 @@ class TestAlign(object):
         assert_allclose(
                         rms.rmsd(last_frame, first_frame, superposition=True), rmsd, 6,
                         err_msg="error: rmsd() is not symmetric")
+        err_msg="RMSD calculation between 1st and last AdK frame gave wrong answer"
         assert_allclose(rmsd, 6.820321761927005, 5,
-                        err_msg="RMSD calculation " +
-                        "between 1st and last AdK frame gave wrong answer")
+                        err_msg=err_msg 
+                        )
         # test masses as weights
         last_atoms_weight = universe.atoms.masses
         A = universe.trajectory[0]
