@@ -867,7 +867,7 @@ class WaterBridgeAnalysis(AnalysisBase):
         donors : sequence (optional)
             Extra H donor atom types (in addition to those in :attr:`~DEFAULT_DONORS`).
             This shall be the name of the heavy atom that bonded to the hydrogen.
-            For example, the oxygen ('O') in the hydroxylgroup, must be a sequence.
+            For example, the oxygen ('O') in the hydroxyl group, must be a sequence.
         acceptors : sequence (optional)
             Extra H acceptor atom types (in addition to those in
             :attr:`~DEFAULT_ACCEPTORS`), must be a
