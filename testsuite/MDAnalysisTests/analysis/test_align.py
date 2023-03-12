@@ -206,7 +206,8 @@ class TestAlign(object):
                         rms.rmsd(last_frame, first_frame, superposition=True), rmsd, 6,
                         err_msg="error: rmsd() is not symmetric")
         assert_allclose(rmsd, 6.820321761927005, 5,
-                        err_msg="RMSD calculation between 1st and last AdK frame gave wrong answer")
+                        err_msg="RMSD calculation " +
+                        "between 1st and last AdK frame gave wrong answer")
         # test masses as weights
         last_atoms_weight = universe.atoms.masses
         A = universe.trajectory[0]
@@ -435,7 +436,7 @@ class TestAverageStructure(object):
     def test_average_structure(self, universe, reference):
         ref, rmsd = _get_aligned_average_positions(self.ref_files, reference)
         avg = align.AverageStructure(universe, reference).run()
-        assert_allclose(avg.results.universe.atoms.positions, ref,atol=4)
+        assert_allclose(avg.results.universe.atoms.positions, ref, atol=4)
         assert_allclose(avg.results.rmsd, rmsd)
 
     def test_average_structure_mass_weighted(self, universe, reference):
