@@ -64,9 +64,12 @@ jobs:
         lint: "flake8"
 
     - name: write-errors
+      env:
+        RUNID: ${{ env.GITHUB_RUN_ID }}
+        JOBID: ${{ env.GITHUB_JOB }}
       run: |
-        echo "run_id: $GITHUB_RUN_ID"
-        echo "job_id: $GITHUB_JOB"
+        echo "run_id: ${RUNID}"
+        echo "job_id: ${JOBID}"
         echo "main_stat: ${{ steps.darker-main-code.outcome }}"
         echo "test_stat: ${{ steps.darker-test-code.outcome }}"
         #python maintainer/ci/darker-outcomes.py --run_id ${{ GITHUB_RUN_ID }} \
