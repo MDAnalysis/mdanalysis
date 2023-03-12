@@ -34,23 +34,30 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument(
     "--main_stat",
-    type=bool,
+    type=str,
     help="Status of main code linting",
 )
 
 
 parser.add_argument(
     "--test_stat",
-    type=bool,
+    type=str,
     help="Status of test code linting",
 )
+
+
+def bool_outcome(outcome: str) -> bool:
+    return True if (outcome == 'passed') else False
 
 
 if __name__ == "__main__":
     args = parser.parse_args()
 
     run_id = os.environ['GITHUB_RUN_ID']
-    job_id = os.environ['GITHUB_JOB']
+    job_id = os.environ['GITHUB_RUN_NUMBER']
 
-    print(f"Linting - code: {args.main_stat}, tests: {args.test_stat}, "
+    def bool_outcome
+
+    print(f"Linting - code: {bool_outcome(args.main_stat)}, "
+          f"tests: {bool_outcome(args.test_stat)}, "
           f"action: https://www.github.com/MDAnalysis/mdanalysis/actions/runs/{run_id}/jobs/{job_id}")
