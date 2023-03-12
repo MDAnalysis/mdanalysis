@@ -1210,6 +1210,7 @@ class WaterBridgeAnalysis(AnalysisBase):
                                            box=self.box,
                                            return_distances=True)
         if self.distance_type != 'heavy':
+            tmp_distances = distances
             tmp_donors = [h_donors[donors_idx[idx]] for idx in pairs[:, 0]]
             tmp_hydrogens = [donors_idx[idx] for idx in pairs[:, 0]]
             tmp_acceptors = [acceptor[idx] for idx in pairs[:, 1]]
@@ -1217,11 +1218,13 @@ class WaterBridgeAnalysis(AnalysisBase):
             tmp_donors = []
             tmp_hydrogens = []
             tmp_acceptors = []
-            for idx in range(len(pairs[:, 0])):
+            tmp_distances = []
+            for idx, distance in enumerate(distances):
                 for h in donors[donors_idx[pairs[idx, 0]]]:
                     tmp_donors.append(donors_idx[pairs[idx, 0]])
                     tmp_hydrogens.append(h)
                     tmp_acceptors.append(acceptor[pairs[idx, 1]])
+                    tmp_distances.append(distance)
 
         angles = np.rad2deg(
             calc_angles(
@@ -1238,7 +1241,7 @@ class WaterBridgeAnalysis(AnalysisBase):
             a = tmp_acceptors[index]
             result.append((h, d, a, self._expand_index(h),
                            self._expand_index(a),
-                           distances[index], angles[index]))
+                           tmp_distances[index], angles[index]))
         return result
 
     def _single_frame(self):
