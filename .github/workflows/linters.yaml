@@ -65,10 +65,14 @@ jobs:
 
     - name: write-errors
       run: |
-        python maintainer/ci/darker-outcomes.py --run_id ${{ vars.GITHUB_RUN_ID }} \
-                                                --job_id ${{ vars.GITHUB_JOB }} \
-                                                --main_stat ${{ steps.darker-main-code.outcome }} \
-                                                --test_stat ${{ steps.darker-test-code.outcome }}
+        echo "run_id: ${{ vars.GITHUB_RUN_ID }}"
+        echo "job_id: ${{ vars.GITHUB_JOB }}"
+        echo "main_stat: ${{ steps.darker-main-code.outcome }}"
+        echo "test_stat: ${{ steps.darker-test-code.outcome }}"
+        #python maintainer/ci/darker-outcomes.py --run_id ${{ vars.GITHUB_RUN_ID }} \
+        #                                        --job_id ${{ vars.GITHUB_JOB }} \
+        #                                        --main_stat ${{ steps.darker-main-code.outcome }} \
+        #                                       --test_stat ${{ steps.darker-test-code.outcome }}
 
 
   pylint_check:
