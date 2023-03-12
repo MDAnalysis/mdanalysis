@@ -865,8 +865,9 @@ class WaterBridgeAnalysis(AnalysisBase):
             :attr:`~DEFAULT_ACCEPTORS` values.
             ["CHARMM27"]
         donors : sequence (optional)
-            Extra H donor atom types (The heavy atom not the hydrogen)
-            (in addition to those in :attr:`~DEFAULT_DONORS`), must be a sequence.
+            Extra H donor atom types (in addition to those in :attr:`~DEFAULT_DONORS`).
+            This shall be the name of the heavy atom that bonded to the hydrogen.
+            For example, the oxygen ('O') in the hydroxylgroup, must be a sequence.
         acceptors : sequence (optional)
             Extra H acceptor atom types (in addition to those in
             :attr:`~DEFAULT_ACCEPTORS`), must be a
@@ -1214,6 +1215,9 @@ class WaterBridgeAnalysis(AnalysisBase):
             tmp_hydrogens = [donors_idx[idx] for idx in pairs[:, 0]]
             tmp_acceptors = [acceptor[idx] for idx in pairs[:, 1]]
         else:
+            # To make sure that for the same index i, the donor (tmp_donors[i]),
+            # hydrogen (tmp_hydrogens[i]), acceptor (tmp_acceptors[i]) matches the
+            # distance (tmp_distances[i]).
             tmp_donors = []
             tmp_hydrogens = []
             tmp_acceptors = []
