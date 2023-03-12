@@ -56,8 +56,6 @@ if __name__ == "__main__":
     run_id = os.environ['GITHUB_RUN_ID']
     job_id = os.environ['GITHUB_RUN_NUMBER']
 
-    def bool_outcome
-
     print(f"Linting - code: {bool_outcome(args.main_stat)}, "
           f"tests: {bool_outcome(args.test_stat)}, "
           f"action: https://www.github.com/MDAnalysis/mdanalysis/actions/runs/{run_id}/jobs/{job_id}")
