@@ -34,13 +34,13 @@ class SimpleRmsBench(object):
             self.A = self.u.atoms.positions.copy()[:num_atoms]
             self.u.trajectory[-1]
             self.B = self.u.atoms.positions.copy()[:num_atoms]
-            self.weights = [self.A.masses() / np.sum(self.A.masses(),self.B.masses() / np.sum(self.B.masses()))] if 'weights' in self.params[1] else None
+            self.weights = [self.A.masses() / np.sum(self.A.masses()),self.B.masses() / np.sum(self.B.masses())] if 'weights' in self.params[1] else None
 
         except:
             self.A = self.u.atoms.positions.copy()[:num_atoms]
             self.u.trajectory[-1]
             self.B = self.u.atoms.positions.copy()[:num_atoms]
-            self.weights = [self.A.masses() / np.sum(self.A.masses(),self.B.masses() / np.sum(self.B.masses()))] if 'weights' in self.params[1] else None
+            self.weights = [self.A.masses() / np.sum(self.A.masses()),self.B.masses() / np.sum(self.B.masses())] if 'weights' in self.params[1] else None
 
     def time_rmsd(self, num_atoms, weights, center, superposition):
         """Benchmark rmsd function using a setup similar to
