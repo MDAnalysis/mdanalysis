@@ -65,8 +65,8 @@ jobs:
 
     - name: write-errors
       run: |
-        python maintainer/ci/darker-outcomes.py --run_id ${{ github.run_id }} \
-                                                --job_id ${{ github.job_id }} \
+        python maintainer/ci/darker-outcomes.py --run_id ${{ vars.GITHUB_RUN_ID }} \
+                                                --job_id ${{ vars.GITHUB_JOB }} \
                                                 --main_stat ${{ steps.darker-main-code.outcome }} \
                                                 --test_stat ${{ steps.darker-test-code.outcome }}
 
