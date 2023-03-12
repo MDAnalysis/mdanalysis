@@ -65,8 +65,8 @@ jobs:
 
     - name: write-errors
       env:
-        RUNID: ${{ env.GITHUB_RUN_ID }}
-        JOBID: ${{ env.GITHUB_JOB }}
+        RUNID: ${{ GITHUB_RUN_ID }}
+        JOBID: ${{ GITHUB_JOB }}
       run: |
         echo "run_id: ${RUNID}"
         echo "job_id: ${JOBID}"
