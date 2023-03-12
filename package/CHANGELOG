@@ -19,6 +19,7 @@ The rules for this file:
  * 2.5.0
 
 Fixes
+  * Fix the heavy distance_type for water bridge analysis (Issue #4040, PR #4066).
   * Add tests for "No path data" exception raise in test_psa.py (Issue #4036)
   * Fix uninitialized `format` variable issue when calling `selections.get_writer` directly (PR #4043)
   * Fix tests should use results.rmsf to avoid DeprecationWarning (Issue #3695)

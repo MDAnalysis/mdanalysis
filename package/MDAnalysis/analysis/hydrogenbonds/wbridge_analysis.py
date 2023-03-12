@@ -866,8 +866,8 @@ class WaterBridgeAnalysis(AnalysisBase):
             :attr:`~DEFAULT_ACCEPTORS` values.
             ["CHARMM27"]
         donors : sequence (optional)
-            Extra H donor atom types (in addition to those in
-            :attr:`~DEFAULT_DONORS`), must be a sequence.
+            Extra H donor atom types (The heavy atom not the hydrogen)
+            (in addition to those in :attr:`~DEFAULT_DONORS`), must be a sequence.
         acceptors : sequence (optional)
             Extra H acceptor atom types (in addition to those in
             :attr:`~DEFAULT_ACCEPTORS`), must be a
