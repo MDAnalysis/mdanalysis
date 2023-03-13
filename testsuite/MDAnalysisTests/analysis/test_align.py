@@ -38,10 +38,12 @@ from numpy.testing import (
     assert_allclose,
 )
 
-#Function for Parametrizing conditional raising
+
+# Function for Parametrizing conditional raising
 @contextmanager
 def does_not_raise():
     yield
+
 
 class TestRotationMatrix(object):
     a = np.array([[0.1, 0.2, 0.3], [1.1, 1.1, 1.1]])
@@ -104,8 +106,9 @@ class TestGetMatchingAtoms(object):
     @pytest.mark.parametrize("strict", (True, False))
     def test_nomatch_atoms_raise(self, universe, reference,
                                  strict, selection="protein and backbone"):
-        # one atom less but same residues; with strict=False should try
-        # to get selections (but current code fails, so we also raise SelectionError)
+        # one atom less but same residues; with strict=False
+        # should try to get selections (but current code fails,
+        # so we also raise SelectionError)
         ref = reference.select_atoms(selection).atoms[1:]
         mobile = universe.select_atoms(selection)
         if strict:
@@ -114,7 +117,8 @@ class TestGetMatchingAtoms(object):
         else:
             with pytest.warns(SelectionWarning):
                 with pytest.raises(SelectionError):
-                    groups = align.get_matching_atoms(ref, mobile, strict=strict)
+                    groups = align.get_matching_atoms(ref, mobile,
+                                                      strict=strict)
 
     @pytest.mark.parametrize("strict", (True, False))
     def test_nomatch_residues_raise_empty(self, universe, reference_small,
@@ -130,7 +134,8 @@ class TestGetMatchingAtoms(object):
         else:
             with pytest.warns(SelectionWarning):
                 with pytest.raises(SelectionError):
-                    groups = align.get_matching_atoms(ref, mobile, strict=strict)
+                    groups = align.get_matching_atoms(ref, mobile,
+                                                      strict=strict)
 
     def test_toggle_atom_mismatch_default_error(self, universe, reference):
         selection = ('resname ALA and name CA', 'resname ALA and name O')
@@ -157,7 +162,8 @@ class TestGetMatchingAtoms(object):
 
     @pytest.mark.parametrize('subselection, expectation', [
         ('resname ALA and name CA', does_not_raise()),
-        (mda.Universe(PSF, DCD).select_atoms('resname ALA and name CA'), does_not_raise()),
+        (mda.Universe(PSF, DCD).select_atoms('resname ALA and name CA'),
+         does_not_raise()),
         (1234, pytest.raises(TypeError)),
     ])
     def test_subselection_alignto(self, universe, reference, subselection, expectation):
@@ -167,7 +173,7 @@ class TestGetMatchingAtoms(object):
             assert_allclose(rmsd[1], 0.0, atol=1)
 
     def test_no_atom_masses(self, universe):
-        #if no masses are present
+        # if no masses are present
         u = mda.Universe.empty(6, 2, atom_resindex=[0, 0, 0, 1, 1, 1], trajectory=True)
         with pytest.warns(SelectionWarning):
             align.get_matching_atoms(u.atoms, u.atoms)
@@ -178,6 +184,7 @@ class TestGetMatchingAtoms(object):
         ref.add_TopologyAttr('masses')
         with pytest.warns(SelectionWarning):
             align.get_matching_atoms(u.atoms, ref.atoms)
+
 
 class TestAlign(object):
     @staticmethod
@@ -203,8 +210,9 @@ class TestAlign(object):
         # the test to 6 decimals.
         rmsd = rms.rmsd(first_frame, last_frame, superposition=True)
         assert_allclose(rms.rmsd(last_frame, first_frame, superposition=True), rmsd, 6,
-                        err_msg = "error: rmsd() is not symmetric")
-        assert_allclose(rmsd, 6.820321761927005, 5, err_msg='RMSD calculation between 1st' 
+                        err_msg="error: rmsd() is not symmetric")
+        assert_allclose(rmsd, 6.820321761927005, 5, err_msg='RMSD calculation'
+                        'between 1st'
                         'and last AdK frame gave wrong answer')
         # test masses as weights
         last_atoms_weight = universe.atoms.masses
@@ -402,6 +410,7 @@ def _get_aligned_average_positions(ref_files, ref, select="all", **kwargs):
     rmsd = sum(prealigner.results.rmsd/len(u.trajectory))
     return reference_coordinates, rmsd
 
+
 class TestAverageStructure(object):
 
     ref_files = (PSF, DCD)
@@ -437,15 +446,19 @@ class TestAverageStructure(object):
         assert_allclose(avg.results.universe.atoms.positions, ref, atol=4)
         assert_allclose(avg.results.rmsd, rmsd)
 
-    def test_average_structure_mass_weighted(self, universe, reference):
-        ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, weights='mass')
+    def test_average_structure_mass_weighted(self, universe,
+                                             reference):
+        ref, rmsd = _get_aligned_average_positions(self.ref_files, reference,
+                                                   weights='mass')
         avg = align.AverageStructure(universe, reference, weights='mass').run()
         assert_allclose(avg.results.universe.atoms.positions, ref, atol=4)
         assert_allclose(avg.results.rmsd, rmsd)
 
     def test_average_structure_select(self, universe, reference):
         select = 'protein and name CA and resid 3-5'
-        ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, select=select)
+        ref, rmsd = _get_aligned_average_positions(self.ref_files,
+                                                   reference,
+                                                   select=select)
         avg = align.AverageStructure(universe, reference, select=select).run()
         assert_allclose(avg.results.universe.atoms.positions, ref, atol=4)
         assert_allclose(avg.results.rmsd, rmsd)
@@ -468,18 +481,16 @@ class TestAverageStructure(object):
     def test_average_structure_ref_frame(self, universe):
         ref_frame = 3
         u = mda.Merge(universe.atoms)
-
         # change to ref_frame
-        # universe.trajectory[ref_frame]
+        universe.trajectory[ref_frame]
         u.load_new(universe.atoms.positions)
-
         # back to start
-        # universe.trajectory[0]
-        ref, rmsd = _get_aligned_average_positions(self.ref_files, 
+        universe.trajectory[0]
+        ref, rmsd = _get_aligned_average_positions(self.ref_files,
                                                    u)
-        avg = align.AverageStructure(universe, 
+        avg = align.AverageStructure(universe,
                                      ref_frame=ref_frame).run()
-        assert_allclose(avg.results.universe.atoms.positions, ref, 
+        assert_allclose(avg.results.universe.atoms.positions, ref,
                         atol=4)
         assert_allclose(avg.results.rmsd, rmsd)
 
@@ -561,7 +572,7 @@ class TestSequenceAlignmentFunction:
                      err_msg="reference sequence mismatch")
         assert mobile.residues.sequence(
             format="string") in seqB, "mobile sequence mismatch"
-        assert score  == pytest.approx(54.6)
+        assert score == pytest.approx(54.6)
         assert_array_equal([begin, end], [0, reference.n_residues])
 
     def test_sequence_alignment_deprecation(self, atomgroups):
