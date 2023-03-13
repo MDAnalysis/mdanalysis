@@ -470,15 +470,17 @@ class TestAverageStructure(object):
         u = mda.Merge(universe.atoms)
 
         # change to ref_frame
-        #universe.trajectory[ref_frame]
+        # universe.trajectory[ref_frame]
         u.load_new(universe.atoms.positions)
 
         # back to start
-        #universe.trajectory[0]
+        # universe.trajectory[0]
         ref, rmsd = _get_aligned_average_positions(self.ref_files, 
                                                    u)
-        avg = align.AverageStructure(universe, ref_frame=ref_frame).run()
-        assert_allclose(avg.results.universe.atoms.positions, ref, atol=4)
+        avg = align.AverageStructure(universe, 
+                                     ref_frame=ref_frame).run()
+        assert_allclose(avg.results.universe.atoms.positions, ref, 
+                        atol=4)
         assert_allclose(avg.results.rmsd, rmsd)
 
     def test_average_structure_in_memory(self, universe):
