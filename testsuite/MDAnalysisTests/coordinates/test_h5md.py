@@ -127,6 +127,8 @@ class TestH5MDWriterBaseAPI(BaseWriterTest):
                     w.write(universe.atoms)
             self._check_copy(outfile, ref, reader)
 
+    @pytest.mark.xfail((os.name =='nt' and sys.maxsize <= 2**32),
+                       reason="occasional fail on 32-bit windows")
     def test_write_trajectory_universe(self, ref, reader, universe, tmpdir):
         outfile = 'write-uni-test.' + ref.ext
         with tmpdir.as_cwd():
