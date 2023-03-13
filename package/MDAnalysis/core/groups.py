@@ -3298,6 +3298,7 @@ class AtomGroup(GroupBase):
 
         .. versionadded:: 0.10.0
         .. versionchanged:: 0.20.2
+        .. versionchanged:: 2.4.2
            Now applies periodic boundary conditions when guessing bonds.
         """
         from ..topology.core import guess_bonds, guess_angles, guess_dihedrals
