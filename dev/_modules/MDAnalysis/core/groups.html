@@ -2767,16 +2767,19 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 
+<span class="sd">           &gt;&gt;&gt; import MDAnalysis as mda</span>
+<span class="sd">           &gt;&gt;&gt; from MDAnalysis.tests.datafiles import PSF, DCD</span>
+<span class="sd">           &gt;&gt;&gt; u = mda.Universe(PSF, DCD)</span>
 <span class="sd">           &gt;&gt;&gt; ag = u.atoms[[2, 1, 2, 2, 1, 0]]</span>
 <span class="sd">           &gt;&gt;&gt; ag</span>
 <span class="sd">           &lt;AtomGroup with 6 atoms&gt;</span>
 <span class="sd">           &gt;&gt;&gt; ag.ix</span>
-<span class="sd">           array([2, 1, 2, 2, 1, 0])</span>
+<span class="sd">           array([2, 1, 2, 2, 1, 0], dtype=int64)</span>
 <span class="sd">           &gt;&gt;&gt; ag2 = ag.unique</span>
 <span class="sd">           &gt;&gt;&gt; ag2</span>
 <span class="sd">           &lt;AtomGroup with 3 atoms&gt;</span>
 <span class="sd">           &gt;&gt;&gt; ag2.ix</span>
-<span class="sd">           array([0, 1, 2])</span>
+<span class="sd">           array([0, 1, 2], dtype=int64)</span>
 <span class="sd">           &gt;&gt;&gt; ag2.unique is ag2</span>
 <span class="sd">           False</span>
 
@@ -2820,19 +2823,22 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 
+<span class="sd">           &gt;&gt;&gt; import MDAnalysis as mda</span>
+<span class="sd">           &gt;&gt;&gt; from MDAnalysis.tests.datafiles import PSF, DCD</span>
+<span class="sd">           &gt;&gt;&gt; u = mda.Universe(PSF, DCD)</span>
 <span class="sd">           &gt;&gt;&gt; ag = u.atoms[[2, 1, 0]]</span>
 <span class="sd">           &gt;&gt;&gt; ag2 = ag.asunique(sorted=False)</span>
 <span class="sd">           &gt;&gt;&gt; ag2 is ag</span>
 <span class="sd">           True</span>
 <span class="sd">           &gt;&gt;&gt; ag2.ix</span>
-<span class="sd">           array([2, 1, 0])</span>
+<span class="sd">           array([2, 1, 0], dtype=int64)</span>
 <span class="sd">           &gt;&gt;&gt; ag3 = ag.asunique(sorted=True)</span>
 <span class="sd">           &gt;&gt;&gt; ag3 is ag</span>
 <span class="sd">           False</span>
 <span class="sd">           &gt;&gt;&gt; ag3.ix</span>
-<span class="sd">           array([0, 1, 2])</span>
+<span class="sd">           array([0, 1, 2], dtype=int64)</span>
 <span class="sd">           &gt;&gt;&gt; u.atoms[[2, 1, 1, 0, 1]].asunique(sorted=False).ix</span>
-<span class="sd">           array([2, 1, 0])</span>
+<span class="sd">           array([2, 1, 0], dtype=int64)</span>
 
 
 <span class="sd">        .. versionadded:: 2.0.0</span>
