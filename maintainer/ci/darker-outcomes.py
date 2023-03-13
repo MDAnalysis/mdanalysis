@@ -24,6 +24,8 @@
 
 import argparse
 import os
+from urllib import request
+import json
 from github import Github
 
 
@@ -47,14 +49,47 @@ parser.add_argument(
 
 
 def bool_outcome(outcome: str) -> bool:
-    return True if (outcome == 'passed') else False
+    return True if (outcome == 'success') else False
 
 
 if __name__ == "__main__":
     args = parser.parse_args()
 
+    git = Github(os.environ['GITHUB_TOKEN'])
+    repo = git.get_repo("MDAnalysis/mdanalysis")
+
     run_id = os.environ['GITHUB_RUN_ID']
     job_id = os.environ['GITHUB_RUN_NUMBER']
+
+    def get_pull_requests(repo):
+        pulls = [pull for pull in repo.get_pulls()]
+        # somehow get PR via the PR number here
+        return pr
+
+    def do_comment(pr):
+
+        # check if the comment exists
+        comments = [comm for comm in pr.get_comments() if "Linter Bot" in comm.body]
+        if len(comments) > 0:
+            # update -- note: probably should fail if there's more than 1 comment, but let's ignore this for now
+            comments[0].edit(body="Linter Bot: this is an edit message")
+        else:
+            # add
+            pr.create_issue_comment("Linter Bot: this is a new message")
+
+    def get_job_run(repo, pr, run_id):
+        lint_wkflow = [wf for wf in repo.get_workflows() if wf.name == 'linters'][0]
+        run = [r for r in linters.get_runs(branch=pr.head.ref) if r.id == run_id][0]
+
+        with request.urlopen(run.jobs_url) as url:
+            data = json.load(url)
+
+        for job in data['jobs']:
+            if job['name'] == 'darker_lint':
+                return job['html_url']
+
+        return 'N/A'
+
 
     print(f"Linting - code: {bool_outcome(args.main_stat)}, "
           f"tests: {bool_outcome(args.test_stat)}, "
