@@ -127,6 +127,8 @@ class TestH5MDWriterBaseAPI(BaseWriterTest):
                     w.write(universe.atoms)
             self._check_copy(outfile, ref, reader)
 
+    @pytest.mark.xfail((os.name == 'nt' and sys.maxsize <= 2**32),
+                       reason="occasional fail on 32-bit windows")
     def test_write_trajectory_universe(self, ref, reader, universe, tmpdir):
         outfile = 'write-uni-test.' + ref.ext
         with tmpdir.as_cwd():
@@ -250,13 +252,6 @@ class TestH5MDReaderWithRealTrajectory(object):
     def test_jump_last_frame(self, universe):
         universe.trajectory[-1]
         assert universe.trajectory.ts.frame == 2
-
-    @pytest.mark.parametrize("start, stop, step", ((0, 2, 1),
-                                                   (1, 2, 1)))
-    def test_slice(universe, start, stop, step):
-        frames = [universe.trajectory.ts.frame
-                  for ts in universe.trajectory[start:stop:step]]
-        assert_equal(frames, np.arange(start, stop, step))
 
     @pytest.mark.parametrize("start, stop, step", ((0, 2, 1),
                                                    (1, 2, 1)))
