@@ -387,10 +387,19 @@ class EinsteinMSD(AnalysisBase):
         """
         lagtimes = np.arange(1, self.n_frames)
         positions = self._position_array.astype(np.float64)
+
+        # progressbar
+        import progressbar
+        import time
+        widgets = ['Loading: ', progressbar.AnimatedMarker()]
+        bar = progressbar.ProgressBar(widgets=widgets).start()
+
         for lag in lagtimes:
             disp = positions[:-lag, :, :] - positions[lag:, :, :]
             sqdist = np.square(disp).sum(axis=-1)
             self.results.msds_by_particle[lag, :] = np.mean(sqdist, axis=0)
+            time.sleep(0.01)
+            bar.update(lag)
         self.results.timeseries = self.results.msds_by_particle.mean(axis=1)
 
     def _conclude_fft(self):  # with FFT, np.float64 bit prescision required.
@@ -411,7 +420,16 @@ class EinsteinMSD(AnalysisBase):
                 or set fft=False""")
 
         positions = self._position_array.astype(np.float64)
+
+        # progressbar
+        import progressbar
+        import time
+        widgets = ['Loading: ', progressbar.AnimatedMarker()]
+        bar = progressbar.ProgressBar(widgets=widgets).start()
+
         for n in range(self.n_particles):
             self.results.msds_by_particle[:, n] = tidynamics.msd(
                 positions[:, n, :])
+            time.sleep(0.01)
+            bar.update(n)
         self.results.timeseries = self.results.msds_by_particle.mean(axis=1)
