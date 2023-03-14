@@ -321,7 +321,7 @@ class Universe(object):
     """
     def __init__(self, topology=None, *coordinates, all_coordinates=False,
                  format=None, topology_format=None, transformations=None,
-                 guess_bonds=False, vdwradii=None,fudge_factor=0.55,
+                 guess_bonds=False, vdwradii=None, fudge_factor=0.55,
                  lower_bound=0.1, in_memory=False,
                  in_memory_step=1, **kwargs):
 
