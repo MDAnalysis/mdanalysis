@@ -389,13 +389,10 @@ class EinsteinMSD(AnalysisBase):
         positions = self._position_array.astype(np.float64)
 
         # progressbar
-        from progressbar import Percentage, ProgressBar,Bar,ETA
+        from progressbar import Percentage, ProgressBar, Bar, ETA
         bar = ProgressBar(widgets=[Bar('=', '[', ']'), ' ',
-                                               Percentage(), ' ',
-                                               ETA()],
+                                   Percentage(), ' ', ETA()],
                           maxval=self.n_frames).start()
-
-
         for lag in lagtimes:
             disp = positions[:-lag, :, :] - positions[lag:, :, :]
             sqdist = np.square(disp).sum(axis=-1)
@@ -423,12 +420,10 @@ class EinsteinMSD(AnalysisBase):
         positions = self._position_array.astype(np.float64)
 
         # progressbar
-        from progressbar import Percentage, ProgressBar,Bar,ETA
+        from progressbar import Percentage, ProgressBar, Bar, ETA
         bar = ProgressBar(widgets=[Bar('=', '[', ']'), ' ',
-                                        Percentage(), ' ',
-                                        ETA()],
+                                   Percentage(), ' ', ETA()],
                           maxval=self.n_particles).start()
-
         for n in range(self.n_particles):
             self.results.msds_by_particle[:, n] = tidynamics.msd(
                 positions[:, n, :])
