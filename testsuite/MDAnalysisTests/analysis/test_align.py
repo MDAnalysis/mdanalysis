@@ -209,7 +209,7 @@ class TestAlign(object):
         # 9th decimal have been observed (see Issue 57 comment #1) so we relax
         # the test to 6 decimals.
         rmsd = rms.rmsd(first_frame, last_frame, superposition=True)
-        assert_allclose(rms.rmsd(last_frame, first_frame, superposition=True), rmsd, 
+        assert_allclose(rms.rmsd(last_frame, first_frame, superposition=True), rmsd,
                         rtol=1e-06, err_msg="error: rmsd() is not symmetric")
         assert_allclose(rmsd, 6.820321761927005, rtol=1e-05, err_msg='RMSD calculation'
                         'between 1st'
@@ -451,7 +451,7 @@ class TestAverageStructure(object):
         ref, rmsd = _get_aligned_average_positions(self.ref_files, reference,
                                                    weights='mass')
         avg = align.AverageStructure(universe, reference, weights='mass').run()
-        assert_allclose(avg.results.universe.atoms.positions, ref, rtol=1e-04)
+        assert_allclose(avg.results.universe.atoms.positions, ref, atol=1e-04)
         assert_allclose(avg.results.rmsd, rmsd)
 
     def test_average_structure_select(self, universe, reference):
