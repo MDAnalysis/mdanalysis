@@ -239,7 +239,7 @@ class TestAlign(object):
         weights[ca.indices] = 1
         rmsd = align.alignto(universe, reference, select='name CA')
         rmsd_weights = align.alignto(universe, reference, weights=weights)
-        assert_allclose(rmsd[1], rmsd_weights[1], rtol=1e-06)
+        assert_allclose(rmsd[1], rmsd_weights[1], atol=1e-06)
 
     def test_AlignTraj_outfile_default(self, universe, reference, tmpdir):
         with tmpdir.as_cwd():
@@ -290,7 +290,7 @@ class TestAlign(object):
         fitted = mda.Universe(PSF, outfile)
 
         assert_allclose(x.results.rmsd[0], 6.9290, rtol=1e-03)
-        assert_allclose(x.results.rmsd[-1], 5.2797e-07, rtol=1e-03)
+        assert_allclose(x.results.rmsd[-1], 5.2797e-07, atol=1e-03)
 
         # RMSD against the reference frame
         # calculated on Mac OS X x86 with MDA 0.7.2 r689
@@ -303,7 +303,7 @@ class TestAlign(object):
         x = align.AlignTraj(universe, reference,
                             filename=outfile, weights='mass').run()
         fitted = mda.Universe(PSF, outfile)
-        assert_allclose(x.results.rmsd[0], 0, rtol=1e-03)
+        assert_allclose(x.results.rmsd[0], 0, atol=1e-03)
         assert_allclose(x.results.rmsd[-1], 6.9033, rtol=1e-03)
 
         self._assert_rmsd(reference, fitted, 0, 0.0,
@@ -331,7 +331,7 @@ class TestAlign(object):
                             filename=outfile,
                             weights=reference.atoms.masses).run()
         fitted = mda.Universe(PSF, outfile)
-        assert_allclose(x.results.rmsd[0], 0, rtol=1e-03)
+        assert_allclose(x.results.rmsd[0], 0, atol=1e-03)
         assert_allclose(x.results.rmsd[-1], 6.9033, rtol=1e-03)
 
         self._assert_rmsd(reference, fitted, 0, 0.0,
@@ -353,7 +353,7 @@ class TestAlign(object):
                             in_memory=True).run()
         assert x.filename is None
         assert_allclose(x.results.rmsd[0], 6.9290, rtol=1e-03)
-        assert_allclose(x.results.rmsd[-1], 5.2797e-07, rtol=1e-03)
+        assert_allclose(x.results.rmsd[-1], 5.2797e-07, atol=1e-03)
 
         # check in memory trajectory
         self._assert_rmsd(reference, universe, 0, 6.929083044751061)
@@ -363,7 +363,7 @@ class TestAlign(object):
         fitted.trajectory[frame]
         rmsd = rms.rmsd(reference.atoms.positions, fitted.atoms.positions,
                         superposition=True)
-        assert_allclose(rmsd, desired, rtol=1e-05,
+        assert_allclose(rmsd, desired, rtol=1e-05, atol=1e-05,
                         err_msg="frame {0:d} of fit does not have "
                                 "expected RMSD".format(frame))
 
