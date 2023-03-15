@@ -15,11 +15,13 @@ The rules for this file:
 ------------------------------------------------------------------------------
   
 ??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae, 
-         ooprathamm, MeetB7, BFedder, v-parmar, MoSchaeffler, jbarnoud, jandom
+         ooprathamm, MeetB7, BFedder, v-parmar, MoSchaeffler, jbarnoud, jandom,
+         xhgchen, jaclark5
  * 2.5.0
 
 Fixes
   * Fix deletion of bond/angle/dihedral types (PR #4003, Issue #4001)
+  * Add tests for "No path data" exception raise in test_psa.py (Issue #4036)
   * Fix uninitialized `format` variable issue when calling `selections.get_writer` directly (PR #4043)
   * Fix tests should use results.rmsf to avoid DeprecationWarning (Issue #3695)
   * Fix EDRReader failing when parsing single-frame EDR files (Issue #3999)
