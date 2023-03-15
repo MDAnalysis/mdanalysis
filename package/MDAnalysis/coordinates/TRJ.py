@@ -546,8 +546,9 @@ class NCDFReader(base.ReaderBase):
         # hacked into MDAnalysis.units)
         try:
             self._verify_units(self.trjfile.variables['time'].units, 'picosecond')
+            self.has_time = True
         except KeyError:
-            pass
+            self.has_time = False
         self._verify_units(self.trjfile.variables['coordinates'].units,
                            'angstrom')
 
@@ -643,10 +644,10 @@ class NCDFReader(base.ReaderBase):
                 self.n_frames))
         # note: self.trjfile.variables['coordinates'].shape == (frames, n_atoms, 3)
         ts._pos[:] = self._get_var_and_scale('coordinates', frame)
-        try:
+        if self.has_time:
             ts.time = self._get_var_and_scale('time', frame)
-        except KeyError:
-            ts.time = -1
+        else:
+            ts.time = frame * self.dt
         if self.has_velocities:
             ts._velocities[:] = self._get_var_and_scale('velocities', frame)
         if self.has_forces:
