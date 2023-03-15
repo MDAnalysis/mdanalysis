@@ -2,7 +2,7 @@
 
 # MIT License
 
-# Copyright (c) 2023 MDAnalysis Development Team
+# Copyright (c) 2023 Irfan Alibay
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -48,8 +48,153 @@ parser.add_argument(
 )
 
 
-def bool_outcome(outcome: str) -> bool:
+def get_pull_request(repo, pr_num):
+    """
+    Simple method to get a PyGithub PR object from a PR number
+
+    Parameters
+    ----------
+    repo : PyGithub.Repository
+      Github Repository API object.
+    pr_num : int
+      Pull request number.
+
+    Returns
+    -------
+    PyGithub.PullRequest
+      Pull Request object corresponding to the input PR number.
+    """
+    # Can get PR directly from PR number
+    return repo.get_pull(pr_num)
+
+
+def get_action_url(repo, pr, run_id, workflow_name, job_name):
+    """
+    Mix PyGithub & Github V3 REST API method to extract the url path to a
+    github actions workflow job corresponding to a given GITHUB_RUN_ID.
+
+    Parameters
+    ----------
+    repo : PyGithub.Repository
+      Github Repository API object.
+    run_id : str
+      Github actions RUN ID as defined by the github actions environment
+      variable `GITHUB_RUN_ID`.
+    workflow_name : str
+      Name of the workflow to extract a job url for.
+    job_name : str
+      Name of the job within the workflow to extract a url for.
+
+
+    Returns
+    -------
+    str
+      URL to github actions workflow job or 'N/A' if a corresponding job name
+      could not be found.
+    """
+    # Accessing get_workflow directly currently fails when passing a name
+    # Instead do the roundabout way by getting list of all workflows
+    linters = [wf for wf in repo.get_workflows()
+               if wf.name == workflow_name][0]
+
+    # Extract the gh action run
+    run = [r for r in linters.get_runs(branch=pr.head.ref)
+           if r.id == run_id][0]
+
+    # The exact job url can't be recovered via the Python API
+    # Switch over to using the REST API instead
+    with request.urlopen(run.jobs_url) as url:
+        data = json.load(url)
+
+    for job in data['jobs']:
+        if job['name'] == job_name:
+            return job['html_url']
+
+    return 'N/A'
+
+
+def bool_outcome(outcome):
+    """
+    Converts github action job status outcome to bool.
+
+    Parameters
+    ----------
+    outcome : str
+      Github action job step outcome message.
+
+    Returns
+    -------
+    bool
+      Whether or not the job step was successful.
+    """
     return True if (outcome == 'success') else False
+
+
+def gen_message(pr, main_stat, test_stat, action_url):
+    """
+    Generate a user facing message on the status of the darker linting
+    action.
+
+    Parameters
+    ----------
+    pr : PyGithub.PullRequest
+      Pull Request object representing the target for this message.
+    main_stat : str
+      Outcome of darker linting of main package code.
+    test_stat : str
+      Outcome of darker linting of testsuite code.
+    action_url : str
+      URL pointing to darker linting job log.
+
+
+    Returns
+    -------
+    str
+      Message to be posted to PR author.
+    """
+    msg = ('### Linter Bot:\n\n',
+           f'Hi {pr.user.login}! Thanks for making this PR. '
+           'We linted your code and found the following: \n\n')
+
+    # If everything is ok
+    if bool_outcome(main_stat) and bool_outcome(test_stat):
+        msg += ('There are currently no issues detected! 🎉')
+    else:
+        msg += (f'main package code: {main_stat}\n'
+                f'testsuite code: {main_stat}\n\n'
+                f'Have a look at linter action url for details: {action_url}\n'
+                '**Please note:** _The `black` linter is purely '
+                'informational, you can safely ignore these outcomes if '
+                'there are no flake8 failures!\n')
+    return msg
+
+
+def post_comment(pr, message, match_string):
+    """
+    Post a comment in a Pull Request.
+
+    If a comment with text matching `match_string` is found in the
+    Pull Request, the comment will be edited.
+
+    Parameters
+    ----------
+    pr : PyGithub.PullRequest
+      Pull Request object representing the target for this message.
+    message : str
+      The message to post as a comment.
+    match_string : str
+      A matching string to recognise if the comment already exists.
+    """
+    # Extract a list of matching comments from PR
+    comments = [comm for comm in pr.get_comments if match_string in comm.body]
+
+    if len(comments) > 0:
+        # Edit the comment in-place
+        # By default we assume that the bot can write faster than anyone else
+        comments[0].edit(body=message)
+    else:
+        # If the comment doesn't exist, create one
+        pr.create_issue_comment(message)
 
 
 if __name__ == "__main__":
@@ -61,36 +206,19 @@ if __name__ == "__main__":
     run_id = os.environ['GITHUB_RUN_ID']
     job_id = os.environ['GITHUB_RUN_NUMBER']
 
-    def get_pull_requests(repo):
-        pulls = [pull for pull in repo.get_pulls()]
-        # somehow get PR via the PR number here
-        return pr
+    # Get Pull Request
+    gh_ref = os.environ['GITHUB_REF']
+    ## gh_ref for a PR is pull/:prNumber/merge
+    pr_num = int(gh_ref.split('/')[2][1:])
+    pr = get_pull_request(repo, pr_num)
 
-    def do_comment(pr):
+    # Get the url to the github action job being pointed to
+    action_url = get_action_url(repo, pr, run_id,
+                                workflow_name='linters',
+                                job_name='darker_lint')
 
-        # check if the comment exists
-        comments = [comm for comm in pr.get_comments() if "Linter Bot" in comm.body]
-        if len(comments) > 0:
-            # update -- note: probably should fail if there's more than 1 comment, but let's ignore this for now
-            comments[0].edit(body="Linter Bot: this is an edit message")
-        else:
-            # add
-            pr.create_issue_comment("Linter Bot: this is a new message")
+    # Get the message you want to post to users
+    message = gen_message(pr, args.main_stat, args.test_stat, action_url)
 
-    def get_job_run(repo, pr, run_id):
-        lint_wkflow = [wf for wf in repo.get_workflows() if wf.name == 'linters'][0]
-        run = [r for r in linters.get_runs(branch=pr.head.ref) if r.id == run_id][0]
-
-        with request.urlopen(run.jobs_url) as url:
-            data = json.load(url)
-
-        for job in data['jobs']:
-            if job['name'] == 'darker_lint':
-                return job['html_url']
-
-        return 'N/A'
-
-
-    print(f"Linting - code: {bool_outcome(args.main_stat)}, "
-          f"tests: {bool_outcome(args.test_stat)}, "
-          f"action: https://www.github.com/MDAnalysis/mdanalysis/actions/runs/{run_id}/jobs/{job_id}")
+    # Post your comment
+    post_comment(pr, message, match_string='### Linter Bot:')
