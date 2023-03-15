@@ -221,4 +221,4 @@ if __name__ == "__main__":
     message = gen_message(pr, args.main_stat, args.test_stat, action_url)
 
     # Post your comment
-    post_comment(pr, message, match_string='### Linter Bot Results:')
+    post_comment(pr, message, match_string='Linter Bot Results:')
