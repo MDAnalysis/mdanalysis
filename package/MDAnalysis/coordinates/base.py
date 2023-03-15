@@ -145,6 +145,15 @@ from ..auxiliary import _AUXREADERS
 from ..lib.util import asiterable, Namespace, store_init_arguments
 from ..lib.util import NamedStream
 
+class aweirdClass:
+    def __init__(self):
+        pass
+    def areallylongmethodthisprobablyshouldbelongerthaneightycharactersbutitsomehowIneedmorecharacters(self):
+        pass
+
+
+    def ashortclassbutsomanyemptylines(self):
+        pass
 
 class FrameIteratorBase(object):
     """

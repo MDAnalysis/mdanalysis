@@ -152,8 +152,8 @@ def gen_message(pr, main_stat, test_stat, action_url):
     str
       Message to be posted to PR author.
     """
-    msg = ('### Linter Bot:\n\n'
-           f'Hi {pr.user.login}! Thanks for making this PR. '
+    msg = ('### Linter Bot Results:\n\n'
+           f'Hi @{pr.user.login}! Thanks for making this PR. '
            'We linted your code and found the following: \n\n')
 
     # If everything is ok
@@ -221,4 +221,4 @@ if __name__ == "__main__":
     message = gen_message(pr, args.main_stat, args.test_stat, action_url)
 
     # Post your comment
-    post_comment(pr, message, match_string='### Linter Bot:')
+    post_comment(pr, message, match_string='### Linter Bot Results:')
