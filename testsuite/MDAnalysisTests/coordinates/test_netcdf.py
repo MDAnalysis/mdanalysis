@@ -35,7 +35,9 @@ from MDAnalysis.coordinates.TRJ import NCDFReader, NCDFWriter
 
 from MDAnalysisTests.datafiles import (PFncdf_Top, PFncdf_Trj,
                                        GRO, TRR, XYZ_mini,
-                                       PRM_NCBOX, TRJ_NCBOX, DLP_CONFIG)
+                                       PRM_NCBOX, TRJ_NCBOX, DLP_CONFIG,
+                                       CPPTRAJ_TRAJ_TOP,
+                                       CPPTRAJ_TRAJ_1, CPPTRAJ_TRAJ_2)
 from MDAnalysisTests.coordinates.test_trj import _TRJReaderTest
 from MDAnalysisTests.coordinates.reference import (RefVGV, RefTZ2)
 from MDAnalysisTests import make_Universe
@@ -297,6 +299,24 @@ class TestNCDFReader3(object):
     def test_box(self, universe, index, expected):
         universe.trajectory[index]
         assert_almost_equal(self.box_refs[expected], universe.dimensions)
+
+
+class TestNCDFReader4(object):
+    """NCDF Trajectory exported by cpptaj, without `time` variable.
+    """
+    prec = 3
+
+    @pytest.fixture(scope='class')
+    def u(self):
+        return mda.Universe(CPPTRAJ_TRAJ_TOP,
+                            [CPPTRAJ_TRAJ_1, CPPTRAJ_TRAJ_2])
+
+    def test_positions_1(self, u):
+        """Check positions on first frame"""
+        #u.trajectory
+        ref_times = [0.0, 1.0, 2.0, 0.0, 1.0, 2.0]
+        time_list = [ts.time for ts in u.trajectory]                
+        assert ref_times == time_list
 
 
 class _NCDFGenerator(object):
