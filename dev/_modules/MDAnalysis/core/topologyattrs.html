@@ -1822,10 +1822,103 @@
     <span class="n">transplants</span><span class="p">[</span><span class="n">GroupBase</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
         <span class="p">(</span><span class="s1">&#39;radius_of_gyration&#39;</span><span class="p">,</span> <span class="n">radius_of_gyration</span><span class="p">))</span>
 
+<div class="viewcode-block" id="Masses.gyration_moments"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.gyration_moments">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
+    <span class="nd">@_pbc_to_wrap</span>
+    <span class="nd">@check_atomgroup_not_empty</span>
+    <span class="k">def</span> <span class="nf">gyration_moments</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Moments of the gyration tensor.</span>
+
+<span class="sd">        The moments are defined as the eigenvalues of the gyration</span>
+<span class="sd">        tensor.</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">        </span>
+<span class="sd">            \mathsf{T} = \frac{1}{N} \sum_{i=1}^{N} (\mathbf{r}_\mathrm{i} - </span>
+<span class="sd">                \mathbf{r}_\mathrm{COM})(\mathbf{r}_\mathrm{i} - \mathbf{r}_\mathrm{COM})</span>
+
+<span class="sd">        Where :math:`\mathbf{r}_\mathrm{COM}` is the center of mass.</span>
+
+<span class="sd">        See [Dima2004a]_ for background information.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        wrap : bool, optional</span>
+<span class="sd">            If ``True``, move all atoms within the primary unit cell before</span>
+<span class="sd">            calculation. [``False``]</span>
+<span class="sd">        unwrap : bool, optional</span>
+<span class="sd">            If ``True``, compounds will be unwrapped before computing their centers.</span>
+<span class="sd">        compound : {&#39;group&#39;, &#39;segments&#39;, &#39;residues&#39;, &#39;molecules&#39;, &#39;fragments&#39;}, optional</span>
+<span class="sd">            Which type of component to keep together during unwrapping.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        principle_moments_of_gyration : numpy.ndarray</span>
+<span class="sd">            Gyration vector(s) of (compounds of) the group in :math:`Å^2`.</span>
+<span class="sd">            If `compound` was set to ``&#39;group&#39;``, the output will be a single</span>
+<span class="sd">            vector of length 3. Otherwise, the output will be a 2D array of shape</span>
+<span class="sd">            ``(n,3)`` where ``n`` is the number of compounds.</span>
+
+
+<span class="sd">        .. versionadded:: 2.5.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">_gyration</span><span class="p">(</span><span class="n">recenteredpos</span><span class="p">,</span> <span class="n">masses</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">masses</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">masses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">masses</span><span class="p">)</span>
+            <span class="n">tensor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span> <span class="s2">&quot;ki,kj-&gt;ij&quot;</span><span class="p">,</span>
+                                <span class="n">recenteredpos</span><span class="p">,</span>
+                                <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,i-&gt;ij&quot;</span><span class="p">,</span> <span class="n">recenteredpos</span><span class="p">,</span> <span class="n">masses</span><span class="p">),</span>
+                              <span class="p">)</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="n">tensor</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">masses</span><span class="p">))</span>
+
+        <span class="n">atomgroup</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">atoms</span>
+        <span class="n">masses</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">masses</span>
+
+        <span class="n">com</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span>
+            <span class="n">wrap</span><span class="o">=</span><span class="n">wrap</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="n">unwrap</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">compound</span> <span class="o">==</span> <span class="s1">&#39;group&#39;</span><span class="p">:</span>
+             <span class="k">if</span> <span class="n">wrap</span><span class="p">:</span>
+                 <span class="n">recenteredpos</span> <span class="o">=</span> <span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">pack_into_box</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-</span> <span class="n">com</span><span class="p">)</span>
+             <span class="k">elif</span> <span class="n">unwrap</span><span class="p">:</span>
+                 <span class="n">recenteredpos</span> <span class="o">=</span> <span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">unwrap</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                                   <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">,</span> 
+                                                   <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+                                                  <span class="p">)</span> <span class="o">-</span> <span class="n">com</span><span class="p">)</span>
+             <span class="k">else</span><span class="p">:</span>
+                 <span class="n">recenteredpos</span> <span class="o">=</span> <span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="n">com</span><span class="p">)</span>
+             <span class="n">eig_vals</span> <span class="o">=</span> <span class="n">_gyration</span><span class="p">(</span><span class="n">recenteredpos</span><span class="p">,</span> <span class="n">masses</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+             <span class="p">(</span><span class="n">atom_masks</span><span class="p">,</span> 
+              <span class="n">compound_masks</span><span class="p">,</span> 
+              <span class="n">n_compounds</span><span class="p">)</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">_split_by_compound_indices</span><span class="p">(</span><span class="n">compound</span><span class="p">)</span>
+
+             <span class="k">if</span> <span class="n">unwrap</span><span class="p">:</span>
+                 <span class="n">coords</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">unwrap</span><span class="p">(</span>
+                     <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">,</span> 
+                     <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+                     <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span>
+                 <span class="p">)</span>
+             <span class="k">else</span><span class="p">:</span>
+                 <span class="n">coords</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">positions</span>
+
+             <span class="n">eig_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">n_compounds</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+             <span class="k">for</span> <span class="n">compound_mask</span><span class="p">,</span> <span class="n">atom_mask</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">compound_masks</span><span class="p">,</span> <span class="n">atom_masks</span><span class="p">):</span>
+                 <span class="n">eig_vals</span><span class="p">[</span><span class="n">compound_mask</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">[</span><span class="n">_gyration</span><span class="p">(</span>
+                      <span class="n">coords</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">-</span> <span class="n">com</span><span class="p">[</span><span class="n">compound_mask</span><span class="p">][</span><span class="n">i</span><span class="p">],</span>
+                      <span class="n">masses</span><span class="p">[</span><span class="n">mask</span><span class="p">][:,</span> <span class="kc">None</span><span class="p">]</span>
+                     <span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">mask</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">atom_mask</span><span class="p">)]</span>
+
+        <span class="k">return</span> <span class="n">eig_vals</span></div>
+
+    <span class="n">transplants</span><span class="p">[</span><span class="n">GroupBase</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="p">(</span><span class="s1">&#39;gyration_moments&#39;</span><span class="p">,</span> <span class="n">gyration_moments</span><span class="p">))</span>
+
+
 <div class="viewcode-block" id="Masses.shape_parameter"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.shape_parameter">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
     <span class="nd">@_pbc_to_wrap</span>
     <span class="nd">@check_atomgroup_not_empty</span>
-    <span class="k">def</span> <span class="nf">shape_parameter</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">shape_parameter</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Shape parameter.</span>
 
 <span class="sd">        See [Dima2004a]_ for background information.</span>
@@ -1835,6 +1928,10 @@
 <span class="sd">        wrap : bool, optional</span>
 <span class="sd">            If ``True``, move all atoms within the primary unit cell before</span>
 <span class="sd">            calculation. [``False``]</span>
+<span class="sd">        unwrap : bool, optional</span>
+<span class="sd">            If ``True``, compounds will be unwrapped before computing their centers.</span>
+<span class="sd">        compound : {&#39;group&#39;, &#39;segments&#39;, &#39;residues&#39;, &#39;molecules&#39;, &#39;fragments&#39;}, optional</span>
+<span class="sd">            Which type of component to keep together during unwrapping.</span>
 
 
 <span class="sd">        .. versionadded:: 0.7.7</span>
@@ -1844,24 +1941,17 @@
 <span class="sd">           Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but</span>
 <span class="sd">           is deprecated and will be removed in version 3.0.</span>
 <span class="sd">           Superfluous kwargs were removed.</span>
+<span class="sd">        .. versionchanged:: 2.5.0</span>
+<span class="sd">           Added calculation for any `compound` type</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">atomgroup</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">atoms</span>
-        <span class="n">masses</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">masses</span>
-
-        <span class="n">com</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">wrap</span><span class="o">=</span><span class="n">wrap</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">wrap</span><span class="p">:</span>
-            <span class="n">recenteredpos</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">pack_into_box</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-</span> <span class="n">com</span>
+        <span class="n">eig_vals</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">gyration_moments</span><span class="p">(</span><span class="n">wrap</span><span class="o">=</span><span class="n">wrap</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="n">unwrap</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">eig_vals</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="mf">27.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">eig_vals</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
+                                   <span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">recenteredpos</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="n">com</span>
-        <span class="n">tensor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-
-        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">recenteredpos</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="n">tensor</span> <span class="o">+=</span> <span class="n">masses</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">recenteredpos</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="p">:],</span>
-                                           <span class="n">recenteredpos</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="p">:])</span>
-        <span class="n">tensor</span> <span class="o">/=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">total_mass</span><span class="p">()</span>
-        <span class="n">eig_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span>
-        <span class="n">shape</span> <span class="o">=</span> <span class="mf">27.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">eig_vals</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">)</span>
-                               <span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="mf">27.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">eig_vals</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">)</span>
+                                   <span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">shape</span></div>
 
@@ -1872,7 +1962,7 @@
     <span class="nd">@_pbc_to_wrap</span>
     <span class="nd">@check_wrap_and_unwrap</span>
     <span class="nd">@check_atomgroup_not_empty</span>
-    <span class="k">def</span> <span class="nf">asphericity</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">asphericity</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Asphericity.</span>
 
 <span class="sd">        See [Dima2004b]_ for background information.</span>
@@ -1896,32 +1986,17 @@
 <span class="sd">        .. versionchanged:: 2.1.0</span>
 <span class="sd">           Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but</span>
 <span class="sd">           is deprecated and will be removed in version 3.0.</span>
+<span class="sd">        .. versionchanged:: 2.5.0</span>
+<span class="sd">           Added calculation for any `compound` type</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">atomgroup</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">atoms</span>
-        <span class="n">masses</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">masses</span>
-
-        <span class="n">com</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span>
-            <span class="n">wrap</span><span class="o">=</span><span class="n">wrap</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="n">unwrap</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">compound</span> <span class="o">!=</span> <span class="s1">&#39;group&#39;</span><span class="p">:</span>
-            <span class="n">com</span> <span class="o">=</span> <span class="p">(</span><span class="n">com</span> <span class="o">*</span> <span class="n">group</span><span class="o">.</span><span class="n">masses</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span>
-                   <span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">group</span><span class="o">.</span><span class="n">masses</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-
-        <span class="k">if</span> <span class="n">wrap</span><span class="p">:</span>
-            <span class="n">recenteredpos</span> <span class="o">=</span> <span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">pack_into_box</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-</span> <span class="n">com</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">unwrap</span><span class="p">:</span>
-            <span class="n">recenteredpos</span> <span class="o">=</span> <span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">unwrap</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-</span> <span class="n">com</span><span class="p">)</span>
+        <span class="n">eig_vals</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">gyration_moments</span><span class="p">(</span><span class="n">wrap</span><span class="o">=</span><span class="n">wrap</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="n">unwrap</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">eig_vals</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mf">3.0</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">eig_vals</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span>
+                                   <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">recenteredpos</span> <span class="o">=</span> <span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="n">com</span><span class="p">)</span>
-
-        <span class="n">tensor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">recenteredpos</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="n">tensor</span> <span class="o">+=</span> <span class="n">masses</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">recenteredpos</span><span class="p">[</span><span class="n">x</span><span class="p">],</span>
-                                           <span class="n">recenteredpos</span><span class="p">[</span><span class="n">x</span><span class="p">])</span>
-
-        <span class="n">tensor</span> <span class="o">/=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">total_mass</span><span class="p">()</span>
-        <span class="n">eig_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span>
-        <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mf">3.0</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">eig_vals</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span>
-                               <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mf">3.0</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">eig_vals</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span>
+                                   <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">shape</span></div>
 

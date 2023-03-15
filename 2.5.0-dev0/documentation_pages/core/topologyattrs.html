@@ -1087,7 +1087,7 @@ where <code class="docutils literal notranslate"><span class="pre">n</span></cod
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.topologyattrs.Masses.asphericity">
-<span class="sig-name descname"><span class="pre">asphericity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.asphericity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.asphericity" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">asphericity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.asphericity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.asphericity" title="Permalink to this definition"></a></dt>
 <dd><p>Asphericity.</p>
 <p>See <a class="reference internal" href="../references.html#dima2004b" id="id68"><span>[Dima2004b]</span></a> for background information.</p>
 <dl class="field-list simple">
@@ -1112,6 +1112,9 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
 is deprecated and will be removed in version 3.0.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.5.0: </span>Added calculation for any <cite>compound</cite> type</p>
 </div>
 </dd></dl>
 
@@ -1204,6 +1207,41 @@ attributes.</p>
 <dd><p>By default, the values for each atom present in the set of residues
 are returned in a single array. This behavior can be overriden in child
 attributes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.core.topologyattrs.Masses.gyration_moments">
+<span class="sig-name descname"><span class="pre">gyration_moments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.gyration_moments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.gyration_moments" title="Permalink to this definition"></a></dt>
+<dd><p>Moments of the gyration tensor.</p>
+<p>The moments are defined as the eigenvalues of the gyration
+tensor.</p>
+<div class="math notranslate nohighlight">
+\[\mathsf{T} = \frac{1}{N} \sum_{i=1}^{N} (\mathbf{r}_\mathrm{i} -
+    \mathbf{r}_\mathrm{COM})(\mathbf{r}_\mathrm{i} - \mathbf{r}_\mathrm{COM})\]</div>
+<p>Where <span class="math notranslate nohighlight">\(\mathbf{r}_\mathrm{COM}\)</span> is the center of mass.</p>
+<p>See <a class="reference internal" href="../references.html#dima2004a" id="id69"><span>[Dima2004a]</span></a> for background information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p></li>
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</p></li>
+<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – Which type of component to keep together during unwrapping.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>principle_moments_of_gyration</strong> – Gyration vector(s) of (compounds of) the group in <span class="math notranslate nohighlight">\(Å^2\)</span>.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
+vector of length 3. Otherwise, the output will be a 2D array of shape
+<code class="docutils literal notranslate"><span class="pre">(n,3)</span></code> where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 2.5.0.</span></p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -1319,13 +1357,17 @@ is deprecated and will be removed in version 3.0.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.topologyattrs.Masses.shape_parameter">
-<span class="sig-name descname"><span class="pre">shape_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.shape_parameter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.shape_parameter" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">shape_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unwrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.shape_parameter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.shape_parameter" title="Permalink to this definition"></a></dt>
 <dd><p>Shape parameter.</p>
-<p>See <a class="reference internal" href="../references.html#dima2004a" id="id69"><span>[Dima2004a]</span></a> for background information.</p>
+<p>See <a class="reference internal" href="../references.html#dima2004a" id="id70"><span>[Dima2004a]</span></a> for background information.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
-calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p></li>
+<li><p><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</p></li>
+<li><p><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – Which type of component to keep together during unwrapping.</p></li>
+</ul>
 </dd>
 </dl>
 <div class="versionadded">
@@ -1338,6 +1380,9 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 <p><span class="versionmodified changed">Changed in version 2.1.0: </span>Renamed <cite>pbc</cite> kwarg to <cite>wrap</cite>. <cite>pbc</cite> is still accepted but
 is deprecated and will be removed in version 3.0.
 Superfluous kwargs were removed.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.5.0: </span>Added calculation for any <cite>compound</cite> type</p>
 </div>
 </dd></dl>
 
