@@ -3298,8 +3298,10 @@ class AtomGroup(GroupBase):
 
         .. versionadded:: 0.10.0
         .. versionchanged:: 0.20.2
-        .. versionchanged:: 2.4.2
            Now applies periodic boundary conditions when guessing bonds.
+        .. versionchanged:: 2.4.2
+           corrected misleading docs ,and now you can pass fudge factor
+           and lower bound.
         """
         from ..topology.core import guess_bonds, guess_angles, guess_dihedrals
         from .topologyattrs import Bonds, Angles, Dihedrals
@@ -3314,14 +3316,16 @@ class AtomGroup(GroupBase):
                 return attr
 
         # indices of bonds
-        b = guess_bonds(self.atoms,
-                        self.atoms.positions,
-                        vdwradii=vdwradii,
-                        box=self.dimensions,
-                        fudge_factor=fudge_factor,
-                        lower_bound=lower_bound,
-                        **kwargs)
-        bondattr = get_TopAttr(self.universe, 'bonds', Bonds)
+        b = guess_bonds(
+            self.atoms,
+            self.atoms.positions,
+            vdwradii=vdwradii,
+            box=self.dimensions,
+            fudge_factor=fudge_factor,
+            lower_bound=lower_bound,
+            **kwargs
+        )
+        bondattr = get_TopAttr(self.universe, "bonds", Bonds)
         bondattr._add_bonds(b, guessed=True)
 
         a = guess_angles(self.bonds)

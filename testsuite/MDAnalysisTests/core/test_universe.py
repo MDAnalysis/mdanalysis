@@ -442,16 +442,18 @@ class TestGuessBonds(object):
         assert not u.kwargs['guess_bonds']
 
     def test_fudge_factor(self):
+        """Test if fudge_factor parameter is being passed correctly"""
         u = mda.Universe(two_water_gro, guess_bonds=True, fudge_factor=0.5)
         self._check_universe(u)
-        assert u.kwargs['guess_bonds']
-        assert_equal(0.5, u.kwargs['fudge_factor'])
+        assert u.kwargs["guess_bonds"]
+        assert_equal(0.5, u.kwargs["fudge_factor"])
 
     def test_lower_bound(self):
+        """Test if lower_bound parameter is being passed correctly"""
         u = mda.Universe(two_water_gro, guess_bonds=True, lower_bound=0.8)
         self._check_universe(u)
-        assert u.kwargs['guess_bonds']
-        assert_equal(0.8, u.kwargs['lower_bound'])
+        assert u.kwargs["guess_bonds"]
+        assert_equal(0.8, u.kwargs["lower_bound"])
 
     def _check_atomgroup(self, ag, u):
         """Verify that the AtomGroup made bonds correctly,
