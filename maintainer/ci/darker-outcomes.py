@@ -152,7 +152,7 @@ def gen_message(pr, main_stat, test_stat, action_url):
     str
       Message to be posted to PR author.
     """
-    msg = ('### Linter Bot:\n\n',
+    msg = ('### Linter Bot:\n\n'
            f'Hi {pr.user.login}! Thanks for making this PR. '
            'We linted your code and found the following: \n\n')
 
