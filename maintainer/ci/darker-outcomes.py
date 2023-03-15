@@ -165,7 +165,7 @@ def gen_message(pr, main_stat, test_stat, action_url):
                 f'Have a look at linter action url for details: {action_url}\n'
                 '**Please note:** _The `black` linter is purely '
                 'informational, you can safely ignore these outcomes if '
-                'there are no flake8 failures!\n')
+                'there are no flake8 failures!_\n')
     return msg
 
 
@@ -186,7 +186,7 @@ def post_comment(pr, message, match_string):
       A matching string to recognise if the comment already exists.
     """
     # Extract a list of matching comments from PR
-    comments = [comm for comm in pr.get_comments() if match_string in comm.body]
+    comments = [comm for comm in pr.get_issue_comments() if match_string in comm.body]
 
     if len(comments) > 0:
         # Edit the comment in-place
