@@ -117,8 +117,7 @@ class TestGetMatchingAtoms(object):
         else:
             with pytest.warns(SelectionWarning):
                 with pytest.raises(SelectionError):
-                    groups = align.get_matching_atoms(ref, mobile,
-                                                      strict=strict)
+                    groups = align.get_matching_atoms(ref, mobile, strict=strict)
 
     @pytest.mark.parametrize("strict", (True, False))
     def test_nomatch_residues_raise_empty(self, universe, reference_small,
