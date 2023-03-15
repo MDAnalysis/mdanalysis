@@ -314,8 +314,8 @@ class TestNCDFReader4(object):
     def test_positions_1(self, u):
         """Check positions on first frame"""
         #u.trajectory
-        ref_times = [0.0, 1.0, 2.0, 0.0, 1.0, 2.0]
-        time_list = [ts.time for ts in u.trajectory]                
+        ref_times = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]
+        time_list = [ts.time for ts in u.trajectory]
         assert ref_times == time_list
 
 
