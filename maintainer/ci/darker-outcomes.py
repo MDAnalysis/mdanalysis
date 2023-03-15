@@ -152,6 +152,13 @@ def gen_message(pr, main_stat, test_stat, action_url):
     str
       Message to be posted to PR author.
     """
+
+    def _format_outcome(stat):
+        if bool_outcome(stat):
+            return "✅ Passed"
+        else:
+            return "⚠️  Possible failure"
+
     msg = ('### Linter Bot Results:\n\n'
            f'Hi @{pr.user.login}! Thanks for making this PR. '
            'We linted your code and found the following: \n\n')
@@ -160,12 +167,14 @@ def gen_message(pr, main_stat, test_stat, action_url):
     if bool_outcome(main_stat) and bool_outcome(test_stat):
         msg += ('There are currently no issues detected! 🎉')
     else:
-        msg += (f'Some issues were found with the formatting of your code.\n'
+        msg += ('_**Please note:** The `black` linter is purely '
+                'informational, you can safely ignore these outcomes if '
+                'there are no flake8 failures!_\n\n'
+                'Some issues were found with the formatting of your code.\n'
+                f'main package code:    {_format_outcome(main_stat)}\n'
+                f'testsuite code:       {_format_outcome(test_stat)}\n'
                 'Please have a look at the `darker-main-code` and '
                 f'`darker-test-code` steps here for more details: {action_url}')
-                '**Please note:** _The `black` linter is purely '
-                'informational, you can safely ignore these outcomes if '
-                'there are no flake8 failures!_\n')
     return msg
 
 
