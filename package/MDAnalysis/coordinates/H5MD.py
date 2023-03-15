@@ -650,7 +650,7 @@ class H5MDReader(base.ReaderBase):
             if edges.shape == (3,):
                 ts.dimensions = [*edges, 90, 90, 90]
             else:
-                ts.dimensions = core.triclinic_box(*edges])
+                ts.dimensions = core.triclinic_box(*edges)
         else:
             ts.dimensions = None
 
