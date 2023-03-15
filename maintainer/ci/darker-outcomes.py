@@ -97,6 +97,8 @@ def get_action_url(repo, pr, run_id, workflow_name, job_name):
     linters = [wf for wf in repo.get_workflows()
                if wf.name == workflow_name][0]
 
+    print(linters)
+    print(run_id)
     # Extract the gh action run
     run = [r for r in linters.get_runs(branch=pr.head.ref)
            if r.id == run_id][0]
