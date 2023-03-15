@@ -186,7 +186,7 @@ def post_comment(pr, message, match_string):
       A matching string to recognise if the comment already exists.
     """
     # Extract a list of matching comments from PR
-    comments = [comm for comm in pr.get_comments if match_string in comm.body]
+    comments = [comm for comm in pr.get_comments() if match_string in comm.body]
 
     if len(comments) > 0:
         # Edit the comment in-place
