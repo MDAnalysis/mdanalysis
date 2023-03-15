@@ -64,6 +64,8 @@ jobs:
         lint: "flake8"
 
     - name: write-errors
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
       run: |
         python maintainer/ci/darker-outcomes.py  --main_stat ${{ steps.darker-main-code.outcome }} \
                                                  --test_stat ${{ steps.darker-test-code.outcome }}
