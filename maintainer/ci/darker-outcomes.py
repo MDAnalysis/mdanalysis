@@ -209,7 +209,7 @@ if __name__ == "__main__":
     # Get Pull Request
     gh_ref = os.environ['GITHUB_REF']
     ## gh_ref for a PR is pull/prNumber/merge
-    pr_num = int(gh_ref.split('/')[2]
+    pr_num = int(gh_ref.split('/')[2])
     pr = get_pull_request(repo, pr_num)
 
     # Get the url to the github action job being pointed to
