@@ -168,11 +168,13 @@ def gen_message(pr, main_stat, test_stat, action_url):
         msg += ('There are currently no issues detected! 🎉')
     else:
         msg += ('Some issues were found with the formatting of your code.\n'
-                f'* Main package code: {_format_outcome(main_stat)}\n'
-                f'* Testsuite code: {_format_outcome(test_stat)}\n'
-                'Please have a look at the `darker-main-code` and '
-                f'`darker-test-code` steps here for more details: '
-                '{action_url}\n\n'
+                '| Code Location | Outcome |\n'
+                '| --- | --- |\n'
+                f'| main package | {_format_outcome(main_stat)}|\n'
+                f'| testsuite | {_format_outcome(test_stat)}|\n'
+                '\nPlease have a look at the `darker-main-code` and '
+                '`darker-test-code` steps here for more details: '
+                f'{action_url}\n\n'
                 '---\n'
                 '_**Please note:** The `black` linter is purely '
                 'informational, you can safely ignore these outcomes if '
