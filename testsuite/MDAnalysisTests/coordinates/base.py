@@ -486,15 +486,15 @@ class BaseReaderTest(object):
                                        step=slice[2], order='fac')
         assert_allclose(timeseries, positions)
 
-    @pytest.mark.parametrize('asel', ("index 1", "index 2", "index 1 to 3"))
-    def test_timeseries_asel_shape(self, reader, asel):
-        atoms = mda.Universe(reader.filename).select_atoms(asel)
+    @pytest.mark.parametrize('ag_select', ("index 1", "index 2", "index 1 to 3"))
+    def test_timeseries_ag_select_shape(self, reader, ag_select):
+        atoms = mda.Universe(reader.filename).select_atoms(ag_select)
         timeseries = reader.timeseries(atoms, order='fac')
         assert(timeseries.shape[0] == len(reader))
         assert(timeseries.shape[1] == len(atoms))
         assert(timeseries.shape[2] == 3)
     
-    def test_timeseries_empty_asel(self, reader):
+    def test_timeseries_empty_ag_select(self, reader):
         atoms = mda.Universe(reader.filename).select_atoms(None)
         with pytest.raises(ValueError, match="Timeseries requires at least"):
             reader.timeseries(atoms)

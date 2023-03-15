@@ -155,23 +155,23 @@ class TestMemoryReader(MultiframeReaderTest):
 
     def test_timeseries_view_from_universe_atoms(self, ref, reader):
         # timeseries() is expected to provide a view of the underlying array
-        # also in the special case when asel=universe.atoms.
+        # also in the special case when ag_select=universe.atoms.
         selection = ref.universe.atoms
-        assert reader.timeseries(asel=selection).base is reader.get_array()
+        assert reader.timeseries(ag_select=selection).base is reader.get_array()
 
     def test_timeseries_view_from_select_all(self, ref, reader):
         # timeseries() is expected to provide a view of the underlying array
         # also in the special case when using "all" in selections.
         selection = ref.universe.select_atoms("all")
         assert_equal(reader.timeseries(
-            asel=selection).base is reader.get_array(),
+            ag_select=selection).base is reader.get_array(),
             True)
 
     def test_timeseries_noview(self, ref, reader):
         # timeseries() is expected NOT to provide a view of the underlying array
         # for any other selection than "all".
         selection = ref.universe.select_atoms("name CA")
-        assert reader.timeseries(asel=selection).base is not reader.get_array()
+        assert reader.timeseries(ag_select=selection).base is not reader.get_array()
 
     def test_repr(self, reader):
         str_rep = str(reader)

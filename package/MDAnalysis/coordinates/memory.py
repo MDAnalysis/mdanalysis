@@ -488,18 +488,18 @@ class MemoryReader(base.ProtoReader):
         self.ts.frame = -1
         self.ts.time = -1
 
-    def timeseries(self, asel=None, start=0, stop=-1, step=1, order='afc'):
+    def timeseries(self, ag_select=None, start=0, stop=-1, step=1, order='afc'):
         """Return a subset of coordinate data for an AtomGroup in desired
         column order. If no selection is given, it will return a view of the
         underlying array, while a copy is returned otherwise.
 
         Parameters
         ---------
-        asel : AtomGroup (optional)
+        ag_select : AtomGroup (optional)
             Atom selection. Defaults to ``None``, in which case the full set of
             coordinate data is returned. Note that in this case, a view
             of the underlying numpy array is returned, while a copy of the
-            data is returned whenever `asel` is different from ``None``.
+            data is returned whenever `ag_select` is different from ``None``.
         start : int (optional)
             the start trajectory frame
         stop : int (optional)
@@ -556,17 +556,17 @@ class MemoryReader(base.ProtoReader):
                        [slice(None)] * (2-f_index))
 
         # Return a view if either:
-        #   1) asel is None
-        #   2) asel corresponds to the selection of all atoms.
+        #   1) ag_select is None
+        #   2) ag_select corresponds to the selection of all atoms.
         array = array[tuple(basic_slice)]
-        if (asel is None or asel is asel.universe.atoms):
+        if (ag_select is None or ag_select is ag_select.universe.atoms):
             return array
         else:
-            if len(asel) == 0:
+            if len(ag_select) == 0:
                 raise ValueError("Timeseries requires at least one atom "
                                   "to analyze")
             # If selection is specified, return a copy
-            return array.take(asel.indices, a_index)
+            return array.take(ag_select.indices, a_index)
 
     def _read_next_timestep(self, ts=None):
         """copy next frame into timestep"""

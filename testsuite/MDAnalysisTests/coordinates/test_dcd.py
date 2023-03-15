@@ -224,16 +224,16 @@ def test_timeseries_order(order, shape, universe_dcd):
                                      [9, 4, 2, 0, 50]])
 def test_timeseries_atomindices(indices, universe_dcd):
         allframes = universe_dcd.trajectory.timeseries(order='afc')
-        asel = universe_dcd.atoms[indices]
-        xyz = universe_dcd.trajectory.timeseries(asel=asel, order='afc')
+        ag_select = universe_dcd.atoms[indices]
+        xyz = universe_dcd.trajectory.timeseries(ag_select=ag_select, order='afc')
         assert len(xyz) == len(indices)
         assert_array_almost_equal(xyz, allframes[indices])
 
 
 def test_timeseries_empty_selection(universe_dcd):
     with pytest.raises(ValueError):
-        asel = universe_dcd.select_atoms('name FOO')
-        universe_dcd.trajectory.timeseries(asel=asel)
+        ag_select = universe_dcd.select_atoms('name FOO')
+        universe_dcd.trajectory.timeseries(ag_select=ag_select)
 
 
 def test_reader_set_dt():
