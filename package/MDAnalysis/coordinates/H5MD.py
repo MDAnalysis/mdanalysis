@@ -641,7 +641,16 @@ class H5MDReader(base.ReaderBase):
         # Sets frame box dimensions
         # Note: H5MD files must contain 'box' group in each 'particles' group
         if 'edges' in particle_group['box']:
-            ts.dimensions = core.triclinic_box(*particle_group['box/edges/value'][frame, :])
+            edges = particle_group['box/edges/value'][frame, :]
+            # A D-dimensional vector or a D × D matrix, depending on the
+            # geometry of the box, of Float or Integer type. If edges is a
+            # vector, it specifies the space diagonal of a cuboid-shaped box.
+            # If edges is a matrix, the box is of triclinic shape with the edge
+            # vectors given by the rows of the matrix.
+            if edges.shape == (3,):
+                ts.dimensions = [*edges, 90, 90, 90]
+            else:
+                ts.dimensions = core.triclinic_box(*edges])
         else:
             ts.dimensions = None
 
