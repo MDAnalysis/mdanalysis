@@ -67,8 +67,10 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ github.token }}
       run: |
-        python maintainer/ci/darker-outcomes.py  --main_stat ${{ steps.darker-main-code.conclusion }} \
-                                                 --test_stat ${{ steps.darker-test-code.conclusion }}
+        echo ${{ steps.darker-main-code.outcome }}
+        echo ${{ steps.darker-test-code.outcome }}
+        python maintainer/ci/darker-outcomes.py  --main_stat ${{ steps.darker-main-code.outcome }} \
+                                                 --test_stat ${{ steps.darker-test-code.outcome }}
 
 
   pylint_check:

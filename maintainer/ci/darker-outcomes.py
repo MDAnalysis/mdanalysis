@@ -160,9 +160,9 @@ def gen_message(pr, main_stat, test_stat, action_url):
     if bool_outcome(main_stat) and bool_outcome(test_stat):
         msg += ('There are currently no issues detected! 🎉')
     else:
-        msg += (f'main package code: {main_stat}\n'
-                f'testsuite code: {main_stat}\n\n'
-                f'Have a look at linter action url for details: {action_url}\n'
+        msg += (f'Some issues were found with the formatting of your code.\n'
+                'Please have a look at the `darker-main-code` and '
+                f'`darker-test-code` steps here for more details: {action_url}')
                 '**Please note:** _The `black` linter is purely '
                 'informational, you can safely ignore these outcomes if '
                 'there are no flake8 failures!_\n')
