@@ -371,7 +371,8 @@ class EDRReader(base.AuxReader):
             return auxstep
         else:
             self.rewind()
-            raise StopIteration
+            if self.n_steps > 1:
+                raise StopIteration
 
     def _go_to_step(self, i: int) -> EDRStep:
         """ Move to and read i-th auxiliary step.

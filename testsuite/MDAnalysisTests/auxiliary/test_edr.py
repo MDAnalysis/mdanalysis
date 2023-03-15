@@ -35,7 +35,8 @@ from MDAnalysis.auxiliary.EDR import HAS_PYEDR
 from MDAnalysisTests.datafiles import (AUX_EDR,
                                        AUX_EDR_TPR,
                                        AUX_EDR_XTC,
-                                       AUX_EDR_RAW)
+                                       AUX_EDR_RAW,
+                                       AUX_EDR_SINGLE_FRAME)
 from MDAnalysisTests.auxiliary.base import (BaseAuxReaderTest,
                                             BaseAuxReference,
                                             assert_auxstep_equal)
@@ -460,3 +461,14 @@ class TestEDRReader(BaseAuxReaderTest):
         # data file AUX_EDR_RAW. If the EDRReader does not convert the units on
         # reading the file, then the two unit dictionaries should be identical.
         assert reader.unit_dict == ref_units
+
+
+@pytest.mark.skipif(not HAS_PYEDR, reason="pyedr not installed")
+def test_single_frame_input_file():
+    """Previously, EDRReader could not handle EDR input files with only one
+       frame. See Issue #3999."""
+    reader = mda.auxiliary.EDR.EDRReader(AUX_EDR_SINGLE_FRAME,
+                                         convert_units=False)
+    ref_dict = get_auxstep_data(0)
+    reader_data_dict = reader.auxstep.data
+    assert ref_dict == reader_data_dict
