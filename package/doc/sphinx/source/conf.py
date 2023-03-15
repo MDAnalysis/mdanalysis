@@ -101,7 +101,6 @@ master_doc = 'index'
 # (take the list from AUTHORS)
 # Ordering: (1) Naveen (2) Elizabeth, then all contributors in alphabetical order
 #           (last) Oliver
-mda.__authors__ = ['Naveen Michaud-Agrawal', 'Elizabeth J. Denning', 'MDAnalysis contributors', 'Oliver Beckstein']
 author_list = mda.__authors__
 authors = u', '.join(author_list[:-1]) + u', and ' + author_list[-1]
 project = u'MDAnalysis'
