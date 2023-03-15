@@ -36,8 +36,7 @@ from MDAnalysis.coordinates.TRJ import NCDFReader, NCDFWriter
 from MDAnalysisTests.datafiles import (PFncdf_Top, PFncdf_Trj,
                                        GRO, TRR, XYZ_mini,
                                        PRM_NCBOX, TRJ_NCBOX, DLP_CONFIG,
-                                       CPPTRAJ_TRAJ_TOP,
-                                       CPPTRAJ_TRAJ_1, CPPTRAJ_TRAJ_2)
+                                       CPPTRAJ_TRAJ_TOP, CPPTRAJ_TRAJ)
 from MDAnalysisTests.coordinates.test_trj import _TRJReaderTest
 from MDAnalysisTests.coordinates.reference import (RefVGV, RefTZ2)
 from MDAnalysisTests import make_Universe
@@ -309,7 +308,7 @@ class TestNCDFReader4(object):
     @pytest.fixture(scope='class')
     def u(self):
         return mda.Universe(CPPTRAJ_TRAJ_TOP,
-                            [CPPTRAJ_TRAJ_1, CPPTRAJ_TRAJ_2])
+                            [CPPTRAJ_TRAJ, CPPTRAJ_TRAJ])
 
     def test_positions_1(self, u):
         """Check positions on first frame"""
