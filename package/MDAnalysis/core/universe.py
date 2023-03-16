@@ -317,7 +317,7 @@ class Universe(object):
     .. versionchanged:: 2.0.0
         Universe now can be (un)pickled.
         ``topology`` and ``trajectory`` are reserved upon unpickle.
-    .. versionchanged:: 2.4.0
+    .. versionchanged:: 2.5.0
         Added fudge_factor and lower_bound parameters for use with
         **guess_bonds**.
     """

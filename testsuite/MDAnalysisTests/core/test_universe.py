@@ -424,7 +424,7 @@ class TestGuessBonds(object):
     def test_universe_guess_bonds_no_vdwradii(self):
         """Make a Universe that has atoms with unknown vdwradii."""
         with pytest.raises(ValueError):
-            mda.Universe(two_water_gro_nonames, guess_bonds = True)
+            mda.Universe(two_water_gro_nonames, guess_bonds=True)
 
     def test_universe_guess_bonds_with_vdwradii(self, vdw):
         """Unknown atom types, but with vdw radii here to save the day"""
@@ -474,11 +474,17 @@ class TestGuessBonds(object):
 
     def test_atomgroup_guess_bonds(self):
         """Test an atomgroup doing guess bonds"""
-        u = mda.Universe(two_water_gro)
+        def multi_parameters_atomgroup(ff=0.55, lb=0.1, nbonds=2):
+            u = mda.Universe(two_water_gro)
+            ag = u.atoms[:3]
+            ag.guess_bonds(fudge_factor=ff, lower_bound=lb)
+            assert_equal(len(ag.bonds), nbonds)
 
-        ag = u.atoms[:3]
-        ag.guess_bonds()
-        self._check_atomgroup(ag, u)
+        # We run here multiple tests with different values for
+        # fudge_factor and lower_bound
+        multi_parameters_atomgroup(0.55, 0.1, 2)
+        multi_parameters_atomgroup(0.9, 1.6, 1)
+        multi_parameters_atomgroup(0.5, 0.2, 2)
 
     def test_atomgroup_guess_bonds_no_vdwradii(self):
         u = mda.Universe(two_water_gro_nonames)
