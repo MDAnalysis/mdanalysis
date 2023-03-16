@@ -311,7 +311,7 @@ class TestNCDFReader4(object):
                             [CPPTRAJ_TRAJ, CPPTRAJ_TRAJ])
 
     def test_chain_times(self, u):
-        """Check positions on first frame"""
+        """Check times entries for a chain of trajectories without a defined time variable""
         ref_times = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]
         time_list = [ts.time for ts in u.trajectory]
         assert ref_times == time_list
