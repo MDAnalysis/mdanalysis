@@ -981,7 +981,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             natoms=self.n_atoms
         ))
     
-    def timeseries(self, asel: Optional['AtomGroup']=None,
+    def timeseries(self, sample_atom_group: Optional['AtomGroup']=None,
                    start: Optional[int]=None, stop: Optional[int]=None,
                    step: Optional[int]=None,
                    order: Optional[str]='fac') -> np.ndarray:
@@ -989,7 +989,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
 
         Parameters
         ----------
-        asel : AtomGroup (optional)
+        sample_atom_group : AtomGroup (optional)
             The :class:`~MDAnalysis.core.groups.AtomGroup` to read the
             coordinates from. Defaults to ``None``, in which case the full set
             of coordinate data is returned.
@@ -1021,11 +1021,11 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         start, stop, step = self.check_slice_indices(start, stop, step)
         nframes = len(range(start, stop, step))
 
-        if asel is not None:
-            if len(asel) == 0:
+        if sample_atom_group is not None:
+            if len(sample_atom_group) == 0:
                 raise ValueError(
                     "Timeseries requires at least one atom to analyze")
-            atom_numbers = asel.indices
+            atom_numbers = sample_atom_group.indices
             natoms = len(atom_numbers)
         else:
             natoms = self.n_atoms

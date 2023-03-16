@@ -277,7 +277,7 @@ class DCDReader(base.ReaderBase):
         return self.ts.dt
 
     def timeseries(self,
-                   asel=None,
+                   sample_atom_group=None,
                    start=None,
                    stop=None,
                    step=None,
@@ -286,7 +286,7 @@ class DCDReader(base.ReaderBase):
 
         Parameters
         ----------
-        asel : :class:`~MDAnalysis.core.groups.AtomGroup`
+        sample_atom_group : :class:`~MDAnalysis.core.groups.AtomGroup`
             The :class:`~MDAnalysis.core.groups.AtomGroup` to read the
             coordinates from. Defaults to None, in which case the full set of
             coordinate data is returned.
@@ -318,11 +318,11 @@ class DCDReader(base.ReaderBase):
 
         start, stop, step = self.check_slice_indices(start, stop, step)
 
-        if asel is not None:
-            if len(asel) == 0:
+        if sample_atom_group is not None:
+            if len(sample_atom_group) == 0:
                 raise ValueError(
                     "Timeseries requires at least one atom to analyze")
-            atom_numbers = list(asel.indices)
+            atom_numbers = list(sample_atom_group.indices)
         else:
             atom_numbers = list(range(self.n_atoms))
 
