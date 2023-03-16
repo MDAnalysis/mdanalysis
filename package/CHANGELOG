@@ -20,8 +20,7 @@ The rules for this file:
  * 2.5.0
 
 Fixes
-  * First attempt to deal with NetCDF trajectories without `time` variable
-    (Issue #4073)
+  * Fix for NetCDF trajectories without `time` variable (Issue #4073)
   * Add tests for "No path data" exception raise in test_psa.py (Issue #4036)
   * Fix uninitialized `format` variable issue when calling `selections.get_writer` directly (PR #4043)
   * Fix tests should use results.rmsf to avoid DeprecationWarning (Issue #3695)
