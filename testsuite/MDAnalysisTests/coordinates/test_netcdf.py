@@ -315,6 +315,11 @@ class TestNCDFReader4(object):
         ref_times = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]
         time_list = [ts.time for ts in u.trajectory]
         assert ref_times == time_list
+    
+    def test_dt(self, u):
+        ref = 1.0
+        assert_almost_equal(ref, u.trajectory.dt, self.prec)
+        assert_almost_equal(ref, u.trajectory.ts.dt, self.prec)        
 
 
 class _NCDFGenerator(object):
