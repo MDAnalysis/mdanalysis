@@ -310,7 +310,7 @@ class TestNCDFReader4(object):
         return mda.Universe(CPPTRAJ_TRAJ_TOP,
                             [CPPTRAJ_TRAJ, CPPTRAJ_TRAJ])
 
-    def test_positions_1(self, u):
+    def test_chain_times(self, u):
         """Check positions on first frame"""
         ref_times = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]
         time_list = [ts.time for ts in u.trajectory]
