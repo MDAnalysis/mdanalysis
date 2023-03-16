@@ -37,8 +37,14 @@ jobs:
       with:
         python-version: 3.8
 
-    - name: darker main code
+    - name: setup_dependencies
+      run: |
+        pip install PyGithub
+
+    - name: darker-main-code
+      id: darker-main-code
       uses: akaihola/darker@1.5.1
+      continue-on-error: true
       with:
         version: "@master"
         options: "--check --diff --color"
@@ -46,15 +52,25 @@ jobs:
         revision: "HEAD^"
         lint: "flake8"
 
-    - name: darker test code
+    - name: darker-test-code
+      id: darker-test-code
       uses: akaihola/darker@1.5.1
-      if: success() || failure()
+      continue-on-error: true
       with:
         version: "@master"
         options: "--check --diff --color"
         src: "./testsuite/MDAnalysisTests"
         revision: "HEAD^"
         lint: "flake8"
+
+    - name: write-errors
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      run: |
+        echo ${{ steps.darker-main-code.outcome }}
+        echo ${{ steps.darker-test-code.outcome }}
+        python maintainer/ci/darker-outcomes.py  --main_stat ${{ steps.darker-main-code.outcome }} \
+                                                 --test_stat ${{ steps.darker-test-code.outcome }}
 
 
   pylint_check:
