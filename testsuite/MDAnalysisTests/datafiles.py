@@ -102,7 +102,7 @@ __all__ = [
     "PRM12", "TRJ12_bz2",  # Amber (v12 format, Issue 100)
     "PRMncdf", "TRJncdf", "NCDF",  # Amber (netcdf)
     "PFncdf_Top", "PFncdf_Trj",  # Amber ncdf with Positions and Forces
-    "CPPTRAJ_TRAJ_TOP", "CPPTRAJ_TRAJ",  # Amber ncdf extracted from CPPTRAJ
+    "CPPTRAJ_TRAJ_TOP", "CPPTRAJ_TRAJ",  # Amber ncdf extracted from CPPTRAJ without time variable
     "PRMcs",  # Amber (format, Issue 1331)
     "PRMNCRST",  # Amber ncrst with positions/forces/velocities
     "PRM_NCBOX", "TRJ_NCBOX",  # Amber parm7 + nc w/ pos/forces/vels/box
