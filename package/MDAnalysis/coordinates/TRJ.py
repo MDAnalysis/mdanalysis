@@ -646,8 +646,6 @@ class NCDFReader(base.ReaderBase):
         ts._pos[:] = self._get_var_and_scale('coordinates', frame)
         if self.has_time:
             ts.time = self._get_var_and_scale('time', frame)
-        #else:
-        #    ts.time = frame * self.dt
         if self.has_velocities:
             ts._velocities[:] = self._get_var_and_scale('velocities', frame)
         if self.has_forces:
