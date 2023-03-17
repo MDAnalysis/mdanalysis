@@ -133,8 +133,7 @@ class TestGetMatchingAtoms(object):
         else:
             with pytest.warns(SelectionWarning):
                 with pytest.raises(SelectionError):
-                    groups = align.get_matching_atoms(ref, mobile,
-                                                      strict=strict)
+                    groups = align.get_matching_atoms(ref, mobile, strict=strict)
 
     def test_toggle_atom_mismatch_default_error(self, universe, reference):
         selection = ('resname ALA and name CA', 'resname ALA and name O')
