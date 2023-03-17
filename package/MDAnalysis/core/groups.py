@@ -3305,7 +3305,7 @@ class AtomGroup(GroupBase):
         .. versionadded:: 0.10.0
         .. versionchanged:: 0.20.2
            Now applies periodic boundary conditions when guessing bonds.
-        .. versionchanged:: 2.4.2
+        .. versionchanged:: 2.5.0
            corrected misleading docs ,and now you can pass fudge factor
            and lower bound.
         """
