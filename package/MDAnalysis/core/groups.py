@@ -3276,8 +3276,7 @@ class AtomGroup(GroupBase):
         return [self[levelindices == index] for index in
                 unique_int_1d(levelindices)]
 
-    def guess_bonds(self, vdwradii=None, fudge_factor=0.55, lower_bound=0.1,
-                    **kwargs):
+    def guess_bonds(self, vdwradii=None, fudge_factor=0.55, lower_bound=0.1):
         """Guess bonds, angles, and dihedrals between the atoms in this
         :class:`AtomGroup` and add them to the underlying
         :attr:`~AtomGroup.universe`.
