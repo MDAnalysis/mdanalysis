@@ -122,6 +122,16 @@ else:
     PERIODIC_TABLE = Chem.GetPeriodicTable()
 
 
+# charges that should be assigned to monatomic cations
+# structure --> atomic number : formal charge
+# anion charges are directly handled by the code using the typical valence
+# of the atom
+MONATOMIC_CATION_CHARGES = {
+    3: 1, 11: 1, 19: 1, 37: 1, 47: 1, 55: 1,
+    12: 2, 20: 2, 29: 2, 30: 2, 38: 2, 56: 2,
+    26: 2,  # Fe could also be +3
+    13: 3,
+}
 _deduce_PDB_atom_name = PDBWriter(StringIO())._deduce_PDB_atom_name
 
 
@@ -596,17 +606,6 @@ def _infer_bo_and_charges(mol):
     atoms = sorted([a for a in mol.GetAtoms() if a.GetAtomicNum() > 1],
                    reverse=True,
                    key=lambda a: _get_nb_unpaired_electrons(a)[0])
-
-    # charges that should be assigned to monatomic cations
-    # structure --> atomic number : formal charge
-    # anion charges are directly handled by the code using the typical valence
-    # of the atom
-    MONATOMIC_CATION_CHARGES = {
-        3: 1, 11: 1, 19: 1, 37: 1, 47: 1, 55: 1,
-        12: 2, 20: 2, 29: 2, 30: 2, 38: 2, 56: 2,
-        26: 2,  # Fe could also be +3
-        13: 3,
-    }
 
     for atom in atoms:
         # monatomic ions
