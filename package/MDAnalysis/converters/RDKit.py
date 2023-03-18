@@ -81,18 +81,17 @@ Classes
 .. _`RDKitConverter benchmark`: https://github.com/MDAnalysis/RDKitConverter-benchmark
 """
 
-import warnings
 import copy
+import warnings
 from functools import lru_cache
 from io import StringIO
 
 import numpy as np
 
-from ..exceptions import NoDataError
-from ..core.topologyattrs import _TOPOLOGY_ATTRS
-from ..coordinates import memory
-from ..coordinates import base
+from ..coordinates import base, memory
 from ..coordinates.PDB import PDBWriter
+from ..core.topologyattrs import _TOPOLOGY_ATTRS
+from ..exceptions import NoDataError
 
 try:
     from rdkit import Chem
@@ -562,6 +561,7 @@ _atom_property_dispatcher = {
     np.uint32: _set_np_int_prop,
     np.uint64: _set_np_int_prop,
 }
+
 
 def _set_atom_property(atom, attr, value):
     """Saves any attribute and value into an RDKit atom property"""

@@ -22,30 +22,27 @@
 #
 
 import copy
-from io import StringIO
 import warnings
-import pytest
+from io import StringIO
+
 import MDAnalysis as mda
-from MDAnalysis.topology.guessers import guess_atom_element
 import numpy as np
-from numpy.testing import (assert_allclose, assert_equal)
-
-from MDAnalysisTests.datafiles import mol2_molecule, PDB_full, GRO, PDB_helix
+import pytest
+from MDAnalysis.topology.guessers import guess_atom_element
+from MDAnalysisTests.datafiles import GRO, PDB_full, PDB_helix, mol2_molecule
 from MDAnalysisTests.util import import_not_available
-
+from numpy.testing import assert_allclose, assert_equal
 
 try:
+    from MDAnalysis.converters.RDKit import (RDATTRIBUTES,
+                                             _add_mda_attr_to_rdkit,
+                                             _infer_bo_and_charges,
+                                             _reassign_index_after_reaction,
+                                             _rebuild_conjugated_bonds,
+                                             _set_atom_property,
+                                             _standardize_patterns)
     from rdkit import Chem
     from rdkit.Chem import AllChem
-    from MDAnalysis.converters.RDKit import (
-        RDATTRIBUTES,
-        _add_mda_attr_to_rdkit,
-        _infer_bo_and_charges,
-        _standardize_patterns,
-        _rebuild_conjugated_bonds,
-        _set_atom_property,
-        _reassign_index_after_reaction,
-    )
 except ImportError:
     pass
 
@@ -228,10 +225,10 @@ class TestRDKitConverter(object):
 
     def test_raise_requires_elements(self):
         u = mda.Universe(mol2_molecule)
-        
+
         # Delete topology attribute (PR #3069)
         u.del_TopologyAttr('elements')
-        
+
         with pytest.raises(
             AttributeError,
             match="`elements` attribute is required for the RDKitConverter"
@@ -496,9 +493,9 @@ class TestRDKitFunctions(object):
         ("C-[N](-[O])-[O].C-[N](-[O])-[O]", "C[N+](=O)[O-].C[N+](=O)[O-]"),
         ("[C-](=O)-C", "[C](=O)-C"),
         ("[H]-[N-]-C", "[H]-[N]-C"),
-        ("[O]-[C]1-[C](-[H])-[C](-[H])-[C](-[H])-[C](-[H])-[C](-[H])1", 
+        ("[O]-[C]1-[C](-[H])-[C](-[H])-[C](-[H])-[C](-[H])-[C](-[H])1",
          "[O-]c1ccccc1"),
-        ("[O]-[C]1-[C](-[H])-[C](-[H])-[C](-[H])-[C]1-[O]", 
+        ("[O]-[C]1-[C](-[H])-[C](-[H])-[C](-[H])-[C]1-[O]",
          "[O-]C1=CC=CC1=O"),
         ("[H]-[C]-[C]-[C](-[H])-[C](-[H])-[H]", "C#CC=C"),
         ("[H]-[C]-[C]-[C]-[C]-[H]", "C#CC#C"),
