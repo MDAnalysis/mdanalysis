@@ -398,7 +398,7 @@ class TestGuessBonds(object):
      - fail properly if not
      - work again if vdwradii are passed.
     """
-    @pytest.fixture()
+    @pytest.fixture(scope='module')
     def vdw(self):
         return {'A': 1.4, 'B': 0.5}
 
@@ -441,19 +441,15 @@ class TestGuessBonds(object):
             assert not hasattr(u, attr)
         assert not u.kwargs['guess_bonds']
 
-    def test_fudge_factor(self):
-        """Test if fudge_factor parameter is being passed correctly"""
-        u = mda.Universe(two_water_gro, guess_bonds=True, fudge_factor=0.5)
+    def test_universe_guess_bonds_arguments(self):
+        """Test if 'fudge_factor', and 'lower_bound' parameters
+        are being passed correctly.
+        """
+        u = mda.Universe(two_water_gro, guess_bonds=True)
         self._check_universe(u)
         assert u.kwargs["guess_bonds"]
-        assert_equal(0.5, u.kwargs["fudge_factor"])
-
-    def test_lower_bound(self):
-        """Test if lower_bound parameter is being passed correctly"""
-        u = mda.Universe(two_water_gro, guess_bonds=True, lower_bound=0.8)
-        self._check_universe(u)
-        assert u.kwargs["guess_bonds"]
-        assert_equal(0.8, u.kwargs["lower_bound"])
+        assert u.kwargs["fudge_factor"]
+        assert u.kwargs["lower_bound"]
 
     def _check_atomgroup(self, ag, u):
         """Verify that the AtomGroup made bonds correctly,
@@ -472,19 +468,19 @@ class TestGuessBonds(object):
         assert_equal(len(u.atoms[4].bonds), 0)
         assert_equal(len(u.atoms[5].bonds), 0)
 
-    def test_atomgroup_guess_bonds(self):
+    @pytest.mark.parametrize(
+        'ff, lb, nbonds',
+        [
+            (0.55, 0.1, 2), (0.9, 1.6, 1),
+            (0.5, 0.2, 2), (0.1, 0.1, 0)
+        ]
+    )
+    def test_atomgroup_guess_bonds(self, ff, lb, nbonds):
         """Test an atomgroup doing guess bonds"""
-        def multi_parameters_atomgroup(ff=0.55, lb=0.1, nbonds=2):
-            u = mda.Universe(two_water_gro)
-            ag = u.atoms[:3]
-            ag.guess_bonds(fudge_factor=ff, lower_bound=lb)
-            assert_equal(len(ag.bonds), nbonds)
-
-        # We run here multiple tests with different values for
-        # fudge_factor and lower_bound
-        multi_parameters_atomgroup(0.55, 0.1, 2)
-        multi_parameters_atomgroup(0.9, 1.6, 1)
-        multi_parameters_atomgroup(0.5, 0.2, 2)
+        u = mda.Universe(two_water_gro)
+        ag = u.atoms[:3]
+        ag.guess_bonds(fudge_factor=ff, lower_bound=lb)
+        assert len(ag.bonds) == nbonds
 
     def test_atomgroup_guess_bonds_no_vdwradii(self):
         u = mda.Universe(two_water_gro_nonames)

@@ -319,7 +319,7 @@ class Universe(object):
         ``topology`` and ``trajectory`` are reserved upon unpickle.
     .. versionchanged:: 2.5.0
         Added fudge_factor and lower_bound parameters for use with
-        **guess_bonds**.
+        *guess_bonds*.
     """
     def __init__(self, topology=None, *coordinates, all_coordinates=False,
                  format=None, topology_format=None, transformations=None,

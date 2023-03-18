@@ -3302,12 +3302,13 @@ class AtomGroup(GroupBase):
         :func:`MDAnalysis.topology.guessers.guess_angles`
         :func:`MDAnalysis.topology.guessers.guess_dihedrals`
 
+
         .. versionadded:: 0.10.0
         .. versionchanged:: 0.20.2
            Now applies periodic boundary conditions when guessing bonds.
         .. versionchanged:: 2.5.0
-           corrected misleading docs ,and now you can pass fudge factor
-           and lower bound.
+           Corrected misleading docs, and now allows passing of `fudge_factor`
+           and `lower_bound` arguments.
         """
         from ..topology.core import guess_bonds, guess_angles, guess_dihedrals
         from .topologyattrs import Bonds, Angles, Dihedrals
@@ -3329,7 +3330,6 @@ class AtomGroup(GroupBase):
             box=self.dimensions,
             fudge_factor=fudge_factor,
             lower_bound=lower_bound,
-            **kwargs
         )
         bondattr = get_TopAttr(self.universe, "bonds", Bonds)
         bondattr._add_bonds(b, guessed=True)
