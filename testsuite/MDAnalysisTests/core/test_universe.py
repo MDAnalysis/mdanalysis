@@ -446,6 +446,7 @@ class TestGuessBonds(object):
         are being passed correctly.
         """
         u = mda.Universe(two_water_gro, guess_bonds=True)
+        
         self._check_universe(u)
         assert u.kwargs["guess_bonds"]
         assert u.kwargs["fudge_factor"]
@@ -478,6 +479,7 @@ class TestGuessBonds(object):
     def test_atomgroup_guess_bonds(self, ff, lb, nbonds):
         """Test an atomgroup doing guess bonds"""
         u = mda.Universe(two_water_gro)
+
         ag = u.atoms[:3]
         ag.guess_bonds(fudge_factor=ff, lower_bound=lb)
         assert len(ag.bonds) == nbonds
