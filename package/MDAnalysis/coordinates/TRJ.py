@@ -549,6 +549,12 @@ class NCDFReader(base.ReaderBase):
             self.has_time = True
         except KeyError:
             self.has_time = False
+            wmsg = ("NCDF trajectory does not contain `time` information;"
+                    " `time` will be set as an increasing index")  
+            warnings.warn(wmsg)
+            logger.warning(wmsg)
+
+
         self._verify_units(self.trjfile.variables['coordinates'].units,
                            'angstrom')
 

@@ -301,8 +301,7 @@ class TestNCDFReader3(object):
 
 
 class TestNCDFReader4(object):
-    """NCDF Trajectory exported by cpptaj, without `time` variable.
-    """
+    """NCDF Trajectory exported by cpptaj, without `time` variable."""
     prec = 3
 
     @pytest.fixture(scope='class')
@@ -311,7 +310,8 @@ class TestNCDFReader4(object):
                             [CPPTRAJ_TRAJ, CPPTRAJ_TRAJ])
 
     def test_chain_times(self, u):
-        """Check times entries for a chain of trajectories without a defined time variable"""
+        """Check times entries for a chain of trajectories without
+        a defined time variable"""
         ref_times = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]
         time_list = [ts.time for ts in u.trajectory]
         assert ref_times == time_list
@@ -320,6 +320,12 @@ class TestNCDFReader4(object):
         ref = 1.0
         assert u.trajectory.dt == pytest.approx(ref)
         assert u.trajectory.ts.dt == pytest.approx(ref)
+
+    def test_warn_user_no_time_information(self, u):
+        wmsg = ("NCDF trajectory does not contain `time` information;"
+                " `time` will be set as an increasing index")  
+        with pytest.warns(UserWarning, match=wmsg):
+            u2 = mda.Universe(CPPTRAJ_TRAJ_TOP, CPPTRAJ_TRAJ)
 
 
 class _NCDFGenerator(object):
