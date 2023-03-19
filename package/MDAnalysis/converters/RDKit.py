@@ -132,6 +132,18 @@ MONATOMIC_CATION_CHARGES = {
     26: 2,  # Fe could also be +3
     13: 3,
 }
+# reactions uses by _standardize_patterns to fix challenging cases
+# must have single reactant and product, and cannot add any atom
+STANDARDIZATION_REACTIONS = [
+    "[C-;X2;H0:1]=[O:2]>>[C+0:1]=[O:2]",  # Cterm
+    "[N-;X2;H1;$(N-[*^3]):1]>>[N+0:1]",  # Nterm
+    "[#6-:1]-[#6:2]=[O:3]>>[#6+0:1]=[#6:2]-[O-:3]",  # keto-enolate
+    "[C-;v3:1]-[#7+0;v3;H2:2]>>[#6+0:1]=[#7+:2]",  # ARG
+    "[#6+0;H0:1]=[#6+0:2]-[#7;X3:3]-[#6-;X3:4]"
+    ">>[#6:1]=[#6:2]-[#7+:3]=[#6+0:4]",  # HIP
+    "[S;D4;!v6:1]-[*-:2]>>[S;v6:1]=[*+0:2]",  # sulfone
+    "[#7+0;X3:1]-[*-:2]>>[#7+:1]=[*+0:2]",  # charged-N
+]
 _deduce_PDB_atom_name = PDBWriter(StringIO())._deduce_PDB_atom_name
 
 
@@ -749,16 +761,7 @@ def _standardize_patterns(mol, max_iter=200):
 
     # list of sanitized reactions
     reactions = []
-    for rxn in [
-        "[C-;X2;H0:1]=[O:2]>>[C+0:1]=[O:2]",  # Cterm
-        "[N-;X2;H1;$(N-[*^3]):1]>>[N+0:1]",  # Nterm
-        "[#6-:1]-[#6:2]=[O:3]>>[#6+0:1]=[#6:2]-[O-:3]",  # keto-enolate
-        "[C-;v3:1]-[#7+0;v3;H2:2]>>[#6+0:1]=[#7+:2]",  # ARG
-        "[#6+0;H0:1]=[#6+0:2]-[#7;X3:3]-[#6-;X3:4]"
-        ">>[#6:1]=[#6:2]-[#7+:3]=[#6+0:4]",  # HIP
-        "[S;D4;!v6:1]-[*-:2]>>[S;v6:1]=[*+0:2]",  # sulfone
-        "[#7+0;X3:1]-[*-:2]>>[#7+:1]=[*+0:2]",  # charged-N
-    ]:
+    for rxn in STANDARDIZATION_REACTIONS:
         reaction = AllChem.ReactionFromSmarts(rxn)
         reactions.append(reaction)
 
