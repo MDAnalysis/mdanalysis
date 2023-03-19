@@ -578,6 +578,18 @@ def _set_atom_property(atom, attr, value):
     _atom_property_dispatcher.get(type(value), _ignore_prop)(atom, attr, value)
 
 
+def _atom_sorter(atom):
+    """Sorts atoms in the molecule in a way that makes it easy for the bond
+    order and charge infering code to get the correct state on the first
+    try. Currently sorts by number of unpaired electrons, then by number of
+    heavy atom neighbors (i.e. atoms at the edge first)."""
+    num_heavy_neighbors = len([
+        neighbor for neighbor in atom.GetNeighbors()
+        if neighbor.GetAtomicNum() > 1]
+    )
+    return (-_get_nb_unpaired_electrons(atom)[0], num_heavy_neighbors)
+
+
 def _infer_bo_and_charges(mol):
     """Infer bond orders and formal charges from a molecule.
 
@@ -602,10 +614,11 @@ def _infer_bo_and_charges(mol):
     R-C(-O)-O the first oxygen read will receive a double bond and the other
     one will be charged. It will also affect more complex conjugated systems.
     """
-    # sort atoms according to their NUE
-    atoms = sorted([a for a in mol.GetAtoms() if a.GetAtomicNum() > 1],
-                   reverse=True,
-                   key=lambda a: _get_nb_unpaired_electrons(a)[0])
+    # heavy atoms sorted by number of heavy atom neighbors (lower first) then
+    # NUE (higher first)
+    atoms = sorted([atom for atom in mol.GetAtoms()
+                    if atom.GetAtomicNum() > 1],
+                   key=_atom_sorter)
 
     for atom in atoms:
         # monatomic ions

@@ -36,6 +36,7 @@ from numpy.testing import assert_allclose, assert_equal
 try:
     from MDAnalysis.converters.RDKit import (RDATTRIBUTES,
                                              _add_mda_attr_to_rdkit,
+                                             _atom_sorter,
                                              _infer_bo_and_charges,
                                              _reassign_index_after_reaction,
                                              _rebuild_conjugated_bonds,
@@ -709,3 +710,14 @@ class TestRDKitFunctions(object):
         for bond in mol.GetBonds():
             if bond.GetBondTypeAsDouble() == 2:
                 assert bond.GetStereo() != Chem.BondStereo.STEREOANY
+
+    def test_atom_sorter(self):
+        mol = Chem.MolFromSmiles(
+            "[H]-[C](-[H])-[C](-[H])-[C]-[C]-[H]", sanitize=False)
+        # corresponding mol: C=C-C#C
+        # atom indices:      1 3 5 6
+        mol.UpdatePropertyCache()
+        sorted_atoms = sorted([atom for atom in mol.GetAtoms()
+                              if atom.GetAtomicNum() > 1], key=_atom_sorter)
+        sorted_indices = [atom.GetIdx() for atom in sorted_atoms]
+        assert sorted_indices == [6, 5, 1, 3]
