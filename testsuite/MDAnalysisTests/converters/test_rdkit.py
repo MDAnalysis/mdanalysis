@@ -632,6 +632,14 @@ class TestRDKitFunctions(object):
         "O=c1ccn([C@H]2C[C@H](OP(=O)(O)O)[C@@H](COP(=O)(O)O)O2)c(=O)[nH]1",  # U
         "Nc1ccn([C@H]2C[C@H](OP(=O)(O)O)[C@@H](COP(=O)(O)O)O2)c(=O)n1",  # C
         "Nc1nc2c(ncn2[C@H]2C[C@H](OP(=O)(O)O)[C@@H](COP(=O)(O)O)O2)c(=O)[nH]1",  # G
+        # RDKitConverter benchmark 2022-05-23, fixed by better sorting
+        "CC(C)NS(C)(=O)=Nc1ccc(-c2ccc(-c3nc4[nH]c(O[C@@H]5CO[C@@H]6[C@H](O)CO[C@H]56)nc4cc3Cl)cc2)cc1 CHEMBL4111464",
+        "C[n+]1c2ccccc2c(C(=O)O)c2[nH]c3ccc(Br)cc3c21 CHEMBL511591",
+        "C[n+]1ccccc1-c1ccc(NC(=O)c2ccc(C(=O)Nc3ccc(-c4cccc[n+]4C)cc3)cc2)cc1 CHEMBL3230729",
+        "Cc1ccc(/C(O)=C(/C([S-])=NCc2ccccc2)[n+]2cccc(CO)c2)cc1[N+](=O)[O-] CHEMBL1596426",
+        "CC(C)(O)c1cc2c(cc1C(C)(C)O)-c1ccccc1-2 CHEMBL1990966",
+        "[O-]/N=C1/c2ccccc2-c2nc3ccc(C(F)(F)F)cc3nc21 CHEMBL4557878",
+        "N#Cc1c[nH]c(C(=O)Nc2ccc(-c3cccc[n+]3[O-])cc2C2=CCCCC2)n1 CHEMBL1172116",
     ])
     def test_order_independant(self, smi):
         # generate mol with hydrogens but without bond orders
