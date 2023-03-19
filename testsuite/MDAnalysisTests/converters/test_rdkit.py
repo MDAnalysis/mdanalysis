@@ -38,7 +38,6 @@ try:
                                              _add_mda_attr_to_rdkit,
                                              _atom_sorter,
                                              _infer_bo_and_charges,
-                                             _reassign_index_after_reaction,
                                              _rebuild_conjugated_bonds,
                                              _set_atom_property,
                                              _standardize_patterns)
@@ -534,14 +533,6 @@ class TestRDKitFunctions(object):
         atom = Chem.Atom(1)
         _set_atom_property(atom, "foo", {"bar": "baz"})
         assert "foo" not in atom.GetPropsAsDict().items()
-
-    @pytest.mark.parametrize("rdmol, product", [
-        ("dummy_reactant", "dummy_product"),
-    ], indirect=["rdmol", "product"])
-    def test_reassign_index_after_reaction(self, rdmol, product):
-        _reassign_index_after_reaction(rdmol, product)
-        atom = product.GetAtomWithIdx(0)
-        assert atom.GetIntProp("_MDAnalysis_index") == 1
 
     @pytest.mark.parametrize("smi", [
         "c1ccc(cc1)-c1ccccc1-c1ccccc1",
