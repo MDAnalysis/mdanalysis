@@ -21,9 +21,8 @@ permissions:
   contents: read
   deployments: read
   discussions: read
-  id-tokens: none
+  id-token: none
   issues: read
-  metadata: read
   packages: read
   pages: read
   pull-requests: read
