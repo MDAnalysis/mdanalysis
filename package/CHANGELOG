@@ -14,23 +14,46 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 <<<<<<< HEAD
+<<<<<<< HEAD
 ??/??/?? IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, yuxuanzhuang
 =======
 ??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo
 
+=======
+  
+??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae, 
+         ooprathamm, MeetB7, BFedder, v-parmar, MoSchaeffler, jbarnoud, jandom,
+         xhgchen, jaclark5
+>>>>>>> mda_origin/develop
  * 2.5.0
 
 Fixes
+  * Allows shape_parameter and asphericity to yield per residue quantities
+    (Issue #3002, PR #3905)
+  * Add tests for "No path data" exception raise in test_psa.py (Issue #4036)
+  * Fix uninitialized `format` variable issue when calling `selections.get_writer` directly (PR #4043)
+  * Fix tests should use results.rmsf to avoid DeprecationWarning (Issue #3695)
+  * Fix EDRReader failing when parsing single-frame EDR files (Issue #3999)
+  * Fix element parsing from PSF files tests read via Parmed (Issue #4015)
   * Fix test clobbering in lib/test_util.py (PR #4000)
   * Fix MSD docs to use the correct error metric in example (Issue #3991)
   * Add 'PairIJ Coeffs' to the list of sections in LAMMPSParser.py
     (Issue #3336)
 
 Enhancements
+  * Added AtomGroup TopologyAttr to calculate gyration moments (Issue #3904,
+    PR #3905)
+  * Add support for TPR files produced by Gromacs 2023 (Issue #4047)
+  * Add distopia distance calculation library bindings as a selectable backend
+    for `calc_bonds` in `MDA.lib.distances`. (Issue #3783, PR #3914)
+  * AuxReaders are now pickle-able and copy-able (Issue #1785, PR #3887)
   * Add pickling support for Atom, Residue, Segment, ResidueGroup 
     and SegmentGroup. (PR #3953)
 
 Changes
+  * As per NEP29 the minimum supported NumPy version has been raised to 1.21
+    (note: in practice later versions of NumPy may be used depending on your
+     architecture, operating system, or Python version) (PR #3983)
   * The deprecated direct indexing and `times` from the `results` attribute of
     analysis.nucleicacids' NucPairDist and WatsonCrickDist classes has been
     removed. Please use the `results.pair_distances` and `times` attributes
@@ -61,7 +84,6 @@ Fixes
 
 12/16/22 IAlibay, Luthaf, hmacdope, rafaelpap, jbarnoud, BFedder, aya9aladdin,
          jaclark5, jfennick, lilyminium, orbeckst, Hakarishirenai
->>>>>>> mda_origin/develop
 
  * 2.4.0
 
@@ -83,18 +105,17 @@ Fixes
     behaviour for cutoff values < -1 (PR # 3749)
   * Fixes distances.between not always returning AtomGroup (Issue #3794)
   * Upgrade to chemfiles 0.10.3 (Issue #3798)
-<<<<<<< HEAD
   * Fix failure in double-serialization of TextIOPicklable file reader.
     (Issue #3723, PR #3722)
   * Fix failure to preserve modification of coordinates after serialization.
     (Issue #3723, PR #3722)
-=======
   * fixes guessed_attributes and read_attributes methods of the Topology class, as 
     those methods were giving unexpected results for some topology attributes
     (e.g. bonds, angles) (PR #3779).
->>>>>>> mda_origin/develop
 
 Enhancements
+  * Added dipole and quadrupole moment topology methods to AtomGroup
+    (Issue #3841, PR #3842)
   * MDAnalysis now follows PEP621 (PR #3528)
   * Added a reader for GROMACS TNG files based on PyTNG (PR #3765,
     Issue #3237, partially addressing Issue #865) 

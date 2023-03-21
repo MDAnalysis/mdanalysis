@@ -53,6 +53,8 @@ inputs:
     default: 'chemfiles-python>=0.9'
   clustalw:
     default: 'clustalw=2.1'
+  distopia:
+    default: 'distopia>=0.2.0'
   h5py:
     default: 'h5py>=2.10'
   joblib:
@@ -115,6 +117,7 @@ runs:
         CONDA_OPT_DEPS: |
           ${{ inputs.chemfiles-python }}
           ${{ inputs.clustalw }}
+          ${{ inputs.distopia }}
           ${{ inputs.h5py }}
           ${{ inputs.joblib }}
           ${{ inputs.netcdf4 }}
