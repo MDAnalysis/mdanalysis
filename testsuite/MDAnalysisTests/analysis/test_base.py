@@ -30,7 +30,7 @@ import numpy as np
 from numpy.testing import assert_equal, assert_almost_equal
 
 import MDAnalysis as mda
-from MDAnalysis.analysis import base
+from MDAnalysis.analysis import base, rms
 
 from MDAnalysisTests.datafiles import PSF, DCD, TPR, XTC
 from MDAnalysisTests.util import no_deprecated_call
@@ -274,6 +274,12 @@ def test_verbose_progressbar_run(u, capsys):
     actual = err.strip().split('\r')[-1]
     assert actual[:24] == expected[:24]
 
+def test_verbose_progressbar_run_with_kwargs(u, capsys):
+    an = FrameAnalysis(u.trajectory).run(verbose=True, pbar_kwargs={'desc':'custom'})
+    out, err = capsys.readouterr()
+    expected = u'custom: 100%|██████████| 98/98 [00:00<00:00, 8799.49it/s]'
+    actual = err.strip().split('\r')[-1]
+    assert actual[:24] == expected[:24]
 
 def test_incomplete_defined_analysis(u):
     with pytest.raises(NotImplementedError):
