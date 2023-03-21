@@ -13,7 +13,15 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-  
+
+03/20/23 SophiaRuan
+
+* 2.5.0
+
+Changes
+  * Add progress bar to track the progress of  _conclude() functions  (_conclude_simple() and _conclude_fft()) in msd.py (PR #4072)
+
+
 ??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae, 
          ooprathamm, MeetB7, BFedder, v-parmar, MoSchaeffler, jbarnoud, jandom,
          xhgchen, jaclark5, DrDomenicoMarson, AHMED-salah00
