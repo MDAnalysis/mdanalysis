@@ -128,6 +128,7 @@ import copy
 import warnings
 import weakref
 from typing import Union, Optional, List, Dict
+from warnings import warn 
 
 from .timestep import Timestep
 from . import core
@@ -144,6 +145,8 @@ from ..auxiliary.core import get_auxreader_for
 from ..auxiliary import _AUXREADERS
 from ..lib.util import asiterable, Namespace, store_init_arguments
 from ..lib.util import NamedStream
+
+
 
 
 class FrameIteratorBase(object):
@@ -1018,6 +1021,11 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
 
         .. versionadded:: 2.4.0
         """
+        if sample_atom_group != None:
+            wmsg = ("The `sample_atom_group` for timeseries function was deprecated in MDAnalysis "
+                "2.0.0 and will be removed in MDAnalysis 3.0.0.")
+            warnings.warn(wmsg, DeprecationWarning)
+            
         start, stop, step = self.check_slice_indices(start, stop, step)
         nframes = len(range(start, stop, step))
 
