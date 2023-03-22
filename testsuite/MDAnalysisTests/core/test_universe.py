@@ -482,6 +482,9 @@ class TestGuessBonds(object):
 
         ag = u.atoms[:3]
         ag.guess_bonds(fudge_factor=ff, lower_bound=lb)
+        # Apply '_check_atomgroup()' only in case of default values for
+        # 'fudge_factor', and 'lower_bound' arguments to avoid unnecessary
+        # errors.
         if ff == 0.55 and lb == 0.1:
             self._check_atomgroup(ag, u)
         assert len(ag.bonds) == nbonds
