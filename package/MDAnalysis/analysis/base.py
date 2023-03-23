@@ -224,7 +224,7 @@ class Results(UserDict):
         self.data = state
 
 
-class AnalysisCollection(object):
+class AnalysisCollection:
     """
     Class for running a collection of analysis classes on a single trajectory.
 
@@ -238,11 +238,7 @@ class AnalysisCollection(object):
 
     By default, it is ensured that all analysis instances use the
     *same original* timestep and not an altered one from a previous analysis
-    object. This behavior can be changed with the `reset_timestep` parameter
-    of the :meth:`MDAnalysis.analysis.base.AnalysisCollection.run` method.
-    Changing the default behaviour of `reset_timestep` might be useful to
-    avoid that subsequent analysis instances have to perform the same
-    transformation on the timestep.
+    object.
 
     Parameters
     ----------
@@ -313,7 +309,6 @@ class AnalysisCollection(object):
         step=None,
         frames=None,
         verbose=None,
-        reset_timestep=True,
     ):
         """Perform the calculation
 
@@ -332,11 +327,6 @@ class AnalysisCollection(object):
             non-default value will raise a :exc:`ValueError`.
         verbose : bool, optional
             Turn on verbosity
-        reset_timestep : bool, optional
-            Reset the timestep object after for each ``analysis_object``.
-            Setting this to ``False`` can be useful if an ``analysis_object``
-            is performing a trajectory manipulation which is also useful for the
-            subsequent ``analysis_instances`` e.g. unwrapping of molecules.
         """
 
         # Ensure compatibility with API of version 0.15.0
@@ -367,8 +357,7 @@ class AnalysisCollection(object):
         for i, ts in enumerate(
             ProgressBar(self._analysis_instances[0]._sliced_trajectory, verbose=verbose)
         ):
-            if reset_timestep:
-                ts_original = ts.copy()
+            ts_original = ts.copy()
 
             for analysis_object in self._analysis_instances:
                 # Set attributes before calling `_single_frame()`. Setting
@@ -382,8 +371,7 @@ class AnalysisCollection(object):
                 # Call the actual analysis of each instance.
                 analysis_object._single_frame()
 
-                if reset_timestep:
-                    ts = ts_original
+                ts = ts_original
 
         logger.info("Finishing up")
 
@@ -489,7 +477,7 @@ class AnalysisBase(AnalysisCollection):
         self._trajectory = trajectory
         self._verbose = verbose
         self.results = Results()
-        super(AnalysisBase, self).__init__(self)
+        super().__init__(self)
 
     def _setup_frames(self, trajectory, start=None, stop=None, step=None,
                       frames=None):
@@ -594,7 +582,7 @@ class AnalysisBase(AnalysisCollection):
             frame indices in the `frames` keyword argument.
 
         """
-        return super(AnalysisBase, self).run(
+        return super().run(
             start=start, stop=stop, step=step, frames=frames, verbose=verbose
         )
 
@@ -671,7 +659,7 @@ class AnalysisFromFunction(AnalysisBase):
 
         self.kwargs = kwargs
 
-        super(AnalysisFromFunction, self).__init__(trajectory)
+        super().__init__(trajectory)
 
     def _prepare(self):
         self.results.timeseries = []
@@ -739,8 +727,7 @@ def analysis_class(function):
 
     class WrapperClass(AnalysisFromFunction):
         def __init__(self, trajectory=None, *args, **kwargs):
-            super(WrapperClass, self).__init__(function, trajectory,
-                                               *args, **kwargs)
+            super().__init__(function, trajectory, *args, **kwargs)
 
     return WrapperClass
 

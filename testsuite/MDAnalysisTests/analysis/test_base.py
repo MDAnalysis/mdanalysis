@@ -166,8 +166,8 @@ class TestAnalysisCollection:
         assert rdf_OO.results is not None
         assert rdf_OH.results is not None
 
-    @pytest.mark.parametrize("reset_timestep", [True, False])
-    def test_trajectory_manipulation(self, universe, reset_timestep):
+    def test_trajectory_manipulation(self, universe):
+        """Test that the timestep is the same for each analysis class."""
         class CustomAnalysis(base.AnalysisBase):
             """Custom class that is shifting positions in every step by 10."""
 
@@ -185,13 +185,9 @@ class TestAnalysisCollection:
         ana_2 = CustomAnalysis(universe.trajectory)
 
         collection = base.AnalysisCollection(ana_1, ana_2)
+        collection.run(frames=[0])
 
-        collection.run(frames=[0], reset_timestep=reset_timestep)
-
-        if reset_timestep:
-            assert ana_2.ref_pos == ana_1.ref_pos
-        else:
-            assert_allclose(ana_2.ref_pos, ana_1.ref_pos + 10)
+        assert ana_2.ref_pos == ana_1.ref_pos
 
     def test_inconsistent_trajectory(self, universe):
         v = mda.Universe(TPR, XTC)
