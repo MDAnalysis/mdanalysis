@@ -38,7 +38,7 @@ jobs:
   darker_lint:
     if: |
       github.repository == 'MDAnalysis/mdanalysis' &&
-      github.event_name == 'pull_request'
+      github.event_name == 'pull_request_target'
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write

@@ -16,10 +16,11 @@ The rules for this file:
   
 ??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae, 
          ooprathamm, MeetB7, BFedder, v-parmar, MoSchaeffler, jbarnoud, jandom,
-         xhgchen, jaclark5
+         xhgchen, jaclark5, DrDomenicoMarson
  * 2.5.0
 
 Fixes
+  * Fix for NetCDF trajectories without `time` variable (Issue #4073)
   * Allows shape_parameter and asphericity to yield per residue quantities
     (Issue #3002, PR #3905)
   * Add tests for "No path data" exception raise in test_psa.py (Issue #4036)
