@@ -221,6 +221,7 @@ if __name__ == "__main__":
 
     # Get Pull Request
     gh_ref = os.environ['GITHUB_REF']
+    print(gh_ref)
     ## gh_ref for a PR is pull/prNumber/merge
     pr_num = int(gh_ref.split('/')[2])
     pr = get_pull_request(repo, pr_num)
