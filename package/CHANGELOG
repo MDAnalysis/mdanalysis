@@ -15,11 +15,17 @@ The rules for this file:
 ------------------------------------------------------------------------------
   
 ??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae, 
-         ooprathamm, MeetB7, BFedder, v-parmar, MoSchaeffler, jbarnoud, jandom, xhgchen
+         ooprathamm, MeetB7, BFedder, v-parmar, MoSchaeffler, jbarnoud, jandom,
+         xhgchen, jaclark5, DrDomenicoMarson, AHMED-salah00, schlaicha
  * 2.5.0
 
 Fixes
   * Fix parsing of box vector in H5MD reader (Issue #4076)
+  * Fix the misleading 'AtomGroup.guess_bonds()' docs and passed missing
+    arguments (PR #4059)
+  * Fix for NetCDF trajectories without `time` variable (Issue #4073)
+  * Allows shape_parameter and asphericity to yield per residue quantities
+    (Issue #3002, PR #3905)
   * Add tests for "No path data" exception raise in test_psa.py (Issue #4036)
   * Fix uninitialized `format` variable issue when calling `selections.get_writer` directly (PR #4043)
   * Fix tests should use results.rmsf to avoid DeprecationWarning (Issue #3695)
@@ -31,6 +37,8 @@ Fixes
     (Issue #3336)
 
 Enhancements
+  * Added AtomGroup TopologyAttr to calculate gyration moments (Issue #3904,
+    PR #3905)
   * Add support for TPR files produced by Gromacs 2023 (Issue #4047)
   * Add distopia distance calculation library bindings as a selectable backend
     for `calc_bonds` in `MDA.lib.distances`. (Issue #3783, PR #3914)

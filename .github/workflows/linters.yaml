@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - develop
-  pull_request:
+  pull_request_target:
     branches:
       - develop
 
@@ -14,6 +14,22 @@ concurrency:
   group: "${{ github.ref }}-${{ github.head_ref }}-${{ github.workflow }}"
   cancel-in-progress: true
 
+permissions:
+  # try to lock things down as much as possible
+  actions: read
+  checks: read
+  contents: read
+  deployments: read
+  discussions: read
+  id-token: none
+  issues: read
+  packages: read
+  pages: read
+  pull-requests: read
+  repository-projects: read
+  security-events: read
+  statuses: read
+
 defaults:
   run:
     shell: bash -l {0}
@@ -22,8 +38,10 @@ jobs:
   darker_lint:
     if: |
       github.repository == 'MDAnalysis/mdanalysis' &&
-      github.event_name == 'pull_request'
+      github.event_name == 'pull_request_target'
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     defaults:
       run:
         shell: bash
@@ -37,8 +55,14 @@ jobs:
       with:
         python-version: 3.8
 
-    - name: darker main code
+    - name: setup_dependencies
+      run: |
+        pip install PyGithub
+
+    - name: darker-main-code
+      id: darker-main-code
       uses: akaihola/darker@1.5.1
+      continue-on-error: true
       with:
         version: "@master"
         options: "--check --diff --color"
@@ -46,15 +70,25 @@ jobs:
         revision: "HEAD^"
         lint: "flake8"
 
-    - name: darker test code
+    - name: darker-test-code
+      id: darker-test-code
       uses: akaihola/darker@1.5.1
-      if: success() || failure()
+      continue-on-error: true
       with:
         version: "@master"
         options: "--check --diff --color"
         src: "./testsuite/MDAnalysisTests"
         revision: "HEAD^"
         lint: "flake8"
+
+    - name: write-errors
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      run: |
+        echo ${{ steps.darker-main-code.outcome }}
+        echo ${{ steps.darker-test-code.outcome }}
+        python maintainer/ci/darker-outcomes.py  --main_stat ${{ steps.darker-main-code.outcome }} \
+                                                 --test_stat ${{ steps.darker-test-code.outcome }}
 
 
   pylint_check:

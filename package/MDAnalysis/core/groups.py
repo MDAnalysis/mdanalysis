@@ -3276,24 +3276,38 @@ class AtomGroup(GroupBase):
         return [self[levelindices == index] for index in
                 unique_int_1d(levelindices)]
 
-    def guess_bonds(self, vdwradii=None):
-        """Guess bonds that exist within this :class:`AtomGroup` and add them to
-        the underlying :attr:`~AtomGroup.universe`.
+    def guess_bonds(self, vdwradii=None, fudge_factor=0.55, lower_bound=0.1):
+        """Guess bonds, angles, and dihedrals between the atoms in this
+        :class:`AtomGroup` and add them to the underlying
+        :attr:`~AtomGroup.universe`.
 
         Parameters
         ----------
         vdwradii : dict, optional
             Dict relating atom types: vdw radii
 
+        fudge_factor : float, optional
+            The factor by which atoms must overlap each other to be considered
+            a bond.  Larger values will increase the number of bonds found. [0.55]
+        lower_bound : float, optional
+            The minimum bond length. All bonds found shorter than this length
+            will be ignored. This is useful for parsing PDB with altloc records
+            where atoms with altloc A and B may be very close together and
+            there should be no chemical bond between them. [0.1]
 
         See Also
         --------
         :func:`MDAnalysis.topology.guessers.guess_bonds`
+        :func:`MDAnalysis.topology.guessers.guess_angles`
+        :func:`MDAnalysis.topology.guessers.guess_dihedrals`
 
 
         .. versionadded:: 0.10.0
         .. versionchanged:: 0.20.2
            Now applies periodic boundary conditions when guessing bonds.
+        .. versionchanged:: 2.5.0
+           Corrected misleading docs, and now allows passing of `fudge_factor`
+           and `lower_bound` arguments.
         """
         from ..topology.core import guess_bonds, guess_angles, guess_dihedrals
         from .topologyattrs import Bonds, Angles, Dihedrals
@@ -3308,9 +3322,15 @@ class AtomGroup(GroupBase):
                 return attr
 
         # indices of bonds
-        b = guess_bonds(self.atoms, self.atoms.positions,
-                        vdwradii=vdwradii, box=self.dimensions)
-        bondattr = get_TopAttr(self.universe, 'bonds', Bonds)
+        b = guess_bonds(
+            self.atoms,
+            self.atoms.positions,
+            vdwradii=vdwradii,
+            box=self.dimensions,
+            fudge_factor=fudge_factor,
+            lower_bound=lower_bound,
+        )
+        bondattr = get_TopAttr(self.universe, "bonds", Bonds)
         bondattr._add_bonds(b, guessed=True)
 
         a = guess_angles(self.bonds)
