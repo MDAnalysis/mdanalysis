@@ -70,6 +70,18 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - uses: actions/github-script@v6
+      with:
+        script:
+            const prNumber = context.payload.number;
+            core.exportVariable('PULL_NUMBER', prNumber);
+
+    - name: test_pr_number
+      env:
+        PRNUM: env.PULL_NUMBER
+      run: |
+        echo $PRNUM
+
     - name: setup_os
       uses: ./.github/actions/setup-os
       with:
