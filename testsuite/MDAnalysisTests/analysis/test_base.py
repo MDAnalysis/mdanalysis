@@ -27,10 +27,11 @@ import pytest
 
 import numpy as np
 
-from numpy.testing import assert_equal, assert_almost_equal
+from numpy.testing import assert_equal, assert_allclose
 
 import MDAnalysis as mda
 from MDAnalysis.analysis import base
+from MDAnalysis.analysis.rdf import InterRDF
 
 from MDAnalysisTests.datafiles import PSF, DCD, TPR, XTC
 from MDAnalysisTests.util import no_deprecated_call
@@ -147,6 +148,71 @@ class Test_Results:
         assert new_results.data is not results.data
 
 
+class TestAnalysisCollection:
+    @pytest.fixture
+    def universe(self):
+        return mda.Universe(TPR, XTC)
+
+    def test_run(self, universe):
+        O = universe.select_atoms('name O')
+        H = universe.select_atoms('name H')
+
+        rdf_OO = InterRDF(O, O)
+        rdf_OH = InterRDF(O, H)
+
+        collection = base.AnalysisCollection(rdf_OO, rdf_OH)
+        collection.run(start=0, stop=100, step=10)
+
+        assert rdf_OO.results is not None
+        assert rdf_OH.results is not None
+
+    @pytest.mark.parametrize("reset_timestep", [True, False])
+    def test_trajectory_manipulation(self, universe, reset_timestep):
+
+        class CustomAnalysis(base.AnalysisBase):
+            """Custom class that is shifting positions in every step by 10."""
+            def __init__(self, trajectory):
+                self._trajectory = trajectory
+
+            def _prepare(self):
+                pass
+
+            def _single_frame(self):
+                self._ts.positions += 10
+                self.ref_pos = self._ts.positions.copy()[0,0]
+
+        ana_1 = CustomAnalysis(universe.trajectory)
+        ana_2 = CustomAnalysis(universe.trajectory)
+
+        collection = base.AnalysisCollection(ana_1, ana_2)
+
+        collection.run(frames=[0], reset_timestep=reset_timestep)
+
+        if reset_timestep:
+            assert ana_2.ref_pos == ana_1.ref_pos
+        else:
+            assert_allclose(ana_2.ref_pos, ana_1.ref_pos + 10.)
+
+    def test_no_trajectory_manipulation(self):
+        pass
+
+    def test_inconsistent_trajectory(self, universe):
+        v = mda.Universe(TPR, XTC)
+
+        with pytest.raises(ValueError, match="`analysis_objects` do not have the same"):
+            base.AnalysisCollection(InterRDF(universe.atoms, universe.atoms),
+                                    InterRDF(v.atoms, v.atoms))
+
+    def test_no_base_child(self, universe):
+        class CustomAnalysis:
+            def __init__(self, trajectory):
+                self._trajectory = trajectory
+
+        # Create collection for common trajectory loop with inconsistent trajectory
+        with pytest.raises(AttributeError, match="not a child of `AnalysisBa"):
+            base.AnalysisCollection(CustomAnalysis(universe.trajectory))
+
+
 class FrameAnalysis(base.AnalysisBase):
     """Just grabs frame numbers of frames it goes over"""
 
@@ -194,7 +260,7 @@ def test_start_stop_step(u, run_kwargs, frames):
     assert an.n_frames == len(frames)
     assert_equal(an.found_frames, frames)
     assert_equal(an.frames, frames, err_msg=FRAMES_ERR)
-    assert_almost_equal(an.times, frames+1, decimal=4, err_msg=TIMES_ERR)
+    assert_allclose(an.times, frames+1, rtol=1e-4, err_msg=TIMES_ERR)
 
 
 @pytest.mark.parametrize('run_kwargs, frames', [
@@ -251,7 +317,7 @@ def test_frames_times():
     assert an.n_frames == len(frames)
     assert_equal(an.found_frames, frames)
     assert_equal(an.frames, frames, err_msg=FRAMES_ERR)
-    assert_almost_equal(an.times, frames*100, decimal=4, err_msg=TIMES_ERR)
+    assert_allclose(an.times, frames*100, rtol=1e-4, err_msg=TIMES_ERR)
 
 
 def test_verbose(u):
@@ -366,7 +432,7 @@ def test_AnalysisFromFunction_args_content(u):
     ans = base.AnalysisFromFunction(mass_xyz, protein, another, masses)
     assert len(ans.args) == 3
     result = np.sum(ans.run().results.timeseries)
-    assert_almost_equal(result, -317054.67757345125, decimal=6)
+    assert_allclose(result, -317054.67757345125, rtol=1e-6)
     assert (ans.args[0] is protein) and (ans.args[1] is another)
     assert ans._trajectory is protein.universe.trajectory
 

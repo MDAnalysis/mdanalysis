@@ -220,7 +220,152 @@ class Results(UserDict):
         self.data = state
 
 
-class AnalysisBase(object):
+class AnalysisCollection(object):
+    """
+    Class for running a collection of analysis classes on a single trajectory.
+
+    Running a collection of analysis with ``AnalysisCollection`` can result in
+    a speedup compared to running the individual object since here we only 
+    perform the trajectory looping once.
+
+    The class assumes that each analysis is a child of
+    :class:`MDAnalysis.analysis.base.AnalysisBase`. Additionally,
+    the trajectory of all ``analysis_objects`` must be same.
+
+    By default it is ensured that all analyisis objects use the 
+    *same original* timestep and not an altered one from a previous analysis
+    object. This behaviour can be changed with the ``reset_timestep`` parameter
+    of the :meth:`MDAnalysis.analysis.base.AnalysisCollection.run` method.
+
+    Parameters
+    ----------
+    *analysis_objects : tuple
+        List of analysis classes to run on the same trajectory.
+
+    Raises
+    ------
+    AttributeError
+        If the provided ``analysis_objects`` do not have the same trajectory.
+    AttributeError
+        If an ``analysis_object`` is not a child of
+        :class:`MDAnalysis.analysis.base.AnalysisBase`.
+
+    Example
+    -------
+    .. code-block:: python
+
+        import MDAnalysis as mda
+        from MDAnalysis.analysis.rdf import InterRDF
+        from MDAnalysis.analysis.base import AnalysisCollection
+        from MDAnalysisTests.datafiles import TPR, XTC
+
+        u = mda.Universe(TPR, XTC)
+
+        # Select atoms
+        O = u.select_atoms('name O')
+        H = u.select_atoms('name H')
+
+        # Create individual analysis objects
+        rdf_OO = InterRDF(O, O)
+        rdf_OH = InterRDF(O, H)
+
+        # Create collection for common trajectory
+        collection = AnalysisCollection(rdf_OO, rdf_OH)
+
+        # Run the collected analysis
+        collection.run(start=0, end=100, step=10)
+
+        # Results are stored in indivial objects
+        print(rdf_OO.results)
+        print(rdf_OH.results)
+
+    .. versionadded:: 2.5.0
+    """
+    def __init__(self, *analysis_objects):
+        for analysis_object in analysis_objects:
+            if analysis_objects[0]._trajectory != analysis_object._trajectory:
+                raise ValueError("`analysis_objects` do not have the same "
+                                 "trajectory.")
+            if not isinstance(analysis_object, AnalysisBase):
+                raise AttributeError(f"Analysis object {analysis_object} is "
+                                      "not a child of `AnalysisBase`.")
+
+        self._analysis_objects = analysis_objects
+
+    def run(self, start=None, stop=None, step=None, frames=None,
+            verbose=None, reset_timestep=True):
+        """Perform the calculation
+
+        Parameters
+        ----------
+        start : int, optional
+            start frame of analysis
+        stop : int, optional
+            stop frame of analysis
+        step : int, optional
+            number of frames to skip between each analysed frame
+        frames : array_like, optional
+            array of integers or booleans to slice trajectory; ``frames`` can
+            only be used *instead* of ``start``, ``stop``, and ``step``. Setting
+            *both* `frames` and at least one of ``start``, ``stop``, ``step`` to a
+            non-default value will raise a :exc:``ValueError``.
+        verbose : bool, optional
+            Turn on verbosity
+        reset_timestep : bool
+            Reset the timestep object after for each ``analysis_object``.
+            Setting this to ``False`` can be useful if an ``analysis_object``
+            is performing a trajectory manipulation which is also useful for the
+            subsequent ``analysis_objects`` e.g. unwrapping of molecules.
+        """
+
+        # Ensure compatibility with API of version 0.15.0
+        if not hasattr(self, "_analysis_objects"):
+            self._analysis_objects = (self, )
+
+        logger.info("Choosing frames to analyze")
+        # if verbose unchanged, use class default
+        verbose = getattr(self, '_verbose',
+                          False) if verbose is None else verbose
+
+        logger.info("Starting preparation")
+
+        for analysis_object in self._analysis_objects:
+            analysis_object._setup_frames(analysis_object._trajectory,
+                                          start=start,
+                                          stop=stop,
+                                          step=step,
+                                          frames=frames)
+            analysis_object._prepare()
+
+        logger.info("Starting analysis loop over"
+                    f"{self._analysis_objects[0].n_frames} trajectory frames")
+
+        for i, ts in enumerate(ProgressBar(
+                self._analysis_objects[0]._sliced_trajectory,
+                verbose=verbose)):
+
+            if reset_timestep:
+                ts_original = ts.copy()
+
+            for analysis_object in self._analysis_objects:
+                analysis_object._frame_index = i
+                analysis_object._ts = ts
+                analysis_object.frames[i] = ts.frame
+                analysis_object.times[i] = ts.time
+                analysis_object._single_frame()
+
+                if reset_timestep:
+                    ts = ts_original
+
+        logger.info("Finishing up")
+
+        for analysis_object in self._analysis_objects:
+            analysis_object._conclude()
+
+        return self
+
+
+class AnalysisBase(AnalysisCollection):
     r"""Base class for defining multi-frame analysis
 
     The class is designed as a template for creating multi-frame analyses.
@@ -316,6 +461,7 @@ class AnalysisBase(object):
         self._trajectory = trajectory
         self._verbose = verbose
         self.results = Results()
+        super(AnalysisBase, self).__init__(self)
 
     def _setup_frames(self, trajectory, start=None, stop=None, step=None,
                       frames=None):
@@ -402,10 +548,10 @@ class AnalysisBase(object):
         step : int, optional
             number of frames to skip between each analysed frame
         frames : array_like, optional
-            array of integers or booleans to slice trajectory; `frames` can
-            only be used *instead* of `start`, `stop`, and `step`. Setting
-            *both* `frames` and at least one of `start`, `stop`, `step` to a
-            non-default value will raise a :exc:`ValueError`.
+            array of integers or booleans to slice trajectory; ``frames`` can
+            only be used *instead* of ``start``, ``stop``, and ``step``. Setting
+            *both* `frames` and at least one of ``start``, ``stop``, ``step`` to a
+            non-default value will raise a :exc:``ValueError``.
 
             .. versionadded:: 2.2.0
 
@@ -418,28 +564,11 @@ class AnalysisBase(object):
             frame indices in the `frames` keyword argument.
 
         """
-        logger.info("Choosing frames to analyze")
-        # if verbose unchanged, use class default
-        verbose = getattr(self, '_verbose',
-                          False) if verbose is None else verbose
-
-        self._setup_frames(self._trajectory, start=start, stop=stop,
-                           step=step, frames=frames)
-        logger.info("Starting preparation")
-        self._prepare()
-        logger.info("Starting analysis loop over %d trajectory frames",
-                    self.n_frames)
-        for i, ts in enumerate(ProgressBar(
-                self._sliced_trajectory,
-                verbose=verbose)):
-            self._frame_index = i
-            self._ts = ts
-            self.frames[i] = ts.frame
-            self.times[i] = ts.time
-            self._single_frame()
-        logger.info("Finishing up")
-        self._conclude()
-        return self
+        return super(AnalysisBase, self).run(start=start,
+                                             stop=stop,
+                                             step=step,
+                                             frames=frames,
+                                             verbose=verbose)
 
 
 class AnalysisFromFunction(AnalysisBase):
