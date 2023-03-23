@@ -332,6 +332,8 @@ class H5MDReader(base.ReaderBase):
        Adds :meth:`parse_n_atoms` method to obtain the number of atoms directly
        from the trajectory by evaluating the shape of the ``position``,
        ``velocity``, or ``force`` groups.
+    .. versionchanged:: 2.5.0
+       Add correct handling of simple cuboid boxes
 
     """
 
@@ -637,9 +639,6 @@ class H5MDReader(base.ReaderBase):
         # Note: dt is not read into data as it is not decided whether
         # Timestep should have a dt attribute (see Issue #2825)
         self._copy_to_data()
-
-        .. versionchanged:: 2.5.0
-           Add correct handling of simple cuboid boxes
 
         # Sets frame box dimensions
         # Note: H5MD files must contain 'box' group in each 'particles' group
