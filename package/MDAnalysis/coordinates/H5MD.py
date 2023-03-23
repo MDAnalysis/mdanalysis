@@ -638,6 +638,9 @@ class H5MDReader(base.ReaderBase):
         # Timestep should have a dt attribute (see Issue #2825)
         self._copy_to_data()
 
+        .. versionchanged:: 2.5.0
+           Add correct handling of simple cuboid boxes
+
         # Sets frame box dimensions
         # Note: H5MD files must contain 'box' group in each 'particles' group
         if "edges" in particle_group["box"]:
