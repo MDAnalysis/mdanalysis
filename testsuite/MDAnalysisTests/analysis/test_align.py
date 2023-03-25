@@ -369,7 +369,7 @@ class TestAlign(object):
         fitted.trajectory[frame]
         rmsd = rms.rmsd(reference.atoms.positions, fitted.atoms.positions,
                         superposition=True)
-        assert_allclose(rmsd, desired, rtol=1e-5,
+        assert_allclose(rmsd, desired, atol=1e-5,
                             err_msg="frame {0:d} of fit does not have "
                                     "expected RMSD".format(frame))
 
@@ -450,14 +450,14 @@ class TestAverageStructure(object):
         ref, rmsd = _get_aligned_average_positions(self.ref_files, reference)
         avg = align.AverageStructure(universe, reference).run()
         assert_allclose(avg.results.universe.atoms.positions, ref,
-                            rtol=1e-04)
+                            atol=1e-04)
         assert avg.results.rmsd == pytest.approx(rmsd)
 
     def test_average_structure_mass_weighted(self, universe, reference):
         ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, weights='mass')
         avg = align.AverageStructure(universe, reference, weights='mass').run()
         assert_allclose(avg.results.universe.atoms.positions, ref,
-                            rtol=1e-04)
+                            atol=1e-04)
         assert avg.results.rmsd == pytest.approx(rmsd) 
 
     def test_average_structure_select(self, universe, reference):
@@ -465,14 +465,14 @@ class TestAverageStructure(object):
         ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, select=select)
         avg = align.AverageStructure(universe, reference, select=select).run()
         assert_allclose(avg.results.universe.atoms.positions, ref,
-                            rtol=1e-04)
+                            atol=1e-04)
         assert avg.results.rmsd == pytest.approx(rmsd) 
 
     def test_average_structure_no_ref(self, universe):
         ref, rmsd = _get_aligned_average_positions(self.ref_files, universe)
         avg = align.AverageStructure(universe).run()
         assert_allclose(avg.results.universe.atoms.positions, ref,
-                            rtol=1e-04)
+                            atol=1e-04)
         assert avg.results.rmsd == pytest.approx(rmsd) 
 
     def test_average_structure_no_msf(self, universe):
@@ -498,7 +498,7 @@ class TestAverageStructure(object):
         avg = align.AverageStructure(universe, ref_frame=ref_frame).run()
 
         assert_allclose(avg.results.universe.atoms.positions, ref,
-                            rtol=1e-04)
+                            atol=1e-04)
         assert avg.results.rmsd == pytest.approx(rmsd) 
 
     def test_average_structure_in_memory(self, universe):
