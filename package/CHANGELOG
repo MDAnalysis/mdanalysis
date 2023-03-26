@@ -44,6 +44,7 @@ Enhancements
   * AuxReaders are now pickle-able and copy-able (Issue #1785, PR #3887)
   * Add pickling support for Atom, Residue, Segment, ResidueGroup 
     and SegmentGroup. (PR #3953)
+  * Add `progressbar_kwargs` parameter to `AnalysisBase.run` method, allowing to modify description, position etc of tqdm progressbars.
 
 Changes
   * As per NEP29 the minimum supported NumPy version has been raised to 1.21

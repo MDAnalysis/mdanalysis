@@ -421,6 +421,9 @@ class AnalysisBase(object):
             Added ability to analyze arbitrary frames by passing a list of
             frame indices in the `frames` keyword argument.
 
+        .. versionchanged:: 2.5.0
+            Add `progressbar_kwargs` parameter, 
+            allowing to modify description, position etc of tqdm progressbars
         """
         logger.info("Choosing frames to analyze")
         # if verbose unchanged, use class default
