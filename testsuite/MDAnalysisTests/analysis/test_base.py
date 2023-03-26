@@ -279,7 +279,7 @@ def test_verbose_progressbar_run_with_kwargs(u, capsys):
     out, err = capsys.readouterr()
     expected = u'custom: 100%|██████████| 98/98 [00:00<00:00, 8799.49it/s]'
     actual = err.strip().split('\r')[-1]
-    assert actual[:24] == expected[:24]
+    assert actual[:30] == expected[:30]
 
 def test_incomplete_defined_analysis(u):
     with pytest.raises(NotImplementedError):
