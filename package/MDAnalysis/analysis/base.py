@@ -390,7 +390,7 @@ class AnalysisBase(object):
         pass  # pylint: disable=unnecessary-pass
 
     def run(self, start=None, stop=None, step=None, frames=None,
-            verbose=None, *, pbar_kwargs={}):
+            verbose=None, *, progressbar_kwargs={}):
         """Perform the calculation
 
         Parameters
@@ -412,7 +412,7 @@ class AnalysisBase(object):
         verbose : bool, optional
             Turn on verbosity
         
-        pbar_kwargs : dict, optional
+        progressbar_kwargs : dict, optional
             ProgressBar keywords with custom parameters regarding progress bar position, etc; 
             see :class:`MDAnalysis.lib.log.ProgressBar` for full list.
 
@@ -437,7 +437,7 @@ class AnalysisBase(object):
         for i, ts in enumerate(ProgressBar(
                 self._sliced_trajectory,
                 verbose=verbose,
-                **pbar_kwargs)):
+                **progressbar_kwargs)):
             self._frame_index = i
             self._ts = ts
             self.frames[i] = ts.frame

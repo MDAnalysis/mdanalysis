@@ -275,7 +275,7 @@ def test_verbose_progressbar_run(u, capsys):
     assert actual[:24] == expected[:24]
 
 def test_verbose_progressbar_run_with_kwargs(u, capsys):
-    an = FrameAnalysis(u.trajectory).run(verbose=True, pbar_kwargs={'desc':'custom'})
+    an = FrameAnalysis(u.trajectory).run(verbose=True, progressbar_kwargs={'desc':'custom'})
     out, err = capsys.readouterr()
     expected = u'custom: 100%|██████████| 98/98 [00:00<00:00, 8799.49it/s]'
     actual = err.strip().split('\r')[-1]
