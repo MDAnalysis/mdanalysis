@@ -30,7 +30,7 @@ import numpy as np
 from numpy.testing import assert_equal, assert_almost_equal
 
 import MDAnalysis as mda
-from MDAnalysis.analysis import base, rms
+from MDAnalysis.analysis import base
 
 from MDAnalysisTests.datafiles import PSF, DCD, TPR, XTC
 from MDAnalysisTests.util import no_deprecated_call
