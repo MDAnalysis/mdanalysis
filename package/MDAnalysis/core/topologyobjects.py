@@ -445,7 +445,6 @@ class TopologyDict(object):
             except KeyError:
                 self.dict[btype] = [b]
 
-        print("Initiating TopologyDict")
         if self.dict and isinstance(list(self.dict.keys())[0], tuple):
             self._removeDupes()
 
@@ -464,7 +463,6 @@ class TopologyDict(object):
                 newdict[k[::-1]] += self.dict[k]
 
         self.dict = newdict
-        print("topDict._removeDupes: topDict id: {}, topDict.dict id: {}, len(topDict.dict.keys()): {}".format(id(self), id(self.dict), len(self.dict)))
 
     @property
     def universe(self):
@@ -476,7 +474,6 @@ class TopologyDict(object):
 
     def keys(self):
         """Returns a list of the different types of available bonds"""
-        print("topDict.keys:         topDict id: {}, topDict.dict id: {}, len(topDict.dict.keys()): {}".format(id(self), id(self.dict), len(self.dict)))
         return self.dict.keys()
 
     def __iter__(self):
@@ -660,7 +657,6 @@ class TopologyGroup(object):
 
         .. versionadded 0.9.0
         """
-        print("Creating a TopologyDict Instance")
         return TopologyDict(self)
 
     def atomgroup_intersection(self, ag, **kwargs):
