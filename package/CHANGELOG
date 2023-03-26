@@ -16,11 +16,12 @@ The rules for this file:
   
 ??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae, 
          ooprathamm, MeetB7, BFedder, v-parmar, MoSchaeffler, jbarnoud, jandom,
-         xhgchen, jaclark5, DrDomenicoMarson, AHMED-salah00, schlaicha, SophiaRuan,
-	 g2707
+         xhgchen, jaclark5, DrDomenicoMarson, AHMED-salah00, schlaicha, SophiaRuan, g2707, p-j-smith
  * 2.5.0
 
 Fixes
+  * Ensure 'HydrogenBondAnalysis' returns the correct distances when using the
+    'between' keyword (PR #4092)
   * Fix parsing of box vector in H5MD reader (Issue #4076)
   * Fix the misleading 'AtomGroup.guess_bonds()' docs and passed missing
     arguments (PR #4059)
