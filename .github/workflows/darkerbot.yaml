@@ -48,7 +48,6 @@ jobs:
             fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/darker_results.zip`, Buffer.from(download.data));
 
       - name: 'Unzip artifact'
-        env:
         run: unzip darker_results.zip
 
       - name: writer-errors
