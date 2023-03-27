@@ -45,9 +45,7 @@ def nojump_constantvel_universe():
     coordinates[:, 0, 2] = np.linspace(0, 10, Nframe)
     reference = mda.Universe.empty(Natom, trajectory=True)
     reference.load_new(coordinates, order="fac")
-    towrap = mda.Universe.empty(Natom, trajectory=True)
-    towrap.load_new(coordinates, order="fac")
-    return reference, towrap
+    return reference
 
 
 def test_nojump_orthogonal_fwd(nojump_universe):
@@ -106,7 +104,9 @@ def test_nojump_constantvel(nojump_constantvel_universe):
     Test if the nojump transform is returning the correct
     values when iterating forwards over the sample trajectory.
     """
-    ref, towrap = nojump_constantvel_universe
+    ref = nojump_constantvel_universe
+    towrap = ref.copy() # This copy of the universe will be wrapped, then unwrapped,
+    # and should be equal to ref.
     dim = np.asarray([5, 5, 5, 54, 60, 90], np.float32)
     workflow = [
         mda.transformations.boxdimensions.set_dimensions(dim),
