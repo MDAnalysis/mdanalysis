@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - develop
-  pull_request_target:
+  pull_request:
     branches:
       - develop
 
@@ -14,22 +14,6 @@ concurrency:
   group: "${{ github.ref }}-${{ github.head_ref }}-${{ github.workflow }}"
   cancel-in-progress: true
 
-permissions:
-  # try to lock things down as much as possible
-  actions: read
-  checks: read
-  contents: read
-  deployments: read
-  discussions: read
-  id-token: none
-  issues: read
-  packages: read
-  pages: read
-  pull-requests: read
-  repository-projects: read
-  security-events: read
-  statuses: read
-
 defaults:
   run:
     shell: bash -l {0}
@@ -37,8 +21,7 @@ defaults:
 jobs:
   darker_lint:
     if: |
-      github.repository == 'MDAnalysis/mdanalysis' &&
-      github.event_name == 'pull_request_target'
+      github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -100,7 +83,6 @@ jobs:
 
 
   pylint_check:
-    if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
 
     steps:
@@ -122,7 +104,6 @@ jobs:
 
 
   mypy :
-    if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
