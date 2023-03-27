@@ -45,12 +45,11 @@ jobs:
                archive_format: 'zip',
             });
             let fs = require('fs');
-            fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/pr_number.zip`, Buffer.from(download.data));
+            fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/darker_results.zip`, Buffer.from(download.data));
 
       - name: 'Unzip artifact'
         env:
-          PRNUM: ${{ env.PULL_NUMBER }}
-        run: unzip darker_${PRNUM}.zip
+        run: unzip darker_results.zip
 
       - name: writer-errors
         env:
