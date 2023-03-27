@@ -61,10 +61,10 @@ jobs:
 
     - name: darker-main-code
       id: darker-main-code
-      uses: akaihola/darker@1.5.1
+      uses: akaihola/darker@1.6.1
       continue-on-error: true
       with:
-        version: "@master"
+        version: "~=1.6.1"
         options: "--check --diff --color"
         src: "./package/MDAnalysis"
         revision: "HEAD^"
@@ -72,10 +72,10 @@ jobs:
 
     - name: darker-test-code
       id: darker-test-code
-      uses: akaihola/darker@1.5.1
+      uses: akaihola/darker@1.6.1
       continue-on-error: true
       with:
-        version: "@master"
+        version: "~=1.6.1"
         options: "--check --diff --color"
         src: "./testsuite/MDAnalysisTests"
         revision: "HEAD^"
