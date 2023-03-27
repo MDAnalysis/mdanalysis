@@ -82,7 +82,7 @@ jobs:
         echo "{'main_stat': ${MAIN}, 'test_stat': ${TEST}}" > darker_results/status.json
 
     - name: upload-status
-      uses: actions/upload-artifacts@v3
+      uses: actions/upload-artifact@v3
       with:
         name: darker_${{ env.PULL_NUMBER }}
         path: darker_results/
