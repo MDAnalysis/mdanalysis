@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - develop
-  pull_request_target:
+  pull_request:
     branches:
       - develop
 
@@ -14,21 +14,21 @@ concurrency:
   group: "${{ github.ref }}-${{ github.head_ref }}-${{ github.workflow }}"
   cancel-in-progress: true
 
-permissions:
-  # try to lock things down as much as possible
-  actions: read
-  checks: read
-  contents: read
-  deployments: read
-  discussions: read
-  id-token: none
-  issues: read
-  packages: read
-  pages: read
-  pull-requests: read
-  repository-projects: read
-  security-events: read
-  statuses: read
+    #permissions:
+    #  # try to lock things down as much as possible
+    #  actions: read
+    #  checks: read
+    #  contents: read
+    #  deployments: read
+    #  discussions: read
+    #  id-token: none
+    #  issues: read
+    #  packages: read
+    #  pages: read
+    #  pull-requests: read
+    #  repository-projects: read
+    #  security-events: read
+    #  statuses: read
 
 defaults:
   run:
@@ -40,8 +40,8 @@ jobs:
       github.repository == 'MDAnalysis/mdanalysis' &&
       github.event_name == 'pull_request_target'
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
+    #permissions:
+    # pull-requests: write
     defaults:
       run:
         shell: bash
@@ -61,10 +61,10 @@ jobs:
 
     - name: darker-main-code
       id: darker-main-code
-      uses: akaihola/darker@1.5.1
+      uses: akaihola/darker@1.7.1
       continue-on-error: true
       with:
-        version: "@master"
+        version: "~=1.7.1"
         options: "--check --diff --color"
         src: "./package/MDAnalysis"
         revision: "HEAD^"
@@ -72,10 +72,10 @@ jobs:
 
     - name: darker-test-code
       id: darker-test-code
-      uses: akaihola/darker@1.5.1
+      uses: akaihola/darker@1.7.1
       continue-on-error: true
       with:
-        version: "@master"
+        version: "~=1.7.1"
         options: "--check --diff --color"
         src: "./testsuite/MDAnalysisTests"
         revision: "HEAD^"
