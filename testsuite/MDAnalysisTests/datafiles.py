@@ -38,13 +38,13 @@ Note that the files are actually located in a separate package,
 
 __all__ = [
     "PSF", "DCD", "CRD",  # CHARMM (AdK example, DIMS trajectory from JMB 2009 paper)
-    "DCD2", # CHARMM (AdK example, DIMS trajectory from PLOS Comput Biol paper)
+    "DCD2",  # CHARMM (AdK example, DIMS trajectory from PLOS Comput Biol paper)
     "PSF_notop", "PSF_BAD",  # Same as PSF but no bonds etc, malformed version of previous
     "DCD_empty",
     "PSF_TRICLINIC", "DCD_TRICLINIC",  # CHARMM c36 new unitcell, NPT 125 TIP3P (box vectors, see Issue 187 for details)
     "PSF_NAMD", "PDB_NAMD",  # NAMD
-    "PSF_NAMD_TRICLINIC", "DCD_NAMD_TRICLINIC", # NAMD, triclinic unitcell (Issue 187)
-    "PSF_NAMD_GBIS", "DCD_NAMD_GBIS",  # NAMD, implicit solvent, 100 steps, #1819
+    "PSF_NAMD_TRICLINIC", "DCD_NAMD_TRICLINIC",  # NAMD, triclinic unitcell (Issue 187)
+    "PSF_NAMD_GBIS", "DCD_NAMD_GBIS",  # NAMD, implicit solvent, 100 steps,  #1819
     "PSF_nosegid",  # psf without a segid, Issue 121
     "PSF_cmap",  # ala3 PSF from ParmEd test files with cmap
     "PDB_small",  # PDB
@@ -64,15 +64,15 @@ __all__ = [
     "PDB_cm", "PDB_cm_bz2", "PDB_cm_gz",
     "PDB_mc", "PDB_mc_bz2", "PDB_mc_gz",
     "PDB_chainidnewres",  # Issue 1110
-    "PDB_sameresid_diffresname", #Case where two residues share the same resid
+    "PDB_sameresid_diffresname",  #Case where two residues share the same resid
     "PDB_chainidrepeat",  # Issue #1107
     "PDB", "GRO", "XTC", "TRR", "TPR", "GRO_velocity",  # Gromacs (AdK)
     "GRO_incomplete_vels",
     "COORDINATES_GRO_BZ2",
-    "GRO_large", #atom number truncation at > 100,000 particles, Issue 550
+    "GRO_large",  #atom number truncation at > 100,000 particles, Issue 550
     "GRO_residwrap",  # resids wrapping because of 5 digit field (Issue #728)
     "GRO_residwrap_0base",  # corner case of #728 with resid=0 for first atom
-    "GRO_sameresid_diffresname", # Case where two residues share the same resid
+    "GRO_sameresid_diffresname",  # Case where two residues share the same resid
     "PDB_xvf", "TPR_xvf", "TRR_xvf",  # Gromacs coords/veloc/forces (cobrotoxin, OPLS-AA, Gromacs 4.5.5 tpr)
     "H5MD_xvf",  # TPR_xvf + TRR_xvf converted to h5md format
     "XVG_BZ2",  # Compressed xvg file about cobrotoxin
@@ -93,7 +93,7 @@ __all__ = [
     "TRR_sub_sol",
     "XTC_sub_sol",
     "XYZ", "XYZ_psf", "XYZ_bz2",
-    "XYZ_mini", "XYZ_five", # 3 and 5 atoms xyzs for an easy topology
+    "XYZ_mini", "XYZ_five",  # 3 and 5 atoms xyzs for an easy topology
     "TXYZ", "ARC", "ARC_PBC",       # Tinker files
     "PRM", "TRJ", "TRJ_bz2",  # Amber (no periodic box)
     "INPCRD",
@@ -101,15 +101,16 @@ __all__ = [
     "PRM7", "NCDFtruncoct",  # Amber (cpptrj test trajectory, see Issue 488)
     "PRM12", "TRJ12_bz2",  # Amber (v12 format, Issue 100)
     "PRMncdf", "TRJncdf", "NCDF",  # Amber (netcdf)
-    "PFncdf_Top", "PFncdf_Trj", # Amber ncdf with Positions and Forces
-    "PRMcs", # Amber (format, Issue 1331)
-    "PRMNCRST", # Amber ncrst with positions/forces/velocities
-    "PRM_NCBOX", "TRJ_NCBOX", # Amber parm7 + nc w/ pos/forces/vels/box
-    "PRMNEGATIVE", # Amber negative ATOMIC_NUMBER (Issue 2306)
-    "PRMErr1", "PRMErr2", "PRMErr3", # Amber TOP files to check raised errors
-    "PRM_UreyBradley", # prmtop from ParmEd test files with Urey-Bradley angles
+    "PFncdf_Top", "PFncdf_Trj",  # Amber ncdf with Positions and Forces
+    "CPPTRAJ_TRAJ_TOP", "CPPTRAJ_TRAJ",  # Amber ncdf extracted from CPPTRAJ without time variable
+    "PRMcs",  # Amber (format, Issue 1331)
+    "PRMNCRST",  # Amber ncrst with positions/forces/velocities
+    "PRM_NCBOX", "TRJ_NCBOX",  # Amber parm7 + nc w/ pos/forces/vels/box
+    "PRMNEGATIVE",  # Amber negative ATOMIC_NUMBER (Issue 2306)
+    "PRMErr1", "PRMErr2", "PRMErr3",  # Amber TOP files to check raised errors
+    "PRM_UreyBradley",  # prmtop from ParmEd test files with Urey-Bradley angles
     "PRM7_ala2", "RST7_ala2",  # prmtop and rst files from ParmEd example files
-    "PRM19SBOPC", #  prmtop w/ ff19SB CMAP terms and OPC water (Issue #2449)
+    "PRM19SBOPC",  #  prmtop w/ ff19SB CMAP terms and OPC water (Issue #2449)
     "PQR",  # PQR v1
     "PQR_icodes",  # PQR v2 with icodes
     "PDBQT_input",  # PDBQT
@@ -117,9 +118,9 @@ __all__ = [
     "PDB_multipole",
     "FASTA",  # sequence alignment, Issue 112 + 113
     "HELANAL_BENDING_MATRIX",  # HELANAL test (from PSF+DCD (AdK) helix 8)
-    "HELANAL_BENDING_MATRIX_SUBSET", # As above, slice of frames 10 to 79
+    "HELANAL_BENDING_MATRIX_SUBSET",  # As above, slice of frames 10 to 79
     "PDB_HOLE",  # gramicidin A
-    "MULTIPDB_HOLE", # gramicidin A, normal mode 7 from ElNemo
+    "MULTIPDB_HOLE",  # gramicidin A, normal mode 7 from ElNemo
     "DMS",
     "DMS_DOMAINS",  # ADK closed with multiple segids
     "DMS_NO_SEGID",  # ADK closed with no segids or chains
@@ -143,25 +144,25 @@ __all__ = [
     "LAMMPScnt", "LAMMPScnt2",  # triclinic box
     "LAMMPShyd", "LAMMPShyd2",
     "LAMMPSdata_deletedatoms",  # with deleted atoms
-    "LAMMPSdata_triclinic", # lammpsdata file to test triclinic dimension parsing, albite with most atoms deleted
+    "LAMMPSdata_triclinic",  # lammpsdata file to test triclinic dimension parsing, albite with most atoms deleted
     "LAMMPSdata_PairIJ",  # lammps datafile with a PairIJ Coeffs section
     "LAMMPSDUMP",
     "LAMMPSDUMP_long",  # lammpsdump file with a few zeros sprinkled in the first column first frame
     "LAMMPSDUMP_allcoords",  # lammpsdump file with all coordinate conventions (x,xs,xu,xsu) present, from LAMMPS rdf example
     "LAMMPSDUMP_nocoords",  # lammpsdump file with no coordinates
-    "LAMMPSDUMP_triclinic", # lammpsdump file to test triclinic dimension parsing, albite with most atoms deleted
-    "LAMMPSDUMP_image_vf", # Lammps dump file with image flags, velocities, and forces.
-    "LAMMPS_image_vf", # Lammps data file to go with LAMMPSDUMP_image_vf
+    "LAMMPSDUMP_triclinic",  # lammpsdump file to test triclinic dimension parsing, albite with most atoms deleted
+    "LAMMPSDUMP_image_vf",  # Lammps dump file with image flags, velocities, and forces.
+    "LAMMPS_image_vf",  # Lammps data file to go with LAMMPSDUMP_image_vf
     "unordered_res",  # pdb file with resids non sequential
     "GMS_ASYMOPT",  # GAMESS C1  optimization
     "GMS_SYMOPT",   # GAMESS D4h optimization
-    "GMS_ASYMSURF", # GAMESS C1  surface
+    "GMS_ASYMSURF",  # GAMESS C1  surface
     "two_water_gro", "two_water_gro_nonames",  # for bond guessing, 2 water molecules, one with weird names
     "two_water_gro_multiframe",
     "two_water_gro_widebox",  # Issue #548
     "DLP_CONFIG", "DLP_CONFIG_order", "DLP_CONFIG_minimal",  # dl_poly 4 config file
     "DLP_HISTORY", "DLP_HISTORY_order", "DLP_HISTORY_minimal",  # dl_poly 4 history file
-    "DLP_HISTORY_minimal_cell", # dl_poly 4 history file with cell parameters
+    "DLP_HISTORY_minimal_cell",  # dl_poly 4 history file with cell parameters
     "DLP_HISTORY_classic",  # dl_poly classic history file
     "waterPSF","waterDCD","rmsfArray",
     "HoomdXMLdata",
@@ -172,7 +173,7 @@ __all__ = [
     "COORDINATES_XYZ_BZ2",
     "COORDINATES_GRO",
     "COORDINATES_GRO_INCOMPLETE_VELOCITY",
-    "Martini_membrane_gro", # for testing the leaflet finder
+    "Martini_membrane_gro",  # for testing the leaflet finder
     "COORDINATES_XTC",
     "COORDINATES_TRR",
     "COORDINATES_TNG",
@@ -180,11 +181,11 @@ __all__ = [
     "COORDINATES_DCD",
     "COORDINATES_TOPOLOGY",
     "NUCLsel",
-    "GRO_empty_atom", "GRO_missing_atomname", # for testing GROParser exception raise
-    "ENT", #for testing ENT file extension
+    "GRO_empty_atom", "GRO_missing_atomname",  # for testing GROParser exception raise
+    "ENT",  #for testing ENT file extension
     "RANDOM_WALK",
-    "RANDOM_WALK_TOPO", # garbage topology to go along with XTC positions above
-    "AUX_XVG", "XVG_BAD_NCOL", #for testing .xvg auxiliary reader
+    "RANDOM_WALK_TOPO",  # garbage topology to go along with XTC positions above
+    "AUX_XVG", "XVG_BAD_NCOL",  #for testing .xvg auxiliary reader
     "AUX_XVG_LOWF", "AUX_XVG_HIGHF",
     "AUX_EDR", "AUX_EDR_TPR",
     "AUX_EDR_XTC", "AUX_EDR_RAW",
@@ -192,36 +193,36 @@ __all__ = [
     "MMTF", "MMTF_gz", 'MMTF_skinny',  # skinny - some optional fields stripped out
     "MMTF_skinny2",
     "ALIGN_BOUND",  # two component bound system
-    "ALIGN_UNBOUND", # two component unbound system
-    "legacy_DCD_ADK_coords", # frames 5 and 29 read in for adk_dims.dcd using legacy DCD reader
-    "legacy_DCD_NAMD_coords", # frame 0 read in for SiN_tric_namd.dcd using legacy DCD reader
-    "legacy_DCD_c36_coords", # frames 1 and 4 read in for tip125_tric_C36.dcd using legacy DCD reader
+    "ALIGN_UNBOUND",  # two component unbound system
+    "legacy_DCD_ADK_coords",  # frames 5 and 29 read in for adk_dims.dcd using legacy DCD reader
+    "legacy_DCD_NAMD_coords",  # frame 0 read in for SiN_tric_namd.dcd using legacy DCD reader
+    "legacy_DCD_c36_coords",  # frames 1 and 4 read in for tip125_tric_C36.dcd using legacy DCD reader
     "GSD", "GSD_bonds", "GSD_long",
-    "GRO_MEMPROT", "XTC_MEMPROT", # YiiP transporter in POPE:POPG lipids with Na+, Cl-, Zn2+ dummy model without water
-    "DihedralArray", "DihedralsArray", # time series of single dihedral
-    "RamaArray", "GLYRamaArray", # time series of phi/psi angles
-    "JaninArray", "LYSJaninArray", # time series of chi1/chi2 angles
-    "PDB_rama", "PDB_janin", # for testing failures of Ramachandran and Janin classes
-    "BATArray", # time series of bond-angle-torsion coordinates array from Molecule_comments_header.mol2
+    "GRO_MEMPROT", "XTC_MEMPROT",  # YiiP transporter in POPE:POPG lipids with Na+, Cl-, Zn2+ dummy model without water
+    "DihedralArray", "DihedralsArray",  # time series of single dihedral
+    "RamaArray", "GLYRamaArray",  # time series of phi/psi angles
+    "JaninArray", "LYSJaninArray",  # time series of chi1/chi2 angles
+    "PDB_rama", "PDB_janin",  # for testing failures of Ramachandran and Janin classes
+    "BATArray",  # time series of bond-angle-torsion coordinates array from Molecule_comments_header.mol2
     # DOS line endings
     "WIN_PDB_multiframe", "WIN_DLP_HISTORY", "WIN_TRJ", "WIN_LAMMPSDUMP", "WIN_ARC",
-    "GRO_huge_box", # for testing gro parser with hige box sizes
-    "ITP", # for GROMACS generated itps
-    "ITP_nomass", # for ATB generated itps
+    "GRO_huge_box",  # for testing gro parser with hige box sizes
+    "ITP",  # for GROMACS generated itps
+    "ITP_nomass",  # for ATB generated itps
     "ITP_atomtypes",  # atom definitions to check atomtyes section parsing
-    "ITP_charges", # atom definitions to test custom particle charge parsing.
-    "NAMDBIN", # for NAMD generated binary file
-    "ITP_edited", # to check different directives are read properly
-    "ITP_tip5p", # tip5p water from opls-aa, edited with additional keywords
-    "ITP_spce", # spce water from gromos54a7, edited with additional keywords,
-    "GMX_TOP", # 2 ala10 chains + 3 spc water
-    "GMX_DIR", # GROMACS directory
-    "GMX_TOP_BAD", # file with an #include that doesn't exist
-    "ITP_no_endif", # file missing an #endif
-    "PDB_CRYOEM_BOX", # Issue 2599, Issue #2679, PR #2685
-    "PDB_CHECK_RIGHTHAND_PA", # for testing right handedness of principal_axes
-    "MMTF_NOCRYST", # File with meaningless CRYST1 record (Issue #2679, PR #2685)
-    "FHIAIMS", # to test FHIAIMS coordinate files
+    "ITP_charges",  # atom definitions to test custom particle charge parsing.
+    "NAMDBIN",  # for NAMD generated binary file
+    "ITP_edited",  # to check different directives are read properly
+    "ITP_tip5p",  # tip5p water from opls-aa, edited with additional keywords
+    "ITP_spce",  # spce water from gromos54a7, edited with additional keywords,
+    "GMX_TOP",  # 2 ala10 chains + 3 spc water
+    "GMX_DIR",  # GROMACS directory
+    "GMX_TOP_BAD",  # file with an #include that doesn't exist
+    "ITP_no_endif",  # file missing an #endif
+    "PDB_CRYOEM_BOX",  # Issue 2599, Issue #2679, PR #2685
+    "PDB_CHECK_RIGHTHAND_PA",  # for testing right handedness of principal_axes
+    "MMTF_NOCRYST",  # File with meaningless CRYST1 record (Issue #2679, PR #2685)
+    "FHIAIMS",  # to test FHIAIMS coordinate files
     "SDF_molecule",  # MDL SDFile for rdkit
     "PDBX",  # PDBxfile
     "PDB_elements",  # PDB file with elements
@@ -428,6 +429,9 @@ INPCRD = resource_filename(__name__, 'data/Amber/test.inpcrd')
 TRJ_bz2 = resource_filename(__name__, 'data/Amber/ache.mdcrd.bz2')
 PFncdf_Top = resource_filename(__name__, 'data/Amber/posfor.top')
 PFncdf_Trj = resource_filename(__name__, 'data/Amber/posfor.ncdf')
+
+CPPTRAJ_TRAJ_TOP = resource_filename(__name__, 'data/Amber/cpptraj_traj.prmtop')
+CPPTRAJ_TRAJ = resource_filename(__name__, 'data/Amber/cpptraj_traj.nc')
 
 PRMpbc = resource_filename(__name__, 'data/Amber/capped-ala.prmtop')
 TRJpbc_bz2 = resource_filename(__name__, 'data/Amber/capped-ala.mdcrd.bz2')
