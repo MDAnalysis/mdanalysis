@@ -30,13 +30,14 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
+            const {PULL_NUMBER} = process.env
             let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
                owner: context.repo.owner,
                repo: context.repo.repo,
                run_id: context.payload.workflow_run.id,
             });
             let matchArtifact = allArtifacts.data.artifacts.filter((artifact) => {
-              return artifact.name == darker_${process.env.PULL_NUMBER}
+              return artifact.name == `${PULL_NUMBER}`
             })[0];
             let download = await github.rest.actions.downloadArtifact({
                owner: context.repo.owner,
