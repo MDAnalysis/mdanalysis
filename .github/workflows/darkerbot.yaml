@@ -55,4 +55,4 @@ jobs:
         env:
           PRNUM: ${{ env.PULL_NUMBER }}
         run: |
-          python maintainer/ci/darker-outcomes.py --json darker_${PRNUM}/status.json
+          python maintainer/ci/darker-outcomes.py --json darker_results/status.json
