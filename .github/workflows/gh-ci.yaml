@@ -78,7 +78,7 @@ jobs:
 
     - name: test_pr_number
       env:
-        PRNUM: env.PULL_NUMBER
+        PRNUM: ${{ env.PULL_NUMBER }}
       run: |
         echo $PRNUM
 
