@@ -83,6 +83,8 @@ jobs:
       uses: actions/upload-artifacts@v3
       with:
         name: darker_${{ env.PULL_NUMBER }}
+        path: darker_results/
+        retention-days: 1
 
 
   pylint_check:
