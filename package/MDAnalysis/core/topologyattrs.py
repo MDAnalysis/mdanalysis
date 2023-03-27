@@ -1718,7 +1718,7 @@ class Masses(AtomAttr):
         else:
             recenteredpos = atomgroup.positions - com
 
-        rog_sq = np.einsum('ij,ij->',masses,np.einsum('ijk,ijk->ik',
+        rog_sq = np.einsum('ij,ij->',masses,np.einsum('ij,ij->i',
                                     recenteredpos,recenteredpos))/atomgroup.total_mass()
 
         return np.sqrt(rog_sq)
@@ -2232,7 +2232,7 @@ class Charges(AtomAttr):
                 ) - ref)
             else:
                 recenteredpos = (atomgroup.positions - ref)
-            dipole_vector = np.einsum('ijk,ijk->jk',recenteredpos, 
+            dipole_vector = np.einsum('ij,ij->j',recenteredpos, 
                                       charges[:, np.newaxis])
         else:
             (atom_masks, compound_masks,
