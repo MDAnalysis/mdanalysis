@@ -81,7 +81,8 @@ jobs:
         revision: "HEAD^"
         lint: "flake8"
 
-    - name: actions/github-script@v6
+    - name: get-pr-info
+      uses: actions/github-script@v6
       with:
         script:
             const prNumber = context.payload.number;
