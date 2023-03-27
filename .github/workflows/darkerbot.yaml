@@ -19,7 +19,7 @@ jobs:
   darker_bot:
     runs-on: ubuntu-latest
     steps:
-      - name: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - name: get-pr-info
         uses: actions/github-script@v6
