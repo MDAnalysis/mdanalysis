@@ -81,8 +81,15 @@ jobs:
         revision: "HEAD^"
         lint: "flake8"
 
+    - name: actions/github-script@v6
+      with:
+        script:
+            const prNumber = context.payload.number;
+            core.exportVariable('PULL_NUMBER', prNumber);
+
     - name: write-errors
       env:
+        PR_NUM: ${{ env.PULL_NUMBER }}
         GITHUB_TOKEN: ${{ github.token }}
       run: |
         echo ${{ steps.darker-main-code.outcome }}
