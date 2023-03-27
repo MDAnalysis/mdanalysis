@@ -1718,7 +1718,7 @@ class Masses(AtomAttr):
         else:
             recenteredpos = atomgroup.positions - com
 
-        rog_sq = np.einsum('ij,ij->',masses,np.einsum('ij,ij->i',
+        rog_sq = np.einsum('i,i->',masses,np.einsum('ij,ij->i',
                                     recenteredpos,recenteredpos))/atomgroup.total_mass()
 
         return np.sqrt(rog_sq)
