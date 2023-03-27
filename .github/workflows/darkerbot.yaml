@@ -53,6 +53,6 @@ jobs:
 
       - name: writer-errors
         env:
-          PRNUM: ${{ env.PULL_NUMBER }}
+          PR_NUM: ${{ env.PULL_NUMBER }}
         run: |
           python maintainer/ci/darker-outcomes.py --json darker_results/status.json
