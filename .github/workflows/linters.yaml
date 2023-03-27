@@ -71,15 +71,19 @@ jobs:
             const prNumber = context.payload.number;
             core.exportVariable('PULL_NUMBER', prNumber);
 
-    - name: write-errors
+    - name: save-status
       env:
         PR_NUM: ${{ env.PULL_NUMBER }}
-        GITHUB_TOKEN: ${{ github.token }}
+        MAIN: ${{ steps.darker-main-code.outcome }}
+        TEST: ${{ steps.darker-test-code.outcome }}
       run: |
-        echo ${{ steps.darker-main-code.outcome }}
-        echo ${{ steps.darker-test-code.outcome }}
-        python maintainer/ci/darker-outcomes.py  --main_stat ${{ steps.darker-main-code.outcome }} \
-                                                 --test_stat ${{ steps.darker-test-code.outcome }}
+        mkdir ${PR_NUM}
+        echo "{'main_stat': ${MAIN}, 'test_stat': ${TEST}}" > ${PR_NUM}/status.json
+
+    - name: upload-status
+      uses: actions/upload-artifacts@v3
+      with:
+        name: darker_${{ env.PULL_NUMBER }}
 
 
   pylint_check:
