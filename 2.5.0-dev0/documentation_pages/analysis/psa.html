@@ -171,7 +171,7 @@ map-dendrogram plots from hierarchical clustering.</p>
 <div class="docutils container" id="id2">
 <div class="citation" id="id43" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span>Seyler2015<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id135">2</a>,<a role="doc-backlink" href="#id136">3</a>,<a role="doc-backlink" href="#id137">4</a>)</span>
+<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id137">2</a>,<a role="doc-backlink" href="#id138">3</a>,<a role="doc-backlink" href="#id139">4</a>)</span>
 <p>Sean L. Seyler, Avishek Kumar, M. F. Thorpe, and Oliver Beckstein. Path similarity analysis: a method for quantifying macromolecular pathways. <em>PLOS Computational Biology</em>, 11(10):1–37, 10 2015. <a class="reference external" href="https://doi.org/10.1371/journal.pcbi.1004568">doi:10.1371/journal.pcbi.1004568</a>.</p>
 </div>
 </div>
@@ -332,13 +332,13 @@ either shape <span class="math notranslate nohighlight">\(N_p \times N \times 3\
 </div>
 <p class="rubric">Notes</p>
 <p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.directed_hausdorff.html#scipy.spatial.distance.directed_hausdorff" title="(in SciPy v1.10.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.spatial.distance.directed_hausdorff()</span></code></a> is an optimized
-implementation of the early break algorithm of <span id="id68">[<a class="reference internal" href="#id114" title="Abdel Aziz Taha and Allan Hanbury. An efficient algorithm for calculating the exact hausdorff distance. IEEE Transactions on Pattern Analysis and Machine Intelligence, 37(11):2153-2163, 2015. doi:10.1109/TPAMI.2015.2408351.">Taha2015</a>]</span>; the
+implementation of the early break algorithm of <span id="id69">[<a class="reference internal" href="#id115" title="Abdel Aziz Taha and Allan Hanbury. An efficient algorithm for calculating the exact hausdorff distance. IEEE Transactions on Pattern Analysis and Machine Intelligence, 37(11):2153-2163, 2015. doi:10.1109/TPAMI.2015.2408351.">Taha2015</a>]</span>; the
 latter code is used here to calculate the symmetric Hausdorff
 distance with an RMSD metric</p>
 <p class="rubric">References</p>
-<div class="docutils container" id="id69">
-<div class="citation" id="id114" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id68">Taha2015</a><span class="fn-bracket">]</span></span>
+<div class="docutils container" id="id70">
+<div class="citation" id="id115" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id69">Taha2015</a><span class="fn-bracket">]</span></span>
 <p>Abdel Aziz Taha and Allan Hanbury. An efficient algorithm for calculating the exact hausdorff distance. <em>IEEE Transactions on Pattern Analysis and Machine Intelligence</em>, 37(11):2153–2163, 2015. <a class="reference external" href="https://doi.org/10.1109/TPAMI.2015.2408351">doi:10.1109/TPAMI.2015.2408351</a>.</p>
 </div>
 </div>
@@ -393,7 +393,7 @@ measure that gives equal weight to <em>P</em> and <em>Q</em>.</p>
 </div>
 <p class="rubric">Notes</p>
 <p>The weighted average Hausdorff distance is not a true metric (it does not
-obey the triangle inequality); see <span id="id135">[<a class="reference internal" href="#id43" title="Sean L. Seyler, Avishek Kumar, M. F. Thorpe, and Oliver Beckstein. Path similarity analysis: a method for quantifying macromolecular pathways. PLOS Computational Biology, 11(10):1-37, 10 2015. doi:10.1371/journal.pcbi.1004568.">Seyler2015</a>]</span> for further
+obey the triangle inequality); see <span id="id137">[<a class="reference internal" href="#id43" title="Sean L. Seyler, Avishek Kumar, M. F. Thorpe, and Oliver Beckstein. Path similarity analysis: a method for quantifying macromolecular pathways. PLOS Computational Biology, 11(10):1-37, 10 2015. doi:10.1371/journal.pcbi.1004568.">Seyler2015</a>]</span> for further
 details.</p>
 </dd></dl>
 
@@ -444,7 +444,7 @@ average Hausdorff gives equal weight to both paths.</p>
 </div>
 <p class="rubric">Notes</p>
 <p>The average Hausdorff distance is not a true metric (it does not obey the
-triangle inequality); see <span id="id136">[<a class="reference internal" href="#id43" title="Sean L. Seyler, Avishek Kumar, M. F. Thorpe, and Oliver Beckstein. Path similarity analysis: a method for quantifying macromolecular pathways. PLOS Computational Biology, 11(10):1-37, 10 2015. doi:10.1371/journal.pcbi.1004568.">Seyler2015</a>]</span> for further details.</p>
+triangle inequality); see <span id="id138">[<a class="reference internal" href="#id43" title="Sean L. Seyler, Avishek Kumar, M. F. Thorpe, and Oliver Beckstein. Path similarity analysis: a method for quantifying macromolecular pathways. PLOS Computational Biology, 11(10):1-37, 10 2015. doi:10.1371/journal.pcbi.1004568.">Seyler2015</a>]</span> for further details.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -478,7 +478,7 @@ distances for <cite>P</cite> and <cite>Q</cite>, respectively</p>
 <li><p>Hausdorff neighbors are those points on the two paths that are separated by
 the Hausdorff distance. They are the farthest nearest neighbors and are
 maximally different in the sense of the Hausdorff distance
-<span id="id137">[<a class="reference internal" href="#id43" title="Sean L. Seyler, Avishek Kumar, M. F. Thorpe, and Oliver Beckstein. Path similarity analysis: a method for quantifying macromolecular pathways. PLOS Computational Biology, 11(10):1-37, 10 2015. doi:10.1371/journal.pcbi.1004568.">Seyler2015</a>]</span>.</p></li>
+<span id="id139">[<a class="reference internal" href="#id43" title="Sean L. Seyler, Avishek Kumar, M. F. Thorpe, and Oliver Beckstein. Path similarity analysis: a method for quantifying macromolecular pathways. PLOS Computational Biology, 11(10):1-37, 10 2015. doi:10.1371/journal.pcbi.1004568.">Seyler2015</a>]</span>.</p></li>
 <li><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.directed_hausdorff.html#scipy.spatial.distance.directed_hausdorff" title="(in SciPy v1.10.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.spatial.distance.directed_hausdorff()</span></code></a> can also provide the
 hausdorff neighbors.</p></li>
 </ul>
@@ -532,25 +532,25 @@ trajectory.</p>
 it is sensitive to the direction of the path.</p>
 <p class="rubric">Notes</p>
 <p>The discrete Fréchet metric is an approximation to the continuous Fréchet
-metric <span id="id138">[<a class="reference internal" href="#id159" title="M. Maurice Frèchet. Sur quelques points du calcul fonctionnel. Rendiconti del Circolo Matematico di Palermo (1884-1940), 22(1):1–72, 1906. doi:10.1007/BF03018603.">Frèchet1906</a>, <a class="reference internal" href="#id144" title="Helmut Alt and Michael Godau. Computing the frechet distance between two polygonal curves. International Journal of Computational Geometry &amp; Applications, 05(01n02):75-91, 1995. doi:10.1142/S0218195995000064.">Alt1995</a>]</span>. The calculation of the continuous
+metric <span id="id140">[<a class="reference internal" href="#id161" title="M. Maurice Frèchet. Sur quelques points du calcul fonctionnel. Rendiconti del Circolo Matematico di Palermo (1884-1940), 22(1):1–72, 1906. doi:10.1007/BF03018603.">Frèchet1906</a>, <a class="reference internal" href="#id146" title="Helmut Alt and Michael Godau. Computing the frechet distance between two polygonal curves. International Journal of Computational Geometry &amp; Applications, 05(01n02):75-91, 1995. doi:10.1142/S0218195995000064.">Alt1995</a>]</span>. The calculation of the continuous
 Fréchet distance is implemented with the dynamic programming algorithm of
-<span id="id139">[<a class="reference internal" href="#id155" title="Thomas Eiter and Heikki Mannila. Computing discrete frechet distance. 05 1994.">Eiter1994</a>, <a class="reference internal" href="#id156" title="Thomas Eiter and Heikki Mannila. Distance measures for point sets and their computation. Acta Informatica, 34(2):109–133, 1997. doi:10.1007/s002360050075.">Eiter1997</a>]</span>.</p>
+<span id="id141">[<a class="reference internal" href="#id157" title="Thomas Eiter and Heikki Mannila. Computing discrete frechet distance. 05 1994.">Eiter1994</a>, <a class="reference internal" href="#id158" title="Thomas Eiter and Heikki Mannila. Distance measures for point sets and their computation. Acta Informatica, 34(2):109–133, 1997. doi:10.1007/s002360050075.">Eiter1997</a>]</span>.</p>
 <p class="rubric">References</p>
-<div class="docutils container" id="id140">
-<div class="citation" id="id159" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id138">Frèchet1906</a><span class="fn-bracket">]</span></span>
+<div class="docutils container" id="id142">
+<div class="citation" id="id161" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id140">Frèchet1906</a><span class="fn-bracket">]</span></span>
 <p>M. Maurice Frèchet. Sur quelques points du calcul fonctionnel. <em>Rendiconti del Circolo Matematico di Palermo (1884-1940)</em>, 22(1):1–72, 1906. <a class="reference external" href="https://doi.org/10.1007/BF03018603">doi:10.1007/BF03018603</a>.</p>
 </div>
-<div class="citation" id="id144" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id138">Alt1995</a><span class="fn-bracket">]</span></span>
+<div class="citation" id="id146" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id140">Alt1995</a><span class="fn-bracket">]</span></span>
 <p>Helmut Alt and Michael Godau. Computing the frechet distance between two polygonal curves. <em>International Journal of Computational Geometry &amp; Applications</em>, 05(01n02):75–91, 1995. <a class="reference external" href="https://doi.org/10.1142/S0218195995000064">doi:10.1142/S0218195995000064</a>.</p>
 </div>
-<div class="citation" id="id155" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id139">Eiter1994</a><span class="fn-bracket">]</span></span>
+<div class="citation" id="id157" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id141">Eiter1994</a><span class="fn-bracket">]</span></span>
 <p>Thomas Eiter and Heikki Mannila. Computing discrete frechet distance. 05 1994.</p>
 </div>
-<div class="citation" id="id156" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id139">Eiter1997</a><span class="fn-bracket">]</span></span>
+<div class="citation" id="id158" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id141">Eiter1997</a><span class="fn-bracket">]</span></span>
 <p>Thomas Eiter and Heikki Mannila. Distance measures for point sets and their computation. <em>Acta Informatica</em>, 34(2):109–133, 1997. <a class="reference external" href="https://doi.org/10.1007/s002360050075">doi:10.1007/s002360050075</a>.</p>
 </div>
 </div>
@@ -1469,7 +1469,7 @@ specified by <code class="xref py py-attr docutils literal notranslate"><span cl
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2023, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
+    <p>&#169; Copyright 2005-2023, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
   </div>
 
   
