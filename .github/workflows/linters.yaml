@@ -93,6 +93,9 @@ jobs:
         with open('darker_results/status.json', 'w') as f:
             json.dump(d, f)
 
+    - name: check-json
+      run: cat darker_results/status.json
+
     - name: upload-status
       uses: actions/upload-artifact@v3
       with:
