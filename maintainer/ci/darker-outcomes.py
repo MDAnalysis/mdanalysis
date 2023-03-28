@@ -213,10 +213,11 @@ if __name__ == "__main__":
         status = json.load(f)
 
     run_id = status['RUN_ID']
+    print(f"debug run_id: {run_id}")
 
     # Get Pull Request
     pr_num = int(status['PR_NUM'])
-    print(f"debug: {pr_num}")
+    print(f"debug pr_num: {pr_num}")
     pr = get_pull_request(repo, pr_num)
 
     # Get the url to the github action job being pointed to
