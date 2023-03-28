@@ -111,10 +111,10 @@ class AtomKind(object):
             self, id, name, type, resid, resname, mass, charge, atomic_number):
         # id is only within the scope of a single molecule, not the whole system
         self.id = id
-        self.name = name
-        self.type = type
+        self.name = name.decode()
+        self.type = type.decode()
         self.resid = resid
-        self.resname = resname
+        self.resname = resname.decode()
         self.mass = mass
         self.charge = charge
         self.atomic_number = atomic_number
