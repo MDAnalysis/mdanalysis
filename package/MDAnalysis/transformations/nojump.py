@@ -28,7 +28,8 @@ No Jump Trajectory Unwrapping --- :mod:`MDAnalysis.transformations.nojump`
 Unwraps the trajectory such that atoms never move more than half a periodic box length.
 The consequence of this is that particles will diffuse across periodic boundaries when
 needed. This unwrapping method is suitable as a preprocessing step to calculate
-molecular diffusion.
+molecular diffusion, or more commonly to keep multi-domain proteins whole during trajectory
+analysis.
 The algorithm used is based on :cite:p:`Kulke2022`.
 
 .. autoclass:: NoJump
@@ -45,15 +46,26 @@ from ..exceptions import NoDataError
 class NoJump(TransformationBase):
     """
     Returns transformed coordinates for the given timestep so that an atom
-    does not move more than half the periodic box size, and will move
+    does not move more than half the periodic box size between two timesteps, and will move
     across periodic boundary edges. The algorithm used is based on :cite:p:`Kulke2022`,
-    equation B6 for non-orthogonal systems.
+    equation B6 for non-orthogonal systems, so it is general to most applications where
+    molecule trajectories should not "jump" from one side of a periodic box to another.
+    
+    Note that this transformation depends on a periodic box dimension being set for every
+    frame in the trajectory, and that this box dimension can be transformed to an orthonormal
+    unit cell. If not, an error is emitted. Since it is typical to transform all frames
+    sequentially when unwrapping trajectories, warnings are emitted if non-sequential timesteps
+    are transformed using NoJump.
 
     Example
     -------
 
-    To calculate diffusion, one of the first steps is to compute a trajectory
-    where the atoms do not cross the periodic boundary.
+    Suppose you had a molecular trajectory with a protein dimer that moved across a periodic
+    boundary. This will normally appear to make the dimer split apart. This transformation
+    uses the molecular motions between frames in a wrapped trajectory to create an unwrapped
+    trajectory where molecules never move more than half a periodic box dimension between subsequent
+    frames. Thus, the normal use case is to apply the transformation to every frame of a trajectory,
+    and to do so sequentially.
 
     .. code-block:: python
 
@@ -62,7 +74,9 @@ class NoJump(TransformationBase):
         for ts in u.trajectory:
             print(ts.positions)
 
-    In this case, ``ts.positions`` will return the NoJump unwrapped trajectory.
+    In this case, ``ts.positions`` will return the NoJump unwrapped trajectory, which would keep
+    protein dimers together if they are together in the inital timestep. The unwrapped trajectory may
+    also be useful to compute diffusion coefficients via the Einstein relation.
     To reverse the process, wrap the coordinates again.
 
     Returns
