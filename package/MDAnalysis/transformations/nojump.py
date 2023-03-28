@@ -102,7 +102,7 @@ class NoJump(TransformationBase):
     def _transform(self, ts):
         L = ts.triclinic_dimensions
         if L is None:
-            msg = "Periodic box dimensions not provided at step %d." % ts.frame
+            msg = f"Periodic box dimensions not provided at step {ts.frame}"
             raise NoDataError(msg)
         try:
             Linverse = np.linalg.inv(L)
