@@ -1,11 +1,9 @@
 name: "linters"
 on:
-  push:
-    branches:
-      - develop
   pull_request:
     branches:
       - develop
+      - main
 
 concurrency:
   # Probably overly cautious group naming.
@@ -36,11 +34,7 @@ jobs:
 
     - uses: actions/setup-python@v4
       with:
-        python-version: 3.8
-
-    - name: setup_dependencies
-      run: |
-        pip install PyGithub
+        python-version: 3.9
 
     - name: darker-main-code
       id: darker-main-code
@@ -71,15 +65,37 @@ jobs:
             const prNumber = context.payload.number;
             core.exportVariable('PULL_NUMBER', prNumber);
 
-    - name: write-errors
+    - name: save-status
       env:
-        PR_NUM: ${{ env.PULL_NUMBER }}
-        GITHUB_TOKEN: ${{ github.token }}
+        MAIN: ${{ steps.darker-main-code.outcome }}
+        TEST: ${{ steps.darker-test-code.outcome }}
+      shell: python
       run: |
-        echo ${{ steps.darker-main-code.outcome }}
-        echo ${{ steps.darker-test-code.outcome }}
-        python maintainer/ci/darker-outcomes.py  --main_stat ${{ steps.darker-main-code.outcome }} \
-                                                 --test_stat ${{ steps.darker-test-code.outcome }}
+        import os
+        import json
+        from pathlib import Path
+
+        Path('./darker_results/').mkdir(exist_ok=True)
+
+        d = {
+            'main_stat': os.environ['MAIN'],
+            'test_stat': os.environ['TEST'],
+            'PR_NUM': os.environ['PULL_NUMBER'],
+            'RUN_ID': os.environ['GITHUB_RUN_ID'],
+        }
+
+        with open('darker_results/status.json', 'w') as f:
+            json.dump(d, f)
+
+    - name: check-json
+      run: cat darker_results/status.json
+
+    - name: upload-status
+      uses: actions/upload-artifact@v3
+      with:
+        name: darkerlint
+        path: darker_results/
+        retention-days: 1
 
 
   pylint_check:
