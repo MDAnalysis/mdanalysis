@@ -209,11 +209,13 @@ if __name__ == "__main__":
     git = Github(os.environ['GITHUB_TOKEN'])
     repo = git.get_repo("MDAnalysis/mdanalysis")
 
-    run_id = os.environ['GITHUB_RUN_ID']
-    job_id = os.environ['GITHUB_RUN_NUMBER']
+    with open(args.json, 'r') as f:
+        status = json.load(f)
+
+    run_id = status['GITHUB_RUN_ID']
 
     # Get Pull Request
-    pr_num = int(os.environ['PR_NUM'])
+    pr_num = int(status['PR_NUM'])
     print(f"debug: {pr_num}")
     pr = get_pull_request(repo, pr_num)
 
@@ -227,8 +229,8 @@ if __name__ == "__main__":
         results_dict = json.load(f)
 
     message = gen_message(pr,
-                          results_dict['main_stat'],
-                          results_dict['test_stat'],
+                          status['main_stat'],
+                          status['test_stat'],
                           action_url)
 
     # Post your comment
