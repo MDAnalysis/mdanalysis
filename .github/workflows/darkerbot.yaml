@@ -21,17 +21,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-#      - name: get-pr-info
-#        uses: actions/github-script@v6
-#        with:
-#          script:
-#            const prNumber = context.payload.number;
-#            core.exportVariable('PULL_NUMBER', prNumber);
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
 
-#      - name: 'Download artifact'
-#        uses: actions/download-artifact@v3
-#        with:
-#          name: darker_${{ env.PULL_NUMBER }}
+      - name: setup_dependencies
+        run: |
+          pip install PyGithub
 
       - name: 'Download artifact'
         uses: actions/github-script@v6
