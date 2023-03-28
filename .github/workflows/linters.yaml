@@ -33,7 +33,7 @@ permissions:
 
 jobs:
   darker_lint:
-    if: "github.repository == 'MDAnalysis/mdanalysis'"
+    #if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
