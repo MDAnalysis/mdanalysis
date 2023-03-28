@@ -107,7 +107,7 @@ class NoJump(TransformationBase):
         try:
             Linverse = np.linalg.inv(L)
         except np.linalg.LinAlgError:
-            msg = "Periodic box dimensions are not invertible at step %d." % ts.frame
+            msg = f"Periodic box dimensions are not invertible at step {ts.frame}"
             raise NoDataError(msg)
         if self.prev is None:
             self.prev = ts.positions @ Linverse
