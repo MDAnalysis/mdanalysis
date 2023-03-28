@@ -145,6 +145,18 @@ from ..auxiliary import _AUXREADERS
 from ..lib.util import asiterable, Namespace, store_init_arguments
 from ..lib.util import NamedStream
 
+class aClassWithSomeStrangeCasingAndAlsoAVeryLongNameThatShouldntBeUsedAnywhereElse(object):
+    def __init__(self):
+        pass
+    def nospacesmethod(self):
+        pass
+
+
+    def toomanyspacesmethod(self):
+        pass
+
+    def WhyAreYouNotFailing(self):
+        pass
 
 class FrameIteratorBase(object):
     """
