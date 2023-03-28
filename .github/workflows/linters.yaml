@@ -75,9 +75,23 @@ jobs:
         TEST: ${{ steps.darker-test-code.outcome }}
         PRNUM: ${{ env.PULL_NUMBER }}
         RUNID: ${{ env.GITHUB_RUN_ID }}
+      shell: python
       run: |
-        mkdir darker_results
-        echo "{'main_stat': ${MAIN}, 'test_stat': ${TEST}, 'PR_NUM': ${PRNUM}, 'RUN_ID': ${RUNID}}" > darker_results/status.json
+        import os
+        import json
+        from pathlib import Path
+
+        Path('./darker_results/').mkdir(exist_ok=True)
+
+        d = {
+            'main_stat': os.environ['MAIN'],
+            'test_stat': os.environ['TEST'],
+            'PR_NUM': os.environ['PRNUM'],
+            'RUN_ID': os.environ['RUNID'],
+        }
+
+        with open('darker_results/status.json', 'w') as f:
+            json.dump(d, f)
 
     - name: upload-status
       uses: actions/upload-artifact@v3
