@@ -16,10 +16,11 @@ The rules for this file:
   
 ??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae, 
          ooprathamm, MeetB7, BFedder, v-parmar, MoSchaeffler, jbarnoud, jandom,
-         xhgchen, jaclark5, DrDomenicoMarson, AHMED-salah00, SophiaRuan
+         xhgchen, jaclark5, DrDomenicoMarson, AHMED-salah00, schlaicha, SophiaRuan
  * 2.5.0
 
 Fixes
+  * Fix parsing of box vector in H5MD reader (Issue #4076)
   * Fix the misleading 'AtomGroup.guess_bonds()' docs and passed missing
     arguments (PR #4059)
   * Fix for NetCDF trajectories without `time` variable (Issue #4073)

@@ -61,10 +61,10 @@ jobs:
 
     - name: darker-main-code
       id: darker-main-code
-      uses: akaihola/darker@1.5.1
+      uses: akaihola/darker@1.6.1
       continue-on-error: true
       with:
-        version: "@master"
+        version: "~=1.6.1"
         options: "--check --diff --color"
         src: "./package/MDAnalysis"
         revision: "HEAD^"
@@ -72,17 +72,25 @@ jobs:
 
     - name: darker-test-code
       id: darker-test-code
-      uses: akaihola/darker@1.5.1
+      uses: akaihola/darker@1.6.1
       continue-on-error: true
       with:
-        version: "@master"
+        version: "~=1.6.1"
         options: "--check --diff --color"
         src: "./testsuite/MDAnalysisTests"
         revision: "HEAD^"
         lint: "flake8"
 
+    - name: get-pr-info
+      uses: actions/github-script@v6
+      with:
+        script:
+            const prNumber = context.payload.number;
+            core.exportVariable('PULL_NUMBER', prNumber);
+
     - name: write-errors
       env:
+        PR_NUM: ${{ env.PULL_NUMBER }}
         GITHUB_TOKEN: ${{ github.token }}
       run: |
         echo ${{ steps.darker-main-code.outcome }}
