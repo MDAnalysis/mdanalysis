@@ -74,9 +74,10 @@ jobs:
         MAIN: ${{ steps.darker-main-code.outcome }}
         TEST: ${{ steps.darker-test-code.outcome }}
         PRNUM: ${{ env.PULL_NUMBER }}
+        RUNID: ${{ env.GITHUB_RUN_ID }}
       run: |
         mkdir darker_results
-        echo "{'main_stat': ${MAIN}, 'test_stat': ${TEST}, 'PRNUM': ${PRNUM}, '}" > darker_results/status.json
+        echo "{'main_stat': ${MAIN}, 'test_stat': ${TEST}, 'PR_NUM': ${PRNUM}, 'RUN_ID': ${RUNID}}" > darker_results/status.json
 
     - name: upload-status
       uses: actions/upload-artifact@v3
