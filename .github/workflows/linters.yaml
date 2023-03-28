@@ -1,8 +1,5 @@
 name: "linters"
 on:
-  push:
-    branches:
-      - develop
   pull_request:
     branches:
       - develop
@@ -20,8 +17,7 @@ defaults:
 
 jobs:
   darker_lint:
-    if: |
-      github.event_name == 'pull_request'
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -83,8 +79,8 @@ jobs:
 
 
   pylint_check:
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
 
@@ -104,6 +100,7 @@ jobs:
 
 
   mypy :
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
