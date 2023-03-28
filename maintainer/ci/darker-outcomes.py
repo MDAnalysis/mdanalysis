@@ -212,7 +212,7 @@ if __name__ == "__main__":
     with open(args.json, 'r') as f:
         status = json.load(f)
 
-    run_id = status['GITHUB_RUN_ID']
+    run_id = status['RUN_ID']
 
     # Get Pull Request
     pr_num = int(status['PR_NUM'])
