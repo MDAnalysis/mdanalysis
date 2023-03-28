@@ -1,9 +1,5 @@
 name: "linters"
 on:
-  push:
-    branches:
-      - develop
-      - main
   pull_request:
     branches:
       - develop
@@ -73,8 +69,6 @@ jobs:
       env:
         MAIN: ${{ steps.darker-main-code.outcome }}
         TEST: ${{ steps.darker-test-code.outcome }}
-        PRNUM: ${{ env.PULL_NUMBER }}
-        RUNID: ${{ env.GITHUB_RUN_ID }}
       shell: python
       run: |
         import os
@@ -86,7 +80,7 @@ jobs:
         d = {
             'main_stat': os.environ['MAIN'],
             'test_stat': os.environ['TEST'],
-            'PR_NUM': os.environ['PRNUM'],
+            'PR_NUM': os.environ['PULL_NUMBER'],
             'RUN_ID': os.environ['GITHUB_RUN_ID'],
         }
 
