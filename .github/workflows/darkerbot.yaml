@@ -53,11 +53,8 @@ jobs:
       - name: 'Unzip artifact'
         run: unzip darker_results.zip
 
-      - name: 'ls'
-        run: ls -a .
-
       - name: writer-errors
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          python maintainer/ci/darker-outcomes.py --json darker_results/status.json
+          python maintainer/ci/darker-outcomes.py --json status.json
