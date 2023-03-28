@@ -84,7 +84,7 @@ jobs:
     - name: upload-status
       uses: actions/upload-artifact@v3
       with:
-        name: darker_${{ env.PULL_NUMBER }}
+        name: darkerlint
         path: darker_results/
         retention-days: 1
 
