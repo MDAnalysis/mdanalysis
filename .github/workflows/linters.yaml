@@ -1,9 +1,6 @@
 name: "linters"
 on:
-  push:
-    branches:
-      - develop
-  pull_request_target:
+  pull_request:
     branches:
       - develop
 
@@ -13,6 +10,10 @@ concurrency:
   # commits within the same PR
   group: "${{ github.ref }}-${{ github.head_ref }}-${{ github.workflow }}"
   cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash -l {0}
 
 permissions:
   # try to lock things down as much as possible
@@ -30,15 +31,9 @@ permissions:
   security-events: read
   statuses: read
 
-defaults:
-  run:
-    shell: bash -l {0}
-
 jobs:
   darker_lint:
-    if: |
-      github.repository == 'MDAnalysis/mdanalysis' &&
-      github.event_name == 'pull_request_target'
+    #if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -102,7 +97,6 @@ jobs:
   pylint_check:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
 
