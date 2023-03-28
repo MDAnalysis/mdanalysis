@@ -87,7 +87,7 @@ jobs:
             'main_stat': os.environ['MAIN'],
             'test_stat': os.environ['TEST'],
             'PR_NUM': os.environ['PRNUM'],
-            'RUN_ID': os.environ['RUNID'],
+            'RUN_ID': os.environ['GITHUB_RUN_ID'],
         }
 
         with open('darker_results/status.json', 'w') as f:
