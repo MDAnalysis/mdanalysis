@@ -207,7 +207,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     git = Github(os.environ['GITHUB_TOKEN'])
-    repo = git.get_repo("IAlibay/mdanalysis")
+    repo = git.get_repo("MDAnalysis/mdanalysis")
 
     with open(args.json, 'r') as f:
         status = json.load(f)
