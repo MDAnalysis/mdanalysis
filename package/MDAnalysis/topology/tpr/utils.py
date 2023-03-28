@@ -326,10 +326,24 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
         mb = do_molblock(data)
         # segment is made to correspond to the molblock as in gromacs, the
         # naming is kind of arbitrary
-        molblock = mtop.moltypes[mb.molb_type].name.decode('utf-8')
+        mt = mtop.moltypes[mb.molb_type]  # mt: molecule type
+        molblock = mt.name.decode('utf-8')
         segid = f"seg_{i}_{molblock}"
+        if mt.bonds is not None:
+            curr_bonds = np.tile(mt.bonds, mb.molb_nmol).reshape((mb.molb_nmol * len(mt.bonds), 2))
+            adder = np.repeat(np.arange(0, mt.number_of_atoms() * mb.molb_nmol, mt.number_of_atoms()), 2 * len(mt.bonds)).reshape(-1, 2) + atom_start_ndx
+            curr_bonds += adder
+            bonds.extend(curr_bonds)
+        if mt.angles is not None:
+            curr_angles = np.tile(mt.angles, mb.molb_nmol).reshape((mb.molb_nmol * len(mt.angles), 3))
+            angles.extend(curr_angles)
+        if mt.dihe is not None:
+            curr_dihedrals = np.tile(mt.dihe, mb.molb_nmol).reshape((mb.molb_nmol * len(mt.dihe), 4))
+            dihedrals.extend(curr_dihedrals)
+        if mt.impr is not None:
+            curr_impropers = np.tile(mt.impr, mb.molb_nmol).reshape((mb.molb_nmol * len(mt.impr), 4))
+            impropers.extend(curr_impropers)
         for j in range(mb.molb_nmol):
-            mt = mtop.moltypes[mb.molb_type]  # mt: molecule type
             for atomkind in mt.atomkinds:
                 atomids.append(atomkind.id + atom_start_ndx)
                 segids.append(segid)
@@ -343,12 +357,6 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
                 masses.append(atomkind.mass)
                 elements.append(atomkind.element_symbol)
             molnum += 1
-
-            # remap_ method returns [blah, blah, ..] or []
-            bonds.extend(mt.remap_bonds(atom_start_ndx))
-            angles.extend(mt.remap_angles(atom_start_ndx))
-            dihedrals.extend(mt.remap_dihe(atom_start_ndx))
-            impropers.extend(mt.remap_impr(atom_start_ndx))
 
             atom_start_ndx += mt.number_of_atoms()
             res_start_ndx += mt.number_of_residues()
@@ -394,12 +402,10 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
                           segids],
                    atom_resindex=residx,
                    residue_segindex=segidx)
-    top.add_TopologyAttr(Bonds([bond for bond in bonds if bond]))
-    top.add_TopologyAttr(Angles([angle for angle in angles if angle]))
-    top.add_TopologyAttr(Dihedrals([dihedral for dihedral in dihedrals
-                                    if dihedral]))
-    top.add_TopologyAttr(Impropers([improper for improper in impropers
-                                    if improper]))
+    top.add_TopologyAttr(Bonds(bonds))
+    top.add_TopologyAttr(Angles(angles))
+    top.add_TopologyAttr(Dihedrals(dihedrals))
+    top.add_TopologyAttr(Impropers(impropers))
 
     if any(elements):
         elements = Elements(np.array(elements, dtype=object))
