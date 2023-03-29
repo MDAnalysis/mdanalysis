@@ -63,7 +63,7 @@ own please see the source code in `lib/formats/libmdaxdr.pyx`_ for the time bein
    https://github.com/MDAnalysis/mdanalysis/blob/develop/package/MDAnalysis/lib/formats/libmdaxdr.pyx
 """
 
-cimport numpy as np
+cimport numpy as cnp
 cimport cython
 from MDAnalysis.lib.formats.cython_util cimport ptr_to_ndarray
 from libc.stdint cimport int64_t
@@ -96,10 +96,10 @@ import numpy as np
 from os.path import exists
 from collections import namedtuple
 
-np.import_array()
+cnp.import_array()
 
 ctypedef float DTYPE_T
-DTYPE = np.float32
+DTYPE = cnp.float32
 cdef int DIMS = 3
 cdef int HASX = 1
 cdef int HASV = 2
@@ -369,7 +369,7 @@ cdef class _XDRFile:
             self._has_offsets = True
         return self._offsets
 
-    def set_offsets(self, np.ndarray offsets):
+    def set_offsets(self, cnp.ndarray offsets):
         """set frame offsets"""
         self._offsets = offsets
         self._has_offsets = True
@@ -424,7 +424,7 @@ cdef class TRRFile(_XDRFile):
     def calc_offsets(self):
         """read byte offsets from TRR file directly"""
         if not self.is_open:
-            return np.array([])
+            return cnp.array([])
         cdef int n_frames = 0
         cdef int est_nframes = 0
         cdef int64_t* offsets = NULL
@@ -436,12 +436,12 @@ cdef class TRRFile(_XDRFile):
         # overestimation. This number is saved in est_nframes and we need to
         # tell the new numpy array about the whole allocated memory to avoid
         # memory leaks.
-        cdef np.npy_intp[1] dim
+        cdef cnp.npy_intp[1] dim
         dim[0] = 1
-        cdef np.ndarray[np.int64_t, ndim=1] dims = np.PyArray_EMPTY(1, dim, np.NPY_INT64, 0)
+        cdef cnp.ndarray[cnp.int64_t, ndim=1] dims = cnp.PyArray_EMPTY(1, dim, cnp.NPY_INT64, 0)
         dims[0] = est_nframes
         # this handles freeing the allocated memory correctly.
-        cdef np.ndarray nd_offsets = ptr_to_ndarray(<void*> offsets, dims, np.NPY_INT64)
+        cdef cnp.ndarray nd_offsets = ptr_to_ndarray(<void*> offsets, dims, cnp.NPY_INT64)
         return nd_offsets[:n_frames]
 
     def read(self):
@@ -475,18 +475,18 @@ cdef class TRRFile(_XDRFile):
         cdef float time = 0
         cdef float lmbda = 0
 
-        cdef np.npy_intp[2] dim
+        cdef cnp.npy_intp[2] dim
         dim[0] = self.n_atoms
         dim[1] = DIMS
 
-        cdef np.npy_intp[2] unitcell_dim
+        cdef cnp.npy_intp[2] unitcell_dim
         unitcell_dim[0] = DIMS
         unitcell_dim[1] = DIMS
 
-        cdef np.ndarray[np.float32_t, ndim=2] xyz = np.PyArray_EMPTY(2, dim, np.NPY_FLOAT32, 0)
-        cdef np.ndarray[np.float32_t, ndim=2] velocity = np.PyArray_EMPTY(2, dim, np.NPY_FLOAT32, 0)
-        cdef np.ndarray[np.float32_t, ndim=2] forces = np.PyArray_EMPTY(2, dim, np.NPY_FLOAT32, 0)
-        cdef np.ndarray[np.float32_t, ndim=2] box = np.PyArray_EMPTY(2, unitcell_dim, np.NPY_FLOAT32, 0)
+        cdef cnp.ndarray[cnp.float32_t, ndim=2] xyz = cnp.PyArray_EMPTY(2, dim, cnp.NPY_FLOAT32, 0)
+        cdef cnp.ndarray[cnp.float32_t, ndim=2] velocity = cnp.PyArray_EMPTY(2, dim, cnp.NPY_FLOAT32, 0)
+        cdef cnp.ndarray[cnp.float32_t, ndim=2] forces = cnp.PyArray_EMPTY(2, dim, cnp.NPY_FLOAT32, 0)
+        cdef cnp.ndarray[cnp.float32_t, ndim=2] box = cnp.PyArray_EMPTY(2, unitcell_dim, cnp.NPY_FLOAT32, 0)
 
         return_code = read_trr(self.xfp, self.n_atoms, <int*> &step,
                                       &time, &lmbda, <matrix>box.data,
@@ -516,16 +516,16 @@ cdef class TRRFile(_XDRFile):
         return TRRFrame(xyz, velocity, forces, box, step, time, lmbda,
                         has_x, has_v, has_f)
 
-    def read_direct_xvf(self, np.float32_t[:, ::1] positions,
-                        np.float32_t[:, ::1] velocities,
-                        np.float32_t[:, ::1] forces,):
+    def read_direct_xvf(self, cnp.float32_t[:, ::1] positions,
+                        cnp.float32_t[:, ::1] velocities,
+                        cnp.float32_t[:, ::1] forces,):
         """
         Read next frame in the TRR file with positions read directly into
         a pre-existing array.
 
         Parameters
         ----------
-        positions : np.ndarray
+        positions : cnp.ndarray
             positions array to read positions into
 
         Returns
@@ -559,12 +559,12 @@ cdef class TRRFile(_XDRFile):
         cdef float time = 0
         cdef float lmbda = 0
 
-        cdef np.npy_intp[2] unitcell_dim
+        cdef cnp.npy_intp[2] unitcell_dim
         unitcell_dim[0] = DIMS
         unitcell_dim[1] = DIMS
 
 
-        cdef np.ndarray[np.float32_t, ndim=2] box = np.PyArray_EMPTY(2, unitcell_dim, np.NPY_FLOAT32, 0)
+        cdef cnp.ndarray[cnp.float32_t, ndim=2] box = cnp.PyArray_EMPTY(2, unitcell_dim, cnp.NPY_FLOAT32, 0)
 
         return_code = read_trr(self.xfp, self.n_atoms, <int*> &step,
                                       &time, &lmbda, <matrix>box.data,
@@ -632,25 +632,25 @@ cdef class TRRFile(_XDRFile):
         # defined here to get a pointer to their first element. This is the only
         # way I know to have a nice pythonic API to the function that can accept
         # array-like inputs or things like None.
-        cdef np.ndarray xyz_helper
-        cdef np.ndarray velocity_helper
-        cdef np.ndarray forces_helper
+        cdef cnp.ndarray xyz_helper
+        cdef cnp.ndarray velocity_helper
+        cdef cnp.ndarray forces_helper
 
         if xyz is not None:
-            xyz = np.asarray(xyz)
-            xyz_helper = np.ascontiguousarray(xyz, dtype=DTYPE)
+            xyz = cnp.asarray(xyz)
+            xyz_helper = cnp.ascontiguousarray(xyz, dtype=DTYPE)
             xyz_ptr = <float*>xyz_helper.data
         if velocity is not None:
-            velocity = np.asarray(velocity)
-            velocity_helper = np.ascontiguousarray(velocity, dtype=DTYPE)
+            velocity = cnp.asarray(velocity)
+            velocity_helper = cnp.ascontiguousarray(velocity, dtype=DTYPE)
             velocity_ptr = <float*>velocity_helper.data
         if forces is not None:
-            forces = np.asarray(forces)
-            forces_helper = np.ascontiguousarray(forces, dtype=DTYPE)
+            forces = cnp.asarray(forces)
+            forces_helper = cnp.ascontiguousarray(forces, dtype=DTYPE)
             forces_ptr = <float*>forces_helper.data
 
-        box = np.asarray(box)
-        cdef np.ndarray box_helper = np.ascontiguousarray(box, dtype=DTYPE)
+        box = cnp.asarray(box)
+        cdef cnp.ndarray box_helper = cnp.ascontiguousarray(box, dtype=DTYPE)
         cdef float* box_ptr = <float*>box_helper.data
 
         if self.current_frame == 0:
@@ -727,7 +727,7 @@ cdef class XTCFile(_XDRFile):
     def calc_offsets(self):
         """Calculate offsets from XTC file directly"""
         if not self.is_open:
-            return np.array([])
+            return cnp.array([])
         cdef int n_frames = 0
         cdef int est_nframes = 0
         cdef int64_t* offsets = NULL
@@ -739,12 +739,12 @@ cdef class XTCFile(_XDRFile):
         # overestimation. This number is saved in est_nframes and we need to
         # tell the new numpy array about the whole allocated memory to avoid
         # memory leaks.
-        cdef np.npy_intp[1] dim
+        cdef cnp.npy_intp[1] dim
         dim[0] = 1
-        cdef np.ndarray[np.int64_t, ndim=1] dims = np.PyArray_EMPTY(1, dim, np.NPY_INT64, 0)
+        cdef cnp.ndarray[cnp.int64_t, ndim=1] dims = cnp.PyArray_EMPTY(1, dim, cnp.NPY_INT64, 0)
         dims[0] = est_nframes
         # this handles freeing the allocated memory correctly.
-        cdef np.ndarray nd_offsets = ptr_to_ndarray(<void*> offsets, dims, np.NPY_INT64)
+        cdef cnp.ndarray nd_offsets = ptr_to_ndarray(<void*> offsets, dims, cnp.NPY_INT64)
         return nd_offsets[:n_frames]
 
     def read(self):
@@ -776,16 +776,16 @@ cdef class XTCFile(_XDRFile):
         cdef int step
         cdef float time, prec
 
-        cdef np.npy_intp[2] dim
+        cdef cnp.npy_intp[2] dim
         dim[0] = self.n_atoms
         dim[1] = DIMS
 
-        cdef np.npy_intp[2] unitcell_dim
+        cdef cnp.npy_intp[2] unitcell_dim
         unitcell_dim[0] = DIMS
         unitcell_dim[1] = DIMS
 
-        cdef np.ndarray[np.float32_t, ndim=2] xyz = np.PyArray_EMPTY(2, dim, np.NPY_FLOAT32, 0)
-        cdef np.ndarray[np.float32_t, ndim=2] box = np.PyArray_EMPTY(2, unitcell_dim, np.NPY_FLOAT32, 0)
+        cdef cnp.ndarray[cnp.float32_t, ndim=2] xyz = cnp.PyArray_EMPTY(2, dim, cnp.NPY_FLOAT32, 0)
+        cdef cnp.ndarray[cnp.float32_t, ndim=2] box = cnp.PyArray_EMPTY(2, unitcell_dim, cnp.NPY_FLOAT32, 0)
 
         return_code = read_xtc(self.xfp, self.n_atoms, <int*> &step,
                                       &time, <matrix>box.data,
@@ -801,14 +801,14 @@ cdef class XTCFile(_XDRFile):
 
         return XTCFrame(xyz, box, step, time, prec)
 
-    def read_direct_x(self, np.float32_t[:, ::1] positions):
+    def read_direct_x(self, cnp.float32_t[:, ::1] positions):
         """
         Read next frame in the XTC file with positions read directly into
         a pre-existing array.
 
         Parameters
         ----------
-        positions : np.ndarray
+        positions : cnp.ndarray
            positions array to read positions into
 
         Returns
@@ -839,11 +839,11 @@ cdef class XTCFile(_XDRFile):
         return_code = 1
         cdef int step
         cdef float time, prec
-        cdef np.npy_intp[2] unitcell_dim
+        cdef cnp.npy_intp[2] unitcell_dim
         unitcell_dim[0] = DIMS
         unitcell_dim[1] = DIMS
 
-        cdef np.ndarray[np.float32_t, ndim=2] box = np.PyArray_EMPTY(2, unitcell_dim, np.NPY_FLOAT32, 0)
+        cdef cnp.ndarray[cnp.float32_t, ndim=2] box = cnp.PyArray_EMPTY(2, unitcell_dim, cnp.NPY_FLOAT32, 0)
 
 
         return_code = read_xtc(self.xfp, self.n_atoms, <int*> &step,
@@ -893,11 +893,11 @@ cdef class XTCFile(_XDRFile):
             raise IOError('File opened in mode: {}. Writing only allow '
                           'in mode "w"'.format('self.mode'))
 
-        xyz = np.asarray(xyz, dtype=np.float32)
-        box = np.asarray(box, dtype=np.float32)
+        xyz = cnp.asarray(xyz, dtype=np.float32)
+        box = cnp.asarray(box, dtype=np.float32)
 
-        cdef DTYPE_T[:, ::1] xyz_view = np.PyArray_GETCONTIGUOUS(xyz)
-        cdef DTYPE_T[:, ::1] box_view = np.PyArray_GETCONTIGUOUS(box)
+        cdef DTYPE_T[:, ::1] xyz_view = cnp.PyArray_GETCONTIGUOUS(xyz)
+        cdef DTYPE_T[:, ::1] box_view = cnp.PyArray_GETCONTIGUOUS(box)
 
         if self.current_frame == 0:
             self.n_atoms = xyz.shape[0]

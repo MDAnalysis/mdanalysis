@@ -137,8 +137,8 @@ Users will typically use the :func:`CalcRMSDRotationalMatrix` function.
 """
 
 import numpy as np
-cimport numpy as np
-np.import_array()
+cimport numpy as cnp
+cnp.import_array()
 
 from ..due import due, BibTeX, Doi
 
@@ -174,24 +174,24 @@ cdef extern from "math.h":
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def InnerProduct(np.ndarray[np.float64_t, ndim=1] A,
-                 np.ndarray[np.float64_t, ndim=2] coords1,
-                 np.ndarray[np.float64_t, ndim=2] coords2,
+def InnerProduct(cnp.ndarray[cnp.float64_t, ndim=1] A,
+                 cnp.ndarray[cnp.float64_t, ndim=2] coords1,
+                 cnp.ndarray[cnp.float64_t, ndim=2] coords2,
                  int N,
-                 np.ndarray[np.float64_t, ndim=1] weight):
+                 cnp.ndarray[cnp.float64_t, ndim=1] weight):
     """Calculate the inner product of two structures.
 
     Parameters
     ----------
-    A : ndarray np.float64_t
+    A : ndarray cnp.float64_t
         result inner product array, modified in place
-    coords1 : ndarray np.float64_t
+    coords1 : ndarray cnp.float64_t
         reference structure
-    coord2 : ndarray np.float64_t
+    coord2 : ndarray cnp.float64_t
         candidate structure
     N : int
         size of system
-    weights : ndarray np.float64_t (optional)
+    weights : ndarray cnp.float64_t (optional)
         use to calculate weighted inner product
 
 
@@ -278,25 +278,25 @@ def InnerProduct(np.ndarray[np.float64_t, ndim=1] A,
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def CalcRMSDRotationalMatrix(np.ndarray[np.float64_t, ndim=2] ref,
-                             np.ndarray[np.float64_t, ndim=2] conf,
+def CalcRMSDRotationalMatrix(cnp.ndarray[cnp.float64_t, ndim=2] ref,
+                             cnp.ndarray[cnp.float64_t, ndim=2] conf,
                              int N,
-                             np.ndarray[np.float64_t, ndim=1] rot,
-                             np.ndarray[np.float64_t, ndim=1] weights):
+                             cnp.ndarray[cnp.float64_t, ndim=1] rot,
+                             cnp.ndarray[cnp.float64_t, ndim=1] weights):
     """
     Calculate the RMSD & rotational matrix.
 
     Parameters
     ----------
-    ref : ndarray, np.float64_t
+    ref : ndarray, cnp.float64_t
         reference structure coordinates
-    conf : ndarray, np.float64_t
+    conf : ndarray, cnp.float64_t
         condidate structure coordinates
     N : int
         size of the system
-    rot : ndarray, np.float64_t
+    rot : ndarray, cnp.float64_t
         array to store rotation matrix. Must be flat
-    weights : ndarray, npfloat64_t (optional)
+    weights : ndarray, cnpfloat64_t (optional)
         weights for each component
 
     Returns
