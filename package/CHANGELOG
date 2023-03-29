@@ -16,7 +16,7 @@ The rules for this file:
   
 ??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae, 
          ooprathamm, MeetB7, BFedder, v-parmar, MoSchaeffler, jbarnoud, jandom,
-         xhgchen, jaclark5, DrDomenicoMarson, AHMED-salah00, schlaicha
+         xhgchen, jaclark5, DrDomenicoMarson, AHMED-salah00, schlaicha, SophiaRuan
  * 2.5.0
 
 Fixes
@@ -50,6 +50,8 @@ Enhancements
   * Add `progressbar_kwargs` parameter to `AnalysisBase.run` method, allowing to modify description, position etc of tqdm progressbars.
 
 Changes
+  * Add progress bars to track the progress of _conclude() functions
+    (_conclude_simple() and _conclude_fft()) in msd.py (Issue #4070, PR #4072)
   * As per NEP29 the minimum supported NumPy version has been raised to 1.21
     (note: in practice later versions of NumPy may be used depending on your
      architecture, operating system, or Python version) (PR #3983)
