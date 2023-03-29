@@ -25,7 +25,7 @@ import scipy
 import scipy.spatial
 
 import MDAnalysis
-from MDAnalysisTests.datafiles import GRO
+from MDAnalysisTests.datafiles import GRO, XTC
 
 import MDAnalysis.analysis.distances
 
@@ -235,3 +235,136 @@ class TestBetween(object):
             dists
         )
         assert isinstance(actual, MDAnalysis.core.groups.AtomGroup)
+
+
+class TestAtomicDistances(object):
+    @staticmethod
+    @pytest.fixture()
+    def ad_u():
+        return MDAnalysis.Universe(GRO, XTC)
+
+    @staticmethod
+    @pytest.fixture()
+    def ad_ag1(ad_u):
+        return ad_u.atoms[100:105]
+
+    @staticmethod
+    @pytest.fixture()
+    def ad_ag2(ad_u):
+        return ad_u.atoms[300:305]
+
+    @staticmethod
+    @pytest.fixture()
+    def ad_ag3(ad_u):
+        # more atoms than expected (exception)
+        return ad_u.atoms[:7]
+
+    @staticmethod
+    @pytest.fixture()
+    def ad_ag4():
+        u = MDAnalysis.Universe(GRO)
+        # different trajectory, no XTC (exception)
+        return u.atoms[-5:]
+
+    @staticmethod
+    @pytest.fixture()
+    def expected_scipy(ad_ag1, ad_ag2):
+        expected = np.zeros((len(ad_ag1.universe.trajectory),
+                             ad_ag1.atoms.n_atoms))
+
+        # calculate distances without PBCs using scipy
+        for i, ts in enumerate(ad_ag1.universe.trajectory):
+            expected[i] = np.diag(scipy.spatial.distance.cdist
+                                  (ad_ag1.positions,
+                                   ad_ag2.positions))
+        return expected
+
+    @staticmethod
+    @pytest.fixture()
+    def expected_dist(ad_ag1, ad_ag2):
+        expected = np.zeros((len(ad_ag1.universe.trajectory),
+                             ad_ag1.atoms.n_atoms))
+
+        # calculate distances without PBCs using dist()
+        for i, ts in enumerate(ad_ag1.universe.trajectory):
+            expected[i] = MDAnalysis.analysis.distances.dist(ad_ag1,
+                                                             ad_ag2)[2]
+        return expected
+
+    @staticmethod
+    @pytest.fixture()
+    def expected_pbc(ad_ag1, ad_ag2):
+        expected = np.zeros((len(ad_ag1.universe.trajectory),
+                             ad_ag1.atoms.n_atoms))
+
+        # calculate distances with PBCs
+        for i, ts in enumerate(ad_ag1.universe.trajectory):
+            # non-pbc x, y, z distances
+            dist = np.abs(ad_ag1.positions - ad_ag2.positions)
+
+            # box size (lx, ly, lz)
+            box = ad_ag1.dimensions[:3]
+
+            # apply minimum image convention i.e. take box - dist
+            # when dist > box / 2
+            dist = np.where(dist > box / 2, box - dist, dist)
+
+            # desired dist = sqrt((x2 - x1)^2 + (y2 - y1)^2 + (z2 - z1)^2)
+            expected[i] = np.sqrt(np.square(dist).sum(axis=1))
+        return expected
+
+    @staticmethod
+    @pytest.fixture()
+    def expected_pbc_dist(ad_ag1, ad_ag2):
+        expected = np.zeros((len(ad_ag1.universe.trajectory),
+                             ad_ag1.atoms.n_atoms))
+
+        # calculate distances with PBCs using dist()
+        for i, ts in enumerate(ad_ag1.universe.trajectory):
+            expected[i] = (MDAnalysis.analysis.distances.dist
+                           (ad_ag1, ad_ag2, box=ad_ag1.dimensions)[2])
+        return expected
+
+    def test_ad_exceptions(self, ad_ag1, ad_ag3, ad_ag4):
+        '''Test exceptions raised when number of atoms do not
+        match or AtomGroups come from different trajectories.'''
+
+        # number of atoms do not match
+        match_exp_atoms = "AtomGroups do not"
+        with pytest.raises(ValueError, match=match_exp_atoms):
+            ad_atoms = MDAnalysis.analysis.distances.AtomicDistances(ad_ag1,
+                                                                     ad_ag3)
+
+        # AtomGroups come from different trajectories
+        match_exp_traj = "AtomGroups are not"
+        with pytest.raises(ValueError, match=match_exp_traj):
+            ad_traj = MDAnalysis.analysis.distances.AtomicDistances(ad_ag1,
+                                                                    ad_ag4)
+
+    def test_ad_pairwise_dist(self, ad_ag1, ad_ag2,
+                              expected_scipy, expected_dist):
+        '''Ensure that pairwise distances between atoms are
+        correctly calculated without PBCs.'''
+        pairwise_no_pbc = (MDAnalysis.analysis.distances.AtomicDistances
+                          (ad_ag1, ad_ag2, pbc=False).run())
+        actual = pairwise_no_pbc.results
+
+        # compare with expected values from scipy
+        assert_allclose(actual, expected_scipy)
+
+        # compare with expected values from dist()
+        assert_allclose(actual, expected_dist)
+
+    def test_ad_pairwise_dist_pbc(self, ad_ag1, ad_ag2,
+                              expected_pbc, expected_pbc_dist):
+        '''Ensure that pairwise distances between atoms are
+        correctly calculated with PBCs.'''
+        pairwise_pbc = (MDAnalysis.analysis.distances.AtomicDistances
+                          (ad_ag1, ad_ag2).run())
+        actual = pairwise_pbc.results
+
+        # compare with expected values from expected_pbc()
+        assert_allclose(actual, expected_pbc, rtol=1e-05)
+
+        # compare with expected values from dist()
+        assert_allclose(actual, expected_pbc_dist)

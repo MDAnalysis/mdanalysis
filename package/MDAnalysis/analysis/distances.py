@@ -55,6 +55,8 @@ from MDAnalysis.lib.distances import calc_bonds
 
 import warnings
 import logging
+from .base import AnalysisBase
+
 logger = logging.getLogger("MDAnalysis.analysis.distances")
 
 
@@ -202,3 +204,65 @@ def between(group, A, B, distance):
     resA = ns_group.search(A, distance)
     resB = ns_group.search(B, distance)
     return resB.intersection(resA)
+
+
+class AtomicDistances(AnalysisBase):
+    r"""Class to calculate atomic distances between two AtomGroups over a
+    trajectory.
+
+    Parameters
+    ----------
+    ag1, ag2 : AtomGroup
+        :class:`~MDAnalysis.core.groups.AtomGroup` with the
+        same number of atoms
+    pbc : bool, optional
+        If ``True``, calculates atomic distances with periodic boundary
+        conditions (PBCs). The unitcell dimensions of the system must be
+        orthogonal or triclinic for the calculations with PBCs to work.
+        Defaults to ``True``.
+
+    Attributes
+    ----------
+    results : :class:`numpy.ndarray`
+        The distances `|ag1[i] - ag2[i]|` for all `i` from `0` to
+        `n_atoms - 1` for each frame over the trajectory.
+    n_frames : int
+        Number of frames included in the analysis.
+    n_atoms : int
+        Number of atoms in each atom group.
+
+
+    .. versionadded:: 2.5.0
+    """
+
+    def __init__(self, ag1, ag2, pbc=True, **kwargs):
+        # check ag1 and ag2 have the same number of atoms
+        if ag1.atoms.n_atoms != ag2.atoms.n_atoms:
+            raise ValueError("AtomGroups do not "
+                             "have the same number of atoms")
+        # check ag1 and ag2 are from the same trajectory
+        elif ag1.universe.trajectory != ag2.universe.trajectory:
+            raise ValueError("AtomGroups are not "
+                             "from the same trajectory")
+
+        super(AtomicDistances, self).__init__(ag1.universe.trajectory,
+                                              **kwargs)
+
+        self._ag1 = ag1
+        self._ag2 = ag2
+        self._pbc = pbc
+
+    def _prepare(self):
+        # initialize NumPy array of frames x distances for results
+        self.results = np.zeros((self.n_frames, self._ag1.atoms.n_atoms))
+
+    def _single_frame(self):
+        if (self._pbc):
+            # consider box size (ag1.dimensions) in calculation if pbc is True
+            self.results[self._frame_index] = calc_bonds(self._ag1.positions,
+                                                         self._ag2.positions,
+                                                         self._ag1.dimensions)
+        else:
+            # calculate without box size if pbc is False
+            self.results[self._frame_index] = calc_bonds(self._ag1.positions,
+                                                         self._ag2.positions)
