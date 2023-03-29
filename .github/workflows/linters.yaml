@@ -3,7 +3,6 @@ on:
   pull_request:
     branches:
       - develop
-      - main
 
 concurrency:
   # Probably overly cautious group naming.
