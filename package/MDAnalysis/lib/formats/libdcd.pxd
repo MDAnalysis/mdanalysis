@@ -115,11 +115,11 @@ cdef class DCDFile:
     # The current DCD frame
     cdef int current_frame
     # size of the first DCD frame
-    cdef readonly int _firstframesize
+    cdef readonly fio_size_t _firstframesize
     # Size of a DCD frame 
-    cdef readonly int _framesize
+    cdef readonly fio_size_t _framesize
     # Size of the DCD header
-    cdef readonly int _header_size
+    cdef readonly fio_size_t _header_size
     # Is the file open?
     cdef int is_open
     # Have we reached the end of the file
