@@ -13,6 +13,16 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+03/29/23 richardjgowers, IAlibay
+
+ * 2.4.3
+
+Fixes
+  * Fixed DCD reading for large (>2Gb) files (Issue #4039).  This was broken
+    for versions 2.4.0, 2.4.1 and 2.4.2
+  * Fix element parsing from PSF files tests read via Parmed (Issue #4015)
+
+
 01/04/23 IAlibay
 
  * 2.4.2
