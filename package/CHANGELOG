@@ -16,7 +16,7 @@ The rules for this file:
   
 ??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae, 
          ooprathamm, MeetB7, BFedder, v-parmar, MoSchaeffler, jbarnoud, jandom,
-         xhgchen, jaclark5, DrDomenicoMarson, AHMED-salah00, schlaicha
+         xhgchen, jaclark5, DrDomenicoMarson, AHMED-salah00, schlaicha, SophiaRuan
  * 2.5.0
 
 Fixes
@@ -37,6 +37,9 @@ Fixes
     (Issue #3336)
 
 Enhancements
+  * Add `progressbar_kwargs` parameter to `AnalysisBase.run` method, allowing to modify description, position etc of tqdm progressbars.
+  * Add a nojump transformation, which unwraps trajectories so that particle
+    paths are continuous. (Issue #3703, PR #4031)
   * Added AtomGroup TopologyAttr to calculate gyration moments (Issue #3904,
     PR #3905)
   * Add support for TPR files produced by Gromacs 2023 (Issue #4047)
@@ -47,6 +50,8 @@ Enhancements
     and SegmentGroup. (PR #3953)
 
 Changes
+  * Add progress bars to track the progress of _conclude() functions
+    (_conclude_simple() and _conclude_fft()) in msd.py (Issue #4070, PR #4072)
   * As per NEP29 the minimum supported NumPy version has been raised to 1.21
     (note: in practice later versions of NumPy may be used depending on your
      architecture, operating system, or Python version) (PR #3983)
@@ -56,6 +61,15 @@ Changes
     instead (Issue #3744)
 
 Deprecations
+
+
+03/29/23 richardjgowers
+
+ * 2.4.3
+
+Fixes
+  * Fixed DCD reading for large (>2Gb) files (Issue #4039).  This was broken
+    for versions 2.4.0, 2.4.1 and 2.4.2
 
 
 01/04/23 IAlibay
