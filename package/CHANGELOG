@@ -63,6 +63,15 @@ Changes
 Deprecations
 
 
+03/29/23 richardjgowers
+
+ * 2.4.3
+
+Fixes
+  * Fixed DCD reading for large (>2Gb) files (Issue #4039).  This was broken
+    for versions 2.4.0, 2.4.1 and 2.4.2
+
+
 01/04/23 IAlibay
 
  * 2.4.2
