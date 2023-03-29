@@ -15,25 +15,9 @@ defaults:
   run:
     shell: bash -l {0}
 
-permissions:
-  # try to lock things down as much as possible
-  actions: read
-  checks: read
-  contents: read
-  deployments: read
-  discussions: read
-  id-token: none
-  issues: read
-  packages: read
-  pages: read
-  pull-requests: read
-  repository-projects: read
-  security-events: read
-  statuses: read
-
 jobs:
   darker_lint:
-    #if: "github.repository == 'MDAnalysis/mdanalysis'"
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
