@@ -341,6 +341,18 @@ class TestH5MDReaderWithRealTrajectory(object):
                            match="MDAnalysis only supports 3-dimensional"):
             u = mda.Universe(TPR_xvf, outfile)
 
+    def test_box_vector(self, h5md_file, outfile):
+        with h5md_file as f:
+            with h5py.File(outfile, 'w') as g:
+                f.copy(source='particles', dest=g)
+                f.copy(source='h5md', dest=g)
+                vector = [1, 2, 3]
+                del g['particles/trajectory/box/edges']
+                g['particles/trajectory/box/edges/value'] = [vector, vector, vector]
+        u = mda.Universe(TPR_xvf, outfile)
+        # values in vector are conveted from nm -> Angstrom
+        assert_equal(u.trajectory.ts.dimensions, [10, 20, 30, 90, 90, 90])
+
     def test_no_box(self, h5md_file, outfile):
         with h5md_file as f:
             with h5py.File(outfile, 'w') as g:
