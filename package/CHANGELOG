@@ -37,6 +37,7 @@ Fixes
     (Issue #3336)
 
 Enhancements
+  * Add `progressbar_kwargs` parameter to `AnalysisBase.run` method, allowing to modify description, position etc of tqdm progressbars.
   * Add a nojump transformation, which unwraps trajectories so that particle
     paths are continuous. (Issue #3703, PR #4031)
   * Added AtomGroup TopologyAttr to calculate gyration moments (Issue #3904,
@@ -47,7 +48,6 @@ Enhancements
   * AuxReaders are now pickle-able and copy-able (Issue #1785, PR #3887)
   * Add pickling support for Atom, Residue, Segment, ResidueGroup 
     and SegmentGroup. (PR #3953)
-  * Add `progressbar_kwargs` parameter to `AnalysisBase.run` method, allowing to modify description, position etc of tqdm progressbars.
 
 Changes
   * Add progress bars to track the progress of _conclude() functions
