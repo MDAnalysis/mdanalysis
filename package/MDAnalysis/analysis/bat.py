@@ -378,7 +378,7 @@ class BAT(AnalysisBase):
         # Distance between second two root atoms
         # Angle between root atoms
         a012 = np.arccos(max(-1.,min(1.,np.einsum('i,i->',v01,v21)/\
-                             np.sqrt(np.einsum('i,i->',v01,v01)*np.einsum('i,i->',v21,v21)))))
+                              np.sqrt(np.einsum('i,i->',v01,v01)*np.einsum('i,i->',v21,v21)))))
         # External coordinates
         e = v01 / r01
         phi = np.arctan2(e[1], e[0])  # Polar angle
