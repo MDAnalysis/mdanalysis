@@ -2249,8 +2249,9 @@ class Charges(AtomAttr):
             dipole_vector = np.empty((n_compounds, 3), dtype=np.float64)
             for compound_mask, atom_mask in zip(compound_masks, atom_masks):
                 dipole_vector[compound_mask] = np.einsum('ijk,ijk->ik',
-                    (coords[atom_mask] - ref[compound_mask][:, None, :]),
-                    chgs[atom_mask][:, :, None])
+                                                         (coords[atom_mask]-
+                                                          ref[compound_mask][:, None, :]),
+                                                         chgs[atom_mask][:, :, None])
 
         return dipole_vector
 

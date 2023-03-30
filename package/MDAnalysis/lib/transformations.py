@@ -958,7 +958,9 @@ def superimposition_matrix(v0, v1, scaling=False, usesvd=True):
 
     # scale: ratio of rms deviations from centroid
     if scaling:
-        M[:3, :3] *= math.sqrt(np.einsum('ij,ij->',v1,v1) / np.einsum('ij,ij->',v0,v0))
+        M[:3, :3] *= math.sqrt(np.einsum('ij,ij->',v1,v1) / 
+                               np.einsum('ij,ij->',v0,v0))
+
 
     # translation
     M[:3, 3] = t1
