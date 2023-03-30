@@ -941,9 +941,9 @@ def superimposition_matrix(v0, v1, scaling=False, usesvd=True):
         M[:3, :3] = R
     else:
         # compute symmetric matrix N
-        xx, yy, zz = np.sum(v0 * v1, axis=1)
-        xy, yz, zx = np.sum(v0 * np.roll(v1, -1, axis=0), axis=1)
-        xz, yx, zy = np.sum(v0 * np.roll(v1, -2, axis=0), axis=1)
+        xx, yy, zz = np.einsum('ij,ij->i', v0 , v1)
+        xy, yz, zx = np.einsum('ij,ij->i', v0, np.roll(v1, -1, axis=0))
+        xz, yx, zy = np.einsum('ij,ij->i', v0, np.roll(v1, -2, axis=0))
         N = (
             (xx + yy + zz, 0.0, 0.0, 0.0),
             (yz - zy, xx - yy - zz, 0.0, 0.0),
@@ -958,9 +958,9 @@ def superimposition_matrix(v0, v1, scaling=False, usesvd=True):
 
     # scale: ratio of rms deviations from centroid
     if scaling:
-        v0 *= v0
-        v1 *= v1
-        M[:3, :3] *= math.sqrt(np.sum(v1) / np.sum(v0))
+        M[:3, :3] *= math.sqrt(np.einsum('ij,ij->',v1,v1) / 
+                                np.einsum('ij,ij->',v0,v0))
+
 
     # translation
     M[:3, 3] = t1
