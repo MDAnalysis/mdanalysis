@@ -68,7 +68,7 @@ Deprecations
 
 Fixes
   * Fixed DCD reading for large (>2Gb) files (Issue #4039).  This was broken
-    for versions 2.4.0, 2.4.1 and 2.4.2a
+    for versions 2.4.0, 2.4.1 and 2.4.2
   * Fix element parsing from PSF files tests read via Parmed (Issue #4015)
 
 
