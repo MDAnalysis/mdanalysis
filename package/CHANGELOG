@@ -30,7 +30,6 @@ Fixes
   * Fix uninitialized `format` variable issue when calling `selections.get_writer` directly (PR #4043)
   * Fix tests should use results.rmsf to avoid DeprecationWarning (Issue #3695)
   * Fix EDRReader failing when parsing single-frame EDR files (Issue #3999)
-  * Fix element parsing from PSF files tests read via Parmed (Issue #4015)
   * Fix test clobbering in lib/test_util.py (PR #4000)
   * Fix MSD docs to use the correct error metric in example (Issue #3991)
   * Add 'PairIJ Coeffs' to the list of sections in LAMMPSParser.py
@@ -63,13 +62,14 @@ Changes
 Deprecations
 
 
-03/29/23 richardjgowers
+03/29/23 richardjgowers, IAlibay
 
  * 2.4.3
 
 Fixes
   * Fixed DCD reading for large (>2Gb) files (Issue #4039).  This was broken
     for versions 2.4.0, 2.4.1 and 2.4.2
+  * Fix element parsing from PSF files tests read via Parmed (Issue #4015)
 
 
 01/04/23 IAlibay
