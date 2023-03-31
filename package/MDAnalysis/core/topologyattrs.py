@@ -472,6 +472,17 @@ class TopologyAttr(object, metaclass=_TopologyAttrMeta):
         elif isinstance(group, (Segment, SegmentGroup)):
             return self.get_segments(group)
 
+    def check_dtype(dtype):
+        def decorator(func):
+            def wrapper(*args, **kwargs):
+                values = kwargs.get('values', args[1])
+                if not isinstance(values, dtype):
+                    raise ValueError(f"Expected {dtype}, but got {type(values)}")
+                return func(*args, **kwargs)
+            return wrapper
+        return decorator
+
+    @check_dtype(str)
     def __setitem__(self, group, values):
         if isinstance(group, (Atom, AtomGroup)):
             return self.set_atoms(group, values)
