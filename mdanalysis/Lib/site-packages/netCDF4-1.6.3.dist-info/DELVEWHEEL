@@ -1,0 +1,2 @@
+Version: 1.3.3
+Arguments: ['C:\\Miniconda3\\conda-bld\\netcdf4_1677767642384\\_h_env\\Scripts\\delvewheel', 'repair', '-w', 'D:\\a\\netcdf4-win-wheels\\netcdf4-win-wheels\\recipe\\..\\build_artifacts\\pypi_wheels\\', 'netCDF4-1.6.3-cp310-cp310-win_amd64.whl']

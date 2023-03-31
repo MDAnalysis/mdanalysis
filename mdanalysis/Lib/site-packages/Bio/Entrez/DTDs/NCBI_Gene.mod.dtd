@@ -1,0 +1,97 @@
+<!-- ============================================
+     ::DATATOOL:: Generated from "seqfeat.asn"
+     ::DATATOOL:: by application DATATOOL version 1.9.0
+     ::DATATOOL:: on 10/09/2008 23:08:21
+     ============================================ -->
+
+<!-- ============================================ -->
+<!-- This section is mapped from module "NCBI-Gene"
+================================================= -->
+
+<!--
+**********************************************************************
+
+  NCBI Genes
+  by James Ostell, 1990
+  version 0.8
+
+**********************************************************************
+-->
+
+<!-- Elements used by other modules:
+          Gene-ref,
+          Gene-nomenclature -->
+
+<!-- Elements referenced from other modules:
+          Dbtag FROM NCBI-General -->
+<!-- ============================================ -->
+
+<!--
+*** Gene ***********************************************
+*
+*  reference to a gene
+*
+-->
+<!ELEMENT Gene-ref (
+        Gene-ref_locus?, 
+        Gene-ref_allele?, 
+        Gene-ref_desc?, 
+        Gene-ref_maploc?, 
+        Gene-ref_pseudo?, 
+        Gene-ref_db?, 
+        Gene-ref_syn?, 
+        Gene-ref_locus-tag?, 
+        Gene-ref_formal-name?)>
+
+<!-- Official gene symbol -->
+<!ELEMENT Gene-ref_locus (#PCDATA)>
+
+<!-- Official allele designation -->
+<!ELEMENT Gene-ref_allele (#PCDATA)>
+
+<!-- descriptive name -->
+<!ELEMENT Gene-ref_desc (#PCDATA)>
+
+<!-- descriptive map location -->
+<!ELEMENT Gene-ref_maploc (#PCDATA)>
+
+<!-- pseudogene -->
+<!ELEMENT Gene-ref_pseudo EMPTY>
+<!ATTLIST Gene-ref_pseudo value ( true | false ) "false" >
+
+
+<!-- ids in other dbases -->
+<!ELEMENT Gene-ref_db (Dbtag*)>
+
+<!-- synonyms for locus -->
+<!ELEMENT Gene-ref_syn (Gene-ref_syn_E*)>
+
+
+<!ELEMENT Gene-ref_syn_E (#PCDATA)>
+
+<!-- systematic gene name (e.g., MI0001, ORF0069) -->
+<!ELEMENT Gene-ref_locus-tag (#PCDATA)>
+
+<!ELEMENT Gene-ref_formal-name (Gene-nomenclature)>
+
+
+<!ELEMENT Gene-nomenclature (
+        Gene-nomenclature_status, 
+        Gene-nomenclature_symbol?, 
+        Gene-nomenclature_name?, 
+        Gene-nomenclature_source?)>
+
+<!ELEMENT Gene-nomenclature_status %ENUM;>
+<!ATTLIST Gene-nomenclature_status value (
+        unknown |
+        official |
+        interim
+        ) #REQUIRED >
+
+
+<!ELEMENT Gene-nomenclature_symbol (#PCDATA)>
+
+<!ELEMENT Gene-nomenclature_name (#PCDATA)>
+
+<!ELEMENT Gene-nomenclature_source (Dbtag)>
+

@@ -1,0 +1,10 @@
+object 1 class gridpositions counts 2 2 2
+origin 20.1 3e0 -1e1
+delta 1.00 0 0
+delta 0 1.00 0
+delta 0 0 1.00
+object 2 class gridconnections counts 2 2 2
+object 3 class array type double rank 0 items 8 data follows
+1.000 1.000 1.000
+1.000 1.e-6 -1.e6
+1.000 1.000

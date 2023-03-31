@@ -1,0 +1,25 @@
+=================
+ gridDataFormats
+=================
+
+Copyright (c) 2007-2020 Oliver Beckstein <orbeckst@gmail.com> and Contributors
+
+Published under the GNU Lesser General Public Licence, version 3
+
+* releases: https://pypi.python.org/pypi/GridDataFormats
+* source code repository: https://github.com/MDAnalysis/GridDataFormats
+
+Contributors:
+
+* Jesse Johnson <holocronweaver> (CCP4 format support)
+* Max Linke <kain88-de>
+* Jan Domanski <jandom>
+* Dominik Mierzejewski <rathann>
+* Tyler Luchko <tluchko>
+* Giacomo Fiorin <giacomofiorin>
+* Eloy Félix <eloyfelix>
+* René Hafner (Hamburger) <renehamburger1993>
+* Lily Wang <lilyminium>
+* Josh Vermaas <jvermaas>
+* Irfan Alibay <IAlibay>
+* Zhiyi Wu <xiki-tempula>
