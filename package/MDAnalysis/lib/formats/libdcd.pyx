@@ -513,11 +513,11 @@ cdef class DCDFile:
 
         if not self.wrote_header:
             raise IOError("write header first before frames can be written")
-        cdef cnp.ndarray xyz_ = cnp.asarray(xyz, order='F', dtype=FLOAT)
+        cdef cnp.ndarray xyz_ = np.asarray(xyz, order='F', dtype=FLOAT)
         cdef cnp.npy_intp[2] shape = cnp.PyArray_DIMS(xyz_)
         if (shape[0] != self.natoms) or (shape[1] != 3):
             raise ValueError("xyz shape is wrong should be (natoms, 3), got:".format(xyz.shape))
-        cdef double[::1] c_box = cnp.asarray(box, order='C', dtype=DOUBLE)
+        cdef double[::1] c_box = np.asarray(box, order='C', dtype=DOUBLE)
         # fortran contiguity
         cdef float[::1] x = xyz_[:, 0]
         cdef float[::1] y = xyz_[:, 1]
@@ -642,7 +642,7 @@ cdef class DCDFile:
             natoms = self.natoms
         else:
             natoms = len(indices)
-            c_indices = cnp.asarray(indices, dtype=cnp.int64)
+            c_indices = np.asarray(indices, dtype=cnp.int64)
         
         cdef cnp.npy_intp[3] dims
         cdef int hash_order = -1

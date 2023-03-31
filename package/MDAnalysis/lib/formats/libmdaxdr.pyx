@@ -637,19 +637,19 @@ cdef class TRRFile(_XDRFile):
         cdef cnp.ndarray forces_helper
 
         if xyz is not None:
-            xyz = cnp.asarray(xyz)
-            xyz_helper = cnp.ascontiguousarray(xyz, dtype=DTYPE)
+            xyz = np.asarray(xyz)
+            xyz_helper = np.ascontiguousarray(xyz, dtype=DTYPE)
             xyz_ptr = <float*>xyz_helper.data
         if velocity is not None:
-            velocity = cnp.asarray(velocity)
-            velocity_helper = cnp.ascontiguousarray(velocity, dtype=DTYPE)
+            velocity = np.asarray(velocity)
+            velocity_helper = np.ascontiguousarray(velocity, dtype=DTYPE)
             velocity_ptr = <float*>velocity_helper.data
         if forces is not None:
-            forces = cnp.asarray(forces)
-            forces_helper = cnp.ascontiguousarray(forces, dtype=DTYPE)
+            forces = np.asarray(forces)
+            forces_helper = np.ascontiguousarray(forces, dtype=DTYPE)
             forces_ptr = <float*>forces_helper.data
 
-        box = cnp.asarray(box)
+        box = np.asarray(box)
         cdef cnp.ndarray box_helper = cnp.ascontiguousarray(box, dtype=DTYPE)
         cdef float* box_ptr = <float*>box_helper.data
 
@@ -893,8 +893,8 @@ cdef class XTCFile(_XDRFile):
             raise IOError('File opened in mode: {}. Writing only allow '
                           'in mode "w"'.format('self.mode'))
 
-        xyz = cnp.asarray(xyz, dtype=np.float32)
-        box = cnp.asarray(box, dtype=np.float32)
+        xyz = np.asarray(xyz, dtype=np.float32)
+        box = np.asarray(box, dtype=np.float32)
 
         cdef DTYPE_T[:, ::1] xyz_view = cnp.PyArray_GETCONTIGUOUS(xyz)
         cdef DTYPE_T[:, ::1] box_view = cnp.PyArray_GETCONTIGUOUS(box)

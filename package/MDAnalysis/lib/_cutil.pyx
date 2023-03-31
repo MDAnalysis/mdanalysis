@@ -473,8 +473,8 @@ def find_fragments(atoms, bondlist):
     cdef cnp.int64_t[:] atoms_view
     cdef cnp.int32_t[:, :] bonds_view
 
-    atoms_view = cnp.asarray(atoms, dtype=cnp.int64)
-    bonds_view = cnp.asarray(bondlist, dtype=cnp.int32)
+    atoms_view = np.asarray(atoms, dtype=cnp.int64)
+    bonds_view = np.asarray(bondlist, dtype=cnp.int32)
 
     # grab record of which atoms I have to process
     # ie set of all nodes
@@ -513,6 +513,6 @@ def find_fragments(atoms, bondlist):
                         frag_todo.insert(b)
 
         # Add fragment to output
-        frags.append(cnp.asarray(this_frag))
+        frags.append(np.asarray(this_frag))
 
     return frags
