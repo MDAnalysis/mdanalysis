@@ -41,7 +41,7 @@ Fixes
     (Issue #3336)
 
 Enhancements
-  * Add simple atomic distance analysis to `analysis.distances` with
+  * Add simple atomic distance analysis to `analysis.atomicdistances` with
     new class `AtomicDistances` (Issue #3654)
   * Improved speed of chi1_selection (PR #4109)
   * Add `progressbar_kwargs` parameter to `AnalysisBase.run` method, allowing
