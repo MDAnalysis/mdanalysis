@@ -1241,7 +1241,7 @@ class Atomnames(AtomStringAttr):
     transplants[Residue].append(('chi1_selection', chi1_selection))
 
     def chi1_selections(residues, n_name='N', ca_name='CA', cb_name='CB',
-                        cg_name='CG'):
+                        cg_name='CG CG1 OG OG1 SG'):
         """Select list of AtomGroups corresponding to the chi1 sidechain dihedral
         N-CA-CB-CG.
 
@@ -1266,13 +1266,13 @@ class Atomnames(AtomStringAttr):
         """
         results = np.array([None]*len(residues))
         names = [n_name, ca_name, cb_name, cg_name]
-        keep = [all(sum(r.atoms.names == n) == 1 for n in names)
+        keep = [all(len(r.atoms.select_atoms(f"name {n}")) == 1 
+                    for n in names)
                 for r in residues]
         keepix = np.where(keep)[0]
         residues = residues[keep]
 
-        atnames = residues.atoms.names
-        ags = [residues.atoms[atnames == n] for n in names]
+        ags = [residues.atoms.select_atoms(f"name {n}") for n in names]
         results[keepix] = [sum(atoms) for atoms in zip(*ags)]
         return list(results)
 

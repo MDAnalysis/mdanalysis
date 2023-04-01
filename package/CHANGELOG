@@ -21,6 +21,7 @@ The rules for this file:
  * 2.5.0
 
 Fixes
+  * Fix chi1_selections incorrectly returning None (Issue #4108)
   * Fix parsing of box vector in H5MD reader (Issue #4076)
   * Fix the misleading 'AtomGroup.guess_bonds()' docs and passed missing
     arguments (PR #4059)
