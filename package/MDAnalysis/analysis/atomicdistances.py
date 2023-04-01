@@ -60,8 +60,8 @@ This example uses files from the MDAnalysis test suite
    >>> from MDAnalysis.tests.datafiles import GRO, XTC
    >>> import MDAnalysis.analysis.atomicdistances as ad
 
-We will calculate the distances between an atom group of atoms 100-104
-and an atom group of atoms 300-304 with periodic boundary conditions.
+We will calculate the distances between an atom group of atoms 101-105
+and an atom group of atoms 4001-4005 with periodic boundary conditions.
 To select these atoms:
 
    >>> u = mda.Universe(GRO, XTC)
