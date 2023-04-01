@@ -380,7 +380,7 @@ class HydrogenBondAnalysis(AnalysisBase):
         self.results.hbonds = None
 
     def guess_hydrogens(self,
-                        select='all',
+                        select=None,
                         max_mass=1.1,
                         min_charge=0.3,
                         min_mass=0.9
@@ -434,18 +434,29 @@ class HydrogenBondAnalysis(AnalysisBase):
         if min_mass > max_mass:
             raise ValueError("min_mass is higher than (or equal to) max_mass")
 
-        ag = self.u.select_atoms(select)
-        hydrogens_ag = ag[
-            np.logical_and.reduce((
-                ag.masses < max_mass,
-                ag.charges > min_charge,
-                ag.masses > min_mass,
-            ))
-        ]
+        if select:
+
+            ag = self.u.select_atoms(select)
+            hydrogens_ag = ag[
+                np.logical_and.reduce((
+                    ag.masses < max_mass,
+                    ag.charges > min_charge,
+                    ag.masses > min_mass,
+                ))
+            ]
+        else:
+            ag = self.u.atoms
+            hydrogens_ag = ag[
+                np.logical_and.reduce((
+                    ag.masses < max_mass,
+                    ag.charges > min_charge,
+                    ag.masses > min_mass,
+                ))
+            ]
 
         return self._group_categories(hydrogens_ag)
 
-    def guess_donors(self, select='all', max_charge=-0.5):
+    def guess_donors(self, select=None, max_charge=-0.5):
         """Guesses which atoms could be considered donors in the analysis. Only
         use if the universe topology does not contain bonding information, 
         otherwise donor-hydrogen pairs may be incorrectly assigned.
@@ -504,24 +515,37 @@ class HydrogenBondAnalysis(AnalysisBase):
         # times faster to access. This is because u.bonds also calculates
         # properties of each bond (e.g bond length). See:
         # https://github.com/MDAnalysis/mdanalysis/issues/2396#issuecomment-596251787
-        if (hasattr(self.u._topology, 'bonds') 
-           and len(self.u._topology.bonds.values) != 0):
-            donors_ag = find_hydrogen_donors(hydrogens_ag)
-            donors_ag = donors_ag.intersection(self.u.select_atoms(select))
-        else:
-            donors_ag = hydrogens_ag.residues.atoms.select_atoms(
-                "({donors_sel}) and around {d_h_cutoff} {hydrogens_sel}".format(
-                    donors_sel=select,
-                    d_h_cutoff=self.d_h_cutoff,
-                    hydrogens_sel=hydrogens_sel
+        if select:
+            if (hasattr(self.u._topology, 'bonds') 
+               and len(self.u._topology.bonds.values) != 0):
+                donors_ag = find_hydrogen_donors(hydrogens_ag)
+                donors_ag = donors_ag.intersection(self.u.select_atoms(select))
+            else:
+                donors_ag = hydrogens_ag.residues.atoms.select_atoms(
+                    "({donors_sel}) and around {d_h_cutoff} {hydrogens_sel}".format(
+                        donors_sel=select,
+                        d_h_cutoff=self.d_h_cutoff,
+                        hydrogens_sel=hydrogens_sel
+                    )
                 )
-            )
+        else:
+            if (hasattr(self.u._topology, 'bonds') 
+               and len(self.u._topology.bonds.values) != 0):
+                donors_ag = find_hydrogen_donors(hydrogens_ag)
+                donors_ag = donors_ag.intersection(self.u.atoms)
+            else:
+                donors_ag = hydrogens_ag.residues.atoms.select_atoms(
+                    "(all) and around {d_h_cutoff} {hydrogens_sel}".format(
+                        d_h_cutoff=self.d_h_cutoff,
+                        hydrogens_sel=hydrogens_sel
+                    )
+                )
 
         donors_ag = donors_ag[donors_ag.charges < max_charge]
 
         return self._group_categories(donors_ag)
 
-    def guess_acceptors(self, select='all', max_charge=-0.5):
+    def guess_acceptors(self, select=None, max_charge=-0.5):
         """Guesses which atoms could be considered acceptors in the analysis.
 
         Acceptor selections may be achieved with either a resname, atom 
@@ -566,8 +590,12 @@ class HydrogenBondAnalysis(AnalysisBase):
 
         """
 
-        ag = self.u.select_atoms(select)
-        acceptors_ag = ag[ag.charges < max_charge]
+        if select:
+            ag = self.u.select_atoms(select)
+            acceptors_ag = ag[ag.charges < max_charge]
+        else:
+            ag = self.u.atoms
+            acceptors_ag = ag[ag.charges < max_charge]
 
         return self._group_categories(acceptors_ag)
 
