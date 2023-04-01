@@ -166,7 +166,7 @@ class TestGetMatchingAtoms(object):
 
         with expectation:
             rmsd = align.alignto(universe, reference, subselection=subselection)
-            assert rmsd[1] == pytest.approx(0.0, rel=1e-09)
+            assert_almost_equal(rmsd[1], 0.0, decimal=9)
 
     def test_no_atom_masses(self, universe):
         #if no masses are present
@@ -198,21 +198,17 @@ class TestAlign(object):
         first_frame = bb.positions
         universe.trajectory[-1]
         last_frame = bb.positions
-
-        # pytest.approx function is used here because the output of rmsd() is a scalar
-        # all comparisons of scalars have been changed from using the function assert_almost_equal to pytest.approx function
-        assert rms.rmsd(first_frame, first_frame) == pytest.approx(0.0), "error: rmsd(X,X) should be 0"
-
+        assert_almost_equal(rms.rmsd(first_frame, first_frame), 0.0, 5,
+                            err_msg="error: rmsd(X,X) should be 0")
         # rmsd(A,B) = rmsd(B,A) should be exact but spurious failures in the
         # 9th decimal have been observed (see Issue 57 comment #1) so we relax
         # the test to 6 decimals.
-        # by default pytest.approx has a relaive tolerance of 1e-06
         rmsd = rms.rmsd(first_frame, last_frame, superposition=True)
-        
-        assert rms.rmsd(last_frame, first_frame, superposition=True) == pytest.approx(rmsd), "error: rmsd() is not symmetric"
-
-        assert rmsd == pytest.approx(6.820321761927005, rel=1e-05), "RMSD calculation between 1st and last AdK frame gave wrong answer"
-
+        assert_almost_equal(
+            rms.rmsd(last_frame, first_frame, superposition=True), rmsd, 6,
+            err_msg="error: rmsd() is not symmetric")
+        assert_almost_equal(rmsd, 6.820321761927005, 5,
+                            err_msg="RMSD calculation between 1st and last AdK frame gave wrong answer")
         # test masses as weights
         last_atoms_weight = universe.atoms.masses
         A = universe.trajectory[0]
@@ -220,7 +216,7 @@ class TestAlign(object):
         rmsd = align.alignto(universe, reference, weights='mass')
         rmsd_sup_weight = rms.rmsd(A, B, weights=last_atoms_weight, center=True,
                                    superposition=True)
-        assert rmsd[1] == pytest.approx(rmsd_sup_weight), "Not equal to tolerance rel=1e-06"
+        assert_almost_equal(rmsd[1], rmsd_sup_weight, 6)
 
     def test_rmsd_custom_mass_weights(self, universe, reference):
         last_atoms_weight = universe.atoms.masses
@@ -230,7 +226,7 @@ class TestAlign(object):
                              weights=reference.atoms.masses)
         rmsd_sup_weight = rms.rmsd(A, B, weights=last_atoms_weight, center=True,
                                    superposition=True)
-        assert rmsd[1] == pytest.approx(rmsd_sup_weight), "Not equal to tolerance rel=1e-06"
+        assert_almost_equal(rmsd[1], rmsd_sup_weight, 6)
 
     def test_rmsd_custom_weights(self, universe, reference):
         weights = np.zeros(universe.atoms.n_atoms)
@@ -238,7 +234,7 @@ class TestAlign(object):
         weights[ca.indices] = 1
         rmsd = align.alignto(universe, reference, select='name CA')
         rmsd_weights = align.alignto(universe, reference, weights=weights)
-        assert rmsd[1] == pytest.approx(rmsd_weights[1]), "Not equal to tolerance rel=1e-06"
+        assert_almost_equal(rmsd[1], rmsd_weights[1], 6)
 
     def test_AlignTraj_outfile_default(self, universe, reference, tmpdir):
         with tmpdir.as_cwd():
@@ -288,9 +284,8 @@ class TestAlign(object):
         x = align.AlignTraj(universe, reference, filename=outfile).run()
         fitted = mda.Universe(PSF, outfile)
 
-        
-        assert x.results.rmsd[0] == pytest.approx(6.9290, rel=1e-03), "Not equal to tolerance rel=1e-03"
-        assert x.results.rmsd[-1] == pytest.approx(5.2797e-07, rel=1e-03), "Not equal to tolerance rel=1e-03"
+        assert_almost_equal(x.results.rmsd[0], 6.9290, decimal=3)
+        assert_almost_equal(x.results.rmsd[-1], 5.2797e-07, decimal=3)
 
         # RMSD against the reference frame
         # calculated on Mac OS X x86 with MDA 0.7.2 r689
@@ -303,10 +298,8 @@ class TestAlign(object):
         x = align.AlignTraj(universe, reference,
                             filename=outfile, weights='mass').run()
         fitted = mda.Universe(PSF, outfile)
-
-        assert x.results.rmsd[0] == pytest.approx(0, rel=1e-03), "Not equal to tolerance rel=1e-03"
-        assert x.results.rmsd[-1] == pytest.approx(6.9033, rel=1e-03), "Not equal to tolerance rel=1e-03"
-        
+        assert_almost_equal(x.results.rmsd[0], 0, decimal=3)
+        assert_almost_equal(x.results.rmsd[-1], 6.9033, decimal=3)
 
         self._assert_rmsd(reference, fitted, 0, 0.0,
                           weights=universe.atoms.masses)
@@ -325,8 +318,7 @@ class TestAlign(object):
         x_weights = align.AlignTraj(universe, reference,
                                     filename=outfile, weights=weights).run()
 
-        # changed fucnion from assert_array_almost_equal to assert_allclose
-        assert_allclose(x.results.rmsd, x_weights.results.rmsd)
+        assert_array_almost_equal(x.results.rmsd, x_weights.results.rmsd)
 
     def test_AlignTraj_custom_mass_weights(self, universe, reference, tmpdir):
         outfile = str(tmpdir.join('align_test.dcd'))
@@ -334,10 +326,8 @@ class TestAlign(object):
                             filename=outfile,
                             weights=reference.atoms.masses).run()
         fitted = mda.Universe(PSF, outfile)
-
-        assert x.results.rmsd[0] == pytest.approx(0, rel=1e-03), "Not equal to tolerance rel=1e-03"
-        assert x.results.rmsd[-1] == pytest.approx(6.9033, rel=1e-03), "Not equal to tolerance rel=1e-03"
-        
+        assert_almost_equal(x.results.rmsd[0], 0, decimal=3)
+        assert_almost_equal(x.results.rmsd[-1], 6.9033, decimal=3)
 
         self._assert_rmsd(reference, fitted, 0, 0.0,
                           weights=universe.atoms.masses)
@@ -357,9 +347,8 @@ class TestAlign(object):
         x = align.AlignTraj(universe, reference, filename=outfile,
                             in_memory=True).run()
         assert x.filename is None
-        assert x.results.rmsd[0] == pytest.approx(6.9290, rel=1e-03), "Not equal to tolerance rel=1e-03"
-        assert x.results.rmsd[-1] == pytest.approx(5.2797e-07, rel=1e-03), "Not equal to tolerance rel=1e-03"
-
+        assert_almost_equal(x.results.rmsd[0], 6.9290, decimal=3)
+        assert_almost_equal(x.results.rmsd[-1], 5.2797e-07, decimal=3)
 
         # check in memory trajectory
         self._assert_rmsd(reference, universe, 0, 6.929083044751061)
@@ -404,9 +393,8 @@ class TestAlign(object):
         segB_free.translate(segB_bound.centroid() - segB_free.centroid())
 
         align.alignto(u_free, u_bound, select=selection)
-        # changed function from assert_array_almost_equal to assert_allclose
-        assert_allclose(segB_bound.positions, segB_free.positions,
-                                  rtol=1e-03)
+        assert_array_almost_equal(segB_bound.positions, segB_free.positions,
+                                  decimal=3)
 
 
 def _get_aligned_average_positions(ref_files, ref, select="all", **kwargs):
@@ -456,24 +444,24 @@ class TestAverageStructure(object):
     def test_average_structure_mass_weighted(self, universe, reference):
         ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, weights='mass')
         avg = align.AverageStructure(universe, reference, weights='mass').run()
-        assert_allclose(avg.results.universe.atoms.positions, ref,
-                            rtol=1e-04)
-        assert avg.results.rmsd == pytest.approx(rmsd) 
+        assert_almost_equal(avg.results.universe.atoms.positions, ref,
+                            decimal=4)
+        assert_almost_equal(avg.results.rmsd, rmsd)
 
     def test_average_structure_select(self, universe, reference):
         select = 'protein and name CA and resid 3-5'
         ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, select=select)
         avg = align.AverageStructure(universe, reference, select=select).run()
-        assert_allclose(avg.results.universe.atoms.positions, ref,
-                            rtol=1e-04)
-        assert avg.results.rmsd == pytest.approx(rmsd) 
+        assert_almost_equal(avg.results.universe.atoms.positions, ref,
+                            decimal=4)
+        assert_almost_equal(avg.results.rmsd, rmsd)
 
     def test_average_structure_no_ref(self, universe):
         ref, rmsd = _get_aligned_average_positions(self.ref_files, universe)
         avg = align.AverageStructure(universe).run()
-        assert_allclose(avg.results.universe.atoms.positions, ref,
-                            rtol=1e-04)
-        assert avg.results.rmsd == pytest.approx(rmsd) 
+        assert_almost_equal(avg.results.universe.atoms.positions, ref,
+                            decimal=4)
+        assert_almost_equal(avg.results.rmsd, rmsd)
 
     def test_average_structure_no_msf(self, universe):
         avg = align.AverageStructure(universe).run()
@@ -496,16 +484,15 @@ class TestAverageStructure(object):
         universe.trajectory[0]
         ref, rmsd = _get_aligned_average_positions(self.ref_files, u)
         avg = align.AverageStructure(universe, ref_frame=ref_frame).run()
-
-        assert_allclose(avg.results.universe.atoms.positions, ref,
-                            rtol=1e-04)
-        assert avg.results.rmsd == pytest.approx(rmsd) 
+        assert_almost_equal(avg.results.universe.atoms.positions, ref,
+                            decimal=4)
+        assert_almost_equal(avg.results.rmsd, rmsd)
 
     def test_average_structure_in_memory(self, universe):
         avg = align.AverageStructure(universe, in_memory=True).run()
         reference_coordinates = universe.trajectory.timeseries().mean(axis=1)
-        assert_allclose(avg.results.universe.atoms.positions,
-                            reference_coordinates, rtol=1e-044)
+        assert_almost_equal(avg.results.universe.atoms.positions,
+                            reference_coordinates, decimal=4)
         assert avg.filename is None
 
 
