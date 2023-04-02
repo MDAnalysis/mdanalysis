@@ -247,9 +247,9 @@ def rmsd(a, b, weights=None, center=False, superposition=False):
     6.838544558398293
 
 
-    .. versionchanged: 0.8.1
+    .. versionchanged:: 0.8.1
        *center* keyword added
-    .. versionchanged: 0.14.0
+    .. versionchanged:: 0.14.0
        *superposition* keyword added
 
     """

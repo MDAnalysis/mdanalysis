@@ -50,10 +50,57 @@ case-insensitive):
                                         with OpenMP
    ========== ========================= ======================================
 
+Use of the distopia library
+---------------------------
+
+MDAnalysis has developed a standalone library, `distopia`_ for accelerating
+the distance functions in this module using explicit SIMD vectorisation.
+This can provide many-fold speedups in calculating distances. Distopia is
+under active development and as such only a selection of functions in this
+module are covered. Consult the following table to see if the function
+you wish to use is covered by distopia. For more information see the
+`distopia documentation`_.
+
+.. Table:: Functions available using the `distopia`_ backend.
+    :align: center
+
+    +-------------------------------------+-----------------------------------+
+    | Functions                           | Notes                             |
+    +=====================================+===================================+
+    | MDAnalysis.lib.distances.calc_bonds | Doesn't support triclinic boxes   |
+    +-------------------------------------+-----------------------------------+
+
+If `distopia`_ is installed, the functions in this table will accept the key
+'distopia' for the `backend` keyword argument. If the distopia backend is
+selected the `distopia` library will be used to calculate the distances. Note
+that for functions listed in this table **distopia is not the default backend
+if and must be selected.**
+
+.. Note::
+   Distopia does not currently support triclinic simulation boxes. If you
+   specify `distopia` as the backend and your simulation box is triclinic,
+   the function will fall back to the default `serial` backend.
+
+.. Note::
+    Due to the use of Instruction Set Architecture (`ISA`_) specific SIMD
+    intrinsics in distopia via `VCL2`_, the precision of your results may
+    depend on the ISA available on your machine. However, in all tested cases
+    distopia satisfied the accuracy thresholds used to the functions in this
+    module. Please document any issues you encounter with distopia's accuracy
+    in the `relevant distopia issue`_ on the MDAnalysis GitHub repository.
+
+.. _distopia: https://github.com/MDAnalysis/distopia
+.. _distopia documentation: https://www.mdanalysis.org/distopia
+.. _ISA: https://en.wikipedia.org/wiki/Instruction_set_architecture
+.. _VCL2: https://github.com/vectorclass/version2
+.. _relevant distopia issue: https://github.com/MDAnalysis/mdanalysis/issues/3915
+
 .. versionadded:: 0.13.0
 .. versionchanged:: 2.3.0
    Distance functions can now accept an
    :class:`~MDAnalysis.core.groups.AtomGroup` or an :class:`np.ndarray`
+.. versionchanged:: 2.5.0
+   Interface to the `distopia`_ package added.
 
 Functions
 ---------
@@ -83,6 +130,7 @@ from .mdamath import triclinic_vectors
 from ._augment import augment_coordinates, undo_augment
 from .nsgrid import FastNS
 from .c_distances import _minimize_vectors_ortho, _minimize_vectors_triclinic
+from ._distopia import HAS_DISTOPIA
 
 
 # hack to select backend with backend=<backend> kwarg. Note that
@@ -97,8 +145,11 @@ try:
                                           package="MDAnalysis.lib")
 except ImportError:
     pass
-del importlib
 
+if HAS_DISTOPIA:
+    _distances["distopia"] = importlib.import_module("._distopia",
+                             package="MDAnalysis.lib")
+del importlib
 
 def _run(funcname: str, args: Optional[tuple] = None,
          kwargs: Optional[dict] = None, backend: str = "serial") -> Callable:
@@ -1408,15 +1459,15 @@ def calc_bonds(coords1: Union[npt.NDArray, 'AtomGroup'],
         Preallocated result array of dtype ``numpy.float64`` and shape ``(n,)``
         (for ``n`` coordinate pairs). Avoids recreating the array in repeated
         function calls.
-    backend : {'serial', 'OpenMP'}, optional
-        Keyword selecting the type of acceleration.
+    backend : {'serial', 'OpenMP', 'distopia'}, optional
+        Keyword selecting the type of acceleration. Defaults to 'serial'.
 
     Returns
     -------
-    bondlengths : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n,)``) or numpy.float64
-        Array containing the bond lengths between each pair of coordinates. If
-        two single coordinates were supplied, their distance is returned as a
-        single number instead of an array.
+    bondlengths : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n,)``) or
+        numpy.float64 Array containing the bond lengths between each pair of
+        coordinates. If two single coordinates were supplied, their distance is
+        returned as a single number instead of an array.
 
 
     .. versionadded:: 0.8
@@ -1428,6 +1479,8 @@ def calc_bonds(coords1: Union[npt.NDArray, 'AtomGroup'],
     .. versionchanged:: 2.3.0
        Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
        argument in any position and checks inputs using type hinting.
+    .. versionchanged:: 2.5.0
+       Can now optionally use the fast distance functions from distopia
     """
     numatom = coords1.shape[0]
     bondlengths = _check_result_array(result, (numatom,))
@@ -1435,19 +1488,30 @@ def calc_bonds(coords1: Union[npt.NDArray, 'AtomGroup'],
     if numatom > 0:
         if box is not None:
             boxtype, box = check_box(box)
-            if boxtype == 'ortho':
-                _run("calc_bond_distance_ortho",
-                     args=(coords1, coords2, box, bondlengths),
-                     backend=backend)
+            if boxtype == "ortho":
+                if backend == 'distopia':
+                    bondlengths = bondlengths.astype(np.float32)
+                _run(
+                    "calc_bond_distance_ortho",
+                    args=(coords1, coords2, box, bondlengths),
+                    backend=backend,
+                )
             else:
-                _run("calc_bond_distance_triclinic",
-                     args=(coords1, coords2, box, bondlengths),
-                     backend=backend)
+                _run(
+                    "calc_bond_distance_triclinic",
+                    args=(coords1, coords2, box, bondlengths),
+                    backend=backend,
+                )
         else:
-            _run("calc_bond_distance",
-                 args=(coords1, coords2, bondlengths),
-                 backend=backend)
-
+            if backend == 'distopia':
+                bondlengths = bondlengths.astype(np.float32)
+            _run(
+                "calc_bond_distance",
+                args=(coords1, coords2, bondlengths),
+                backend=backend,
+            )
+    if backend == 'distopia':
+        bondlengths = bondlengths.astype(np.float64)
     return bondlengths
 
 

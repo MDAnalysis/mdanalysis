@@ -238,6 +238,11 @@ class Universe(object):
     vdwradii: dict, ``None``, default ``None``
         For use with *guess_bonds*. Supply a dict giving a vdwradii for each
         atom type which are used in guessing bonds.
+    fudge_factor: float, default [0.55]
+        For use with *guess_bonds*. Supply the factor by which atoms must
+        overlap each other to be considered a bond.
+    lower_bound: float, default [0.1]
+        For use with *guess_bonds*. Supply the minimum bond length.
     transformations: function or list, ``None``, default ``None``
         Provide a list of transformations that you wish to apply to the
         trajectory upon reading. Transformations can be found in
@@ -312,11 +317,14 @@ class Universe(object):
     .. versionchanged:: 2.0.0
         Universe now can be (un)pickled.
         ``topology`` and ``trajectory`` are reserved upon unpickle.
-
+    .. versionchanged:: 2.5.0
+        Added fudge_factor and lower_bound parameters for use with
+        *guess_bonds*.
     """
     def __init__(self, topology=None, *coordinates, all_coordinates=False,
                  format=None, topology_format=None, transformations=None,
-                 guess_bonds=False, vdwradii=None, in_memory=False,
+                 guess_bonds=False, vdwradii=None, fudge_factor=0.55,
+                 lower_bound=0.1, in_memory=False,
                  in_memory_step=1, **kwargs):
 
         self._trajectory = None  # managed attribute holding Reader
@@ -330,6 +338,8 @@ class Universe(object):
             'transformations': transformations,
             'guess_bonds': guess_bonds,
             'vdwradii': vdwradii,
+            'fudge_factor': fudge_factor,
+            'lower_bound': lower_bound,
             'in_memory': in_memory,
             'in_memory_step': in_memory_step,
             'format': format,
@@ -371,7 +381,8 @@ class Universe(object):
             self._trajectory.add_transformations(*transformations)
 
         if guess_bonds:
-            self.atoms.guess_bonds(vdwradii=vdwradii)
+            self.atoms.guess_bonds(vdwradii=vdwradii, fudge_factor=fudge_factor,
+                                   lower_bound=lower_bound)
 
     def copy(self):
         """Return an independent copy of this Universe"""
