@@ -23,7 +23,7 @@
 
 import MDAnalysis as mda
 import pytest
-from MDAnalysis.analysis.nucleicacids import WatsonCrickDist
+from MDAnalysis.analysis.nucleicacids import WatsonCrickDist, NucPairDist
 from MDAnalysisTests.datafiles import RNA_PSF, RNA_PDB
 from numpy.testing import assert_allclose
 
@@ -44,9 +44,32 @@ def wc_rna(u):
     return WC
 
 
+def test_wc_dist_shape(wc_rna):
+    assert wc_rna.results.pair_distances.shape == (1, 2)
+
+
+def test_wc_dist_results_keys(wc_rna):
+    assert "pair_distances" in wc_rna.results
+
+
 def test_wc_dist(wc_rna):
     assert_allclose(wc_rna.results.pair_distances[0, 0], 4.3874702, atol=1e-3)
     assert_allclose(wc_rna.results.pair_distances[0, 1], 4.1716404, atol=1e-3)
+
+
+def test_wc_dist_invalid_residue_types(u):
+    strand = u.select_atoms("resid 1-10")
+    strand1 = [strand.residues[0], strand.residues[21]]
+    strand2 = [strand.residues[2], strand.residues[22]]
+    with pytest.raises(ValueError, match="are not valid nucleic acids"):
+        WatsonCrickDist(strand1, strand2)
+
+
+def test_selection_length_mismatch(u):
+    sel1 = u.select_atoms("resid 1-10")
+    sel2 = u.select_atoms("resid 1-5")
+    with pytest.raises(ValueError, match="Selections must be same length"):
+        NucPairDist(sel1, sel2)
 
 
 @pytest.mark.parametrize("key", [0, 1, 2, "parsnips", "time", -1])
