@@ -653,8 +653,9 @@ class HydrogenBondAnalysis(AnalysisBase):
 
     def _filter_atoms(self, donors, acceptors):
         """Create a mask to filter donor, hydrogen and acceptor atoms.
-         
-        This can be used to consider only hydrogen bonds between two or more specified groups.
+
+        This can be used to consider only hydrogen bonds between two or more
+        specified groups.
 
         Groups are specified with the `between` keyword when creating the
         HydrogenBondAnalysis object.
