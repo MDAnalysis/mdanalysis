@@ -52,6 +52,3 @@ benchmarks/results
 .idea
 .vscode
 *.lock
-
-# add mdanalysis dir 
-mdanalysis/
