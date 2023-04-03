@@ -205,10 +205,7 @@ Classes
    :members:
 
 """
-import os
-import errno
 import warnings
-import bz2
 import functools
 
 import numpy as np
@@ -217,7 +214,6 @@ import logging
 
 import MDAnalysis
 import MDAnalysis.lib.distances
-from MDAnalysis.lib.util import openany
 from MDAnalysis.analysis.distances import distance_array
 from MDAnalysis.core.groups import AtomGroup, UpdatingAtomGroup
 from .base import AnalysisBase

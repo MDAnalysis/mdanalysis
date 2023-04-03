@@ -122,7 +122,6 @@ Utilities
 .. autoexception:: ApplicationError
 
 """
-import glob
 import os
 import errno
 import shutil
@@ -136,8 +135,6 @@ from collections import OrderedDict
 import numpy as np
 import matplotlib.pyplot as plt
 
-from MDAnalysis import ApplicationError
-from MDAnalysis.lib.util import which, realpath, asiterable
 
 import logging
 

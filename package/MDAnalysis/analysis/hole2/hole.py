@@ -33,13 +33,12 @@ import matplotlib
 import matplotlib.pyplot as plt
 from collections import OrderedDict
 
-from ...exceptions import ApplicationError
 from ..base import AnalysisBase
 from ...lib import util
 from .utils import (check_and_fix_long_filename, write_simplerad2,
                     set_up_hole_input, run_hole, collect_hole,
                     create_vmd_surface)
-from .templates import (hole_input, hole_lines, vmd_script_array,
+from .templates import (vmd_script_array,
                         vmd_script_function, exe_err,
                         IGNORE_RESIDUES)
 

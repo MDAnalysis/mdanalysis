@@ -25,7 +25,6 @@ from multiprocessing.sharedctypes import SynchronizedArray
 from multiprocessing import Process, Manager
 from joblib import cpu_count
 import numpy as np
-import sys
 
 import MDAnalysis as mda
 from ...coordinates.memory import MemoryReader

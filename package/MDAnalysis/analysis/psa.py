@@ -217,7 +217,6 @@ import matplotlib
 import MDAnalysis
 import MDAnalysis.analysis.align
 from MDAnalysis import NoDataError
-from MDAnalysis.lib.util import deprecate
 
 import logging
 logger = logging.getLogger('MDAnalysis.analysis.psa')

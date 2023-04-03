@@ -124,10 +124,7 @@ writers share.
 """
 import numpy as np
 import numbers
-import copy
-import warnings
-import weakref
-from typing import Union, Optional, List, Dict
+from typing import Union, Optional, Dict
 
 from .timestep import Timestep
 from . import core
@@ -142,7 +139,7 @@ from ..auxiliary.base import AuxReader
 from ..auxiliary.core import auxreader
 from ..auxiliary.core import get_auxreader_for
 from ..auxiliary import _AUXREADERS
-from ..lib.util import asiterable, Namespace, store_init_arguments
+from ..lib.util import asiterable, store_init_arguments
 from ..lib.util import NamedStream
 
 

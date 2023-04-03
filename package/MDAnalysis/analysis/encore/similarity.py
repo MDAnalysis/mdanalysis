@@ -172,7 +172,6 @@ Function reference
 .. All functions are included via automodule :members:.
 
 """
-import warnings
 import logging
 
 import numpy as np

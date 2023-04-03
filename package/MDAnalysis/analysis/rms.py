@@ -168,7 +168,7 @@ import warnings
 
 import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.analysis.base import AnalysisBase
-from MDAnalysis.exceptions import SelectionError, NoDataError
+from MDAnalysis.exceptions import SelectionError
 from MDAnalysis.lib.util import asiterable, iterable, get_weights
 
 

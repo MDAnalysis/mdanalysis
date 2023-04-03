@@ -369,10 +369,8 @@ Classes
 
 """
 from MDAnalysis.lib.correlations import autocorrelation, correct_intermittency
-import MDAnalysis.analysis.hbonds
 from itertools import zip_longest
 import logging
-import warnings
 import numpy as np
 
 
