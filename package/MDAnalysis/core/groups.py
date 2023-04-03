@@ -1071,7 +1071,7 @@ class GroupBase(_MutableBase):
                 return coords.mean(axis=0)
             # promote weights to dtype if required:
             weights = weights.astype(dtype, copy=False)
-            return (coords * weights[:, None]).sum(axis=0) / weights.sum()
+            return np.einsum('ij,ij->j',coords,weights[:, None]) / weights.sum()
 
         # When compound split caching gets implemented it will be clever to
         # preempt at this point whether or not stable sorting will be needed
@@ -1100,7 +1100,7 @@ class GroupBase(_MutableBase):
                 _centers = _coords.mean(axis=1)
             else:
                 _weights = weights[atom_mask]
-                _centers = (_coords * _weights[:, :, None]).sum(axis=1)
+                _centers = np.einsum('ijk,ijk->ik',_coords,_weights[:, :, None])
                 _centers /= _weights.sum(axis=1)[:, None]
             centers[compound_mask] = _centers
         if wrap:
@@ -1864,7 +1864,7 @@ class GroupBase(_MutableBase):
                         raise ValueError("Cannot perform unwrap with "
                                          "reference='com' because the total "
                                          "mass of the group is zero.")
-                    refpos = np.sum(positions * masses[:, None], axis=0)
+                    refpos = np.einsum('ij,ij->j',positions,masses[:, None])
                     refpos /= total_mass
                 else:  # reference == 'cog'
                     refpos = positions.mean(axis=0)
@@ -1893,8 +1893,8 @@ class GroupBase(_MutableBase):
                                              "reference='com' because the "
                                              "total mass of at least one of "
                                              "the {} is zero.".format(comp))
-                        refpos = np.sum(positions[atom_mask]
-                                        * masses[:, :, None], axis=1)
+                        refpos = np.einsum('ijk,ijk->ik',positions[atom_mask],
+                                           masses[:, :, None])
                         refpos /= total_mass[:, None]
                     else:  # reference == 'cog'
                         refpos = positions[atom_mask].mean(axis=1)
