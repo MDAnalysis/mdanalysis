@@ -34,6 +34,7 @@ Simple atomic distance analysis --- :mod:`MDAnalysis.analysis.atomicdistances`
 This module provides a class to efficiently compute distances between
 two groups of atoms with an equal number of atoms over a trajectory.
 Specifically, for two atom groups ``ag1`` and ``ag2``, it will return
+the distances
 
 .. math::
     |ag1[i] - ag2[i]|
