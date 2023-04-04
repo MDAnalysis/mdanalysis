@@ -37,6 +37,7 @@ Fixes
     (Issue #3336)
 
 Enhancements
+  * Add writing u.trajectory.ts.data['molecule_tag'] as molecule tags to LAMMPS data file (Issue #3548)
   * Add `progressbar_kwargs` parameter to `AnalysisBase.run` method, allowing to modify description, position etc of tqdm progressbars.
   * Add a nojump transformation, which unwraps trajectories so that particle
     paths are continuous. (Issue #3703, PR #4031)
