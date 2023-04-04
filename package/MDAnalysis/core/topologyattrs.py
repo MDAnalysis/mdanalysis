@@ -1266,13 +1266,13 @@ class Atomnames(AtomStringAttr):
         """
         results = np.array([None]*len(residues))
         names = [n_name, ca_name, cb_name, cg_name]
-        keep = [all(len(r.atoms.select_atoms(f"name {n}")) == 1 
-                    for n in names)
-                for r in residues]
+        keep = [all(sum(np.in1d(r.atoms.names, n.split())) == 1
+                    for n in names) for r in residues]
         keepix = np.where(keep)[0]
         residues = residues[keep]
 
-        ags = [residues.atoms.select_atoms(f"name {n}") for n in names]
+        atnames = residues.atoms.names
+        ags = [residues.atoms[np.in1d(atnames, n.split())] for n in names]
         results[keepix] = [sum(atoms) for atoms in zip(*ags)]
         return list(results)
 
