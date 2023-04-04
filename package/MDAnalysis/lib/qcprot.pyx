@@ -183,15 +183,15 @@ def InnerProduct(cnp.ndarray[cnp.float64_t, ndim=1] A,
 
     Parameters
     ----------
-    A : ndarray cnp.float64_t
+    A : ndarray np.float64_t
         result inner product array, modified in place
-    coords1 : ndarray cnp.float64_t
+    coords1 : ndarray np.float64_t
         reference structure
-    coord2 : ndarray cnp.float64_t
+    coord2 : ndarray np.float64_t
         candidate structure
     N : int
         size of system
-    weights : ndarray cnp.float64_t (optional)
+    weights : ndarray np.float64_t (optional)
         use to calculate weighted inner product
 
 
@@ -288,15 +288,15 @@ def CalcRMSDRotationalMatrix(cnp.ndarray[cnp.float64_t, ndim=2] ref,
 
     Parameters
     ----------
-    ref : ndarray, cnp.float64_t
+    ref : ndarray, np.float64_t
         reference structure coordinates
-    conf : ndarray, cnp.float64_t
+    conf : ndarray, np.float64_t
         condidate structure coordinates
     N : int
         size of the system
-    rot : ndarray, cnp.float64_t
+    rot : ndarray, np.float64_t
         array to store rotation matrix. Must be flat
-    weights : ndarray, cnpfloat64_t (optional)
+    weights : ndarray, npfloat64_t (optional)
         weights for each component
 
     Returns
@@ -308,14 +308,14 @@ def CalcRMSDRotationalMatrix(cnp.ndarray[cnp.float64_t, ndim=2] ref,
        Array size changed from 3xN to Nx3.
     """
     cdef double E0
-    cdef np.ndarray[np.float64_t, ndim=1] A = np.zeros(9, dtype=np.float64)
+    cdef cnp.ndarray[cnp.float64_t, ndim=1] A = np.zeros(9, dtype=np.float64)
 
     E0 = InnerProduct(A, conf, ref, N, weights)
     return FastCalcRMSDAndRotation(rot, A, E0, N)
 
 
-def FastCalcRMSDAndRotation(np.ndarray[np.float64_t, ndim=1] rot,
-                            np.ndarray[np.float64_t, ndim=1] A,
+def FastCalcRMSDAndRotation(cnp.ndarray[cnp.float64_t, ndim=1] rot,
+                            cnp.ndarray[cnp.float64_t, ndim=1] A,
                             double E0, int N):
     """
     Calculate the RMSD, and/or the optimal rotation matrix.
@@ -346,7 +346,7 @@ def FastCalcRMSDAndRotation(np.ndarray[np.float64_t, ndim=1] rot,
     cdef double SxzpSzx, SyzpSzy, SxypSyx, SyzmSzy,
     cdef double SxzmSzx, SxymSyx, SxxpSyy, SxxmSyy
 
-    cdef np.ndarray[np.float64_t, ndim=1] C = np.zeros(4,)
+    cdef cnp.ndarray[np.float64_t, ndim=1] C = np.zeros(4,)
     cdef unsigned int i
     cdef double mxEigenV
     cdef double oldg = 0.0
