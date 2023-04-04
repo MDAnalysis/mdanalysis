@@ -23,9 +23,9 @@
 #
 
 
-"""
-A simple atomic distance analysis --- :mod:`MDAnalysis.analysis.atomicdistances`
-==========================================================
+r"""
+Simple atomic distance analysis --- :mod:`MDAnalysis.analysis.atomicdistances`
+==============================================================================
 
 :Author: Xu Hong Chen
 :Year: 2023
@@ -33,15 +33,19 @@ A simple atomic distance analysis --- :mod:`MDAnalysis.analysis.atomicdistances`
 
 This module provides a class to efficiently compute distances between
 two groups of atoms with an equal number of atoms over a trajectory.
-Specifically, for two atom groups `ag1` and `ag2`, it will return 
-`|ag1[i] - ag2[i]|` for all `i` from `0` to `n_atoms - 1`, where 
-`n_atoms` is the number of atoms in each atom group. By default, this
-computation is done with periodic boundary conditions, but this can be
-easily turned off. These distances are grouped by timestep in a NumPy
-array.
+Specifically, for two atom groups ``ag1`` and ``ag2``, it will return
+
+.. math::
+    |ag1[i] - ag2[i]|
+
+for all :math:`i` from :math:`0` to `n_atoms` :math:`- 1`, where
+`n_atoms` is the number of atoms in each atom group. By default,
+this computation is done with periodic boundary conditions, but this
+can be easily turned off. These distances are grouped by time step in
+a NumPy array.
 
 For more general functions on computing distances between atoms or
-groups of atoms, please see `MDAnalysis.analysis.distances`.
+groups of atoms, please see :class:`MDAnalysis.analysis.distances`.
 
 See Also
 --------
@@ -49,8 +53,8 @@ See Also
 :mod:`MDAnalysis.lib.distances`
 
 
-Simple usage example
---------------------
+Basic usage
+-----------
 
 This example uses files from the MDAnalysis test suite
 (:data:`~MDAnalysis.tests.datafiles.GRO` and
@@ -68,8 +72,8 @@ To select these atoms:
    >>> ag1 = u.atoms[100:105]
    >>> ag2 = u.atoms[4000:4005]
 
-Run the calculations using a variable of your choice like `my_dists` and
-access your results using `my_dists.results`:
+We can run the calculations using any variable of choice such as
+``my_dists`` and access our results using ``my_dists.results``:
 
    >>> my_dists = ad.AtomicDistances(ag1, ag2).run()
    >>> my_dists.results
@@ -84,9 +88,9 @@ access your results using `my_dists.results`:
        [38.76272761, 41.31816555, 38.81588421, 39.82491432, 38.890219  ],
        [39.20012515, 40.00563374, 40.83857688, 38.77886735, 41.45775864]])
 
-To do the computation without periodic boundary conditions, enter
-the keyword argument `pbc=False` after `ag2`. The result will look
-different, in this case:
+To do the computation without periodic boundary conditions, we can enter
+the keyword argument ``pbc=False`` after ``ag2``. The result is different
+in this case:
 
    >>> my_dists_nopbc = ad.AtomicDistances(ag1, ag2, pbc=False).run()
    >>> my_dists_nopbc.results
@@ -132,8 +136,9 @@ class AtomicDistances(AnalysisBase):
     Attributes
     ----------
     results : :class:`numpy.ndarray`
-        The distances `|ag1[i] - ag2[i]|` for all `i` from `0` to
-        `n_atoms - 1` for each frame over the trajectory.
+        The distances :math:`|ag1[i] - ag2[i]|` for all :math:`i`
+        from :math:`0` to `n_atoms` :math:`- 1` for each frame over
+        the trajectory.
     n_frames : int
         Number of frames included in the analysis.
     n_atoms : int
