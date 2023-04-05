@@ -58,7 +58,7 @@ import platform
 
 # Make sure I have the right Python version.
 if sys.version_info[:2] < (3, 9):
-    print('MDAnalysis requires Python 3.9 or better. Python {0:d}.{1:d} detected'.format(*
+    print('MDAnalysis requires Python 3.9+. Python {0:d}.{1:d} detected'.format(*
           sys.version_info[:2]))
     print('Please upgrade your version of Python.')
     sys.exit(-1)
