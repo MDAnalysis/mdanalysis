@@ -53,7 +53,8 @@ Enhancements
     and SegmentGroup. (PR #3953)
 
 Changes
-  * As per NEP29 the minimum supported Python version has been raised to 3.9.
+  * As per NEP29 the minimum supported Python version has been raised to 3.9
+    (PR #4115).
   * einsum method for Einstein summation convention introduced to increase 
     performance (Issue #2063, PR #4089)
   * Add progress bars to track the progress of _conclude() functions
