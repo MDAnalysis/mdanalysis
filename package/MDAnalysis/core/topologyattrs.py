@@ -1233,7 +1233,8 @@ class Atomnames(AtomStringAttr):
            faster atom matching with boolean arrays.
         """
         names = [n_name, ca_name, cb_name, cg_name]
-        ags = [residue.atoms.select_atoms(f"name {n}") for n in names]
+        atnames = residue.atoms.names
+        ags = [residue.atoms[np.in1d(atnames, n.split())] for n in names]
         if any(len(ag) != 1 for ag in ags):
             return None
         return sum(ags)
