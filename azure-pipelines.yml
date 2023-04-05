@@ -21,14 +21,14 @@ jobs:
     MPLBACKEND: agg
   strategy:
     matrix:
-        Win-Python38-32bit-full:
-          PYTHON_VERSION: '3.8'
+        Win-Python39-32bit-full:
+          PYTHON_VERSION: '3.9'
           PYTHON_ARCH: 'x86'
           BUILD_TYPE: 'normal'
           NUMPY_MIN: '1.21.0'
           imageName: 'windows-2019'
-        Win-Python38-64bit-full:
-          PYTHON_VERSION: '3.8'
+        Win-Python39-64bit-full:
+          PYTHON_VERSION: '3.9'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'normal'
           imageName: 'windows-2019'
@@ -43,8 +43,8 @@ jobs:
           BUILD_TYPE: 'wheel'
           NUMPY_MIN: '1.23.2'
           imageName: 'windows-2019'
-        Win-Python38-64bit-full-wheel:
-          PYTHON_VERSION: '3.8'
+        Win-Python39-64bit-full-wheel:
+          PYTHON_VERSION: '3.9'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
           NUMPY_MIN: '1.21.0'
@@ -55,8 +55,8 @@ jobs:
           BUILD_TYPE: 'wheel'
           NUMPY_MIN: '1.23.2'
           imageName: 'ubuntu-latest'
-        Linux-Python38-64bit-full-wheel:
-          PYTHON_VERSION: '3.8'
+        Linux-Python39-64bit-full-wheel:
+          PYTHON_VERSION: '3.9'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
           NUMPY_MIN: '1.21.0'
