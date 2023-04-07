@@ -986,11 +986,13 @@ class Universe(object):
         -------
 
         Adding a new GLY residue, then placing atoms within it:
-
-        >>> newres = u.add_Residue(segment=u.segments[0], resid=42, resname='GLY')
+        >>> import MDAnalysis as mda
+        >>> from MDAnalysis.tests.datafiles import PSF, DCD
+        >>> u = mda.Universe(PSF, DCD)
+        >>> newres = u.add_Residue(segment=u.segments[0], resid=42, resname='GLY', resnum=0)
         >>> u.atoms[[1, 2, 3]].residues = newres
         >>> u.select_atoms('resname GLY and resid 42')
-        <AtomGroup with 3 atoms>
+        <AtomGroup with 10 atoms>
 
         """
         if len(self.segments) == 1:  # if only one segment, use this

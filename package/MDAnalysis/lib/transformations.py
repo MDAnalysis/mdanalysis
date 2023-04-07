@@ -108,7 +108,7 @@ be specified using a 4 character string or encoded 4-tuple:
 
 Examples
 --------
-
+>>> from MDAnalysis.lib.transformations import identity_matrix
 >>> alpha, beta, gamma = 0.123, -1.234, 2.345
 >>> origin, xaxis, yaxis, zaxis = (0, 0, 0), (1, 0, 0), (0, 1, 0), (0, 0, 1)
 >>> I = identity_matrix()
@@ -174,7 +174,7 @@ from .mdamath import angle as vecangle
 
 def identity_matrix():
     """Return 4x4 identity/unit matrix.
-
+    >>> from MDAnalysis.lib.transformations import identity_matrix
     >>> I = identity_matrix()
     >>> np.allclose(I, np.dot(I, I))
     True
@@ -1180,7 +1180,7 @@ def quaternion_about_axis(angle, axis):
 
 def quaternion_matrix(quaternion):
     """Return homogeneous rotation matrix from quaternion.
-
+    >>> from MDAnalysis.lib.transformations import identity_matrix
     >>> M = quaternion_matrix([0.99810947, 0.06146124, 0, 0])
     >>> np.allclose(M, rotation_matrix(0.123, (1, 0, 0)))
     True
@@ -1212,7 +1212,7 @@ def quaternion_from_matrix(matrix, isprecise=False):
 
     If isprecise=True, the input matrix is assumed to be a precise rotation
     matrix and a faster algorithm is used.
-
+    >>> from MDAnalysis.lib.transformations import identity_matrix
     >>> q = quaternion_from_matrix(identity_matrix(), True)
     >>> np.allclose(q, [1., 0., 0., 0.])
     True
