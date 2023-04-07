@@ -986,6 +986,7 @@ class Universe(object):
         -------
 
         Adding a new GLY residue, then placing atoms within it:
+        
         >>> import MDAnalysis as mda
         >>> from MDAnalysis.tests.datafiles import PSF, DCD
         >>> u = mda.Universe(PSF, DCD)
