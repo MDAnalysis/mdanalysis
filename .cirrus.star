@@ -13,4 +13,4 @@ def main(ctx):
     if env.get("CIRRUS_REPO_FULL_NAME") != "MDAnalysis/mdanalysis":
         return []
 
-    fs.read("maintainer/ci/cirrus-ci.yml")
+    return fs.read("maintainer/ci/cirrus-ci.yml")
