@@ -1,5 +1,5 @@
 macos_instance:
-  image: ghcr.io/cirruslabs/macos-monterey-base:latest
+  image: ghcr.io/cirruslabs/macos-ventura-base:latest
 
 task:
   script: |
@@ -11,5 +11,5 @@ task:
     python -m pip install .
     cd ../testsuite
     python -m pip install .
-    python -m pip install pytest
-    python -m pytest MDAnalysisTests
+    python -m pip install pytest pytest-xdist
+    python -m pytest -n auto MDAnalysisTests
