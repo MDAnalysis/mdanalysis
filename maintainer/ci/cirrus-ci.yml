@@ -5,6 +5,8 @@ linux_aarch64_task:
     memory: 4G
 
   ci_script: |
+    apt update
+    apt install -y --no-install-recommends gcc g++
     echo $PYTHON_VERSION
     python3 --version
     python3 -m pip install ./package
