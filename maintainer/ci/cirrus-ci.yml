@@ -1,9 +1,21 @@
+linux_aarch64_task:
+  arm_container:
+    image: python:slim
+    cpu: 4
+    memory: 4G
+
+  ci_script: |
+    echo $PYTHON_VERSION
+    python3 --version
+    python3 -m pip install ./package
+    python3 -m pip install ./testsuite
+    python3 -m pip install pytest-xdist
+    python -m pytest -n auto ./testsuite/MDAnalysisTests
+
+
 macos_arm64_task:
   macos_instance:
     image: ghcr.io/cirruslabs/macos-ventura-base:latest
-
-  pip_cache:
-    folder: ~/.cache/pip
 
   ci_script: |
     brew update
