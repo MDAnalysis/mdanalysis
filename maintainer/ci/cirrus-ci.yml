@@ -2,7 +2,7 @@ linux_aarch64_task:
   arm_container:
     image: python:slim
     cpu: 4
-    memory: 4G
+    memory: 8G
 
   ci_script: |
     apt update
