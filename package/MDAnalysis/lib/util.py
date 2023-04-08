@@ -474,6 +474,8 @@ def greedy_splitext(p):
 
     Example
     -------
+
+    >>> from MDAnalysis.lib.util import greedy_splitext
     >>> greedy_splitext("/home/joe/protein.pdb.bz2")
     ('/home/joe/protein', '.pdb.bz2')
 

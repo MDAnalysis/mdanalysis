@@ -808,7 +808,7 @@ class Universe(object):
 
         >>> u.add_TopologyAttr('bfactors')
         >>> u.atoms.bfactors
-        array([ 0.,  0.,  0., ...,  0.,  0.,  0.])
+        array([0., 0., 0., ..., 0., 0., 0.])
 
         .. versionchanged:: 0.17.0
            Can now also add TopologyAttrs with a string of the name of the
@@ -986,7 +986,7 @@ class Universe(object):
         -------
 
         Adding a new GLY residue, then placing atoms within it:
-        
+
         >>> import MDAnalysis as mda
         >>> from MDAnalysis.tests.datafiles import PSF, DCD
         >>> u = mda.Universe(PSF, DCD)
