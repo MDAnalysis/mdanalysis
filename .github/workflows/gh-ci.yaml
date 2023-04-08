@@ -26,39 +26,39 @@ jobs:
         fail-fast: false
         matrix:
           os: [ubuntu-latest, ]
-          python-version: ["3.8", "3.9", "3.10", "3.11"]
+          python-version: ["3.9", "3.10", "3.11"]
           full-deps: [true, ]
           install_hole: [true, ]
           codecov: [true, ]
           include:
-            - name: macOS_monterey_py39
+            - name: macOS_monterey_py311
               os: macOS-12
-              python-version: 3.9
+              python-version: "3.11"
               full-deps: true
               install_hole: true
               codecov: true
-            - name: macOS_bigsur_py38
+            - name: macOS_bigsur_py39
               os: macOS-11
-              python-version: 3.8
+              python-version: 3.9
               full-deps: true
               install_hole: true
               codecov: false
             - name: minimal-ubuntu
               os: ubuntu-latest
-              python-version: 3.8
+              python-version: 3.9
               full-deps: false
               install_hole: false
               codecov: true
             - name: numpy_min
               os: ubuntu-latest
-              python-version: 3.8
+              python-version: 3.9
               full-deps: false
               install_hole: false
               codecov: false
               numpy: numpy=1.21.0
             - name: asv_check
               os: ubuntu-latest
-              python-version: 3.8
+              python-version: 3.9
               full-deps: true
               install_hole: false
               codecov: false
@@ -142,7 +142,7 @@ jobs:
     - name: setup_miniconda
       uses: conda-incubator/setup-miniconda@v2
       with:
-        python-version: 3.8
+        python-version: 3.9
         auto-update-conda: true
         channel-priority: flexible
         channels: conda-forge, bioconda
@@ -238,7 +238,7 @@ jobs:
 
     - uses: actions/setup-python@v4
       with:
-        python-version: 3.8
+        python-version: 3.9
 
     - name: install_deps
       run: |

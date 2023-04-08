@@ -12,13 +12,13 @@ dependencies:
   - h5py>=2.10
   - hypothesis
   - joblib>=0.12
-  - matplotlib==3.2.2
+  - matplotlib>=3.2.2
   - mmtf-python
   - mock
   - networkx
   - numpy>=1.21
   - pytest
-  - python==3.8
+  - python==3.9
   - pytng>=0.2.3
   - scikit-learn
   - scipy
