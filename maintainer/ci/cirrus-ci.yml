@@ -1,8 +1,11 @@
-macos_instance:
-  image: ghcr.io/cirruslabs/macos-ventura-base:latest
+macos_arm64_ci:
+  macos_instance:
+    image: ghcr.io/cirruslabs/macos-ventura-base:latest
 
-task:
-  script: |
+  pip_cache:
+    folder: ~/.cache/pip
+
+  ci_script: |
     brew update
     brew install python@3.11
     /opt/homebrew/bin/python3 -m venv ~/py_311
