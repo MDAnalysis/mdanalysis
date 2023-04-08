@@ -1,6 +1,6 @@
 linux_aarch64_task:
   arm_container:
-    image: python:slim
+    image: python:latest
     cpu: 4
     memory: 8G
 
@@ -12,7 +12,7 @@ linux_aarch64_task:
     python3 -m pip install ./package
     python3 -m pip install ./testsuite
     python3 -m pip install pytest-xdist
-    python -m pytest -n 8 ./testsuite/MDAnalysisTests
+    python -m pytest -n 4 ./testsuite/MDAnalysisTests
 
 
 macos_arm64_task:
