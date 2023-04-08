@@ -1,4 +1,4 @@
-macos_arm64_ci:
+macos_arm64_task:
   macos_instance:
     image: ghcr.io/cirruslabs/macos-ventura-base:latest
 
