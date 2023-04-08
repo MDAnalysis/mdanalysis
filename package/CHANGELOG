@@ -21,6 +21,8 @@ The rules for this file:
  * 2.5.0
 
 Fixes
+  * Fix chi1_selections() ignored atom names CG1 OG OG1 SG and incorrectly returned
+    None for amino acids CYS, ILE, SER, THR, VAL (Issue #4108)
   * Fix parsing of box vector in H5MD reader (Issue #4076)
   * Fix the misleading 'AtomGroup.guess_bonds()' docs and passed missing
     arguments (PR #4059)
@@ -39,6 +41,7 @@ Fixes
 Enhancements
   * LAMMPSDump Reader use of `continuous` option to stitch trajectories
     (Issue #3546)
+  * Improved speed of chi1_selection (PR #4109)
   * Add `progressbar_kwargs` parameter to `AnalysisBase.run` method, allowing to modify description, position etc of tqdm progressbars.
   * Add a nojump transformation, which unwraps trajectories so that particle
     paths are continuous. (Issue #3703, PR #4031)
