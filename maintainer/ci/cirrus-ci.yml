@@ -9,10 +9,12 @@ linux_aarch64_task:
     apt install -y --no-install-recommends gcc g++
     echo $PYTHON_VERSION
     python3 --version
+    python3 -m venv mda-dev
+    source mda-dev/bin/activate
     python3 -m pip install ./package
     python3 -m pip install ./testsuite
     python3 -m pip install pytest-xdist
-    python -m pytest -n 4 ./testsuite/MDAnalysisTests
+    python3 -m pytest -n 4 ./testsuite/MDAnalysisTests
 
 
 macos_arm64_task:
