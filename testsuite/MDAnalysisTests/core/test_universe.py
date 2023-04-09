@@ -171,15 +171,6 @@ class TestUniverseCreation(object):
             with pytest.raises(PermissionError, match=f"Errno {errno.EACCES}"):
                 mda.Universe('permission.denied.tpr')
 
-            # pre-teardown permission fix - leaving permission blocked dir
-            # is problematic on py3.9 + Windows it seems.
-            if os.name == 'nt':
-                subprocess.call(f"icacls {tmpdir} /grant Users:W", shell=True)
-            else:
-                os.chmod(str(tmpdir), 0o777)
-
-            shutil.rmtree(tmpdir)
-
     def test_load_new_VE(self):
         u = mda.Universe.empty(0)
 
