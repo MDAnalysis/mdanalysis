@@ -280,6 +280,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ci-sdist
+          path: dist
 
       - uses: actions/setup-python@v4
         with:
