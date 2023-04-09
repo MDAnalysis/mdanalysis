@@ -212,22 +212,21 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: setup_miniconda
-        uses: conda-incubator/setup-miniconda@v2
+      - name: setup_micromamba
+        uses: mamba-org/provision-with-micromamba@main
         with:
-          python-version: ${{ matrix.python-version }}
-          auto-update-conda: true
-          channel-priority: flexible
+          environment-file: False
+          environment-name: mda
+          extra-specs: |
+            python==${{ matrix.python-version }}
+            pip
           channels: conda-forge, bioconda
-          add-pip-as-python-dependency: true
-          mamba-version: "*"
-          architecture: x64
 
       - name: install_full_deps
         uses: ./.github/actions/setup-deps
         if: "matrix.type == 'FULL'"
         with:
-          mamba: true
+          micromamba: true
           full-deps: true
 
       - name: install_min_deps

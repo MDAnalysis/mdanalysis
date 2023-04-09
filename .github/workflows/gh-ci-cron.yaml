@@ -32,21 +32,20 @@ jobs:
       with:
         os-type: "ubuntu"
 
-    - name: setup_miniconda
-      uses: conda-incubator/setup-miniconda@v2
+    - name: setup_micromamba
+      uses: mamba-org/provision-with-micromamba@main
       with:
-        python-version: "3.11"
-        miniforge-variant: Mambaforge
-        miniforge-version: latest
-        channel-priority: strict
+        environment-file: False
+        environment-name: mda
+        extra-specs: |
+          python=="3.11"
+          pip
         channels: conda-forge, bioconda
-        add-pip-as-python-dependency: true
-        architecture: x64
 
     - name: install_deps
       uses: ./.github/actions/setup-deps
       with:
-        mamba: true
+        micromamba: true
         full-deps: true
 
       # overwrite installs by picking up nightly wheels
@@ -56,7 +55,7 @@ jobs:
 
     - name: list_deps
       run: |
-        mamba list
+        micromamba list
         pip list
 
       # Intentionally going with setup.py builds so we can build with latest
@@ -85,17 +84,15 @@ jobs:
       with:
         os-type: "ubuntu"
 
-    - name: setup_miniconda
-      uses: conda-incubator/setup-miniconda@v2
+    - name: setup_micromamba
+      uses: mamba-org/provision-with-micromamba@main
       with:
-        python-version: 3.11
-        auto-update-conda: true
-        channel-priority: flexible
+        environment-file: False
+        environment-name: mda
+        extra-specs: |
+          python=="3.11"
+          pip
         channels: conda-forge, bioconda
-        use-mamba: true
-        miniforge-variant: Mambaforge
-        add-pip-as-python-dependency: true
-        architecture: x64
 
     - name: install_deps
       uses: ./.github/actions/setup-deps
