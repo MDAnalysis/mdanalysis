@@ -1,7 +1,7 @@
 linux_aarch64_task:
   arm_container:
     image: python:latest
-    cpu: 4
+    cpu: 8
     memory: 8G
 
   ci_script: |
@@ -14,7 +14,7 @@ linux_aarch64_task:
     python3 -m pip install ./package
     python3 -m pip install ./testsuite
     python3 -m pip install pytest-xdist
-    python3 -m pytest -n 4 ./testsuite/MDAnalysisTests
+    python3 -m pytest -n 8 ./testsuite/MDAnalysisTests
 
 
 macos_arm64_task:
