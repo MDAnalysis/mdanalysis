@@ -892,8 +892,8 @@ class _GromacsReader_offsets(object):
         # pre-teardown permission fix for windows
         if os.name == 'nt':
             subprocess.call(f"icacls {tmpdir} /grant Users:W", shell=True)
-        #else:
-        os.chmod(str(tmpdir), 0o777)
+        else:
+            os.chmod(str(tmpdir), 0o777)
 
         def remove_readonly(func, path, _):
             os.chmod(path, stat.S_IWRITE)
