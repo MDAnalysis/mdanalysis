@@ -40,10 +40,7 @@ jobs:
         extra-specs: |
           python=="3.11"
           pip
-        channels: |
-          jaimergp/label/unsupported-cudatoolkit-shim
-          conda-forge
-          bioconda
+        channels: jaimergp/label/unsupported-cudatoolkit-shim, conda-forge, bioconda
 
     - name: install_deps
       uses: ./.github/actions/setup-deps

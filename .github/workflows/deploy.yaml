@@ -220,10 +220,7 @@ jobs:
           extra-specs: |
             python==${{ matrix.python-version }}
             pip
-          channels: |
-            jaimergp/label/unsupported-cudatoolkit-shim
-            conda-forge
-            bioconda
+          channels: jaimergp/label/unsupported-cudatoolkit-shim, conda-forge, bioconda
 
       - name: install_full_deps
         uses: ./.github/actions/setup-deps
