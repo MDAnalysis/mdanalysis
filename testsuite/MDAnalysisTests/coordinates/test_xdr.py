@@ -890,8 +890,8 @@ class _GromacsReader_offsets(object):
                                                     ending='.lock')), False)
 
         # pre-teardown permission fix for windows
-        #if os.name == 'nt':
-        #    subprocess.call(f"icalcs {tmpdir} /grant Users:W", shell=True)
+        if os.name == 'nt':
+            subprocess.call(f"icalcs {tmpdir} /grant Users:W", shell=True)
         #else:
         os.chmod(str(tmpdir), 0o777)
 
