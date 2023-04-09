@@ -229,28 +229,72 @@ jobs:
   pypi_check:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./package
 
     steps:
     - uses: actions/checkout@v3
 
     - uses: actions/setup-python@v4
       with:
-        python-version: 3.9
+        python-version: 3.11
 
     - name: install_deps
       run: |
+        python -m pip install -U pip pipx
         python -m pip install twine "readme-renderer>=34.0"
 
-    - name: build_sdist
+    - name: build_package_sdist
       run: |
-        pipx run build --sdist
+        pipx run build --sdist --outdir dist package
+
+    - name: build_testsuite_sdist
+      run: |
+        pipx run build --sdist --outdir dist testsuite
 
     - name: check_package_build
       run: |
-        DISTRIBUTION=$(ls -t1 dist/MDAnalysis-*.tar.gz | head -n 1)
+        DISTRIBUTION=$(ls -t1 dist/MDAnalysis-*.tar.gz | head -n1)
         test -n "${DISTRIBUTION}" || { echo "no distribution dist/MDAnalysis-*.tar.gz found"; exit 1; }
-        echo "twine check $DISTRIBUTION"
         twine check $DISTRIBUTION
+
+    - name: check_testsuite_build
+      run: |
+        DISTRIBUTION=$(ls -t1 dist/MDAnalysisTests-*.tar.gz | head -n1)
+        test -n "${DISTRIBUTION}" || { echo "no distribution dist/MDAnalysisTests-*.tar.gz found"; exit 1; }
+        twine check $DISTRIBUTION
+
+    - name: upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: ci-sdist
+        path: dist/*.tar.gz
+        retention-days: 1
+
+
+  sdist_install_check:
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
+    needs: pypi_check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: download sdist tarball
+        uses: actions/download-artifact@v3
+        with:
+          name: ci-sdist
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: update base deps
+        run: python -m pip install -U pip wheel build
+
+      - name: install sdist
+        run: |
+          python -m pip install dist/MDAnalysis-*.tar.gz
+          python -m pip install dist/MDAnalysisTests-*.tar.gz
+
+      - name: install extra deps
+        run: python -m pip install pytest-xdist
+
+      - name: run tests
+        run: python -m pytest -n auto --pyargs MDAnalysisTests
