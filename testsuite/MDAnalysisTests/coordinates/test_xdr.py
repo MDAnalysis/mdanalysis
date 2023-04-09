@@ -889,17 +889,14 @@ class _GromacsReader_offsets(object):
         assert_equal(os.path.exists(XDR.offsets_filename(filename,
                                                     ending='.lock')), False)
 
-        # pre-teardown permission fix for windows
+        # pre-teardown permission fix - leaving permission blocked dir
+        # is problematic on py3.9 + Windows it seems.
         if os.name == 'nt':
             subprocess.call(f"icacls {tmpdir} /grant Users:W", shell=True)
         else:
             os.chmod(str(tmpdir), 0o777)
 
-        def remove_readonly(func, path, _):
-            os.chmod(path, stat.S_IWRITE)
-            func(path)
-
-        shutil.rmtree(tmpdir, onerror=remove_readonly)
+        shutil.rmtree(tmpdir)
 
     def test_offset_lock_created(self):
         assert os.path.exists(XDR.offsets_filename(self.filename,
