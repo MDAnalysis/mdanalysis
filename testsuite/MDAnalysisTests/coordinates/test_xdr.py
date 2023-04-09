@@ -890,6 +890,10 @@ class _GromacsReader_offsets(object):
         assert_equal(os.path.exists(XDR.offsets_filename(filename,
                                                     ending='.lock')), False)
 
+        # pre-teardown permission fix for windows
+        if os.name == 'nt':
+            subprocess.call(f"icalcs {fname} /grant Users:W", shell=True)
+
     def test_offset_lock_created(self):
         assert os.path.exists(XDR.offsets_filename(self.filename,
                                                    ending='lock'))
