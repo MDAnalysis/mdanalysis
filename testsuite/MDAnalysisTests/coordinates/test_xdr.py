@@ -892,7 +892,7 @@ class _GromacsReader_offsets(object):
 
         # pre-teardown permission fix for windows
         if os.name == 'nt':
-            subprocess.call(f"icalcs {fname} /grant Users:W", shell=True)
+            subprocess.call(f"icalcs {tmpdir} /grant Users:W", shell=True)
 
     def test_offset_lock_created(self):
         assert os.path.exists(XDR.offsets_filename(self.filename,
