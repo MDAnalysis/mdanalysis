@@ -173,12 +173,12 @@ class TestUniverseCreation(object):
 
             # pre-teardown permission fix - leaving permission blocked dir
             # is problematic on py3.9 + Windows it seems.
-            if os.name == 'nt':
-                subprocess.call(f"icacls {temp_file} /grant Users:RX", shell=True)
-            else:
-                os.chmod(str(tmpdir), 0o777)
+            #if os.name == 'nt':
+            #    subprocess.call(f"icacls {temp_file} /grant Users:RX", shell=True)
+            #else:
+            #    os.chmod(str(tmpdir), 0o777)
 
-            shutil.rmtree(tmpdir)
+            #shutil.rmtree(tmpdir)
 
     def test_load_new_VE(self):
         u = mda.Universe.empty(0)
