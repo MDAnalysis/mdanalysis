@@ -23,14 +23,13 @@
 import pytest
 from unittest.mock import patch
 
-import errno
-import numpy as np
 import os
-from os.path import split
 import shutil
+import stat
 import subprocess
 from pathlib import Path
 
+import numpy as np
 from numpy.testing import (assert_equal,
                            assert_almost_equal,
                            assert_allclose)
@@ -891,8 +890,16 @@ class _GromacsReader_offsets(object):
                                                     ending='.lock')), False)
 
         # pre-teardown permission fix for windows
-        if os.name == 'nt':
-            subprocess.call(f"icalcs {tmpdir} /grant Users:W", shell=True)
+        #if os.name == 'nt':
+        #    subprocess.call(f"icalcs {tmpdir} /grant Users:W", shell=True)
+        #else:
+        os.chmod(str(tmpdir), 0o777)
+
+        #def remove_readonly(func, path, _):
+        #    os.chmod(path, stat.S_IWRITE)
+        #    func(path)
+
+        shutil.rmtree(tmpdir)# onerror=remove_readonly)
 
     def test_offset_lock_created(self):
         assert os.path.exists(XDR.offsets_filename(self.filename,
