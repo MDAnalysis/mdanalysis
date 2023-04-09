@@ -372,13 +372,13 @@ class BAT(AnalysisBase):
         v01 = p1 - p0
         v21 = p1 - p2
         # Internal coordinates
-        r01 = np.sqrt(np.sum(v01 *
-                             v01))  # Distance between first two root atoms
-        r12 = np.sqrt(np.sum(v21 *
-                             v21))  # Distance between second two root atoms
+        r01 = np.sqrt(np.einsum('i,i->',v01,v01))  
+        # Distance between first two root atoms
+        r12 = np.sqrt(np.einsum('i,i->',v21,v21))  
+        # Distance between second two root atoms
         # Angle between root atoms
-        a012 = np.arccos(max(-1.,min(1.,np.sum(v01*v21)/\
-                             np.sqrt(np.sum(v01*v01)*np.sum(v21*v21)))))
+        a012 = np.arccos(max(-1.,min(1.,np.einsum('i,i->',v01,v21)/\
+                              np.sqrt(np.einsum('i,i->',v01,v01)*np.einsum('i,i->',v21,v21)))))
         # External coordinates
         e = v01 / r01
         phi = np.arctan2(e[1], e[0])  # Polar angle
@@ -545,12 +545,12 @@ class BAT(AnalysisBase):
             cs_tor = np.cos(torsion)
 
             v21 = p1 - p2
-            v21 /= np.sqrt(np.sum(v21 * v21))
+            v21 /= np.sqrt(np.einsum('i,i->',v21,v21))
             v32 = p2 - p3
-            v32 /= np.sqrt(np.sum(v32 * v32))
+            v32 /= np.sqrt(np.einsum('i,i->',v32,v32))
 
             vp = np.cross(v32, v21)
-            cs = np.sum(v21 * v32)
+            cs = np.einsum('i,i->',v21,v32)
 
             sn = max(np.sqrt(1.0 - cs * cs), 0.0000000001)
             vp = vp / sn
