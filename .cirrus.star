@@ -10,7 +10,8 @@ load("cirrus", "env", "fs")
 
 def main(ctx):
     # TODO: Add a summary of what this file does
-    if env.get("CIRRUS_REPO_FULL_NAME") != "MDAnalysis/mdanalysis":
+    if ((env.get("CIRRUS_REPO_FULL_NAME") != "MDAnalysis/mdanalysis")
+        or (env.get("CIRRUS_BASE_BRANCH") == "develop")):
         return []
 
     return fs.read("maintainer/ci/cirrus-ci.yml")
