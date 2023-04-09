@@ -23,6 +23,7 @@
 import pickle
 
 import os
+import shutil
 import subprocess
 import errno
 from collections import defaultdict
@@ -169,6 +170,15 @@ class TestUniverseCreation(object):
             # Issue #3221 match by PermissionError and error number instead
             with pytest.raises(PermissionError, match=f"Errno {errno.EACCES}"):
                 mda.Universe('permission.denied.tpr')
+
+            # pre-teardown permission fix - leaving permission blocked dir
+            # is problematic on py3.9 + Windows it seems.
+            if os.name == 'nt':
+                subprocess.call(f"icacls {tmpdir} /grant Users:W", shell=True)
+            else:
+                os.chmod(str(tmpdir), 0o777)
+
+            shutil.rmtree(tmpdir)
 
     def test_load_new_VE(self):
         u = mda.Universe.empty(0)
