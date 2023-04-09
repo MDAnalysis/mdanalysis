@@ -37,24 +37,12 @@ jobs:
               full-deps: true
               install_hole: true
               codecov: true
-            - name: macOS_bigsur_py39
-              os: macOS-11
-              python-version: 3.9
-              full-deps: true
-              install_hole: true
-              codecov: false
-            - name: minimal-ubuntu
-              os: ubuntu-latest
-              python-version: 3.9
-              full-deps: false
-              install_hole: false
-              codecov: true
             - name: numpy_min
               os: ubuntu-latest
               python-version: 3.9
               full-deps: false
               install_hole: false
-              codecov: false
+              codecov: true
               numpy: numpy=1.21.0
             - name: asv_check
               os: ubuntu-latest
