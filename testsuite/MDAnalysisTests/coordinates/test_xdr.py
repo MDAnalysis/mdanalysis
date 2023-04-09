@@ -25,7 +25,6 @@ from unittest.mock import patch
 
 import os
 import shutil
-import stat
 import subprocess
 from pathlib import Path
 
@@ -890,7 +889,9 @@ class _GromacsReader_offsets(object):
                                                     ending='.lock')), False)
 
         # pre-teardown permission fix - leaving permission blocked dir
-        # is problematic on py3.9 + Windows it seems.
+        # is problematic on py3.9 + Windows it seems. See issue
+        # [4123](https://github.com/MDAnalysis/mdanalysis/issues/4123)
+        # for more details.
         if os.name == 'nt':
             subprocess.call(f"icacls {tmpdir} /grant Users:W", shell=True)
         else:
