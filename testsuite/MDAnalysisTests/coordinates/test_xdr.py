@@ -895,11 +895,11 @@ class _GromacsReader_offsets(object):
         #else:
         os.chmod(str(tmpdir), 0o777)
 
-        #def remove_readonly(func, path, _):
-        #    os.chmod(path, stat.S_IWRITE)
-        #    func(path)
+        def remove_readonly(func, path, _):
+            os.chmod(path, stat.S_IWRITE)
+            func(path)
 
-        shutil.rmtree(tmpdir)# onerror=remove_readonly)
+        shutil.rmtree(tmpdir, onerror=remove_readonly)
 
     def test_offset_lock_created(self):
         assert os.path.exists(XDR.offsets_filename(self.filename,
