@@ -258,7 +258,7 @@ def get_userid():
     Calls os.geteuid() where possible, or returns 1000 (usually on windows).
     """
     # no such thing as euid on Windows, assuming normal user 1000
-    if not hasattr(os, geteuid):
+    if not hasattr(os, "geteuid"):
         return 1000
     else:
         return os.geteuid()
