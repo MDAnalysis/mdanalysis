@@ -870,6 +870,7 @@ class _GromacsReader_offsets(object):
         reader = self._reader(traj)
         reader[idx_frame]
 
+    @pytest.mark.skipif(os.geteuid() == 0, reason="cannot readonly as root")
     def test_persistent_offsets_readonly(self, tmpdir):
         shutil.copy(self.filename, str(tmpdir))
 

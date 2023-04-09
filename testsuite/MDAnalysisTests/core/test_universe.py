@@ -153,6 +153,8 @@ class TestUniverseCreation(object):
             else:
                 raise AssertionError
 
+    @pytest.mark.skipif(os.geteuid() == 0,
+                        reason="cannot permisssionerror as root")
     def test_Universe_invalidpermissionfile_IE_msg(self, tmpdir):
         # check for file with invalid permissions (eg. no read access)
         with tmpdir.as_cwd():
