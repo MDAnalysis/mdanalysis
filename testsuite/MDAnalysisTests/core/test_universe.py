@@ -23,7 +23,6 @@
 import pickle
 
 import os
-import shutil
 import subprocess
 import errno
 from collections import defaultdict
