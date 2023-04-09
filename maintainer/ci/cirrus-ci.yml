@@ -8,8 +8,9 @@ linux_aarch64_task:
     #apt update
     #apt install -y --no-install-recommends gcc g++
     #echo $PYTHON_VERSION
-    adduser mda
+    useradd mda
     su mda
+    whoami
     python3 --version
     python3 -m venv mda-dev
     source mda-dev/bin/activate
