@@ -263,12 +263,12 @@ jobs:
         twine check $DISTRIBUTION
 
     - name: install sdist
-      working-directory: ./sdist
+      working-directory: ./dist
       run: |
         ls -a .
-        python -m pip install dist/MDAnalysis-*.tar.gz
-        python -m pip install dist/MDAnalysisTests-*.tar.gz
+        python -m pip install MDAnalysis-*.tar.gz
+        python -m pip install MDAnalysisTests-*.tar.gz
 
     - name: run tests
-      working-directory: ./sdist
+      working-directory: ./dist
       run: python -m pytest -n auto --pyargs MDAnalysisTests
