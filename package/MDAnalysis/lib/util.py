@@ -1622,6 +1622,8 @@ def unique_rows(arr, return_index=False):
     --------
     Remove dupicate rows from an array:
 
+    >>> import numpy as np
+    >>> from MDAnalysis.lib.util import unique_rows
     >>> a = np.array([[0, 1], [1, 2], [1, 2], [0, 1], [2, 3]])
     >>> b = unique_rows(a)
     >>> b
@@ -1682,6 +1684,8 @@ def blocks_of(a, n, m):
 
     Examples
     --------
+    >>> import numpy as np
+    >>> from MDAnalysis.lib.util import blocks_of
     >>> arr = np.arange(16).reshape(4, 4)
     >>> view = blocks_of(arr, 2, 2)
     >>> view[:] = 100
@@ -1739,6 +1743,7 @@ def group_same_or_consecutive_integers(arr):
     list of :class:`numpy.ndarray`
 
     Examples
+    >>> import numpy as np
     >>> arr = np.array([ 2,  3,  4,  7,  8,  9, 10, 11, 15, 16])
     >>> group_same_or_consecutive_integers(arr)
     [array([2, 3, 4]), array([ 7,  8,  9, 10, 11]), array([15, 16])]
@@ -1793,6 +1798,7 @@ def ltruncate_int(value, ndigits):
 
     Examples
     --------
+    >>> from MDAnalysis.lib.util import ltruncate_int
     >>> ltruncate_int(123, 2)
     23
     >>> ltruncate_int(1234, 5)
@@ -1842,6 +1848,7 @@ def static_variables(**kwargs):
     Example
     -------
 
+    >>> from MDAnalysis.lib.util import static_variables
     >>> @static_variables(msg='foo calls', calls=0)
     ... def foo():
     ...     foo.calls += 1
@@ -2013,6 +2020,9 @@ def check_coords(*coord_names, **options):
     Example
     -------
 
+    >>> import numpy as np
+    >>> import MDAnalysis as mda
+    >>> from MDAnalysis.lib.util import check_coords
     >>> @check_coords('coords1', 'coords2', allow_atomgroup=True)
     ... def coordsum(coords1, coords2):
     ...     assert coords1.dtype == np.float32
