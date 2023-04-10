@@ -109,7 +109,8 @@ be specified using a 4 character string or encoded 4-tuple:
 Examples
 --------
 
->>> from MDAnalysis.lib.transformations import identity_matrix
+>>> from MDAnalysis.lib.transformations import *
+>>> import numpy
 >>> alpha, beta, gamma = 0.123, -1.234, 2.345
 >>> origin, xaxis, yaxis, zaxis = (0, 0, 0), (1, 0, 0), (0, 1, 0), (0, 0, 1)
 >>> I = identity_matrix()
@@ -177,6 +178,7 @@ def identity_matrix():
     """Return 4x4 identity/unit matrix.
 
     >>> from MDAnalysis.lib.transformations import identity_matrix
+    >>> import numpy as np
     >>> I = identity_matrix()
     >>> np.allclose(I, np.dot(I, I))
     True
@@ -193,6 +195,7 @@ def translation_matrix(direction):
     """Return matrix to translate by direction vector.
 
     >>> from MDAnalysis.lib.transformations import translation_matrix
+    >>> import numpy as np
     >>> v = np.random.random(3) - 0.5
     >>> np.allclose(v, translation_matrix(v)[:3, 3])
     True
@@ -206,8 +209,9 @@ def translation_matrix(direction):
 def translation_from_matrix(matrix):
     """Return translation vector from translation matrix.
 
-    >>> from MDAnalysis.lib.transformations import translation_matrix, \
-    ...     translation_from_matrix
+    >>> from MDAnalysis.lib.transformations import (translation_matrix,
+    ...     translation_from_matrix)
+    >>> import numpy as np
     >>> v0 = np.random.random(3) - 0.5
     >>> v1 = translation_from_matrix(translation_matrix(v0))
     >>> np.allclose(v0, v1)
@@ -221,6 +225,7 @@ def reflection_matrix(point, normal):
     """Return matrix to mirror at plane defined by point and normal vector.
 
     >>> from MDAnalysis.lib.transformations import reflection_matrix
+    >>> import numpy as np
     >>> v0 = np.random.random(4) - 0.5
     >>> v0[3] = 1.0
     >>> v1 = np.random.random(3) - 0.5
@@ -247,8 +252,9 @@ def reflection_matrix(point, normal):
 def reflection_from_matrix(matrix):
     """Return mirror plane point and normal vector from reflection matrix.
 
-    >>> from MDAnalysis.lib.transformations import reflection_matrix, \
-    ...     reflection_from_matrix, is_same_transform
+    >>> from MDAnalysis.lib.transformations import (reflection_matrix,
+    ...     reflection_from_matrix, is_same_transform)
+    >>> import numpy as np
     >>> v0 = np.random.random(3) - 0.5
     >>> v1 = np.random.random(3) - 0.5
     >>> M0 = reflection_matrix(v0, v1)
@@ -278,9 +284,10 @@ def reflection_from_matrix(matrix):
 def rotation_matrix(angle, direction, point=None):
     """Return matrix to rotate about axis defined by point and direction.
 
-    >>> from MDAnalysis.lib.transformations import rotation_matrix, \
-    ...     is_same_transform
+    >>> from MDAnalysis.lib.transformations import (rotation_matrix,
+    ...     is_same_transform)
     >>> import random, math
+    >>> import numpy as np
     >>> R = rotation_matrix(math.pi/2.0, [0, 0, 1], [1, 0, 0])
     >>> np.allclose(np.dot(R, [0, 0, 0, 1]), [ 1., -1.,  0.,  1.])
     True
@@ -330,9 +337,10 @@ def rotation_matrix(angle, direction, point=None):
 def rotation_from_matrix(matrix):
     """Return rotation angle and axis from rotation matrix.
 
-    >>> from MDAnalysis.lib.transformations import rotation_matrix, is_same_transform \
-    ...     rotation_from_matrix
+    >>> from MDAnalysis.lib.transformations import (rotation_matrix,
+    ...     is_same_transform, rotation_from_matrix)
     >>> import random, math
+    >>> import numpy as np
     >>> angle = (random.random() - 0.5) * (2*math.pi)
     >>> direc = np.random.random(3) - 0.5
     >>> point = np.random.random(3) - 0.5
@@ -377,6 +385,7 @@ def scale_matrix(factor, origin=None, direction=None):
 
     >>> from MDAnalysis.lib.transformations import scale_matrix
     >>> import random
+    >>> import numpy as np
     >>> v = (np.random.rand(4, 5) - 0.5) * 20.0
     >>> v[3] = 1.0
     >>> S = scale_matrix(-1.234)
@@ -413,9 +422,10 @@ def scale_matrix(factor, origin=None, direction=None):
 def scale_from_matrix(matrix):
     """Return scaling factor, origin and direction from scaling matrix.
 
-    >>> from MDAnalysis.lib.transformations import scale_matrix, scale_from_matrix, \
-    ...     is_same_transform
+    >>> from MDAnalysis.lib.transformations import (scale_matrix,
+    ...      scale_from_matrix, is_same_transform)
     >>> import random
+    >>> import numpy as np
     >>> factor = random.random() * 10 - 5
     >>> origin = np.random.random(3) - 0.5
     >>> direct = np.random.random(3) - 0.5
@@ -463,8 +473,9 @@ def projection_matrix(point, normal, direction=None,
     If pseudo is True, perspective projections will preserve relative depth
     such that Perspective = dot(Orthogonal, PseudoPerspective).
 
-    >>> from MDAnalysis.lib.transformations import projection_matrix, \
-    ... is_same_transform
+    >>> from MDAnalysis.lib.transformations import (projection_matrix,
+    ...     is_same_transform)
+    >>> import numpy as np
     >>> P = projection_matrix((0, 0, 0), (1, 0, 0))
     >>> np.allclose(P[1:, 1:], np.identity(4)[1:, 1:])
     True
@@ -524,8 +535,9 @@ def projection_from_matrix(matrix, pseudo=False):
     Return values are same as arguments for projection_matrix function:
     point, normal, direction, perspective, and pseudo.
 
-    >>> from MDAnalysis.lib.transformations import projection_matrix, \
-    ...     projection_from_matrix, is_same_transform
+    >>> from MDAnalysis.lib.transformations import (projection_matrix,
+    ...     projection_from_matrix, is_same_transform)
+    >>> import numpy as np
     >>> point = np.random.random(3) - 0.5
     >>> normal = np.random.random(3) - 0.5
     >>> direct = np.random.random(3) - 0.5
@@ -610,6 +622,7 @@ def clip_matrix(left, right, bottom, top, near, far, perspective=False):
     need to be dehomogenized (devided by w coordinate).
 
     >>> from MDAnalysis.lib.transformations import clip_matrix
+    >>> import numpy as np
     >>> frustrum = np.random.rand(6)
     >>> frustrum[1] += frustrum[0]
     >>> frustrum[3] += frustrum[2]
@@ -661,6 +674,7 @@ def shear_matrix(angle, direction, point, normal):
 
     >>> from MDAnalysis.lib.transformations import shear_matrix
     >>> import random, math
+    >>> import numpy as np
     >>> angle = (random.random() - 0.5) * 4*math.pi
     >>> direct = np.random.random(3) - 0.5
     >>> point = np.random.random(3) - 0.5
@@ -684,9 +698,10 @@ def shear_matrix(angle, direction, point, normal):
 def shear_from_matrix(matrix):
     """Return shear angle, direction and plane from shear matrix.
 
-    >>> from MDAnalysis.lib.transformations import shear_matrix, \
-    ...     shear_from_matrix, is_same_transform
+    >>> from MDAnalysis.lib.transformations import (shear_matrix,
+    ...     shear_from_matrix, is_same_transform)
     >>> import random, math
+    >>> import numpy as np
     >>> angle = (random.random() - 0.5) * 4*math.pi
     >>> direct = np.random.random(3) - 0.5
     >>> point = np.random.random(3) - 0.5
@@ -744,8 +759,9 @@ def decompose_matrix(matrix):
 
     Raise ValueError if matrix is of wrong type or degenerative.
 
-    >>> from MDAnalysis.lib.transformations import translation_matrix, \
-    ...     decompose_matrix, scale_matrix, euler_matrix
+    >>> from MDAnalysis.lib.transformations import (translation_matrix,
+    ...     decompose_matrix, scale_matrix, euler_matrix)
+    >>> import numpy as np
     >>> T0 = translation_matrix((1, 2, 3))
     >>> scale, shear, angles, trans, persp = decompose_matrix(T0)
     >>> T1 = translation_matrix(trans)
@@ -830,9 +846,10 @@ def compose_matrix(scale=None, shear=None, angles=None, translate=None,
         translate : translation vector along x, y, z axes
         perspective : perspective partition of matrix
 
-    >>> from MDAnalysis.lib.transformations import compose_matrix, \
-    ...     decompose_matrix, is_same_transform
+    >>> from MDAnalysis.lib.transformations import (compose_matrix,
+    ...     decompose_matrix, is_same_transform)
     >>> import math
+    >>> import numpy as np
     >>> scale = np.random.random(3) - 0.5
     >>> shear = np.random.random(3) - 0.5
     >>> angles = (np.random.random(3) - 0.5) * (2*math.pi)
@@ -881,6 +898,7 @@ def orthogonalization_matrix(lengths, angles):
     The de-orthogonalization matrix is the inverse.
 
     >>> from MDAnalysis.lib.transformations import orthogonalization_matrix
+    >>> import numpy as np
     >>> O = orthogonalization_matrix((10., 10., 10.), (90., 90., 90.))
     >>> np.allclose(O[:3, :3], np.identity(3, float) * 10)
     True
@@ -916,10 +934,11 @@ def superimposition_matrix(v0, v1, scaling=False, usesvd=True):
     The returned matrix performs rotation, translation and uniform scaling
     (if specified).
 
-    >>> from MDAnalysis.lib.transformations import superimposition_matrix, \
-    ... random_rotation_matrix, scale_matrix, translation_matrix, \
-    ... concatenate_matrices
+    >>> from MDAnalysis.lib.transformations import (superimposition_matrix,
+    ... random_rotation_matrix, scale_matrix, translation_matrix,
+    ... concatenate_matrices)
     >>> import random
+    >>> import numpy as np
     >>> v0 = np.random.rand(3, 10)
     >>> M = superimposition_matrix(v0, v0)
     >>> np.allclose(M, np.identity(4))
@@ -1015,9 +1034,10 @@ def euler_matrix(ai, aj, ak, axes='sxyz'):
     ai, aj, ak : Euler's roll, pitch and yaw angles
     axes : One of 24 axis sequences as string or encoded tuple
 
-    >>> from MDAnalysis.lib.transformations import euler_matrix \
-    ... _AXES2TUPLE, _TUPLE2AXES
+    >>> from MDAnalysis.lib.transformations import (euler_matrix
+    ... _AXES2TUPLE, _TUPLE2AXES)
     >>> import math
+    >>> import numpy as np
     >>> R = euler_matrix(1, 2, 3, 'syxz')
     >>> np.allclose(np.sum(R[0]), -1.34786452)
     True
@@ -1082,9 +1102,10 @@ def euler_from_matrix(matrix, axes='sxyz'):
 
     Note that many Euler angle triplets can describe one matrix.
 
-    >>> from MDAnalysis.lib.transformations import euler_matrix, \
-    ... euler_from_matrix, _AXES2TUPLE
+    >>> from MDAnalysis.lib.transformations import (euler_matrix,
+    ... euler_from_matrix, _AXES2TUPLE)
     >>> import math
+    >>> import numpy as np
     >>> R0 = euler_matrix(1, 2, 3, 'syxz')
     >>> al, be, ga = euler_from_matrix(R0, 'syxz')
     >>> R1 = euler_matrix(al, be, ga, 'syxz')
@@ -1140,6 +1161,7 @@ def euler_from_quaternion(quaternion, axes='sxyz'):
     """Return Euler angles from quaternion for specified axis sequence.
 
     >>> from MDAnalysis.lib.transformations import euler_from_quaternion
+    >>> import numpy as np
     >>> angles = euler_from_quaternion([0.99810947, 0.06146124, 0, 0])
     >>> np.allclose(angles, [0.123, 0, 0])
     True
@@ -1210,6 +1232,7 @@ def quaternion_about_axis(angle, axis):
     """Return quaternion for rotation about axis.
 
     >>> from MDAnalysis.lib.transformations import quaternion_about_axis
+    >>> import numpy as np
     >>> q = quaternion_about_axis(0.123, (1, 0, 0))
     >>> np.allclose(q, [0.99810947, 0.06146124, 0, 0])
     True
@@ -1229,7 +1252,9 @@ def quaternion_about_axis(angle, axis):
 def quaternion_matrix(quaternion):
     """Return homogeneous rotation matrix from quaternion.
 
-    >>> from MDAnalysis.lib.transformations import identity_matrix
+    >>> from MDAnalysis.lib.transformations import (identity_matrix,
+    ...     quaternion_matrix, rotation_matrix)
+    >>> import numpy as np
     >>> M = quaternion_matrix([0.99810947, 0.06146124, 0, 0])
     >>> np.allclose(M, rotation_matrix(0.123, (1, 0, 0)))
     True
@@ -1262,9 +1287,10 @@ def quaternion_from_matrix(matrix, isprecise=False):
     If isprecise=True, the input matrix is assumed to be a precise rotation
     matrix and a faster algorithm is used.
 
-    >>> from MDAnalysis.lib.transformations import identity_matrix, \
-    ...     quaternion_from_matrix, rotation_matrix, random_rotation_matrix, \
-    ...     is_same_transform, quaternion_matrix
+    >>> from MDAnalysis.lib.transformations import (identity_matrix,
+    ...     quaternion_from_matrix, rotation_matrix, random_rotation_matrix,
+    ...     is_same_transform, quaternion_matrix)
+    >>> import numpy as np
     >>> q = quaternion_from_matrix(identity_matrix(), True)
     >>> np.allclose(q, [1., 0., 0., 0.])
     True
@@ -1341,6 +1367,8 @@ def quaternion_from_matrix(matrix, isprecise=False):
 def quaternion_multiply(quaternion1, quaternion0):
     """Return multiplication of two quaternions.
 
+    >>> from MDAnalysis.lib.transformations import quaternion_multiply
+    >>> import numpy as np
     >>> q = quaternion_multiply([4, 1, -2, 3], [8, -5, 6, 7])
     >>> np.allclose(q, [28, -44, -14, 48])
     True
@@ -1359,8 +1387,9 @@ def quaternion_multiply(quaternion1, quaternion0):
 def quaternion_conjugate(quaternion):
     """Return conjugate of quaternion.
 
-    >>> from MDAnalysis.lib.transformations import random_quaternion, \
-    ...     quaternion_conjugate
+    >>> from MDAnalysis.lib.transformations import (random_quaternion,
+    ...     quaternion_conjugate)
+    >>> import numpy as np
     >>> q0 = random_quaternion()
     >>> q1 = quaternion_conjugate(q0)
     >>> q1[0] == q0[0] and all(q1[1:] == -q0[1:])
@@ -1376,8 +1405,9 @@ def quaternion_conjugate(quaternion):
 def quaternion_inverse(quaternion):
     """Return inverse of quaternion.
 
-    >>> from MDAnalysis.lib.transformations import random_quaternion, \
-    ...     quaternion_inverse
+    >>> from MDAnalysis.lib.transformations import (random_quaternion,
+    ...     quaternion_inverse)
+    >>> import numpy as np
     >>> q0 = random_quaternion()
     >>> q1 = quaternion_inverse(q0)
     >>> np.allclose(quaternion_multiply(q0, q1), [1, 0, 0, 0])
@@ -1412,9 +1442,10 @@ def quaternion_imag(quaternion):
 def quaternion_slerp(quat0, quat1, fraction, spin=0, shortestpath=True):
     r"""Return spherical linear interpolation between two quaternions.
 
-    >>> from MDAnalysis.lib.transformations import random_quaternion, \
-    ...     quaternion_slerp
+    >>> from MDAnalysis.lib.transformations import (random_quaternion,
+    ...     quaternion_slerp)
     >>> import math
+    >>> import numpy as np
     >>> q0 = random_quaternion()
     >>> q1 = random_quaternion()
     >>> q = quaternion_slerp(q0, q1, 0.0)
@@ -1460,8 +1491,9 @@ def random_quaternion(rand=None):
         Three independent random variables that are uniformly distributed
         between 0 and 1.
 
-    >>> from MDAnalysis.lib.transformations import random_quaternion, \
-    ...     vector_norm
+    >>> from MDAnalysis.lib.transformations import (random_quaternion,
+    ...     vector_norm)
+    >>> import numpy as np
     >>> q = random_quaternion()
     >>> np.allclose(1.0, vector_norm(q))
     True
@@ -1495,6 +1527,7 @@ def random_rotation_matrix(rand=None):
         between 0 and 1 for each returned quaternion.
 
     >>> from MDAnalysis.lib.transformations import random_rotation_matrix
+    >>> import numpy as np
     >>> R = random_rotation_matrix()
     >>> np.allclose(np.dot(R.T, R), np.identity(4))
     True
@@ -1507,6 +1540,7 @@ class Arcball(object):
     """Virtual Trackball Control.
 
     >>> from MDAnalysis.lib.transformations import Arcball
+    >>> import numpy as np
     >>> ball = Arcball()
     >>> ball = Arcball(initial=np.identity(4))
     >>> ball.place([320, 320], 320)
@@ -1690,6 +1724,7 @@ def vector_norm(data, axis=None, out=None):
     """Return length, i.e. eucledian norm, of ndarray along axis.
 
     >>> from MDAnalysis.lib.transformations import vector_norm
+    >>> import numpy as np
     >>> v = np.random.random(3)
     >>> n = vector_norm(v)
     >>> np.allclose(n, np.linalg.norm(v))
@@ -1730,6 +1765,7 @@ def unit_vector(data, axis=None, out=None):
     """Return ndarray normalized by length, i.e. eucledian norm, along axis.
 
     >>> from MDAnalysis.lib.transformations import unit_vector
+    >>> import numpy as np
     >>> v0 = np.random.random(3)
     >>> v1 = unit_vector(v0)
     >>> np.allclose(v1, v0 / np.linalg.norm(v0))
@@ -1775,6 +1811,7 @@ def random_vector(size):
     """Return array of random doubles in the half-open interval [0.0, 1.0).
 
     >>> from MDAnalysis.lib.transformations import random_vector
+    >>> import numpy as np
     >>> v = random_vector(10000)
     >>> np.all(v >= 0.0) and np.all(v < 1.0)
     True
@@ -1790,8 +1827,9 @@ def random_vector(size):
 def inverse_matrix(matrix):
     """Return inverse of square transformation matrix.
 
-    >>> from MDAnalysis.lib.transformations import random_rotation_matrix, \
-    ...     inverse_matrix
+    >>> from MDAnalysis.lib.transformations import (random_rotation_matrix,
+    ...     inverse_matrix)
+    >>> import numpy as np
     >>> M0 = random_rotation_matrix()
     >>> M1 = inverse_matrix(M0.T)
     >>> np.allclose(M1, np.linalg.inv(M0.T))
@@ -1809,6 +1847,7 @@ def concatenate_matrices(*matrices):
     """Return concatenation of series of transformation matrices.
 
     >>> from MDAnalysis.lib.transformations import concatenate_matrices
+    >>> import numpy as np
     >>> M = np.random.rand(16).reshape((4, 4)) - 0.5
     >>> np.allclose(M, concatenate_matrices(M))
     True
@@ -1825,8 +1864,9 @@ def concatenate_matrices(*matrices):
 def is_same_transform(matrix0, matrix1):
     """Return True if two matrices perform same transformation.
 
-    >>> from MDAnalysis.lib.transformations import is_same_transform, \
-    ... random_rotation_matrix
+    >>> from MDAnalysis.lib.transformations import (is_same_transform,
+    ...     random_rotation_matrix)
+    >>> import numpy as np
     >>> is_same_transform(np.identity(4), np.identity(4))
     True
     >>> is_same_transform(np.identity(4), random_rotation_matrix())
