@@ -427,7 +427,7 @@
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;No `atoms` attribute in object of type </span><span class="si">{}</span><span class="s2">, &quot;</span>
                             <span class="s2">&quot;please use a valid AtomGroup or Universe&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                                <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)))</span> <span class="kn">from</span> <span class="bp">None</span>
+                                <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)))</span> <span class="kn">from</span> <span class="kc">None</span>
 
         <span class="c1"># parameters passed to atomgroup_to_mol</span>
         <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">NoImplicit</span><span class="o">=</span><span class="n">NoImplicit</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
@@ -482,7 +482,7 @@
             <span class="s2">&quot;The `elements` attribute is required for the RDKitConverter &quot;</span>
             <span class="s2">&quot;but is not present in this AtomGroup. Please refer to the &quot;</span>
             <span class="s2">&quot;documentation to guess elements from other attributes or &quot;</span>
-            <span class="s2">&quot;type `help(MDAnalysis.topology.guessers)`&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+            <span class="s2">&quot;type `help(MDAnalysis.topology.guessers)`&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
 
     <span class="k">if</span> <span class="s2">&quot;H&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ag</span><span class="o">.</span><span class="n">elements</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">force</span><span class="p">:</span>

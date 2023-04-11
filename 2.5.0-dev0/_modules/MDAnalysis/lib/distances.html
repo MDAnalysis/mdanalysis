@@ -258,7 +258,7 @@
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
         <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Function </span><span class="si">{</span><span class="n">funcname</span><span class="si">}</span><span class="s2"> not available with backend </span><span class="si">{</span><span class="n">backend</span><span class="si">}</span><span class="s2"> &quot;</span>
                   <span class="sa">f</span><span class="s2">&quot;try one of: </span><span class="si">{</span><span class="n">_distances</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
     <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 <span class="c1"># serial versions are always available (and are typically used within</span>

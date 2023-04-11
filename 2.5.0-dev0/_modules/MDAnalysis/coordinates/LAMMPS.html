@@ -257,7 +257,7 @@
                     <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;LAMMPS DCDWriter: wrong unit </span><span class="si">{0!r}</span><span class="s2"> for unit type </span><span class="si">{1!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span> <span class="n">unit_type</span><span class="p">))</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;LAMMPS DCDWriter: unknown unit </span><span class="si">{</span><span class="n">unit</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">DCDWriter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
@@ -441,7 +441,7 @@
             <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
                 <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;LAMMPS DATAWriter: Trying to write bond, but bond &quot;</span>
                           <span class="sa">f</span><span class="s2">&quot;type </span><span class="si">{</span><span class="n">bond</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2"> is not numerical.&quot;</span><span class="p">)</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">_write_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimensions</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert dimensions to triclinic vectors, convert lengths to native</span>
@@ -502,7 +502,7 @@
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
             <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;LAMMPS.DATAWriter: atom types must be convertible to &quot;</span>
                       <span class="s2">&quot;integers&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">velocities</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">velocities</span>

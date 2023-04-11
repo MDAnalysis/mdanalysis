@@ -269,7 +269,8 @@ all extensions.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">greedy_splitext</span><span class="p">(</span><span class="s2">&quot;/home/joe/protein.pdb.bz2&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">greedy_splitext</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">greedy_splitext</span><span class="p">(</span><span class="s2">&quot;/home/joe/protein.pdb.bz2&quot;</span><span class="p">)</span>
 <span class="go">(&#39;/home/joe/protein&#39;, &#39;.pdb.bz2&#39;)</span>
 </pre></div>
 </div>
@@ -748,10 +749,14 @@ is <code class="docutils literal notranslate"><span class="pre">True</span></cod
 </dl>
 <p class="rubric">Examples</p>
 <p>Remove dupicate rows from an array:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]])</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">unique_rows</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">unique_rows</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span>
-<span class="go">array([[0, 1], [1, 2], [2, 3]])</span>
+<span class="go">array([[0, 1],</span>
+<span class="go">       [1, 2],</span>
+<span class="go">       [2, 3]])</span>
 </pre></div>
 </div>
 <div class="admonition seealso">
@@ -786,7 +791,9 @@ fit in the original.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">blocks_of</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">view</span> <span class="o">=</span> <span class="n">blocks_of</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">view</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">100</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">arr</span>
@@ -820,6 +827,7 @@ sequences.</p>
 <dd class="field-even"><p><ul class="simple">
 <li><p>list of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p></li>
 <li><p><em>Examples</em></p></li>
+<li><p><em>&gt;&gt;&gt; import numpy as np</em></p></li>
 <li><p><em>&gt;&gt;&gt; arr = np.array([ 2,  3,  4,  7,  8,  9, 10, 11, 15, 16])</em></p></li>
 <li><p><em>&gt;&gt;&gt; group_same_or_consecutive_integers(arr)</em></p></li>
 <li><p><em>[array([2, 3, 4]), array([ 7,  8,  9, 10, 11]), array([15, 16])]</em></p></li>
@@ -1012,7 +1020,8 @@ value of <cite>weights</cite> (which can be <code class="docutils literal notran
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ltruncate_int</span><span class="p">(</span><span class="mi">123</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">ltruncate_int</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ltruncate_int</span><span class="p">(</span><span class="mi">123</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="go">23</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ltruncate_int</span><span class="p">(</span><span class="mi">1234</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 <span class="go">1234</span>
@@ -1179,7 +1188,8 @@ stored in the dictionary.</p></li>
 <p>Static variables are declared and initialized by supplying keyword arguments
 and initial values to the decorator.</p>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nd">@static_variables</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;foo calls&#39;</span><span class="p">,</span> <span class="n">calls</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">static_variables</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nd">@static_variables</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;foo calls&#39;</span><span class="p">,</span> <span class="n">calls</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="gp">... </span><span class="k">def</span> <span class="nf">foo</span><span class="p">():</span>
 <span class="gp">... </span>    <span class="n">foo</span><span class="o">.</span><span class="n">calls</span> <span class="o">+=</span> <span class="mi">1</span>
 <span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">foo</span><span class="o">.</span><span class="n">msg</span><span class="p">,</span> <span class="n">foo</span><span class="o">.</span><span class="n">calls</span><span class="p">))</span>
@@ -1299,7 +1309,11 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;coords1&#39;</span><span class="p">,</span> <span class="s1">&#39;coords2&#39;</span><span class="p">,</span> <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">check_coords</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;coords1&#39;</span><span class="p">,</span> <span class="s1">&#39;coords2&#39;</span><span class="p">,</span> <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">... </span><span class="k">def</span> <span class="nf">coordsum</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">assert</span> <span class="n">coords1</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
 <span class="gp">... </span>    <span class="k">assert</span> <span class="n">coords2</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;C_CONTIGUOUS&#39;</span><span class="p">]</span>
@@ -1315,12 +1329,18 @@ Default: <code class="docutils literal notranslate"><span class="pre">False</spa
 <span class="go">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># automatic handling of AtomGroups</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">coordsum</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;index 1 to 10&quot;</span><span class="p">))</span>
-<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">coordsum</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;index 1 to 10&quot;</span><span class="p">))</span>
+<span class="gp">... </span><span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">err</span>
+<span class="go">ValueError(&#39;coordsum(): coords1, coords2 must contain the same number of coordinates, got [3341, 10].&#39;)</span>
 <span class="go">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># automatic shape checking:</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">coordsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
-<span class="go">ValueError: coordsum(): coords2.shape must be (3,) or (n, 3), got (6,).</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">coordsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
+<span class="gp">... </span><span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">err</span>
+<span class="go">ValueError(&#39;coordsum(): coords2.shape must be (3,) or (n, 3), got (6,)&#39;)</span>
 </pre></div>
 </div>
 <div class="versionadded">

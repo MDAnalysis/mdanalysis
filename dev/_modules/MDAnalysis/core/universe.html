@@ -472,7 +472,7 @@
                         <span class="n">in_memory_step</span><span class="o">=</span><span class="n">in_memory_step</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">transformations</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">transformations</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">transformations</span><span class="p">):</span>
                 <span class="n">transformations</span> <span class="o">=</span> <span class="p">[</span><span class="n">transformations</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="o">*</span><span class="n">transformations</span><span class="p">)</span>
 
@@ -902,9 +902,12 @@
 <span class="sd">        -------</span>
 <span class="sd">        For example to add bfactors to a Universe:</span>
 
-<span class="sd">        &gt;&gt;&gt; u.add_TopologyAttr(&#39;bfactors&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; u.atoms.bfactors</span>
-<span class="sd">        array([ 0.,  0.,  0., ...,  0.,  0.,  0.])</span>
+<span class="sd">        &gt;&gt;&gt; import MDAnalysis as mda</span>
+<span class="sd">        &gt;&gt;&gt; from MDAnalysis.tests.datafiles import PSF, DCD</span>
+<span class="sd">        &gt;&gt;&gt; u = mda.Universe(PSF, DCD)</span>
+<span class="sd">        &gt;&gt;&gt; u.add_TopologyAttr(&#39;tempfactors&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; u.atoms.tempfactors</span>
+<span class="sd">        array([0., 0., 0., ..., 0., 0., 0.])</span>
 
 <span class="sd">        .. versionchanged:: 0.17.0</span>
 <span class="sd">           Can now also add TopologyAttrs with a string of the name of the</span>
@@ -933,7 +936,7 @@
                     <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">topologyattr</span><span class="p">,</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                             <span class="nb">sorted</span><span class="p">(</span><span class="n">_TOPOLOGY_ATTRS</span><span class="o">.</span><span class="n">keys</span><span class="p">()))))</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">topologyattr</span> <span class="o">=</span> <span class="n">tcls</span><span class="o">.</span><span class="n">from_blank</span><span class="p">(</span>
                     <span class="n">n_atoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
@@ -959,8 +962,15 @@
 <span class="sd">        -------</span>
 <span class="sd">        For example to remove bfactors to a Universe:</span>
 
-<span class="sd">        &gt;&gt;&gt; u.del_TopologyAttr(&#39;bfactors&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; hasattr(u.atoms[:3], &#39;bfactors&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; import MDAnalysis as mda</span>
+<span class="sd">        &gt;&gt;&gt; from MDAnalysis.tests.datafiles import PSF, DCD</span>
+<span class="sd">        &gt;&gt;&gt; u = mda.Universe(PSF, DCD)</span>
+<span class="sd">        &gt;&gt;&gt; u.add_TopologyAttr(&#39;tempfactors&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; hasattr(u.atoms[:3], &#39;tempfactors&#39;)</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; u.del_TopologyAttr(&#39;tempfactors&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; hasattr(u.atoms[:3], &#39;tempfactors&#39;)</span>
 <span class="sd">        False</span>
 
 
@@ -979,7 +989,7 @@
                 <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Topology attribute must be str or &quot;</span>
                                      <span class="s2">&quot;TopologyAttr object or class. &quot;</span>
-                                     <span class="sa">f</span><span class="s2">&quot;Given: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+                                     <span class="sa">f</span><span class="s2">&quot;Given: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">topologyattr</span> <span class="o">=</span> <span class="n">_TOPOLOGY_ATTRS</span><span class="p">[</span><span class="n">topologyattr</span><span class="p">]</span><span class="o">.</span><span class="n">attrname</span>
@@ -989,13 +999,13 @@
                       <span class="sa">f</span><span class="s2">&quot;  Possible values: &#39;</span><span class="si">{</span><span class="n">attrs</span><span class="si">}</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">&quot;</span>
                       <span class="s2">&quot;To raise an issue go to: &quot;</span>
                       <span class="s2">&quot;https://github.com/MDAnalysis/mdanalysis/issues&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">topattr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="p">,</span> <span class="n">topologyattr</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Topology attribute </span><span class="si">{</span><span class="n">topologyattr</span><span class="si">}</span><span class="s2"> &quot;</span>
-                             <span class="s2">&quot;not in Universe.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+                             <span class="s2">&quot;not in Universe.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">del_TopologyAttr</span><span class="p">(</span><span class="n">topattr</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_unprocess_attr</span><span class="p">(</span><span class="n">topattr</span><span class="p">)</span></div>
 
@@ -1083,9 +1093,12 @@
 
 <span class="sd">        Adding a new GLY residue, then placing atoms within it:</span>
 
-<span class="sd">        &gt;&gt;&gt; newres = u.add_Residue(segment=u.segments[0], resid=42, resname=&#39;GLY&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; import MDAnalysis as mda</span>
+<span class="sd">        &gt;&gt;&gt; from MDAnalysis.tests.datafiles import PSF, DCD</span>
+<span class="sd">        &gt;&gt;&gt; u = mda.Universe(PSF, DCD)</span>
+<span class="sd">        &gt;&gt;&gt; newres = u.add_Residue(segment=u.segments[0], resid=42, resname=&#39;GLY&#39;, resnum=0)</span>
 <span class="sd">        &gt;&gt;&gt; u.atoms[[1, 2, 3]].residues = newres</span>
-<span class="sd">        &gt;&gt;&gt; u.select_atoms(&#39;resname GLY and resid 42&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; u.select_atoms(&#39;resname GLY and resid 42 and resnum 0&#39;)</span>
 <span class="sd">        &lt;AtomGroup with 3 atoms&gt;</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1503,6 +1516,7 @@
 <span class="sd">        --------</span>
 <span class="sd">        To create a Universe with 10 conformers of ethanol:</span>
 
+<span class="sd">        &gt;&gt;&gt; from rdkit.Chem import AllChem</span>
 <span class="sd">        &gt;&gt;&gt; u = mda.Universe.from_smiles(&#39;CCO&#39;, numConfs=10)</span>
 <span class="sd">        &gt;&gt;&gt; u</span>
 <span class="sd">        &lt;Universe with 9 atoms&gt;</span>
@@ -1512,7 +1526,7 @@
 <span class="sd">        To use a different conformer generation algorithm, like ETKDGv3:</span>
 
 <span class="sd">        &gt;&gt;&gt; u = mda.Universe.from_smiles(&#39;CCO&#39;, rdkit_kwargs=dict(</span>
-<span class="sd">                                         params=AllChem.ETKDGv3()))</span>
+<span class="sd">        ...      params=AllChem.ETKDGv3()))</span>
 <span class="sd">        &gt;&gt;&gt; u.trajectory</span>
 <span class="sd">        &lt;RDKitReader with 1 frames of 9 atoms&gt;</span>
 

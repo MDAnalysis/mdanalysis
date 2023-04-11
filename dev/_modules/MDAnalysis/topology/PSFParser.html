@@ -374,7 +374,7 @@
             <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
                 <span class="n">err</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2"> is not valid PSF file&quot;</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">vals</span> <span class="o">=</span> <span class="n">set_type</span><span class="p">(</span><span class="n">atom_parser</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>

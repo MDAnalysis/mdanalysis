@@ -410,7 +410,7 @@
         <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span>
                 <span class="s2">&quot;select must contain two selection strings &quot;</span>
-                <span class="s2">&quot;(reference, mobile)&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+                <span class="s2">&quot;(reference, mobile)&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
     <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">select</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="c1"># compatability hack to use new nomenclature</span>
         <span class="k">try</span><span class="p">:</span>
@@ -420,7 +420,7 @@
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
                     <span class="s2">&quot;select dictionary must contain entries for keys &quot;</span>
                     <span class="s2">&quot;&#39;mobile&#39; and &#39;reference&#39;.&quot;</span>
-                    <span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+                    <span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;select&#39; must be either a string, 2-tuple, or dict&quot;</span><span class="p">)</span>
     <span class="n">select</span><span class="p">[</span><span class="s1">&#39;mobile&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">asiterable</span><span class="p">(</span><span class="n">select</span><span class="p">[</span><span class="s1">&#39;mobile&#39;</span><span class="p">])</span>

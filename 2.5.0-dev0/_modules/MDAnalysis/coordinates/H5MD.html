@@ -613,7 +613,7 @@
                             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">errmsg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                                                <span class="n">unit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_particle_group</span><span class="p">[</span>
                                                <span class="n">name</span><span class="p">][</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;unit&#39;</span><span class="p">])</span>
-                                               <span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+                                               <span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has</span><span class="p">[</span><span class="n">group</span><span class="p">]:</span>
@@ -625,7 +625,7 @@
                         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">errmsg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                                            <span class="n">unit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_particle_group</span><span class="p">[</span><span class="n">group</span><span class="p">][</span>
                                            <span class="s1">&#39;value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;unit&#39;</span><span class="p">])</span>
-                                           <span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+                                           <span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
 
             <span class="c1"># if position group is not provided, can still get &#39;length&#39; unit</span>
             <span class="c1"># from unitcell box</span>
@@ -640,7 +640,7 @@
                         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">errmsg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span>
                                            <span class="bp">self</span><span class="o">.</span><span class="n">_particle_group</span><span class="p">[</span>
                                            <span class="s1">&#39;box/edges/value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span>
-                                           <span class="s1">&#39;unit&#39;</span><span class="p">]))</span> <span class="kn">from</span> <span class="bp">None</span>
+                                           <span class="s1">&#39;unit&#39;</span><span class="p">]))</span> <span class="kn">from</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">_check_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">unit</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Raises error if no units are provided from H5MD file</span>
@@ -724,7 +724,7 @@
                 <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;Provide at least a position, velocity&quot;</span>
                                   <span class="s2">&quot; or force group in the h5md file.&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">IOError</span> <span class="kn">from</span> <span class="bp">None</span>
+            <span class="k">raise</span> <span class="ne">IOError</span> <span class="kn">from</span> <span class="kc">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="n">frame</span>
         <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
@@ -1228,7 +1228,7 @@
                 <span class="n">ts</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                 <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;Input obj is neither an AtomGroup or Universe&quot;</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;H5MDWriter: Timestep does not have&quot;</span>

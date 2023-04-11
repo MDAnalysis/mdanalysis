@@ -205,6 +205,8 @@
 <span class="sd">Examples</span>
 <span class="sd">--------</span>
 
+<span class="sd">&gt;&gt;&gt; from MDAnalysis.lib.transformations import *</span>
+<span class="sd">&gt;&gt;&gt; import numpy as np</span>
 <span class="sd">&gt;&gt;&gt; alpha, beta, gamma = 0.123, -1.234, 2.345</span>
 <span class="sd">&gt;&gt;&gt; origin, xaxis, yaxis, zaxis = (0, 0, 0), (1, 0, 0), (0, 1, 0), (0, 0, 1)</span>
 <span class="sd">&gt;&gt;&gt; I = identity_matrix()</span>
@@ -213,7 +215,7 @@
 <span class="sd">&gt;&gt;&gt; Rz = rotation_matrix(gamma, zaxis)</span>
 <span class="sd">&gt;&gt;&gt; R = concatenate_matrices(Rx, Ry, Rz)</span>
 <span class="sd">&gt;&gt;&gt; euler = euler_from_matrix(R, &#39;rxyz&#39;)</span>
-<span class="sd">&gt;&gt;&gt; numpy.allclose([alpha, beta, gamma], euler)</span>
+<span class="sd">&gt;&gt;&gt; np.allclose([alpha, beta, gamma], euler)</span>
 <span class="sd">True</span>
 <span class="sd">&gt;&gt;&gt; Re = euler_matrix(alpha, beta, gamma, &#39;rxyz&#39;)</span>
 <span class="sd">&gt;&gt;&gt; is_same_transform(R, Re)</span>
@@ -232,14 +234,14 @@
 <span class="sd">&gt;&gt;&gt; S = scale_matrix(1.23, origin)</span>
 <span class="sd">&gt;&gt;&gt; T = translation_matrix((1, 2, 3))</span>
 <span class="sd">&gt;&gt;&gt; Z = shear_matrix(beta, xaxis, origin, zaxis)</span>
-<span class="sd">&gt;&gt;&gt; R = random_rotation_matrix(numpy.random.rand(3))</span>
+<span class="sd">&gt;&gt;&gt; R = random_rotation_matrix(np.random.rand(3))</span>
 <span class="sd">&gt;&gt;&gt; M = concatenate_matrices(T, R, Z, S)</span>
 <span class="sd">&gt;&gt;&gt; scale, shear, angles, trans, persp = decompose_matrix(M)</span>
-<span class="sd">&gt;&gt;&gt; numpy.allclose(scale, 1.23)</span>
+<span class="sd">&gt;&gt;&gt; np.allclose(scale, 1.23)</span>
 <span class="sd">True</span>
-<span class="sd">&gt;&gt;&gt; numpy.allclose(trans, (1, 2, 3))</span>
+<span class="sd">&gt;&gt;&gt; np.allclose(trans, (1, 2, 3))</span>
 <span class="sd">True</span>
-<span class="sd">&gt;&gt;&gt; numpy.allclose(shear, (0, math.tan(beta), 0))</span>
+<span class="sd">&gt;&gt;&gt; np.allclose(shear, (0, math.tan(beta), 0))</span>
 <span class="sd">True</span>
 <span class="sd">&gt;&gt;&gt; is_same_transform(R, euler_matrix(axes=&#39;sxyz&#39;, *angles))</span>
 <span class="sd">True</span>
@@ -271,6 +273,8 @@
 <span class="k">def</span> <span class="nf">identity_matrix</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return 4x4 identity/unit matrix.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import identity_matrix</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; I = identity_matrix()</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(I, np.dot(I, I))</span>
 <span class="sd">    True</span>
@@ -286,6 +290,8 @@
 <span class="k">def</span> <span class="nf">translation_matrix</span><span class="p">(</span><span class="n">direction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return matrix to translate by direction vector.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import translation_matrix</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; v = np.random.random(3) - 0.5</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(v, translation_matrix(v)[:3, 3])</span>
 <span class="sd">    True</span>
@@ -299,6 +305,9 @@
 <div class="viewcode-block" id="translation_from_matrix"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.translation_from_matrix">[docs]</a><span class="k">def</span> <span class="nf">translation_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return translation vector from translation matrix.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (translation_matrix,</span>
+<span class="sd">    ...     translation_from_matrix)</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; v0 = np.random.random(3) - 0.5</span>
 <span class="sd">    &gt;&gt;&gt; v1 = translation_from_matrix(translation_matrix(v0))</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(v0, v1)</span>
@@ -311,6 +320,8 @@
 <span class="k">def</span> <span class="nf">reflection_matrix</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">normal</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return matrix to mirror at plane defined by point and normal vector.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import reflection_matrix</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; v0 = np.random.random(4) - 0.5</span>
 <span class="sd">    &gt;&gt;&gt; v0[3] = 1.0</span>
 <span class="sd">    &gt;&gt;&gt; v1 = np.random.random(3) - 0.5</span>
@@ -337,6 +348,9 @@
 <div class="viewcode-block" id="reflection_from_matrix"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.reflection_from_matrix">[docs]</a><span class="k">def</span> <span class="nf">reflection_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return mirror plane point and normal vector from reflection matrix.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (reflection_matrix,</span>
+<span class="sd">    ...     reflection_from_matrix, is_same_transform)</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; v0 = np.random.random(3) - 0.5</span>
 <span class="sd">    &gt;&gt;&gt; v1 = np.random.random(3) - 0.5</span>
 <span class="sd">    &gt;&gt;&gt; M0 = reflection_matrix(v0, v1)</span>
@@ -366,6 +380,10 @@
 <span class="k">def</span> <span class="nf">rotation_matrix</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">point</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return matrix to rotate about axis defined by point and direction.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (rotation_matrix,</span>
+<span class="sd">    ...     is_same_transform)</span>
+<span class="sd">    &gt;&gt;&gt; import random, math</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; R = rotation_matrix(math.pi/2.0, [0, 0, 1], [1, 0, 0])</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(np.dot(R, [0, 0, 0, 1]), [ 1., -1.,  0.,  1.])</span>
 <span class="sd">    True</span>
@@ -415,6 +433,10 @@
 <div class="viewcode-block" id="rotation_from_matrix"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.rotation_from_matrix">[docs]</a><span class="k">def</span> <span class="nf">rotation_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return rotation angle and axis from rotation matrix.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (rotation_matrix,</span>
+<span class="sd">    ...     is_same_transform, rotation_from_matrix)</span>
+<span class="sd">    &gt;&gt;&gt; import random, math</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; angle = (random.random() - 0.5) * (2*math.pi)</span>
 <span class="sd">    &gt;&gt;&gt; direc = np.random.random(3) - 0.5</span>
 <span class="sd">    &gt;&gt;&gt; point = np.random.random(3) - 0.5</span>
@@ -457,6 +479,9 @@
 
 <span class="sd">    Use factor -1 for point symmetry.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import scale_matrix</span>
+<span class="sd">    &gt;&gt;&gt; import random</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; v = (np.random.rand(4, 5) - 0.5) * 20.0</span>
 <span class="sd">    &gt;&gt;&gt; v[3] = 1.0</span>
 <span class="sd">    &gt;&gt;&gt; S = scale_matrix(-1.234)</span>
@@ -493,6 +518,10 @@
 <div class="viewcode-block" id="scale_from_matrix"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.scale_from_matrix">[docs]</a><span class="k">def</span> <span class="nf">scale_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return scaling factor, origin and direction from scaling matrix.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (scale_matrix,</span>
+<span class="sd">    ...      scale_from_matrix, is_same_transform)</span>
+<span class="sd">    &gt;&gt;&gt; import random</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; factor = random.random() * 10 - 5</span>
 <span class="sd">    &gt;&gt;&gt; origin = np.random.random(3) - 0.5</span>
 <span class="sd">    &gt;&gt;&gt; direct = np.random.random(3) - 0.5</span>
@@ -540,6 +569,9 @@
 <span class="sd">    If pseudo is True, perspective projections will preserve relative depth</span>
 <span class="sd">    such that Perspective = dot(Orthogonal, PseudoPerspective).</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (projection_matrix,</span>
+<span class="sd">    ...     is_same_transform)</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; P = projection_matrix((0, 0, 0), (1, 0, 0))</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(P[1:, 1:], np.identity(4)[1:, 1:])</span>
 <span class="sd">    True</span>
@@ -599,6 +631,9 @@
 <span class="sd">    Return values are same as arguments for projection_matrix function:</span>
 <span class="sd">    point, normal, direction, perspective, and pseudo.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (projection_matrix,</span>
+<span class="sd">    ...     projection_from_matrix, is_same_transform)</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; point = np.random.random(3) - 0.5</span>
 <span class="sd">    &gt;&gt;&gt; normal = np.random.random(3) - 0.5</span>
 <span class="sd">    &gt;&gt;&gt; direct = np.random.random(3) - 0.5</span>
@@ -682,6 +717,8 @@
 <span class="sd">    Homogeneous coordinates transformed by the perspective clip matrix</span>
 <span class="sd">    need to be dehomogenized (devided by w coordinate).</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import clip_matrix</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; frustrum = np.random.rand(6)</span>
 <span class="sd">    &gt;&gt;&gt; frustrum[1] += frustrum[0]</span>
 <span class="sd">    &gt;&gt;&gt; frustrum[3] += frustrum[2]</span>
@@ -731,6 +768,9 @@
 <span class="sd">    given by the angle of P-P&#39;-P&quot;, where P&#39; is the orthogonal projection</span>
 <span class="sd">    of P onto the shear plane.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import shear_matrix</span>
+<span class="sd">    &gt;&gt;&gt; import random, math</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; angle = (random.random() - 0.5) * 4*math.pi</span>
 <span class="sd">    &gt;&gt;&gt; direct = np.random.random(3) - 0.5</span>
 <span class="sd">    &gt;&gt;&gt; point = np.random.random(3) - 0.5</span>
@@ -754,6 +794,10 @@
 <div class="viewcode-block" id="shear_from_matrix"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.shear_from_matrix">[docs]</a><span class="k">def</span> <span class="nf">shear_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return shear angle, direction and plane from shear matrix.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (shear_matrix,</span>
+<span class="sd">    ...     shear_from_matrix, is_same_transform)</span>
+<span class="sd">    &gt;&gt;&gt; import random, math</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; angle = (random.random() - 0.5) * 4*math.pi</span>
 <span class="sd">    &gt;&gt;&gt; direct = np.random.random(3) - 0.5</span>
 <span class="sd">    &gt;&gt;&gt; point = np.random.random(3) - 0.5</span>
@@ -811,6 +855,9 @@
 
 <span class="sd">    Raise ValueError if matrix is of wrong type or degenerative.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (translation_matrix,</span>
+<span class="sd">    ...     decompose_matrix, scale_matrix, euler_matrix)</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; T0 = translation_matrix((1, 2, 3))</span>
 <span class="sd">    &gt;&gt;&gt; scale, shear, angles, trans, persp = decompose_matrix(T0)</span>
 <span class="sd">    &gt;&gt;&gt; T1 = translation_matrix(trans)</span>
@@ -895,6 +942,10 @@
 <span class="sd">        translate : translation vector along x, y, z axes</span>
 <span class="sd">        perspective : perspective partition of matrix</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (compose_matrix,</span>
+<span class="sd">    ...     decompose_matrix, is_same_transform)</span>
+<span class="sd">    &gt;&gt;&gt; import math</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; scale = np.random.random(3) - 0.5</span>
 <span class="sd">    &gt;&gt;&gt; shear = np.random.random(3) - 0.5</span>
 <span class="sd">    &gt;&gt;&gt; angles = (np.random.random(3) - 0.5) * (2*math.pi)</span>
@@ -942,6 +993,8 @@
 
 <span class="sd">    The de-orthogonalization matrix is the inverse.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import orthogonalization_matrix</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; O = orthogonalization_matrix((10., 10., 10.), (90., 90., 90.))</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(O[:3, :3], np.identity(3, float) * 10)</span>
 <span class="sd">    True</span>
@@ -977,6 +1030,11 @@
 <span class="sd">    The returned matrix performs rotation, translation and uniform scaling</span>
 <span class="sd">    (if specified).</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (superimposition_matrix,</span>
+<span class="sd">    ... random_rotation_matrix, scale_matrix, translation_matrix,</span>
+<span class="sd">    ... concatenate_matrices)</span>
+<span class="sd">    &gt;&gt;&gt; import random</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; v0 = np.random.rand(3, 10)</span>
 <span class="sd">    &gt;&gt;&gt; M = superimposition_matrix(v0, v0)</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(M, np.identity(4))</span>
@@ -1072,6 +1130,10 @@
 <span class="sd">    ai, aj, ak : Euler&#39;s roll, pitch and yaw angles</span>
 <span class="sd">    axes : One of 24 axis sequences as string or encoded tuple</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (euler_matrix</span>
+<span class="sd">    ... _AXES2TUPLE, _TUPLE2AXES)</span>
+<span class="sd">    &gt;&gt;&gt; import math</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; R = euler_matrix(1, 2, 3, &#39;syxz&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(np.sum(R[0]), -1.34786452)</span>
 <span class="sd">    True</span>
@@ -1136,6 +1198,10 @@
 
 <span class="sd">    Note that many Euler angle triplets can describe one matrix.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (euler_matrix,</span>
+<span class="sd">    ... euler_from_matrix, _AXES2TUPLE)</span>
+<span class="sd">    &gt;&gt;&gt; import math</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; R0 = euler_matrix(1, 2, 3, &#39;syxz&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; al, be, ga = euler_from_matrix(R0, &#39;syxz&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; R1 = euler_matrix(al, be, ga, &#39;syxz&#39;)</span>
@@ -1190,6 +1256,8 @@
 <div class="viewcode-block" id="euler_from_quaternion"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.euler_from_quaternion">[docs]</a><span class="k">def</span> <span class="nf">euler_from_quaternion</span><span class="p">(</span><span class="n">quaternion</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s1">&#39;sxyz&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return Euler angles from quaternion for specified axis sequence.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import euler_from_quaternion</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; angles = euler_from_quaternion([0.99810947, 0.06146124, 0, 0])</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(angles, [0.123, 0, 0])</span>
 <span class="sd">    True</span>
@@ -1204,6 +1272,7 @@
 <span class="sd">    ai, aj, ak : Euler&#39;s roll, pitch and yaw angles</span>
 <span class="sd">    axes : One of 24 axis sequences as string or encoded tuple</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import quaternion_from_euler</span>
 <span class="sd">    &gt;&gt;&gt; q = quaternion_from_euler(1, 2, 3, &#39;ryxz&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(q, [0.435953, 0.310622, -0.718287, 0.444435])</span>
 <span class="sd">    True</span>
@@ -1258,6 +1327,8 @@
 <span class="k">def</span> <span class="nf">quaternion_about_axis</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return quaternion for rotation about axis.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import quaternion_about_axis</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; q = quaternion_about_axis(0.123, (1, 0, 0))</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(q, [0.99810947, 0.06146124, 0, 0])</span>
 <span class="sd">    True</span>
@@ -1277,6 +1348,9 @@
 <span class="k">def</span> <span class="nf">quaternion_matrix</span><span class="p">(</span><span class="n">quaternion</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return homogeneous rotation matrix from quaternion.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (identity_matrix,</span>
+<span class="sd">    ...     quaternion_matrix, rotation_matrix)</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; M = quaternion_matrix([0.99810947, 0.06146124, 0, 0])</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(M, rotation_matrix(0.123, (1, 0, 0)))</span>
 <span class="sd">    True</span>
@@ -1309,6 +1383,10 @@
 <span class="sd">    If isprecise=True, the input matrix is assumed to be a precise rotation</span>
 <span class="sd">    matrix and a faster algorithm is used.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (identity_matrix,</span>
+<span class="sd">    ...     quaternion_from_matrix, rotation_matrix, random_rotation_matrix,</span>
+<span class="sd">    ...     is_same_transform, quaternion_matrix)</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; q = quaternion_from_matrix(identity_matrix(), True)</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(q, [1., 0., 0., 0.])</span>
 <span class="sd">    True</span>
@@ -1385,6 +1463,8 @@
 <span class="k">def</span> <span class="nf">quaternion_multiply</span><span class="p">(</span><span class="n">quaternion1</span><span class="p">,</span> <span class="n">quaternion0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return multiplication of two quaternions.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import quaternion_multiply</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; q = quaternion_multiply([4, 1, -2, 3], [8, -5, 6, 7])</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(q, [28, -44, -14, 48])</span>
 <span class="sd">    True</span>
@@ -1403,6 +1483,9 @@
 <span class="k">def</span> <span class="nf">quaternion_conjugate</span><span class="p">(</span><span class="n">quaternion</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return conjugate of quaternion.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (random_quaternion,</span>
+<span class="sd">    ...     quaternion_conjugate)</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; q0 = random_quaternion()</span>
 <span class="sd">    &gt;&gt;&gt; q1 = quaternion_conjugate(q0)</span>
 <span class="sd">    &gt;&gt;&gt; q1[0] == q0[0] and all(q1[1:] == -q0[1:])</span>
@@ -1418,6 +1501,9 @@
 <span class="k">def</span> <span class="nf">quaternion_inverse</span><span class="p">(</span><span class="n">quaternion</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return inverse of quaternion.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (random_quaternion,</span>
+<span class="sd">    ...     quaternion_inverse)</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; q0 = random_quaternion()</span>
 <span class="sd">    &gt;&gt;&gt; q1 = quaternion_inverse(q0)</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(quaternion_multiply(q0, q1), [1, 0, 0, 0])</span>
@@ -1430,6 +1516,7 @@
 <div class="viewcode-block" id="quaternion_real"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.quaternion_real">[docs]</a><span class="k">def</span> <span class="nf">quaternion_real</span><span class="p">(</span><span class="n">quaternion</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return real part of quaternion.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import quaternion_real</span>
 <span class="sd">    &gt;&gt;&gt; quaternion_real([3.0, 0.0, 1.0, 2.0])</span>
 <span class="sd">    3.0</span>
 
@@ -1440,6 +1527,7 @@
 <div class="viewcode-block" id="quaternion_imag"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.quaternion_imag">[docs]</a><span class="k">def</span> <span class="nf">quaternion_imag</span><span class="p">(</span><span class="n">quaternion</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return imaginary part of quaternion.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import quaternion_imag</span>
 <span class="sd">    &gt;&gt;&gt; quaternion_imag([3.0, 0.0, 1.0, 2.0])</span>
 <span class="sd">    [0.0, 1.0, 2.0]</span>
 
@@ -1450,6 +1538,10 @@
 <span class="k">def</span> <span class="nf">quaternion_slerp</span><span class="p">(</span><span class="n">quat0</span><span class="p">,</span> <span class="n">quat1</span><span class="p">,</span> <span class="n">fraction</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">shortestpath</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return spherical linear interpolation between two quaternions.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (random_quaternion,</span>
+<span class="sd">    ...     quaternion_slerp)</span>
+<span class="sd">    &gt;&gt;&gt; import math</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; q0 = random_quaternion()</span>
 <span class="sd">    &gt;&gt;&gt; q1 = random_quaternion()</span>
 <span class="sd">    &gt;&gt;&gt; q = quaternion_slerp(q0, q1, 0.0)</span>
@@ -1495,6 +1587,9 @@
 <span class="sd">        Three independent random variables that are uniformly distributed</span>
 <span class="sd">        between 0 and 1.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (random_quaternion,</span>
+<span class="sd">    ...     vector_norm)</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; q = random_quaternion()</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(1.0, vector_norm(q))</span>
 <span class="sd">    True</span>
@@ -1527,6 +1622,8 @@
 <span class="sd">        Three independent random variables that are uniformly distributed</span>
 <span class="sd">        between 0 and 1 for each returned quaternion.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import random_rotation_matrix</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; R = random_rotation_matrix()</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(np.dot(R.T, R), np.identity(4))</span>
 <span class="sd">    True</span>
@@ -1538,6 +1635,8 @@
 <div class="viewcode-block" id="Arcball"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball">[docs]</a><span class="k">class</span> <span class="nc">Arcball</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Virtual Trackball Control.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import Arcball</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; ball = Arcball()</span>
 <span class="sd">    &gt;&gt;&gt; ball = Arcball(initial=np.identity(4))</span>
 <span class="sd">    &gt;&gt;&gt; ball.place([320, 320], 320)</span>
@@ -1720,6 +1819,8 @@
 <span class="k">def</span> <span class="nf">vector_norm</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return length, i.e. eucledian norm, of ndarray along axis.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import vector_norm</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; v = np.random.random(3)</span>
 <span class="sd">    &gt;&gt;&gt; n = vector_norm(v)</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(n, np.linalg.norm(v))</span>
@@ -1759,6 +1860,8 @@
 <span class="k">def</span> <span class="nf">unit_vector</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return ndarray normalized by length, i.e. eucledian norm, along axis.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import unit_vector</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; v0 = np.random.random(3)</span>
 <span class="sd">    &gt;&gt;&gt; v1 = unit_vector(v0)</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(v1, v0 / np.linalg.norm(v0))</span>
@@ -1803,6 +1906,8 @@
 <span class="k">def</span> <span class="nf">random_vector</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return array of random doubles in the half-open interval [0.0, 1.0).</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import random_vector</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; v = random_vector(10000)</span>
 <span class="sd">    &gt;&gt;&gt; np.all(v &gt;= 0.0) and np.all(v &lt; 1.0)</span>
 <span class="sd">    True</span>
@@ -1818,6 +1923,9 @@
 <span class="k">def</span> <span class="nf">inverse_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return inverse of square transformation matrix.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (random_rotation_matrix,</span>
+<span class="sd">    ...     inverse_matrix)</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; M0 = random_rotation_matrix()</span>
 <span class="sd">    &gt;&gt;&gt; M1 = inverse_matrix(M0.T)</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(M1, np.linalg.inv(M0.T))</span>
@@ -1834,6 +1942,8 @@
 <div class="viewcode-block" id="concatenate_matrices"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.concatenate_matrices">[docs]</a><span class="k">def</span> <span class="nf">concatenate_matrices</span><span class="p">(</span><span class="o">*</span><span class="n">matrices</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return concatenation of series of transformation matrices.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import concatenate_matrices</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; M = np.random.rand(16).reshape((4, 4)) - 0.5</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(M, concatenate_matrices(M))</span>
 <span class="sd">    True</span>
@@ -1850,6 +1960,9 @@
 <span class="k">def</span> <span class="nf">is_same_transform</span><span class="p">(</span><span class="n">matrix0</span><span class="p">,</span> <span class="n">matrix1</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True if two matrices perform same transformation.</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.transformations import (is_same_transform,</span>
+<span class="sd">    ...     random_rotation_matrix)</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; is_same_transform(np.identity(4), np.identity(4))</span>
 <span class="sd">    True</span>
 <span class="sd">    &gt;&gt;&gt; is_same_transform(np.identity(4), random_rotation_matrix())</span>

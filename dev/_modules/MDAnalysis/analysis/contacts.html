@@ -532,7 +532,7 @@
         <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;radius_cut&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fraction_contacts</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">radius_cut_q</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">method</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">method</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;method has to be callable&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fraction_contacts</span> <span class="o">=</span> <span class="n">method</span>
 

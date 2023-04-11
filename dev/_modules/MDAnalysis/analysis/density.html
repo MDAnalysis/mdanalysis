@@ -858,11 +858,11 @@
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                     <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unit </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> of type </span><span class="si">{</span><span class="n">unit_type</span><span class="si">}</span><span class="s2"> is not &quot;</span>
                               <span class="sa">f</span><span class="s2">&quot;recognized.&quot;</span><span class="p">)</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="n">errmsg</span> <span class="o">=</span> <span class="s1">&#39;&quot;unit&quot; must be a dictionary with keys &quot;length&quot; and &quot;density.&#39;</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
         <span class="c1"># need at least length and density (can be None)</span>
         <span class="k">if</span> <span class="s1">&#39;length&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;unit&quot; must contain a unit for &quot;length&quot;.&#39;</span><span class="p">)</span>
@@ -973,7 +973,7 @@
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The name of the unit (</span><span class="si">{</span><span class="n">unit</span><span class="si">}</span><span class="s2"> supplied) must be one &quot;</span>
                       <span class="sa">f</span><span class="s2">&quot;of:</span><span class="se">\n</span><span class="si">{</span><span class="n">units</span><span class="o">.</span><span class="n">conversion_factor</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">unit</span></div>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

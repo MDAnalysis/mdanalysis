@@ -364,9 +364,12 @@ specified</p></li>
 </dl>
 <p class="rubric">Example</p>
 <p>Adding a new GLY residue, then placing atoms within it:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">newres</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">add_Residue</span><span class="p">(</span><span class="n">segment</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">resid</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">resname</span><span class="o">=</span><span class="s1">&#39;GLY&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">newres</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">add_Residue</span><span class="p">(</span><span class="n">segment</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">resid</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">resname</span><span class="o">=</span><span class="s1">&#39;GLY&#39;</span><span class="p">,</span> <span class="n">resnum</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span><span class="o">.</span><span class="n">residues</span> <span class="o">=</span> <span class="n">newres</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname GLY and resid 42&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname GLY and resid 42 and resnum 0&#39;</span><span class="p">)</span>
 <span class="go">&lt;AtomGroup with 3 atoms&gt;</span>
 </pre></div>
 </div>
@@ -409,9 +412,12 @@ or zero values.</p></li>
 </dl>
 <p class="rubric">Example</p>
 <p>For example to add bfactors to a Universe:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="s1">&#39;bfactors&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">bfactors</span>
-<span class="go">array([ 0.,  0.,  0., ...,  0.,  0.,  0.])</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="s1">&#39;tempfactors&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">tempfactors</span>
+<span class="go">array([0., 0., 0., ..., 0., 0., 0.])</span>
 </pre></div>
 </div>
 <div class="versionchanged">
@@ -575,8 +581,15 @@ topology attribute.</p>
 </dl>
 <p class="rubric">Example</p>
 <p>For example to remove bfactors to a Universe:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">del_TopologyAttr</span><span class="p">(</span><span class="s1">&#39;bfactors&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">hasattr</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span> <span class="s1">&#39;bfactors&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="s1">&#39;tempfactors&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">hasattr</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span> <span class="s1">&#39;tempfactors&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">del_TopologyAttr</span><span class="p">(</span><span class="s1">&#39;tempfactors&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">hasattr</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span> <span class="s1">&#39;tempfactors&#39;</span><span class="p">)</span>
 <span class="go">False</span>
 </pre></div>
 </div>
@@ -760,7 +773,8 @@ the input SMILES string; coordinates are included if
 </dl>
 <p class="rubric">Examples</p>
 <p>To create a Universe with 10 conformers of ethanol:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="o">.</span><span class="n">from_smiles</span><span class="p">(</span><span class="s1">&#39;CCO&#39;</span><span class="p">,</span> <span class="n">numConfs</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="kn">import</span> <span class="n">AllChem</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="o">.</span><span class="n">from_smiles</span><span class="p">(</span><span class="s1">&#39;CCO&#39;</span><span class="p">,</span> <span class="n">numConfs</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span>
 <span class="go">&lt;Universe with 9 atoms&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span>
@@ -769,7 +783,7 @@ the input SMILES string; coordinates are included if
 </div>
 <p>To use a different conformer generation algorithm, like ETKDGv3:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="o">.</span><span class="n">from_smiles</span><span class="p">(</span><span class="s1">&#39;CCO&#39;</span><span class="p">,</span> <span class="n">rdkit_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
-<span class="go">                                 params=AllChem.ETKDGv3()))</span>
+<span class="gp">... </span>     <span class="n">params</span><span class="o">=</span><span class="n">AllChem</span><span class="o">.</span><span class="n">ETKDGv3</span><span class="p">()))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span>
 <span class="go">&lt;RDKitReader with 1 frames of 9 atoms&gt;</span>
 </pre></div>

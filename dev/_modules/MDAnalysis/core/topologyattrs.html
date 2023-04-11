@@ -2925,7 +2925,7 @@
         <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
             <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AtomGroup contains a residue name &#39;</span><span class="si">{</span><span class="n">err</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&#39; that&quot;</span>
                       <span class="sa">f</span><span class="s2">&quot; does not have a IUPAC protein 1-letter character&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="s2">&quot;string&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">sequence</span>
         <span class="n">seq</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">Seq</span><span class="o">.</span><span class="n">Seq</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>

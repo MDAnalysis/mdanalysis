@@ -218,7 +218,7 @@
                 <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                     <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Check CRD format at line </span><span class="si">{</span><span class="n">linenum</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">: &quot;</span>
                               <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
 
                 <span class="n">atomids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">serial</span><span class="p">)</span>
                 <span class="n">atomnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>

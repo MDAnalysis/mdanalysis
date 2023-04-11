@@ -570,6 +570,8 @@
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
+
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.util import greedy_splitext</span>
 <span class="sd">    &gt;&gt;&gt; greedy_splitext(&quot;/home/joe/protein.pdb.bz2&quot;)</span>
 <span class="sd">    (&#39;/home/joe/protein&#39;, &#39;.pdb.bz2&#39;)</span>
 
@@ -586,7 +588,7 @@
 
 <div class="viewcode-block" id="hasmethod"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.hasmethod">[docs]</a><span class="k">def</span> <span class="nf">hasmethod</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return ``True`` if object *obj* contains the method *m*.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span> <span class="ow">and</span> <span class="n">callable</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">m</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">callable</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">m</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="isstream"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.isstream">[docs]</a><span class="k">def</span> <span class="nf">isstream</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
@@ -953,7 +955,7 @@
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="c1"># IOBase.fileno does not raise IOError as advertised so we do this here</span>
             <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;This NamedStream does not use a file descriptor.&quot;</span>
-            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span></div>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="NamedStream.readline"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.readline">[docs]</a>    <span class="k">def</span> <span class="nf">readline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
@@ -1060,7 +1062,7 @@
             <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">get_ext</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Cannot determine coordinate format for &#39;</span><span class="si">{</span><span class="n">root</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">ext</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
 
     <span class="k">return</span> <span class="n">ext</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span></div>
 
@@ -1087,7 +1089,7 @@
         <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot determine file format for file &#39;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&#39;.</span><span class="se">\n</span><span class="s2">&quot;</span>
                   <span class="sa">f</span><span class="s2">&quot;           You can set the format explicitly with &quot;</span>
                   <span class="sa">f</span><span class="s2">&quot;&#39;Universe(..., format=FORMAT)&#39;.&quot;</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="n">check_compressed_format</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">ext</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">format</span></div>
 
@@ -1127,7 +1129,7 @@
             <span class="c1"># format is None so we need to complain:</span>
             <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;guess_format requires an explicit format specifier &quot;</span>
                       <span class="sa">f</span><span class="s2">&quot;for stream </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># iterator, list, filename: simple extension checking... something more</span>
         <span class="c1"># complicated is left for the ambitious.</span>
@@ -1218,7 +1220,7 @@
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
             <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: Failed to read&amp;convert &quot;</span>
                       <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">line</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Length of the field in columns (stop - start)&quot;&quot;&quot;</span>
@@ -1453,7 +1455,7 @@
             <span class="n">weights</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">masses</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;weights=&#39;mass&#39; selected but atoms.masses is missing&quot;</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
 
     <span class="k">if</span> <span class="n">iterable</span><span class="p">(</span><span class="n">weights</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
@@ -1537,7 +1539,7 @@
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
         <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No conversion for </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2"> found (1 letter -&gt; 3 letter or 3/4 &quot;</span>
                   <span class="sa">f</span><span class="s2">&quot;letter -&gt; 1 letter)&quot;</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span></div>
 
 
 <span class="c1">#: Regular expression to match and parse a residue-atom selection; will match</span>
@@ -1716,10 +1718,14 @@
 <span class="sd">    --------</span>
 <span class="sd">    Remove dupicate rows from an array:</span>
 
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.util import unique_rows</span>
 <span class="sd">    &gt;&gt;&gt; a = np.array([[0, 1], [1, 2], [1, 2], [0, 1], [2, 3]])</span>
 <span class="sd">    &gt;&gt;&gt; b = unique_rows(a)</span>
 <span class="sd">    &gt;&gt;&gt; b</span>
-<span class="sd">    array([[0, 1], [1, 2], [2, 3]])</span>
+<span class="sd">    array([[0, 1],</span>
+<span class="sd">           [1, 2],</span>
+<span class="sd">           [2, 3]])</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
@@ -1776,6 +1782,8 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.util import blocks_of</span>
 <span class="sd">    &gt;&gt;&gt; arr = np.arange(16).reshape(4, 4)</span>
 <span class="sd">    &gt;&gt;&gt; view = blocks_of(arr, 2, 2)</span>
 <span class="sd">    &gt;&gt;&gt; view[:] = 100</span>
@@ -1833,6 +1841,7 @@
 <span class="sd">    list of :class:`numpy.ndarray`</span>
 
 <span class="sd">    Examples</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; arr = np.array([ 2,  3,  4,  7,  8,  9, 10, 11, 15, 16])</span>
 <span class="sd">    &gt;&gt;&gt; group_same_or_consecutive_integers(arr)</span>
 <span class="sd">    [array([2, 3, 4]), array([ 7,  8,  9, 10, 11]), array([15, 16])]</span>
@@ -1849,7 +1858,7 @@
             <span class="k">return</span> <span class="nb">dict</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&quot; is not known in the namespace.&#39;</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="nb">dict</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
@@ -1859,7 +1868,7 @@
             <span class="nb">dict</span><span class="o">.</span><span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&quot; is not known in the namespace.&#39;</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
@@ -1887,6 +1896,7 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.util import ltruncate_int</span>
 <span class="sd">    &gt;&gt;&gt; ltruncate_int(123, 2)</span>
 <span class="sd">    23</span>
 <span class="sd">    &gt;&gt;&gt; ltruncate_int(1234, 5)</span>
@@ -1936,6 +1946,7 @@
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
 
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.util import static_variables</span>
 <span class="sd">    &gt;&gt;&gt; @static_variables(msg=&#39;foo calls&#39;, calls=0)</span>
 <span class="sd">    ... def foo():</span>
 <span class="sd">    ...     foo.calls += 1</span>
@@ -2107,6 +2118,10 @@
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
 
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; import MDAnalysis as mda</span>
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.tests.datafiles import PSF, DCD</span>
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.lib.util import check_coords</span>
 <span class="sd">    &gt;&gt;&gt; @check_coords(&#39;coords1&#39;, &#39;coords2&#39;, allow_atomgroup=True)</span>
 <span class="sd">    ... def coordsum(coords1, coords2):</span>
 <span class="sd">    ...     assert coords1.dtype == np.float32</span>
@@ -2123,12 +2138,18 @@
 <span class="sd">    &gt;&gt;&gt;</span>
 <span class="sd">    &gt;&gt;&gt; # automatic handling of AtomGroups</span>
 <span class="sd">    &gt;&gt;&gt; u = mda.Universe(PSF, DCD)</span>
-<span class="sd">    &gt;&gt;&gt; coordsum(u.atoms, u.select_atoms(&quot;index 1 to 10&quot;))</span>
-<span class="sd">    ...</span>
+<span class="sd">    &gt;&gt;&gt; try:</span>
+<span class="sd">    ...     coordsum(u.atoms, u.select_atoms(&quot;index 1 to 10&quot;))</span>
+<span class="sd">    ... except ValueError as err:</span>
+<span class="sd">    ...     err</span>
+<span class="sd">    ValueError(&#39;coordsum(): coords1, coords2 must contain the same number of coordinates, got [3341, 10].&#39;)</span>
 <span class="sd">    &gt;&gt;&gt;</span>
 <span class="sd">    &gt;&gt;&gt; # automatic shape checking:</span>
-<span class="sd">    &gt;&gt;&gt; coordsum(np.zeros(3), np.ones(6))</span>
-<span class="sd">    ValueError: coordsum(): coords2.shape must be (3,) or (n, 3), got (6,).</span>
+<span class="sd">    &gt;&gt;&gt; try:</span>
+<span class="sd">    ...     coordsum(np.zeros(3), np.ones(6))</span>
+<span class="sd">    ... except ValueError as err:</span>
+<span class="sd">    ...     err</span>
+<span class="sd">    ValueError(&#39;coordsum(): coords2.shape must be (3,) or (n, 3), got (6,)&#39;)</span>
 
 
 <span class="sd">    .. versionadded:: 0.19.0</span>
@@ -2191,7 +2212,7 @@
                         <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s2">(): </span><span class="si">{</span><span class="n">argname</span><span class="si">}</span><span class="s2">.dtype must be&quot;</span>
                                   <span class="sa">f</span><span class="s2">&quot;convertible to float32, got&quot;</span>
                                   <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">coords</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
-                        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+                        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
                 <span class="c1"># coordinates should now be the right shape</span>
                 <span class="n">ncoord</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
