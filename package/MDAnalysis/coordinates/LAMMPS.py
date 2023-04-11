@@ -288,11 +288,7 @@ class DATAWriter(base.WriterBase):
         indices = atoms.indices + 1
         types = atoms.types.astype(np.int32)
 
-        try:
-            moltags = data['molecule_tag']
-        except KeyError:
-            moltags = [0] * len(atoms)
-
+        moltags = data.get("molecule_tag", np.zeros(len(atoms), dtype=int))
 
         if self.convert_units:
             coordinates = self.convert_pos_to_native(atoms.positions, inplace=False)
