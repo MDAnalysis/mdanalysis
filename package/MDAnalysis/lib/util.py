@@ -2042,12 +2042,18 @@ def check_coords(*coord_names, **options):
     >>>
     >>> # automatic handling of AtomGroups
     >>> u = mda.Universe(PSF, DCD)
-    >>> coordsum(u.atoms, u.select_atoms("index 1 to 10"))
-    ...
+    >>> try:
+    ...     coordsum(u.atoms, u.select_atoms("index 1 to 10"))
+    ... except ValueError as err:
+    ...     err
+    ValueError('coordsum(): coords1, coords2 must contain the same number of coordinates, got [3341, 10].')
     >>>
     >>> # automatic shape checking:
-    >>> coordsum(np.zeros(3), np.ones(6))
-    ValueError: coordsum(): coords1, coords2 must contain the same number of coordinates, got [3341, 10].
+    >>> try:
+    ...     coordsum(np.zeros(3), np.ones(6))
+    ... except ValueError as err:
+    ...     err
+    ValueError('coordsum(): coords2.shape must be (3,) or (n, 3), got (6,)')
 
 
     .. versionadded:: 0.19.0
