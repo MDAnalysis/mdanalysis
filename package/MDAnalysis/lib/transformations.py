@@ -110,7 +110,7 @@ Examples
 --------
 
 >>> from MDAnalysis.lib.transformations import *
->>> import numpy
+>>> import numpy as np
 >>> alpha, beta, gamma = 0.123, -1.234, 2.345
 >>> origin, xaxis, yaxis, zaxis = (0, 0, 0), (1, 0, 0), (0, 1, 0), (0, 0, 1)
 >>> I = identity_matrix()
@@ -119,7 +119,7 @@ Examples
 >>> Rz = rotation_matrix(gamma, zaxis)
 >>> R = concatenate_matrices(Rx, Ry, Rz)
 >>> euler = euler_from_matrix(R, 'rxyz')
->>> numpy.allclose([alpha, beta, gamma], euler)
+>>> np.allclose([alpha, beta, gamma], euler)
 True
 >>> Re = euler_matrix(alpha, beta, gamma, 'rxyz')
 >>> is_same_transform(R, Re)
@@ -138,14 +138,14 @@ True
 >>> S = scale_matrix(1.23, origin)
 >>> T = translation_matrix((1, 2, 3))
 >>> Z = shear_matrix(beta, xaxis, origin, zaxis)
->>> R = random_rotation_matrix(numpy.random.rand(3))
+>>> R = random_rotation_matrix(np.random.rand(3))
 >>> M = concatenate_matrices(T, R, Z, S)
 >>> scale, shear, angles, trans, persp = decompose_matrix(M)
->>> numpy.allclose(scale, 1.23)
+>>> np.allclose(scale, 1.23)
 True
->>> numpy.allclose(trans, (1, 2, 3))
+>>> np.allclose(trans, (1, 2, 3))
 True
->>> numpy.allclose(shear, (0, math.tan(beta), 0))
+>>> np.allclose(shear, (0, math.tan(beta), 0))
 True
 >>> is_same_transform(R, euler_matrix(axes='sxyz', *angles))
 True

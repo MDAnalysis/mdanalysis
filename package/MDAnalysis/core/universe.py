@@ -806,8 +806,11 @@ class Universe(object):
         -------
         For example to add bfactors to a Universe:
 
-        >>> u.add_TopologyAttr('bfactors')
-        >>> u.atoms.bfactors
+        >>> import MDAnalysis as mda
+        >>> from MDAnalysis.tests.datafiles import PSF, DCD
+        >>> u = mda.Universe(PSF, DCD)
+        >>> u.add_TopologyAttr('tempfactors')
+        >>> u.atoms.tempfactors
         array([0., 0., 0., ..., 0., 0., 0.])
 
         .. versionchanged:: 0.17.0
@@ -863,8 +866,15 @@ class Universe(object):
         -------
         For example to remove bfactors to a Universe:
 
-        >>> u.del_TopologyAttr('bfactors')
-        >>> hasattr(u.atoms[:3], 'bfactors')
+        >>> import MDAnalysis as mda
+        >>> from MDAnalysis.tests.datafiles import PSF, DCD
+        >>> u = mda.Universe(PSF, DCD)
+        >>> u.add_TopologyAttr('tempfactors')
+        >>> hasattr(u.atoms[:3], 'tempfactors')
+        True
+        >>>
+        >>> u.del_TopologyAttr('tempfactors')
+        >>> hasattr(u.atoms[:3], 'tempfactors')
         False
 
 
@@ -1410,6 +1420,7 @@ class Universe(object):
         --------
         To create a Universe with 10 conformers of ethanol:
 
+        >>> from rdkit.Chem import AllChem
         >>> u = mda.Universe.from_smiles('CCO', numConfs=10)
         >>> u
         <Universe with 9 atoms>
@@ -1419,9 +1430,9 @@ class Universe(object):
         To use a different conformer generation algorithm, like ETKDGv3:
 
         >>> u = mda.Universe.from_smiles('CCO', rdkit_kwargs=dict(
-            ... params=AllChem.ETKDGv3()))
+        ...      params=AllChem.ETKDGv3()))
         >>> u.trajectory
-        <RDKitReader with 10 frames of 9 atoms>
+        <RDKitReader with 1 frames of 9 atoms>
 
 
         .. versionadded:: 2.0.0

@@ -1627,7 +1627,9 @@ def unique_rows(arr, return_index=False):
     >>> a = np.array([[0, 1], [1, 2], [1, 2], [0, 1], [2, 3]])
     >>> b = unique_rows(a)
     >>> b
-    array([[0, 1], [1, 2], [2, 3]])
+    array([[0, 1],
+           [1, 2],
+           [2, 3]])
 
     See Also
     --------
@@ -2022,6 +2024,7 @@ def check_coords(*coord_names, **options):
 
     >>> import numpy as np
     >>> import MDAnalysis as mda
+    >>> from MDAnalysis.tests.datafiles import PSF, DCD
     >>> from MDAnalysis.lib.util import check_coords
     >>> @check_coords('coords1', 'coords2', allow_atomgroup=True)
     ... def coordsum(coords1, coords2):
@@ -2044,7 +2047,7 @@ def check_coords(*coord_names, **options):
     >>>
     >>> # automatic shape checking:
     >>> coordsum(np.zeros(3), np.ones(6))
-    ValueError: coordsum(): coords2.shape must be (3,) or (n, 3), got (6,).
+    ValueError: coordsum(): coords1, coords2 must contain the same number of coordinates, got [3341, 10].
 
 
     .. versionadded:: 0.19.0
