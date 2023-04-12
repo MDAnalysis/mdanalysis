@@ -874,6 +874,12 @@ class TestDihedralSelections(object):
         rssel = [r.chi1_selection() for r in resgroup]
         assert_equal(rgsel, rssel)
 
+    @pytest.mark.parametrize("resname", ["CYS", "ILE", "SER", "THR", "VAL"])
+    def test_chi1_selections_non_cg(self, resname, PSFDCD):
+        resgroup = PSFDCD.select_atoms(f"resname {resname}").residues
+        rgsel = resgroup.chi1_selections()
+        assert not any(sel is None for sel in rgsel)
+
     @pytest.mark.parametrize("resname", ["CYSH", "ILE", "SER", "THR", "VAL"])
     def test_chi1_selection_non_cg_gromacs(self, resname, TPR):
         resgroup = TPR.select_atoms(f"resname {resname}").residues

@@ -23,14 +23,12 @@
 import pytest
 from unittest.mock import patch
 
-import errno
-import numpy as np
 import os
-from os.path import split
 import shutil
 import subprocess
 from pathlib import Path
 
+import numpy as np
 from numpy.testing import (assert_equal,
                            assert_almost_equal,
                            assert_allclose)
@@ -46,6 +44,7 @@ from MDAnalysisTests.coordinates.base import (MultiframeReaderTest,
 import MDAnalysis as mda
 from MDAnalysis.coordinates.base import Timestep
 from MDAnalysis.coordinates import XDR
+from MDAnalysisTests.util import get_userid
 
 
 class _XDRReader_Sub(object):
@@ -870,6 +869,7 @@ class _GromacsReader_offsets(object):
         reader = self._reader(traj)
         reader[idx_frame]
 
+    @pytest.mark.skipif(get_userid() == 0, reason="cannot readonly as root")
     def test_persistent_offsets_readonly(self, tmpdir):
         shutil.copy(self.filename, str(tmpdir))
 
@@ -889,6 +889,17 @@ class _GromacsReader_offsets(object):
         # check the lock file is not created as well.
         assert_equal(os.path.exists(XDR.offsets_filename(filename,
                                                     ending='.lock')), False)
+
+        # pre-teardown permission fix - leaving permission blocked dir
+        # is problematic on py3.9 + Windows it seems. See issue
+        # [4123](https://github.com/MDAnalysis/mdanalysis/issues/4123)
+        # for more details.
+        if os.name == 'nt':
+            subprocess.call(f"icacls {tmpdir} /grant Users:W", shell=True)
+        else:
+            os.chmod(str(tmpdir), 0o777)
+
+        shutil.rmtree(tmpdir)
 
     def test_offset_lock_created(self):
         assert os.path.exists(XDR.offsets_filename(self.filename,

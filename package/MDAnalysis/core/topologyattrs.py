@@ -1233,7 +1233,8 @@ class Atomnames(AtomStringAttr):
            faster atom matching with boolean arrays.
         """
         names = [n_name, ca_name, cb_name, cg_name]
-        ags = [residue.atoms.select_atoms(f"name {n}") for n in names]
+        atnames = residue.atoms.names
+        ags = [residue.atoms[np.in1d(atnames, n.split())] for n in names]
         if any(len(ag) != 1 for ag in ags):
             return None
         return sum(ags)
@@ -1241,7 +1242,7 @@ class Atomnames(AtomStringAttr):
     transplants[Residue].append(('chi1_selection', chi1_selection))
 
     def chi1_selections(residues, n_name='N', ca_name='CA', cb_name='CB',
-                        cg_name='CG'):
+                        cg_name='CG CG1 OG OG1 SG'):
         """Select list of AtomGroups corresponding to the chi1 sidechain dihedral
         N-CA-CB-CG.
 
@@ -1266,13 +1267,13 @@ class Atomnames(AtomStringAttr):
         """
         results = np.array([None]*len(residues))
         names = [n_name, ca_name, cb_name, cg_name]
-        keep = [all(sum(r.atoms.names == n) == 1 for n in names)
-                for r in residues]
+        keep = [all(sum(np.in1d(r.atoms.names, n.split())) == 1
+                    for n in names) for r in residues]
         keepix = np.where(keep)[0]
         residues = residues[keep]
 
         atnames = residues.atoms.names
-        ags = [residues.atoms[atnames == n] for n in names]
+        ags = [residues.atoms[np.in1d(atnames, n.split())] for n in names]
         results[keepix] = [sum(atoms) for atoms in zip(*ags)]
         return list(results)
 
@@ -1718,8 +1719,8 @@ class Masses(AtomAttr):
         else:
             recenteredpos = atomgroup.positions - com
 
-        rog_sq = np.sum(masses * np.sum(recenteredpos**2,
-                                        axis=1)) / atomgroup.total_mass()
+        rog_sq = np.einsum('i,i->',masses,np.einsum('ij,ij->i',
+                                     recenteredpos,recenteredpos))/atomgroup.total_mass()
 
         return np.sqrt(rog_sq)
 
@@ -2232,8 +2233,8 @@ class Charges(AtomAttr):
                 ) - ref)
             else:
                 recenteredpos = (atomgroup.positions - ref)
-            dipole_vector = np.sum(recenteredpos * charges[:, np.newaxis],
-                                   axis=0)
+            dipole_vector = np.einsum('ij,ij->j',recenteredpos, 
+                                       charges[:, np.newaxis])
         else:
             (atom_masks, compound_masks,
              n_compounds) = atomgroup._split_by_compound_indices(compound)
@@ -2248,10 +2249,10 @@ class Charges(AtomAttr):
 
             dipole_vector = np.empty((n_compounds, 3), dtype=np.float64)
             for compound_mask, atom_mask in zip(compound_masks, atom_masks):
-                dipole_vector[compound_mask] = np.sum(
-                    (coords[atom_mask] - ref[compound_mask][:, None, :]) *
-                    chgs[atom_mask][:, :, None],
-                    axis=1)
+                dipole_vector[compound_mask] = np.einsum('ijk,ijk->ik',
+                                                          (coords[atom_mask]-
+                                                           ref[compound_mask][:, None, :]),
+                                                          chgs[atom_mask][:, :, None])
 
         return dipole_vector
 
@@ -2315,9 +2316,9 @@ class Charges(AtomAttr):
         dipole_vector = atomgroup.dipole_vector(**kwargs)
 
         if len(dipole_vector.shape) > 1:
-            dipole_moment = np.sqrt(np.sum(dipole_vector**2, axis=1))
+            dipole_moment = np.sqrt(np.einsum('ij,ij->i',dipole_vector,dipole_vector))
         else:
-            dipole_moment = np.sqrt(np.sum(dipole_vector**2))
+            dipole_moment = np.sqrt(np.einsum('i,i->',dipole_vector,dipole_vector))
 
         return dipole_moment
 
