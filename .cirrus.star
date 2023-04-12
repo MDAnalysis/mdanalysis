@@ -1,6 +1,6 @@
 # See https://cirrus-ci.org/guide/programming-tasks/ for more information on
 # starlark CirrusCI files
-# Inspired by scipy's .cirrus.star script
+# Inspired by scipy's .cirrus.star script https://github.com/scipy/scipy/blob/main/.cirrus.star
 # In the spirit of ensuring this can also be freely used in derviative works by
 # the community, we release the contents of this file under the MIT license.
 
