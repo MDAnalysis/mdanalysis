@@ -22,6 +22,8 @@ The rules for this file:
  * 2.5.0
 
 Fixes
+  * Skip tests artificially checking for readonly or PermissionError cases
+    when running at root user on linux systems (Issue #4112, PR #4120)
   * Fix chi1_selections() ignored atom names CG1 OG OG1 SG and incorrectly returned
     None for amino acids CYS, ILE, SER, THR, VAL (Issue #4108)
   * Fix parsing of box vector in H5MD reader (Issue #4076)
