@@ -81,8 +81,8 @@ class TestAtom(object):
         assert_almost_equal(a.position, pos)
 
     def test_atom_selection(self, universe, atom):
-        asel = universe.select_atoms('atom 4AKE 67 CG').atoms[0]
-        assert atom == asel
+        sample_atom_group = universe.select_atoms('atom 4AKE 67 CG').atoms[0]
+        assert atom == sample_atom_group
 
     def test_hierarchy(self, universe, atom):
         u = universe

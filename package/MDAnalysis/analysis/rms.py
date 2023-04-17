@@ -810,7 +810,7 @@ class RMSF(AnalysisBase):
                                         in_memory=True).run()
 
            # 3) reference = average structure
-           ref_coordinates = u.trajectory.timeseries(asel=protein).mean(axis=1)
+           ref_coordinates = u.trajectory.timeseries(sample_atom_group=protein).mean(axis=1)
            # make a reference structure (need to reshape into a 1-frame
            # "trajectory")
            reference = mda.Merge(protein).load_new(ref_coordinates[:, None, :],

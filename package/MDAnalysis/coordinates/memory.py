@@ -488,18 +488,18 @@ class MemoryReader(base.ProtoReader):
         self.ts.frame = -1
         self.ts.time = -1
 
-    def timeseries(self, asel=None, start=0, stop=-1, step=1, order='afc'):
+    def timeseries(self, sample_atom_group=None, start=0, stop=-1, step=1, order='afc'):
         """Return a subset of coordinate data for an AtomGroup in desired
         column order. If no selection is given, it will return a view of the
         underlying array, while a copy is returned otherwise.
 
         Parameters
         ---------
-        asel : AtomGroup (optional)
+        sample_atom_group : AtomGroup (optional)
             Atom selection. Defaults to ``None``, in which case the full set of
             coordinate data is returned. Note that in this case, a view
             of the underlying numpy array is returned, while a copy of the
-            data is returned whenever `asel` is different from ``None``.
+            data is returned whenever `sample_atom_group` is different from ``None``.
         start : int (optional)
             the start trajectory frame
         stop : int (optional)
@@ -556,17 +556,17 @@ class MemoryReader(base.ProtoReader):
                        [slice(None)] * (2-f_index))
 
         # Return a view if either:
-        #   1) asel is None
-        #   2) asel corresponds to the selection of all atoms.
+        #   1) sample_atom_group is None
+        #   2) sample_atom_group corresponds to the selection of all atoms.
         array = array[tuple(basic_slice)]
-        if (asel is None or asel is asel.universe.atoms):
+        if (sample_atom_group is None or sample_atom_group is sample_atom_group.universe.atoms):
             return array
         else:
-            if len(asel) == 0:
+            if len(sample_atom_group) == 0:
                 raise ValueError("Timeseries requires at least one atom "
                                   "to analyze")
             # If selection is specified, return a copy
-            return array.take(asel.indices, a_index)
+            return array.take(sample_atom_group.indices, a_index)
 
     def _read_next_timestep(self, ts=None):
         """copy next frame into timestep"""

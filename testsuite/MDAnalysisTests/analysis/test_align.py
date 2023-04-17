@@ -401,7 +401,7 @@ def _get_aligned_average_positions(ref_files, ref, select="all", **kwargs):
     u = mda.Universe(*ref_files, in_memory=True)
     prealigner = align.AlignTraj(u, ref, select=select, **kwargs).run()
     ag = u.select_atoms(select)
-    reference_coordinates = u.trajectory.timeseries(asel=ag).mean(axis=1)
+    reference_coordinates = u.trajectory.timeseries(sample_atom_group=ag).mean(axis=1)
     rmsd = sum(prealigner.results.rmsd/len(u.trajectory))
     return reference_coordinates, rmsd
 
