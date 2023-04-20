@@ -391,7 +391,9 @@ cdef class DCDFile:
         if frame == 0:
             offset = self._header_size
         else:
-            offset = self._header_size + self._firstframesize + self._framesize * (frame - 1)
+            offset = self._header_size
+            offset += self._firstframesize
+            offset += self._framesize * (frame - 1)
 
         cdef int ok = fio_fseek(self.fp, offset, _whence_vals['FIO_SEEK_SET'])
         if ok != 0:

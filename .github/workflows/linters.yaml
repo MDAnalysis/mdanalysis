@@ -1,8 +1,5 @@
 name: "linters"
 on:
-  push:
-    branches:
-      - develop
   pull_request:
     branches:
       - develop
@@ -20,10 +17,10 @@ defaults:
 
 jobs:
   darker_lint:
-    if: |
-      github.repository == 'MDAnalysis/mdanalysis' &&
-      github.event_name == 'pull_request'
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     defaults:
       run:
         shell: bash
@@ -35,38 +32,79 @@ jobs:
 
     - uses: actions/setup-python@v4
       with:
-        python-version: 3.8
+        python-version: 3.9
 
-    - name: darker main code
-      uses: akaihola/darker@1.5.1
+    - name: darker-main-code
+      id: darker-main-code
+      uses: akaihola/darker@1.6.1
+      continue-on-error: true
       with:
-        version: "@master"
+        version: "~=1.6.1"
         options: "--check --diff --color"
         src: "./package/MDAnalysis"
         revision: "HEAD^"
         lint: "flake8"
 
-    - name: darker test code
-      uses: akaihola/darker@1.5.1
-      if: success() || failure()
+    - name: darker-test-code
+      id: darker-test-code
+      uses: akaihola/darker@1.6.1
+      continue-on-error: true
       with:
-        version: "@master"
+        version: "~=1.6.1"
         options: "--check --diff --color"
         src: "./testsuite/MDAnalysisTests"
         revision: "HEAD^"
         lint: "flake8"
 
+    - name: get-pr-info
+      uses: actions/github-script@v6
+      with:
+        script:
+            const prNumber = context.payload.number;
+            core.exportVariable('PULL_NUMBER', prNumber);
+
+    - name: save-status
+      env:
+        MAIN: ${{ steps.darker-main-code.outcome }}
+        TEST: ${{ steps.darker-test-code.outcome }}
+      shell: python
+      run: |
+        import os
+        import json
+        from pathlib import Path
+
+        Path('./darker_results/').mkdir(exist_ok=True)
+
+        d = {
+            'main_stat': os.environ['MAIN'],
+            'test_stat': os.environ['TEST'],
+            'PR_NUM': os.environ['PULL_NUMBER'],
+            'RUN_ID': os.environ['GITHUB_RUN_ID'],
+        }
+
+        with open('darker_results/status.json', 'w') as f:
+            json.dump(d, f)
+
+    - name: check-json
+      run: cat darker_results/status.json
+
+    - name: upload-status
+      uses: actions/upload-artifact@v3
+      with:
+        name: darkerlint
+        path: darker_results/
+        retention-days: 1
+
 
   pylint_check:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
 
     - uses: actions/setup-python@v4
       with:
-        python-version: 3.8
+        python-version: 3.9
 
     - name: install
       run: |
@@ -88,7 +126,7 @@ jobs:
       - name: setup_miniconda
         uses: conda-incubator/setup-miniconda@v2
         with:
-          python-version: 3.8
+          python-version: 3.9
           auto-update-conda: true
           channel-priority: flexible
           channels: conda-forge, bioconda
