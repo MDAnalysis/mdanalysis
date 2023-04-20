@@ -426,9 +426,6 @@ CPPTRAJ_TRAJ = str(data_ref / 'data/Amber/cpptraj_traj.nc')
 PRMpbc = str(data_ref / 'Amber/capped-ala.prmtop')
 TRJpbc_bz2 = str(data_ref / 'Amber/capped-ala.mdcrd.bz2')
 
-PRMpbc = resource_filename(__name__, 'data/Amber/capped-ala.prmtop')
-TRJpbc_bz2 = resource_filename(__name__, 'data/Amber/capped-ala.mdcrd.bz2')
-
 PRMncdf = str(data_ref / 'Amber/bala.prmtop')
 TRJncdf = str(data_ref / 'Amber/bala.trj')
 NCDF = str(data_ref / 'Amber/bala.ncdf')
