@@ -307,10 +307,6 @@ class TestTopologyGroup(object):
         bondtypes = universe.atoms.bonds.types()
         assert len(bondtypes) == nbonds
 
-#        universe.atoms.bonds.topDict._removeDupes()
-#        bondtypes = universe.atoms.bonds.types()
-#        assert len(bondtypes) != nbonds
-
     def test_angles_types(self, PSFDCD):
         """TopologyDict for angles"""
         assert len(PSFDCD.atoms.angles.types()) == 130
