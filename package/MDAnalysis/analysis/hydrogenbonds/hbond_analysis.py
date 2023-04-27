@@ -663,6 +663,11 @@ class HydrogenBondAnalysis(AnalysisBase):
            Returns
            -------
            mask: np.ndarray
+
+
+        .. versionchanged:: 2.5.0
+           Change return value to a mask instead of separate AtomGroups.
+``
         """
 
         mask = np.full(donors.n_atoms, fill_value=False)
