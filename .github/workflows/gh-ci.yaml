@@ -37,24 +37,12 @@ jobs:
               full-deps: true
               install_hole: true
               codecov: true
-            - name: macOS_bigsur_py39
-              os: macOS-11
-              python-version: 3.9
-              full-deps: true
-              install_hole: true
-              codecov: false
-            - name: minimal-ubuntu
-              os: ubuntu-latest
-              python-version: 3.9
-              full-deps: false
-              install_hole: false
-              codecov: true
             - name: numpy_min
               os: ubuntu-latest
               python-version: 3.9
               full-deps: false
               install_hole: false
-              codecov: false
+              codecov: true
               numpy: numpy=1.21.0
             - name: asv_check
               os: ubuntu-latest
@@ -75,22 +63,20 @@ jobs:
       with:
         os-type: ${{ matrix.os }}
 
-    - name: setup_miniconda
-      uses: conda-incubator/setup-miniconda@v2
+    - name: setup_micromamba
+      uses: mamba-org/provision-with-micromamba@main
       with:
-        python-version: ${{ matrix.python-version }}
-        auto-update-conda: true
-        channel-priority: flexible
-        channels: conda-forge, bioconda
-        add-pip-as-python-dependency: true
-        use-mamba: true
-        miniforge-variant: Mambaforge
-        architecture: x64
+        environment-file: False
+        environment-name: mda
+        extra-specs: |
+          python==${{ matrix.python-version }}
+          pip
+        channels: jaimergp/label/unsupported-cudatoolkit-shim, conda-forge, bioconda
 
     - name: install_deps
       uses: ./.github/actions/setup-deps
       with:
-        mamba: true
+        micromamba: true
         full-deps: ${{ matrix.full-deps }}
         # in most cases will just default to empty, i.e. pick up max version from other deps
         numpy: ${{ matrix.numpy }}
@@ -139,22 +125,20 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: setup_miniconda
-      uses: conda-incubator/setup-miniconda@v2
+    - name: setup_micromamba
+      uses: mamba-org/provision-with-micromamba@main
       with:
-        python-version: 3.9
-        auto-update-conda: true
-        channel-priority: flexible
+        environment-file: False
+        environment-name: mda
+        extra-specs: |
+          python=="3.9"
+          pip
         channels: conda-forge, bioconda
-        add-pip-as-python-dependency: true
-        architecture: x64
-        use-mamba: true
-        miniforge-variant: Mambaforge
 
     - name: install_deps
       uses: ./.github/actions/setup-deps
       with:
-        mamba: true
+        micromamba: true
         full-deps: true
         extra-pip-deps: "sphinx sphinx-sitemap sphinx_rtd_theme msmb_theme==1.2.0 sphinxcontrib-bibtex pybtex pybtex-docutils"
 

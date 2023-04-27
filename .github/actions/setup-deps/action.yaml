@@ -13,6 +13,9 @@ inputs:
   mamba:
     description: 'use mamba instead of conda'
     default: false
+  micromamba:
+    description: 'use micromamba instead of conda'
+    default: false
   # conda-installed min dependencies
   biopython:
     default: 'biopython>=1.80'
@@ -139,6 +142,8 @@ runs:
         # do the install
         if [ ${{ inputs.mamba }} = "true" ]; then
           mamba install ${CONDA_DEPS}
+        elif [ ${{ inputs.micromamba }} == "true" ]; then
+          micromamba install ${CONDA_DEPS}
         else
           conda install ${CONDA_DEPS}
         fi
