@@ -35,7 +35,8 @@ from MDAnalysis.coordinates.TRJ import NCDFReader, NCDFWriter
 
 from MDAnalysisTests.datafiles import (PFncdf_Top, PFncdf_Trj,
                                        GRO, TRR, XYZ_mini,
-                                       PRM_NCBOX, TRJ_NCBOX, DLP_CONFIG)
+                                       PRM_NCBOX, TRJ_NCBOX, DLP_CONFIG,
+                                       CPPTRAJ_TRAJ_TOP, CPPTRAJ_TRAJ)
 from MDAnalysisTests.coordinates.test_trj import _TRJReaderTest
 from MDAnalysisTests.coordinates.reference import (RefVGV, RefTZ2)
 from MDAnalysisTests import make_Universe
@@ -297,6 +298,34 @@ class TestNCDFReader3(object):
     def test_box(self, universe, index, expected):
         universe.trajectory[index]
         assert_almost_equal(self.box_refs[expected], universe.dimensions)
+
+
+class TestNCDFReader4(object):
+    """NCDF Trajectory exported by cpptaj, without `time` variable."""
+    prec = 3
+
+    @pytest.fixture(scope='class')
+    def u(self):
+        return mda.Universe(CPPTRAJ_TRAJ_TOP,
+                            [CPPTRAJ_TRAJ, CPPTRAJ_TRAJ])
+
+    def test_chain_times(self, u):
+        """Check times entries for a chain of trajectories without
+        a defined time variable"""
+        ref_times = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]
+        time_list = [ts.time for ts in u.trajectory]
+        assert ref_times == time_list
+
+    def test_dt(self, u):
+        ref = 1.0
+        assert u.trajectory.dt == pytest.approx(ref)
+        assert u.trajectory.ts.dt == pytest.approx(ref)
+
+    def test_warn_user_no_time_information(self, u):
+        wmsg = ("NCDF trajectory does not contain `time` information;"
+                " `time` will be set as an increasing index")  
+        with pytest.warns(UserWarning, match=wmsg):
+            u2 = mda.Universe(CPPTRAJ_TRAJ_TOP, CPPTRAJ_TRAJ)
 
 
 class _NCDFGenerator(object):

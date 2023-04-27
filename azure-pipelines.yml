@@ -21,14 +21,14 @@ jobs:
     MPLBACKEND: agg
   strategy:
     matrix:
-        Win-Python38-32bit-full:
-          PYTHON_VERSION: '3.8'
+        Win-Python39-32bit-full:
+          PYTHON_VERSION: '3.9'
           PYTHON_ARCH: 'x86'
           BUILD_TYPE: 'normal'
           NUMPY_MIN: '1.21.0'
           imageName: 'windows-2019'
-        Win-Python38-64bit-full:
-          PYTHON_VERSION: '3.8'
+        Win-Python39-64bit-full:
+          PYTHON_VERSION: '3.9'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'normal'
           imageName: 'windows-2019'
@@ -43,8 +43,8 @@ jobs:
           BUILD_TYPE: 'wheel'
           NUMPY_MIN: '1.23.2'
           imageName: 'windows-2019'
-        Win-Python38-64bit-full-wheel:
-          PYTHON_VERSION: '3.8'
+        Win-Python39-64bit-full-wheel:
+          PYTHON_VERSION: '3.9'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
           NUMPY_MIN: '1.21.0'
@@ -55,8 +55,8 @@ jobs:
           BUILD_TYPE: 'wheel'
           NUMPY_MIN: '1.23.2'
           imageName: 'ubuntu-latest'
-        Linux-Python38-64bit-full-wheel:
-          PYTHON_VERSION: '3.8'
+        Linux-Python39-64bit-full-wheel:
+          PYTHON_VERSION: '3.9'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
           NUMPY_MIN: '1.21.0'
@@ -82,7 +82,7 @@ jobs:
   - script: python -m pip install --upgrade pip setuptools wheel
     displayName: 'Install tools'
   - script: >-
-      python -m pip install --only-binary=h5py,scipy
+      python -m pip install --only-binary=scipy
       cython
       hypothesis
       matplotlib
@@ -92,11 +92,17 @@ jobs:
       pytest-cov
       pytest-xdist
       scikit-learn
-      h5py>=2.10
       tqdm
       threadpoolctl
       fasteners
     displayName: 'Install dependencies'
+  # H5PY wheels are problematic on 32bit py3.9, so we don't install
+  # it in that specific case. Note: prefer binary because building
+  # h5py is difficult on azure.
+  - script: >-
+      pip install --prefer-binary h5py>=2.10
+    displayName: 'Install non 32bit dependencies'
+    condition: and(succeeded(), ne(variables['PYTHON_ARCH'], 'x86'))
   # for wheel install testing, we pin to an
   # older NumPy, the oldest version we support and that
   # supports the Python version in use

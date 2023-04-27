@@ -189,16 +189,13 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.9", "3.10", "3.11"]
         type: ["FULL", "MIN"]
         exclude:
           # Py311 doesn't support all optional deps yet
           - python-version: "3.11"
             type: "FULL"
           # Multiple deps don't like windows
-          - os: windows-latest
-            python-version: "3.8"
-            type: "FULL"
           - os: windows-latest
             python-version: "3.9"
             type: "FULL"
@@ -215,22 +212,21 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: setup_miniconda
-        uses: conda-incubator/setup-miniconda@v2
+      - name: setup_micromamba
+        uses: mamba-org/provision-with-micromamba@main
         with:
-          python-version: ${{ matrix.python-version }}
-          auto-update-conda: true
-          channel-priority: flexible
-          channels: conda-forge, bioconda
-          add-pip-as-python-dependency: true
-          mamba-version: "*"
-          architecture: x64
+          environment-file: False
+          environment-name: mda
+          extra-specs: |
+            python==${{ matrix.python-version }}
+            pip
+          channels: jaimergp/label/unsupported-cudatoolkit-shim, conda-forge, bioconda
 
       - name: install_full_deps
         uses: ./.github/actions/setup-deps
         if: "matrix.type == 'FULL'"
         with:
-          mamba: true
+          micromamba: true
           full-deps: true
 
       - name: install_min_deps

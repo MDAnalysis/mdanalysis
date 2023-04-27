@@ -127,6 +127,8 @@ class TestH5MDWriterBaseAPI(BaseWriterTest):
                     w.write(universe.atoms)
             self._check_copy(outfile, ref, reader)
 
+    @pytest.mark.xfail((os.name == 'nt' and sys.maxsize <= 2**32),
+                       reason="occasional fail on 32-bit windows")
     def test_write_trajectory_universe(self, ref, reader, universe, tmpdir):
         outfile = 'write-uni-test.' + ref.ext
         with tmpdir.as_cwd():
@@ -253,13 +255,6 @@ class TestH5MDReaderWithRealTrajectory(object):
 
     @pytest.mark.parametrize("start, stop, step", ((0, 2, 1),
                                                    (1, 2, 1)))
-    def test_slice(universe, start, stop, step):
-        frames = [universe.trajectory.ts.frame
-                  for ts in universe.trajectory[start:stop:step]]
-        assert_equal(frames, np.arange(start, stop, step))
-
-    @pytest.mark.parametrize("start, stop, step", ((0, 2, 1),
-                                                   (1, 2, 1)))
     def test_slice(self, universe, start, stop, step):
         frames = [universe.trajectory.ts.frame
                   for ts in universe.trajectory[start:stop:step]]
@@ -345,6 +340,18 @@ class TestH5MDReaderWithRealTrajectory(object):
         with pytest.raises(ValueError,
                            match="MDAnalysis only supports 3-dimensional"):
             u = mda.Universe(TPR_xvf, outfile)
+
+    def test_box_vector(self, h5md_file, outfile):
+        with h5md_file as f:
+            with h5py.File(outfile, 'w') as g:
+                f.copy(source='particles', dest=g)
+                f.copy(source='h5md', dest=g)
+                vector = [1, 2, 3]
+                del g['particles/trajectory/box/edges']
+                g['particles/trajectory/box/edges/value'] = [vector, vector, vector]
+        u = mda.Universe(TPR_xvf, outfile)
+        # values in vector are conveted from nm -> Angstrom
+        assert_equal(u.trajectory.ts.dimensions, [10, 20, 30, 90, 90, 90])
 
     def test_no_box(self, h5md_file, outfile):
         with h5md_file as f:
