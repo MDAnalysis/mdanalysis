@@ -62,7 +62,6 @@ jobs:
     - name: build_srcs
       uses: ./.github/actions/build-src
       with:
-        build-hole: true
         build-tests: true
         build-docs: false
 
@@ -107,7 +106,6 @@ jobs:
     - name: build_srcs
       uses: ./.github/actions/build-src
       with:
-        build-hole: true
         build-tests: true
         build-docs: false
 
@@ -151,7 +149,6 @@ jobs:
     - name: build_srcs
       uses: ./.github/actions/build-src
       with:
-        build-hole: true
         build-tests: true
         build-docs: false
 
