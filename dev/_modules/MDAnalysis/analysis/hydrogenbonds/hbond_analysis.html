@@ -747,16 +747,23 @@
 
         <span class="k">return</span> <span class="n">donors</span><span class="p">,</span> <span class="n">hydrogens</span>
 
-    <span class="k">def</span> <span class="nf">_filter_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">donors</span><span class="p">,</span> <span class="n">hydrogens</span><span class="p">,</span> <span class="n">acceptors</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Filter donor, hydrogen and acceptor atoms to consider only hydrogen</span>
-<span class="sd">        bonds between two or more specified groups.</span>
+    <span class="k">def</span> <span class="nf">_filter_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">donors</span><span class="p">,</span> <span class="n">acceptors</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a mask to filter donor, hydrogen and acceptor atoms.</span>
+
+<span class="sd">        This can be used to consider only hydrogen bonds between two or more</span>
+<span class="sd">        specified groups.</span>
 
 <span class="sd">        Groups are specified with the `between` keyword when creating the</span>
 <span class="sd">        HydrogenBondAnalysis object.</span>
 
 <span class="sd">           Returns</span>
 <span class="sd">           -------</span>
-<span class="sd">           donors, hydrogens, acceptors: Filtered AtomGroups</span>
+<span class="sd">           mask: np.ndarray</span>
+
+
+<span class="sd">        .. versionchanged:: 2.5.0</span>
+<span class="sd">           Change return value to a mask instead of separate AtomGroups.</span>
+<span class="sd">``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">donors</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -778,7 +785,7 @@
                 <span class="p">)</span>
             <span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
-        <span class="k">return</span> <span class="n">donors</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">hydrogens</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">acceptors</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">mask</span>
 
 
     <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -829,8 +836,11 @@
         <span class="c1"># Remove donor-acceptor pairs between pairs of AtomGroups we are not</span>
         <span class="c1"># interested in</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">between_ags</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">tmp_donors</span><span class="p">,</span> <span class="n">tmp_hydrogens</span><span class="p">,</span> <span class="n">tmp_acceptors</span> <span class="o">=</span> \
-                <span class="bp">self</span><span class="o">.</span><span class="n">_filter_atoms</span><span class="p">(</span><span class="n">tmp_donors</span><span class="p">,</span> <span class="n">tmp_hydrogens</span><span class="p">,</span> <span class="n">tmp_acceptors</span><span class="p">)</span>
+            <span class="n">between_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_atoms</span><span class="p">(</span><span class="n">tmp_donors</span><span class="p">,</span> <span class="n">tmp_acceptors</span><span class="p">)</span>
+            <span class="n">tmp_donors</span> <span class="o">=</span> <span class="n">tmp_donors</span><span class="p">[</span><span class="n">between_mask</span><span class="p">]</span>
+            <span class="n">tmp_hydrogens</span> <span class="o">=</span> <span class="n">tmp_hydrogens</span><span class="p">[</span><span class="n">between_mask</span><span class="p">]</span>
+            <span class="n">tmp_acceptors</span> <span class="o">=</span> <span class="n">tmp_acceptors</span><span class="p">[</span><span class="n">between_mask</span><span class="p">]</span>
+            <span class="n">d_a_distances</span> <span class="o">=</span> <span class="n">d_a_distances</span><span class="p">[</span><span class="n">between_mask</span><span class="p">]</span>
 
         <span class="c1"># Find D-H-A angles greater than d_h_a_angle_cutoff</span>
         <span class="n">d_h_a_angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span>
