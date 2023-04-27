@@ -28,27 +28,23 @@ jobs:
           os: [ubuntu-latest, ]
           python-version: ["3.9", "3.10", "3.11"]
           full-deps: [true, ]
-          install_hole: [true, ]
           codecov: [true, ]
           include:
             - name: macOS_monterey_py311
               os: macOS-12
               python-version: "3.11"
               full-deps: true
-              install_hole: true
               codecov: true
             - name: numpy_min
               os: ubuntu-latest
               python-version: 3.9
               full-deps: false
-              install_hole: false
               codecov: true
               numpy: numpy=1.21.0
             - name: asv_check
               os: ubuntu-latest
               python-version: 3.9
               full-deps: true
-              install_hole: false
               codecov: false
               extra-pip-deps: asv
     env:
@@ -85,7 +81,6 @@ jobs:
     - name: build_srcs
       uses: ./.github/actions/build-src
       with:
-        build-hole: ${{ matrix.install_hole }}
         build-tests: true
         build-docs: false
 
@@ -145,7 +140,6 @@ jobs:
     - name: build_srcs
       uses: ./.github/actions/build-src
       with:
-        build-hole: false
         build-tests: true
         build-docs: true
 

@@ -60,6 +60,8 @@ inputs:
     default: 'distopia>=0.2.0'
   h5py:
     default: 'h5py>=2.10'
+  hole2:
+    default: 'hole2'
   joblib:
     default: 'joblib>=0.12'
   netcdf4:
@@ -122,6 +124,7 @@ runs:
           ${{ inputs.clustalw }}
           ${{ inputs.distopia }}
           ${{ inputs.h5py }}
+          ${{ inputs.hole2 }}
           ${{ inputs.joblib }}
           ${{ inputs.netcdf4 }}
           ${{ inputs.openmm }}
