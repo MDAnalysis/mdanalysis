@@ -47,4 +47,4 @@ runs:
       if: ${{ inputs.build-docs == 'true' }}
       shell: bash -l {0}
       run: |
-        cd package && python setup.py build_sphinx -E --keep-going
+        cd package && python setup.py build_sphinx -E # --keep-going
