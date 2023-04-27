@@ -210,31 +210,49 @@ jobs:
         git push -q upstream HEAD:gh-pages
 
 
-  pypi_check:
+  sdist_check_and_build:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./package
 
     steps:
     - uses: actions/checkout@v3
 
     - uses: actions/setup-python@v4
       with:
-        python-version: 3.9
+        python-version: 3.11
 
     - name: install_deps
       run: |
-        python -m pip install twine "readme-renderer>=34.0"
+        python -m pip install -U pip pipx wheel build
+        python -m pip install twine "readme-renderer>=34.0" pytest-xdist
 
-    - name: build_sdist
+    - name: build_package_sdist
       run: |
-        pipx run build --sdist
+        pipx run build --sdist --outdir dist package
+
+    - name: build_testsuite_sdist
+      run: |
+        pipx run build --sdist --outdir dist testsuite
 
     - name: check_package_build
       run: |
-        DISTRIBUTION=$(ls -t1 dist/MDAnalysis-*.tar.gz | head -n 1)
+        DISTRIBUTION=$(ls -t1 dist/MDAnalysis-*.tar.gz | head -n1)
         test -n "${DISTRIBUTION}" || { echo "no distribution dist/MDAnalysis-*.tar.gz found"; exit 1; }
-        echo "twine check $DISTRIBUTION"
         twine check $DISTRIBUTION
+
+    - name: check_testsuite_build
+      run: |
+        DISTRIBUTION=$(ls -t1 dist/MDAnalysisTests-*.tar.gz | head -n1)
+        test -n "${DISTRIBUTION}" || { echo "no distribution dist/MDAnalysisTests-*.tar.gz found"; exit 1; }
+        twine check $DISTRIBUTION
+
+    - name: install sdist
+      working-directory: ./dist
+      run: |
+        ls -a .
+        python -m pip install MDAnalysis-*.tar.gz
+        python -m pip install MDAnalysisTests-*.tar.gz
+
+    - name: run tests
+      working-directory: ./dist
+      run: python -m pytest -n auto --pyargs MDAnalysisTests
