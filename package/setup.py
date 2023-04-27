@@ -640,7 +640,9 @@ if __name__ == '__main__':
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           setup_requires=[
+              'cython>=0.28',
               'numpy>=1.21.0',
+              'wheel',
               'packaging',
           ],
           install_requires=install_requires,
