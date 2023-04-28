@@ -3329,7 +3329,7 @@ class AtomGroup(GroupBase):
                                 vdwradii=vdwradii,
                                 box=self.dimensions,
                                 fudge_factor=fudge_factor,
-                                fudge_factor=fudge_factor,
+                                lower_bound=lower_bound,
                                 )
 
         bondattr = get_TopAttr(self.universe, 'bonds', Bonds)
