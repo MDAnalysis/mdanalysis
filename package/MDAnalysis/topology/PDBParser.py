@@ -194,6 +194,9 @@ class PDBParser(TopologyReaderBase):
        Any formal charges not set are assumed to have a value of 0.
        Raise `UserWarning` instead `RuntimeError`
        when CONECT records are corrupt.
+    .. versionchanged:: 2.5.0
+       Formal charges will not be populated if an unknown entry is encountered,
+       instead a UserWarning is emitted.
     """
     format = ['PDB', 'ENT']
 
