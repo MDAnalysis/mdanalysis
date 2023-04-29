@@ -301,6 +301,9 @@ class TestTopologyGroup(object):
         tg2 = b_td[b[::-1]]
         assert tg1 == tg2
 
+    # This test will pass as long as `TopologyDict._removeDupes()` is
+    # not run. Otherwise bond type 12 and 21 will be seen as duplicates
+    # and combined.
     def test_bond_no_reversal(self):
         universe = mda.Universe(LAMMPSdata_many_bonds, format="DATA")
         nbonds = 22
