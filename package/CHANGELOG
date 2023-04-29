@@ -17,12 +17,15 @@ The rules for this file:
 ??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae, 
          ooprathamm, MeetB7, BFedder, v-parmar, MoSchaeffler, jbarnoud, jandom,
          xhgchen, jaclark5, DrDomenicoMarson, AHMED-salah00, schlaicha,
-         SophiaRuan, g2707
+         SophiaRuan, g2707, p-j-smith, tylerjereddy
 
  * 2.5.0
 
 Fixes
   * Fix deletion of bond/angle/dihedral types (PR #4003, Issue #4001)
+  * Added support for Cython 3.0.0b2 (PR #4129)
+  * Ensure 'HydrogenBondAnalysis' returns the correct distances when using the
+    'between' keyword (PR #4092)
   * Skip tests artificially checking for readonly or PermissionError cases
     when running at root user on linux systems (Issue #4112, PR #4120)
   * Fix chi1_selections() ignored atom names CG1 OG OG1 SG and incorrectly returned
