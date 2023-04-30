@@ -207,6 +207,10 @@ Any formal charges not set are assumed to have a value of 0.
 Raise <cite>UserWarning</cite> instead <cite>RuntimeError</cite>
 when CONECT records are corrupt.</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.5.0: </span>Formal charges will not be populated if an unknown entry is encountered,
+instead a UserWarning is emitted.</p>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.PDBParser.PDBParser.close">
 <span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.PDBParser.PDBParser.close" title="Permalink to this definition"></a></dt>

@@ -290,6 +290,9 @@
 <span class="sd">       Any formal charges not set are assumed to have a value of 0.</span>
 <span class="sd">       Raise `UserWarning` instead `RuntimeError`</span>
 <span class="sd">       when CONECT records are corrupt.</span>
+<span class="sd">    .. versionchanged:: 2.5.0</span>
+<span class="sd">       Formal charges will not be populated if an unknown entry is encountered,</span>
+<span class="sd">       instead a UserWarning is emitted.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;PDB&#39;</span><span class="p">,</span> <span class="s1">&#39;ENT&#39;</span><span class="p">]</span>
 
@@ -443,28 +446,29 @@
             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Elements</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">validated_elements</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
 
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">formalcharges</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">formalcharges</span><span class="p">):</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">entry</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">entry</span> <span class="o">==</span> <span class="s1">&#39;0&#39;</span><span class="p">:</span>
-                        <span class="c1"># Technically a lack of charge shouldn&#39;t be in the PDB</span>
-                        <span class="c1"># but MDA has a few files that specifically have 0</span>
-                        <span class="c1"># entries, indicating that some folks interpret 0 as</span>
-                        <span class="c1"># an allowed entry</span>
-                        <span class="n">formalcharges</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-                    <span class="k">elif</span> <span class="p">(</span><span class="s1">&#39;+&#39;</span> <span class="ow">in</span> <span class="n">entry</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="s1">&#39;-&#39;</span> <span class="ow">in</span> <span class="n">entry</span><span class="p">):</span>
-                        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">formalcharges</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">entry</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">entry</span> <span class="o">==</span> <span class="s1">&#39;0&#39;</span><span class="p">:</span>
+                            <span class="c1"># Technically a lack of charge shouldn&#39;t be in the</span>
+                            <span class="c1"># PDB but MDA has a few files that specifically</span>
+                            <span class="c1"># have 0 entries, indicating that some folks</span>
+                            <span class="c1"># interpret 0 as an allowed entry</span>
+                            <span class="n">formalcharges</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="k">elif</span> <span class="p">(</span><span class="s1">&#39;+&#39;</span> <span class="ow">in</span> <span class="n">entry</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="s1">&#39;-&#39;</span> <span class="ow">in</span> <span class="n">entry</span><span class="p">):</span>
                             <span class="n">formalcharges</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">entry</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-                        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown formal charge </span><span class="si">{</span><span class="n">entry</span><span class="si">}</span><span class="s2"> &quot;</span>
-                                      <span class="s2">&quot;encountered&quot;</span><span class="p">)</span>
-                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Formal charge </span><span class="si">{</span><span class="n">entry</span><span class="si">}</span><span class="s2"> is unrecognized&quot;</span><span class="p">)</span>
-                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">formalcharges</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                    <span class="n">FormalCharges</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">formalcharges</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)))</span>
+                        <span class="n">formalcharges</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown entry </span><span class="si">{</span><span class="n">entry</span><span class="si">}</span><span class="s2"> encountered in formal charge &quot;</span>
+                        <span class="s2">&quot;field. This likely indicates that the PDB file is &quot;</span>
+                        <span class="s2">&quot;not fully standard compliant. The formalcharges &quot;</span>
+                        <span class="s2">&quot;attribute will not be populated.&quot;</span><span class="p">)</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">FormalCharges</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">formalcharges</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)))</span>
 
         <span class="n">masses</span> <span class="o">=</span> <span class="n">guess_masses</span><span class="p">(</span><span class="n">atomtypes</span><span class="p">)</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Masses</span><span class="p">(</span><span class="n">masses</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
