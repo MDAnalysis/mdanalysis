@@ -22,6 +22,8 @@ The rules for this file:
  * 2.5.0
 
 Fixes
+  * PDB topology parser no longer fails when encountering unknown formal
+    charges and instead simply does not populate attribute (Issue #4027)
   * Added support for Cython 3.0.0b2 (PR #4129)
   * Ensure 'HydrogenBondAnalysis' returns the correct distances when using the
     'between' keyword (PR #4092)
