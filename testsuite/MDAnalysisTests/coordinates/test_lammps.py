@@ -116,14 +116,17 @@ def LAMMPSDATAWriter(request, tmpdir_factory):
 
 
 @pytest.fixture(params=[
-    LAMMPSdata,
-    LAMMPSdata_mini,
-    LAMMPScnt,
-    LAMMPShyd,
+    [LAMMPSdata, True],
+    [LAMMPSdata_mini, True],
+    [LAMMPScnt, True],
+    [LAMMPShyd, True],
+    [LAMMPSdata, False]
 ], scope='module')
 def LAMMPSDATAWriter_molecule_tag(request, tmpdir_factory):
-    filename = request.param
+    filename, charges = request.param
     u = mda.Universe(filename)
+    if charges == False:
+        u.del_TopologyAttr('charges')
 
     u.trajectory.ts.data['molecule_tag'] = u.atoms.resids
 
