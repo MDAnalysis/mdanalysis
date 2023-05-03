@@ -125,7 +125,7 @@ def LAMMPSDATAWriter(request, tmpdir_factory):
 def LAMMPSDATAWriter_molecule_tag(request, tmpdir_factory):
     filename, charges = request.param
     u = mda.Universe(filename)
-    if charges == False:
+    if not charges:
         u.del_TopologyAttr('charges')
 
     u.trajectory.ts.data['molecule_tag'] = u.atoms.resids
