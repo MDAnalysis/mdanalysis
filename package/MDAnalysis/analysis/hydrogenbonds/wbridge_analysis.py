@@ -768,7 +768,7 @@ class WaterBridgeAnalysis(AnalysisBase):
     #: N, O, P, and S. Any other heavy atoms are assumed to have hydrogens
     #: covalently bound at a maximum distance of 1.5 Å.
     r_cov = defaultdict(lambda: 1.5,  # default value
-                        N=1.31, O=1.31, P=1.58, S=1.55) # noqa: E741
+                        N=1.31, O=1.31, P=1.58, S=1.55)  # noqa: E741
 
     def __init__(self, universe, selection1='protein',
                  selection2='not resname SOL', water_selection='resname SOL',
@@ -866,8 +866,8 @@ class WaterBridgeAnalysis(AnalysisBase):
             ["CHARMM27"]
         donors : sequence (optional)
             Extra H donor atom types (in addition to those in :attr:`~DEFAULT_DONORS`).
-            This shall be the name of the heavy atom that bonded to the hydrogen.
-            For example, the oxygen ('O') in the hydroxyl group, must be a sequence.
+            This shall be the name of the heavy atom that is bonded to the hydrogen.
+            For example, the oxygen ('O') in the hydroxyl group. Must be a sequence.
         acceptors : sequence (optional)
             Extra H acceptor atom types (in addition to those in
             :attr:`~DEFAULT_ACCEPTORS`), must be a

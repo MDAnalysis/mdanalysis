@@ -78,8 +78,8 @@ class MDA_SDist(sdist.sdist):
 
 
 # Make sure I have the right Python version.
-if sys.version_info[:2] < (3, 8):
-    print("MDAnalysis requires Python 3.8 or better. "
+if sys.version_info[:2] < (3, 9):
+    print("MDAnalysis requires Python 3.9 or better. "
           "Python {0:d}.{1:d} detected".format(*sys.version_info[:2]))
     print("Please upgrade your version of Python.")
     sys.exit(-1)
@@ -101,7 +101,6 @@ if __name__ == '__main__':
         'Operating System :: Microsoft :: Windows ',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
@@ -185,7 +184,7 @@ if __name__ == '__main__':
                          'data/*.txt',
                         ],
           },
-          python_requires='>=3.8',
+          python_requires='>=3.9',
           install_requires=[
               'MDAnalysis=={0!s}'.format(RELEASE),  # same as this release!
               'pytest>=3.3.0', # Raised to 3.3.0 due to Issue 2329

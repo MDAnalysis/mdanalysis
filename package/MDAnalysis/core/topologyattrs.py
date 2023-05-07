@@ -1233,7 +1233,8 @@ class Atomnames(AtomStringAttr):
            faster atom matching with boolean arrays.
         """
         names = [n_name, ca_name, cb_name, cg_name]
-        ags = [residue.atoms.select_atoms(f"name {n}") for n in names]
+        atnames = residue.atoms.names
+        ags = [residue.atoms[np.in1d(atnames, n.split())] for n in names]
         if any(len(ag) != 1 for ag in ags):
             return None
         return sum(ags)
@@ -1241,7 +1242,7 @@ class Atomnames(AtomStringAttr):
     transplants[Residue].append(('chi1_selection', chi1_selection))
 
     def chi1_selections(residues, n_name='N', ca_name='CA', cb_name='CB',
-                        cg_name='CG'):
+                        cg_name='CG CG1 OG OG1 SG'):
         """Select list of AtomGroups corresponding to the chi1 sidechain dihedral
         N-CA-CB-CG.
 
@@ -1266,13 +1267,13 @@ class Atomnames(AtomStringAttr):
         """
         results = np.array([None]*len(residues))
         names = [n_name, ca_name, cb_name, cg_name]
-        keep = [all(sum(r.atoms.names == n) == 1 for n in names)
-                for r in residues]
+        keep = [all(sum(np.in1d(r.atoms.names, n.split())) == 1
+                    for n in names) for r in residues]
         keepix = np.where(keep)[0]
         residues = residues[keep]
 
         atnames = residues.atoms.names
-        ags = [residues.atoms[atnames == n] for n in names]
+        ags = [residues.atoms[np.in1d(atnames, n.split())] for n in names]
         results[keepix] = [sum(atoms) for atoms in zip(*ags)]
         return list(results)
 
@@ -1718,8 +1719,8 @@ class Masses(AtomAttr):
         else:
             recenteredpos = atomgroup.positions - com
 
-        rog_sq = np.sum(masses * np.sum(recenteredpos**2,
-                                        axis=1)) / atomgroup.total_mass()
+        rog_sq = np.einsum('i,i->',masses,np.einsum('ij,ij->i',
+                                     recenteredpos,recenteredpos))/atomgroup.total_mass()
 
         return np.sqrt(rog_sq)
 
@@ -1729,7 +1730,100 @@ class Masses(AtomAttr):
     @warn_if_not_unique
     @_pbc_to_wrap
     @check_atomgroup_not_empty
-    def shape_parameter(group, wrap=False):
+    def gyration_moments(group, wrap=False, unwrap=False, compound='group'):
+        r"""Moments of the gyration tensor.
+
+        The moments are defined as the eigenvalues of the gyration
+        tensor.
+
+        .. math::
+        
+            \mathsf{T} = \frac{1}{N} \sum_{i=1}^{N} (\mathbf{r}_\mathrm{i} - 
+                \mathbf{r}_\mathrm{COM})(\mathbf{r}_\mathrm{i} - \mathbf{r}_\mathrm{COM})
+
+        Where :math:`\mathbf{r}_\mathrm{COM}` is the center of mass.
+
+        See [Dima2004a]_ for background information.
+
+        Parameters
+        ----------
+        wrap : bool, optional
+            If ``True``, move all atoms within the primary unit cell before
+            calculation. [``False``]
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their centers.
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
+            Which type of component to keep together during unwrapping.
+
+        Returns
+        -------
+        principle_moments_of_gyration : numpy.ndarray
+            Gyration vector(s) of (compounds of) the group in :math:`Å^2`.
+            If `compound` was set to ``'group'``, the output will be a single
+            vector of length 3. Otherwise, the output will be a 2D array of shape
+            ``(n,3)`` where ``n`` is the number of compounds.
+
+
+        .. versionadded:: 2.5.0
+        """
+
+        def _gyration(recenteredpos, masses):
+            if len(masses.shape) > 1:
+                masses = np.squeeze(masses)
+            tensor = np.einsum( "ki,kj->ij",
+                                recenteredpos,
+                                np.einsum("ij,i->ij", recenteredpos, masses),
+                              )
+            return np.linalg.eigvalsh(tensor/np.sum(masses))
+
+        atomgroup = group.atoms
+        masses = atomgroup.masses
+
+        com = atomgroup.center_of_mass(
+            wrap=wrap, unwrap=unwrap, compound=compound)
+
+        if compound == 'group':
+             if wrap:
+                 recenteredpos = (atomgroup.pack_into_box(inplace=False) - com)
+             elif unwrap:
+                 recenteredpos = (atomgroup.unwrap(inplace=False,
+                                                   compound=compound, 
+                                                   reference=None, 
+                                                  ) - com)
+             else:
+                 recenteredpos = (atomgroup.positions - com)
+             eig_vals = _gyration(recenteredpos, masses)
+        else:
+             (atom_masks, 
+              compound_masks, 
+              n_compounds) = atomgroup._split_by_compound_indices(compound)
+
+             if unwrap:
+                 coords = atomgroup.unwrap(
+                     compound=compound, 
+                     reference=None, 
+                     inplace=False
+                 )
+             else:
+                 coords = atomgroup.positions
+
+             eig_vals = np.empty((n_compounds, 3), dtype=np.float64)
+             for compound_mask, atom_mask in zip(compound_masks, atom_masks):
+                 eig_vals[compound_mask, :] = [_gyration(
+                      coords[mask] - com[compound_mask][i],
+                      masses[mask][:, None]
+                     ) for i, mask in enumerate(atom_mask)]
+
+        return eig_vals
+
+    transplants[GroupBase].append(
+        ('gyration_moments', gyration_moments))
+
+
+    @warn_if_not_unique
+    @_pbc_to_wrap
+    @check_atomgroup_not_empty
+    def shape_parameter(group, wrap=False, unwrap=False, compound='group'):
         """Shape parameter.
 
         See [Dima2004a]_ for background information.
@@ -1739,6 +1833,10 @@ class Masses(AtomAttr):
         wrap : bool, optional
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their centers.
+        compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
+            Which type of component to keep together during unwrapping.
 
 
         .. versionadded:: 0.7.7
@@ -1748,24 +1846,17 @@ class Masses(AtomAttr):
            Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
            is deprecated and will be removed in version 3.0.
            Superfluous kwargs were removed.
+        .. versionchanged:: 2.5.0
+           Added calculation for any `compound` type
         """
         atomgroup = group.atoms
-        masses = atomgroup.masses
-
-        com = atomgroup.center_of_mass(wrap=wrap)
-        if wrap:
-            recenteredpos = atomgroup.pack_into_box(inplace=False) - com
+        eig_vals = atomgroup.gyration_moments(wrap=wrap, unwrap=unwrap, compound=compound)
+        if len(eig_vals.shape) > 1:
+            shape = 27.0 * np.prod(eig_vals - np.mean(eig_vals, axis=1), axis=1
+                                   ) / np.power(np.sum(eig_vals, axis=1), 3)
         else:
-            recenteredpos = atomgroup.positions - com
-        tensor = np.zeros((3, 3))
-
-        for x in range(recenteredpos.shape[0]):
-            tensor += masses[x] * np.outer(recenteredpos[x, :],
-                                           recenteredpos[x, :])
-        tensor /= atomgroup.total_mass()
-        eig_vals = np.linalg.eigvalsh(tensor)
-        shape = 27.0 * np.prod(eig_vals - np.mean(eig_vals)
-                               ) / np.power(np.sum(eig_vals), 3)
+            shape = 27.0 * np.prod(eig_vals - np.mean(eig_vals)
+                                   ) / np.power(np.sum(eig_vals), 3)
 
         return shape
 
@@ -1776,7 +1867,7 @@ class Masses(AtomAttr):
     @_pbc_to_wrap
     @check_wrap_and_unwrap
     @check_atomgroup_not_empty
-    def asphericity(group, wrap=False, unwrap=None, compound='group'):
+    def asphericity(group, wrap=False, unwrap=False, compound='group'):
         """Asphericity.
 
         See [Dima2004b]_ for background information.
@@ -1800,32 +1891,17 @@ class Masses(AtomAttr):
         .. versionchanged:: 2.1.0
            Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
            is deprecated and will be removed in version 3.0.
+        .. versionchanged:: 2.5.0
+           Added calculation for any `compound` type
         """
         atomgroup = group.atoms
-        masses = atomgroup.masses
-
-        com = atomgroup.center_of_mass(
-            wrap=wrap, unwrap=unwrap, compound=compound)
-        if compound != 'group':
-            com = (com * group.masses[:, None]
-                   ).sum(axis=0) / group.masses.sum()
-
-        if wrap:
-            recenteredpos = (atomgroup.pack_into_box(inplace=False) - com)
-        elif unwrap:
-            recenteredpos = (atomgroup.unwrap(inplace=False) - com)
+        eig_vals = atomgroup.gyration_moments(wrap=wrap, unwrap=unwrap, compound=compound)
+        if len(eig_vals.shape) > 1:
+            shape = (3.0 / 2.0) * (np.sum((eig_vals - np.mean(eig_vals, axis=1))**2, axis=1) /
+                                   np.sum(eig_vals, axis=1)**2)
         else:
-            recenteredpos = (atomgroup.positions - com)
-
-        tensor = np.zeros((3, 3))
-        for x in range(recenteredpos.shape[0]):
-            tensor += masses[x] * np.outer(recenteredpos[x],
-                                           recenteredpos[x])
-
-        tensor /= atomgroup.total_mass()
-        eig_vals = np.linalg.eigvalsh(tensor)
-        shape = (3.0 / 2.0) * (np.sum((eig_vals - np.mean(eig_vals))**2) /
-                               np.sum(eig_vals)**2)
+            shape = (3.0 / 2.0) * (np.sum((eig_vals - np.mean(eig_vals))**2) /
+                                   np.sum(eig_vals)**2)
 
         return shape
 
@@ -2157,8 +2233,8 @@ class Charges(AtomAttr):
                 ) - ref)
             else:
                 recenteredpos = (atomgroup.positions - ref)
-            dipole_vector = np.sum(recenteredpos * charges[:, np.newaxis],
-                                   axis=0)
+            dipole_vector = np.einsum('ij,ij->j',recenteredpos, 
+                                       charges[:, np.newaxis])
         else:
             (atom_masks, compound_masks,
              n_compounds) = atomgroup._split_by_compound_indices(compound)
@@ -2173,10 +2249,10 @@ class Charges(AtomAttr):
 
             dipole_vector = np.empty((n_compounds, 3), dtype=np.float64)
             for compound_mask, atom_mask in zip(compound_masks, atom_masks):
-                dipole_vector[compound_mask] = np.sum(
-                    (coords[atom_mask] - ref[compound_mask][:, None, :]) *
-                    chgs[atom_mask][:, :, None],
-                    axis=1)
+                dipole_vector[compound_mask] = np.einsum('ijk,ijk->ik',
+                                                          (coords[atom_mask]-
+                                                           ref[compound_mask][:, None, :]),
+                                                          chgs[atom_mask][:, :, None])
 
         return dipole_vector
 
@@ -2240,9 +2316,9 @@ class Charges(AtomAttr):
         dipole_vector = atomgroup.dipole_vector(**kwargs)
 
         if len(dipole_vector.shape) > 1:
-            dipole_moment = np.sqrt(np.sum(dipole_vector**2, axis=1))
+            dipole_moment = np.sqrt(np.einsum('ij,ij->i',dipole_vector,dipole_vector))
         else:
-            dipole_moment = np.sqrt(np.sum(dipole_vector**2))
+            dipole_moment = np.sqrt(np.einsum('i,i->',dipole_vector,dipole_vector))
 
         return dipole_moment
 
