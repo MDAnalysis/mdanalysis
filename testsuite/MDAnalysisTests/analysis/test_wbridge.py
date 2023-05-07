@@ -305,6 +305,21 @@ class TestWaterBridgeAnalysis(object):
         else:
             raise pytest.fail("selection_type aaa should rasie error")
 
+    def test_distance_type_error(self, universe_DA):
+        '''Test the case when the wrong selection1_type is given'''
+        with pytest.raises(ValueError, match="Only 'hydrogen' and 'heavy' are allowed for option `distance_type'"):
+            WaterBridgeAnalysis(universe_DA, 'protein and (resid 1)',
+                                'protein and (resid 4)', order=0,
+                                selection1_type='aaa', distance_type='aaa')
+
+    def test_selection2_type_error(self, universe_DA):
+        '''Test the case when the wrong selection1_type is given'''
+        with pytest.raises(ValueError, match="`selection2_type` is not a keyword argument."):
+            WaterBridgeAnalysis(universe_DA, 'protein and (resid 1)',
+                                'protein and (resid 4)', order=0,
+                                selection1_type='aaa', selection2_type='aaa')
+
+
     def test_empty_selection(self, universe_DA):
         '''Test the case when selection yields empty result'''
         wb = WaterBridgeAnalysis(universe_DA, 'protein and (resid 9)',

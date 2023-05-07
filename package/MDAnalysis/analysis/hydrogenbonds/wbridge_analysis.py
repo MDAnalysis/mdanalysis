@@ -925,6 +925,8 @@ class WaterBridgeAnalysis(AnalysisBase):
         self.selection1 = selection1
         self.selection2 = selection2
         self.selection1_type = selection1_type
+        if "selection2_type" in kwargs:
+            raise ValueError("`selection2_type` is not a keyword argument.")
 
         # if the selection 1 and selection 2 are the same
         if selection1 == selection2:
@@ -933,7 +935,9 @@ class WaterBridgeAnalysis(AnalysisBase):
         self.update_selection = update_selection
         self.filter_first = filter_first
         self.distance = distance
-        self.distance_type = distance_type  # note: everything except 'heavy'
+        if distance_type not in {"hydrogen", "heavy"}:
+            raise ValueError(f"Only 'hydrogen' and 'heavy' are allowed for option `distance_type' ({distance_type}).")
+        self.distance_type = distance_type
         # will give the default behavior
         self.angle = angle
         self.pbc = pbc and all(self.u.dimensions[:3])
