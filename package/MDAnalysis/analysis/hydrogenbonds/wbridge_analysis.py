@@ -1213,7 +1213,7 @@ class WaterBridgeAnalysis(AnalysisBase):
                                            max_cutoff=self.distance,
                                            box=self.box,
                                            return_distances=True)
-        if self.distance_type != 'heavy':
+        if self.distance_type == 'hydrogen':
             tmp_distances = distances
             tmp_donors = [h_donors[donors_idx[idx]] for idx in pairs[:, 0]]
             tmp_hydrogens = [donors_idx[idx] for idx in pairs[:, 0]]
