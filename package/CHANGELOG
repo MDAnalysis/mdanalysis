@@ -17,12 +17,17 @@ The rules for this file:
 ??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae, 
          ooprathamm, MeetB7, BFedder, v-parmar, MoSchaeffler, jbarnoud, jandom,
          xhgchen, jaclark5, DrDomenicoMarson, AHMED-salah00, schlaicha,
-         SophiaRuan, g2707, p-j-smith, tylerjereddy
+         SophiaRuan, g2707, p-j-smith, tylerjereddy, xiki-tempula
 
  * 2.5.0
 
 Fixes
   * Fix deletion of bond/angle/dihedral types (PR #4003, Issue #4001)
+  * Fix the `heavy` distance_type for water bridge analysis where distance
+    is not correctly assigned when more than one hydrogen is bonded to a
+    heavy atom (Issue #4040, PR #4066).
+  * PDB topology parser no longer fails when encountering unknown formal
+    charges and instead simply does not populate attribute (Issue #4027)
   * Added support for Cython 3.0.0b2 (PR #4129)
   * Ensure 'HydrogenBondAnalysis' returns the correct distances when using the
     'between' keyword (PR #4092)
