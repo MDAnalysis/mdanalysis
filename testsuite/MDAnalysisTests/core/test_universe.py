@@ -1305,6 +1305,11 @@ class TestEmpty(object):
         assert len(u.atoms) == 10
         assert u.atoms.positions.shape == (10, 3)
 
+    def test_trajectory_multiple_frames(self):
+        u = mda.Universe.empty(10, n_frames=5)
+
+        assert_equal(u.trajectory.n_frames, 5)
+
     def test_trajectory_iteration(self):
         u = mda.Universe.empty(10, trajectory=True)
 
