@@ -51,6 +51,9 @@ Fixes
     (Issue #3336)
 
 Enhancements
+  * Add kwarg `n_frames` to class method `empty()` in
+  `MDAnalysis.core.universe`, enabling creation of a `Universe` with
+  multiple frames from scratch (PR #4140)
   * Improved speed of chi1_selection (PR #4109)
   * Add `progressbar_kwargs` parameter to `AnalysisBase.run` method, allowing
     to modify description, position etc of tqdm progressbars.
