@@ -194,6 +194,9 @@ class PDBParser(TopologyReaderBase):
        Any formal charges not set are assumed to have a value of 0.
        Raise `UserWarning` instead `RuntimeError`
        when CONECT records are corrupt.
+    .. versionchanged:: 2.5.0
+       Formal charges will not be populated if an unknown entry is encountered,
+       instead a UserWarning is emitted.
     """
     format = ['PDB', 'ENT']
 
@@ -347,28 +350,29 @@ class PDBParser(TopologyReaderBase):
             attrs.append(Elements(np.array(validated_elements, dtype=object)))
 
         if any(formalcharges):
-            for i, entry in enumerate(formalcharges):
-                if not entry == '':
-                    if entry == '0':
-                        # Technically a lack of charge shouldn't be in the PDB
-                        # but MDA has a few files that specifically have 0
-                        # entries, indicating that some folks interpret 0 as
-                        # an allowed entry
-                        formalcharges[i] = 0
-                    elif ('+' in entry) or ('-' in entry):
-                        try:
+            try:
+                for i, entry in enumerate(formalcharges):
+                    if not entry == '':
+                        if entry == '0':
+                            # Technically a lack of charge shouldn't be in the
+                            # PDB but MDA has a few files that specifically
+                            # have 0 entries, indicating that some folks
+                            # interpret 0 as an allowed entry
+                            formalcharges[i] = 0
+                        elif ('+' in entry) or ('-' in entry):
                             formalcharges[i] = int(entry[::-1])
-                        except ValueError:
-                            errmsg = (f"Unknown formal charge {entry} "
-                                      "encountered")
-                            raise ValueError(errmsg)
+                        else:
+                            raise ValueError
                     else:
-                        errmsg = (f"Formal charge {entry} is unrecognized")
-                        raise ValueError(errmsg)
-                else:
-                    formalcharges[i] = 0
-            attrs.append(
-                    FormalCharges(np.array(formalcharges, dtype=int)))
+                        formalcharges[i] = 0
+            except ValueError:
+                wmsg = (f"Unknown entry {entry} encountered in formal charge "
+                        "field. This likely indicates that the PDB file is "
+                        "not fully standard compliant. The formalcharges "
+                        "attribute will not be populated.")
+                warnings.warn(wmsg)
+            else:
+                attrs.append(FormalCharges(np.array(formalcharges, dtype=int)))
 
         masses = guess_masses(atomtypes)
         attrs.append(Masses(masses, guessed=True))

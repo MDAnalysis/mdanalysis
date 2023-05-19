@@ -651,16 +651,23 @@ class HydrogenBondAnalysis(AnalysisBase):
 
         return donors, hydrogens
 
-    def _filter_atoms(self, donors, hydrogens, acceptors):
-        """Filter donor, hydrogen and acceptor atoms to consider only hydrogen
-        bonds between two or more specified groups.
+    def _filter_atoms(self, donors, acceptors):
+        """Create a mask to filter donor, hydrogen and acceptor atoms.
+
+        This can be used to consider only hydrogen bonds between two or more
+        specified groups.
 
         Groups are specified with the `between` keyword when creating the
         HydrogenBondAnalysis object.
 
            Returns
            -------
-           donors, hydrogens, acceptors: Filtered AtomGroups
+           mask: np.ndarray
+
+
+        .. versionchanged:: 2.5.0
+           Change return value to a mask instead of separate AtomGroups.
+``
         """
 
         mask = np.full(donors.n_atoms, fill_value=False)
@@ -682,7 +689,7 @@ class HydrogenBondAnalysis(AnalysisBase):
                 )
             ] = True
 
-        return donors[mask], hydrogens[mask], acceptors[mask]
+        return mask
 
 
     def _prepare(self):
@@ -733,8 +740,11 @@ class HydrogenBondAnalysis(AnalysisBase):
         # Remove donor-acceptor pairs between pairs of AtomGroups we are not
         # interested in
         if self.between_ags is not None:
-            tmp_donors, tmp_hydrogens, tmp_acceptors = \
-                self._filter_atoms(tmp_donors, tmp_hydrogens, tmp_acceptors)
+            between_mask = self._filter_atoms(tmp_donors, tmp_acceptors)
+            tmp_donors = tmp_donors[between_mask]
+            tmp_hydrogens = tmp_hydrogens[between_mask]
+            tmp_acceptors = tmp_acceptors[between_mask]
+            d_a_distances = d_a_distances[between_mask]
 
         # Find D-H-A angles greater than d_h_a_angle_cutoff
         d_h_a_angles = np.rad2deg(
