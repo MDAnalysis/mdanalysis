@@ -115,6 +115,32 @@ def LAMMPSDATAWriter(request, tmpdir_factory):
     return u, u_new
 
 
+@pytest.fixture(params=[
+    [LAMMPSdata, True],
+    [LAMMPSdata_mini, True],
+    [LAMMPScnt, True],
+    [LAMMPShyd, True],
+    [LAMMPSdata, False]
+], scope='module')
+def LAMMPSDATAWriter_molecule_tag(request, tmpdir_factory):
+    filename, charges = request.param
+    u = mda.Universe(filename)
+    if not charges:
+        u.del_TopologyAttr('charges')
+
+    u.trajectory.ts.data['molecule_tag'] = u.atoms.resids
+
+    fn = os.path.split(filename)[1]
+    outfile = str(tmpdir_factory.mktemp('data').join(fn))
+
+    with mda.Writer(outfile, n_atoms=u.atoms.n_atoms) as w:
+        w.write(u.atoms)
+
+    u_new = mda.Universe(outfile)
+
+    return u, u_new
+
+
 def test_unwrap_vel_force():
 
     u_wrapped = mda.Universe(LAMMPS_image_vf, [LAMMPSDUMP_image_vf], 
@@ -185,6 +211,13 @@ class TestLAMMPSDATAWriter(object):
                                 getattr(u_new.atoms, attr),
                                 err_msg="attributes different after writing",
                                 atol=1e-6)
+
+
+class TestLAMMPSDATAWriter_molecule_tag(object):
+    def test_molecule_tag(self, LAMMPSDATAWriter_molecule_tag):
+        u_ref, u_new = LAMMPSDATAWriter_molecule_tag
+        assert_equal(u_ref.atoms.resids, u_new.atoms.resids,
+                     err_msg="resids different after writing",)
 
 
 def test_datawriter_universe(tmpdir):
