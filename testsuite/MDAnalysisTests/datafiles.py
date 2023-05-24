@@ -420,8 +420,8 @@ TRJ_bz2 = str(_data_ref / 'Amber/ache.mdcrd.bz2')
 PFncdf_Top = str(_data_ref / 'Amber/posfor.top')
 PFncdf_Trj = str(_data_ref / 'Amber/posfor.ncdf')
 
-CPPTRAJ_TRAJ_TOP = str(_data_ref / 'data/Amber/cpptraj_traj.prmtop')
-CPPTRAJ_TRAJ = str(_data_ref / 'data/Amber/cpptraj_traj.nc')
+CPPTRAJ_TRAJ_TOP = str(_data_ref / 'Amber/cpptraj_traj.prmtop')
+CPPTRAJ_TRAJ = str(_data_ref / 'Amber/cpptraj_traj.nc')
 
 PRMpbc = str(_data_ref / 'Amber/capped-ala.prmtop')
 TRJpbc_bz2 = str(_data_ref / 'Amber/capped-ala.mdcrd.bz2')
