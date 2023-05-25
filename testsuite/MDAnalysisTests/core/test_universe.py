@@ -57,6 +57,7 @@ from MDAnalysis.transformations import translate
 from MDAnalysisTests import assert_nowarns
 from MDAnalysis.exceptions import NoDataError
 from MDAnalysis.core.topologyattrs import AtomStringAttr
+from MDAnalysisTests.util import get_userid
 
 
 class IOErrorParser(TopologyReaderBase):
@@ -153,6 +154,8 @@ class TestUniverseCreation(object):
             else:
                 raise AssertionError
 
+    @pytest.mark.skipif(get_userid() == 0,
+                        reason="cannot permisssionerror as root")
     def test_Universe_invalidpermissionfile_IE_msg(self, tmpdir):
         # check for file with invalid permissions (eg. no read access)
         with tmpdir.as_cwd():
