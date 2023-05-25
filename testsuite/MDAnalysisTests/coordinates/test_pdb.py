@@ -978,13 +978,14 @@ class TestPDBVaryingOccTmp:
         assert 'occupancy' in ts.data
         assert 'tempfactor' in ts.data
 
-    @pytest.mark.parametrize('attr,vals', [
-        ('occupancy', [[1.0, 0.0], [0.9, 0.0], [1.0, 0.0]]),
-        ('tempfactor', [[23.44, 23.44], [24.44, 23.44], [np.nan, 23.44]]),
+    @pytest.mark.parametrize('attr,ag_attr,vals', [
+        ('occupancy', 'occupancies', [[1.0, 0.0], [0.9, 0.0], [0.0, 0.0]]),
+        ('tempfactor', 'tempfactors', [[23.44, 1.0], [24.44, 23.44], [1.0, 23.44]]),
     ])
-    def test_varying_attrs(self, u, attr, vals):
+    def test_varying_attrs(self, u, attr, ag_attr, vals):
         u.trajectory[0]
         assert_allclose(u.trajectory.ts.data[attr], vals[0])
+        assert_allclose(u.trajectory.ts.data[attr], getattr(u.atoms, ag_attr))
         u.trajectory[1]
         assert_allclose(u.trajectory.ts.data[attr], vals[1])
         u.trajectory[2]

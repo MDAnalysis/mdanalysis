@@ -52,7 +52,7 @@ Fixes
 Enhancements
   * PDBReader now populates ts.data['tempfactor'] with the tempfactor for
     each atom *for each frame*. If an entry is missing for a given atom,
-    this will default to an `np.nan` value. Note, this does not affect the
+    this will default to a `1.0` value. Note, this does not affect the
     topology (i.e. `AtomGroup.tempfactors` is not dynamically updated.
     (Issue #3825, PR #3988)
   * Add writing u.trajectory.ts.data['molecule_tag'] as molecule tags to LAMMPS data file (Issue #3548)

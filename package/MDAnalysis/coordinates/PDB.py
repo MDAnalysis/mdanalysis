@@ -399,7 +399,7 @@ class PDBReader(base.ReaderBase):
         .. versionchanged:: 2.5.0
            When seen, `ts.data` is populated with tempfactor information at
            each frame read. If any atom has a non-parsable (i.e. non float)
-           value in the tempfactor field, the entry is left as a `NaN`.
+           value in the tempfactor field, the entry is left as `1.0`.
         """
         try:
             start = self._start_offsets[frame]
@@ -408,9 +408,8 @@ class PDBReader(base.ReaderBase):
             raise IOError from None
 
         pos = 0
-        occupancy = np.ones(self.n_atoms)
-        tempfactor = np.empty(self.n_atoms)
-        tempfactor.fill(np.nan)  # Default value for unseen entry is a NaN
+        occupancy = np.zeros(self.n_atoms)
+        tempfactor = np.ones(self.n_atoms)
         saw_tempfactor = False
 
         # Seek to start and read until start of next frame
