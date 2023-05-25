@@ -412,3 +412,32 @@ def test_multilevel_arg_sort(l, ref):
 def test_filter_times(l, ref):
     indices = mda.coordinates.chain.filter_times(l, dt=1)
     assert_equal(indices, ref)
+
+
+def test_issue_4008():
+    # test for transformation on a chainreader trajectory
+    # in issue #4008 it was observed that the transformation did not work on
+    # the frames which were "borders" of the chained trajectories
+    def shift_by_group(ag):
+        # this just shifts all atoms in the box by their center of mass,
+        # i.e. afterwards the center of mass of all atoms should be [0,0,0]
+        def wrapped(ts):
+            shift = ag.center_of_mass()
+            ts.positions[:] -= shift
+            return ts
+
+        return wrapped
+
+    u = mda.Universe(GRO, [XTC, XTC])
+
+    trafos = (shift_by_group(u.atoms),)
+    u.trajectory.add_transformations(*trafos)
+    com = np.zeros((len(u.trajectory), 3))
+
+    for i, ts in enumerate(u.trajectory):
+        com[i] = u.atoms.center_of_mass()
+
+    # see issue for details, but in general the com shouldn't be far from zero
+    # in the issue report values of ~25 were seen before the fix
+    # with the fix all values should be <1e-6
+    assert np.abs(com).max() < 1e-6
