@@ -3,8 +3,8 @@ build_and_store_wheels: &BUILD_AND_STORE_WHEELS
     - python -m pip install cibuildwheel==2.12.3
   run_cibuildwheel_script:
     - cibuildwheel
-  wheels_artifacts:
-    path: "wheelhouse/*"
+  #wheels_artifacts:
+  #  path: "wheelhouse/*"
 
 
 linux_aarch64_task:
@@ -12,29 +12,25 @@ linux_aarch64_task:
     image: python:latest
     cpu: 8
     memory: 8G
+  env:
+    CIBW_BUILD: cp39-manylinux* cp310-manylinux* cp311-manylinux*
 
-  ci_script: |
+  build_script: |
     python3 --version
-    python3 -m venv mda-dev
-    source mda-dev/bin/activate
-    python3 -m pip install ./package
-    python3 -m pip install ./testsuite
-    python3 -m pip install pytest-xdist
-    python3 -m pytest -n 8 ./testsuite/MDAnalysisTests
+    python --version
+  <<: *BUILD_AND_STORE_WHEELS
 
 
 macos_arm64_task:
   macos_instance:
-    image: ghcr.io/cirruslabs/macos-ventura-base:latest
+    image: ghcr.io/cirruslabs/macos-monterey-xcode:14
+  env:
+    CIBW_BUILD: cp39-* cp310-* cp311-*
+    PATH: /opt/homebrew/opt/python@3.10/bin:$PATH
 
-  ci_script: |
-    brew update
-    brew install python@3.11
-    /opt/homebrew/bin/python3 -m venv ~/py_311
-    source ~/py_311/bin/activate
-    cd package
-    python -m pip install .
-    cd ../testsuite
-    python -m pip install .
-    python -m pip install pytest pytest-xdist
-    python -m pytest -n auto MDAnalysisTests
+  build_script: |
+    brew install python@3.10
+    ln -s python3 /opt/homebrew/opt/python@3.10/bin/python
+    python --version
+    python3 --version
+  <<: *BUILD_AND_STORE_WHEELS

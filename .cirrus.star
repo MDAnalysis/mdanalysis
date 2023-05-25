@@ -15,4 +15,4 @@ def main(ctx):
         or (env.get("CIRRUS_BASE_BRANCH") != "develop")):
         return []
 
-    return fs.read("maintainer/ci/cirrus-ci.yml")
+    return fs.read("maintainer/ci/cirrus-ci.yml") + fs.read("maintainer/ci/cirrus-deploy.yml")
