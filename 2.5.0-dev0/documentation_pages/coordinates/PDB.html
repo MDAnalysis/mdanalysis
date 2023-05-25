@@ -235,7 +235,11 @@ details):</p>
 <li><p>all other lines are ignored</p></li>
 </ul>
 </div></blockquote>
-<p>Reads multi-<a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#MODEL">MODEL</a> PDB files as trajectories.</p>
+<p>Reads multi-<a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#MODEL">MODEL</a> PDB files as trajectories.  The <cite>Timestep.data</cite> dictionary
+holds the occupancy and tempfactor (bfactor) values for each atom for a given frame.
+These attributes are commonly appropriated to store other time varying properties
+and so they are exposed here. Note this does not update the <cite>AtomGroup</cite> attributes,
+as the topology does not change with trajectory iteration.</p>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>COLUMNS</p></th>
@@ -383,6 +387,8 @@ and it will warn the user.</p>
 <dt><code class="xref py py-obj docutils literal notranslate"></code></dt><dd><p>Strip trajectory header of trailing spaces and newlines</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"></code></dt><dd><p>Raise user warning for <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect8.html#CRYST1">CRYST1</a> record with unitary valuse (cubic box with sides of 1 Å) and do not set cell dimensions.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"></code></dt><dd><p>Tempfactors (aka bfactors) are now read into the ts.data dictionary each frame.  Occupancies are also read into this dictionary.</p>
 </dd>
 </dl>
 </div>

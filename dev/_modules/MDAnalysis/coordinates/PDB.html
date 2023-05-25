@@ -272,7 +272,11 @@
 <span class="sd">       (:attr:`compound`), *REMARK* (:attr:`remarks`)</span>
 <span class="sd">     - all other lines are ignored</span>
 
-<span class="sd">    Reads multi-`MODEL`_ PDB files as trajectories.</span>
+<span class="sd">    Reads multi-`MODEL`_ PDB files as trajectories.  The `Timestep.data` dictionary</span>
+<span class="sd">    holds the occupancy and tempfactor (bfactor) values for each atom for a given frame.</span>
+<span class="sd">    These attributes are commonly appropriated to store other time varying properties</span>
+<span class="sd">    and so they are exposed here. Note this does not update the `AtomGroup` attributes,</span>
+<span class="sd">    as the topology does not change with trajectory iteration.</span>
 
 <span class="sd">    .. _PDB-formatted:</span>
 <span class="sd">       http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html</span>
@@ -338,6 +342,9 @@
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">       Raise user warning for CRYST1_ record with unitary valuse</span>
 <span class="sd">       (cubic box with sides of 1 Å) and do not set cell dimensions.</span>
+<span class="sd">    .. versionchanged:: 2.5.0</span>
+<span class="sd">       Tempfactors (aka bfactors) are now read into the ts.data dictionary each</span>
+<span class="sd">       frame.  Occupancies are also read into this dictionary.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;PDB&#39;</span><span class="p">,</span> <span class="s1">&#39;ENT&#39;</span><span class="p">]</span>
     <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">}</span>
@@ -481,9 +488,14 @@
 <span class="sd">        raised and cell dimensions are set to</span>
 <span class="sd">        :code:`np.zeros(6)` (see Issue #2698)</span>
 
+
 <span class="sd">        .. versionchanged:: 1.0.0</span>
 <span class="sd">           Raise user warning for CRYST1_ record with unitary valuse</span>
 <span class="sd">           (cubic box with sides of 1 Å) and do not set cell dimensions.</span>
+<span class="sd">        .. versionchanged:: 2.5.0</span>
+<span class="sd">           When seen, `ts.data` is populated with tempfactor information at</span>
+<span class="sd">           each frame read. If any atom has a non-parsable (i.e. non float)</span>
+<span class="sd">           value in the tempfactor field, the entry is left as `1.0`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_offsets</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span>
@@ -492,7 +504,9 @@
             <span class="k">raise</span> <span class="ne">IOError</span> <span class="kn">from</span> <span class="kc">None</span>
 
         <span class="n">pos</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">occupancy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
+        <span class="n">occupancy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
+        <span class="n">tempfactor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
+        <span class="n">saw_tempfactor</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># Seek to start and read until start of next frame</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pdbfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
@@ -503,13 +517,18 @@
             <span class="k">if</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;ATOM  &#39;</span><span class="p">,</span> <span class="s1">&#39;HETATM&#39;</span><span class="p">):</span>
                 <span class="c1"># we only care about coordinates</span>
                 <span class="n">tmp_buf</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">line</span><span class="p">[</span><span class="mi">30</span><span class="p">:</span><span class="mi">38</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">38</span><span class="p">:</span><span class="mi">46</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">46</span><span class="p">:</span><span class="mi">54</span><span class="p">]])</span>
-                <span class="c1"># TODO import bfactors - might these change?</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="c1"># does an implicit str -&gt; float conversion</span>
                     <span class="n">occupancy</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">54</span><span class="p">:</span><span class="mi">60</span><span class="p">]</span>
                 <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
                     <span class="c1"># Be tolerant for ill-formated or empty occupancies</span>
                     <span class="k">pass</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">tempfactor</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">60</span><span class="p">:</span><span class="mi">66</span><span class="p">]</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">saw_tempfactor</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="n">pos</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="k">elif</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;CRYST1&#39;</span><span class="p">:</span>
                 <span class="c1"># does an implicit str -&gt; float conversion</span>
@@ -551,6 +570,9 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">frame</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;occupancy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">occupancy</span>
+        <span class="k">if</span> <span class="n">saw_tempfactor</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tempfactor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tempfactor</span>
+
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
 
 <div class="viewcode-block" id="PDBReader.close"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBReader.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
