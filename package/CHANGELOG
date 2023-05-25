@@ -50,6 +50,11 @@ Fixes
     (Issue #3336)
 
 Enhancements
+  * PDBReader now populates ts.data['tempfactor'] with the tempfactor for
+    each atom *for each frame*. If an entry is missing for a given atom,
+    this will default to an `np.nan` value. Note, this does not affect the
+    topology (i.e. `AtomGroup.tempfactors` is not dynamically updated.
+    (Issue #3825, PR #3988)
   * Add writing u.trajectory.ts.data['molecule_tag'] as molecule tags to LAMMPS data file (Issue #3548)
   * Improved speed of chi1_selection (PR #4109)
   * Add `progressbar_kwargs` parameter to `AnalysisBase.run` method, allowing
@@ -63,11 +68,6 @@ Enhancements
     for `calc_bonds` in `MDA.lib.distances`. (Issue #3783, PR #3914)
   * AuxReaders are now pickle-able and copy-able (Issue #1785, PR #3887)
   * Add pickling support for Atom, Residue, Segment, ResidueGroup 
-    and SegmentGroup. (PR #3953)
-  * PDBReader now populates ts.data['tempfactor'] with the tempfactor for
-    each atom *for each frame*.  Note, this does not affect the topology (i.e.
-    `AtomGroup.tempfactors` is not dynamically updated. (Issue #3825)
-  * Add pickling support for Atom, Residue, Segment, ResidueGroup
     and SegmentGroup. (PR #3953)
 
 Changes

@@ -41,7 +41,8 @@ from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        CONECT_ERROR,)
 from numpy.testing import (assert_equal,
                            assert_array_almost_equal,
-                           assert_almost_equal)
+                           assert_almost_equal,
+                           assert_allclose)
 
 IGNORE_NO_INFORMATION_WARNING = 'ignore:Found no information for attr:UserWarning'
 
@@ -978,19 +979,21 @@ class TestPDBVaryingOccTmp:
         assert 'tempfactor' in ts.data
 
     @pytest.mark.parametrize('attr,vals', [
-        ('occupancy', [1.0, 0.9]),
-        ('tempfactor', [23.44, 24.44]),
+        ('occupancy', [[1.0, 0.0], [0.9, 0.0], [1.0, 0.0]]),
+        ('tempfactor', [[23.44, 23.44], [24.44, 23.44], [np.nan, 23.44]]),
     ])
     def test_varying_attrs(self, u, attr, vals):
         u.trajectory[0]
-        assert u.trajectory.ts.data[attr][0] == pytest.approx(vals[0])
+        assert_allclose(u.trajectory.ts.data[attr], vals[0])
         u.trajectory[1]
-        assert u.trajectory.ts.data[attr][0] == pytest.approx(vals[1])
+        assert_allclose(u.trajectory.ts.data[attr], vals[1])
+        u.trajectory[2]
+        assert_allclose(u.trajectory.ts.data[attr], vals[2])
         u.trajectory.rewind()
-        assert u.trajectory.ts.data[attr][0] == pytest.approx(vals[0])
+        assert_allclose(u.trajectory.ts.data[attr], vals[0])
 
         for i, ts in enumerate(u.trajectory):
-            assert ts.data[attr] == pytest.approx(vals[i])
+            assert_allclose(ts.data[attr], vals[i])
 
 
 class TestIncompletePDB(object):

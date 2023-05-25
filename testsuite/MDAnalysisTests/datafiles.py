@@ -294,7 +294,7 @@ PSF_nosegid = (_data_ref / 'nosegid.psf').as_posix()
 
 PSF_cmap = (_data_ref / 'parmed_ala3.psf').as_posix()
 
-PDB_varying = (_data_ref / 'data/varying_occ_tmp.pdb').as_posix()
+PDB_varying = (_data_ref / 'varying_occ_tmp.pdb').as_posix()
 PDB_small = (_data_ref / 'adk_open.pdb').as_posix()
 PDB_closed = (_data_ref / 'adk_closed.pdb').as_posix()
 
