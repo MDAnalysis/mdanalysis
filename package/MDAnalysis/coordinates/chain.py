@@ -257,7 +257,10 @@ class ChainReader(base.ReaderBase):
 
         """
         super(ChainReader, self).__init__(filename='CHAIN',
-                                          convert_units=convert_units)
+                                          skip=skip,
+                                          convert_units=convert_units,
+                                          dt=dt,
+                                          **kwargs)
 
         filenames = asiterable(filenames)
         # Override here because single frame readers handle this argument as a
