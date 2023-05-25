@@ -621,7 +621,7 @@ class _Readermeta(abc.ABCMeta):
     """
     # Auto register upon class creation
     def __init__(cls, name, bases, classdict):
-        type.__init__(type, name, bases, classdict)
+        type.__init__(type, name, bases, classdict)  # pylint: disable=non-parent-init-called
         try:
             fmt = asiterable(classdict['format'])
         except KeyError:
