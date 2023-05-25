@@ -3,11 +3,11 @@ build_and_store_wheels: &BUILD_AND_STORE_WHEELS
     - python -m pip install cibuildwheel==2.12.3
   run_cibuildwheel_script:
     - cibuildwheel ./package
-  #wheels_artifacts:
-  #  path: "wheelhouse/*"
+  wheels_artifacts:
+    path: "wheelhouse/*"
 
 
-linux_aarch64_task:
+linux_aarch64_wheel_task:
   arm_container:
     image: python:latest
     cpu: 8
@@ -21,7 +21,7 @@ linux_aarch64_task:
   <<: *BUILD_AND_STORE_WHEELS
 
 
-macos_arm64_task:
+macos_arm64_wheel_task:
   macos_instance:
     image: ghcr.io/cirruslabs/macos-monterey-xcode:14
   env:
@@ -34,3 +34,22 @@ macos_arm64_task:
     python --version
     python3 --version
   <<: *BUILD_AND_STORE_WHEELS
+
+
+wheel_upload:
+  depends_on:
+    - macos_arm64_wheel_task
+    - linux_aarch64_wheel_task
+  container:
+    image: python:latest
+  env:
+    TESTPYPI: ENCRYPTED[LOOKATMEIMATOKEN]
+    PYPI: ENCRYPTED[NEVERGONNAGIVEYOUUPNEVERGONNALETYOUDOWNNEVERGONNAEATPARSNIPS]
+  uploady_script:
+    curl https://api.cirrus-ci.com/v1/artifact/build/$CIRRUS_BUILD_ID/wheels.zip --output wheels.zip
+    unzip wheels.zip
+    ls *
+    ls wheels
+    python --version
+    python3 --version
+    echo "Hey Nate, how's life?"
