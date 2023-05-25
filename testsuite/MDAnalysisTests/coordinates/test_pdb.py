@@ -31,7 +31,7 @@ from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.coordinates.reference import (RefAdKSmall,
                                                    RefAdK)
 from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
-                                       PDB_full,
+                                       PDB_full, PDB_varying,
                                        XPDB_small, PSF, DCD, CONECT, CRD,
                                        INC_PDB, PDB_xlserial, ALIGN, ENT,
                                        PDB_cm, PDB_cm_gz, PDB_cm_bz2,
@@ -41,7 +41,8 @@ from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        CONECT_ERROR,)
 from numpy.testing import (assert_equal,
                            assert_array_almost_equal,
-                           assert_almost_equal)
+                           assert_almost_equal,
+                           assert_allclose)
 
 IGNORE_NO_INFORMATION_WARNING = 'ignore:Found no information for attr:UserWarning'
 
@@ -963,6 +964,37 @@ class TestPDBReaderBig(RefAdK):
         # First residue is a MET, shouldn't be smushed together
         # with a water
         assert len(universe.residues[0].atoms) == 19
+
+
+class TestPDBVaryingOccTmp:
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def u():
+        return mda.Universe(PDB_varying)
+
+    def test_ts_data_keys(self, u):
+        ts = u.trajectory.ts
+
+        assert 'occupancy' in ts.data
+        assert 'tempfactor' in ts.data
+
+    @pytest.mark.parametrize('attr,ag_attr,vals', [
+        ('occupancy', 'occupancies', [[1.0, 0.0], [0.9, 0.0], [0.0, 0.0]]),
+        ('tempfactor', 'tempfactors', [[23.44, 1.0], [24.44, 23.44], [1.0, 23.44]]),
+    ])
+    def test_varying_attrs(self, u, attr, ag_attr, vals):
+        u.trajectory[0]
+        assert_allclose(u.trajectory.ts.data[attr], vals[0])
+        assert_allclose(u.trajectory.ts.data[attr], getattr(u.atoms, ag_attr))
+        u.trajectory[1]
+        assert_allclose(u.trajectory.ts.data[attr], vals[1])
+        u.trajectory[2]
+        assert_allclose(u.trajectory.ts.data[attr], vals[2])
+        u.trajectory.rewind()
+        assert_allclose(u.trajectory.ts.data[attr], vals[0])
+
+        for i, ts in enumerate(u.trajectory):
+            assert_allclose(ts.data[attr], vals[i])
 
 
 class TestIncompletePDB(object):

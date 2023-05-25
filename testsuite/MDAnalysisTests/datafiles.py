@@ -55,6 +55,7 @@ __all__ = [
     "PDB_conect2TER",  # Conect record to a TER entry (Issue 936)
     "PDB_singleconect",  # Conect record with one entry (Issue 937)
     "PDB_icodes",  # stripped down version of 1osm, has icodes!
+    "PDB_varying",  # varying occupancies and tempfactors
     "XPDB_small",
     "PDB_full",   # PDB 4E43 (full HEADER, TITLE, COMPND, REMARK, altloc)
     "ALIGN",  # Various way to align atom names in PDB files
@@ -293,6 +294,7 @@ PSF_nosegid = (_data_ref / 'nosegid.psf').as_posix()
 
 PSF_cmap = (_data_ref / 'parmed_ala3.psf').as_posix()
 
+PDB_varying = (_data_ref / 'varying_occ_tmp.pdb').as_posix()
 PDB_small = (_data_ref / 'adk_open.pdb').as_posix()
 PDB_closed = (_data_ref / 'adk_closed.pdb').as_posix()
 

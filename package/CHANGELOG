@@ -13,11 +13,10 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-  
 ??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae, 
          ooprathamm, MeetB7, BFedder, v-parmar, MoSchaeffler, jbarnoud, jandom,
          xhgchen, jaclark5, DrDomenicoMarson, AHMED-salah00, schlaicha,
-         SophiaRuan, g2707, p-j-smith, tylerjereddy, xiki-tempula
+         SophiaRuan, g2707, p-j-smith, tylerjereddy, xiki-tempula, richardjgowers
 
  * 2.5.0
 
@@ -51,6 +50,11 @@ Fixes
     (Issue #3336)
 
 Enhancements
+  * PDBReader now populates ts.data['tempfactor'] with the tempfactor for
+    each atom *for each frame*. If an entry is missing for a given atom,
+    this will default to a `1.0` value. Note, this does not affect the
+    topology (i.e. `AtomGroup.tempfactors` is not dynamically updated.
+    (Issue #3825, PR #3988)
   * Add writing u.trajectory.ts.data['molecule_tag'] as molecule tags to LAMMPS data file (Issue #3548)
   * Improved speed of chi1_selection (PR #4109)
   * Add `progressbar_kwargs` parameter to `AnalysisBase.run` method, allowing
