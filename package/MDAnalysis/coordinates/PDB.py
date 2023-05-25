@@ -392,9 +392,14 @@ class PDBReader(base.ReaderBase):
         raised and cell dimensions are set to
         :code:`np.zeros(6)` (see Issue #2698)
 
+
         .. versionchanged:: 1.0.0
            Raise user warning for CRYST1_ record with unitary valuse
            (cubic box with sides of 1 Å) and do not set cell dimensions.
+        .. versionchanged:: 2.5.0
+           When seen, `ts.data` is populated with tempfactor information at
+           each frame read. If any atom has a non-parsable (i.e. non float)
+           value in the tempfactor field, the entry is left as a `NaN`.
         """
         try:
             start = self._start_offsets[frame]
@@ -404,7 +409,8 @@ class PDBReader(base.ReaderBase):
 
         pos = 0
         occupancy = np.ones(self.n_atoms)
-        tempfactor = np.zeros(self.n_atoms)
+        tempfactor = np.empty(self.n_atoms)
+        tempfactor.fill(np.nan)  # Default value for unseen entry is a NaN
         saw_tempfactor = False
 
         # Seek to start and read until start of next frame
