@@ -52,6 +52,9 @@ Fixes
     (Issue #3336)
 
 Enhancements
+  * Add kwarg `n_frames` to class method `empty()` in
+  `MDAnalysis.core.universe`, enabling creation of a `Universe` with
+  multiple frames from scratch (PR #4140)
   * PDBReader now populates ts.data['tempfactor'] with the tempfactor for
     each atom *for each frame*. If an entry is missing for a given atom,
     this will default to a `1.0` value. Note, this does not affect the
