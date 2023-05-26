@@ -122,12 +122,11 @@ writers share.
    :members:
 
 """
+import abc
 import numpy as np
 import numbers
-import copy
 import warnings
-import weakref
-from typing import Union, Optional, List, Dict
+from typing import Any, Union, Optional, List, Dict
 
 from .timestep import Timestep
 from . import core
@@ -614,7 +613,7 @@ class IOBase(object):
         return False  # do not suppress exceptions
 
 
-class _Readermeta(type):
+class _Readermeta(abc.ABCMeta):
     """Automatic Reader registration metaclass
 
     .. versionchanged:: 1.0.0
@@ -622,7 +621,7 @@ class _Readermeta(type):
     """
     # Auto register upon class creation
     def __init__(cls, name, bases, classdict):
-        type.__init__(type, name, bases, classdict)
+        type.__init__(type, name, bases, classdict)  # pylint: disable=non-parent-init-called
         try:
             fmt = asiterable(classdict['format'])
         except KeyError:
@@ -664,6 +663,10 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
     #: The appropriate Timestep class, e.g.
     #: :class:`MDAnalysis.coordinates.xdrfile.XTC.Timestep` for XTC.
     _Timestep = Timestep
+    _transformations: list
+    _auxs: dict
+    _filename: Any
+    n_frames: int
 
     def __init__(self):
         # initialise list to store added auxiliary readers in
@@ -671,7 +674,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         self._auxs = {}
         self._transformations=[]
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self.n_frames
 
     @classmethod
@@ -691,7 +694,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         raise NotImplementedError("{} cannot deduce the number of atoms"
                                   "".format(cls.__name__))
 
-    def next(self):
+    def next(self) -> Timestep:
         """Forward one step to next frame."""
         try:
             ts = self._read_next_timestep()
@@ -706,22 +709,22 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
 
         return ts
 
-    def __next__(self):
+    def __next__(self) -> Timestep:
         """Forward one step to next frame when using the `next` builtin."""
         return self.next()
 
-    def rewind(self):
+    def rewind(self) -> Timestep:
         """Position at beginning of trajectory"""
         self._reopen()
         self.next()
 
     @property
-    def dt(self):
+    def dt(self) -> float:
         """Time between two trajectory frames in picoseconds."""
         return self.ts.dt
 
     @property
-    def totaltime(self):
+    def totaltime(self) -> float:
         """Total length of the trajectory
 
         The time is calculated as ``(n_frames - 1) * dt``, i.e., we assume that
@@ -733,7 +736,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         return (self.n_frames - 1) * self.dt
 
     @property
-    def frame(self):
+    def frame(self) -> int:
         """Frame number of the current time step.
 
         This is a simple short cut to :attr:`Timestep.frame`.
@@ -781,20 +784,21 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             pass
         return core.writer(filename, **kwargs)
 
-    def _read_next_timestep(self, ts=None):  # pragma: no cover
+    @abc.abstractmethod
+    def _read_next_timestep(self, ts=None):
         # Example from DCDReader:
         #     if ts is None:
         #         ts = self.ts
         #     ts.frame = self._read_next_frame(etc)
         #     return ts
-        raise NotImplementedError(
-            "BUG: Override _read_next_timestep() in the trajectory reader!")
+        ...
 
     def __iter__(self):
         """ Iterate over trajectory frames. """
         self._reopen()
         return self
 
+    @abc.abstractmethod
     def _reopen(self):
         """Should position Reader to just before first frame
 
@@ -980,7 +984,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             nframes=self.n_frames,
             natoms=self.n_atoms
         ))
-    
+
     def timeseries(self, asel: Optional['AtomGroup']=None,
                    start: Optional[int]=None, stop: Optional[int]=None,
                    step: Optional[int]=None,
@@ -1703,6 +1707,9 @@ class SingleFrameReaderBase(ProtoReader):
 
     def next(self):
         raise StopIteration(self._err.format(self.__class__.__name__))
+
+    def _read_next_timestep(self, ts=None):
+        raise NotImplementedError(self._err.format(self.__class__.__name__))
 
     def __iter__(self):
         self.rewind()
