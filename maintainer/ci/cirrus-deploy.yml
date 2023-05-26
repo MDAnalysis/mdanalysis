@@ -58,7 +58,7 @@ wheel_upload_task:
     python3 --version
     python -m pip install pipx
 
-    export TWINE_USERNAME = "__token__"
+    export TWINE_USERNAME="__token__"
 
     if [ -z "$CIRRUS_RELEASE"]; then
         export TWINE_PASSWORD=$PYPI
