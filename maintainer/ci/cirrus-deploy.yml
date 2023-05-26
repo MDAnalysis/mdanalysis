@@ -54,6 +54,7 @@ wheel_upload_task:
     unzip wheels.zip
     ls *
     ls wheelhouse
+    apt install -y python3-venv python-is-python3
     python --version
     python3 --version
     python -m pip install pipx
@@ -63,7 +64,7 @@ wheel_upload_task:
     if [ -z "$CIRRUS_RELEASE"]; then
         export TWINE_PASSWORD=$PYPI
         twine upload -r pypi wheelhouse/* --non-interactive
-    elif [[ $CIRRUS_TAG == "release-"* ]]; then
+    elif [[ $CIRRUS_TAG == "package-"* ]]; then
         export TWINE_PASSWORD=$TESTPYPI
         twine upload -r testpypi wheelhouse/* --non-interactive
     else
