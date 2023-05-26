@@ -16,7 +16,8 @@ The rules for this file:
 ??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae, 
          ooprathamm, MeetB7, BFedder, v-parmar, MoSchaeffler, jbarnoud, jandom,
          xhgchen, jaclark5, DrDomenicoMarson, AHMED-salah00, schlaicha,
-         SophiaRuan, g2707, p-j-smith, tylerjereddy, xiki-tempula, richardjgowers
+         SophiaRuan, g2707, p-j-smith, tylerjereddy, xiki-tempula, richardjgowers,
+         cbouy
 
  * 2.5.0
 
@@ -55,8 +56,8 @@ Enhancements
   * Add simple atomic distance analysis to `analysis.atomicdistances` with
     new class `AtomicDistances` (Issue #3654)
   * Add kwarg `n_frames` to class method `empty()` in
-  `MDAnalysis.core.universe`, enabling creation of a `Universe` with
-  multiple frames from scratch (PR #4140)
+    `MDAnalysis.core.universe`, enabling creation of a `Universe` with
+    multiple frames from scratch (PR #4140)
   * PDBReader now populates ts.data['tempfactor'] with the tempfactor for
     each atom *for each frame*. If an entry is missing for a given atom,
     this will default to a `1.0` value. Note, this does not affect the
@@ -91,6 +92,17 @@ Changes
     analysis.nucleicacids' NucPairDist and WatsonCrickDist classes has been
     removed. Please use the `results.pair_distances` and `times` attributes
     instead (Issue #3744)
+  * RDKitConverter changes (part of Issue #3996):
+    * moved some variables (`MONATOMIC_CATION_CHARGES `and
+      `STANDARDIZATION_REACTIONS`) out of the related functions to allow users
+      fine tuning them if necessary.
+    * changed the sorting of heavy atoms when inferring bond orders and
+      charges: previously only based on the number of unpaired electrons, now
+      based on this and the number of heavy atom neighbors.
+    * use RDKit's `RunReactantInPlace` for the standardization reactions, which
+      should result in a significant speed improvement as we don't need to use
+      bespoke code to transfer atomic properties from the non-standardized mol
+      to the standardized one.
 
 Deprecations
 
