@@ -93,7 +93,7 @@ class GSDReader(base.ReaderBase):
     def open_trajectory(self):
         """opens the trajectory file using gsd.hoomd module"""
         self._frame = -1
-        self._file = gsd_pickle_open(self.filename, mode='rb')
+        self._file = gsd_pickle_open(self.filename, mode='r')
 
     def close(self):
         """close reader"""
@@ -170,7 +170,7 @@ class GSDPicklable(gsd.hoomd.HOOMDTrajectory):
     ::
 
         gsdfileobj = gsd.fl.open(name=filename,
-                                     mode='rb',
+                                     mode='r',
                                      application='gsd.hoomd '+gsd.__version__,
                                      schema='hoomd',
                                      schema_version=[1, 3])
@@ -202,7 +202,7 @@ class GSDPicklable(gsd.hoomd.HOOMDTrajectory):
         self.__init__(gsdfileobj)
 
 
-def gsd_pickle_open(name, mode='rb'):
+def gsd_pickle_open(name: str, mode: str='r'):
     """Open hoomd schema GSD file with pickle function implemented.
 
     This function returns a GSDPicklable object. It can be used as a
@@ -219,8 +219,8 @@ def gsd_pickle_open(name, mode='rb'):
     ----------
     name : str
         a filename given a text or byte string.
-    mode: {'r', 'rb'} (optional)
-        'r', 'rb':  open for reading;
+    mode: str, optional
+        'r':  open for reading;  n.b.: the 'rb' mode is deprecated
 
     Returns
     -------

@@ -21,6 +21,7 @@ The rules for this file:
  * 2.5.0
 
 Fixes
+  * Fixed using 'rb' mode inside GSDReader to avoid FutureWarning from GSDFile (Issue #4152)
   * Fixed ChainReader performing transformations correctly across boundaries in the individual trajectories
     (Issue #3657 #4008 PR #3906)
   * Fix the `heavy` distance_type for water bridge analysis where distance
