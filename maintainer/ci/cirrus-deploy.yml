@@ -53,7 +53,7 @@ wheel_upload_task:
     curl https://api.cirrus-ci.com/v1/artifact/build/$CIRRUS_BUILD_ID/wheels.zip --output wheels.zip
     unzip wheels.zip
     ls *
-    ls wheels
+    ls wheelhouse
     python --version
     python3 --version
     python -m pip install pipx
@@ -62,10 +62,10 @@ wheel_upload_task:
 
     if [ -z "$CIRRUS_RELEASE"]; then
         export TWINE_PASSWORD=$PYPI
-        twine upload -r pypi wheels/* --non-interactive
+        twine upload -r pypi wheelhouse/* --non-interactive
     elif [[ $CIRRUS_TAG == "release-"* ]]; then
         export TWINE_PASSWORD=$TESTPYPI
-        twine upload -r testpypi wheels/* --non-interactive
+        twine upload -r testpypi wheelhouse/* --non-interactive
     else
         export TWINE_PASSWORD="FOOBAR"
-        twine upload -r pypi wheels/* --non-interactive
+        twine upload -r testpypi wheelhouse/* --non-interactive
