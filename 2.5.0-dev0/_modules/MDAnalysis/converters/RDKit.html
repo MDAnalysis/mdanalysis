@@ -177,18 +177,17 @@
 <span class="sd">.. _`RDKitConverter benchmark`: https://github.com/MDAnalysis/RDKitConverter-benchmark</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
 <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
-<span class="kn">from</span> <span class="nn">..core.topologyattrs</span> <span class="kn">import</span> <span class="n">_TOPOLOGY_ATTRS</span>
-<span class="kn">from</span> <span class="nn">..coordinates</span> <span class="kn">import</span> <span class="n">memory</span>
-<span class="kn">from</span> <span class="nn">..coordinates</span> <span class="kn">import</span> <span class="n">base</span>
+<span class="kn">from</span> <span class="nn">..coordinates</span> <span class="kn">import</span> <span class="n">base</span><span class="p">,</span> <span class="n">memory</span>
 <span class="kn">from</span> <span class="nn">..coordinates.PDB</span> <span class="kn">import</span> <span class="n">PDBWriter</span>
+<span class="kn">from</span> <span class="nn">..core.topologyattrs</span> <span class="kn">import</span> <span class="n">_TOPOLOGY_ATTRS</span>
+<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">rdkit</span> <span class="kn">import</span> <span class="n">Chem</span>
@@ -219,6 +218,28 @@
     <span class="n">PERIODIC_TABLE</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">GetPeriodicTable</span><span class="p">()</span>
 
 
+<span class="c1"># charges that should be assigned to monatomic cations</span>
+<span class="c1"># structure --&gt; atomic number : formal charge</span>
+<span class="c1"># anion charges are directly handled by the code using the typical valence</span>
+<span class="c1"># of the atom</span>
+<span class="n">MONATOMIC_CATION_CHARGES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="mi">3</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">19</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">37</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">47</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">55</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="mi">12</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">20</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">29</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">38</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">56</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="mi">26</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>  <span class="c1"># Fe could also be +3</span>
+    <span class="mi">13</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="c1"># reactions uses by _standardize_patterns to fix challenging cases</span>
+<span class="c1"># must have single reactant and product, and cannot add any atom</span>
+<span class="n">STANDARDIZATION_REACTIONS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;[C-;X2;H0:1]=[O:2]&gt;&gt;[C+0:1]=[O:2]&quot;</span><span class="p">,</span>  <span class="c1"># Cterm</span>
+    <span class="s2">&quot;[N-;X2;H1;$(N-[*^3]):1]&gt;&gt;[N+0:1]&quot;</span><span class="p">,</span>  <span class="c1"># Nterm</span>
+    <span class="s2">&quot;[#6-:1]-[#6:2]=[O:3]&gt;&gt;[#6+0:1]=[#6:2]-[O-:3]&quot;</span><span class="p">,</span>  <span class="c1"># keto-enolate</span>
+    <span class="s2">&quot;[C-;v3:1]-[#7+0;v3;H2:2]&gt;&gt;[#6+0:1]=[#7+:2]&quot;</span><span class="p">,</span>  <span class="c1"># ARG</span>
+    <span class="s2">&quot;[#6+0;H0:1]=[#6+0:2]-[#7;X3:3]-[#6-;X3:4]&quot;</span>
+    <span class="s2">&quot;&gt;&gt;[#6:1]=[#6:2]-[#7+:3]=[#6+0:4]&quot;</span><span class="p">,</span>  <span class="c1"># HIP</span>
+    <span class="s2">&quot;[S;D4;!v6:1]-[*-:2]&gt;&gt;[S;v6:1]=[*+0:2]&quot;</span><span class="p">,</span>  <span class="c1"># sulfone</span>
+    <span class="s2">&quot;[#7+0;X3:1]-[*-:2]&gt;&gt;[#7+:1]=[*+0:2]&quot;</span><span class="p">,</span>  <span class="c1"># charged-N</span>
+<span class="p">]</span>
 <span class="n">_deduce_PDB_atom_name</span> <span class="o">=</span> <span class="n">PDBWriter</span><span class="p">(</span><span class="n">StringIO</span><span class="p">())</span><span class="o">.</span><span class="n">_deduce_PDB_atom_name</span>
 
 
@@ -659,9 +680,22 @@
     <span class="n">np</span><span class="o">.</span><span class="n">uint64</span><span class="p">:</span> <span class="n">_set_np_int_prop</span><span class="p">,</span>
 <span class="p">}</span>
 
+
 <span class="k">def</span> <span class="nf">_set_atom_property</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Saves any attribute and value into an RDKit atom property&quot;&quot;&quot;</span>
     <span class="n">_atom_property_dispatcher</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="n">_ignore_prop</span><span class="p">)(</span><span class="n">atom</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_atom_sorter</span><span class="p">(</span><span class="n">atom</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sorts atoms in the molecule in a way that makes it easy for the bond</span>
+<span class="sd">    order and charge infering code to get the correct state on the first</span>
+<span class="sd">    try. Currently sorts by number of unpaired electrons, then by number of</span>
+<span class="sd">    heavy atom neighbors (i.e. atoms at the edge first).&quot;&quot;&quot;</span>
+    <span class="n">num_heavy_neighbors</span> <span class="o">=</span> <span class="nb">len</span><span class="p">([</span>
+        <span class="n">neighbor</span> <span class="k">for</span> <span class="n">neighbor</span> <span class="ow">in</span> <span class="n">atom</span><span class="o">.</span><span class="n">GetNeighbors</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">neighbor</span><span class="o">.</span><span class="n">GetAtomicNum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="n">_get_nb_unpaired_electrons</span><span class="p">(</span><span class="n">atom</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">num_heavy_neighbors</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="_infer_bo_and_charges"><a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKit._infer_bo_and_charges">[docs]</a><span class="k">def</span> <span class="nf">_infer_bo_and_charges</span><span class="p">(</span><span class="n">mol</span><span class="p">):</span>
@@ -688,21 +722,11 @@
 <span class="sd">    R-C(-O)-O the first oxygen read will receive a double bond and the other</span>
 <span class="sd">    one will be charged. It will also affect more complex conjugated systems.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># sort atoms according to their NUE</span>
-    <span class="n">atoms</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">mol</span><span class="o">.</span><span class="n">GetAtoms</span><span class="p">()</span> <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">GetAtomicNum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">],</span>
-                   <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                   <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">_get_nb_unpaired_electrons</span><span class="p">(</span><span class="n">a</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-
-    <span class="c1"># charges that should be assigned to monatomic cations</span>
-    <span class="c1"># structure --&gt; atomic number : formal charge</span>
-    <span class="c1"># anion charges are directly handled by the code using the typical valence</span>
-    <span class="c1"># of the atom</span>
-    <span class="n">MONATOMIC_CATION_CHARGES</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="mi">3</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">19</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">37</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">47</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">55</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="mi">12</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">20</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">29</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">38</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">56</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-        <span class="mi">26</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>  <span class="c1"># Fe could also be +3</span>
-        <span class="mi">13</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-    <span class="p">}</span>
+    <span class="c1"># heavy atoms sorted by number of heavy atom neighbors (lower first) then</span>
+    <span class="c1"># NUE (higher first)</span>
+    <span class="n">atoms</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">atom</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">mol</span><span class="o">.</span><span class="n">GetAtoms</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">GetAtomicNum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">],</span>
+                   <span class="n">key</span><span class="o">=</span><span class="n">_atom_sorter</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">:</span>
         <span class="c1"># monatomic ions</span>
@@ -833,80 +857,43 @@
 
     <span class="c1"># list of sanitized reactions</span>
     <span class="n">reactions</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">rxn</span> <span class="ow">in</span> <span class="p">[</span>
-        <span class="s2">&quot;[C-;X2;H0:1]=[O:2]&gt;&gt;[C+0:1]=[O:2]&quot;</span><span class="p">,</span>  <span class="c1"># Cterm</span>
-        <span class="s2">&quot;[N-;X2;H1;$(N-[*^3]):1]&gt;&gt;[N+0:1]&quot;</span><span class="p">,</span>  <span class="c1"># Nterm</span>
-        <span class="s2">&quot;[#6-:1]-[#6:2]=[O:3]&gt;&gt;[#6+0:1]=[#6:2]-[O-:3]&quot;</span><span class="p">,</span>  <span class="c1"># keto-enolate</span>
-        <span class="s2">&quot;[C-;v3:1]-[#7+0;v3;H2:2]&gt;&gt;[#6+0:1]=[#7+:2]&quot;</span><span class="p">,</span>  <span class="c1"># ARG</span>
-        <span class="s2">&quot;[#6+0;H0:1]=[#6+0:2]-[#7;X3:3]-[#6-;X3:4]&quot;</span>
-        <span class="s2">&quot;&gt;&gt;[#6:1]=[#6:2]-[#7+:3]=[#6+0:4]&quot;</span><span class="p">,</span>  <span class="c1"># HIP</span>
-        <span class="s2">&quot;[S;D4;!v6:1]-[*-:2]&gt;&gt;[S;v6:1]=[*+0:2]&quot;</span><span class="p">,</span>  <span class="c1"># sulfone</span>
-        <span class="s2">&quot;[#7+0;X3:1]-[*-:2]&gt;&gt;[#7+:1]=[*+0:2]&quot;</span><span class="p">,</span>  <span class="c1"># charged-N</span>
-    <span class="p">]:</span>
+    <span class="k">for</span> <span class="n">rxn</span> <span class="ow">in</span> <span class="n">STANDARDIZATION_REACTIONS</span><span class="p">:</span>
         <span class="n">reaction</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">ReactionFromSmarts</span><span class="p">(</span><span class="n">rxn</span><span class="p">)</span>
         <span class="n">reactions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reaction</span><span class="p">)</span>
 
-    <span class="n">fragments</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">reactant</span> <span class="ow">in</span> <span class="n">Chem</span><span class="o">.</span><span class="n">GetMolFrags</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">asMols</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">reaction</span> <span class="ow">in</span> <span class="n">reactions</span><span class="p">:</span>
-            <span class="n">reactant</span> <span class="o">=</span> <span class="n">_run_reaction</span><span class="p">(</span><span class="n">reaction</span><span class="p">,</span> <span class="n">reactant</span><span class="p">)</span>
-        <span class="n">fragments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reactant</span><span class="p">)</span>
+    <span class="c1"># fragment mol (reactions must have single reactant and product)</span>
+    <span class="n">fragments</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">Chem</span><span class="o">.</span><span class="n">GetMolFrags</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">asMols</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">reactant</span> <span class="ow">in</span> <span class="n">fragments</span><span class="p">:</span>
+        <span class="n">_apply_reactions</span><span class="p">(</span><span class="n">reactions</span><span class="p">,</span> <span class="n">reactant</span><span class="p">)</span>
 
     <span class="c1"># recombine fragments</span>
     <span class="n">newmol</span> <span class="o">=</span> <span class="n">fragments</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">fragment</span> <span class="ow">in</span> <span class="n">fragments</span><span class="p">:</span>
         <span class="n">newmol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">CombineMols</span><span class="p">(</span><span class="n">newmol</span><span class="p">,</span> <span class="n">fragment</span><span class="p">)</span>
 
-    <span class="c1"># reassign all properties</span>
-    <span class="n">_transfer_properties</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">newmol</span><span class="p">)</span>
-
     <span class="k">return</span> <span class="n">newmol</span></div>
 
 
-<span class="k">def</span> <span class="nf">_run_reaction</span><span class="p">(</span><span class="n">reaction</span><span class="p">,</span> <span class="n">reactant</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Runs a reaction until all reactants are transformed</span>
-
-<span class="sd">    If a pattern is matched N times in the molecule, the reaction will return N</span>
-<span class="sd">    products as an array of shape (N, 1). Only the first product will be kept</span>
-<span class="sd">    and the same reaction will be reapplied to the product N times in total.</span>
+<span class="k">def</span> <span class="nf">_apply_reactions</span><span class="p">(</span><span class="n">reactions</span><span class="p">,</span> <span class="n">reactant</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Applies a series of unimolecular reactions to a molecule. The reactions</span>
+<span class="sd">    must not add any atom to the product. The molecule is modified inplace.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    reaction : rdkit.Chem.rdChemReactions.ChemicalReaction</span>
-<span class="sd">        Reaction from SMARTS</span>
+<span class="sd">    reactions : List[rdkit.Chem.rdChemReactions.ChemicalReaction]</span>
+<span class="sd">        Reactions from SMARTS. Each reaction is applied until no more</span>
+<span class="sd">        transformations can be made.</span>
 <span class="sd">    reactant : rdkit.Chem.rdchem.Mol</span>
-<span class="sd">        The molecule to transform</span>
+<span class="sd">        The molecule to transform inplace</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    product : rdkit.Chem.rdchem.Mol</span>
-<span class="sd">        The final product of the reaction</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># repeat the reaction until all matching moeities have been transformed</span>
-    <span class="c1"># note: this loop is meant to be ended by a `break` statement</span>
-    <span class="c1"># but let&#39;s avoid using `while` loops just in case</span>
-    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">reactant</span><span class="o">.</span><span class="n">GetNumAtoms</span><span class="p">()):</span>
-        <span class="n">reactant</span><span class="o">.</span><span class="n">UpdatePropertyCache</span><span class="p">(</span><span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">Chem</span><span class="o">.</span><span class="n">Kekulize</span><span class="p">(</span><span class="n">reactant</span><span class="p">)</span>
-        <span class="n">products</span> <span class="o">=</span> <span class="n">reaction</span><span class="o">.</span><span class="n">RunReactants</span><span class="p">((</span><span class="n">reactant</span><span class="p">,))</span>
-        <span class="k">if</span> <span class="n">products</span><span class="p">:</span>
-            <span class="c1"># structure: tuple[tuple[mol]]</span>
-            <span class="c1"># length of 1st tuple: number of matches in reactant</span>
-            <span class="c1"># length of 2nd tuple: number of products yielded by the reaction</span>
-            <span class="c1"># if there&#39;s no match in reactant, returns an empty tuple</span>
-            <span class="c1"># here we have at least one match, and the reaction used yield</span>
-            <span class="c1"># a single product hence `products[0][0]`</span>
-            <span class="n">product</span> <span class="o">=</span> <span class="n">products</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-            <span class="c1"># map back atom properties from the reactant to the product</span>
-            <span class="n">_reassign_index_after_reaction</span><span class="p">(</span><span class="n">reactant</span><span class="p">,</span> <span class="n">product</span><span class="p">)</span>
-            <span class="c1"># apply the next reaction to the product</span>
-            <span class="n">reactant</span> <span class="o">=</span> <span class="n">product</span>
-        <span class="c1"># exit the loop if there was nothing to transform</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">break</span>
     <span class="n">reactant</span><span class="o">.</span><span class="n">UpdatePropertyCache</span><span class="p">(</span><span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">Chem</span><span class="o">.</span><span class="n">Kekulize</span><span class="p">(</span><span class="n">reactant</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">reactant</span>
+    <span class="k">for</span> <span class="n">reaction</span> <span class="ow">in</span> <span class="n">reactions</span><span class="p">:</span>
+        <span class="k">while</span> <span class="n">reaction</span><span class="o">.</span><span class="n">RunReactantInPlace</span><span class="p">(</span><span class="n">reactant</span><span class="p">):</span>
+            <span class="n">reactant</span><span class="o">.</span><span class="n">UpdatePropertyCache</span><span class="p">(</span><span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">reactant</span><span class="o">.</span><span class="n">UpdatePropertyCache</span><span class="p">(</span><span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">Chem</span><span class="o">.</span><span class="n">Kekulize</span><span class="p">(</span><span class="n">reactant</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="_rebuild_conjugated_bonds"><a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKit._rebuild_conjugated_bonds">[docs]</a><span class="k">def</span> <span class="nf">_rebuild_conjugated_bonds</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
@@ -1085,38 +1072,6 @@
     <span class="c1"># reached max_iter</span>
     <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;The standardization could not be completed within a &quot;</span>
                   <span class="s2">&quot;reasonable number of iterations&quot;</span><span class="p">)</span></div>
-
-
-<span class="k">def</span> <span class="nf">_reassign_index_after_reaction</span><span class="p">(</span><span class="n">reactant</span><span class="p">,</span> <span class="n">product</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Maps back MDAnalysis index from the reactant to the product.</span>
-<span class="sd">    The product molecule is modified inplace.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">prop</span> <span class="o">=</span> <span class="s2">&quot;_MDAnalysis_index&quot;</span>
-    <span class="k">if</span> <span class="n">reactant</span><span class="o">.</span><span class="n">GetAtoms</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">HasProp</span><span class="p">(</span><span class="n">prop</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">product</span><span class="o">.</span><span class="n">GetAtoms</span><span class="p">():</span>
-            <span class="n">idx</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">GetUnsignedProp</span><span class="p">(</span><span class="s2">&quot;react_atom_idx&quot;</span><span class="p">)</span>
-            <span class="n">old_atom</span> <span class="o">=</span> <span class="n">reactant</span><span class="o">.</span><span class="n">GetAtomWithIdx</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">old_atom</span><span class="o">.</span><span class="n">GetIntProp</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
-            <span class="n">_set_atom_property</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">prop</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">_transfer_properties</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">newmol</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Transfer properties between two RDKit molecules. Requires the</span>
-<span class="sd">    `_MDAnalysis_index` property to be present. Modifies `newmol` inplace.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">atoms</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">GetAtoms</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">HasProp</span><span class="p">(</span><span class="s2">&quot;_MDAnalysis_index&quot;</span><span class="p">):</span>
-        <span class="n">props</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">:</span>
-            <span class="n">ix</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">GetIntProp</span><span class="p">(</span><span class="s2">&quot;_MDAnalysis_index&quot;</span><span class="p">)</span>
-            <span class="n">props</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">GetPropsAsDict</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">newmol</span><span class="o">.</span><span class="n">GetAtoms</span><span class="p">():</span>
-            <span class="n">ix</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">GetIntProp</span><span class="p">(</span><span class="s2">&quot;_MDAnalysis_index&quot;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">props</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">_set_atom_property</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-            <span class="c1"># remove properties assigned during reactions</span>
-            <span class="n">atom</span><span class="o">.</span><span class="n">ClearProp</span><span class="p">(</span><span class="s2">&quot;old_mapno&quot;</span><span class="p">)</span>
-            <span class="n">atom</span><span class="o">.</span><span class="n">ClearProp</span><span class="p">(</span><span class="s2">&quot;react_atom_idx&quot;</span><span class="p">)</span>
 </pre></div>
 
            </div>
