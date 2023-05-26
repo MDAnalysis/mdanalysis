@@ -563,13 +563,13 @@ with default parameters which may differ from the original class.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.GSD.GSDReader.dt">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dt</span></span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.dt" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></em><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.dt" title="Permalink to this definition"></a></dt>
 <dd><p>Time between two trajectory frames in picoseconds.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.GSD.GSDReader.frame">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">frame</span></span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.frame" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">frame</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></em><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.frame" title="Permalink to this definition"></a></dt>
 <dd><p>Frame number of the current time step.</p>
 <p>This is a simple short cut to <code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestep.frame</span></code>.</p>
 </dd></dl>
@@ -668,7 +668,7 @@ through the trajectory.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.GSD.GSDReader.next">
-<span class="sig-name descname"><span class="pre">next</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.next" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">next</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><span class="pre">Timestep</span></a></span></span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.next" title="Permalink to this definition"></a></dt>
 <dd><p>Forward one step to next frame.</p>
 </dd></dl>
 
@@ -748,7 +748,7 @@ list of added auxiliaries, and in the auxiliary reader itself.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.GSD.GSDReader.rewind">
-<span class="sig-name descname"><span class="pre">rewind</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.rewind" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">rewind</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><span class="pre">Timestep</span></a></span></span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.rewind" title="Permalink to this definition"></a></dt>
 <dd><p>Position at beginning of trajectory</p>
 </dd></dl>
 
@@ -816,7 +816,7 @@ coordinates)</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.GSD.GSDReader.totaltime">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">totaltime</span></span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.totaltime" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">totaltime</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></em><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.totaltime" title="Permalink to this definition"></a></dt>
 <dd><p>Total length of the trajectory</p>
 <p>The time is calculated as <code class="docutils literal notranslate"><span class="pre">(n_frames</span> <span class="pre">-</span> <span class="pre">1)</span> <span class="pre">*</span> <span class="pre">dt</span></code>, i.e., we assume that
 the first frame no time as elapsed. Thus, a trajectory with two frames will
