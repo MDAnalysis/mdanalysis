@@ -13,9 +13,9 @@ def main(ctx):
     if env.get("CIRRUS_REPO_FULL_NAME") != "MDAnalysis/mdanalysis":
         return []
 
-    print(env.get("CIRRUS_TAG"))
-    print(env.get("CIRRUS_RELEASE"))
-    print(env.get("CIRRUS_PR"))
+    print(env.get("CIRRUS_TAG") == None)
+    print(env.get("CIRRUS_RELEASE") == None)
+    print(env.get("CIRRUS_PR") != None)
 
     #if (env.get("CIRRUS_BASE_BRANCH" == "develop") and (env.get("CIRRUS_PR") != ""):
     #    fs.read("maintainer/ci/cirrus-ci.yml")
