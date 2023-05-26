@@ -42,8 +42,8 @@ macos_arm64_wheel_task:
 
 wheel_upload_task:
   depends_on:
-    - macos_arm64_wheel_task
-    - linux_aarch64_wheel_task
+    - macos_arm64_wheel
+    - linux_aarch64_wheel
   container:
     image: python:latest
   env:
