@@ -43,8 +43,8 @@ wheel_upload:
   container:
     image: python:latest
   env:
-    TESTPYPI: ENCRYPTED[LOOKATMEIMATOKEN]
-    PYPI: ENCRYPTED[NEVERGONNAGIVEYOUUPNEVERGONNALETYOUDOWNNEVERGONNAEATPARSNIPS]
+    TESTPYPI: ENCRYPTED[!adb082e719dbf71b700796a3f6969d1ca8ba69879cbf8ce4e969285b2ccd0212a54afea897c8d55174bd18388b22fd7a!]
+    PYPI: ENCRYPTED[!35e6711ac1b0f6ff790a2743db2e02c9efc07a49865252c53f9482c71609946746eb7d05fa75a13c094c9692f4d869d4!]
   uploady_script:
     curl https://api.cirrus-ci.com/v1/artifact/build/$CIRRUS_BUILD_ID/wheels.zip --output wheels.zip
     unzip wheels.zip
