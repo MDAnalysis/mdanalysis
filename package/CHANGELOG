@@ -13,15 +13,29 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-  
 ??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae, 
          ooprathamm, MeetB7, BFedder, v-parmar, MoSchaeffler, jbarnoud, jandom,
-         xhgchen, jaclark5, DrDomenicoMarson, AHMED-salah00, schlaicha, SophiaRuan,
+         xhgchen, jaclark5, DrDomenicoMarson, AHMED-salah00, schlaicha,
+         SophiaRuan, g2707, p-j-smith, tylerjereddy, xiki-tempula, richardjgowers,
          cbouy
 
  * 2.5.0
 
 Fixes
+  * Fixed ChainReader performing transformations correctly across boundaries in the individual trajectories
+    (Issue #3657 #4008 PR #3906)
+  * Fix the `heavy` distance_type for water bridge analysis where distance
+    is not correctly assigned when more than one hydrogen is bonded to a
+    heavy atom (Issue #4040, PR #4066).
+  * PDB topology parser no longer fails when encountering unknown formal
+    charges and instead simply does not populate attribute (Issue #4027)
+  * Added support for Cython 3.0.0b2 (PR #4129)
+  * Ensure 'HydrogenBondAnalysis' returns the correct distances when using the
+    'between' keyword (PR #4092)
+  * Skip tests artificially checking for readonly or PermissionError cases
+    when running at root user on linux systems (Issue #4112, PR #4120)
+  * Fix chi1_selections() ignored atom names CG1 OG OG1 SG and incorrectly returned
+    None for amino acids CYS, ILE, SER, THR, VAL (Issue #4108)
   * Fix parsing of box vector in H5MD reader (Issue #4076)
   * Fix the misleading 'AtomGroup.guess_bonds()' docs and passed missing
     arguments (PR #4059)
@@ -29,17 +43,30 @@ Fixes
   * Allows shape_parameter and asphericity to yield per residue quantities
     (Issue #3002, PR #3905)
   * Add tests for "No path data" exception raise in test_psa.py (Issue #4036)
-  * Fix uninitialized `format` variable issue when calling `selections.get_writer` directly (PR #4043)
+  * Fix uninitialized `format` variable issue when calling
+    `selections.get_writer` directly (PR #4043)
   * Fix tests should use results.rmsf to avoid DeprecationWarning (Issue #3695)
   * Fix EDRReader failing when parsing single-frame EDR files (Issue #3999)
-  * Fix element parsing from PSF files tests read via Parmed (Issue #4015)
   * Fix test clobbering in lib/test_util.py (PR #4000)
   * Fix MSD docs to use the correct error metric in example (Issue #3991)
   * Add 'PairIJ Coeffs' to the list of sections in LAMMPSParser.py
     (Issue #3336)
 
 Enhancements
-  * Add `progressbar_kwargs` parameter to `AnalysisBase.run` method, allowing to modify description, position etc of tqdm progressbars.
+  * Add simple atomic distance analysis to `analysis.atomicdistances` with
+    new class `AtomicDistances` (Issue #3654)
+  * Add kwarg `n_frames` to class method `empty()` in
+    `MDAnalysis.core.universe`, enabling creation of a `Universe` with
+    multiple frames from scratch (PR #4140)
+  * PDBReader now populates ts.data['tempfactor'] with the tempfactor for
+    each atom *for each frame*. If an entry is missing for a given atom,
+    this will default to a `1.0` value. Note, this does not affect the
+    topology (i.e. `AtomGroup.tempfactors` is not dynamically updated.
+    (Issue #3825, PR #3988)
+  * Add writing u.trajectory.ts.data['molecule_tag'] as molecule tags to LAMMPS data file (Issue #3548)
+  * Improved speed of chi1_selection (PR #4109)
+  * Add `progressbar_kwargs` parameter to `AnalysisBase.run` method, allowing
+    to modify description, position etc of tqdm progressbars.
   * Add a nojump transformation, which unwraps trajectories so that particle
     paths are continuous. (Issue #3703, PR #4031)
   * Added AtomGroup TopologyAttr to calculate gyration moments (Issue #3904,
@@ -52,6 +79,10 @@ Enhancements
     and SegmentGroup. (PR #3953)
 
 Changes
+  * As per NEP29 the minimum supported Python version has been raised to 3.9
+    (PR #4115).
+  * einsum method for Einstein summation convention introduced to increase 
+    performance (Issue #2063, PR #4089)
   * Add progress bars to track the progress of _conclude() functions
     (_conclude_simple() and _conclude_fft()) in msd.py (Issue #4070, PR #4072)
   * As per NEP29 the minimum supported NumPy version has been raised to 1.21
@@ -76,13 +107,14 @@ Changes
 Deprecations
 
 
-03/29/23 richardjgowers
+03/29/23 richardjgowers, IAlibay
 
  * 2.4.3
 
 Fixes
   * Fixed DCD reading for large (>2Gb) files (Issue #4039).  This was broken
     for versions 2.4.0, 2.4.1 and 2.4.2
+  * Fix element parsing from PSF files tests read via Parmed (Issue #4015)
 
 
 01/04/23 IAlibay
