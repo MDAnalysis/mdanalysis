@@ -72,3 +72,4 @@ wheel_upload_task:
     else
         export TWINE_PASSWORD="FOOBAR"
         twine upload -r testpypi wheelhouse/* --non-interactive
+    fi
