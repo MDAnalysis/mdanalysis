@@ -19,11 +19,11 @@ def main(ctx):
     print(env.get("CIRRUS_PR") != None)
 
     # If you're targetting develop and it's a PR, run a CI job
-    if (env.get("CIRRUS_BASE_BRANCH" == "develop") and (env.get("CIRRUS_PR") != None):
+    if ((env.get("CIRRUS_BASE_BRANCH") == "develop") and (env.get("CIRRUS_PR") != None)):
         fs.read("maintainer/ci/cirrus-ci.yml")
 
     # If you've tagged a package or released something, deploy
-    if (env.get("CIRRUS_TAG" != None) or (env.get("CIRRUS_RELEASE") != None):
+    if ((env.get("CIRRUS_TAG") != None) or (env.get("CIRRUS_RELEASE") != None)):
         fs.read("maintainer/ci/cirrus-deploy.yml")
 
     return []
