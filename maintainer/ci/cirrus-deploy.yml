@@ -43,7 +43,7 @@ macos_arm64_wheel_task:
 wheel_upload_task:
   depends_on:
     - macos_arm64_wheel
-    #- linux_aarch64_wheel
+    - linux_aarch64_wheel
   compute_engine_instance:
     image_project: cirrus-images
     image: family/docker-builder
