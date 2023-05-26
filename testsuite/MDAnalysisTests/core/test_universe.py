@@ -57,6 +57,7 @@ from MDAnalysis.transformations import translate
 from MDAnalysisTests import assert_nowarns
 from MDAnalysis.exceptions import NoDataError
 from MDAnalysis.core.topologyattrs import AtomStringAttr
+from MDAnalysisTests.util import get_userid
 
 
 class IOErrorParser(TopologyReaderBase):
@@ -153,6 +154,8 @@ class TestUniverseCreation(object):
             else:
                 raise AssertionError
 
+    @pytest.mark.skipif(get_userid() == 0,
+                        reason="cannot permisssionerror as root")
     def test_Universe_invalidpermissionfile_IE_msg(self, tmpdir):
         # check for file with invalid permissions (eg. no read access)
         with tmpdir.as_cwd():
@@ -1301,6 +1304,11 @@ class TestEmpty(object):
 
         assert len(u.atoms) == 10
         assert u.atoms.positions.shape == (10, 3)
+
+    def test_trajectory_multiple_frames(self):
+        u = mda.Universe.empty(10, n_frames=5)
+
+        assert_equal(u.trajectory.n_frames, 5)
 
     def test_trajectory_iteration(self):
         u = mda.Universe.empty(10, trajectory=True)

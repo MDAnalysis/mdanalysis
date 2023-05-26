@@ -44,6 +44,7 @@ from MDAnalysisTests.coordinates.base import (MultiframeReaderTest,
 import MDAnalysis as mda
 from MDAnalysis.coordinates.base import Timestep
 from MDAnalysis.coordinates import XDR
+from MDAnalysisTests.util import get_userid
 
 
 class _XDRReader_Sub(object):
@@ -868,6 +869,7 @@ class _GromacsReader_offsets(object):
         reader = self._reader(traj)
         reader[idx_frame]
 
+    @pytest.mark.skipif(get_userid() == 0, reason="cannot readonly as root")
     def test_persistent_offsets_readonly(self, tmpdir):
         shutil.copy(self.filename, str(tmpdir))
 

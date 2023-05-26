@@ -28,39 +28,23 @@ jobs:
           os: [ubuntu-latest, ]
           python-version: ["3.9", "3.10", "3.11"]
           full-deps: [true, ]
-          install_hole: [true, ]
           codecov: [true, ]
           include:
             - name: macOS_monterey_py311
               os: macOS-12
               python-version: "3.11"
               full-deps: true
-              install_hole: true
-              codecov: true
-            - name: macOS_bigsur_py39
-              os: macOS-11
-              python-version: 3.9
-              full-deps: true
-              install_hole: true
-              codecov: false
-            - name: minimal-ubuntu
-              os: ubuntu-latest
-              python-version: 3.9
-              full-deps: false
-              install_hole: false
               codecov: true
             - name: numpy_min
               os: ubuntu-latest
               python-version: 3.9
               full-deps: false
-              install_hole: false
-              codecov: false
+              codecov: true
               numpy: numpy=1.21.0
             - name: asv_check
               os: ubuntu-latest
               python-version: 3.9
               full-deps: true
-              install_hole: false
               codecov: false
               extra-pip-deps: asv
     env:
@@ -75,22 +59,20 @@ jobs:
       with:
         os-type: ${{ matrix.os }}
 
-    - name: setup_miniconda
-      uses: conda-incubator/setup-miniconda@v2
+    - name: setup_micromamba
+      uses: mamba-org/provision-with-micromamba@main
       with:
-        python-version: ${{ matrix.python-version }}
-        auto-update-conda: true
-        channel-priority: flexible
-        channels: conda-forge, bioconda
-        add-pip-as-python-dependency: true
-        use-mamba: true
-        miniforge-variant: Mambaforge
-        architecture: x64
+        environment-file: False
+        environment-name: mda
+        extra-specs: |
+          python==${{ matrix.python-version }}
+          pip
+        channels: jaimergp/label/unsupported-cudatoolkit-shim, conda-forge, bioconda
 
     - name: install_deps
       uses: ./.github/actions/setup-deps
       with:
-        mamba: true
+        micromamba: true
         full-deps: ${{ matrix.full-deps }}
         # in most cases will just default to empty, i.e. pick up max version from other deps
         numpy: ${{ matrix.numpy }}
@@ -99,7 +81,6 @@ jobs:
     - name: build_srcs
       uses: ./.github/actions/build-src
       with:
-        build-hole: ${{ matrix.install_hole }}
         build-tests: true
         build-docs: false
 
@@ -139,29 +120,26 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: setup_miniconda
-      uses: conda-incubator/setup-miniconda@v2
+    - name: setup_micromamba
+      uses: mamba-org/provision-with-micromamba@main
       with:
-        python-version: 3.9
-        auto-update-conda: true
-        channel-priority: flexible
+        environment-file: False
+        environment-name: mda
+        extra-specs: |
+          python=="3.9"
+          pip
         channels: conda-forge, bioconda
-        add-pip-as-python-dependency: true
-        architecture: x64
-        use-mamba: true
-        miniforge-variant: Mambaforge
 
     - name: install_deps
       uses: ./.github/actions/setup-deps
       with:
-        mamba: true
+        micromamba: true
         full-deps: true
         extra-pip-deps: "sphinx sphinx-sitemap sphinx_rtd_theme msmb_theme==1.2.0 sphinxcontrib-bibtex pybtex pybtex-docutils"
 
     - name: build_srcs
       uses: ./.github/actions/build-src
       with:
-        build-hole: false
         build-tests: true
         build-docs: true
 
@@ -226,31 +204,49 @@ jobs:
         git push -q upstream HEAD:gh-pages
 
 
-  pypi_check:
+  sdist_check_and_build:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./package
 
     steps:
     - uses: actions/checkout@v3
 
     - uses: actions/setup-python@v4
       with:
-        python-version: 3.9
+        python-version: 3.11
 
     - name: install_deps
       run: |
-        python -m pip install twine "readme-renderer>=34.0"
+        python -m pip install -U pip pipx wheel build
+        python -m pip install twine "readme-renderer>=34.0" pytest-xdist
 
-    - name: build_sdist
+    - name: build_package_sdist
       run: |
-        pipx run build --sdist
+        pipx run build --sdist --outdir dist package
+
+    - name: build_testsuite_sdist
+      run: |
+        pipx run build --sdist --outdir dist testsuite
 
     - name: check_package_build
       run: |
-        DISTRIBUTION=$(ls -t1 dist/MDAnalysis-*.tar.gz | head -n 1)
+        DISTRIBUTION=$(ls -t1 dist/MDAnalysis-*.tar.gz | head -n1)
         test -n "${DISTRIBUTION}" || { echo "no distribution dist/MDAnalysis-*.tar.gz found"; exit 1; }
-        echo "twine check $DISTRIBUTION"
         twine check $DISTRIBUTION
+
+    - name: check_testsuite_build
+      run: |
+        DISTRIBUTION=$(ls -t1 dist/MDAnalysisTests-*.tar.gz | head -n1)
+        test -n "${DISTRIBUTION}" || { echo "no distribution dist/MDAnalysisTests-*.tar.gz found"; exit 1; }
+        twine check $DISTRIBUTION
+
+    - name: install sdist
+      working-directory: ./dist
+      run: |
+        ls -a .
+        python -m pip install MDAnalysis-*.tar.gz
+        python -m pip install MDAnalysisTests-*.tar.gz
+
+    - name: run tests
+      working-directory: ./dist
+      run: python -m pytest -n auto --pyargs MDAnalysisTests
