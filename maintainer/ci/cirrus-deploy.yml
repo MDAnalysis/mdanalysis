@@ -63,13 +63,19 @@ wheel_upload_task:
 
     export TWINE_USERNAME="__token__"
 
+    echo $CIRRUS_RELEASE
+    echo $CIRRUS_TAG
+
     if [ -z "$CIRRUS_RELEASE"]; then
-        export TWINE_PASSWORD=$PYPI
-        pipx run twine upload -r pypi wheelhouse/* --non-interactive
+        echo "RELEASE THE KRAKEN!"
+        #export TWINE_PASSWORD=$PYPI
+        #pipx run twine upload -r pypi wheelhouse/* --non-interactive
     elif [[ $CIRRUS_TAG == "package-"* ]]; then
-        export TWINE_PASSWORD=$TESTPYPI
-        pipx run twine upload -r testpypi wheelhouse/* --non-interactive
+        echo "it's a package!"
+        #export TWINE_PASSWORD=$TESTPYPI
+        #pipx run twine upload -r testpypi wheelhouse/* --non-interactive
     else
-        export TWINE_PASSWORD="FOOBAR"
-        pipx run twine upload -r testpypi wheelhouse/* --non-interactive
+        echo "sure whatever"
+        #export TWINE_PASSWORD="FOOBAR"
+        #pipx run twine upload -r testpypi wheelhouse/* --non-interactive
     fi
