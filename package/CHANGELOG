@@ -51,6 +51,7 @@ Fixes
     (Issue #3336)
 
 Enhancements
+  * ARM64 (osx and linux) wheels now uploaded on release (Issue #4054)
   * Add writing u.trajectory.ts.data['molecule_tag'] as molecule tags to LAMMPS data file (Issue #3548)
   * Improved speed of chi1_selection (PR #4109)
   * Add `progressbar_kwargs` parameter to `AnalysisBase.run` method, allowing
