@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>4.2.7. Bond-Angle-Torsion coordinates analysis — MDAnalysis.analysis.bat &mdash; MDAnalysis 2.5.0-dev0 documentation</title>
+  <title>4.2.8. Bond-Angle-Torsion coordinates analysis — MDAnalysis.analysis.bat &mdash; MDAnalysis 2.5.0-dev0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
@@ -27,7 +27,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="4.3.1. Hydrogen Bond Analysis — MDAnalysis.analysis.hydrogenbonds.hbond_analysis" href="hydrogenbonds.html" />
-    <link rel="prev" title="4.2.6.1.7. Utility functions for ENCORE" href="encore/utils.html" /> 
+    <link rel="prev" title="4.2.7.1.7. Utility functions for ENCORE" href="encore/utils.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -63,12 +63,13 @@
 <li class="toctree-l3"><a class="reference internal" href="align.html">4.2.1. Coordinate fitting and alignment — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="contacts.html">4.2.2. Native contacts analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.contacts</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="distances.html">4.2.3. Distance analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.distances</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="rms.html">4.2.4. Calculating root mean square quantities — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="psa.html">4.2.5. Calculating path similarity — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.psa</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="encore.html">4.2.6. ENCORE Ensemble Similarity Calculations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">4.2.7. Bond-Angle-Torsion coordinates analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.bat</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#example-applications">4.2.7.1. Example applications</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#analysis-classes">4.2.7.2. Analysis classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="atomicdistances.html">4.2.4. Simple atomic distance analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.atomicdistances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rms.html">4.2.5. Calculating root mean square quantities — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="psa.html">4.2.6. Calculating path similarity — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.psa</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="encore.html">4.2.7. ENCORE Ensemble Similarity Calculations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">4.2.8. Bond-Angle-Torsion coordinates analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.bat</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#example-applications">4.2.8.1. Example applications</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#analysis-classes">4.2.8.2. Analysis classes</a></li>
 </ul>
 </li>
 </ul>
@@ -114,7 +115,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../analysis_modules.html"><span class="section-number">4. </span>Analysis modules</a></li>
-      <li class="breadcrumb-item active"><span class="section-number">4.2.7. </span>Bond-Angle-Torsion coordinates analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.bat</span></code></li>
+      <li class="breadcrumb-item active"><span class="section-number">4.2.8. </span>Bond-Angle-Torsion coordinates analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.bat</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/documentation_pages/analysis/bat.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -125,7 +126,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.analysis.bat"></span><section id="bond-angle-torsion-coordinates-analysis-mdanalysis-analysis-bat">
-<h1><span class="section-number">4.2.7. </span>Bond-Angle-Torsion coordinates analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.bat" title="MDAnalysis.analysis.bat"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.bat</span></code></a><a class="headerlink" href="#bond-angle-torsion-coordinates-analysis-mdanalysis-analysis-bat" title="Permalink to this heading"></a></h1>
+<h1><span class="section-number">4.2.8. </span>Bond-Angle-Torsion coordinates analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.bat" title="MDAnalysis.analysis.bat"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.bat</span></code></a><a class="headerlink" href="#bond-angle-torsion-coordinates-analysis-mdanalysis-analysis-bat" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Soohaeng Yoo Willow and David Minh</p>
@@ -175,7 +176,7 @@ that describes the rotation of the third atom about the axis.</p>
 </dl>
 </div>
 <section id="example-applications">
-<h2><span class="section-number">4.2.7.1. </span>Example applications<a class="headerlink" href="#example-applications" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.2.8.1. </span>Example applications<a class="headerlink" href="#example-applications" title="Permalink to this heading"></a></h2>
 <p>The <a class="reference internal" href="#MDAnalysis.analysis.bat.BAT" title="MDAnalysis.analysis.bat.BAT"><code class="xref py py-class docutils literal notranslate"><span class="pre">BAT</span></code></a> class defines bond-angle-torsion
 coordinates based on the topology of an atom group and interconverts between
 Cartesian and BAT coordinate systems.</p>
@@ -232,7 +233,7 @@ previous snippet has been executed.</p>
 </div>
 </section>
 <section id="analysis-classes">
-<h2><span class="section-number">4.2.7.2. </span>Analysis classes<a class="headerlink" href="#analysis-classes" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.2.8.2. </span>Analysis classes<a class="headerlink" href="#analysis-classes" title="Permalink to this heading"></a></h2>
 <blockquote>
 <div><dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.bat.BAT">
@@ -410,7 +411,7 @@ allowing to modify description, position etc of tqdm progressbars</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="encore/utils.html" class="btn btn-neutral float-left" title="4.2.6.1.7. Utility functions for ENCORE" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="encore/utils.html" class="btn btn-neutral float-left" title="4.2.7.1.7. Utility functions for ENCORE" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="hydrogenbonds.html" class="btn btn-neutral float-right" title="4.3.1. Hydrogen Bond Analysis — MDAnalysis.analysis.hydrogenbonds.hbond_analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

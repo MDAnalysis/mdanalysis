@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>4.2.6.1.5. Covariance calculation — encore.covariance &mdash; MDAnalysis 2.5.0-dev0 documentation</title>
+  <title>4.2.7.1.5. Covariance calculation — encore.covariance &mdash; MDAnalysis 2.5.0-dev0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
@@ -25,8 +25,8 @@
           href="../../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="4.2.6.1.6. bootstrap procedures — MDAnalysis.analysis.ensemble.bootstrap" href="bootstrap.html" />
-    <link rel="prev" title="4.2.6.1.4. Distance Matrix calculation — MDAnalysis.analysis.ensemble.confdistmatrix" href="confdistmatrix.html" /> 
+    <link rel="next" title="4.2.7.1.6. bootstrap procedures — MDAnalysis.analysis.ensemble.bootstrap" href="bootstrap.html" />
+    <link rel="prev" title="4.2.7.1.4. Distance Matrix calculation — MDAnalysis.analysis.ensemble.confdistmatrix" href="confdistmatrix.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -62,14 +62,15 @@
 <li class="toctree-l3"><a class="reference internal" href="../align.html">4.2.1. Coordinate fitting and alignment — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../contacts.html">4.2.2. Native contacts analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.contacts</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="../distances.html">4.2.3. Distance analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.distances</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../rms.html">4.2.4. Calculating root mean square quantities — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../psa.html">4.2.5. Calculating path similarity — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.psa</span></code></a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="../encore.html">4.2.6. ENCORE Ensemble Similarity Calculations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a><ul class="current">
-<li class="toctree-l4 current"><a class="reference internal" href="../encore.html#modules">4.2.6.1. Modules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../encore.html#references">4.2.6.2. References</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../atomicdistances.html">4.2.4. Simple atomic distance analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.atomicdistances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../rms.html">4.2.5. Calculating root mean square quantities — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../psa.html">4.2.6. Calculating path similarity — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.psa</span></code></a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../encore.html">4.2.7. ENCORE Ensemble Similarity Calculations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="../encore.html#modules">4.2.7.1. Modules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../encore.html#references">4.2.7.2. References</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../bat.html">4.2.7. Bond-Angle-Torsion coordinates analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.bat</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../bat.html">4.2.8. Bond-Angle-Torsion coordinates analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.bat</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#hydrogen-bonding">4.3. Hydrogen bonding</a></li>
@@ -113,8 +114,8 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../analysis_modules.html"><span class="section-number">4. </span>Analysis modules</a></li>
-          <li class="breadcrumb-item"><a href="../encore.html"><span class="section-number">4.2.6. </span>ENCORE Ensemble Similarity Calculations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a></li>
-      <li class="breadcrumb-item active"><span class="section-number">4.2.6.1.5. </span>Covariance calculation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">encore.covariance</span></code></li>
+          <li class="breadcrumb-item"><a href="../encore.html"><span class="section-number">4.2.7. </span>ENCORE Ensemble Similarity Calculations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">4.2.7.1.5. </span>Covariance calculation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">encore.covariance</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/documentation_pages/analysis/encore/covariance.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -125,7 +126,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.analysis.encore.covariance"></span><section id="covariance-calculation-encore-covariance">
-<h1><span class="section-number">4.2.6.1.5. </span>Covariance calculation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">encore.covariance</span></code><a class="headerlink" href="#covariance-calculation-encore-covariance" title="Permalink to this heading"></a></h1>
+<h1><span class="section-number">4.2.7.1.5. </span>Covariance calculation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">encore.covariance</span></code><a class="headerlink" href="#covariance-calculation-encore-covariance" title="Permalink to this heading"></a></h1>
 <p>The module contains functions to estimate the covariance matrix of
 an ensemble of structures.</p>
 <dl class="field-list simple">
@@ -216,8 +217,8 @@ Ledoit on his website:
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="confdistmatrix.html" class="btn btn-neutral float-left" title="4.2.6.1.4. Distance Matrix calculation — MDAnalysis.analysis.ensemble.confdistmatrix" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="bootstrap.html" class="btn btn-neutral float-right" title="4.2.6.1.6. bootstrap procedures — MDAnalysis.analysis.ensemble.bootstrap" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="confdistmatrix.html" class="btn btn-neutral float-left" title="4.2.7.1.4. Distance Matrix calculation — MDAnalysis.analysis.ensemble.confdistmatrix" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="bootstrap.html" class="btn btn-neutral float-right" title="4.2.7.1.6. bootstrap procedures — MDAnalysis.analysis.ensemble.bootstrap" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
