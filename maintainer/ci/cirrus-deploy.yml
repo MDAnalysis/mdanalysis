@@ -7,22 +7,22 @@ build_and_store_wheels: &BUILD_AND_STORE_WHEELS
     path: "wheelhouse/*"
 
 
-linux_aarch64_wheel_task:
-  compute_engine_instance:
-    image_project: cirrus-images
-    image: family/docker-builder-arm64
-    architecture: arm64
-    platform: linux
-    cpu: 4
-    memory: 4G
-  env:
-    CIBW_BUILD: cp39-manylinux* cp310-manylinux* cp311-manylinux*
-
-  build_script: |
-    apt install -y python3-venv python-is-python3
-    python3 --version
-    python --version
-  <<: *BUILD_AND_STORE_WHEELS
+#linux_aarch64_wheel_task:
+#  compute_engine_instance:
+#    image_project: cirrus-images
+#    image: family/docker-builder-arm64
+#    architecture: arm64
+#    platform: linux
+#    cpu: 4
+#    memory: 4G
+#  env:
+#    CIBW_BUILD: cp39-manylinux* cp310-manylinux* cp311-manylinux*
+#
+#  build_script: |
+#    apt install -y python3-venv python-is-python3
+#    python3 --version
+#    python --version
+#  <<: *BUILD_AND_STORE_WHEELS
 
 
 macos_arm64_wheel_task:
@@ -43,9 +43,11 @@ macos_arm64_wheel_task:
 wheel_upload_task:
   depends_on:
     - macos_arm64_wheel
-    - linux_aarch64_wheel
-  container:
-    image: python:latest
+    #- linux_aarch64_wheel
+  compute_engine_instance:
+    image_project: cirrus-images
+    image: family/docker-builder
+    platform: linux
   env:
     TESTPYPI: ENCRYPTED[!adb082e719dbf71b700796a3f6969d1ca8ba69879cbf8ce4e969285b2ccd0212a54afea897c8d55174bd18388b22fd7a!]
     PYPI: ENCRYPTED[!35e6711ac1b0f6ff790a2743db2e02c9efc07a49865252c53f9482c71609946746eb7d05fa75a13c094c9692f4d869d4!]
