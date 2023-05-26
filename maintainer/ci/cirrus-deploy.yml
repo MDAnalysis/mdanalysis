@@ -40,7 +40,7 @@ macos_arm64_wheel_task:
   <<: *BUILD_AND_STORE_WHEELS
 
 
-wheel_upload:
+wheel_upload_task:
   depends_on:
     - macos_arm64_wheel_task
     - linux_aarch64_wheel_task
