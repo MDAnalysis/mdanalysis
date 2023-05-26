@@ -66,7 +66,7 @@ wheel_upload_task:
     echo $CIRRUS_RELEASE
     echo $CIRRUS_TAG
 
-    if [ -z "$CIRRUS_RELEASE"]; then
+    if [ ! -z "$CIRRUS_RELEASE" ]; then
         echo "RELEASE THE KRAKEN!"
         #export TWINE_PASSWORD=$PYPI
         #pipx run twine upload -r pypi wheelhouse/* --non-interactive
