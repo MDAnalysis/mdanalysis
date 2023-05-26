@@ -487,7 +487,7 @@
         <span class="k">return</span> <span class="n">new</span></div>
 
 <div class="viewcode-block" id="Universe.empty"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.empty">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="n">n_residues</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_segments</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="n">n_residues</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_segments</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_frames</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
               <span class="n">atom_resindex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">residue_segindex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
               <span class="n">trajectory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">velocities</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">forces</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a blank Universe</span>
@@ -507,6 +507,8 @@
 <span class="sd">          number of Residues in the Universe, defaults to 1</span>
 <span class="sd">        n_segments: int, default 1</span>
 <span class="sd">          number of Segments in the Universe, defaults to 1</span>
+<span class="sd">        n_frames: int, default 1</span>
+<span class="sd">          number of Frames in the Universe, defaults to 1</span>
 <span class="sd">        atom_resindex: array like, optional</span>
 <span class="sd">          mapping of atoms to residues, e.g. with 6 atoms,</span>
 <span class="sd">          `atom_resindex=[0, 0, 1, 1, 2, 2]` would put 2 atoms</span>
@@ -571,8 +573,8 @@
 
         <span class="n">u</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">top</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">trajectory</span><span class="p">:</span>
-            <span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">n_frames</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">trajectory</span><span class="p">:</span>
+            <span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_frames</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
             <span class="n">vels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span> <span class="k">if</span> <span class="n">velocities</span> <span class="k">else</span> <span class="kc">None</span>
             <span class="n">forces</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span> <span class="k">if</span> <span class="n">forces</span> <span class="k">else</span> <span class="kc">None</span>
 
