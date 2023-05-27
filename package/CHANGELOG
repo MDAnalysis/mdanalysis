@@ -53,6 +53,7 @@ Fixes
     (Issue #3336)
 
 Enhancements
+  * ARM64 (osx and linux) wheels now uploaded on release (Issue #4054)
   * Add simple atomic distance analysis to `analysis.atomicdistances` with
     new class `AtomicDistances` (Issue #3654)
   * Add kwarg `n_frames` to class method `empty()` in
