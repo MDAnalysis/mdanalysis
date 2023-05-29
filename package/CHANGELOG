@@ -13,6 +13,19 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+??/??/?? IAlibay
+
+ * 2.6.0
+
+Fixes
+
+Enhancements
+
+Changes
+
+Deprecations
+
+
 05/28/23 IAlibay, pgbarletta, mglagolev, hmacdope, manuel.nuno.melo, chrispfae, 
          ooprathamm, MeetB7, BFedder, v-parmar, MoSchaeffler, jbarnoud, jandom,
          xhgchen, jaclark5, DrDomenicoMarson, AHMED-salah00, schlaicha,
@@ -104,8 +117,6 @@ Changes
       should result in a significant speed improvement as we don't need to use
       bespoke code to transfer atomic properties from the non-standardized mol
       to the standardized one.
-
-Deprecations
 
 
 03/29/23 richardjgowers, IAlibay
