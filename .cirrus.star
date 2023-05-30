@@ -10,9 +10,21 @@ load("cirrus", "env", "fs")
 
 def main(ctx):
     # Default case: don't do anything if not in the core repo
-    # or if you're not targetting the develop branch
-    if ((env.get("CIRRUS_REPO_FULL_NAME") != "MDAnalysis/mdanalysis")
-        or (env.get("CIRRUS_BASE_BRANCH") != "develop")):
+    if env.get("CIRRUS_REPO_FULL_NAME") != "MDAnalysis/mdanalysis":
         return []
 
-    return fs.read("maintainer/ci/cirrus-ci.yml")
+    # Some debugging to know what state you are in, by default everything is None but PR
+    print(env.get("CIRRUS_TAG") == None)
+    print(env.get("CIRRUS_RELEASE") == None)
+    print(env.get("CIRRUS_PR") != None)
+    print(env.get("CIRRUS_BASE_BRANCH") == "develop")
+
+    # If you're targetting develop and it's a PR, run a CI job
+    if ((env.get("CIRRUS_BASE_BRANCH") == "develop") and (env.get("CIRRUS_PR") != None)):
+        return fs.read("maintainer/ci/cirrus-ci.yml")
+
+    # If you've tagged a package or released something, deploy
+    if ((env.get("CIRRUS_TAG") != None) or (env.get("CIRRUS_RELEASE") != None)):
+        return fs.read("maintainer/ci/cirrus-deploy.yml")
+
+    return []
