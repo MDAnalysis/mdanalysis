@@ -44,8 +44,7 @@ import warnings
 
 import os.path
 import bisect
-import copy
-
+from typing import Tuple
 import numpy as np
 
 from ..lib import util
@@ -161,7 +160,7 @@ def check_allowed_filetypes(readers, allowed):
                                   "type test to expand this list.")
 
 
-class ChainReader(base.ProtoReader):
+class ChainReader(base.ReaderBase):
     """Reader that concatenates multiple trajectories on the fly.
 
     The :class:`ChainReader` is used by MDAnalysis internally to
@@ -221,7 +220,8 @@ class ChainReader(base.ProtoReader):
     format = 'CHAIN'
 
     @store_init_arguments
-    def __init__(self, filenames, skip=1, dt=None, continuous=False, **kwargs):
+    def __init__(self, filenames, skip=1, dt=None, continuous=False,
+                 convert_units=True, **kwargs):
         """Set up the chain reader.
 
         Parameters
@@ -258,14 +258,18 @@ class ChainReader(base.ProtoReader):
             unchanged
 
         """
-        super(ChainReader, self).__init__()
+        super(ChainReader, self).__init__(filename='CHAIN',
+                                          skip=skip,
+                                          convert_units=convert_units,
+                                          dt=dt,
+                                          **kwargs)
 
         filenames = asiterable(filenames)
         # Override here because single frame readers handle this argument as a
         # kwarg to a timestep which behaves differently if dt is present or not.
         if dt is not None:
             kwargs['dt'] = dt
-        self.readers = [core.reader(filename, **kwargs)
+        self.readers = [core.reader(filename, convert_units=convert_units, **kwargs)
                         for filename in filenames]
         self.filenames = np.array([fn[0] if isinstance(fn, tuple) else fn
                                                         for fn in filenames])
@@ -379,7 +383,7 @@ class ChainReader(base.ProtoReader):
                 util.iterable(thing) and
                 not util.isstream(thing))
 
-    def _get_local_frame(self, k):
+    def _get_local_frame(self, k) -> Tuple[int, int]:
         """Find trajectory index and trajectory frame for chained frame `k`.
 
         Parameters
@@ -452,21 +456,7 @@ class ChainReader(base.ProtoReader):
     def convert_pos_to_native(self, x):
         return self.active_reader.convert_pos_to_native(x)
 
-    def copy(self):
-        new = self.__class__(**self._kwargs)
-        # seek the new reader to the same frame we started with
-        new[self.ts.frame]
-        # then copy over the current Timestep in case it has
-        # been modified since initial load
-        new.ts = self.ts.copy()
-        return new
-
     # attributes that can change with the current reader
-    @property
-    def filename(self):
-        """Filename of the currently read trajectory"""
-        return self.active_reader.filename
-
     # TODO: check that skip_timestep is still supported in all readers
     #       or should this be removed?
     @property
@@ -550,6 +540,7 @@ class ChainReader(base.ProtoReader):
         if not (0 <= i < len(self.readers)):
             raise IndexError("Reader index must be 0 <= i < {0:d}".format(len(self.readers)))
         self.__active_reader_index = i
+        self.filename = self.filenames[i]
 
     @property
     def active_reader(self):
@@ -584,31 +575,27 @@ class ChainReader(base.ProtoReader):
         self.__current_frame = frame
         return self.ts
 
-
     def _read_next_timestep(self, ts=None):
         if ts is None:
             ts = self.ts
-        ts = self.__next__()
-        return ts
 
-    def rewind(self):
-        """Set current frame to the beginning."""
-        self._rewind()
+        if self.__current_frame < self.n_frames - 1:
+            j, f = self._get_local_frame(self.__current_frame + 1)
+            self.__activate_reader(j)
+            self.ts = self.active_reader[f]
+            self.ts.frame = self.__current_frame + 1
+            self.__current_frame += 1
+            return self.ts
+        else:
+            raise StopIteration()
 
-    def _rewind(self):
+    def _reopen(self):
         """Internal method: Rewind trajectories themselves and trj pointer."""
         self.__current_frame = -1
         self._apply('rewind')
-        self.__next__()
 
     def close(self):
         self._apply('close')
-
-    def __iter__(self):
-        """Generator for all frames, starting at frame 0."""
-        self.__current_frame = -1
-        # start from first frame
-        return self
 
     def __repr__(self):
         if len(self.filenames) > 3:
@@ -623,57 +610,3 @@ class ChainReader(base.ProtoReader):
                     fname=fnames,
                     nframes=self.n_frames,
                     natoms=self.n_atoms))
-
-    def add_transformations(self, *transformations):
-        """ Add all transformations to be applied to the trajectory.
-
-        This function take as list of transformations as an argument. These
-        transformations are functions that will be called by the Reader and given
-        a :class:`Timestep` object as argument, which will be transformed and returned
-        to the Reader.
-        The transformations can be part of the :mod:`~MDAnalysis.transformations`
-        module, or created by the user, and are stored as a list `transformations`.
-        This list can only be modified once, and further calls of this function will
-        raise an exception.
-
-        .. code-block:: python
-
-          u = MDAnalysis.Universe(topology, coordinates)
-          workflow = [some_transform, another_transform, this_transform]
-          u.trajectory.add_transformations(*workflow)
-
-        Parameters
-        ----------
-        transform_list : list
-            list of all the transformations that will be applied to the coordinates
-
-        See Also
-        --------
-        :mod:`MDAnalysis.transformations`
-        """
-        #Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`
-        #to avoid unintended behaviour where the coordinates of each frame are transformed
-        #multiple times when iterating over the trajectory.
-        #In this method, the trajectory is modified all at once and once only.
-
-        super(ChainReader, self).add_transformations(*transformations)
-        for r in self.readers:
-            r.add_transformations(*transformations)
-
-    def _apply_transformations(self, ts):
-        """ Applies the transformations to the timestep."""
-        # Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`
-        # to avoid applying the same transformations multiple times on each frame
-
-        return ts
-
-    def __next__(self):
-        if self.__current_frame < self.n_frames - 1:
-            j, f = self._get_local_frame(self.__current_frame + 1)
-            self.__activate_reader(j)
-            self.ts = self.active_reader[f]
-            self.ts.frame = self.__current_frame + 1
-            self.__current_frame += 1
-            return self.ts
-        else:
-            raise StopIteration()

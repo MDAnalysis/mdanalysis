@@ -273,7 +273,7 @@ class DATAWriter(base.WriterBase):
         self.units['velocity'] = kwargs.pop('velocityunit',
                                  self.units['length']+'/'+self.units['time'])
 
-    def _write_atoms(self, atoms):
+    def _write_atoms(self, atoms, data):
         self.f.write('\n')
         self.f.write('Atoms\n')
         self.f.write('\n')
@@ -288,20 +288,23 @@ class DATAWriter(base.WriterBase):
         indices = atoms.indices + 1
         types = atoms.types.astype(np.int32)
 
+        moltags = data.get("molecule_tag", np.zeros(len(atoms), dtype=int))
+
         if self.convert_units:
             coordinates = self.convert_pos_to_native(atoms.positions, inplace=False)
 
         if has_charges:
-            for index, atype, charge, coords in zip(indices, types, charges,
-                    coordinates):
-                self.f.write('{i:d} 0 {t:d} {c:f} {x:f} {y:f} {z:f}\n'.format(
-                             i=index, t=atype, c=charge, x=coords[0],
-                             y=coords[1], z=coords[2]))
+            for index, moltag, atype, charge, coords in zip(indices, moltags,
+                    types, charges, coordinates):
+                x, y, z = coords
+                self.f.write(f"{index:d} {moltag:d} {atype:d} {charge:f}"
+                             f" {x:f} {y:f} {z:f}\n")
         else:
-            for index, atype, coords in zip(indices, types, coordinates):
-                self.f.write('{i:d} 0 {t:d} {x:f} {y:f} {z:f}\n'.format(
-                             i=index, t=atype, x=coords[0], y=coords[1],
-                             z=coords[2]))
+            for index, moltag, atype, coords in zip(indices, moltags, types,
+                    coordinates):
+                x, y, z = coords
+                self.f.write(f"{index:d} {moltag:d} {atype:d}"
+                             f" {x:f} {y:f} {z:f}\n")
 
     def _write_velocities(self, atoms):
         self.f.write('\n')
@@ -441,7 +444,7 @@ class DATAWriter(base.WriterBase):
             self._write_dimensions(atoms.dimensions)
 
             self._write_masses(atoms)
-            self._write_atoms(atoms)
+            self._write_atoms(atoms, u.trajectory.ts.data)
             for attr in features.values():
                 if attr is None or len(attr) == 0:
                     continue

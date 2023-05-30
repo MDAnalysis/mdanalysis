@@ -179,10 +179,10 @@ def test_reader_copied_extra_attributes(original_and_copy_extra_args):
     # Issue #3664
     original, copy = original_and_copy_extra_args
 
-    # memory and chain readers subclass protoreader directly and
+    # memory reader subclass protoreader directly and
     # therefore don't have convert_units or _ts_kwargs
     if original.__class__.__bases__[0].__name__ != "ProtoReader":
-        assert original.format not in ('MEMORY', 'CHAIN')
+        assert original.format is not 'MEMORY'
         assert original.convert_units is False
         assert copy.convert_units is False
         assert original._ts_kwargs['time_offset'] == 10
