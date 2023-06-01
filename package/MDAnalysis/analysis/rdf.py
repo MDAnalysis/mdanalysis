@@ -267,8 +267,8 @@ class InterRDF(AnalysisBase):
 
         if self.ignore_same_residue:
             # Ignore distances between atoms in the same residue
-            resixA = self.g1.resids[pairs[:, 0]]
-            resixB = self.g2.resids[pairs[:, 1]]
+            resixA = self.g1.resindices[pairs[:, 0]]
+            resixB = self.g2.resindices[pairs[:, 1]]
             mask = np.where(resixA != resixB)[0]
             dist = dist[mask]
 
