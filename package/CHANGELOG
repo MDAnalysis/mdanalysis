@@ -22,6 +22,9 @@ Fixes
 Enhancements
 
 Changes
+  * As per NEP29 tthe minimum supported version has been raised to 1.22. We
+    have opted to pin to a minimum of 1.22.3 to avoid known issues on some
+    platforms.
 
 Deprecations
 

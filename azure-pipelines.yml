@@ -25,7 +25,7 @@ jobs:
           PYTHON_VERSION: '3.9'
           PYTHON_ARCH: 'x86'
           BUILD_TYPE: 'normal'
-          NUMPY_MIN: '1.21.0'
+          NUMPY_MIN: '1.22.3'
           imageName: 'windows-2019'
         Win-Python39-64bit-full:
           PYTHON_VERSION: '3.9'
@@ -47,7 +47,7 @@ jobs:
           PYTHON_VERSION: '3.9'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
-          NUMPY_MIN: '1.21.0'
+          NUMPY_MIN: '1.22.3'
           imageName: 'windows-2019'
         Linux-Python311-64bit-full-wheel:
           PYTHON_VERSION: '3.11'
@@ -59,7 +59,7 @@ jobs:
           PYTHON_VERSION: '3.9'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
-          NUMPY_MIN: '1.21.0'
+          NUMPY_MIN: '1.22.3'
           imageName: 'ubuntu-latest'
   pool:
     vmImage: $(imageName)

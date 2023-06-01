@@ -40,7 +40,7 @@ jobs:
               python-version: 3.9
               full-deps: false
               codecov: true
-              numpy: numpy=1.21.0
+              numpy: numpy=1.22.3
             - name: asv_check
               os: ubuntu-latest
               python-version: 3.9
