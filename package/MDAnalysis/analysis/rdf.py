@@ -125,6 +125,8 @@ class InterRDF(AnalysisBase):
 
     exclusion_block : tuple
         A tuple representing the tile to exclude from the distance array.
+    ignore_same_residue : bool
+        If `True`, ignore distances between atoms in the same residue.
     verbose : bool
         Show detailed progress of the calculation if set to `True`
 
@@ -220,6 +222,7 @@ class InterRDF(AnalysisBase):
                  range=(0.0, 15.0),
                  norm="rdf",
                  exclusion_block=None,
+                 ignore_same_residue=False,
                  **kwargs):
         super(InterRDF, self).__init__(g1.universe.trajectory, **kwargs)
         self.g1 = g1
@@ -229,6 +232,7 @@ class InterRDF(AnalysisBase):
         self.rdf_settings = {'bins': nbins,
                              'range': range}
         self._exclusion_block = exclusion_block
+        self.ignore_same_residue = ignore_same_residue
 
         if self.norm not in ['rdf', 'density', 'none']:
             raise ValueError(f"'{self.norm}' is an invalid norm. "
@@ -259,6 +263,13 @@ class InterRDF(AnalysisBase):
             idxA = pairs[:, 0]//self._exclusion_block[0]
             idxB = pairs[:, 1]//self._exclusion_block[1]
             mask = np.where(idxA != idxB)[0]
+            dist = dist[mask]
+
+        if self.ignore_same_residue:
+            # Ignore distances between atoms in the same residue
+            resixA = self.g1.resids[pairs[:, 0]]
+            resixB = self.g2.resids[pairs[:, 1]]
+            mask = np.where(resixA != resixB)[0]
             dist = dist[mask]
 
         count, _ = np.histogram(dist, **self.rdf_settings)
