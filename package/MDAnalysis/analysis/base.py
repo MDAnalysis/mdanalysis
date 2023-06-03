@@ -131,6 +131,8 @@ from MDAnalysis import coordinates
 from MDAnalysis.core.groups import AtomGroup
 from MDAnalysis.lib.log import ProgressBar
 
+from functools import partial
+
 logger = logging.getLogger(__name__)
 
 
@@ -218,6 +220,36 @@ class Results(UserDict):
 
     def __setstate__(self, state):
         self.data = state
+
+from typing import Callable, Iterable
+
+
+def delayed(obj):
+    if isinstance(obj, Iterable):
+
+        class inner:
+            def __init__(self, iterable):
+                self._computations = iterable
+
+            def compute(self):
+                return [f.compute() for f in self._computations]
+
+        return inner(obj)
+
+    elif isinstance(obj, Callable):
+
+        class inner:
+            def __init__(self, *a, **kwa):
+                self._a = a
+                self._kwa = kwa
+                self._func = obj
+
+            def compute(self):
+                return self._func(*self._a, **self._kwa)
+
+        return inner
+    else:
+        raise ValueError(f"Argument should be Iterable or Callable, got {type(obj)}")
 
 
 class AnalysisBase(object):
@@ -389,8 +421,8 @@ class AnalysisBase(object):
         """
         pass  # pylint: disable=unnecessary-pass
 
-    def run(self, start=None, stop=None, step=None, frames=None,
-            verbose=None, *, progressbar_kwargs={}):
+    def _compute(self, start=None, stop=None, step=None, 
+        frames=None, verbose=None, *, progressbar_kwargs={}):
         """Perform the calculation
 
         Parameters
@@ -447,8 +479,40 @@ class AnalysisBase(object):
             self.times[i] = ts.time
             self._single_frame()
         logger.info("Finishing up")
+        return self
+
+    def _setup_bslices(self, start=None, stop=None, step=None, frames=None):
+        self._bslices = [(start, stop, step, frames)]
+    
+    def _setup_scheduler(self, **kwa):
+        self._scheduler_kwargs = kwa
+
+    def run(self, start=None, stop=None, step=None, frames=None,
+            verbose=None, *, progressbar_kwargs={},
+            scheduler=None):
+        if scheduler is None:
+            self._compute()
+        elif scheduler == 'remote':
+            self._compute(start=start, stop=stop, step=step, frames=frames, verbose=verbose)
+        else: # elif scheduler is a type of dask scheduler
+            self._setup_scheduler()
+            self._setup_bslices(start=start, stop=stop, step=step,
+                frames=frames)
+            computations = delayed(
+                [
+                    delayed(self.run)(start=bstart, stop=bstop, step=bstep, frames=bframes)
+                    for bstart, bstop, bstep, bframes in self._bslices
+                ]
+            )
+            dask_results = computations.compute(**self._scheduler_kwargs)
+            self._remote_results = dask_results
+            self._parallel_conclude()
+
         self._conclude()
         return self
+    
+    def _parallel_conclude(self):
+        self.results = self._remote_results[0].results
 
 
 class AnalysisFromFunction(AnalysisBase):
