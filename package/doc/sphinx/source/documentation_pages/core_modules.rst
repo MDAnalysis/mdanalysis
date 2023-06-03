@@ -43,6 +43,7 @@ The topology system is primarily of interest to developers.
    core/topology
    core/topologyobjects
    core/topologyattrs
+   core/bondtable
 
 .. SeeAlso:: :ref:`Developer notes for Topology
              Parsers <topology-parsers-developer-notes>`

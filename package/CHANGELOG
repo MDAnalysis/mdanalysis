@@ -13,13 +13,15 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay
+??/??/?? IAlibay, hmacdope
 
  * 2.6.0
 
 Fixes
 
 Enhancements
+  * Added BondTable cython class to Bonds topology attribute for fast searching
+    of bonds (PR #3777, Issue #3733)
 
 Changes
 
