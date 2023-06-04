@@ -21,7 +21,8 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import numpy as np
-from numpy.testing import assert_equal
+import pickle
+from numpy.testing import assert_equal, assert_almost_equal
 import pytest
 
 import MDAnalysis as mda
@@ -281,3 +282,9 @@ class TestResidueGroup(object):
         prev_resids = [r.resid if r is not None else None for r in prev_res]
         assert_equal(len(prev_res), len(unsorted_rep_res))
         assert_equal(prev_resids, resids)
+
+    @pytest.mark.parametrize("selection", ("name CA", "segid 4AKE"))
+    def test_residuegroup_pickle(self, universe, selection):
+        seg_res = universe.select_atoms(selection).residues
+        seg = pickle.loads(pickle.dumps(seg_res))
+        assert_almost_equal(seg_res.atoms.positions, seg.atoms.positions)

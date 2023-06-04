@@ -20,6 +20,9 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+import sys
+import platform
+import warnings
 import numpy as np
 import os
 
@@ -171,6 +174,7 @@ class TestChainReader(object):
         ref = universe.trajectory[0].positions + vector
         transformed.trajectory.rewind()
         assert_almost_equal(transformed.trajectory.ts.positions, ref, decimal = 6)
+
 
 class TestChainReaderCommonDt(object):
     common_dt = 100.0
@@ -345,7 +349,16 @@ class TestChainReaderContinuous(object):
         sequences = ([0, 1, 2, 3], [2, 3, 4, 5], [4, 5, 6, 7])
         utop, fnames = build_trajectories(folder, sequences=sequences,)
         with no_warning(UserWarning):
-            mda.Universe(utop._topology, fnames, continuous=True)
+            with warnings.catch_warnings():
+                # for windows Python 3.10 ignore:
+                # ImportWarning('_SixMetaPathImporter.find_spec() not found
+                # TODO: remove when we no longer have a dependency
+                # that still imports six
+                if sys.version_info >= (3, 10):
+                    warnings.filterwarnings(
+                            action='ignore',
+                            category=ImportWarning)
+                mda.Universe(utop._topology, fnames, continuous=True)
 
     def test_single_frames(self, tmpdir):
         folder = str(tmpdir)
@@ -399,3 +412,32 @@ def test_multilevel_arg_sort(l, ref):
 def test_filter_times(l, ref):
     indices = mda.coordinates.chain.filter_times(l, dt=1)
     assert_equal(indices, ref)
+
+
+def test_issue_4008():
+    # test for transformation on a chainreader trajectory
+    # in issue #4008 it was observed that the transformation did not work on
+    # the frames which were "borders" of the chained trajectories
+    def shift_by_group(ag):
+        # this just shifts all atoms in the box by their center of mass,
+        # i.e. afterwards the center of mass of all atoms should be [0,0,0]
+        def wrapped(ts):
+            shift = ag.center_of_mass()
+            ts.positions[:] -= shift
+            return ts
+
+        return wrapped
+
+    u = mda.Universe(GRO, [XTC, XTC])
+
+    trafos = (shift_by_group(u.atoms),)
+    u.trajectory.add_transformations(*trafos)
+    com = np.zeros((len(u.trajectory), 3))
+
+    for i, ts in enumerate(u.trajectory):
+        com[i] = u.atoms.center_of_mass()
+
+    # see issue for details, but in general the com shouldn't be far from zero
+    # in the issue report values of ~25 were seen before the fix
+    # with the fix all values should be <1e-6
+    assert np.abs(com).max() < 1e-6

@@ -9,6 +9,7 @@ from numpy.testing import (
 )
 import pytest
 import numpy as np
+import pickle
 
 from MDAnalysisTests import make_Universe
 
@@ -21,6 +22,11 @@ from MDAnalysis.core import topologyattrs as ta
 from MDAnalysis.core import groups
 from MDAnalysis import NoDataError
 import MDAnalysis
+
+
+def assert_rows_match(a, b):
+    for row_a, row_b in zip(a, b):
+        assert_equal(row_a, row_b)
 
 
 class TestTransTable(object):
@@ -143,6 +149,39 @@ class TestTransTable(object):
         assert_equal(tt.residues2segments(1), 0)
         assert_equal(len(tt.segments2residues_1d(0)), 3)
         assert_equal(len(tt.segments2residues_1d(1)), 1)
+
+    def test_lazy_building_RA(self, tt):
+        assert_equal(tt._RA, None)
+        RA = tt.RA
+        assert_rows_match(tt.RA,
+                          np.array([np.array([0, 1]),
+                                    np.array([4, 5, 8]),
+                                    np.array([2, 3, 9]),
+                                    np.array([6, 7]),
+                                    None], dtype=object))
+
+        tt.move_atom(1, 3)
+        assert_equal(tt._RA, None)
+
+    def test_lazy_building_SR(self, tt):
+        assert_equal(tt._SR, None)
+        SR = tt.SR
+        assert_rows_match(tt.SR,
+                          np.array([np.array([0, 3]),
+                                    np.array([1, 2]),
+                                    None], dtype=object))
+
+        tt.move_residue(1, 0)
+        assert_equal(tt._SR, None)
+
+    def test_serialization(self, tt):
+        _ = tt.RA
+        _ = tt.SR
+        tt_loaded = pickle.loads(pickle.dumps(tt))
+        assert_equal(tt_loaded._RA, None)
+        assert_equal(tt_loaded._SR, None)
+        assert_rows_match(tt_loaded.RA, tt.RA)
+        assert_rows_match(tt_loaded.SR, tt.SR)
 
 
 class TestLevelMoves(object):
@@ -467,11 +506,6 @@ class TestDownshiftArrays(object):
         return np.array([[0, 4, 7], [1, 5, 8], [2, 3, 6, 9]],
                         dtype=object)
 
-    @staticmethod
-    def assert_rows_match(a, b):
-        for row_a, row_b in zip(a, b):
-            assert_equal(row_a, row_b)
-
     # The array as a whole must be dtype object
     # While the subarrays must be integers
     def test_downshift_dtype_square(self, square, square_size):
@@ -498,16 +532,16 @@ class TestDownshiftArrays(object):
 
     def test_contents_square(self, square, square_size, square_result):
         out = make_downshift_arrays(square, square_size)
-        self.assert_rows_match(out, square_result)
+        assert_rows_match(out, square_result)
 
     def test_contents_ragged(self, ragged, ragged_size, ragged_result):
         out = make_downshift_arrays(ragged, ragged_size)
-        self.assert_rows_match(out, ragged_result)
+        assert_rows_match(out, ragged_result)
 
     def test_missing_intra_values(self):
         out = make_downshift_arrays(
             np.array([0, 0, 2, 2, 3, 3]), 4)
-        self.assert_rows_match(out,
+        assert_rows_match(out,
                                np.array([np.array([0, 1]),
                                          np.array([], dtype=int),
                                          np.array([2, 3]),
@@ -517,7 +551,7 @@ class TestDownshiftArrays(object):
     def test_missing_intra_values_2(self):
         out = make_downshift_arrays(
             np.array([0, 0, 3, 3, 4, 4]), 5)
-        self.assert_rows_match(out,
+        assert_rows_match(out,
                                np.array([np.array([0, 1]),
                                          np.array([], dtype=int),
                                          np.array([], dtype=int),
@@ -527,7 +561,7 @@ class TestDownshiftArrays(object):
 
     def test_missing_end_values(self):
         out = make_downshift_arrays(np.array([0, 0, 1, 1, 2, 2]), 4)
-        self.assert_rows_match(out,
+        assert_rows_match(out,
                                np.array([np.array([0, 1]),
                                          np.array([2, 3]),
                                          np.array([4, 5]),
@@ -536,7 +570,7 @@ class TestDownshiftArrays(object):
 
     def test_missing_end_values_2(self):
         out = make_downshift_arrays(np.array([0, 0, 1, 1, 2, 2]), 6)
-        self.assert_rows_match(out,
+        assert_rows_match(out,
                                np.array([np.array([0, 1]),
                                          np.array([2, 3]),
                                          np.array([4, 5]),
@@ -544,6 +578,14 @@ class TestDownshiftArrays(object):
                                          np.array([], dtype=int),
                                          None], dtype=object))
 
+    def test_missing_start_values_2(self):
+        out = make_downshift_arrays(np.array([1, 1, 2, 2, 3, 3]), 4)
+        assert_rows_match(out,
+                          np.array([np.array([], dtype=int),
+                                    np.array([0, 1]),
+                                    np.array([2, 3]),
+                                    np.array([4, 5]),
+                                    None], dtype=object))
 
 class TestAddingResidues(object):
     """Tests for adding residues and segments to a Universe
@@ -672,26 +714,30 @@ class TestTopologyGuessed(object):
                            guessed=True)
 
     @pytest.fixture()
-    def top(self, names, types, resids, resnames):
-        return Topology(n_atoms=3, n_res=1,
-                        attrs=[names, types, resids, resnames])
+    def bonds(self):
+        return ta.Bonds([(1, 2), (2, 3)], guessed=False)
 
-    def test_guessed(self, names, types, resids, resnames, top):
+    @pytest.fixture()
+    def top(self, names, types, resids, resnames, bonds):
+        return Topology(n_atoms=3, n_res=1,
+                        attrs=[names, types, resids, resnames, bonds])
+
+    def test_guessed(self, names, types, resids, resnames, bonds, top):
         guessed = top.guessed_attributes
 
         assert types in guessed
         assert resnames in guessed
         assert not names in guessed
         assert not resids in guessed
+        assert bonds not in guessed
 
-    def test_read(self, names, types, resids, resnames, top):
+    def test_read(self, names, types, resids, resnames, bonds, top):
         read = top.read_attributes
-
         assert names in read
         assert resids in read
+        assert bonds in read
         assert not types in read
         assert not resnames in read
-
 
 class TestTopologyCreation(object):
     def test_make_topology_no_attrs(self):

@@ -25,10 +25,17 @@
 Mathematical helper functions --- :mod:`MDAnalysis.lib.mdamath`
 ===============================================================
 
-Helper functions for common mathematical operations
+
+Helper functions for common mathematical operations. Some of these functions
+are written in C/cython for higher performance.
+
+Linear algebra
+--------------
 
 .. autofunction:: normal
 .. autofunction:: norm
+.. autofunction:: pdot
+.. autofunction:: pnorm
 .. autofunction:: angle
 .. autofunction:: dihedral
 .. autofunction:: stp
@@ -36,12 +43,19 @@ Helper functions for common mathematical operations
 .. autofunction:: triclinic_box
 .. autofunction:: triclinic_vectors
 .. autofunction:: box_volume
+
+
+Connectivity
+------------
+
 .. autofunction:: make_whole
 .. autofunction:: find_fragments
+
 
 .. versionadded:: 0.11.0
 .. versionchanged: 1.0.0
    Unused function :func:`_angle()` has now been removed.
+
 """
 import numpy as np
 
@@ -49,11 +63,13 @@ from ..exceptions import NoDataError
 from . import util
 from ._cutil import (make_whole, find_fragments, _sarrus_det_single,
                      _sarrus_det_multiple)
+import numpy.typing as npt
+from typing import Union
 
 # geometric functions
 
 
-def norm(v):
+def norm(v: npt.ArrayLike) -> float:
     r"""Calculate the norm of a vector v.
 
     .. math:: v = \sqrt{\mathbf{v}\cdot\mathbf{v}}
@@ -76,7 +92,7 @@ def norm(v):
     return np.sqrt(np.dot(v, v))
 
 
-def normal(vec1, vec2):
+def normal(vec1: npt.ArrayLike, vec2: npt.ArrayLike) -> npt.NDArray:
     r"""Returns the unit vector normal to two vectors.
 
     .. math::
@@ -88,7 +104,7 @@ def normal(vec1, vec2):
     .. versionchanged:: 0.11.0
        Moved into lib.mdamath
     """
-    normal = np.cross(vec1, vec2)
+    normal: npt.NDArray = np.cross(vec1, vec2)
     n = norm(normal)
     if n == 0.0:
         return normal  # returns [0,0,0] instead of [nan,nan,nan]
@@ -96,7 +112,7 @@ def normal(vec1, vec2):
     return normal / n
 
 
-def pdot(a, b):
+def pdot(a: npt.NDArray, b: npt.NDArray) -> npt.NDArray:
     """Pairwise dot product.
 
     ``a`` must be the same shape as ``b``.
@@ -113,7 +129,7 @@ def pdot(a, b):
     return np.einsum('ij,ij->i', a, b)
 
 
-def pnorm(a):
+def pnorm(a: npt.NDArray) -> npt.NDArray:
     """Euclidean norm of each vector in a matrix
 
     Parameters
@@ -127,7 +143,7 @@ def pnorm(a):
     return pdot(a, a)**0.5
 
 
-def angle(a, b):
+def angle(a: npt.ArrayLike, b: npt.ArrayLike) -> float:
     """Returns the angle between two vectors in radians
 
     .. versionchanged:: 0.11.0
@@ -142,7 +158,7 @@ def angle(a, b):
     return np.arccos(x)
 
 
-def stp(vec1, vec2, vec3):
+def stp(vec1: npt.ArrayLike, vec2: npt.ArrayLike, vec3: npt.ArrayLike) -> float:
     r"""Takes the scalar triple product of three vectors.
 
     Returns the volume *V* of the parallel epiped spanned by the three
@@ -158,7 +174,7 @@ def stp(vec1, vec2, vec3):
     return np.dot(vec3, np.cross(vec1, vec2))
 
 
-def dihedral(ab, bc, cd):
+def dihedral(ab: npt.ArrayLike, bc: npt.ArrayLike, cd: npt.ArrayLike) -> float:
     r"""Returns the dihedral angle in radians between vectors connecting A,B,C,D.
 
     The dihedral measures the rotation around bc::
@@ -180,7 +196,7 @@ def dihedral(ab, bc, cd):
     return (x if stp(ab, bc, cd) <= 0.0 else -x)
 
 
-def sarrus_det(matrix):
+def sarrus_det(matrix: npt.NDArray) -> Union[float, npt.NDArray]:
     """Computes the determinant of a 3x3 matrix according to the
     `rule of Sarrus`_.
 
@@ -225,7 +241,7 @@ def sarrus_det(matrix):
     return _sarrus_det_multiple(m.reshape((-1, 3, 3))).reshape(shape[:-2])
 
 
-def triclinic_box(x, y, z):
+def triclinic_box(x: npt.ArrayLike, y: npt.ArrayLike, z: npt.ArrayLike) -> npt.NDArray:
     """Convert the three triclinic box vectors to
     ``[lx, ly, lz, alpha, beta, gamma]``.
 
@@ -253,7 +269,7 @@ def triclinic_box(x, y, z):
     numpy.ndarray
         A numpy array of shape ``(6,)`` and dtype ``np.float32`` providing the
         unitcell dimensions in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.\n
         Invalid boxes are returned as a zero vector.
 
@@ -287,7 +303,8 @@ def triclinic_box(x, y, z):
     return np.zeros(6, dtype=np.float32)
 
 
-def triclinic_vectors(dimensions, dtype=np.float32):
+def triclinic_vectors(dimensions: npt.ArrayLike,
+                      dtype: npt.DTypeLike = np.float32) -> npt.NDArray:
     """Convert ``[lx, ly, lz, alpha, beta, gamma]`` to a triclinic matrix
     representation.
 
@@ -305,7 +322,7 @@ def triclinic_vectors(dimensions, dtype=np.float32):
     ----------
     dimensions : array_like
         Unitcell dimensions provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.
     dtype: numpy.dtype
         The data type of the returned box matrix.
@@ -385,7 +402,7 @@ def triclinic_vectors(dimensions, dtype=np.float32):
     return box_matrix
 
 
-def box_volume(dimensions):
+def box_volume(dimensions: npt.ArrayLike) -> float:
     """Return the volume of the unitcell described by `dimensions`.
 
     The volume is computed as the product of the box matrix trace, with the
@@ -398,7 +415,7 @@ def box_volume(dimensions):
     ----------
     dimensions : array_like
         Unitcell dimensions provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.
 
     Returns

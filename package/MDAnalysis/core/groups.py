@@ -119,6 +119,11 @@ def _unpickle(u, ix):
     return u.atoms[ix]
 
 
+# TODO 3.0: deprecate _unpickle in favor of _unpickle2.
+def _unpickle2(u, ix, cls):
+    return cls(ix, u)
+
+
 def _unpickle_uag(basepickle, selections, selstrs):
     bfunc, bargs = basepickle[0], basepickle[1:][0]
     basegroup = bfunc(*bargs)
@@ -432,15 +437,27 @@ class _ImmutableBase(object):
     __new__ = object.__new__
 
 
-def check_pbc_and_unwrap(function):
-    """Decorator to raise ValueError when both 'pbc' and 'unwrap' are set to True.
-    """
+def _pbc_to_wrap(function):
+    """Raises deprecation warning if 'pbc' is set and assigns value to 'wrap'"""
     @functools.wraps(function)
     def wrapped(group, *args, **kwargs):
-        if kwargs.get('compound') == 'group':
-            if kwargs.get('pbc') and kwargs.get('unwrap'):
-                raise ValueError(
-                    "both 'pbc' and 'unwrap' can not be set to true")
+        if kwargs.get('pbc', None) is not None:
+            warnings.warn("The 'pbc' kwarg has been deprecated and will be "
+                          "removed in version 3.0., "
+                          "please use 'wrap' instead",
+                          DeprecationWarning)
+            kwargs['wrap'] = kwargs.pop('pbc')
+
+        return function(group, *args, **kwargs)
+    return wrapped
+
+
+def check_wrap_and_unwrap(function):
+    """Raises ValueError when both 'wrap' and 'unwrap' are set to True"""
+    @functools.wraps(function)
+    def wrapped(group, *args, **kwargs):
+        if kwargs.get('wrap') and kwargs.get('unwrap'):
+            raise ValueError("both 'wrap' and 'unwrap' can not be set to true")
         return function(group, *args, **kwargs)
     return wrapped
 
@@ -569,7 +586,9 @@ class GroupBase(_MutableBase):
         # because our _ix attribute is a numpy array
         # it can be sliced by all of these already,
         # so just return ourselves sliced by the item
-        if isinstance(item, numbers.Integral):
+        if item is None:
+            raise TypeError('None cannot be used to index a group.')
+        elif isinstance(item, numbers.Integral):
             return self.level.singular(self.ix[item], self.universe)
         else:
             if isinstance(item, list) and item:  # check for empty list
@@ -948,8 +967,9 @@ class GroupBase(_MutableBase):
         return atom_masks, compound_masks, len(compound_sizes)
 
     @warn_if_not_unique
-    @check_pbc_and_unwrap
-    def center(self, weights, pbc=False, compound='group', unwrap=False):
+    @_pbc_to_wrap
+    @check_wrap_and_unwrap
+    def center(self, weights, wrap=False, unwrap=False, compound='group'):
         """Weighted center of (compounds of) the group
 
         Computes the weighted center of :class:`Atoms<Atom>` in the group.
@@ -964,14 +984,17 @@ class GroupBase(_MutableBase):
         weights : array_like or None
             Weights to be used. Setting `weights=None` is equivalent to passing
             identical weights for all atoms of the group.
-        pbc : bool, optional
+        wrap : bool, optional
             If ``True`` and `compound` is ``'group'``, move all atoms to the
-            primary unit cell before calculation. If ``True`` and `compound` is
-            ``'segments'``, ``'residues'``, ``'molecules'``, or ``'fragments'``,
-            the center of each compound will be calculated without moving any
+            primary unit cell before calculation.
+            If ``True`` and `compound` is not ``'group'`` the center of each
+            compound will be calculated without moving any
             :class:`Atoms<Atom>` to keep the compounds intact. Instead, the
             resulting position vectors will be moved to the primary unit cell
             after calculation. Default [``False``].
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their
+             centers.
         compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
             If ``'group'``, the weighted center of all atoms in the group will
             be returned as a single position vector. Else, the weighted centers
@@ -979,11 +1002,6 @@ class GroupBase(_MutableBase):
             will be returned as an array of position vectors, i.e. a 2d array.
             Note that, in any case, *only* the positions of :class:`Atoms<Atom>`
             *belonging to the group* will be taken into account.
-        unwrap : bool, optional
-            If ``True``, compounds will be unwrapped before computing their
-            centers. The position of the first atom of each compound will be
-            taken as the reference to unwrap from; as such, results may differ
-            for the same :class:`AtomGroup` if atoms are ordered differently.
 
         Returns
         -------
@@ -1001,7 +1019,7 @@ class GroupBase(_MutableBase):
             If `compound` is not one of ``'group'``, ``'segments'``,
             ``'residues'``, ``'molecules'``, or ``'fragments'``.
         ValueError
-            If both 'pbc' and 'unwrap' set to true.
+            If both 'wrap' and 'unwrap' set to true.
         ~MDAnalysis.exceptions.NoDataError
             If `compound` is ``'molecule'`` but the topology doesn't
             contain molecule information (molnums) or if `compound` is
@@ -1026,6 +1044,9 @@ class GroupBase(_MutableBase):
             compounds
         .. versionchanged:: 0.20.0 Added `unwrap` parameter
         .. versionchanged:: 1.0.0 Removed flags affecting default behaviour
+        .. versionchanged::
+           2.1.0 Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
+           is deprecated and will be removed in version 3.0.
         """
         atoms = self.atoms
 
@@ -1034,7 +1055,7 @@ class GroupBase(_MutableBase):
 
         comp = compound.lower()
         if comp == 'group':
-            if pbc:
+            if wrap:
                 coords = atoms.pack_into_box(inplace=False)
             elif unwrap:
                 coords = atoms.unwrap(
@@ -1050,7 +1071,7 @@ class GroupBase(_MutableBase):
                 return coords.mean(axis=0)
             # promote weights to dtype if required:
             weights = weights.astype(dtype, copy=False)
-            return (coords * weights[:, None]).sum(axis=0) / weights.sum()
+            return np.einsum('ij,ij->j',coords,weights[:, None]) / weights.sum()
 
         # When compound split caching gets implemented it will be clever to
         # preempt at this point whether or not stable sorting will be needed
@@ -1079,41 +1100,46 @@ class GroupBase(_MutableBase):
                 _centers = _coords.mean(axis=1)
             else:
                 _weights = weights[atom_mask]
-                _centers = (_coords * _weights[:, :, None]).sum(axis=1)
+                _centers = np.einsum('ijk,ijk->ik',_coords,_weights[:, :, None])
                 _centers /= _weights.sum(axis=1)[:, None]
             centers[compound_mask] = _centers
-        if pbc:
+        if wrap:
             centers = distances.apply_PBC(centers, atoms.dimensions)
         return centers
 
     @warn_if_not_unique
-    @check_pbc_and_unwrap
-    def center_of_geometry(self, pbc=False, compound='group', unwrap=False):
-        """Center of geometry of (compounds of) the group.
+    @_pbc_to_wrap
+    @check_wrap_and_unwrap
+    def center_of_geometry(self, wrap=False, unwrap=False, compound='group'):
+        r"""Center of geometry of (compounds of) the group
 
-        Computes the center of geometry (a.k.a. centroid) of
-        :class:`Atoms<Atom>` in the group. Centers of geometry per
-        :class:`Residue`, :class:`Segment`, molecule, or fragment can be
-        obtained by setting the `compound` parameter accordingly.
+        .. math::
+            \boldsymbol R = \frac{\sum_i \boldsymbol r_i}{\sum_i 1}
+
+        where :math:`\boldsymbol r_i` of :class:`Atoms<Atom>` :math:`i`.
+        Centers of geometry per :class:`Residue` or per :class:`Segment` can
+        be obtained by setting the `compound` parameter accordingly.
 
         Parameters
         ----------
-        pbc : bool, optional
+        wrap : bool, optional
             If ``True`` and `compound` is ``'group'``, move all atoms to the
             primary unit cell before calculation. If ``True`` and `compound` is
             ``'segments'`` or ``'residues'``, the center of each compound will
             be calculated without moving any :class:`Atoms<Atom>` to keep the
             compounds intact. Instead, the resulting position vectors will be
             moved to the primary unit cell after calculation. Default False.
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their
+            centers.
         compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
             If ``'group'``, the center of geometry of all :class:`Atoms<Atom>`
-            in the group will be returned as a single position vector. Else, the
-            centers of geometry of each :class:`Segment` or :class:`Residue`
-            will be returned as an array of position vectors, i.e. a 2d array.
-            Note that, in any case, *only* the positions of :class:`Atoms<Atom>`
-            *belonging to the group* will be taken into account.
-        unwrap : bool, optional
-            If ``True``, compounds will be unwrapped before computing their centers.
+            in the group will be returned as a single position vector. Else,
+            the centers of geometry of each :class:`Segment` or
+            :class:`Residue` will be returned as an array of position vectors,
+            i.e. a 2d array. Note that, in any case, *only* the positions of
+            :class:`Atoms<Atom>` *belonging to the group* will be taken into
+            account.
 
         Returns
         -------
@@ -1132,8 +1158,11 @@ class GroupBase(_MutableBase):
             compounds
         .. versionchanged:: 0.20.0 Added `unwrap` parameter
         .. versionchanged:: 1.0.0 Removed flags affecting default behaviour
+        .. versionchanged::
+           2.1.0 Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
+           is deprecated and will be removed in version 3.0.
         """
-        return self.center(None, pbc=pbc, compound=compound, unwrap=unwrap)
+        return self.center(None, wrap=wrap, compound=compound, unwrap=unwrap)
 
     centroid = center_of_geometry
 
@@ -1249,7 +1278,8 @@ class GroupBase(_MutableBase):
             accumulation[compound_mask] = _accumulation
         return accumulation
 
-    def bbox(self, pbc=False):
+    @_pbc_to_wrap
+    def bbox(self, wrap=False):
         """Return the bounding box of the selection.
 
         The lengths A,B,C of the orthorhombic enclosing box are ::
@@ -1259,7 +1289,7 @@ class GroupBase(_MutableBase):
 
         Parameters
         ----------
-        pbc : bool, optional
+        wrap : bool, optional
             If ``True``, move all :class:`Atoms<Atom>` to the primary unit cell
             before calculation. [``False``]
 
@@ -1273,17 +1303,22 @@ class GroupBase(_MutableBase):
         .. versionadded:: 0.7.2
         .. versionchanged:: 0.8 Added *pbc* keyword
         .. versionchanged:: 1.0.0 Removed flags affecting default behaviour
+        .. versionchanged::
+           2.1.0 Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
+           is deprecated and will be removed in version 3.0.
         """
+        # TODO: Add unwrap/compounds treatment
         atomgroup = self.atoms
 
-        if pbc:
+        if wrap:
             x = atomgroup.pack_into_box(inplace=False)
         else:
             x = atomgroup.positions
 
         return np.array([x.min(axis=0), x.max(axis=0)])
 
-    def bsphere(self, pbc=False):
+    @_pbc_to_wrap
+    def bsphere(self, wrap=False):
         """Return the bounding sphere of the selection.
 
         The sphere is calculated relative to the
@@ -1291,7 +1326,7 @@ class GroupBase(_MutableBase):
 
         Parameters
         ----------
-        pbc : bool, optional
+        wrap : bool, optional
             If ``True``, move all atoms to the primary unit cell before
             calculation. [``False``]
 
@@ -1305,15 +1340,18 @@ class GroupBase(_MutableBase):
 
         .. versionadded:: 0.7.3
         .. versionchanged:: 0.8 Added *pbc* keyword
+        .. versionchanged::
+           2.1.0 Renamed `pbc` kwarg to `wrap`. `pbc` is still accepted but
+           is deprecated and will be removed in version 3.0.
         """
         atomgroup = self.atoms.unsorted_unique
 
-        if pbc:
+        if wrap:
             x = atomgroup.pack_into_box(inplace=False)
-            centroid = atomgroup.center_of_geometry(pbc=True)
+            centroid = atomgroup.center_of_geometry(wrap=True)
         else:
             x = atomgroup.positions
-            centroid = atomgroup.center_of_geometry(pbc=False)
+            centroid = atomgroup.center_of_geometry(wrap=False)
 
         R = np.sqrt(np.max(np.sum(np.square(x - centroid), axis=1)))
 
@@ -1490,7 +1528,7 @@ class GroupBase(_MutableBase):
         box : array_like
             Box dimensions, can be either orthogonal or triclinic information.
             Cell dimensions must be in an identical to format to those returned
-            by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,
+            by :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`,
             ``[lx, ly, lz, alpha, beta, gamma]``. If ``None``, uses these
             timestep dimensions.
         inplace : bool
@@ -1512,7 +1550,7 @@ class GroupBase(_MutableBase):
            x_i' = x_i - \left\lfloor\frac{x_i}{L_i}\right\rfloor
 
         The default is to take unit cell information from the underlying
-        :class:`~MDAnalysis.coordinates.base.Timestep` instance. The optional
+        :class:`~MDAnalysis.coordinates.timestep.Timestep` instance. The optional
         argument `box` can be used to provide alternative unit cell information
         (in the MDAnalysis standard format
         ``[Lx, Ly, Lz, alpha, beta, gamma]``).
@@ -1555,7 +1593,7 @@ class GroupBase(_MutableBase):
         box : array_like, optional
             The unitcell dimensions of the system, which can be orthogonal or
             triclinic and must be provided in the same format as returned by
-            :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+            :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
             ``[lx, ly, lz, alpha, beta, gamma]``.
             If ``None``, uses the
             dimensions of the current time step.
@@ -1610,9 +1648,9 @@ class GroupBase(_MutableBase):
 
 
         `box` allows a unit cell to be given for the transformation. If not
-        specified, the :attr:`~MDAnalysis.coordinates.base.Timestep.dimensions`
+        specified, the :attr:`~MDAnalysis.coordinates.timestep.Timestep.dimensions`
         information from the current
-        :class:`~MDAnalysis.coordinates.base.Timestep` will be used.
+        :class:`~MDAnalysis.coordinates.timestep.Timestep` will be used.
 
         .. note::
             :meth:`AtomGroup.wrap` is currently faster than
@@ -1681,14 +1719,14 @@ class GroupBase(_MutableBase):
 
             # compute and apply required shift:
             if ctr == 'com':
-                ctrpos = atoms.center_of_mass(pbc=False, compound=comp)
+                ctrpos = atoms.center_of_mass(wrap=False, compound=comp)
                 if np.any(np.isnan(ctrpos)):
                     specifier = 'the' if comp == 'group' else 'one of the'
                     raise ValueError("Cannot use compound='{0}' with "
                                      "center='com' because {1} {0}\'s total "
                                      "mass is zero.".format(comp, specifier))
             else:  # ctr == 'cog'
-                ctrpos = atoms.center_of_geometry(pbc=False, compound=comp)
+                ctrpos = atoms.center_of_geometry(wrap=False, compound=comp)
             ctrpos = ctrpos.astype(np.float32, copy=False)
             target = distances.apply_PBC(ctrpos, box)
             shifts = target - ctrpos
@@ -1826,7 +1864,7 @@ class GroupBase(_MutableBase):
                         raise ValueError("Cannot perform unwrap with "
                                          "reference='com' because the total "
                                          "mass of the group is zero.")
-                    refpos = np.sum(positions * masses[:, None], axis=0)
+                    refpos = np.einsum('ij,ij->j',positions,masses[:, None])
                     refpos /= total_mass
                 else:  # reference == 'cog'
                     refpos = positions.mean(axis=0)
@@ -1855,8 +1893,8 @@ class GroupBase(_MutableBase):
                                              "reference='com' because the "
                                              "total mass of at least one of "
                                              "the {} is zero.".format(comp))
-                        refpos = np.sum(positions[atom_mask]
-                                        * masses[:, :, None], axis=1)
+                        refpos = np.einsum('ijk,ijk->ik',positions[atom_mask],
+                                           masses[:, :, None])
                         refpos /= total_mass[:, None]
                     else:  # reference == 'cog'
                         refpos = positions[atom_mask].mean(axis=1)
@@ -2488,10 +2526,9 @@ class AtomGroup(GroupBase):
     .. versionchanged:: 2.0.0
        :class:`AtomGroup` can always be pickled with or without its universe,
        instead of failing when not finding its anchored universe.
+    .. versionchanged:: 2.1.0
+       Indexing an AtomGroup with ``None`` raises a ``TypeError``.
     """
-
-    def __reduce__(self):
-        return (_unpickle, (self.universe, self.ix))
 
     def __getattr__(self, attr):
         # special-case timestep info
@@ -2500,6 +2537,9 @@ class AtomGroup(GroupBase):
         elif attr == 'positions':
             raise NoDataError('This Universe has no coordinates')
         return super(AtomGroup, self).__getattr__(attr)
+
+    def __reduce__(self):
+        return (_unpickle, (self.universe, self.ix))
 
     @property
     def atoms(self):
@@ -2632,16 +2672,19 @@ class AtomGroup(GroupBase):
         Examples
         --------
 
+           >>> import MDAnalysis as mda
+           >>> from MDAnalysis.tests.datafiles import PSF, DCD
+           >>> u = mda.Universe(PSF, DCD)
            >>> ag = u.atoms[[2, 1, 2, 2, 1, 0]]
            >>> ag
            <AtomGroup with 6 atoms>
            >>> ag.ix
-           array([2, 1, 2, 2, 1, 0])
+           array([2, 1, 2, 2, 1, 0], dtype=int64)
            >>> ag2 = ag.unique
            >>> ag2
            <AtomGroup with 3 atoms>
            >>> ag2.ix
-           array([0, 1, 2])
+           array([0, 1, 2], dtype=int64)
            >>> ag2.unique is ag2
            False
 
@@ -2685,19 +2728,22 @@ class AtomGroup(GroupBase):
         Examples
         --------
 
+           >>> import MDAnalysis as mda
+           >>> from MDAnalysis.tests.datafiles import PSF, DCD
+           >>> u = mda.Universe(PSF, DCD)
            >>> ag = u.atoms[[2, 1, 0]]
            >>> ag2 = ag.asunique(sorted=False)
            >>> ag2 is ag
            True
            >>> ag2.ix
-           array([2, 1, 0])
+           array([2, 1, 0], dtype=int64)
            >>> ag3 = ag.asunique(sorted=True)
            >>> ag3 is ag
            False
            >>> ag3.ix
-           array([0, 1, 2])
+           array([0, 1, 2], dtype=int64)
            >>> u.atoms[[2, 1, 1, 0, 1]].asunique(sorted=False).ix
-           array([2, 1, 0])
+           array([2, 1, 0], dtype=int64)
 
 
         .. versionadded:: 2.0.0
@@ -2733,9 +2779,9 @@ class AtomGroup(GroupBase):
         Raises
         ------
         ~MDAnalysis.exceptions.NoDataError
-            If the underlying :class:`~MDAnalysis.coordinates.base.Timestep`
+            If the underlying :class:`~MDAnalysis.coordinates.timestep.Timestep`
             does not contain
-            :attr:`~MDAnalysis.coordinates.base.Timestep.positions`.
+            :attr:`~MDAnalysis.coordinates.timestep.Timestep.positions`.
         """
         return self.universe.trajectory.ts.positions[self.ix]
 
@@ -2761,9 +2807,9 @@ class AtomGroup(GroupBase):
         Raises
         ------
         ~MDAnalysis.exceptions.NoDataError
-            If the underlying :class:`~MDAnalysis.coordinates.base.Timestep`
+            If the underlying :class:`~MDAnalysis.coordinates.timestep.Timestep`
             does not contain
-            :attr:`~MDAnalysis.coordinates.base.Timestep.velocities`.
+            :attr:`~MDAnalysis.coordinates.timestep.Timestep.velocities`.
         """
         ts = self.universe.trajectory.ts
         return np.array(ts.velocities[self.ix])
@@ -2790,8 +2836,8 @@ class AtomGroup(GroupBase):
         Raises
         ------
         ~MDAnalysis.exceptions.NoDataError
-            If the :class:`~MDAnalysis.coordinates.base.Timestep` does not
-            contain :attr:`~MDAnalysis.coordinates.base.Timestep.forces`.
+            If the :class:`~MDAnalysis.coordinates.timestep.Timestep` does not
+            contain :attr:`~MDAnalysis.coordinates.timestep.Timestep.forces`.
         """
         ts = self.universe.trajectory.ts
         return ts.forces[self.ix]
@@ -2805,7 +2851,7 @@ class AtomGroup(GroupBase):
     def ts(self):
         """Temporary Timestep that contains the selection coordinates.
 
-        A :class:`~MDAnalysis.coordinates.base.Timestep` instance,
+        A :class:`~MDAnalysis.coordinates.timestep.Timestep` instance,
         which can be passed to a trajectory writer.
 
         If :attr:`~AtomGroup.ts` is modified then these modifications
@@ -2814,7 +2860,7 @@ class AtomGroup(GroupBase):
         :attr:`~MDAnalysis.core.universe.Universe.trajectory` frame changes).
 
         It is not possible to assign a new
-        :class:`~MDAnalysis.coordinates.base.Timestep` to the
+        :class:`~MDAnalysis.coordinates.timestep.Timestep` to the
         :attr:`AtomGroup.ts` attribute; change attributes of the object.
         """
         trj_ts = self.universe.trajectory.ts  # original time step
@@ -2826,7 +2872,7 @@ class AtomGroup(GroupBase):
 
     def select_atoms(self, sel, *othersel, periodic=True, rtol=1e-05,
                      atol=1e-08, updating=False, sorted=True,
-                     rdkit_kwargs=None, **selgroups):
+                     rdkit_kwargs=None, smarts_kwargs=None, **selgroups):
         """Select atoms from within this Group using a selection string.
 
         Returns an :class:`AtomGroup` sorted according to their index in the
@@ -2859,6 +2905,10 @@ class AtomGroup(GroupBase):
           Arguments passed to the
           :class:`~MDAnalysis.converters.RDKit.RDKitConverter` when using
           selection based on SMARTS queries
+        smarts_kwargs : dict (optional)
+          Arguments passed internally to RDKit's `GetSubstructMatches
+          <https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol.GetSubstructMatches>`_.
+
         **selgroups : keyword arguments of str: AtomGroup (optional)
           when using the "group" keyword in selections, groups are defined by
           passing them as keyword arguments.  See section on **preexisting
@@ -2977,7 +3027,35 @@ class AtomGroup(GroupBase):
             smarts *SMARTS-query*
                 select atoms using Daylight's SMARTS queries, e.g. ``smarts
                 [#7;R]`` to find nitrogen atoms in rings. Requires RDKit.
-                All matches (max 1000) are combined as a unique match
+                All matches are combined as a single unique match. The `smarts`
+                selection accepts two sets of key word arguments from
+                `select_atoms()`: the ``rdkit_kwargs`` are passed internally to
+                `RDKitConverter.convert()` and the ``smarts_kwargs`` are passed to
+                RDKit's `GetSubstructMatches
+                <https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol.GetSubstructMatches>`_.
+                By default, the `useChirality` kwarg in ``rdkit_kwargs`` is set to true
+                and maxMatches in ``smarts_kwargs`` is
+                ``max(1000, 10 * n_atoms)``, where ``n_atoms`` is either
+                ``len(AtomGroup)`` or ``len(Universe.atoms)``, whichever is
+                applicable. Note that the number of matches can occasionally
+                exceed the default value of maxMatches, causing too few atoms
+                to be returned. If this occurs, a warning will be issued. The
+                problem can be fixed by increasing the value of maxMatches.
+                This behavior may be updated in the future.
+
+                >>> universe.select_atoms("C", smarts_kwargs={"maxMatches": 100})
+                <AtomGroup with 100 atoms>
+
+            chiral *R | S*
+                select a particular stereocenter. e.g. ``name C and chirality
+                S`` to select only S-chiral carbon atoms.  Only ``R`` and
+                ``S`` will be possible options but other values will not raise
+                an error.
+
+            formalcharge *formal-charge*
+                select atoms based on their formal charge, e.g.
+                ``name O and formalcharge -1`` to select all oxygens with a
+                negative 1 formal charge.
 
         **Boolean**
 
@@ -3014,6 +3092,9 @@ class AtomGroup(GroupBase):
             sphlayer *inner radius* *outer radius* *selection*
                 Similar to sphzone, but also excludes atoms that are within
                 *inner radius* of the selection COG
+            isolayer *inner radius* *outer radius* *selection*
+                Similar to sphlayer, but will find layer around all reference
+                layer, creating an iso-surface.
             cyzone *externalRadius* *zMax* *zMin* *selection*
                 selects all atoms within a cylindric zone centered in the
                 center of geometry (COG) of a given selection,
@@ -3128,6 +3209,9 @@ class AtomGroup(GroupBase):
             Added the *smarts* selection. Added `atol` and `rtol` keywords
             to select float values. Added the ``sort`` keyword. Added
             `rdkit_kwargs` to pass parameters to the RDKitConverter.
+        .. versionchanged:: 2.2.0
+            Added `smarts_kwargs` to pass parameters to the RDKit
+            GetSubstructMatch for *smarts* selection.
         """
 
         if not sel:
@@ -3147,7 +3231,8 @@ class AtomGroup(GroupBase):
                                                    periodic=periodic,
                                                    atol=atol, rtol=rtol,
                                                    sorted=sorted,
-                                                   rdkit_kwargs=rdkit_kwargs)
+                                                   rdkit_kwargs=rdkit_kwargs,
+                                                   smarts_kwargs=smarts_kwargs)
                             for s in sel_strs))
         if updating:
             atomgrp = UpdatingAtomGroup(self, selections, sel_strs)
@@ -3191,24 +3276,38 @@ class AtomGroup(GroupBase):
         return [self[levelindices == index] for index in
                 unique_int_1d(levelindices)]
 
-    def guess_bonds(self, vdwradii=None):
-        """Guess bonds that exist within this :class:`AtomGroup` and add them to
-        the underlying :attr:`~AtomGroup.universe`.
+    def guess_bonds(self, vdwradii=None, fudge_factor=0.55, lower_bound=0.1):
+        """Guess bonds, angles, and dihedrals between the atoms in this
+        :class:`AtomGroup` and add them to the underlying
+        :attr:`~AtomGroup.universe`.
 
         Parameters
         ----------
         vdwradii : dict, optional
             Dict relating atom types: vdw radii
 
+        fudge_factor : float, optional
+            The factor by which atoms must overlap each other to be considered
+            a bond.  Larger values will increase the number of bonds found. [0.55]
+        lower_bound : float, optional
+            The minimum bond length. All bonds found shorter than this length
+            will be ignored. This is useful for parsing PDB with altloc records
+            where atoms with altloc A and B may be very close together and
+            there should be no chemical bond between them. [0.1]
 
         See Also
         --------
         :func:`MDAnalysis.topology.guessers.guess_bonds`
+        :func:`MDAnalysis.topology.guessers.guess_angles`
+        :func:`MDAnalysis.topology.guessers.guess_dihedrals`
 
 
         .. versionadded:: 0.10.0
         .. versionchanged:: 0.20.2
            Now applies periodic boundary conditions when guessing bonds.
+        .. versionchanged:: 2.5.0
+           Corrected misleading docs, and now allows passing of `fudge_factor`
+           and `lower_bound` arguments.
         """
         from ..topology.core import guess_bonds, guess_angles, guess_dihedrals
         from .topologyattrs import Bonds, Angles, Dihedrals
@@ -3223,9 +3322,15 @@ class AtomGroup(GroupBase):
                 return attr
 
         # indices of bonds
-        b = guess_bonds(self.atoms, self.atoms.positions,
-                        vdwradii=vdwradii, box=self.dimensions)
-        bondattr = get_TopAttr(self.universe, 'bonds', Bonds)
+        b = guess_bonds(
+            self.atoms,
+            self.atoms.positions,
+            vdwradii=vdwradii,
+            box=self.dimensions,
+            fudge_factor=fudge_factor,
+            lower_bound=lower_bound,
+        )
+        bondattr = get_TopAttr(self.universe, "bonds", Bonds)
         bondattr._add_bonds(b, guessed=True)
 
         a = guess_angles(self.bonds)
@@ -3577,7 +3682,12 @@ class ResidueGroup(GroupBase):
        *Instant selectors* of Segments will be removed in the 1.0 release.
     .. versionchanged:: 1.0.0
        Removed instant selectors, use select_atoms instead
+    .. versionchanged:: 2.1.0
+       Indexing an ResidueGroup with ``None`` raises a ``TypeError``.
     """
+
+    def __reduce__(self):
+        return (_unpickle2, (self.universe, self.ix, ResidueGroup))
 
     @property
     def atoms(self):
@@ -3768,7 +3878,12 @@ class SegmentGroup(GroupBase):
        *Instant selectors* of Segments will be removed in the 1.0 release.
     .. versionchanged:: 1.0.0
        Removed instant selectors, use select_atoms instead
+    .. versionchanged:: 2.1.0
+       Indexing an SegmentGroup with ``None`` raises a ``TypeError``.
     """
+
+    def __reduce__(self):
+        return (_unpickle2, (self.universe, self.ix, SegmentGroup))
 
     @property
     def atoms(self):
@@ -4062,6 +4177,9 @@ class Atom(ComponentBase):
             me += ' and altLoc {}'.format(self.altLoc)
         return me + '>'
 
+    def __reduce__(self):
+        return (_unpickle2, (self.universe, self.ix, Atom))
+
     def __getattr__(self, attr):
         # special-case timestep info
         ts = {'velocity': 'velocities', 'force': 'forces'}
@@ -4104,9 +4222,9 @@ class Atom(ComponentBase):
         Raises
         ------
         ~MDAnalysis.exceptions.NoDataError
-            If the underlying :class:`~MDAnalysis.coordinates.base.Timestep`
+            If the underlying :class:`~MDAnalysis.coordinates.timestep.Timestep`
             does not contain
-            :attr:`~MDAnalysis.coordinates.base.Timestep.positions`.
+            :attr:`~MDAnalysis.coordinates.timestep.Timestep.positions`.
         """
         return self.universe.trajectory.ts.positions[self.ix].copy()
 
@@ -4127,9 +4245,9 @@ class Atom(ComponentBase):
         Raises
         ------
         ~MDAnalysis.exceptions.NoDataError
-            If the underlying :class:`~MDAnalysis.coordinates.base.Timestep`
+            If the underlying :class:`~MDAnalysis.coordinates.timestep.Timestep`
             does not contain
-            :attr:`~MDAnalysis.coordinates.base.Timestep.velocities`.
+            :attr:`~MDAnalysis.coordinates.timestep.Timestep.velocities`.
         """
         ts = self.universe.trajectory.ts
         return ts.velocities[self.ix].copy()
@@ -4152,9 +4270,9 @@ class Atom(ComponentBase):
         Raises
         ------
         ~MDAnalysis.exceptions.NoDataError
-            If the underlying :class:`~MDAnalysis.coordinates.base.Timestep`
+            If the underlying :class:`~MDAnalysis.coordinates.timestep.Timestep`
             does not contain
-            :attr:`~MDAnalysis.coordinates.base.Timestep.forces`.
+            :attr:`~MDAnalysis.coordinates.timestep.Timestep.forces`.
         """
         ts = self.universe.trajectory.ts
         return ts.forces[self.ix].copy()
@@ -4183,6 +4301,9 @@ class Residue(ComponentBase):
             me += ' {}'.format(self.resid)
 
         return me + '>'
+
+    def __reduce__(self):
+        return (_unpickle2, (self.universe, self.ix, Residue))
 
     @property
     def atoms(self):
@@ -4233,6 +4354,9 @@ class Segment(ComponentBase):
         if hasattr(self, 'segid'):
             me += ' {}'.format(self.segid)
         return me + '>'
+
+    def __reduce__(self):
+        return (_unpickle2, (self.universe, self.ix, Segment))
 
     @property
     def atoms(self):

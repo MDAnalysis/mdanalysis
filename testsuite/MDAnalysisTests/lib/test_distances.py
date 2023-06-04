@@ -22,11 +22,13 @@
 #
 import pytest
 import numpy as np
-from numpy.testing import assert_equal, assert_almost_equal
+from numpy.testing import assert_equal, assert_almost_equal, assert_allclose
+import itertools
 from itertools import combinations_with_replacement as comb
 
 import MDAnalysis
 from MDAnalysis.lib import distances
+from MDAnalysis.lib.distances import HAS_DISTOPIA
 from MDAnalysis.lib import mdamath
 from MDAnalysis.tests.datafiles import PSF, DCD, TRIC
 
@@ -70,175 +72,217 @@ def test_transform_StoR_pass(coord_dtype):
 
     test_r = distances.transform_StoR(s, box)
 
-    assert_equal(original_r, test_r)
+    assert_allclose(original_r, test_r)
 
 
-def test_capped_distance_noresults():
-    point1 = np.array([0.1, 0.1, 0.1], dtype=np.float32)
-    point2 = np.array([0.95, 0.1, 0.1], dtype=np.float32)
+class TestCappedDistances(object):
 
-    pairs, dists = distances.capped_distance(point1, point2, max_cutoff=0.2)
+    npoints_1 = (1, 100)
 
-    assert_equal(len(pairs), 0)
+    boxes_1 = (np.array([10, 20, 30, 90, 90, 90], dtype=np.float32),  # ortho
+               np.array([10, 20, 30, 30, 45, 60], dtype=np.float32),  # tri_box
+               None,  # Non Periodic
+               )
 
+    @pytest.fixture()
+    def query_1(self):
+        q1 = np.array([0.1, 0.1, 0.1], dtype=np.float32)
+        return q1
 
-npoints_1 = (1, 100)
+    @pytest.fixture()
+    def query_2(self):
+        q2 = np.array([[0.1, 0.1, 0.1], [0.2, 0.1, 0.1]], dtype=np.float32)
+        return q2
 
-boxes_1 = (np.array([10, 20, 30, 90, 90, 90], dtype=np.float32),  # ortho
-           np.array([10, 20, 30, 30, 45, 60], dtype=np.float32),  # tri_box
-           None,  # Non Periodic
-           )
+    @pytest.fixture()
+    def query_1_atomgroup(self, query_1):
+        q1 = query_1
+        u = MDAnalysis.Universe.empty(len(q1), trajectory=True)
+        u.atoms.positions = q1
+        return u.atoms
 
+    @pytest.fixture()
+    def query_2_atomgroup(self, query_2):
+        q2 = query_2
+        u = MDAnalysis.Universe.empty(len(q2), trajectory=True)
+        u.atoms.positions = q2
+        return u.atoms
 
-query_1 = (np.array([0.1, 0.1, 0.1], dtype=np.float32),
-           np.array([[0.1, 0.1, 0.1],
-                     [0.2, 0.1, 0.1]], dtype=np.float32))
+    method_1 = ('bruteforce', 'pkdtree', 'nsgrid')
 
-method_1 = ('bruteforce', 'pkdtree', 'nsgrid')
+    min_cutoff_1 = (None, 0.1)
 
-min_cutoff_1 = (None, 0.1)
+    def test_capped_distance_noresults(self):
+        point1 = np.array([0.1, 0.1, 0.1], dtype=np.float32)
+        point2 = np.array([0.95, 0.1, 0.1], dtype=np.float32)
 
+        pairs, dists = distances.capped_distance(point1,
+                                                 point2, max_cutoff=0.2)
 
-@pytest.mark.parametrize('npoints', npoints_1)
-@pytest.mark.parametrize('box', boxes_1)
-@pytest.mark.parametrize('query', query_1)
-@pytest.mark.parametrize('method', method_1)
-@pytest.mark.parametrize('min_cutoff', min_cutoff_1)
-def test_capped_distance_checkbrute(npoints, box, query, method, min_cutoff):
-    np.random.seed(90003)
-    points = (np.random.uniform(low=0, high=1.0,
-                        size=(npoints, 3))*(boxes_1[0][:3])).astype(np.float32)
-    max_cutoff = 2.5
-    # capped distance should be able to handle array of vectors
-    # as well as single vectors.
-    pairs, dist = distances.capped_distance(query, points, max_cutoff,
-                                            min_cutoff=min_cutoff, box=box,
-                                            method=method)
+        assert_equal(len(pairs), 0)
 
-    if pairs.shape != (0, ):
-        found_pairs = pairs[:, 1]
-    else:
-        found_pairs = list()
+    @pytest.mark.parametrize('query', ['query_1', 'query_2',
+                             'query_1_atomgroup', 'query_2_atomgroup'])
+    @pytest.mark.parametrize('npoints', npoints_1)
+    @pytest.mark.parametrize('box', boxes_1)
+    @pytest.mark.parametrize('method', method_1)
+    @pytest.mark.parametrize('min_cutoff', min_cutoff_1)
+    def test_capped_distance_checkbrute(self, npoints, box, method,
+                                        min_cutoff, query, request):
+        q = request.getfixturevalue(query)
+        np.random.seed(90003)
+        points = (np.random.uniform(low=0, high=1.0,
+                  size=(npoints, 3))*(self.boxes_1[0][:3])).astype(np.float32)
+        max_cutoff = 2.5
+        # capped distance should be able to handle array of vectors
+        # as well as single vectors.
+        pairs, dist = distances.capped_distance(q, points, max_cutoff,
+                                                min_cutoff=min_cutoff, box=box,
+                                                method=method)
 
-    if(query.shape[0] == 3):
-        query = query.reshape((1, 3))
+        if pairs.shape != (0, ):
+            found_pairs = pairs[:, 1]
+        else:
+            found_pairs = list()
 
-    dists = distances.distance_array(query, points, box=box)
+        if isinstance(q, np.ndarray):
+            if(q.shape[0] == 3):
+                q = q.reshape((1, 3))
 
-    if min_cutoff is None:
-        min_cutoff = 0.
-    indices = np.where((dists <= max_cutoff) & (dists > min_cutoff))
+        dists = distances.distance_array(q, points, box=box)
 
-    assert_equal(np.sort(found_pairs, axis=0), np.sort(indices[1], axis=0))
+        if min_cutoff is None:
+            min_cutoff = 0.
+        indices = np.where((dists <= max_cutoff) & (dists > min_cutoff))
 
-# for coverage
-@pytest.mark.parametrize('npoints', npoints_1)
-@pytest.mark.parametrize('box', boxes_1)
-@pytest.mark.parametrize('query', query_1)
-@pytest.mark.parametrize('method', method_1)
-@pytest.mark.parametrize('min_cutoff', min_cutoff_1)
-def test_capped_distance_return(npoints, box, query, method, min_cutoff):
-    np.random.seed(90003)
-    points = (np.random.uniform(low=0, high=1.0,
-                        size=(npoints, 3))*(boxes_1[0][:3])).astype(np.float32)
-    max_cutoff = 0.3
-    # capped distance should be able to handle array of vectors
-    # as well as single vectors.
-    pairs = distances.capped_distance(query, points, max_cutoff,
-                                      min_cutoff=min_cutoff, box=box,
-                                      method=method, return_distances=False)
+        assert_equal(np.sort(found_pairs, axis=0), np.sort(indices[1], axis=0))
 
-    if pairs.shape != (0, ):
-        found_pairs = pairs[:, 1]
-    else:
-        found_pairs = list()
+    # for coverage
+    @pytest.mark.parametrize('query', ['query_1', 'query_2',
+                             'query_1_atomgroup', 'query_2_atomgroup'])
+    @pytest.mark.parametrize('npoints', npoints_1)
+    @pytest.mark.parametrize('box', boxes_1)
+    @pytest.mark.parametrize('method', method_1)
+    @pytest.mark.parametrize('min_cutoff', min_cutoff_1)
+    def test_capped_distance_return(self, npoints, box, query, request,
+                                    method, min_cutoff):
+        q = request.getfixturevalue(query)
+        np.random.seed(90003)
+        points = (np.random.uniform(low=0, high=1.0,
+                  size=(npoints, 3))*(self.boxes_1[0][:3])).astype(np.float32)
+        max_cutoff = 0.3
+        # capped distance should be able to handle array of vectors
+        # as well as single vectors.
+        pairs = distances.capped_distance(q, points, max_cutoff,
+                                          min_cutoff=min_cutoff, box=box,
+                                          method=method,
+                                          return_distances=False)
 
-    if(query.shape[0] == 3):
-        query = query.reshape((1, 3))
+        if pairs.shape != (0, ):
+            found_pairs = pairs[:, 1]
+        else:
+            found_pairs = list()
 
-    dists = distances.distance_array(query, points, box=box)
+        if isinstance(q, np.ndarray):
+            if(q.shape[0] == 3):
+                q = q.reshape((1, 3))
 
-    if min_cutoff is None:
-        min_cutoff = 0.
-    indices = np.where((dists <= max_cutoff) & (dists > min_cutoff))
+        dists = distances.distance_array(q, points, box=box)
 
-    assert_equal(np.sort(found_pairs, axis=0), np.sort(indices[1], axis=0))
+        if min_cutoff is None:
+            min_cutoff = 0.
+        indices = np.where((dists <= max_cutoff) & (dists > min_cutoff))
 
+        assert_equal(np.sort(found_pairs, axis=0),
+                     np.sort(indices[1], axis=0))
 
-@pytest.mark.parametrize('npoints', npoints_1)
-@pytest.mark.parametrize('box', boxes_1)
-@pytest.mark.parametrize('method', method_1)
-@pytest.mark.parametrize('min_cutoff', min_cutoff_1)
-@pytest.mark.parametrize('ret_dist', (False, True))
-def test_self_capped_distance(npoints, box, method, min_cutoff, ret_dist):
-    np.random.seed(90003)
-    points = (np.random.uniform(low=0, high=1.0,
-                         size=(npoints, 3))*(boxes_1[0][:3])).astype(np.float32)
-    max_cutoff = 0.2
-    result = distances.self_capped_distance(points, max_cutoff,
-                                            min_cutoff=min_cutoff, box=box,
-                                            method=method,
-                                            return_distances=ret_dist)
-    if ret_dist:
-        pairs, cdists = result
-    else:
-        pairs = result
+    def points_or_ag_self_capped(self, npoints, atomgroup=False):
+        np.random.seed(90003)
+        points = (np.random.uniform(low=0, high=1.0,
+                  size=(npoints, 3))*(self.boxes_1[0][:3])).astype(np.float32)
+        if atomgroup:
+            u = MDAnalysis.Universe.empty(points.shape[0], trajectory=True)
+            u.atoms.positions = points
+            return u.atoms
+        else:
+            return points
 
-    # Check we found all hits
-    ref = distances.self_distance_array(points, box)
-    ref_d = ref[ref < 0.2]
-    if not min_cutoff is None:
-        ref_d = ref_d[ref_d > min_cutoff]
-    assert len(ref_d) == len(pairs)
+    @pytest.mark.parametrize('npoints', npoints_1)
+    @pytest.mark.parametrize('box', boxes_1)
+    @pytest.mark.parametrize('method', method_1)
+    @pytest.mark.parametrize('min_cutoff', min_cutoff_1)
+    @pytest.mark.parametrize('ret_dist', (False, True))
+    @pytest.mark.parametrize('atomgroup', (False, True))
+    def test_self_capped_distance(self, npoints, box, method, min_cutoff,
+                                  ret_dist, atomgroup):
+        points = self.points_or_ag_self_capped(npoints, atomgroup=atomgroup)
+        max_cutoff = 0.2
+        result = distances.self_capped_distance(points, max_cutoff,
+                                                min_cutoff=min_cutoff, box=box,
+                                                method=method,
+                                                return_distances=ret_dist)
+        if ret_dist:
+            pairs, cdists = result
+        else:
+            pairs = result
 
-    # Go through hit by hit and check we got the indices correct too
-    ref = distances.distance_array(points, points, box)
-    if ret_dist:
-        for (i, j), d in zip(pairs, cdists):
-            d_ref = ref[i, j]
-            assert d_ref < 0.2
-            if not min_cutoff is None:
-                assert d_ref > min_cutoff
-            assert_almost_equal(d, d_ref, decimal=6)
-    else:
-        for i, j in pairs:
-            d_ref = ref[i, j]
-            assert d_ref < 0.2
-            if not min_cutoff is None:
-                assert d_ref > min_cutoff
+        # Check we found all hits
+        ref = distances.self_distance_array(points, box)
+        ref_d = ref[ref < 0.2]
+        if min_cutoff is not None:
+            ref_d = ref_d[ref_d > min_cutoff]
+        assert len(ref_d) == len(pairs)
 
+        # Go through hit by hit and check we got the indices correct too
+        ref = distances.distance_array(points, points, box)
+        if ret_dist:
+            for (i, j), d in zip(pairs, cdists):
+                d_ref = ref[i, j]
+                assert d_ref < 0.2
+                if min_cutoff is not None:
+                    assert d_ref > min_cutoff
+                assert_almost_equal(d, d_ref, decimal=6)
+        else:
+            for i, j in pairs:
+                d_ref = ref[i, j]
+                assert d_ref < 0.2
+                if min_cutoff is not None:
+                    assert d_ref > min_cutoff
 
-@pytest.mark.parametrize('box', (None,
-                                 np.array([1, 1, 1,  90, 90, 90], dtype=np.float32),
-                                 np.array([1, 1, 1, 60, 75, 80], dtype=np.float32)))
-@pytest.mark.parametrize('npoints,cutoff,meth',
-                         [(1, 0.02, '_bruteforce_capped_self'),
-                          (1, 0.2, '_bruteforce_capped_self'),
-                          (600, 0.02, '_pkdtree_capped_self'),
-                          (600, 0.2, '_nsgrid_capped_self')])
-def test_method_selfselection(box, npoints, cutoff, meth):
-    np.random.seed(90003)
-    points = (np.random.uniform(low=0, high=1.0,
-                        size=(npoints, 3))).astype(np.float32)
-    method = distances._determine_method_self(points, cutoff, box=box)
-    assert_equal(method.__name__, meth)
+    @pytest.mark.parametrize('box', (None,
+                                     np.array([1, 1, 1,  90, 90, 90],
+                                              dtype=np.float32),
+                                     np.array([1, 1, 1, 60, 75, 80],
+                                              dtype=np.float32)))
+    @pytest.mark.parametrize('npoints,cutoff,meth',
+                             [(1, 0.02, '_bruteforce_capped_self'),
+                              (1, 0.2, '_bruteforce_capped_self'),
+                              (600, 0.02, '_pkdtree_capped_self'),
+                              (600, 0.2, '_nsgrid_capped_self')])
+    def test_method_selfselection(self, box, npoints, cutoff, meth):
+        np.random.seed(90003)
+        points = (np.random.uniform(low=0, high=1.0,
+                  size=(npoints, 3))).astype(np.float32)
+        method = distances._determine_method_self(points, cutoff, box=box)
+        assert_equal(method.__name__, meth)
 
-
-@pytest.mark.parametrize('box', (None,
-                                 np.array([1, 1, 1,  90, 90, 90], dtype=np.float32),
-                                 np.array([1, 1, 1, 60, 75, 80], dtype=np.float32)))
-@pytest.mark.parametrize('npoints,cutoff,meth',
-                         [(1, 0.02, '_bruteforce_capped'),
-                          (1, 0.2, '_bruteforce_capped'),
-                          (200, 0.02, '_nsgrid_capped'),
-                          (200, 0.35, '_bruteforce_capped'),
-                          (10000, 0.35, '_nsgrid_capped')])
-def test_method_selection(box, npoints, cutoff, meth):
-    np.random.seed(90003)
-    points = (np.random.uniform(low=0, high=1.0,
-                        size=(npoints, 3)).astype(np.float32))
-    method = distances._determine_method(points, points, cutoff, box=box)
-    assert_equal(method.__name__, meth)
+    @pytest.mark.parametrize('box', (None,
+                                     np.array([1, 1, 1,  90, 90, 90],
+                                              dtype=np.float32),
+                                     np.array([1, 1, 1, 60, 75, 80],
+                                              dtype=np.float32)))
+    @pytest.mark.parametrize('npoints,cutoff,meth',
+                             [(1, 0.02, '_bruteforce_capped'),
+                              (1, 0.2, '_bruteforce_capped'),
+                              (200, 0.02, '_nsgrid_capped'),
+                              (200, 0.35, '_bruteforce_capped'),
+                              (10000, 0.35, '_nsgrid_capped')])
+    def test_method_selection(self, box, npoints, cutoff, meth):
+        np.random.seed(90003)
+        points = (np.random.uniform(low=0, high=1.0,
+                  size=(npoints, 3)).astype(np.float32))
+        method = distances._determine_method(points, points, cutoff, box=box)
+        assert_equal(method.__name__, meth)
 
 
 @pytest.fixture()
@@ -255,6 +299,16 @@ def ref_system():
     return box, points, ref, conf
 
 
+@pytest.fixture()
+def ref_system_universe(ref_system):
+    box, points, ref, conf = ref_system
+    u = MDAnalysis.Universe.empty(points.shape[0], trajectory=True)
+    u.atoms.positions = points
+    u.trajectory.ts.dimensions = box
+    return (box, u.atoms, u.select_atoms("index 0"),
+            u.select_atoms("index 1 to 3"))
+
+
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
 class TestDistanceArray(object):
     @staticmethod
@@ -263,24 +317,61 @@ class TestDistanceArray(object):
         r = x - ref
         return np.sqrt(np.dot(r, r))
 
-    def test_noPBC(self, backend, ref_system):
-        box, points, ref, conf = ref_system
+    # test both AtomGroup and numpy array
+    @pytest.mark.parametrize('pos', ['ref_system', 'ref_system_universe'])
+    def test_noPBC(self, backend, ref_system, pos, request):
+        _, points, reference, _ = ref_system  # reference values
+        _, all, ref, _ = request.getfixturevalue(pos)
 
-        d = distances.distance_array(ref, points, backend=backend)
-
+        d = distances.distance_array(ref, all, backend=backend)
         assert_almost_equal(d, np.array([[
-            self._dist(points[0], ref[0]),
-            self._dist(points[1], ref[0]),
-            self._dist(points[2], ref[0]),
-            self._dist(points[3], ref[0])]
+            self._dist(points[0], reference[0]),
+            self._dist(points[1], reference[0]),
+            self._dist(points[2], reference[0]),
+            self._dist(points[3], reference[0])]
         ]))
 
-    def test_PBC(self, backend, ref_system):
-        box, points, ref, conf = ref_system
+    # cycle through combinations of numpy array and AtomGroup
+    @pytest.mark.parametrize('pos0', ['ref_system', 'ref_system_universe'])
+    @pytest.mark.parametrize('pos1', ['ref_system', 'ref_system_universe'])
+    def test_noPBC_mixed_combinations(self, backend, ref_system, pos0, pos1,
+                                      request):
+        _, points, reference, _ = ref_system  # reference values
+        _, _, ref_val, _ = request.getfixturevalue(pos0)
+        _, points_val, _, _ = request.getfixturevalue(pos1)
+        d = distances.distance_array(ref_val, points_val,
+                                     backend=backend)
+        assert_almost_equal(d, np.array([[
+            self._dist(points[0], reference[0]),
+            self._dist(points[1], reference[0]),
+            self._dist(points[2], reference[0]),
+            self._dist(points[3], reference[0])]
+        ]))
 
-        d = distances.distance_array(ref, points, box=box, backend=backend)
+    # test both AtomGroup and numpy array
+    @pytest.mark.parametrize('pos', ['ref_system', 'ref_system_universe'])
+    def test_PBC(self, backend, ref_system, pos, request):
+        box, points, _, _ = ref_system
+        _, all, ref, _ = request.getfixturevalue(pos)
 
-        assert_almost_equal(d, np.array([[0., 0., 0., self._dist(points[3], ref=[1, 1, 2])]]))
+        d = distances.distance_array(ref, all, box=box, backend=backend)
+
+        assert_almost_equal(d, np.array([[0., 0., 0., self._dist(points[3],
+                            ref=[1, 1, 2])]]))
+
+    # cycle through combinations of numpy array and AtomGroup
+    @pytest.mark.parametrize('pos0', ['ref_system', 'ref_system_universe'])
+    @pytest.mark.parametrize('pos1', ['ref_system', 'ref_system_universe'])
+    def test_PBC_mixed_combinations(self, backend, ref_system, pos0, pos1,
+                                    request):
+        box, points, _, _ = ref_system
+        _, _, ref_val, _ = request.getfixturevalue(pos0)
+        _, points_val, _, _ = request.getfixturevalue(pos1)
+        d = distances.distance_array(ref_val, points_val,
+                                     box=box,
+                                     backend=backend)
+        assert_almost_equal(
+            d, np.array([[0., 0., 0., self._dist(points[3], ref=[1, 1, 2])]]))
 
     def test_PBC2(self, backend):
         a = np.array([7.90146923, -13.72858524, 3.75326586], dtype=np.float32)
@@ -297,16 +388,46 @@ class TestDistanceArray(object):
         assert_almost_equal(val, ref, decimal=6,
                             err_msg="Issue 151 not correct (PBC in distance array)")
 
+def test_distance_array_overflow_exception():
+    class FakeArray(np.ndarray):
+        shape = (4294967296, 3)  # upper limit is sqrt(UINT64_MAX)
+        ndim = 2
+    dummy_array = FakeArray([1, 2, 3])
+    box = np.array([100, 100, 100, 90., 90., 90.], dtype=np.float32)
+    with pytest.raises(ValueError, match="Size of resulting array"):
+        distances.distance_array.__wrapped__(dummy_array, dummy_array, box=box)
+
+def test_self_distance_array_overflow_exception():
+    class FakeArray(np.ndarray):
+        shape = (6074001001, 3)  # solution of x**2 -x = 2*UINT64_MAX
+        ndim = 2
+    dummy_array = FakeArray([1, 2, 3])
+    box = np.array([100, 100, 100, 90., 90., 90.], dtype=np.float32)
+    with pytest.raises(ValueError, match="Size of resulting array"):
+        distances.self_distance_array.__wrapped__(dummy_array, box=box)
+
 
 @pytest.fixture()
 def DCD_Universe():
     universe = MDAnalysis.Universe(PSF, DCD)
-    trajectory = universe.trajectory
+    return universe
 
-    return universe, trajectory
+
+# second independent universe required for
+# TestDistanceArrayDCD_TRIC.test_atomgroup_simple
+@pytest.fixture()
+def DCD_Universe2():
+    universe = MDAnalysis.Universe(PSF, DCD)
+    return universe
+
+
+@pytest.fixture()
+def Triclinic_Universe():
+    universe = MDAnalysis.Universe(TRIC)
+    return universe
 
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
-class TestDistanceArrayDCD(object):
+class TestDistanceArrayDCD_TRIC(object):
     # reasonable precision so that tests succeed on 32 and 64 bit machines
     # (the reference values were obtained on 64 bit)
     # Example:
@@ -316,20 +437,23 @@ class TestDistanceArrayDCD(object):
     prec = 5
 
     def test_simple(self, DCD_Universe, backend):
-        U, trajectory = DCD_Universe
+        U = DCD_Universe
+        trajectory = U.trajectory
         trajectory.rewind()
         x0 = U.atoms.positions
         trajectory[10]
         x1 = U.atoms.positions
         d = distances.distance_array(x0, x1, backend=backend)
-        assert_equal(d.shape, (3341, 3341), "wrong shape (should be (Natoms,Natoms))")
+        assert_equal(d.shape, (3341, 3341), "wrong shape (should be"
+                     "(Natoms,Natoms))")
         assert_almost_equal(d.min(), 0.11981228170520701, self.prec,
                             err_msg="wrong minimum distance value")
         assert_almost_equal(d.max(), 53.572192429459619, self.prec,
                             err_msg="wrong maximum distance value")
 
     def test_outarray(self, DCD_Universe, backend):
-        U, trajectory = DCD_Universe
+        U = DCD_Universe
+        trajectory = DCD_Universe.trajectory
         trajectory.rewind()
         x0 = U.atoms.positions
         trajectory[10]
@@ -337,7 +461,8 @@ class TestDistanceArrayDCD(object):
         natoms = len(U.atoms)
         d = np.zeros((natoms, natoms), np.float64)
         distances.distance_array(x0, x1, result=d, backend=backend)
-        assert_equal(d.shape, (natoms, natoms), "wrong shape, shoud be  (Natoms,Natoms) entries")
+        assert_equal(d.shape, (natoms, natoms), "wrong shape, should be"
+                     " (Natoms,Natoms) entries")
         assert_almost_equal(d.min(), 0.11981228170520701, self.prec,
                             err_msg="wrong minimum distance value")
         assert_almost_equal(d.max(), 53.572192429459619, self.prec,
@@ -345,27 +470,86 @@ class TestDistanceArrayDCD(object):
 
     def test_periodic(self, DCD_Universe, backend):
         # boring with the current dcd as that has no PBC
-        U, trajectory = DCD_Universe
+        U = DCD_Universe
+        trajectory = DCD_Universe.trajectory
         trajectory.rewind()
         x0 = U.atoms.positions
         trajectory[10]
         x1 = U.atoms.positions
         d = distances.distance_array(x0, x1, box=U.coord.dimensions,
                                      backend=backend)
-        assert_equal(d.shape, (3341, 3341), "should be square matrix with Natoms entries")
+        assert_equal(d.shape, (3341, 3341), "should be square matrix with"
+                     " Natoms entries")
         assert_almost_equal(d.min(), 0.11981228170520701, self.prec,
                             err_msg="wrong minimum distance value with PBC")
         assert_almost_equal(d.max(), 53.572192429459619, self.prec,
                             err_msg="wrong maximum distance value with PBC")
 
+    def test_atomgroup_simple(self, DCD_Universe, DCD_Universe2, backend):
+        # need two copies as moving ts updates underlying array on atomgroup
+        U1 = DCD_Universe
+        U2 = DCD_Universe2
+        trajectory1 = DCD_Universe.trajectory
+        trajectory2 = DCD_Universe2.trajectory
+        trajectory1.rewind()
+        trajectory2.rewind()
+        x0 = U1.select_atoms("all")
+        trajectory2[10]
+        x1 = U2.select_atoms("all")
+        d = distances.distance_array(x0, x1, backend=backend)
+        assert_equal(d.shape, (3341, 3341), "wrong shape (should be"
+                     " (Natoms,Natoms))")
+        assert_almost_equal(d.min(), 0.11981228170520701, self.prec,
+                            err_msg="wrong minimum distance value")
+        assert_almost_equal(d.max(), 53.572192429459619, self.prec,
+                            err_msg="wrong maximum distance value")
+
+    # check no box and ortho box types and some slices
+    @pytest.mark.parametrize('box', [None, [50, 50, 50, 90, 90, 90]])
+    @pytest.mark.parametrize("sel, np_slice", [("all", np.s_[:, :]),
+                             ("index 0 to 8 ", np.s_[0:9, :]),
+                             ("index 9", np.s_[8, :])])
+    def test_atomgroup_matches_numpy(self, DCD_Universe, backend, sel,
+                                     np_slice, box):
+        U = DCD_Universe
+        x0_ag = U.select_atoms(sel)
+        x0_arr = U.atoms.positions[np_slice]
+        x1_ag = U.select_atoms(sel)
+        x1_arr = U.atoms.positions[np_slice]
+        d_ag = distances.distance_array(x0_ag, x1_ag, box=box,
+                                        backend=backend)
+        d_arr = distances.distance_array(x0_arr, x1_arr, box=box,
+                                         backend=backend)
+        assert_allclose(d_ag, d_arr,
+                        err_msg="AtomGroup and NumPy distances do not match")
+
+    # check triclinic box and some slices
+    @pytest.mark.parametrize("sel, np_slice", [("all", np.s_[:, :]),
+                             ("index 0 to 8 ", np.s_[0:9, :]),
+                             ("index 9", np.s_[8, :])])
+    def test_atomgroup_matches_numpy_tric(self, Triclinic_Universe, backend,
+                                          sel, np_slice):
+        U = Triclinic_Universe
+        x0_ag = U.select_atoms(sel)
+        x0_arr = U.atoms.positions[np_slice]
+        x1_ag = U.select_atoms(sel)
+        x1_arr = U.atoms.positions[np_slice]
+        d_ag = distances.distance_array(x0_ag, x1_ag, box=U.coord.dimensions,
+                                        backend=backend)
+        d_arr = distances.distance_array(x0_arr, x1_arr,
+                                         box=U.coord.dimensions,
+                                         backend=backend)
+        assert_allclose(d_ag, d_arr,
+                        err_msg="AtomGroup and NumPy distances do not match")
 
 
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
-class TestSelfDistanceArrayDCD(object):
+class TestSelfDistanceArrayDCD_TRIC(object):
     prec = 5
 
     def test_simple(self, DCD_Universe, backend):
-        U, trajectory = DCD_Universe
+        U = DCD_Universe
+        trajectory = DCD_Universe.trajectory
         trajectory.rewind()
         x0 = U.atoms.positions
         d = distances.self_distance_array(x0, backend=backend)
@@ -377,7 +561,8 @@ class TestSelfDistanceArrayDCD(object):
                             err_msg="wrong maximum distance value")
 
     def test_outarray(self, DCD_Universe, backend):
-        U, trajectory = DCD_Universe
+        U = DCD_Universe
+        trajectory = DCD_Universe.trajectory
         trajectory.rewind()
         x0 = U.atoms.positions
         natoms = len(U.atoms)
@@ -392,7 +577,8 @@ class TestSelfDistanceArrayDCD(object):
 
     def test_periodic(self, DCD_Universe, backend):
         # boring with the current dcd as that has no PBC
-        U, trajectory = DCD_Universe
+        U = DCD_Universe
+        trajectory = DCD_Universe.trajectory
         trajectory.rewind()
         x0 = U.atoms.positions
         natoms = len(U.atoms)
@@ -404,6 +590,54 @@ class TestSelfDistanceArrayDCD(object):
                             err_msg="wrong minimum distance value with PBC")
         assert_almost_equal(d.max(), 52.4702570624190590, self.prec,
                             err_msg="wrong maximum distance value with PBC")
+
+    def test_atomgroup_simple(self, DCD_Universe, backend):
+        U = DCD_Universe
+        trajectory = DCD_Universe.trajectory
+        trajectory.rewind()
+        x0 = U.select_atoms("all")
+        d = distances.self_distance_array(x0, backend=backend)
+        N = 3341 * (3341 - 1) / 2
+        assert_equal(d.shape, (N,), "wrong shape (should be"
+                     " (Natoms*(Natoms-1)/2,))")
+        assert_almost_equal(d.min(), 0.92905562402529318, self.prec,
+                            err_msg="wrong minimum distance value")
+        assert_almost_equal(d.max(), 52.4702570624190590, self.prec,
+                            err_msg="wrong maximum distance value")
+
+    # check no box and ortho box types and some slices
+    @pytest.mark.parametrize('box', [None, [50, 50, 50, 90, 90, 90]])
+    @pytest.mark.parametrize("sel, np_slice", [("all", np.s_[:, :]),
+                             ("index 0 to 8 ", np.s_[0:9, :]),
+                             ("index 9", np.s_[8, :])])
+    def test_atomgroup_matches_numpy(self, DCD_Universe, backend,
+                                     sel, np_slice, box):
+        U = DCD_Universe
+
+        x0_ag = U.select_atoms(sel)
+        x0_arr = U.atoms.positions[np_slice]
+        d_ag = distances.self_distance_array(x0_ag, box=box,
+                                             backend=backend)
+        d_arr = distances.self_distance_array(x0_arr, box=box,
+                                              backend=backend)
+        assert_allclose(d_ag, d_arr,
+                        err_msg="AtomGroup and NumPy distances do not match")
+
+    # check triclinic box and some slices
+    @pytest.mark.parametrize("sel, np_slice", [
+                            ("index 0 to 8 ", np.s_[0:9, :]),
+                            ("index 9", np.s_[8, :])])
+    def test_atomgroup_matches_numpy_tric(self, Triclinic_Universe, backend,
+                                          sel, np_slice):
+        U = Triclinic_Universe
+        x0_ag = U.select_atoms(sel)
+        x0_arr = U.atoms.positions[np_slice]
+        d_ag = distances.self_distance_array(x0_ag, box=U.coord.dimensions,
+                                             backend=backend)
+        d_arr = distances.self_distance_array(x0_arr, box=U.coord.dimensions,
+                                              backend=backend)
+        assert_allclose(d_ag, d_arr,
+                        err_msg="AtomGroup and NumPy distances do not match")
 
 
 @pytest.mark.parametrize('backend', ['serial', 'openmp'])
@@ -554,8 +788,53 @@ class TestTriclinicDistances(object):
         # expected.
         assert np.linalg.norm(point_a - point_b) != dist[0, 0]
 
+@pytest.mark.parametrize("box", 
+    [
+        None, 
+        np.array([10., 15., 20., 90., 90., 90.]), # otrho
+        np.array([10., 15., 20., 70.53571, 109.48542, 70.518196]), # TRIC
+    ]
+)
+def test_issue_3725(box):
+    """
+    Code from @hmacdope
+    https://github.com/MDAnalysis/mdanalysis/issues/3725
+    """
+    random_coords = np.random.uniform(-50, 50, (1000, 3))
 
-@pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    self_da_serial = distances.self_distance_array(
+        random_coords, box=box, backend='serial'
+    )
+    self_da_openmp = distances.self_distance_array(
+        random_coords, box=box, backend='openmp'
+    )
+
+    np.testing.assert_allclose(self_da_serial, self_da_openmp)
+
+
+def conv_dtype_if_ndarr(a, dtype):
+    if isinstance(a, np.ndarray):
+        return a.astype(dtype)
+    else:
+        return a
+
+
+def convert_position_dtype_if_ndarray(a, b, c, d, dtype):
+    return (conv_dtype_if_ndarr(a, dtype),
+            conv_dtype_if_ndarr(b, dtype),
+            conv_dtype_if_ndarr(c, dtype),
+            conv_dtype_if_ndarr(d, dtype))
+
+
+def distopia_conditional_backend():
+    # functions that allow distopia acceleration need to be tested with
+    # distopia backend argument but distopia is an optional dep.
+    if HAS_DISTOPIA:
+        return ["serial", "openmp", "distopia"]
+    else:
+        return ["serial", "openmp"]
+
+
 class TestCythonFunctions(object):
     # Unit tests for calc_bonds calc_angles and calc_dihedrals in lib.distances
     # Tests both numerical results as well as input types as Cython will silently
@@ -571,7 +850,7 @@ class TestCythonFunctions(object):
     @pytest.fixture()
     def triclinic_box():
         box_vecs = np.array([[10., 0., 0.], [1., 10., 0., ], [1., 0., 10.]],
-                               dtype=np.float32)
+                            dtype=np.float32)
         return mdamath.triclinic_box(box_vecs[0], box_vecs[1], box_vecs[2])
 
     @staticmethod
@@ -585,8 +864,15 @@ class TestCythonFunctions(object):
         return a, b, c, d
 
     @staticmethod
-    def convert_position_dtype(a, b, c, d, dtype):
-        return a.astype(dtype), b.astype(dtype), c.astype(dtype), d.astype(dtype)
+    @pytest.fixture()
+    def positions_atomgroups(positions):
+        a, b, c, d = positions
+        arrs = [a, b, c, d]
+        universes = [MDAnalysis.Universe.empty(arr.shape[0],
+                     trajectory=True) for arr in arrs]
+        for u, a in zip(universes, arrs):
+            u.atoms.positions = a
+        return tuple([u.atoms for u in universes])
 
     @staticmethod
     @pytest.fixture()
@@ -601,9 +887,12 @@ class TestCythonFunctions(object):
               ((-1, 0, 1), (0, -1, 0), (1, 0, 1), (-1, -1, -1)),  # negative single
               ((4, 3, -2), (-2, 2, 2), (-5, 2, 2), (0, 2, 2))]  # multiple boxlengths
 
-    @pytest.mark.parametrize('dtype', (np.float32, np.float64))
-    def test_bonds(self, positions, box, backend, dtype):
-        a, b, c, d = self.convert_position_dtype(*positions, dtype=dtype)
+    @pytest.mark.parametrize("dtype", (np.float32, np.float64))
+    @pytest.mark.parametrize("pos", ["positions", "positions_atomgroups"])
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
+    def test_bonds(self, box, backend, dtype, pos, request):
+        a, b, c, d = request.getfixturevalue(pos)
+        a, b, c, d = convert_position_dtype_if_ndarray(a, b, c, d, dtype)
         dists = distances.calc_bonds(a, b, backend=backend)
         assert_equal(len(dists), 4, err_msg="calc_bonds results have wrong length")
         dists_pbc = distances.calc_bonds(a, b, box=box, backend=backend)
@@ -621,6 +910,7 @@ class TestCythonFunctions(object):
         assert_almost_equal(dists_pbc[3], 3.46410072, self.prec,
                             err_msg="PBC check #w with box")
 
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_bonds_badbox(self, positions, backend):
         a, b, c, d = positions
         badbox1 = np.array([10., 10., 10.], dtype=np.float64)
@@ -632,20 +922,26 @@ class TestCythonFunctions(object):
         with pytest.raises(ValueError):
             distances.calc_bonds(a, b, box=badbox2, backend=backend)
 
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_bonds_badresult(self, positions, backend):
         a, b, c, d = positions
         badresult = np.zeros(len(a) - 1)  # Bad result array
         with pytest.raises(ValueError):
             distances.calc_bonds(a, b, result=badresult, backend=backend)
 
-    def test_bonds_triclinic(self, positions, triclinic_box, backend):
-        a, b, c, d = positions
+    @pytest.mark.parametrize("dtype", (np.float32, np.float64))
+    @pytest.mark.parametrize("pos", ["positions", "positions_atomgroups"])
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
+    def test_bonds_triclinic(self, triclinic_box, backend, dtype, pos, request):
+        a, b, c, d = request.getfixturevalue(pos)
+        a, b, c, d = convert_position_dtype_if_ndarray(a, b, c, d, dtype)
         dists = distances.calc_bonds(a, b, box=triclinic_box, backend=backend)
         reference = np.array([0.0, 1.7320508, 1.4142136, 2.82842712])
         assert_almost_equal(dists, reference, self.prec, err_msg="calc_bonds with triclinic box failed")
 
-    @pytest.mark.parametrize('shift', shifts)
-    @pytest.mark.parametrize('periodic', [True, False])
+    @pytest.mark.parametrize("shift", shifts)
+    @pytest.mark.parametrize("periodic", [True, False])
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_bonds_single_coords(self, shift, periodic, backend):
         box = np.array([10, 20, 30, 90., 90., 90.], dtype=np.float32)
 
@@ -663,9 +959,12 @@ class TestCythonFunctions(object):
 
         assert_almost_equal(result, reference, decimal=self.prec)
 
-    @pytest.mark.parametrize('dtype', (np.float32, np.float64))
-    def test_angles(self, positions, backend, dtype):
-        a, b, c, d = self.convert_position_dtype(*positions, dtype=dtype)
+    @pytest.mark.parametrize("dtype", (np.float32, np.float64))
+    @pytest.mark.parametrize("pos", ["positions", "positions_atomgroups"])
+    @pytest.mark.parametrize("backend", ["serial", "openmp"])
+    def test_angles(self, backend, dtype, pos, request):
+        a, b, c, d = request.getfixturevalue(pos)
+        a, b, c, d = convert_position_dtype_if_ndarray(a, b, c, d, dtype)
         angles = distances.calc_angles(a, b, c, backend=backend)
         # Check calculated values
         assert_equal(len(angles), 4, err_msg="calc_angles results have wrong length")
@@ -678,19 +977,33 @@ class TestCythonFunctions(object):
         assert_almost_equal(angles[3], 0.098174833, self.prec,
                             err_msg="Small angle failed in calc_angles")
 
+    @pytest.mark.parametrize("backend", ["serial", "openmp"])
     def test_angles_bad_result(self, positions, backend):
         a, b, c, d = positions
         badresult = np.zeros(len(a) - 1)  # Bad result array
         with pytest.raises(ValueError):
             distances.calc_angles(a, b, c, result=badresult, backend=backend)
 
-    @pytest.mark.parametrize('case', [
-        (np.array([[1, 1, 1], [1, 2, 1], [2, 2, 1]], dtype=np.float32), 0.5 * np.pi),  # 90 degree angle
-        (np.array([[1, 1, 1], [1, 2, 1], [1, 3, 1]], dtype=np.float32), np.pi),  # straight line / 180.
-        (np.array([[1, 1, 1], [1, 2, 1], [2, 1, 1]], dtype=np.float32), 0.25 * np.pi),  # 45
-    ])
-    @pytest.mark.parametrize('shift', shifts)
-    @pytest.mark.parametrize('periodic', [True, False])
+    @pytest.mark.parametrize(
+        "case",
+        [
+            (
+                np.array([[1, 1, 1], [1, 2, 1], [2, 2, 1]], dtype=np.float32),
+                0.5 * np.pi,
+            ),  # 90 degree angle
+            (
+                np.array([[1, 1, 1], [1, 2, 1], [1, 3, 1]], dtype=np.float32),
+                np.pi,
+            ),  # straight line / 180.
+            (
+                np.array([[1, 1, 1], [1, 2, 1], [2, 1, 1]], dtype=np.float32),
+                0.25 * np.pi,
+            ),  # 45
+        ],
+    )
+    @pytest.mark.parametrize("shift", shifts)
+    @pytest.mark.parametrize("periodic", [True, False])
+    @pytest.mark.parametrize("backend", ["serial", "openmp"])
     def test_angles_single_coords(self, case, shift, periodic, backend):
         def manual_angle(x, y, z):
             return mdamath.angle(y - x, y - z)
@@ -709,9 +1022,12 @@ class TestCythonFunctions(object):
         reference = ref if periodic else manual_angle(a, b, c)
         assert_almost_equal(result, reference, decimal=4)
 
-    @pytest.mark.parametrize('dtype', (np.float32, np.float64))
-    def test_dihedrals(self, positions, backend, dtype):
-        a, b, c, d = self.convert_position_dtype(*positions, dtype=dtype)
+    @pytest.mark.parametrize("dtype", (np.float32, np.float64))
+    @pytest.mark.parametrize("pos", ["positions", "positions_atomgroups"])
+    @pytest.mark.parametrize("backend", ["serial", "openmp"])
+    def test_dihedrals(self, backend, dtype, pos, request):
+        a, b, c, d = request.getfixturevalue(pos)
+        a, b, c, d = convert_position_dtype_if_ndarray(a, b, c, d, dtype)
         dihedrals = distances.calc_dihedrals(a, b, c, d, backend=backend)
         # Check calculated values
         assert_equal(len(dihedrals), 4, err_msg="calc_dihedrals results have wrong length")
@@ -721,6 +1037,7 @@ class TestCythonFunctions(object):
         assert_almost_equal(dihedrals[3], -0.50714064, self.prec,
                             err_msg="arbitrary dihedral angle failed")
 
+    @pytest.mark.parametrize("backend", ["serial", "openmp"])
     def test_dihedrals_wronglength(self, positions, wronglength, backend):
         a, b, c, d = positions
         with pytest.raises(ValueError):
@@ -735,6 +1052,7 @@ class TestCythonFunctions(object):
         with pytest.raises(ValueError):
             distances.calc_dihedrals(a, b, c, wronglength, backend=backend)
 
+    @pytest.mark.parametrize("backend", ["serial", "openmp"])
     def test_dihedrals_bad_result(self, positions, backend):
         a, b, c, d = positions
         badresult = np.zeros(len(a) - 1)  # Bad result array
@@ -742,16 +1060,50 @@ class TestCythonFunctions(object):
         with pytest.raises(ValueError):
             distances.calc_dihedrals(a, b, c, d, result=badresult, backend=backend)
 
-    @pytest.mark.parametrize('case', [
-        (np.array([[1, 2, 1], [1, 1, 1], [2, 1, 1], [2, 2, 1]], dtype=np.float32), 0.),  # 0 degree angle (cis)
-        (np.array([[1, 2, 1], [1, 1, 1], [2, 1, 1], [2, 0, 1]], dtype=np.float32), np.pi),  # 180 degree (trans)
-        (np.array([[1, 2, 1], [1, 1, 1], [2, 1, 1], [2, 1, 2]], dtype=np.float32), 0.5 * np.pi),  # 90 degree
-        (np.array([[1, 2, 1], [1, 1, 1], [2, 1, 1], [2, 1, 0]], dtype=np.float32), 0.5 * np.pi),  # other 90 degree
-        (np.array([[1, 2, 1], [1, 1, 1], [2, 1, 1], [2, 2, 2]], dtype=np.float32), 0.25 * np.pi),  # 45 degree
-        (np.array([[1, 2, 1], [1, 1, 1], [2, 1, 1], [2, 0, 2]], dtype=np.float32), 0.75 * np.pi),  # 135
-    ])
-    @pytest.mark.parametrize('shift', shifts)
-    @pytest.mark.parametrize('periodic', [True, False])
+    @pytest.mark.parametrize(
+        "case",
+        [
+            (
+                np.array(
+                    [[1, 2, 1], [1, 1, 1], [2, 1, 1], [2, 2, 1]], dtype=np.float32
+                ),
+                0.0,
+            ),  # 0 degree angle (cis)
+            (
+                np.array(
+                    [[1, 2, 1], [1, 1, 1], [2, 1, 1], [2, 0, 1]], dtype=np.float32
+                ),
+                np.pi,
+            ),  # 180 degree (trans)
+            (
+                np.array(
+                    [[1, 2, 1], [1, 1, 1], [2, 1, 1], [2, 1, 2]], dtype=np.float32
+                ),
+                0.5 * np.pi,
+            ),  # 90 degree
+            (
+                np.array(
+                    [[1, 2, 1], [1, 1, 1], [2, 1, 1], [2, 1, 0]], dtype=np.float32
+                ),
+                0.5 * np.pi,
+            ),  # other 90 degree
+            (
+                np.array(
+                    [[1, 2, 1], [1, 1, 1], [2, 1, 1], [2, 2, 2]], dtype=np.float32
+                ),
+                0.25 * np.pi,
+            ),  # 45 degree
+            (
+                np.array(
+                    [[1, 2, 1], [1, 1, 1], [2, 1, 1], [2, 0, 2]], dtype=np.float32
+                ),
+                0.75 * np.pi,
+            ),  # 135
+        ],
+    )
+    @pytest.mark.parametrize("shift", shifts)
+    @pytest.mark.parametrize("periodic", [True, False])
+    @pytest.mark.parametrize("backend", ["serial", "openmp"])
     def test_dihedrals_single_coords(self, case, shift, periodic, backend):
         def manual_dihedral(a, b, c, d):
             return mdamath.dihedral(b - a, c - b, d - c)
@@ -772,27 +1124,45 @@ class TestCythonFunctions(object):
         reference = ref if periodic else manual_dihedral(a, b, c, d)
         assert_almost_equal(abs(result), abs(reference), decimal=4)
 
-    def test_numpy_compliance(self, positions, backend):
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
+    def test_numpy_compliance_bonds(self, positions, backend):
         a, b, c, d = positions
         # Checks that the cython functions give identical results to the numpy versions
         bonds = distances.calc_bonds(a, b, backend=backend)
-        angles = distances.calc_angles(a, b, c, backend=backend)
-        dihedrals = distances.calc_dihedrals(a, b, c, d, backend=backend)
-
         bonds_numpy = np.array([mdamath.norm(y - x) for x, y in zip(a, b)])
+
+        assert_almost_equal(
+            bonds,
+            bonds_numpy,
+            self.prec,
+            err_msg="Cython bonds didn't match numpy calculations",
+        )
+
+    @pytest.mark.parametrize("backend", ["serial", "openmp"])
+    def test_numpy_compliance_angles(self, positions, backend):
+        a, b, c, d = positions
+        # Checks that the cython functions give identical results to the numpy versions
+        angles = distances.calc_angles(a, b, c, backend=backend)
         vec1 = a - b
         vec2 = c - b
         angles_numpy = np.array([mdamath.angle(x, y) for x, y in zip(vec1, vec2)])
+        # numpy 0 angle returns NaN rather than 0
+        assert_almost_equal(
+            angles[1:],
+            angles_numpy[1:],
+            self.prec,
+            err_msg="Cython angles didn't match numpy calcuations",
+        )
+
+    @pytest.mark.parametrize("backend", ["serial", "openmp"])
+    def test_numpy_compliance_dihedrals(self, positions, backend):
+        a, b, c, d = positions
+        # Checks that the cython functions give identical results to the numpy versions
+        dihedrals = distances.calc_dihedrals(a, b, c, d, backend=backend)
         ab = a - b
         bc = b - c
         cd = c - d
         dihedrals_numpy = np.array([mdamath.dihedral(x, y, z) for x, y, z in zip(ab, bc, cd)])
-
-        assert_almost_equal(bonds, bonds_numpy, self.prec,
-                            err_msg="Cython bonds didn't match numpy calculations")
-        # numpy 0 angle returns NaN rather than 0
-        assert_almost_equal(angles[1:], angles_numpy[1:], self.prec,
-                            err_msg="Cython angles didn't match numpy calcuations")
         assert_almost_equal(dihedrals, dihedrals_numpy, self.prec,
                             err_msg="Cython dihedrals didn't match numpy calculations")
 
@@ -801,24 +1171,59 @@ class TestCythonFunctions(object):
 class Test_apply_PBC(object):
     prec = 6
 
-    def test_ortho_PBC(self, backend):
-        U = MDAnalysis.Universe(PSF, DCD)
+    @pytest.fixture()
+    def DCD_universe_pos(self, DCD_Universe):
+        U = DCD_Universe
+        return U.atoms.positions
+
+    @pytest.fixture()
+    def DCD_universe_ag(self, DCD_Universe):
+        return DCD_Universe.atoms
+
+    @pytest.fixture()
+    def Triclinic_universe_pos_box(self, Triclinic_Universe):
+        U = Triclinic_Universe
         atoms = U.atoms.positions
+        box = U.dimensions
+        return atoms, box
+
+    @pytest.fixture()
+    def Triclinic_universe_pos_box(self, Triclinic_Universe):
+        U = Triclinic_Universe
+        atoms = U.atoms.positions
+        box = U.dimensions
+        return atoms, box
+
+    @pytest.fixture()
+    def Triclinic_universe_ag_box(self, Triclinic_Universe):
+        U = Triclinic_Universe
+        atoms = U.atoms
+        box = U.dimensions
+        return atoms, box
+
+    @pytest.mark.parametrize('pos', ['DCD_universe_pos', 'DCD_universe_ag'])
+    def test_ortho_PBC(self, backend, pos, request, DCD_universe_pos):
+        positions = request.getfixturevalue(pos)
         box = np.array([2.5, 2.5, 3.5, 90., 90., 90.], dtype=np.float32)
         with pytest.raises(ValueError):
-            cyth1 = distances.apply_PBC(atoms, box[:3], backend=backend)
-        cyth2 = distances.apply_PBC(atoms, box, backend=backend)
-        reference = atoms - np.floor(atoms / box[:3]) * box[:3]
+            cyth1 = distances.apply_PBC(positions, box[:3], backend=backend)
+        cyth2 = distances.apply_PBC(positions, box, backend=backend)
+        reference = (DCD_universe_pos -
+                     np.floor(DCD_universe_pos / box[:3]) * box[:3])
 
         assert_almost_equal(cyth2, reference, self.prec,
                             err_msg="Ortho apply_PBC #2 failed comparison with np")
 
-    def test_tric_PBC(self, backend):
-        U = MDAnalysis.Universe(TRIC)
-        atoms = U.atoms.positions
-        box = U.dimensions
-
+    @pytest.mark.parametrize('pos', ['Triclinic_universe_pos_box',
+                             'Triclinic_universe_ag_box'])
+    def test_tric_PBC(self, backend, pos, request):
+        positions, box = request.getfixturevalue(pos)
         def numpy_PBC(coords, box):
+            # need this to allow both AtomGroup and array
+            if isinstance(coords, MDAnalysis.core.AtomGroup):
+                coords = coords.positions
+            else:
+                pass
             # move to fractional coordinates
             fractional = distances.transform_RtoS(coords, box)
             # move fractional coordinates to central cell
@@ -826,8 +1231,9 @@ class Test_apply_PBC(object):
             # move back to real coordinates
             return distances.transform_StoR(fractional, box)
 
-        cyth1 = distances.apply_PBC(atoms, box, backend=backend)
-        reference = numpy_PBC(atoms, box)
+        cyth1 = distances.apply_PBC(positions, box, backend=backend)
+
+        reference = numpy_PBC(positions, box)
 
         assert_almost_equal(cyth1, reference, decimal=4,
                             err_msg="Triclinic apply_PBC failed comparison with np")
@@ -968,6 +1374,15 @@ class TestInputUnchanged(object):
                 np.array([[0.1, 1.9, 1.9], [-0.9,  0.9,  0.9]], dtype=np.float32),
                 np.array([[0.1, 1.9, 0.1], [-0.9,  0.9, -0.9]], dtype=np.float32)]
 
+    @staticmethod
+    @pytest.fixture()
+    def coords_atomgroups(coords):
+        universes = [MDAnalysis.Universe.empty(arr.shape[0], trajectory=True)
+                     for arr in coords]
+        for u, a in zip(universes, coords):
+            u.atoms.positions = a
+        return [u.atoms for u in universes]
+
     @pytest.mark.parametrize('box', boxes)
     @pytest.mark.parametrize('backend', ['serial', 'openmp'])
     def test_input_unchanged_distance_array(self, coords, box, backend):
@@ -979,11 +1394,31 @@ class TestInputUnchanged(object):
 
     @pytest.mark.parametrize('box', boxes)
     @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_input_unchanged_distance_array_atomgroup(self, coords_atomgroups,
+                                                      box, backend):
+        crds = coords_atomgroups[:2]
+        refs = [crd.positions.copy() for crd in crds]
+        res = distances.distance_array(crds[0], crds[1], box=box,
+                                       backend=backend)
+        assert_equal([crd.positions for crd in crds], refs)
+
+    @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
     def test_input_unchanged_self_distance_array(self, coords, box, backend):
         crd = coords[0]
         ref = crd.copy()
         res = distances.self_distance_array(crd, box=box, backend=backend)
         assert_equal(crd, ref)
+
+    @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_input_unchanged_self_distance_array_atomgroup(self,
+                                                           coords_atomgroups,
+                                                           box, backend):
+        crd = coords_atomgroups[0]
+        ref = crd.positions.copy()
+        res = distances.self_distance_array(crd, box=box, backend=backend)
+        assert_equal(crd.positions, ref)
 
     @pytest.mark.parametrize('box', boxes)
     @pytest.mark.parametrize('met', ["bruteforce", "pkdtree", "nsgrid", None])
@@ -1016,13 +1451,23 @@ class TestInputUnchanged(object):
         res = distances.transform_StoR(crd, box, backend=backend)
         assert_equal(crd, ref)
 
-    @pytest.mark.parametrize('box', boxes)
-    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    @pytest.mark.parametrize("box", boxes)
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_input_unchanged_calc_bonds(self, coords, box, backend):
         crds = coords[:2]
         refs = [crd.copy() for crd in crds]
         res = distances.calc_bonds(crds[0], crds[1], box=box, backend=backend)
         assert_equal(crds, refs)
+
+    @pytest.mark.parametrize("box", boxes)
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
+    def test_input_unchanged_calc_bonds_atomgroup(
+        self, coords_atomgroups, box, backend
+    ):
+        crds = coords_atomgroups[:2]
+        refs = [crd.positions.copy() for crd in crds]
+        res = distances.calc_bonds(crds[0], crds[1], box=box, backend=backend)
+        assert_equal([crd.positions for crd in crds], refs)
 
     @pytest.mark.parametrize('box', boxes)
     @pytest.mark.parametrize('backend', ['serial', 'openmp'])
@@ -1035,12 +1480,32 @@ class TestInputUnchanged(object):
 
     @pytest.mark.parametrize('box', boxes)
     @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_input_unchanged_calc_angles_atomgroup(self, coords_atomgroups,
+                                                   box, backend):
+        crds = coords_atomgroups[:3]
+        refs = [crd.positions.copy() for crd in crds]
+        res = distances.calc_angles(crds[0], crds[1], crds[2], box=box,
+                                    backend=backend)
+        assert_equal([crd.positions for crd in crds], refs)
+
+    @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
     def test_input_unchanged_calc_dihedrals(self, coords, box, backend):
         crds = coords
         refs = [crd.copy() for crd in crds]
         res = distances.calc_dihedrals(crds[0], crds[1], crds[2], crds[3],
                                        box=box, backend=backend)
         assert_equal(crds, refs)
+
+    @pytest.mark.parametrize('box', boxes)
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_input_unchanged_calc_dihedrals_atomgroup(self, coords_atomgroups,
+                                                      box, backend):
+        crds = coords_atomgroups
+        refs = [crd.positions.copy() for crd in crds]
+        res = distances.calc_dihedrals(crds[0], crds[1], crds[2], crds[3],
+                                       box=box, backend=backend)
+        assert_equal([crd.positions for crd in crds], refs)
 
     @pytest.mark.parametrize('box', boxes[:2])
     @pytest.mark.parametrize('backend', ['serial', 'openmp'])
@@ -1050,6 +1515,14 @@ class TestInputUnchanged(object):
         res = distances.apply_PBC(crd, box, backend=backend)
         assert_equal(crd, ref)
 
+    @pytest.mark.parametrize('box', boxes[:2])
+    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    def test_input_unchanged_apply_PBC_atomgroup(self, coords_atomgroups, box,
+                                                 backend):
+        crd = coords_atomgroups[0]
+        ref = crd.positions.copy()
+        res = distances.apply_PBC(crd, box, backend=backend)
+        assert_equal(crd.positions, ref)
 
 class TestEmptyInputCoordinates(object):
     """Tests ensuring that the following functions in MDAnalysis.lib.distances
@@ -1137,8 +1610,8 @@ class TestEmptyInputCoordinates(object):
         res = distances.transform_StoR(empty_coord, box, backend=backend)
         assert_equal(res, empty_coord)
 
-    @pytest.mark.parametrize('box', boxes)
-    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    @pytest.mark.parametrize("box", boxes)
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_empty_input_calc_bonds(self, empty_coord, box, backend):
         res = distances.calc_bonds(empty_coord, empty_coord, box=box,
                                    backend=backend)
@@ -1291,10 +1764,9 @@ class TestOutputTypes(object):
         assert res.dtype.type == np.float32
         assert res.shape == incoords.shape
 
-    @pytest.mark.parametrize('box', boxes)
-    @pytest.mark.parametrize('incoords',
-                             [2 * [coords[0]]] + list(comb(coords[1:], 2)))
-    @pytest.mark.parametrize('backend', ['serial', 'openmp'])
+    @pytest.mark.parametrize("box", boxes)
+    @pytest.mark.parametrize("incoords", [2 * [coords[0]]] + list(comb(coords[1:], 2)))
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_output_type_calc_bonds(self, incoords, box, backend):
         res = distances.calc_bonds(*incoords, box=box, backend=backend)
         maxdim = max([crd.ndim for crd in incoords])
@@ -1376,3 +1848,27 @@ class TestDistanceBackendSelection(object):
 
 def test_used_openmpflag():
     assert isinstance(distances.USED_OPENMP, bool)
+
+
+# test both orthognal and triclinic boxes
+@pytest.mark.parametrize('box', (np.eye(3) * 10, np.array([[10, 0, 0], [2, 10, 0], [2, 2, 10]])))
+# try shifts of -2 to +2 in each dimension, and all combinations of shifts
+@pytest.mark.parametrize('shift', itertools.product(range(-2, 3), range(-2, 3), range(-2, 3)))
+@pytest.mark.parametrize('dtype', (np.float32, np.float64))
+def test_minimize_vectors(box, shift, dtype):
+    # test vectors pointing in all directions
+    # these currently all obey minimum convention as they're much smaller than the box
+    vec = np.array(list(itertools.product(range(-1, 2), range(-1, 2), range(-1, 2))), dtype=dtype)
+    box = box.astype(dtype)
+
+    # box is 3x3 representation
+    # multiply by shift, then sum xyz components then add these to the vector
+    # this technically doesn't alter the vector because of periodic boundaries
+    shifted_vec = (vec + (box.T * shift).sum(axis=1)).astype(dtype)
+
+    box2 = mdamath.triclinic_box(*box).astype(dtype)
+
+    res = distances.minimize_vectors(shifted_vec, box2)
+
+    assert_allclose(res, vec, atol=0.00001)
+    assert res.dtype == dtype

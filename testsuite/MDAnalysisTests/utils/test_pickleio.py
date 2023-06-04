@@ -164,8 +164,8 @@ def test_pickle_with_write_mode(unpicklable_f, tmpdir):
 def test_GSD_pickle():
     gsd_io = gsd_pickle_open(GSD, mode='rb')
     gsd_io_pickled = pickle.loads(pickle.dumps(gsd_io))
-    assert_equal(gsd_io.read_frame(0).particles.position,
-                 gsd_io_pickled.read_frame(0).particles.position)
+    assert_equal(gsd_io[0].particles.position,
+                 gsd_io_pickled[0].particles.position)
 
 
 def test_GSD_with_write_mode(tmpdir):

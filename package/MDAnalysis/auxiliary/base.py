@@ -43,12 +43,17 @@ import os
 import numbers
 import math
 import warnings
+from typing import Union, Optional, Dict
+from collections import defaultdict
+import pickle
 
 import numpy as np
 
 from ..lib.util import asiterable, anyopen
+from .. import units
 
 from . import _AUXREADERS
+from .core import auxreader
 
 
 class _AuxReaderMeta(type):
@@ -69,6 +74,9 @@ class AuxStep(object):
 
     Stores the auxiliary data for the current auxiliary step. On creation,
     ``step`` is set to -1.
+
+    .. versionchanged:: 2.4.0
+        Added memory_limit parameter to control raising memory usage warnings.
 
     Parameters
     ----------
@@ -96,15 +104,18 @@ class AuxStep(object):
         (Default: True) Set to False if ``dt`` is not constant
         throughout the auxiliary data set, in which case a valid
         ``time_selector`` must be provided.
+    memory_limit : float, optional
+        Sets the threshold of memory usage by auxiliary data  (in GB) at which
+        to issue a warning. Default: 1 GB.
 
     Attributes
     ----------
     step : int
         Number of the current auxiliary step (0-based).
-
     """
+
     def __init__(self, dt=1, initial_time=0, time_selector=None,
-                 data_selector=None, constant_dt=True):
+                 data_selector=None, constant_dt=True, memory_limit=None):
         self.step = -1
         self._initial_time = initial_time
         self._dt = dt
@@ -114,7 +125,6 @@ class AuxStep(object):
         # if invalid, will catch later
         self._time_selector_ = time_selector
         self._data_selector_ = data_selector
-
 
     @property
     def time(self):
@@ -227,18 +237,29 @@ class AuxStep(object):
 
         Default behaviour here works when ``data`` is a ndarray of floats. May
         need to overwrite in individual format's AuxSteps.
+
+        .. versionchanged:: 2.4.0
+            dtype changed to np.float64 from np.float_
         """
-        return np.full_like(self.data, np.nan)
+        return np.full_like(self.data, np.nan, dtype=np.float64)
 
 
 class AuxReader(metaclass=_AuxReaderMeta):
-    """ Base class for auxiliary readers.
+    """Base class for auxiliary readers.
 
     Allows iteration over a set of data from a trajectory, additional
     ('auxiliary') to the regular positions/velocities/etc. This auxiliary
     data may be stored in e.g. an array or a separate file.
 
     See the :ref:`Auxiliary API` for more on use.
+
+    .. versionchanged:: 2.4.0
+        Behaviour of ``cutoff`` changed, default parameter which specifies
+        not cutoff is set is now None, not -1.
+
+    .. versionchanged:: 2.4.0
+        :class:`AuxReader` instances now have a :meth:`copy` method which
+        creates a deep copy of the instance.
 
     Parameters
     ----------
@@ -251,7 +272,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
         trajectory timestep. See :func:`calc_representative` for valid options.
     cutoff : float, optional
         Auxiliary steps further from the trajectory timestep than *cutoff*
-        (in ps) will be ignored when calculating representative values. If -1
+        (in ps) will be ignored when calculating representative values. If None
         (default), all auxiliary steps assigned to that timestep will be used.
     **kwargs
         Options to be passed to :class:`~AuxStep`
@@ -283,13 +304,15 @@ class AuxReader(metaclass=_AuxReaderMeta):
                       'time_selector', 'data_selector', 'constant_dt', 'auxname',
                       'format', '_auxdata']
 
-    def __init__(self, represent_ts_as='closest', auxname=None, cutoff=-1,
+    def __init__(self, represent_ts_as='closest', auxname=None, cutoff=None,
                  **kwargs):
         # allow auxname to be optional for when using reader separate from
         # trajectory.
         self.auxname = auxname
         self.represent_ts_as = represent_ts_as
-        self.cutoff = cutoff
+        # no cutoff was previously passed as -1. This check is to maintain this
+        # behaviour: negative number is appropriately turned to None
+        self.cutoff = cutoff if cutoff is not None and cutoff >= 0 else None
         self.frame_data = None
         self.frame_rep = None
 
@@ -305,7 +328,10 @@ class AuxReader(metaclass=_AuxReaderMeta):
             self.rewind()
 
     def copy(self):
-        raise NotImplementedError("Copy not implemented for AuxReader")
+        """Returns a deep copy of the AuxReader"""
+        orig_dict = pickle.dumps(self)
+        new_reader = pickle.loads(orig_dict)
+        return new_reader
 
     def __len__(self):
         """ Number of steps in auxiliary data. """
@@ -343,7 +369,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
         """
         # Define in each auxiliary reader
         raise NotImplementedError(
-            "BUG: Override _read_next_timestep() in auxiliary reader!")
+            "BUG: Override _read_next_step() in auxiliary reader!")
 
     def update_ts(self, ts):
         """ Read auxiliary steps corresponding to and update the trajectory
@@ -355,13 +381,13 @@ class AuxReader(metaclass=_AuxReaderMeta):
 
         Parameters
         ----------
-        ts : :class:`~MDAnalysis.coordinates.base.Timestep` object
+        ts : :class:`~MDAnalysis.coordinates.timestep.Timestep` object
             The trajectory timestep for which corresponding auxiliary data is
             to be read and updated.
 
         Returns
         -------
-        :class:`~MDAnalysis.coordinates.base.Timestep`
+        :class:`~MDAnalysis.coordinates.timestep.Timestep`
             *ts* with the representative auxiliary
             value in ``ts.aux`` be updated appropriately.
 
@@ -395,7 +421,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
 
         Parameters
         ----------
-        ts : :class:`~MDAnalysis.coordinates.base.Timestep` object
+        ts : :class:`~MDAnalysis.coordinates.timestep.Timestep` object
             The trajectory timestep for which corresponding auxiliary data is
             to be read.
 
@@ -431,6 +457,100 @@ class AuxReader(metaclass=_AuxReaderMeta):
             self._add_step_to_frame_data(ts.time)
         self.frame_rep = self.calc_representative()
 
+    def attach_auxiliary(self,
+                         coord_parent,
+                         aux_spec: Optional[Union[str, Dict[str, str]]] = None,
+                         format: Optional[str] = None,
+                         **kwargs) -> None:
+        """Attaches the data specified in `aux_spec` to the `coord_parent`
+
+        This method is called from within
+        :meth:`MDAnalysis.coordinates.base.ReaderBase.add_auxiliary()`.
+        `add_auxiliary` should be agnostic to the type of AuxReader, so the
+        method call leads here instead. First, some checks are done on
+        the arguments to make sure the input is treated properly. Then,
+        the AuxReader(s) with appropriate :attr:`data_selector` are
+        associated with the `coord_parent` from which `add_auxiliary` was
+        called.
+
+        Parameters
+        ----------
+        coord_parent : MDAnalysis.coordinates.base.ReaderBase
+            Reader object to which to attach the auxiliary data.
+
+        aux_spec : str, Dict[str, str], None
+            Specifies which data to add to `coord_parent`. String types are
+            for :class:`MDAnalysis.auxiliary.XVG.XVGReader` only. Dictionaries
+            are the standard way of providing `aux_spec` information (see also:
+            :mod:`MDAnalysis.auxiliary.EDR`).
+            Passing `None` causes all data to be added.
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        ValueError
+            If trying to add data under an `aux_spec` key that is already
+            assigned.
+
+        """
+        if "auxname" in kwargs:
+            # This check is necessary for the tests in coordinates/base
+            # `test_reload_auxiliaries_from_description`
+            # because there, auxreaders are created from descriptions without
+            # giving explicit `aux_spec`s
+            aux_spec = {kwargs["auxname"]: None}
+
+        elif aux_spec is None:
+            # Add all terms found in the file if aux_spec is None
+            aux_spec = {term: term for term in self.terms}
+
+        elif isinstance(aux_spec, str):
+            # This is to keep XVGReader functioning as-is, working with strings
+            # for what used to be `auxname`. Often, no `auxterms` are specified
+            # for XVG files. The below sets the data selector to None,
+            # the default for XVGReader
+            aux_spec = {aux_spec: None}
+
+        for auxname in aux_spec:
+            if auxname in coord_parent.aux_list:
+                raise ValueError(f"Auxiliary data with name {auxname} already "
+                                 "exists")
+            if " " in auxname:
+                warnings.warn(f"Auxiliary name '{auxname}' contains a space. "
+                              "Only dictionary style accession, not attribute "
+                              f"style accession of '{auxname}' will work.")
+            description = self.get_description()
+            # make sure kwargs are also used
+            description_kwargs = {**description, **kwargs}
+            # Make a copy of the auxreader for every attribute to add
+            # This is necessary so all attributes can be iterated over
+            aux = auxreader(**description_kwargs)
+            aux.auxname = auxname
+            if aux.data_selector is None:
+                # When calling ReaderBase.copy(), aux_spec information is lost
+                # but data_selector is retained
+                aux.data_selector = aux_spec[auxname]
+            coord_parent._auxs[auxname] = aux
+            coord_parent.ts = aux.update_ts(coord_parent.ts)
+
+        aux_memory_usage = 0
+        # Check if testing, which needs lower memory limit
+        memory_limit = kwargs.get("memory_limit", 1e+09)
+        for reader in coord_parent._auxs.values():
+            aux_memory_usage += reader._memory_usage()
+        if aux_memory_usage > memory_limit:
+            conv = 1e+09  # convert to GB
+            warnings.warn("AuxReader: memory usage warning! "
+                          f"Auxiliary data takes up {aux_memory_usage/conv} "
+                          f"GB of memory (Warning limit: {memory_limit/conv} "
+                          "GB).")
+
+    def _memory_usage(self):
+        raise NotImplementedError("BUG: Override _memory_usage() "
+                                  "in auxiliary reader!")
 
     def step_to_frame(self, step, ts, return_time_diff=False):
         """ Calculate closest trajectory frame for auxiliary step *step*.
@@ -449,7 +569,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
         step : int
             Number of the auxiliary step to calculate closest trajectory frame
             for.
-        ts : :class:`~MDAnalysis.coordinates.base.Timestep` object
+        ts : :class:`~MDAnalysis.coordinates.timestep.Timestep` object
             (Any) timestep from the trajectory the calculated frame number is to
             correspond to.
         return_time_diff : bool, optional
@@ -492,7 +612,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
 
         Parameters
         ----------
-        ts : :class:`~MDAnalysis.coordinates.base.Timestep` object
+        ts : :class:`~MDAnalysis.coordinates.timestep.Timestep` object
             The trajectory timestep before which the auxiliary reader is to
             be positioned.
         """
@@ -526,7 +646,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
 
         Parameters
         ----------
-        ts : :class:`~MDAnalysis.coordinates.base.Timestep` object
+        ts : :class:`~MDAnalysis.coordinates.timestep.Timestep` object
             Any timestep from the trajectory for which the next 'non-empty'
             frame is to be found.
 
@@ -543,7 +663,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
         while step < self.n_steps-1:
             next_frame, time_diff = self.step_to_frame(self.step+1, ts,
                                                        return_time_diff=True)
-            if self.cutoff != -1 and time_diff > self.cutoff:
+            if self.cutoff is not None and time_diff > self.cutoff:
                 # 'representative values' will be NaN; check next step
                 step = step + 1
             else:
@@ -659,7 +779,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
         ndarray
             Array of auxiliary value(s) 'representative' for the timestep.
         """
-        if self.cutoff == -1:
+        if self.cutoff is None:
             cutoff_data = self.frame_data
         else:
             cutoff_data = {key: val for key, val in self.frame_data.items()
@@ -678,8 +798,20 @@ class AuxReader(metaclass=_AuxReaderMeta):
             except KeyError:
                 value = cutoff_data[min_diff]
         elif self.represent_ts_as == 'average':
-            value = np.mean(np.array([val for val in cutoff_data.values()]),
-                            axis=0)
+            try:
+                value = np.mean(np.array(
+                                [val for val in cutoff_data.values()]
+                                ), axis=0)
+            except TypeError:
+                # for readers like EDRReader, the above does not work
+                # because each step contains a dictionary of numpy arrays
+                # as data
+                value = defaultdict(float)
+                for dataset in cutoff_data:
+                    for term in self.terms:
+                        value[term] += cutoff_data[dataset][term]
+                for term in value:
+                    value[term] = value[term] / len(cutoff_data)
         return value
 
     def __enter__(self):

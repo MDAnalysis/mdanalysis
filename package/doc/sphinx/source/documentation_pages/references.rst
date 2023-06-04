@@ -1,5 +1,5 @@
 .. -*- coding: utf-8 -*-
-.. note: make sure that no lines accidentaly start with a single character
+.. note: make sure that no lines accidentally start with a single character
 ..       followed by a period: reST interprets it as an enumerated list and
 ..       messes up the formatting
 
@@ -203,6 +203,15 @@ please cite [Dima2004b]_.
    proteins. *J Phys Chem B*, 108(21),
    6564-6570. doi:`10.1021/jp037128y
    <https://doi.org/10.1021/jp037128y>`_
+
+If you use use the dielectric analysis code in
+:class:`~MDAnalysis.analysis.dielectric.DielectricConstant` please cite [Neumann1983]_.
+
+.. [Neumann1983] Neumann, M. (1983). Dipole
+   Moment Fluctuation Formulas in Computer Simulations of Polar Systems.
+   *Molecular Physics* **50**, no. 4, 841–858. doi: `10.1080/00268978300102721`_
+
+.. _`10.1080/00268978300102721`: http://doi.org/10.1080/00268978300102721
 
 If you use H5MD files using
 :mod:`MDAnalysis.coordinates.H5MD.py`, please cite [Buyl2013]_ and
