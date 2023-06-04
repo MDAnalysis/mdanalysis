@@ -13,6 +13,12 @@ sphinx:
 #mkdocs:
 #  configuration: mkdocs.yml
 
+# Set the version of Python and other tools you might need
+build:
+  os: ubuntu-20.04
+  tools:
+    # python: "miniconda3-4.7"
+    python: "mambaforge-4.10"
 
 # Optionally set the version of Python and requirements required to build your docs
 python:

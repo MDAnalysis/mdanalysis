@@ -26,10 +26,11 @@
 ===================================================================
 
 Fast C-routines to calculate arrays of distances or angles from coordinate
-arrays. Many of the functions also exist in parallel versions, which typically
-provide higher performance than the serial code.
-The boolean attribute `MDAnalysis.lib.distances.USED_OPENMP` can be checked to
-see if OpenMP was used in the compilation of MDAnalysis.
+arrays. Distance functions can accept a NumPy :class:`np.ndarray` or an
+:class:`~MDAnalysis.core.groups.AtomGroup`. Many of the functions also exist
+in parallel versions, which typically provide higher performance than the
+serial code. The boolean attribute `MDAnalysis.lib.distances.USED_OPENMP` can
+be checked to see if OpenMP was used in the compilation of MDAnalysis.
 
 Selection of acceleration ("backend")
 -------------------------------------
@@ -49,7 +50,57 @@ case-insensitive):
                                         with OpenMP
    ========== ========================= ======================================
 
+Use of the distopia library
+---------------------------
+
+MDAnalysis has developed a standalone library, `distopia`_ for accelerating
+the distance functions in this module using explicit SIMD vectorisation.
+This can provide many-fold speedups in calculating distances. Distopia is
+under active development and as such only a selection of functions in this
+module are covered. Consult the following table to see if the function
+you wish to use is covered by distopia. For more information see the
+`distopia documentation`_.
+
+.. Table:: Functions available using the `distopia`_ backend.
+    :align: center
+
+    +-------------------------------------+-----------------------------------+
+    | Functions                           | Notes                             |
+    +=====================================+===================================+
+    | MDAnalysis.lib.distances.calc_bonds | Doesn't support triclinic boxes   |
+    +-------------------------------------+-----------------------------------+
+
+If `distopia`_ is installed, the functions in this table will accept the key
+'distopia' for the `backend` keyword argument. If the distopia backend is
+selected the `distopia` library will be used to calculate the distances. Note
+that for functions listed in this table **distopia is not the default backend
+if and must be selected.**
+
+.. Note::
+   Distopia does not currently support triclinic simulation boxes. If you
+   specify `distopia` as the backend and your simulation box is triclinic,
+   the function will fall back to the default `serial` backend.
+
+.. Note::
+    Due to the use of Instruction Set Architecture (`ISA`_) specific SIMD
+    intrinsics in distopia via `VCL2`_, the precision of your results may
+    depend on the ISA available on your machine. However, in all tested cases
+    distopia satisfied the accuracy thresholds used to the functions in this
+    module. Please document any issues you encounter with distopia's accuracy
+    in the `relevant distopia issue`_ on the MDAnalysis GitHub repository.
+
+.. _distopia: https://github.com/MDAnalysis/distopia
+.. _distopia documentation: https://www.mdanalysis.org/distopia
+.. _ISA: https://en.wikipedia.org/wiki/Instruction_set_architecture
+.. _VCL2: https://github.com/vectorclass/version2
+.. _relevant distopia issue: https://github.com/MDAnalysis/mdanalysis/issues/3915
+
 .. versionadded:: 0.13.0
+.. versionchanged:: 2.3.0
+   Distance functions can now accept an
+   :class:`~MDAnalysis.core.groups.AtomGroup` or an :class:`np.ndarray`
+.. versionchanged:: 2.5.0
+   Interface to the `distopia`_ package added.
 
 Functions
 ---------
@@ -65,14 +116,22 @@ Functions
 .. autofunction:: transform_StoR
 .. autofunction:: augment_coordinates(coordinates, box, r)
 .. autofunction:: undo_augment(results, translation, nreal)
+.. autofunction:: minimize_vectors(vectors, box)
 """
 import numpy as np
-from numpy.lib.utils import deprecate
+import numpy.typing as npt
 
+from typing import Union, Optional, Callable
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:  # pragma: no cover
+    from ..core.groups import AtomGroup
 from .util import check_coords, check_box
 from .mdamath import triclinic_vectors
 from ._augment import augment_coordinates, undo_augment
 from .nsgrid import FastNS
+from .c_distances import _minimize_vectors_ortho, _minimize_vectors_triclinic
+from ._distopia import HAS_DISTOPIA
+
 
 # hack to select backend with backend=<backend> kwarg. Note that
 # the cython parallel code (prange) in parallel.distances is
@@ -86,9 +145,14 @@ try:
                                           package="MDAnalysis.lib")
 except ImportError:
     pass
+
+if HAS_DISTOPIA:
+    _distances["distopia"] = importlib.import_module("._distopia",
+                             package="MDAnalysis.lib")
 del importlib
 
-def _run(funcname, args=None, kwargs=None, backend="serial"):
+def _run(funcname: str, args: Optional[tuple] = None,
+         kwargs: Optional[dict] = None, backend: str = "serial") -> Callable:
     """Helper function to select a backend function `funcname`."""
     args = args if args is not None else tuple()
     kwargs = kwargs if kwargs is not None else dict()
@@ -103,7 +167,8 @@ def _run(funcname, args=None, kwargs=None, backend="serial"):
 
 # serial versions are always available (and are typically used within
 # the core and topology modules)
-from .c_distances import (calc_distance_array,
+from .c_distances import (_UINT64_MAX,
+                          calc_distance_array,
                           calc_distance_array_ortho,
                           calc_distance_array_triclinic,
                           calc_self_distance_array,
@@ -125,7 +190,8 @@ from .c_distances import (calc_distance_array,
 from .c_distances_openmp import OPENMP_ENABLED as USED_OPENMP
 
 
-def _check_result_array(result, shape):
+def _check_result_array(result: Optional[npt.NDArray],
+                        shape: tuple) -> npt.NDArray:
     """Check if the result array is ok to use.
 
     The `result` array must meet the following requirements:
@@ -167,9 +233,12 @@ def _check_result_array(result, shape):
 
 
 @check_coords('reference', 'configuration', reduce_result_if_single=False,
-              check_lengths_match=False)
-def distance_array(reference, configuration, box=None, result=None,
-                   backend="serial"):
+              check_lengths_match=False, allow_atomgroup=True)
+def distance_array(reference: Union[npt.NDArray, 'AtomGroup'],
+                   configuration: Union[npt.NDArray, 'AtomGroup'],
+                   box: Optional[npt.NDArray] = None,
+                   result: Optional[npt.NDArray] = None,
+                   backend: str = "serial") -> npt.NDArray:
     """Calculate all possible distances between a reference set and another
     configuration.
 
@@ -186,16 +255,18 @@ def distance_array(reference, configuration, box=None, result=None,
 
     Parameters
     ----------
-    reference : numpy.ndarray
+    reference :numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Reference coordinate array of shape ``(3,)`` or ``(n, 3)`` (dtype is
-        arbitrary, will be converted to ``numpy.float32`` internally).
-    configuration : numpy.ndarray
+        arbitrary, will be converted to ``numpy.float32`` internally). Also
+        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.
+    configuration : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Configuration coordinate array of shape ``(3,)`` or ``(m, 3)`` (dtype is
-        arbitrary, will be converted to ``numpy.float32`` internally).
+        arbitrary, will be converted to ``numpy.float32`` internally). Also
+        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.
     box : array_like, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     result : numpy.ndarray, optional
         Preallocated result array which must have the shape ``(n, m)`` and dtype
@@ -217,14 +288,21 @@ def distance_array(reference, configuration, box=None, result=None,
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
        Now also accepts single coordinates as input.
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
     confnum = configuration.shape[0]
     refnum = reference.shape[0]
 
+    # check resulting array will not overflow UINT64_MAX
+    if refnum * confnum > _UINT64_MAX:
+        raise ValueError(f"Size of resulting array {refnum * confnum} elements"
+                         " larger than size of maximum integer")
+
     distances = _check_result_array(result, (refnum, confnum))
     if len(distances) == 0:
         return distances
-
     if box is not None:
         boxtype, box = check_box(box)
         if boxtype == 'ortho':
@@ -243,8 +321,11 @@ def distance_array(reference, configuration, box=None, result=None,
     return distances
 
 
-@check_coords('reference', reduce_result_if_single=False)
-def self_distance_array(reference, box=None, result=None, backend="serial"):
+@check_coords('reference', reduce_result_if_single=False, allow_atomgroup=True)
+def self_distance_array(reference: Union[npt.NDArray, 'AtomGroup'],
+                        box: Optional[npt.NDArray] = None,
+                        result: Optional[npt.NDArray] = None,
+                        backend: str = "serial") -> npt.NDArray:
     """Calculate all possible distances within a configuration `reference`.
 
     If the optional argument `box` is supplied, the minimum image convention is
@@ -257,13 +338,14 @@ def self_distance_array(reference, box=None, result=None, backend="serial"):
 
     Parameters
     ----------
-    reference : numpy.ndarray
+    reference : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Reference coordinate array of shape ``(3,)`` or ``(n, 3)`` (dtype is
-        arbitrary, will be converted to ``numpy.float32`` internally).
+        arbitrary, will be converted to ``numpy.float32`` internally). Also
+        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.
     box : array_like, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     result : numpy.ndarray, optional
         Preallocated result array which must have the shape ``(n*(n-1)/2,)`` and
@@ -290,14 +372,20 @@ def self_distance_array(reference, box=None, result=None, backend="serial"):
        Added *backend* keyword.
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
     refnum = reference.shape[0]
     distnum = refnum * (refnum - 1) // 2
+    # check resulting array will not overflow UINT64_MAX
+    if distnum > _UINT64_MAX:
+        raise ValueError(f"Size of resulting array {distnum} elements larger"
+                         " than size of maximum integer")
 
     distances = _check_result_array(result, (distnum,))
     if len(distances) == 0:
         return distances
-
     if box is not None:
         boxtype, box = check_box(box)
         if boxtype == 'ortho':
@@ -316,8 +404,15 @@ def self_distance_array(reference, box=None, result=None, backend="serial"):
     return distances
 
 
-def capped_distance(reference, configuration, max_cutoff, min_cutoff=None,
-                    box=None, method=None, return_distances=True):
+@check_coords('reference', 'configuration', enforce_copy=False,
+              reduce_result_if_single=False, check_lengths_match=False,
+              allow_atomgroup=True)
+def capped_distance(reference: Union[npt.NDArray, 'AtomGroup'],
+                    configuration: Union[npt.NDArray, 'AtomGroup'],
+                    max_cutoff: float, min_cutoff: Optional[float] = None,
+                    box: Optional[npt.NDArray] = None,
+                    method: Optional[str] = None,
+                    return_distances: Optional[bool] = True):
     """Calculates pairs of indices corresponding to entries in the `reference`
     and `configuration` arrays which are separated by a distance lying within
     the specified cutoff(s). Optionally, these distances can be returned as
@@ -335,10 +430,12 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None,
 
     Parameters
     -----------
-    reference : numpy.ndarray
-        Reference coordinate array with shape ``(3,)`` or ``(n, 3)``.
-    configuration : numpy.ndarray
-        Configuration coordinate array with shape ``(3,)`` or ``(m, 3)``.
+    reference : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
+        Reference coordinate array with shape ``(3,)`` or ``(n, 3)``. Also
+        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.
+    configuration : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
+        Configuration coordinate array with shape ``(3,)`` or ``(m, 3)``. Also
+        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.
     max_cutoff : float
         Maximum cutoff distance between the reference and configuration.
     min_cutoff : float, optional
@@ -346,7 +443,7 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None,
     box : array_like, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     method : {'bruteforce', 'nsgrid', 'pkdtree'}, optional
         Keyword to override the automatic guessing of the employed search
@@ -392,6 +489,9 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None,
        #2670, #2930)
     .. versionchanged:: 1.0.2
        nsgrid enabled again
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
     if box is not None:
         box = np.asarray(box, dtype=np.float32)
@@ -399,14 +499,24 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None,
             raise ValueError("Box Argument is of incompatible type. The "
                              "dimension should be either None or of the form "
                              "[lx, ly, lz, alpha, beta, gamma]")
-    method = _determine_method(reference, configuration, max_cutoff,
-                               min_cutoff=min_cutoff, box=box, method=method)
-    return method(reference, configuration, max_cutoff, min_cutoff=min_cutoff,
-                  box=box, return_distances=return_distances)
+
+    # The check_coords decorator made sure that reference and configuration
+    # are arrays of positions. Mypy does not know about that so we have to
+    # tell it.
+    reference_positions: npt.NDArray = reference  # type: ignore
+    configuration_positions: npt.NDArray = configuration  # type: ignore
+    function = _determine_method(reference_positions, configuration_positions,
+                                 max_cutoff, min_cutoff=min_cutoff,
+                                 box=box, method=method)
+    return function(reference, configuration,
+                    max_cutoff, min_cutoff=min_cutoff,
+                    box=box, return_distances=return_distances)
 
 
-def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
-                      box=None, method=None):
+def _determine_method(reference: npt.NDArray, configuration: npt.NDArray,
+                      max_cutoff: float, min_cutoff: Optional[float] = None,
+                      box: Optional[npt.NDArray] = None,
+                      method: Optional[str] = None) -> Callable:
     """Guesses the fastest method for capped distance calculations based on the
     size of the coordinate sets and the relative size of the target volume.
 
@@ -425,7 +535,7 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
     box : numpy.ndarray
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     method : {'bruteforce', 'nsgrid', 'pkdtree'}, optional
         Keyword to override the automatic guessing of the employed search
@@ -477,9 +587,13 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
 
 
 @check_coords('reference', 'configuration', enforce_copy=False,
-              reduce_result_if_single=False, check_lengths_match=False)
-def _bruteforce_capped(reference, configuration, max_cutoff, min_cutoff=None,
-                       box=None, return_distances=True):
+              reduce_result_if_single=False, check_lengths_match=False,
+              allow_atomgroup=True)
+def _bruteforce_capped(reference: Union[npt.NDArray, 'AtomGroup'],
+                       configuration: Union[npt.NDArray, 'AtomGroup'],
+                       max_cutoff: float, min_cutoff: Optional[float] = None,
+                       box: Optional[npt.NDArray] = None,
+                       return_distances: Optional[bool] = True):
     """Capped distance evaluations using a brute force method.
 
     Computes and returns an array containing pairs of indices corresponding to
@@ -495,12 +609,14 @@ def _bruteforce_capped(reference, configuration, max_cutoff, min_cutoff=None,
 
     Parameters
     ----------
-    reference : numpy.ndarray
+    reference : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Reference coordinate array with shape ``(3,)`` or ``(n, 3)`` (dtype will
-        be converted to ``numpy.float32`` internally).
-    configuration : array
+        be converted to ``numpy.float32`` internally). Also
+        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.
+    configuration : array or :class:`~MDAnalysis.core.groups.AtomGroup`
         Configuration coordinate array with shape ``(3,)`` or ``(m, 3)`` (dtype
-        will be converted to ``numpy.float32`` internally).
+        will be converted to ``numpy.float32`` internally). Also
+        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.
     max_cutoff : float
         Maximum cutoff distance between `reference` and `configuration`
         coordinates.
@@ -510,7 +626,7 @@ def _bruteforce_capped(reference, configuration, max_cutoff, min_cutoff=None,
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     return_distances : bool, optional
         If set to ``True``, distances will also be returned.
@@ -530,6 +646,10 @@ def _bruteforce_capped(reference, configuration, max_cutoff, min_cutoff=None,
         ``k``-th pair returned in `pairs` and gives the distance between the
         coordinates ``reference[pairs[k, 0]]`` and
         ``configuration[pairs[k, 1]]``.
+
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
     # Default return values (will be overwritten only if pairs are found):
     pairs = np.empty((0, 2), dtype=np.intp)
@@ -554,9 +674,13 @@ def _bruteforce_capped(reference, configuration, max_cutoff, min_cutoff=None,
 
 
 @check_coords('reference', 'configuration', enforce_copy=False,
-              reduce_result_if_single=False, check_lengths_match=False)
-def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None,
-                    box=None, return_distances=True):
+              reduce_result_if_single=False, check_lengths_match=False,
+              allow_atomgroup=True)
+def _pkdtree_capped(reference: Union[npt.NDArray, 'AtomGroup'],
+                    configuration: Union[npt.NDArray, 'AtomGroup'],
+                    max_cutoff: float, min_cutoff: Optional[float] = None,
+                    box: Optional[npt.NDArray] = None,
+                    return_distances: Optional[bool] = True):
     """Capped distance evaluations using a KDtree method.
 
     Computes and returns an array containing pairs of indices corresponding to
@@ -572,12 +696,14 @@ def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None,
 
     Parameters
     ----------
-    reference : numpy.ndarray
+    reference : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Reference coordinate array with shape ``(3,)`` or ``(n, 3)`` (dtype will
-        be converted to ``numpy.float32`` internally).
-    configuration : array
+        be converted to ``numpy.float32`` internally). Also
+        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.
+    configuration : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Configuration coordinate array with shape ``(3,)`` or ``(m, 3)`` (dtype
-        will be converted to ``numpy.float32`` internally).
+        will be converted to ``numpy.float32`` internally). Also
+        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.
     max_cutoff : float
         Maximum cutoff distance between `reference` and `configuration`
         coordinates.
@@ -587,7 +713,7 @@ def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None,
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     return_distances : bool, optional
         If set to ``True``, distances will also be returned.
@@ -607,6 +733,10 @@ def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None,
         ``k``-th pair returned in `pairs` and gives the distance between the
         coordinates ``reference[pairs[k, 0]]`` and
         ``configuration[pairs[k, 1]]``.
+
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
     from .pkdtree import PeriodicKDTree  # must be here to avoid circular import
 
@@ -636,9 +766,13 @@ def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None,
 
 
 @check_coords('reference', 'configuration', enforce_copy=False,
-              reduce_result_if_single=False, check_lengths_match=False)
-def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
-                   box=None, return_distances=True):
+              reduce_result_if_single=False, check_lengths_match=False,
+              allow_atomgroup=True)
+def _nsgrid_capped(reference: Union[npt.NDArray, 'AtomGroup'],
+                   configuration: Union[npt.NDArray, 'AtomGroup'],
+                   max_cutoff: float, min_cutoff: Optional[float] = None,
+                   box: Optional[npt.NDArray] = None,
+                   return_distances: Optional[bool] = True):
     """Capped distance evaluations using a grid-based search method.
 
     Computes and returns an array containing pairs of indices corresponding to
@@ -654,12 +788,14 @@ def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
 
     Parameters
     ----------
-    reference : numpy.ndarray
+    reference : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Reference coordinate array with shape ``(3,)`` or ``(n, 3)`` (dtype will
-        be converted to ``numpy.float32`` internally).
-    configuration : array
+        be converted to ``numpy.float32`` internally). Also
+        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.
+    configuration : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Configuration coordinate array with shape ``(3,)`` or ``(m, 3)`` (dtype
-        will be converted to ``numpy.float32`` internally).
+        will be converted to ``numpy.float32`` internally). Also
+        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.
     max_cutoff : float
         Maximum cutoff distance between `reference` and `configuration`
         coordinates.
@@ -669,7 +805,7 @@ def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
     box : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``), optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     return_distances : bool, optional
         If set to ``True``, distances will also be returned.
@@ -689,6 +825,10 @@ def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
         ``k``-th pair returned in `pairs` and gives the distance between the
         coordinates ``reference[pairs[k, 0]]`` and
         ``configuration[pairs[k, 1]]``.
+
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
     # Default return values (will be overwritten only if pairs are found):
     pairs = np.empty((0, 2), dtype=np.intp)
@@ -734,8 +874,15 @@ def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
         return pairs
 
 
-def self_capped_distance(reference, max_cutoff, min_cutoff=None, box=None,
-                         method=None, return_distances=True):
+@check_coords('reference', enforce_copy=False,
+              reduce_result_if_single=False, check_lengths_match=False,
+              allow_atomgroup=True)
+def self_capped_distance(reference: Union[npt.NDArray, 'AtomGroup'],
+                         max_cutoff: float,
+                         min_cutoff: Optional[float] = None,
+                         box: Optional[npt.NDArray] = None,
+                         method: Optional[str] = None,
+                         return_distances: Optional[bool] = True):
     """Calculates pairs of indices corresponding to entries in the `reference`
     array which are separated by a distance lying within the specified
     cutoff(s). Optionally, these distances can be returned as well.
@@ -752,8 +899,9 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None, box=None,
 
     Parameters
     -----------
-    reference : numpy.ndarray
-        Reference coordinate array with shape ``(3,)`` or ``(n, 3)``.
+    reference : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
+        Reference coordinate array with shape ``(3,)`` or ``(n, 3)``. Also
+        accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.
     max_cutoff : float
         Maximum cutoff distance between `reference` coordinates.
     min_cutoff : float, optional
@@ -761,7 +909,7 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None, box=None,
     box : array_like, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     method : {'bruteforce', 'nsgrid', 'pkdtree'}, optional
         Keyword to override the automatic guessing of the employed search
@@ -813,6 +961,9 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None, box=None,
        #2670, #2930)
     .. versionchanged:: 1.0.2
        enabled nsgrid again
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
     if box is not None:
         box = np.asarray(box, dtype=np.float32)
@@ -820,15 +971,21 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None, box=None,
             raise ValueError("Box Argument is of incompatible type. The "
                              "dimension should be either None or of the form "
                              "[lx, ly, lz, alpha, beta, gamma]")
-    method = _determine_method_self(reference, max_cutoff,
-                                    min_cutoff=min_cutoff,
-                                    box=box, method=method)
-    return method(reference,  max_cutoff, min_cutoff=min_cutoff, box=box,
-                  return_distances=return_distances)
+    # The check_coords decorator made sure that reference is an
+    # array of positions. Mypy does not know about that so we have to
+    # tell it.
+    reference_positions: npt.NDArray = reference  # type: ignore
+    function = _determine_method_self(reference_positions,
+                                      max_cutoff, min_cutoff=min_cutoff,
+                                      box=box, method=method)
+    return function(reference,  max_cutoff, min_cutoff=min_cutoff, box=box,
+                    return_distances=return_distances)
 
 
-def _determine_method_self(reference, max_cutoff, min_cutoff=None, box=None,
-                           method=None):
+def _determine_method_self(reference: npt.NDArray, max_cutoff: float,
+                           min_cutoff: Optional[float] = None,
+                           box: Optional[npt.NDArray] = None,
+                           method: Optional[str] = None):
     """Guesses the fastest method for capped distance calculations based on the
     size of the `reference` coordinate set and the relative size of the target
     volume.
@@ -844,7 +1001,7 @@ def _determine_method_self(reference, max_cutoff, min_cutoff=None, box=None,
     box : numpy.ndarray
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     method : {'bruteforce', 'nsgrid', 'pkdtree'}, optional
         Keyword to override the automatic guessing of the employed search
@@ -890,9 +1047,13 @@ def _determine_method_self(reference, max_cutoff, min_cutoff=None, box=None,
         return methods['nsgrid']
 
 
-@check_coords('reference', enforce_copy=False, reduce_result_if_single=False)
-def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
-                            return_distances=True):
+@check_coords('reference', enforce_copy=False, reduce_result_if_single=False,
+              allow_atomgroup=True)
+def _bruteforce_capped_self(reference: Union[npt.NDArray, 'AtomGroup'],
+                            max_cutoff: float,
+                            min_cutoff: Optional[float] = None,
+                            box: Optional[npt.NDArray] = None,
+                            return_distances: Optional[bool] = True):
     """Capped distance evaluations using a brute force method.
 
     Computes and returns an array containing pairs of indices corresponding to
@@ -907,9 +1068,10 @@ def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
 
     Parameters
     ----------
-    reference : numpy.ndarray
+    reference : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Reference coordinate array with shape ``(3,)`` or ``(n, 3)`` (dtype will
-        be converted to ``numpy.float32`` internally).
+        be converted to ``numpy.float32`` internally). Also accepts an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
     max_cutoff : float
         Maximum cutoff distance between `reference` coordinates.
     min_cutoff : float, optional
@@ -917,7 +1079,7 @@ def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     return_distances : bool, optional
         If set to ``True``, distances will also be returned.
@@ -939,6 +1101,9 @@ def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
 
     .. versionchanged:: 0.20.0
        Added `return_distances` keyword.
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
     # Default return values (will be overwritten only if pairs are found):
     pairs = np.empty((0, 2), dtype=np.intp)
@@ -965,9 +1130,13 @@ def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
     return pairs
 
 
-@check_coords('reference', enforce_copy=False, reduce_result_if_single=False)
-def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
-                         return_distances=True):
+@check_coords('reference', enforce_copy=False, reduce_result_if_single=False,
+              allow_atomgroup=True)
+def _pkdtree_capped_self(reference: Union[npt.NDArray, 'AtomGroup'],
+                         max_cutoff: float,
+                         min_cutoff: Optional[float] = None,
+                         box: Optional[npt.NDArray] = None,
+                         return_distances: Optional[bool] = True):
     """Capped distance evaluations using a KDtree method.
 
     Computes and returns an array containing pairs of indices corresponding to
@@ -982,9 +1151,10 @@ def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
 
     Parameters
     ----------
-    reference : numpy.ndarray
+    reference : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Reference coordinate array with shape ``(3,)`` or ``(n, 3)`` (dtype will
-        be converted to ``numpy.float32`` internally).
+        be converted to ``numpy.float32`` internally). Also accepts an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
     max_cutoff : float
         Maximum cutoff distance between `reference` coordinates.
     min_cutoff : float, optional
@@ -992,7 +1162,7 @@ def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     return_distances : bool, optional
         If set to ``True``, distances will also be returned.
@@ -1014,6 +1184,9 @@ def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
 
     .. versionchanged:: 0.20.0
        Added `return_distances` keyword.
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
     from .pkdtree import PeriodicKDTree  # must be here to avoid circular import
 
@@ -1041,9 +1214,13 @@ def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
     return pairs
 
 
-@check_coords('reference', enforce_copy=False, reduce_result_if_single=False)
-def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
-                        return_distances=True):
+@check_coords('reference', enforce_copy=False, reduce_result_if_single=False,
+              allow_atomgroup=True)
+def _nsgrid_capped_self(reference: Union[npt.NDArray, 'AtomGroup'],
+                        max_cutoff: float,
+                        min_cutoff: Optional[float] = None,
+                        box: Optional[npt.NDArray] = None,
+                        return_distances: Optional[bool] = True):
     """Capped distance evaluations using a grid-based search method.
 
     Computes and returns an array containing pairs of indices corresponding to
@@ -1058,9 +1235,10 @@ def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
 
     Parameters
     ----------
-    reference : numpy.ndarray
+    reference : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Reference coordinate array with shape ``(3,)`` or ``(n, 3)`` (dtype will
-        be converted to ``numpy.float32`` internally).
+        be converted to ``numpy.float32`` internally).  Also accepts an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
     max_cutoff : float
         Maximum cutoff distance between `reference` coordinates.
     min_cutoff : float, optional
@@ -1068,7 +1246,7 @@ def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
 
     Returns
@@ -1088,6 +1266,9 @@ def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
 
     .. versionchanged:: 0.20.0
        Added `return_distances` keyword.
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
     # Default return values (will be overwritten only if pairs are found):
     pairs = np.empty((0, 2), dtype=np.intp)
@@ -1153,7 +1334,7 @@ def transform_RtoS(coords, box, backend="serial"):
     box : numpy.ndarray
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     backend : {'serial', 'OpenMP'}, optional
         Keyword selecting the type of acceleration.
@@ -1202,7 +1383,7 @@ def transform_StoR(coords, box, backend="serial"):
     box : numpy.ndarray
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     backend : {'serial', 'OpenMP'}, optional
         Keyword selecting the type of acceleration.
@@ -1230,8 +1411,12 @@ def transform_StoR(coords, box, backend="serial"):
     return coords
 
 
-@check_coords('coords1', 'coords2')
-def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
+@check_coords('coords1', 'coords2', allow_atomgroup=True)
+def calc_bonds(coords1: Union[npt.NDArray, 'AtomGroup'],
+               coords2: Union[npt.NDArray, 'AtomGroup'],
+               box: Optional[npt.NDArray] = None,
+               result: Optional[npt.NDArray] = None,
+               backend: str = "serial") -> npt.NDArray:
     """Calculates the bond lengths between pairs of atom positions from the two
     coordinate arrays `coords1` and `coords2`, which must contain the same
     number of coordinates. ``coords1[i]`` and ``coords2[i]`` represent the
@@ -1255,32 +1440,34 @@ def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
 
     Parameters
     ----------
-    coords1 : numpy.ndarray
+    coords1 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` for one half of a
         single or ``n`` bonds, respectively (dtype is arbitrary, will be
-        converted to ``numpy.float32`` internally).
-    coords2 : numpy.ndarray
+        converted to ``numpy.float32`` internally).  Also accepts an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
+    coords2 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` for the other half of
         a single or ``n`` bonds, respectively (dtype is arbitrary, will be
-        converted to ``numpy.float32`` internally).
+        converted to ``numpy.float32`` internally). Also accepts an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     result : numpy.ndarray, optional
         Preallocated result array of dtype ``numpy.float64`` and shape ``(n,)``
         (for ``n`` coordinate pairs). Avoids recreating the array in repeated
         function calls.
-    backend : {'serial', 'OpenMP'}, optional
-        Keyword selecting the type of acceleration.
+    backend : {'serial', 'OpenMP', 'distopia'}, optional
+        Keyword selecting the type of acceleration. Defaults to 'serial'.
 
     Returns
     -------
-    bondlengths : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n,)``) or numpy.float64
-        Array containing the bond lengths between each pair of coordinates. If
-        two single coordinates were supplied, their distance is returned as a
-        single number instead of an array.
+    bondlengths : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n,)``) or
+        numpy.float64 Array containing the bond lengths between each pair of
+        coordinates. If two single coordinates were supplied, their distance is
+        returned as a single number instead of an array.
 
 
     .. versionadded:: 0.8
@@ -1289,6 +1476,11 @@ def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
        Now also accepts single coordinates as input.
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
+    .. versionchanged:: 2.5.0
+       Can now optionally use the fast distance functions from distopia
     """
     numatom = coords1.shape[0]
     bondlengths = _check_result_array(result, (numatom,))
@@ -1296,25 +1488,40 @@ def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
     if numatom > 0:
         if box is not None:
             boxtype, box = check_box(box)
-            if boxtype == 'ortho':
-                _run("calc_bond_distance_ortho",
-                     args=(coords1, coords2, box, bondlengths),
-                     backend=backend)
+            if boxtype == "ortho":
+                if backend == 'distopia':
+                    bondlengths = bondlengths.astype(np.float32)
+                _run(
+                    "calc_bond_distance_ortho",
+                    args=(coords1, coords2, box, bondlengths),
+                    backend=backend,
+                )
             else:
-                _run("calc_bond_distance_triclinic",
-                     args=(coords1, coords2, box, bondlengths),
-                     backend=backend)
+                _run(
+                    "calc_bond_distance_triclinic",
+                    args=(coords1, coords2, box, bondlengths),
+                    backend=backend,
+                )
         else:
-            _run("calc_bond_distance",
-                 args=(coords1, coords2, bondlengths),
-                 backend=backend)
-
+            if backend == 'distopia':
+                bondlengths = bondlengths.astype(np.float32)
+            _run(
+                "calc_bond_distance",
+                args=(coords1, coords2, bondlengths),
+                backend=backend,
+            )
+    if backend == 'distopia':
+        bondlengths = bondlengths.astype(np.float64)
     return bondlengths
 
 
-@check_coords('coords1', 'coords2', 'coords3')
-def calc_angles(coords1, coords2, coords3, box=None, result=None,
-                backend="serial"):
+@check_coords('coords1', 'coords2', 'coords3', allow_atomgroup=True)
+def calc_angles(coords1: Union[npt.NDArray, 'AtomGroup'],
+                coords2: Union[npt.NDArray, 'AtomGroup'],
+                coords3: Union[npt.NDArray, 'AtomGroup'],
+                box: Optional[npt.NDArray] = None,
+                result: Optional[npt.NDArray] = None,
+                backend: str = "serial") -> npt.NDArray:
     """Calculates the angles formed between triplets of atom positions from the
     three coordinate arrays `coords1`, `coords2`, and `coords3`. All coordinate
     arrays must contain the same number of coordinates.
@@ -1340,22 +1547,25 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None,
 
     Parameters
     ----------
-    coords1 : numpy.ndarray
+    coords1 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Array of shape ``(3,)`` or ``(n, 3)`` containing the coordinates of one
         side of a single or ``n`` angles, respectively (dtype is arbitrary, will
-        be converted to ``numpy.float32`` internally)
-    coords2 : numpy.ndarray
+        be converted to ``numpy.float32`` internally). Also accepts an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
+    coords2 :  numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Array of shape ``(3,)`` or ``(n, 3)`` containing the coordinates of the
         apices of a single or ``n`` angles, respectively (dtype is arbitrary,
-        will be converted to ``numpy.float32`` internally)
-    coords3 : numpy.ndarray
+        will be converted to ``numpy.float32`` internally). Also accepts an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
+    coords3 :  numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Array of shape ``(3,)`` or ``(n, 3)`` containing the coordinates of the
         other side of a single or ``n`` angles, respectively (dtype is
-        arbitrary, will be converted to ``numpy.float32`` internally)
+        arbitrary, will be converted to ``numpy.float32`` internally).
+        Also accepts an :class:`~MDAnalysis.core.groups.AtomGroup`.
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     result : numpy.ndarray, optional
         Preallocated result array of dtype ``numpy.float64`` and shape ``(n,)``
@@ -1381,6 +1591,9 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None,
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
        Now also accepts single coordinates as input.
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
     numatom = coords1.shape[0]
     angles = _check_result_array(result, (numatom,))
@@ -1404,9 +1617,14 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None,
     return angles
 
 
-@check_coords('coords1', 'coords2', 'coords3', 'coords4')
-def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
-                   backend="serial"):
+@check_coords('coords1', 'coords2', 'coords3', 'coords4', allow_atomgroup=True)
+def calc_dihedrals(coords1: Union[npt.NDArray, 'AtomGroup'],
+                   coords2: Union[npt.NDArray, 'AtomGroup'],
+                   coords3: Union[npt.NDArray, 'AtomGroup'],
+                   coords4: Union[npt.NDArray, 'AtomGroup'],
+                   box: Optional[npt.NDArray] = None,
+                   result: Optional[npt.NDArray] = None,
+                   backend: str = "serial") -> npt.NDArray:
     r"""Calculates the dihedral angles formed between quadruplets of positions
     from the four coordinate arrays `coords1`, `coords2`, `coords3`, and
     `coords4`, which must contain the same number of coordinates.
@@ -1438,26 +1656,30 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
 
     Parameters
     ----------
-    coords1 : numpy.ndarray
+    coords1 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 1st
         positions in dihedrals (dtype is arbitrary, will be converted to
-        ``numpy.float32`` internally)
-    coords2 : numpy.ndarray
+        ``numpy.float32`` internally).  Also accepts an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
+    coords2 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 2nd
         positions in dihedrals (dtype is arbitrary, will be converted to
-        ``numpy.float32`` internally)
-    coords3 : numpy.ndarray
+        ``numpy.float32`` internally).  Also accepts an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
+    coords3 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 3rd
         positions in dihedrals (dtype is arbitrary, will be converted to
-        ``numpy.float32`` internally)
-    coords4 : numpy.ndarray
+        ``numpy.float32`` internally).  Also accepts an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
+    coords4 : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 4th
         positions in dihedrals (dtype is arbitrary, will be converted to
-        ``numpy.float32`` internally)
+        ``numpy.float32`` internally).  Also accepts an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
     box : numpy.ndarray, optional
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     result : numpy.ndarray, optional
         Preallocated result array of dtype ``numpy.float64`` and shape ``(n,)``
@@ -1472,7 +1694,8 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
         Array containing the dihedral angles formed by each quadruplet of
         coordinates. Values are returned in radians (rad). If four single
         coordinates were supplied, the dihedral angle is returned as a single
-        number instead of an array.
+        number instead of an array. The range of dihedral angle is 
+        :math:`(-\pi, \pi)`.
 
 
     .. versionadded:: 0.8
@@ -1486,6 +1709,9 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
        Now also accepts single coordinates as input.
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
     numatom = coords1.shape[0]
     dihedrals = _check_result_array(result, (numatom,))
@@ -1509,19 +1735,22 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
     return dihedrals
 
 
-@check_coords('coords')
-def apply_PBC(coords, box, backend="serial"):
+@check_coords('coords', allow_atomgroup=True)
+def apply_PBC(coords: Union[npt.NDArray, 'AtomGroup'],
+              box: Optional[npt.NDArray] = None,
+              backend: str = "serial") -> npt.NDArray:
     """Moves coordinates into the primary unit cell.
 
     Parameters
     ----------
-    coords : numpy.ndarray
+    coords : numpy.ndarray or :class:`~MDAnalysis.core.groups.AtomGroup`
         Coordinate array of shape ``(3,)`` or ``(n, 3)`` (dtype is arbitrary,
-        will be converted to ``numpy.float32`` internally).
+        will be converted to ``numpy.float32`` internally). Also accepts an
+        :class:`~MDAnalysis.core.groups.AtomGroup`.
     box : numpy.ndarray
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
     backend : {'serial', 'OpenMP'}, optional
         Keyword selecting the type of acceleration.
@@ -1539,13 +1768,63 @@ def apply_PBC(coords, box, backend="serial"):
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
        Now also accepts (and, likewise, returns) single coordinates.
+    .. versionchanged:: 2.3.0
+       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
+       argument in any position and checks inputs using type hinting.
     """
-    if len(coords) == 0:
-        return coords
+    # coords is an array, the check_coords decorator made sure of that.
+    # Mypy, however, is not aware of that so we have to tell it explicitly.
+    coords_array: npt.NDArray = coords  # type: ignore
+
+    if len(coords_array) == 0:
+        return coords_array
     boxtype, box = check_box(box)
     if boxtype == 'ortho':
-        _run("ortho_pbc", args=(coords, box), backend=backend)
+        _run("ortho_pbc", args=(coords_array, box), backend=backend)
     else:
-        _run("triclinic_pbc", args=(coords, box), backend=backend)
+        _run("triclinic_pbc", args=(coords_array, box), backend=backend)
 
-    return coords
+    return coords_array
+
+
+@check_coords('vectors', enforce_copy=False, enforce_dtype=False)
+def minimize_vectors(vectors: npt.NDArray, box: npt.NDArray) -> npt.NDArray:
+    """Apply minimum image convention to an array of vectors
+
+    This function is required for calculating the correct vectors between two
+    points.  A naive approach of ``ag1.positions - ag2.positions`` will not
+    provide the minimum vectors between particles, even if all particles are
+    within the primary unit cell (box).
+
+    Parameters
+    ----------
+    vectors : numpy.ndarray
+        Vector array of shape ``(n, 3)``, either float32 or float64.  These
+        represent many vectors (such as between two particles).
+    box : numpy.ndarray
+        The unitcell dimensions of the system, which can be orthogonal or
+        triclinic and must be provided in the same format as returned by
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
+        ``[lx, ly, lz, alpha, beta, gamma]``.
+
+    Returns
+    -------
+    minimized_vectors : numpy.ndarray
+        Same shape and dtype as input.  The vectors from the input, but
+        minimized according to the size of the box.
+
+
+    .. versionadded:: 2.1.0
+    """
+    boxtype, box = check_box(box)
+    output = np.empty_like(vectors)
+
+    # use box which is same precision as input vectors
+    box = box.astype(vectors.dtype)
+
+    if boxtype == 'ortho':
+        _minimize_vectors_ortho(vectors, box, output)
+    else:
+        _minimize_vectors_triclinic(vectors, box.ravel(), output)
+
+    return output

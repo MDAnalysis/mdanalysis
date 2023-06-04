@@ -22,15 +22,16 @@
 #
 import MDAnalysis as mda
 import pytest
+import numpy as np
 
 from MDAnalysisTests.topology.base import ParserBase
-from MDAnalysisTests.datafiles import TXYZ, ARC
-
+from MDAnalysisTests.datafiles import TXYZ, ARC, ARC_PBC
+from numpy.testing import assert_equal
 
 class TestTXYZParser(ParserBase):
     parser = mda.topology.TXYZParser.TXYZParser
     guessed_attrs = ['masses']
-    expected_attrs = ['ids', 'names', 'bonds', 'types']
+    expected_attrs = ['ids', 'names', 'bonds', 'types', 'elements']
     expected_n_residues = 1
     expected_n_atoms = 9
     expected_n_segments = 1
@@ -51,3 +52,26 @@ class TestTXYZParser(ParserBase):
         types = top.types.values
         type_is_str = [isinstance(atom_type, str) for atom_type in types]
         assert all(type_is_str)
+
+def test_TXYZ_elements():
+    """The test checks whether elements attribute are assigned
+    properly given a TXYZ file with valid elements record.
+    """
+    u = mda.Universe(TXYZ, format='TXYZ')
+    element_list = np.array(['C', 'H', 'H', 'O', 'H', 'C', 'H', 'H', 'H'], dtype=object)
+    assert_equal(u.atoms.elements, element_list)
+    
+    
+def test_missing_elements_noattribute():
+    """Check that:
+
+    1) a warning is raised if elements are missing
+    2) the elements attribute is not set
+    """
+    wmsg = ("Element information is missing, elements attribute will not be "
+            "populated")
+    with pytest.warns(UserWarning, match=wmsg):
+        u = mda.Universe(ARC_PBC)
+    with pytest.raises(AttributeError):
+        _ = u.atoms.elements
+

@@ -33,7 +33,7 @@ Calculating path similarity --- :mod:`MDAnalysis.analysis.psa`
 
 The module contains code to calculate the geometric similarity of trajectories
 using path metrics such as the Hausdorff or Fréchet distances
-[Seyler2015]_. The path metrics are functions of two paths and return a
+:cite:p:`Seyler2015`. The path metrics are functions of two paths and return a
 nonnegative number, i.e., a distance. Two paths are identical if their distance
 is zero, and large distances indicate dissimilarity. Each path metric is a
 function of the individual points (e.g., coordinate snapshots) that comprise
@@ -63,13 +63,12 @@ map-dendrogram plots from hierarchical clustering.
 
 .. Rubric:: References
 
+.. bibliography::
+    :filter: False
+    :style: MDA
 
-.. [Seyler2015] Seyler SL, Kumar A, Thorpe MF, Beckstein O (2015)
-                Path Similarity Analysis: A Method for Quantifying
-                Macromolecular Pathways. PLoS Comput Biol 11(10): e1004568.
-                doi: `10.1371/journal.pcbi.1004568`_
+    Seyler2015
 
-.. _`10.1371/journal.pcbi.1004568`: http://dx.doi.org/10.1371/journal.pcbi.1004568
 .. _`PSAnalysisTutorial`: https://github.com/Becksteinlab/PSAnalysisTutorial
 
 
@@ -190,7 +189,7 @@ Classes, methods, and functions
 
    .. attribute:: D
 
-      :class:`numpy.ndarray` whichs store calculated distance matrix
+      :class:`numpy.ndarray` which stores the calculated distance matrix
 
 
 .. Markup definitions
@@ -399,9 +398,12 @@ def hausdorff(P, Q):
     -------
     Calculate the Hausdorff distance between two halves of a trajectory:
 
+     >>> import MDAnalysis as mda
+     >>> import numpy
      >>> from MDAnalysis.tests.datafiles import PSF, DCD
-     >>> u = Universe(PSF,DCD)
-     >>> mid = len(u.trajectory)/2
+     >>> from MDAnalysis.analysis import psa
+     >>> u = mda.Universe(PSF,DCD)
+     >>> mid = int(len(u.trajectory)/2)
      >>> ca = u.select_atoms('name CA')
      >>> P = numpy.array([
      ...                ca.positions for _ in u.trajectory[:mid:]
@@ -409,24 +411,26 @@ def hausdorff(P, Q):
      >>> Q = numpy.array([
      ...                ca.positions for _ in u.trajectory[mid::]
      ...              ]) # second half of trajectory
-     >>> hausdorff(P,Q)
-     4.7786639840135905
-     >>> hausdorff(P,Q[::-1]) # hausdorff distance w/ reversed 2nd trajectory
-     4.7786639840135905
+     >>> psa.hausdorff(P,Q)
+     4.778663899862152
+     >>> psa.hausdorff(P,Q[::-1]) # hausdorff distance w/ reversed 2nd trajectory
+     4.778663899862152
 
 
     Notes
     -----
     :func:`scipy.spatial.distance.directed_hausdorff` is an optimized
-    implementation of the early break algorithm of [Taha2015]_; the
+    implementation of the early break algorithm of :cite:p:`Taha2015`; the
     latter code is used here to calculate the symmetric Hausdorff
     distance with an RMSD metric
 
     References
     ----------
-    .. [Taha2015] A. A. Taha and A. Hanbury. An efficient algorithm for
-       calculating the exact Hausdorff distance. IEEE Transactions On Pattern
-       Analysis And Machine Intelligence, 37:2153-63, 2015.
+    .. bibliography::
+        :filter: False
+        :style: MDA
+
+        Taha2015
 
     """
     N_p, axis_p = get_coord_axes(P)
@@ -469,10 +473,12 @@ def hausdorff_wavg(P, Q):
     Example
     -------
 
+     >>> import MDAnalysis as mda
      >>> from MDAnalysis import Universe
      >>> from MDAnalysis.tests.datafiles import PSF, DCD
-     >>> u = Universe(PSF,DCD)
-     >>> mid = len(u.trajectory)/2
+     >>> from MDAnalysis.analysis import psa
+     >>> u = mda.Universe(PSF,DCD)
+     >>> mid = int(len(u.trajectory)/2)
      >>> ca = u.select_atoms('name CA')
      >>> P = numpy.array([
      ...                ca.positions for _ in u.trajectory[:mid:]
@@ -480,15 +486,16 @@ def hausdorff_wavg(P, Q):
      >>> Q = numpy.array([
      ...                ca.positions for _ in u.trajectory[mid::]
      ...              ]) # second half of trajectory
-     >>> hausdorff_wavg(P,Q)
+     >>> psa.hausdorff_wavg(P,Q)
      2.5669644353703447
-     >>> hausdorff_wavg(P,Q[::-1]) # weighted avg hausdorff dist w/ Q reversed
+     >>> psa.hausdorff_wavg(P,Q[::-1]) # weighted avg hausdorff dist w/ Q reversed
      2.5669644353703447
 
     Notes
     -----
     The weighted average Hausdorff distance is not a true metric (it does not
-    obey the triangle inequality); see [Seyler2015]_ for further details.
+    obey the triangle inequality); see :cite:p:`Seyler2015` for further
+    details.
 
 
     """
@@ -525,9 +532,11 @@ def hausdorff_avg(P, Q):
     Example
     -------
 
+     >>> import MDAnalysis as mda
      >>> from MDAnalysis.tests.datafiles import PSF, DCD
-     >>> u = Universe(PSF,DCD)
-     >>> mid = len(u.trajectory)/2
+     >>> from MDAnalysis.analysis import psa
+     >>> u = mda.Universe(PSF,DCD)
+     >>> mid = int(len(u.trajectory)/2)
      >>> ca = u.select_atoms('name CA')
      >>> P = numpy.array([
      ...                ca.positions for _ in u.trajectory[:mid:]
@@ -535,16 +544,16 @@ def hausdorff_avg(P, Q):
      >>> Q = numpy.array([
      ...                ca.positions for _ in u.trajectory[mid::]
      ...              ]) # second half of trajectory
-     >>> hausdorff_avg(P,Q)
+     >>> psa.hausdorff_avg(P,Q)
      2.5669646575869005
-     >>> hausdorff_avg(P,Q[::-1]) # hausdorff distance w/ reversed 2nd trajectory
+     >>> psa.hausdorff_avg(P,Q[::-1]) # hausdorff distance w/ reversed 2nd trajectory
      2.5669646575869005
 
 
     Notes
     -----
     The average Hausdorff distance is not a true metric (it does not obey the
-    triangle inequality); see [Seyler2015]_ for further details.
+    triangle inequality); see :cite:p:`Seyler2015` for further details.
 
     """
     N, axis = get_coord_axes(P)
@@ -581,7 +590,8 @@ def hausdorff_neighbors(P, Q):
     -----
     - Hausdorff neighbors are those points on the two paths that are separated by
       the Hausdorff distance. They are the farthest nearest neighbors and are
-      maximally different in the sense of the Hausdorff distance [Seyler2015]_.
+      maximally different in the sense of the Hausdorff distance
+      :cite:p:`Seyler2015`.
     - :func:`scipy.spatial.distance.directed_hausdorff` can also provide the
       hausdorff neighbors.
 
@@ -620,8 +630,12 @@ def discrete_frechet(P, Q):
     Calculate the discrete Fréchet distance between two halves of a
     trajectory.
 
-     >>> u = Universe(PSF,DCD)
-     >>> mid = len(u.trajectory)/2
+     >>> import MDAnalysis as mda
+     >>> import numpy as np
+     >>> from MDAnalysis.tests.datafiles import PSF, DCD
+     >>> from MDAnalysis.analysis import psa
+     >>> u = mda.Universe(PSF,DCD)
+     >>> mid = int(len(u.trajectory)/2)
      >>> ca = u.select_atoms('name CA')
      >>> P = np.array([
      ...                ca.positions for _ in u.trajectory[:mid:]
@@ -629,10 +643,10 @@ def discrete_frechet(P, Q):
      >>> Q = np.array([
      ...                ca.positions for _ in u.trajectory[mid::]
      ...              ]) # second half of trajectory
-     >>> discrete_frechet(P,Q)
-     4.7786639840135905
-     >>> discrete_frechet(P,Q[::-1]) # frechet distance w/ 2nd trj reversed 2nd
-     6.8429011177113832
+     >>> psa.discrete_frechet(P,Q)
+     4.778663984013591
+     >>> psa.discrete_frechet(P,Q[::-1]) # frechet distance w/ 2nd trj reversed 2nd
+     6.842901117711383
 
     Note that reversing the direction increased the Fréchet distance:
     it is sensitive to the direction of the path.
@@ -641,32 +655,23 @@ def discrete_frechet(P, Q):
     -----
 
     The discrete Fréchet metric is an approximation to the continuous Fréchet
-    metric [Frechet1906]_ [Alt1995]_. The calculation of the continuous
+    metric :cite:p:`Frechet1906,Alt1995`. The calculation of the continuous
     Fréchet distance is implemented with the dynamic programming algorithm of
-    [EiterMannila1994]_ [EiterMannila1997]_.
+    :cite:p:`EiterMannila1994,EiterMannila1997`.
 
 
     References
     ----------
 
-    .. [Frechet1906] M. Fréchet. Sur quelques points du calcul
-       fonctionnel. Rend. Circ. Mat. Palermo, 22(1):1–72, Dec. 1906.
+    .. bibliography::
+        :filter: False
+        :style: MDA
 
-    .. [Alt1995] H. Alt and M. Godau. Computing the Fréchet distance between
-       two polygonal curves. Int J Comput Geometry & Applications,
-       5(01n02):75–91, 1995. doi: `10.1142/S0218195995000064`_
+        Frechet1906
+        Alt1995
+        EiterMannila1994
+        EiterMannila1997
 
-    .. _`10.1142/S0218195995000064`: http://doi.org/10.1142/S0218195995000064
-
-    .. [EiterMannila1994] T. Eiter and H. Mannila. Computing discrete Fréchet
-       distance. Technical Report CD-TR 94/64, Christian Doppler Laboratory for
-       Expert Systems, Technische Universität Wien, Wien, 1994.
-
-    .. [EiterMannila1997] T. Eiter and H. Mannila. Distance measures for point
-       sets and their computation. Acta Informatica, 34:109–133, 1997. doi: `10.1007/s002360050075`_.
-
-
-    .. _10.1007/s002360050075: http://doi.org/10.1007/s002360050075
 
     """
 

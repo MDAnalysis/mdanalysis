@@ -31,6 +31,8 @@ See Also
 MDAnalysis.coordinates.TRR: Read and write GROMACS TRR trajectory files.
 MDAnalysis.coordinates.XDR: BaseReader/Writer for XDR based formats
 """
+
+import errno
 from . import base
 from .XDR import XDRBaseReader, XDRBaseWriter
 from ..lib.formats.libmdaxdr import XTCFile
@@ -130,11 +132,34 @@ class XTCReader(XDRBaseReader):
     See :ref:`Notes on offsets <offsets-label>` for more information about
     offsets.
 
+
+
     """
     format = 'XTC'
     units = {'time': 'ps', 'length': 'nm'}
     _writer = XTCWriter
     _file = XTCFile
+
+    def _read_next_timestep(self, ts=None):
+        """
+        copy next frame into timestep
+        
+        versionadded:: 2.4.0
+            XTCReader implements this method so that it can use
+            read_direct_x method of XTCFile to read the data directly
+            into the timestep rather than copying it from a temporary array.
+        """
+        if self._frame == self.n_frames - 1:
+            raise IOError(errno.EIO, 'trying to go over trajectory limit')
+        if ts is None:
+            ts = self.ts
+        if ts.has_positions:
+            frame = self._xdr.read_direct_x(ts.positions)
+        else:
+            frame = self._xdr.read()
+        self._frame += 1
+        self._frame_to_ts(frame, ts)
+        return ts
 
     def _frame_to_ts(self, frame, ts):
         """convert a xtc-frame to a mda TimeStep"""

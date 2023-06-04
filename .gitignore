@@ -21,7 +21,8 @@ examples/output.txt
 # ignore Vagrant virtual machines
 .vagrant
 # ignore coverage files
-.coverage
+.coverage*
+!.coveragerc
 .noseids
 htmlcov
 # ignore trajectory offset caches
@@ -50,3 +51,4 @@ benchmarks/results
 *~
 .idea
 .vscode
+*.lock

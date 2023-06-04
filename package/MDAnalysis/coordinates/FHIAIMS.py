@@ -63,10 +63,6 @@ specifications in the official `FHI-AIMS format`_.
 Classes
 -------
 
-.. autoclass:: Timestep
-   :members:
-   :inherited-members:
-
 .. autoclass:: FHIAIMSReader
    :members:
    :inherited-members:
@@ -118,9 +114,6 @@ from .core import triclinic_box, triclinic_vectors
 from ..exceptions import NoDataError
 from ..lib import util
 from ..lib import mdamath
-
-
-from .base import Timestep
 
 
 class FHIAIMSReader(base.SingleFrameReaderBase):

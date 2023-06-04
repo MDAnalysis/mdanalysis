@@ -38,45 +38,6 @@ trajectories in *little-endian* byte order.
 Classes
 -------
 
-.. autoclass:: MDAnalysis.coordinates.TRZ.Timestep
-   :members:
-
-   .. attribute:: frame
-
-      Index of current frame number (0 based)
-
-   .. attribute:: time
-
-      Current system time in ps
-
-   .. attribute:: n_atoms
-
-      Number of atoms in the frame (will be constant throughout trajectory)
-
-   .. attribute:: pressure
-
-      System pressure in pascals
-
-   .. attribute:: pressure_tensor
-
-      Array containing pressure tensors in order: xx, xy, yy, xz, yz, zz
-
-   .. attribute:: total_energy
-
-      Hamiltonian for the system in kJ/mol
-
-   .. attribute:: potential_energy
-
-      Potential energy of the system in kJ/mol
-
-   .. attribute:: kinetic_energy
-
-      Kinetic energy of the system in kJ/mol
-
-   .. attribute:: temperature
-
-      Temperature of the system in Kelvin
-
 .. autoclass:: TRZReader
    :members:
 
@@ -90,9 +51,10 @@ import os
 import errno
 
 from . import base
-from .base import Timestep
+from ..exceptions import NoDataError
+from .timestep import Timestep
 from ..lib import util
-from ..lib.util import cached
+from ..lib.util import cached, store_init_arguments
 from .core import triclinic_box, triclinic_vectors
 
 
@@ -101,8 +63,8 @@ class TRZReader(base.ReaderBase):
 
     Attributes
     ----------
-    ts : TRZ.Timestep
-         :class:`~MDAnalysis.coordinates.TRZ.Timestep` object containing
+    ts : timestep.Timestep
+         :class:`~MDAnalysis.coordinates.timestep.Timestep` object containing
          coordinates of current frame
 
     Note
@@ -119,12 +81,18 @@ class TRZReader(base.ReaderBase):
     .. versionchanged:: 1.0.1
        Now checks for the correct `n_atoms` on reading
        and can raise :exc:`ValueError`.
+    .. versionchanged:: 2.1.0
+       TRZReader now returns a default :attr:`dt` of 1.0 when it cannot be
+       obtained from the difference between two frames.
+    .. versionchanged:: 2.3.0
+       _frame attribute moved to `ts.data` dictionary.
     """
 
     format = "TRZ"
 
     units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps'}
 
+    @store_init_arguments
     def __init__(self, trzfilename, n_atoms=None, **kwargs):
         """Creates a TRZ Reader
 
@@ -233,7 +201,7 @@ class TRZReader(base.ReaderBase):
                                  "Maybe `topology` is wrong?".format(
                                                              self.n_atoms))
             ts.frame = data['nframe'][0] - 1  # 0 based for MDA
-            ts._frame = data['ntrj'][0]
+            ts.data['frame'] = data['ntrj'][0] # moved from attr to data
             ts.time = data['treal'][0]
             ts.dimensions = triclinic_box(*(data['box'].reshape(3, 3)))
             ts.data['pressure'] = data['pressure']
@@ -296,9 +264,14 @@ class TRZReader(base.ReaderBase):
     def _get_dt(self):
         """The amount of time between frames in ps
 
-        Assumes that this step is constant (ie. 2 trajectories with different steps haven't been
-        stitched together)
-        Returns 0 in case of IOError
+        Assumes that this step is constant (ie. 2 trajectories with different
+        steps haven't been stitched together).
+        Returns ``AttributeError`` in case of ``StopIteration``
+        (which makes :attr:`dt` return 1.0).
+
+        .. versionchanged:: 2.1.0
+           Now returns an ``AttributeError`` if dt can't be obtained from the
+           time difference between two frames.
         """
         curr_frame = self.ts.frame
         try:
@@ -307,10 +280,7 @@ class TRZReader(base.ReaderBase):
             t1 = self.ts.time
             dt = t1 - t0
         except StopIteration:
-            msg = ('dt information could not be obtained, defaulting to 0 ps. '
-                   'Note: in MDAnalysis 2.1.0 this default will change 1 ps.')
-            warnings.warn(msg)
-            return 0
+            raise AttributeError
         else:
             return dt
         finally:
@@ -328,9 +298,9 @@ class TRZReader(base.ReaderBase):
         """Timesteps between trajectory frames"""
         curr_frame = self.ts.frame
         try:
-            t0 = self.ts._frame
+            t0 = self.ts.data['frame']
             self.next()
-            t1 = self.ts._frame
+            t1 = self.ts.data['frame']
             skip_timestep = t1 - t0
         except StopIteration:
             return 0
@@ -553,8 +523,8 @@ class TRZWriter(base.WriterBase):
                     data[att] = 0.0
                 faked_attrs.append(att)
         try:
-            data['step'] = ts._frame
-        except AttributeError:
+            data['step'] = ts.data['frame']
+        except KeyError:
             data['step'] = ts.frame
             faked_attrs.append('step')
         try:
@@ -576,8 +546,8 @@ class TRZWriter(base.WriterBase):
             unitcell = np.zeros(9, dtype=np.float32)
 
         try:
-            vels = ts._velocities
-        except AttributeError:
+            vels = ts.velocities
+        except NoDataError:
             vels = np.zeros((self.n_atoms, 3), dtype=np.float32, order='F')
             warnings.warn("Timestep didn't have velocity information, "
                           "this will be set to zero in output trajectory. ")
