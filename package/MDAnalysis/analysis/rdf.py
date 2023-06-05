@@ -125,8 +125,10 @@ class InterRDF(AnalysisBase):
 
     exclusion_block : tuple
         A tuple representing the tile to exclude from the distance array.
-    ignore_same_residue : bool
-        If `True`, ignore distances between atoms in the same residue.
+    exclude_same : str
+        Will exclude pairs of atoms that share the same "residue", "segment", or "chain".
+        Those are the only valid values. This is intended to remove atoms that are
+        spatially correlated due to direct bonded connections.
     verbose : bool
         Show detailed progress of the calculation if set to `True`
 
@@ -222,7 +224,7 @@ class InterRDF(AnalysisBase):
                  range=(0.0, 15.0),
                  norm="rdf",
                  exclusion_block=None,
-                 ignore_same_residue=False,
+                 exclude_same=None,
                  **kwargs):
         super(InterRDF, self).__init__(g1.universe.trajectory, **kwargs)
         self.g1 = g1
@@ -232,7 +234,12 @@ class InterRDF(AnalysisBase):
         self.rdf_settings = {'bins': nbins,
                              'range': range}
         self._exclusion_block = exclusion_block
-        self.ignore_same_residue = ignore_same_residue
+        assert exclude_same is None or exclude_same in ['residue', 'segment', 'chain'], (
+            "The exclude_same argument to InterRDF must be None, 'residue', 'segment' "
+            "or 'chain'."
+        )
+        name_to_attr = {'residue': 'resindices', 'segment': 'segindices', 'chain': 'chainids'}
+        self.exclude_same = name_to_attr.get(exclude_same)
 
         if self.norm not in ['rdf', 'density', 'none']:
             raise ValueError(f"'{self.norm}' is an invalid norm. "
@@ -265,7 +272,7 @@ class InterRDF(AnalysisBase):
             mask = np.where(idxA != idxB)[0]
             dist = dist[mask]
 
-        if self.ignore_same_residue:
+        if self.exclude_same:
             # Ignore distances between atoms in the same residue
             resixA = self.g1.resindices[pairs[:, 0]]
             resixB = self.g2.resindices[pairs[:, 1]]

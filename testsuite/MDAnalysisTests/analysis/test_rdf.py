@@ -96,7 +96,7 @@ def test_exclusion(sels):
 def test_ignore_same_residues(sels):
     # should see two distances with 4 counts each
     s1, s2 = sels
-    rdf = InterRDF(s2, s2, ignore_same_residue=True).run()
+    rdf = InterRDF(s2, s2, exclude_same="residue").run()
     assert rdf.rdf[0] == 0
     assert rdf.results.count.sum() == 8
 
