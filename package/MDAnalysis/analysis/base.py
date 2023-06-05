@@ -490,10 +490,9 @@ class AnalysisBase(object):
     def run(self, start=None, stop=None, step=None, frames=None,
             verbose=None, *, progressbar_kwargs={},
             scheduler=None):
-        if scheduler is None:
-            self._compute()
-        elif scheduler == 'remote':
-            self._compute(start=start, stop=stop, step=step, frames=frames, verbose=verbose)
+        if scheduler is None: # fallback to the local scheduler
+            self._compute(start=start, stop=stop, step=step, frames=frames, 
+            verbose=verbose, progressbar_kwargs=progressbar_kwargs)
         else: # elif scheduler is a type of dask scheduler
             self._setup_scheduler()
             self._setup_bslices(start=start, stop=stop, step=step,
