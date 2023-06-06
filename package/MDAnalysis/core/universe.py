@@ -391,7 +391,7 @@ class Universe(object):
         return new
 
     @classmethod
-    def empty(cls, n_atoms, n_residues=1, n_segments=1,
+    def empty(cls, n_atoms, n_residues=1, n_segments=1, n_frames=1,
               atom_resindex=None, residue_segindex=None,
               trajectory=False, velocities=False, forces=False):
         """Create a blank Universe
@@ -411,6 +411,8 @@ class Universe(object):
           number of Residues in the Universe, defaults to 1
         n_segments: int, default 1
           number of Segments in the Universe, defaults to 1
+        n_frames: int, default 1
+          number of Frames in the Universe, defaults to 1
         atom_resindex: array like, optional
           mapping of atoms to residues, e.g. with 6 atoms,
           `atom_resindex=[0, 0, 1, 1, 2, 2]` would put 2 atoms
@@ -475,8 +477,8 @@ class Universe(object):
 
         u = cls(top)
 
-        if trajectory:
-            coords = np.zeros((1, n_atoms, 3), dtype=np.float32)
+        if n_frames > 1 or trajectory:
+            coords = np.zeros((n_frames, n_atoms, 3), dtype=np.float32)
             vels = np.zeros_like(coords) if velocities else None
             forces = np.zeros_like(coords) if forces else None
 
