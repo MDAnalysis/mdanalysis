@@ -28,7 +28,7 @@ import MDAnalysis as mda
 import numpy as np
 from MDAnalysisTests import make_Universe
 from MDAnalysisTests.coordinates.base import (
-    _SingleFrameReader, BaseWriterTest)
+    _SingleFrameReader, SingleFrameBaseWriterTest)
 from MDAnalysisTests.datafiles import FHIAIMS
 from numpy.testing import (assert_equal,
                            assert_array_almost_equal,
@@ -189,7 +189,7 @@ class TestFHIAIMSReader(object):
                             "FHIAIMSReader failed to read positions in lattice units properly")
 
 
-class TestFHIAIMSWriter(BaseWriterTest):
+class TestFHIAIMSWriter(SingleFrameBaseWriterTest):
     prec = 6
     ext = ".in"
 

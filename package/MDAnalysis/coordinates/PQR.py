@@ -171,7 +171,7 @@ class PQRReader(base.SingleFrameReaderBase):
         return PQRWriter(filename, **kwargs)
 
 
-class PQRWriter(base.WriterBase):
+class PQRWriter(base.SingleFrameWriterBase):
     """Write a single coordinate frame in whitespace-separated PQR format.
 
     Charges ("Q") are taken from the
@@ -197,7 +197,7 @@ class PQRWriter(base.WriterBase):
                 " {pos[2]:-8.3f} {charge:-7.4f} {radius:6.4f}\n")
     fmt_remark = "REMARK   {0} {1}\n"
 
-    def __init__(self, filename, convert_units=True, **kwargs):
+    def __init__(self, filename, n_atoms=None, append=False, convert_units=True, **kwargs):
         """Set up a PQRWriter with full whitespace separation.
 
         Parameters
@@ -210,11 +210,12 @@ class PQRWriter(base.WriterBase):
              remark lines (list of strings) or single string to be added to the
              top of the PQR file
         """
-        self.filename = util.filename(filename, ext='pqr')
+        filename = util.filename(filename, ext='pqr')
+        super().__init__(filename, n_atoms, append)
         self.convert_units = convert_units  # convert length and time to base units
         self.remarks = kwargs.pop('remarks', "PQR file written by MDAnalysis")
 
-    def write(self, selection, frame=None):
+    def _write_next_frame(self, selection, frame=None):
         """Write selection at current trajectory frame to file.
 
         Parameters

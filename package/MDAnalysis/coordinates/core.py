@@ -85,7 +85,7 @@ def reader(filename, format=None, **kwargs):
         raise TypeError(errmsg) from None
 
 
-def writer(filename, n_atoms=None, **kwargs):
+def writer(filename, n_atoms=None, append=False, **kwargs):
     """Initialize a trajectory writer instance for *filename*.
 
     Parameters
@@ -96,6 +96,9 @@ def writer(filename, n_atoms=None, **kwargs):
     n_atoms : int (optional)
         The number of atoms in the output trajectory; can be ommitted
         for single-frame writers.
+    append: bool (optional)
+        If ``True``, append to an existing file. If ``False``, overwrite
+        he file. Default is ``False``.
     multiframe : bool (optional)
         ``True``: write a trajectory with multiple frames; ``False``
         only write a single frame snapshot; ``None`` first try to get
@@ -123,4 +126,4 @@ def writer(filename, n_atoms=None, **kwargs):
     """
     Writer = get_writer_for(filename, format=kwargs.pop('format', None),
                             multiframe=kwargs.pop('multiframe', None))
-    return Writer(filename, n_atoms=n_atoms, **kwargs)
+    return Writer(filename, n_atoms=n_atoms, append=append, **kwargs)

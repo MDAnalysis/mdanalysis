@@ -483,7 +483,7 @@ class PDBReader(base.ReaderBase):
         self._pdbfile.close()
 
 
-class PDBWriter(base.WriterBase):
+class PDBWriter(base.SingleFrameWriterBase):
     """PDB writer that implements a subset of the `PDB 3.3 standard`_ .
 
     PDB format as used by NAMD/CHARMM: 4-letter resnames and segID are allowed,
@@ -634,7 +634,8 @@ class PDBWriter(base.WriterBase):
 
     def __init__(self, filename, bonds="conect", n_atoms=None, start=0, step=1,
                  remarks="Created by PDBWriter",
-                 convert_units=True, multiframe=None, reindex=True):
+                 convert_units=True, multiframe=None, reindex=True,
+                 append=False):
         """Create a new PDBWriter
 
         Parameters
@@ -665,7 +666,9 @@ class PDBWriter(base.WriterBase):
         reindex: bool (optional)
             If ``True`` (default), the atom serial is set to be consecutive
             numbers starting at 1. Else, use the atom id.
-
+        append: bool (optional)
+            If ``True``, append to an existing file. If ``False``, overwrite
+            the file. [``False``]
         """
         # n_atoms = None : dummy keyword argument
         # (not used, but Writer() always provides n_atoms as the second argument)
@@ -673,7 +676,7 @@ class PDBWriter(base.WriterBase):
         # TODO: - remarks should be a list of lines and written to REMARK
         #       - additional title keyword could contain line for TITLE
 
-        self.filename = filename
+        super().__init__(filename, n_atoms, append)
         # convert length and time to base units
         self.convert_units = convert_units
         self._multiframe = self.multiframe if multiframe is None else multiframe
@@ -917,32 +920,7 @@ class PDBWriter(base.WriterBase):
         # hack...
         self.obj = obj
         self.ts = obj.universe.trajectory.ts
-
-    def write(self, obj):
-        """Write object *obj* at current trajectory frame to file.
-
-        *obj* can be a selection (i.e. a
-        :class:`~MDAnalysis.core.groups.AtomGroup`) or a whole
-        :class:`~MDAnalysis.core.universe.Universe`.
-
-        The last letter of the :attr:`~MDAnalysis.core.groups.Atom.segid` is
-        used as the PDB chainID (but see :meth:`~PDBWriter.ATOM` for
-        details).
-
-        Parameters
-        ----------
-        obj
-            The :class:`~MDAnalysis.core.groups.AtomGroup` or
-            :class:`~MDAnalysis.core.universe.Universe` to write.
-        """
-
-        self._update_frame(obj)
-        self._write_pdb_header()
-        # Issue 105: with write() ONLY write a single frame; use
-        # write_all_timesteps() to dump everything in one go, or do the
-        # traditional loop over frames
-        self._write_next_frame(self.ts, multiframe=self._multiframe)
-        # END and CONECT records are written when file is being close()d
+        
 
     def write_all_timesteps(self, obj):
         """Write all timesteps associated with *obj* to the PDB file.
@@ -987,7 +965,7 @@ class PDBWriter(base.WriterBase):
 
         for framenumber in range(start, len(traj), step):
             traj[framenumber]
-            self._write_next_frame(self.ts, multiframe=True)
+            self._write_next_frame(obj, multiframe=True)
 
         # CONECT record is written when the file is being close()d
         self.close()
@@ -995,7 +973,7 @@ class PDBWriter(base.WriterBase):
         # Set the trajectory to the starting position
         traj[start]
 
-    def _write_next_frame(self, ts=None, **kwargs):
+    def _write_next_frame(self, obj, **kwargs):
         '''write a new timestep to the PDB file
 
         :Keywords:
@@ -1016,13 +994,17 @@ class PDBWriter(base.WriterBase):
         .. versionchanged:: 1.0.0
            Renamed from `write_next_timestep` to `_write_next_frame`.
         '''
-        if ts is None:
-            try:
-                ts = self.ts
-            except AttributeError:
-                errmsg = ("PBDWriter: no coordinate data to write to "
-                          "trajectory file")
-                raise NoDataError(errmsg) from None
+
+        self._update_frame(obj)
+        self._write_pdb_header()
+
+        try:
+            ts = self.ts
+        except AttributeError:
+            errmsg = ("PBDWriter: no coordinate data to write to "
+                        "trajectory file")
+            raise NoDataError(errmsg) from None
+
         self._check_pdb_coordinates()
         self._write_timestep(ts, **kwargs)
 
@@ -1382,3 +1364,21 @@ class MultiPDBWriter(PDBWriter):
     format = ['PDB', 'ENT']
     multiframe = True  # For Writer registration
     singleframe = False
+
+    def write(self, obj, **kwargs):
+        """Write current timestep, using the supplied `obj`.
+
+        Parameters
+        ----------
+        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe`
+            write coordinate information associate with `obj`
+
+        Note
+        ----
+        The size of the `obj` must be the same as the number of atoms provided
+        when setting up the trajectory.
+        """
+
+        # overwrite the default behavior of PDBWriter
+        self._n_frames_written += 1
+        return self._write_next_frame(obj, multiframe=True, **kwargs)

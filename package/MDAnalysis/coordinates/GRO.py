@@ -261,7 +261,7 @@ class GROReader(base.SingleFrameReaderBase):
         return GROWriter(filename, n_atoms=n_atoms, **kwargs)
 
 
-class GROWriter(base.WriterBase):
+class GROWriter(base.SingleFrameWriterBase):
     """GRO Writer that conforms to the Trajectory API.
 
     Will attempt to write the following information from the topology:
@@ -311,7 +311,8 @@ class GROWriter(base.WriterBase):
     }
     fmt['xyz_v'] = fmt['xyz'][:-1] + "{vel[0]:8.4f}{vel[1]:8.4f}{vel[2]:8.4f}\n"
 
-    def __init__(self, filename, convert_units=True, n_atoms=None, **kwargs):
+    def __init__(self, filename, convert_units=True, n_atoms=None,
+                 append=False, **kwargs):
         """Set up a GROWriter with a precision of 3 decimal places.
 
         Parameters
@@ -326,7 +327,9 @@ class GROWriter(base.WriterBase):
             By default, all the atoms were reindexed to have a atom id starting
             from 1. [``True``] However, this behaviour can be turned off by
             specifying `reindex` ``=False``.
-
+        append : bool (optional)
+            If ``True``, open file in append mode. [``False``]
+            
         Note
         ----
         To use the reindex keyword, user can follow the two examples given
@@ -344,13 +347,13 @@ class GROWriter(base.WriterBase):
                w.write(u.atoms)
 
         """
-        self.filename = util.filename(filename, ext='gro', keep=True)
-        self.n_atoms = n_atoms
+        filename = util.filename(filename, ext='gro', keep=True)
+        super().__init__(filename, n_atoms, append)
         self.reindex = kwargs.pop('reindex', True)
 
         self.convert_units = convert_units  # convert length and time to base units
 
-    def write(self, obj):
+    def _write_next_frame(self, obj):
         """Write selection at current trajectory frame to file.
 
         Parameters

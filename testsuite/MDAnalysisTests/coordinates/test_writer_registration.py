@@ -31,10 +31,6 @@ class TestWriterCreation(object):
         # this writer does the 'magic' format
         format = 'MAGIC'
 
-        def __init__(self, filename, n_atoms=None):
-            self.filename = filename
-            self.n_atoms = n_atoms
-
     class MultiMagicWriter(MagicWriter):
         # this writer does the 'magic' and 'magic2' formats
         # but *only* supports multiframe writing.

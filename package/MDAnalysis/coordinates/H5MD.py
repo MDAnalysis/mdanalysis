@@ -1061,7 +1061,8 @@ class H5MDWriter(base.WriterBase):
     @due.dcite(Doi("10.1016/j.cpc.2014.01.018"),
                description="Specifications of the H5MD standard",
                path=__name__, version='1.1')
-    def __init__(self, filename, n_atoms, n_frames=None, driver=None,
+    def __init__(self, filename, n_atoms, 
+                 append=False, n_frames=None, driver=None,
                  convert_units=True, chunks=None, compression=None,
                  compression_opts=None, positions=True, velocities=True,
                  forces=True, timeunit=None, lengthunit=None,
@@ -1071,14 +1072,13 @@ class H5MDWriter(base.WriterBase):
 
         if not HAS_H5PY:
             raise RuntimeError("H5MDWriter: Please install h5py")
-        self.filename = filename
         if n_atoms == 0:
             raise ValueError("H5MDWriter: no atoms in output trajectory")
+        super().__init__(filename, n_atoms, append)
         self._driver = driver
         if self._driver == 'mpio':
             raise ValueError("H5MDWriter: parallel writing with MPI I/O "
                              "is not currently supported.")
-        self.n_atoms = n_atoms
         self.n_frames = n_frames
         self.chunks = (1, n_atoms, 3) if chunks is None else chunks
         if self.chunks is False and self.n_frames is None:

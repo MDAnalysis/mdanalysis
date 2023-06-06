@@ -397,7 +397,8 @@ class TRZWriter(base.WriterBase):
 
     units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps'}
 
-    def __init__(self, filename, n_atoms, title='TRZ', convert_units=True):
+    def __init__(self, filename, n_atoms, append=False,
+                 title='TRZ', convert_units=True):
         """Create a TRZWriter
 
         Parameters
@@ -406,18 +407,21 @@ class TRZWriter(base.WriterBase):
             name of output file
         n_atoms : int
             number of atoms in trajectory
+        append : bool (optional)
+            If ``True``, append to an existing file. If ``False``, overwrite
+            the file. Default is ``False``.
         title : str (optional)
             title of the trajectory; the title must be 80 characters or
             shorter, a longer title raises a ValueError exception.
         convert_units : bool (optional)
             units are converted to the MDAnalysis base format; [``True``]
         """
-        self.filename = filename
         if n_atoms is None:
             raise ValueError("TRZWriter requires the n_atoms keyword")
         if n_atoms == 0:
             raise ValueError("TRZWriter: no atoms in output trajectory")
-        self.n_atoms = n_atoms
+
+        super().__init__(filename, n_atoms, append)
 
         if len(title) > 80:
             raise ValueError("TRZWriter: 'title' must be 80 characters of shorter")

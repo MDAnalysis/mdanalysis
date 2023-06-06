@@ -110,7 +110,7 @@ class CRDReader(base.SingleFrameReaderBase):
         return CRDWriter(filename, **kwargs)
 
 
-class CRDWriter(base.WriterBase):
+class CRDWriter(base.SingleFrameWriterBase):
     """CRD writer that implements the CHARMM CRD coordinate format.
 
     It automatically writes the CHARMM EXT extended format if there
@@ -148,13 +148,16 @@ class CRDWriter(base.WriterBase):
         "NUMATOMS": "{0:5d}\n",
     }
 
-    def __init__(self, filename, **kwargs):
+    def __init__(self, filename, n_atoms=None, append=False, **kwargs):
         """
         Parameters
         ----------
         filename : str or :class:`~MDAnalysis.lib.util.NamedStream`
              name of the output file or a stream
-
+        n_atoms : int (optional)
+                number of atoms in the coordinate file;
+        append : bool (optional)
+                append to an existing CRD file; default is to overwrite
         extended : bool (optional)
              By default, noextended CRD format is used [``False``].
              However, extended CRD format can be forced by
@@ -165,13 +168,14 @@ class CRDWriter(base.WriterBase):
              .. versionadded:: 2.2.0
         """
 
-        self.filename = util.filename(filename, ext='crd')
+        filename = util.filename(filename, ext='crd')
+        super().__init__(filename, n_atoms, append)
         self.crd = None
 
         # account for explicit crd format, if requested
         self.extended = kwargs.pop("extended", False)
 
-    def write(self, selection, frame=None):
+    def _write_next_frame(self, selection, frame=None):
         """Write selection at current trajectory frame to file.
 
         Parameters

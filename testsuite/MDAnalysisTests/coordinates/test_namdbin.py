@@ -32,7 +32,7 @@ import MDAnalysis as mda
 from MDAnalysisTests.datafiles import NAMDBIN, PDB_small
 from MDAnalysisTests.coordinates.base import (_SingleFrameReader,
                                               BaseReference,
-                                              BaseWriterTest)
+                                              SingleFrameBaseWriterTest)
 
 
 class TestNAMDBINReader(_SingleFrameReader):
@@ -70,7 +70,7 @@ class NAMDBINReference(BaseReference):
         self.container_format = True
 
 
-class NAMDBINWriter(BaseWriterTest):
+class NAMDBINWriter(SingleFrameBaseWriterTest):
     __test__ = True
     @staticmethod
     @pytest.fixture()
