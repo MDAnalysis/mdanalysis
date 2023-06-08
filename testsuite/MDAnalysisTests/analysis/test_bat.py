@@ -41,16 +41,16 @@ class TestBAT(object):
         return ag
 
     @pytest.fixture()
-    def bat(self, selected_residues):
+    def bat(self, selected_residues, scheduler):
         R = BAT(selected_residues)
-        R.run()
+        R.run(scheduler=scheduler)
         return R.results.bat
 
     @pytest.fixture
-    def bat_npz(self, tmpdir, selected_residues):
+    def bat_npz(self, tmpdir, selected_residues, scheduler):
         filename = str(tmpdir / 'test_bat_IO.npy')
         R = BAT(selected_residues)
-        R.run()
+        R.run(scheduler=scheduler)
         R.save(filename)
         return filename
 
@@ -72,8 +72,8 @@ class TestBAT(object):
             5,
             err_msg="error: BAT coordinates should match test values")
 
-    def test_bat_coordinates_single_frame(self, selected_residues):
-        bat = BAT(selected_residues).run(start=1, stop=2).results.bat
+    def test_bat_coordinates_single_frame(self, selected_residues, scheduler):
+        bat = BAT(selected_residues).run(start=1, stop=2, scheduler=scheduler).results.bat
         test_bat = [np.load(BATArray)[1]]
         assert_almost_equal(
             bat,
