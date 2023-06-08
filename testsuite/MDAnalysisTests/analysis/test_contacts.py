@@ -172,7 +172,7 @@ class TestContacts(object):
         return mda.Universe(PSF, DCD)
 
     def _run_Contacts(
-        self, universe,
+        self, universe, scheduler=None,
         start=None, stop=None, step=None, **kwargs
     ):
         acidic = universe.select_atoms(self.sel_acidic)
@@ -182,7 +182,7 @@ class TestContacts(object):
             select=(self.sel_acidic, self.sel_basic),
             refgroup=(acidic, basic),
             radius=6.0,
-            **kwargs).run(start=start, stop=stop, step=step)
+            **kwargs).run(start=start, stop=stop, step=step, scheduler=scheduler)
 
     @pytest.mark.parametrize("seltxt", [sel_acidic, sel_basic])
     def test_select_valid_types(self, universe, seltxt):
@@ -196,7 +196,7 @@ class TestContacts(object):
 
         assert ag_from_string == ag_from_ag
 
-    def test_contacts_selections(self, universe):
+    def test_contacts_selections(self, universe, scheduler):
         """Test if Contacts can take both string and AtomGroup as selections.
         """
         aga = universe.select_atoms(self.sel_acidic)
@@ -211,8 +211,8 @@ class TestContacts(object):
             refgroup=(aga, agb)
         )
 
-        cag.run()
-        csel.run()
+        cag.run(scheduler=scheduler)
+        csel.run(scheduler=scheduler)
 
         assert cag.grA == csel.grA
         assert cag.grB == csel.grB
@@ -229,26 +229,26 @@ class TestContacts(object):
         ) as te:
             contacts.Contacts._get_atomgroup(universe, ag)
 
-    def test_startframe(self, universe):
+    def test_startframe(self, universe, scheduler):
         """test_startframe: TestContactAnalysis1: start frame set to 0 (resolution of
         Issue #624)
 
         """
-        CA1 = self._run_Contacts(universe)
+        CA1 = self._run_Contacts(universe, scheduler=scheduler)
         assert len(CA1.results.timeseries) == universe.trajectory.n_frames
 
-    def test_end_zero(self, universe):
+    def test_end_zero(self, universe, scheduler):
         """test_end_zero: TestContactAnalysis1: stop frame 0 is not ignored"""
-        CA1 = self._run_Contacts(universe, stop=0)
+        CA1 = self._run_Contacts(universe, stop=0, scheduler=scheduler)
         assert len(CA1.results.timeseries) == 0
 
-    def test_slicing(self, universe):
+    def test_slicing(self, universe, scheduler):
         start, stop, step = 10, 30, 5
-        CA1 = self._run_Contacts(universe, start=start, stop=stop, step=step)
+        CA1 = self._run_Contacts(universe, start=start, stop=stop, step=step, scheduler=scheduler)
         frames = np.arange(universe.trajectory.n_frames)[start:stop:step]
         assert len(CA1.results.timeseries) == len(frames)
 
-    def test_villin_folded(self):
+    def test_villin_folded(self, scheduler):
         # one folded, one unfolded
         f = mda.Universe(contacts_villin_folded)
         u = mda.Universe(contacts_villin_unfolded)
@@ -260,12 +260,12 @@ class TestContacts(object):
                               select=(sel, sel),
                               refgroup=(grF, grF),
                               method="soft_cut")
-        q.run()
+        q.run(scheduler=scheduler)
 
         results = soft_cut(f, u, sel, sel)
         assert_almost_equal(q.results.timeseries[:, 1], results[:, 1])
 
-    def test_villin_unfolded(self):
+    def test_villin_unfolded(self, scheduler):
         # both folded
         f = mda.Universe(contacts_villin_folded)
         u = mda.Universe(contacts_villin_folded)
@@ -277,13 +277,13 @@ class TestContacts(object):
                               select=(sel, sel),
                               refgroup=(grF, grF),
                               method="soft_cut")
-        q.run()
+        q.run(scheduler=scheduler)
 
         results = soft_cut(f, u, sel, sel)
         assert_almost_equal(q.results.timeseries[:, 1], results[:, 1])
 
-    def test_hard_cut_method(self, universe):
-        ca = self._run_Contacts(universe)
+    def test_hard_cut_method(self, universe, scheduler):
+        ca = self._run_Contacts(universe, scheduler=scheduler)
         expected = [1., 0.58252427, 0.52427184, 0.55339806, 0.54368932,
                     0.54368932, 0.51456311, 0.46601942, 0.48543689, 0.52427184,
                     0.46601942, 0.58252427, 0.51456311, 0.48543689, 0.48543689,
@@ -307,7 +307,7 @@ class TestContacts(object):
         assert len(ca.results.timeseries) == len(expected)
         assert_array_almost_equal(ca.results.timeseries[:, 1], expected)
 
-    def test_radius_cut_method(self, universe):
+    def test_radius_cut_method(self, universe, scheduler):
         acidic = universe.select_atoms(self.sel_acidic)
         basic = universe.select_atoms(self.sel_basic)
         r = contacts.distance_array(acidic.positions, basic.positions)
@@ -317,15 +317,15 @@ class TestContacts(object):
             r = contacts.distance_array(acidic.positions, basic.positions)
             expected.append(contacts.radius_cut_q(r[initial_contacts], None, radius=6.0))
 
-        ca = self._run_Contacts(universe, method='radius_cut')
+        ca = self._run_Contacts(universe, method='radius_cut', scheduler=scheduler)
         assert_array_equal(ca.results.timeseries[:, 1], expected)
 
     @staticmethod
     def _is_any_closer(r, r0, dist=2.5):
         return np.any(r < dist)
 
-    def test_own_method(self, universe):
-        ca = self._run_Contacts(universe, method=self._is_any_closer)
+    def test_own_method(self, universe, scheduler):
+        ca = self._run_Contacts(universe, method=self._is_any_closer, scheduler=scheduler)
 
         bound_expected = [1., 1., 0., 1., 1., 0., 0., 1., 0., 1., 1., 0., 0.,
                           1., 0., 0., 0., 0., 1., 1., 0., 0., 0., 1., 0., 1.,
@@ -341,13 +341,13 @@ class TestContacts(object):
     def _weird_own_method(r, r0):
         return 'aaa'
 
-    def test_own_method_no_array_cast(self, universe):
+    def test_own_method_no_array_cast(self, universe, scheduler):
         with pytest.raises(ValueError):
-            self._run_Contacts(universe, method=self._weird_own_method, stop=2)
+            self._run_Contacts(universe, method=self._weird_own_method, stop=2, scheduler=scheduler)
 
-    def test_non_callable_method(self, universe):
+    def test_non_callable_method(self, universe, scheduler):
         with pytest.raises(ValueError):
-            self._run_Contacts(universe, method=2, stop=2)
+            self._run_Contacts(universe, method=2, stop=2, scheduler=scheduler)
 
     @pytest.mark.parametrize("pbc,expected", [
     (True, [1., 0.43138152, 0.3989021, 0.43824337, 0.41948765,
@@ -355,7 +355,7 @@ class TestContacts(object):
     (False, [1., 0.42327791, 0.39192399, 0.40950119, 0.40902613,
              0.42470309, 0.41140143, 0.42897862, 0.41472684, 0.38574822])
     ])
-    def test_distance_box(self, pbc, expected):
+    def test_distance_box(self, pbc, expected, scheduler):
         u = mda.Universe(TPR, XTC)
         sel_basic = "(resname ARG LYS)"
         sel_acidic = "(resname ASP GLU)"
@@ -364,22 +364,22 @@ class TestContacts(object):
         
         r = contacts.Contacts(u, select=(sel_acidic, sel_basic),
                         refgroup=(acidic, basic), radius=6.0, pbc=pbc)
-        r.run()
+        r.run(scheduler=scheduler)
         assert_array_almost_equal(r.results.timeseries[:, 1], expected)
 
-    def test_warn_deprecated_attr(self, universe):
+    def test_warn_deprecated_attr(self, universe, scheduler):
         """Test for warning message emitted on using deprecated `timeseries`
         attribute"""
-        CA1 = self._run_Contacts(universe, stop=1)
+        CA1 = self._run_Contacts(universe, stop=1, scheduler=scheduler)
         wmsg = "The `timeseries` attribute was deprecated in MDAnalysis"
         with pytest.warns(DeprecationWarning, match=wmsg):
             assert_equal(CA1.timeseries, CA1.results.timeseries)
 
 
-def test_q1q2():
+def test_q1q2(scheduler):
     u = mda.Universe(PSF, DCD)
     q1q2 = contacts.q1q2(u, 'name CA', radius=8)
-    q1q2.run()
+    q1q2.run(scheduler=scheduler)
 
     q1_expected = [1., 0.98092643, 0.97366031, 0.97275204, 0.97002725,
                    0.97275204, 0.96276113, 0.96730245, 0.9582198, 0.96185286,
