@@ -205,9 +205,9 @@ def test_start_stop_step(u, run_kwargs, frames):
     ({'frames': [True, True, False, True, False, True, True, False, True,
                  False]}, (0, 1, 3, 5, 6, 8)),
 ])
-def test_frame_slice(run_kwargs, frames):
+def test_frame_slice(run_kwargs, frames, scheduler):
     u = mda.Universe(TPR, XTC)  # dt = 100
-    an = FrameAnalysis(u.trajectory).run(**run_kwargs)
+    an = FrameAnalysis(u.trajectory).run(scheduler=scheduler, **run_kwargs)
     assert an.n_frames == len(frames)
     assert_equal(an.found_frames, frames)
     assert_equal(an.frames, frames, err_msg=FRAMES_ERR)
@@ -222,31 +222,31 @@ def test_frame_slice(run_kwargs, frames):
     ({'start': 4, 'step': 2, 'frames': [4, 6, 8]}),
     ({'start': 0, 'stop': 0, 'step': 0, 'frames': [4, 6, 8]}),
 ])
-def test_frame_fail(u, run_kwargs):
+def test_frame_fail(u, run_kwargs, scheduler):
     an = FrameAnalysis(u.trajectory)
     msg = 'start/stop/step cannot be combined with frames'
     with pytest.raises(ValueError, match=msg):
-        an.run(**run_kwargs)
+        an.run(scheduler=scheduler, **run_kwargs)
 
 
-def test_frame_bool_fail():
+def test_frame_bool_fail(scheduler):
     u = mda.Universe(TPR, XTC)  # dt = 100
     an = FrameAnalysis(u.trajectory)
     frames = [True, True, False]
     msg = 'boolean index did not match indexed array along dimension 0'
     with pytest.raises(IndexError, match=msg):
-        an.run(frames=frames)
+        an.run(scheduler=scheduler, frames=frames)
 
 
-def test_rewind():
+def test_rewind(scheduler):
     u = mda.Universe(TPR, XTC)  # dt = 100
-    an = FrameAnalysis(u.trajectory).run(frames=[0, 2, 3, 5, 9])
+    an = FrameAnalysis(u.trajectory).run(scheduler=scheduler, frames=[0, 2, 3, 5, 9])
     assert_equal(u.trajectory.ts.frame, 0)
 
 
-def test_frames_times():
+def test_frames_times(scheduler):
     u = mda.Universe(TPR, XTC)  # dt = 100
-    an = FrameAnalysis(u.trajectory).run(start=1, stop=8, step=2)
+    an = FrameAnalysis(u.trajectory).run(start=1, stop=8, step=2, scheduler=scheduler)
     frames = np.array([1, 3, 5, 7])
     assert an.n_frames == len(frames)
     assert_equal(an.found_frames, frames)
@@ -259,8 +259,8 @@ def test_verbose(u):
     assert a._verbose
 
 
-def test_verbose_progressbar(u, capsys):
-    an = FrameAnalysis(u.trajectory).run()
+def test_verbose_progressbar(u, capsys, scheduler):
+    an = FrameAnalysis(u.trajectory).run(scheduler=scheduler)
     out, err = capsys.readouterr()
     expected = ''
     actual = err.strip().split('\r')[-1]
@@ -281,9 +281,9 @@ def test_verbose_progressbar_run_with_kwargs(u, capsys):
     actual = err.strip().split('\r')[-1]
     assert actual[:30] == expected[:30]
 
-def test_incomplete_defined_analysis(u):
+def test_incomplete_defined_analysis(u, scheduler):
     with pytest.raises(NotImplementedError):
-        IncompleteAnalysis(u.trajectory).run()
+        IncompleteAnalysis(u.trajectory).run(scheduler=scheduler)
 
 
 def test_old_api(u):
@@ -330,15 +330,15 @@ def test_results_type(u):
     (20, 50, 2, 15),
     (20, 50, None, 30)
 ])
-def test_AnalysisFromFunction(u, start, stop, step, nframes):
+def test_AnalysisFromFunction(u, start, stop, step, nframes, scheduler):
     ana1 = base.AnalysisFromFunction(simple_function, mobile=u.atoms)
-    ana1.run(start=start, stop=stop, step=step)
+    ana1.run(start=start, stop=stop, step=step, scheduler=scheduler)
 
     ana2 = base.AnalysisFromFunction(simple_function, u.atoms)
-    ana2.run(start=start, stop=stop, step=step)
+    ana2.run(start=start, stop=stop, step=step, scheduler=scheduler)
 
     ana3 = base.AnalysisFromFunction(simple_function, u.trajectory, u.atoms)
-    ana3.run(start=start, stop=stop, step=step)
+    ana3.run(start=start, stop=stop, step=step, scheduler=scheduler)
 
     frames = []
     times = []
@@ -365,26 +365,26 @@ def mass_xyz(atomgroup1, atomgroup2, masses):
     return atomgroup1.positions * masses
 
 
-def test_AnalysisFromFunction_args_content(u):
+def test_AnalysisFromFunction_args_content(u, scheduler):
     protein = u.select_atoms('protein')
     masses = protein.masses.reshape(-1, 1)
     another = mda.Universe(TPR, XTC).select_atoms("protein")
     ans = base.AnalysisFromFunction(mass_xyz, protein, another, masses)
     assert len(ans.args) == 3
-    result = np.sum(ans.run().results.timeseries)
+    result = np.sum(ans.run(scheduler=scheduler).results.timeseries)
     assert_almost_equal(result, -317054.67757345125, decimal=6)
     assert (ans.args[0] is protein) and (ans.args[1] is another)
     assert ans._trajectory is protein.universe.trajectory
 
 
-def test_analysis_class():
+def test_analysis_class(scheduler):
     ana_class = base.analysis_class(simple_function)
     assert issubclass(ana_class, base.AnalysisBase)
     assert issubclass(ana_class, base.AnalysisFromFunction)
 
     u = mda.Universe(PSF, DCD)
     step = 2
-    ana = ana_class(u.atoms).run(step=step)
+    ana = ana_class(u.atoms).run(step=step, scheduler=scheduler)
 
     results = []
     for ts in u.trajectory[::step]:
