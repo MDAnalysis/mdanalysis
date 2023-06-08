@@ -115,21 +115,23 @@ class TestAtomicDistances(object):
     # only need to test that this class correctly applies distance calcs
     # calc_bonds() is tested elsewhere
     def test_ad_pairwise_dist(self, ad_ag1, ad_ag2,
-                              expected_dist):
+                              expected_dist,
+                              scheduler):
         '''Ensure that pairwise distances between atoms are
         correctly calculated without PBCs.'''
         pairwise_no_pbc = (ad.AtomicDistances(ad_ag1, ad_ag2,
-                                              pbc=False).run())
+                                              pbc=False).run(scheduler=scheduler))
         actual = pairwise_no_pbc.results
 
         # compare with expected values from dist()
         assert_allclose(actual, expected_dist)
 
     def test_ad_pairwise_dist_pbc(self, ad_ag1, ad_ag2,
-                                  expected_pbc_dist):
+                                  expected_pbc_dist,
+                                  scheduler):
         '''Ensure that pairwise distances between atoms are
         correctly calculated with PBCs.'''
-        pairwise_pbc = (ad.AtomicDistances(ad_ag1, ad_ag2).run())
+        pairwise_pbc = (ad.AtomicDistances(ad_ag1, ad_ag2).run(scheduler=scheduler))
         actual = pairwise_pbc.results
 
         # compare with expected values from dist()
