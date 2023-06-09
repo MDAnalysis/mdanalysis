@@ -53,8 +53,8 @@ class TestPersistenceLength(object):
 
     @staticmethod
     @pytest.fixture()
-    def p_run(p):
-        return p.run()
+    def p_run(p, scheduler):
+        return p.run(scheduler=scheduler)
 
     def test_ag_ValueError(self, u):
         ags = [u.atoms[:10], u.atoms[10:110]]
@@ -97,8 +97,8 @@ class TestPersistenceLength(object):
         assert ax2 is not ax
 
     @pytest.mark.parametrize("attr", ("lb", "lp", "fit"))
-    def test(self, p, attr):
-        p_run = p.run(step=3)
+    def test(self, p, attr, scheduler):
+        p_run = p.run(step=3, scheduler=scheduler)
         wmsg = f"The `{attr}` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):
             getattr(p_run, attr) is p_run.results[attr]
