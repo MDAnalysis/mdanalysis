@@ -1,6 +1,6 @@
 import pytest
 
-@pytest.fixture(params=[None, 'localdask',])
+@pytest.fixture(params=[None, 'localdask',], scope='module')
 def scheduler(request):
     """
     Fixture for testing all possible schedulers.
