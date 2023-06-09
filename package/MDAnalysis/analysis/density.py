@@ -489,6 +489,9 @@ class DensityAnalysis(AnalysisBase):
         density.make_density()
         self.results.density = density
 
+    def _setup_scheduler(self, **kwargs):
+        raise NotImplementedError('DensityAnalysis is unavailable with remote schedulers')
+
     @property
     def density(self):
         wmsg = ("The `density` attribute was deprecated in MDAnalysis 2.0.0 "

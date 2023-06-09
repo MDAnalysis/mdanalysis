@@ -231,11 +231,11 @@ class DensityParameters(object):
 
 class TestDensityAnalysis(DensityParameters):
     def check_DensityAnalysis(self, ag, ref_meandensity,
-                              tmpdir, runargs=None, **kwargs):
+                              tmpdir, runargs=None, scheduler=None, **kwargs):
         runargs = runargs if runargs else {}
         with tmpdir.as_cwd():
             D = density.DensityAnalysis(
-                ag, delta=self.delta, **kwargs).run(**runargs)
+                ag, delta=self.delta, **kwargs).run(scheduler=scheduler, **runargs)
             assert_almost_equal(D.results.density.grid.mean(), ref_meandensity,
                                 err_msg="mean density does not match")
             D.results.density.export(self.outfile)
@@ -252,8 +252,20 @@ class TestDensityAnalysis(DensityParameters):
         self.check_DensityAnalysis(
             universe.select_atoms(self.selections[mode], updating=updating),
             self.references[mode]['meandensity'],
-            tmpdir=tmpdir
+            tmpdir=tmpdir,
         )
+
+    @pytest.mark.parametrize("mode", ("static", "dynamic"))
+    def test_run_fails_for_remote_schedulers(self, mode, universe, tmpdir, scheduler):
+        updating = (mode == "dynamic")
+        if scheduler is not None:
+            with pytest.raises(NotImplementedError):
+                self.check_DensityAnalysis(
+                    universe.select_atoms(self.selections[mode], updating=updating),
+                    self.references[mode]['meandensity'],
+                    tmpdir=tmpdir,
+                    scheduler=scheduler
+                )
 
     def test_sliced(self, universe, tmpdir):
         self.check_DensityAnalysis(
