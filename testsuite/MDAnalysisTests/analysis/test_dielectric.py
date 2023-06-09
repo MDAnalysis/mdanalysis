@@ -56,6 +56,11 @@ class TestDielectric(object):
         eps = DielectricConstant(ag, temperature=100).run()
         assert_allclose(eps.results['eps_mean'], 9.621, rtol=1e-03)
 
+    def test_fails_with_remote_schedulers(self, ag, scheduler):
+        if scheduler is not None:
+            with pytest.raises(NotImplementedError):
+                eps = DielectricConstant(ag, temperature=100).run(scheduler=scheduler)
+
     def test_non_charges(self):
         u = mda.Universe(DCD_TRICLINIC)
         with pytest.raises(NoDataError,

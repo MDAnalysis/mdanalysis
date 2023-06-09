@@ -166,3 +166,6 @@ class DielectricConstant(AnalysisBase):
 
         self.results.eps += 1
         self.results.eps_mean += 1
+
+    def _setup_scheduler(self, **kwargs):
+        raise NotImplementedError('DielectricConstant is unavailable with remote schedulers')
