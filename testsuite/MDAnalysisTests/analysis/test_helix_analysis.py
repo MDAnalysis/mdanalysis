@@ -360,11 +360,11 @@ class TestHELANAL(object):
         assert_almost_equal(np.triu(bends['abs_dev'], 1), old_helanal['ABDEV'],
                             decimal=1)
 
-    def test_regression_values(self):
+    def test_regression_values(self, scheduler):
         u = mda.Universe(PDB_small)
         ha = hel.HELANAL(u, select='name CA and resnum 161-187',
                          flatten_single_helix=True)
-        ha.run()
+        ha.run(scheduler=scheduler)
 
         for key, value in HELANAL_SINGLE_DATA.items():
             if 'summary' in key:
@@ -379,10 +379,10 @@ class TestHELANAL(object):
                                 decimal=4,
                                 err_msg=msg.format(key))
 
-    def test_multiple_selections(self, psf_ca):
+    def test_multiple_selections(self, psf_ca, scheduler):
         ha = hel.HELANAL(psf_ca, flatten_single_helix=True,
                          select=('resnum 30-40', 'resnum 60-80'))
-        ha.run()
+        ha.run(scheduler=scheduler)
         n_frames = len(psf_ca.universe.trajectory)
         assert len(ha.atomgroups) == 2
         assert len(ha.results.summary) == 2
@@ -408,10 +408,10 @@ class TestHELANAL(object):
         assert len(rec) == 1
         assert 'multiple atoms' in rec[0].message.args[0]
 
-    def test_residue_gaps_split(self, psf_ca):
+    def test_residue_gaps_split(self, psf_ca, scheduler):
         sel = 'resid 6:50 or resid 100:130 or resid 132:148'
         with pytest.warns(UserWarning) as rec:
-            ha = hel.HELANAL(psf_ca, select=sel).run()
+            ha = hel.HELANAL(psf_ca, select=sel).run(scheduler=scheduler)
             assert len(ha.atomgroups) == 3
             assert len(ha.atomgroups[0]) == 45
             assert len(ha.atomgroups[1]) == 31
@@ -421,12 +421,12 @@ class TestHELANAL(object):
         assert 'has gaps in the residues' in warnmsg
         assert 'Splitting into 3 helices' in warnmsg
 
-    def test_residue_gaps_no_split(self, psf_ca):
+    def test_residue_gaps_no_split(self, psf_ca, scheduler):
         sel = 'resid 6:50 or resid 100:130 or resid 132:148'
         with pytest.warns(UserWarning) as rec:
             ha = hel.HELANAL(psf_ca, select=sel,
                              split_residue_sequences=False)
-            ha.run()
+            ha.run(scheduler=scheduler)
             assert len(ha.atomgroups) == 1
             assert len(ha.atomgroups[0]) == 45+31+17
         assert len(rec) == 1
@@ -461,9 +461,9 @@ class TestHELANAL(object):
         ([-1, -1, 1], [-45, 135]),
         ([-1, -1, -1], [-45, 135]),
     ])
-    def test_helanal_zigzag(self, zigzag, ref_axis, screw_angles):
+    def test_helanal_zigzag(self, zigzag, ref_axis, screw_angles, scheduler):
         ha = hel.HELANAL(zigzag, select="all", ref_axis=ref_axis,
-                         flatten_single_helix=True).run()
+                         flatten_single_helix=True).run(scheduler=scheduler)
         assert_almost_equal(ha.results.local_twists, 180, decimal=4)
         assert_almost_equal(ha.results.local_nres_per_turn, 2, decimal=4)
         assert_almost_equal(ha.results.global_axis, [[0, 0, -1]], decimal=4)
