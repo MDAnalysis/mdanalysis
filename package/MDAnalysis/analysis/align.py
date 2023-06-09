@@ -944,6 +944,9 @@ class AverageStructure(AnalysisBase):
         if not self._verbose:
             logging.disable(logging.NOTSET)
 
+    def _setup_scheduler(self, **kwa):
+        raise NotImplementedError('AverageStructure is unavailable with non-local schedulers')
+
     @property
     def universe(self):
         wmsg = ("The `universe` attribute was deprecated in MDAnalysis 2.0.0 "

@@ -398,6 +398,7 @@ class TestAlign(object):
 
 
 def _get_aligned_average_positions(ref_files, ref, scheduler=None, select="all", **kwargs):
+    print(f'{ref_files=}, {ref=}, {scheduler=}, {select=}, {kwargs=}')
     u = mda.Universe(*ref_files, in_memory=True)
     prealigner = align.AlignTraj(u, ref, select=select, **kwargs).run(scheduler=scheduler)
     ag = u.select_atoms(select)
@@ -417,9 +418,9 @@ class TestAverageStructure(object):
     def reference(self):
         return mda.Universe(PSF, CRD)
 
-    def test_average_structure_deprecated_attrs(self, universe, reference, scheduler):
+    def test_average_structure_deprecated_attrs(self, universe, reference):
         # Issue #3278 - remove in MDAnalysis 3.0.0
-        avg = align.AverageStructure(universe, reference).run(stop=2, scheduler=scheduler)
+        avg = align.AverageStructure(universe, reference).run(stop=2)
 
         wmsg = "The `universe` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):
@@ -434,45 +435,69 @@ class TestAverageStructure(object):
         with pytest.warns(DeprecationWarning, match=wmsg):
             assert avg.rmsd == avg.results.rmsd
 
-    def test_average_structure(self, universe, reference, scheduler): 
-        ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, scheduler=scheduler)
-        avg = align.AverageStructure(universe, reference).run()
-        assert_almost_equal(avg.results.universe.atoms.positions, ref,
-                            decimal=4)
-        assert_almost_equal(avg.results.rmsd, rmsd)
+    def test_average_structure(self, universe, reference, scheduler):
+        if scheduler is not None:
+            with pytest.raises(NotImplementedError):
+                ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, scheduler=scheduler)
+                avg = align.AverageStructure(universe, reference).run(scheduler=scheduler)
+        else:
+            ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, scheduler=scheduler)
+            avg = align.AverageStructure(universe, reference).run(scheduler=scheduler)
+            assert_almost_equal(avg.results.universe.atoms.positions, ref,
+                                decimal=4) # will fail with remote schedulers
+            assert_almost_equal(avg.results.rmsd, rmsd)
 
-    def test_average_structure_mass_weighted(self, universe, reference): # FIXME: fails with `localdask` if I provide scheduler
-        ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, weights='mass')
-        avg = align.AverageStructure(universe, reference, weights='mass').run()
-        assert_almost_equal(avg.results.universe.atoms.positions, ref,
-                            decimal=4)
-        assert_almost_equal(avg.results.rmsd, rmsd)
+    def test_average_structure_mass_weighted(self, universe, reference, scheduler): 
+        if scheduler is not None:
+            with pytest.raises(NotImplementedError):
+                ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, weights='mass')
+                avg = align.AverageStructure(universe, reference, weights='mass').run(scheduler=scheduler)
+        else:
+            ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, weights='mass')
+            avg = align.AverageStructure(universe, reference, weights='mass').run(scheduler=scheduler)
+            assert_almost_equal(avg.results.universe.atoms.positions, ref,
+                                decimal=4) # will fail with remote schedulers
+            assert_almost_equal(avg.results.rmsd, rmsd)
 
-    def test_average_structure_select(self, universe, reference): # FIXME: fails with `localdask` if I provide scheduler
+    def test_average_structure_select(self, universe, reference, scheduler):
         select = 'protein and name CA and resid 3-5'
-        ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, select=select)
-        avg = align.AverageStructure(universe, reference, select=select).run()
-        assert_almost_equal(avg.results.universe.atoms.positions, ref,
-                            decimal=4)
-        assert_almost_equal(avg.results.rmsd, rmsd)
+        if scheduler is not None:
+            with pytest.raises(NotImplementedError):
+                ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, select=select)
+                avg = align.AverageStructure(universe, reference, select=select).run(scheduler=scheduler)
+        else:
+            ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, select=select)
+            avg = align.AverageStructure(universe, reference, select=select).run(scheduler=scheduler)
+            assert_almost_equal(avg.results.universe.atoms.positions, ref,
+                                decimal=4) # will fail with remote schedulers
+            assert_almost_equal(avg.results.rmsd, rmsd)
 
-    def test_average_structure_no_ref(self, universe): # FIXME: fails with `localdask` if I provide scheduler
-        ref, rmsd = _get_aligned_average_positions(self.ref_files, universe)
-        avg = align.AverageStructure(universe).run()
-        assert_almost_equal(avg.results.universe.atoms.positions, ref,
-                            decimal=4)
-        assert_almost_equal(avg.results.rmsd, rmsd)
+    def test_average_structure_no_ref(self, universe, scheduler):
+        if scheduler is not None:
+            with pytest.raises(NotImplementedError):
+                ref, rmsd = _get_aligned_average_positions(self.ref_files, universe)
+                avg = align.AverageStructure(universe).run(scheduler=scheduler)
+        else:
+            ref, rmsd = _get_aligned_average_positions(self.ref_files, universe)
+            avg = align.AverageStructure(universe).run(scheduler=scheduler)
+            assert_almost_equal(avg.results.universe.atoms.positions, ref,
+                                decimal=4) # will fail with remote schedulers
+            assert_almost_equal(avg.results.rmsd, rmsd)
 
     def test_average_structure_no_msf(self, universe, scheduler):
-        avg = align.AverageStructure(universe).run(scheduler=scheduler)
-        assert not hasattr(avg, 'msf')
+        if scheduler is not None:
+            with pytest.raises(NotImplementedError):
+                avg = align.AverageStructure(universe).run(scheduler=scheduler)
+        else:
+            avg = align.AverageStructure(universe).run(scheduler=scheduler)
+            assert not hasattr(avg, 'msf')
 
     def test_mismatch_atoms(self, universe):
         u = mda.Merge(universe.atoms[:10])
         with pytest.raises(SelectionError):
             align.AverageStructure(universe, u)
 
-    def test_average_structure_ref_frame(self, universe): # FIXME: fails with `localdask` if I provide scheduler
+    def test_average_structure_ref_frame(self, universe):
         ref_frame = 3
         u = mda.Merge(universe.atoms)
 
@@ -485,14 +510,14 @@ class TestAverageStructure(object):
         ref, rmsd = _get_aligned_average_positions(self.ref_files, u)
         avg = align.AverageStructure(universe, ref_frame=ref_frame).run()
         assert_almost_equal(avg.results.universe.atoms.positions, ref,
-                            decimal=4)
+                                decimal=4) # will fail with remote schedulers
         assert_almost_equal(avg.results.rmsd, rmsd)
 
-    def test_average_structure_in_memory(self, universe): # FIXME: fails with `localdask` if I provide scheduler
+    def test_average_structure_in_memory(self, universe):
         avg = align.AverageStructure(universe, in_memory=True).run()
         reference_coordinates = universe.trajectory.timeseries().mean(axis=1)
         assert_almost_equal(avg.results.universe.atoms.positions,
-                            reference_coordinates, decimal=4)
+                            reference_coordinates, decimal=4) # will fail with remote schedulers
         assert avg.filename is None
 
 
