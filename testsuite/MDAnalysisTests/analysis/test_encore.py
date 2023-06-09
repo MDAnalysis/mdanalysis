@@ -130,7 +130,7 @@ inconsistent results")
         parallel_calculation = encore.utils.ParallelCalculation(function=function,
                                                                 n_jobs=4,
                                                                 args=arguments)
-        results = parallel_calculation.run()
+        results = parallel_calculation.run() 
 
         for i, r in enumerate(results):
             assert_equal(
@@ -138,7 +138,7 @@ inconsistent results")
                 arguments[i][0]**2,
                 err_msg="Unexpected results from ParallelCalculation")
 
-    def test_rmsd_matrix_with_superimposition(self, ens1):
+    def test_rmsd_matrix_with_superimposition(self, ens1, scheduler):
         conf_dist_matrix = encore.confdistmatrix.conformational_distance_matrix(
             ens1,
             encore.confdistmatrix.set_rmsd_matrix_elements,
@@ -148,7 +148,7 @@ inconsistent results")
             n_jobs=1)
 
         reference = rms.RMSD(ens1, select="name CA")
-        reference.run()
+        reference.run(scheduler=scheduler)
         err_msg = (
             "Calculated RMSD values differ from "
             "the reference implementation")
@@ -195,42 +195,42 @@ inconsistent results")
         assert_almost_equal(confdist_matrix.as_array()[0,:], reference_rmsd, decimal=3,
                             err_msg="calculated RMSD values differ from reference")
 
-    def test_ensemble_superimposition(self):
+    def test_ensemble_superimposition(self, scheduler):
         aligned_ensemble1 = mda.Universe(PSF, DCD)
         align.AlignTraj(aligned_ensemble1, aligned_ensemble1,
                         select="name CA",
-                        in_memory=True).run()
+                        in_memory=True).run(scheduler=scheduler)
         aligned_ensemble2 = mda.Universe(PSF, DCD)
         align.AlignTraj(aligned_ensemble2, aligned_ensemble2,
                         select="name *",
-                        in_memory=True).run()
+                        in_memory=True).run(scheduler=scheduler)
 
         rmsfs1 = rms.RMSF(aligned_ensemble1.select_atoms('name *'))
-        rmsfs1.run()
+        rmsfs1.run(scheduler=scheduler)
 
         rmsfs2 = rms.RMSF(aligned_ensemble2.select_atoms('name *'))
-        rmsfs2.run()
+        rmsfs2.run(scheduler=scheduler)
 
         assert sum(rmsfs1.results.rmsf) > sum(rmsfs2.results.rmsf), (
             "Ensemble aligned on all "
             "atoms should have lower full-atom RMSF than ensemble aligned on only CAs."
         )
 
-    def test_ensemble_superimposition_to_reference_non_weighted(self):
+    def test_ensemble_superimposition_to_reference_non_weighted(self, scheduler):
         aligned_ensemble1 = mda.Universe(PSF, DCD)
         align.AlignTraj(aligned_ensemble1, aligned_ensemble1,
                         select="name CA",
-                        in_memory=True).run()
+                        in_memory=True).run(scheduler=scheduler)
         aligned_ensemble2 = mda.Universe(PSF, DCD)
         align.AlignTraj(aligned_ensemble2, aligned_ensemble2,
                         select="name *",
-                        in_memory=True).run()
+                        in_memory=True).run(scheduler=scheduler)
 
         rmsfs1 = rms.RMSF(aligned_ensemble1.select_atoms('name *'))
-        rmsfs1.run()
+        rmsfs1.run(scheduler=scheduler)
 
         rmsfs2 = rms.RMSF(aligned_ensemble2.select_atoms('name *'))
-        rmsfs2.run()
+        rmsfs2.run(scheduler=scheduler)
 
         assert sum(rmsfs1.results.rmsf) > sum(rmsfs2.results.rmsf), (
             "Ensemble aligned on all "
