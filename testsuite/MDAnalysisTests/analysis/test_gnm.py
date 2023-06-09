@@ -38,10 +38,10 @@ def universe():
     return mda.Universe(GRO, XTC)
 
 
-def test_gnm(universe, tmpdir):
+def test_gnm(universe, tmpdir, scheduler):
     output = os.path.join(str(tmpdir), 'output.txt')
     gnm = mda.analysis.gnm.GNMAnalysis(universe, ReportVector=output)
-    gnm.run()
+    gnm.run(scheduler=scheduler)
     result = gnm.results
     assert len(result.times) == 10
     assert_almost_equal(gnm.results.times, np.arange(0, 1000, 100), decimal=4)
@@ -51,9 +51,9 @@ def test_gnm(universe, tmpdir):
        4.2058769e-15, 3.9839431e-15])
 
 
-def test_gnm_run_step(universe):
+def test_gnm_run_step(universe, scheduler):
     gnm = mda.analysis.gnm.GNMAnalysis(universe)
-    gnm.run(step=3)
+    gnm.run(step=3, scheduler=scheduler)
     result = gnm.results
     assert len(result.times) == 4
     assert_almost_equal(gnm.results.times, np.arange(0, 1200, 300), decimal=4)
@@ -79,18 +79,18 @@ def test_generate_kirchoff(universe):
        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 
 
-def test_gnm_SVD_fail(universe):
+def test_gnm_SVD_fail(universe, scheduler):
     with patch.object(np.linalg, "svd") as np_load_mock:
         np_load_mock.side_effect = np.linalg.LinAlgError
         msg = "SVD with cutoff 7.0 failed to converge. "
         msg += "Skip frame at 0.0."
         with pytest.warns(UserWarning, match=msg):
-            mda.analysis.gnm.GNMAnalysis(universe).run(stop=1)
+            mda.analysis.gnm.GNMAnalysis(universe).run(stop=1, scheduler=scheduler)
 
 
-def test_closeContactGNMAnalysis(universe):
+def test_closeContactGNMAnalysis(universe, scheduler):
     gnm = mda.analysis.gnm.closeContactGNMAnalysis(universe, weights="size")
-    gnm.run(stop=2)
+    gnm.run(stop=2, scheduler=scheduler)
     result = gnm.results
     assert len(result.times) == 2
     assert_almost_equal(gnm.results.times, (0,  100), decimal=4)
@@ -114,9 +114,9 @@ def test_closeContactGNMAnalysis(universe):
        0.0, 0.0, -2.263157894736841, -0.24333213169614382])
 
 
-def test_closeContactGNMAnalysis_weights_None(universe):
+def test_closeContactGNMAnalysis_weights_None(universe, scheduler):
     gnm = mda.analysis.gnm.closeContactGNMAnalysis(universe, weights=None)
-    gnm.run(stop=2)
+    gnm.run(stop=2, scheduler=scheduler)
     result = gnm.results
     assert len(result.times) == 2
     assert_almost_equal(gnm.results.times, (0, 100), decimal=4)
