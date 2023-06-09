@@ -90,11 +90,11 @@ expected_xcharge_fragments = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
      expected_xmass_fragments, expected_xcharge_fragments)
 ])
 def test_lineardensity(grouping, expected_masses, expected_charges,
-                       expected_xmass, expected_xcharge):
+                       expected_xmass, expected_xcharge, scheduler):
     universe = mda.Universe(waterPSF, waterDCD)
     sel_string = 'all'
     selection = universe.select_atoms(sel_string)
-    ld = LinearDensity(selection, grouping, binsize=5).run()
+    ld = LinearDensity(selection, grouping, binsize=5).run(scheduler=scheduler)
     assert_allclose(ld.masses, expected_masses)
     assert_allclose(ld.charges, expected_charges)
     # rtol changed here due to floating point imprecision
@@ -132,11 +132,11 @@ def testing_Universe():
     return u
 
 
-def test_updating_atomgroup(testing_Universe):
+def test_updating_atomgroup(testing_Universe, scheduler):
     expected_z_pos = np.array([0., 0.91329641, 0.08302695, 0., 0., 0.])
     u = testing_Universe
     selection = u.select_atoms("prop z < 3", updating=True)
-    ld = LinearDensity(selection, binsize=1).run()
+    ld = LinearDensity(selection, binsize=1).run(scheduler=scheduler)
     assert_allclose(ld.results.z.mass_density, expected_z_pos)
     # Test whether histogram bins are saved correctly.
     expected_bin_edges = np.arange(0, 7)
