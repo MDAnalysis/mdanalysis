@@ -218,6 +218,13 @@ class TestAlign(object):
                                    superposition=True)
         assert_almost_equal(rmsd[1], rmsd_sup_weight, 6)
 
+    def test_remote_scheduler_raises(self, universe, reference, tmpdir, scheduler):
+        reference.trajectory[-1]
+        outfile = str(tmpdir.join('align_test.dcd'))
+        if scheduler is not None:
+            with pytest.raises(NotImplementedError):
+                align.AlignTraj(universe, reference, filename=outfile).run(scheduler=scheduler)
+
     def test_rmsd_custom_mass_weights(self, universe, reference):
         last_atoms_weight = universe.atoms.masses
         A = universe.trajectory[0]
@@ -245,10 +252,10 @@ class TestAlign(object):
             finally:
                 x._writer.close()
 
-    def test_AlignTraj_outfile_default_exists(self, universe, reference, tmpdir, scheduler):
+    def test_AlignTraj_outfile_default_exists(self, universe, reference, tmpdir):
         reference.trajectory[-1]
         outfile = str(tmpdir.join('align_test.dcd'))
-        align.AlignTraj(universe, reference, filename=outfile).run(scheduler=scheduler)
+        align.AlignTraj(universe, reference, filename=outfile).run()
         fitted = mda.Universe(PSF, outfile)
 
         # ensure default file exists
@@ -263,25 +270,25 @@ class TestAlign(object):
             with pytest.raises(IOError):
                 align.AlignTraj(fitted, reference, force=False)
 
-    def test_AlignTraj_step_works(self, universe, reference, tmpdir, scheduler):
+    def test_AlignTraj_step_works(self, universe, reference, tmpdir):
         reference.trajectory[-1]
         outfile = str(tmpdir.join('align_test.dcd'))
         # this shouldn't throw an exception
-        align.AlignTraj(universe, reference, filename=outfile).run(step=10, scheduler=scheduler)
+        align.AlignTraj(universe, reference, filename=outfile).run(step=10)
 
-    def test_AlignTraj_deprecated_attribute(self, universe, reference, tmpdir, scheduler):
+    def test_AlignTraj_deprecated_attribute(self, universe, reference, tmpdir):
         reference.trajectory[-1]
         outfile = str(tmpdir.join('align_test.dcd'))
-        x = align.AlignTraj(universe, reference, filename=outfile).run(stop=2, scheduler=scheduler)
+        x = align.AlignTraj(universe, reference, filename=outfile).run(stop=2)
 
         wmsg = "The `rmsd` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):
             assert_equal(x.rmsd, x.results.rmsd)
 
-    def test_AlignTraj(self, universe, reference, tmpdir, scheduler):
+    def test_AlignTraj(self, universe, reference, tmpdir):
         reference.trajectory[-1]
         outfile = str(tmpdir.join('align_test.dcd'))
-        x = align.AlignTraj(universe, reference, filename=outfile).run(scheduler=scheduler)
+        x = align.AlignTraj(universe, reference, filename=outfile).run()
         fitted = mda.Universe(PSF, outfile)
 
         assert_almost_equal(x.results.rmsd[0], 6.9290, decimal=3)
@@ -293,10 +300,10 @@ class TestAlign(object):
         self._assert_rmsd(reference, fitted, 0, 6.929083044751061)
         self._assert_rmsd(reference, fitted, -1, 0.0)
 
-    def test_AlignTraj_weighted(self, universe, reference, tmpdir, scheduler):
+    def test_AlignTraj_weighted(self, universe, reference, tmpdir):
         outfile = str(tmpdir.join('align_test.dcd'))
         x = align.AlignTraj(universe, reference,
-                            filename=outfile, weights='mass').run(scheduler=scheduler)
+                            filename=outfile, weights='mass').run()
         fitted = mda.Universe(PSF, outfile)
         assert_almost_equal(x.results.rmsd[0], 0, decimal=3)
         assert_almost_equal(x.results.rmsd[-1], 6.9033, decimal=3)
@@ -306,7 +313,7 @@ class TestAlign(object):
         self._assert_rmsd(reference, fitted, -1, 6.929083032629219,
                           weights=universe.atoms.masses)
 
-    def test_AlignTraj_custom_weights(self, universe, reference, tmpdir, scheduler):
+    def test_AlignTraj_custom_weights(self, universe, reference, tmpdir):
         weights = np.zeros(universe.atoms.n_atoms)
         ca = universe.select_atoms('name CA')
         weights[ca.indices] = 1
@@ -314,17 +321,17 @@ class TestAlign(object):
         outfile = str(tmpdir.join('align_test.dcd'))
 
         x = align.AlignTraj(universe, reference,
-                            filename=outfile, select='name CA').run(scheduler=scheduler)
+                            filename=outfile, select='name CA').run()
         x_weights = align.AlignTraj(universe, reference,
-                                    filename=outfile, weights=weights).run(scheduler=scheduler)
+                                    filename=outfile, weights=weights).run()
 
         assert_array_almost_equal(x.results.rmsd, x_weights.results.rmsd)
 
-    def test_AlignTraj_custom_mass_weights(self, universe, reference, tmpdir, scheduler):
+    def test_AlignTraj_custom_mass_weights(self, universe, reference, tmpdir):
         outfile = str(tmpdir.join('align_test.dcd'))
         x = align.AlignTraj(universe, reference,
                             filename=outfile,
-                            weights=reference.atoms.masses).run(scheduler=scheduler)
+                            weights=reference.atoms.masses).run()
         fitted = mda.Universe(PSF, outfile)
         assert_almost_equal(x.results.rmsd[0], 0, decimal=3)
         assert_almost_equal(x.results.rmsd[-1], 6.9033, decimal=3)
@@ -334,18 +341,18 @@ class TestAlign(object):
         self._assert_rmsd(reference, fitted, -1, 6.929083032629219,
                           weights=universe.atoms.masses)
 
-    def test_AlignTraj_partial_fit(self, universe, reference, tmpdir, scheduler):
+    def test_AlignTraj_partial_fit(self, universe, reference, tmpdir):
         outfile = str(tmpdir.join('align_test.dcd'))
         # fitting on a partial selection should still write the whole topology
         align.AlignTraj(universe, reference, select='resid 1-20',
-                        filename=outfile, weights='mass').run(scheduler=scheduler)
+                        filename=outfile, weights='mass').run()
         mda.Universe(PSF, outfile)
 
-    def test_AlignTraj_in_memory(self, universe, reference, tmpdir, scheduler):
+    def test_AlignTraj_in_memory(self, universe, reference, tmpdir):
         outfile = str(tmpdir.join('align_test.dcd'))
         reference.trajectory[-1]
         x = align.AlignTraj(universe, reference, filename=outfile,
-                            in_memory=True).run(scheduler=scheduler)
+                            in_memory=True).run()
         assert x.filename is None
         assert_almost_equal(x.results.rmsd[0], 6.9290, decimal=3)
         assert_almost_equal(x.results.rmsd[-1], 5.2797e-07, decimal=3)
@@ -397,10 +404,9 @@ class TestAlign(object):
                                   decimal=3)
 
 
-def _get_aligned_average_positions(ref_files, ref, scheduler=None, select="all", **kwargs):
-    print(f'{ref_files=}, {ref=}, {scheduler=}, {select=}, {kwargs=}')
+def _get_aligned_average_positions(ref_files, ref, select="all", **kwargs):
     u = mda.Universe(*ref_files, in_memory=True)
-    prealigner = align.AlignTraj(u, ref, select=select, **kwargs).run(scheduler=scheduler)
+    prealigner = align.AlignTraj(u, ref, select=select, **kwargs).run()
     ag = u.select_atoms(select)
     reference_coordinates = u.trajectory.timeseries(asel=ag).mean(axis=1)
     rmsd = sum(prealigner.results.rmsd/len(u.trajectory))
@@ -435,62 +441,44 @@ class TestAverageStructure(object):
         with pytest.warns(DeprecationWarning, match=wmsg):
             assert avg.rmsd == avg.results.rmsd
 
-    def test_average_structure(self, universe, reference, scheduler):
+    def test_average_structure(self, universe, reference):
+        ref, rmsd = _get_aligned_average_positions(self.ref_files, reference)
+        avg = align.AverageStructure(universe, reference).run()
+        assert_almost_equal(avg.results.universe.atoms.positions, ref,
+                            decimal=4)
+        assert_almost_equal(avg.results.rmsd, rmsd)
+
+    def test_remote_scheduler_raises(self, universe, reference, scheduler):
+        ref, rmsd = _get_aligned_average_positions(self.ref_files, reference)
         if scheduler is not None:
             with pytest.raises(NotImplementedError):
-                ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, scheduler=scheduler)
                 avg = align.AverageStructure(universe, reference).run(scheduler=scheduler)
-        else:
-            ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, scheduler=scheduler)
-            avg = align.AverageStructure(universe, reference).run(scheduler=scheduler)
-            assert_almost_equal(avg.results.universe.atoms.positions, ref,
-                                decimal=4) # will fail with remote schedulers
-            assert_almost_equal(avg.results.rmsd, rmsd)
 
-    def test_average_structure_mass_weighted(self, universe, reference, scheduler): 
-        if scheduler is not None:
-            with pytest.raises(NotImplementedError):
-                ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, weights='mass')
-                avg = align.AverageStructure(universe, reference, weights='mass').run(scheduler=scheduler)
-        else:
-            ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, weights='mass')
-            avg = align.AverageStructure(universe, reference, weights='mass').run(scheduler=scheduler)
-            assert_almost_equal(avg.results.universe.atoms.positions, ref,
-                                decimal=4) # will fail with remote schedulers
-            assert_almost_equal(avg.results.rmsd, rmsd)
+    def test_average_structure_mass_weighted(self, universe, reference):
+        ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, weights='mass')
+        avg = align.AverageStructure(universe, reference, weights='mass').run()
+        assert_almost_equal(avg.results.universe.atoms.positions, ref,
+                            decimal=4)
+        assert_almost_equal(avg.results.rmsd, rmsd)
 
-    def test_average_structure_select(self, universe, reference, scheduler):
+    def test_average_structure_select(self, universe, reference):
         select = 'protein and name CA and resid 3-5'
-        if scheduler is not None:
-            with pytest.raises(NotImplementedError):
-                ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, select=select)
-                avg = align.AverageStructure(universe, reference, select=select).run(scheduler=scheduler)
-        else:
-            ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, select=select)
-            avg = align.AverageStructure(universe, reference, select=select).run(scheduler=scheduler)
-            assert_almost_equal(avg.results.universe.atoms.positions, ref,
-                                decimal=4) # will fail with remote schedulers
-            assert_almost_equal(avg.results.rmsd, rmsd)
+        ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, select=select)
+        avg = align.AverageStructure(universe, reference, select=select).run()
+        assert_almost_equal(avg.results.universe.atoms.positions, ref,
+                            decimal=4)
+        assert_almost_equal(avg.results.rmsd, rmsd)
 
-    def test_average_structure_no_ref(self, universe, scheduler):
-        if scheduler is not None:
-            with pytest.raises(NotImplementedError):
-                ref, rmsd = _get_aligned_average_positions(self.ref_files, universe)
-                avg = align.AverageStructure(universe).run(scheduler=scheduler)
-        else:
-            ref, rmsd = _get_aligned_average_positions(self.ref_files, universe)
-            avg = align.AverageStructure(universe).run(scheduler=scheduler)
-            assert_almost_equal(avg.results.universe.atoms.positions, ref,
-                                decimal=4) # will fail with remote schedulers
-            assert_almost_equal(avg.results.rmsd, rmsd)
+    def test_average_structure_no_ref(self, universe):
+        ref, rmsd = _get_aligned_average_positions(self.ref_files, universe)
+        avg = align.AverageStructure(universe).run()
+        assert_almost_equal(avg.results.universe.atoms.positions, ref,
+                            decimal=4)
+        assert_almost_equal(avg.results.rmsd, rmsd)
 
-    def test_average_structure_no_msf(self, universe, scheduler):
-        if scheduler is not None:
-            with pytest.raises(NotImplementedError):
-                avg = align.AverageStructure(universe).run(scheduler=scheduler)
-        else:
-            avg = align.AverageStructure(universe).run(scheduler=scheduler)
-            assert not hasattr(avg, 'msf')
+    def test_average_structure_no_msf(self, universe):
+        avg = align.AverageStructure(universe).run()
+        assert not hasattr(avg, 'msf')
 
     def test_mismatch_atoms(self, universe):
         u = mda.Merge(universe.atoms[:10])
@@ -510,14 +498,14 @@ class TestAverageStructure(object):
         ref, rmsd = _get_aligned_average_positions(self.ref_files, u)
         avg = align.AverageStructure(universe, ref_frame=ref_frame).run()
         assert_almost_equal(avg.results.universe.atoms.positions, ref,
-                                decimal=4) # will fail with remote schedulers
+                            decimal=4)
         assert_almost_equal(avg.results.rmsd, rmsd)
 
     def test_average_structure_in_memory(self, universe):
         avg = align.AverageStructure(universe, in_memory=True).run()
         reference_coordinates = universe.trajectory.timeseries().mean(axis=1)
         assert_almost_equal(avg.results.universe.atoms.positions,
-                            reference_coordinates, decimal=4) # will fail with remote schedulers
+                            reference_coordinates, decimal=4)
         assert avg.filename is None
 
 
