@@ -135,6 +135,36 @@ from functools import partial
 
 logger = logging.getLogger(__name__)
 
+def localdelayed(obj):
+    """
+    Mock implementation of `dask.delayed.delayed` function
+    with the same semantics
+    """
+    if isinstance(obj, Iterable):
+    
+        class inner:
+            def __init__(self, iterable):
+                self._computations = iterable
+
+            def compute(self):
+                return [f.compute() for f in self._computations]
+
+        return inner(obj)
+
+    elif isinstance(obj, Callable):
+    
+        class inner:
+            def __init__(self, *a, **kwa):
+                self._a = a
+                self._kwa = kwa
+                self._func = obj
+
+            def compute(self):
+                return self._func(*self._a, **self._kwa)
+
+        return inner
+    else:
+        raise ValueError(f"Argument should be Iterable or Callable, got {type(obj)}")
 
 class Results(UserDict):
     r"""Container object for storing results.
@@ -454,13 +484,14 @@ class AnalysisBase(object):
             self.times[i] = ts.time
             self._single_frame()
         logger.info("Finishing up")
+        self._conclude()
         return self
 
     def _setup_bslices(self, start=None, stop=None, step=None, frames=None):
         self._bslices = [(start, stop, step, frames)]
     
-    def _setup_scheduler(self, **kwa):
-        self._scheduler_kwargs = kwa
+    def _setup_scheduler(self, **kwargs):
+        self._scheduler_kwargs = kwargs
 
     def run(self, start=None, stop=None, step=None, frames=None,
             verbose=None, scheduler=None, 
@@ -472,32 +503,7 @@ class AnalysisBase(object):
         else:
             self._setup_scheduler()
             if scheduler == 'localdask': # imitation of dask mainly for testing purposes
-                def delayed(obj):
-                    if isinstance(obj, Iterable):
-                    
-                        class inner:
-                            def __init__(self, iterable):
-                                self._computations = iterable
-
-                            def compute(self):
-                                return [f.compute() for f in self._computations]
-
-                        return inner(obj)
-
-                    elif isinstance(obj, Callable):
-                    
-                        class inner:
-                            def __init__(self, *a, **kwa):
-                                self._a = a
-                                self._kwa = kwa
-                                self._func = obj
-
-                            def compute(self):
-                                return self._func(*self._a, **self._kwa)
-
-                        return inner
-                    else:
-                        raise ValueError(f"Argument should be Iterable or Callable, got {type(obj)}")
+                delayed = localdelayed
             else: # elif scheduler is a type of dask scheduler
                 try:
                     from dask.delayed import delayed
@@ -518,7 +524,6 @@ class AnalysisBase(object):
             self._remote_results = dask_results
             self._parallel_conclude()
 
-        self._conclude()
         return self
     
     def _parallel_conclude(self):
