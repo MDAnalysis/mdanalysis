@@ -224,32 +224,7 @@ class Results(UserDict):
 from typing import Callable, Iterable
 
 
-def delayed(obj):
-    if isinstance(obj, Iterable):
-
-        class inner:
-            def __init__(self, iterable):
-                self._computations = iterable
-
-            def compute(self):
-                return [f.compute() for f in self._computations]
-
-        return inner(obj)
-
-    elif isinstance(obj, Callable):
-
-        class inner:
-            def __init__(self, *a, **kwa):
-                self._a = a
-                self._kwa = kwa
-                self._func = obj
-
-            def compute(self):
-                return self._func(*self._a, **self._kwa)
-
-        return inner
-    else:
-        raise ValueError(f"Argument should be Iterable or Callable, got {type(obj)}")
+# from dask import delayed
 
 
 class AnalysisBase(object):
@@ -488,13 +463,49 @@ class AnalysisBase(object):
         self._scheduler_kwargs = kwa
 
     def run(self, start=None, stop=None, step=None, frames=None,
-            verbose=None, *, progressbar_kwargs={},
-            scheduler=None):
+            verbose=None, scheduler=None, 
+            *, progressbar_kwargs={},
+            ):
         if scheduler is None: # fallback to the local scheduler
             self._compute(start=start, stop=stop, step=step, frames=frames, 
             verbose=verbose, progressbar_kwargs=progressbar_kwargs)
-        else: # elif scheduler is a type of dask scheduler
+        else:
             self._setup_scheduler()
+            if scheduler == 'localdask': # imitation of dask mainly for testing purposes
+                def delayed(obj):
+                    if isinstance(obj, Iterable):
+                    
+                        class inner:
+                            def __init__(self, iterable):
+                                self._computations = iterable
+
+                            def compute(self):
+                                return [f.compute() for f in self._computations]
+
+                        return inner(obj)
+
+                    elif isinstance(obj, Callable):
+                    
+                        class inner:
+                            def __init__(self, *a, **kwa):
+                                self._a = a
+                                self._kwa = kwa
+                                self._func = obj
+
+                            def compute(self):
+                                return self._func(*self._a, **self._kwa)
+
+                        return inner
+                    else:
+                        raise ValueError(f"Argument should be Iterable or Callable, got {type(obj)}")
+            else: # elif scheduler is a type of dask scheduler
+                try:
+                    from dask.delayed import delayed
+                except ImportError:
+                    def delayed(*args, **kwargs): # need implementation to avoid syntax warnings below
+                        pass
+                    # raising exception here allows me to skip potentionally time-consuming setup steps
+                    raise ImportError('Please install dask for this functionality')
             self._setup_bslices(start=start, stop=stop, step=step,
                 frames=frames)
             computations = delayed(
