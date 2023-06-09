@@ -34,13 +34,13 @@ def u():
 
 
 @pytest.fixture(scope='module')
-def wc_rna(u):
+def wc_rna(u, scheduler):
     strand: mda.AtomGroup = u.select_atoms("segid RNAA")
     strand1 = [strand.residues[0], strand.residues[21]]
     strand2 = [strand.residues[1], strand.residues[22]]
 
     WC = WatsonCrickDist(strand1, strand2)
-    WC.run()
+    WC.run(scheduler=scheduler)
     return WC
 
 
