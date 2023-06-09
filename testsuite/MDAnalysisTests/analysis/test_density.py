@@ -247,35 +247,25 @@ class TestDensityAnalysis(DensityParameters):
             )
 
     @pytest.mark.parametrize("mode", ("static", "dynamic"))
-    def test_run(self, mode, universe, tmpdir):
+    def test_run(self, mode, universe, tmpdir, scheduler):
         updating = (mode == "dynamic")
         self.check_DensityAnalysis(
             universe.select_atoms(self.selections[mode], updating=updating),
             self.references[mode]['meandensity'],
             tmpdir=tmpdir,
+            scheduler=scheduler
         )
 
-    @pytest.mark.parametrize("mode", ("static", "dynamic"))
-    def test_run_fails_for_remote_schedulers(self, mode, universe, tmpdir, scheduler):
-        updating = (mode == "dynamic")
-        if scheduler is not None:
-            with pytest.raises(NotImplementedError):
-                self.check_DensityAnalysis(
-                    universe.select_atoms(self.selections[mode], updating=updating),
-                    self.references[mode]['meandensity'],
-                    tmpdir=tmpdir,
-                    scheduler=scheduler
-                )
-
-    def test_sliced(self, universe, tmpdir):
+    def test_sliced(self, universe, tmpdir, scheduler):
         self.check_DensityAnalysis(
             universe.select_atoms(self.selections['static']),
             self.references['static_sliced']['meandensity'],
             tmpdir=tmpdir,
+            scheduler=scheduler,
             runargs=dict(start=1, stop=-1, step=2),
         )
 
-    def test_userdefn_eqbox(self, universe, tmpdir):
+    def test_userdefn_eqbox(self, universe, tmpdir, scheduler):
         with warnings.catch_warnings():
             # Do not need to see UserWarning that box is too small
             warnings.simplefilter("ignore")
@@ -283,90 +273,92 @@ class TestDensityAnalysis(DensityParameters):
                 universe.select_atoms(self.selections['static']),
                 self.references['static_defined']['meandensity'],
                 tmpdir=tmpdir,
+                scheduler=scheduler,
                 gridcenter=self.gridcenters['static_defined'],
                 xdim=10.0,
                 ydim=10.0,
                 zdim=10.0,
             )
 
-    def test_userdefn_neqbox(self, universe, tmpdir):
+    def test_userdefn_neqbox(self, universe, tmpdir, scheduler):
         self.check_DensityAnalysis(
             universe.select_atoms(self.selections['static']),
             self.references['static_defined_unequal']['meandensity'],
             tmpdir=tmpdir,
+            scheduler=scheduler,
             gridcenter=self.gridcenters['static_defined'],
             xdim=10.0,
             ydim=15.0,
             zdim=20.0,
         )
 
-    def test_userdefn_boxshape(self, universe):
+    def test_userdefn_boxshape(self, universe, scheduler):
         D = density.DensityAnalysis(
             universe.select_atoms(self.selections['static']),
             delta=1.0, xdim=8.0, ydim=12.0, zdim=17.0,
-            gridcenter=self.gridcenters['static_defined']).run()
+            gridcenter=self.gridcenters['static_defined']).run(scheduler=scheduler)
         assert D.results.density.grid.shape == (8, 12, 17)
 
-    def test_warn_userdefn_padding(self, universe):
+    def test_warn_userdefn_padding(self, universe, scheduler):
         regex = (r"Box padding \(currently set at 1\.0\) is not used "
                  r"in user defined grids\.")
         with pytest.warns(UserWarning, match=regex):
             D = density.DensityAnalysis(
                 universe.select_atoms(self.selections['static']),
                 delta=self.delta, xdim=100.0, ydim=100.0, zdim=100.0, padding=1.0,
-                gridcenter=self.gridcenters['static_defined']).run(step=5)
+                gridcenter=self.gridcenters['static_defined']).run(step=5, scheduler=scheduler)
 
-    def test_warn_userdefn_smallgrid(self, universe):
+    def test_warn_userdefn_smallgrid(self, universe, scheduler):
         regex = ("Atom selection does not fit grid --- "
                  "you may want to define a larger box")
         with pytest.warns(UserWarning, match=regex):
             D = density.DensityAnalysis(
                 universe.select_atoms(self.selections['static']),
                 delta=self.delta, xdim=1.0, ydim=2.0, zdim=2.0, padding=0.0,
-                gridcenter=self.gridcenters['static_defined']).run(step=5)
+                gridcenter=self.gridcenters['static_defined']).run(step=5, scheduler=scheduler)
 
-    def test_ValueError_userdefn_gridcenter_shape(self, universe):
+    def test_ValueError_userdefn_gridcenter_shape(self, universe, scheduler):
         # Test len(gridcenter) != 3
         with pytest.raises(ValueError, match="Gridcenter must be a 3D coordinate"):
             D = density.DensityAnalysis(
                 universe.select_atoms(self.selections['static']),
                 delta=self.delta, xdim=10.0, ydim=10.0, zdim=10.0,
-                gridcenter=self.gridcenters['error1']).run(step=5)
+                gridcenter=self.gridcenters['error1']).run(step=5, scheduler=scheduler)
 
-    def test_ValueError_userdefn_gridcenter_type(self, universe):
+    def test_ValueError_userdefn_gridcenter_type(self, universe, scheduler):
         # Test gridcenter includes non-numeric strings
         with pytest.raises(ValueError, match="Gridcenter must be a 3D coordinate"):
             D = density.DensityAnalysis(
                 universe.select_atoms(self.selections['static']),
                 delta=self.delta, xdim=10.0, ydim=10.0, zdim=10.0,
-                gridcenter=self.gridcenters['error2']).run(step=5)
+                gridcenter=self.gridcenters['error2']).run(step=5, scheduler=scheduler)
 
-    def test_ValueError_userdefn_gridcenter_missing(self, universe):
+    def test_ValueError_userdefn_gridcenter_missing(self, universe, scheduler):
         # Test no gridcenter provided when grid dimensions are given
         regex = ("Gridcenter or grid dimensions are not provided")
         with pytest.raises(ValueError, match=regex):
             D = density.DensityAnalysis(
                 universe.select_atoms(self.selections['static']),
-                delta=self.delta, xdim=10.0, ydim=10.0, zdim=10.0).run(step=5)
+                delta=self.delta, xdim=10.0, ydim=10.0, zdim=10.0).run(step=5, scheduler=scheduler)
 
-    def test_ValueError_userdefn_xdim_type(self, universe):
+    def test_ValueError_userdefn_xdim_type(self, universe, scheduler):
         # Test xdim != int or float
         with pytest.raises(ValueError, match="xdim, ydim, and zdim must be numbers"):
             D = density.DensityAnalysis(
                 universe.select_atoms(self.selections['static']),
                 delta=self.delta, xdim="MDAnalysis", ydim=10.0, zdim=10.0,
-                gridcenter=self.gridcenters['static_defined']).run(step=5)
+                gridcenter=self.gridcenters['static_defined']).run(step=5, scheduler=scheduler)
 
-    def test_ValueError_userdefn_xdim_nanvalue(self, universe):
+    def test_ValueError_userdefn_xdim_nanvalue(self, universe, scheduler):
         # Test  xdim set to NaN value
         regex = ("Gridcenter or grid dimensions have NaN element")
         with pytest.raises(ValueError, match=regex):
             D = density.DensityAnalysis(
                 universe.select_atoms(self.selections['static']),
                 delta=self.delta, xdim=np.NaN, ydim=10.0, zdim=10.0,
-                gridcenter=self.gridcenters['static_defined']).run(step=5)
+                gridcenter=self.gridcenters['static_defined']).run(step=5, scheduler=scheduler)
 
-    def test_warn_noatomgroup(self, universe):
+    def test_warn_noatomgroup(self, universe, scheduler):
         regex = ("No atoms in AtomGroup at input time frame. "
                  "This may be intended; please ensure that "
                  "your grid selection covers the atomic "
@@ -375,9 +367,9 @@ class TestDensityAnalysis(DensityParameters):
             D = density.DensityAnalysis(
                 universe.select_atoms(self.selections['none']),
                 delta=self.delta, xdim=1.0, ydim=2.0, zdim=2.0, padding=0.0,
-                gridcenter=self.gridcenters['static_defined']).run(step=5)
+                gridcenter=self.gridcenters['static_defined']).run(step=5, scheduler=scheduler)
 
-    def test_ValueError_noatomgroup(self, universe):
+    def test_ValueError_noatomgroup(self, universe, scheduler):
         with pytest.raises(ValueError, match="No atoms in AtomGroup at input"
                                              " time frame. Grid for density"
                                              " could not be automatically"
@@ -386,12 +378,12 @@ class TestDensityAnalysis(DensityParameters):
                                              " defined grid will "
                                              "need to be provided instead."):
             D = density.DensityAnalysis(
-                universe.select_atoms(self.selections['none'])).run(step=5)
+                universe.select_atoms(self.selections['none'])).run(step=5, scheduler=scheduler)
 
-    def test_warn_results_deprecated(self, universe):
+    def test_warn_results_deprecated(self, universe, scheduler):
         D = density.DensityAnalysis(
             universe.select_atoms(self.selections['static']))
-        D.run(stop=1)
+        D.run(stop=1, scheduler=scheduler)
         wmsg = "The `density` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):
             assert_equal(D.density.grid, D.results.density.grid)
