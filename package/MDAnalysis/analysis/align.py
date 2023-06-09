@@ -713,9 +713,6 @@ class AlignTraj(AnalysisBase):
         if not self._verbose:
             logging.disable(logging.NOTSET)
 
-    def _setup_scheduler(self, **kwa):
-        raise NotImplementedError('AverageStructure is unavailable with remote schedulers')
-
     @property
     def rmsd(self):
         wmsg = ("The `rmsd` attribute was deprecated in MDAnalysis 2.0.0 and "
@@ -946,9 +943,6 @@ class AverageStructure(AnalysisBase):
         self._writer.close()
         if not self._verbose:
             logging.disable(logging.NOTSET)
-
-    def _setup_scheduler(self, **kwargs):
-        raise NotImplementedError('AverageStructure is unavailable with remote schedulers')
 
     @property
     def universe(self):
