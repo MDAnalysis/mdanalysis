@@ -484,7 +484,6 @@ class AnalysisBase(object):
             self.times[i] = ts.time
             self._single_frame()
         logger.info("Finishing up")
-        self._conclude()
         return self
 
     def _setup_bslices(self, start=None, stop=None, step=None, frames=None):
@@ -516,13 +515,15 @@ class AnalysisBase(object):
                 frames=frames)
             computations = delayed(
                 [
-                    delayed(self.run)(start=bstart, stop=bstop, step=bstep, frames=bframes)
+                    delayed(self._compute)(start=bstart, stop=bstop, step=bstep, frames=bframes)
                     for bstart, bstop, bstep, bframes in self._bslices
                 ]
             )
             dask_results = computations.compute(**self._scheduler_kwargs)
             self._remote_results = dask_results
             self._parallel_conclude()
+
+        self._conclude()
 
         return self
     
