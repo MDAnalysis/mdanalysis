@@ -204,7 +204,12 @@ def guess_atom_element(atomname):
     except KeyError:
         # strip symbols and numbers
         no_symbols = re.sub(SYMBOLS, '', atomname)
-        name = re.sub(NUMBERS, '', no_symbols).upper()
+        no_numbers = re.split(NUMBERS, no_symbols)
+
+        if list(filter(None, no_numbers)) == []:
+            name = ''
+        else:
+            name = list(filter(None, no_numbers))[0].upper()
 
         # just in case
         if name in tables.atomelements:
