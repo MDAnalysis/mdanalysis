@@ -1,4 +1,4 @@
-import MDAnalysis
+import MDAnalysis as mda
 import numpy as np
 
 try:
@@ -77,16 +77,19 @@ class DistancesBench(object):
                           B=self.ag2,
                           distance=15.0)
 
+
     def time_distance_array(self, num_atoms):
         """Benchmark calculation of all distances
         between two numpy arrays of coordinates,
         using default arguments to distance_array.
         """
-        distances.distance_array(reference=self.coords_1,
-                                 configuration=self.coords_2,
-                                 box=None,
-                                 result=None,
-                                 backend='serial')
+        distances.distance_array(
+            reference=self.coords_1,
+            configuration=self.coords_2,
+            box=None,
+            result=None,
+            backend="serial",
+        )
 
     def time_distance_array_pre_allocated(self, num_atoms):
         """Benchmark calculation of all distances
@@ -94,21 +97,22 @@ class DistancesBench(object):
         using distance_array with a preallocated
         result array.
         """
-        distances.distance_array(reference=self.coords_1,
-                                 configuration=self.coords_2,
-                                 box=None,
-                                 result=self.allocated_array_2D,
-                                 backend='serial')
+        distances.distance_array(
+            reference=self.coords_1,
+            configuration=self.coords_2,
+            box=None,
+            result=self.allocated_array_2D,
+            backend="serial",
+        )
 
     def time_self_distance_array(self, num_atoms):
         """Benchmark calculation of all distances
         within a single numpy array of coordinates
         using default parameters to self_distance_array.
         """
-        distances.self_distance_array(reference=self.coords_1,
-                                      box=None,
-                                      result=None,
-                                      backend='serial')
+        distances.self_distance_array(
+            reference=self.coords_1, box=None, result=None, backend="serial"
+        )
 
     def time_self_distance_array_pre_allocated(self, num_atoms):
         """Benchmark calculation of all distances
@@ -116,10 +120,12 @@ class DistancesBench(object):
         using self_distance_array with preallocated
         result array.
         """
-        distances.self_distance_array(reference=self.coords_1,
-                                      box=None,
-                                      result=self.allocated_array_1D,
-                                      backend='serial')
+        distances.self_distance_array(
+            reference=self.coords_1,
+            box=None,
+            result=self.allocated_array_1D,
+            backend="serial",
+        )
 
     def time_dist(self, num_atoms):
         """Benchmark calculation of distances between
@@ -146,10 +152,9 @@ class DistancesBench(object):
         a single numpy array using the default arguments
         to contact_matrix.
         """
-        distances.contact_matrix(coord=self.ag1.positions,
-                                 cutoff=15.0,
-                                 returntype='numpy',
-                                 box=None)
+        distances.contact_matrix(
+            coord=self.ag1.positions, cutoff=15.0, returntype="numpy", box=None
+        )
 
     def time_contact_matrix_sparse(self, num_atoms):
         """Benchmark calculation of contacts within
@@ -168,6 +173,7 @@ class DistancesBenchPBC(object):
     timeout = 180
     params = ([10, 100, 1000, 10000], ['orthogonal', 'triclinic'])
     param_names = ['num_atoms', 'pbc_type']
+
 
     def setup(self, num_atoms, pbc_type):
 
@@ -307,6 +313,7 @@ class DistancesBenchPBC(object):
                        box=self.box_dims,
                        offset=0)
 
+
     def time_dist_offsets_pbc(self, num_atoms, pbc_type):
         """Benchmark calculation of distances between
         atoms in two atomgroups with offsets
@@ -316,6 +323,7 @@ class DistancesBenchPBC(object):
                        B=self.ag2,
                        box=self.box_dims,
                        offset=20)
+
 
     def time_contact_matrix_pbc(self, num_atoms, pbc_type):
         """Benchmark calculation of contacts within
@@ -337,3 +345,4 @@ class DistancesBenchPBC(object):
                                  cutoff=15.0,
                                  returntype='sparse',
                                  box=self.box_dims)
+
