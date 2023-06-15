@@ -166,6 +166,15 @@ def localdelayed(obj):
     else:
         raise ValueError(f"Argument should be Iterable or Callable, got {type(obj)}")
 
+from itertools import islice
+
+def split_every(n, iterable):
+    i = iter(iterable)
+    piece = list(islice(i, n))
+    while piece:
+        yield piece
+        piece = list(islice(i, n))
+
 class Results(UserDict):
     r"""Container object for storing results.
 
@@ -428,7 +437,8 @@ class AnalysisBase(object):
 
     def _compute(self, start=None, stop=None, step=None, 
         frames=None, verbose=None, *, progressbar_kwargs={}):
-        """Perform the calculation
+        """Perform the calculation on frames that have been setup prior to that
+        using _setup_frames()
 
         Parameters
         ----------
@@ -486,21 +496,148 @@ class AnalysisBase(object):
         logger.info("Finishing up")
         return self
 
-    def _setup_bslices(self, start=None, stop=None, step=None, frames=None):
-        self._bslices = [(start, stop, step, frames)]
-    
-    def _setup_scheduler(self, **kwargs):
-        self._scheduler_kwargs = kwargs
+    def _setup_bslices(self, start=None, stop=None, step=None, frames=None, 
+                       n_bslices=None): 
+        """
+        Set the self._bslices (the workload distribution scheme) for the future delayed
+        computations.
+
+        Parameters
+        ----------
+        start : int, optional
+            start frame of analysis
+        stop : int, optional
+            stop frame of analysis
+        step : int, optional
+            number of frames to skip between each analysed frame
+        frames : array_like, optional
+            array of integers or booleans to slice trajectory; `frames` can
+            only be used *instead* of `start`, `stop`, and `step`. Setting
+            *both* `frames` and at least one of `start`, `stop`, `step` to a
+            non-default value will raise a :exc:`ValueError`.
+
+        Raises
+        ------
+        ValueError
+            if *both* `frames` and at least one of `start`, `stop`, or `frames`
+            is provided (i.e., set to another value than ``None``)
+
+        Returns
+        -------
+        bslices : list of (bstart, bstop, bstep, bframes) tuples.
+            Iterator will have size of self._n_bslices.
+        """
+        if frames is not None:
+            if not all(opt is None for opt in [start, stop, step]):
+                raise ValueError("start/stop/step cannot be combined with "
+                                 "frames")
+            self.n_frames_total = len(frames)
+            n_bslices = self._n_bslices
+            slices = [(None, None, None, subframes) for subframes in split_every(n_bslices, frames)]
+
+        else:  # frames is None
+            start, stop, step = self._trajectory.check_slice_indices(start, stop, step)
+            n_frames = len(range(start, stop, step))
+            self.start, self.stop, self.step = start, stop, step
+            self.n_frames_total = n_frames
+
+            ## this part was taken from pmda with slight modifications
+            n_bslices = self._n_bslices
+            bsizes = np.ones(n_bslices, dtype=np.int64) * n_frames // n_bslices
+            bsizes += np.arange(n_bslices, dtype=np.int64) < n_frames % n_bslices
+            # This can give a last index that is larger than the real last index;
+            # this is not a problem for slicing but it's not pretty.
+            # Example: original [0:20:3] -> n_frames=7, start=0, step=3:
+            #          last frame 21 instead of 20
+            bsizes *= step
+            idx = np.cumsum(np.concatenate(([start], bsizes)))
+            slices = [(bstart, bstop, step, None) 
+                       for bstart, bstop in zip(idx[:-1], idx[1:])]
+
+            # fix very last stop index: make sure it's within trajectory range or None
+            # (no really critical because the slices will work regardless, but neater)
+            last = slices[-1]
+            last_stop = min(last[1], stop) if stop is not None else stop
+            slices[-1] = (last[0], last_stop, last[2], None)
+        
+        self._bslices = slices
+        return self._bslices
+
+
+    def _setup_scheduler(self, scheduler, n_workers):
+        """
+        Configure parameters necessary for running a distributed workload.
+
+        Parameters
+        ----------
+        scheduler : dask.distributed.Client
+            dask scheduler object
+        n_workers : int, optional
+            number of workers (local or remote processes).
+        """
+        if scheduler == 'localdask':
+            n_workers = 1
+        else:
+            from dask.distributed import Client
+            if isinstance(scheduler, Client):
+                # TODO: add assertions that make sure that 
+                # you don't set 
+                # both `scheduler` and `n_workers/threads_per_worker`
+                n_workers = len(scheduler.ncores())
+            else:
+                kwargs = {'n_workers':n_workers}
+                scheduler = Client(**kwargs)
+            self._scheduler_kwargs = kwargs
+            self._scheduler = scheduler
+        self._n_bslices = self._n_workers = n_workers
 
     def run(self, start=None, stop=None, step=None, frames=None,
-            verbose=None, scheduler=None, 
-            *, progressbar_kwargs={},
+            verbose=None, n_workers=1, 
+            *, scheduler=None,
+            progressbar_kwargs={},
             ):
+        """Perform the calculation
+
+        Parameters
+        ----------
+        start : int, optional
+            start frame of analysis
+        stop : int, optional
+            stop frame of analysis
+        step : int, optional
+            number of frames to skip between each analysed frame
+        frames : array_like, optional
+            array of integers or booleans to slice trajectory; `frames` can
+            only be used *instead* of `start`, `stop`, and `step`. Setting
+            *both* `frames` and at least one of `start`, `stop`, `step` to a
+            non-default value will raise a :exc:`ValueError`.
+
+            .. versionadded:: 2.2.0
+
+        verbose : bool, optional
+            Turn on verbosity
+        
+        scheduler : str, optional
+            Enables running with different schedulers.
+        
+        progressbar_kwargs : dict, optional
+            ProgressBar keywords with custom parameters regarding progress bar position, etc; 
+            see :class:`MDAnalysis.lib.log.ProgressBar` for full list.
+
+
+        .. versionchanged:: 2.2.0
+            Added ability to analyze arbitrary frames by passing a list of
+            frame indices in the `frames` keyword argument.
+
+        .. versionchanged:: 2.5.0
+            Add `progressbar_kwargs` parameter, 
+            allowing to modify description, position etc of tqdm progressbars
+        """
         if scheduler is None: # fallback to the local scheduler
             self._compute(start=start, stop=stop, step=step, frames=frames, 
             verbose=verbose, progressbar_kwargs=progressbar_kwargs)
         else:
-            self._setup_scheduler()
+            self._setup_scheduler(scheduler=scheduler, n_workers=n_workers)
             if scheduler == 'localdask': # imitation of dask mainly for testing purposes
                 delayed = localdelayed
             else: # elif scheduler is a type of dask scheduler
@@ -519,7 +656,7 @@ class AnalysisBase(object):
                     for bstart, bstop, bstep, bframes in self._bslices
                 ]
             )
-            dask_results = computations.compute(**self._scheduler_kwargs)
+            dask_results = computations.compute()
             self._remote_results = dask_results
             self._parallel_conclude()
 
