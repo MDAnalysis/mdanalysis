@@ -13,11 +13,12 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay
+??/??/?? IAlibay, jaclark5
 
  * 2.6.0
 
 Fixes
+  * Fix deletion of bond/angle/dihedral types (PR #4003, Issue #4001)
 
 Enhancements
 
