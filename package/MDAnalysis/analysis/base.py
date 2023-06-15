@@ -533,7 +533,7 @@ class AnalysisBase(object):
                                  "frames")
             self.n_frames_total = len(frames)
             n_bslices = self._n_bslices
-            slices = [(None, None, None, subframes) for subframes in split_every(n_bslices, frames)]
+            slices = [(None, None, None, frames[i::n_bslices]) for i in range(n_bslices)]
 
         else:  # frames is None
             start, stop, step = self._trajectory.check_slice_indices(start, stop, step)
@@ -650,6 +650,7 @@ class AnalysisBase(object):
                     raise ImportError('Please install dask for this functionality')
             self._setup_bslices(start=start, stop=stop, step=step,
                 frames=frames)
+            # assert False, len(self._bslices)
             computations = delayed(
                 [
                     delayed(self._compute)(start=bstart, stop=bstop, step=bstep, frames=bframes)
