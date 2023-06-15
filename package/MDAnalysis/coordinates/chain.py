@@ -155,9 +155,7 @@ def check_allowed_filetypes(readers, allowed):
                          "Found: {}".format(readernames))
     if readers[0].format not in allowed:
         raise NotImplementedError("ChainReader: continuous=True only "
-                                  f"supported for formats: {allowed}.\nFeel"
-                                  " free to contribute an additional file "
-                                  "type test to expand this list.")
+                                 "supported for formats: {}".format(allowed))
 
 
 class ChainReader(base.ReaderBase):
@@ -320,9 +318,9 @@ class ChainReader(base.ReaderBase):
             times = []
             for r in self.readers:
                 r[0]
-                start = r._call_time()
+                start = r.ts.time 
                 r[-1]
-                end = r._call_time()
+                end = r.ts.time
                 times.append((start, end))
             # sort step
             sort_idx = multi_level_argsort(times)
@@ -343,21 +341,21 @@ class ChainReader(base.ReaderBase):
             n_frames = 0
             for r1, r2 in zip(self.readers[:-1], self.readers[1:]):
                 r2[0], r1[0]
-                r1_start_time = r1._call_time()
-                start_time = r2._call_time()
+                r1_start_time = r1.ts.time
+                start_time = r2.ts.time
                 r1[-1]
-                if r1._call_time() < start_time:
+                if r1.ts.time < start_time:
                     warnings.warn("Missing frame in continuous chain", UserWarning)
 
                 # check for interleaving
                 r1[1]
-                if r1_start_time < start_time < r1._call_time():
+                if r1_start_time < start_time < r1.ts.time:
                     raise RuntimeError("ChainReader: Interleaving not supported "
                                        "with continuous=True.")
 
                 # find end where trajectory was restarted from
                 for ts in r1[::-1]:
-                    if r1._call_time() < start_time:
+                    if r1.ts.time < start_time:
                         break
                 sf.append(sf[-1] + ts.frame + 1)
                 n_frames += ts.frame + 1

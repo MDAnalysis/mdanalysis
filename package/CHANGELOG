@@ -23,8 +23,7 @@ Enhancements
   * LAMMPSDump Reader use of `continuous` option to stitch trajectories
 
 Changes
- * Continuous feature of ChainReader now uses `_call_time()` method from 
-   ProtoReader
+  * Add definition of ts.data['time'] in LAMMPSDump Reader
 
 Deprecations
 

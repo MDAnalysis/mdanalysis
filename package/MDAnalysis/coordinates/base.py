@@ -723,9 +723,6 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         """Time between two trajectory frames in picoseconds."""
         return self.ts.dt
 
-    def _call_time(self):
-        return self.ts.time
-
     @property
     def totaltime(self) -> float:
         """Total length of the trajectory

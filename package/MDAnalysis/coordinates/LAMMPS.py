@@ -585,9 +585,6 @@ class DumpReader(base.ReaderBase):
 
         return self._read_next_timestep()
 
-    def _call_time(self):
-        return self.ts.data["step"]
-
     def _read_next_timestep(self):
         f = self._file
         ts = self.ts
@@ -598,6 +595,7 @@ class DumpReader(base.ReaderBase):
         f.readline()  # ITEM TIMESTEP
         step_num = int(f.readline())
         ts.data['step'] = step_num
+        ts.data['time'] = step_num * ts.dt
 
         f.readline()  # ITEM NUMBER OF ATOMS
         n_atoms = int(f.readline())
