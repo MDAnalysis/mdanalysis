@@ -586,9 +586,7 @@ class AnalysisBase(object):
                 n_workers = len(scheduler.ncores())
             else:
                 kwargs = {'n_workers':n_workers}
-                scheduler = Client(**kwargs)
             self._scheduler_kwargs = kwargs
-            self._scheduler = scheduler
         self._n_bslices = self._n_workers = n_workers
 
     def run(self, start=None, stop=None, step=None, frames=None,
@@ -650,7 +648,7 @@ class AnalysisBase(object):
                     raise ImportError('Please install dask for this functionality')
             self._setup_bslices(start=start, stop=stop, step=step,
                 frames=frames)
-            # assert False, len(self._bslices)
+
             computations = delayed(
                 [
                     delayed(self._compute)(start=bstart, stop=bstop, step=bstep, frames=bframes)
