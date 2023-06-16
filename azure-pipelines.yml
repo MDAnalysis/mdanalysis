@@ -94,6 +94,7 @@ jobs:
       numpy
       packaging
       pytest
+      pytest-cov
       scikit-learn
       tqdm
       threadpoolctl
