@@ -81,6 +81,12 @@ jobs:
     condition: and(succeeded(), eq(variables['BUILD_TYPE'], 'wheel'))
   - script: python -m pip install --upgrade pip setuptools wheel
     displayName: 'Install tools'
+  # contourpy 1.1.0+ does not support x86, so we need to install
+  # a lower version ahead of time
+  - script: >-
+      pip install contourpy<1.1
+    displayName: 'Install 32bit specific dependencies'
+    condition: and(succeeded(), eq(variables['PYTHON_ARCH'], 'x86'))
   - script: >-
       python -m pip install --only-binary=scipy
       cython
