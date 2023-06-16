@@ -83,7 +83,7 @@ jobs:
     displayName: 'Install tools'
   # contourpy 1.1.0+ does not support x86, so we need to install
   # a lower version ahead of time
-  - script: python -m pip -v install contourpy<1.1
+  - script: python -m pip -v install "contourpy<1.1"
     displayName: 'Install 32bit specific dependencies'
     condition: and(succeeded(), eq(variables['PYTHON_ARCH'], 'x86'))
   - script: >-
@@ -94,8 +94,6 @@ jobs:
       numpy
       packaging
       pytest
-      pytest-cov
-      pytest-xdist
       scikit-learn
       tqdm
       threadpoolctl
