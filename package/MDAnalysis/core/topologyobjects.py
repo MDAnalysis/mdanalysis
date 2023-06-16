@@ -470,7 +470,6 @@ class TopologyDict(object):
                 newdict[k[::-1]] += self.dict[k]
 
         self.dict = newdict
-        print("topDict._removeDupes: topDict id: {}, topDict.dict id: {}, len(topDict.dict.keys()): {}".format(id(self), id(self.dict), len(self.dict)))
 
     @property
     def universe(self):
@@ -482,7 +481,6 @@ class TopologyDict(object):
 
     def keys(self):
         """Returns a list of the different types of available bonds"""
-        print("topDict.keys:         topDict id: {}, topDict.dict id: {}, len(topDict.dict.keys()): {}".format(id(self), id(self.dict), len(self.dict)))
         return self.dict.keys()
 
     def __iter__(self):
