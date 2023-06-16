@@ -36,7 +36,6 @@ Deprecations
  * 2.5.0
 
 Fixes
-  * Fix deletion of bond/angle/dihedral types (PR #4003, Issue #4001)
   * Fixed ChainReader performing transformations correctly across boundaries in the individual trajectories
     (Issue #3657 #4008 PR #3906)
   * Fix the `heavy` distance_type for water bridge analysis where distance
