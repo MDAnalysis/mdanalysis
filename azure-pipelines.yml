@@ -146,7 +146,7 @@ jobs:
     condition: and(succeeded(), eq(variables['BUILD_TYPE'], 'normal'))
   - powershell: |
       cd testsuite
-      pytest MDAnalysisTests --disable-pytest-warnings -rsx --cov=MDAnalysis
+      pytest MDAnalysisTests --disable-pytest-warnings -rsx
     displayName: 'Run MDAnalysis Test Suite'
   - script: |
       curl -s https://codecov.io/bash | bash
