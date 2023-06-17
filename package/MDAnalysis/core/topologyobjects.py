@@ -445,7 +445,15 @@ class TopologyDict(object):
             except KeyError:
                 self.dict[btype] = [b]
 
-        self._removeDupes()
+        # Some force field types define bonds with a type
+        # (Ex. 1: 12 or 21), while others define with a tuple of atom types
+        # (Ex. 2: ("H", "O")  or ("O", "H")). If the bond type is a tuple
+        # then the bond types in our second example are equivalent and one
+        # should be removed. If the bonds are defined as an integer then
+        # our first example would also be combined if `_removeDupes()`
+        # is run.
+        if self.dict and isinstance(list(self.dict.keys())[0], tuple):
+            self._removeDupes()
 
     def _removeDupes(self):
         """Sorts through contents and makes sure that there are
