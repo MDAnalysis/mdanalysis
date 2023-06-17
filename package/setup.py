@@ -604,7 +604,7 @@ if __name__ == '__main__':
           'threadpoolctl',
           'packaging',
           'fasteners',
-          'gsd>=1.9.3',
+          'gsd>=1.9.3,<3.0',
     ]
 
     setup(name='MDAnalysis',
