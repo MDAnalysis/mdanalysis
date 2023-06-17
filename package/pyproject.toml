@@ -47,7 +47,7 @@ dependencies = [
     'threadpoolctl',
     'packaging',
     'fasteners',
-    'gsd>=1.9.3',
+    'gsd>=1.9.3,<3.0',
 ]
 keywords = [
     "python", "science", "chemistry", "biophysics", "molecular-dynamics",
