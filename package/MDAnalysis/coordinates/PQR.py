@@ -210,7 +210,7 @@ class PQRWriter(base.WriterBase):
              remark lines (list of strings) or single string to be added to the
              top of the PQR file
         """
-        self.filename = util.filename(filename, ext='pqr')
+        self.filename = util.filename(filename, ext='pqr', keep=True)
         self.convert_units = convert_units  # convert length and time to base units
         self.remarks = kwargs.pop('remarks', "PQR file written by MDAnalysis")
 
@@ -299,7 +299,7 @@ class PQRWriter(base.WriterBase):
                 "{miss}. These will be written with default values. "
                 "".format(miss=', '.join(missing_topology)))
 
-        with util.openany(self.filename, 'w') as pqrfile:
+        with util.openany(self.filename, 'wt') as pqrfile:
             # Header / Remarks
             # The *remarknumber* is typically 1 but :program:`pdb2pgr`
             # also uses 6 for the total charge and 5 for warnings.
