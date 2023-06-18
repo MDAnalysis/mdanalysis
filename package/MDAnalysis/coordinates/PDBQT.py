@@ -198,7 +198,7 @@ class PDBQTWriter(base.WriterBase):
 
 
     .. versionchanged:: 2.6.0
-       Files are now writen in `wt` mode, and keep extensions, allowing
+       Files are now written in `wt` mode, and keep extensions, allowing
        for files to be written under compressed formats
     """
 
