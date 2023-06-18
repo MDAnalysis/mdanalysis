@@ -338,9 +338,10 @@ def anyopen(datasource, mode='rt', reset=True):
         a file (from :class:`file` or :func:`open`) or a stream (e.g. from
         :func:`urllib2.urlopen` or :class:`io.StringIO`)
     mode: {'r', 'w', 'a'} (optional)
-        Open in r(ead), w(rite) or a(ppen) mode. More complicated
-        modes ('r+', 'w+', ...) are not supported; only the first letter of
-        `mode` is used and thus any additional modifiers are silently ignored.
+        Open in r(ead), w(rite) or a(ppend) mode. This string is directly
+        passed to the file opening handler (either Python's openfe, bz2, or
+        gzip). More complex modes are supported if the file opening handler
+        supports it.
     reset: bool (optional)
         try to read (`mode` 'r') the stream from the start
 

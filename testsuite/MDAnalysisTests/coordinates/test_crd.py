@@ -43,14 +43,17 @@ class TestCRDWriter(object):
     def outfile(self, tmpdir):
         return os.path.join(str(tmpdir), 'test.crd')
 
-    def test_write_atoms(self, u, outfile):
+    @pytest.mark.parametrize('testfile',
+        ['test.crd', 'test.crd.bz2', 'test.crd.gz'])
+    def test_write_atoms(self, u, testfile, tmpdir):
         # Test that written file when read gives same coordinates
-        u.atoms.write(outfile)
+        with tmpdir.as_cwd():
+            u.atoms.write(testfile)
 
-        u2 = mda.Universe(outfile)
+            u2 = mda.Universe(testfile)
 
-        assert_equal(u.atoms.positions,
-                     u2.atoms.positions)
+            assert_equal(u.atoms.positions,
+                         u2.atoms.positions)
 
     def test_roundtrip(self, u, outfile):
         # Write out a copy of the Universe, and compare this against the original
