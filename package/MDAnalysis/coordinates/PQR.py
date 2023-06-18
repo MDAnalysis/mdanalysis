@@ -186,7 +186,11 @@ class PQRWriter(base.WriterBase):
 
     The output format is similar to ``pdb2pqr --whitespace``.
 
+
     .. versionadded:: 0.9.0
+    .. versionchanged:: 2.6.0
+       Files are now writen in `wt` mode, and keep extensions, allowing
+       for files to be written under compressed formats
     """
     format = 'PQR'
     units = {'time': None, 'length': 'Angstrom'}

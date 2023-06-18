@@ -43,7 +43,8 @@ class TestCRDWriter(object):
     def outfile(self, tmpdir):
         return os.path.join(str(tmpdir), 'test.crd')
 
-    @pytest.mark.parametrize('testfile', ['test.crd', 'test.crd.bz2'])
+    @pytest.mark.parametrize('testfile',
+        ['test.crd', 'test.crd.bz2', 'test.crd.gz'])
     def test_write_atoms(self, u, testfile, tmpdir):
         # Test that written file when read gives same coordinates
         with tmpdir.as_cwd():

@@ -89,7 +89,8 @@ class TestPDBQTWriter(object):
     def outfile(self, tmpdir):
         return str(tmpdir) + 'out.pdbqt'
 
-    @pytest.mark.parametrize('filename', ['test.pdbqt', 'test.pdbqt.bz2'])
+    @pytest.mark.parametrize('filename',
+        ['test.pdbqt', 'test.pdbqt.bz2', 'test.pdbqt.gz'])
     def test_roundtrip_writing_coords(self, filename, tmpdir):
 
         with tmpdir.as_cwd():

@@ -195,6 +195,11 @@ class PDBQTWriter(base.WriterBase):
 
     .. _PDB: http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html
     .. _PDBQT: http://autodock.scripps.edu/faqs-help/faq/what-is-the-format-of-a-pdbqt-file
+
+
+    .. versionchanged:: 2.6.0
+       Files are now writen in `wt` mode, and keep extensions, allowing
+       for files to be written under compressed formats
     """
 
     fmt = {

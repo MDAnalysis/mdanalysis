@@ -80,7 +80,8 @@ class TestPQRWriter(RefAdKSmall):
 
     prec = 3
 
-    @pytest.mark.parametrize('filename', ['test.pqr', 'test.pqr.bz2'])
+    @pytest.mark.parametrize('filename',
+        ['test.pqr', 'test.pqr.bz2', 'test.pqr.gz'])
     def test_simple_writer_roundtrip(self, universe, filename, tmpdir):
         with tmpdir.as_cwd():
             universe.atoms.write(filename)
