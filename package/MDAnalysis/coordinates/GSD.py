@@ -54,13 +54,13 @@ import numpy as np
 try:
     import gsd
     import gsd.fl
-    from gsd.hoomd import HOOMDTrajectory
 except ImportError:
     HAS_GSD = False
     import types
 
     class MockHOOMDTrajectory:
         pass
+
     gsd = types.ModuleType("gsd")
     gsd.hoomd = types.ModuleType("hoomd")
     gsd.hoomd.HOOMDTrajectory = MockHOOMDTrajectory
