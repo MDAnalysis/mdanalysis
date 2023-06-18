@@ -190,7 +190,12 @@
 <div class="viewcode-block" id="NAMDBINWriter"><a class="viewcode-back" href="../../../documentation_pages/coordinates/NAMDBIN.html#MDAnalysis.coordinates.NAMDBIN.NAMDBINWriter">[docs]</a><span class="k">class</span> <span class="nc">NAMDBINWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">WriterBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Writer for NAMD binary coordinate files.</span>
 <span class="sd">    </span>
-<span class="sd">    </span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    * Does not handle writing to bz2 or gz compressed file types.</span>
+
+
 <span class="sd">    .. versionadded:: 1.0.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;COOR&#39;</span><span class="p">,</span> <span class="s1">&#39;NAMDBIN&#39;</span><span class="p">]</span>

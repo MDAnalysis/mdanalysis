@@ -220,9 +220,10 @@ default, a stream is reset to its start if possible (via
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>datasource</strong> – a file (from <code class="xref py py-class docutils literal notranslate"><span class="pre">file</span></code> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#open" title="(in Python v3.11)"><code class="xref py py-func docutils literal notranslate"><span class="pre">open()</span></code></a>) or a stream (e.g. from
 <code class="xref py py-func docutils literal notranslate"><span class="pre">urllib2.urlopen()</span></code> or <a class="reference external" href="https://docs.python.org/3/library/io.html#io.StringIO" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.StringIO</span></code></a>)</p></li>
-<li><p><strong>mode</strong> (<em>{'r'</em><em>, </em><em>'w'</em><em>, </em><em>'a'}</em><em> (</em><em>optional</em><em>)</em>) – Open in r(ead), w(rite) or a(ppen) mode. More complicated
-modes (‘r+’, ‘w+’, …) are not supported; only the first letter of
-<cite>mode</cite> is used and thus any additional modifiers are silently ignored.</p></li>
+<li><p><strong>mode</strong> (<em>{'r'</em><em>, </em><em>'w'</em><em>, </em><em>'a'}</em><em> (</em><em>optional</em><em>)</em>) – Open in r(ead), w(rite) or a(ppend) mode. This string is directly
+passed to the file opening handler (either Python’s openfe, bz2, or
+gzip). More complex modes are supported if the file opening handler
+supports it.</p></li>
 <li><p><strong>reset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – try to read (<cite>mode</cite> ‘r’) the stream from the start</p></li>
 </ul>
 </dd>
