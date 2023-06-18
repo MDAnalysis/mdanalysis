@@ -26,14 +26,20 @@ import pytest
 from numpy.testing import assert_almost_equal
 
 import MDAnalysis as mda
-from MDAnalysis.coordinates.GSD import HAS_GSD
+from MDAnalysis.coordinates.GSD import GSDReader, HAS_GSD
 from MDAnalysisTests.datafiles import GSD
 
 
 @pytest.mark.skipif(HAS_GSD, reason='gsd is installed')
-def test_no_gsd_raises():
-    with pytest.raises(ImportError, match="please install gsd"):
+def test_no_gsd_u_raises():
+    with pytest.raises(ImportError, match='please install gsd'):
         _ = mda.Universe(GSD)
+
+
+@pytest.mark.skipif(HAS_GSD, reason='gsd is installed')
+def test_gsd_reader_raises():
+    with pytest.raises(ImportError, match='please install gsd'):
+        _ = GSDReader('foo')
 
 
 @pytest.mark.skipif(not HAS_GSD, reason='gsd is not installed')
