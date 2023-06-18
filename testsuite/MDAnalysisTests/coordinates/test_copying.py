@@ -60,6 +60,7 @@ from MDAnalysisTests.datafiles import (
     XYZ_mini,
 )
 from MDAnalysis.coordinates.core import get_reader_for
+from MDAnalysis.coordinates.GSD import HAS_GSD
 from MDAnalysis.auxiliary.EDR import HAS_PYEDR
 
 
@@ -89,7 +90,10 @@ from MDAnalysis.auxiliary.EDR import HAS_PYEDR
     ('memory', np.arange(60).reshape(2, 10, 3).astype(np.float64), dict()),
     ('CHAIN', [GRO, GRO, GRO], dict()),
     ('FHIAIMS', FHIAIMS, dict()),
-    ('GSD', GSD, dict()),
+    pytest.param(
+        ('GSD', GSD, dict()),
+        marks=pytest.mark.skipif(not HAS_GSD, reason='gsd not installed')
+    ),
     ('NAMDBIN', NAMDBIN, dict()),
     ('TXYZ', TXYZ, dict()),
 ])
@@ -130,7 +134,10 @@ def ref_reader(request):
     ('memory', np.arange(60).reshape(2, 10, 3).astype(np.float64), dict()),
     ('CHAIN', [GRO, GRO, GRO], dict()),
     ('FHIAIMS', FHIAIMS, dict()),
-    ('GSD', GSD, dict()),
+    pytest.param(
+        ('GSD', GSD, dict()),
+        marks=pytest.mark.skipif(not HAS_GSD, reason='gsd not installed')
+    ),
     ('NAMDBIN', NAMDBIN, dict()),
     ('TXYZ', TXYZ, dict()),
 ])
