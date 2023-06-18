@@ -220,7 +220,7 @@ class TestLAMMPSDATAWriter_molecule_tag(object):
                      err_msg="resids different after writing",)
 
 
-@pytest.mark.parametrize('filename', ['out.data', 'out.data.bz2'])
+@pytest.mark.parametrize('filename', ['out.data', 'out.data.bz2', 'out.data.gz'])
 def test_datawriter_universe(filename, tmpdir):
     """
     Test roundtrip on datawriter, and also checks compressed files
