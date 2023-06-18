@@ -23,6 +23,9 @@ Fixes
 Enhancements
 
 Changes
+  * GSD is no longer a core dependency of MDAnalysis. It must be installed
+    independently if you wish to read HOOMD trajectory files.
+    (PR #4174, Issue #3819)
 
 Deprecations
 
