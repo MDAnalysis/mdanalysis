@@ -341,7 +341,7 @@ def anyopen(datasource, mode='rt', reset=True):
         Open in r(ead), w(rite) or a(ppen) mode. This string is directly
         passed to the file opening handler (either Python's openfe, bz2, or
         gzip). More complex mode are supported if the file opening handler
-        supportst it.
+        supports it.
     reset: bool (optional)
         try to read (`mode` 'r') the stream from the start
 
