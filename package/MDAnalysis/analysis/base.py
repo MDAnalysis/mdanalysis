@@ -131,8 +131,6 @@ from MDAnalysis import coordinates
 from MDAnalysis.core.groups import AtomGroup
 from MDAnalysis.lib.log import ProgressBar
 
-from functools import partial
-
 logger = logging.getLogger(__name__)
 
 def localdelayed(obj):
@@ -166,14 +164,44 @@ def localdelayed(obj):
     else:
         raise ValueError(f"Argument should be Iterable or Callable, got {type(obj)}")
 
-from itertools import islice
+def _self_compute_helper(obj, bstart, bstop, bstep, bframes):
+    return obj._compute(start=bstart, stop=bstop, step=bstep, frames=bframes)
 
-def split_every(n, iterable):
-    i = iter(iterable)
-    piece = list(islice(i, n))
-    while piece:
-        yield piece
-        piece = list(islice(i, n))
+def multiprocessingdelayed(obj):
+    """
+    multiprocessing implementation of `dask.delayed.delayed` function
+    with the same semantics
+    """
+    import multiprocessing
+
+    if isinstance(obj, Iterable):
+    
+        class inner:
+            def __init__(self, iterable):
+                self._computations = iterable
+
+            def compute(self, n_workers):
+                with multiprocessing.Pool(n_workers) as pool:
+                    results = pool.apply(_self_compute_helper, self._computations)
+                return list(results)
+
+        return inner(obj)
+
+    elif isinstance(obj, Callable):
+    
+        class inner:
+            def __init__(self, *a, **kwa):
+                self._a = a
+                self._kwa = kwa
+                self._func = obj
+
+            def compute(self):
+                return self._func(*self._a, **self._kwa)
+
+        return inner
+    else:
+        raise ValueError(f"Argument should be Iterable or Callable, got {type(obj)}")
+
 
 class Results(UserDict):
     r"""Container object for storing results.
@@ -480,7 +508,6 @@ class AnalysisBase(object):
         self._setup_frames(self._trajectory, start=start, stop=stop,
                            step=step, frames=frames)
         logger.info("Starting preparation")
-        self._prepare()
         logger.info("Starting analysis loop over %d trajectory frames",
                     self.n_frames)
 
@@ -570,24 +597,24 @@ class AnalysisBase(object):
 
         Parameters
         ----------
-        scheduler : dask.distributed.Client
-            dask scheduler object
+        scheduler : str, optional 
+            scheduling type:
+              - 'dask' implies `dask` scheduler (need to install MDAnalysis[dask] for that to work)
+              - 'multiprocessing' works with standard python multiprocessing module
+              - None if you want to run things locally
         n_workers : int, optional
             number of workers (local or remote processes).
         """
-        if scheduler == 'localdask':
+        if scheduler is None:
             n_workers = 1
+            kwargs = {}
+        elif scheduler == 'multiprocessing' or scheduler == 'dask':
+            kwargs = {'n_workers':n_workers}
         else:
-            from dask.distributed import Client
-            if isinstance(scheduler, Client):
-                # TODO: add assertions that make sure that 
-                # you don't set 
-                # both `scheduler` and `n_workers/threads_per_worker`
-                n_workers = len(scheduler.ncores())
-            else:
-                kwargs = {'n_workers':n_workers}
-            self._scheduler_kwargs = kwargs
-        self._n_bslices = self._n_workers = n_workers
+            raise ValueError("`scheduler` should be either 'dask', 'multiprocessing' or None")
+
+        self._scheduler_kwargs = kwargs
+        self._n_bslices = n_workers
 
     def run(self, start=None, stop=None, step=None, frames=None,
             verbose=None, n_workers=1, 
@@ -631,32 +658,44 @@ class AnalysisBase(object):
             Add `progressbar_kwargs` parameter, 
             allowing to modify description, position etc of tqdm progressbars
         """
+        self._setup_frames(self._trajectory, start, stop, step, frames)
+        self._prepare()
+        self._setup_scheduler(scheduler=scheduler, n_workers=n_workers)
+        self._setup_bslices(start=start, stop=stop, step=step, frames=frames)
+
         if scheduler is None: # fallback to the local scheduler
             self._compute(start=start, stop=stop, step=step, frames=frames, 
             verbose=verbose, progressbar_kwargs=progressbar_kwargs)
         else:
-            self._setup_scheduler(scheduler=scheduler, n_workers=n_workers)
-            if scheduler == 'localdask': # imitation of dask mainly for testing purposes
+            if scheduler == 'multiprocessing':
+                import multiprocessing
+
                 delayed = localdelayed
-            else: # elif scheduler is a type of dask scheduler
+                computations = [
+                    (self, bstart, bstop, bstep, bframes)
+                    for bstart, bstop, bstep, bframes in self._bslices]
+
+                with multiprocessing.Pool(**self._scheduler_kwargs) as pool:
+                    results = pool.starmap(_self_compute_helper, computations)
+
+            elif scheduler == 'dask':
                 try:
                     from dask.delayed import delayed
                 except ImportError:
-                    def delayed(*args, **kwargs): # need implementation to avoid syntax warnings below
-                        pass
-                    # raising exception here allows me to skip potentionally time-consuming setup steps
                     raise ImportError('Please install dask for this functionality')
-            self._setup_bslices(start=start, stop=stop, step=step,
-                frames=frames)
 
-            computations = delayed(
-                [
-                    delayed(self._compute)(start=bstart, stop=bstop, step=bstep, frames=bframes)
-                    for bstart, bstop, bstep, bframes in self._bslices
-                ]
-            )
-            dask_results = computations.compute()
-            self._remote_results = dask_results
+                computations = delayed(
+                    [
+                        delayed(self._compute)(start=bstart, stop=bstop, step=bstep, frames=bframes)
+                        for bstart, bstop, bstep, bframes in self._bslices
+                    ]
+                )
+                results = computations.compute(**self._scheduler_kwargs)
+
+            else:
+                raise ValueError("scheduler can be 'dask', 'multiprocessing' or None")
+
+            self._remote_results = results
             self._parallel_conclude()
 
         self._conclude()
