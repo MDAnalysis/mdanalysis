@@ -167,41 +167,6 @@ def localdelayed(obj):
 def _self_compute_helper(obj, bstart, bstop, bstep, bframes):
     return obj._compute(start=bstart, stop=bstop, step=bstep, frames=bframes)
 
-def multiprocessingdelayed(obj):
-    """
-    multiprocessing implementation of `dask.delayed.delayed` function
-    with the same semantics
-    """
-    import multiprocessing
-
-    if isinstance(obj, Iterable):
-    
-        class inner:
-            def __init__(self, iterable):
-                self._computations = iterable
-
-            def compute(self, n_workers):
-                with multiprocessing.Pool(n_workers) as pool:
-                    results = pool.apply(_self_compute_helper, self._computations)
-                return list(results)
-
-        return inner(obj)
-
-    elif isinstance(obj, Callable):
-    
-        class inner:
-            def __init__(self, *a, **kwa):
-                self._a = a
-                self._kwa = kwa
-                self._func = obj
-
-            def compute(self):
-                return self._func(*self._a, **self._kwa)
-
-        return inner
-    else:
-        raise ValueError(f"Argument should be Iterable or Callable, got {type(obj)}")
-
 
 class Results(UserDict):
     r"""Container object for storing results.
@@ -675,7 +640,7 @@ class AnalysisBase(object):
                     (self, bstart, bstop, bstep, bframes)
                     for bstart, bstop, bstep, bframes in self._bslices]
 
-                with multiprocessing.Pool(**self._scheduler_kwargs) as pool:
+                with multiprocessing.Pool(processes=self._scheduler_kwargs['n_workers']) as pool:
                     results = pool.starmap(_self_compute_helper, computations)
 
             elif scheduler == 'dask':
