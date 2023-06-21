@@ -214,6 +214,11 @@ class TestChainReaderFormats(object):
             format="LAMMPSDUMP", continuous=True)
         assert universe.trajectory.n_frames == 11
 
+        # Test whether the amount of time between frames is consistently = 1
+        time_values = np.array([ts.time for ts in universe.trajectory])
+        dt_array = time_values[1:]-time_values[:-1]
+        assert np.unique(dt_array) == 1
+
     def test_set_format_tuples_and_format(self):
         universe = mda.Universe(GRO, [(PDB, 'pdb'), GRO, GRO, (XTC, 'xtc'), 
                                       (TRR, 'trr')], format='gro')
