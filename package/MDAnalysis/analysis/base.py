@@ -523,35 +523,16 @@ class AnalysisBase(object):
             if not all(opt is None for opt in [start, stop, step]):
                 raise ValueError("start/stop/step cannot be combined with "
                                  "frames")
-            self.n_frames_total = len(frames)
-            n_bslices = self._n_bslices
-            slices = [(None, None, None, frames[i::n_bslices]) for i in range(n_bslices)]
 
         else:  # frames is None
             start, stop, step = self._trajectory.check_slice_indices(start, stop, step)
-            n_frames = len(range(start, stop, step))
-            self.start, self.stop, self.step = start, stop, step
-            self.n_frames_total = n_frames
-
-            ## this part was taken from pmda with slight modifications
-            n_bslices = self._n_bslices
-            bsizes = np.ones(n_bslices, dtype=np.int64) * n_frames // n_bslices
-            bsizes += np.arange(n_bslices, dtype=np.int64) < n_frames % n_bslices
-            # This can give a last index that is larger than the real last index;
-            # this is not a problem for slicing but it's not pretty.
-            # Example: original [0:20:3] -> n_frames=7, start=0, step=3:
-            #          last frame 21 instead of 20
-            bsizes *= step
-            idx = np.cumsum(np.concatenate(([start], bsizes)))
-            slices = [(bstart, bstop, step, None) 
-                       for bstart, bstop in zip(idx[:-1], idx[1:])]
-
-            # fix very last stop index: make sure it's within trajectory range or None
-            # (no really critical because the slices will work regardless, but neater)
-            last = slices[-1]
-            last_stop = min(last[1], stop) if stop is not None else stop
-            slices[-1] = (last[0], last_stop, last[2], None)
+            frames = list(range(start, stop, step))
         
+        # triple None is written for consistency in calling methods: 
+        # they accept (start, stop, step, frames) quartet
+        self.n_frames_total = len(frames)
+        n_bslices = self._n_bslices
+        slices = [(None, None, None, frames[i::n_bslices]) for i in range(n_bslices)]
         self._bslices = slices
         return self._bslices
 
@@ -574,7 +555,7 @@ class AnalysisBase(object):
             n_workers = 1
             kwargs = {}
         elif scheduler == 'multiprocessing' or scheduler == 'dask':
-            kwargs = {'n_workers':n_workers}
+            kwargs = {'n_workers':n_workers, 'scheduler':'processes'}
         else:
             raise ValueError("`scheduler` should be either 'dask', 'multiprocessing' or None")
 
