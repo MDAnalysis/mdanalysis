@@ -151,9 +151,6 @@ __all__ = [
     "LAMMPSDUMP_long",  # lammpsdump file with a few zeros sprinkled in the first column first frame
     "LAMMPSDUMP_allcoords",  # lammpsdump file with all coordinate conventions (x,xs,xu,xsu) present, from LAMMPS rdf example
     "LAMMPSDUMP_nocoords",  # lammpsdump file with no coordinates
-    "LAMMPSDUMP_chain1", # Lammps dump file with chain reader
-    "LAMMPSDUMP_chain2", # Lammps dump file with chain reader
-    "LAMMPS_chain", # Lammps data file with chain reader
     "LAMMPSDUMP_triclinic",  # lammpsdump file to test triclinic dimension parsing, albite with most atoms deleted
     "LAMMPSDUMP_image_vf",  # Lammps dump file with image flags, velocities, and forces.
     "LAMMPS_image_vf",  # Lammps data file to go with LAMMPSDUMP_image_vf

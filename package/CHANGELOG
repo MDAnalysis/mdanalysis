@@ -21,9 +21,10 @@ Fixes
 
 Enhancements
   * LAMMPSDump Reader use of `continuous` option to stitch trajectories
+    (Issue #3546)
 
 Changes
-  * Add definition of ts.data['time'] in LAMMPSDump Reader
+  * Add definition of ts.data['time'] in LAMMPSDump Reader (Issue #3546)
 
 Deprecations
 
@@ -68,8 +69,6 @@ Fixes
     (Issue #3336)
 
 Enhancements
-  * LAMMPSDump Reader use of `continuous` option to stitch trajectories
-    (Issue #3546)
   * ARM64 (osx and linux) wheels now uploaded on release (Issue #4054)
   * Add simple atomic distance analysis to `analysis.atomicdistances` with
     new class `AtomicDistances` (Issue #3654)
@@ -215,8 +214,6 @@ Enhancements
   * Added isolayer selection method (Issue #3845)
 
 Changes
- * Continuous feature of ChainReader now uses `_call_time()` method from 
-   ProtoReader (Issue #3546)
  * Minimum numpy version for python 3.10 and Windows has been raised to 1.22.3
    (PR #3903)
  * Replaced deprecated Bio.pairwise2 with Bio.align.PairwiseAligner in
