@@ -144,6 +144,7 @@ __all__ = [
     "LAMMPSdata2", "LAMMPSdcd2",
     "LAMMPScnt", "LAMMPScnt2",  # triclinic box
     "LAMMPShyd", "LAMMPShyd2",
+    "LAMMPSdata_many_bonds",
     "LAMMPSdata_deletedatoms",  # with deleted atoms
     "LAMMPSdata_triclinic",  # lammpsdata file to test triclinic dimension parsing, albite with most atoms deleted
     "LAMMPSdata_PairIJ",  # lammps datafile with a PairIJ Coeffs section
@@ -532,6 +533,7 @@ LAMMPS_image_vf = (_data_ref / "lammps/image_vf.data").as_posix()
 LAMMPSDUMP_chain1 = (_data_ref / "lammps/chain_dump_1.lammpstrj").as_posix()
 LAMMPSDUMP_chain2 = (_data_ref / "lammps/chain_dump_2.lammpstrj").as_posix()
 LAMMPS_chain = (_data_ref / "lammps/chain_initial.data").as_posix()
+LAMMPSdata_many_bonds = (_data_ref / "lammps/a_lot_of_bond_types.data").as_posix()
 
 unordered_res = (_data_ref / "unordered_res.pdb").as_posix()
 
