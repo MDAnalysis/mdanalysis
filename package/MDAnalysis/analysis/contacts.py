@@ -484,7 +484,7 @@ class Contacts(AnalysisBase):
             raise TypeError(select_error_message)
 
     def _prepare(self):
-        self.results.timeseries = np.empty((self.n_frames, len(self.r0)+1))
+        self.results.timeseries = np.zeros((self.n_frames, len(self.r0)+1))
 
     def _single_frame(self):
         self.results.timeseries[self._frame_index][0] = self._ts.frame
