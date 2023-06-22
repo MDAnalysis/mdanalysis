@@ -263,7 +263,7 @@ class DATAWriter(base.WriterBase):
         convert_units : bool, optional
             units are converted to the MDAnalysis base format; [``True``]
         """
-        self.filename = util.filename(filename, ext='data')
+        self.filename = util.filename(filename, ext='data', keep=True)
 
         self.convert_units = convert_units
 
@@ -419,7 +419,7 @@ class DATAWriter(base.WriterBase):
             has_velocities = True
 
         features = {}
-        with util.openany(self.filename, 'w') as self.f:
+        with util.openany(self.filename, 'wt') as self.f:
             self.f.write('LAMMPS data file via MDAnalysis\n')
             self.f.write('\n')
             self.f.write('{:>12d}  atoms\n'.format(len(atoms)))
