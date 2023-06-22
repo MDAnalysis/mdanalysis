@@ -164,8 +164,8 @@ def localdelayed(obj):
     else:
         raise ValueError(f"Argument should be Iterable or Callable, got {type(obj)}")
 
-def _self_compute_helper(obj, bstart, bstop, bstep, bframes):
-    return obj._compute(start=bstart, stop=bstop, step=bstep, frames=bframes)
+def _self_compute_helper(obj, bslice_idx):
+    return obj._compute(bslice_idx)
 
 
 class Results(UserDict):
@@ -428,10 +428,9 @@ class AnalysisBase(object):
         """
         pass  # pylint: disable=unnecessary-pass
 
-    def _compute(self, start=None, stop=None, step=None, 
-        frames=None, verbose=None, *, progressbar_kwargs={}):
-        """Perform the calculation on frames that have been setup prior to that
-        using _setup_frames()
+    def _compute(self, bslice_idx, verbose=None, *, progressbar_kwargs={}):
+        """Perform the calculation on a balanced slice of frames 
+        that have been setup prior to that using _setup_bslices()
 
         Parameters
         ----------
@@ -470,16 +469,18 @@ class AnalysisBase(object):
         verbose = getattr(self, '_verbose',
                           False) if verbose is None else verbose
 
-        self._setup_frames(self._trajectory, start=start, stop=stop,
-                           step=step, frames=frames)
+        # self._setup_frames(self._trajectory, start=start, stop=stop,
+                        #    step=step, frames=frames)
+
         logger.info("Starting preparation")
         logger.info("Starting analysis loop over %d trajectory frames",
                     self.n_frames)
 
-        for i, ts in enumerate(ProgressBar(
-                self._sliced_trajectory,
+        frame_indices, trajectory = self._bslices[bslice_idx]
+        for i, ts in ProgressBar(zip(
+                frame_indices, trajectory),
                 verbose=verbose,
-                **progressbar_kwargs)):
+                **progressbar_kwargs):
             self._frame_index = i
             self._ts = ts
             self.frames[i] = ts.frame
@@ -488,8 +489,7 @@ class AnalysisBase(object):
         logger.info("Finishing up")
         return self
 
-    def _setup_bslices(self, start=None, stop=None, step=None, frames=None, 
-                       n_bslices=None): 
+    def _setup_bslices(self, start=None, stop=None, step=None, frames=None): 
         """
         Set the self._bslices (the workload distribution scheme) for the future delayed
         computations.
@@ -528,12 +528,18 @@ class AnalysisBase(object):
             start, stop, step = self._trajectory.check_slice_indices(start, stop, step)
             frames = list(range(start, stop, step))
         
-        # triple None is written for consistency in calling methods: 
-        # they accept (start, stop, step, frames) quartet
         self.n_frames_total = len(frames)
         n_bslices = self._n_bslices
-        slices = [(None, None, None, frames[i::n_bslices]) for i in range(n_bslices)]
+
+        slices = [(indices, self._trajectory[frames_]) 
+                   for indices, frames_ in zip(
+                    np.array_split(range(len(frames)), n_bslices),
+                    np.array_split(frames, n_bslices),
+                   )
+                   ]
+
         self._bslices = slices
+
         return self._bslices
 
 
@@ -610,16 +616,15 @@ class AnalysisBase(object):
         self._setup_bslices(start=start, stop=stop, step=step, frames=frames)
 
         if scheduler is None: # fallback to the local scheduler
-            self._compute(start=start, stop=stop, step=step, frames=frames, 
-            verbose=verbose, progressbar_kwargs=progressbar_kwargs)
+            self._compute(bslice_idx=0, verbose=verbose, progressbar_kwargs=progressbar_kwargs)
         else:
             if scheduler == 'multiprocessing':
                 import multiprocessing
 
                 delayed = localdelayed
                 computations = [
-                    (self, bstart, bstop, bstep, bframes)
-                    for bstart, bstop, bstep, bframes in self._bslices]
+                    (self, bslice_idx)
+                    for bslice_idx in range(len(self._bslices))]
 
                 with multiprocessing.Pool(processes=self._scheduler_kwargs['n_workers']) as pool:
                     results = pool.starmap(_self_compute_helper, computations)
@@ -632,8 +637,8 @@ class AnalysisBase(object):
 
                 computations = delayed(
                     [
-                        delayed(self._compute)(start=bstart, stop=bstop, step=bstep, frames=bframes)
-                        for bstart, bstop, bstep, bframes in self._bslices
+                        delayed(self._compute)(bslice_idx=bslice_idx)
+                        for bslice_idx in range(len(self._bslices))
                     ]
                 )
                 results = computations.compute(**self._scheduler_kwargs)
@@ -649,6 +654,16 @@ class AnalysisBase(object):
         return self
     
     def _parallel_conclude(self):
+        for i, ts in enumerate(self._sliced_trajectory):
+            # this is a dry run of _compute 
+            # to assign correct attributes
+            # in the "parent" object
+            self._frame_index = i
+            self._ts = ts
+            self.frames[i] = ts.frame
+            self.times[i] = ts.time
+
+        # FIXME
         self.results = self._remote_results[0].results
 
 
