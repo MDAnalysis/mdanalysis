@@ -130,6 +130,7 @@ import numpy as np
 from MDAnalysis import coordinates
 from MDAnalysis.core.groups import AtomGroup
 from MDAnalysis.lib.log import ProgressBar
+from typing import Callable, Iterable
 
 logger = logging.getLogger(__name__)
 
@@ -165,6 +166,11 @@ def localdelayed(obj):
         raise ValueError(f"Argument should be Iterable or Callable, got {type(obj)}")
 
 def _self_compute_helper(obj, bslice_idx):
+    """
+    Helper function for multiprocessing implementation of parallel analysis.
+    Exists due to the fact that non-global functions, such as object methods, 
+    can't be pickled with the multiprocessing.
+    """
     return obj._compute(bslice_idx)
 
 
@@ -252,11 +258,6 @@ class Results(UserDict):
 
     def __setstate__(self, state):
         self.data = state
-
-from typing import Callable, Iterable
-
-
-# from dask import delayed
 
 
 class AnalysisBase(object):
@@ -664,7 +665,10 @@ class AnalysisBase(object):
             self.times[i] = ts.time
 
         # FIXME
-        self.results = self._remote_results[0].results
+        keys = list(self._remote_results[0].results.keys())
+        for k in keys:
+            # if they were initialized as zeros and I need to stack them
+            self.results[k] = np.array([obj.results[k] for obj in self._remote_results]).sum(axis=0)
 
 
 class AnalysisFromFunction(AnalysisBase):
