@@ -234,10 +234,11 @@ class InterRDF(AnalysisBase):
         self.rdf_settings = {'bins': nbins,
                              'range': range}
         self._exclusion_block = exclusion_block
-        assert exclude_same is None or exclude_same in ['residue', 'segment', 'chain'], (
-            "The exclude_same argument to InterRDF must be None, 'residue', 'segment' "
-            "or 'chain'."
-        )
+        if exclude_same is not None and exclude_same not in ['residue', 'segment', 'chain']:
+            raise ValueError(
+                "The exclude_same argument to InterRDF must be None, 'residue', 'segment' "
+                "or 'chain'."
+            )
         name_to_attr = {'residue': 'resindices', 'segment': 'segindices', 'chain': 'chainids'}
         self.exclude_same = name_to_attr.get(exclude_same)
 
@@ -274,8 +275,8 @@ class InterRDF(AnalysisBase):
 
         if self.exclude_same:
             # Ignore distances between atoms in the same residue
-            resixA = self.g1.resindices[pairs[:, 0]]
-            resixB = self.g2.resindices[pairs[:, 1]]
+            resixA = getattr(self.g1, self.exclude_same)[pairs[:, 0]]
+            resixB = getattr(self.g2, self.exclude_same)[pairs[:, 1]]
             mask = np.where(resixA != resixB)[0]
             dist = dist[mask]
 
