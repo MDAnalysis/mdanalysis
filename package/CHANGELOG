@@ -13,11 +13,14 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay
+??/??/?? IAlibay, jaclark5
 
  * 2.6.0
 
 Fixes
+  * Fix deletion of bond/angle/dihedral types (PR #4003, Issue #4001)
+  * CRD, PQR, and PDBQT writers now write BZ2 and GZ files if requested
+    (PR #4163, Issue #4159)
 
 Enhancements
 
@@ -25,6 +28,9 @@ Changes
   * As per NEP29 tthe minimum supported version has been raised to 1.22. We
     have opted to pin to a minimum of 1.22.3 to avoid known issues on some
     platforms.
+  * GSD is no longer a core dependency of MDAnalysis. It must be installed
+    independently if you wish to read HOOMD trajectory files.
+    (PR #4174, Issue #3819)
 
 Deprecations
 
