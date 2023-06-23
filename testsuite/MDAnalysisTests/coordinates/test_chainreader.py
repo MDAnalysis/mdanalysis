@@ -218,6 +218,7 @@ class TestChainReaderFormats(object):
         time_values = np.array([ts.time for ts in universe.trajectory])
         dt_array = time_values[1:]-time_values[:-1]
         assert np.unique(dt_array) == 1
+        assert_equal(time_values, np.arange(11))
 
     def test_set_format_tuples_and_format(self):
         universe = mda.Universe(GRO, [(PDB, 'pdb'), GRO, GRO, (XTC, 'xtc'), 
