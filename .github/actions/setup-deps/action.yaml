@@ -28,7 +28,7 @@ inputs:
   griddataformats:
     default: 'griddataformats'
   gsd:
-    default: 'gsd<3.0'
+    default: 'gsd>3.0.0'
   hypothesis:
     default: 'hypothesis'
   matplotlib:
