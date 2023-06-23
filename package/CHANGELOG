@@ -25,7 +25,7 @@ Fixes
 Enhancements
 
 Changes
-  * As per NEP29 tthe minimum supported version has been raised to 1.22. We
+  * As per NEP29 the minimum supported version has been raised to 1.22. We
     have opted to pin to a minimum of 1.22.3 to avoid known issues on some
     platforms.
   * GSD is no longer a core dependency of MDAnalysis. It must be installed
