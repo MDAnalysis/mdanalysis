@@ -107,7 +107,6 @@ runs:
           ${{ inputs.cython }}
           ${{ inputs.fasteners }}
           ${{ inputs.griddataformats }}
-          ${{ inputs.gsd }}
           ${{ inputs.hypothesis }}
           ${{ inputs.matplotlib }}
           ${{ inputs.mmtf-python }}
@@ -123,6 +122,7 @@ runs:
           ${{ inputs.chemfiles-python }}
           ${{ inputs.clustalw }}
           ${{ inputs.distopia }}
+          ${{ inputs.gsd }}
           ${{ inputs.h5py }}
           ${{ inputs.hole2 }}
           ${{ inputs.joblib }}

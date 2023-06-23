@@ -604,7 +604,6 @@ if __name__ == '__main__':
           'threadpoolctl',
           'packaging',
           'fasteners',
-          'gsd>=1.9.3,<3.0',
     ]
 
     setup(name='MDAnalysis',
@@ -654,6 +653,7 @@ if __name__ == '__main__':
                   'pytng>=0.2.3',  # TNG
                   'chemfiles>=0.10',  # multiple formats supported by chemfiles
                   'pyedr>=0.7.0',  # EDR files for the EDR AuxReader
+                  'gsd>=1.9.3,<3.0', # GSD
                   ],
               'analysis': [
                   'seaborn',  # for annotated heat map and nearest neighbor
