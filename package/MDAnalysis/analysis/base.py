@@ -125,11 +125,13 @@ from collections import UserDict
 import inspect
 import logging
 import itertools
+import warnings
 
 import numpy as np
 from MDAnalysis import coordinates
 from MDAnalysis.core.groups import AtomGroup
 from MDAnalysis.lib.log import ProgressBar
+from MDAnalysis.core.universe import Universe
 from typing import Callable, Iterable
 
 logger = logging.getLogger(__name__)
@@ -664,11 +666,18 @@ class AnalysisBase(object):
             self.frames[i] = ts.frame
             self.times[i] = ts.time
 
-        # FIXME
-        keys = list(self._remote_results[0].results.keys())
-        for k in keys:
-            # if they were initialized as zeros and I need to stack them
-            self.results[k] = np.array([obj.results[k] for obj in self._remote_results]).sum(axis=0)
+        if isinstance(self._remote_results[0].results, np.ndarray):
+            self.results = np.array(self._remote_results).sum(axis=0)
+        else:
+            keys, types = zip(*self._remote_results[0].results.items())
+            for k, t in zip(keys, types):
+                results_of_t = [obj.results[k] for obj in self._remote_results]
+                if isinstance(t, np.ndarray):
+                    self.results[k] = np.array(results_of_t).sum(axis=0)
+                elif isinstance(t, float):
+                    self.results[k] = np.array(results_of_t).mean()
+                else:
+                    warnings.warn(f'Attribute {t} will not be available in resulting object')
 
 
 class AnalysisFromFunction(AnalysisBase):
