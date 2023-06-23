@@ -67,7 +67,7 @@ import configparser
 from subprocess import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "2.5.0-dev0"
+RELEASE = "2.6.0-dev0"
 
 is_release = 'dev' not in RELEASE
 
@@ -604,7 +604,6 @@ if __name__ == '__main__':
           'threadpoolctl',
           'packaging',
           'fasteners',
-          'gsd>=1.9.3',
     ]
 
     setup(name='MDAnalysis',
@@ -654,6 +653,7 @@ if __name__ == '__main__':
                   'pytng>=0.2.3',  # TNG
                   'chemfiles>=0.10',  # multiple formats supported by chemfiles
                   'pyedr>=0.7.0',  # EDR files for the EDR AuxReader
+                  'gsd>=1.9.3,<3.0', # GSD
                   ],
               'analysis': [
                   'seaborn',  # for annotated heat map and nearest neighbor

@@ -23,6 +23,7 @@
 import pytest
 
 import MDAnalysis as mda
+from MDAnalysis.topology.GSDParser import HAS_GSD
 
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import GSD
@@ -30,6 +31,8 @@ from MDAnalysisTests.datafiles import GSD_bonds
 from numpy.testing import assert_equal
 import os
 
+
+@pytest.mark.skipif(not HAS_GSD, reason='gsd not installed')
 class GSDBase(ParserBase):
     parser = mda.topology.GSDParser.GSDParser
     expected_attrs = ['ids', 'names', 'resids', 'resnames', 'masses',
@@ -78,14 +81,15 @@ class GSDBase(ParserBase):
             assert top.impropers.values == []
 
 
+@pytest.mark.skipif(not HAS_GSD, reason='gsd not installed')
 class TestGSDParser(GSDBase):
     ref_filename = GSD
     expected_n_atoms = 5832
     expected_n_residues = 648
     expected_n_segments = 1
 
-    
 
+@pytest.mark.skipif(not HAS_GSD, reason='gsd not installed')
 class TestGSDParserBonds(GSDBase):
     ref_filename = GSD_bonds
     expected_n_atoms = 490
