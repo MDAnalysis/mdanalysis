@@ -187,7 +187,7 @@ class GSDPicklable(gsd.hoomd.HOOMDTrajectory):
 
         gsdfileobj = gsd.fl.open(name=filename,
                                      mode='r',
-                                     application='gsd.hoomd '+gsd.__version__,
+                                     application='gsd.hoomd '+gsd.version_,
                                      schema='hoomd',
                                      schema_version=[1, 3])
         file = GSDPicklable(gsdfileobj)
@@ -208,7 +208,7 @@ class GSDPicklable(gsd.hoomd.HOOMDTrajectory):
         return self.file.name, self.file.mode
 
     def __setstate__(self, args):
-        gsd_version = gsd.__version__
+        gsd_version = gsd.version
         schema_version = [1, 4] if gsd_version >= '1.9.0' else [1, 3]
         gsdfileobj = gsd.fl.open(name=args[0],
                                  mode=args[1],
@@ -271,7 +271,7 @@ def gsd_pickle_open(name: str, mode: str='r'):
 
     .. versionadded:: 2.0.0
     """
-    gsd_version = gsd.__version__
+    gsd_version = gsd.version
     schema_version = [1, 4] if gsd_version >= '1.9.0' else [1, 3]
     if mode not in {'r', 'rb'}:
         raise ValueError("Only read mode ('r', 'rb') "
