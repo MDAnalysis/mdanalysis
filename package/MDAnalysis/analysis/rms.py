@@ -714,6 +714,11 @@ class RMSD(AnalysisBase):
                 self._ref_coordinates64, self._mobile_coordinates64,
                 self._n_atoms, None, self.weights_select)
 
+    def _setup_scheduler(self, scheduler, n_workers):
+        super()._setup_scheduler(scheduler, n_workers)
+        if scheduler is not None:
+            raise NotImplementedError("Only 'scheduler=None' is available for this class")
+
     @property
     def rmsd(self):
         wmsg = ("The `rmsd` attribute was deprecated in MDAnalysis 2.0.0 and "
@@ -882,6 +887,11 @@ class RMSF(AnalysisBase):
         if not (self.results.rmsf >= 0).all():
             raise ValueError("Some RMSF values negative; overflow " +
                              "or underflow occurred")
+    
+    def _setup_scheduler(self, scheduler, n_workers):
+        super()._setup_scheduler(scheduler, n_workers)
+        if scheduler is not None:
+            raise NotImplementedError("Only 'scheduler=None' is available for this class")
 
     @property
     def rmsf(self):
