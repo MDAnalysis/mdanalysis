@@ -781,8 +781,12 @@ class HydrogenBondAnalysis(AnalysisBase):
         self.results.hbonds[5].extend(hbond_angles)
 
     def _conclude(self):
-
         self.results.hbonds = np.asarray(self.results.hbonds).T
+
+    def _setup_scheduler(self, scheduler, n_workers):
+        super()._setup_scheduler(scheduler, n_workers)
+        if scheduler is not None:
+            raise NotImplementedError("Only 'scheduler=None' is available for this class")
 
     @property
     def hbonds(self):
