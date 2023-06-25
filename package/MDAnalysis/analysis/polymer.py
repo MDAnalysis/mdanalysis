@@ -283,6 +283,9 @@ class PersistenceLength(AnalysisBase):
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.fit
 
+    def _parallel_conclude(self):
+        self._results = np.array([obj._results for obj in self._remote_results]).sum(axis=0)
+
     def _conclude(self):
         n = len(self._atomgroups[0])
 
