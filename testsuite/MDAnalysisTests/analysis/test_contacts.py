@@ -196,7 +196,20 @@ class TestContacts(object):
 
         assert ag_from_string == ag_from_ag
 
-    def test_contacts_selections(self, universe, scheduler):
+    def test_can_not_run_multiprocessing(self, universe, schedulers_all):
+        scheduler = schedulers_all['scheduler']
+        if scheduler == 'multiprocessing':
+            with pytest.raises(NotImplementedError):
+                aga = universe.select_atoms(self.sel_acidic)
+                agb = universe.select_atoms(self.sel_basic)
+
+                cag = contacts.Contacts(
+                    universe, select=(aga, agb), refgroup=(aga, agb)
+                )
+
+                cag.run(**schedulers_all)
+
+    def test_contacts_selections(self, universe, scheduler_current_or_dask):
         """Test if Contacts can take both string and AtomGroup as selections.
         """
         aga = universe.select_atoms(self.sel_acidic)
@@ -211,8 +224,8 @@ class TestContacts(object):
             refgroup=(aga, agb)
         )
 
-        cag.run(**scheduler)
-        csel.run(**scheduler)
+        cag.run(**scheduler_current_or_dask)
+        csel.run(**scheduler_current_or_dask)
 
         assert cag.grA == csel.grA
         assert cag.grB == csel.grB
@@ -229,26 +242,26 @@ class TestContacts(object):
         ) as te:
             contacts.Contacts._get_atomgroup(universe, ag)
 
-    def test_startframe(self, universe, scheduler): # FIXME
+    def test_startframe(self, universe, scheduler_current_or_dask): # FIXME
         """test_startframe: TestContactAnalysis1: start frame set to 0 (resolution of
         Issue #624)
 
         """
-        CA1 = self._run_Contacts(universe, **scheduler)
+        CA1 = self._run_Contacts(universe, **scheduler_current_or_dask)
         assert len(CA1.results.timeseries) == universe.trajectory.n_frames
 
-    def test_end_zero(self, universe, scheduler): # FIXME
+    def test_end_zero(self, universe, scheduler_current_or_dask): # FIXME
         """test_end_zero: TestContactAnalysis1: stop frame 0 is not ignored"""
-        CA1 = self._run_Contacts(universe, stop=0, **scheduler)
+        CA1 = self._run_Contacts(universe, stop=0, **scheduler_current_or_dask)
         assert len(CA1.results.timeseries) == 0
 
-    def test_slicing(self, universe, scheduler): # FIXME
+    def test_slicing(self, universe, scheduler_current_or_dask): # FIXME
         start, stop, step = 10, 30, 5
-        CA1 = self._run_Contacts(universe, start=start, stop=stop, step=step, **scheduler)
+        CA1 = self._run_Contacts(universe, start=start, stop=stop, step=step, **scheduler_current_or_dask)
         frames = np.arange(universe.trajectory.n_frames)[start:stop:step]
         assert len(CA1.results.timeseries) == len(frames)
 
-    def test_villin_folded(self, scheduler):
+    def test_villin_folded(self, scheduler_current_or_dask):
         # one folded, one unfolded
         f = mda.Universe(contacts_villin_folded)
         u = mda.Universe(contacts_villin_unfolded)
@@ -260,12 +273,12 @@ class TestContacts(object):
                               select=(sel, sel),
                               refgroup=(grF, grF),
                               method="soft_cut")
-        q.run(**scheduler)
+        q.run(**scheduler_current_or_dask)
 
         results = soft_cut(f, u, sel, sel)
         assert_almost_equal(q.results.timeseries[:, 1], results[:, 1])
 
-    def test_villin_unfolded(self, scheduler):
+    def test_villin_unfolded(self, scheduler_current_or_dask):
         # both folded
         f = mda.Universe(contacts_villin_folded)
         u = mda.Universe(contacts_villin_folded)
@@ -277,13 +290,13 @@ class TestContacts(object):
                               select=(sel, sel),
                               refgroup=(grF, grF),
                               method="soft_cut")
-        q.run(**scheduler)
+        q.run(**scheduler_current_or_dask)
 
         results = soft_cut(f, u, sel, sel)
         assert_almost_equal(q.results.timeseries[:, 1], results[:, 1])
 
-    def test_hard_cut_method(self, universe, scheduler):
-        ca = self._run_Contacts(universe, **scheduler) # FIXME
+    def test_hard_cut_method(self, universe, scheduler_current_or_dask):
+        ca = self._run_Contacts(universe, **scheduler_current_or_dask) # FIXME
         expected = [1., 0.58252427, 0.52427184, 0.55339806, 0.54368932,
                     0.54368932, 0.51456311, 0.46601942, 0.48543689, 0.52427184,
                     0.46601942, 0.58252427, 0.51456311, 0.48543689, 0.48543689,
@@ -307,7 +320,7 @@ class TestContacts(object):
         assert len(ca.results.timeseries) == len(expected)
         assert_array_almost_equal(ca.results.timeseries[:, 1], expected)
 
-    def test_radius_cut_method(self, universe, scheduler):
+    def test_radius_cut_method(self, universe, scheduler_current_or_dask):
         acidic = universe.select_atoms(self.sel_acidic)
         basic = universe.select_atoms(self.sel_basic)
         r = contacts.distance_array(acidic.positions, basic.positions)
@@ -317,15 +330,15 @@ class TestContacts(object):
             r = contacts.distance_array(acidic.positions, basic.positions)
             expected.append(contacts.radius_cut_q(r[initial_contacts], None, radius=6.0))
 
-        ca = self._run_Contacts(universe, method='radius_cut', **scheduler) # FIXME
+        ca = self._run_Contacts(universe, method='radius_cut', **scheduler_current_or_dask) # FIXME
         assert_array_equal(ca.results.timeseries[:, 1], expected)
 
     @staticmethod
     def _is_any_closer(r, r0, dist=2.5):
         return np.any(r < dist)
 
-    def test_own_method(self, universe, scheduler):
-        ca = self._run_Contacts(universe, method=self._is_any_closer, **scheduler) # FIXME
+    def test_own_method(self, universe, scheduler_current_or_dask):
+        ca = self._run_Contacts(universe, method=self._is_any_closer, **scheduler_current_or_dask) # FIXME
 
         bound_expected = [1., 1., 0., 1., 1., 0., 0., 1., 0., 1., 1., 0., 0.,
                           1., 0., 0., 0., 0., 1., 1., 0., 0., 0., 1., 0., 1.,
@@ -341,13 +354,13 @@ class TestContacts(object):
     def _weird_own_method(r, r0):
         return 'aaa'
 
-    def test_own_method_no_array_cast(self, universe, scheduler):
+    def test_own_method_no_array_cast(self, universe, scheduler_current_or_dask):
         with pytest.raises(ValueError):
-            self._run_Contacts(universe, method=self._weird_own_method, stop=2, **scheduler) # FIXME
+            self._run_Contacts(universe, method=self._weird_own_method, stop=2, **scheduler_current_or_dask) # FIXME
 
-    def test_non_callable_method(self, universe, scheduler):
+    def test_non_callable_method(self, universe, scheduler_current_or_dask):
         with pytest.raises(ValueError):
-            self._run_Contacts(universe, method=2, stop=2, **scheduler)
+            self._run_Contacts(universe, method=2, stop=2, **scheduler_current_or_dask)
 
     @pytest.mark.parametrize("pbc,expected", [
     (True, [1., 0.43138152, 0.3989021, 0.43824337, 0.41948765,
@@ -355,7 +368,7 @@ class TestContacts(object):
     (False, [1., 0.42327791, 0.39192399, 0.40950119, 0.40902613,
              0.42470309, 0.41140143, 0.42897862, 0.41472684, 0.38574822])
     ])
-    def test_distance_box(self, pbc, expected, scheduler):
+    def test_distance_box(self, pbc, expected, scheduler_current_or_dask):
         u = mda.Universe(TPR, XTC)
         sel_basic = "(resname ARG LYS)"
         sel_acidic = "(resname ASP GLU)"
@@ -364,22 +377,22 @@ class TestContacts(object):
         
         r = contacts.Contacts(u, select=(sel_acidic, sel_basic),
                         refgroup=(acidic, basic), radius=6.0, pbc=pbc)
-        r.run(**scheduler)
+        r.run(**scheduler_current_or_dask)
         assert_array_almost_equal(r.results.timeseries[:, 1], expected)
 
-    def test_warn_deprecated_attr(self, universe, scheduler):
+    def test_warn_deprecated_attr(self, universe, scheduler_current_or_dask):
         """Test for warning message emitted on using deprecated `timeseries`
         attribute"""
-        CA1 = self._run_Contacts(universe, stop=1, **scheduler) # FIXME
+        CA1 = self._run_Contacts(universe, stop=1, **scheduler_current_or_dask) # FIXME
         wmsg = "The `timeseries` attribute was deprecated in MDAnalysis"
         with pytest.warns(DeprecationWarning, match=wmsg):
             assert_equal(CA1.timeseries, CA1.results.timeseries)
 
 
-def test_q1q2(scheduler):
+def test_q1q2(scheduler_current_or_dask):
     u = mda.Universe(PSF, DCD)
     q1q2 = contacts.q1q2(u, 'name CA', radius=8)
-    q1q2.run(**scheduler)
+    q1q2.run(**scheduler_current_or_dask)
 
     q1_expected = [1., 0.98092643, 0.97366031, 0.97275204, 0.97002725,
                    0.97275204, 0.96276113, 0.96730245, 0.9582198, 0.96185286,

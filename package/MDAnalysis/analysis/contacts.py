@@ -500,6 +500,11 @@ class Contacts(AnalysisBase):
             r0 = r0[initial_contacts]
             q = self.fraction_contacts(r, r0, **self.fraction_kwargs)
             self.results.timeseries[self._frame_index][i] = q
+        
+    def _setup_scheduler(self, scheduler, n_workers):
+        super()._setup_scheduler(scheduler, n_workers)
+        if scheduler == 'multiprocessing':
+            raise NotImplementedError("Use scheduler=None or scheduler='dask' for this class")
 
     @property
     def timeseries(self):
