@@ -1842,6 +1842,11 @@ class WaterBridgeAnalysis(AnalysisBase):
 
     def _conclude(self):
         self.results.timeseries = self._generate_timeseries()
+    
+    def _setup_scheduler(self, scheduler, n_workers):
+        super()._setup_scheduler(scheduler, n_workers)
+        if scheduler is not None:
+            raise NotImplementedError("Only 'scheduler=None' is available for this class")
 
     @property
     def network(self):
