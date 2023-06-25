@@ -431,6 +431,11 @@ class HELANAL(AnalysisBase):
 
         self.results.global_axis = [self._zeros_per_frame((3,)) for n in n_res]
         self.results.all_bends = [self._zeros_per_frame((n-3, n-3)) for n in n_res]
+    
+    def _setup_scheduler(self, scheduler, n_workers):
+        super()._setup_scheduler(scheduler, n_workers)
+        if scheduler is not None:
+            raise NotImplementedError("Only 'scheduler=None' is available for this class")
 
     def _single_frame(self):
         _f = self._frame_index
