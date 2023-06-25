@@ -166,3 +166,17 @@ class DielectricConstant(AnalysisBase):
 
         self.results.eps += 1
         self.results.eps_mean += 1
+
+    def _parallel_conclude(self):
+      for attrname in ('M', 'M2', 'fluct', 'eps'):
+        self.results[attrname] = np.array([obj.results[attrname] for obj in self._remote_results]).sum(axis=0)
+      for attrname in ('eps_mean', ):
+        self.results[attrname] = np.array([obj.results[attrname] for obj in self._remote_results]).mean(axis=0)
+      self.volume = np.array([obj.volume for obj in self._remote_results]).sum(axis=0)
+
+      # self.volume = 0
+      # self.results.M = np.zeros(3)
+      # self.results.M2 = np.zeros(3)
+      # self.results.fluct = np.zeros(3)
+      # self.results.eps = np.zeros(3)
+      # self.results.eps_mean = 0
