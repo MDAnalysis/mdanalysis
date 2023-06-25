@@ -667,7 +667,7 @@ class AnalysisBase(object):
             self.times[i] = ts.time
 
         if isinstance(self._remote_results[0].results, np.ndarray):
-            self.results = np.array(self._remote_results).sum(axis=0)
+            self.results = np.array([obj.results for obj in self._remote_results]).sum(axis=0)
         else:
             keys, types = zip(*self._remote_results[0].results.items())
             for k, t in zip(keys, types):
@@ -677,7 +677,7 @@ class AnalysisBase(object):
                 elif isinstance(t, float):
                     self.results[k] = np.array(results_of_t).mean()
                 else:
-                    warnings.warn(f'Attribute {t} will not be available in resulting object')
+                    raise NotImplementedError(f'Attribute {t} will not be available in resulting object')
 
 
 class AnalysisFromFunction(AnalysisBase):
