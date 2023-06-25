@@ -291,6 +291,14 @@ class InterRDF(AnalysisBase):
             norm *= N / box_vol
 
         self.results.rdf = self.results.count / norm
+    
+    def _parallel_conclude(self):
+        if self.norm == "rdf":
+            self.volume_cum = sum([obj.volume_cum for obj in self._remote_results])
+        self.results.count = np.array([obj.results.count for obj in self._remote_results]).sum(axis=0) 
+        self.results.edges = self._remote_results[0].results.edges
+        self.results.bins = self._remote_results[0].results.bins
+
 
     @property
     def edges(self):
@@ -592,6 +600,17 @@ class InterRDF_s(AnalysisBase):
             # Number of each selection
             self.results.indices.append([ag1.indices, ag2.indices])
             self.results.rdf.append(self.results.count[i] / norm)
+    
+    def _parallel_conclude(self):
+        self.results.count = [
+            np.array([obj.results.count[idx] 
+            for obj in self._remote_results]).sum(axis=0) 
+            for idx, (ag1, ag2) in enumerate(self.ags)
+            ]
+        self.results.edges = self._remote_results[0].results.edges
+        self.results.bins = self._remote_results[0].results.bins
+        if self.norm == "rdf":
+            self.volume_cum = sum([obj.volume_cum for obj in self._remote_results])
 
     def get_cdf(self):
         r"""Calculate the cumulative counts for all sites.
