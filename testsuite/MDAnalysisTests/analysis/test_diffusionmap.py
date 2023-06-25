@@ -52,13 +52,13 @@ def test_eg(dist, dmap):
     # makes no sense to test values here, no physical meaning
 
 
-def test_dist_weights(u, scheduler):
+def test_dist_weights(u, schedulers_all):
     backbone = u.select_atoms('backbone')
     weights_atoms = np.ones(len(backbone.atoms))
     dist = diffusionmap.DistanceMatrix(u,
                                        select='backbone',
                                        weights=weights_atoms)
-    dist.run(step=3, scheduler=scheduler)
+    dist.run(step=3, **schedulers_all)
     dmap = diffusionmap.DiffusionMap(dist)
     dmap.run()
     assert_array_almost_equal(dmap.eigenvalues, [1, 1, 1, 1], 4)
@@ -69,18 +69,18 @@ def test_dist_weights(u, scheduler):
                                 [.707, -.707, 0, 0]]), 2)
 
 
-def test_distvalues_ag_universe(u, scheduler):
-    dist_universe = diffusionmap.DistanceMatrix(u, select='backbone').run(scheduler=scheduler)
+def test_distvalues_ag_universe(u, schedulers_all):
+    dist_universe = diffusionmap.DistanceMatrix(u, select='backbone').run(**schedulers_all)
     ag = u.select_atoms('backbone')
-    dist_ag = diffusionmap.DistanceMatrix(ag).run(scheduler=scheduler)
+    dist_ag = diffusionmap.DistanceMatrix(ag).run(**schedulers_all)
     assert_allclose(dist_universe.results.dist_matrix,
                     dist_ag.results.dist_matrix)
 
 
-def test_distvalues_ag_select(u, scheduler):
-    dist_universe = diffusionmap.DistanceMatrix(u, select='backbone').run(scheduler=scheduler)
+def test_distvalues_ag_select(u, schedulers_all):
+    dist_universe = diffusionmap.DistanceMatrix(u, select='backbone').run(**schedulers_all)
     ag = u.select_atoms('protein')
-    dist_ag = diffusionmap.DistanceMatrix(ag, select='backbone').run(scheduler=scheduler)
+    dist_ag = diffusionmap.DistanceMatrix(ag, select='backbone').run(**schedulers_all)
     assert_allclose(dist_universe.results.dist_matrix,
                     dist_ag.results.dist_matrix)
                     
@@ -121,8 +121,8 @@ def test_not_universe_atomgroup_error(u):
         diffusionmap.DiffusionMap(trj_only)
 
 
-def test_DistanceMatrix_attr_warning(u, scheduler):
-    dist = diffusionmap.DistanceMatrix(u, select='backbone').run(step=3, scheduler=scheduler)
+def test_DistanceMatrix_attr_warning(u, schedulers_all):
+    dist = diffusionmap.DistanceMatrix(u, select='backbone').run(step=3, **schedulers_all)
     wmsg = f"The `dist_matrix` attribute was deprecated in MDAnalysis 2.0.0"
     with pytest.warns(DeprecationWarning, match=wmsg):
         assert getattr(dist, "dist_matrix") is dist.results.dist_matrix
