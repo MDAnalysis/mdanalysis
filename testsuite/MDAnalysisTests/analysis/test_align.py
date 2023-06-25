@@ -417,9 +417,9 @@ class TestAverageStructure(object):
     def reference(self):
         return mda.Universe(PSF, CRD)
 
-    def test_average_structure_deprecated_attrs(self, universe, reference, scheduler):
+    def test_average_structure_deprecated_attrs(self, universe, reference, scheduler_only_current_process):
         # Issue #3278 - remove in MDAnalysis 3.0.0
-        avg = align.AverageStructure(universe, reference).run(stop=2, **scheduler)
+        avg = align.AverageStructure(universe, reference).run(stop=2, **scheduler_only_current_process)
 
         wmsg = "The `universe` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):
@@ -434,37 +434,37 @@ class TestAverageStructure(object):
         with pytest.warns(DeprecationWarning, match=wmsg):
             assert avg.rmsd == avg.results.rmsd
 
-    def test_average_structure(self, universe, reference, scheduler):
+    def test_average_structure(self, universe, reference, scheduler_only_current_process):
         ref, rmsd = _get_aligned_average_positions(self.ref_files, reference)
-        avg = align.AverageStructure(universe, reference).run(**scheduler)
+        avg = align.AverageStructure(universe, reference).run(**scheduler_only_current_process)
         assert_almost_equal(avg.results.universe.atoms.positions, ref,
                             decimal=4)
         assert_almost_equal(avg.results.rmsd, rmsd)
 
-    def test_average_structure_mass_weighted(self, universe, reference, scheduler):
+    def test_average_structure_mass_weighted(self, universe, reference, scheduler_only_current_process):
         ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, weights='mass')
-        avg = align.AverageStructure(universe, reference, weights='mass').run(**scheduler)
+        avg = align.AverageStructure(universe, reference, weights='mass').run(**scheduler_only_current_process)
         assert_almost_equal(avg.results.universe.atoms.positions, ref,
                             decimal=4)
         assert_almost_equal(avg.results.rmsd, rmsd)
 
-    def test_average_structure_select(self, universe, reference, scheduler):
+    def test_average_structure_select(self, universe, reference, scheduler_only_current_process):
         select = 'protein and name CA and resid 3-5'
         ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, select=select)
-        avg = align.AverageStructure(universe, reference, select=select).run(**scheduler)
+        avg = align.AverageStructure(universe, reference, select=select).run(**scheduler_only_current_process)
         assert_almost_equal(avg.results.universe.atoms.positions, ref,
                             decimal=4)
         assert_almost_equal(avg.results.rmsd, rmsd)
 
-    def test_average_structure_no_ref(self, universe, scheduler):
+    def test_average_structure_no_ref(self, universe, scheduler_only_current_process):
         ref, rmsd = _get_aligned_average_positions(self.ref_files, universe)
-        avg = align.AverageStructure(universe).run(**scheduler)
+        avg = align.AverageStructure(universe).run(**scheduler_only_current_process)
         assert_almost_equal(avg.results.universe.atoms.positions, ref,
                             decimal=4)
         assert_almost_equal(avg.results.rmsd, rmsd)
 
-    def test_average_structure_no_msf(self, universe, scheduler):
-        avg = align.AverageStructure(universe).run(**scheduler)
+    def test_average_structure_no_msf(self, universe, scheduler_only_current_process):
+        avg = align.AverageStructure(universe).run(**scheduler_only_current_process)
         assert not hasattr(avg, 'msf')
 
     def test_mismatch_atoms(self, universe):
@@ -472,7 +472,7 @@ class TestAverageStructure(object):
         with pytest.raises(SelectionError):
             align.AverageStructure(universe, u)
 
-    def test_average_structure_ref_frame(self, universe, scheduler):
+    def test_average_structure_ref_frame(self, universe, scheduler_only_current_process):
         ref_frame = 3
         u = mda.Merge(universe.atoms)
 
@@ -483,13 +483,13 @@ class TestAverageStructure(object):
         # back to start
         universe.trajectory[0]
         ref, rmsd = _get_aligned_average_positions(self.ref_files, u)
-        avg = align.AverageStructure(universe, ref_frame=ref_frame).run(**scheduler)
+        avg = align.AverageStructure(universe, ref_frame=ref_frame).run(**scheduler_only_current_process)
         assert_almost_equal(avg.results.universe.atoms.positions, ref,
                             decimal=4)
         assert_almost_equal(avg.results.rmsd, rmsd)
 
-    def test_average_structure_in_memory(self, universe, scheduler):
-        avg = align.AverageStructure(universe, in_memory=True).run(**scheduler)
+    def test_average_structure_in_memory(self, universe, scheduler_only_current_process):
+        avg = align.AverageStructure(universe, in_memory=True).run(**scheduler_only_current_process)
         reference_coordinates = universe.trajectory.timeseries().mean(axis=1)
         assert_almost_equal(avg.results.universe.atoms.positions,
                             reference_coordinates, decimal=4)
