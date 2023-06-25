@@ -25,6 +25,8 @@ Fixes
 Enhancements
 
 Changes
+  * Support for GSD is now limited to version 3.0.1 and above. Alongside this
+    change, support for schema 1.3 files has been dropped (PR #4153)
   * As per NEP29 the minimum supported version has been raised to 1.22. We
     have opted to pin to a minimum of 1.22.3 to avoid known issues on some
     platforms.
