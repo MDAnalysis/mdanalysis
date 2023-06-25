@@ -943,6 +943,11 @@ class AverageStructure(AnalysisBase):
         self._writer.close()
         if not self._verbose:
             logging.disable(logging.NOTSET)
+    
+    def _setup_scheduler(self, scheduler, n_workers):
+        super()._setup_scheduler(scheduler, n_workers)
+        if scheduler is not None:
+            raise NotImplementedError("Only 'scheduler=None' is available for this class")
 
     @property
     def universe(self):
