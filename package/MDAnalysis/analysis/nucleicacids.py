@@ -150,6 +150,11 @@ class NucPairDist(AnalysisBase):
     def _conclude(self) -> None:
         self.results['pair_distances'] = self._res_array
 
+    def _setup_scheduler(self, scheduler, n_workers):
+        super()._setup_scheduler(scheduler, n_workers)
+        if scheduler is not None:
+            raise NotImplementedError("Only 'scheduler=None' is available for this class")
+
 
 class WatsonCrickDist(NucPairDist):
     r"""Watson-Crick basepair distance for selected residues over a trajectory.
