@@ -47,19 +47,19 @@ def sels(u):
 
 
 @pytest.fixture(scope='module')
-def rdf(u, sels, scheduler):
-    return InterRDF_s(u, sels).run(scheduler=scheduler)
+def rdf(u, sels, schedulers_all):
+    return InterRDF_s(u, sels).run(**schedulers_all)
 
 
-def test_nbins(u, sels, scheduler):
-    rdf = InterRDF_s(u, sels, nbins=412).run(scheduler=scheduler)
+def test_nbins(u, sels, schedulers_all):
+    rdf = InterRDF_s(u, sels, nbins=412).run(**schedulers_all)
 
     assert len(rdf.results.bins) == 412
 
 
-def test_range(u, sels, scheduler):
+def test_range(u, sels, schedulers_all):
     rmin, rmax = 1.0, 13.0
-    rdf = InterRDF_s(u, sels, range=(rmin, rmax)).run(scheduler=scheduler)
+    rdf = InterRDF_s(u, sels, range=(rmin, rmax)).run(**schedulers_all)
 
     assert rdf.results.edges[0] == rmin
     assert rdf.results.edges[-1] == rmax
@@ -108,15 +108,15 @@ def test_cdf(rdf):
     (None, 26551.55088100731),    # default, like False (no kwarg, see below)
     (False, 26551.55088100731),
     (True, 0.021915460340071267)])
-def test_density(u, sels, density, value, scheduler):
+def test_density(u, sels, density, value, schedulers_all):
     kwargs = {'density': density} if density is not None else {}
-    rdf = InterRDF_s(u, sels, **kwargs).run(scheduler=scheduler)
+    rdf = InterRDF_s(u, sels, **kwargs).run(**schedulers_all)
     assert_almost_equal(max(rdf.results.rdf[0][0][0]), value)
     if not density:
         s1 = u.select_atoms('name ZND and resid 289')
         s2 = u.select_atoms(
                 'name OD1 and resid 51 and sphzone 5.0 (resid 289)')
-        rdf_ref = InterRDF(s1, s2).run(scheduler=scheduler)
+        rdf_ref = InterRDF(s1, s2).run(**schedulers_all)
         assert_almost_equal(rdf_ref.results.rdf, rdf.results.rdf[0][0][0])
 
 
@@ -129,21 +129,21 @@ def test_overwrite_norm(u, sels):
     ("density", 0.021915460340071267),
     ("rdf", 26551.55088100731),
     ("none", 0.6)])
-def test_norm(u, sels, norm, value, scheduler):
-    rdf = InterRDF_s(u, sels, norm=norm).run(scheduler=scheduler)
+def test_norm(u, sels, norm, value, schedulers_all):
+    rdf = InterRDF_s(u, sels, norm=norm).run(**schedulers_all)
     assert_allclose(max(rdf.results.rdf[0][0][0]), value)
     if norm == "rdf":
         s1 = u.select_atoms('name ZND and resid 289')
         s2 = u.select_atoms(
                 'name OD1 and resid 51 and sphzone 5.0 (resid 289)')
-        rdf_ref = InterRDF(s1, s2).run(scheduler=scheduler)
+        rdf_ref = InterRDF(s1, s2).run(**schedulers_all)
         assert_almost_equal(rdf_ref.results.rdf, rdf.results.rdf[0][0][0])
 
 
 @pytest.mark.parametrize("norm, norm_required", [
     ("Density", "density"), (None, "none")])
-def test_norm_values(u, sels, norm, norm_required, scheduler):
-    rdf = InterRDF_s(u, sels, norm=norm).run(scheduler=scheduler)
+def test_norm_values(u, sels, norm, norm_required, schedulers_all):
+    rdf = InterRDF_s(u, sels, norm=norm).run(**schedulers_all)
     assert rdf.norm == norm_required
 
 
