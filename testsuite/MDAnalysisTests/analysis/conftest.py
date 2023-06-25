@@ -19,7 +19,7 @@ def schedulers_all(request):
         n_workers = int(n_workers)
         return {'scheduler':scheduler, 'n_workers':n_workers}
 
-@pytest.fixture(params=[None])
+@pytest.fixture(params=[None], scope='module')
 def scheduler_only_current_process(request):
     """
     Fixture for testing only current process.
@@ -31,7 +31,7 @@ def scheduler_only_current_process(request):
     """
     return {'scheduler':None}
 
-@pytest.fixture(params=[None, 'dask:1', 'dask:2'])
+@pytest.fixture(params=[None, 'dask:1', 'dask:2'], scope='module')
 def scheduler_current_or_dask(request):
     """
     Fixture for testing dask or current process (because multiprocessing is worse with serialization).
