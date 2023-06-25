@@ -248,6 +248,7 @@ References
 """
 import numpy as np
 import matplotlib.pyplot as plt
+from itertools import chain
 
 import warnings
 
@@ -453,6 +454,11 @@ class Ramachandran(AnalysisBase):
                                     box=self.ag1.dimensions)
         phi_psi = [(phi, psi) for phi, psi in zip(phi_angles, psi_angles)]
         self.results.angles.append(phi_psi)
+    
+    def _setup_scheduler(self, scheduler, n_workers):
+        super()._setup_scheduler(scheduler, n_workers)
+        if scheduler is not None:
+            raise NotImplementedError("Only 'scheduler=None' is available for this class")
 
     def _conclude(self):
         self.results.angles = np.rad2deg(np.array(self.results.angles))
