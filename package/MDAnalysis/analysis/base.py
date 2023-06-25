@@ -677,7 +677,7 @@ class AnalysisBase(object):
                 elif isinstance(t, float):
                     self.results[k] = np.array(results_of_t).mean()
                 else:
-                    raise NotImplementedError(f'Attribute {t} will not be available in resulting object')
+                    raise NotImplementedError(f'Attribute {k} of type {type(t)} will not be available in resulting object')
 
 
 class AnalysisFromFunction(AnalysisBase):
