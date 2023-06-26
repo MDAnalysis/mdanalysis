@@ -312,7 +312,8 @@ class TestMatrixOperations(object):
             ref[1, 1] = y * sin_c
             ref[2, 0] = z * cos_b
             ref[2, 1] = z * (cos_a - cos_b * cos_c) / sin_c
-            ref[2, 2] = np.sqrt(z * z - ref[2, 0] ** 2 - ref[2, 1] ** 2)
+            with np.errstate(invalid="ignore"):
+                ref[2, 2] = np.sqrt(z * z - ref[2, 0] ** 2 - ref[2, 1] ** 2)
             ref = ref.astype(np.float32)
         return ref
 
