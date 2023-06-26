@@ -155,6 +155,9 @@ __all__ = [
     "LAMMPSDUMP_triclinic",  # lammpsdump file to test triclinic dimension parsing, albite with most atoms deleted
     "LAMMPSDUMP_image_vf",  # Lammps dump file with image flags, velocities, and forces.
     "LAMMPS_image_vf",  # Lammps data file to go with LAMMPSDUMP_image_vf
+    "LAMMPSDUMP_chain1", # Lammps dump file with chain reader
+    "LAMMPSDUMP_chain2", # Lammps dump file with chain reader
+    "LAMMPS_chain", # Lammps data file with chain reader
     "unordered_res",  # pdb file with resids non sequential
     "GMS_ASYMOPT",  # GAMESS C1  optimization
     "GMS_SYMOPT",   # GAMESS D4h optimization
@@ -527,6 +530,9 @@ LAMMPSDUMP_nocoords = (_data_ref / "lammps/spce_no_coords.lammpstrj.bz2").as_pos
 LAMMPSDUMP_triclinic = (_data_ref / "lammps/albite_triclinic.dump").as_posix()
 LAMMPSDUMP_image_vf = (_data_ref / "lammps/image_vf.lammpstrj").as_posix()
 LAMMPS_image_vf = (_data_ref / "lammps/image_vf.data").as_posix()
+LAMMPSDUMP_chain1 = (_data_ref / "lammps/chain_dump_1.lammpstrj").as_posix()
+LAMMPSDUMP_chain2 = (_data_ref / "lammps/chain_dump_2.lammpstrj").as_posix()
+LAMMPS_chain = (_data_ref / "lammps/chain_initial.data").as_posix()
 LAMMPSdata_many_bonds = (_data_ref / "lammps/a_lot_of_bond_types.data").as_posix()
 
 unordered_res = (_data_ref / "unordered_res.pdb").as_posix()

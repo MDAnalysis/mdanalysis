@@ -23,8 +23,11 @@ Fixes
     (PR #4163, Issue #4159)
 
 Enhancements
+  * LAMMPSDump Reader use of `continuous` option to stitch trajectories
+    (Issue #3546)
 
 Changes
+  * Add definition of ts.data['time'] in LAMMPSDump Reader (Issue #3546)
   * As per NEP29 the minimum supported version has been raised to 1.22. We
     have opted to pin to a minimum of 1.22.3 to avoid known issues on some
     platforms.
