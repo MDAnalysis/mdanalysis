@@ -51,9 +51,21 @@ Classes
 
 """
 import numpy as np
-import gsd
-import gsd.fl
-import gsd.hoomd
+try:
+    import gsd
+    import gsd.fl
+except ImportError:
+    HAS_GSD = False
+    import types
+
+    class MockHOOMDTrajectory:
+        pass
+
+    gsd = types.ModuleType("gsd")
+    gsd.hoomd = types.ModuleType("hoomd")
+    gsd.hoomd.HOOMDTrajectory = MockHOOMDTrajectory
+else:
+    HAS_GSD = True
 
 from . import base
 from MDAnalysis.lib.util import store_init_arguments
@@ -83,6 +95,10 @@ class GSDReader(base.ReaderBase):
             :class:`GSDPicklable`
 
         """
+        if not HAS_GSD:
+            errmsg = "GSDReader: To read GSD files, please install gsd"
+            raise ImportError(errmsg)
+
         super(GSDReader, self).__init__(filename, **kwargs)
         self.filename = filename
         self.open_trajectory()

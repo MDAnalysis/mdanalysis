@@ -104,7 +104,8 @@ def normal(vec1: npt.ArrayLike, vec2: npt.ArrayLike) -> npt.NDArray:
     .. versionchanged:: 0.11.0
        Moved into lib.mdamath
     """
-    normal: npt.NDArray = np.cross(vec1, vec2)
+    # TODO: enable typing when https://github.com/python/mypy/issues/11347 done
+    normal: npt.NDArray = np.cross(vec1, vec2)  # type: ignore
     n = norm(normal)
     if n == 0.0:
         return normal  # returns [0,0,0] instead of [nan,nan,nan]
@@ -171,7 +172,8 @@ def stp(vec1: npt.ArrayLike, vec2: npt.ArrayLike, vec3: npt.ArrayLike) -> float:
     .. versionchanged:: 0.11.0
        Moved into lib.mdamath
     """
-    return np.dot(vec3, np.cross(vec1, vec2))
+    # TODO: enable typing when https://github.com/python/mypy/issues/11347 done
+    return np.dot(vec3, np.cross(vec1, vec2))  # type: ignore
 
 
 def dihedral(ab: npt.ArrayLike, bc: npt.ArrayLike, cd: npt.ArrayLike) -> float:
@@ -292,9 +294,10 @@ def triclinic_box(x: npt.ArrayLike, y: npt.ArrayLike, z: npt.ArrayLike) -> npt.N
     lx = norm(x)
     ly = norm(y)
     lz = norm(z)
-    alpha = np.rad2deg(np.arccos(np.dot(y, z) / (ly * lz)))
-    beta = np.rad2deg(np.arccos(np.dot(x, z) / (lx * lz)))
-    gamma = np.rad2deg(np.arccos(np.dot(x, y) / (lx * ly)))
+    with np.errstate(invalid="ignore"):
+        alpha = np.rad2deg(np.arccos(np.dot(y, z) / (ly * lz)))
+        beta = np.rad2deg(np.arccos(np.dot(x, z) / (lx * lz)))
+        gamma = np.rad2deg(np.arccos(np.dot(x, y) / (lx * ly)))
     box = np.array([lx, ly, lz, alpha, beta, gamma], dtype=np.float32)
     # Only positive edge lengths and angles in (0, 180) are allowed:
     if np.all(box > 0.0) and alpha < 180.0 and beta < 180.0 and gamma < 180.0:
