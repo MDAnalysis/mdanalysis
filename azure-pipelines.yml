@@ -21,12 +21,6 @@ jobs:
     MPLBACKEND: agg
   strategy:
     matrix:
-        Win-Python39-32bit-full:
-          PYTHON_VERSION: '3.9'
-          PYTHON_ARCH: 'x86'
-          BUILD_TYPE: 'normal'
-          NUMPY_MIN: '1.22.3'
-          imageName: 'windows-2019'
         Win-Python39-64bit-full:
           PYTHON_VERSION: '3.9'
           PYTHON_ARCH: 'x64'
@@ -81,15 +75,11 @@ jobs:
     condition: and(succeeded(), eq(variables['BUILD_TYPE'], 'wheel'))
   - script: python -m pip install --upgrade pip setuptools wheel
     displayName: 'Install tools'
-  # contourpy 1.1.0+ does not support x86, so we need to install
-  # a lower version ahead of time
-  - script: python -m pip -v install "contourpy<1.1"
-    displayName: 'Install 32bit specific dependencies'
-    condition: and(succeeded(), eq(variables['PYTHON_ARCH'], 'x86'))
   - script: >-
-      python -m pip install --only-binary=scipy
+      python -m pip install --only-binary=scipy,h5py
       cython
       hypothesis
+      h5py>=2.10
       matplotlib
       numpy
       packaging
@@ -101,20 +91,13 @@ jobs:
       threadpoolctl
       fasteners
     displayName: 'Install dependencies'
-  # H5PY wheels are problematic on 32bit py3.9, so we don't install
-  # it in that specific case. Note: prefer binary because building
-  # h5py is difficult on azure.
-  - script: >-
-      pip install --prefer-binary h5py>=2.10
-    displayName: 'Install non 32bit dependencies'
-    condition: and(succeeded(), ne(variables['PYTHON_ARCH'], 'x86'))
   # for wheel install testing, we pin to an
   # older NumPy, the oldest version we support and that
   # supports the Python version in use
   # to check the ABI compatibility of our wheels
   - script: >-
       python -m pip install numpy==$(NUMPY_MIN)
-    displayName: 'pin to older NumPy (wheel test and 32bit)'
+    displayName: 'pin to older NumPy (wheel test)'
     condition: and(succeeded(), ne(variables['NUMPY_MIN'], ''))
   - script: >-
       python -m pip install
