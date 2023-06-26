@@ -236,7 +236,7 @@ def gsd_pickle_open(name: str, mode: str='r'):
     name : str
         a filename given a text or byte string.
     mode: str, optional
-        'r':  open for reading;  n.b.: the 'rb' mode is deprecated
+        'r':  open for reading.
 
     Returns
     -------
@@ -270,11 +270,14 @@ def gsd_pickle_open(name: str, mode: str='r'):
 
 
     .. versionadded:: 2.0.0
+    .. versionchanged:: 2.6.0
+       Only GSD versions 3.0.1+ are supported. 'rb' mode support
+       has been replaced with 'r' mode.
     """
     gsd_version = gsd.version
     schema_version = [1, 4] if gsd_version >= '1.9.0' else [1, 3]
-    if mode not in {'r', 'rb'}:
-        raise ValueError("Only read mode ('r', 'rb') "
+    if mode != 'r':
+        raise ValueError("Only read mode 'r' "
                          "files can be pickled.")
     gsdfileobj = gsd.fl.open(name=name,
                              mode=mode,
