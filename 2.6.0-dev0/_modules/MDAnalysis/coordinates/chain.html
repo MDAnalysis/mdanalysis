@@ -287,7 +287,7 @@
 <span class="sd">        what frames are used with the continuous option.</span>
 
 <span class="sd">    The default chainreader will read all frames. The continuous option is</span>
-<span class="sd">    currently only supported for XTC and TRR files.</span>
+<span class="sd">    currently only supported for XTC, TRR, and LAMMPSDUMP files.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -395,7 +395,7 @@
 
         <span class="c1"># calculate new start_frames to have a time continuous trajectory.</span>
         <span class="k">if</span> <span class="n">continuous</span><span class="p">:</span>
-            <span class="n">check_allowed_filetypes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readers</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;XTC&#39;</span><span class="p">,</span> <span class="s1">&#39;TRR&#39;</span><span class="p">])</span>
+            <span class="n">check_allowed_filetypes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readers</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;XTC&#39;</span><span class="p">,</span> <span class="s1">&#39;TRR&#39;</span><span class="p">,</span> <span class="s2">&quot;LAMMPSDUMP&quot;</span><span class="p">])</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">n_frames</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;ChainReader: Need at least two frames in &quot;</span>
                                    <span class="s2">&quot;every trajectory with continuous=True&quot;</span><span class="p">)</span>
