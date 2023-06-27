@@ -164,7 +164,7 @@ def test_pickle_with_write_mode(unpicklable_f, tmpdir):
 
 @pytest.mark.skipif(not HAS_GSD, reason='gsd not installed')
 def test_GSD_pickle():
-    gsd_io = gsd_pickle_open(GSD, mode='rb')
+    gsd_io = gsd_pickle_open(GSD, mode='r')
     gsd_io_pickled = pickle.loads(pickle.dumps(gsd_io))
     assert_equal(gsd_io[0].particles.position,
                  gsd_io_pickled[0].particles.position)
