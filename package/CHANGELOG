@@ -27,6 +27,8 @@ Enhancements
     (Issue #3546)
 
 Changes
+  * Support for GSD is now limited to version 3.0.1 and above. Alongside this
+    change, support for schema 1.3 files has been dropped (PR #4153)
   * Add definition of ts.data['time'] in LAMMPSDump Reader (Issue #3546)
   * As per NEP29 the minimum supported version has been raised to 1.22. We
     have opted to pin to a minimum of 1.22.3 to avoid known issues on some
@@ -52,6 +54,7 @@ Deprecations
  * 2.5.0
 
 Fixes
+  * Fixed using 'rb' mode inside GSDReader to avoid FutureWarning from GSDFile (Issue #4152)
   * Fixed ChainReader performing transformations correctly across boundaries in the individual trajectories
     (Issue #3657 #4008 PR #3906)
   * Fix the `heavy` distance_type for water bridge analysis where distance

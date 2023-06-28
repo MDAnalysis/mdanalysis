@@ -104,7 +104,7 @@ jobs:
       biopython
       "chemfiles>=0.10,<0.10.4"
       duecredit
-      "gsd<3.0"
+      "gsd>3.0.0"
       joblib
       GridDataFormats
       mmtf-python

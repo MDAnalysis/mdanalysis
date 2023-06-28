@@ -122,7 +122,7 @@ class GSDParser(TopologyReaderBase):
         """
         attrs = {}
 
-        with gsd.hoomd.open(self.filename,mode='rb') as t :
+        with gsd.hoomd.open(self.filename, mode='r') as t :
             # Here it is assumed that the particle data does not change in the
             # trajectory.
             snap = t[0]
