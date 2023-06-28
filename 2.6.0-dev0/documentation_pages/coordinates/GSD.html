@@ -170,6 +170,10 @@ changes in particle identity or topology is currently implemented.</p>
 <p><span class="versionmodified changed">Changed in version 2.0.0: </span>Now use a picklable <a class="reference external" href="https://gsd.readthedocs.io/en/stable/python-module-gsd.hoomd.html#gsd.hoomd.HOOMDTrajectory" title="(in GSD v3.0.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gsd.hoomd.HOOMDTrajectory</span></code></a>–
 <a class="reference internal" href="#MDAnalysis.coordinates.GSD.GSDPicklable" title="MDAnalysis.coordinates.GSD.GSDPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">GSDPicklable</span></code></a></p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.6.0: </span>Support for GSD versions below 3.0.1 have been dropped. This
+includes support for schema 1.3.</p>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.GSD.GSDReader.OtherWriter">
 <span class="sig-name descname"><span class="pre">OtherWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.GSD.GSDReader.OtherWriter" title="Permalink to this definition"></a></dt>
@@ -863,8 +867,8 @@ to be used to return to its original frame.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gsdfileobj</span> <span class="o">=</span> <span class="n">gsd</span><span class="o">.</span><span class="n">fl</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span>
-                             <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rb&#39;</span><span class="p">,</span>
-                             <span class="n">application</span><span class="o">=</span><span class="s1">&#39;gsd.hoomd &#39;</span><span class="o">+</span><span class="n">gsd</span><span class="o">.</span><span class="n">__version__</span><span class="p">,</span>
+                             <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span>
+                             <span class="n">application</span><span class="o">=</span><span class="s1">&#39;gsd.hoomd &#39;</span><span class="o">+</span> <span class="n">gsd</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
                              <span class="n">schema</span><span class="o">=</span><span class="s1">&#39;hoomd&#39;</span><span class="p">,</span>
                              <span class="n">schema_version</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
 <span class="n">file</span> <span class="o">=</span> <span class="n">GSDPicklable</span><span class="p">(</span><span class="n">gsdfileobj</span><span class="p">)</span>
@@ -882,7 +886,7 @@ to be used to return to its original frame.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.GSD.gsd_pickle_open">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.GSD.</span></span><span class="sig-name descname"><span class="pre">gsd_pickle_open</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rb'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/GSD.html#gsd_pickle_open"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.GSD.gsd_pickle_open" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.GSD.</span></span><span class="sig-name descname"><span class="pre">gsd_pickle_open</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'r'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/GSD.html#gsd_pickle_open"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.GSD.gsd_pickle_open" title="Permalink to this definition"></a></dt>
 <dd><p>Open hoomd schema GSD file with pickle function implemented.</p>
 <p>This function returns a GSDPicklable object. It can be used as a
 context manager, and replace the built-in <a class="reference external" href="https://gsd.readthedocs.io/en/stable/python-module-gsd.hoomd.html#gsd.hoomd.open" title="(in GSD v3.0.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">gsd.hoomd.open()</span></code></a> function
@@ -896,7 +900,7 @@ in read mode that only returns an unpicklable file object.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – a filename given a text or byte string.</p></li>
-<li><p><strong>mode</strong> (<em>{'r'</em><em>, </em><em>'rb'}</em><em> (</em><em>optional</em><em>)</em>) – ‘r’, ‘rb’:  open for reading;</p></li>
+<li><p><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – ‘r’:  open for reading.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -927,6 +931,10 @@ in read mode that only returns an unpicklable file object.</p>
 </div>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 2.0.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.6.0: </span>Only GSD versions 3.0.1+ are supported. ‘rb’ mode support
+has been replaced with ‘r’ mode.</p>
 </div>
 </dd></dl>
 
