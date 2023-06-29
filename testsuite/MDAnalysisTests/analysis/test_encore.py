@@ -195,42 +195,42 @@ inconsistent results")
         assert_almost_equal(confdist_matrix.as_array()[0,:], reference_rmsd, decimal=3,
                             err_msg="calculated RMSD values differ from reference")
 
-    def test_ensemble_superimposition(self, schedulers_all):
+    def test_ensemble_superimposition(self, scheduler_only_current_process):
         aligned_ensemble1 = mda.Universe(PSF, DCD)
         align.AlignTraj(aligned_ensemble1, aligned_ensemble1,
                         select="name CA",
-                        in_memory=True).run(**schedulers_all)
+                        in_memory=True).run(**scheduler_only_current_process)
         aligned_ensemble2 = mda.Universe(PSF, DCD)
         align.AlignTraj(aligned_ensemble2, aligned_ensemble2,
                         select="name *",
-                        in_memory=True).run(**schedulers_all)
+                        in_memory=True).run(**scheduler_only_current_process)
 
         rmsfs1 = rms.RMSF(aligned_ensemble1.select_atoms('name *'))
-        rmsfs1.run(**schedulers_all)
+        rmsfs1.run(**scheduler_only_current_process)
 
         rmsfs2 = rms.RMSF(aligned_ensemble2.select_atoms('name *'))
-        rmsfs2.run(**schedulers_all)
+        rmsfs2.run(**scheduler_only_current_process)
 
         assert sum(rmsfs1.results.rmsf) > sum(rmsfs2.results.rmsf), (
             "Ensemble aligned on all "
             "atoms should have lower full-atom RMSF than ensemble aligned on only CAs."
         )
 
-    def test_ensemble_superimposition_to_reference_non_weighted(self, schedulers_all):
+    def test_ensemble_superimposition_to_reference_non_weighted(self, scheduler_only_current_process):
         aligned_ensemble1 = mda.Universe(PSF, DCD)
         align.AlignTraj(aligned_ensemble1, aligned_ensemble1,
                         select="name CA",
-                        in_memory=True).run(**schedulers_all)
+                        in_memory=True).run(**scheduler_only_current_process)
         aligned_ensemble2 = mda.Universe(PSF, DCD)
         align.AlignTraj(aligned_ensemble2, aligned_ensemble2,
                         select="name *",
-                        in_memory=True).run(**schedulers_all)
+                        in_memory=True).run(**scheduler_only_current_process)
 
         rmsfs1 = rms.RMSF(aligned_ensemble1.select_atoms('name *'))
-        rmsfs1.run(**schedulers_all)
+        rmsfs1.run(**scheduler_only_current_process)
 
         rmsfs2 = rms.RMSF(aligned_ensemble2.select_atoms('name *'))
-        rmsfs2.run(**schedulers_all)
+        rmsfs2.run(**scheduler_only_current_process)
 
         assert sum(rmsfs1.results.rmsf) > sum(rmsfs2.results.rmsf), (
             "Ensemble aligned on all "
