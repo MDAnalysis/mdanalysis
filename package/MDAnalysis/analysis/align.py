@@ -246,8 +246,11 @@ def rotation_matrix(a, b, weights=None):
     :meth:`MDAnalysis.core.groups.AtomGroup.rotate` to generate a rotated
     selection, e.g. ::
 
+    >>> from MDAnalysisTests.datafiles import TPR, TRR
+    >>> A = mda.Universe('topol.tpr','traj.trr')
+    >>> B = A.copy()
     >>> R = rotation_matrix(A.select_atoms('backbone').positions,
-    >>>                     B.select_atoms('backbone').positions)[0]
+    ...                     B.select_atoms('backbone').positions)[0]
     >>> A.atoms.rotate(R)
     >>> A.atoms.write("rotated.pdb")
 
