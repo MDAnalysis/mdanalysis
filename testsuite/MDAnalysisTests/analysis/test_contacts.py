@@ -242,7 +242,7 @@ class TestContacts(object):
         ) as te:
             contacts.Contacts._get_atomgroup(universe, ag)
 
-    def test_startframe(self, universe, scheduler_current_or_dask): # FIXME
+    def test_startframe(self, universe, scheduler_current_or_dask):
         """test_startframe: TestContactAnalysis1: start frame set to 0 (resolution of
         Issue #624)
 
@@ -250,12 +250,12 @@ class TestContacts(object):
         CA1 = self._run_Contacts(universe, **scheduler_current_or_dask)
         assert len(CA1.results.timeseries) == universe.trajectory.n_frames
 
-    def test_end_zero(self, universe, scheduler_current_or_dask): # FIXME
+    def test_end_zero(self, universe, scheduler_current_or_dask):
         """test_end_zero: TestContactAnalysis1: stop frame 0 is not ignored"""
         CA1 = self._run_Contacts(universe, stop=0, **scheduler_current_or_dask)
         assert len(CA1.results.timeseries) == 0
 
-    def test_slicing(self, universe, scheduler_current_or_dask): # FIXME
+    def test_slicing(self, universe, scheduler_current_or_dask):
         start, stop, step = 10, 30, 5
         CA1 = self._run_Contacts(universe, start=start, stop=stop, step=step, **scheduler_current_or_dask)
         frames = np.arange(universe.trajectory.n_frames)[start:stop:step]
@@ -296,7 +296,7 @@ class TestContacts(object):
         assert_almost_equal(q.results.timeseries[:, 1], results[:, 1])
 
     def test_hard_cut_method(self, universe, scheduler_current_or_dask):
-        ca = self._run_Contacts(universe, **scheduler_current_or_dask) # FIXME
+        ca = self._run_Contacts(universe, **scheduler_current_or_dask)
         expected = [1., 0.58252427, 0.52427184, 0.55339806, 0.54368932,
                     0.54368932, 0.51456311, 0.46601942, 0.48543689, 0.52427184,
                     0.46601942, 0.58252427, 0.51456311, 0.48543689, 0.48543689,
@@ -330,7 +330,7 @@ class TestContacts(object):
             r = contacts.distance_array(acidic.positions, basic.positions)
             expected.append(contacts.radius_cut_q(r[initial_contacts], None, radius=6.0))
 
-        ca = self._run_Contacts(universe, method='radius_cut', **scheduler_current_or_dask) # FIXME
+        ca = self._run_Contacts(universe, method='radius_cut', **scheduler_current_or_dask)
         assert_array_equal(ca.results.timeseries[:, 1], expected)
 
     @staticmethod
@@ -338,7 +338,7 @@ class TestContacts(object):
         return np.any(r < dist)
 
     def test_own_method(self, universe, scheduler_current_or_dask):
-        ca = self._run_Contacts(universe, method=self._is_any_closer, **scheduler_current_or_dask) # FIXME
+        ca = self._run_Contacts(universe, method=self._is_any_closer, **scheduler_current_or_dask)
 
         bound_expected = [1., 1., 0., 1., 1., 0., 0., 1., 0., 1., 1., 0., 0.,
                           1., 0., 0., 0., 0., 1., 1., 0., 0., 0., 1., 0., 1.,
@@ -356,7 +356,7 @@ class TestContacts(object):
 
     def test_own_method_no_array_cast(self, universe, scheduler_current_or_dask):
         with pytest.raises(ValueError):
-            self._run_Contacts(universe, method=self._weird_own_method, stop=2, **scheduler_current_or_dask) # FIXME
+            self._run_Contacts(universe, method=self._weird_own_method, stop=2, **scheduler_current_or_dask)
 
     def test_non_callable_method(self, universe, scheduler_current_or_dask):
         with pytest.raises(ValueError):
@@ -383,7 +383,7 @@ class TestContacts(object):
     def test_warn_deprecated_attr(self, universe, scheduler_current_or_dask):
         """Test for warning message emitted on using deprecated `timeseries`
         attribute"""
-        CA1 = self._run_Contacts(universe, stop=1, **scheduler_current_or_dask) # FIXME
+        CA1 = self._run_Contacts(universe, stop=1, **scheduler_current_or_dask)
         wmsg = "The `timeseries` attribute was deprecated in MDAnalysis"
         with pytest.warns(DeprecationWarning, match=wmsg):
             assert_equal(CA1.timeseries, CA1.results.timeseries)
