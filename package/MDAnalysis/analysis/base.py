@@ -534,11 +534,21 @@ class AnalysisBase(object):
         self.n_frames_total = len(frames)
         n_bslices = self._n_bslices
 
+        def array_is_boolean(arr):
+            if isinstance(arr, np.ndarray) and arr.dtype is bool:
+                return True
+            elif set(arr) == {True, False}:
+                return True
+            return False
+
+        if array_is_boolean(frames):
+            frames = np.arange(self.n_frames_total)[frames]
+
         slices = [(indices, self._trajectory[frames_]) 
                    for indices, frames_ in zip(
                     np.array_split(range(len(frames)), n_bslices),
                     np.array_split(frames, n_bslices),
-                   )
+                    )
                    ]
 
         self._bslices = slices
@@ -613,10 +623,14 @@ class AnalysisBase(object):
             Add `progressbar_kwargs` parameter, 
             allowing to modify description, position etc of tqdm progressbars
         """
+        if progressbar_kwargs and scheduler:
+            raise NotImplementedError("Can not display progress if scheduler is not None")
+
         self._setup_frames(self._trajectory, start, stop, step, frames)
         self._prepare()
         self._setup_scheduler(scheduler=scheduler, n_workers=n_workers)
         self._setup_bslices(start=start, stop=stop, step=step, frames=frames)
+
 
         if scheduler is None: # fallback to the local scheduler
             self._compute(bslice_idx=0, verbose=verbose, progressbar_kwargs=progressbar_kwargs)
@@ -652,21 +666,18 @@ class AnalysisBase(object):
             self._remote_results = results
             self._parallel_conclude()
 
+            self.frames = np.array([obj.frames for obj in self._remote_results]).sum(axis=0)
+            self.times = np.array([obj.times for obj in self._remote_results]).sum(axis=0)
+
         self._conclude()
 
         return self
     
     def _parallel_conclude(self):
-        for i, ts in enumerate(self._sliced_trajectory):
-            # this is a dry run of _compute 
-            # to assign correct attributes
-            # in the "parent" object
-            self._frame_index = i
-            self._ts = ts
-            self.frames[i] = ts.frame
-            self.times[i] = ts.time
-
-        if isinstance(self._remote_results[0].results, np.ndarray):
+        if len(self._remote_results[0].results) == 0:
+            # results are empty
+            self.results = Results()
+        elif isinstance(self._remote_results[0].results, np.ndarray):
             self.results = np.array([obj.results for obj in self._remote_results]).sum(axis=0)
         else:
             keys, types = zip(*self._remote_results[0].results.items())
@@ -676,6 +687,9 @@ class AnalysisBase(object):
                     self.results[k] = np.array(results_of_t).sum(axis=0)
                 elif isinstance(t, float):
                     self.results[k] = np.array(results_of_t).mean()
+                elif k == 'timeseries': # but aggregation function will be suitable for any 'list' attribute
+                    # here we also rely on the fact that frames are ordered in execution order in self._bslices
+                    self.results[k] = [item for sublist in results_of_t for item in sublist]
                 else:
                     raise NotImplementedError(f'Attribute {k} of type {type(t)} will not be available in resulting object')
 
