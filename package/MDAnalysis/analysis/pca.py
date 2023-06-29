@@ -312,6 +312,11 @@ class PCA(AnalysisBase):
         self._p_components = e_vects[:, sort_idx]
         self._calculated = True
         self.n_components = self._n_components
+    
+    def _setup_scheduler(self, scheduler, n_workers):
+        super()._setup_scheduler(scheduler, n_workers)
+        if scheduler is not None:
+            raise ValueError("Only 'scheduler=None' is available for this class")
 
     @property
     def p_components(self):
