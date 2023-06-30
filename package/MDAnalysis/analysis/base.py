@@ -131,7 +131,6 @@ import numpy as np
 from MDAnalysis import coordinates
 from MDAnalysis.core.groups import AtomGroup
 from MDAnalysis.lib.log import ProgressBar
-from MDAnalysis.core.universe import Universe
 from typing import Callable, Iterable
 
 logger = logging.getLogger(__name__)
@@ -155,9 +154,9 @@ def localdelayed(obj):
     elif isinstance(obj, Callable):
     
         class inner:
-            def __init__(self, *a, **kwa):
-                self._a = a
-                self._kwa = kwa
+            def __init__(self, *args, **kwargs):
+                self._a = args
+                self._kwa = kwargs
                 self._func = obj
 
             def compute(self):
@@ -472,18 +471,15 @@ class AnalysisBase(object):
         verbose = getattr(self, '_verbose',
                           False) if verbose is None else verbose
 
-        # self._setup_frames(self._trajectory, start=start, stop=stop,
-                        #    step=step, frames=frames)
-
         logger.info("Starting preparation")
         logger.info("Starting analysis loop over %d trajectory frames",
                     self.n_frames)
 
         frame_indices, trajectory = self._bslices[bslice_idx]
-        for i, ts in ProgressBar(zip(
-                frame_indices, trajectory),
+        for idx, ts in ProgressBar(enumerate(trajectory),
                 verbose=verbose,
                 **progressbar_kwargs):
+            i = frame_indices[idx]
             self._frame_index = i
             self._ts = ts
             self.frames[i] = ts.frame
@@ -607,13 +603,20 @@ class AnalysisBase(object):
         verbose : bool, optional
             Turn on verbosity
         
-        scheduler : str, optional
-            Enables running with different schedulers.
-        
         progressbar_kwargs : dict, optional
             ProgressBar keywords with custom parameters regarding progress bar position, etc; 
             see :class:`MDAnalysis.lib.log.ProgressBar` for full list.
 
+        scheduler : str, optional 
+            Enables parallel execution of :meth:`AnalysisBase.run`.
+            Available schedulers
+              - 'dask' implies execution using `dask` processes (need to install MDAnalysis[dask] for that to work)
+              - 'multiprocessing' works with standard python multiprocessing module
+              - `None` if you want to run things locally
+        n_workers : int, optional
+            number of workers. 
+            Will become number of processes in multiprocessing.Pool(...) with `multiprocessing` scheduler,
+            and `n_workers` with `dask` scheduler.
 
         .. versionchanged:: 2.2.0
             Added ability to analyze arbitrary frames by passing a list of
@@ -650,7 +653,8 @@ class AnalysisBase(object):
                 try:
                     from dask.delayed import delayed
                 except ImportError:
-                    raise ImportError('Please install dask for this functionality')
+                    raise ImportError(
+                        "Please install dask to execute run() in parallel using scheduler='dask'")
 
                 computations = delayed(
                     [
