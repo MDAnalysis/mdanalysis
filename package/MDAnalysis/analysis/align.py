@@ -247,11 +247,12 @@ def rotation_matrix(a, b, weights=None):
     selection, e.g. ::
 
     >>> from MDAnalysisTests.datafiles import TPR, TRR
-    >>> A = mda.Universe('topol.tpr','traj.trr')
+    >>> from MDAnalysis.analysis import align
+    >>> A = mda.Universe(TPR, TRR)
     >>> B = A.copy()
-    >>> R = rotation_matrix(A.select_atoms('backbone').positions,
-    ...                     B.select_atoms('backbone').positions)[0]
-    >>> A.atoms.rotate(R)
+    >>> R = align.rotation_matrix(A.select_atoms('backbone').positions,
+    ...                           B.select_atoms('backbone').positions)[0]
+    >>> A.atoms.rotate(R) # doctest: +SKIP
     >>> A.atoms.write("rotated.pdb")
 
     Notes
