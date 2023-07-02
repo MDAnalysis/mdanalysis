@@ -57,8 +57,8 @@ import warnings
 import platform
 
 # Make sure I have the right Python version.
-if sys.version_info[:2] < (3, 8):
-    print('MDAnalysis requires Python 3.8 or better. Python {0:d}.{1:d} detected'.format(*
+if sys.version_info[:2] < (3, 9):
+    print('MDAnalysis requires Python 3.9+. Python {0:d}.{1:d} detected'.format(*
           sys.version_info[:2]))
     print('Please upgrade your version of Python.')
     sys.exit(-1)
@@ -67,7 +67,7 @@ import configparser
 from subprocess import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "2.5.0-dev0"
+RELEASE = "2.6.0-dev0"
 
 is_release = 'dev' not in RELEASE
 
@@ -183,7 +183,7 @@ def get_numpy_include():
         import numpy as np
     except ImportError:
         print('*** package "numpy" not found ***')
-        print('MDAnalysis requires a version of NumPy (>=1.20.0), even for setup.')
+        print('MDAnalysis requires a version of NumPy (>=1.21.0), even for setup.')
         print('Please get it from http://numpy.scipy.org/ or install it through '
               'your package manager.')
         sys.exit(-1)
@@ -579,7 +579,6 @@ if __name__ == '__main__':
         'Operating System :: Microsoft :: Windows ',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
@@ -593,7 +592,7 @@ if __name__ == '__main__':
     exts, cythonfiles = extensions(config)
 
     install_requires = [
-          'numpy>=1.20.0',
+          'numpy>=1.22.3',
           'biopython>=1.80',
           'networkx>=2.0',
           'GridDataFormats>=0.4.0',
@@ -605,7 +604,6 @@ if __name__ == '__main__':
           'threadpoolctl',
           'packaging',
           'fasteners',
-          'gsd>=1.9.3',
     ]
 
     setup(name='MDAnalysis',
@@ -637,11 +635,11 @@ if __name__ == '__main__':
                         ],
           },
           ext_modules=exts,
-          python_requires='>=3.8',
+          python_requires='>=3.9',
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           setup_requires=[
-              'numpy>=1.20.0',
+              'numpy>=1.21.0',
               'packaging',
           ],
           install_requires=install_requires,
@@ -655,6 +653,7 @@ if __name__ == '__main__':
                   'pytng>=0.2.3',  # TNG
                   'chemfiles>=0.10',  # multiple formats supported by chemfiles
                   'pyedr>=0.7.0',  # EDR files for the EDR AuxReader
+                  'gsd>3.0.0', # GSD
                   ],
               'analysis': [
                   'seaborn',  # for annotated heat map and nearest neighbor

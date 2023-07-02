@@ -13,6 +13,9 @@ inputs:
   mamba:
     description: 'use mamba instead of conda'
     default: false
+  micromamba:
+    description: 'use micromamba instead of conda'
+    default: false
   # conda-installed min dependencies
   biopython:
     default: 'biopython>=1.80'
@@ -25,7 +28,7 @@ inputs:
   griddataformats:
     default: 'griddataformats'
   gsd:
-    default: 'gsd'
+    default: 'gsd>3.0.0'
   hypothesis:
     default: 'hypothesis'
   matplotlib:
@@ -53,8 +56,12 @@ inputs:
     default: 'chemfiles-python>=0.9'
   clustalw:
     default: 'clustalw=2.1'
+  distopia:
+    default: 'distopia>=0.2.0'
   h5py:
     default: 'h5py>=2.10'
+  hole2:
+    default: 'hole2'
   joblib:
     default: 'joblib>=0.12'
   netcdf4:
@@ -100,7 +107,6 @@ runs:
           ${{ inputs.cython }}
           ${{ inputs.fasteners }}
           ${{ inputs.griddataformats }}
-          ${{ inputs.gsd }}
           ${{ inputs.hypothesis }}
           ${{ inputs.matplotlib }}
           ${{ inputs.mmtf-python }}
@@ -115,7 +121,10 @@ runs:
         CONDA_OPT_DEPS: |
           ${{ inputs.chemfiles-python }}
           ${{ inputs.clustalw }}
+          ${{ inputs.distopia }}
+          ${{ inputs.gsd }}
           ${{ inputs.h5py }}
+          ${{ inputs.hole2 }}
           ${{ inputs.joblib }}
           ${{ inputs.netcdf4 }}
           ${{ inputs.openmm }}
@@ -136,6 +145,8 @@ runs:
         # do the install
         if [ ${{ inputs.mamba }} = "true" ]; then
           mamba install ${CONDA_DEPS}
+        elif [ ${{ inputs.micromamba }} == "true" ]; then
+          micromamba install ${CONDA_DEPS}
         else
           conda install ${CONDA_DEPS}
         fi

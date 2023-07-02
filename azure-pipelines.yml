@@ -21,45 +21,39 @@ jobs:
     MPLBACKEND: agg
   strategy:
     matrix:
-        Win-Python38-32bit-full:
-          PYTHON_VERSION: '3.8'
-          PYTHON_ARCH: 'x86'
-          BUILD_TYPE: 'normal'
-          NUMPY_MIN: '1.20.0'
-          imageName: 'windows-2019'
-        Win-Python38-64bit-full:
-          PYTHON_VERSION: '3.8'
+        Win-Python39-64bit-full:
+          PYTHON_VERSION: '3.9'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'normal'
           imageName: 'windows-2019'
-        Win-Python310-64bit-full:
-          PYTHON_VERSION: '3.10'
+        Win-Python311-64bit-full:
+          PYTHON_VERSION: '3.11'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'normal'
           imageName: 'windows-2019'
-        Win-Python310-64bit-full-wheel:
-          PYTHON_VERSION: '3.10'
+        Win-Python311-64bit-full-wheel:
+          PYTHON_VERSION: '3.11'
+          PYTHON_ARCH: 'x64'
+          BUILD_TYPE: 'wheel'
+          NUMPY_MIN: '1.23.2'
+          imageName: 'windows-2019'
+        Win-Python39-64bit-full-wheel:
+          PYTHON_VERSION: '3.9'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
           NUMPY_MIN: '1.22.3'
           imageName: 'windows-2019'
-        Win-Python38-64bit-full-wheel:
-          PYTHON_VERSION: '3.8'
+        Linux-Python311-64bit-full-wheel:
+          PYTHON_VERSION: '3.11'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
-          NUMPY_MIN: '1.20.0'
-          imageName: 'windows-2019'
-        Linux-Python310-64bit-full-wheel:
-          PYTHON_VERSION: '3.10'
-          PYTHON_ARCH: 'x64'
-          BUILD_TYPE: 'wheel'
-          NUMPY_MIN: '1.21.6'
+          NUMPY_MIN: '1.23.2'
           imageName: 'ubuntu-latest'
-        Linux-Python38-64bit-full-wheel:
-          PYTHON_VERSION: '3.8'
+        Linux-Python39-64bit-full-wheel:
+          PYTHON_VERSION: '3.9'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
-          NUMPY_MIN: '1.20.0'
+          NUMPY_MIN: '1.22.3'
           imageName: 'ubuntu-latest'
   pool:
     vmImage: $(imageName)
@@ -82,9 +76,10 @@ jobs:
   - script: python -m pip install --upgrade pip setuptools wheel
     displayName: 'Install tools'
   - script: >-
-      python -m pip install --only-binary=h5py,scipy
+      python -m pip install --only-binary=scipy,h5py
       cython
       hypothesis
+      h5py>=2.10
       matplotlib
       numpy
       packaging
@@ -92,7 +87,6 @@ jobs:
       pytest-cov
       pytest-xdist
       scikit-learn
-      h5py>=2.10
       tqdm
       threadpoolctl
       fasteners
@@ -103,14 +97,14 @@ jobs:
   # to check the ABI compatibility of our wheels
   - script: >-
       python -m pip install numpy==$(NUMPY_MIN)
-    displayName: 'pin to older NumPy (wheel test and 32bit)'
+    displayName: 'pin to older NumPy (wheel test)'
     condition: and(succeeded(), ne(variables['NUMPY_MIN'], ''))
   - script: >-
       python -m pip install
       biopython
-      chemfiles>=0.10
+      "chemfiles>=0.10,<0.10.4"
       duecredit
-      gsd
+      "gsd>3.0.0"
       joblib
       GridDataFormats
       mmtf-python

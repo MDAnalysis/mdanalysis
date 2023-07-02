@@ -32,21 +32,20 @@ jobs:
       with:
         os-type: "ubuntu"
 
-    - name: setup_miniconda
-      uses: conda-incubator/setup-miniconda@v2
+    - name: setup_micromamba
+      uses: mamba-org/provision-with-micromamba@main
       with:
-        python-version: "3.10"
-        miniforge-variant: Mambaforge
-        miniforge-version: latest
-        channel-priority: strict
-        channels: conda-forge, bioconda
-        add-pip-as-python-dependency: true
-        architecture: x64
+        environment-file: False
+        environment-name: mda
+        extra-specs: |
+          python=="3.11"
+          pip
+        channels: jaimergp/label/unsupported-cudatoolkit-shim, conda-forge, bioconda
 
     - name: install_deps
       uses: ./.github/actions/setup-deps
       with:
-        mamba: true
+        micromamba: true
         full-deps: true
 
       # overwrite installs by picking up nightly wheels
@@ -54,17 +53,15 @@ jobs:
       run: |
         pip install --pre -U -i https://pypi.anaconda.org/scipy-wheels-nightly/simple scipy numpy h5py matplotlib
 
-
     - name: list_deps
       run: |
-        mamba list
+        micromamba list
         pip list
 
       # Intentionally going with setup.py builds so we can build with latest
     - name: build_srcs
       uses: ./.github/actions/build-src
       with:
-        build-hole: true
         build-tests: true
         build-docs: false
 
@@ -86,29 +83,72 @@ jobs:
       with:
         os-type: "ubuntu"
 
-    - name: setup_miniconda
-      uses: conda-incubator/setup-miniconda@v2
+    - name: setup_micromamba
+      uses: mamba-org/provision-with-micromamba@main
       with:
-        python-version: 3.9
-        auto-update-conda: true
-        channel-priority: flexible
-        channels: conda-forge, bioconda
-        mamba-version: "*"
-        add-pip-as-python-dependency: true
-        architecture: x64
+        environment-file: False
+        environment-name: mda
+        extra-specs: |
+          python=="3.11"
+          pip
+        channels: jaimergp/label/unsupported-cudatoolkit-shim, conda-forge, bioconda
 
     - name: install_deps
       uses: ./.github/actions/setup-deps
+      with:
+        micromamba: true
+        full-deps: true
 
     - name: set_extra_flags
       run: |
         sed -i "s/#extra_cflags =/extra_cflags = -march=native -mtune=native/g" package/setup.cfg
         cat package/setup.cfg
+    - name: build_srcs
+      uses: ./.github/actions/build-src
+      with:
+        build-tests: true
+        build-docs: false
+
+    - name: run_tests
+      run: |
+        pytest -n $numprocs testsuite/MDAnalysisTests --disable-pytest-warnings --durations=50
+
+
+  old_ubuntu_macos:
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, macos-11]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: setup_os
+      uses: ./.github/actions/setup-os
+      with:
+        os-type: ${{ matrix.os }}
+
+    - name: setup_micromamba
+      uses: mamba-org/provision-with-micromamba@main
+      with:
+        environment-file: False
+        environment-name: mda
+        extra-specs: |
+          python=="3.9"
+          pip
+        channels: jaimergp/label/unsupported-cudatoolkit-shim, conda-forge, bioconda
+
+    - name: install_deps
+      uses: ./.github/actions/setup-deps
+      with:
+        micromamba: true
+        full-deps: true
 
     - name: build_srcs
       uses: ./.github/actions/build-src
       with:
-        build-hole: true
         build-tests: true
         build-docs: false
 

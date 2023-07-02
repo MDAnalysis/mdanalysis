@@ -398,9 +398,12 @@ def hausdorff(P, Q):
     -------
     Calculate the Hausdorff distance between two halves of a trajectory:
 
+     >>> import MDAnalysis as mda
+     >>> import numpy
      >>> from MDAnalysis.tests.datafiles import PSF, DCD
-     >>> u = Universe(PSF,DCD)
-     >>> mid = len(u.trajectory)/2
+     >>> from MDAnalysis.analysis import psa
+     >>> u = mda.Universe(PSF,DCD)
+     >>> mid = int(len(u.trajectory)/2)
      >>> ca = u.select_atoms('name CA')
      >>> P = numpy.array([
      ...                ca.positions for _ in u.trajectory[:mid:]
@@ -408,10 +411,10 @@ def hausdorff(P, Q):
      >>> Q = numpy.array([
      ...                ca.positions for _ in u.trajectory[mid::]
      ...              ]) # second half of trajectory
-     >>> hausdorff(P,Q)
-     4.7786639840135905
-     >>> hausdorff(P,Q[::-1]) # hausdorff distance w/ reversed 2nd trajectory
-     4.7786639840135905
+     >>> psa.hausdorff(P,Q)
+     4.778663899862152
+     >>> psa.hausdorff(P,Q[::-1]) # hausdorff distance w/ reversed 2nd trajectory
+     4.778663899862152
 
 
     Notes
@@ -470,10 +473,12 @@ def hausdorff_wavg(P, Q):
     Example
     -------
 
+     >>> import MDAnalysis as mda
      >>> from MDAnalysis import Universe
      >>> from MDAnalysis.tests.datafiles import PSF, DCD
-     >>> u = Universe(PSF,DCD)
-     >>> mid = len(u.trajectory)/2
+     >>> from MDAnalysis.analysis import psa
+     >>> u = mda.Universe(PSF,DCD)
+     >>> mid = int(len(u.trajectory)/2)
      >>> ca = u.select_atoms('name CA')
      >>> P = numpy.array([
      ...                ca.positions for _ in u.trajectory[:mid:]
@@ -481,9 +486,9 @@ def hausdorff_wavg(P, Q):
      >>> Q = numpy.array([
      ...                ca.positions for _ in u.trajectory[mid::]
      ...              ]) # second half of trajectory
-     >>> hausdorff_wavg(P,Q)
+     >>> psa.hausdorff_wavg(P,Q)
      2.5669644353703447
-     >>> hausdorff_wavg(P,Q[::-1]) # weighted avg hausdorff dist w/ Q reversed
+     >>> psa.hausdorff_wavg(P,Q[::-1]) # weighted avg hausdorff dist w/ Q reversed
      2.5669644353703447
 
     Notes
@@ -527,9 +532,11 @@ def hausdorff_avg(P, Q):
     Example
     -------
 
+     >>> import MDAnalysis as mda
      >>> from MDAnalysis.tests.datafiles import PSF, DCD
-     >>> u = Universe(PSF,DCD)
-     >>> mid = len(u.trajectory)/2
+     >>> from MDAnalysis.analysis import psa
+     >>> u = mda.Universe(PSF,DCD)
+     >>> mid = int(len(u.trajectory)/2)
      >>> ca = u.select_atoms('name CA')
      >>> P = numpy.array([
      ...                ca.positions for _ in u.trajectory[:mid:]
@@ -537,9 +544,9 @@ def hausdorff_avg(P, Q):
      >>> Q = numpy.array([
      ...                ca.positions for _ in u.trajectory[mid::]
      ...              ]) # second half of trajectory
-     >>> hausdorff_avg(P,Q)
+     >>> psa.hausdorff_avg(P,Q)
      2.5669646575869005
-     >>> hausdorff_avg(P,Q[::-1]) # hausdorff distance w/ reversed 2nd trajectory
+     >>> psa.hausdorff_avg(P,Q[::-1]) # hausdorff distance w/ reversed 2nd trajectory
      2.5669646575869005
 
 
@@ -623,8 +630,12 @@ def discrete_frechet(P, Q):
     Calculate the discrete Fréchet distance between two halves of a
     trajectory.
 
-     >>> u = Universe(PSF,DCD)
-     >>> mid = len(u.trajectory)/2
+     >>> import MDAnalysis as mda
+     >>> import numpy as np
+     >>> from MDAnalysis.tests.datafiles import PSF, DCD
+     >>> from MDAnalysis.analysis import psa
+     >>> u = mda.Universe(PSF,DCD)
+     >>> mid = int(len(u.trajectory)/2)
      >>> ca = u.select_atoms('name CA')
      >>> P = np.array([
      ...                ca.positions for _ in u.trajectory[:mid:]
@@ -632,10 +643,10 @@ def discrete_frechet(P, Q):
      >>> Q = np.array([
      ...                ca.positions for _ in u.trajectory[mid::]
      ...              ]) # second half of trajectory
-     >>> discrete_frechet(P,Q)
-     4.7786639840135905
-     >>> discrete_frechet(P,Q[::-1]) # frechet distance w/ 2nd trj reversed 2nd
-     6.8429011177113832
+     >>> psa.discrete_frechet(P,Q)
+     4.778663984013591
+     >>> psa.discrete_frechet(P,Q[::-1]) # frechet distance w/ 2nd trj reversed 2nd
+     6.842901117711383
 
     Note that reversing the direction increased the Fréchet distance:
     it is sensitive to the direction of the path.

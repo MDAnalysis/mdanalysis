@@ -156,6 +156,9 @@ pygments_style = 'default'
 # to include decorated objects like __init__
 autoclass_content = 'both'
 
+# to prevent including of member entries in toctree
+toc_object_entries = False
+
 # -- Options for HTML output ---------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
@@ -370,15 +373,15 @@ epub_copyright = u'2015, '+authors
 
 # Configuration for intersphinx: refer to the Python standard library
 # and other packages used by MDAnalysis
-intersphinx_mapping = {'https://docs.h5py.org/en/stable': None,
-                       'https://docs.python.org/3/': None,
-                       'https://docs.scipy.org/doc/scipy/': None,
-                       'https://gsd.readthedocs.io/en/stable/': None,
-                       'https://matplotlib.org/stable/': None,
-                       'https://mdanalysis.org/GridDataFormats/': None,
-                       'https://mdanalysis.org/pmda/': None,
-                       'https://networkx.org/documentation/stable/': None,
-                       'https://numpy.org/doc/stable/': None,
-                       'https://parmed.github.io/ParmEd/html/': None,
-                       'https://rdkit.org/docs/': None,
+intersphinx_mapping = {'h5py': ('https://docs.h5py.org/en/stable', None),
+                       'python': ('https://docs.python.org/3/', None),
+                       'scipy': ('https://docs.scipy.org/doc/scipy/', None),
+                       'gsd': ('https://gsd.readthedocs.io/en/stable/', None),
+                       'maplotlib': ('https://matplotlib.org/stable/', None),
+                       'griddataformats': ('https://mdanalysis.org/GridDataFormats/', None),
+                       'pmda': ('https://mdanalysis.org/pmda/', None),
+                       'networkx': ('https://networkx.org/documentation/stable/', None),
+                       'numpy': ('https://numpy.org/doc/stable/', None),
+                       'parmed': ('https://parmed.github.io/ParmEd/html/', None),
+                       'rdkit': ('https://rdkit.org/docs/', None),
                        }

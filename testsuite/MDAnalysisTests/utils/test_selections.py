@@ -25,15 +25,17 @@
 # use StringIO and NamedStream to write to memory instead to temp files
 import pytest
 from io import StringIO
+from unittest.mock import patch
 
 import re
 
 import numpy as np
-from numpy.testing import TestCase, assert_equal, assert_array_equal, dec
+from numpy.testing import assert_equal, assert_array_equal
 
 from MDAnalysis.tests.datafiles import PSF, DCD
 
 import MDAnalysis
+import MDAnalysis.selections as selections
 from MDAnalysis.lib.util import NamedStream
 
 
@@ -196,3 +198,10 @@ class TestSelectionWriter_Jmol(_SelectionWriter):
                      err_msg="SPT file has wrong selection name")
         assert_array_equal(indices, self.ref_indices,
                            err_msg="SPT indices were not written correctly")
+
+
+class TestSelections:
+    @patch.object(selections, "_SELECTION_WRITERS", {"FOO": "BAR"})
+    def test_get_writer_valid(self):
+        writer = selections.get_writer(None, "FOO")
+        assert writer == "BAR"
