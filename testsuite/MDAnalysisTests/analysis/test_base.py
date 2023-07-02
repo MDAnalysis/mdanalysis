@@ -268,8 +268,8 @@ def test_verbose(u):
     assert a._verbose
 
 
-def test_verbose_progressbar(u, capsys, scheduler_only_current_process):
-    an = FrameAnalysis(u.trajectory).run(**scheduler_only_current_process)
+def test_verbose_progressbar(u, capsys):
+    an = FrameAnalysis(u.trajectory).run()
     out, err = capsys.readouterr()
     expected = ''
     actual = err.strip().split('\r')[-1]
