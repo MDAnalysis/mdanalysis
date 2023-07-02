@@ -13,6 +13,17 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+07/02/23 Mohit Kumar
+
+ * 2.5.0
+
+Fixes 
+  * Fix doctest errors in analysis/align.py (Issue #3365)
+
+Changes
+  * Add missed output in docstring.
+
+
 ??/??/?? IAlibay, pgbarletta, mglagolev, hmacdope
 
  * 2.5.0
