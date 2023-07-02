@@ -90,7 +90,7 @@ rotational superposition use the superposition keyword. This will calculate a
 minimized RMSD between the reference and mobile structure.
 
    >>> rmsd(mobile.select_atoms('name CA').positions, ref.select_atoms('name CA').positions,
-   >>>      superposition=True)
+   ...      superposition=True)
    6.809396586471815
 
 The rotation matrix that superimposes *mobile* on *ref* while
@@ -100,18 +100,21 @@ function ::
    >>> mobile0 = mobile.select_atoms('name CA').positions - mobile.select_atoms('name CA').center_of_mass()
    >>> ref0 = ref.select_atoms('name CA').positions - ref.select_atoms('name CA').center_of_mass()
    >>> R, rmsd = align.rotation_matrix(mobile0, ref0)
-   >>> print rmsd
+   >>> rmsd
    6.809396586471805
-   >>> print R
-   [[ 0.14514539 -0.27259113  0.95111876]
-    [ 0.88652593  0.46267112 -0.00268642]
-    [-0.43932289  0.84358136  0.30881368]]
+   >>> R
+   array([[ 0.14514539, -0.27259113,  0.95111876],
+          [ 0.88652593,  0.46267112, -0.00268642],
+          [-0.43932289,  0.84358136,  0.30881368]])
 
 Putting all this together one can superimpose all of *mobile* onto *ref*::
 
    >>> mobile.atoms.translate(-mobile.select_atoms('name CA').center_of_mass())
+   <AtomGroup with 3341 atoms>
    >>> mobile.atoms.rotate(R)
+   <AtomGroup with 3341 atoms>
    >>> mobile.atoms.translate(ref.select_atoms('name CA').center_of_mass())
+   <AtomGroup with 3341 atoms>
    >>> mobile.atoms.write("mobile_on_ref.pdb")
 
 
@@ -123,6 +126,7 @@ To **fit a single structure** with :func:`alignto`::
    >>> ref = mda.Universe(PSF, PDB_small)
    >>> mobile = mda.Universe(PSF, DCD)     # we use the first frame
    >>> align.alignto(mobile, ref, select="protein and name CA", weights="mass")
+   (21.892591663632704, 6.809396586471809)
 
 This will change *all* coordinates in *mobile* so that the protein
 C-alpha atoms are optimally superimposed (translation and rotation).
@@ -133,7 +137,7 @@ To **fit a whole trajectory** to a reference structure with the
    >>> ref = mda.Universe(PSF, PDB_small)   # reference structure 1AKE
    >>> trj = mda.Universe(PSF, DCD)         # trajectory of change 1AKE->4AKE
    >>> alignment = align.AlignTraj(trj, ref, filename='rmsfit.dcd')
-   >>> alignment.run()
+   >>> alignment.run() # doctest:+SKIP
 
 It is also possible to align two arbitrary structures by providing a
 mapping between atoms based on a sequence alignment. This allows
@@ -143,9 +147,9 @@ If a alignment was provided as "sequences.aln" one would first produce
 the appropriate MDAnalysis selections with the :func:`fasta2select`
 function and then feed the resulting dictionary to :class:`AlignTraj`::
 
-   >>> seldict = align.fasta2select('sequences.aln')
-   >>> alignment = align.AlignTraj(trj, ref, filename='rmsfit.dcd', select=seldict)
-   >>> alignment.run()
+   >>> seldict = align.fasta2select('sequences.aln') # doctest:+SKIP
+   >>> alignment = align.AlignTraj(trj, ref, filename='rmsfit.dcd', select=seldict) # doctest:+SKIP
+   >>> alignment.run() # doctest:+SKIP
 
 (See the documentation of the functions for this advanced usage.)
 
@@ -252,7 +256,8 @@ def rotation_matrix(a, b, weights=None):
     >>> B = A.copy()
     >>> R = align.rotation_matrix(A.select_atoms('backbone').positions,
     ...                           B.select_atoms('backbone').positions)[0]
-    >>> A.atoms.rotate(R) # doctest: +SKIP
+    >>> A.atoms.rotate(R)
+    <AtomGroup with 47681 atoms>
     >>> A.atoms.write("rotated.pdb")
 
     Notes
