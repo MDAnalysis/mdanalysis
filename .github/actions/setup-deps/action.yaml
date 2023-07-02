@@ -78,6 +78,8 @@ inputs:
     default: 'seaborn>=0.7.0'
   tidynamics:
     default: 'tidynamics>=1.0.0'
+  dask:
+    default: 'dask'
   # pip-installed min dependencies
   coverage:
     default: 'coverage'
@@ -133,6 +135,7 @@ runs:
           ${{ inputs.scikit-learn }}
           ${{ inputs.seaborn }}
           ${{ inputs.tidynamics }}
+          ${{ inputs.dask }}
 
       run: |
         # setup full variable
