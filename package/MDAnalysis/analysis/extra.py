@@ -35,6 +35,7 @@ def rotation_matrix(a, b, weights=None):
     :meth:`MDAnalysis.core.groups.AtomGroup.rotate` to generate a rotated
     selection, e.g. ::
 
+    >>> import MDAnalysis as mda
     >>> from MDAnalysisTests.datafiles import TPR, TRR
     >>> from MDAnalysis.analysis import align
     >>> A = mda.Universe(TPR, TRR)
