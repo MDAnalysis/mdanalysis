@@ -254,7 +254,7 @@ def rotation_matrix(a, b, weights=None):
     >>> from MDAnalysisTests.datafiles import TPR, TRR
     >>> from MDAnalysis.analysis import align
     >>> A = mda.Universe(TPR, TRR)
-    >>> B = A.copy()
+    >>> B = mda.Universe(TPR, TRR)
     >>> R = align.rotation_matrix(A.select_atoms('backbone').positions,
     ...                           B.select_atoms('backbone').positions)[0]
     >>> A.atoms.rotate(R)
