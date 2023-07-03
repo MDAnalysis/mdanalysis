@@ -148,9 +148,9 @@ If a alignment was provided as "sequences.aln" one would first produce
 the appropriate MDAnalysis selections with the :func:`fasta2select`
 function and then feed the resulting dictionary to :class:`AlignTraj`::
 
-   >>> seldict = align.fasta2select('sequences.aln') # doctest:+SKIP
-   >>> alignment = align.AlignTraj(trj, ref, filename='rmsfit.dcd', select=seldict) # doctest:+SKIP
-   >>> alignment.run() # doctest:+SKIP
+   >>> seldict = align.fasta2select('sequences.aln') # doctest: +SKIP
+   >>> alignment = align.AlignTraj(trj, ref, filename='rmsfit.dcd', select=seldict) # doctest: +SKIP
+   >>> alignment.run() # doctest: +SKIP
 
 (See the documentation of the functions for this advanced usage.)
 
