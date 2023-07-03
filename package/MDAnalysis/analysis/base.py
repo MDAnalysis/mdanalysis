@@ -476,9 +476,9 @@ class AnalysisBase(object):
                     self.n_frames)
 
         frame_indices, trajectory = self._bslices[bslice_idx]
-        for idx, ts in ProgressBar(enumerate(trajectory),
+        for idx, ts in enumerate(ProgressBar(trajectory,
                 verbose=verbose,
-                **progressbar_kwargs):
+                **progressbar_kwargs)):
             i = frame_indices[idx]
             self._frame_index = i
             self._ts = ts
