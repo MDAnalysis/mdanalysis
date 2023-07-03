@@ -644,7 +644,7 @@ def discrete_frechet(P, Q):
      >>> discrete_frechet(P,Q)
      4.778663984013591
      >>> discrete_frechet(P,Q[::-1]) # frechet distance w/ 2nd trj reversed 2nd
-     6.8429011177113832
+     6.842901117711383
 
     Note that reversing the direction increased the Fréchet distance:
     it is sensitive to the direction of the path.
