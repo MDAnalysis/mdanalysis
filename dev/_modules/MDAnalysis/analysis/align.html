@@ -170,7 +170,7 @@
 <span class="sd">two structures, using :func:`rmsd`::</span>
 
 <span class="sd">   &gt;&gt;&gt; ref = mda.Universe(PDB_small)</span>
-<span class="sd">   &gt;&gt;&gt; mobile = mda.Universe(PSF,DCD)</span>
+<span class="sd">   &gt;&gt;&gt; mobile = mda.Universe(PSF, DCD)</span>
 <span class="sd">   &gt;&gt;&gt; rmsd(mobile.select_atoms(&#39;name CA&#39;).positions, ref.select_atoms(&#39;name CA&#39;).positions)</span>
 <span class="sd">   28.20178579474479</span>
 
@@ -185,8 +185,8 @@
 <span class="sd">rotational superposition use the superposition keyword. This will calculate a</span>
 <span class="sd">minimized RMSD between the reference and mobile structure.</span>
 
-<span class="sd">   &gt;&gt;&gt; rmsd(mobile.select_atoms(&#39;name CA&#39;).positions, ref.select_atoms(&#39;name CA&#39;).positions,</span>
-<span class="sd">   &gt;&gt;&gt;      superposition=True)</span>
+<span class="sd">   &gt;&gt;&gt; rmsd(mobile.select_atoms(&#39;name CA&#39;).positions, ref.select_atoms(&#39;name CA&#39;).positions, </span>
+<span class="sd">   ...      superposition=True)</span>
 <span class="sd">   6.809396586471815</span>
 
 <span class="sd">The rotation matrix that superimposes *mobile* on *ref* while</span>
@@ -196,18 +196,21 @@
 <span class="sd">   &gt;&gt;&gt; mobile0 = mobile.select_atoms(&#39;name CA&#39;).positions - mobile.select_atoms(&#39;name CA&#39;).center_of_mass()</span>
 <span class="sd">   &gt;&gt;&gt; ref0 = ref.select_atoms(&#39;name CA&#39;).positions - ref.select_atoms(&#39;name CA&#39;).center_of_mass()</span>
 <span class="sd">   &gt;&gt;&gt; R, rmsd = align.rotation_matrix(mobile0, ref0)</span>
-<span class="sd">   &gt;&gt;&gt; print rmsd</span>
+<span class="sd">   &gt;&gt;&gt; rmsd</span>
 <span class="sd">   6.809396586471805</span>
-<span class="sd">   &gt;&gt;&gt; print R</span>
-<span class="sd">   [[ 0.14514539 -0.27259113  0.95111876]</span>
-<span class="sd">    [ 0.88652593  0.46267112 -0.00268642]</span>
-<span class="sd">    [-0.43932289  0.84358136  0.30881368]]</span>
+<span class="sd">   &gt;&gt;&gt; R</span>
+<span class="sd">   array([[ 0.14514539, -0.27259113,  0.95111876],</span>
+<span class="sd">   ...    [ 0.88652593,  0.46267112, -0.00268642],</span>
+<span class="sd">   ...    [-0.43932289,  0.84358136,  0.30881368]])</span>
 
 <span class="sd">Putting all this together one can superimpose all of *mobile* onto *ref*::</span>
 
 <span class="sd">   &gt;&gt;&gt; mobile.atoms.translate(-mobile.select_atoms(&#39;name CA&#39;).center_of_mass())</span>
+<span class="sd">   &lt;AtomGroup with 3341 atoms&gt;</span>
 <span class="sd">   &gt;&gt;&gt; mobile.atoms.rotate(R)</span>
+<span class="sd">   &lt;AtomGroup with 3341 atoms&gt;</span>
 <span class="sd">   &gt;&gt;&gt; mobile.atoms.translate(ref.select_atoms(&#39;name CA&#39;).center_of_mass())</span>
+<span class="sd">   &lt;AtomGroup with 3341 atoms&gt;</span>
 <span class="sd">   &gt;&gt;&gt; mobile.atoms.write(&quot;mobile_on_ref.pdb&quot;)</span>
 
 
@@ -219,6 +222,7 @@
 <span class="sd">   &gt;&gt;&gt; ref = mda.Universe(PSF, PDB_small)</span>
 <span class="sd">   &gt;&gt;&gt; mobile = mda.Universe(PSF, DCD)     # we use the first frame</span>
 <span class="sd">   &gt;&gt;&gt; align.alignto(mobile, ref, select=&quot;protein and name CA&quot;, weights=&quot;mass&quot;)</span>
+<span class="sd">   (21.892591663632704, 6.809396586471809)</span>
 
 <span class="sd">This will change *all* coordinates in *mobile* so that the protein</span>
 <span class="sd">C-alpha atoms are optimally superimposed (translation and rotation).</span>
@@ -230,6 +234,7 @@
 <span class="sd">   &gt;&gt;&gt; trj = mda.Universe(PSF, DCD)         # trajectory of change 1AKE-&gt;4AKE</span>
 <span class="sd">   &gt;&gt;&gt; alignment = align.AlignTraj(trj, ref, filename=&#39;rmsfit.dcd&#39;)</span>
 <span class="sd">   &gt;&gt;&gt; alignment.run()</span>
+<span class="sd">   &lt;MDAnalysis.analysis.align.AlignTraj object at ...&gt; </span>
 
 <span class="sd">It is also possible to align two arbitrary structures by providing a</span>
 <span class="sd">mapping between atoms based on a sequence alignment. This allows</span>
@@ -239,9 +244,9 @@
 <span class="sd">the appropriate MDAnalysis selections with the :func:`fasta2select`</span>
 <span class="sd">function and then feed the resulting dictionary to :class:`AlignTraj`::</span>
 
-<span class="sd">   &gt;&gt;&gt; seldict = align.fasta2select(&#39;sequences.aln&#39;)</span>
-<span class="sd">   &gt;&gt;&gt; alignment = align.AlignTraj(trj, ref, filename=&#39;rmsfit.dcd&#39;, select=seldict)</span>
-<span class="sd">   &gt;&gt;&gt; alignment.run()</span>
+<span class="sd">   &gt;&gt;&gt; seldict = align.fasta2select(&#39;sequences.aln&#39;) # doctest: +SKIP</span>
+<span class="sd">   &gt;&gt;&gt; alignment = align.AlignTraj(trj, ref, filename=&#39;rmsfit.dcd&#39;, select=seldict) # doctest: +SKIP</span>
+<span class="sd">   &gt;&gt;&gt; alignment.run() # doctest: +SKIP</span>
 
 <span class="sd">(See the documentation of the functions for this advanced usage.)</span>
 
@@ -318,15 +323,15 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    a : array_like</span>
-<span class="sd">          coordinates that are to be rotated (&quot;mobile set&quot;); array of N atoms</span>
-<span class="sd">          of shape N*3 as generated by, e.g.,</span>
-<span class="sd">          :attr:`MDAnalysis.core.groups.AtomGroup.positions`.</span>
+<span class="sd">        coordinates that are to be rotated (&quot;mobile set&quot;); array of N atoms</span>
+<span class="sd">        of shape N*3 as generated by, e.g.,</span>
+<span class="sd">        :attr:`MDAnalysis.core.groups.AtomGroup.positions`.</span>
 <span class="sd">    b : array_like</span>
-<span class="sd">          reference coordinates; array of N atoms of shape N*3 as generated by,</span>
-<span class="sd">          e.g., :attr:`MDAnalysis.core.groups.AtomGroup.positions`.</span>
+<span class="sd">        reference coordinates; array of N atoms of shape N*3 as generated by,</span>
+<span class="sd">        e.g., :attr:`MDAnalysis.core.groups.AtomGroup.positions`.</span>
 <span class="sd">    weights : array_like (optional)</span>
-<span class="sd">          array of floats of size N for doing weighted RMSD fitting (e.g. the</span>
-<span class="sd">          masses of the atoms)</span>
+<span class="sd">        array of floats of size N for doing weighted RMSD fitting (e.g. the</span>
+<span class="sd">        masses of the atoms)</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -342,10 +347,15 @@
 <span class="sd">    :meth:`MDAnalysis.core.groups.AtomGroup.rotate` to generate a rotated</span>
 <span class="sd">    selection, e.g. ::</span>
 
-<span class="sd">    &gt;&gt;&gt; R = rotation_matrix(A.select_atoms(&#39;backbone&#39;).positions,</span>
-<span class="sd">    &gt;&gt;&gt;                     B.select_atoms(&#39;backbone&#39;).positions)[0]</span>
-<span class="sd">    &gt;&gt;&gt; A.atoms.rotate(R)</span>
-<span class="sd">    &gt;&gt;&gt; A.atoms.write(&quot;rotated.pdb&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; from MDAnalysisTests.datafiles import TPR, TRR</span>
+<span class="sd">        &gt;&gt;&gt; from MDAnalysis.analysis import align</span>
+<span class="sd">        &gt;&gt;&gt; A = mda.Universe(TPR,TRR)</span>
+<span class="sd">        &gt;&gt;&gt; B = A.copy()</span>
+<span class="sd">        &gt;&gt;&gt; R = rotation_matrix(A.select_atoms(&#39;backbone&#39;).positions,</span>
+<span class="sd">        ...                     B.select_atoms(&#39;backbone&#39;).positions)[0]</span>
+<span class="sd">        &gt;&gt;&gt; A.atoms.rotate(R)</span>
+<span class="sd">        &lt;AtomGroup with 47681 atoms&gt;</span>
+<span class="sd">        &gt;&gt;&gt; A.atoms.write(&quot;rotated.pdb&quot;)</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -358,6 +368,7 @@
 <span class="sd">    alignto: A complete fit of two structures.</span>
 <span class="sd">    AlignTraj: Fit a whole trajectory.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
 
     <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
     <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
@@ -1602,7 +1613,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2023, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
+    <p>&#169; Copyright 2005-2023, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Alia Lescoulie, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Yuxuan Zhuang, and Oliver Beckstein.</p>
   </div>
 
   
