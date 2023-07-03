@@ -74,7 +74,7 @@ In the simplest case, we can simply calculate the C-alpha RMSD between
 two structures, using :func:`rmsd`::
 
    >>> ref = mda.Universe(PDB_small)
-   >>> mobile = mda.Universe(PSF,DCD)
+   >>> mobile = mda.Universe(PSF, DCD)
    >>> rmsd(mobile.select_atoms('name CA').positions, ref.select_atoms('name CA').positions)
    28.20178579474479
 
