@@ -76,6 +76,7 @@ extra_formats = [
     "netCDF4>=1.0",
     "h5py>=2.10",
     "chemfiles>=0.10",
+    "parmed",
     "pyedr>=0.7.0",
     "pytng>=0.2.3",
     "gsd>3.0.0",
