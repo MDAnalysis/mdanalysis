@@ -398,9 +398,12 @@ def hausdorff(P, Q):
     -------
     Calculate the Hausdorff distance between two halves of a trajectory:
 
+     >>> import MDAnalysis
+     >>> from MDAnalysis import Universe
      >>> from MDAnalysis.tests.datafiles import PSF, DCD
-     >>> u = Universe(PSF,DCD)
-     >>> mid = len(u.trajectory)/2
+     >>> import numpy
+     >>> u = Universe(PSF, DCD)
+     >>> mid = int(len(u.trajectory)/2)
      >>> ca = u.select_atoms('name CA')
      >>> P = numpy.array([
      ...                ca.positions for _ in u.trajectory[:mid:]
@@ -409,9 +412,9 @@ def hausdorff(P, Q):
      ...                ca.positions for _ in u.trajectory[mid::]
      ...              ]) # second half of trajectory
      >>> hausdorff(P,Q)
-     4.7786639840135905
+     4.778663899862152
      >>> hausdorff(P,Q[::-1]) # hausdorff distance w/ reversed 2nd trajectory
-     4.7786639840135905
+     4.778663899862152
 
 
     Notes
@@ -472,11 +475,11 @@ def hausdorff_wavg(P, Q):
 
      >>> from MDAnalysis import Universe
      >>> from MDAnalysis.tests.datafiles import PSF, DCD
+     >>> import numpy
      >>> u = Universe(PSF,DCD)
-     >>> mid = len(u.trajectory)/2
+     >>> mid = int(len(u.trajectory)/2)
      >>> ca = u.select_atoms('name CA')
-     >>> P = numpy.array([
-     ...                ca.positions for _ in u.trajectory[:mid:]
+     >>> P = numpy.array([ca.positions for _ in u.trajectory[:mid:]
      ...              ]) # first half of trajectory
      >>> Q = numpy.array([
      ...                ca.positions for _ in u.trajectory[mid::]
@@ -527,9 +530,12 @@ def hausdorff_avg(P, Q):
     Example
     -------
 
+     >>> import MDAnalysis
+     >>> from MDAnalysis import Universe
      >>> from MDAnalysis.tests.datafiles import PSF, DCD
-     >>> u = Universe(PSF,DCD)
-     >>> mid = len(u.trajectory)/2
+     >>> import numpy
+     >>> u = Universe(PSF, DCD)
+     >>> mid = int(len(u.trajectory)/2)
      >>> ca = u.select_atoms('name CA')
      >>> P = numpy.array([
      ...                ca.positions for _ in u.trajectory[:mid:]
@@ -623,8 +629,11 @@ def discrete_frechet(P, Q):
     Calculate the discrete Fréchet distance between two halves of a
     trajectory.
 
-     >>> u = Universe(PSF,DCD)
-     >>> mid = len(u.trajectory)/2
+     >>> import MDAnalysis
+     >>> from MDAnalysis import Universe
+     >>> from MDAnalysis.tests.datafiles import PSF, DCD
+     >>> u = Universe(PSF, DCD)
+     >>> mid = int(len(u.trajectory)/2)
      >>> ca = u.select_atoms('name CA')
      >>> P = np.array([
      ...                ca.positions for _ in u.trajectory[:mid:]
@@ -633,7 +642,7 @@ def discrete_frechet(P, Q):
      ...                ca.positions for _ in u.trajectory[mid::]
      ...              ]) # second half of trajectory
      >>> discrete_frechet(P,Q)
-     4.7786639840135905
+     4.778663984013591
      >>> discrete_frechet(P,Q[::-1]) # frechet distance w/ 2nd trj reversed 2nd
      6.8429011177113832
 
