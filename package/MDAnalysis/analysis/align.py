@@ -134,8 +134,6 @@ C-alpha atoms are optimally superimposed (translation and rotation).
 To **fit a whole trajectory** to a reference structure with the
 :class:`AlignTraj` class::
 
-   >>> import doctest
-   >>> doctest.ELLIPSIS_MARKER = '-etc-'
    >>> ref = mda.Universe(PSF, PDB_small)   # reference structure 1AKE
    >>> trj = mda.Universe(PSF, DCD)         # trajectory of change 1AKE->4AKE
    >>> alignment = align.AlignTraj(trj, ref, filename='rmsfit.dcd')
