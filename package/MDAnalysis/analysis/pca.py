@@ -631,10 +631,10 @@ class PCA(AnalysisBase):
             >>> first_interval = pca.PCA(u, select="backbone").run(start=0, stop=25)
             >>> second_interval = pca.PCA(u, select="backbone").run(start=25, stop=50)
             >>> last_interval = pca.PCA(u, select="backbone").run(start=75)
-            >>> first_interval.rmsip(second_interval, n_components=3)
-            0.38147609331128324
-            >>> first_interval.rmsip(last_interval, n_components=3)
-            0.17478244043688052
+            >>> first_interval.rmsip(second_interval, n_components=3)   # Approximate expected value
+            0.381476093311283...
+            >>> first_interval.rmsip(last_interval, n_components=3)   # Approximate expected value
+            0.174782440436880...
 
 
         See also
@@ -814,11 +814,11 @@ def rmsip(a, b, n_components=None):
         >>> pca.rmsip(first_interval.results.p_components.T,
         ...           second_interval.results.p_components.T,
         ...           n_components=3)
-        0.38147609331128324
+        0.381476093311283...
         >>> pca.rmsip(first_interval.results.p_components.T,
         ...           last_interval.results.p_components.T,
         ...           n_components=3)
-        0.17478244043688052
+        0.174782440436880...
 
 
     .. versionadded:: 1.0.0
