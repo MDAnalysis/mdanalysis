@@ -654,6 +654,8 @@ if __name__ == '__main__':
                   'chemfiles>=0.10',  # multiple formats supported by chemfiles
                   'pyedr>=0.7.0',  # EDR files for the EDR AuxReader
                   'gsd>3.0.0', # GSD
+                  'rdkit>=2020.03.1', # RDKit converter
+                  'parmed', # ParmEd converter
                   ],
               'analysis': [
                   'seaborn',  # for annotated heat map and nearest neighbor
