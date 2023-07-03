@@ -89,8 +89,8 @@ This has only done a translational superposition. If you want to also do a
 rotational superposition use the superposition keyword. This will calculate a
 minimized RMSD between the reference and mobile structure.
 
-   >>> rmsd(mobile.select_atoms('name CA').positions, ref.select_atoms('name CA').positions,
-   ...      superposition=True)
+   >>> rmsd(mobile.select_atoms('name CA').positions,
+   ...      ref.select_atoms('name CA').positions, superposition=True)
    6.809396586471815
 
 The rotation matrix that superimposes *mobile* on *ref* while
