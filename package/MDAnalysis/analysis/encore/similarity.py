@@ -85,8 +85,8 @@ two ensemble objects are first created and then used for calculation: ::
     >>> ens2 = Universe(PSF, DCD2)
     >>> HES, details = encore.hes([ens1, ens2])
     >>> print(HES)
-    [[        0.        ,  38279683.95892926],
-    [ 38279683.95892926,         0.        ]]
+    [[       0.         38279560.89086347]
+     [38279560.89086347        0.        ]]
 
 HES can assume any non-negative value, i.e. no upper bound exists and the
 measurement can therefore be used as an absolute scale.
@@ -98,27 +98,30 @@ of. The similarity matrix is derived from a distance matrix (By default a RMSD
 matrix; a full RMSD matrix between each pairs of elements needs to be computed).
 The RMSD matrix is automatically calculated. ::
 
+    >>> import MDAnalysis 
+    >>> from MDAnalysis import Universe
+    >>> from MDAnalysis.tests.datafiles import PSF, DCD
     >>> ens1 = Universe(PSF, DCD)
     >>> ens2 = Universe(PSF, DCD2)
     >>> CES, details = encore.ces([ens1, ens2])
     >>> print(CES)
-    [[ 0.          0.68070702]
-    [ 0.68070702  0.        ]]
+    [[0.         0.68070702]
+     [0.68070702 0.        ]]
 
 However, we may want to reuse the RMSD matrix in other calculations e.g.
 running CES with different parameters or running DRES. In this
 case we first compute the RMSD matrix alone:
 
     >>> rmsd_matrix = encore.get_distance_matrix(
-                                    encore.utils.merge_universes([ens1, ens2]),
-                                    save_matrix="rmsd.npz")
+    ...                             encore.utils.merge_universes([ens1, ens2]),
+    ...                             save_matrix="rmsd.npz")
 
 In the above example the RMSD matrix was also saved in rmsd.npz on disk, and
 so can be loaded and re-used at later times, instead of being recomputed:
 
     >>> rmsd_matrix = encore.get_distance_matrix(
-                                    encore.utils.merge_universes([ens1, ens2]),
-                                    load_matrix="rmsd.npz")
+    ...                             encore.utils.merge_universes([ens1, ens2]),
+    ...                             load_matrix="rmsd.npz")
 
 
 For instance, the rmsd_matrix object can be re-used as input for the
@@ -133,10 +136,11 @@ In the following example the dimensions are reduced to 3 using the
 saved RMSD matrix and the default SPE dimensional reduction method.   : ::
 
     >>> DRES,details = encore.dres([ens1, ens2],
-                                   distance_matrix = rmsd_matrix)
-    >>> print(DRES)
-    [[ 0.        ,   0.67453198]
-     [  0.67453198,  0.        ]]
+    ...                            distance_matrix = rmsd_matrix)
+    >>> import doctest
+    >>> doctest.ELLIPSIS_MARKER = '-etc-'
+    >>> DRES #doctest: +ELLIPSIS
+    -etc-
 
 
 In addition to the quantitative similarity estimate, the dimensional reduction
@@ -800,12 +804,16 @@ def hes(ensembles,
     test suite for two different simulations of the protein AdK. To run the
     examples see the module `Examples`_ for how to import the files: ::
 
+        >>> import MDAnalysis
+        >>> from MDAnalysis import Universe
+        >>> from MDAnalysis.tests.datafiles import PSF, DCD, DCD2
+        >>> import MDAnalysis.analysis.encore as encore
         >>> ens1 = Universe(PSF, DCD)
         >>> ens2 = Universe(PSF, DCD2)
         >>> HES, details = encore.hes([ens1, ens2])
         >>> print(HES)
-        [[        0.          38279683.95892926]
-         [ 38279683.95892926         0.        ]]
+        [[       0.         38279560.89086347]
+         [38279560.89086347        0.        ]]
 
 
     You can use the ``align=True`` option to align the ensembles first. This will
@@ -813,19 +821,20 @@ def hes(ensembles,
     this changes the ``ens1`` and ``ens2`` objects:
 
         >>> print(encore.hes([ens1, ens2], align=True)[0])
-        [[    0.          6880.34140106]
-        [ 6880.34140106     0.        ]]
+        [[   0.         6889.89687839]
+         [6889.89687839    0.        ]]
 
     Alternatively, for greater flexibility in how the alignment should be done
     you can call use an :class:`~MDAnalysis.analysis.align.AlignTraj` object
     manually:
 
         >>> from MDAnalysis.analysis import align
-        >>> align.AlignTraj(ens1, ens1, select="name CA", in_memory=True).run()
-        >>> align.AlignTraj(ens2, ens1, select="name CA", in_memory=True).run()
-        >>> print(encore.hes([ens1, ens2])[0])
-        [[    0.          7032.19607004]
-         [ 7032.19607004     0.        ]]
+        >>> import doctest
+        >>> doctest.ELLIPSIS_MARKER = '-etc-'
+        >>> align.AlignTraj(ens1, ens1, select="name CA", in_memory=True).run() # doctest: +SKIP
+        >>> align.AlignTraj(ens2, ens1, select="name CA", in_memory=True).run() # doctest: +SKIP
+        >>> print(encore.hes([ens1, ens2])[0]) # doctest: +ELLIPSIS
+        -etc-
 
 
     .. versionchanged:: 1.0.0
@@ -1059,12 +1068,16 @@ def ces(ensembles,
     examples see the module `Examples`_ for how to import the files.
     Here the simplest case of just two instances of :class:`Universe` is illustrated: ::
 
+        >>> import MDAnalysis
+        >>> from MDAnalysis import Universe
+        >>> from MDAnalysis.tests.datafiles import PSF, DCD, DCD2
+        >>> import MDAnalysis.analysis.encore as encore
         >>> ens1 = Universe(PSF, DCD)
         >>> ens2 = Universe(PSF, DCD2)
         >>> CES, details = encore.ces([ens1,ens2])
         >>> print(CES)
-        [[ 0.          0.68070702]
-         [ 0.68070702  0.        ]]
+        [[0.         0.68070702]
+         [0.68070702 0.        ]]
 
     To use a different clustering method, set the parameter clustering_method
     (Note that the sklearn module must be installed). Likewise,  different parameters
@@ -1072,8 +1085,8 @@ def ces(ensembles,
     instances of the same clustering class: ::
 
         >>> CES, details = encore.ces([ens1,ens2],
-                                      clustering_method = [encore.DBSCAN(eps=0.45),
-                                                           encore.DBSCAN(eps=0.50)])
+        ...                           clustering_method = [encore.DBSCAN(eps=0.45),
+        ...                                                encore.DBSCAN(eps=0.50)])
         >>> print("eps=0.45: ", CES[0])
         eps=0.45:  [[ 0.          0.20447236]
         [ 0.20447236  0.        ]]
@@ -1334,12 +1347,18 @@ def dres(ensembles,
     Here the simplest case of comparing just two instances of :class:`Universe` is
     illustrated: ::
 
+        
+        >>> import MDAnalysis
+        >>> from MDAnalysis import Universe
+        >>> from MDAnalysis.tests.datafiles import PSF, DCD, DCD2
+        >>> import MDAnalysis.analysis.encore as encore
+        >>> import doctest
+        >>> doctest.ELLIPSIS_MARKER = '-etc-'
         >>> ens1 = Universe(PSF,DCD)
         >>> ens2 = Universe(PSF,DCD2)
         >>> DRES, details = encore.dres([ens1,ens2])
-        >>> print(DRES)
-        [[ 0.          0.67996043]
-         [ 0.67996043  0.        ]]
+        >>> DRES # doctest: +ELLIPSIS
+        -etc-
 
     In addition to the quantitative similarity estimate, the dimensional
     reduction can easily be visualized, see the ``Example`` section in
@@ -1352,7 +1371,7 @@ def dres(ensembles,
     instances of the same method  class: ::
 
         >>> DRES, details = encore.dres([ens1,ens2],
-                                        dimensionality_reduction_method = encore.PrincipalComponentAnalysis(dimension=2))
+        ...                 dimensionality_reduction_method = encore.PrincipalComponentAnalysis(dimension=2))
         >>> print(DRES)
         [[ 0.          0.69314718]
          [ 0.69314718  0.        ]]
@@ -1548,18 +1567,22 @@ def ces_convergence(original_ensemble,
     splitting the trajectory into a window_size of 10 frames : ::
 
 
+        >>> import MDAnalysis
+        >>> from MDAnalysis import Universe
+        >>> from MDAnalysis.tests.datafiles import PSF, DCD
+        >>> import MDAnalysis.analysis.encore as encore
         >>> ens1 = Universe(PSF,DCD)
         >>> ces_conv = encore.ces_convergence(ens1, 10)
         >>> print(ces_conv)
-        [[ 0.48194205]
-        [ 0.40284672]
-        [ 0.31699026]
-        [ 0.25220447]
-        [ 0.19829817]
-        [ 0.14642725]
-        [ 0.09911411]
-        [ 0.05667391]
-        [ 0.        ]]
+        [[0.48194205]
+         [0.40284672]
+         [0.31699026]
+         [0.25220447]
+         [0.19829817]
+         [0.14642725]
+         [0.09911411]
+         [0.05667391]
+         [0.        ]]
 
 
 
@@ -1657,18 +1680,16 @@ def dres_convergence(original_ensemble,
     splitting the trajectory into a window_size of 10 frames : ::
 
 
+        >>> import MDAnalysis
+        >>> from MDAnalysis import Universe
+        >>> from MDAnalysis.tests.datafiles import PSF, DCD
+        >>> import MDAnalysis.analysis.encore as encore
+        >>> import doctest
+        >>> doctest.ELLIPSIS_MARKER = '-etc-'
         >>> ens1 = Universe(PSF,DCD)
         >>> dres_conv = encore.dres_convergence(ens1, 10)
-        >>> print(dres_conv)
-        [[ 0.5295528 ]
-         [ 0.40716539]
-         [ 0.31158669]
-         [ 0.25314041]
-         [ 0.20447271]
-         [ 0.13212364]
-         [ 0.06979114]
-         [ 0.05214759]
-         [ 0.        ]]
+        >>> print(dres_conv) # doctest: +ELLIPSIS
+        -etc-
 
     Here, the rate at which the values reach zero will be indicative of how
     much the trajectory keeps on resampling the same ares of the conformational
