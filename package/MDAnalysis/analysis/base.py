@@ -565,6 +565,10 @@ class AnalysisBase(object):
             kwargs = {'n_workers':n_workers, 'scheduler':'processes'}
         else:
             raise ValueError("`scheduler` should be either 'dask', 'multiprocessing' or None")
+        
+        if n_workers <= 0:
+            raise ValueError("`n_workers` should be a positive integer")
+
 
         self._scheduler_kwargs = kwargs
         self._n_bslices = n_workers
@@ -590,9 +594,8 @@ class AnalysisBase(object):
             *both* `frames` and at least one of `start`, `stop`, `step` to a
             non-default value will raise a :exc:`ValueError`.
 
-            .. versionadded:: 2.2.0
-
-        verbose : bool, optional
+        .. versionadded:: 2.2.0
+            verbose : bool, optional
             Turn on verbosity
         
         progressbar_kwargs : dict, optional
@@ -670,6 +673,21 @@ class AnalysisBase(object):
         return self
     
     def _parallel_conclude(self):
+        """Aggregation function that gathers together results of workers 
+        into .results of the main object. 
+        
+        By default, if checks type of each attribute in first remote worker,
+        and based on this type applies aggregation to the results in remote workers:
+         - `np.ndarray` -- sums the results (assuming the results will be zero in all but one workers)
+         - `float` -- averages the values
+         - `timeseries` -- merges the iterables obtained from remote workers
+        
+        Raises
+        ------
+        NotImplementedError
+            If type of the attribute in results is neither `float`, 
+            `np.ndarray` and is not named `timeseries` (which is a special case of ordered iterable)
+        """
         if len(self._remote_results[0].results) == 0:
             # results are empty
             self.results = Results()
