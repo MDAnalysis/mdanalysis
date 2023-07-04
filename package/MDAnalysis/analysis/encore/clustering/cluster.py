@@ -112,31 +112,25 @@ def cluster(ensembles,
         >>> ens1 = Universe(PSF, DCD)
         >>> ens2 = Universe(PSF, DCD2)
         >>> cluster_collection = encore.cluster([ens1,ens2])
-        >>> print cluster_collection
+        >>> print(cluster_collection)
+        <ClusterCollection with 35 clusters>
 
     You can change the parameters of the clustering method by explicitly
     specifying the method ::
 
-        >>> cluster_collection =
-                encore.cluster(
-                     [ens1,ens2],
-                     method=encore.AffinityPropagationNative(preference=-2.))
+        >>> cluster_collection = encore.cluster([ens1,ens2],
+        ...          method=encore.AffinityPropagationNative(preference=-2.))
 
     Here is an illustration using DBSCAN algorithm, instead
     of the default clustering method ::
 
-        >>> cluster_collection =
-                encore.cluster(
-                     [ens1,ens2],
-                     method=encore.DBSCAN())
+        >>> cluster_collection = encore.cluster([ens1,ens2])
 
     You can also combine multiple methods in one call ::
 
-        >>> cluster_collection =
-                encore.cluster(
-                     [ens1,ens2],
-                     method=[encore.AffinityPropagationNative(preference=-1.),
-                             encore.AffinityPropagationNative(preference=-2.)])
+        >>> cluster_collection = encore.cluster([ens1,ens2],
+        ...                      method=[encore.AffinityPropagationNative(preference=-1.),
+        ...                      encore.AffinityPropagationNative(preference=-2.)])
 
     In addition to standard cluster membership information, the
     `cluster_collection` output keep track of the origin of each
@@ -144,8 +138,8 @@ def cluster(ensembles,
     represented in each cluster. Here, for brevity, we print just the
     members of the two first clusters ::
 
-        >>> print [cluster.metadata["ensemble_membership"]
-                     for cluster in cluster_collection][:2]
+        >>> print([cluster.metadata["ensemble_membership"]
+        ...          for cluster in cluster_collection][:2])
         [array([1, 1, 1, 1, 2]), array([1, 1, 1, 1, 1])]
 
     """
