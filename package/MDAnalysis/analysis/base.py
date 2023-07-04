@@ -475,7 +475,12 @@ class AnalysisBase(object):
         logger.info("Starting analysis loop over %d trajectory frames",
                     self.n_frames)
 
-        frame_indices, trajectory = self._bslices[bslice_idx]
+        bslice = self._bslices[bslice_idx]
+        if len(bslice) == 0: # if `frames` were empty in `run` or `stop=0`
+            return self
+        
+        frame_indices, frames = bslice[:, 0], bslice[:, 1], 
+        trajectory = self._trajectory[frames]
         for idx, ts in enumerate(ProgressBar(trajectory,
                 verbose=verbose,
                 **progressbar_kwargs)):
@@ -530,25 +535,11 @@ class AnalysisBase(object):
         self.n_frames_total = len(frames)
         n_bslices = self._n_bslices
 
-        def array_is_boolean(arr):
-            if isinstance(arr, np.ndarray) and arr.dtype is bool:
-                return True
-            elif set(arr) == {True, False}:
-                return True
-            return False
-
-        if array_is_boolean(frames):
+        if all((isinstance(obj, bool) for obj in frames)):
             frames = np.arange(self.n_frames_total)[frames]
 
-        slices = [(indices, self._trajectory[frames_]) 
-                   for indices, frames_ in zip(
-                    np.array_split(range(len(frames)), n_bslices),
-                    np.array_split(frames, n_bslices),
-                    )
-                   ]
-
+        slices = np.array_split(np.array(list(enumerate(frames))), n_bslices)
         self._bslices = slices
-
         return self._bslices
 
 
