@@ -523,22 +523,23 @@ class AnalysisBase(object):
         bslices : list of (bstart, bstop, bstep, bframes) tuples.
             Iterator will have size of self._n_bslices.
         """
-        if frames is not None:
-            if not all(opt is None for opt in [start, stop, step]):
-                raise ValueError("start/stop/step cannot be combined with "
-                                 "frames")
-
-        else:  # frames is None
+        if frames is None:
             start, stop, step = self._trajectory.check_slice_indices(start, stop, step)
             frames = list(range(start, stop, step))
+        elif not all(opt is None for opt in [start, stop, step]):
+            raise ValueError("start/stop/step cannot be combined with frames")
         
         self.n_frames_total = len(frames)
         n_bslices = self._n_bslices
 
         if all((isinstance(obj, bool) for obj in frames)):
-            frames = np.arange(self.n_frames_total)[frames]
+            arange = np.arange(len(frames))
+            frames = arange[frames]
+        
+        # this numpy thing is similar to list(enumerate(frames))
+        enumerated_frames = np.vstack([np.arange(len(frames)), frames]).T
+        slices = np.array_split(enumerated_frames, n_bslices)
 
-        slices = np.array_split(np.array(list(enumerate(frames))), n_bslices)
         self._bslices = slices
         return self._bslices
 
