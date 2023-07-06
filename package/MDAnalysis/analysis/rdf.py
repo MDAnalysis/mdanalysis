@@ -239,7 +239,11 @@ class InterRDF(AnalysisBase):
                 "The exclude_same argument to InterRDF must be None, 'residue', 'segment' "
                 "or 'chain'."
             )
-        name_to_attr = {'residue': 'resindices', 'segment': 'segindices', 'chain': 'chainids'}
+        if exclude_same is not None and exclusion_block is not None:
+            raise ValueError(
+                "The exclude_same argument to InterRDF cannot be used with exclusion_block."
+            )
+        name_to_attr = {'residue': 'resindices', 'segment': 'segindices', 'chain': 'chainIDs'}
         self.exclude_same = name_to_attr.get(exclude_same)
 
         if self.norm not in ['rdf', 'density', 'none']:
@@ -273,11 +277,11 @@ class InterRDF(AnalysisBase):
             mask = np.where(idxA != idxB)[0]
             dist = dist[mask]
 
-        if self.exclude_same:
-            # Ignore distances between atoms in the same residue
-            resixA = getattr(self.g1, self.exclude_same)[pairs[:, 0]]
-            resixB = getattr(self.g2, self.exclude_same)[pairs[:, 1]]
-            mask = np.where(resixA != resixB)[0]
+        if self.exclude_same is not None:
+            # Ignore distances between atoms in the same attribute
+            attr_ix_a = getattr(self.g1, self.exclude_same)[pairs[:, 0]]
+            attr_ix_b = getattr(self.g2, self.exclude_same)[pairs[:, 1]]
+            mask = np.where(attr_ix_a != attr_ix_b)[0]
             dist = dist[mask]
 
         count, _ = np.histogram(dist, **self.rdf_settings)

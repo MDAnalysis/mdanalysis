@@ -93,12 +93,21 @@ def test_exclusion(sels):
     rdf = InterRDF(s1, s2, exclusion_block=(1, 2)).run()
     assert rdf.results.count.sum() == 4
 
-def test_ignore_same_residues(sels):
+
+@pytest.mark.parametrize("attr", ("residue"))
+def test_ignore_same_residues(sels, attr):
     # should see two distances with 4 counts each
     s1, s2 = sels
-    rdf = InterRDF(s2, s2, exclude_same="residue").run()
+    rdf = InterRDF(s2, s2, exclude_same=attr).run()
     assert rdf.rdf[0] == 0
     assert rdf.results.count.sum() == 8
+
+
+def test_ignore_same_residues_fails(sels):
+    # should see two distances with 4 counts each
+    s1, s2 = sels
+    with pytest.raises(ValueError):
+        rdf = InterRDF(s2, s2, exclude_same="unsupported").run()
 
 @pytest.mark.parametrize("attr", ("rdf", "bins", "edges", "count"))
 def test_rdf_attr_warning(sels, attr):

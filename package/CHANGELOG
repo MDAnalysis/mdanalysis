@@ -20,7 +20,7 @@ The rules for this file:
 Fixes
 
 Enhancements
-  * Added a ignore_same_residue kwarg to InterRDF (PR #4161)
+  * Added a `exclude_same` kwarg to InterRDF (PR #4161)
 
 Changes
 
