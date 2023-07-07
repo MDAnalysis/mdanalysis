@@ -116,7 +116,7 @@ class TopologyObject(object):
         return hash((self._u, tuple(self.indices)))
 
     def __repr__(self):
-        indices = (self.indices if self.indices[0] < self.indices[-1]
+        indices = np.sort(self.indices if self.indices[0] < self.indices[-1]
                    else self.indices[::-1])
         return "<{cname} between: {conts}>".format(
             cname=self.__class__.__name__,
