@@ -221,7 +221,7 @@ class TestTopologyObjects(object):
 
         assert_equal(
             repr(cmap),
-            '<CMap between: Atom 2, Atom 1, Atom 8, Atom 7, Atom 4>')
+            '<CMap between: Atom 4, Atom 7, Atom 8, Atom 1, Atom 2>')
     
     def test_cmap_repr_VE(self, PSFDCD):
         with pytest.raises(ValueError):
