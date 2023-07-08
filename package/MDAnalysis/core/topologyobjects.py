@@ -116,13 +116,12 @@ class TopologyObject(object):
         return hash((self._u, tuple(self.indices)))
 
     def __repr__(self):
-        indices = (self.indices if self.indices[0] < self.indices[-1]
-                   else self.indices[::-1])
+        "Return representation in same order of AtomGroup"
         return "<{cname} between: {conts}>".format(
             cname=self.__class__.__name__,
             conts=", ".join([
                 "Atom {0}".format(i)
-                for i in indices]))
+                for i in self.indices]))
 
     def __contains__(self, other):
         """Check whether an atom is in this :class:`TopologyObject`"""
