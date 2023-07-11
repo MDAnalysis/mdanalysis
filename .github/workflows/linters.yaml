@@ -19,6 +19,7 @@ jobs:
   darker_lint:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       pull-requests: write
     defaults:
@@ -99,6 +100,7 @@ jobs:
   pylint_check:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
     - uses: actions/checkout@v3
 
@@ -120,6 +122,7 @@ jobs:
   mypy :
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3
 
