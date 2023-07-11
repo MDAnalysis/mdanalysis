@@ -22,6 +22,7 @@ jobs:
   main_tests:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
     strategy:
         fail-fast: false
         matrix:
@@ -113,6 +114,7 @@ jobs:
   build_docs:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     env:
       CYTHON_TRACE_NOGIL: 1
       MPLBACKEND: agg
@@ -207,6 +209,7 @@ jobs:
   sdist_check_and_build:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
     - uses: actions/checkout@v3
