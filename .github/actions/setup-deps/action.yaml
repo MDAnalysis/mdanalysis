@@ -28,7 +28,7 @@ inputs:
   griddataformats:
     default: 'griddataformats'
   gsd:
-    default: 'gsd<3.0'
+    default: 'gsd>3.0.0'
   hypothesis:
     default: 'hypothesis'
   matplotlib:
@@ -107,7 +107,6 @@ runs:
           ${{ inputs.cython }}
           ${{ inputs.fasteners }}
           ${{ inputs.griddataformats }}
-          ${{ inputs.gsd }}
           ${{ inputs.hypothesis }}
           ${{ inputs.matplotlib }}
           ${{ inputs.mmtf-python }}
@@ -123,6 +122,7 @@ runs:
           ${{ inputs.chemfiles-python }}
           ${{ inputs.clustalw }}
           ${{ inputs.distopia }}
+          ${{ inputs.gsd }}
           ${{ inputs.h5py }}
           ${{ inputs.hole2 }}
           ${{ inputs.joblib }}

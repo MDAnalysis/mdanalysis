@@ -595,6 +595,7 @@ class DumpReader(base.ReaderBase):
         f.readline()  # ITEM TIMESTEP
         step_num = int(f.readline())
         ts.data['step'] = step_num
+        ts.data['time'] = step_num * ts.dt
 
         f.readline()  # ITEM NUMBER OF ATOMS
         n_atoms = int(f.readline())

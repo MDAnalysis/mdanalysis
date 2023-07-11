@@ -23,6 +23,7 @@ jobs:
   numpy_and_scipy_dev:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
+    timeout-minutes: 60
 
     steps:
     - uses: actions/checkout@v3
@@ -74,6 +75,7 @@ jobs:
   native_march:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
+    timeout-minutes: 60
 
     steps:
     - uses: actions/checkout@v3
@@ -117,6 +119,7 @@ jobs:
   old_ubuntu_macos:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
@@ -161,6 +164,7 @@ jobs:
   pip-only:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     strategy:
         fail-fast: false
         matrix:
