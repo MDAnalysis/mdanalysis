@@ -94,7 +94,7 @@ def test_exclusion(sels):
     assert rdf.results.count.sum() == 4
 
 
-@pytest.mark.parametrize("attr", ("residue"))
+@pytest.mark.parametrize("attr", ("residue",))
 def test_ignore_same_residues(sels, attr):
     # should see two distances with 4 counts each
     s1, s2 = sels
