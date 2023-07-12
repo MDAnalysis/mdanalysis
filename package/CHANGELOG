@@ -36,6 +36,8 @@ Changes
   * GSD is no longer a core dependency of MDAnalysis. It must be installed
     independently if you wish to read HOOMD trajectory files.
     (PR #4174, Issue #3819)
+  * Atom ID representation order updated to match that of associated AtomGroup indices.
+    (PR #4191, Issue #4181)
 
 Deprecations
   * MDAnalysis no longer officially supports 32 bit installations (they are

@@ -52,6 +52,8 @@ class TopologyObject(object):
        via the ``is_guessed`` managed property.
     .. versionadded:: 0.11.0
        Added the `value` method to return the size of the object
+    .. versionchanged:: 2.6.0
+       Updated Atom ID representation order to match that of AtomGroup indices
     """
     __slots__ = ("_ix", "_u", "btype", "_bondtype", "_guessed", "order")
 
