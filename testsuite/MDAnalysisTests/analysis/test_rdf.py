@@ -114,6 +114,10 @@ def test_ignore_same_residues_fails(sels):
     with pytest.raises(ValueError, match="The exclude_same argument to InterRDF must be"):
         rdf = InterRDF(s2, s2, exclude_same="unsupported").run()
 
+    with pytest.raises(ValueError, match="The exclude_same argument to InterRDF cannot be used with"):
+        rdf = InterRDF(s2, s2, exclude_same="unsupported", exclude_block=tuple()).run()
+        
+        
 @pytest.mark.parametrize("attr", ("rdf", "bins", "edges", "count"))
 def test_rdf_attr_warning(sels, attr):
     s1, s2 = sels
