@@ -109,7 +109,6 @@ def test_ignore_same_residues(sels, attr, count):
 
 
 def test_ignore_same_residues_fails(sels):
-    # should see two distances with 4 counts each
     s1, s2 = sels
     with pytest.raises(ValueError, match="The exclude_same argument to InterRDF must be"):
         rdf = InterRDF(s2, s2, exclude_same="unsupported").run()
