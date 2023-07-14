@@ -41,7 +41,11 @@ jobs:
         create-args: >-
           python=="3.11"
           pip
-        channels: jaimergp/label/unsupported-cudatoolkit-shim, conda-forge, bioconda
+        condarc: |
+          channels:
+            - jaimergp/label/unsupported-cudatoolkit-shim
+            - conda-forge
+            - bioconda
 
     - name: install_deps
       uses: ./.github/actions/setup-deps
@@ -93,7 +97,11 @@ jobs:
         create-args: >-
           python=="3.11"
           pip
-        channels: jaimergp/label/unsupported-cudatoolkit-shim, conda-forge, bioconda
+        condarc: |
+          channels:
+            - jaimergp/label/unsupported-cudatoolkit-shim
+            - conda-forge
+            - bioconda
 
     - name: install_deps
       uses: ./.github/actions/setup-deps
@@ -141,7 +149,11 @@ jobs:
         create-args: >-
           python=="3.9"
           pip
-        channels: jaimergp/label/unsupported-cudatoolkit-shim, conda-forge, bioconda
+        condarc: |
+          channels:
+            - jaimergp/label/unsupported-cudatoolkit-shim
+            - conda-forge
+            - bioconda
 
     - name: install_deps
       uses: ./.github/actions/setup-deps

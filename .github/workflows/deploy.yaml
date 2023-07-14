@@ -227,7 +227,11 @@ jobs:
           create-args: >-
             python==${{ matrix.python-version }}
             pip
-          channels: jaimergp/label/unsupported-cudatoolkit-shim, conda-forge, bioconda
+          condarc: |
+            channels:
+              - jaimergp/label/unsupported-cudatoolkit-shim
+              - conda-forge
+              - bioconda
 
       - name: install_full_deps
         uses: ./.github/actions/setup-deps
