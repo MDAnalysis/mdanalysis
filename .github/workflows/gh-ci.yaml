@@ -63,7 +63,6 @@ jobs:
     - name: setup_micromamba
       uses: mamba-org/setup-micromamba@v1
       with:
-        environment-file: False
         environment-name: mda
         create-args: >-
           python==${{ matrix.python-version }}
@@ -129,7 +128,6 @@ jobs:
     - name: setup_micromamba
       uses: mamba-org/setup-micromamba@v1
       with:
-        environment-file: False
         environment-name: mda
         create-args: >-
           python=="3.9"
