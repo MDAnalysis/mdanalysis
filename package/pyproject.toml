@@ -3,20 +3,11 @@
 requires = [
     "Cython>=0.28",
     "packaging",
-    # lowest NumPy we can use for a given Python,
-    # In part adapted from: https://github.com/scipy/oldest-supported-numpy/blob/main/setup.cfg
-    # except for more exotic platform (Mac Arm flavors)
-    # aarch64, AIX, s390x, and arm64 all support 1.21 so we can safely pin to this
-    # Note: MDA does not build with PyPy so we do not support it in the build system
-    # Scipy: On windows avoid 1.21.6, 1.22.0, and 1.22.1 because they were built on vc142
-    # Let's set everything to this version to make things clean, also avoids other issues
-    # on other archs
-    "numpy==1.22.3; python_version=='3.9' and platform_python_implementation != 'PyPy'",
-    "numpy==1.22.3; python_version=='3.10' and platform_python_implementation != 'PyPy'",
-    "numpy==1.23.2; python_version=='3.11' and platform_python_implementation != 'PyPy'",
-    # For unreleased versions of Python there is currently no known supported
-    # NumPy version. In that case we just let it be a bare NumPy install
-    "numpy<2.0; python_version>='3.12'",
+    # NumPy 1.25+ offers backwards compatibility that tracks with greater
+    # than NEP29 (see: https://numpy.org/doc/stable/dev/depending_on_numpy.html#adding-a-dependency-on-numpy)
+    # We pin our wheel installation to that and a maximum of numpy 2.0 since
+    # this will likely involve several breaking changes
+    "numpy>=1.25,<2.0; python_version>='3.9'",
     "setuptools",
     "wheel",
 ]
