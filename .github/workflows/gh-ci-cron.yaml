@@ -38,7 +38,7 @@ jobs:
       with:
         environment-name: mda
         create-args: >-
-          python=="3.11"
+          python=3.11
           pip
         condarc: |
           channels:
@@ -93,7 +93,7 @@ jobs:
       with:
         environment-name: mda
         create-args: >-
-          python=="3.11"
+          python=3.11
           pip
         condarc: |
           channels:
@@ -144,7 +144,7 @@ jobs:
       with:
         environment-name: mda
         create-args: >-
-          python=="3.9"
+          python=3.9
           pip
         condarc: |
           channels:

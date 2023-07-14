@@ -224,7 +224,7 @@ jobs:
         with:
           environment-name: mda
           create-args: >-
-            python==${{ matrix.python-version }}
+            python=${{ matrix.python-version }}
             pip
           condarc: |
             channels:
