@@ -34,11 +34,11 @@ jobs:
         os-type: "ubuntu"
 
     - name: setup_micromamba
-      uses: mamba-org/provision-with-micromamba@main
+      uses: mamba-org/setup-micromamba@v1
       with:
         environment-file: False
         environment-name: mda
-        extra-specs: |
+        create-args: >-
           python=="3.11"
           pip
         channels: jaimergp/label/unsupported-cudatoolkit-shim, conda-forge, bioconda
@@ -86,11 +86,11 @@ jobs:
         os-type: "ubuntu"
 
     - name: setup_micromamba
-      uses: mamba-org/provision-with-micromamba@main
+      uses: mamba-org/setup-micromamba@v1
       with:
         environment-file: False
         environment-name: mda
-        extra-specs: |
+        create-args: >-
           python=="3.11"
           pip
         channels: jaimergp/label/unsupported-cudatoolkit-shim, conda-forge, bioconda
@@ -134,11 +134,11 @@ jobs:
         os-type: ${{ matrix.os }}
 
     - name: setup_micromamba
-      uses: mamba-org/provision-with-micromamba@main
+      uses: mamba-org/setup-micromamba@v1
       with:
         environment-file: False
         environment-name: mda
-        extra-specs: |
+        create-args: >-
           python=="3.9"
           pip
         channels: jaimergp/label/unsupported-cudatoolkit-shim, conda-forge, bioconda
