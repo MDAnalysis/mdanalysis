@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>5.28. Utility functions for the TPR topology parser &mdash; MDAnalysis 2.5.0 documentation</title>
@@ -13,11 +13,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -163,7 +163,6 @@ If iterable is specified the tuple is initialized from iterable’s items.</p>
 <p>Definition of constants.</p>
 <p>The currently read file format versions are defined in
 <a class="reference internal" href="#MDAnalysis.topology.tpr.setting.SUPPORTED_VERSIONS" title="MDAnalysis.topology.tpr.setting.SUPPORTED_VERSIONS"><code class="xref py py-data docutils literal notranslate"><span class="pre">SUPPORTED_VERSIONS</span></code></a>.</p>
-</section>
 <dl class="py data">
 <dt class="sig sig-object py" id="MDAnalysis.topology.tpr.setting.F_ANGLES">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.tpr.setting.</span></span><span class="sig-name descname"><span class="pre">F_ANGLES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_ANGLES" title="Permalink to this definition"></a></dt>
@@ -752,9 +751,9 @@ If iterable is specified the tuple is initialized from iterable’s items.</p>
 <dd><p>Interaction types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/gmxlib/ifunc.c</span></code></p>
 </dd></dl>
 
+</section>
 <span class="target" id="module-MDAnalysis.topology.tpr.obj"></span><section id="class-definitions-for-the-tprparser">
 <h2><span class="section-number">5.28.3. </span>Class definitions for the TPRParser<a class="headerlink" href="#class-definitions-for-the-tprparser" title="Permalink to this heading"></a></h2>
-</section>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.topology.tpr.obj.Atom">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.tpr.obj.</span></span><span class="sig-name descname"><span class="pre">Atom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typeB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ptype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resind</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atomnumber</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Atom" title="Permalink to this definition"></a></dt>
@@ -1169,6 +1168,7 @@ atom (e.g a coarse-grained particle), an empty string is returned.</p>
 
 </dd></dl>
 
+</section>
 <span class="target" id="module-MDAnalysis.topology.tpr.utils"></span><section id="utilities-for-the-tprparser">
 <h2><span class="section-number">5.28.4. </span>Utilities for the TPRParser<a class="headerlink" href="#utilities-for-the-tprparser" title="Permalink to this heading"></a></h2>
 <p>Function calling order:</p>
@@ -1185,7 +1185,6 @@ atom (e.g a coarse-grained particle), an empty string is returned.</p>
 </div>
 <p>Then compose the stuffs in the format <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.Universe</span></code> reads in.</p>
 <p>The module also contains the <code class="xref py py-func docutils literal notranslate"><span class="pre">do_inputrec()</span></code> to read the TPR header with.</p>
-</section>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.topology.tpr.utils.TPXUnpacker">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.tpr.utils.</span></span><span class="sig-name descname"><span class="pre">TPXUnpacker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#TPXUnpacker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.TPXUnpacker" title="Permalink to this definition"></a></dt>
@@ -1378,6 +1377,7 @@ keep using the previous implementation of the serializer).</p>
 <dd><p>this function is now compatible with do_tpxheader in tpxio.cpp</p>
 </dd></dl>
 
+</section>
 </section>
 
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.2.7.1.5. Covariance calculation — encore.covariance &mdash; MDAnalysis 2.5.0 documentation</title>
@@ -13,11 +13,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -130,20 +130,19 @@
 <p>The module contains functions to estimate the covariance matrix of
 an ensemble of structures.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Author<span class="colon">:</span></dt>
+<dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Matteo Tiberti, Wouter Boomsma, Tone Bengtsen</p>
 </dd>
 </dl>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.16.0.</span></p>
 </div>
-</section>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.encore.covariance.covariance_matrix">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.covariance.</span></span><span class="sig-name descname"><span class="pre">covariance_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ensemble</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select='name</span> <span class="pre">CA'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimator=&lt;function</span> <span class="pre">shrinkage_covariance_estimator&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights='mass'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/covariance.html#covariance_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.covariance.covariance_matrix" title="Permalink to this definition"></a></dt>
 <dd><p>Calculates (optionally mass weighted) covariance matrix</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ensemble</strong> (<em>Universe object</em>) – The structural ensemble</p></li>
 <li><p><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Atom selection string in the MDAnalysis format.</p></li>
@@ -156,10 +155,10 @@ shrinkage_covariance_estimator for reference.</p></li>
 distance to the mean.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>cov_mat</strong> – Covariance matrix</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>numpy.array</p>
 </dd>
 </dl>
@@ -170,16 +169,16 @@ distance to the mean.</p></li>
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.encore.covariance.</span></span><span class="sig-name descname"><span class="pre">ml_covariance_estimator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coordinates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_coordinates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/covariance.html#ml_covariance_estimator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.covariance.ml_covariance_estimator" title="Permalink to this definition"></a></dt>
 <dd><p>Standard maximum likelihood estimator of the covariance matrix.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>coordinates</strong> (<em>numpy.array</em>) – Flattened array of coordiantes</p></li>
 <li><p><strong>reference_coordinates</strong> (<em>numpy.array</em>) – Optional reference to use instead of mean</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>cov_mat</strong> – Estimate of  covariance matrix</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>numpy.array</p>
 </dd>
 </dl>
@@ -196,22 +195,23 @@ Empirical Finance, 10, 5, 2003</p>
 Ledoit on his website:
 <a class="reference external" href="http://www.ledoit.net/ole2_abstract.htm">http://www.ledoit.net/ole2_abstract.htm</a></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>coordinates</strong> (<em>numpy.array</em>) – Flattened array of coordinates</p></li>
 <li><p><strong>reference_coordinates</strong> (<em>numpy.array</em>) – Optional reference to use instead of mean</p></li>
 <li><p><strong>shrinkage_parameter</strong> (<em>None</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Optional shrinkage parameter</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>cov_mat</strong> – Covariance matrix</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>nump.array</p>
 </dd>
 </dl>
 </dd></dl>
 
+</section>
 
 
            </div>

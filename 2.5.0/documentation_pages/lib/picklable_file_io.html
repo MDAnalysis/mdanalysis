@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>13.2.14. Picklable read-only I/O classes — MDAnalysis.lib.picklable_file_io &mdash; MDAnalysis 2.5.0 documentation</title>
+  <title>13.2.12. Picklable read-only I/O classes — MDAnalysis.lib.picklable_file_io &mdash; MDAnalysis 2.5.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
@@ -13,11 +13,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -79,9 +79,7 @@
 <li class="toctree-l3"><a class="reference internal" href="qcprot.html">13.2.9. Fast QCP RMSD structure alignment — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="util.html">13.2.10. Helper functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="correlations.html">13.2.11. Correlations utilities — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.correlations</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="correlations.html#autocorrelation-function">13.2.12. Autocorrelation Function</a></li>
-<li class="toctree-l3"><a class="reference internal" href="correlations.html#intermittency-function">13.2.13. Intermittency Function</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">13.2.14. Picklable read-only I/O classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">13.2.12. Picklable read-only I/O classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#low-level-file-formats">13.3. Low level file formats</a></li>
@@ -109,7 +107,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../lib_modules.html"><span class="section-number">13. </span>Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-      <li class="breadcrumb-item active"><span class="section-number">13.2.14. </span>Picklable read-only I/O classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io</span></code></li>
+      <li class="breadcrumb-item active"><span class="section-number">13.2.12. </span>Picklable read-only I/O classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/documentation_pages/lib/picklable_file_io.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -120,7 +118,7 @@
            <div itemprop="articleBody">
              
   <span class="target" id="module-MDAnalysis.lib.picklable_file_io"></span><section id="picklable-read-only-i-o-classes-mdanalysis-lib-picklable-file-io">
-<h1><span class="section-number">13.2.14. </span>Picklable read-only I/O classes — <a class="reference internal" href="#module-MDAnalysis.lib.picklable_file_io" title="MDAnalysis.lib.picklable_file_io"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io</span></code></a><a class="headerlink" href="#picklable-read-only-i-o-classes-mdanalysis-lib-picklable-file-io" title="Permalink to this heading"></a></h1>
+<h1><span class="section-number">13.2.12. </span>Picklable read-only I/O classes — <a class="reference internal" href="#module-MDAnalysis.lib.picklable_file_io" title="MDAnalysis.lib.picklable_file_io"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io</span></code></a><a class="headerlink" href="#picklable-read-only-i-o-classes-mdanalysis-lib-picklable-file-io" title="Permalink to this heading"></a></h1>
 <p>Provide with an interface for pickling read-only IO file object.
 These classes are used for further pickling <a class="reference internal" href="../core/universe.html#module-MDAnalysis.core.universe" title="MDAnalysis.core.universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></a>
 in a object composition approach.</p>
@@ -142,7 +140,7 @@ be accessible with its filename.</p>
 a file in text mode, use the <a class="reference internal" href="#MDAnalysis.lib.picklable_file_io.pickle_open" title="MDAnalysis.lib.picklable_file_io.pickle_open"><code class="xref py py-func docutils literal notranslate"><span class="pre">pickle_open()</span></code></a>.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – either a text or byte string giving the name (and the path
 if the file isn’t in the current working directory) of the file to
@@ -177,7 +175,7 @@ with a wider API.</p></li>
 that can be pickled.
 Note that this only works in read mode.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>raw</strong> (<em>FileIO object</em>) – </p>
 </dd>
 </dl>
@@ -207,7 +205,7 @@ be pickled. Note that this only works in read mode.</p>
 to be used to return to its original frame.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>raw</strong> (<em>FileIO object</em>) – </p>
 </dd>
 </dl>
@@ -243,7 +241,7 @@ be accessible with its filename.</p>
 to open a compressed file in text mode, use <a class="reference internal" href="#MDAnalysis.lib.picklable_file_io.bz2_pickle_open" title="MDAnalysis.lib.picklable_file_io.bz2_pickle_open"><code class="xref py py-func docutils literal notranslate"><span class="pre">bz2_pickle_open()</span></code></a>.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – either a text or byte string giving the name (and the path
 if the file isn’t in the current working directory) of the file to
@@ -299,7 +297,7 @@ be accessible with its filename.</p>
 to open a compressed file in text mode, use the <a class="reference internal" href="#MDAnalysis.lib.picklable_file_io.gzip_pickle_open" title="MDAnalysis.lib.picklable_file_io.gzip_pickle_open"><code class="xref py py-func docutils literal notranslate"><span class="pre">gzip_pickle_open()</span></code></a>.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – either a text or byte string giving the name (and the path
 if the file isn’t in the current working directory) of the file to
@@ -368,7 +366,7 @@ for new readers.</p>
 <p>Can be only used with read mode.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – either a text or byte string giving the name (and the path
 if the file isn’t in the current working directory) of the file to
@@ -378,14 +376,14 @@ be opened.</p></li>
 ‘rb’: read in binary mode;</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>stream-like object</strong> – when mode is ‘r’ or ‘rt’, returns TextIOPicklable;
 when mode is ‘rb’, returns BufferIOPicklable</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#MDAnalysis.lib.picklable_file_io.BufferIOPicklable" title="MDAnalysis.lib.picklable_file_io.BufferIOPicklable">BufferIOPicklable</a> or <a class="reference internal" href="#MDAnalysis.lib.picklable_file_io.TextIOPicklable" title="MDAnalysis.lib.picklable_file_io.TextIOPicklable">TextIOPicklable</a></p>
 </dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dt class="field-even">Raises</dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – if <cite>mode</cite> is not one of the allowed read modes</p>
 </dd>
 </dl>
@@ -426,7 +424,7 @@ unpicklable file object.</p>
 <p>Can be only used with read mode.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – either a text or byte string giving the name (and the path
 if the file isn’t in the current working directory) of the file to
@@ -436,14 +434,14 @@ be opened.</p></li>
 ‘rb’: read in binary mode; (default)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>stream-like object</strong> – when mode is ‘rt’, returns TextIOPicklable;
 when mode is ‘r’ or ‘rb’, returns BZ2Picklable</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#MDAnalysis.lib.picklable_file_io.BZ2Picklable" title="MDAnalysis.lib.picklable_file_io.BZ2Picklable">BZ2Picklable</a> or <a class="reference internal" href="#MDAnalysis.lib.picklable_file_io.TextIOPicklable" title="MDAnalysis.lib.picklable_file_io.TextIOPicklable">TextIOPicklable</a></p>
 </dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dt class="field-even">Raises</dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – if <cite>mode</cite> is not one of the allowed read modes</p>
 </dd>
 </dl>
@@ -484,7 +482,7 @@ unpicklable file object.</p>
 <p>Can be only used with read mode.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – either a text or byte string giving the name (and the path
 if the file isn’t in the current working directory) of the file to
@@ -494,14 +492,14 @@ be opened.</p></li>
 ‘rb’: read in binary mode; (default)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>stream-like object</strong> – when mode is ‘rt’, returns TextIOPicklable;
 when mode is ‘r’ or ‘rb’, returns GzipPicklable</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#MDAnalysis.lib.picklable_file_io.GzipPicklable" title="MDAnalysis.lib.picklable_file_io.GzipPicklable">GzipPicklable</a> or <a class="reference internal" href="#MDAnalysis.lib.picklable_file_io.TextIOPicklable" title="MDAnalysis.lib.picklable_file_io.TextIOPicklable">TextIOPicklable</a></p>
 </dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dt class="field-even">Raises</dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – if <cite>mode</cite> is not one of the allowed read modes</p>
 </dd>
 </dl>

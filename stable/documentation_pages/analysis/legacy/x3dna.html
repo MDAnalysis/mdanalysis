@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.10.1.1.1. Generation and Analysis of X3DNA helicoidal parameter profiles — MDAnalysis.analysis.legacy.x3dna &mdash; MDAnalysis 2.5.0 documentation</title>
@@ -13,11 +13,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -120,13 +120,13 @@
   <span class="target" id="module-MDAnalysis.analysis.legacy.x3dna"></span><section id="generation-and-analysis-of-x3dna-helicoidal-parameter-profiles-mdanalysis-analysis-legacy-x3dna">
 <h1><span class="section-number">4.10.1.1.1. </span>Generation and Analysis of X3DNA helicoidal parameter profiles — <a class="reference internal" href="#module-MDAnalysis.analysis.legacy.x3dna" title="MDAnalysis.analysis.legacy.x3dna"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.legacy.x3dna</span></code></a><a class="headerlink" href="#generation-and-analysis-of-x3dna-helicoidal-parameter-profiles-mdanalysis-analysis-legacy-x3dna" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
-<dt class="field-odd">Author<span class="colon">:</span></dt>
+<dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Elizabeth Denning</p>
 </dd>
-<dt class="field-even">Year<span class="colon">:</span></dt>
+<dt class="field-even">Year</dt>
 <dd class="field-even"><p>2013-2014</p>
 </dd>
-<dt class="field-odd">Copyright<span class="colon">:</span></dt>
+<dt class="field-odd">Copyright</dt>
 <dd class="field-odd"><p>GNU Public License v2</p>
 </dd>
 </dl>
@@ -143,15 +143,14 @@ can be combined and analyzed. <a class="reference external" href="http://x3dna.o
 separately.</p>
 <p class="rubric">References</p>
 <div class="docutils container" id="id2">
-<div class="citation" id="id34" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">Lu2003</a><span class="fn-bracket">]</span></span>
-<p>Xiang‐Jun Lu and Wilma K. Olson. 3DNA: a software package for the analysis, rebuilding and visualization of three‐dimensional nucleic acid structures. <em>Nucleic Acids Research</em>, 31(17):5108–5121, 09 2003. <a class="reference external" href="https://doi.org/10.1093/nar/gkg680">doi:10.1093/nar/gkg680</a>.</p>
-</div>
-<div class="citation" id="id35" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">Lu2008</a><span class="fn-bracket">]</span></span>
-<p>Xiang-Jun Lu and Wilma K Olson. 3dna: a versatile, integrated software system for the analysis, rebuilding and visualization of three-dimensional nucleic-acid structures. <em>Nature Protocols</em>, 3(7):1213–1227, 2008. <a class="reference external" href="https://doi.org/10.1038/nprot.2008.104">doi:10.1038/nprot.2008.104</a>.</p>
-</div>
-</div>
+<dl class="citation">
+<dt class="label" id="id34"><span class="brackets"><a class="fn-backref" href="#id1">Lu2003</a></span></dt>
+<dd><p>Xiang‐Jun Lu and Wilma K. Olson. 3DNA: a software package for the analysis, rebuilding and visualization of three‐dimensional nucleic acid structures. <em>Nucleic Acids Research</em>, 31(17):5108–5121, 09 2003. <a class="reference external" href="https://doi.org/10.1093/nar/gkg680">doi:10.1093/nar/gkg680</a>.</p>
+</dd>
+<dt class="label" id="id35"><span class="brackets"><a class="fn-backref" href="#id1">Lu2008</a></span></dt>
+<dd><p>Xiang-Jun Lu and Wilma K Olson. 3dna: a versatile, integrated software system for the analysis, rebuilding and visualization of three-dimensional nucleic-acid structures. <em>Nature Protocols</em>, 3(7):1213–1227, 2008. <a class="reference external" href="https://doi.org/10.1038/nprot.2008.104">doi:10.1038/nprot.2008.104</a>.</p>
+</dd>
+</dl>
 </div>
 <section id="example-applications">
 <h2><span class="section-number">4.10.1.1.1.1. </span>Example applications<a class="headerlink" href="#example-applications" title="Permalink to this heading"></a></h2>
@@ -206,6 +205,10 @@ data such as <a class="reference internal" href="#MDAnalysis.analysis.legacy.x3d
 <p>When methods return helicoidal basepair parameter as lists, then the order
 is always</p>
 <table class="docutils align-default">
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 70%" />
+</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>index</p></th>
 <th class="head"><p>parameter</p></th>
@@ -255,7 +258,7 @@ is always</p>
 </div>
 <p>Set up parameters to run <a class="reference external" href="http://x3dna.org/">X3DNA</a> on PDB <em>filename</em>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The <cite>filename</cite> is used as input for X3DNA in the
 <strong class="program">xdna_ensemble</strong> command.  It specifies the name of a
@@ -299,7 +302,7 @@ indexed by the frame number. Each entry is a
 <p>If the keyword <cite>outdir</cite> is supplied (e.g. “.”) then each profile is
 saved to a gzipped data file.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>run</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> (</em><em>optional</em>) – identifier, free form [1]</p></li>
 <li><p><strong>outdir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – save output data under <cite>outdir</cite>/<cite>run</cite> if set to any other
@@ -314,12 +317,12 @@ value but <code class="docutils literal notranslate"><span class="pre">None</spa
 <span class="sig-name descname"><span class="pre">mean</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.legacy.x3dna.X3DNA.mean" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the mean value for the base parameters.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>The list contains the means for the helicoidal parameters. The
 order is <code class="docutils literal notranslate"><span class="pre">[shear,</span> <span class="pre">stretch,</span> <span class="pre">stagger,</span> <span class="pre">buckle,</span> <span class="pre">propeller,</span> <span class="pre">opening,</span>
 <span class="pre">shift,</span> <span class="pre">slide,</span> <span class="pre">rise,</span> <span class="pre">tilt,</span> <span class="pre">roll,</span> <span class="pre">twist]</span></code>.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a></p>
 </dd>
 </dl>
@@ -330,13 +333,13 @@ order is <code class="docutils literal notranslate"><span class="pre">[shear,</s
 <span class="sig-name descname"><span class="pre">mean_std</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.legacy.x3dna.X3DNA.mean_std" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the mean and standard deviation of base parameters.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>The tuple contains two lists with the means and the standard deviations
 for the helicoidal parameters. The order for both lists is <code class="docutils literal notranslate"><span class="pre">[shear,</span>
 <span class="pre">stretch,</span> <span class="pre">stagger,</span> <span class="pre">buckle,</span> <span class="pre">propeller,</span> <span class="pre">opening,</span> <span class="pre">shift,</span> <span class="pre">slide,</span> <span class="pre">rise,</span> <span class="pre">tilt,</span>
 <span class="pre">roll,</span> <span class="pre">twist]</span></code>.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a>)</p>
 </dd>
 </dl>
@@ -350,7 +353,7 @@ for the helicoidal parameters. The order for both lists is <code class="docutils
 standard deviation for each individual base pair. Each plot is saved to
 PNG file with name “&lt;parameter_name&gt;.png”.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>ax</strong> (<em>matplotlib.pyplot.Axes</em><em> (</em><em>optional</em><em>)</em>) – Provide <cite>ax</cite> to have all plots plotted in the same axes.</p>
 </dd>
 </dl>
@@ -386,12 +389,12 @@ frame number.</p>
 <span class="sig-name descname"><span class="pre">std</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.legacy.x3dna.X3DNA.std" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the standard deviation for the base parameters.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>The list contains the standard deviations for the helicoidal
 parameters. The order is <code class="docutils literal notranslate"><span class="pre">[shear,</span> <span class="pre">stretch,</span> <span class="pre">stagger,</span> <span class="pre">buckle,</span>
 <span class="pre">propeller,</span> <span class="pre">opening,</span> <span class="pre">shift,</span> <span class="pre">slide,</span> <span class="pre">rise,</span> <span class="pre">tilt,</span> <span class="pre">roll,</span> <span class="pre">twist]</span></code>.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a></p>
 </dd>
 </dl>
@@ -410,7 +413,7 @@ universe and feed it to X3DNA. By default it sequentially creates a PDB for
 each frame and runs X3DNA on the frame.</p>
 <p>Set up the class.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>universe</strong> (<a class="reference internal" href="../../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – The input trajectory as part of a
 <a class="reference internal" href="../../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>; the trajectory is
@@ -448,12 +451,12 @@ X3DNA profiles, indexed by the frame number.</p>
 <span class="sig-name descname"><span class="pre">mean</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.legacy.x3dna.X3DNAtraj.mean" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the mean value for the base parameters.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>The list contains the means for the helicoidal parameters. The
 order is <code class="docutils literal notranslate"><span class="pre">[shear,</span> <span class="pre">stretch,</span> <span class="pre">stagger,</span> <span class="pre">buckle,</span> <span class="pre">propeller,</span> <span class="pre">opening,</span>
 <span class="pre">shift,</span> <span class="pre">slide,</span> <span class="pre">rise,</span> <span class="pre">tilt,</span> <span class="pre">roll,</span> <span class="pre">twist]</span></code>.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a></p>
 </dd>
 </dl>
@@ -464,13 +467,13 @@ order is <code class="docutils literal notranslate"><span class="pre">[shear,</s
 <span class="sig-name descname"><span class="pre">mean_std</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.legacy.x3dna.X3DNAtraj.mean_std" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the mean and standard deviation of base parameters.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>The tuple contains two lists with the means and the standard deviations
 for the helicoidal parameters. The order for both lists is <code class="docutils literal notranslate"><span class="pre">[shear,</span>
 <span class="pre">stretch,</span> <span class="pre">stagger,</span> <span class="pre">buckle,</span> <span class="pre">propeller,</span> <span class="pre">opening,</span> <span class="pre">shift,</span> <span class="pre">slide,</span> <span class="pre">rise,</span> <span class="pre">tilt,</span>
 <span class="pre">roll,</span> <span class="pre">twist]</span></code>.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a>)</p>
 </dd>
 </dl>
@@ -484,7 +487,7 @@ for the helicoidal parameters. The order for both lists is <code class="docutils
 standard deviation for each individual base pair. Each plot is saved to
 PNG file with name “&lt;parameter_name&gt;.png”.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>ax</strong> (<em>matplotlib.pyplot.Axes</em><em> (</em><em>optional</em><em>)</em>) – Provide <cite>ax</cite> to have all plots plotted in the same axes.</p>
 </dd>
 </dl>
@@ -529,12 +532,12 @@ frame number.</p>
 <span class="sig-name descname"><span class="pre">std</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.legacy.x3dna.X3DNAtraj.std" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the standard deviation for the base parameters.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>The list contains the standard deviations for the helicoidal
 parameters. The order is <code class="docutils literal notranslate"><span class="pre">[shear,</span> <span class="pre">stretch,</span> <span class="pre">stagger,</span> <span class="pre">buckle,</span>
 <span class="pre">propeller,</span> <span class="pre">opening,</span> <span class="pre">shift,</span> <span class="pre">slide,</span> <span class="pre">rise,</span> <span class="pre">tilt,</span> <span class="pre">roll,</span> <span class="pre">twist]</span></code>.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a></p>
 </dd>
 </dl>

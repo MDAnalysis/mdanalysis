@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>1. Overview over MDAnalysis &mdash; MDAnalysis 2.5.0 documentation</title>
@@ -13,11 +13,11 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
         <script src="../_static/js/versions.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -150,7 +150,7 @@ from within the interpreter:</p>
 </pre></div>
 </div>
 <p>The idea behind MDAnalysis is to get trajectory data into <a class="reference external" href="http://numpy.scipy.org">NumPy</a>
-<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> arrays, where it can then be easily manipulated using
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> arrays, where it can then be easily manipulated using
 all the power in <a class="reference external" href="http://numpy.scipy.org">NumPy</a> and <a class="reference external" href="http://www.scipy.org/">SciPy</a>.</p>
 <p>MDAnalysis works well both in scripts and in interactive use. The developers
 very much recommend using MDAnalysis from within the <a class="reference external" href="http://ipython.scipy.org/">IPython</a> Python shell.  It
@@ -230,16 +230,15 @@ everything is working properly:</p>
 Adenylate Kinase (from <a class="reference internal" href="#beckstein2009" id="id1"><span>[Beckstein2009]</span></a>) and the PDB+XTC file are ten
 frames from a Gromacs simulation of AdK solvated in TIP4P water with
 the OPLS/AA force field.</p>
-<div role="list" class="citation-list">
-<div class="citation" id="beckstein2009" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">Beckstein2009</a><span class="fn-bracket">]</span></span>
-<p>O. Beckstein, E.J. Denning, J.R. Perilla, and
+<dl class="citation">
+<dt class="label" id="beckstein2009"><span class="brackets"><a class="fn-backref" href="#id1">Beckstein2009</a></span></dt>
+<dd><p>O. Beckstein, E.J. Denning, J.R. Perilla, and
 T.B. Woolf. Zipping and Unzipping of Adenylate
 Kinase: Atomistic Insights into the Ensemble of
 Open &lt;–&gt; Closed Transitions. <em>J Mol Biol</em> <strong>394</strong>
 (2009), 160–176, doi:<a class="reference external" href="http://dx.doi.org/10.1016/j.jmb.2009.09.009">10.1016/j.jmb.2009.09.009</a></p>
-</div>
-</div>
+</dd>
+</dl>
 </section>
 <section id="code-snippets">
 <h3><span class="section-number">1.2.2. </span>Code snippets<a class="headerlink" href="#code-snippets" title="Permalink to this heading"></a></h3>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>13.3.2. Low level DCD trajectory reading - MDAnalysis.lib.formats.libdcd &mdash; MDAnalysis 2.5.0 documentation</title>
@@ -13,11 +13,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
         <script src="../../../_static/js/versions.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -134,7 +134,6 @@ complete trajectory frames.</p>
 <p class="rubric">Acknowledgements</p>
 <p><code class="xref py py-mod docutils literal notranslate"><span class="pre">libdcd</span></code> contains and is originally based on DCD reading and writing code
 from VMD’s <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/">molfile</a> plugin and <a class="reference external" href="http://www.ks.uiuc.edu/Development/MDTools/catdcd/">catdcd</a>.</p>
-</section>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.lib.formats.libdcd.DCDFile">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.formats.libdcd.</span></span><span class="sig-name descname"><span class="pre">DCDFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile" title="Permalink to this definition"></a></dt>
@@ -148,7 +147,7 @@ different unitcell conventions or time and length units, has to be handled in
 higher level code. Reading and writing does not support fixed atoms or 4D
 coordinates.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The filename to open.</p></li>
 <li><p><strong>mode</strong> (<em>(</em><em>'r'</em><em>, </em><em>'w'</em><em>)</em>) – The mode in which to open the file, either ‘r’ read or ‘w’ write</p></li>
@@ -212,7 +211,7 @@ the dcd. The bit flags are:</p>
 <dd><p>Open a DCD file</p>
 <p>If another DCD file is currently opened it will be closed</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>mode</strong> (<em>(</em><em>'r'</em><em>, </em><em>'w'</em><em>)</em>) – The mode in which to open the file, either ‘r’ read or ‘w’ write</p>
 </dd>
 </dl>
@@ -223,10 +222,10 @@ the dcd. The bit flags are:</p>
 <span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.read" title="Permalink to this definition"></a></dt>
 <dd><p>Read next dcd frame</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><strong>DCDFrame</strong> – positions are in <code class="docutils literal notranslate"><span class="pre">x</span></code> and unitcell in <code class="docutils literal notranslate"><span class="pre">unitcell</span></code> attribute of DCDFrame</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p>namedtuple</p>
 </dd>
 </dl>
@@ -241,7 +240,7 @@ for possible post processing into a common unitcell data structure.</p>
 <span class="sig-name descname"><span class="pre">readframes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fac'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.readframes" title="Permalink to this definition"></a></dt>
 <dd><p>read multiple frames at once</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – starting frame, default to 0</p></li>
 <li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – stop frame, default to <code class="docutils literal notranslate"><span class="pre">n_frames</span></code></p></li>
@@ -250,11 +249,11 @@ for possible post processing into a common unitcell data structure.</p>
 <li><p><strong>indices</strong> (<em>array_like</em><em> (</em><em>optional</em><em>)</em>) – only read selected atoms. In <code class="docutils literal notranslate"><span class="pre">None</span></code> read all.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>DCDFrame</strong> – positions are in <code class="docutils literal notranslate"><span class="pre">x</span></code> and unitcell in <code class="docutils literal notranslate"><span class="pre">unitcell</span></code> attribute of DCDFrame.
 Here the attributes contain the positions for all frames in the given order</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>namedtuple</p>
 </dd>
 </dl>
@@ -270,7 +269,7 @@ unitcell data structure.</p>
 <span class="sig-name descname"><span class="pre">seek</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.seek" title="Permalink to this definition"></a></dt>
 <dd><p>Seek to Frame.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – seek the file to given frame (0-based)</p>
 </dd>
 </dl>
@@ -280,7 +279,7 @@ unitcell data structure.</p>
 <dt class="sig sig-object py" id="MDAnalysis.lib.formats.libdcd.DCDFile.tell">
 <span class="sig-name descname"><span class="pre">tell</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.tell" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>current frame (0-based)</p>
 </dd>
 </dl>
@@ -291,7 +290,7 @@ unitcell data structure.</p>
 <span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xyz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.write" title="Permalink to this definition"></a></dt>
 <dd><p>write one frame into DCD file.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>xyz</strong> (<em>array_like</em><em>, </em><em>shape=</em><em>(</em><em>natoms</em><em>, </em><em>3</em><em>)</em>) – cartesian coordinates</p></li>
 <li><p><strong>box</strong> (<em>array_like</em><em>, </em><em>shape=</em><em>(</em><em>6</em><em>) </em><em>(</em><em>optional</em><em>)</em>) – Box vectors for this frame. Can be left to skip writing a unitcell</p></li>
@@ -306,7 +305,7 @@ unitcell data structure.</p>
 <dd><p>Write DCD header</p>
 <p>This function needs to be called before the first frame can be written.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>remarks</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – remarks of DCD file. Writes up to 239 characters (ASCII). The
 character 240 will be the null terminator</p></li>
@@ -322,6 +321,7 @@ character 240 will be the null terminator</p></li>
 
 </dd></dl>
 
+</section>
 
 
            </div>

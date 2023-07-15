@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.2.8. Bond-Angle-Torsion coordinates analysis — MDAnalysis.analysis.bat &mdash; MDAnalysis 2.5.0 documentation</title>
@@ -13,11 +13,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -128,13 +128,13 @@
   <span class="target" id="module-MDAnalysis.analysis.bat"></span><section id="bond-angle-torsion-coordinates-analysis-mdanalysis-analysis-bat">
 <h1><span class="section-number">4.2.8. </span>Bond-Angle-Torsion coordinates analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.bat" title="MDAnalysis.analysis.bat"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.bat</span></code></a><a class="headerlink" href="#bond-angle-torsion-coordinates-analysis-mdanalysis-analysis-bat" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
-<dt class="field-odd">Author<span class="colon">:</span></dt>
+<dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Soohaeng Yoo Willow and David Minh</p>
 </dd>
-<dt class="field-even">Year<span class="colon">:</span></dt>
+<dt class="field-even">Year</dt>
 <dd class="field-even"><p>2020</p>
 </dd>
-<dt class="field-odd">Copyright<span class="colon">:</span></dt>
+<dt class="field-odd">Copyright</dt>
 <dd class="field-odd"><p>GNU Public License, v2 or any higher version</p>
 </dd>
 </dl>
@@ -242,7 +242,7 @@ previous snippet has been executed.</p>
 <p>Bond-Angle-Torsions (BAT) internal coordinates will be computed for
 the group of atoms and all frame in the trajectory belonging to <cite>ag</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ag</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Group of atoms for which the BAT coordinates are calculated.
 <cite>ag</cite> must have a bonds attribute.
@@ -259,7 +259,7 @@ If filename is not <code class="docutils literal notranslate"><span class="pre">
 instead of being recalculated using the run() method.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.11)"><strong>AttributeError</strong></a> – If <cite>ag</cite> does not contain a bonds attribute</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – If <cite>ag</cite> contains more than one molecule</p></li>
@@ -270,7 +270,7 @@ instead of being recalculated using the run() method.</p></li>
 <dt class="sig sig-object py" id="MDAnalysis.analysis.bat.BAT.results.bat">
 <span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">bat</span></span><a class="headerlink" href="#MDAnalysis.analysis.bat.BAT.results.bat" title="Permalink to this definition"></a></dt>
 <dd><p>Contains the time series of the Bond-Angle-Torsion coordinates as a
-(nframes, 3N) <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> array. Each row corresponds to
+(nframes, 3N) <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> array. Each row corresponds to
 a frame in the trajectory. In each column, the first six elements
 describe external degrees of freedom. The first three are the center
 of mass of the initial atom. The next three specify the  external angles
@@ -292,19 +292,19 @@ all the other bond angles, and then all the other torsion angles.</p>
 <p>One application of this function is to determine the new
 Cartesian coordinates after modifying a specific torsion angle.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>bat_frame</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>numpy.ndarray</em></a>) – an array with dimensions (3N,) with external then internal
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>bat_frame</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><em>numpy.ndarray</em></a>) – an array with dimensions (3N,) with external then internal
 degrees of freedom based on the root atoms, followed by the bond,
 angle, and (proper and improper) torsion coordinates.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>XYZ</strong> – an array with dimensions (N,3) with Cartesian coordinates. The first
 dimension has the same ordering as the AtomGroup used to initialize
 the class. The molecule will be whole opposed to wrapped around a
 periodic boundary.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -320,7 +320,7 @@ periodic boundary.</p>
 <span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/bat.html#BAT.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.bat.BAT.load" title="Permalink to this definition"></a></dt>
 <dd><p>Loads the bat trajectory from a file in numpy binary format</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – name of numpy binary file</p></li>
 <li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</p></li>
@@ -343,7 +343,7 @@ periodic boundary.</p>
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progressbar_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.bat.BAT.run" title="Permalink to this definition"></a></dt>
 <dd><p>Perform the calculation</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</p></li>
 <li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</p></li>
@@ -390,19 +390,17 @@ allowing to modify description, position etc of tqdm progressbars</p>
 </div></blockquote>
 <p class="rubric">References</p>
 <div class="docutils container" id="id4">
-<div class="citation" id="id14" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">Chang2003</a><span class="fn-bracket">]</span></span>
-<p>Chia-En Chang, Michael J. Potter, and Michael K. Gilson. Calculation of molecular configuration integrals. <em>The Journal of Physical Chemistry B</em>, 107(4):1048–1055, 2003. <a class="reference external" href="https://doi.org/10.1021/jp027149c">doi:10.1021/jp027149c</a>.</p>
-</div>
-<div class="citation" id="id29" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">Hikiri2016</a><span class="fn-bracket">]</span></span>
-<p>Simon Hikiri, Takashi Yoshidome, and Mitsunori Ikeguchi. Computational methods for configurational entropy using internal and cartesian coordinates. <em>Journal of Chemical Theory and Computation</em>, 12(12):5990–6000, 2016. PMID: 27951672. <a class="reference external" href="https://doi.org/10.1021/acs.jctc.6b00563">doi:10.1021/acs.jctc.6b00563</a>.</p>
-</div>
-<div class="citation" id="id41" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">Minh2020</a><span class="fn-bracket">]</span></span>
-<p>David D. L. Minh. Alchemical grid dock (algdock): binding free energy calculations between flexible ligands and rigid receptors. <em>Journal of Computational Chemistry</em>, 41(7):715–730, 2020. <a class="reference external" href="https://doi.org/https://doi.org/10.1002/jcc.26036">doi:https://doi.org/10.1002/jcc.26036</a>.</p>
-</div>
-</div>
+<dl class="citation">
+<dt class="label" id="id14"><span class="brackets"><a class="fn-backref" href="#id1">Chang2003</a></span></dt>
+<dd><p>Chia-En Chang, Michael J. Potter, and Michael K. Gilson. Calculation of molecular configuration integrals. <em>The Journal of Physical Chemistry B</em>, 107(4):1048–1055, 2003. <a class="reference external" href="https://doi.org/10.1021/jp027149c">doi:10.1021/jp027149c</a>.</p>
+</dd>
+<dt class="label" id="id29"><span class="brackets"><a class="fn-backref" href="#id2">Hikiri2016</a></span></dt>
+<dd><p>Simon Hikiri, Takashi Yoshidome, and Mitsunori Ikeguchi. Computational methods for configurational entropy using internal and cartesian coordinates. <em>Journal of Chemical Theory and Computation</em>, 12(12):5990–6000, 2016. PMID: 27951672. <a class="reference external" href="https://doi.org/10.1021/acs.jctc.6b00563">doi:10.1021/acs.jctc.6b00563</a>.</p>
+</dd>
+<dt class="label" id="id41"><span class="brackets"><a class="fn-backref" href="#id3">Minh2020</a></span></dt>
+<dd><p>David D. L. Minh. Alchemical grid dock (algdock): binding free energy calculations between flexible ligands and rigid receptors. <em>Journal of Computational Chemistry</em>, 41(7):715–730, 2020. <a class="reference external" href="https://doi.org/https://doi.org/10.1002/jcc.26036">doi:https://doi.org/10.1002/jcc.26036</a>.</p>
+</dd>
+</dl>
 </div>
 </section>
 </section>

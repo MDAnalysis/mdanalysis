@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>13.2.11. Correlations utilities — MDAnalysis.lib.correlations &mdash; MDAnalysis 2.5.0 documentation</title>
@@ -13,11 +13,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -26,7 +26,7 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="13.2.14. Picklable read-only I/O classes — MDAnalysis.lib.picklable_file_io" href="picklable_file_io.html" />
+    <link rel="next" title="13.2.12. Picklable read-only I/O classes — MDAnalysis.lib.picklable_file_io" href="picklable_file_io.html" />
     <link rel="prev" title="13.2.10. Helper functions — MDAnalysis.lib.util" href="util.html" /> 
 </head>
 
@@ -79,10 +79,12 @@
 <li class="toctree-l3"><a class="reference internal" href="transformations.html">13.2.8. Homogeneous Transformation Matrices and Quaternions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="qcprot.html">13.2.9. Fast QCP RMSD structure alignment — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="util.html">13.2.10. Helper functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">13.2.11. Correlations utilities — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.correlations</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#autocorrelation-function">13.2.12. Autocorrelation Function</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#intermittency-function">13.2.13. Intermittency Function</a></li>
-<li class="toctree-l3"><a class="reference internal" href="picklable_file_io.html">13.2.14. Picklable read-only I/O classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">13.2.11. Correlations utilities — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.correlations</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#autocorrelation-function">13.2.11.1. Autocorrelation Function</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#intermittency-function">13.2.11.2. Intermittency Function</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="picklable_file_io.html">13.2.12. Picklable read-only I/O classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#low-level-file-formats">13.3. Low level file formats</a></li>
@@ -123,13 +125,13 @@
   <span class="target" id="module-MDAnalysis.lib.correlations"></span><section id="correlations-utilities-mdanalysis-lib-correlations">
 <h1><span class="section-number">13.2.11. </span>Correlations utilities — <a class="reference internal" href="#module-MDAnalysis.lib.correlations" title="MDAnalysis.lib.correlations"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.correlations</span></code></a><a class="headerlink" href="#correlations-utilities-mdanalysis-lib-correlations" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
-<dt class="field-odd">Authors<span class="colon">:</span></dt>
+<dt class="field-odd">Authors</dt>
 <dd class="field-odd"><p>Paul Smith &amp; Mateusz Bieniek</p>
 </dd>
-<dt class="field-even">Year<span class="colon">:</span></dt>
+<dt class="field-even">Year</dt>
 <dd class="field-even"><p>2020</p>
 </dd>
-<dt class="field-odd">Copyright<span class="colon">:</span></dt>
+<dt class="field-odd">Copyright</dt>
 <dd class="field-odd"><p>GNU Public License v2</p>
 </dd>
 </dl>
@@ -173,25 +175,20 @@ lifetime.</p>
 </div>
 <p class="rubric">References</p>
 <div class="docutils container" id="id4">
-<div class="citation" id="id24" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>Gowers2015<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id2">1</a>,<a role="doc-backlink" href="#id72">2</a>)</span>
-<p>Richard J. Gowers and Paola Carbone. A multiscale approach to model hydrogen bonding: the case of polyamide. <em>The journal of Chemical Physics</em>, 142(22):224907, 2015. <a class="reference external" href="https://doi.org/10.1063/1.4922445">doi:10.1063/1.4922445</a>.</p>
+<dl class="citation">
+<dt class="label" id="id24"><span class="brackets">Gowers2015</span><span class="fn-backref">(<a href="#id2">1</a>,<a href="#id72">2</a>)</span></dt>
+<dd><p>Richard J. Gowers and Paola Carbone. A multiscale approach to model hydrogen bonding: the case of polyamide. <em>The journal of Chemical Physics</em>, 142(22):224907, 2015. <a class="reference external" href="https://doi.org/10.1063/1.4922445">doi:10.1063/1.4922445</a>.</p>
+</dd>
+<dt class="label" id="id9"><span class="brackets">Araya-Secchi2014</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id2">2</a>,<a href="#id71">3</a>)</span></dt>
+<dd><p>Raul Araya-Secchi, Tomas Perez-Acle, Seung-gu Kang, Tien Huynh, Alejandro Bernardin, Yerko Escalona, Jose-Antonio Garate, Agustin D. Martínez, Isaac E. García, Juan C. Sáez, and Ruhong Zhou. Characterization of a novel water pocket inside the human cx26 hemichannel structure. <em>Biophysical Journal</em>, 107(3):599–612, 2014. <a class="reference external" href="https://doi.org/10.1016/j.bpj.2014.05.037">doi:10.1016/j.bpj.2014.05.037</a>.</p>
+</dd>
+<dt class="label" id="id27"><span class="brackets"><a class="fn-backref" href="#id3">Gu2019</a></span></dt>
+<dd><p>Ruo-Xu Gu, Svetlana Baoukina, and D. Peter Tieleman. Cholesterol flip-flop in heterogeneous membranes. <em>Journal of Chemical Theory and Computation</em>, 15(3):2064–2070, 2019. <a class="reference external" href="https://doi.org/10.1021/acs.jctc.8b00933">doi:10.1021/acs.jctc.8b00933</a>.</p>
+</dd>
+</dl>
 </div>
-<div class="citation" id="id9" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>Araya-Secchi2014<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id2">2</a>,<a role="doc-backlink" href="#id71">3</a>)</span>
-<p>Raul Araya-Secchi, Tomas Perez-Acle, Seung-gu Kang, Tien Huynh, Alejandro Bernardin, Yerko Escalona, Jose-Antonio Garate, Agustin D. Martínez, Isaac E. García, Juan C. Sáez, and Ruhong Zhou. Characterization of a novel water pocket inside the human cx26 hemichannel structure. <em>Biophysical Journal</em>, 107(3):599–612, 2014. <a class="reference external" href="https://doi.org/10.1016/j.bpj.2014.05.037">doi:10.1016/j.bpj.2014.05.037</a>.</p>
-</div>
-<div class="citation" id="id27" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">Gu2019</a><span class="fn-bracket">]</span></span>
-<p>Ruo-Xu Gu, Svetlana Baoukina, and D. Peter Tieleman. Cholesterol flip-flop in heterogeneous membranes. <em>Journal of Chemical Theory and Computation</em>, 15(3):2064–2070, 2019. <a class="reference external" href="https://doi.org/10.1021/acs.jctc.8b00933">doi:10.1021/acs.jctc.8b00933</a>.</p>
-</div>
-</div>
-</div>
-</section>
 <section id="autocorrelation-function">
-<h1><span class="section-number">13.2.12. </span>Autocorrelation Function<a class="headerlink" href="#autocorrelation-function" title="Permalink to this heading"></a></h1>
+<h2><span class="section-number">13.2.11.1. </span>Autocorrelation Function<a class="headerlink" href="#autocorrelation-function" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.correlations.autocorrelation">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.correlations.</span></span><span class="sig-name descname"><span class="pre">autocorrelation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list_of_sets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/correlations.html#autocorrelation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.correlations.autocorrelation" title="Permalink to this definition"></a></dt>
@@ -222,7 +219,7 @@ this feature is present at every frame from <span class="math notranslate nohigh
 The angular brackets represent an average over all time origins, <span class="math notranslate nohighlight">\(t_0\)</span>.</p>
 <p>See <span id="id71">[<a class="reference internal" href="#id9" title="Raul Araya-Secchi, Tomas Perez-Acle, Seung-gu Kang, Tien Huynh, Alejandro Bernardin, Yerko Escalona, Jose-Antonio Garate, Agustin D. Martínez, Isaac E. García, Juan C. Sáez, and Ruhong Zhou. Characterization of a novel water pocket inside the human cx26 hemichannel structure. Biophysical Journal, 107(3):599–612, 2014. doi:10.1016/j.bpj.2014.05.037.">Araya-Secchi2014</a>]</span> for a description survival probability.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>list_of_sets</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – List of sets. Each set corresponds to data from a single frame. Each element in a set
 may be, for example, an atom id or a tuple of atoms ids. In the case of calculating the
@@ -238,7 +235,7 @@ Default is 1.</p>
 </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>tau_timeseries</strong> (<em>list of int</em>) – the values of tau for which the autocorrelation was calculated</p></li>
 <li><p><strong>timeseries</strong> (<em>list of int</em>) – the autocorelation values for each of the tau values</p></li>
@@ -253,7 +250,7 @@ This allows the time dependant evolution of <span class="math notranslate nohigh
 
 </section>
 <section id="intermittency-function">
-<h1><span class="section-number">13.2.13. </span>Intermittency Function<a class="headerlink" href="#intermittency-function" title="Permalink to this heading"></a></h1>
+<h2><span class="section-number">13.2.11.2. </span>Intermittency Function<a class="headerlink" href="#intermittency-function" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.lib.correlations.correct_intermittency">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.correlations.</span></span><span class="sig-name descname"><span class="pre">correct_intermittency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list_of_sets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intermittency</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/correlations.html#correct_intermittency"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.lib.correlations.correct_intermittency" title="Permalink to this definition"></a></dt>
@@ -278,7 +275,7 @@ to calculate the survival probability with a given intermittency.</p>
 calculation of hydrogen bond lifetimes.</p>
 <p># TODO - is intermittency consitent with list of sets of sets? (hydrogen bonds)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>list_of_sets</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – In the simple case of e.g survival probability, a list of sets of atom ids present at each frame, where a
 single set contains atom ids at a given frame, e.g [{0, 1}, {0}, {0}, {0, 1}]</p></li>
@@ -287,18 +284,19 @@ changes are made to the data. With the value of <cite>intermittency=2</cite>, al
 consecutive frames will be instead be considered present.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>list_of_sets</strong> – returns a new list with the IDs with added IDs which disappeared for &lt;= <code class="xref py py-attr docutils literal notranslate"><span class="pre">intermittency</span></code>.
 e.g If [{0, 1}, {0}, {0}, {0, 1}] is a list of sets of atom ids present at each frame and <cite>intermittency=2</cite>,
 both atoms will be considered present throughout and thus the returned list of sets will be
 [{0, 1}, {0, 1}, {0, 1}, {0, 1}].</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
 
+</section>
 </section>
 
 
@@ -306,7 +304,7 @@ both atoms will be considered present throughout and thus the returned list of s
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="util.html" class="btn btn-neutral float-left" title="13.2.10. Helper functions — MDAnalysis.lib.util" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="picklable_file_io.html" class="btn btn-neutral float-right" title="13.2.14. Picklable read-only I/O classes — MDAnalysis.lib.picklable_file_io" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="picklable_file_io.html" class="btn btn-neutral float-right" title="13.2.12. Picklable read-only I/O classes — MDAnalysis.lib.picklable_file_io" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

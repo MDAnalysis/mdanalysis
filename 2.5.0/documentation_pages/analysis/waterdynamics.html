@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.8.3. Water dynamics analysis — MDAnalysis.analysis.waterdynamics &mdash; MDAnalysis 2.5.0 documentation</title>
@@ -13,11 +13,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -125,13 +125,13 @@
   <span class="target" id="module-MDAnalysis.analysis.waterdynamics"></span><section id="water-dynamics-analysis-mdanalysis-analysis-waterdynamics">
 <h1><span class="section-number">4.8.3. </span>Water dynamics analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.waterdynamics" title="MDAnalysis.analysis.waterdynamics"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.waterdynamics</span></code></a><a class="headerlink" href="#water-dynamics-analysis-mdanalysis-analysis-waterdynamics" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
-<dt class="field-odd">Author<span class="colon">:</span></dt>
+<dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Alejandro Bernardin</p>
 </dd>
-<dt class="field-even">Year<span class="colon">:</span></dt>
+<dt class="field-even">Year</dt>
 <dd class="field-even"><p>2014-2015</p>
 </dd>
-<dt class="field-odd">Copyright<span class="colon">:</span></dt>
+<dt class="field-odd">Copyright</dt>
 <dd class="field-odd"><p>GNU Public License v3</p>
 </dd>
 </dl>
@@ -149,32 +149,26 @@ square displacement (MSD) <span id="id4">[<a class="reference internal" href="#i
 <span id="id7">[<a class="reference internal" href="#id44" title="Anatoli A. Milischuk and Branka M. Ladanyi. Structure and dynamics of water confined in silica nanopores. The Journal of Chemical Physics, 135(17):174709, 2011. doi:10.1063/1.3657408.">Milischuk2011</a>]</span> (water in a nanopore).</p>
 <p class="rubric">References</p>
 <div class="docutils container" id="id8">
-<div class="citation" id="id57" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>Yeh1999<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id80">2</a>)</span>
-<p>Yu-ling Yeh and Chung-Yuan Mou. Orientational relaxation dynamics of liquid water studied by molecular dynamics simulation. <em>The Journal of Physical Chemistry B</em>, 103(18):3699–3705, 1999. <a class="reference external" href="https://doi.org/10.1021/jp984584r">doi:10.1021/jp984584r</a>.</p>
-</div>
-<div class="citation" id="id48" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">Rapaport1983</a><span class="fn-bracket">]</span></span>
-<p>D.C. Rapaport. Hydrogen bonds in water. <em>Molecular Physics</em>, 50(5):1151–1162, 1983. <a class="reference external" href="https://doi.org/10.1080/00268978300102931">doi:10.1080/00268978300102931</a>.</p>
-</div>
-<div class="citation" id="id30" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">Grigera1996</a><span class="fn-bracket">]</span></span>
-<p>J. Raul Grigera, Susana G. Kalko, and Jorge Fischbarg. Wall−water interface. a molecular dynamics study. <em>Langmuir</em>, 12(1):154–158, 1996. <a class="reference external" href="https://doi.org/10.1021/la9408681">doi:10.1021/la9408681</a>.</p>
-</div>
-<div class="citation" id="id16" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">Bródka1994</a><span class="fn-bracket">]</span></span>
-<p>Aleksander Bródka. Diffusion in restricted volume. <em>Molecular Physics</em>, 82(5):1075–1078, 1994. <a class="reference external" href="https://doi.org/10.1080/00268979400100764">doi:10.1080/00268979400100764</a>.</p>
-</div>
-<div class="citation" id="id38" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">Liu2004</a><span class="fn-bracket">]</span></span>
-<p>Pu Liu, Edward Harder, and B. J. Berne. On the calculation of diffusion coefficients in confined fluids and interfaces with an application to the liquid−vapor interface of water. <em>The Journal of Physical Chemistry B</em>, 108(21):6595–6602, 2004. <a class="reference external" href="https://doi.org/10.1021/jp0375057">doi:10.1021/jp0375057</a>.</p>
-</div>
-<div class="citation" id="id44" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id7">Milischuk2011</a><span class="fn-bracket">]</span></span>
-<p>Anatoli A. Milischuk and Branka M. Ladanyi. Structure and dynamics of water confined in silica nanopores. <em>The Journal of Chemical Physics</em>, 135(17):174709, 2011. <a class="reference external" href="https://doi.org/10.1063/1.3657408">doi:10.1063/1.3657408</a>.</p>
-</div>
-</div>
+<dl class="citation">
+<dt class="label" id="id57"><span class="brackets">Yeh1999</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id80">2</a>)</span></dt>
+<dd><p>Yu-ling Yeh and Chung-Yuan Mou. Orientational relaxation dynamics of liquid water studied by molecular dynamics simulation. <em>The Journal of Physical Chemistry B</em>, 103(18):3699–3705, 1999. <a class="reference external" href="https://doi.org/10.1021/jp984584r">doi:10.1021/jp984584r</a>.</p>
+</dd>
+<dt class="label" id="id48"><span class="brackets"><a class="fn-backref" href="#id2">Rapaport1983</a></span></dt>
+<dd><p>D.C. Rapaport. Hydrogen bonds in water. <em>Molecular Physics</em>, 50(5):1151–1162, 1983. <a class="reference external" href="https://doi.org/10.1080/00268978300102931">doi:10.1080/00268978300102931</a>.</p>
+</dd>
+<dt class="label" id="id30"><span class="brackets"><a class="fn-backref" href="#id3">Grigera1996</a></span></dt>
+<dd><p>J. Raul Grigera, Susana G. Kalko, and Jorge Fischbarg. Wall−water interface. a molecular dynamics study. <em>Langmuir</em>, 12(1):154–158, 1996. <a class="reference external" href="https://doi.org/10.1021/la9408681">doi:10.1021/la9408681</a>.</p>
+</dd>
+<dt class="label" id="id16"><span class="brackets"><a class="fn-backref" href="#id4">Bródka1994</a></span></dt>
+<dd><p>Aleksander Bródka. Diffusion in restricted volume. <em>Molecular Physics</em>, 82(5):1075–1078, 1994. <a class="reference external" href="https://doi.org/10.1080/00268979400100764">doi:10.1080/00268979400100764</a>.</p>
+</dd>
+<dt class="label" id="id38"><span class="brackets"><a class="fn-backref" href="#id5">Liu2004</a></span></dt>
+<dd><p>Pu Liu, Edward Harder, and B. J. Berne. On the calculation of diffusion coefficients in confined fluids and interfaces with an application to the liquid−vapor interface of water. <em>The Journal of Physical Chemistry B</em>, 108(21):6595–6602, 2004. <a class="reference external" href="https://doi.org/10.1021/jp0375057">doi:10.1021/jp0375057</a>.</p>
+</dd>
+<dt class="label" id="id44"><span class="brackets"><a class="fn-backref" href="#id7">Milischuk2011</a></span></dt>
+<dd><p>Anatoli A. Milischuk and Branka M. Ladanyi. Structure and dynamics of water confined in silica nanopores. <em>The Journal of Chemical Physics</em>, 135(17):174709, 2011. <a class="reference external" href="https://doi.org/10.1063/1.3657408">doi:10.1063/1.3657408</a>.</p>
+</dd>
+</dl>
 </div>
 <section id="example-use-of-the-analysis-classes">
 <h2><span class="section-number">4.8.3.1. </span>Example use of the analysis classes<a class="headerlink" href="#example-use-of-the-analysis-classes" title="Permalink to this heading"></a></h2>
@@ -470,7 +464,7 @@ This is a time correlation function given by:</p>
 <p>where <span class="math notranslate nohighlight">\(P_2=(3x^2-1)/2\)</span> is the second-order Legendre polynomial and <span class="math notranslate nohighlight">\(\hat{u}\)</span> is
 a unit vector along HH, OH or dipole vector.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe object</p></li>
 <li><p><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Selection string for water [‘byres name OH2’].</p></li>
@@ -512,11 +506,11 @@ is define as <span class="math notranslate nohighlight">\(\cos \theta = \hat u \
 u\)</span> is OH, HH or dipole vector.  It creates a histogram and returns a list
 of lists, see <a class="reference internal" href="#output">Output</a>. The AD is also know as Angular Probability (AP).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe object</p></li>
 <li><p><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Selection string to evaluate its angular distribution [‘byres name OH2’]</p></li>
-<li><p><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Number of bins to create the histogram by means of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.histogram.html#numpy.histogram" title="(in NumPy v1.24)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.histogram()</span></code></a></p></li>
+<li><p><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Number of bins to create the histogram by means of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.histogram.html#numpy.histogram" title="(in NumPy v1.25)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.histogram()</span></code></a></p></li>
 <li><p><strong>axis</strong> (<em>{'x'</em><em>, </em><em>'y'</em><em>, </em><em>'z'}</em><em> (</em><em>optional</em><em>)</em>) – Axis to create angle with the vector (HH, OH or dipole) and calculate
 cosine theta [‘z’].</p></li>
 </ul>
@@ -549,7 +543,7 @@ average distance that particles travels. The MSD is given by:</p>
 <span class="math notranslate nohighlight">\(n\)</span> is the dimensionality, in this case <span class="math notranslate nohighlight">\(n=3\)</span>,
 <span class="math notranslate nohighlight">\(D\)</span> is the diffusion coefficient and <span class="math notranslate nohighlight">\(t\)</span> is the time.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe object</p></li>
 <li><p><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Selection string for water [‘byres name OH2’].</p></li>
@@ -584,7 +578,7 @@ The SP is given by:</p>
 timestep, <span class="math notranslate nohighlight">\(N(t)\)</span> the number of particles at time <span class="math notranslate nohighlight">\(t\)</span>, and
 <span class="math notranslate nohighlight">\(N(t, t+\tau)\)</span> is the number of particles at every frame from <span class="math notranslate nohighlight">\(t\)</span> to <cite>tau</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe object</p></li>
 <li><p><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Selection string; any selection is allowed. With this selection you
@@ -619,7 +613,7 @@ previous <cite>inclusive</cite> behaviour),</p>
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tau_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residues</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intermittency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#SurvivalProbability.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.SurvivalProbability.run" title="Permalink to this definition"></a></dt>
 <dd><p>Computes and returns the Survival Probability (SP) timeseries</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – Zero-based index of the first frame to be analysed, Default: None
 (first frame).</p></li>
@@ -646,7 +640,7 @@ treated as being present at all frames. The default is continuous
 <li><p><strong>verbose</strong> (<em>Boolean</em><em>, </em><em>optional</em>) – Print the progress to the console.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>tau_timeseries</strong> (<em>list</em>) – tau from 1 to <cite>tau_max</cite>. Saved in the field tau_timeseries.</p></li>
 <li><p><strong>sp_timeseries</strong> (<em>list</em>) – survival probability for each value of <cite>tau</cite>. Saved in the field

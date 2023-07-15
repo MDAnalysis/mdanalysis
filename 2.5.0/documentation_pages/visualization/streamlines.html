@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>12.1.1. Streamplots (2D) — MDAnalysis.visualization.streamlines &mdash; MDAnalysis 2.5.0 documentation</title>
@@ -13,11 +13,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -108,13 +108,13 @@
   <span class="target" id="module-MDAnalysis.visualization.streamlines"></span><section id="streamplots-2d-mdanalysis-visualization-streamlines">
 <h1><span class="section-number">12.1.1. </span>Streamplots (2D)  — <a class="reference internal" href="#module-MDAnalysis.visualization.streamlines" title="MDAnalysis.visualization.streamlines"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.visualization.streamlines</span></code></a><a class="headerlink" href="#streamplots-2d-mdanalysis-visualization-streamlines" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
-<dt class="field-odd">Authors<span class="colon">:</span></dt>
+<dt class="field-odd">Authors</dt>
 <dd class="field-odd"><p>Tyler Reddy and Matthieu Chavent</p>
 </dd>
-<dt class="field-even">Year<span class="colon">:</span></dt>
+<dt class="field-even">Year</dt>
 <dd class="field-even"><p>2014</p>
 </dd>
-<dt class="field-odd">Copyright<span class="colon">:</span></dt>
+<dt class="field-odd">Copyright</dt>
 <dd class="field-odd"><p>GNU Public License v3</p>
 </dd>
 </dl>
@@ -134,7 +134,7 @@ use of multiple cores to perform the analyis in parallel (using
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.visualization.streamlines.</span></span><span class="sig-name descname"><span class="pre">generate_streamlines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topology_file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trajectory_file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_spacing</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MDA_selection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ymin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ymax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum_delta_magnitude</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_cores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'maximum'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/visualization/streamlines.html#generate_streamlines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.visualization.streamlines.generate_streamlines" title="Permalink to this definition"></a></dt>
 <dd><p>Produce the x and y components of a 2D streamplot data set.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>topology_file_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Absolute path to the topology file</p></li>
 <li><p><strong>trajectory_file_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Absolute path to the trajectory file. It will normally be desirable
@@ -156,7 +156,7 @@ excessively large displacements crossing the periodic boundary)</p></li>
 cores)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>dx_array</strong> (<em>array of floats</em>) – An array object containing the displacements in the x direction</p></li>
 <li><p><strong>dy_array</strong> (<em>array of floats</em>) – An array object containing the displacements in the y direction</p></li>
@@ -191,11 +191,11 @@ cores)</p></li>
 <img alt="../../_images/testing_streamline.png" src="../../_images/testing_streamline.png" />
 <p class="rubric">References</p>
 <div class="docutils container" id="id2">
-<div class="citation" id="id13" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">ᵃChavent2014</a><span class="fn-bracket">]</span></span>
-<p>Matthieu Chavent, Tyler Reddy, Joseph Goose, Anna Caroline E. Dahl, John E. Stone, Bruno Jobard, and Mark S. P. Sansom. Methodologies for the analysis of instantaneous lipid diffusion in md simulations of large membrane systems. <em>Faraday Discuss.</em>, 169:455–475, 2014. <a class="reference external" href="https://doi.org/10.1039/C3FD00145H">doi:10.1039/C3FD00145H</a>.</p>
-</div>
-</div>
+<dl class="citation">
+<dt class="label" id="id13"><span class="brackets"><a class="fn-backref" href="#id1">ᵃChavent2014</a></span></dt>
+<dd><p>Matthieu Chavent, Tyler Reddy, Joseph Goose, Anna Caroline E. Dahl, John E. Stone, Bruno Jobard, and Mark S. P. Sansom. Methodologies for the analysis of instantaneous lipid diffusion in md simulations of large membrane systems. <em>Faraday Discuss.</em>, 169:455–475, 2014. <a class="reference external" href="https://doi.org/10.1039/C3FD00145H">doi:10.1039/C3FD00145H</a>.</p>
+</dd>
+</dl>
 </div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>

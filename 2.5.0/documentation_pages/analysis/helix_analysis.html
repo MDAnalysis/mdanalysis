@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.7.1.2. HELANAL — analysis of protein helices &mdash; MDAnalysis 2.5.0 documentation</title>
@@ -13,11 +13,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -122,13 +122,13 @@
   <span class="target" id="module-MDAnalysis.analysis.helix_analysis"></span><section id="helanal-analysis-of-protein-helices">
 <h1><span class="section-number">4.7.1.2. </span>HELANAL — analysis of protein helices<a class="headerlink" href="#helanal-analysis-of-protein-helices" title="Permalink to this heading"></a></h1>
 <dl class="field-list simple">
-<dt class="field-odd">Author<span class="colon">:</span></dt>
+<dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Lily Wang</p>
 </dd>
-<dt class="field-even">Year<span class="colon">:</span></dt>
+<dt class="field-even">Year</dt>
 <dd class="field-even"><p>2020</p>
 </dd>
-<dt class="field-odd">Copyright<span class="colon">:</span></dt>
+<dt class="field-odd">Copyright</dt>
 <dd class="field-odd"><p>GNU Public License v3</p>
 </dd>
 </dl>
@@ -142,20 +142,18 @@
 Cα atoms. It can determine local structural features such as the local
 helical twist and rise, virtual torsion angle, local helix origins and
 bending angles between successive local helix axes.</p>
-<div role="list" class="citation-list">
-<div class="citation" id="sugeta1967" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">Sugeta1967</a><span class="fn-bracket">]</span></span>
-<p>Sugeta, H. and Miyazawa, T. 1967. General method for
+<dl class="citation">
+<dt class="label" id="sugeta1967"><span class="brackets"><a class="fn-backref" href="#id2">Sugeta1967</a></span></dt>
+<dd><p>Sugeta, H. and Miyazawa, T. 1967. General method for
 calculating helical parameters of polymer chains from bond lengths, bond
 angles and internal rotation angles. <em>Biopolymers</em> 5 673 - 679</p>
-</div>
-<div class="citation" id="bansal2000" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">Bansal2000</a><span class="fn-bracket">]</span></span>
-<p>Bansal M, Kumar S, Velavan R. 2000.
+</dd>
+<dt class="label" id="bansal2000"><span class="brackets"><a class="fn-backref" href="#id1">Bansal2000</a></span></dt>
+<dd><p>Bansal M, Kumar S, Velavan R. 2000.
 HELANAL - A program to characterise helix geometry in proteins.
 <em>J Biomol Struct Dyn.</em>  17(5):811-819.</p>
-</div>
-</div>
+</dd>
+</dl>
 <section id="example-use">
 <h2><span class="section-number">4.7.1.2.1. </span>Example use<a class="headerlink" href="#example-use" title="Permalink to this heading"></a></h2>
 <p>You can pass in a single selection:</p>
